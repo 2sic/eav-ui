@@ -10,7 +10,7 @@ import { NgTemplateOutlet } from '@angular/common';
 
 /**
  * Special Speed-Dial kind of FAB which opens more menu items on hover.
- * 
+ *
  * IMPORTANT: to work it needs ca. 4 more directives.
  * So never import this component directly, but instead import the ExtendedFabSpeedDialImports.
  */
@@ -20,6 +20,7 @@ import { NgTemplateOutlet } from '@angular/common';
   templateUrl: './extended-fab-speed-dial.component.html',
   styleUrls: ['./extended-fab-speed-dial.component.scss'],
   encapsulation: ViewEncapsulation.None,
+  standalone: true,
   imports: [
     ExtendedFabSpeedDialTriggerContentDirective,
     ExtendedFabSpeedDialActionsContentDirective,
@@ -27,7 +28,6 @@ import { NgTemplateOutlet } from '@angular/common';
     ExtendedFabSpeedDialActionDirective,
     NgTemplateOutlet
   ],
-  standalone: true,
 })
 export class ExtendedFabSpeedDialComponent extends BaseComponent implements AfterContentInit, OnDestroy {
   @ContentChild(ExtendedFabSpeedDialTriggerContentDirective) trigger: ExtendedFabSpeedDialTriggerContentDirective;
@@ -40,7 +40,7 @@ export class ExtendedFabSpeedDialComponent extends BaseComponent implements Afte
 
   constructor() {
     super();
-   }
+  }
 
   ngAfterContentInit(): void {
     this.subscriptions.add(
@@ -67,7 +67,7 @@ export class ExtendedFabSpeedDialComponent extends BaseComponent implements Afte
   }
 
   setOpen(event: PointerEvent, open: boolean): void {
-    if (event.pointerType === 'touch') { return; }
+    if (event.pointerType === 'touch') return;
     this.open$.next(open);
   }
 }

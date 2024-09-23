@@ -2,14 +2,11 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, RouterOutlet } from '@angular/router';
 import { Context } from '../shared/services/context';
 import { PlumbEditorComponent } from './plumb-editor/plumb-editor.component';
-import { VisualQueryService } from './services/visual-query.service';
+import { VisualQueryStateService } from './services/visual-query.service';
 import { AddExplorerComponent } from './add-explorer/add-explorer.component';
 import { RunExplorerComponent } from './run-explorer/run-explorer.component';
 import { MatIconModule } from '@angular/material/icon';
 import { NgClass } from '@angular/common';
-import { QueryDefinitionService } from './services/query-definition.service';
-import { MetadataService } from '../permissions';
-import { ContentTypesService } from '../app-administration/services';
 
 @Component({
   selector: 'app-visual-query',
@@ -25,11 +22,7 @@ import { ContentTypesService } from '../app-administration/services';
     PlumbEditorComponent,
   ],
   providers: [
-    VisualQueryService,
-    QueryDefinitionService,
-
-    MetadataService,
-    ContentTypesService,
+    VisualQueryStateService,  // Shared State for the entire Visual Query, - init run here
   ],
 })
 export class VisualQueryComponent implements OnInit {
@@ -41,7 +34,11 @@ export class VisualQueryComponent implements OnInit {
   };
   activeExplorer = this.explorer.run;
 
-  constructor(private context: Context, private route: ActivatedRoute, private visualQueryService: VisualQueryService) {
+  constructor(
+    private context: Context,
+    private route: ActivatedRoute,
+    private visualQueryService: VisualQueryStateService
+  ) {
     this.context.init(this.route);
   }
 

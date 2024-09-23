@@ -1,24 +1,24 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, signal } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
 import { ContentItemsService } from '../../../content-items/services/content-items.service';
 import { GoToMetadata } from '../../../metadata';
-import { BaseWithChildDialogComponent } from '../../../shared/components/base-with-child-dialog.component';
 import { eavConstants } from '../../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../../shared/helpers/url-prep.helper';
 import { DialogSettings } from '../../../shared/models/dialog-settings.model';
-import { EditForm } from '../../../shared/models/edit-form.model';
+import { EditForm, EditPrep } from '../../../shared/models/edit-form.model';
 import { Context } from '../../../shared/services/context';
 import { AppInternalsService } from '../../services/app-internals.service';
-import { Subject, Observable, combineLatest, map } from 'rxjs';
 import { AppInternals } from '../../models/app-internals.model';
 import { copyToClipboard } from '../../../shared/helpers/copy-to-clipboard.helper';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
-import { NgTemplateOutlet, AsyncPipe } from '@angular/common';
+import { NgTemplateOutlet } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
+import { transient } from '../../../core';
+import { DialogRoutingService } from '../../../shared/routing/dialog-routing.service';
+import { ContentItem } from '../../../content-items/models/content-item.model';
 
 @Component({
   selector: 'app-app-configuration-card',
@@ -31,54 +31,35 @@ import { TippyDirective } from '../../../shared/directives/tippy.directive';
     NgTemplateOutlet,
     MatButtonModule,
     MatBadgeModule,
-    AsyncPipe,
     TippyDirective,
   ],
 })
-export class AppConfigurationCardComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
+export class AppConfigurationCardComponent implements OnInit, OnDestroy {
   @Input() dialogSettings: DialogSettings;
 
-  // More proper ViewModel
-  appSettingsInternal$ = new Subject<AppInternals>();
-  viewModel$: Observable<ViewModel>;
+  contentItem = signal<ContentItem>(undefined);
+  appSettingsInternal = signal<AppInternals>(undefined);
+
+  #appInternalsSvc = transient(AppInternalsService);
+  #contentItemsSvc = transient(ContentItemsService);
+  #dialogRouter = transient(DialogRoutingService);
 
   constructor(
-    protected router: Router,
-    protected route: ActivatedRoute,
-    private contentItemsService: ContentItemsService,
     private context: Context,
     private snackBar: MatSnackBar,
-    private appInternalsService: AppInternalsService) {
-    super(router, route);
-
-    // New with proper ViewModel
-    this.viewModel$ = combineLatest([
-      this.appSettingsInternal$,
-      this.contentItemsService.getAll(eavConstants.contentTypes.appConfiguration),
-    ]).pipe(map(([settings, contentItems]) => {
-      const contentItem = contentItems[0];
-      const result: ViewModel = {
-        appConfigurationsCount: settings.EntityLists.ToSxcContentApp.length,
-        appMetadataCount: settings.MetadataList.Items.length,
-        displayName: contentItem?.DisplayName ?? '-',
-        folder: contentItem?.Folder ?? '-',
-        version: contentItem?.Version ?? '-',
-        toSxc: contentItem?.RequiredVersion ?? '-',
-        dnn: contentItem?.RequiredDnnVersion ?? '-',
-        oqt: contentItem?.RequiredOqtaneVersion ?? '-',
-      }
-      return result;
-    }));
-  }
+  ) {}
 
   ngOnInit() {
     this.fetchSettings();
-    this.subscriptions.add(this.childDialogClosed$().subscribe(() => { this.fetchSettings(); }));
+    this.#dialogRouter.doOnDialogClosed(() => { this.fetchSettings(); });
+
+    this.#contentItemsSvc.getAll(eavConstants.contentTypes.appConfiguration).subscribe(contentItems => {
+      this.contentItem.set(contentItems[0]);
+    });
   }
 
   ngOnDestroy() {
     this.snackBar.dismiss();
-    super.ngOnDestroy();
   }
 
   copyToClipboard(text: string): void {
@@ -88,17 +69,17 @@ export class AppConfigurationCardComponent extends BaseWithChildDialogComponent 
 
   edit() {
     const staticName = eavConstants.contentTypes.appConfiguration;
-    this.contentItemsService.getAll(staticName).subscribe(contentItems => {
+    this.#contentItemsSvc.getAll(staticName).subscribe(contentItems => {
       let form: EditForm;
 
       if (contentItems.length < 1) throw new Error(`Found no settings for type ${staticName}`);
       if (contentItems.length > 1) throw new Error(`Found too many settings for type ${staticName}`);
       form = {
-        items: [{ EntityId: contentItems[0].Id }],
+        items: [EditPrep.editId(contentItems[0].Id)],
       };
 
       const formUrl = convertFormToUrl(form);
-      this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.parent.firstChild });
+      this.#dialogRouter.navParentFirstChild([`edit/${formUrl}`]);
     });
   }
 
@@ -107,25 +88,20 @@ export class AppConfigurationCardComponent extends BaseWithChildDialogComponent 
       this.context.appId,
       `Metadata for App: ${this.dialogSettings.Context.App.Name} (${this.context.appId})`,
     );
-    this.router.navigate([url], { relativeTo: this.route.parent.firstChild });
+    this.#dialogRouter.navParentFirstChild([url]);
   }
 
   private fetchSettings() {
-    const getObservable = this.appInternalsService.getAppInternals(eavConstants.metadata.app.targetType, eavConstants.metadata.app.keyType, this.context.appId);
+    const getObservable = this.#appInternalsSvc.getAppInternals();
     getObservable.subscribe(x => {
       // 2dm - New mode for Reactive UI
-      this.appSettingsInternal$.next(x);
+      this.appSettingsInternal.set(x);
     });
   }
+
+  formatValue(value?: string): string {
+    return value === "" ? "-" : value ?? "-";
+  }
+
 }
 
-class ViewModel {
-  appConfigurationsCount: number;
-  appMetadataCount: number;
-  displayName: string;
-  folder: string;
-  version: string;
-  toSxc: string;
-  dnn: string;
-  oqt: string;
-}

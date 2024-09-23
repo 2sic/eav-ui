@@ -1,0 +1,27 @@
+@import '../../../assets/styles/variables';
+
+.eav-suffix-button {
+  scale: calc(4/5);
+  margin-left: -4px;
+  margin-right: -4px;
+}
+
+.toggle-buttons {
+  .mat-icon-button {
+    top: 3px;
+
+    .mat-icon {
+      font-size: 18px;
+    }
+  }
+
+  .active {
+    background-color: $accent-color;
+    color: white;
+
+    &.mat-mdc-icon-button:disabled {
+      background-color: $editUI-label-disabled-color;
+      color: white;
+    }
+  }
+}

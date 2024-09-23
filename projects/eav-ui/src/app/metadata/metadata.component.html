@@ -1,77 +1,75 @@
-@if (viewModel$ | async; as vm) {
-  <div class="eav-dialog nav-component-wrapper">
-    <div class="eav-dialog-header">
-      <div class="eav-dialog-header__title">
-        {{ title || 'Metadata' }}
-      </div>
-      <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
-        <mat-icon>close</mat-icon>
-      </button>
+<div class="eav-dialog nav-component-wrapper">
+  <div class="eav-dialog-header">
+    <div class="eav-dialog-header__title">
+      {{ title || 'Metadata' }}
     </div>
-    <div class="eav-dialog-content nav-component-wrapper">
-      <p>
-        @if (!vm.itemFor) {
-          This item is not metadata for anything else.
-        }
-        @else {
-          This item is metadata for:
-          <br>Target: {{ vm.itemFor.Target }}
-          <br>TargetType: {{ vm.itemFor.TargetType }}
-          @if (vm.itemFor.KeyNumber) {
-            <br>Key Number: {{ vm.itemFor.KeyNumber }}
-          }
-          @if (vm.itemFor.KeyGuid) {
-            <br>Key Guid: {{ vm.itemFor.KeyGuid }}
-          }
-          @if (vm.itemFor.KeyString) {
-            <br>Key String: {{ vm.itemFor.KeyString }}
-          }
-          @if (vm.itemFor.Title) {
-            <br>Title: {{ vm.itemFor.Title }}
-          }
-        }
-      </p>
-      <router-outlet></router-outlet>
-      <div class="grid-wrapper">
-        <ag-grid-angular class="ag-theme-material" [rowData]="vm.metadata" [gridOptions]="gridOptions">
-        </ag-grid-angular>
-      </div>
-    </div>
-    <mat-dialog-actions align="end">
-      @if (vm.recommendations.length === 0) {
-        <button mat-fab mat-elevation-z24 class="grid-fab" tippy="Create a new metadata for this item"
-          (click)="createMetadata()">
-          <mat-icon>add</mat-icon>
-        </button>
-      }
-      @if (vm.recommendations.length > 0) {
-        <eco-fab-speed-dial class="eav-eco-fab-speed-dial" [ngClass]="{ 'fab-opened': vm.fabOpen }"
-          (openChange)="openChange($event)">
-          <eco-fab-speed-dial-trigger [spin]="true">
-            <button mat-fab>
-              <mat-icon class="spin180">{{ vm.fabOpen ? 'close' : 'add' }}</mat-icon>
-            </button>
-          </eco-fab-speed-dial-trigger>
-          <eco-fab-speed-dial-actions class="eav-eco-fab-speed-dial-actions">
-            <button mat-mini-fab class="eav-eco-fab-speed-dial-action-button" label="Other Content Type"
-              (click)="createMetadata()">
-              <mat-icon>search</mat-icon>
-            </button>
-            @for (recommendation of vm.recommendations; track recommendation) {
-              <button mat-mini-fab class="eav-eco-fab-speed-dial-action-button" [attr.label]="recommendation.Title"
-                (click)="createMetadata(recommendation)">
-                @if (recommendation.Icon) {
-                  <div style="color: white; fill: white;" [innerHTML]="recommendation.Icon | safeHtml"
-                    [matBadgeHidden]="recommendation.Enabled" matBadgeColor="accent" matBadgeSize="small" matBadge="💎"
-                    matBadgePosition="below after" aria-hidden="false"></div>
-                } @else {
-                  <mat-icon>add</mat-icon>
-                }
-              </button>
-            }
-          </eco-fab-speed-dial-actions>
-        </eco-fab-speed-dial>
-      }
-    </mat-dialog-actions>
+    <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
+      <mat-icon>close</mat-icon>
+    </button>
   </div>
-}
+  <div class="eav-dialog-content nav-component-wrapper">
+    <p>
+      @if (!itemFor()) {
+      This item is not metadata for anything else.
+      }
+      @else {
+      This item is metadata for:
+      <br>Target: {{ itemFor().Target }}
+      <br>TargetType: {{ itemFor().TargetType }}
+      @if (itemFor().KeyNumber) {
+      <br>Key Number: {{ itemFor().KeyNumber }}
+      }
+      @if (itemFor().KeyGuid) {
+      <br>Key Guid: {{ itemFor().KeyGuid }}
+      }
+      @if (itemFor().KeyString) {
+      <br>Key String: {{ itemFor().KeyString }}
+      }
+      @if (itemFor().Title) {
+      <br>Title: {{ itemFor().Title }}
+      }
+      }
+    </p>
+    <router-outlet></router-outlet>
+    <div class="grid-wrapper">
+      <ag-grid-angular class="ag-theme-material" [rowData]="metadataSet().Items" [gridOptions]="gridOptions">
+      </ag-grid-angular>
+    </div>
+  </div>
+  <mat-dialog-actions align="end">
+    @if (recommendations().length === 0) {
+    <button mat-fab mat-elevation-z24 class="grid-fab" tippy="Create a new metadata for this item"
+      (click)="createMetadata()">
+      <mat-icon>add</mat-icon>
+    </button>
+    }
+    @if (recommendations().length > 0) {
+    <eco-fab-speed-dial class="eav-eco-fab-speed-dial" [ngClass]="{ 'fab-opened': fabOpen() }"
+      (openChange)="openChange($event)">
+      <eco-fab-speed-dial-trigger [spin]="true">
+        <button mat-fab>
+          <mat-icon class="spin180">{{ fabOpen() ? 'close' : 'add' }}</mat-icon>
+        </button>
+      </eco-fab-speed-dial-trigger>
+      <eco-fab-speed-dial-actions class="eav-eco-fab-speed-dial-actions">
+        <button mat-mini-fab class="eav-eco-fab-speed-dial-action-button" label="Other Content Type"
+          (click)="createMetadata()">
+          <mat-icon>search</mat-icon>
+        </button>
+        @for (recommendation of recommendations(); track recommendation) {
+        <button mat-mini-fab class="eav-eco-fab-speed-dial-action-button" [attr.label]="recommendation.Title"
+          (click)="createMetadata(recommendation)">
+          @if (recommendation.Icon) {
+          <div style="color: white; fill: white;" [innerHTML]="recommendation.Icon | safeHtml"
+            [matBadgeHidden]="recommendation.Enabled" matBadgeColor="accent" matBadgeSize="small" matBadge="💎"
+            matBadgePosition="below after" aria-hidden="false"></div>
+          } @else {
+          <mat-icon>add</mat-icon>
+          }
+        </button>
+        }
+      </eco-fab-speed-dial-actions>
+    </eco-fab-speed-dial>
+    }
+  </mat-dialog-actions>
+</div>

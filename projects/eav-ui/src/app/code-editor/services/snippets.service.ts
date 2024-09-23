@@ -1,26 +1,27 @@
-import { Context as DnnContext } from '@2sic.com/sxc-angular';
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import cloneDeep from 'lodash-es/cloneDeep';
 import { map, Observable } from 'rxjs';
-import { DataTypeConstants } from '../../content-type-fields/constants/data-type.constants';
-import { Field } from '../../content-type-fields/models/field.model';
-import { webApiFieldsAll } from '../../content-type-fields/services/content-types-fields.service';
+import { DataTypeCatalog } from '../../shared/fields/data-type-catalog';
+import { Field } from '../../shared/fields/field.model';
+import { webApiFieldsAll } from '../../shared/fields/content-types-fields.service';
 import { MoreSnippet, SetSnippet, SetSnippetLink, Snippet, SnippetsSets, SnippetsSubSubSets } from '../models/snippet.model';
 import { SourceView } from '../models/source-view.model';
 import { Tooltip } from '../models/tooltip.model';
-import { InputTypeStrict } from '../../content-type-fields/constants/input-type.constants';
+import { InputTypeStrict } from '../../shared/fields/input-type-catalog';
+import { HttpServiceBase } from '../../shared/services/http-service-base';
 
 export const inlineHelp = 'admin/Code/InlineHelp';
 
 @Injectable()
-export class SnippetsService {
+export class SnippetsService extends HttpServiceBase {
 
-  constructor(private http: HttpClient, private dnnContext: DnnContext, private translate: TranslateService) { }
+  constructor( private translate: TranslateService) {
+    super();
+  }
 
   getTooltips(language: string): Observable<Tooltip[]> {
-    return this.http.get<Tooltip[]>(this.dnnContext.$2sxc.http.apiUrl(inlineHelp), {
+    return this.http.get<Tooltip[]>(this.apiUrl(inlineHelp), {
       params: {
         language,
       },
@@ -267,13 +268,13 @@ export class SnippetsService {
   }
 
   private getFields(appId: number, staticName: string): Observable<Field[]> {
-    return this.http.get<Field[]>(this.dnnContext.$2sxc.http.apiUrl(webApiFieldsAll), {
+    return this.http.get<Field[]>(this.apiUrl(webApiFieldsAll), {
       params: { appid: appId.toString(), staticName },
     }).pipe(
       map(fields => {
-        fields = fields.filter(field => field.Type !== DataTypeConstants.Empty);
+        fields = fields.filter(field => field.Type !== DataTypeCatalog.Empty);
         for (const fld of fields) {
-          if (!fld.Metadata) { continue; }
+          if (!fld.Metadata) continue;
           const md = fld.Metadata;
           const allMd = md.All;
           const typeMd = md[fld.Type];
@@ -303,7 +304,7 @@ export class SnippetsService {
         }
       }
     }
-    if (!genericSnippet) { return; }
+    if (!genericSnippet) return;
 
     if (target[fieldname].more === undefined) {
       target[fieldname].more = {};

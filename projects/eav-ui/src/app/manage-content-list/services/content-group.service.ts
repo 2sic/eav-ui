@@ -1,51 +1,48 @@
-import { Context as DnnContext } from '@2sic.com/sxc-angular';
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ReplaceConfig } from '../../replace-content/models/replace-config.model';
-import { Context } from '../../shared/services/context';
+import { ReplaceConfig } from '../../replace-content/replace-config.model';
 import { ContentGroup, ContentGroupAdd } from '../models/content-group.model';
 import { GroupHeader } from '../models/group-header.model';
+import { HttpServiceBase } from '../../shared/services/http-service-base';
 
 const webApiContentGroup = 'cms/contentgroup/';
 
 @Injectable()
-export class ContentGroupService {
-  constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
+export class ContentGroupService extends HttpServiceBase {
 
   getItems(item: ContentGroup) {
-    return this.http.get<ReplaceConfig>(this.dnnContext.$2sxc.http.apiUrl(webApiContentGroup + 'replace'), {
-      params: { appId: this.context.appId.toString(), guid: item.guid, part: item.part, index: item.index.toString() }
+    return this.http.get<ReplaceConfig>(this.apiUrl(webApiContentGroup + 'replace'), {
+      params: { appId: this.appId, guid: item.guid, part: item.part, index: item.index.toString() }
     });
   }
 
   saveItem(item: ContentGroupAdd) {
-    return this.http.post<null>(this.dnnContext.$2sxc.http.apiUrl(webApiContentGroup + 'replace'), {}, {
+    return this.http.post<null>(this.apiUrl(webApiContentGroup + 'replace'), {}, {
       params: { guid: item.guid, part: item.part, index: item.index.toString(), entityId: item.id.toString(), add: `${item.add}` }
     });
   }
 
   removeItem(contentGroup: ContentGroup, index: number) {
     // note: the server checks if the part == 'content' and will automatically treat it as a pair with presentation
-    return this.http.delete<null>(this.dnnContext.$2sxc.http.apiUrl('cms/list/delete'), {
+    return this.http.delete<null>(this.apiUrl('cms/list/delete'), {
       params: { index: index, parent: contentGroup.guid, fields: contentGroup.part }
     });
   }
 
   getList(contentGroup: ContentGroup) {
-    return this.http.get<GroupHeader[]>(this.dnnContext.$2sxc.http.apiUrl(webApiContentGroup + 'itemlist'), {
-      params: { appId: this.context.appId.toString(), guid: contentGroup.guid, part: contentGroup.part }
+    return this.http.get<GroupHeader[]>(this.apiUrl(webApiContentGroup + 'itemlist'), {
+      params: { appId: this.appId, guid: contentGroup.guid, part: contentGroup.part }
     });
   }
 
   saveList(contentGroup: ContentGroup, resortedList: GroupHeader[]) {
-    return this.http.post<boolean>(this.dnnContext.$2sxc.http.apiUrl(webApiContentGroup + 'itemlist'), resortedList, {
-      params: { appId: this.context.appId.toString(), guid: contentGroup.guid, part: contentGroup.part }
+    return this.http.post<boolean>(this.apiUrl(webApiContentGroup + 'itemlist'), resortedList, {
+      params: { appId: this.appId, guid: contentGroup.guid, part: contentGroup.part }
     });
   }
 
   getHeader(contentGroup: ContentGroup) {
-    return this.http.get<GroupHeader>(this.dnnContext.$2sxc.http.apiUrl(webApiContentGroup + 'header'), {
-      params: { appId: this.context.appId.toString(), guid: contentGroup.guid }
+    return this.http.get<GroupHeader>(this.apiUrl(webApiContentGroup + 'header'), {
+      params: { appId: this.appId, guid: contentGroup.guid }
     });
   }
 }

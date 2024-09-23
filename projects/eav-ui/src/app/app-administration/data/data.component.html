@@ -1,13 +1,12 @@
-@if (viewModel$ | async; as vm) {
 <div class="grid-wrapper mat-tab-grid-wrapper">
-  <ag-grid-angular class="ag-theme-material" [rowData]="vm.contentTypes" [gridOptions]="gridOptions" appDragAndDrop
+  <ag-grid-angular class="ag-theme-material" [rowData]="contentTypes()" [gridOptions]="gridOptions" appDragAndDrop
     [allowedFileTypes]="'xml,json'" (filesDropped)="filesDropped($event)">
   </ag-grid-angular>
   <mat-dialog-actions class="eav-dialog-actions">
     <div class="eav-dialog-actions-div">
       <mat-form-field color="accent" class="eav-mat-form-field eav-scope-dropdown">
-        <mat-select [ngModel]="vm.scope" name="Scope" (ngModelChange)="changeScope($event)">
-          @for (scopeOption of (vm.scopeOptions); track scopeOption) {
+        <mat-select [ngModel]="scope()" name="Scope" (ngModelChange)="changeScope($event)">
+          @for (scopeOption of (scopeOptions()); track scopeOption) {
           <mat-option [value]="scopeOption.name">
             {{ 'Scope: ' + scopeOption.label }}
           </mat-option>
@@ -19,7 +18,7 @@
         <mat-icon class="eav-icon">cloud_upload</mat-icon>
         <span>Content Type</span>
       </button>
-      @if (vm.debugEnabled) {
+      @if (isDebug()) {
       <button mat-button class="eav-button__with-icon" color="accent" tippy="Create a ghost content type"
         (click)="createGhost()">
         <mat-icon class="eav-icon">share</mat-icon>
@@ -33,5 +32,4 @@
     </button>
   </mat-dialog-actions>
 </div>
-}
 <router-outlet></router-outlet>

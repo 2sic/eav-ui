@@ -1,0 +1,28 @@
+@import "../../assets/styles/_variables.scss";
+
+.auto-translate-menu-dialog-card {
+  max-height: 99vh;
+  overflow-y: scroll;
+
+  .eav-card-content__no-padding {
+    padding: 0px;
+
+    &:last-child {
+      padding-bottom: 16px;
+    }
+
+    .eav-list-item__focus {
+      background: $edit-ui-selected-option;
+    }
+
+    .list-item__disabled {
+      cursor: default;
+      color: $editUI-label-disabled-color;
+      background: $primary-color;
+
+      .list-item-icon__disabled {
+        color: $editUI-label-disabled-color;
+      }
+    }
+  }
+}

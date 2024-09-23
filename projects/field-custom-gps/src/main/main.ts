@@ -1,5 +1,5 @@
 import { FieldMask } from '../../../eav-ui/src/app/edit/shared/helpers/field-mask.helper';
-import { ElementEventListener } from '../../../eav-ui/src/app/edit/shared/models';
+import { ElementEventListener } from '../../../eav-ui/src/app/edit/shared/controls/element-event-listener.model';
 import { Connector, EavCustomInputField } from '../../../edit-types';
 import { CoordinatesDto } from '../preview/coordinates';
 import { buildTemplate, parseLatLng, stringifyLatLng } from '../shared/helpers';
@@ -7,14 +7,14 @@ import * as template from './main.html';
 import * as styles from './main.scss';
 import { EditApiKeyPaths } from '../../../eav-ui/src/app/shared/constants/eav.constants';
 import { ApiKeySpecs } from '../../../eav-ui/src/app/shared/models/dialog-context.models';
-import { EavLogger } from '../../../eav-ui/src/app/shared/logging/eav-logger';
-
-const logThis = false;
-const nameOfThis = 'FieldCustomGpsDialog';
+import { classLog } from '../../../eav-ui/src/app/shared/logging';
 
 const gpsDialogTag = 'field-custom-gps-dialog';
 
 class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<string> {
+  
+  log = classLog({FieldCustomGpsDialog});
+  
   fieldInitialized: boolean;
   connector: Connector<string>;
 
@@ -31,8 +31,6 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
   private eventListeners: ElementEventListener[];
   private defaultCoordinates: google.maps.LatLngLiteral;
 
-  private log = new EavLogger(nameOfThis, logThis);
-
   constructor() {
     super();
     this.log.a(`${gpsDialogTag} constructor called`);
@@ -40,7 +38,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
   }
 
   connectedCallback(): void {
-    if (this.fieldInitialized) { return; }
+    if (this.fieldInitialized) return;
     this.fieldInitialized = true;
     this.log.a(`${gpsDialogTag} connectedCallback called`);
 
@@ -64,11 +62,11 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
     }
 
     const addressMaskSetting = this.connector.field.settings.AddressMask || this.connector.field.settings['Address Mask'];
-    this.addressMask = expConnector.getFieldMask(addressMaskSetting, 'Gps', false);
+    this.addressMask = expConnector.getFieldMask(addressMaskSetting, 'Gps');
     this.log.a(`${gpsDialogTag} addressMask:`, {addressMaskSetting});
     if (addressMaskSetting) {
       addressMaskContainer.classList.remove('hidden');
-      formattedAddressContainer.innerText = this.addressMask.resolve();
+      formattedAddressContainer.innerText = this.addressMask.result();
     }
 
     // TODO: TRY to refactor to use the new context.app.getSetting(...) in the formulas-data
@@ -153,7 +151,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
 
   private autoSelect(): void {
     this.log.a(`${gpsDialogTag} geocoder called`);
-    const address = this.addressMask.resolve();
+    const address = this.addressMask.result();
     this.geocoder.geocode({
       address,
     }, (results, status) => {

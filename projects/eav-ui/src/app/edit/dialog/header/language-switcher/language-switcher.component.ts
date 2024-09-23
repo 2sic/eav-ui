@@ -1,18 +1,17 @@
 import { AfterViewInit, Component, ElementRef, Input, NgZone, OnDestroy, ViewChild, computed } from '@angular/core';
-import { Language } from '../../../shared/models';
-import { FormConfigService } from '../../../shared/services';
-import { LanguageInstanceService, LanguageService } from '../../../shared/store/ngrx-data';
 import { CenterSelectedHelper } from './center-selected.helper';
 import { getLanguageButtons } from './language-switcher.helpers';
 import { MouseScrollHelper } from './mouse-scroll.helper';
 import { ShowShadowsHelper } from './show-shadows.helper';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MatButtonModule } from '@angular/material/button';
-import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
-
-const logThis = false;
-const nameOfThis = 'LanguageSwitcherComponent';
+import { TippyDirective } from '../../../../shared/directives/tippy.directive';
+import { FormConfigService } from '../../../form/form-config.service';
+import { Language } from '../../../form/form-languages.model';
+import { FormLanguageService } from '../../../form/form-language.service';
+import { LanguageService } from '../../../localization/language.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { classLog } from '../../../../shared/logging';
 
 @Component({
   selector: 'app-language-switcher',
@@ -26,6 +25,9 @@ const nameOfThis = 'LanguageSwitcherComponent';
   ],
 })
 export class LanguageSwitcherComponent implements AfterViewInit, OnDestroy {
+
+  log = classLog({LanguageSwitcherComponent});
+
   @ViewChild('scrollable') private headerRef: ElementRef;
   @ViewChild('leftShadow') private leftShadowRef: ElementRef;
   @ViewChild('rightShadow') private rightShadowRef: ElementRef;
@@ -35,17 +37,17 @@ export class LanguageSwitcherComponent implements AfterViewInit, OnDestroy {
   private mouseScrollHelper: MouseScrollHelper;
   private showShadowsHelper: ShowShadowsHelper;
 
-  private log = new EavLogger(nameOfThis, logThis);
-
   current = computed(() => this.formConfig.language().current);
 
-  buttons = getLanguageButtons(this.languageService.getLanguages());
+  buttons = getLanguageButtons(this.languageService.getAll());
 
   constructor(
     private languageService: LanguageService,
-    private languageInstanceService: LanguageInstanceService,
+    private languageInstanceService: FormLanguageService,
     private ngZone: NgZone,
     private formConfig: FormConfigService,
+    private snackBar: MatSnackBar,
+    private translate: TranslateService,
   ) { }
 
   ngAfterViewInit() {
@@ -60,9 +62,9 @@ export class LanguageSwitcherComponent implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.centerSelectedHelper.destroy();
-    this.mouseScrollHelper.destroy();
-    this.showShadowsHelper.destroy();
+    this.centerSelectedHelper?.destroy();
+    this.mouseScrollHelper?.destroy();
+    this.showShadowsHelper?.destroy();
   }
 
   lngButtonMouseDown(event: MouseEvent) {
@@ -70,7 +72,11 @@ export class LanguageSwitcherComponent implements AfterViewInit, OnDestroy {
   }
 
   lngButtonClick(event: MouseEvent, language: Language) {
-    if (this.disabled) return;
+    const l = this.log.fn('lngButtonClick');
+    if (this.disabled) {
+      this.snackBar.open(this.translate.instant('Message.CantSwitchLanguage'), null, { duration: 3000, verticalPosition: 'top' });
+      return l.end('disabled');
+    }
     this.centerSelectedHelper.lngButtonClick(event);
 
     if (!this.centerSelectedHelper.stopClickIfMouseMoved()) {

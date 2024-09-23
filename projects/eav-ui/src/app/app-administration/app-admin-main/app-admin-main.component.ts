@@ -1,24 +1,24 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
-import { BehaviorSubject, combineLatest, filter, map, startWith, tap } from 'rxjs';
-import { BaseWithChildDialogComponent } from '../../shared/components/base-with-child-dialog.component';
+import { NavigationEnd, RouterOutlet } from '@angular/router';
+import { BehaviorSubject, combineLatest, filter, map, startWith } from 'rxjs';
 import { UpdateEnvVarsFromDialogSettings } from '../../shared/helpers/update-env-vars-from-dialog-settings.helper';
 import { AppScopes } from '../../shared/models/dialog-context.models';
 import { DialogSettings } from '../../shared/models/dialog-settings.model';
-import { AppDialogConfigService } from '../services/app-dialog-config.service';
 import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { AppAdminMenu } from './app-admin-menu';
-import { EavLogger } from '../../shared/logging/eav-logger';
 import { AsyncPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { BreadcrumbModule } from 'xng-breadcrumb';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { NavItemListComponent } from '../../shared/components/nav-item-list/nav-item-list.component';
-
-const logThis = false;
+import { ToggleDebugDirective } from '../../shared/directives/toggle-debug.directive';
+import { DialogConfigAppService } from '../services/dialog-config-app.service';
+import { transient } from '../../core';
+import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
+import { classLog } from '../../shared/logging';
 
 @Component({
   selector: 'app-app-admin-main',
@@ -34,25 +34,21 @@ const logThis = false;
     RouterOutlet,
     AsyncPipe,
     NavItemListComponent,
-  ],
-  providers: [
-    // Must have a new config service here, to restart with new settings
-    // which are injected into it from the context
-    // Because of standalone-components, it's not enough to have it in the module-definition
-    AppDialogConfigService,
+    ToggleDebugDirective,
   ],
 })
-export class AppAdminMainComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
+export class AppAdminMainComponent implements OnInit, OnDestroy {
+
+  log = classLog({AppAdminMainComponent});
+
+  #dialogConfigSvc = transient(DialogConfigAppService);
+  #dialogRouter = transient(DialogRoutingService);
 
   constructor(
-    protected router: Router,
-    protected route: ActivatedRoute,
     private dialogRef: MatDialogRef<AppAdminMainComponent>,
-    private appDialogConfigService: AppDialogConfigService,
     private media: MediaMatcher
   ) {
-    super(router, route, new EavLogger('AppAdminMainComponent', logThis));
-    this.log.a('constructor', { appDialogConfigService });
+    this.log.a('constructor');
   }
 
   AppScopes = AppScopes;
@@ -61,10 +57,10 @@ export class AppAdminMainComponent extends BaseWithChildDialogComponent implemen
   private pathsArray$ = new BehaviorSubject<string[]>(undefined);
   private currentPath$ = combineLatest([
     this.pathsArray$,
-    this.router.events.pipe(
+    this.#dialogRouter.router.events.pipe(
       filter((event) => event instanceof NavigationEnd),
-      map(() => this.route.snapshot.firstChild.url[0].path),
-      startWith(this.route.snapshot.firstChild.url[0].path)
+      map(() => this.#dialogRouter.snapshot.firstChild.url[0].path),
+      startWith(this.#dialogRouter.snapshot.firstChild.url[0].path)
     ),
   ]).pipe(
     map(([paths, currentPath]) => {
@@ -95,11 +91,7 @@ export class AppAdminMainComponent extends BaseWithChildDialogComponent implemen
 
   ngOnInit() {
     this.fetchDialogSettings();
-    this.subscriptions.add(
-      this.childDialogClosed$().subscribe(() => {
-        this.fetchDialogSettings();
-      })
-    );
+    this.#dialogRouter.doOnDialogClosed(() => this.fetchDialogSettings());
 
     this.smallScreen.addEventListener(
       'change',
@@ -113,7 +105,6 @@ export class AppAdminMainComponent extends BaseWithChildDialogComponent implemen
   ngOnDestroy() {
     this.dialogSettings$.complete();
     this.pathsArray$.complete();
-    super.ngOnDestroy();
   }
 
 
@@ -121,14 +112,8 @@ export class AppAdminMainComponent extends BaseWithChildDialogComponent implemen
     this.dialogRef.close();
   }
 
-  // @2dg not longer in use with new routing SideNav
-  // changeUrl(path: string) {
-  //   // if (path === 'data') path = `data/${eavConstants.scopes.default.value}`;
-  //   // this.router.navigate([path], { relativeTo: this.route });
-  // }
-
   private fetchDialogSettings() {
-    this.appDialogConfigService.getCurrent$().subscribe((dialogSettings) => {
+    this.#dialogConfigSvc.getCurrent$().subscribe(dialogSettings => {
       UpdateEnvVarsFromDialogSettings(dialogSettings.Context.App);
       this.dialogSettings$.next(dialogSettings);
 

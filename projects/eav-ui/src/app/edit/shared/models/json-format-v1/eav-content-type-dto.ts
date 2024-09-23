@@ -7,6 +7,7 @@ import { EavContentTypeAttributesDto, EavEntityDto } from '.';
 export interface EavContentTypeDto {
   Attributes: EavContentTypeAttributesDto[];
   Description: string;
+  /** The NameId / Guid of this Content-Type */
   Id: string;
   Metadata: EavEntityDto[];
   Name: string;

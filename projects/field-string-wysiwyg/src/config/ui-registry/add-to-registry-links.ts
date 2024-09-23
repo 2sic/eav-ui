@@ -83,7 +83,7 @@ export class TinyButtonsLinks extends AddToRegistryBase {
     const connector = fieldStringWysiwyg.connector._experimental;
 
     connector.openPagePicker(page => {
-      if (!page) { return; }
+      if (!page) return;
 
       connector.getUrlOfId(`page:${page.id}`, (path) => {
         const previouslySelected = this.editor.selection.getContent();

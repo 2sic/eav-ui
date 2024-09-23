@@ -4,6 +4,7 @@ import { EavContentTypeDto } from '../json-format-v1';
 export class EavContentType {
   Attributes: EavContentTypeAttribute[];
   Description: string;
+    /** The NameId / Guid of this Content-Type */
   Id: string;
   Metadata: EavEntity[];
   Name: string;

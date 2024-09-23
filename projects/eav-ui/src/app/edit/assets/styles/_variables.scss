@@ -6,18 +6,11 @@ $error-color: #b00030;
 $edit-ui-dialog-width: 100vw;
 $edit-ui-dialog-max-width: 800px;
 
-$edit-ui-dialog-top-padding: 24px;
-$edit-ui-dialog-header-max-height: 52px;
-$edit-ui-dialog-max-height: calc(100vh - #{$edit-ui-dialog-top-padding} - #{$edit-ui-dialog-header-max-height} - #{$edit-ui-dialog-top-padding});
-$edit-ui-dialog-max-height-mobile: calc(100vh - #{$edit-ui-dialog-header-max-height});
+// Main height - all moved to main styles.css so it's not added multiple times
+// Debug - all moved to main styles.css so it's not added multiple times
 
-// Debug
-$edit-ui-dialog-debug-max-height: 52px;
-$debug-info-container-height: 300px;
-$debug-info-container-margin: 16px;
-$debug-info-container-total-height: calc(#{$debug-info-container-height} + #{$debug-info-container-margin});
-$edit-ui-dialog-max-height-with-debug: calc(100vh - #{$edit-ui-dialog-top-padding} - #{$edit-ui-dialog-header-max-height} - #{$edit-ui-dialog-debug-max-height} - #{$edit-ui-dialog-top-padding});
-$edit-ui-dialog-max-height-with-debug-mobile: calc(100vh - #{$edit-ui-dialog-header-max-height} - #{$edit-ui-dialog-debug-max-height});
+
+
 
 $edit-ui-dialog-border-radius:8px;
 $edit-ui-dialog-border-radius-mobile:0px;
@@ -31,8 +24,8 @@ $save-button-width-extended:200px;
 $save-button-width-extended-mobile:170px;
 
 // The max-height should also be set in the expandable wrapper animations
-$expandable-wrapper-max-height: calc(#{$edit-ui-dialog-max-height} + #{$edit-ui-dialog-header-max-height});
-$expandable-wrapper-max-height-mobile: calc(#{$edit-ui-dialog-max-height-mobile} + #{$edit-ui-dialog-header-max-height});
+$expandable-wrapper-max-height: calc(var(--edit-content-max-height-default) + var(--edit-dialog-header-height));
+$expandable-wrapper-max-height-mobile: calc(var(--edit-ui-dialog-max-height-mobile) + var(--edit-dialog-header-height));
 
 $edit-ui-dialog-background-color: #EFF0F2;
 

@@ -2,11 +2,9 @@ import { AgGridAngular } from '@ag-grid-community/angular';
 import { GridOptions } from '@ag-grid-community/core';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogActions } from '@angular/material/dialog';
-import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
-// tslint:disable-next-line:max-line-length
+import { RouterOutlet } from '@angular/router';
 import { BehaviorSubject, catchError, forkJoin, map, Observable, of, share, startWith, Subject, switchMap, tap, timer } from 'rxjs';
 import { FeatureState } from '../../features/models';
-import { BaseWithChildDialogComponent } from '../../shared/components/base-with-child-dialog.component';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
@@ -34,6 +32,7 @@ import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-mod
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { transient } from '../../core';
+import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 
 @Component({
   selector: 'app-license-info',
@@ -55,35 +54,33 @@ import { transient } from '../../core';
     TippyDirective,
   ],
 })
-export class LicenseInfoComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
+export class LicenseInfoComponent implements OnInit, OnDestroy {
   @ViewChild(AgGridAngular) private gridRef?: AgGridAngular;
 
   disabled$ = new BehaviorSubject(false);
-  gridOptions = this.buildGridOptions();
+  gridOptions = this.#buildGridOptions();
 
-  private refreshLicenses$ = new Subject<void>();
+  #refreshLicenses$ = new Subject<void>();
 
   viewModel$: Observable<LicenseInfoViewModel>;
 
-  private featuresConfigService = transient(FeaturesConfigService);
+  #featuresConfigSvc = transient(FeaturesConfigService);
+  #dialogRouter = transient(DialogRoutingService);
 
   constructor(
-    protected router: Router,
-    protected route: ActivatedRoute,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
   ) {
-    super(router, route);
     ModuleRegistry.registerModules([ClientSideRowModelModule]);
   }
 
   ngOnInit(): void {
-    this.subscriptions.add(this.childDialogClosed$().subscribe(() => { this.refreshLicenses$.next(); }));
-    this.viewModel$ = //combineLatest([
-      this.refreshLicenses$.pipe(
+    this.#dialogRouter.doOnDialogClosed(() => this.#refreshLicenses$.next());
+    this.viewModel$ =
+      this.#refreshLicenses$.pipe(
         startWith(undefined),
-        switchMap(() => this.featuresConfigService.getLicenses().pipe(catchError(() => of(undefined)))),
+        switchMap(() => this.#featuresConfigSvc.getLicenses().pipe(catchError(() => of(undefined)))),
         tap(() => this.disabled$.next(false)),
 
         // Fiddle with the data for development tests
@@ -115,7 +112,6 @@ export class LicenseInfoComponent extends BaseWithChildDialogComponent implement
 
   ngOnDestroy(): void {
     this.disabled$.complete();
-    super.ngOnDestroy();
   }
 
   trackLicenses(index: number, license: License): string {
@@ -124,10 +120,11 @@ export class LicenseInfoComponent extends BaseWithChildDialogComponent implement
 
 
   openRegistration(): void {
-    this.router.navigate([this.router.url.replace('license', '') + "/registration"]);
+    const router = this.#dialogRouter.router;
+    router.navigate([router.url.replace('license', '') + "/registration"]);
   }
 
-  private showFeatureDetails(feature: Feature): void {
+  #showFeatureDetails(feature: Feature): void {
     const data: FeatureDetailsDialogData = {
       feature,
     };
@@ -140,18 +137,18 @@ export class LicenseInfoComponent extends BaseWithChildDialogComponent implement
     this.changeDetectorRef.markForCheck();
   }
 
-  private toggleFeature(feature: Feature, enabled: boolean): void {
+  #toggleFeature(feature: Feature, enabled: boolean): void {
     this.disabled$.next(true);
     const state: FeatureState = {
       FeatureGuid: feature.guid,
       Enabled: enabled,
     };
-    forkJoin([this.featuresConfigService.saveFeatures([state]), timer(100)]).subscribe({
+    forkJoin([this.#featuresConfigSvc.saveFeatures([state]), timer(100)]).subscribe({
       error: () => {
-        this.refreshLicenses$.next();
+        this.#refreshLicenses$.next();
       },
       next: () => {
-        this.refreshLicenses$.next();
+        this.#refreshLicenses$.next();
       },
     });
   }
@@ -162,18 +159,16 @@ export class LicenseInfoComponent extends BaseWithChildDialogComponent implement
   // 2. Also we should probably never add a valueGetter for the simple properties
   // ...not sure why it's even in here, my guess is copy-paste of code which wasn't understood properly
   // 3. I think the header-name should always be the first line, then the field
-  private buildGridOptions(): GridOptions {
+  #buildGridOptions(): GridOptions {
     const gridOptions: GridOptions = {
       ...defaultGridOptions,
       columnDefs: [
         {
+          ...ColumnDefinitions.ItemsText,
           headerName: 'ID',
           field: 'nameId',
-          filter: 'agTextColumnFilter',
           width: 200,
-          headerClass: 'dense',
-          sortable: true,
-          cellClass: 'id-action no-padding no-outline'.split(' '),
+          cellClass: 'no-outline',
           cellRenderer: IdFieldComponent,
           cellRendererParams: (() => {
             const params: IdFieldParams<Feature> = {
@@ -184,10 +179,11 @@ export class LicenseInfoComponent extends BaseWithChildDialogComponent implement
         },
         {
           ...ColumnDefinitions.TextWideFlex3,
-          field: 'Name',
+          headerName: 'Name',
+          field: 'name',
           cellClass: 'primary-action highlight'.split(' '),
           onCellClicked: (params) => {
-            this.showFeatureDetails(params.data as Feature);
+            this.#showFeatureDetails(params.data as Feature);
           },
         },
         {
@@ -208,11 +204,12 @@ export class LicenseInfoComponent extends BaseWithChildDialogComponent implement
           cellRenderer: FeaturesListEnabledReasonComponent,
         },
         {
+          ...ColumnDefinitions.ItemsText,
           headerName: 'Expiration',
           field: 'ExpMessage',
-          filter: 'agTextColumnFilter',
+          sortable: false,
           width: 120,
-          tooltipValueGetter: (params) => (params.data as Feature & ExpirationExtension)?.expiration,
+          tooltipValueGetter: (p) => (p.data as Feature & ExpirationExtension)?.expiration,
         },
         {
           ...ColumnDefinitions.ActionsPinnedRight7,
@@ -222,7 +219,7 @@ export class LicenseInfoComponent extends BaseWithChildDialogComponent implement
           cellRendererParams: (() => {
             const params: FeaturesStatusParams & IdFieldParams<Feature> = {
               isDisabled: (feature) => !feature.isConfigurable || this.disabled$.value,
-              onToggle: (feature, enabled) => this.toggleFeature(feature, enabled),
+              onToggle: (feature, enabled) => this.#toggleFeature(feature, enabled),
               tooltipGetter: (feature: Feature) => feature.isConfigurable ? "Toggle off | default | on" : "This feature can't be configured",
             };
             return params;

@@ -1,0 +1,95 @@
+<div class="eav-dialog">
+  <div class="eav-dialog-header">
+    <div class="eav-dialog-header__title">{{ 'Fields.Hyperlink.PagePicker.Title' | translate }}</div>
+  </div>
+  <div class="eav-dialog-content">
+    <div class="page-search-box">
+      <mat-form-field color="accent" class="eav-mat-form-field">
+        <mat-label>Search</mat-label>
+        <input matInput [ngModel]="filterText()" (ngModelChange)="setFilter($event)">
+      </mat-form-field>
+    </div>
+    <div class="page-tree-box">
+      @if (!filterText()) {
+      <ul>
+        @for (page of tree(); track page) {
+        <ng-container *ngTemplateOutlet="pageAndChildren; context: {page: page}"></ng-container>
+        }
+      </ul>
+      }
+      @if (filterText()) {
+      <ul>
+        @if (filteredSearch().length === 0) {
+        <li>
+          <div class="page-row">
+            <div class="no-toggle"></div>
+            <div>No results</div>
+          </div>
+        </li>
+        }
+        @for (page of filteredSearch(); track page) {
+        <li>
+          <div class="page-row">
+            <div class="no-toggle"></div>
+            <div class="page-label" [ngClass]="page.id === selected ? 'selected' : ''" (click)="select(page)">
+              <div class="page-icon-and-text">
+                <mat-icon class="page-icon" svgIcon="file"></mat-icon>
+                @if (page.path) {
+                <span class="page-path" [tippy]="page.path">{{ page.path }}&nbsp;>&nbsp;</span>
+                }
+                <span class="page-name" [tippy]="page.name">{{ page.name }}</span>
+              </div>
+              <div class="page-icons">
+                @if (!page.isVisible) {
+                <mat-icon class="page-visible-clickable-icon">visibility_off</mat-icon>
+                }
+                @if (!page.isClickable) {
+                <mat-icon class="page-visible-clickable-icon">cancel</mat-icon>
+                }
+              </div>
+            </div>
+          </div>
+        </li>
+        }
+      </ul>
+      }
+    </div>
+    <ng-template #pageAndChildren let-page="page">
+      <li>
+        <div class="page-row">
+          @if (page.children.length === 0) {
+          <div class="no-toggle"></div>
+          }
+          @if (page.children.length > 0) {
+          <mat-icon class="page-toggle" (click)="toggle(page.id)">
+            {{ toggled.includes(page.id) ? 'keyboard_arrow_down' : 'keyboard_arrow_right' }}
+          </mat-icon>
+          }
+          <div class="page-label" [ngClass]="page.id === selected ? 'selected' : ''" (click)="select(page)">
+            <div class="page-icon-and-text">
+              <mat-icon class="page-icon" svgIcon="file"></mat-icon>
+              <span>{{ page.name }}</span>
+            </div>
+            <div class="page-icons">
+              @if (!page.isVisible) {
+              <mat-icon class="page-visible-clickable-icon">visibility_off</mat-icon>
+              }
+              @if (!page.isClickable) {
+              <mat-icon class="page-visible-clickable-icon">cancel</mat-icon>
+              }
+            </div>
+          </div>
+        </div>
+        @if (page.children.length > 0 && toggled.includes(page.id)) {
+        <ul>
+          @for (child of page.children; track child) {
+          <ng-container *ngTemplateOutlet="pageAndChildren; context: {page: child}"></ng-container>
+          }
+        </ul>
+        }
+      </li>
+    </ng-template>
+  </div>
+  <mat-dialog-actions>
+  </mat-dialog-actions>
+</div>

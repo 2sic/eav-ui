@@ -1,5 +1,5 @@
-import { InputTypeStrict } from 'projects/eav-ui/src/app/content-type-fields/constants/input-type.constants';
 import { EavEntityDto } from '.';
+import { InputTypeStrict } from '../../../../shared/fields/input-type-catalog';
 
 /**
  * A JSON representation of an EavContentType.

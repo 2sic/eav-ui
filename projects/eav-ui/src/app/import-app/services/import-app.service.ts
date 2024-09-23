@@ -1,22 +1,19 @@
-import { Context as DnnContext } from '@2sic.com/sxc-angular';
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of, switchMap } from 'rxjs';
 import { FileUploadMessageTypes, FileUploadResult } from '../../shared/components/file-upload-dialog';
-import { Context } from '../../shared/services/context';
+import { HttpServiceBase } from '../../shared/services/http-service-base';
 
 export const webApiAppRoot = 'admin/app/';
 
 @Injectable()
-export class ImportAppService {
-  constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
+export class ImportAppService extends HttpServiceBase {
 
   importApp(file: File, changedName: string, retryOnDuplicate = false): Observable<FileUploadResult> {
     const formData = new FormData();
     formData.append('File', file);
     formData.append('Name', changedName ?? '');
-    return this.http.post<FileUploadResult>(this.dnnContext.$2sxc.http.apiUrl(webApiAppRoot + 'Import'), formData, {
-      params: { zoneId: this.context.zoneId.toString() }
+    return this.http.post<FileUploadResult>(this.apiUrl(webApiAppRoot + 'Import'), formData, {
+      params: { zoneId: this.zoneId }
     }).pipe(
       switchMap(result => {
         if (retryOnDuplicate && result.Messages[0]?.MessageType === FileUploadMessageTypes.Warning) {

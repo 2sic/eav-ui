@@ -1,17 +1,17 @@
-import { ElementEventListener } from '../../../eav-ui/src/app/edit/shared/models';
+import { ElementEventListener } from '../../../eav-ui/src/app/edit/shared/controls/element-event-listener.model';
 import { Connector, EavCustomInputField } from '../../../edit-types';
 import { buildTemplate, customGpsIcons, parseLatLng } from '../shared/helpers';
 import * as template from './preview.html';
 import * as styles from './preview.scss';
 import { CoordinatesDto } from './coordinates';
-import { EavLogger } from '../../../eav-ui/src/app/shared/logging/eav-logger';
-
-const logThis = false;
-const nameOfThis = 'FieldCustomGps';
+import { classLog } from '../../../eav-ui/src/app/shared/logging';
 
 const gpsTag = 'field-custom-gps';
 
 class FieldCustomGps extends HTMLElement implements EavCustomInputField<string> {
+  
+  log = classLog({ FieldCustomGps });
+  
   fieldInitialized: boolean;
   connector: Connector<string>;
 
@@ -20,8 +20,6 @@ class FieldCustomGps extends HTMLElement implements EavCustomInputField<string> 
   private eventListeners: ElementEventListener[];
   private defaultCoordinates: google.maps.LatLngLiteral;
 
-  private log = new EavLogger(nameOfThis, logThis);
-
   constructor() {
     super();
     this.log.a(`${gpsTag} constructor called`);
@@ -29,7 +27,7 @@ class FieldCustomGps extends HTMLElement implements EavCustomInputField<string> 
   }
 
   connectedCallback(): void {
-    if (this.fieldInitialized) { return; }
+    if (this.fieldInitialized) return;
     this.fieldInitialized = true;
     this.log.a(`${gpsTag} connectedCallback called`);
 

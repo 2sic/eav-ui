@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { map } from 'rxjs';
-import { AppDialogConfigService } from '../services/app-dialog-config.service';
 import { AsyncPipe } from '@angular/common';
 import { SafeResourceUrlPipe } from '../../shared/pipes/safe-resource-url';
+import { transient } from '../../core';
+import { DialogConfigAppService } from '../services/dialog-config-app.service';
 
 @Component({
   selector: 'app-getting-started',
@@ -16,11 +17,11 @@ import { SafeResourceUrlPipe } from '../../shared/pipes/safe-resource-url';
 })
 export class GettingStartedComponent {
 
-  gettingStartedUrl$ = this.appDialogConfigService.getCurrent$().pipe(map(
+  private dialogConfigSvc = transient(DialogConfigAppService);
+
+  gettingStartedUrl$ = this.dialogConfigSvc.getCurrent$().pipe(map(
     dialogSettings => dialogSettings.Context.App.GettingStartedUrl
   ));
-
-  constructor(private appDialogConfigService: AppDialogConfigService) { }
 
 
 }

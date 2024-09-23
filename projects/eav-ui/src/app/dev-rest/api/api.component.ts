@@ -4,7 +4,6 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, combineLatest, filter, map, share, shareReplay, switchMap } from 'rxjs';
 import { DevRestBase } from '..';
-import { AppDialogConfigService } from '../../app-administration/services';
 import { SourceService } from '../../code-editor/services/source.service';
 import { Context } from '../../shared/services/context';
 import { GoToDevRest } from '../go-to-dev-rest';
@@ -28,11 +27,12 @@ import { SelectorWithHelpComponent } from '../selector-with-help/selector-with-h
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
-import { EavLogger } from '../../shared/logging/eav-logger';
 import { transient } from '../../core';
+import { classLog } from '../../shared/logging';
 
 const pathToApi = 'app/{appname}/{endpointPath}/{action}';
-const logThis = false;
+
+
 @Component({
   selector: 'app-dev-rest-api',
   templateUrl: './api.component.html',
@@ -59,14 +59,12 @@ const logThis = false;
     DevRestHttpHeadersComponent,
     AsyncPipe,
   ],
-  providers: [
-    AppDialogConfigService,
-  ],
 })
 export class DevRestApiComponent extends DevRestBase<DevRestApiViewModel> implements OnDestroy {
-  @HostBinding('className') hostClass = 'dialog-component';
 
-  private sourceService = transient(SourceService);
+  log = classLog({DevRestApiComponent});
+
+  @HostBinding('className') hostClass = 'dialog-component';
 
   /** action name to check for */
   selectedActionName$ = new BehaviorSubject<string>(null);
@@ -74,9 +72,9 @@ export class DevRestApiComponent extends DevRestBase<DevRestApiViewModel> implem
   /** Test values for url params */
   urlParams$ = new BehaviorSubject<string>('');
 
-  log = new EavLogger("DevRestApiComponent", logThis);
+  private sourceService = transient(SourceService);
+  
   constructor(
-    appDialogConfigService: AppDialogConfigService,
     /** Context for this dialog. Used for appId, zoneId, tabId, etc. */
     context: Context,
     dnnContext: DnnContext,
@@ -84,7 +82,7 @@ export class DevRestApiComponent extends DevRestBase<DevRestApiViewModel> implem
     router: Router,
     route: ActivatedRoute,
   ) {
-    super(appDialogConfigService, context, dialogRef, dnnContext, router, route, null);
+    super(context, dialogRef, dnnContext, router, route, null);
 
     const logWebApi = this.log.rxTap('webApi$', { enabled: true });
     const webApi$ = combineLatest([

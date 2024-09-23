@@ -1,34 +1,31 @@
-import { Context as DnnContext } from '@2sic.com/sxc-angular';
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { webApiAppRoot } from '../../import-app/services/import-app.service';
-import { Context } from '../../shared/services/context';
 import { SiteLanguage, SiteLanguagePermissions } from '../models/site-language.model';
 import { SystemInfoSet } from '../models/system-info.model';
+import { HttpServiceBase } from '../../shared/services/http-service-base';
 
 const webApiZoneRoot = 'admin/zone/';
 
 @Injectable()
-export class ZoneService {
-  constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
+export class ZoneService extends HttpServiceBase {
 
   getLanguages() {
-    return this.http.get<SiteLanguage[]>(this.dnnContext.$2sxc.http.apiUrl(webApiZoneRoot + 'GetLanguages'));
+    return this.http.get<SiteLanguage[]>(this.apiUrl(webApiZoneRoot + 'GetLanguages'));
   }
 
   toggleLanguage(code: string, enable: boolean) {
-    return this.http.get<null>(this.dnnContext.$2sxc.http.apiUrl(webApiZoneRoot + 'SwitchLanguage'), {
+    return this.http.get<null>(this.apiUrl(webApiZoneRoot + 'SwitchLanguage'), {
       params: { cultureCode: code, enable: enable.toString() },
     });
   }
 
   getSystemInfo() {
-    return this.http.get<SystemInfoSet>(this.dnnContext.$2sxc.http.apiUrl(webApiZoneRoot + 'GetSystemInfo'));
+    return this.http.get<SystemInfoSet>(this.apiUrl(webApiZoneRoot + 'GetSystemInfo'));
   }
 
   getLanguagesPermissions() {
-    return this.http.get<SiteLanguagePermissions[]>(this.dnnContext.$2sxc.http.apiUrl(webApiAppRoot + 'languages'), {
-      params: { appId: this.context.appId },
+    return this.http.get<SiteLanguagePermissions[]>(this.apiUrl(webApiAppRoot + 'languages'), {
+      params: { appId: this.appId },
     });
   }
 }

@@ -1,30 +1,24 @@
 import { ColDef, GridApi, GridOptions, GridReadyEvent, ValueGetterParams } from '@ag-grid-community/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnDestroy, OnInit, signal, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
-import { BehaviorSubject, combineLatest, filter, map, Observable, pairwise, startWith, Subject, Subscription, take } from 'rxjs';
+import { RouterOutlet } from '@angular/router';
+import { BehaviorSubject, filter, take } from 'rxjs';
 import { ContentType } from '../app-administration/models/content-type.model';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { ContentExportService } from '../content-export/services/content-export.service';
 import { ContentImportDialogData } from '../content-import/content-import-dialog.config';
-import { DataTypeConstants } from '../content-type-fields/constants/data-type.constants';
-import { Field } from '../content-type-fields/models/field.model';
-import { GlobalConfigService } from '../edit/shared/store/ngrx-data';
+import { DataTypeCatalog } from '../shared/fields/data-type-catalog';
+import { Field } from '../shared/fields/field.model';
 import { GoToMetadata } from '../metadata';
-import { BaseWithChildDialogComponent } from '../shared/components/base-with-child-dialog.component';
 import { BooleanFilterComponent } from '../shared/components/boolean-filter/boolean-filter.component';
 import { EntityFilterComponent } from '../shared/components/entity-filter/entity-filter.component';
 import { FileUploadDialogData } from '../shared/components/file-upload-dialog';
-import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
-import { IdFieldParams } from '../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
-import { eavConstants } from '../shared/constants/eav.constants';
 import { keyFilters } from '../shared/constants/session.constants';
-import { consoleLogDev } from '../shared/helpers/console-log-angular.helper';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
-import { EditForm } from '../shared/models/edit-form.model';
+import { EditForm, EditPrep } from '../shared/models/edit-form.model';
 import { ContentItemsActionsComponent } from './content-items-actions/content-items-actions.component';
 import { ContentItemsActionsParams } from './content-items-actions/content-items-actions.models';
 import { ContentItemsEntityComponent } from './content-items-entity/content-items-entity.component';
@@ -39,8 +33,7 @@ import { ExtendedColDef } from './models/extended-col-def.model';
 import { PubMetaFilterComponent } from './pub-meta-filter/pub-meta-filter.component';
 import { PubMeta } from './pub-meta-filter/pub-meta-filter.model';
 import { ContentItemsService } from './services/content-items.service';
-import { EntitiesService } from './services/entities.service';
-import { AsyncPipe } from '@angular/common';
+import { EntityEditService } from '../shared/services/entity-edit.service';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
@@ -48,77 +41,65 @@ import { SafeHtmlPipe } from '../shared/pipes/safe-html.pipe';
 import { DragAndDropDirective } from '../shared/directives/drag-and-drop.directive';
 import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
 import { ToggleDebugDirective } from '../shared/directives/toggle-debug.directive';
+import { transient } from '../core';
+import { GlobalConfigService } from '../shared/services/global-config.service';
+import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
+import { classLog } from '../shared/logging';
 
 @Component({
   selector: 'app-content-items',
   templateUrl: './content-items.component.html',
-  styleUrls: ['./content-items.component.scss'],
   standalone: true,
   imports: [
     MatButtonModule,
     MatIconModule,
     RouterOutlet,
     MatDialogActions,
-    AsyncPipe,
     SafeHtmlPipe,
     DragAndDropDirective,
     ToggleDebugDirective,
     SxcGridModule,
   ],
-  providers: [
-    ContentItemsService,
-    EntitiesService,
-    ContentExportService,
-    ContentTypesService,
-  ],
 })
-export class ContentItemsComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
-  contentType$ = new Subject<ContentType>();
-  items$ = new BehaviorSubject<ContentItem[]>(undefined);
+export class ContentItemsComponent implements OnInit, OnDestroy {
+
+  log = classLog({ContentItemsComponent});
+
+  isDebug = inject(GlobalConfigService).isDebug;
+
+  #entitiesSvc = transient(EntityEditService);
+  #contentExportSvc = transient(ContentExportService);
+  #contentItemsSvc = transient(ContentItemsService);
+  #contentTypesSvc = transient(ContentTypesService);
+  #dialogRouter = transient(DialogRoutingService);
+
+  constructor(
+    private dialogRef: MatDialogRef<ContentItemsComponent>,
+    private snackBar: MatSnackBar,
+    private dialog: MatDialog,
+    private viewContainerRef: ViewContainerRef,
+    private changeDetectorRef: ChangeDetectorRef,
+  ) { }
+
+  contentType = signal<ContentType>(undefined);
+  items = signal<ContentItem[]>(undefined);
+
   gridOptions: GridOptions = {
     ...defaultGridOptions,
   };
 
-  private gridApi$ = new BehaviorSubject<GridApi>(null);
-  private contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
-
-  viewModel$: Observable<ContentItemsViewModel>;
-
-  constructor(
-    protected router: Router,
-    protected route: ActivatedRoute,
-    private dialogRef: MatDialogRef<ContentItemsComponent>,
-    private contentTypesService: ContentTypesService,
-    private contentItemsService: ContentItemsService,
-    private entitiesService: EntitiesService,
-    private contentExportService: ContentExportService,
-    private snackBar: MatSnackBar,
-    private globalConfigService: GlobalConfigService,
-    private dialog: MatDialog,
-    private viewContainerRef: ViewContainerRef,
-    private changeDetectorRef: ChangeDetectorRef,
-  ) {
-    super(router, route);
-  }
+  #gridApi$ = new BehaviorSubject<GridApi>(null);
+  #contentTypeStaticName = this.#dialogRouter.getParam('contentTypeStaticName');
 
   ngOnInit() {
     this.fetchContentType();
     this.fetchItems();
     this.fetchColumns();
-    this.subscriptions.add(this.childDialogClosed$().subscribe(() => { this.fetchItems(); }));
-
-    this.viewModel$ = combineLatest([
-      this.contentType$, this.items$, this.globalConfigService.getDebugEnabled$()
-    ]).pipe(
-      map(([contentType, items, debugEnabled]) => ({ contentType, items, debugEnabled }))
-    );
+    this.#dialogRouter.doOnDialogClosed(() => this.fetchItems());
   }
 
   ngOnDestroy() {
-    this.contentType$.complete();
-    this.items$.complete();
-    this.gridApi$.complete();
-    super.ngOnDestroy();
+    this.#gridApi$.complete();
   }
 
   closeDialog() {
@@ -126,31 +107,31 @@ export class ContentItemsComponent extends BaseWithChildDialogComponent implemen
   }
 
   onGridReady(params: GridReadyEvent) {
-    this.gridApi$.next(params.api);
+    this.#gridApi$.next(params.api);
   }
 
   private fetchContentType() {
-    this.contentTypesService.retrieveContentType(this.contentTypeStaticName).subscribe(contentType => {
-      this.contentType$.next(contentType);
+    this.#contentTypesSvc.retrieveContentType(this.#contentTypeStaticName).subscribe(contentType => {
+      this.contentType.set(contentType);
     });
   }
 
   private fetchItems() {
-    this.contentItemsService.getAll(this.contentTypeStaticName).subscribe(items => {
-      this.items$.next(items);
+    this.#contentItemsSvc.getAll(this.#contentTypeStaticName).subscribe(items => {
+      this.items.set(items);
     });
   }
 
   private fetchColumns() {
-    this.contentItemsService.getColumns(this.contentTypeStaticName).subscribe(columns => {
+    this.#contentItemsSvc.getColumns(this.#contentTypeStaticName).subscribe(columns => {
       // filter out ephemeral columns as they don't have data to show
       const columnsWithoutEphemeral = columns.filter(column => !column.IsEphemeral);
       const columnDefs = this.buildColumnDefs(columnsWithoutEphemeral);
       const filterModel = buildFilterModel(sessionStorage.getItem(keyFilters), columnDefs);
-      if (this.gridApi$.value) {
+      if (this.#gridApi$.value) {
         this.setColumnDefs(columnDefs, filterModel);
       } else {
-        this.gridApi$.pipe(
+        this.#gridApi$.pipe(
           filter(gridApi => gridApi != null), // firefox does web requests faster than drawing grid and getting gridApi
           take(1),
         ).subscribe(gridApi => {
@@ -161,10 +142,10 @@ export class ContentItemsComponent extends BaseWithChildDialogComponent implemen
   }
 
   private setColumnDefs(columnDefs: ColDef[], filterModel: AgGridFilterModel) {
-    this.gridApi$.value.setColumnDefs(columnDefs);
+    this.#gridApi$.value.setColumnDefs(columnDefs);
     if (filterModel) {
-      consoleLogDev('Will try to apply filter:', filterModel);
-      this.gridApi$.value.setFilterModel(filterModel);
+      this.log.a('Will try to apply filter:', filterModel);
+      this.#gridApi$.value.setFilterModel(filterModel);
     }
   }
 
@@ -172,34 +153,34 @@ export class ContentItemsComponent extends BaseWithChildDialogComponent implemen
     const url = GoToMetadata.getUrlEntity(
       item.Guid,
       `Metadata for Entity: ${item._Title} (${item.Id})`,
-      this.contentTypeStaticName,
+      this.#contentTypeStaticName,
     );
-    this.router.navigate([url], { relativeTo: this.route });
+    this.#dialogRouter.navRelative([url]);
   }
 
   editItem(item?: ContentItem) {
     const form: EditForm = {
       items: [
         item == null
-          ? { ContentTypeName: this.contentTypeStaticName }
-          : { EntityId: item.Id }
+          ? EditPrep.newFromType(this.#contentTypeStaticName)
+          : EditPrep.editId(item.Id)
       ],
     };
     const formUrl = convertFormToUrl(form);
-    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
+    this.#dialogRouter.navRelative([`edit/${formUrl}`]);
   }
 
   exportContent() {
-    const filterModel = this.gridApi$.value.getFilterModel();
+    const filterModel = this.#gridApi$.value.getFilterModel();
     const hasFilters = Object.keys(filterModel).length > 0;
     const ids: number[] = [];
     if (hasFilters) {
-      this.gridApi$.value.forEachNodeAfterFilterAndSort(rowNode => {
+      this.#gridApi$.value.forEachNodeAfterFilterAndSort(rowNode => {
         const contentItem: ContentItem = rowNode.data;
         ids.push(contentItem.Id);
       });
     }
-    this.router.navigate([`export/${this.contentTypeStaticName}${ids.length > 0 ? `/${ids}` : ''}`], { relativeTo: this.route });
+    this.#dialogRouter.navRelative([`export/${this.#contentTypeStaticName}${ids.length > 0 ? `/${ids}` : ''}`]);
   }
 
   filesDropped(files: File[]) {
@@ -217,12 +198,12 @@ export class ContentItemsComponent extends BaseWithChildDialogComponent implemen
 
   importContent(files?: File[]) {
     const dialogData: ContentImportDialogData = { files };
-    this.router.navigate([`${this.contentTypeStaticName}/import`], { relativeTo: this.route, state: dialogData });
+    this.#dialogRouter.navRelative([`${this.#contentTypeStaticName}/import`], { state: dialogData });
   }
 
   importItem(files?: File[]) {
     const dialogData: FileUploadDialogData = { files };
-    this.router.navigate(['import'], { relativeTo: this.route, state: dialogData });
+    this.#dialogRouter.navRelative(['import'], { state: dialogData });
   }
 
   createMetadata() {
@@ -232,46 +213,28 @@ export class ContentItemsComponent extends BaseWithChildDialogComponent implemen
       width: '650px',
     });
     metadataDialogRef.afterClosed().subscribe((itemFor: MetadataInfo) => {
-      if (itemFor == null) { return; }
+      if (itemFor == null) return;
 
       const form: EditForm = {
-        items: [{
-          ContentTypeName: this.contentTypeStaticName,
-          For: {
-            Target: itemFor.target ?? itemFor.targetType.toString(),
-            TargetType: itemFor.targetType,
-            ...(itemFor.keyType === eavConstants.keyTypes.guid && { Guid: itemFor.key }),
-            ...(itemFor.keyType === eavConstants.keyTypes.number && { Number: parseInt(itemFor.key, 10) }),
-            ...(itemFor.keyType === eavConstants.keyTypes.string && { String: itemFor.key }),
-          },
-        }],
+        items: [ EditPrep.newMetadataFromInfo(this.#contentTypeStaticName, itemFor) ],
       };
       const formUrl = convertFormToUrl(form);
-      this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
+      this.#dialogRouter.navRelative([`edit/${formUrl}`]);
       this.changeDetectorRef.markForCheck();
     });
   }
 
   debugFilter() {
-    console.warn('Current filter:', this.gridApi$.value.getFilterModel());
+    console.warn('Current filter:', this.#gridApi$.value.getFilterModel());
     this.snackBar.open('Check console for filter information', undefined, { duration: 3000 });
   }
 
   private buildColumnDefs(columns: Field[]) {
     const columnDefs: ColDef[] = [
       {
-        ...ColumnDefinitions.Id,
-        cellClass: (params) => {
-          const contentItem: ContentItem = params.data;
-          return `id-action no-padding no-outline ${contentItem._EditInfo.ReadOnly ? 'disabled' : ''}`.split(' ');
-        },
-        cellRenderer: IdFieldComponent,
-        cellRendererParams: (() => {
-          const params: IdFieldParams<ContentItem> = {
-            tooltipGetter: (item) => `ID: ${item.Id}\nRepoID: ${item._RepositoryId}\nGUID: ${item.Guid}`,
-          };
-          return params;
-        })(),
+        ...ColumnDefinitions.IdWithDefaultRenderer,
+        cellClass: (p: { data: ContentItem }) => `id-action no-padding no-outline ${p.data._EditInfo.ReadOnly ? 'disabled' : ''}`.split(' '),
+        cellRendererParams: ColumnDefinitions.idFieldParamsTooltipGetter<ContentItem>()
       },
       {
         field: 'Status',
@@ -279,8 +242,8 @@ export class ContentItemsComponent extends BaseWithChildDialogComponent implemen
         headerClass: 'dense',
         cellClass: 'secondary-action no-padding'.split(' '),
         filter: PubMetaFilterComponent,
-        valueGetter: (params) => {
-          const item: ContentItem = params.data;
+        valueGetter: (p) => {
+          const item: ContentItem = p.data;
           const published: PubMeta = {
             published: item.IsPublished,
             metadata: !!item.For,
@@ -297,17 +260,11 @@ export class ContentItemsComponent extends BaseWithChildDialogComponent implemen
         })(),
       },
       {
+        ...ColumnDefinitions.TextWidePrimary,
         headerName: 'Item (Entity)',
         field: '_Title',
         flex: 2,
-        minWidth: 250,
-        cellClass: 'primary-action highlight'.split(' '),
-        sortable: true,
-        filter: 'agTextColumnFilter',
-        onCellClicked: (params) => {
-          const contentItem: ContentItem = params.data;
-          this.editItem(contentItem);
-        },
+        onCellClicked: (p: { data: ContentItem }) => this.editItem(p.data),
       },
       {
         headerName: 'Stats',
@@ -318,10 +275,7 @@ export class ContentItemsComponent extends BaseWithChildDialogComponent implemen
         cellClass: 'no-outline',
         sortable: true,
         filter: 'agTextColumnFilter',
-        valueGetter: (params) => {
-          const item: ContentItem = params.data;
-          return `${item._Used} / ${item._Uses}`;
-        },
+        valueGetter: (p: { data: ContentItem }) => `${p.data._Used} / ${p.data._Uses}`,
       },
       {
         ...ColumnDefinitions.ActionsPinnedRight3,
@@ -350,22 +304,22 @@ export class ContentItemsComponent extends BaseWithChildDialogComponent implemen
         sortable: true,
       };
       switch (column.Type) {
-        case DataTypeConstants.Entity:
+        case DataTypeCatalog.Entity:
           colDef.allowMultiValue = column.Metadata?.Entity?.AllowMultiValue ?? true;
           colDef.cellRenderer = ContentItemsEntityComponent;
           colDef.valueGetter = this.valueGetterEntityField;
           colDef.filter = EntityFilterComponent;
           break;
-        case DataTypeConstants.DateTime:
+        case DataTypeCatalog.DateTime:
           colDef.useTimePicker = column.Metadata?.DateTime?.UseTimePicker ?? false;
           colDef.valueGetter = this.valueGetterDateTime;
           colDef.filter = 'agTextColumnFilter';
           break;
-        case DataTypeConstants.Boolean:
+        case DataTypeCatalog.Boolean:
           colDef.valueGetter = this.valueGetterBoolean;
           colDef.filter = BooleanFilterComponent;
           break;
-        case DataTypeConstants.Number:
+        case DataTypeCatalog.Number:
           colDef.filter = 'agNumberColumnFilter';
           break;
         default:
@@ -379,20 +333,20 @@ export class ContentItemsComponent extends BaseWithChildDialogComponent implemen
 
   private clone(item: ContentItem) {
     const form: EditForm = {
-      items: [{ ContentTypeName: this.contentTypeStaticName, DuplicateEntity: item.Id }],
+      items: [EditPrep.copy(this.#contentTypeStaticName, item.Id)],
     };
     const formUrl = convertFormToUrl(form);
-    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
+    this.#dialogRouter.navRelative([`edit/${formUrl}`]);
   }
 
   private export(item: ContentItem) {
-    this.contentExportService.exportEntity(item.Id, this.contentTypeStaticName, true);
+    this.#contentExportSvc.exportEntity(item.Id, this.#contentTypeStaticName, true);
   }
 
   private delete(item: ContentItem) {
-    if (!confirm(`Delete '${item._Title}' (${item._RepositoryId})?`)) { return; }
+    if (!confirm(`Delete '${item._Title}' (${item._RepositoryId})?`)) return;
     this.snackBar.open('Deleting...');
-    this.entitiesService.delete(this.contentTypeStaticName, item._RepositoryId, false).subscribe({
+    this.#entitiesSvc.delete(this.#contentTypeStaticName, item._RepositoryId, false).subscribe({
       next: () => {
         this.snackBar.open('Deleted', null, { duration: 2000 });
         this.fetchItems();
@@ -403,7 +357,7 @@ export class ContentItemsComponent extends BaseWithChildDialogComponent implemen
           return;
         }
         this.snackBar.open('Deleting...');
-        this.entitiesService.delete(this.contentTypeStaticName, item._RepositoryId, true).subscribe(() => {
+        this.#entitiesSvc.delete(this.#contentTypeStaticName, item._RepositoryId, true).subscribe(() => {
           this.snackBar.open('Deleted', null, { duration: 2000 });
           this.fetchItems();
         });
@@ -432,8 +386,3 @@ export class ContentItemsComponent extends BaseWithChildDialogComponent implemen
   }
 }
 
-interface ContentItemsViewModel {
-  contentType: ContentType;
-  items: ContentItem[];
-  debugEnabled: boolean;
-}

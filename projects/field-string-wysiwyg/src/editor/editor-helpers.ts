@@ -1,10 +1,10 @@
-import { Connector } from 'projects/edit-types';
-import { Observable, distinctUntilChanged, map } from 'rxjs';
+import { mapUntilChanged } from '../../../eav-ui/src/app/shared/rxJs/mapUntilChanged';
+import { Connector } from '../../../edit-types';
+import { Observable } from 'rxjs';
 
 export function connectorToDisabled$(connector: Connector<string>): Observable<boolean> {
   return connector.field$.pipe(
-    map(fc => fc.settings.Disabled || fc.settings.ForcedDisabled),
-    distinctUntilChanged()
+    mapUntilChanged(fc => fc.settings.uiDisabled),
   );
 }
 

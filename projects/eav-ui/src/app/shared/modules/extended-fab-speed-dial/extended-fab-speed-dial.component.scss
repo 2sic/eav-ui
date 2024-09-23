@@ -5,7 +5,6 @@ extended-fab-speed-dial {
 }
 
 .extended-fab-speed-dial {
-
   .extended-fab-speed-dial-trigger {
     position: absolute;
     bottom: 0;
@@ -23,7 +22,7 @@ extended-fab-speed-dial {
 
     button[extended-fab-speed-dial-action] {
       opacity: 0;
-      transition: opacity .3s ease-in-out;
+      transition: opacity 0.3s ease-in-out;
       margin-bottom: 8px;
     }
   }
@@ -54,17 +53,20 @@ extended-fab-speed-dial {
     white-space: nowrap;
     background: #002753;
     cursor: pointer;
-    box-shadow: 0px 3px 5px -1px rgb(0 0 0 / 20%), 0px 6px 10px 0px rgb(0 0 0 / 14%), 0px 1px 18px 0px rgb(0 0 0 / 12%);
+    box-shadow:
+      0px 3px 5px -1px rgb(0 0 0 / 20%),
+      0px 6px 10px 0px rgb(0 0 0 / 14%),
+      0px 1px 18px 0px rgb(0 0 0 / 12%);
     box-sizing: border-box;
 
-    >mat-icon {
+    > mat-icon {
       font-size: 20px;
       width: 20px;
       height: 20px;
       line-height: 20px;
     }
 
-    >span {
+    > span {
       display: inline-block;
       white-space: nowrap;
       overflow: hidden;
@@ -86,7 +88,7 @@ extended-fab-speed-dial {
     }
 
     &:hover:not([disabled]) {
-      >span {
+      > span {
         max-width: 256px;
       }
     }

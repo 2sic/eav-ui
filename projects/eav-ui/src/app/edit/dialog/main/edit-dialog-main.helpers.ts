@@ -1,12 +1,12 @@
 import { ActivatedRoute } from '@angular/router';
-import { Language } from '../../shared/models';
+import { Language } from '../../form/form-languages.model';
 
 export function calculateIsParentDialog(route: ActivatedRoute) {
   let editDialogCount = 0;
   for (const path of route.snapshot.pathFromRoot) {
-    if (path.url.length <= 0) { continue; }
+    if (path.url.length <= 0) continue;
     for (const urlSegment of path.url) {
-      if (urlSegment.path !== 'edit') { continue; }
+      if (urlSegment.path !== 'edit') continue;
       editDialogCount++;
     }
   }

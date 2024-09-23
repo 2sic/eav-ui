@@ -1,33 +1,53 @@
-<mat-card appearance="raised" class="mat-elevation-z4" [ngClass]="{ 'debug-enabled': activeDebug != null }">
+<mat-card appearance="raised" class="mat-elevation-z4" [ngClass]="{ 'debug-enabled': userSettings().tab != null }">
 
   <div class="debug-buttons-container">
-    <button mat-button tippy="Show Data JSON" (click)="toggleDebugType(DebugTypes.Data)">
+    <button mat-button tippy="Show Data JSON" (click)="toggleDialog(DebugTypes.Data)">
       <mat-icon>offline_bolt</mat-icon>
       <span>Data</span>
     </button>
-    <button mat-button tippy="Show Formula Designer" (click)="toggleDebugType(DebugTypes.Formulas)">
+    <button mat-button tippy="Show Formula Designer" (click)="toggleDialog(DebugTypes.Formulas)">
       <mat-icon>functions</mat-icon>
       <span>Formulas</span>
     </button>
-    <button mat-button tippy="Show Logs" (click)="toggleDebugType(DebugTypes.Logs)">
+    <button mat-button tippy="Show Logs" (click)="toggleDialog(DebugTypes.Logs)">
       <mat-icon>speed</mat-icon>
       <span>Logs</span>
     </button>
     <div class="spacer"></div>
-    <div class="sxc-version">2sxc {{ sxcVer }}</div>
+
+    <!-- Special expand button when working with formulas, to get more space -->
+    @if (userSettings().tab != null)
+    {
+      <button mat-icon-button tippy="expand/shrink" (click)="toggleSize()">
+        <mat-icon>{{ userSettings().expanded ? 'unfold_less' : 'expand' }}</mat-icon>
+      </button>
+    }
+    @else
+    {
+      <button mat-icon-button tippy="Developer tools are only visible to developers.">
+        <mat-icon>info</mat-icon>
+      </button>
+    }
+
+
+    <div class="sxc-version">
+      2sxc {{ sxcVer }}
+    </div>
   </div>
 
-  @if (activeDebug != null) {
-    <div class="debug-info-container">
-      @if (activeDebug === DebugTypes.Data) {
-        <app-data-dump></app-data-dump>
-      }
-      @if (activeDebug === DebugTypes.Formulas) {
-        <app-formula-designer [formBuilderRefs]="formBuilderRefs">
-        </app-formula-designer>
-      }
-      @if (activeDebug === DebugTypes.Logs) {
-        <app-logs-dump></app-logs-dump>
+  @if (userSettings().tab != null)
+  {
+    <div class="debug-info-container" [ngClass]="'size' + (userSettings().expanded ? '-xl' : '')">
+      @switch (userSettings().tab) {
+        @case (DebugTypes.Data) {
+          <app-data-dump></app-data-dump>
+        }
+        @case (DebugTypes.Formulas) {
+          <app-formula-designer></app-formula-designer>
+        }
+        @case (DebugTypes.Logs) {
+          <app-logs-dump></app-logs-dump>
+        }
       }
     </div>
   }

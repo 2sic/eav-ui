@@ -1,17 +1,12 @@
-import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostBinding, model, OnInit } from '@angular/core';
 import { MatAutocompleteSelectedEvent, MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
-import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
+import { RouterOutlet } from '@angular/router';
 import { ContentGroupAdd } from '../manage-content-list/models/content-group.model';
 import { ContentGroupService } from '../manage-content-list/services/content-group.service';
-import { BaseWithChildDialogComponent } from '../shared/components/base-with-child-dialog.component';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
-import { EditForm } from '../shared/models/edit-form.model';
-import { ReplaceOption } from './models/replace-option.model';
-import { ReplaceContentViewModel } from './replace-content.models';
-import { AsyncPipe } from '@angular/common';
+import { EditForm, EditPrep } from '../shared/models/edit-form.model';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
@@ -19,6 +14,9 @@ import { CdkVirtualScrollViewport, CdkFixedSizeVirtualScroll, CdkVirtualForOf } 
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { convert, transient } from '../core';
+import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
+import { computedObj, signalObj } from '../shared/signals/signal.utilities';
 
 @Component({
   selector: 'app-replace-content',
@@ -38,139 +36,118 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     MatButtonModule,
     MatIconModule,
     MatDialogActions,
-    AsyncPipe,
-  ],
-  providers: [
-    ContentGroupService,
   ],
 })
-export class ReplaceContentComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
+export class ReplaceContentComponent implements OnInit {
   @HostBinding('className') hostClass = 'dialog-component';
 
-  viewModel$: Observable<ReplaceContentViewModel>;
-
-  private guid: string;
-  private part: string;
-  private index: number;
-  private add: boolean;
-  private filterText$: BehaviorSubject<string>;
-  private options$: BehaviorSubject<ReplaceOption[]>;
-  private contentTypeName: string;
+  #contentGroupSvc = transient(ContentGroupService);
+  #dialogRoutes = transient(DialogRoutingService);
 
   constructor(
-    protected router: Router,
-    protected route: ActivatedRoute,
     private dialogRef: MatDialogRef<ReplaceContentComponent>,
-    private contentGroupService: ContentGroupService,
-
     private snackBar: MatSnackBar,
-  ) {
-    super(router, route);
-  }
+  ) { }
+
+  #params = convert(this.#dialogRoutes.getParams(['guid', 'part', 'index']), p => ({
+    guid: p.guid,
+    part: p.part,
+    index: parseInt(p.index, 10),
+  }));
+
+  #contentTypeName: string;
+  
+  /** Mode is adding the to-be-selected item, not replace */
+  protected isAddMode = signalObj('isAddMode', !!this.#dialogRoutes.getQueryParam('add'));
+
+  /** The text being searched for */
+  filterText = model<string>('');
+
+  /** The options which could be used */
+  #optionsRaw = signalObj<ReplaceOption[]>('options', []);
+
+  /** The options after filtering */
+  options = computedObj<ReplaceOption[]>('filteredOptions', () => {
+    const filter = this.filterText().toLocaleLowerCase();
+    return this.#optionsRaw()
+      .filter(o => o.label.toLocaleLowerCase().includes(filter));
+  });
+
+  /** The system has a selected item, when the text exactly matches the label of an option */
+  hasSelection = computedObj<boolean>('isMatch', () => this.options().map(o => o.label).includes(this.filterText()));
 
   ngOnInit() {
-    this.guid = this.route.snapshot.paramMap.get('guid');
-    this.part = this.route.snapshot.paramMap.get('part');
-    this.index = parseInt(this.route.snapshot.paramMap.get('index'), 10);
-    this.add = !!this.route.snapshot.queryParamMap.get('add');
+    this.#fetchConfig(false, null);
 
-    this.filterText$ = new BehaviorSubject('');
-    this.options$ = new BehaviorSubject([]);
-
-    const filteredOptions$ = combineLatest([this.filterText$, this.options$]).pipe(
-      map(([filterText, options]) =>
-        options.filter(option => option.label.toLocaleLowerCase().includes(filterText.toLocaleLowerCase())).map(option => option.label)
-      ),
-    );
-    this.viewModel$ = combineLatest([this.filterText$, filteredOptions$]).pipe(
-      map(([filterText, filteredOptions]) => {
-        const viewModel: ReplaceContentViewModel = {
-          filterText,
-          filteredOptions,
-          isAddMode: this.add,
-          isMatch: filteredOptions.includes(filterText),
-        };
-        return viewModel;
-      }),
-    );
-
-    this.fetchConfig(false, null);
-    this.subscriptions.add(this.childDialogClosed$().subscribe(() => {
-      const navigation = this.router.getCurrentNavigation();
+    this.#dialogRoutes.doOnDialogClosed(() => {
+      const navigation = this.#dialogRoutes.router.getCurrentNavigation();
       const editResult = navigation.extras?.state;
       const cloneId: number = editResult?.[Object.keys(editResult)[0]];
-      this.fetchConfig(true, cloneId);
-    }));
-  }
-
-  ngOnDestroy() {
-    this.filterText$.complete();
-    this.options$.complete();
-    super.ngOnDestroy();
+      this.#fetchConfig(true, cloneId);
+    });
   }
 
   closeDialog() {
     this.dialogRef.close();
   }
 
-  setFilter(filterText: string) {
-    this.filterText$.next(filterText);
-  }
-
   select(event: MatAutocompleteSelectedEvent) {
-    this.filterText$.next(event.option.value);
+    this.filterText.set(event.option.value);
   }
 
   copySelected() {
-    const contentGroup = this.buildContentGroup();
+    const contentGroup = this.#buildContentGroup();
     const form: EditForm = {
-      items: [{ ContentTypeName: this.contentTypeName, DuplicateEntity: contentGroup.id }],
+      items: [EditPrep.copy(this.#contentTypeName, contentGroup.id)],
     };
     const formUrl = convertFormToUrl(form);
-    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
+    this.#dialogRoutes.navRelative([`edit/${formUrl}`]);
   }
 
   save() {
     this.snackBar.open('Saving...');
-    const contentGroup = this.buildContentGroup();
-    this.contentGroupService.saveItem(contentGroup).subscribe(() => {
+    const contentGroup = this.#buildContentGroup();
+    this.#contentGroupSvc.saveItem(contentGroup).subscribe(() => {
       this.snackBar.open('Saved', null, { duration: 2000 });
       this.closeDialog();
     });
   }
 
-  private fetchConfig(isRefresh: boolean, cloneId: number) {
-    const contentGroup = this.buildContentGroup();
-    this.contentGroupService.getItems(contentGroup).subscribe(replaceConfig => {
-      const options = Object.entries(replaceConfig.Items).map(([itemId, itemName]) => {
-        const option: ReplaceOption = {
+  #fetchConfig(isRefresh: boolean, cloneId: number) {
+    const contentGroup = this.#buildContentGroup();
+    this.#contentGroupSvc.getItems(contentGroup).subscribe(replaceConfig => {
+      const options = Object.entries(replaceConfig.Items)
+        .map(([itemId, itemName]) => ({
           id: parseInt(itemId, 10),
           label: `${itemName} (${itemId})`,
-        };
-        return option;
-      });
-      this.options$.next(options);
+        } satisfies ReplaceOption));
+      this.#optionsRaw.set(options);
 
       // don't set selected option if dialog should be in add-mode and don't change selected option on refresh unless it's cloneId
       if ((!contentGroup.add && !isRefresh) || cloneId != null) {
         const newId = !isRefresh ? replaceConfig.SelectedId : cloneId;
-        const newFilter = this.options$.value.find(option => option.id === newId)?.label || '';
-        this.filterText$.next(newFilter);
+        const newFilter = this.#optionsRaw().find(o => o.id === newId)?.label || '';
+        this.filterText.set(newFilter);
       }
-      this.contentTypeName = replaceConfig.ContentTypeName;
+      this.#contentTypeName = replaceConfig.ContentTypeName;
     });
   }
 
-  private buildContentGroup() {
-    const id = this.options$.value.find(option => option.label === this.filterText$.value)?.id ?? null;
+  #buildContentGroup() {
+    const filter = this.filterText();
+    const id = this.#optionsRaw().find(o => o.label === filter)?.id ?? null;
 
     const contentGroup: ContentGroupAdd = {
       id,
-      guid: this.guid,
-      part: this.part,
-      index: this.index,
-      add: this.add,
+      ...this.#params,
+      add: this.isAddMode(),
     };
     return contentGroup;
   }
+}
+
+
+interface ReplaceOption {
+  id: number;
+  label: string;
 }

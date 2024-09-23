@@ -1,9 +1,8 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { Component, OnInit, signal, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
-import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
 import { SourceService } from '../../code-editor/services/source.service';
 import { CreateFileDialogComponent, CreateFileDialogData, CreateFileDialogResult } from '../../create-file-dialog';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
@@ -11,15 +10,14 @@ import { DialogService } from '../../shared/services/dialog.service';
 import { WebApi } from '../models/web-api.model';
 import { WebApiActionsComponent } from './web-api-actions/web-api-actions.component';
 import { WebApiActionsParams } from './web-api-actions/web-api-actions.models';
-import { AppDialogConfigService } from '../services/app-dialog-config.service';
 import { TrueFalseComponent } from '../../dev-rest/api/true-false/true-false.component';
-import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { transient } from '../../core';
+import { DialogConfigAppService } from '../services/dialog-config-app.service';
 
 @Component({
   selector: 'app-web-api',
@@ -33,42 +31,33 @@ import { transient } from '../../core';
     MatMenuModule,
     MatIconModule,
     RouterOutlet,
-    AsyncPipe,
   ]
 })
-export class WebApiComponent implements OnInit, OnDestroy {
+export class WebApiComponent implements OnInit {
 
   private dialogService = transient(DialogService);
   private sourceService = transient(SourceService);
 
   enableCode!: boolean;
+  webApis = signal<WebApi[]>(undefined);
 
-  webApis$ = new BehaviorSubject<WebApi[]>(undefined);
   gridOptions = this.buildGridOptions();
 
-  viewModel$: Observable<WebApiViewModel>;
+  private dialogConfigSvc = transient(DialogConfigAppService);
 
   constructor(
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
-    private dialogConfigSvc: AppDialogConfigService,
   ) { }
 
   ngOnInit() {
     this.fetchWebApis();
-    this.viewModel$ = combineLatest([this.webApis$]).pipe(
-      map(([webApis]) => ({ webApis }))
-    );
 
     this.dialogConfigSvc.getCurrent$().subscribe(settings => {
       this.enableCode = settings.Context.Enable.CodeEditor;
     });
 
-  }
-
-  ngOnDestroy() {
-    this.webApis$.complete();
   }
 
   createController(global?: boolean): void {
@@ -84,7 +73,7 @@ export class WebApiComponent implements OnInit, OnDestroy {
     //     width: '650px',
     //   });
     //   fileLocationDialogRef.afterClosed().subscribe((isShared?: boolean) => {
-    //     if (isShared == null) { return; }
+    //     if (isShared == null) return;
     //     this.createController(isShared);
     //   });
     //   return;
@@ -103,7 +92,7 @@ export class WebApiComponent implements OnInit, OnDestroy {
     });
 
     createFileDialogRef.afterClosed().subscribe((result?: CreateFileDialogResult) => {
-      if (!result) { return; }
+      if (!result) return;
 
       if (result.name.endsWith('Controller.cs')) {
         const fileName = result.name.substring(result.name.lastIndexOf('/') + 1);
@@ -124,7 +113,7 @@ export class WebApiComponent implements OnInit, OnDestroy {
 
   private fetchWebApis() {
     this.sourceService.getWebApis().subscribe(webApis => {
-      this.webApis$.next(webApis);
+      this.webApis.set(webApis);
     });
   }
 
@@ -141,13 +130,11 @@ export class WebApiComponent implements OnInit, OnDestroy {
       ...defaultGridOptions,
       columnDefs: [
         {
+          ...ColumnDefinitions.ItemsText,
           headerName: 'Endpoint',
           field: 'endpointPath',
           flex: 2,
           minWidth: 250,
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: 'agTextColumnFilter',
         },
         {
           ...ColumnDefinitions.TextWideMin100,
@@ -166,23 +153,10 @@ export class WebApiComponent implements OnInit, OnDestroy {
           headerName: 'Name',
           field: 'name',
         },
-        // {
-        //   field: 'Type',
-        //   flex: 1,
-        //   minWidth: 100,
-        //   cellClass: 'no-outline',
-        //   sortable: true,
-        //   filter: BooleanFilterComponent,
-        //   valueGetter: (params) => {
-        //     const api: WebApi = params.data;
-        //     return api.isShared;
-        //   },
-        //   cellRenderer: WebApiTypeComponent,
-        // },
         {
+          ...ColumnDefinitions.Boolean2,
           headerName: 'Compiled',
           field: 'isCompiled',
-          ...ColumnDefinitions.Boolean2,
           cellRenderer: TrueFalseComponent,
         },
         {
@@ -200,8 +174,4 @@ export class WebApiComponent implements OnInit, OnDestroy {
     };
     return gridOptions;
   }
-}
-
-interface WebApiViewModel {
-  webApis: WebApi[];
 }

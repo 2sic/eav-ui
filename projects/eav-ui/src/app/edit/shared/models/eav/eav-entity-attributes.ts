@@ -23,7 +23,7 @@ export class EavEntityAttributes {
     const merged: EavEntityAttributes = {};
     // copy metadata settings which are not @All
     for (const item of metadataItems) {
-      if (item.Type.Id === '@All') { continue; }
+      if (item.Type.Id === '@All') continue;
 
       for (const [name, value] of Object.entries(item.Attributes)) {
         const copy: EavField<any> = { ...value };
@@ -33,13 +33,13 @@ export class EavEntityAttributes {
 
     // copy @All metadata settings, overwriting previous settings
     for (const item of metadataItems) {
-      if (item.Type.Id !== '@All') { continue; }
+      if (item.Type.Id !== '@All') continue;
 
       for (const [name, value] of Object.entries(item.Attributes)) {
         // do not overwrite previous settings if @All is empty
         const exists = merged[name] != null;
         const emptyAll = value.Values[0].Value === '';
-        if (exists && emptyAll) { continue; }
+        if (exists && emptyAll) continue;
 
         const copy: EavField<any> = { ...value };
         merged[name] = copy;

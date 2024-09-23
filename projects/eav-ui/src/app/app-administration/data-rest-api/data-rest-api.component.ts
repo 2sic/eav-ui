@@ -9,10 +9,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { DevRestDataComponent } from '../../dev-rest/data/data.component';
-import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
-import { MetadataService } from '../../permissions';
+import { RouterOutlet } from '@angular/router';
 import { transient } from '../../core';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
+import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 
 @Component({
   selector: 'app-data-rest-api',
@@ -32,7 +32,9 @@ import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.mod
   styleUrl: './data-rest-api.component.scss'
 })
 export class DataRestApiComponent {
-  private contentTypesService = transient(ContentTypesService);
+  #contentTypesSvc = transient(ContentTypesService);
+  #dialogRouter = transient(DialogRoutingService);
+
   contentTypes$ = new BehaviorSubject<ContentType[]>(undefined);
   contentTypes: ContentType[] = [];
 
@@ -40,8 +42,6 @@ export class DataRestApiComponent {
 
   constructor(
     private fb: FormBuilder,
-    private router: Router,
-    private route: ActivatedRoute,
   ) { }
 
   ngOnInit() {
@@ -52,11 +52,11 @@ export class DataRestApiComponent {
   }
 
   fetchData() {
-    this.contentTypesService.retrieveContentTypes("Default").subscribe(
+    this.#contentTypesSvc.retrieveContentTypes("Default").subscribe(
       (contentTypes: ContentType[]) => {
         this.contentTypes$.next(contentTypes);
         // When Route are reload and have some StaticName in the Route
-        const urlSegments = this.router.url.split('/');
+        const urlSegments = this.#dialogRouter.url.split('/');
         const urlStaticName = urlSegments[urlSegments.length - 1]
 
         const selectedContentType = contentTypes.find(contentType => contentType.StaticName === urlStaticName);
@@ -68,6 +68,6 @@ export class DataRestApiComponent {
 
   openRestApi(event: string): void {
     if (!event) return;
-    this.router.navigate([`${event}`], { relativeTo: this.route.parent.firstChild });
+    this.#dialogRouter.navParentFirstChild([`${event}`]);
   }
 }

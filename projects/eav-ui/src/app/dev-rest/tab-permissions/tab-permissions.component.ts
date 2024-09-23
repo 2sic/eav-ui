@@ -1,6 +1,5 @@
 import { GridOptions } from '@ag-grid-community/core';
 import { Component, Input } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { DevRestBaseViewModel } from '..';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
@@ -10,6 +9,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
+import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
+import { transient } from '../../core';
 
 @Component({
   selector: 'app-dev-rest-tab-permissions',
@@ -26,12 +27,12 @@ import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.mod
 export class DevRestTabPermissionsComponent {
   @Input() data: DevRestBaseViewModel;
 
+  #dialogRouter = transient(DialogRoutingService);
+
   gridOptions = this.buildGridOptions();
 
-  constructor(private router: Router, private route: ActivatedRoute) { }
-
   openPermissions() {
-    this.router.navigate([GoToPermissions.getUrlContentType(this.data.permissionTarget)], { relativeTo: this.route });
+    this.#dialogRouter.navRelative([GoToPermissions.getUrlContentType(this.data.permissionTarget)]);
   }
 
   private buildGridOptions(): GridOptions {

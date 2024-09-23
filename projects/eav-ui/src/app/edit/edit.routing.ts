@@ -1,52 +1,38 @@
 import { Routes } from '@angular/router';
-import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
 import { editDialog } from './edit-dialog.config';
-import { editRouteMatcherRoot, editRouteMatcherRootRefresh, editRouteMatcherSubEdit, editRouteMatcherSubEditRefresh } from './edit.matcher';
-import { EavLogger } from '../shared/logging/eav-logger';
+import { matchEditRoot, matchEditSub, matchEditSubRefresh, matchEditRootRefresh } from './routing/edit-route-matchers';
+import { classLog } from '../shared/logging';
 
-const logThis = false;
-const logger = new EavLogger('EditRoutingModule', logThis);
-
-
-export const EditRoutesSubItems: Routes = [
-  {
-    matcher: editRouteMatcherSubEdit,
-    loadChildren: () => {
-      // Recursively use these routes again.
-      logger.a('loadChildren - matcher: sub-edit');
-      return EditRoutes;
-    },
-  },
-  {
-    matcher: editRouteMatcherSubEditRefresh,
-    loadChildren: () => import('./refresh-edit.module').then(m => m.RefreshEditModule)
-  },
-];
+const log = classLog('Routes');
 
 /**
- * In some cases the history could cause trouble, eg. in VisualQuery, where there are many hidden fields which
- * build the query, and if someone goes back in time thinking they are just changing the labels, the query would break.
+ * Routes which open an empty component which then reloads the entity to ensure a full refresh.
+ * This is used on the history dialog, to ensure the restored data is fully reloaded.
  */
-export const EditRoutesSubItemsNoHistory: Routes = [
-  {
-    matcher: editRouteMatcherSubEdit,
-    loadChildren: () => EditRoutes,
-    data: { history: false },
-  },
-  // 2024-07-01 2dm: not sure why the refresh-part was never on this, but leave until I know better.
-  // {
-  //   matcher: editRouteMatcherSubEditRefresh,
-  //   loadChildren: () => import('./refresh-edit.module').then(m => m.RefreshEditModule)
-  // },
-];
-
-export const EditRoutes: Routes = [
+const reloadRoutes: Routes = [
   {
     path: '',
-    component: DialogEntryComponent,
+    loadComponent: () => import('./routing/edit-reload.component').then(m => m.EditReloadComponent),
+    data: { title: 'Reloading Edit Dialog' }
+  },
+];
+
+
+/**
+ * The main routes for the Edit Dialog.
+ * It must always be attached to a /edit/:items route.
+ * It will
+ * 1. load the EntryComponent
+ * 2. watch routes for sub-items.
+ * 3. enable the history mechanism.
+ */
+const editRoutesDialogAndChildren: Routes = [
+  {
+    path: '',
+    loadComponent: () => import('../shared/components/dialog-entry/dialog-entry.component').then(m => m.DialogEntryComponent),
     data: { dialog: editDialog },
-    children: [
-      ...EditRoutesSubItems,
+    loadChildren: () => [
+      ...EditRoutes,
       {
         path: 'versions/:itemId',
         loadChildren: () => import('../item-history/item-history.routing').then(m => m.historyRoutes),
@@ -56,15 +42,49 @@ export const EditRoutes: Routes = [
 ];
 
 /**
+ * Routes for the Edit Dialog.
+ * It will handle /edit/:items routes and also /edit/refresh/ routes.
+ */
+export const EditRoutes: Routes = [
+  {
+    matcher: matchEditSub,
+    loadChildren: () => {
+      // Recursively use these routes again.
+      log.a('loadChildren - matcher: sub-edit');
+      return editRoutesDialogAndChildren;
+    },
+  },
+  {
+    matcher: matchEditSubRefresh,
+    children: reloadRoutes,
+  },
+];
+
+/**
+ * In some cases the history could cause trouble, eg. in VisualQuery, where there are many hidden fields which
+ * build the query, and if someone goes back in time thinking they are just changing the labels, the query would break.
+ * 
+ * So this is a route without the history-restore/refresh mechanism.
+ */
+export const EditRoutesNoHistory: Routes = [
+  {
+    matcher: matchEditSub,
+    loadChildren: () => editRoutesDialogAndChildren,
+    data: { history: false }, // disable history in the edit dialog
+  },
+];
+
+
+/**
  * Root routes only meant for the entry points of the application, "App" and "Apps"
  */
 export const EditRoutesRoot: Routes = [
   {
-    matcher: editRouteMatcherRoot,
-    loadChildren: () => EditRoutes,
+    matcher: matchEditRoot,
+    loadChildren: () => editRoutesDialogAndChildren,
   },
   {
-    matcher: editRouteMatcherRootRefresh,
-    loadChildren: () => import('../edit/refresh-edit.module').then(m => m.RefreshEditModule)
+    matcher: matchEditRootRefresh,
+    children: reloadRoutes,
   },
 ];

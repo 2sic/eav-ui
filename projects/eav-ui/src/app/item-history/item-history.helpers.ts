@@ -3,7 +3,8 @@ import { HistoryAttribute, HistoryAttributeValue, HistoryItem } from './models/h
 import { Version, VersionEntityAttributeValues, VersionJsonParsed } from './models/version.model';
 
 export function getHistoryItems(versions: Version[], page: number, pageSize: number, compareWith: CompareWith) {
-  if (versions == null || page == null || pageSize == null || compareWith == null) { return null; }
+  if (versions == null || page == null || pageSize == null || compareWith == null)
+    return null;
   const filtered = versions.slice((page - 1) * pageSize, page * pageSize);
 
   const historyItems = calcHistoryItems(filtered, versions, compareWith);
@@ -11,18 +12,15 @@ export function getHistoryItems(versions: Version[], page: number, pageSize: num
 }
 
 function calcHistoryItems(filteredVersions: Version[], versions: Version[], compareWith: CompareWith) {
-  return filteredVersions.map(version => {
-    const historyItem: HistoryItem = {
-      changeSetId: version.ChangeSetId,
-      attributes: calcHistoryAttributes(version, versions, compareWith),
-      historyId: version.HistoryId,
-      timeStamp: version.TimeStamp,
-      user: version.User,
-      versionNumber: version.VersionNumber,
-      isLastVersion: !versions.some(v => v.VersionNumber === version.VersionNumber + 1),
-    };
-    return historyItem;
-  });
+  return filteredVersions.map(version => ({
+    changeSetId: version.ChangeSetId,
+    attributes: calcHistoryAttributes(version, versions, compareWith),
+    historyId: version.HistoryId,
+    timeStamp: version.TimeStamp,
+    user: version.User,
+    versionNumber: version.VersionNumber,
+    isLastVersion: !versions.some(v => v.VersionNumber === version.VersionNumber + 1),
+  } satisfies HistoryItem));
 }
 
 function calcHistoryAttributes(version: Version, versions: Version[], compareWith: CompareWith) {
@@ -34,7 +32,8 @@ function calcHistoryAttributes(version: Version, versions: Version[], compareWit
   if (currentDataTypes != null) {
     Object.entries(currentDataTypes).forEach(([dataType, attributes]) => {
       Object.keys(attributes).forEach(attributeName => {
-        if (allAttributes.find(a => a.name === attributeName && a.dataType === dataType) != null) { return; }
+        if (allAttributes.find(a => a.name === attributeName && a.dataType === dataType) != null)
+          return;
         allAttributes.push({ name: attributeName, dataType });
       });
     });
@@ -42,7 +41,8 @@ function calcHistoryAttributes(version: Version, versions: Version[], compareWit
   if (previousDataTypes != null) {
     Object.entries(previousDataTypes).forEach(([dataType, attributes]) => {
       Object.keys(attributes).forEach(attributeName => {
-        if (allAttributes.find(a => a.name === attributeName && a.dataType === dataType) != null) { return; }
+        if (allAttributes.find(a => a.name === attributeName && a.dataType === dataType) != null)
+          return;
         allAttributes.push({ name: attributeName, dataType });
       });
     });
@@ -51,14 +51,12 @@ function calcHistoryAttributes(version: Version, versions: Version[], compareWit
   const historyAttributes = allAttributes.map(attribute => {
     const currentValues = currentDataTypes?.[attribute.dataType]?.[attribute.name];
     const previousValues = previousDataTypes?.[attribute.dataType]?.[attribute.name];
-
-    const historyAttribute: HistoryAttribute = {
+    return {
       name: attribute.name,
       dataType: attribute.dataType,
       change: calcChangeType(currentValues, previousValues, true),
       values: calcHistoryValues(currentValues, previousValues),
-    };
-    return historyAttribute;
+    } satisfies HistoryAttribute;
   });
 
   return historyAttributes;
@@ -67,7 +65,8 @@ function calcHistoryAttributes(version: Version, versions: Version[], compareWit
 function findLive(versions: Version[]) {
   let liveVersion = versions[0];
   for (const version of versions) {
-    if (version.VersionNumber <= liveVersion.VersionNumber) { continue; }
+    if (version.VersionNumber <= liveVersion.VersionNumber)
+      continue;
     liveVersion = version;
   }
   return liveVersion;
@@ -77,13 +76,13 @@ function calcHistoryValues(values: VersionEntityAttributeValues, previousValues:
   const allLangKeys: string[] = [];
   if (values != null) {
     Object.keys(values).forEach(lang => {
-      if (allLangKeys.includes(lang)) { return; }
+      if (allLangKeys.includes(lang)) return;
       allLangKeys.push(lang);
     });
   }
   if (previousValues != null) {
     Object.keys(previousValues).forEach(lang => {
-      if (allLangKeys.includes(lang)) { return; }
+      if (allLangKeys.includes(lang)) return;
       allLangKeys.push(lang);
     });
   }
@@ -91,14 +90,12 @@ function calcHistoryValues(values: VersionEntityAttributeValues, previousValues:
   const historyValues = allLangKeys.map(langKey => {
     const currentValue = values?.[langKey];
     const previousValue = previousValues?.[langKey];
-
-    const historyValue: HistoryAttributeValue = {
+    return {
       langKey,
       value: currentValue,
       oldValue: previousValue,
       change: calcChangeType(currentValue, previousValue),
-    };
-    return historyValue;
+    } satisfies HistoryAttributeValue;
   });
 
   return historyValues;
@@ -116,23 +113,17 @@ function calcChangeType(currentValue: any, previousValue: any, sortObjectKeys = 
     }
   }
 
-  if (currentValue != null && previousValue != null) {
-    if (JSON.stringify(currentValue) !== JSON.stringify(previousValue)) {
-      change = 'changed';
-    } else {
-      change = 'none';
-    }
-  } else if (currentValue != null) {
-    change = 'new';
-  } else {
-    change = 'deleted';
-  }
+  change = (currentValue != null && previousValue != null)
+    ? (JSON.stringify(currentValue) !== JSON.stringify(previousValue)) ?  'changed' : 'none'
+    : (currentValue != null) ? 'new' : 'deleted';
 
   return change;
 }
 
 function sortKeysAlphabetically(obj: Record<string, any>): Record<string, any> {
-  if (typeof obj !== 'object') { return obj; }
+  if (typeof obj !== 'object') return obj;
 
-  return Object.keys(obj).sort().reduce((acc, key) => ({ ...acc, [key]: obj[key] }), {});
+  return Object.keys(obj)
+    .sort()
+    .reduce((acc, key) => ({ ...acc, [key]: obj[key] }), {});
 }

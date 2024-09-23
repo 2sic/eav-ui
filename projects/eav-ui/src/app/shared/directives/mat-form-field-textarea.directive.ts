@@ -1,6 +1,6 @@
 import { Directive, ElementRef, NgZone, OnDestroy, OnInit } from '@angular/core';
-// TODO:: @2dg Not in use?
-@Directive({ selector: '[appMatFormFieldTextarea]', standalone: true})
+
+@Directive({ selector: '[appMatFormFieldTextarea]', standalone: true })
 export class MatFormFieldTextareaDirective implements OnInit, OnDestroy {
   private observer: ResizeObserver;
   private debounce = 500;
@@ -11,9 +11,9 @@ export class MatFormFieldTextareaDirective implements OnInit, OnDestroy {
   ngOnInit() {
     this.zone.runOutsideAngular(() => {
       const matFormField = this.elementRef.nativeElement;
-      this.observer = new ResizeObserver(entries => {
+      this.observer = new ResizeObserver(() => {
         const newResizeTime = Date.now();
-        if (newResizeTime - this.oldResizeTime < this.debounce) { return; }
+        if (newResizeTime - this.oldResizeTime < this.debounce) return;
         this.oldResizeTime = newResizeTime;
 
         const textarea = matFormField.querySelector('textarea');
@@ -25,8 +25,6 @@ export class MatFormFieldTextareaDirective implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.zone.runOutsideAngular(() => {
-      this.observer?.disconnect();
-    });
+    this.zone.runOutsideAngular(() => this.observer?.disconnect());
   }
 }

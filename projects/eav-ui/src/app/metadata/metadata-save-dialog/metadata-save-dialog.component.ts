@@ -1,15 +1,15 @@
-import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostBinding, OnInit, signal } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, startWith } from 'rxjs';
+import { distinctUntilChanged, startWith } from 'rxjs';
 import { ContentType } from '../../app-administration/models';
 import { ContentTypesService } from '../../app-administration/services';
 import { dropdownInsertValue } from '../../shared/constants/dropdown-insert-value.constant';
 import { eavConstants, ScopeOption } from '../../shared/constants/eav.constants';
-import { MetadataSaveDialogViewModel, MetadataSaveFormValues } from './metadata-save-dialog.models';
+import { MetadataSaveFormValues } from './metadata-save-dialog.models';
 import { MatIconModule } from '@angular/material/icon';
-import { NgClass, AsyncPipe } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatOptionModule } from '@angular/material/core';
@@ -18,6 +18,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
 import { ClickStopPropagationDirective } from '../../shared/directives/click-stop-propagation.directive';
+import { transient } from '../../core';
 
 @Component({
   selector: 'app-metadata-save-dialog',
@@ -36,49 +37,30 @@ import { ClickStopPropagationDirective } from '../../shared/directives/click-sto
     NgClass,
     MatIconModule,
     MatSlideToggleModule,
-    AsyncPipe,
     FieldHintComponent,
     ClickStopPropagationDirective,
   ]
 })
-export class MetadataSaveDialogComponent implements OnInit, OnDestroy {
+export class MetadataSaveDialogComponent implements OnInit {
   @HostBinding('className') hostClass = 'dialog-component';
 
   form: UntypedFormGroup;
   dropdownInsertValue = dropdownInsertValue;
-  viewModel$: Observable<MetadataSaveDialogViewModel>;
   guidedContentType = true;
   advancedMode = false;
 
-  private contentTypes$: BehaviorSubject<ContentType[]>;
-  private scopeOptions$: BehaviorSubject<ScopeOption[]>;
+  contentTypes = signal<ContentType[]>([]);
+  scopeOptions = signal<ScopeOption[]>([]);
+
+  private contentTypesService = transient(ContentTypesService);
 
   constructor(
     private dialogRef: MatDialogRef<MetadataSaveDialogComponent>,
-    private contentTypesService: ContentTypesService,
   ) { }
 
   ngOnInit(): void {
-    this.contentTypes$ = new BehaviorSubject<ContentType[]>([]);
-    this.scopeOptions$ = new BehaviorSubject<ScopeOption[]>([]);
-
     this.buildForm();
     this.fetchScopes();
-
-    this.viewModel$ = combineLatest([this.contentTypes$, this.scopeOptions$]).pipe(
-      map(([contentTypes, scopeOptions]) => {
-        const viewModel: MetadataSaveDialogViewModel = {
-          contentTypes,
-          scopeOptions,
-        };
-        return viewModel;
-      }),
-    );
-  }
-
-  ngOnDestroy(): void {
-    this.contentTypes$.complete();
-    this.scopeOptions$.complete();
   }
 
   closeDialog(contentType?: string): void {
@@ -115,12 +97,12 @@ export class MetadataSaveDialogComponent implements OnInit, OnDestroy {
       // add new scope on manual entry
       if (newScope === dropdownInsertValue) {
         newScope = prompt('This is an advanced feature to show content-types of another scope. Don\'t use this if you don\'t know what you\'re doing, as content-types of other scopes are usually hidden for a good reason.') || eavConstants.scopes.default.value;
-        if (!this.scopeOptions$.value.some(option => option.value === newScope)) {
+        if (!this.scopeOptions().some(option => option.value === newScope)) {
           const newScopeOption: ScopeOption = {
             name: newScope,
             value: newScope,
           };
-          this.scopeOptions$.next([newScopeOption, ...this.scopeOptions$.value]);
+          this.scopeOptions.set([newScopeOption, ...this.scopeOptions()]);
         }
         this.form.controls.scope.patchValue(newScope);
       } else {
@@ -131,13 +113,13 @@ export class MetadataSaveDialogComponent implements OnInit, OnDestroy {
 
   private fetchContentTypes(scope: string): void {
     this.contentTypesService.retrieveContentTypes(scope).subscribe(contentTypes => {
-      this.contentTypes$.next(contentTypes);
+      this.contentTypes.set(contentTypes);
     });
   }
 
   private fetchScopes(): void {
     this.contentTypesService.getScopes().subscribe(scopes => {
-      this.scopeOptions$.next(scopes);
+      this.scopeOptions.set(scopes);
     });
   }
 }

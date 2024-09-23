@@ -22,9 +22,11 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
 import { ClickStopPropagationDirective } from '../../shared/directives/click-stop-propagation.directive';
-import { ControlHelpers } from '../../edit/shared/helpers/control.helpers';
 import { RxHelpers } from '../../shared/rxJs/rx.helpers';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
+import { mapUntilObjChanged } from '../../shared/rxJs/mapUntilChanged';
+import { transient } from '../../core';
+import { UiControl } from '../../edit/shared/controls/ui-control';
 
 @Component({
   selector: 'app-create-metadata-dialog',
@@ -69,11 +71,12 @@ export class CreateMetadataDialogComponent extends BaseComponent implements OnIn
   private contentTypes$: BehaviorSubject<ContentType[]>;
   private guidedKey$: BehaviorSubject<boolean>;
 
+  private contentItemsService = transient(ContentItemsService);
+  
+  private contentTypesService = transient(ContentTypesService);
   constructor(
     private dialogRef: MatDialogRef<CreateMetadataDialogComponent>,
     private context: Context,
-    private contentItemsService: ContentItemsService,
-    private contentTypesService: ContentTypesService,
   ) {
     super();
   }
@@ -164,7 +167,8 @@ export class CreateMetadataDialogComponent extends BaseComponent implements OnIn
     const formValues$ = this.form.valueChanges.pipe(
       startWith(this.form.getRawValue() as MetadataFormValues),
       map(() => this.form.getRawValue() as MetadataFormValues),
-      distinctUntilChanged(RxHelpers.objectsEqual),
+      mapUntilObjChanged(m => m)
+      // distinctUntilChanged(RxHelpers.objectsEqual),
     );
 
     this.subscriptions.add(
@@ -172,29 +176,25 @@ export class CreateMetadataDialogComponent extends BaseComponent implements OnIn
         // keyTypeOptions depend on targetType and advanced
         const foundTargetType = this.targetTypeOptions.find(option => option.targetType === formValues.targetType);
         const keyTypeOptions = guidedMode && foundTargetType ? [foundTargetType.keyType] : [...this.keyTypeOptions];
-        if (!RxHelpers.arraysEqual(keyTypeOptions, this.keyTypeOptions$.value)) {
+        if (!RxHelpers.arraysEqual(keyTypeOptions, this.keyTypeOptions$.value))
           this.keyTypeOptions$.next(keyTypeOptions);
-        }
 
         // update form if keyType is not available
         const updatedForm: Partial<MetadataFormValues> = {};
-        if (!this.keyTypeOptions$.value.includes(formValues.keyType)) {
+        if (!this.keyTypeOptions$.value.includes(formValues.keyType))
           updatedForm.keyType = this.keyTypeOptions$.value[0];
-        }
 
         // if target is app key must be current app id
         const isAppMetadata = guidedMode && formValues.targetType === eavConstants.metadata.app.targetType;
-        if (isAppMetadata && formValues.key !== this.context.appId) {
+        if (isAppMetadata && formValues.key !== this.context.appId)
           updatedForm.key = this.context.appId;
-        }
 
-        if (Object.keys(updatedForm).length) {
+        if (Object.keys(updatedForm).length)
           this.form.patchValue(updatedForm);
-        }
 
         const keyTypeDisabled = guidedMode && this.keyTypeOptions$.value.length <= 1;
-        ControlHelpers.disableControl(this.form.controls['keyType'], keyTypeDisabled);
-        ControlHelpers.disableControl(this.form.controls['key'], isAppMetadata);
+        UiControl.disable(this.form.controls['keyType'], keyTypeDisabled);
+        UiControl.disable(this.form.controls['key'], isAppMetadata);
       })
     );
 

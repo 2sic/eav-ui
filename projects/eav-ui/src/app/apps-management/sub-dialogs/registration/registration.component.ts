@@ -1,8 +1,6 @@
-import { Component, HostBinding, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { Component, HostBinding, OnInit, signal, ViewContainerRef } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { catchError, combineLatest, map, Observable, of, share, startWith, Subject, Subscription, switchMap } from 'rxjs';
-import { GlobalConfigService } from '../../../edit/shared/store/ngrx-data/global-config.service';
 import { FileUploadDialogComponent, FileUploadDialogData } from '../../../shared/components/file-upload-dialog';
 import { copyToClipboard } from '../../../shared/helpers/copy-to-clipboard.helper';
 import { SystemInfoSet } from '../../models/system-info.model';
@@ -28,55 +26,30 @@ import { transient } from '../../../core';
     MatCardModule,
     MatIconModule,
     MatButtonModule,
-    AsyncPipe,
     TippyDirective,
     SafeHtmlPipe,
   ],
-  providers: [
-    ZoneService,
-    FeaturesConfigService,
-  ],
-
 })
 export class RegistrationComponent implements OnInit {
   @HostBinding('className') hostClass = 'dialog-component';
 
-  debugEnabled$ = this.globalConfigService.getDebugEnabled$();
-
-  private refreshSystemInfoSet$ = new Subject<void>();
-
-  viewModel$: Observable<RegistrationViewModel>;
+  systemInfoSet = signal<SystemInfoSet>(undefined);
 
   // patrons logo
   logo = patronsLogo;
 
-  private zoneService = transient(ZoneService);
-  private featuresConfigService = transient(FeaturesConfigService);
+  #zoneSvc = transient(ZoneService);
+  #featuresConfigSvc = transient(FeaturesConfigService);
 
   constructor(
-    private globalConfigService: GlobalConfigService,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
   ) { }
 
   ngOnInit(): void {
-    this.viewModel$ = combineLatest([
-      this.refreshSystemInfoSet$.pipe(
-        startWith(undefined),
-        switchMap(() => this.zoneService.getSystemInfo().pipe(catchError(() => of(undefined)))),
-        share(),
-      )
-    ]).pipe(
-      map(([systemInfoSet]) => {
-        return { systemInfoSet };
-      }),
-    );
+    this.#loadSystemInfo();
   }
-
-  // closeDialog() {
-  //   this.dialogRef.close();
-  // }
 
   copyToClipboard(text: string): void {
     copyToClipboard(text);
@@ -88,7 +61,7 @@ export class RegistrationComponent implements OnInit {
   }
 
   retrieveLicense(): void {
-    this.featuresConfigService.retrieveLicense().subscribe({
+    this.#featuresConfigSvc.retrieveLicense().subscribe({
       error: () => {
         this.snackBar.open('Failed to retrieve license. Please check console for more information', undefined, { duration: 3000 });
       },
@@ -97,7 +70,7 @@ export class RegistrationComponent implements OnInit {
         const duration = info.Success ? 3000 : 100000;
         const panelClass = info.Success ? undefined : 'snackbar-error';
         this.snackBar.open(message, undefined, { duration, panelClass });
-        this.refreshSystemInfoSet$.next();
+        this.#loadSystemInfo();
       },
     });
   }
@@ -111,7 +84,7 @@ export class RegistrationComponent implements OnInit {
       title: 'Upload license',
       description: '',
       allowedFileTypes: 'json',
-      upload$: (files) => this.featuresConfigService.uploadLicense(files[0]),
+      upload$: (files) => this.#featuresConfigSvc.uploadLicense(files[0]),
     };
     const dialogRef = this.dialog.open(FileUploadDialogComponent, {
       data,
@@ -121,12 +94,16 @@ export class RegistrationComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((refresh?: boolean) => {
       if (refresh) {
-        this.refreshSystemInfoSet$.next();
+        this.#loadSystemInfo();
       }
     });
   }
-}
 
-interface RegistrationViewModel {
-  systemInfoSet: SystemInfoSet;
+  #loadSystemInfo(): void {
+    this.#zoneSvc.getSystemInfo().subscribe(info => {
+      this.systemInfoSet.set(info);
+      console.log(info);
+    });
+  }
+
 }

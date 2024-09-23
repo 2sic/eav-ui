@@ -1,23 +1,20 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { MatDialogRef, MatDialogActions } from '@angular/material/dialog';
-import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
-import { BehaviorSubject, combineLatest, map, Observable, Subscription } from 'rxjs';
+import { RouterOutlet } from '@angular/router';
 import { SiteLanguagePermissions } from '../../../apps-management/models/site-language.model';
 import { ZoneService } from '../../../apps-management/services/zone.service';
 import { GoToPermissions } from '../../../permissions';
-import { BaseWithChildDialogComponent } from '../../../shared/components/base-with-child-dialog.component';
-import { IdFieldComponent } from '../../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';
 import { LanguagesPermissionsActionsComponent } from './languages-permissions-actions/languages-permissions-actions.component';
 import { LanguagesPermissionsActionsParams } from './languages-permissions-actions/languages-permissions-actions.models';
 import { ColumnDefinitions } from '../../../shared/ag-grid/column-definitions';
-import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { SxcGridModule } from '../../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { transient } from '../../../core';
+import { DialogRoutingService } from '../../../shared/routing/dialog-routing.service';
 
 @Component({
   selector: 'app-language-permissions',
@@ -29,40 +26,24 @@ import { transient } from '../../../core';
     MatIconModule,
     RouterOutlet,
     MatDialogActions,
-    AsyncPipe,
     SxcGridModule,
   ],
 })
-export class LanguagePermissionsComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
-  languages$: BehaviorSubject<SiteLanguagePermissions[] | undefined>;
-  gridOptions: GridOptions;
+export class LanguagePermissionsComponent implements OnInit {
+  gridOptions: GridOptions = this.#buildGridOptions();
 
-  viewModel$: Observable<LanguagePermissionsViewModel>;
+  languages = signal<SiteLanguagePermissions[]>([]);
 
-  private zoneService = transient(ZoneService);
+  #zoneService = transient(ZoneService);
+  #dialogRouting = transient(DialogRoutingService);
 
   constructor(
-    protected router: Router,
-    protected route: ActivatedRoute,
     private dialogRef: MatDialogRef<LanguagePermissionsComponent>,
-  ) {
-    super(router, route);
-    this.subscriptions = new Subscription();
-    this.languages$ = new BehaviorSubject<SiteLanguagePermissions[] | undefined>(undefined);
-    this.gridOptions = this.buildGridOptions();
-  }
+  ) { }
 
   ngOnInit(): void {
     this.getLanguages();
-    this.subscriptions.add(this.childDialogClosed$().subscribe(() => { this.getLanguages(); }));
-    this.viewModel$ = combineLatest([this.languages$]).pipe(
-      map(([languages]) => ({ languages }))
-    );
-  }
-
-  ngOnDestroy(): void {
-    this.languages$.complete();
-    super.ngOnDestroy();
+    this.#dialogRouting.doOnDialogClosed(() => { this.getLanguages(); });
   }
 
   closeDialog(): void {
@@ -70,29 +51,28 @@ export class LanguagePermissionsComponent extends BaseWithChildDialogComponent i
   }
 
   openPermissions(language: SiteLanguagePermissions): void {
-    this.router.navigate([GoToPermissions.getUrlLanguage(language.NameId)], { relativeTo: this.route });
+    this.#dialogRouting.navRelative([GoToPermissions.getUrlLanguage(language.NameId)]);
   }
 
   private getLanguages(): void {
-    this.zoneService.getLanguagesPermissions().subscribe({
+    this.#zoneService.getLanguagesPermissions().subscribe({
       error: () => {
-        this.languages$.next(undefined);
+        this.languages.set(undefined);
       },
       next: (languages) => {
-        this.languages$.next(languages);
+        this.languages.set(languages);
       },
     });
   }
 
-  private buildGridOptions(): GridOptions {
+  #buildGridOptions(): GridOptions {
     const gridOptions: GridOptions = {
       ...defaultGridOptions,
       columnDefs: [
         {
-          ...ColumnDefinitions.Id,
+          ...ColumnDefinitions.IdWithDefaultRenderer,
           field: 'Code',
           filter: 'agTextColumnFilter',
-          cellRenderer: IdFieldComponent,
           cellRendererParams: (() => {
             const params: IdFieldParams<SiteLanguagePermissions> = {
               tooltipGetter: (language) => `ID: ${language.Code}`,
@@ -104,17 +84,14 @@ export class LanguagePermissionsComponent extends BaseWithChildDialogComponent i
           ...ColumnDefinitions.TextWide,
           field: 'Name',
           sort: 'asc',
-          valueGetter: (params) => {
-            const language: SiteLanguagePermissions = params.data;
-            return language.Culture;
-          },
+          valueGetter: (p: { data: SiteLanguagePermissions }) => p.data.Culture,
         },
         {
           ...ColumnDefinitions.ActionsPinnedRight1,
           cellRenderer: LanguagesPermissionsActionsComponent,
           cellRendererParams: (() => {
             const params: LanguagesPermissionsActionsParams = {
-              onOpenPermissions: (language) => this.openPermissions(language),
+              onOpenPermissions: (lang) => this.openPermissions(lang),
             };
             return params;
           })(),
@@ -125,6 +102,4 @@ export class LanguagePermissionsComponent extends BaseWithChildDialogComponent i
   }
 }
 
-interface LanguagePermissionsViewModel {
-  languages: SiteLanguagePermissions[] | undefined
-}
+

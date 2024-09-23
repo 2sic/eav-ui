@@ -1,12 +1,16 @@
 import { Injectable } from '@angular/core';
-import { FormConfigService } from '.';
 import { EavWindow } from '../../../shared/models/eav-window.model';
 import { UrlHelpers } from '../helpers';
-import { ServiceBase } from '../../../shared/services/service-base';
-import { EavLogger } from '../../../shared/logging/eav-logger';
+import { classLog } from '../../../shared/logging';
+import { FormConfigService } from '../../form/form-config.service';
+import { FormConfiguration } from '../../form/form-configuration.model';
 
-const logThis = false;
-const nameOfThis = 'ScriptsLoaderService';
+const logSpecs = {
+  all: false,
+  load: true,
+  sortByType: false,
+  insertToDom: false,
+};
 
 declare const window: EavWindow;
 
@@ -15,7 +19,7 @@ export const FileTypeConstants = {
   JS: '.js',
 } as const;
 
-export interface LoadFile {
+interface LoadFile {
   path: string;
   type: string;
   loaded: boolean;
@@ -28,26 +32,28 @@ export interface LoadFile {
  * to resolve paths pointing to the correct app, zone, etc.
  */
 @Injectable()
-export class ScriptsLoaderService extends ServiceBase {
-  private loadedFiles: LoadFile[] = [];
+export class ScriptsLoaderService {
+  
+  log = classLog({ScriptsLoaderService}, logSpecs);
 
-  constructor(private formConfig: FormConfigService) {
-    super(new EavLogger(nameOfThis, logThis));
-  }
+  #loadedFiles: LoadFile[] = [];
+
+  constructor(private formConfig: FormConfigService) { }
 
   /** Loads CSS and JS files in order (CSS first) and calls callback function when finished */
   load(scripts: string[], callback: () => void) {
-    this.log.a('Loading scripts:', {scripts})
-    const sortedFiles = this.sortByType(scripts);
-    this.insertToDom(sortedFiles, callback, 0); // async, called again and again after each script is loaded
+    this.log.fnIf('load', {scripts})
+    const sortedFiles = this.#sortByType(scripts);
+    this.#insertToDom(sortedFiles, callback, 0); // async, called again and again after each script is loaded
   }
 
-  private sortByType(scripts: string[]): LoadFile[] {
+  #sortByType(scripts: string[]): LoadFile[] {
+    this.log.fnIf('sortByType', {scripts})
     const cssFiles: LoadFile[] = [];
     const jsFiles: LoadFile[] = [];
     scripts.forEach(script => {
       const file: LoadFile = {
-        path: this.resolveSpecialPaths(script),
+        path: ScriptsLoaderService.resolveUrlTokens(script, this.formConfig.config),
         type: null,
         loaded: false,
         domEl: null
@@ -63,7 +69,8 @@ export class ScriptsLoaderService extends ServiceBase {
     return cssFiles.concat(jsFiles);
   }
 
-  private insertToDom(files: LoadFile[], callback: () => void, increment: number) {
+  #insertToDom(files: LoadFile[], callback: () => void, increment: number) {
+    this.log.fnIf('insertToDom', {files, increment})
     const file = files[increment];
     increment++;
     if (!file) {
@@ -72,14 +79,14 @@ export class ScriptsLoaderService extends ServiceBase {
     }
     file.path = file.path + '?sxcver=' + window.sxcVersion; // break cache
 
-    const existing = this.loadedFiles.find(loadedFile => loadedFile.path === file.path);
+    const existing = this.#loadedFiles.find(loadedFile => loadedFile.path === file.path);
     if (existing) {
       if (existing.loaded) {
-        this.insertToDom(files, callback, increment);
+        this.#insertToDom(files, callback, increment);
       } else {
         const _listener = () => {
           file.loaded = true;
-          this.insertToDom(files, callback, increment);
+          this.#insertToDom(files, callback, increment);
           existing.domEl.removeEventListener('load', _listener);
           existing.domEl.removeEventListener('error', _listener);
         };
@@ -99,7 +106,7 @@ export class ScriptsLoaderService extends ServiceBase {
 
       const _listener = () => {
         file.loaded = true;
-        this.insertToDom(files, callback, increment);
+        this.#insertToDom(files, callback, increment);
         file.domEl.removeEventListener('load', _listener);
         file.domEl.removeEventListener('error', _listener);
       };
@@ -107,14 +114,14 @@ export class ScriptsLoaderService extends ServiceBase {
       file.domEl.addEventListener('error', _listener);
 
       document.querySelector('head').appendChild(file.domEl);
-      this.loadedFiles.push(file);
+      this.#loadedFiles.push(file);
     }
   }
 
-  private resolveSpecialPaths(url: string) {
-    return url.replace(/\[System:Path\]/i, UrlHelpers.getUrlPrefix('system', this.formConfig.config))
-      .replace(/\[Zone:Path\]/i, UrlHelpers.getUrlPrefix('zone', this.formConfig.config))
-      .replace(/\[App:Path\]/i, UrlHelpers.getUrlPrefix('app', this.formConfig.config))
-      .replace(/\[App:PathShared\]/i, UrlHelpers.getUrlPrefix('appShared', this.formConfig.config));
+  public static resolveUrlTokens(url: string, formConfig: FormConfiguration) {
+    return url.replace(/\[System:Path\]/i, UrlHelpers.getUrlPrefix('system', formConfig))
+      .replace(/\[Zone:Path\]/i, UrlHelpers.getUrlPrefix('zone', formConfig))
+      .replace(/\[App:Path\]/i, UrlHelpers.getUrlPrefix('app', formConfig))
+      .replace(/\[App:PathShared\]/i, UrlHelpers.getUrlPrefix('appShared', formConfig));
   }
 }

@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { combineLatest, map, Observable } from 'rxjs';
-import { LogEntry, LogSeverities } from '../../../shared/models';
-import { LoggingService } from '../../../shared/services';
-import { LogsDumpViewModel } from './logs-dump.component.models';
+import { AsyncPipe, DatePipe, NgClass } from '@angular/common';
+import { Component } from '@angular/core';
 import { ExtendedModule } from '@angular/flex-layout/extended';
-import { NgClass, AsyncPipe, DatePipe } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { TippyDirective } from '../../../../shared/directives/tippy.directive';
+import { LogEntry, LoggingService, LogSeverities } from '../../../shared/services/logging.service';
+import { LogsConfigComponent } from "../log-config/logs-config.component";
 
 @Component({
   selector: 'app-logs-dump',
@@ -16,25 +17,19 @@ import { NgClass, AsyncPipe, DatePipe } from '@angular/common';
     ExtendedModule,
     AsyncPipe,
     DatePipe,
-  ],
+    MatIconModule,
+    MatButtonModule,
+    LogsConfigComponent,
+    TippyDirective,
+],
 })
-export class LogsDumpComponent implements OnInit {
+export class LogsDumpComponent {
   LogSeverities = LogSeverities;
-  viewModel$: Observable<LogsDumpViewModel>;
+  showSettings = false;
+
+  protected logs = this.loggingService.getLogsSignal();
 
   constructor(private loggingService: LoggingService) { }
-
-  ngOnInit(): void {
-    const logs$ = this.loggingService.getLogs$();
-    this.viewModel$ = combineLatest([logs$]).pipe(
-      map(([logs]) => {
-        const viewModel: LogsDumpViewModel = {
-          logs,
-        };
-        return viewModel;
-      }),
-    );
-  }
 
   logToConsole(log: LogEntry): void {
     switch (log.severity) {
@@ -49,4 +44,9 @@ export class LogsDumpComponent implements OnInit {
         break;
     }
   }
+
+  toggleDialog(): void {
+    this.showSettings = !this.showSettings;
+  }
 }
+

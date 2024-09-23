@@ -1,22 +1,24 @@
 import { Directive, HostListener } from '@angular/core';
-
-const logThis = false;
+import { classLog } from '../logging';
 
 @Directive({
   selector: '[appClickStopPropagation]',
   standalone: true,
 })
 export class ClickStopPropagationDirective {
+
+  log = classLog({ClickStopPropagationDirective});
+
+  // Log constructor to detect that it was really attached/created
   constructor() {
-    if (logThis)
-      console.log('ClickStopPropagationDirective.constructor');
+    this.log.a('constructor');
   }
 
   @HostListener('click', ['$event'])
   onClick(event: MouseEvent): void {
-    if (logThis)
-      console.log('ClickStopPropagationDirective.onClick', event);
+    this.log.a('onClick', { event });
     event.stopPropagation();
+    event.preventDefault();
   }
 
 }

@@ -49,7 +49,7 @@ export class MonacoInstance {
   }
 
   updateValue(value: string): void {
-    if (this.cachedValue === value) { return; }
+    if (this.cachedValue === value) return;
     this.cachedValue = value;
     this.editorInstance.getModel().setValue(value);
   }
@@ -95,7 +95,7 @@ export class MonacoInstance {
         ? { uri, fileMatch: [uri], schema: JSON.parse(jsonSchema.value) }
         : undefined;
 
-    if (!exists && !newSchema) { return; }
+    if (!exists && !newSchema) return;
 
     const newJsonDiagnostics: Monaco.languages.json.DiagnosticsOptions = {
       ...oldJsonDiagnostics,
@@ -111,7 +111,7 @@ export class MonacoInstance {
   }
 
   setJsonComments(comments?: Monaco.languages.json.SeverityLevel): void {
-    if (!comments) { return; }
+    if (!comments) return;
 
     const jsonDiagnostics: Monaco.languages.json.DiagnosticsOptions = {
       ...this.monaco.languages.json.jsonDefaults.diagnosticsOptions,
@@ -121,7 +121,7 @@ export class MonacoInstance {
   }
 
   setJsDiagnostics(options: Monaco.languages.typescript.DiagnosticsOptions): void {
-    if (!options) { return; }
+    if (!options) return;
 
     const javascriptDiagnostics: Monaco.languages.typescript.DiagnosticsOptions = {
       ...this.monaco.languages.typescript.javascriptDefaults.getDiagnosticsOptions(),
@@ -152,7 +152,7 @@ export class MonacoInstance {
   /** Registers our themes. Themes are global. Run before creating editor */
   private defineThemes(globalCache: Monaco2sxc, monaco: typeof Monaco): void {
     // there is currently no official way to get defined themes from Monaco to check if some theme was already defined
-    if (globalCache.themesAreDefined) { return; }
+    if (globalCache.themesAreDefined) return;
     globalCache.themesAreDefined = true;
 
     monaco.editor.defineTheme('2sxc-dark', {
@@ -194,7 +194,7 @@ export class MonacoInstance {
   private restoreState(globalCache: Monaco2sxc, editorInstance: Monaco.editor.IStandaloneCodeEditor): void {
     const uri = editorInstance.getModel().uri.toString();
     const savedState = globalCache.savedStates[uri];
-    if (savedState == null) { return; }
+    if (savedState == null) return;
 
     const viewState: Monaco.editor.ICodeEditorViewState = JSON.parse(savedState.viewState);
     editorInstance.restoreViewState(viewState);
@@ -267,7 +267,7 @@ export class MonacoInstance {
 
           const word = model.getWordUntilPosition(position);
           const suggestions = this.snippets.map(snippet => {
-            if (!snippet.content) { return; }
+            if (!snippet.content) return;
             const suggestion: Monaco.languages.CompletionItem = {
               label: snippet.name,
               kind: monaco.languages.CompletionItemKind.Snippet,
@@ -289,13 +289,13 @@ export class MonacoInstance {
 
       monaco.languages.registerHoverProvider(editorInstance.getModel().getLanguageId(), {
         provideHover: (model, position) => {
-          if (this.tooltips == null || editorInstance.getModel() !== model) { return; }
+          if (this.tooltips == null || editorInstance.getModel() !== model) return;
 
           const word = model.getWordAtPosition(position);
-          if (!word) { return; }
+          if (!word) return;
 
           const tooltip = this.tooltips.find(i => i.Term === word.word);
-          if (!tooltip) { return; }
+          if (!tooltip) return;
 
           return {
             contents: tooltip.Help.map(value => {
@@ -329,7 +329,7 @@ export class MonacoInstance {
   private addEvents(editorInstance: Monaco.editor.IStandaloneCodeEditor): void {
     editorInstance.getModel().onDidChangeContent(() => {
       const newValue = editorInstance.getModel().getValue();
-      if (newValue === this.cachedValue) { return; }
+      if (newValue === this.cachedValue) return;
       this.cachedValue = newValue;
       this.valueChangedCallback?.(newValue);
     });

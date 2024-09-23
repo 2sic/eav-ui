@@ -1,144 +1,153 @@
 @if (!loadError) {
-  @if (viewModel$ | async; as vm) {
-    <div class="formula-context-box">
-      <mat-form-field color="accent" class="eav-mat-form-field">
-        <mat-label>Entity</mat-label>
-        <mat-select [ngModel]="vm.designer.entityGuid" (ngModelChange)="selectedChanged(SelectTargets.Entity, $event)">
-          @for (entityOption of vm.entityOptions; track trackEntityOptions($index, entityOption)) {
-            <mat-option
-              [value]="entityOption.entityGuid">
-              <span [ngClass]="{ 'has-formula': entityOption.hasFormula }">
-                {{ entityOption.label }}
-              </span>
-            </mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
-      <mat-form-field color="accent" class="eav-mat-form-field">
-        <mat-label>Attribute</mat-label>
-        <mat-select [ngModel]="vm.designer.fieldName" (ngModelChange)="selectedChanged(SelectTargets.Field, $event)"
-          [disabled]="vm.designer.entityGuid == null">
-          @for (fieldOption of vm.fieldOptions; track trackFieldOptions($index, fieldOption)) {
-            <mat-option
-              [value]="fieldOption.fieldName">
-              <span [ngClass]="{ 'has-formula': fieldOption.hasFormula }">
-                {{ fieldOption.fieldName }}
-              </span>
-            </mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
-      <mat-form-field color="accent" class="eav-mat-form-field">
-        <mat-label>Target</mat-label>
-        @if (!freeTextTarget) {
-          <mat-select [ngModel]="vm.designer.target"
-            (ngModelChange)="selectedChanged(SelectTargets.Target, $event)"
-            [disabled]="vm.designer.entityGuid == null || vm.designer.fieldName == null">
-            @for (targetOption of vm.targetOptions; track targetOption) {
-              <mat-option [value]="targetOption.target">
-                <span [ngClass]="{ 'has-formula': targetOption.hasFormula }">
-                  {{ targetOption.label }}
-                </span>
-              </mat-option>
-            }
-          </mat-select>
-        }
-        @if (freeTextTarget) {
-          <input matInput [ngModel]="vm.designer.target"
-            (ngModelChange)="selectedChanged(SelectTargets.Target, $event)"
-            [disabled]="vm.designer.entityGuid == null || vm.designer.fieldName == null">
-        }
-      </mat-form-field>
-      <button mat-icon-button tippy="FreeText Target" class="eav-formula-button"
-        [disabled]="vm.designer.entityGuid == null || vm.designer.fieldName == null" (click)="toggleFreeText()">
-        <mat-icon>text_fields</mat-icon>
-      </button>
-      <div class="spacer"></div>
-      <button mat-icon-button tippy="Help" class="eav-formula-button" (click)="openFormulasHelp()">
-        <mat-icon>help</mat-icon>
-      </button>
-    </div>
-    <div class="formula-box">
-      <div class="formula-field" [ngClass]="{
-        'disabled': !vm.designer.editMode || vm.designer.entityGuid == null || vm.designer.fieldName == null || vm.designer.target == null,
-        'focused': focused
-        }">
-        <mat-label class="label">Function</mat-label>
-        <app-monaco-editor class="editor" [filename]="filename" [value]="vm.formula?.source ?? vm.template"
-          [jsTypings]="vm.typings" (valueChanged)="formulaChanged($event)" [options]="monacoOptions"
-          (focused)="onFocused()" (blurred)="onBlurred()">
-        </app-monaco-editor>
-      </div>
-      <div class="formula-snippets fancy-scrollbar-light" [ngClass]="{ 'disabled': !vm.designer.editMode }">
-        @for (snippet of vm.dataSnippets; track trackSnippets($index, snippet)) {
-          <div class="snippet" [title]="snippet.code"
-            (click)="copyToClipboard(snippet.code)">
-            {{ snippet.label | snippetLabelSize }}
-          </div>
-        }
-        @if (vm.dataSnippets?.length && vm.contextSnippets?.length) {
-          <div class="separator"></div>
-        }
-        @for (snippet of vm.contextSnippets; track trackSnippets($index, snippet)) {
-          <div class="snippet" [title]="snippet.code"
-            (click)="copyToClipboard(snippet.code)">
-            {{ snippet.label | snippetLabelSize }}
-          </div>
-        }
-      </div>
-    </div>
-    <div class="formula-footer-box">
-      <div class="formula-result-box hide-scrollbar">
-        <span class="label">Result:&nbsp;</span>
-        @if (vm.resultExists) {
-          @if (!vm.resultIsError) {
-            @if (vm.result === undefined && !vm.resultIsOnlyPromise) {
-              <span class="result-undefined">undefined</span>
-            }
-            @if (vm.result === undefined && vm.resultIsOnlyPromise) {
-              <span>promise(🤞🏽)</span>
-            }
-            @if (vm.result !== undefined) {
-              <span>{{ vm.result | json }}</span>
-            }
-          }
-          @if (vm.resultIsError) {
-            <span class="result-error">
-              Calculation failed. Please check logs for more info
+  <div class="formula-context-box">
+    <mat-form-field color="accent" class="eav-mat-form-field">
+      <mat-label>Entity</mat-label>
+      <mat-select [ngModel]="state().entityGuid" (ngModelChange)="selectedChanged(SelectTargets.Entity, $event)">
+        @for (entityOption of entityOptions(); track entityOption.entityGuid)
+        {
+          <mat-option
+            [value]="entityOption.entityGuid">
+            <span [ngClass]="{ 'has-formula': entityOption.hasFormula }">
+              {{ entityOption.label }}
             </span>
+          </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field color="accent" class="eav-mat-form-field">
+      <mat-label>Attribute</mat-label>
+      <mat-select [ngModel]="state().fieldName" (ngModelChange)="selectedChanged(SelectTargets.Field, $event)"
+        [disabled]="state().entityGuid == null">
+        @for (fieldOption of fieldsOptions(); track fieldOption.fieldName)
+        {
+          <mat-option
+            [value]="fieldOption.fieldName">
+            <span [ngClass]="{ 'has-formula': fieldOption.hasFormula }">
+              {{ fieldOption.fieldName }}
+            </span>
+          </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field color="accent" class="eav-mat-form-field">
+      <mat-label>Target</mat-label>
+      @if (!freeTextTarget)
+      {
+        <mat-select [ngModel]="state().target"
+          (ngModelChange)="selectedChanged(SelectTargets.Target, $event)"
+          [disabled]="state().entityGuid == null || state().fieldName == null">
+          @for (targetOption of targetOptions(); track targetOption) {
+            <mat-option [value]="targetOption.target">
+              <span [ngClass]="{ 'has-formula': targetOption.hasFormula }">
+                {{ targetOption.label }}
+              </span>
+            </mat-option>
+          }
+        </mat-select>
+      }
+      @else
+      {
+        <input matInput [ngModel]="state().target"
+          (ngModelChange)="selectedChanged(SelectTargets.Target, $event)"
+          [disabled]="state().entityGuid == null || state().fieldName == null">
+      }
+    </mat-form-field>
+    <button mat-icon-button tippy="FreeText Target" class="eav-formula-button"
+      [disabled]="state().entityGuid == null || state().fieldName == null" (click)="toggleFreeText()">
+      <mat-icon>text_fields</mat-icon>
+    </button>
+    <div class="spacer"></div>
+    <a mat-icon-button tippy="Help" class="eav-formula-button" href="https://go.2sxc.org/formulas" target="_blank">
+      <mat-icon>help</mat-icon>
+    </a>
+  </div>
+  <div class="formula-box">
+    <div class="formula-field" [ngClass]="{
+      'disabled': !state().editMode || state().entityGuid == null || state().fieldName == null || state().target == null,
+      'focused': focused
+      }">
+      <mat-label class="label">Function</mat-label>
+      <app-monaco-editor class="editor" [filename]="filename" [value]="currentFormula()?.sourceCode ?? template()"
+        [jsTypings]="v2JsTypings()" (valueChanged)="formulaChanged($event)" [options]="monacoOptions"
+        (focused)="onFocused(true)" (blurred)="onFocused(false)">
+      </app-monaco-editor>
+    </div>
+    <div class="formula-snippets fancy-scrollbar-light" [ngClass]="{ 'disabled': !state().editMode }">
+      @for (snippet of v1DataSnippets(); track snippet.code)
+      {
+        <div class="snippet" [title]="snippet.code"
+          (click)="copyToClipboard(snippet.code)">
+          {{ snippet.label | snippetLabelSize }}
+        </div>
+      }
+      @if (v1DataSnippets()?.length && v1ContextSnippets().length)
+      {
+        <div class="separator"></div>
+      }
+      @for (snippet of v1ContextSnippets(); track snippet.code)
+      {
+        <div class="snippet" [title]="snippet.code"
+          (click)="copyToClipboard(snippet.code)">
+          {{ snippet.label | snippetLabelSize }}
+        </div>
+      }
+    </div>
+  </div>
+  <div class="formula-footer-box">
+    <div class="formula-result-box hide-scrollbar">
+      <span class="label">Result:&nbsp;</span>
+      @if (result() != null && !isDeleted())
+      {
+        @if (!result().isError)
+        {
+          @if (result().value !== undefined) {
+            <span>{{ result().value | json }}</span>
+          }
+          @else if (!result().isOnlyPromise) {
+            <span class="result-undefined">undefined</span>
+          }
+          @else {
+            <span>promise(🤞🏽)</span>
           }
         }
-      </div>
-      <div class="formula-actions-box">
-        <button mat-icon-button tippy="Edit" class="eav-formula-action-button" (click)="toggleEdit()">
-          <mat-icon>edit</mat-icon>
-        </button>
-        <button mat-icon-button tippy="Menu" class="eav-formula-action-button" [matMenuTriggerFor]="menu">
-          <mat-icon>more_vert</mat-icon>
-        </button>
-        <mat-menu #menu="matMenu">
-          <button mat-menu-item (click)="deleteFormula()"
-            [disabled]="!vm.formula?.sourceId">
-            <mat-icon>delete</mat-icon>
-            <span>Delete</span>
-          </button>
-          <button mat-menu-item (click)="reset()">
-            <mat-icon>history</mat-icon>
-            <span>Reset</span>
-          </button>
-        </mat-menu>
-        @if (allowSaveFormula) {
-          <button mat-icon-button tippy="Save" class="eav-formula-action-button"
-            [tippyDisabled]="!vm.designer.editMode || !vm.formula?.source"
-            [disabled]="!vm.designer.editMode || !vm.formula?.source || vm.saving" (click)="save()">
-            <mat-icon>save</mat-icon>
-          </button>
+        @else
+        {
+          <span class="result-error">
+            Calculation failed. Please check console for more info
+          </span>
         }
-        <button mat-icon-button class="eav-formula-action-button" tippy="Run"
-          [disabled]="!vm.designer.editMode || !vm.formula?.source" (click)="run()">
-          <mat-icon>play_arrow</mat-icon>
-        </button>
-      </div>
+      }
     </div>
-  }
+    <div class="formula-actions-box">
+      <button mat-icon-button tippy="Edit" (click)="toggleEdit()">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button mat-icon-button tippy="Menu" [matMenuTriggerFor]="menu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="deleteFormula()"
+          [disabled]="!currentFormula()?.sourceCodeId">
+          <mat-icon>delete</mat-icon>
+          <span>Delete</span>
+        </button>
+        <button mat-menu-item (click)="reset()">
+          <mat-icon>history</mat-icon>
+          <span>Reset</span>
+        </button>
+      </mat-menu>
+      @if (allowSaveFormula)
+      {
+        <button mat-icon-button tippy="Save"
+          [tippyDisabled]="!state().editMode || !currentFormula()?.sourceCode"
+          [disabled]="!state().editMode || !currentFormula()?.sourceCode || saving()" (click)="save()">
+          <mat-icon>save</mat-icon>
+        </button>
+      }
+      <button mat-icon-button tippy="Run"
+        [disabled]="!state().editMode || !currentFormula()?.sourceCode" (click)="run()">
+        <mat-icon>play_arrow</mat-icon>
+      </button>
+    </div>
+  </div>
 }

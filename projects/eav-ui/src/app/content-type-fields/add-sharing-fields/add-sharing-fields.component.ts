@@ -1,16 +1,15 @@
 import { ChangeDetectorRef, Component, HostBinding, Inject, OnDestroy, OnInit, ViewChild, ViewContainerRef, inject } from '@angular/core';
 import { BaseComponent } from '../../shared/components/base.component';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatDialogActions } from '@angular/material/dialog';
-import { Field } from '../models/field.model';
-import { ContentTypesFieldsService } from '../services/content-types-fields.service';
+import { Field } from '../../shared/fields/field.model';
+import { ContentTypesFieldsService } from '../../shared/fields/content-types-fields.service';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject, catchError, concatMap, filter, of, toArray } from 'rxjs';
 import { ContentType } from '../../app-administration/models';
 import { fieldNameError, fieldNamePattern } from '../../app-administration/constants/field-name.patterns';
-import { ReservedNames } from '../models/reserved-names.model';
 import { NgForm, FormsModule } from '@angular/forms';
-import { FeaturesService } from '../../shared/services/features.service';
+import { FeaturesScopedService } from '../../features/features-scoped.service';
 import { FeatureNames } from '../../features/feature-names';
 import { openFeatureDialog } from '../../features/shared/base-feature.component';
 import { TranslateModule } from '@ngx-translate/core';
@@ -22,7 +21,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { FeatureIconIndicatorComponent } from '../../features/feature-icon-indicator/feature-icon-indicator.component';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
-import { FeatureDetailService } from '../../features/services/feature-detail.service';
+import { transient } from '../../core';
 
 @Component({
   selector: 'app-add-sharing-fields',
@@ -43,9 +42,6 @@ import { FeatureDetailService } from '../../features/services/feature-detail.ser
     FeatureIconIndicatorComponent,
     FieldHintComponent,
   ],
-  providers: [
-    FeatureDetailService,
-  ],
 })
 export class AddSharingFieldsComponent extends BaseComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
@@ -54,21 +50,23 @@ export class AddSharingFieldsComponent extends BaseComponent implements OnInit, 
   displayedShareableFieldsColumns: string[] = ['contentType', 'name', 'type', 'share'];
   displayedSelectedFieldsColumns: string[] = ['newName', 'source', 'remove'];
 
-  shareableFields = new MatTableDataSource<Field>([]);
-  selectedFields = new MatTableDataSource<NewNameField>([]);
-  fieldNamePattern = fieldNamePattern;
-  fieldNameError = fieldNameError;
-  reservedNames: ReservedNames;
+  protected shareableFields = new MatTableDataSource<Field>([]);
+  protected selectedFields = new MatTableDataSource<NewNameField>([]);
+  protected fieldNamePattern = fieldNamePattern;
+  protected fieldNameError = fieldNameError;
+  protected reservedNames: Record<string, string> = {};
 
-  saving$ = new BehaviorSubject(false);
+  protected saving$ = new BehaviorSubject(false);
 
-  public features: FeaturesService = inject(FeaturesService);
-  private fieldShareConfigManagement = this.features.isEnabled(FeatureNames.FieldShareConfigManagement);
+  #features = inject(FeaturesScopedService);
+
+  #contentTypesFieldsSvc = transient(ContentTypesFieldsService);
+
+  #fieldShareConfigManagement = this.#features.isEnabled[FeatureNames.FieldShareConfigManagement];
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public dialogData: { contentType: ContentType, existingFields: Field[] },
     private dialogRef: MatDialogRef<AddSharingFieldsComponent>,
-    private contentTypesFieldsService: ContentTypesFieldsService,
     private snackBar: MatSnackBar,
     // All this is just for the feature dialog
     private dialog: MatDialog,
@@ -81,7 +79,7 @@ export class AddSharingFieldsComponent extends BaseComponent implements OnInit, 
       this.dialogRef.backdropClick().subscribe(() => {
         if (this.form.dirty || this.selectedFields.data.length > 0) {
           const confirmed = confirm('You have unsaved changes. Are you sure you want to close this dialog?');
-          if (!confirmed) { return; }
+          if (!confirmed) return;
         }
         this.closeDialog();
       })
@@ -90,20 +88,20 @@ export class AddSharingFieldsComponent extends BaseComponent implements OnInit, 
 
   ngOnInit() {
     // TODO: @SDV Try to find a better way to do this
-    this.subscriptions.add(this.contentTypesFieldsService.getShareableFields().subscribe(shareableFields => {
-      this.shareableFields.data = shareableFields;
-    }));
-    this.subscriptions.add(this.contentTypesFieldsService.getReservedNames().subscribe(reservedNames => {
-      const existingFields: ReservedNames = {};
-      this.dialogData.existingFields.forEach(field => {
-        existingFields[field.StaticName] = 'Field with this name already exists';
-      });
-      this.reservedNames = {
-        ...reservedNames,
-        ...existingFields,
-      };
-    }));
+    this.subscriptions.add(
+      this.#contentTypesFieldsSvc.getShareableFields()
+        .subscribe(shareableFields => {
+          this.shareableFields.data = shareableFields;
+        })
+    );
+    this.subscriptions.add(
+      this.#contentTypesFieldsSvc.getReservedNames()
+        .subscribe(reservedNames => {
+          this.reservedNames = ReservedNamesValidatorDirective.assembleReservedNames(reservedNames, this.dialogData.existingFields);
+        })
+    );
   }
+
 
   ngOnDestroy() {
     this.saving$.complete();
@@ -127,7 +125,7 @@ export class AddSharingFieldsComponent extends BaseComponent implements OnInit, 
 
   // When API gets created we will need to send the selected fields to the API
   save() {
-    if (!this.fieldShareConfigManagement()) {
+    if (!this.#fieldShareConfigManagement()) {
       openFeatureDialog(this.dialog, FeatureNames.FieldShareConfigManagement, this.viewContainerRef, this.changeDetectorRef);
     } else {
       this.saving$.next(true);
@@ -135,7 +133,7 @@ export class AddSharingFieldsComponent extends BaseComponent implements OnInit, 
       of(...this.selectedFields.data).pipe(
         filter(inheritField => !!inheritField.newName),
         concatMap(inheritField =>
-          this.contentTypesFieldsService.addInheritedField(
+          this.#contentTypesFieldsSvc.addInheritedField(
             this.dialogData.contentType.Id,
             inheritField.field.ContentType.Id,
             inheritField.field.Guid,

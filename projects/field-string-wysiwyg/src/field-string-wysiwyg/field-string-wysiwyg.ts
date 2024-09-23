@@ -1,13 +1,10 @@
-import { EavLogger } from '../../../../projects/eav-ui/src/app/shared/logging/eav-logger';
 import { Connector, EavCustomInputField, WysiwygReconfigure } from '../../../edit-types';
 import { wysiwygEditorHtmlTag } from '../../internal-constants';
 import { FieldStringWysiwygEditor } from '../editor/editor';
 import { registerCustomElement } from '../editor/editor-helpers';
 import { FieldStringWysiwygPreview, wysiwygPreviewTag } from '../preview/preview';
 import * as styles from './field-string-wysiwyg.scss';
-
-const logThis = false;
-const nameOfThis = 'FieldStringWysiwyg';
+import { classLog } from '../../../../projects/eav-ui/src/app/shared/logging';
 
 const wysiwygTag = 'field-string-wysiwyg';
 
@@ -21,7 +18,7 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
   mode?: 'edit' | 'preview';
   reconfigure?: WysiwygReconfigure;
 
-  private log = new EavLogger(nameOfThis, logThis);
+  private log = classLog({FieldStringWysiwyg});
 
   constructor() {
     super();

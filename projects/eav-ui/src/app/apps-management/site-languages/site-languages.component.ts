@@ -1,8 +1,7 @@
 import { GridOptions } from '@ag-grid-community/core';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { catchError, combineLatest, map, Observable, of, share, startWith, Subject, switchMap } from 'rxjs';
+import { catchError, map, Observable, of, share, startWith, Subject, switchMap } from 'rxjs';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
-import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { SiteLanguage } from '../models/site-language.model';
@@ -29,13 +28,13 @@ import { transient } from '../../core';
   ],
 })
 export class SiteLanguagesComponent implements OnInit, OnDestroy {
-  gridOptions = this.buildGridOptions();
+  gridOptions = this.#buildGridOptions();
 
-  private refreshLanguages$ = new Subject<void>();
+  #refreshLanguages$ = new Subject<void>();
 
   viewModel$: Observable<SiteLanguagesViewModel>;
 
-  private zoneService = transient(ZoneService);
+  #zoneSvc = transient(ZoneService);
 
   constructor() {
     ModuleRegistry.registerModules([ClientSideRowModelModule]);
@@ -43,43 +42,35 @@ export class SiteLanguagesComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    this.viewModel$ = combineLatest([
-      this.refreshLanguages$.pipe(
-        startWith(undefined),
-        switchMap(() => this.zoneService.getLanguages().pipe(catchError(() => of(undefined)))),
-        share()
-      )
-    ]).pipe(
-      map(([languages]) => {
+    this.viewModel$ = this.#refreshLanguages$.pipe(
+      startWith(undefined),
+      switchMap(() => this.#zoneSvc.getLanguages().pipe(catchError(() => of(undefined)))),
+      share(),
+      map(languages => {
         return { languages };
       })
     );
   }
 
   ngOnDestroy(): void {
-    this.refreshLanguages$.complete();
+    this.#refreshLanguages$.complete();
   }
 
-  private toggleLanguage(language: SiteLanguage, enable: boolean): void {
-    this.zoneService.toggleLanguage(language.Code, enable).subscribe({
-      error: () => {
-        this.refreshLanguages$.next();
-      },
-      next: () => {
-        this.refreshLanguages$.next();
-      },
+  #toggleLanguage(language: SiteLanguage, enable: boolean): void {
+    this.#zoneSvc.toggleLanguage(language.Code, enable).subscribe({
+      error: () => this.#refreshLanguages$.next(),
+      next: () => this.#refreshLanguages$.next(),
     });
   }
 
-  private buildGridOptions(): GridOptions {
+  #buildGridOptions(): GridOptions {
     const gridOptions: GridOptions = {
       ...defaultGridOptions,
       columnDefs: [
         {
-          ...ColumnDefinitions.Id,
+          ...ColumnDefinitions.IdWithDefaultRenderer,
           field: 'Code',
           filter: 'agTextColumnFilter',
-          cellRenderer: IdFieldComponent,
           cellRendererParams: (() => {
             const params: IdFieldParams<SiteLanguage> = {
               tooltipGetter: (language: SiteLanguage) => `ID: ${language.Code}`,
@@ -94,7 +85,7 @@ export class SiteLanguagesComponent implements OnInit, OnDestroy {
           sort: 'asc',
           onCellClicked: (params) => {
             const language: SiteLanguage = params.data;
-            this.toggleLanguage(language, !language.IsEnabled);
+            this.#toggleLanguage(language, !language.IsEnabled);
           },
         },
         {
@@ -104,14 +95,11 @@ export class SiteLanguagesComponent implements OnInit, OnDestroy {
           cellClass: 'no-padding no-outline'.split(' '),
           sortable: true,
           filter: BooleanFilterComponent,
-          valueGetter: (params) => {
-            const language: SiteLanguage = params.data;
-            return language.IsEnabled;
-          },
+          valueGetter: (p: { data: SiteLanguage }) => p.data.IsEnabled,
           cellRenderer: SiteLanguagesStatusComponent,
           cellRendererParams: (() => {
             const params: SiteLanguagesStatusParams = {
-              onToggleLanguage: (language, enable) => this.toggleLanguage(language, enable),
+              onToggleLanguage: (language, enable) => this.#toggleLanguage(language, enable),
             };
             return params;
           })(),

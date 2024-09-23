@@ -1,0 +1,22 @@
+<div class="json-field" [ngClass]="{
+  'disabled': ui().disabled,
+  'focused': focused().value,
+  'error': ui().touchedAndInvalid
+  }">
+  <mat-label class="label">{{ basics().label }} {{ basics().required ? '*' : '' }}</mat-label>
+  <app-monaco-editor class="editor"
+    [filename]="filename"
+    [ngStyle]="{ 'height': editorHeight() }"
+    [value]="uiValue()"
+    [options]="monacoOptions"
+    [jsonSchema]="jsonSchema()"
+    [jsonComments]="jsonComments()"
+    (valueChanged)="codeChanged($event)"
+    (focused)="onFocused()"
+    (blurred)="onBlurred()">
+  </app-monaco-editor>
+  @if (!uiValue() && basics().placeholder) {
+    <input class="placeholder eav-translate-on-dblclick" [placeholder]="basics().placeholder">
+  }
+</div>
+<app-field-helper-text></app-field-helper-text>

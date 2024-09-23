@@ -1,16 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { ActivatedRoute, Router } from '@angular/router';
 import { map, Observable } from 'rxjs';
 import { GoToDevRest } from '../../dev-rest';
 import { Context } from '../../shared/services/context';
 import { PipelineModel } from '../models';
-import { VisualQueryService } from '../services/visual-query.service';
+import { VisualQueryStateService } from '../services/visual-query.service';
 import { calculateWarnings } from './run-explorer.helpers';
 import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { JsonHelpers } from '../../shared/helpers/json.helpers';
+import { transient } from '../../core';
+import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 
 @Component({
   selector: 'app-run-explorer',
@@ -29,11 +30,11 @@ export class RunExplorerComponent implements OnInit {
   warnings$: Observable<string[]>;
   visualDesignerData$: Observable<Record<string, any>>;
 
+  #dialogRouter = transient(DialogRoutingService);
+  
   constructor(
-    private router: Router,
-    private route: ActivatedRoute,
     private context: Context,
-    private visualQueryService: VisualQueryService,
+    private visualQueryService: VisualQueryStateService,
   ) { }
 
   ngOnInit() {
@@ -64,6 +65,6 @@ export class RunExplorerComponent implements OnInit {
 
   openRestApi() {
     const queryGuid = this.visualQueryService.pipelineModel$.value.Pipeline.EntityGuid;
-    this.router.navigate([GoToDevRest.getUrlQueryDialog(queryGuid)], { relativeTo: this.route });
+    this.#dialogRouter.navRelative([GoToDevRest.getUrlQueryDialog(queryGuid)]);
   }
 }

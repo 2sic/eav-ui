@@ -14,7 +14,7 @@ export function calculateWarnings(pipelineModel: PipelineModel, context: Context
 
     queryParams.forEach(param => {
       param = param?.trim();
-      if (!param) { return; }
+      if (!param) return;
 
       // Check if the syntax on Query Parameters is off.
       // It should contain [...]=...
@@ -35,7 +35,7 @@ export function calculateWarnings(pipelineModel: PipelineModel, context: Context
 
     testParams.forEach(param => {
       param = param?.trim();
-      if (!param) { return; }
+      if (!param) return;
 
       // Check if the syntax on Test Parameters is off.
       // It should contain [...]=...

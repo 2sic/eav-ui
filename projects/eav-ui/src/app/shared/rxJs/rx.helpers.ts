@@ -1,3 +1,4 @@
+import isEqual from 'lodash-es/isEqual';
 
 export class RxHelpers {
 
@@ -11,18 +12,6 @@ export class RxHelpers {
 
   static valueEquals<T>(x: T, y: T): boolean {
     return x === y;
-  }
-
-  static manyEquals<T>(x: T, y: T): boolean {
-    if (x == null || y == null) return x === y;
-    const typeOfX = typeof x;
-    if (typeOfX !== typeof y) return false;
-    if (typeOfX === 'string' || typeOfX === 'number' || typeOfX === 'boolean')
-      return x === y;
-
-    if (Array.isArray(x)) return RxHelpers.arraysEqual(x, y as []);
-
-    return RxHelpers.objectsEqual(x, y);
   }
 
   static objectsEqual<T>(x: T, y: T): boolean {

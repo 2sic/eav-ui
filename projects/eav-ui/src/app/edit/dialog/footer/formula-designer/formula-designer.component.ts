@@ -1,25 +1,17 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, Input, OnDestroy, OnInit, QueryList } from '@angular/core';
+import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import type * as Monaco from 'monaco-editor';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, switchMap } from 'rxjs';
-import { EntitiesService } from '../../../../content-items/services/entities.service';
-import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
+import { EntityEditService } from '../../../../shared/services/entity-edit.service';
 import { eavConstants } from '../../../../shared/constants/eav.constants';
 import { copyToClipboard } from '../../../../shared/helpers/copy-to-clipboard.helper';
-import { FormBuilderComponent } from '../../../form/builder/form-builder/form-builder.component';
-import { FormulaDesignerService } from '../../../formulas/formula-designer.service';
-import { defaultFormulaNow, listItemFormulaNow } from '../../../formulas/formula.constants';
-import { FormulaHelpers } from '../../../formulas/helpers/formula.helpers';
-import { FormulaListItemTargets, FormulaDefaultTargets, FormulaTarget, FormulaTargets, FormulaOptionalTargets } from '../../../formulas/models/formula.models';
-import { InputFieldHelpers } from '../../../shared/helpers';
-import { FormConfigService } from '../../../shared/services';
-import { ContentTypeService, ItemService } from '../../../shared/store/ngrx-data';
-// tslint:disable-next-line:max-line-length
-import { DesignerSnippet, EntityOption, FieldOption, FormulaDesignerViewModel, SelectOptions, SelectTarget, SelectTargets, TargetOption } from './formula-designer.models';
-import { DesignerState } from '../../../formulas/models/formula-results.models';
-import { EmptyFieldHelpers } from '../../../form/fields/empty/empty-field-helpers';
+import { FormulaDesignerService } from '../../../formulas/designer/formula-designer.service';
+import { defaultFormula, defaultListItemFormula } from '../../../formulas/formula-definitions';
+import { FormulaNewPickerTargets, FormulaTarget } from '../../../formulas/targets/formula-targets';
+import { SelectTarget, SelectTargets } from './formula-designer.models';
+import { FormulaIdentifier } from '../../../formulas/results/formula-results.models';
+import { DesignerState } from '../../../formulas/designer/designer-state.model';
 import { SnippetLabelSizePipe } from './snippet-label-size.pipe';
 import { MatMenuModule } from '@angular/material/menu';
 import { MonacoEditorComponent } from '../../../../monaco-editor/monaco-editor.component';
@@ -27,12 +19,18 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { ExtendedModule } from '@angular/flex-layout/extended';
-import { NgClass, AsyncPipe, JsonPipe } from '@angular/common';
+import { NgClass, JsonPipe } from '@angular/common';
 import { MatOptionModule } from '@angular/material/core';
 import { FormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
+import { TippyDirective } from '../../../../shared/directives/tippy.directive';
+import { transient } from '../../../../core/transient';
+import { FormConfigService } from '../../../form/form-config.service';
+import { ItemService } from '../../../state/item.service';
+import { ContentTypeService } from '../../../shared/content-types/content-type.service';
+import { EditPrep } from '../../../../shared/models/edit-form.model';
+import { classLog } from '../../../../shared/logging';
 
 @Component({
   selector: 'app-formula-designer',
@@ -51,24 +49,33 @@ import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.
     MatIconModule,
     MonacoEditorComponent,
     MatMenuModule,
-    AsyncPipe,
     JsonPipe,
     SnippetLabelSizePipe,
     TippyDirective,
   ],
-  providers: [
-    EntitiesService,
-  ]
 })
 export class FormulaDesignerComponent implements OnInit, OnDestroy {
-  @Input() formBuilderRefs: QueryList<FormBuilderComponent>;
+
+  log = classLog({FormulaDesignerComponent});
+
+  #designerSvc = inject(FormulaDesignerService);
+
+  #entitiesService = transient(EntityEditService);
+  
+  constructor(
+    private snackBar: MatSnackBar,
+    private formConfig: FormConfigService,
+    private itemService: ItemService,
+    private contentTypeService: ContentTypeService,
+    private translate: TranslateService,
+  ) { }
 
   SelectTargets = SelectTargets;
   loadError = false;
   freeTextTarget = false;
   allowSaveFormula = this.formConfig.config.enableFormulaSave;
-  isDeleted$ = new BehaviorSubject(false);
-  saving$ = new BehaviorSubject(false);
+  isDeleted = signal(false);
+  saving = signal(false);
   monacoOptions: Monaco.editor.IStandaloneEditorConstructionOptions = {
     minimap: {
       enabled: false,
@@ -83,55 +90,54 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
   };
   filename = `formula${this.formConfig.config.formId}.js`;
   focused = false;
-  viewModel$: Observable<FormulaDesignerViewModel>;
 
-  constructor(
-    private formulaDesignerService: FormulaDesignerService,
-    private snackBar: MatSnackBar,
-    private formConfig: FormConfigService,
-    private entitiesService: EntitiesService,
-    private itemService: ItemService,
-    private contentTypeService: ContentTypeService,
-    private translate: TranslateService,
-  ) { }
+
+  protected state = this.#designerSvc.designerState;
+  protected result = this.#designerSvc.formulaResult;
+  protected targetOptions = this.#designerSvc.currentTargetOptions;
+  
+  protected entityOptions = this.#designerSvc.entityOptions;
+  protected fieldsOptions = this.#designerSvc.fieldsOptions;
+  protected currentFormula = this.#designerSvc.currentFormula;
+
+  protected v2JsTypings = this.#designerSvc.v2JsTypings;
+
+  protected v1ContextSnippets = this.#designerSvc.v1ContextSnippets;
+  protected v1DataSnippets = this.#designerSvc.v1DataSnippets;
+
+  protected template = computed(() => Object.values(FormulaNewPickerTargets).includes(this.state().target)
+    ? defaultListItemFormula
+    : defaultFormula
+  );
+
 
   ngOnInit(): void {
+    // Make sure all necessary services have what they need, otherwise flag & exit
+    // 1. Make sure the designer has access to all itemSettingsServices
     this.loadError = false;
-    if (this.formBuilderRefs == null) {
+    if (Object.keys(this.#designerSvc.itemSettingsServices).length < 1) {
       this.loadError = true;
       return;
     }
-    this.formulaDesignerService.setDesignerOpen(true);
-    this.buildViewModel();
+    
+    this.#designerSvc.setDesignerOpen(true);
+    this.#designerSvc.initAfterItemSettingsAreReady();
   }
 
   ngOnDestroy(): void {
-    this.formulaDesignerService.setDesignerOpen(false);
-    this.saving$.complete();
-  }
-
-  trackEntityOptions(index: number, entityOption: EntityOption): string {
-    return entityOption.entityGuid;
-  }
-
-  trackFieldOptions(index: number, fieldOption: FieldOption): string {
-    return fieldOption.fieldName;
-  }
-
-  trackSnippets(index: number, snippet: DesignerSnippet): string {
-    return snippet.code;
+    this.#designerSvc.setDesignerOpen(false);
   }
 
   selectedChanged(target: SelectTarget, value: string | FormulaTarget): void {
     const newState: DesignerState = {
-      ...this.formulaDesignerService.getDesignerState(),
+      ...this.#designerSvc.designerState(),
       editMode: false,
     };
     switch (target) {
       case SelectTargets.Entity:
         newState.entityGuid = value;
-        const selectedFormRef = this.formBuilderRefs.find(formBuilderRef => formBuilderRef.entityGuid === newState.entityGuid);
-        newState.fieldName = Object.keys(selectedFormRef.fieldsSettingsService.getFieldsProps())[0];
+        const selectedSettingsSvc = this.#designerSvc.itemSettingsServices[newState.entityGuid];
+        newState.fieldName = Object.keys(selectedSettingsSvc.allProps())[0];
         break;
       case SelectTargets.Field:
         newState.fieldName = value;
@@ -141,7 +147,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
         break;
     }
 
-    this.formulaDesignerService.setDesignerState(newState);
+    this.#designerSvc.designerState.set(newState);
   }
 
   toggleFreeText(): void {
@@ -149,16 +155,11 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
   }
 
   formulaChanged(formula: string): void {
-    const designer = this.formulaDesignerService.getDesignerState();
-    this.formulaDesignerService.updateFormulaFromEditor(designer.entityGuid, designer.fieldName, designer.target, formula, false);
+    this.#designerSvc.cache.updateFormulaFromEditor(this.#designerIdentifier, formula, false);
   }
 
-  onFocused(): void {
-    this.focused = true;
-  }
-
-  onBlurred(): void {
-    this.focused = false;
+  onFocused(focused: boolean): void {
+    this.focused = focused;
   }
 
   copyToClipboard(text: string): void {
@@ -167,339 +168,106 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
   }
 
   toggleEdit(): void {
-    const oldState = this.formulaDesignerService.getDesignerState();
+    const oldState = this.#designerSvc.designerState();
     const designer: DesignerState = {
       ...oldState,
       editMode: !oldState.editMode,
     };
-    this.formulaDesignerService.setDesignerState(designer);
-    if (designer.editMode) {
-      const formula = this.formulaDesignerService.getFormula(designer.entityGuid, designer.fieldName, designer.target, true);
-      if (formula == null) {
-        this.formulaDesignerService.updateFormulaFromEditor(
-          designer.entityGuid, designer.fieldName, designer.target, Object.values(FormulaListItemTargets).includes(designer.target) ? listItemFormulaNow : defaultFormulaNow, false
-        );
-      }
-    }
+    this.#designerSvc.designerState.set(designer);
+    if (designer.editMode && this.#designerSvc.currentFormula() == null)
+      this.#designerSvc.cache.updateFormulaFromEditor(this.#designerIdentifier, this.template(), false);
   }
 
   reset(): void {
     const designer: DesignerState = {
-      ...this.formulaDesignerService.getDesignerState(),
+      ...this.#designerSvc.designerState(),
       editMode: false,
     };
-    this.formulaDesignerService.setDesignerState(designer);
-    this.formulaDesignerService.resetFormula(designer.entityGuid, designer.fieldName, designer.target);
-    this.formBuilderRefs
-      .find(formBuilderRef => formBuilderRef.entityGuid === designer.entityGuid)
-      .fieldsSettingsService.retriggerFormulas();
+    const identifier = this.#designerIdentifier;
+    this.#designerSvc.designerState.set(designer);
+    this.#designerSvc.cache.resetFormula(identifier);
+    this.#designerSvc.itemSettingsServices[identifier.entityGuid].retriggerFormulas('designer-reset');
   }
 
   run(): void {
-    const designer = this.formulaDesignerService.getDesignerState();
-    const formula = this.formulaDesignerService.getFormula(designer.entityGuid, designer.fieldName, designer.target, true);
-    this.formulaDesignerService.updateFormulaFromEditor(designer.entityGuid, designer.fieldName, designer.target, formula.source, true);
-    this.formBuilderRefs
-      .find(formBuilderRef => formBuilderRef.entityGuid === designer.entityGuid)
-      .fieldsSettingsService.retriggerFormulas();
-    this.isDeleted$.next(false);
+    const identifier = this.#designerIdentifier;
+    const formula = this.#designerSvc.currentFormula();
+    this.#designerSvc.cache.updateFormulaFromEditor(identifier, formula.sourceCode, true);
+    this.#designerSvc.itemSettingsServices[identifier.entityGuid].retriggerFormulas('designer-run');
+    this.isDeleted.set(false);
   }
 
-  save(): void {
-    this.saving$.next(true);
-    const designer = this.formulaDesignerService.getDesignerState();
-    const formula = this.formulaDesignerService.getFormula(designer.entityGuid, designer.fieldName, designer.target, true);
+  get #designerIdentifier(): FormulaIdentifier {
+    const designer = this.#designerSvc.designerState();
+    const id: FormulaIdentifier = { entityGuid: designer.entityGuid, fieldName: designer.fieldName, target: designer.target };
+    return id;
+  }
 
-    if (formula.sourceId == null) {
-      const item = this.itemService.getItem(formula.entityGuid);
-      const contentTypeId = InputFieldHelpers.getContentTypeId(item);
-      const contentType = this.contentTypeService.getContentType(contentTypeId);
-      const attributeDef = contentType.Attributes.find(a => a.Name === formula.fieldName);
+  //#region Save/Delete
+
+  save(): void {
+    this.saving.set(true);
+    const formula = this.#designerSvc.currentFormula();
+
+    if (formula.sourceCodeId == null) {
+      const item = this.itemService.get(formula.entityGuid);
+      const attributeDef = this.contentTypeService.getAttributeOfItem(item, formula.fieldName);
       const atAllFieldSettings = attributeDef.Metadata.find(m => m.Type.Id === '@All');
       if (!atAllFieldSettings) {
         this.snackBar.open('Field configuration is missing. Please create formula in Administration', undefined, { duration: 3000 });
-        this.saving$.next(false);
+        this.saving.set(false);
         return;
       }
-      this.entitiesService.create(
+      this.#entitiesService.create(
         eavConstants.contentTypes.formulas,
         {
           Title: formula.target,
           Target: formula.target,
-          Formula: formula.source,
+          Formula: formula.sourceCode,
           Enabled: true,
-          ParentRelationship: {
-            Add: null,
-            EntityId: null,
-            Field: 'Formulas',
-            Index: 0,
-            Parent: atAllFieldSettings.Guid,
-          },
+          ParentRelationship: EditPrep.relationship(atAllFieldSettings.Guid, 'Formulas'),
         },
       ).subscribe(savedFormula => {
-        this.formulaDesignerService.updateSaved(
-          formula.entityGuid, formula.fieldName, formula.target, formula.source, savedFormula.Guid, savedFormula.Id,
-        );
+        this.#designerSvc.cache.updateSaved(formula, savedFormula.Guid, savedFormula.Id);
         this.snackBar.open('Formula saved', null, { duration: 2000 });
-        this.saving$.next(false);
+        this.saving.set(false);
       });
       return;
     }
 
-    this.entitiesService.update(eavConstants.contentTypes.formulas, formula.sourceId, { Formula: formula.source }).subscribe(() => {
-      this.formulaDesignerService.updateSaved(
-        formula.entityGuid, formula.fieldName, formula.target, formula.source, formula.sourceGuid, formula.sourceId,
-      );
+    this.#entitiesService.update(eavConstants.contentTypes.formulas, formula.sourceCodeId, { Formula: formula.sourceCode }).subscribe(() => {
+      this.#designerSvc.cache.updateSaved(formula, formula.sourceCodeGuid, formula.sourceCodeId);
       this.snackBar.open('Formula saved', null, { duration: 2000 });
-      this.saving$.next(false);
+      this.saving.set(false);
     });
   }
 
   deleteFormula(): void {
-    const designer = this.formulaDesignerService.getDesignerState();
-    const formula = this.formulaDesignerService.getFormula(designer.entityGuid, designer.fieldName, designer.target, true);
+    const designer = this.#designerSvc.designerState();
+    const formula = this.#designerSvc.currentFormula();
 
-    const id = formula.sourceId;
+    const id = formula.sourceCodeId;
     const title = formula.fieldName + ' - ' + formula.target;
 
     const confirmed = confirm(this.translate.instant('Data.Delete.Question', { title, id }));
-    if (!confirmed) { return; }
+    if (!confirmed)
+      return;
 
-    this.entitiesService.delete(eavConstants.contentTypes.formulas, formula.sourceId, true).subscribe({
-      next: () => {
-        this.formulaDesignerService.delete(formula.entityGuid, formula.fieldName, formula.target);
-        this.snackBar.open(this.translate.instant('Message.Deleted'), null, { duration: 2000 });
-        this.isDeleted$.next(true);
-        if (designer.editMode)
-          this.toggleEdit();
-      },
-      error: (error: HttpErrorResponse) => {
-        this.snackBar.open(this.translate.instant('Message.DeleteError'), null, { duration: 2000 });
-      }
-    });
-  }
-
-  openFormulasHelp(): void {
-    window.open('https://go.2sxc.org/formulas', '_blank');
-  }
-
-  private buildViewModel(): void {
-    const oldState = this.formulaDesignerService.getDesignerState();
-    if (oldState.entityGuid == null && oldState.fieldName == null && oldState.target == null) {
-      const entityGuid = this.formBuilderRefs.first.entityGuid;
-      const fieldsProps = this.formBuilderRefs.first.fieldsSettingsService.getFieldsProps();
-      const fieldName = Object.keys(fieldsProps)[0];
-      const target = fieldName != null ? FormulaTargets.Value : null;
-      const newState: DesignerState = {
-        ...oldState,
-        entityGuid,
-        fieldName,
-        target,
-      };
-      this.formulaDesignerService.setDesignerState(newState);
-    }
-
-    const designerState$ = this.formulaDesignerService.getDesignerState$();
-    const options$ = combineLatest([
-      designerState$,
-      this.formulaDesignerService.getFormulas$()
-    ]).pipe(
-      map(([designer, formulas]): SelectOptions => {
-        const entityOptions = this.formBuilderRefs.map(formBuilderRef => {
-          const entity: EntityOption = {
-            entityGuid: formBuilderRef.entityGuid,
-            hasFormula: formulas.some(f => f.entityGuid === formBuilderRef.entityGuid),
-            label: formBuilderRef.fieldsSettingsService.getContentTypeSettings()._itemTitle,
-          };
-          return entity;
-        });
-
-        const fieldOptions: FieldOption[] = [];
-        if (designer.entityGuid != null) {
-          const selectedItem = this.formBuilderRefs.find(i => i.entityGuid === designer.entityGuid);
-          const fieldsProps = selectedItem.fieldsSettingsService.getFieldsProps();
-          for (const fieldName of Object.keys(fieldsProps)) {
-            const field: FieldOption = {
-              fieldName,
-              hasFormula: formulas.some(f => f.entityGuid === designer.entityGuid && f.fieldName === fieldName),
-              label: fieldName,
-            };
-            fieldOptions.push(field);
-          }
+    this.#entitiesService.delete(eavConstants.contentTypes.formulas, formula.sourceCodeId, true)
+      .subscribe({
+        next: () => {
+          this.#designerSvc.cache.delete(formula);
+          this.snackBar.open(this.translate.instant('Message.Deleted'), null, { duration: 2000 });
+          this.isDeleted.set(true);
+          if (designer.editMode)
+            this.toggleEdit();
+        },
+        error: (_: HttpErrorResponse) => {
+          this.snackBar.open(this.translate.instant('Message.DeleteError'), null, { duration: 2000 });
         }
-
-        const targetOptions: TargetOption[] = [];
-        if (designer.entityGuid != null && designer.fieldName != null) {
-          // default targets
-          for (const target of Object.values(FormulaDefaultTargets)) {
-            const targetOption: TargetOption = {
-              hasFormula: formulas.some(
-                f => f.entityGuid === designer.entityGuid && f.fieldName === designer.fieldName && f.target === target
-              ),
-              label: target.substring(target.lastIndexOf('.') + 1),
-              target,
-            };
-            targetOptions.push(targetOption);
-          }
-
-          // optional targets
-          const item = this.itemService.getItem(designer.entityGuid);
-          const contentTypeId = InputFieldHelpers.getContentTypeId(item);
-          const contentType = this.contentTypeService.getContentType(contentTypeId);
-          const attribute = contentType.Attributes.find(a => a.Name === designer.fieldName);
-          const inputType = attribute.InputType;
-          if (EmptyFieldHelpers.isGroupStart(inputType)) {
-            for (const target of [FormulaOptionalTargets.Collapsed]) {
-              const targetOption: TargetOption = {
-                hasFormula: formulas.some(
-                  f => f.entityGuid === designer.entityGuid && f.fieldName === designer.fieldName && f.target === target
-                ),
-                label: target.substring(target.lastIndexOf('.') + 1),
-                target: target as FormulaTarget,
-              };
-              targetOptions.push(targetOption);
-            }
-          }
-          if (inputType === InputTypeConstants.StringDropdown || inputType === InputTypeConstants.NumberDropdown) {
-            for (const target of [FormulaOptionalTargets.DropdownValues]) {
-              const targetOption: TargetOption = {
-                hasFormula: formulas.some(
-                  f => f.entityGuid === designer.entityGuid && f.fieldName === designer.fieldName && f.target === target
-                ),
-                label: target.substring(target.lastIndexOf('.') + 1),
-                target: target as FormulaTarget,
-              };
-              targetOptions.push(targetOption);
-            }
-          }
-          if (inputType === InputTypeConstants.EntityPicker
-            || inputType === InputTypeConstants.StringPicker
-            || inputType === InputTypeConstants.NumberPicker) {
-            for (const target of Object.values(FormulaListItemTargets)) {
-              const targetOption: TargetOption = {
-                hasFormula: formulas.some(
-                  f => f.entityGuid === designer.entityGuid && f.fieldName === designer.fieldName && f.target === target
-                ),
-                label: "List Item " + target.substring(target.lastIndexOf('.') + 1),
-                target: target as FormulaTarget,
-              };
-              targetOptions.push(targetOption);
-            }
-          }
-          /*
-          TODO: @SDV
-          for all picker types
-          add formulas -> Field.ListItem.Label
-                          Field.ListItem.Tooltip
-                          Field.ListItem.Information
-                          Field.ListItem.HelpLink
-                          Field.ListItem.Disabled
-
-          Template for all new type formulas
-          v2((data, context, item) => {
-            return data.value;
-          });
-
-          old template for all of the rest
-
-          run formulas upon dropdowning the picker, upon each opening
-          */
-
-          // targets for formulas
-          const formulasForThisField = formulas.filter(f => f.entityGuid === designer.entityGuid && f.fieldName === designer.fieldName);
-          for (const formula of formulasForThisField) {
-            const formulaExists = targetOptions.some(t => t.target === formula.target);
-            if (formulaExists) { continue; }
-
-            const targetOption: TargetOption = {
-              hasFormula: true,
-              label: formula.target.substring(formula.target.lastIndexOf('.') + 1),
-              target: formula.target,
-            };
-            targetOptions.push(targetOption);
-          }
-
-          // currently selected target
-          const selectedExists = targetOptions.some(t => t.target === designer.target);
-          if (!selectedExists) {
-            const targetOption: TargetOption = {
-              hasFormula: formulas.some(
-                f => f.entityGuid === designer.entityGuid && f.fieldName === designer.fieldName && f.target === designer.target
-              ),
-              label: designer.target.substring(designer.target.lastIndexOf('.') + 1),
-              target: designer.target,
-            };
-            targetOptions.push(targetOption);
-          }
-        }
-
-        const selectOptions: SelectOptions = {
-          entityOptions,
-          fieldOptions,
-          targetOptions,
-        };
-        return selectOptions;
-      }),
-    );
-    const formula$ = designerState$.pipe(
-      switchMap(designer => this.formulaDesignerService.getFormula$(designer.entityGuid, designer.fieldName, designer.target, true)),
-    );
-    const itemHeader$ = designerState$.pipe(
-      map(designer => designer.entityGuid),
-      distinctUntilChanged(),
-      switchMap(entityGuid => this.itemService.getItemHeader$(entityGuid)),
-    );
-    const dataSnippets$ = combineLatest([options$, formula$, itemHeader$]).pipe(
-      map(([options, formula, itemHeader]) => formula != null && itemHeader != null
-        ? FormulaHelpers.buildDesignerSnippetsData(formula, options.fieldOptions, itemHeader.Prefill)
-        : []
-      ),
-    );
-    const contextSnippets$ = combineLatest([formula$]).pipe(
-      map(([formula]) => formula != null
-        ? FormulaHelpers.buildDesignerSnippetsContext(formula)
-        : []
-      ),
-    );
-    const typings$ = combineLatest([options$, formula$, itemHeader$]).pipe(
-      map(([options, formula, itemHeader]) => formula != null && itemHeader != null
-        ? FormulaHelpers.buildFormulaTypings(formula, options.fieldOptions, itemHeader.Prefill)
-        : ''
-      ),
-    );
-    const result$ = designerState$.pipe(
-      switchMap(designer =>
-        this.formulaDesignerService.getFormulaResult$(designer.entityGuid, designer.fieldName, designer.target)
-      ),
-    );
-
-    this.viewModel$ = combineLatest([
-      combineLatest([options$, formula$, dataSnippets$, contextSnippets$, typings$, designerState$]),
-      combineLatest([result$, this.saving$, this.isDeleted$]),
-    ]).pipe(
-      map(([
-        [options, formula, dataSnippets, contextSnippets, typings, designer],
-        [result, saving, isDeleted],
-      ]) => {
-        const template = Object.values(FormulaListItemTargets).includes(designer.target) ? listItemFormulaNow : defaultFormulaNow;
-        const viewModel: FormulaDesignerViewModel = {
-          entityOptions: options.entityOptions,
-          fieldOptions: options.fieldOptions,
-          targetOptions: options.targetOptions,
-          formula,
-          designer,
-          dataSnippets,
-          contextSnippets,
-          typings,
-          template,
-          result: result?.value,
-          resultExists: result != null && !isDeleted,
-          resultIsError: result?.isError ?? false,
-          resultIsOnlyPromise: result?.isOnlyPromise ?? false,
-          saving,
-        };
-        return viewModel;
-      }),
-    );
+      });
   }
+
+  //#endregion
+
 }

@@ -3,7 +3,7 @@ import { GoToMetadata } from '../metadata';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
 import { importContentItemDialog } from './import-content-item/import-content-item-dialog.config';
 import { contentItemsDialog } from './content-items-dialog.config';
-import { EditRoutesSubItems } from '../edit/edit.routing';
+import { EditRoutes } from '../edit/edit.routing';
 
 export const contentItemsRoutes: Routes = [
   {
@@ -30,7 +30,7 @@ export const contentItemsRoutes: Routes = [
         loadChildren: () => import('../content-import/content-import.routing').then(m => m.contentImportRoutes),
         data: { title: 'Import Items' },
       },
-      ...EditRoutesSubItems,
+      ...EditRoutes,
     ]
   },
 ];

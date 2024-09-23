@@ -1,4 +1,33 @@
-import { DropdownOption } from './DropdownOption';
+import { PickerOptionCustom } from './DropdownOption';
+import { FeatureNames } from '../../eav-ui/src/app/features/feature-names';
+import { Of } from '../../eav-ui/src/app/core';
+
+/** */
+interface InternalSettings {
+  /** Ui is disabled for translation reasons - detected at runtime */
+  uiDisabledInThisLanguage?: boolean;
+
+  /**
+   * This is set by calculations and does not come from the back end.
+   * Reasons typically:
+   * - Form is read-only
+   * - Field is disabled because of translation
+   * - Slot is empty (eg. not activate presentation)
+   */
+  uiDisabledForced: boolean;
+
+  /** This is the combined calculation of forced disabled and configured disabled */
+  uiDisabled: boolean;
+
+  /** Ui is currently in a popup dialog */
+  isDialog?: boolean;
+
+  /**
+   * The value is currently required.
+   * This is calculated at runtime, often based on visibility etc.
+   */
+  valueRequired?: boolean;
+}
 
 /**
  * @All
@@ -8,23 +37,50 @@ interface All {
    * Used as a label
    */
   Name: string;
+  /** The input type such as 'string-default' or 'string-picker' */
   InputType: string;
+
+  /** The default value to use if there is nothing in the field yet / new */
   DefaultValue: string;
+
+  /** Placeholder message in the input box */
   Placeholder: string;
+
+  /** Notes / help - usually underneath the field input */
   Notes: string;
+
+  /** If the field is visible */
   Visible: boolean;
-  /** new v16.01 2dm - WIP */
+
+  /**
+   * Information if this field was forcibly disabled.
+   * TODO: explain why this would be the case.
+   * new v16.01
+   */
   VisibleDisabled: boolean;
+
+  /** Required according to configuration */
   Required: boolean;
+
+  /** Disabled according to configuration */
   Disabled: boolean;
-  ForcedDisabled: boolean;
+
+  /** Translation is not allowed - eg. on fields which should never have a different value in another language. */
   DisableTranslation: boolean;
+
+  /** Disable Auto-Translation - eg. because it would not make sense. */
   DisableAutoTranslation: boolean;
   ValidationRegExJavaScript: string;
+
+  /** IDs of formulas */
   Formulas: string[];
+
   CustomJavaScript: string;
+
   /** Determines if this field really exists or not */
   IsEphemeral: boolean;
+
+  requiredFeatures: Of<typeof FeatureNames>[];
 }
 
 /**
@@ -41,6 +97,7 @@ interface String extends All {
 export interface StringDefault extends String {
   InputFontFamily: '' | 'monospace';
   RowCount: number;
+  TextWrapping: '' | 'pre';
 }
 
 /**
@@ -50,7 +107,7 @@ export interface StringDropdown extends String {
   DropdownValues: string;
   DropdownValuesFormat: '' | 'value-label';
   EnableTextEntry: boolean;
-  _options: DropdownOption[];
+  _options: PickerOptionCustom[];
 }
 
 /**
@@ -69,11 +126,6 @@ export interface StringTemplatePicker extends String {
   /** Contains the extension for which the file picker should filter. If not set, use preset mechanisms */
   FileType: string;
 }
-
-// export const WysiwygDisplayModeDialogOnly = 'dialog';
-// export const WysiwygDisplayModeInlineOnly = 'inline';
-// export const WysiwygDisplayModeInlineWithDialog = '';
-// export type WysiwygDisplayModes = typeof WysiwygDisplayModeDialogOnly | typeof WysiwygDisplayModeInlineOnly | typeof WysiwygDisplayModeInlineWithDialog; 
 
 /**
  * @string-wysiwyg
@@ -252,26 +304,30 @@ export interface Boolean extends All {
   _label: string;
 }
 
-export interface EntityPicker extends EntityQuery {
+interface PickerSettings {
+  PickerDisplayMode: 'list' | 'tree' | 'checkbox' | 'radio' | 'auto-inline';
+  PickerDisplayConfiguration: string[]; //can only be one entity guid
+  PickerTreeConfiguration: UiPickerModeTree;
+}
+
+export type PickerDataSourceType = 'UiPickerSourceCustomList' | 'UiPickerSourceCustomCsv' | 'UiPickerSourceQuery' | 'UiPickerSourceEntity';
+
+export interface EntityPicker extends EntityQuery, PickerSettings {
   EnableReselect: boolean;
   AllowMultiMin: number;
   AllowMultiMax: number;
 
   DataSources: string[];
   UiPickerSourceQuery: UiPickerSourceQuery;
-
-  PickerDisplayMode: 'list' | 'tree';
-  PickerDisplayConfiguration: string[]; //can only be one entity guid
-  PickerTreeConfiguration: UiPickerModeTree;
 
   ItemInformation: string;
   ItemTooltip: string;
   ItemLink: string;
 
-  DataSourceType: 'UiPickerSourceCustomList' | 'UiPickerSourceQuery' | 'UiPickerSourceEntity';
+  DataSourceType: PickerDataSourceType;
 }
 
-export interface StringPicker extends StringDropdown {
+export interface StringPicker extends StringDropdown, PickerSettings {
   EnableReselect: boolean;
   AllowMultiMin: number;
   AllowMultiMax: number;
@@ -279,17 +335,7 @@ export interface StringPicker extends StringDropdown {
   DataSources: string[];
   UiPickerSourceQuery: UiPickerSourceQuery;
 
-  PickerDisplayMode: 'list' | 'tree';
-  PickerDisplayConfiguration: string[]; //can only be one entity guid
-  PickerTreeConfiguration: UiPickerModeTree;
-
-  DataSourceType: 'UiPickerSourceCustomList' | 'UiPickerSourceQuery' | 'UiPickerSourceEntity';
-}
-
-interface InternalSettings {
-  _disabledBecauseOfTranslation?: boolean;
-  _isDialog?: boolean;
-  _currentRequired?: boolean;
+  DataSourceType: PickerDataSourceType;
 }
 
 export interface FieldSettings extends
@@ -364,10 +410,16 @@ export interface UiPickerSourceCustomList extends UiPickerSource {
   DropdownValues: string;
 }
 
+export interface UiPickerSourceCustomCsv extends UiPickerSource {
+  Csv: string;
+}
+
 export interface UiPickerSourceEntityAndQuery extends UiPickerSource {
   CreateTypes: string;
   MoreFields: string;
 }
+
+
 
 interface UiPickerSource extends ConfigModel {
   /** Label or field-mask for label */
@@ -383,5 +435,5 @@ interface UiPickerSource extends ConfigModel {
 interface ConfigModel {
   Title: string;
 
-  ConfigModel: 'UiPickerSourceCustomList' | 'UiPickerSourceQuery' | 'UiPickerSourceEntity' | 'UiPickerModeTree';
+  ConfigModel: 'UiPickerModeTree';
 }

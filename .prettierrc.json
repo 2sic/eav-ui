@@ -1,0 +1,6 @@
+{
+  "semi": true,
+  "endOfLine": "auto",
+  "trailingComma": "all",
+  "arrowParens": "avoid"
+}

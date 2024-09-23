@@ -24,7 +24,7 @@ export interface Feature extends FeatureSummary {
   security: FeatureSecurity;
   /** Does this feature apply to UIs (like the edit-form) */
   // Ui: boolean;
-  
+
   link: string;
 
   /** Allow configuration in UI - if false, the user can't enable/disable it */

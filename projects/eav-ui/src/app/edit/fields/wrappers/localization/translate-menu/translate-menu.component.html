@@ -1,0 +1,40 @@
+<!-- DBG: {{ language().current }} | {{ disabled() }} -->
+
+@if (language().current !== language().primary)
+{
+  <div fxLayoutAlign="end center">
+    <div fxLayoutAlign="end center" class="eav-shared-languages-container" [ngClass]="translationStateClass()">
+      <div class="eav-shared-languages mat-caption" [ngClass]="{ 'eav-shared-languages--disabled': disabled() }">
+        {{translationState().infoLabel ? (translationState().infoLabel | translate:{ languages:
+        translationState().infoMessage }): '' }}
+      </div>
+      <div [tippy]="'LangMenu.NotTranslatable' | translate" [tippyDisabled]="!disableTranslateButtonSignal()" [tippyPlacement]="'top'">
+        <button mat-icon-button class="eav-translate-icon-button" [matMenuTriggerFor]="menu"
+          [disabled]="disableTranslateButtonSignal()" [ngClass]="{ 'hidden': hideTranslateButton }">
+          <mat-icon class="eav-translate-icon">translate</mat-icon>
+        </button>
+      </div>
+    </div>
+    <mat-menu #menu="matMenu">
+      <ng-template matMenuContent>
+        <button mat-menu-item (click)="translate()"
+          [ngClass]="{ 'eav-menu-item-selected':translationState().linkType === TranslationLinks.Translate }">
+          {{ 'LangMenu.Translate' | translate }}
+        </button>
+        <button mat-menu-item (click)="openAutoTranslateMenuDialog(translationState())"
+          [ngClass]="{ 'eav-menu-item-selected':translationState().linkType === TranslationLinks.Translate }">
+          {{ 'LangMenu.AutoTranslate' | translate }}
+          <app-feature-icon-indicator [featureNameId]="'EditUiTranslateWithGoogle'"></app-feature-icon-indicator>
+        </button>
+        <button mat-menu-item (click)="dontTranslate()"
+          [ngClass]="{ 'eav-menu-item-selected':translationState().linkType === TranslationLinks.DontTranslate }">
+          {{ 'LangMenu.NoTranslate' | translate }}
+        </button>
+        <button mat-menu-item (click)="openTranslateMenuDialog(translationState())"
+          [ngClass]="{ 'eav-menu-item-selected':translationState().language !== '' }">
+          {{ 'LangMenu.Link' | translate }}
+        </button>
+      </ng-template>
+    </mat-menu>
+  </div>
+}

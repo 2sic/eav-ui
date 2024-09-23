@@ -67,6 +67,8 @@
       "Title": "⚠️ Warning: You are using a test account",
       "Body": "You are using a demo Google Account to translate. This can stop working at any time. <br>You <strong>must</strong> register your own API key. It's free for 500'000 words per month. See <a href='https://go.2sxc.org/translate-api-key' target='_blank'>docs</a>."
     },
+    "NoTranslatableFieldsFound": "No fields found which can be translated/unlocked.",
+    "NoAutoTranslatableFieldsFound": "No fields found which can be auto-translated.",
     "Dialog": {
       "Title": "Translate {{name}}",
       "Intro": "You can do many things when translating, like linking languages together.",
@@ -231,6 +233,7 @@
     "NoHeader": "(this list has no header)",
     "SortItems": "Sort the items by dragging as needed.",
     "SortLotsOfItems": "Sort the items by dragging and scrolling with mouse wheel as needed.",
+    "ListHasBeenReordered": "⚠️ The list has been reordered. Because of this, certain buttons are disabled until you save your changes.",
     "ConfirmRemove": "This will remove this content-item from this list, but not delete it (so you can add it again later). \nSee 2sxc.org/help for more. \n\nOk to remove?"
   },
   "SharingOrInheriting": {

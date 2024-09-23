@@ -1,0 +1,14 @@
+<div fxLayout="row" fxLayoutAlign="start end">
+  <mat-form-field [formGroup]="fieldState.group" class="eav-mat-form-field" color="accent">
+    @if (useMultiLine()) {
+      <textarea matInput [required]="basics().required" [formControlName]="fieldState.name"
+        [placeholder]="basics().placeholder"></textarea>
+    } @else {
+      <input matInput [required]="basics().required" [formControlName]="fieldState.name" [placeholder]="basics().placeholder">
+    }
+    <div matSuffix>
+      <ng-content select="[freeTextButtons]"></ng-content>
+    </div>
+    <mat-label>{{ basics().label }}</mat-label>
+  </mat-form-field>
+</div>

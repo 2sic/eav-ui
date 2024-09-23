@@ -1,8 +1,13 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable, OnDestroy, Signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { LogEntry, LogSeverity } from '../models';
 
+/**
+ * Logging service - ATM not really used, but would be great
+ * to show logs in the debug-panel.
+ * So don't delete - reconsider how to use.
+ */
 @Injectable()
 export class LoggingService implements OnDestroy {
   private logs$ = new BehaviorSubject<LogEntry[]>([]);
@@ -46,4 +51,25 @@ export class LoggingService implements OnDestroy {
   getLogs$(): Observable<LogEntry[]> {
     return this.logs$.asObservable();
   }
+
+  getLogsSignal(): Signal<LogEntry[]> {
+    return toSignal(this.logs$);
+  }
+
 }
+
+
+export interface LogEntry {
+  error: any;
+  label: string;
+  severity: LogSeverity;
+  time: number;
+}
+
+export const LogSeverities = {
+  Error: 'error',
+  Log: 'log',
+  Warn: 'warn',
+} as const /* the as const ensures that the keys/values can be strictly checked */;
+
+export type LogSeverity = typeof LogSeverities[keyof typeof LogSeverities];

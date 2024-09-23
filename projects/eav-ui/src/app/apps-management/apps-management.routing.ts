@@ -18,10 +18,6 @@ export const appsManagementRoutes: Routes = [
         path: 'system',
         loadComponent: () => import('./system-info/system-info.component').then(m => m.SystemInfoComponent),
         data: { title: 'System Info' , breadcrumb: 'System Info'},
-        // @2dg is no longer needed as Register is a separate SideNav and no longer a dialog
-        //  children: [
-        //     GoToRegistration.getRoute()
-        // ]
       },
       { path: 'registration',
         loadComponent: () => import('./sub-dialogs/registration/registration.component').then(m => m.RegistrationComponent),

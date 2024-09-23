@@ -1,5 +1,5 @@
 import { ActivatedRoute } from '@angular/router';
-import { FormConfiguration } from '../models';
+import { FormConfiguration } from '../../form/form-configuration.model';
 
 export class UrlHelpers {
 
@@ -144,6 +144,14 @@ export class UrlHelpers {
     return result;
   }
 
+  static newUrlIfCurrentContainsOldUrl(route: ActivatedRoute, oldEditUrl: string, newEditUrl: string) {
+    const currentUrl = UrlHelpers.calculatePathFromRoot(route);
+    const lastIndex = currentUrl.lastIndexOf(oldEditUrl);
+    if (lastIndex <= 0) return null;
+    const newUrl = currentUrl.substring(0, lastIndex) + currentUrl.substring(lastIndex).replace(oldEditUrl, newEditUrl);
+    return newUrl;
+  }
+
   static calculatePathFromRoot(route: ActivatedRoute) {
     let lastChild = route;
     while (lastChild.firstChild) {
@@ -151,9 +159,9 @@ export class UrlHelpers {
     }
     let pathFromRoot = '';
     for (const path of lastChild.snapshot.pathFromRoot) {
-      if (path.url.length <= 0) { continue; }
+      if (path.url.length <= 0) continue;
       for (const urlSegment of path.url) {
-        if (!urlSegment.path) { continue; }
+        if (!urlSegment.path) continue;
         pathFromRoot += '/' + urlSegment.path;
       }
     }

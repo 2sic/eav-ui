@@ -1,7 +1,7 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
-import { Field } from '../models/field.model';
+import { Field } from '../../shared/fields/field.model';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({

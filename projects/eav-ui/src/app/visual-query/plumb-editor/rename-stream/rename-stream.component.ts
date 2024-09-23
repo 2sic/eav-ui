@@ -2,11 +2,11 @@ import { ChangeDetectorRef, Component, HostBinding, Inject, OnDestroy, OnInit } 
 import { UntypedFormControl, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogActions } from '@angular/material/dialog';
 import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { distinctUntilChanged, startWith, Subscription } from 'rxjs';
+import { distinctUntilChanged, startWith } from 'rxjs';
 import { ContentTypesService } from '../../../app-administration/services';
 import { BaseComponent } from '../../../shared/components/base.component';
 import { eavConstants, ScopeOption } from '../../../shared/constants/eav.constants';
-import { VisualQueryService } from '../../services/visual-query.service';
+import { VisualQueryStateService } from '../../services/visual-query.service';
 import { RenameStreamDialogControls, RenameStreamDialogData, RenameStreamDialogFormValue } from './rename-stream.models';
 import { NgClass } from '@angular/common';
 import { MatOptionModule } from '@angular/material/core';
@@ -17,6 +17,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { FieldHintComponent } from '../../../shared/components/field-hint/field-hint.component';
 import { ClickStopPropagationDirective } from '../../../shared/directives/click-stop-propagation.directive';
+import { transient } from '../../../core';
 
 @Component({
   selector: 'app-rename-stream',
@@ -37,7 +38,7 @@ import { ClickStopPropagationDirective } from '../../../shared/directives/click-
     MatSlideToggleModule,
     FieldHintComponent,
     ClickStopPropagationDirective,
-  ]
+  ],
 })
 export class RenameStreamComponent extends BaseComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
@@ -51,11 +52,12 @@ export class RenameStreamComponent extends BaseComponent implements OnInit, OnDe
   guidedLabel = true;
   advancedMode = false;
 
+  private contentTypesService = transient(ContentTypesService);
+  
   constructor(
     @Inject(MAT_DIALOG_DATA) private dialogData: RenameStreamDialogData,
     private dialogRef: MatDialogRef<RenameStreamComponent>,
-    private visualQueryService: VisualQueryService,
-    private contentTypesService: ContentTypesService,
+    private visualQueryService: VisualQueryStateService,
     private changeDetectorRef: ChangeDetectorRef,
   ) {
     super();
@@ -93,7 +95,7 @@ export class RenameStreamComponent extends BaseComponent implements OnInit, OnDe
     });
     this.controls = this.form.controls as any;
 
-    if (!this.isSource || !this.pipelineResultExists) { return; }
+    if (!this.isSource || !this.pipelineResultExists) return;
 
     this.subscriptions.add(
       this.controls.scope.valueChanges.pipe(

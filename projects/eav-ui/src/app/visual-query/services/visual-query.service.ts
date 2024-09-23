@@ -3,16 +3,14 @@ import { ChangeDetectorRef, Injectable, NgZone, OnDestroy, ViewContainerRef } fr
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
-import { ActivatedRoute, Router } from '@angular/router';
 import cloneDeep from 'lodash-es/cloneDeep';
 import { BehaviorSubject, filter, fromEvent, Subject } from 'rxjs';
 import { ContentTypesService } from '../../app-administration/services/content-types.service';
 import { MetadataService } from '../../permissions/services/metadata.service';
 import { QueryDefinitionService } from './query-definition.service';
-import { BaseWithChildDialogComponent } from '../../shared/components/base-with-child-dialog.component';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
-import { EditForm } from '../../shared/models/edit-form.model';
+import { EditForm, EditPrep } from '../../shared/models/edit-form.model';
 // tslint:disable-next-line:max-line-length
 import { DataSource, DataSourceConfig, DataSourceConfigs, DebugStreamInfo, PipelineDataSource, PipelineModel, PipelineResult, PipelineResultStream, StreamWire, VisualDesignerData } from '../models';
 import { QueryResultComponent } from '../query-result/query-result.component';
@@ -20,33 +18,43 @@ import { QueryResultDialogData } from '../query-result/query-result.models';
 import { StreamErrorResultComponent } from '../stream-error-result/stream-error-result.component';
 import { StreamErrorResultDialogData } from '../stream-error-result/stream-error-result.models';
 import { JsonHelpers } from '../../shared/helpers/json.helpers';
+import { transient } from '../../core';
+import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
+import { ServiceBase } from '../../shared/services/service-base';
+import { isCtrlS } from '../../edit/dialog/main/keyboard-shortcuts';
 
+/**
+ * Service containing the state for the visual query.
+ * It's shared, so should not be used with transient(...);
+ */
 @Injectable()
-export class VisualQueryService extends BaseWithChildDialogComponent implements OnDestroy {
+export class VisualQueryStateService extends ServiceBase implements OnDestroy {
+
+  #contentTypesSvc = transient(ContentTypesService);
+  #metadataSvc = transient(MetadataService);
+  #queryDefSvc = transient(QueryDefinitionService);
+  #dialogRoute = transient(DialogRoutingService);
+  #titleSvc = transient(Title);
+
+
   pipelineModel$ = new BehaviorSubject<PipelineModel>(null);
   dataSources$ = new BehaviorSubject<DataSource[]>(null);
   putEntityCountOnConnections$ = new Subject<PipelineResult>();
   dataSourceConfigs$ = new BehaviorSubject<DataSourceConfigs>({});
   pipelineResult?: PipelineResult;
 
-  private pipelineId = parseInt(this.route.snapshot.paramMap.get('pipelineId'), 10);
-  private refreshPipeline = false;
-  private refreshDataSourceConfigs = false;
+  #pipelineId = parseInt(this.#dialogRoute.getParam('pipelineId'), 10);
+  #refreshPipeline = false;
+  #refreshDataSourceConfigs = false;
 
   constructor(
-    protected router: Router,
-    protected route: ActivatedRoute,
-    private queryDefinitionService: QueryDefinitionService,
-    private titleService: Title,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private zone: NgZone,
-    private metadataService: MetadataService,
-    private contentTypesService: ContentTypesService,
     private changeDetectorRef: ChangeDetectorRef,
   ) {
-    super(router, route);
+    super();
   }
 
   ngOnDestroy() {
@@ -59,24 +67,23 @@ export class VisualQueryService extends BaseWithChildDialogComponent implements 
   init() {
     this.fetchDataSources(() => this.fetchPipeline(true, true, false));
     this.attachKeyboardSave();
-    this.subscriptions.add(this.childDialogClosed$().subscribe(() => {
-      if (this.refreshPipeline || this.refreshDataSourceConfigs) {
-        this.fetchPipeline(this.refreshPipeline, this.refreshDataSourceConfigs, this.refreshPipeline);
-      }
-      this.refreshPipeline = false;
-      this.refreshDataSourceConfigs = false;
-     }));
+    this.#dialogRoute.doOnDialogClosed(() => {
+      if (this.#refreshPipeline || this.#refreshDataSourceConfigs)
+        this.fetchPipeline(this.#refreshPipeline, this.#refreshDataSourceConfigs, this.#refreshPipeline);
+      this.#refreshPipeline = false;
+      this.#refreshDataSourceConfigs = false;
+    });
   }
 
   editPipelineEntity() {
     // save Pipeline, then open Edit Dialog
     this.savePipeline(() => {
       const form: EditForm = {
-        items: [{ EntityId: this.pipelineModel$.value.Pipeline.EntityId }],
+        items: [EditPrep.editId(this.pipelineModel$.value.Pipeline.EntityId)],
       };
       const formUrl = convertFormToUrl(form);
-      this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
-      this.refreshPipeline = true;
+      this.#dialogRoute.navRelative([`edit/${formUrl}`]);
+      this.#refreshPipeline = true;
     });
   }
 
@@ -157,12 +164,12 @@ export class VisualQueryService extends BaseWithChildDialogComponent implements 
   private calculateDataSourceConfigs(dataSources: PipelineDataSource[]) {
     const dataSourceConfigs: DataSourceConfigs = {};
     dataSources.forEach(dataSource => {
-      if (dataSource.EntityId == null) { return; }
+      if (dataSource.EntityId == null) return;
       dataSourceConfigs[dataSource.EntityId] = [];
       dataSource.Metadata?.forEach(metadataItem => {
         Object.entries(metadataItem).forEach(([attributeName, attributeValue]) => {
-          if (attributeValue == null || attributeValue === '') { return; }
-          if (['Created', 'Guid', 'Id', 'Modified', 'Title', '_Type'].includes(attributeName)) { return; }
+          if (attributeValue == null || attributeValue === '') return;
+          if (['Created', 'Guid', 'Id', 'Modified', 'Title', '_Type'].includes(attributeName)) return;
           if (Array.isArray(attributeValue) && attributeValue[0]?.Title != null && attributeValue[0]?.Id != null) {
             attributeValue = `${attributeValue[0].Title} (${attributeValue[0].Id})`;
           }
@@ -185,38 +192,31 @@ export class VisualQueryService extends BaseWithChildDialogComponent implements 
     const key = pipelineDataSource.EntityGuid;
 
     // query for existing Entity
-    this.metadataService.getMetadata(targetType, keyType, key, contentTypeName).subscribe(metadata => {
+    this.#metadataSvc.getMetadata(targetType, keyType, key, contentTypeName).subscribe(metadata => {
       // edit existing Entity
       if (metadata.Items.length) {
         const form: EditForm = {
-          items: [{ EntityId: metadata.Items[0].Id }],
+          items: [EditPrep.editId(metadata.Items[0].Id)],
         };
         const formUrl = convertFormToUrl(form);
-        this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
-        this.refreshDataSourceConfigs = true;
+        this.#dialogRoute.navRelative([`edit/${formUrl}`]);
+        this.#refreshDataSourceConfigs = true;
         return;
       }
 
       // Check if the type exists, and if yes, create new Entity
-      this.contentTypesService.retrieveContentType(contentTypeName).subscribe({
+      this.#contentTypesSvc.retrieveContentType(contentTypeName).subscribe({
         next: contentType => {
           if (contentType == null) {
             this.snackBar.open('DataSource doesn\'t have any configuration', undefined, { duration: 3000 });
             return;
           }
           const form: EditForm = {
-            items: [{
-              ContentTypeName: contentTypeName,
-              For: {
-                Target: eavConstants.metadata.entity.target,
-                TargetType: eavConstants.metadata.entity.targetType,
-                Guid: key,
-              },
-            }],
+            items: [ EditPrep.newMetadata(key, contentTypeName, eavConstants.metadata.entity) ],
           };
           const formUrl = convertFormToUrl(form);
-          this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
-          this.refreshDataSourceConfigs = true;
+          this.#dialogRoute.navRelative([`edit/${formUrl}`]);
+          this.#refreshDataSourceConfigs = true;
         },
         error: (error: HttpErrorResponse) => {
           const message = 'Server reports error - this usually means that this DataSource doesn\'t have any configuration';
@@ -228,7 +228,7 @@ export class VisualQueryService extends BaseWithChildDialogComponent implements 
 
   private savePipeline(callback?: () => void) {
     this.snackBar.open('Saving...');
-    this.queryDefinitionService.savePipeline(this.pipelineModel$.value).subscribe({
+    this.#queryDefSvc.savePipeline(this.pipelineModel$.value).subscribe({
       next: pipelineModel => {
         this.snackBar.open('Saved', null, { duration: 2000 });
         this.pipelineModel$.next(pipelineModel);
@@ -242,7 +242,7 @@ export class VisualQueryService extends BaseWithChildDialogComponent implements 
 
   runPipeline(top = 25) {
     this.snackBar.open('Running query...');
-    this.queryDefinitionService.runPipeline(this.pipelineModel$.value.Pipeline.EntityId, top).subscribe({
+    this.#queryDefSvc.runPipeline(this.pipelineModel$.value.Pipeline.EntityId, top).subscribe({
       next: pipelineResult => {
         this.snackBar.open('Query worked', null, { duration: 2000 });
         this.pipelineResult = pipelineResult;
@@ -264,11 +264,11 @@ export class VisualQueryService extends BaseWithChildDialogComponent implements 
       return;
     }
 
-    if (stream.Count === 0) { return; }
+    if (stream.Count === 0) return;
 
     this.snackBar.open('Running stream...');
     const pipelineId = this.pipelineModel$.value.Pipeline.EntityId;
-    this.queryDefinitionService.debugStream(pipelineId, stream.Source, stream.SourceOut, top).subscribe({
+    this.#queryDefSvc.debugStream(pipelineId, stream.Source, stream.SourceOut, top).subscribe({
       next: streamResult => {
         this.snackBar.open('Stream worked', null, { duration: 2000 });
         const pipelineDataSource = this.pipelineModel$.value.DataSources.find(ds => ds.EntityGuid === stream.Source);
@@ -291,11 +291,11 @@ export class VisualQueryService extends BaseWithChildDialogComponent implements 
     if (showSnackBar) {
       this.snackBar.open('Reloading query, please wait...');
     }
-    this.queryDefinitionService.fetchPipeline(this.pipelineId, this.dataSources$.value).subscribe(pipelineModel => {
+    this.#queryDefSvc.fetchPipeline(this.#pipelineId, this.dataSources$.value).subscribe(pipelineModel => {
       if (showSnackBar) {
         this.snackBar.open('Query reloaded', null, { duration: 2000 });
       }
-      this.titleService.setTitle(`${pipelineModel.Pipeline.Name} - Visual Query`);
+      this.#titleSvc.setTitle(`${pipelineModel.Pipeline.Name} - Visual Query`);
       if (refreshPipeline) {
         this.pipelineModel$.next(pipelineModel);
       }
@@ -344,7 +344,7 @@ export class VisualQueryService extends BaseWithChildDialogComponent implements 
   }
 
   private fetchDataSources(callback?: () => void) {
-    this.queryDefinitionService.fetchDataSources().subscribe(dataSources => {
+    this.#queryDefSvc.fetchDataSources().subscribe(dataSources => {
       this.dataSources$.next(dataSources);
       callback();
     });
@@ -354,11 +354,8 @@ export class VisualQueryService extends BaseWithChildDialogComponent implements 
     this.zone.runOutsideAngular(() => {
       this.subscriptions.add(
         fromEvent<KeyboardEvent>(window, 'keydown').pipe(
-          filter(() => !this.route.snapshot.firstChild),
-          filter(event => {
-            const CTRL_S = (navigator.platform.match('Mac') ? event.metaKey : event.ctrlKey) && event.keyCode === 83;
-            return CTRL_S;
-          }),
+          filter(() => !this.#dialogRoute.snapshot.firstChild),
+          filter(event => isCtrlS(event)),
         ).subscribe(event => {
           event.preventDefault();
           this.zone.run(() => { this.savePipeline(); });

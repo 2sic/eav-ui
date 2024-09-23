@@ -8,7 +8,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
   styleUrls: ['./field-hint.component.scss'],
   standalone: true,
   imports: [
-    MatFormFieldModule, NgClass, NgTemplateOutlet
+    MatFormFieldModule,
+    NgClass,
+    NgTemplateOutlet
   ]
 })
 export class FieldHintComponent {

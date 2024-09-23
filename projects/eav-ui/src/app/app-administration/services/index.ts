@@ -1,4 +1,4 @@
-export * from './app-dialog-config.service';
+export * from './dialog-config-global.service';
 export * from './content-types.service';
 export * from './export-app-parts.service';
 export * from './export-app.service';

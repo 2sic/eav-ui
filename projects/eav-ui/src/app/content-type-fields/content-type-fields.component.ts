@@ -1,15 +1,13 @@
-// tslint:disable-next-line:max-line-length
 import { ColumnApi, FilterChangedEvent, GridApi, GridOptions, GridReadyEvent, ICellRendererParams, RowClassParams, RowDragEvent, SortChangedEvent } from '@ag-grid-community/core';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { MatDialog, MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
-import { BehaviorSubject, Observable, combineLatest, forkJoin, map, of } from 'rxjs';
+import { RouterOutlet } from '@angular/router';
+import { forkJoin, of } from 'rxjs';
 import { ContentType } from '../app-administration/models/content-type.model';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { GoToMetadata } from '../metadata';
 import { GoToPermissions } from '../permissions/go-to-permissions';
-import { BaseWithChildDialogComponent } from '../shared/components/base-with-child-dialog.component';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
 import { eavConstants } from '../shared/constants/eav.constants';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
@@ -17,27 +15,27 @@ import { ItemAddIdentifier, EditForm, ItemEditIdentifier, ItemIdentifier, EditPr
 import { ContentTypeFieldsActionsComponent } from './content-type-fields-actions/content-type-fields-actions.component';
 import { ContentTypeFieldsActionsParams } from './content-type-fields-actions/content-type-fields-actions.models';
 import { ContentTypeFieldsInputTypeComponent } from './content-type-fields-input-type/content-type-fields-input-type.component';
-// tslint:disable-next-line:max-line-length
 import { ContentTypeFieldsInputTypeParams } from './content-type-fields-input-type/content-type-fields-input-type.models';
 import { ContentTypeFieldsSpecialComponent } from './content-type-fields-special/content-type-fields-special.component';
 import { ContentTypeFieldsTitleComponent } from './content-type-fields-title/content-type-fields-title.component';
 import { ContentTypeFieldsTitleParams } from './content-type-fields-title/content-type-fields-title.models';
 import { ContentTypeFieldsTypeComponent } from './content-type-fields-type/content-type-fields-type.component';
-import { Field } from './models/field.model';
-import { ContentTypesFieldsService } from './services/content-types-fields.service';
-import { EmptyFieldHelpers } from '../edit/form/fields/empty/empty-field-helpers';
+import { Field } from '../shared/fields/field.model';
+import { ContentTypesFieldsService } from '../shared/fields/content-types-fields.service';
 import { ShareOrInheritDialogComponent } from './share-or-inherit-dialog/share-or-inherit-dialog.component';
-import { NgClass, AsyncPipe } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
 import { ToggleDebugDirective } from '../shared/directives/toggle-debug.directive';
 import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
+import { transient } from '../core';
+import { InputTypeHelpers } from '../shared/fields/input-type-helpers';
+import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
 
 @Component({
   selector: 'app-content-type-fields',
   templateUrl: './content-type-fields.component.html',
-  styleUrls: ['./content-type-fields.component.scss'],
   standalone: true,
   imports: [
     MatButtonModule,
@@ -45,19 +43,17 @@ import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module
     RouterOutlet,
     NgClass,
     MatDialogActions,
-    AsyncPipe,
-
     ToggleDebugDirective,
     SxcGridModule,
   ],
-  providers: [
-    ContentTypesService,
-    ContentTypesFieldsService
-  ]
 })
-export class ContentTypeFieldsComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
-  contentType$ = new BehaviorSubject<ContentType>(undefined);
-  fields$ = new BehaviorSubject<Field[]>(undefined);
+export class ContentTypeFieldsComponent implements OnInit {
+
+  #dialogRouter = transient(DialogRoutingService);
+
+  contentType = signal<ContentType>(undefined);
+  fields = signal<Field[]>(undefined);
+
   gridOptions = this.buildGridOptions();
   sortApplied = false;
   filterApplied = false;
@@ -65,37 +61,21 @@ export class ContentTypeFieldsComponent extends BaseWithChildDialogComponent imp
   private gridApi: GridApi;
   private columnApi: ColumnApi;
   private rowDragSuppressed = false;
-  private contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
+  private contentTypeStaticName = this.#dialogRouter.getParam('contentTypeStaticName');
 
-  viewModel$: Observable<ContentTypeFieldsViewModel>;
-
+  private contentTypesService = transient(ContentTypesService);
+  private contentTypesFieldsService = transient(ContentTypesFieldsService);
 
   constructor(
-    protected router: Router,
-    protected route: ActivatedRoute,
     private dialogRef: MatDialogRef<ContentTypeFieldsComponent>,
-    private contentTypesService: ContentTypesService,
-    private contentTypesFieldsService: ContentTypesFieldsService,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
   ) {
-    super(router, route);
   }
 
   ngOnInit() {
     this.fetchFields();
-    this.subscriptions.add(this.childDialogClosed$().subscribe(() => { this.fetchFields(); }));
-    this.viewModel$ = combineLatest([
-      this.contentType$, this.fields$
-    ]).pipe(
-      map(([contentType, fields]) => ({ contentType, fields }))
-    );
-  }
-
-  ngOnDestroy() {
-    this.contentType$.complete();
-    this.fields$.complete();
-    super.ngOnDestroy();
+    this.#dialogRouter.doOnDialogClosed(() => this.fetchFields());
   }
 
   closeDialog() {
@@ -113,8 +93,8 @@ export class ContentTypeFieldsComponent extends BaseWithChildDialogComponent imp
 
   onRowDragEnd(event: RowDragEvent) {
     this.gridApi.setSuppressRowDrag(true);
-    const idArray = this.fields$.value.map(field => field.Id);
-    this.contentTypesFieldsService.reOrder(idArray, this.contentType$.value).subscribe(() => {
+    const idArray = this.fields().map(field => field.Id);
+    this.contentTypesFieldsService.reOrder(idArray, this.contentType()).subscribe(() => {
       this.fetchFields(() => {
         this.gridApi.setEnableCellTextSelection(true);
         this.gridApi.setSuppressRowDrag(false);
@@ -125,16 +105,16 @@ export class ContentTypeFieldsComponent extends BaseWithChildDialogComponent imp
   onRowDragMove(event: RowDragEvent) {
     const movingNode = event.node;
     const overNode = event.overNode;
-    if (!overNode) { return; }
+    if (!overNode) return;
     const rowNeedsToMove = movingNode !== overNode;
     if (rowNeedsToMove) {
       const movingData: Field = movingNode.data;
       const overData: Field = overNode.data;
-      const newFields = [...this.fields$.value];
+      const newFields = [...this.fields()];
       const fromIndex = newFields.indexOf(movingData);
       const toIndex = newFields.indexOf(overData);
       this.moveInArray(newFields, fromIndex, toIndex);
-      this.fields$.next(newFields);
+      this.fields.set(newFields);
       this.gridApi.clearFocusedCell();
     }
   }
@@ -170,27 +150,26 @@ export class ContentTypeFieldsComponent extends BaseWithChildDialogComponent imp
   }
 
   add() {
-    this.router.navigate([`add/${this.contentTypeStaticName}`], { relativeTo: this.route });
+    this.#dialogRouter.navRelative([`add/${this.contentTypeStaticName}`]);
   }
 
-  private nameCellRenderer(params: ICellRendererParams) {
-    const currentField: Field = params.data;
-    const inputType = currentField.InputType;
+  private nameCellRenderer(params: Omit<ICellRendererParams, 'data'> & { data: Field }) {
+    const inputType = params.data.InputType;
 
-    if (EmptyFieldHelpers.endsPreviousGroup(inputType))
+    if (InputTypeHelpers.endsPreviousGroup(inputType))
       return params.value;
 
     let isGroupOpen = false;
-    for (const field of this.fields$.value) {
-      if (EmptyFieldHelpers.isGroupStart(inputType)) {
+    for (const field of this.fields()) {
+      if (InputTypeHelpers.isGroupStart(inputType)) {
         isGroupOpen = true;
         continue;
       }
-      if (EmptyFieldHelpers.isGroupEnd(inputType)) {
+      if (InputTypeHelpers.isGroupEnd(inputType)) {
         isGroupOpen = false;
         continue;
       }
-      if (field.StaticName === currentField.StaticName)
+      if (field.StaticName === params.data.StaticName)
         break;
     }
 
@@ -198,13 +177,13 @@ export class ContentTypeFieldsComponent extends BaseWithChildDialogComponent imp
   }
 
   private fetchFields(callback?: () => void) {
-    const contentType$ = this.contentType$.value == null
+    const contentTypeTemp = this.contentType() == null
       ? this.contentTypesService.retrieveContentType(this.contentTypeStaticName)
-      : of(this.contentType$.value);
-    const fields$ = this.contentTypesFieldsService.getFields(this.contentTypeStaticName);
-    forkJoin([contentType$, fields$]).subscribe(([contentType, fields]) => {
-      this.contentType$.next(contentType);
-      this.fields$.next(fields);
+      : of(this.contentType());
+    const fieldsTemp = this.contentTypesFieldsService.getFields(this.contentTypeStaticName);
+    forkJoin([contentTypeTemp, fieldsTemp]).subscribe(([contentType, fields]) => {
+      this.contentType.set(contentType);
+      this.fields.set(fields);
       if (callback != null)
         callback();
     });
@@ -242,7 +221,7 @@ export class ContentTypeFieldsComponent extends BaseWithChildDialogComponent imp
     };
     // console.warn('2dm - editFieldMetadata', field.ConfigTypes, form);
     const formUrl = convertFormToUrl(form);
-    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
+    this.#dialogRouter.navRelative([`edit/${formUrl}`]);
   }
 
   private createItemDefinition(field: Field, metadataType: string): ItemAddIdentifier | ItemEditIdentifier {
@@ -263,35 +242,34 @@ export class ContentTypeFieldsComponent extends BaseWithChildDialogComponent imp
 
   private setTitle(field: Field) {
     this.snackBar.open('Setting title...');
-    this.contentTypesFieldsService.setTitle(field, this.contentType$.value).subscribe(() => {
+    this.contentTypesFieldsService.setTitle(field, this.contentType()).subscribe(() => {
       this.snackBar.open('Title set', null, { duration: 2000 });
       this.fetchFields();
     });
   }
 
   private changeInputType(field: Field) {
-    this.router.navigate([`update/${this.contentTypeStaticName}/${field.Id}/inputType`], { relativeTo: this.route });
+    this.#dialogRouter.navRelative([`update/${this.contentTypeStaticName}/${field.Id}/inputType`]);
   }
 
   private rename(field: Field) {
-    this.router.navigate([`update/${this.contentTypeStaticName}/${field.Id}/name`], { relativeTo: this.route });
+    this.#dialogRouter.navRelative([`update/${this.contentTypeStaticName}/${field.Id}/name`]);
   }
 
   private delete(field: Field) {
-    if (!confirm(`Are you sure you want to delete '${field.StaticName}' (${field.Id})?`)) { return; }
+    if (!confirm(`Are you sure you want to delete '${field.StaticName}' (${field.Id})?`)) return;
     this.snackBar.open('Deleting...');
-    this.contentTypesFieldsService.delete(field, this.contentType$.value).subscribe(() => {
+    this.contentTypesFieldsService.delete(field, this.contentType()).subscribe(() => {
       this.snackBar.open('Deleted', null, { duration: 2000 });
       this.fetchFields();
     });
   }
 
   private openPermissions(field: Field) {
-    this.router.navigate([GoToPermissions.getUrlAttribute(field.Id)], { relativeTo: this.route });
+    this.#dialogRouter.navRelative([GoToPermissions.getUrlAttribute(field.Id)]);
   }
 
   private openImageConfiguration(field: Field) {
-    console.log('2dm - openImageConfiguration', field);
     const imgConfig = field.imageConfiguration;
     if (imgConfig?.isRecommended != true)
       throw new Error('This field does not expect to have an image configuration');
@@ -300,7 +278,7 @@ export class ContentTypeFieldsComponent extends BaseWithChildDialogComponent imp
       ? EditPrep.editId(imgConfig.entityId)
       : EditPrep.newMetadata(field.Id, imgConfig.typeName, eavConstants.metadata.attribute);
     const formUrl = convertFormToUrl({ items: [itemIdentifier] });
-    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
+    this.#dialogRouter.navRelative([`edit/${formUrl}`]);
   }
 
   private openMetadata(field: Field) {
@@ -308,7 +286,7 @@ export class ContentTypeFieldsComponent extends BaseWithChildDialogComponent imp
       field.Id,
       `Metadata for Field: ${field.StaticName} (${field.Id})`,
     );
-    this.router.navigate([url], { relativeTo: this.route });
+    this.#dialogRouter.navRelative([url]);
   }
 
   private shareOrInherit(field: Field) {
@@ -320,6 +298,8 @@ export class ContentTypeFieldsComponent extends BaseWithChildDialogComponent imp
     shareOrInheritDialogRef.afterClosed().subscribe(() => this.fetchFields());
   }
 
+  //#region Grid Options
+
   private buildGridOptions(): GridOptions {
     const gridOptions: GridOptions = {
       ...defaultGridOptions,
@@ -327,8 +307,8 @@ export class ContentTypeFieldsComponent extends BaseWithChildDialogComponent imp
         const field: Field = params.data;
         const rowClass: string[] = [];
         if (field.EditInfo.DisableSort) { rowClass.push('disable-row-drag'); }
-        if (EmptyFieldHelpers.isGroupStart(field.InputType)) { rowClass.push('group-start-row'); }
-        if (EmptyFieldHelpers.isGroupEnd(field.InputType)) { rowClass.push('group-end-row'); }
+        if (InputTypeHelpers.isGroupStart(field.InputType)) { rowClass.push('group-start-row'); }
+        if (InputTypeHelpers.isGroupEnd(field.InputType)) { rowClass.push('group-end-row'); }
         return rowClass;
       },
       columnDefs: [
@@ -341,63 +321,37 @@ export class ContentTypeFieldsComponent extends BaseWithChildDialogComponent imp
           field: 'Title',
           width: 42,
           cellClass: 'secondary-action no-padding no-outline'.split(' '),
-          valueGetter: (params) => {
-            const field: Field = params.data;
-            return field.IsTitle;
-          },
+          valueGetter: (p: { data: Field }) => p.data.IsTitle,
           cellRenderer: ContentTypeFieldsTitleComponent,
-          cellRendererParams: (() => {
-            const params: ContentTypeFieldsTitleParams = {
-              onSetTitle: (field) => this.setTitle(field),
-            };
-            return params;
-          })(),
+          cellRendererParams: (() => ({
+            onSetTitle: (field) => this.setTitle(field),
+          } satisfies ContentTypeFieldsTitleParams))(),
         },
         {
-          ...ColumnDefinitions.TextWide,
+          ...ColumnDefinitions.TextWidePrimary,
           headerName: 'Name',
           field: 'StaticName',
-          onCellClicked: (params) => {
-            const field: Field = params.data;
-            this.editFieldMetadata(field);
-          },
+          onCellClicked: (p: { data: Field }) => this.editFieldMetadata(p.data),
           cellRenderer: (params: ICellRendererParams) => this.nameCellRenderer(params),
         },
         {
+          ...ColumnDefinitions.ItemsText,
           field: 'Type',
           width: 70,
-          headerClass: 'dense',
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const field: Field = params.data;
-            return field.Type;
-          },
+          valueGetter: (p: { data: Field }) => p.data.Type,
           cellRenderer: ContentTypeFieldsTypeComponent,
         },
         {
+          ...ColumnDefinitions.ItemsText,
           headerName: 'Input',
           field: 'InputType',
           width: 160,
-          cellClass: (params) => {
-            const field: Field = params.data;
-            return `${field.EditInfo.DisableEdit ? 'no-outline no-padding' : 'secondary-action no-padding'}`.split(' ');
-          },
-          sortable: true,
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const field: Field = params.data;
-            const inputType = field.InputType.substring(field.InputType.indexOf('-') + 1);
-            return inputType;
-          },
+          cellClass: (p: { data: Field }) => `${p.data.EditInfo.DisableEdit ? 'no-outline no-padding' : 'secondary-action no-padding'}`.split(' '),
+          valueGetter: (p: { data: Field }) => p.data.InputType.substring(p.data.InputType.indexOf('-') + 1),
           cellRenderer: ContentTypeFieldsInputTypeComponent,
-          cellRendererParams: (() => {
-            const params: ContentTypeFieldsInputTypeParams = {
-              onChangeInputType: (field) => this.changeInputType(field),
-            };
-            return params;
-          })(),
+          cellRendererParams: (() => ({
+            onChangeInputType: (field) => this.changeInputType(field),
+          } satisfies ContentTypeFieldsInputTypeParams))(),
         },
         {
           field: 'Label',
@@ -406,10 +360,7 @@ export class ContentTypeFieldsComponent extends BaseWithChildDialogComponent imp
           cellClass: 'no-outline',
           sortable: true,
           filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const field: Field = params.data;
-            return field.Metadata?.All?.Name;
-          },
+          valueGetter: (p: { data: Field }) => p.data.Metadata?.All?.Name,
         },
         {
           field: 'Special',
@@ -425,10 +376,7 @@ export class ContentTypeFieldsComponent extends BaseWithChildDialogComponent imp
           cellClass: 'no-outline',
           sortable: true,
           filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const field: Field = params.data;
-            return field.Metadata?.All?.Notes;
-          },
+          valueGetter: (p: { data: Field }) => p.data.Metadata?.All?.Notes,
         },
         {
           ...ColumnDefinitions.ActionsPinnedRight5,
@@ -450,9 +398,6 @@ export class ContentTypeFieldsComponent extends BaseWithChildDialogComponent imp
     };
     return gridOptions;
   }
-}
 
-interface ContentTypeFieldsViewModel {
-  contentType: ContentType;
-  fields: Field[];
+  //#endregion
 }

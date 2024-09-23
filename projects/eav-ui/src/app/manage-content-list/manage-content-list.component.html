@@ -1,4 +1,4 @@
-@if (viewModel$ | async; as vm) {
+@if (header() && items()) {
   <div class="eav-dialog eav-no-scrollbar">
     <div class="eav-dialog-header">
       <div class="eav-dialog-header__title">{{'ManageContentList.Title' | translate}}</div>
@@ -6,34 +6,34 @@
     <div class="eav-dialog-content">
       <router-outlet></router-outlet>
       <div class="dialog-component-content fancy-scrollbar-light" cdkScrollable>
-        @if (vm.header) {
+        @if (header()) {
           <p>
             {{'ManageContentList.Description' | translate}}
           </p>
           <p>
-            @if (vm.header.Type) {
-              <span>{{ vm.header.Title }}</span>
+            @if (header().Type) {
+              <span>{{ header().Title }}</span>
               <button mat-icon-button tippy="Edit header" (click)="editHeader()">
                 <mat-icon>edit</mat-icon>
               </button>
             }
-            @if (!vm.header.Type) {
+            @else {
               {{'ManageContentList.NoHeader' | translate}}
             }
           </p>
         }
-        @if (vm.items && vm.items?.length < 25 ) {
+        @if (items()) {
           <p class="eav-sort-title">
-            {{'ManageContentList.SortItems' | translate}}
+            {{ 'ManageContentList.' + (reordered() ? 'ListHasBeenReordered' : (items()?.length < 25 ? 'SortItems' : 'SortLotsOfItems'))
+              | translate
+            }}
           </p>
         }
-        @if (vm.items?.length >= 25 ) {
-          <p class="eav-sort-title">
-            {{'ManageContentList.SortLotsOfItems' | translate}}
-          </p>
-        }
+
+        <!-- Items - with drag-and-drop -->
         <div class="eav-dnd-list" cdkDropList (cdkDropListDropped)="drop($event)">
-          @for (item of vm.items; track trackByFn($index, item)) {
+          <!-- we use both Index and Id because all demo items have Id=0 -->
+          @for (item of items(); track (item.Index + '+' + item.Id)) {
             <div class="eav-dnd-item" cdkDrag>
               <div class="eav-dnd-item__title">
                 <mat-icon class="eav-dnd-item__title-icon" tippy="Drag to reorder the list">drag_handle</mat-icon>
@@ -48,11 +48,11 @@
                   <mat-icon>playlist_add</mat-icon>
                 </button>
                 <button mat-icon-button [tippy]="'Fields.Picker.AddItemBelow' | translate" appMousedownStopPropagation
-                  [disabled]="item.Id === 0 || reordered" (click)="addBelow(item.Index)">
+                  [disabled]="item.Id === 0 || reordered()" (click)="addBelow(item.Index)">
                   <mat-icon>add</mat-icon>
                 </button>
                 <button mat-icon-button [tippy]="'Fields.Picker.Remove' | translate" appMousedownStopPropagation
-                  [disabled]="reordered" (click)="remove(item)">
+                  [disabled]="reordered()" (click)="remove(item)">
                   <mat-icon>remove</mat-icon>
                 </button>
                 <button mat-icon-button [tippy]="'Fields.Picker.Edit' | translate" appMousedownStopPropagation

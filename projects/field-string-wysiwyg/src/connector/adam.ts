@@ -24,7 +24,7 @@ function insertContent(item: AdamItem, editor: Editor, imageMode: boolean): void
   if (extIndex > 0)
     fileName = fileName.substring(0, extIndex);
 
-  const imageOrFileUrl = item.Url; // (item as AdamItem).Url ?? (item as AdamPostResponse).Path;
+  const imageOrFileUrl = item.Url;
   const content = imageMode
     ? `${selected}<img src="${imageOrFileUrl}" alt="${fileName}" data-cmsid="file:${item.Name}">`
     : `<a href="${imageOrFileUrl}">${selected || fileName}</a>`;

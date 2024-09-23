@@ -1,46 +1,54 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { MatDialogRef, MatDialogActions } from '@angular/material/dialog';
+import { CdkScrollable } from '@angular/cdk/scrolling';
+import { AsyncPipe, NgClass } from '@angular/common';
+import { AfterViewInit, Component, computed, effect, inject, OnDestroy, OnInit, QueryList, signal, ViewChildren } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { MatRippleModule } from '@angular/material/core';
+import { MatDialogActions, MatDialogRef } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { TranslateService, TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import 'reflect-metadata';
-import { BehaviorSubject, combineLatest, delay, fromEvent, map, Observable, of, startWith, tap } from 'rxjs';
+import { delay, fromEvent, of, startWith } from 'rxjs';
+import { transient } from '../../../core';
 import { BaseComponent } from '../../../shared/components/base.component';
-import { consoleLogDev } from '../../../shared/helpers/console-log-angular.helper';
-import { FormBuilderComponent } from '../../form/builder/form-builder/form-builder.component';
-import { FormulaDesignerService } from '../../formulas/formula-designer.service';
-import { MetadataDecorators } from '../../shared/constants';
-import { InputFieldHelpers, ValidationMessagesHelpers } from '../../shared/helpers';
-import { FieldErrorMessage, SaveResult } from '../../shared/models';
-import { EavItem } from '../../shared/models/eav';
+import { ToggleDebugDirective } from '../../../shared/directives/toggle-debug.directive';
+import { classLog } from '../../../shared/logging';
+import { ExtendedFabSpeedDialImports } from '../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
+import { GlobalConfigService } from '../../../shared/services/global-config.service';
+import { computedWithPrev } from '../../../shared/signals/signal.utilities';
+import { UserSettings } from '../../../shared/user/user-settings.service';
+import { LoadIconsService } from '../../assets/icons/load-icons.service';
+import { EntityFormBuilderComponent } from '../../entity-form/entity-form-builder/form-builder.component';
+import { PickerTreeDataHelper } from '../../fields/picker/picker-tree/picker-tree-data-helper';
+import { FormConfigService } from '../../form/form-config.service';
+import { FormDataService } from '../../form/form-data.service';
+import { FormLanguageService } from '../../form/form-language.service';
+import { FormPublishingService } from '../../form/form-publishing.service';
+import { FormsStateService } from '../../form/forms-state.service';
+import { FormulaDesignerService } from '../../formulas/designer/formula-designer.service';
+import { LanguageService } from '../../localization/language.service';
+import { EditRoutingService } from '../../routing/edit-routing.service';
+import { AdamCacheService } from '../../shared/adam/adam-cache.service';
+import { LinkCacheService } from '../../shared/adam/link-cache.service';
+import { ContentTypeItemService } from '../../shared/content-types/content-type-item.service';
+import { ContentTypeService } from '../../shared/content-types/content-type.service';
+import { InputTypeService } from '../../shared/input-types/input-type.service';
 import { EavEntityBundleDto } from '../../shared/models/json-format-v1';
-import { FormConfigService, EditRoutingService, FormsStateService, LoadIconsService } from '../../shared/services';
-// tslint:disable-next-line:max-line-length
-import { AdamCacheService, ContentTypeItemService, ContentTypeService, GlobalConfigService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, LinkCacheService, PublishStatusService } from '../../shared/store/ngrx-data';
+import { ValidationMsgHelper } from '../../shared/validation/validation-messages.helpers';
+import { ItemService } from '../../state/item.service';
+import { MetadataDecorators } from '../../state/metadata-decorators.constants';
+import { SaveResult } from '../../state/save-result.model';
 import { EditEntryComponent } from '../entry/edit-entry.component';
-import { EditDialogMainViewModel, SaveEavFormData } from './edit-dialog-main.models';
+import { EditDialogFooterComponent } from '../footer/edit-dialog-footer.component';
+import { EditDialogHeaderComponent } from '../header/edit-dialog-header.component';
+import { SaveEavFormData } from './edit-dialog-main.models';
+import { FormSlideDirective } from './form-slide.directive';
+import { isCtrlS, isEscape } from './keyboard-shortcuts';
 import { SnackBarSaveErrorsComponent } from './snack-bar-save-errors/snack-bar-save-errors.component';
-import { SaveErrorsSnackBarData } from './snack-bar-save-errors/snack-bar-save-errors.models';
+import { FieldErrorMessage, SaveErrorsSnackBarData } from './snack-bar-save-errors/snack-bar-save-errors.models';
 import { SnackBarUnsavedChangesComponent } from './snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
 import { UnsavedChangesSnackBarData } from './snack-bar-unsaved-changes/snack-bar-unsaved-changes.models';
-import { PickerDataCacheService } from '../../form/fields/picker/cache/picker-data-cache.service';
-import { EditDialogFooterComponent } from '../footer/edit-dialog-footer.component';
-import { MatIconModule } from '@angular/material/icon';
-import { MatRippleModule } from '@angular/material/core';
-import { FormSlideDirective } from './form-slide.directive';
-import { CdkScrollable } from '@angular/cdk/scrolling';
-import { EditDialogHeaderComponent } from '../header/edit-dialog-header.component';
-import { ExtendedModule } from '@angular/flex-layout/extended';
-import { NgClass, AsyncPipe } from '@angular/common';
-import { PickerTreeDataService } from '../../form/fields/picker/picker-tree/picker-tree-data-service';
-import { PickerTreeDataHelper } from '../../form/fields/picker/picker-tree/picker-tree-data-helper';
-import { FormDataService } from '../../shared/services/form-data.service';
-import { ToggleDebugDirective } from '../../../shared/directives/toggle-debug.directive';
-import { SourceService } from '../../../code-editor/services/source.service';
-import { EavLogger } from '../../../shared/logging/eav-logger';
-import { ExtendedFabSpeedDialImports } from '../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
-
-const logThis = true;
-const nameOfThis = 'EditDialogMainComponent';
 
 @Component({
   selector: 'app-edit-dialog-main',
@@ -54,7 +62,7 @@ const nameOfThis = 'EditDialogMainComponent';
     EditDialogHeaderComponent,
     CdkScrollable,
     FormSlideDirective,
-    FormBuilderComponent,
+    EntityFormBuilderComponent,
     MatRippleModule,
     MatIconModule,
     EditDialogFooterComponent,
@@ -66,111 +74,116 @@ const nameOfThis = 'EditDialogMainComponent';
   providers: [
     EditRoutingService,
     FormsStateService,
+    // This is shared across all entities on this form
     FormulaDesignerService,
-    // 2dm: don't think it's used for real - except for in the create template, where it's referenced directly
-    SourceService,
 
-    // TODO: probably move to each picker component
-    PickerTreeDataService,
+    // TODO: probably move to each picker component (Errors)
     PickerTreeDataHelper,
-
-    LoadIconsService,
   ],
 })
 export class EditDialogMainComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
-  @ViewChildren(FormBuilderComponent) formBuilderRefs: QueryList<FormBuilderComponent>;
 
-  viewModel$: Observable<EditDialogMainViewModel>;
+  log = classLog({EditDialogMainComponent});
 
-  private viewInitiated$ = new BehaviorSubject(false);
-  private debugInfoIsOpen$= new BehaviorSubject(false);
-  private saveResult: SaveResult;
+  @ViewChildren(EntityFormBuilderComponent) formBuilderRefs: QueryList<EntityFormBuilderComponent>;
+
+  #globalConfigService = inject(GlobalConfigService);
+  #formConfig = inject(FormConfigService);
+
+  #loadIconsService = transient(LoadIconsService);
+  #formDataService = transient(FormDataService);
+
+  protected viewInitiated = signal(false);
 
   constructor(
     private dialogRef: MatDialogRef<EditEntryComponent>,
     private contentTypeItemService: ContentTypeItemService,
     private contentTypeService: ContentTypeService,
-    private globalConfigService: GlobalConfigService,
-
-    private formConfig: FormConfigService,
-    private formDataService: FormDataService,
-
     private inputTypeService: InputTypeService,
     private itemService: ItemService,
     private languageService: LanguageService,
-    private languageStore: LanguageInstanceService,
+    private languageStore: FormLanguageService,
     private snackBar: MatSnackBar,
     private translate: TranslateService,
-    private loadIconsService: LoadIconsService,
     private editRoutingService: EditRoutingService,
-    private publishStatusService: PublishStatusService,
+    private publishStatusService: FormPublishingService,
     private formsStateService: FormsStateService,
-    private entityCacheService: PickerDataCacheService,
     private adamCacheService: AdamCacheService,
     private linkCacheService: LinkCacheService,
     private formulaDesignerService: FormulaDesignerService,
   ) {
-    super(new EavLogger(nameOfThis, logThis));
+    super();
     this.dialogRef.disableClose = true;
-  }
 
-  ngOnInit() {
-    // this.viewInitiated$ = new BehaviorSubject(false);
-    // this.debugInfoIsOpen$ = new BehaviorSubject(false);
-    this.editRoutingService.init();
-    this.loadIconsService.load();
-    this.formsStateService.init();
-    this.formulaDesignerService.init();
-    /** Small delay to make form opening feel smoother. */
-    const delayForm$ = of(false).pipe(delay(0), startWith(true));
-    const items$ = this.itemService.getItems$(this.formConfig.config.itemGuids);
-    const hideHeader$ = this.languageStore.getHideHeader$(this.formConfig.config.formId);
-    const formsValid$ = this.formsStateService.formsValid$;
-    const saveButtonDisabled$ = this.formsStateService.saveButtonDisabled$;
-    const debugEnabled$ = this.globalConfigService.getDebugEnabled$().pipe(
-      tap(debugEnabled => {
-        if (this.debugInfoIsOpen$.value && !debugEnabled) {
-          this.debugInfoIsOpen$.next(false);
-        }
-      })
-    );
-    this.viewModel$ = combineLatest([
-      combineLatest([items$, formsValid$, delayForm$, this.viewInitiated$]),
-      combineLatest([debugEnabled$, this.debugInfoIsOpen$, hideHeader$, saveButtonDisabled$]),
-    ]).pipe(
-      map(([
-        [items, formsValid, delayForm, viewInitiated],
-        [debugEnabled, debugInfoIsOpen, hideHeader, saveButtonDisabled],
-      ]) => {
-        const viewModel: EditDialogMainViewModel = {
-          items,
-          formsValid,
-          delayForm,
-          viewInitiated,
-          debugEnabled,
-          debugInfoIsOpen,
-          hideHeader,
-          saveButtonDisabled,
-        };
-        return viewModel;
-      }),
-    );
-    this.startSubscriptions();
-  }
-
-  ngAfterViewInit() {
-    setTimeout(() => {
-      this.viewInitiated$.next(true);
+    // Watch to save based on messages from sub-dialogs.
+    effect(() => {
+      const { tryToSave, close } = this.formsStateService.triggerTrySaveAndMaybeClose();
+      if (!tryToSave) return;
+      this.saveAll(close);
     });
   }
 
-  ngOnDestroy() {
-    this.viewInitiated$.complete();
-    this.debugInfoIsOpen$.complete();
-    this.languageStore.removeFromStore(this.formConfig.config.formId);
-    this.publishStatusService.removePublishStatus(this.formConfig.config.formId);
+  #saveResult: SaveResult;
 
-    if (this.formConfig.config.isParentDialog) {
+  protected items = this.itemService.getManySignal(this.#formConfig.config.itemGuids);
+
+  protected formsValid = this.formsStateService.formsValidTemp;
+  protected saveButtonDisabled = this.formsStateService.saveButtonDisabled;
+  protected hideHeader = this.languageStore.getHideHeaderSignal(this.#formConfig.config.formId);
+
+  //#region Footer - Show once or more, hide again, and expand footer (extra large footer)
+
+  /** Signal to determine if we should show the footer. Will affect style.display of the footer tag */
+  protected footerShow = computed(() => {
+    // if debug is true, then it was set once using the magic shortcut
+    if (this.#globalConfigService.isDebug()) {
+      this.#debugWasModified = true;
+      return true;
+    }
+
+    // If debug is false, and was never modified, show based on system admin status
+    return !this.#debugWasModified && this.#formConfig.config.dialogContext.User?.IsSystemAdmin;
+  });
+
+  /** Show footer once or more - basically stays true if it was ever shown */
+  protected footerShowOnceOrMore = computedWithPrev(prev => prev || this.footerShow(), false);
+
+  /** Special variable to check if debug was ever triggered, to allow super-users to re-hide the footer */
+  #debugWasModified = false;
+
+  /** Signal to tell the UI that the footer needs more space (changes CSS) */
+  #footerUserSettings = inject(UserSettings).part(EditDialogFooterComponent.userSettings)
+  footerSize = computed(() => this.#footerUserSettings.data().size);
+
+  //#endregion
+
+  /** delay showing the form, but not quite sure why. maybe to prevent flickering? */
+  protected delayForm = toSignal(
+    of(false).pipe(
+      delay(0),
+      startWith(true)
+    ));
+
+
+  ngOnInit() {
+    this.editRoutingService.init();
+    this.#loadIconsService.load();
+    this.formsStateService.init();
+    this.formulaDesignerService.cache.init();
+
+    this.#startSubscriptions();
+    this.#watchKeyboardShortcuts();
+  }
+
+  ngAfterViewInit() {
+    setTimeout(() => this.viewInitiated.set(true));
+  }
+
+  ngOnDestroy() {
+    this.languageStore.remove(this.#formConfig.config.formId);
+    this.publishStatusService.remove(this.#formConfig.config.formId);
+
+    if (this.#formConfig.config.isParentDialog) {
       // clear the rest of the store
       this.languageStore.clearCache();
       this.languageService.clearCache();
@@ -179,82 +192,84 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
       this.contentTypeItemService.clearCache();
       this.contentTypeService.clearCache();
       this.publishStatusService.clearCache();
-      this.entityCacheService.clearCache();
       this.adamCacheService.clearCache();
       this.linkCacheService.clearCache();
-      // this.stringQueryCacheService.clearCache();
     }
     super.ngOnDestroy();
   }
 
   closeDialog(forceClose?: boolean) {
     if (forceClose) {
-      this.dialogRef.close(this.formConfig.config.createMode ? this.saveResult : undefined);
-    } else if (!this.formsStateService.readOnly$.value.isReadOnly && this.formsStateService.formsDirty$.value) {
-      this.snackBarYouHaveUnsavedChanges();
+      this.dialogRef.close(this.#formConfig.config.createMode ? this.#saveResult : undefined);
+    } else if (!this.formsStateService.readOnly().isReadOnly && this.formsStateService.formsAreDirty()) {
+      this.#snackBarYouHaveUnsavedChanges();
     } else {
-      this.dialogRef.close(this.formConfig.config.createMode ? this.saveResult : undefined);
+      this.dialogRef.close(this.#formConfig.config.createMode ? this.#saveResult : undefined);
     }
-  }
-
-  trackByFn(index: number, item: EavItem) {
-    return item.Entity.Guid;
   }
 
   /** Save all forms */
   saveAll(close: boolean) {
-    if (this.formsStateService.formsValid$.value) {
+    const l = this.log.fn('saveAll', { close });
+    if (this.formsStateService.formsAreValid()) {
+
       const items = this.formBuilderRefs
         .map(formBuilderRef => {
-          const eavItem = this.itemService.getItem(formBuilderRef.entityGuid);
+          const eavItem = this.itemService.get(formBuilderRef.entityGuid);
           const isValid = this.formsStateService.getFormValid(eavItem.Entity.Guid);
-          if (!isValid) { return; }
+          if (!isValid)
+            return null;
 
           // do not try to save item which doesn't have any fields, nothing could have changed about it
           // but enable saving if there is a special metadata
           const hasAttributes = Object.keys(eavItem.Entity.Attributes).length > 0;
-          const contentTypeId = InputFieldHelpers.getContentTypeId(eavItem);
-          const contentType = this.contentTypeService.getContentType(contentTypeId);
+          const contentType = this.contentTypeService.getContentTypeOfItem(eavItem);
           const saveIfEmpty = contentType.Metadata.some(m => m.Type.Name === MetadataDecorators.SaveEmptyDecorator);
-          if (!hasAttributes && !saveIfEmpty) { return; }
+          if (!hasAttributes && !saveIfEmpty)
+            return null;
 
           const item = EavEntityBundleDto.bundleToDto(eavItem);
           return item;
         })
         .filter(item => item != null);
-      const publishStatus = this.publishStatusService.getPublishStatus(this.formConfig.config.formId);
+
+      const publishStatus = this.publishStatusService.get(this.#formConfig.config.formId);
 
       const saveFormData: SaveEavFormData = {
         Items: items,
         IsPublished: publishStatus.IsPublished,
         DraftShouldBranch: publishStatus.DraftShouldBranch,
       };
-      consoleLogDev('SAVE FORM DATA:', saveFormData);
+      l.a('SAVE FORM DATA:', { saveFormData });
       this.snackBar.open(this.translate.instant('Message.Saving'), null, { duration: 2000 });
 
-      this.formDataService.saveFormData(saveFormData, this.formConfig.config.partOfPage).subscribe({
+      this.#formDataService.saveFormData(saveFormData, this.#formConfig.config.partOfPage).subscribe({
         next: result => {
-          consoleLogDev('SAVED!, result:', result, 'close:', close);
-          this.itemService.updateItemId(result);
+          l.a('SAVED!, result:', { result, close });
+          this.itemService.updater.updateItemId(result);
           this.snackBar.open(this.translate.instant('Message.Saved'), null, { duration: 2000 });
-          this.formsStateService.formsDirty$.next(false);
-          this.saveResult = result;
-          if (close) {
+          this.formsStateService.formsAreDirty.set(false);
+          this.#saveResult = result;
+          if (close)
             this.closeDialog();
-          }
         },
         error: err => {
-          consoleLogDev('SAVE FAILED:', err);
+          l.a('SAVE FAILED:', err);
           this.snackBar.open('Error', null, { duration: 2000 });
         },
       });
     } else {
-      if (this.formBuilderRefs == null) { return; }
+      // Case form is not valid
+
+      // check if there is even a formBuilder to process, otherwise exit
+      if (this.formBuilderRefs == null)
+        return;
 
       const formErrors: Record<string, string>[] = [];
       this.formBuilderRefs.forEach(formBuilderRef => {
-        if (!formBuilderRef.form.invalid) { return; }
-        formErrors.push(ValidationMessagesHelpers.validateForm(formBuilderRef.form));
+        if (!formBuilderRef.form.invalid)
+          return;
+        formErrors.push(ValidationMsgHelper.validateForm(formBuilderRef.form));
       });
 
       const fieldErrors: FieldErrorMessage[] = [];
@@ -263,56 +278,48 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
           fieldErrors.push({ field: key, message: formError[key] });
         });
       });
-      const snackBarData: SaveErrorsSnackBarData = {
-        fieldErrors,
-      };
+
       this.snackBar.openFromComponent(SnackBarSaveErrorsComponent, {
-        data: snackBarData,
+        data: {
+          fieldErrors,
+        } satisfies SaveErrorsSnackBarData,
         duration: 5000,
       });
     }
   }
 
-  debugInfoOpened(opened: boolean) {
-    this.debugInfoIsOpen$.next(opened);
-  }
-
-  private startSubscriptions() {
+  #startSubscriptions() {
     this.subscriptions.add(
       fromEvent<BeforeUnloadEvent>(window, 'beforeunload').subscribe(event => {
-        if (this.formsStateService.readOnly$.value.isReadOnly || !this.formsStateService.formsDirty$.value) { return; }
+        if (this.formsStateService.readOnly().isReadOnly || !this.formsStateService.formsAreDirty()) return;
         event.preventDefault();
         event.returnValue = ''; // fix for Chrome
-        this.snackBarYouHaveUnsavedChanges();
+        this.#snackBarYouHaveUnsavedChanges();
       })
     );
 
     this.subscriptions.add(
-      this.formsStateService.saveForm$.subscribe(close => this.saveAll(close)),
+      this.dialogRef.backdropClick().subscribe(_ => this.closeDialog())
     );
+  }
 
-    this.dialogRef.backdropClick().subscribe(event => {
-      this.closeDialog();
-    });
-
+  #watchKeyboardShortcuts() {
     this.dialogRef.keydownEvents().subscribe(event => {
-      const ESCAPE = event.keyCode === 27;
-      if (ESCAPE) {
+      if (isEscape(event)) {
         this.closeDialog();
         return;
       }
-      const CTRL_S = (navigator.platform.match('Mac') ? event.metaKey : event.ctrlKey) && event.keyCode === 83;
-      if (CTRL_S) {
+
+      if (isCtrlS(event)) {
         event.preventDefault();
-        if (!this.formsStateService.readOnly$.value.isReadOnly) {
+        if (!this.formsStateService.readOnly().isReadOnly)
           this.saveAll(false);
-        }
         return;
       }
     });
   }
 
-  private snackBarYouHaveUnsavedChanges() {
+  #snackBarYouHaveUnsavedChanges() {
     const snackBarData: UnsavedChangesSnackBarData = {
       save: false,
     };

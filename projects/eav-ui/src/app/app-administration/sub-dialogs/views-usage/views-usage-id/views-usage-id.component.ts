@@ -5,7 +5,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { copyToClipboard } from '../../../../shared/helpers/copy-to-clipboard.helper';
 import { MatIconModule } from '@angular/material/icon';
 import { MatRippleModule } from '@angular/material/core';
-import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
+import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 
 @Component({
   selector: 'app-views-usage-id',
@@ -26,7 +26,7 @@ export class ViewsUsageIdComponent implements ICellRendererAngularComp {
 
   agInit(params: ICellRendererParams) {
     this.tooltip = params.value;
-    if (this.tooltip == null) { return; }
+    if (this.tooltip == null) return;
     const idPart = this.tooltip.split('\n')[0];
     this.id = idPart.split(' ')[1];
   }

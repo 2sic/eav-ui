@@ -4,8 +4,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, combineLatest, filter, map, share, switchMap } from 'rxjs';
 import { generateApiCalls } from '..';
-import { AppDialogConfigService, ContentTypesService } from '../../app-administration/services';
-import { FormConfigService, EntityService, QueryService } from '../../edit/shared/services';
+import { ContentTypesService } from '../../app-administration/services';
 import { PermissionsService } from '../../permissions';
 import { Context } from '../../shared/services/context';
 import { DevRestBase } from '../dev-rest-base.component';
@@ -22,11 +21,12 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { SelectorWithHelpComponent } from '../selector-with-help/selector-with-help.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { EntitiesService } from '../../content-items/services/entities.service';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { ContentType } from '../../app-administration/models';
-import { EntityBasic } from '../../edit/shared/models/entity-basic';
+import { EntityLightIdentifier } from '../../shared/models/entity-basic';
 import { transient } from '../../core';
+import { EntityService } from '../../shared/services/entity.service';
+
 
 const pathToContent = 'app/{appname}/data/{typename}';
 
@@ -52,55 +52,33 @@ const pathToContent = 'app/{appname}/data/{typename}';
     DevRestHttpHeadersComponent,
     AsyncPipe,
   ],
-  providers: [
-    PermissionsService,
-    EntitiesService,
-    FormConfigService,
-    // WIP - should be self-declared by the EntitiesService
-    QueryService,
-
-    // AppDialogConfigService,
-    // ContentTypesService,
-    // EntityService,
-  ],
 })
 export class DevRestDataComponent extends DevRestBase<DevRestDataViewModel> implements OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
-
   @Input() contentTypeInput$: BehaviorSubject<ContentType>;
 
   private entityService = transient(EntityService);
   private contentTypesService = transient(ContentTypesService);
-  // TODO:: @2dg Open to use transient
-  // private appDialogConfigService = transient(AppDialogConfigService);
-  // private permissionsService = transient(PermissionsService);
+
 
   constructor(
-    // entityService: EntityService,
-    // contentTypesService: ContentTypesService,
     dialogRef: MatDialogRef<DevRestDataComponent>,
     router: Router,
     route: ActivatedRoute,
-    appDialogConfigService: AppDialogConfigService,
-    permissionsService: PermissionsService,
 
     /** Context for this dialog. Used for appId, zoneId, tabId, etc. */
     context: Context,
     /** sxc-angular context. Used to resolve urls */
     dnnContext: DnnContext,
   ) {
-    super(appDialogConfigService, context, dialogRef, dnnContext, router, route, permissionsService);
-    // this.isSideNavContent = this.router.url.includes(GoToDevRest.routeData);
+    const permissionsService = transient(PermissionsService);
+    super(context, dialogRef, dnnContext, router, route, permissionsService);
 
     const contentType$ = route.paramMap.pipe(
       map(pm => pm.get(GoToDevRest.paramTypeName)),
       switchMap(ctName => this.contentTypesService.retrieveContentType(ctName)),
       share()
     );
-
-    // Build Dialog Settings Stream
-    // Note: this is probably already loaded somewhere, so I'm not sure why we're getting it again
-    // const dialogSettings$ = appDialogConfigService.getDialogSettings().pipe(share());
 
     this.permissions$ = this.buildPermissionStream(GoToDevRest.paramTypeName);
 
@@ -115,7 +93,7 @@ export class DevRestDataComponent extends DevRestBase<DevRestDataViewModel> impl
     );
 
     // Get an item of this type for building urls
-    const noDataFound: EntityBasic = { Id: 0, Guid: '00000000-0000-0000-0000-000000000000', Title: 'no data found' };
+    const noDataFound: EntityLightIdentifier = { Id: 0, Guid: '00000000-0000-0000-0000-000000000000', Title: 'no data found' };
     const itemOfThisType$ = this.entityService.getEntities$(
       contentType$.pipe(
         filter(ct => !!ct),
@@ -129,29 +107,21 @@ export class DevRestDataComponent extends DevRestBase<DevRestDataViewModel> impl
     );
 
     // Prepare everything for use in the template
-    // Note that we need to mix multiple combineLatest, because a combineLatest can only take 6 streams
     this.viewModel$ = combineLatest([
-      combineLatest([
         contentType$,
         this.scenario$,
-        this.permissions$
-      ]),
-      combineLatest([
+        this.permissions$,
         root$,
         itemOfThisType$,
         this.dialogSettings$
-      ]),
     ]).pipe(
-      map(([[contentType, scenario, permissions], [root, item, diag]]) => {
+      map(([contentType, scenario, permissions, root, item, diag]) => {
         var result: DevRestDataViewModel = {
-          // return ({
           ...this.buildBaseViewModel(contentType.Name, contentType.StaticName, diag, permissions, root, scenario),
           contentType,
           itemId: item.Id,
-          // 2024-04-26 2dm - believe this is never used, so removed it #cleanup-picker
-          // itemGuid: item.Guid, //Value,
           apiCalls: generateApiCalls(dnnContext.$2sxc, scenario, context, root, item.Id),
-        };//);
+        };
         return result;
       }),
     );

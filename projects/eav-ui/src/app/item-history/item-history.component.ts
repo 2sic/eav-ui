@@ -1,21 +1,21 @@
-import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
+import { Component, computed, HostBinding, OnInit, signal } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { PageEvent, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, combineLatest, map } from 'rxjs';
 import { getHistoryItems } from './item-history.helpers';
 import { CompareWith } from './models/compare-with.model';
 import { ItemHistoryResult } from './models/item-history-result.model';
 import { Version } from './models/version.model';
 import { VersionsService } from './services/versions.service';
-import { AsyncPipe, DatePipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { transient } from '../core';
 
 @Component({
   selector: 'app-item-history',
@@ -30,55 +30,36 @@ import { MatButtonModule } from '@angular/material/button';
     MatOptionModule,
     MatExpansionModule,
     MatPaginatorModule,
-    AsyncPipe,
     DatePipe,
   ],
-  providers: [
-    VersionsService,
-  ],
 })
-export class ItemHistoryComponent implements OnInit, OnDestroy {
+export class ItemHistoryComponent implements OnInit {
   @HostBinding('className') hostClass = 'dialog-component';
 
   pageSizeOptions = [10, 20, 50];
   expandedPanels: Record<string, boolean> = {};
   expandedAttributes: Record<string, boolean> = {};
 
-  private itemId = parseInt(this.route.snapshot.paramMap.get('itemId'), 10);
-  private versions$ = new BehaviorSubject<Version[]>(null);
-  private page$ = new BehaviorSubject(1);
-  private pageSize$ = new BehaviorSubject(this.pageSizeOptions[0]);
-  private compareWith$ = new BehaviorSubject<CompareWith>('live');
-  private historyItems$ = combineLatest([this.versions$, this.page$, this.pageSize$, this.compareWith$]).pipe(
-    map(([versions, page, pageSize, compareWith]) => getHistoryItems(versions, page, pageSize, compareWith)),
-  );
-  viewModel$ = combineLatest([this.versions$, this.historyItems$, this.pageSize$, this.compareWith$]).pipe(
-    map(([versions, historyItems, pageSize, compareWith]) => ({
-      length: versions?.length,
-      historyItems,
-      pageSize,
-      compareWith,
-    })),
-  );
+  #itemId = parseInt(this.route.snapshot.paramMap.get('itemId'), 10);
+
+  version = signal<Version[]>(undefined);
+  page = signal<number>(1);
+  pageSize = signal<number>(this.pageSizeOptions[0]);
+  compareWith = signal<CompareWith>('live');
+  historyItems = computed(() => getHistoryItems(this.version(), this.page(), this.pageSize(), this.compareWith()));
+
+  private versionsService = transient(VersionsService);
 
   constructor(
     private dialogRef: MatDialogRef<ItemHistoryComponent>,
     private route: ActivatedRoute,
-    private versionsService: VersionsService,
     private snackBar: MatSnackBar,
   ) { }
 
   ngOnInit() {
-    this.versionsService.fetchVersions(this.itemId).subscribe(versions => {
-      this.versions$.next(versions);
+    this.versionsService.fetchVersions(this.#itemId).subscribe(versions => {
+      this.version.set(versions);
     });
-  }
-
-  ngOnDestroy() {
-    this.versions$.complete();
-    this.page$.complete();
-    this.pageSize$.complete();
-    this.compareWith$.complete();
   }
 
   closeDialog() {
@@ -86,7 +67,7 @@ export class ItemHistoryComponent implements OnInit, OnDestroy {
   }
 
   compareChange(newCompareWith: CompareWith) {
-    this.compareWith$.next(newCompareWith);
+    this.compareWith.set(newCompareWith);
   }
 
   panelExpandedChange(expand: boolean, versionNumber: number) {
@@ -99,20 +80,20 @@ export class ItemHistoryComponent implements OnInit, OnDestroy {
 
   pageChange(event: PageEvent) {
     const newPage = event.pageIndex + 1;
-    if (newPage !== this.page$.value) {
+    if (newPage !== this.page()) {
       this.expandedPanels = {};
       this.expandedAttributes = {};
-      this.page$.next(newPage);
+      this.page.set(newPage);
     }
     const newPageSize = event.pageSize;
-    if (newPageSize !== this.pageSize$.value) {
-      this.pageSize$.next(newPageSize);
+    if (newPageSize !== this.pageSize()) {
+      this.pageSize.set(newPageSize);
     }
   }
 
   restore(changeId: number) {
     this.snackBar.open('Restoring previous version...');
-    this.versionsService.restore(this.itemId, changeId).subscribe(res => {
+    this.versionsService.restore(this.#itemId, changeId).subscribe(res => {
       this.snackBar.open('Previous version restored. Will reload edit dialog', null, { duration: 3000 });
       const result: ItemHistoryResult = {
         refreshEdit: true,

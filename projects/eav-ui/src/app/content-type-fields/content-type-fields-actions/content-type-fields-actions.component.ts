@@ -1,11 +1,10 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { ICellRendererParams } from '@ag-grid-community/core';
-import { Component, OnDestroy } from '@angular/core';
-import { DataTypeConstants } from '../constants/data-type.constants';
-import { InputTypeConstants } from '../constants/input-type.constants';
-import { Field } from '../models/field.model';
+import { Component } from '@angular/core';
+import { DataTypeCatalog } from '../../shared/fields/data-type-catalog';
+import { InputTypeCatalog } from '../../shared/fields/input-type-catalog';
+import { Field } from '../../shared/fields/field.model';
 import { ContentTypeFieldsActions, ContentTypeFieldsActionsParams } from './content-type-fields-actions.models';
-import { BaseComponent } from '../../shared/components/base.component';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatIconModule } from '@angular/material/icon';
@@ -25,21 +24,32 @@ import { TippyDirective } from '../../shared/directives/tippy.directive';
     TippyDirective,
   ],
 })
-export class ContentTypeFieldsActionsComponent extends BaseComponent implements ICellRendererAngularComp, OnDestroy {
+export class ContentTypeFieldsActionsComponent implements ICellRendererAngularComp {
   field: Field;
   metadataCount: number;
   enablePermissions: boolean;
+  enableMetadata: boolean;
+
+  enableImageConfig: boolean;
+  imgConfigCount: number;
   private params: ICellRendererParams & ContentTypeFieldsActionsParams;
 
-  constructor() {
-    super();
-  }
 
   agInit(params: ICellRendererParams & ContentTypeFieldsActionsParams): void {
     this.params = params;
     this.field = this.params.data;
+    const disableEdit = this.field.EditInfo.DisableEdit;
+
+    this.enablePermissions = !disableEdit && (this.field.InputType === InputTypeCatalog.StringWysiwyg || this.field.Type === DataTypeCatalog.Hyperlink);
+    this.enableMetadata = !this.field.EditInfo.DisableMetadata;
     this.metadataCount = this.field.Metadata ? Object.keys(this.field.Metadata).filter(key => key !== 'merged').length : 0;
-    this.enablePermissions = this.field.InputType === InputTypeConstants.StringWysiwyg || this.field.Type === DataTypeConstants.Hyperlink;
+
+    this.enableImageConfig = !disableEdit && this.field.imageConfiguration.isRecommended;
+    this.imgConfigCount = this.field.imageConfiguration.entityId ? 1 : 0;
+  }
+
+  highlightOrDisabled(toggle: boolean): string {
+    return toggle ? 'highlight' : 'disabled';
   }
 
   // #region Sharing Info for better icons #SharedFieldDefinition

@@ -1,16 +1,17 @@
 import { UntypedFormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
-import { InputTypeName } from './InputTypeName';
+import { AttributeInputType } from './InputTypeName';
 import { Dropzone } from './Dropzone';
 import { Adam } from './Adam';
 import { PagePickerResult } from './PagePickerResult';
 import { FieldValue } from './FieldValue';
-import { FieldMask } from 'projects/eav-ui/src/app/edit/shared/helpers';
+import { FieldMask } from '../../eav-ui/src/app/edit/shared/helpers';
+import { Injector } from '@angular/core';
 
 export interface ExperimentalProps {
   entityGuid: string;
-  allInputTypeNames: InputTypeName[];
+  allInputTypeNames: AttributeInputType[];
   formGroup: UntypedFormGroup;
   translateService: TranslateService;
   isExpanded$: Observable<boolean>;
@@ -29,4 +30,7 @@ export interface ExperimentalProps {
 
   /** 2024-06-20 2dm - temporary solutions as GPS needs the mask */
   getFieldMask(mask: string, name?: string, watch?: boolean): FieldMask;
+
+  /** 2024-09-03 v18 2dm - injector so effects can be used */
+  injector: Injector;
 }

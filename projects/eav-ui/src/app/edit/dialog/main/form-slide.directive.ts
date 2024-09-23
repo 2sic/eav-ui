@@ -1,12 +1,10 @@
 import { Directive, ElementRef, OnDestroy, OnInit } from '@angular/core';
-import { delay, distinctUntilChanged, filter, fromEvent, map, merge, pairwise, tap } from 'rxjs';
-import { FormConfigService } from '../../shared/services';
-import { LanguageInstanceService, LanguageService } from '../../shared/store/ngrx-data';
+import { delay, filter, fromEvent, map, merge, pairwise } from 'rxjs';
 import { BaseDirective } from '../../../shared/directives/base.directive';
-import { EavLogger } from '../../../shared/logging/eav-logger';
-
-const logThis = false;
-const nameOfThis = 'FormSlideDirective';
+import { mapUntilChanged } from '../../../shared/rxJs/mapUntilChanged';
+import { FormConfigService } from '../../form/form-config.service';
+import { LanguageService } from '../../localization/language.service';
+import { classLog } from '../../../shared/logging';
 
 const classNext = 'next';
 const classPrevious = 'previous';
@@ -18,7 +16,7 @@ const animationNames = ['move-next', 'move-previous'];
 })
 export class FormSlideDirective extends BaseDirective implements OnInit, OnDestroy {
 
-  log = new EavLogger(nameOfThis, logThis);
+  log = classLog({FormSlideDirective});
 
   constructor(
     private elementRef: ElementRef<HTMLElement>,
@@ -30,14 +28,15 @@ export class FormSlideDirective extends BaseDirective implements OnInit, OnDestr
 
   ngOnInit() {
     const l = this.log.fn('ngOnInit');
-    const languages = this.languageService.getLanguages();
+    const languages = this.languageService.getAll();
     const nativeElement = this.elementRef.nativeElement;
     this.subscriptions.add(
       merge(
         // emit 'next' and 'previous' slide direction based on language change
         this.formConfig.language$.pipe(
           map(language => language.current),
-          distinctUntilChanged(),
+          mapUntilChanged(m => m),
+          // distinctUntilChanged(),
           pairwise(),
           map(([previousLang, currentLang]) => {
             l.a('toggle', { previousLang, currentLang });

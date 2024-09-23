@@ -1,5 +1,5 @@
 import { NgZone } from '@angular/core';
-import { ElementEventListener } from '../../../shared/models';
+import { ElementEventListener } from '../../../shared/controls/element-event-listener.model';
 
 export class CenterSelectedHelper {
   private positionX: number;
@@ -67,7 +67,7 @@ export class CenterSelectedHelper {
   }
 
   private doMove(event: MouseEvent) {
-    if (this.stopClick) { return; }
+    if (this.stopClick) return;
 
     const button = event.target as HTMLButtonElement;
     const buttonOffset = button.getBoundingClientRect().left;

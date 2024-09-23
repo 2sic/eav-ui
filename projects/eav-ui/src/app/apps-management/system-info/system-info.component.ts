@@ -1,31 +1,30 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { NgForm, FormsModule } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router, RouterLink, RouterOutlet } from '@angular/router';
-import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
+import { RouterLink, RouterOutlet } from '@angular/router';
+import { map, take } from 'rxjs';
 import { FeatureNames } from '../../features/feature-names';
-import { BaseWithChildDialogComponent } from '../../shared/components/base-with-child-dialog.component';
 import { copyToClipboard } from '../../shared/helpers/copy-to-clipboard.helper';
 import { EavWindow } from '../../shared/models/eav-window.model';
 import { DialogService } from '../../shared/services/dialog.service';
-import { FeaturesService } from '../../shared/services/features.service';
+import { FeaturesScopedService } from '../../features/features-scoped.service';
 import { SiteLanguage } from '../models/site-language.model';
 import { SystemInfoSet } from '../models/system-info.model';
 import { SxcInsightsService } from '../services/sxc-insights.service';
 import { ZoneService } from '../services/zone.service';
-import { InfoTemplate, SystemInfoViewModel } from './system-info.models';
+import { InfoTemplate } from './system-info.models';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
-import { NgTemplateOutlet, AsyncPipe } from '@angular/common';
+import { NgTemplateOutlet } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
-import { AppDialogConfigService } from '../../app-administration/services';
 import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
-import { FeatureDetailService } from '../../features/services/feature-detail.service';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { transient } from '../../core';
+import { DialogConfigAppService } from '../../app-administration/services/dialog-config-app.service';
+import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 
 declare const window: EavWindow;
 
@@ -44,57 +43,147 @@ declare const window: EavWindow;
     MatFormFieldModule,
     MatInputModule,
     RouterOutlet,
-    AsyncPipe,
     FeatureTextInfoComponent,
     FieldHintComponent,
     TippyDirective,
   ],
 })
-export class SystemInfoComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
+export class SystemInfoComponent implements OnInit {
 
-  private dialogSettings = transient(AppDialogConfigService);
-  private sxcInsightsService = transient(SxcInsightsService);
-  private zoneService = transient(ZoneService);
-  private dialogService = transient(DialogService);
+  public features = inject(FeaturesScopedService);
+
+  #dialogSettings = transient(DialogConfigAppService);
+  #sxcInsightsService = transient(SxcInsightsService);
+  #zoneSvc = transient(ZoneService);
+  #dialogSvc = transient(DialogService);
+  #dialogRouter = transient(DialogRoutingService);
 
   pageLogDuration: number;
   positiveWholeNumber = /^[1-9][0-9]*$/;
-  viewModel$: Observable<SystemInfoViewModel>;
 
-  private systemInfoSet$: BehaviorSubject<SystemInfoSet | undefined>;
-  private languages$: BehaviorSubject<SiteLanguage[] | undefined>;
-  private loading$: BehaviorSubject<boolean>;
 
-  public features: FeaturesService = inject(FeaturesService);
-  protected lsEnabled = this.features.isEnabled(FeatureNames.LightSpeed);
-  protected cspEnabled = this.features.isEnabled(FeatureNames.ContentSecurityPolicy);
+  loading = signal(false);
+  languages = signal<SiteLanguage[] | undefined>(undefined);
+  systemInfoSet = signal<SystemInfoSet | undefined>(undefined);
+
+  systemInfos = computed(() => {
+    const systemInfoSetValue = this.systemInfoSet();
+    if (systemInfoSetValue == null) return;
+    const url = this.#dialogRouter.router.url + '/' + "registration";
+    const info: InfoTemplate[] = [
+      { label: 'CMS', value: `2sxc v.${systemInfoSetValue.System.EavVersion}` },
+      { label: 'Platform', value: `${systemInfoSetValue.System.Platform} v.${systemInfoSetValue.System.PlatformVersion}` },
+      { label: 'Zones', value: systemInfoSetValue.System.Zones.toString() },
+      { label: 'Fingerprint', value: systemInfoSetValue.System.Fingerprint },
+      {
+        label: 'Registered to',
+        value: systemInfoSetValue.License.Owner || '(unregistered)',
+        link: systemInfoSetValue.License.Owner
+          ? {
+            url,
+            label: 'manage',
+            target: 'angular',
+          }
+          : {
+            url,
+            label: 'register',
+            target: 'angular',
+          },
+      },
+    ];
+    return info;
+  });
+
+  siteInfos = computed(() => {
+    const systemInfoSetValue = this.systemInfoSet();
+    const languagesValue = this.languages();
+
+    if (systemInfoSetValue == null || languagesValue == null) return;
+
+    const allLanguages = languagesValue.length;
+    const activeLanguages = languagesValue.filter(l => l.IsEnabled).length;
+
+    const info: InfoTemplate[] = [
+      { label: 'Zone', value: systemInfoSetValue.Site.ZoneId.toString() },
+      { label: 'Site', value: systemInfoSetValue.Site.SiteId.toString() },
+      {
+        label: 'Languages',
+        value: `${activeLanguages}/${allLanguages}`,
+        link: {
+          url: 'languages',
+          label: 'manage',
+          target: 'angular',
+        },
+      },
+      {
+        label: 'Apps',
+        value: systemInfoSetValue.Site.Apps.toString(),
+        link: {
+          url: 'list',
+          label: 'manage',
+          target: 'angular',
+        },
+      },
+    ];
+
+    return info;
+  });
+
+  warningIcon = computed(() => {
+    const systemInfoSetValue = this.systemInfoSet();
+    if (systemInfoSetValue == null) return undefined;
+    if (systemInfoSetValue.Messages.WarningsObsolete || systemInfoSetValue.Messages.WarningsOther) {
+      return 'warning';
+    }
+    return 'check';
+  });
+
+  warningInfos = computed(() => {
+    const systemInfoSetValue = this.systemInfoSet();
+    if (systemInfoSetValue == null) return undefined;
+
+    const info: InfoTemplate[] = [
+      {
+        label: 'Warnings Obsolete',
+        value: systemInfoSetValue.Messages.WarningsObsolete.toString(),
+        link: !systemInfoSetValue.Messages.WarningsObsolete
+          ? undefined
+          : {
+            url: window.$2sxc.http.apiUrl('sys/insights/logs?key=warnings-obsolete'),
+            label: 'review',
+            target: '_blank',
+          },
+      },
+      {
+        label: 'Warnings Other',
+        value: systemInfoSetValue.Messages.WarningsOther.toString(),
+        link: !systemInfoSetValue.Messages.WarningsOther
+          ? undefined
+          : {
+            url: window.$2sxc.http.apiUrl('sys/insights/logs'),
+            label: 'review',
+            target: '_blank',
+          },
+      },
+    ];
+    return info;
+  });
+
+  protected lsEnabled = this.features.isEnabled[FeatureNames.LightSpeed];
+  protected cspEnabled = this.features.isEnabled[FeatureNames.ContentSecurityPolicy];
 
   constructor(
-    protected router: Router,
-    protected route: ActivatedRoute,
     private snackBar: MatSnackBar,
   ) {
-    super(router, route);
-  }
-  ngOnInit(): void {
-    this.systemInfoSet$ = new BehaviorSubject<SystemInfoSet | undefined>(undefined);
-    this.languages$ = new BehaviorSubject<SiteLanguage[] | undefined>(undefined);
-    this.loading$ = new BehaviorSubject<boolean>(false);
-    this.buildViewModel();
-    this.getSystemInfo();
-    this.getLanguages();
-    this.subscriptions.add(this.childDialogClosed$().subscribe(() => {
-      this.buildViewModel();
-      this.getSystemInfo();
-      this.getLanguages();
-    }));
   }
 
-  ngOnDestroy(): void {
-    this.systemInfoSet$.complete();
-    this.languages$.complete();
-    this.loading$.complete();
-    super.ngOnDestroy();
+  ngOnInit(): void {
+    this.getSystemInfo();
+    this.getLanguages();
+    this.#dialogRouter.doOnDialogClosed(() => {
+      this.getSystemInfo();
+      this.getLanguages();
+    });
   }
 
   copyToClipboard(text: string): void {
@@ -103,15 +192,19 @@ export class SystemInfoComponent extends BaseWithChildDialogComponent implements
   }
 
   openSiteSettings(): void {
-    this.dialogSettings.getSitePrimaryApp$().subscribe(sitePrimaryApp => {
-      this.dialogService.openAppAdministration(sitePrimaryApp.ZoneId, sitePrimaryApp.AppId, 'app');
-    })
+    this.openParentAppSettings("Site");
   }
 
   openGlobalSettings(): void {
-    this.dialogSettings.getGlobalPrimaryApp$().subscribe(globalPrimaryApp => {
-      this.dialogService.openAppAdministration(globalPrimaryApp.ZoneId, globalPrimaryApp.AppId, 'app');
-    })
+    this.openParentAppSettings("System");
+  }
+
+  openParentAppSettings(partName: "System" | "Site"): void {
+    this.#dialogSettings.getCurrent$()
+      .pipe(map(dc => dc?.Context[partName].PrimaryApp), take(1))
+      .subscribe(appIdentity => {
+        this.#dialogSvc.openAppAdministration(appIdentity.ZoneId, appIdentity.AppId, 'app');
+      })
   }
 
   openInsights() {
@@ -125,14 +218,15 @@ export class SystemInfoComponent extends BaseWithChildDialogComponent implements
     if (sideNavPath.includes('registration'))
       sideNavPath = 'registration';
 
-    this.router.navigate([this.router.url.replace('system', '') + sideNavPath]);
+    const router = this.#dialogRouter.router;
+    router.navigate([router.url.replace('system', '') + sideNavPath]);
   }
 
   activatePageLog(form: NgForm) {
-    this.loading$.next(true);
+    this.loading.set(true);
     this.snackBar.open('Activating...');
-    this.sxcInsightsService.activatePageLog(this.pageLogDuration).subscribe(res => {
-      this.loading$.next(false);
+    this.#sxcInsightsService.activatePageLog(this.pageLogDuration).subscribe(res => {
+      this.loading.set(false);
       this.snackBar.open(res, null, { duration: 4000 });
     });
     if (document.activeElement instanceof HTMLElement) {
@@ -142,135 +236,24 @@ export class SystemInfoComponent extends BaseWithChildDialogComponent implements
   }
 
   private getSystemInfo(): void {
-    this.zoneService.getSystemInfo().subscribe({
+    this.#zoneSvc.getSystemInfo().subscribe({
       error: () => {
-        this.systemInfoSet$.next(undefined);
+        this.systemInfoSet.set(undefined);
       },
       next: (systemInfoSet) => {
-        this.systemInfoSet$.next(systemInfoSet);
+        this.systemInfoSet.set(systemInfoSet);
       },
     });
   }
 
   private getLanguages(): void {
-    this.zoneService.getLanguages().subscribe({
+    this.#zoneSvc.getLanguages().subscribe({
       error: () => {
-        this.languages$.next(undefined);
+        this.languages.set(undefined);
       },
       next: (languages) => {
-        this.languages$.next(languages);
+        this.languages.set(languages);
       },
     });
-  }
-
-  private buildViewModel(): void {
-    const systemInfos$ = this.systemInfoSet$.pipe(
-      map(systemInfoSet => {
-        if (systemInfoSet == null) { return; }
-        const info: InfoTemplate[] = [
-          { label: 'CMS', value: `2sxc v.${systemInfoSet.System.EavVersion}` },
-          { label: 'Platform', value: `${systemInfoSet.System.Platform} v.${systemInfoSet.System.PlatformVersion}` },
-          { label: 'Zones', value: systemInfoSet.System.Zones.toString() },
-          { label: 'Fingerprint', value: systemInfoSet.System.Fingerprint },
-          {
-            label: 'Registered to',
-            value: systemInfoSet.License.Owner || '(unregistered)',
-            link: systemInfoSet.License.Owner
-              ? {
-                url: this.router.url + '/' + "registration",
-                label: 'manage',
-                target: 'angular',
-              }
-              : {
-                url: this.router.url + '/' + "registration",
-                label: 'register',
-                target: 'angular',
-              },
-          },
-        ];
-        return info;
-      })
-    );
-    const siteInfos$ = combineLatest([this.systemInfoSet$, this.languages$]).pipe(
-      map(([systemInfoSet, languages]) => {
-        if (systemInfoSet == null || languages == null) { return; }
-        const allLanguages = languages.length;
-        const activeLanguages = languages.filter(l => l.IsEnabled).length;
-        const info: InfoTemplate[] = [
-          { label: 'Zone', value: systemInfoSet.Site.ZoneId.toString() },
-          { label: 'Site', value: systemInfoSet.Site.SiteId.toString() },
-          {
-            label: 'Languages',
-            value: `${activeLanguages}/${allLanguages}`,
-            link: {
-              url: 'languages',
-              label: 'manage',
-              target: 'angular',
-            },
-          },
-          {
-            label: 'Apps',
-            value: systemInfoSet.Site.Apps.toString(),
-            link: {
-              url: 'list',
-              label: 'manage',
-              target: 'angular',
-            },
-          },
-        ];
-        return info;
-      })
-    );
-    const warningIcon$ = this.systemInfoSet$.pipe(
-      map(systemInfoSet => {
-        if (systemInfoSet == null) { return; }
-        if (systemInfoSet.Messages.WarningsObsolete || systemInfoSet.Messages.WarningsOther) {
-          return 'warning';
-        }
-        return 'check';
-      }),
-    );
-    const warningInfos$ = this.systemInfoSet$.pipe(
-      map(systemInfoSet => {
-        if (systemInfoSet == null) { return; }
-        const info: InfoTemplate[] = [
-          {
-            label: 'Warnings Obsolete',
-            value: systemInfoSet.Messages.WarningsObsolete.toString(),
-            link: !systemInfoSet.Messages.WarningsObsolete
-              ? undefined
-              : {
-                url: window.$2sxc.http.apiUrl('sys/insights/logs?key=warnings-obsolete'),
-                label: 'review',
-                target: '_blank',
-              },
-          },
-          {
-            label: 'Warnings Other',
-            value: systemInfoSet.Messages.WarningsOther.toString(),
-            link: !systemInfoSet.Messages.WarningsOther
-              ? undefined
-              : {
-                url: window.$2sxc.http.apiUrl('sys/insights/logs'),
-                label: 'review',
-                target: '_blank',
-              },
-          },
-        ];
-        return info;
-      }),
-    );
-    this.viewModel$ = combineLatest([systemInfos$, siteInfos$, this.loading$, warningIcon$, warningInfos$]).pipe(
-      map(([systemInfos, siteInfos, loading, warningIcon, warningInfos]) => {
-        const viewModel: SystemInfoViewModel = {
-          systemInfos,
-          siteInfos,
-          loading,
-          warningIcon,
-          warningInfos,
-        };
-        return viewModel;
-      }),
-    );
   }
 }

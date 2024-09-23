@@ -1,27 +1,22 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
-import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
-import { BaseWithChildDialogComponent } from '../shared/components/base-with-child-dialog.component';
-import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
-import { IdFieldParams } from '../shared/components/id-field/id-field.models';
+import { RouterOutlet } from '@angular/router';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
 import { eavConstants, MetadataKeyType } from '../shared/constants/eav.constants';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
-import { EditForm } from '../shared/models/edit-form.model';
+import { EditForm, EditPrep } from '../shared/models/edit-form.model';
 import { Permission } from './models/permission.model';
 import { PermissionsActionsComponent } from './permissions-actions/permissions-actions.component';
 import { PermissionsActionsParams } from './permissions-actions/permissions-actions.models';
 import { PermissionsService } from './services/permissions.service';
 import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
-import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { MetadataService } from './services/metadata.service';
-import { EntitiesService } from '../content-items/services/entities.service';
 import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
+import { convert, transient } from '../core';
+import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
 
 @Component({
   selector: 'app-permissions',
@@ -33,62 +28,47 @@ import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module
     MatIconModule,
     RouterOutlet,
     MatDialogActions,
-    AsyncPipe,
     SxcGridModule,
   ],
-  providers: [
-    PermissionsService,
-    MetadataService,
-    EntitiesService,
-  ],
 })
-export class PermissionsComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
-  permissions$ = new BehaviorSubject<Permission[]>(undefined);
+export class PermissionsComponent implements OnInit {
   gridOptions = this.buildGridOptions();
+  permissions = signal<Permission[]>([]);
+  #permissionsService = transient(PermissionsService);
+  #dialogRoutes = transient(DialogRoutingService);
 
-  private targetType = parseInt(this.route.snapshot.paramMap.get('targetType'), 10);
-  private keyType = this.route.snapshot.paramMap.get('keyType') as MetadataKeyType;
-  private key = this.route.snapshot.paramMap.get('key');
-  private prefills: Record<string, Record<string, string>> = {
+  #params = convert(this.#dialogRoutes.getParams(['targetType', 'keyType', 'key']), p => ({
+    targetType: parseInt(p.targetType, 10),
+    keyType: p.keyType as MetadataKeyType,
+    key: p.key,
+  }));
+
+  #prefills: Record<string, Record<string, string>> = {
     [eavConstants.metadata.language.targetType]: {
       PermissionType: 'language',
     },
   };
 
-  viewModel$: Observable<PermissionsViewModel>;
-
   constructor(
-    protected router: Router,
-    protected route: ActivatedRoute,
     private dialogRef: MatDialogRef<PermissionsComponent>,
-
-    private permissionsService: PermissionsService,
     private snackBar: MatSnackBar,
   ) {
-    super(router, route);
   }
 
   ngOnInit() {
-    this.fetchPermissions();
-    this.subscriptions.add(this.childDialogClosed$().subscribe(() => { this.fetchPermissions(); }));
-    this.viewModel$ = combineLatest([
-      this.permissions$
-    ]).pipe(map(([permissions]) => ({ permissions })));
-  }
-
-  ngOnDestroy() {
-    this.permissions$.complete();
-    super.ngOnDestroy();
+    this.#fetchPermissions();
+    this.#dialogRoutes.doOnDialogClosed(() => this.#fetchPermissions());
   }
 
   closeDialog() {
     this.dialogRef.close();
   }
 
-  private fetchPermissions() {
-    this.permissionsService.getAll(this.targetType, this.keyType, this.key).subscribe(permissions => {
-      this.permissions$.next(permissions);
-    });
+  #fetchPermissions() {
+    this.#permissionsService.getAll(this.#params.targetType, this.#params.keyType, this.#params.key)
+      .subscribe(permissions => {
+        this.permissions.set(permissions);
+      });
   }
 
   editPermission(permission?: Permission) {
@@ -96,32 +76,28 @@ export class PermissionsComponent extends BaseWithChildDialogComponent implement
     if (permission == null) {
       form = {
         items: [{
-          ContentTypeName: eavConstants.contentTypes.permissions,
-          For: {
-            Target: Object.values(eavConstants.metadata).find(m => m.targetType === this.targetType)?.target ?? this.targetType.toString(),
-            TargetType: this.targetType,
-            ...(this.keyType === eavConstants.keyTypes.guid && { Guid: this.key }),
-            ...(this.keyType === eavConstants.keyTypes.number && { Number: parseInt(this.key, 10) }),
-            ...(this.keyType === eavConstants.keyTypes.string && { String: this.key }),
-          },
-          ...(this.prefills[this.targetType] && { Prefill: this.prefills[this.targetType] }),
+          ...EditPrep.newMetadataFromInfo(
+            eavConstants.contentTypes.permissions,
+            EditPrep.constructMetadataInfo(this.#params.targetType, this.#params.keyType, this.#params.key)
+          ),
+          ...(this.#prefills[this.#params.targetType] && { Prefill: this.#prefills[this.#params.targetType] }),
         }],
       };
     } else {
       form = {
-        items: [{ EntityId: permission.Id }],
+        items: [EditPrep.editId(permission.Id)],
       };
     }
     const formUrl = convertFormToUrl(form);
-    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
+    this.#dialogRoutes.navRelative([`edit/${formUrl}`]);
   }
 
   private deletePermission(permission: Permission) {
-    if (!confirm(`Delete '${permission.Title}' (${permission.Id})?`)) { return; }
+    if (!confirm(`Delete '${permission.Title}' (${permission.Id})?`)) return;
     this.snackBar.open('Deleting...');
-    this.permissionsService.delete(permission.Id).subscribe(() => {
+    this.#permissionsService.delete(permission.Id).subscribe(() => {
       this.snackBar.open('Deleted', null, { duration: 2000 });
-      this.fetchPermissions();
+      this.#fetchPermissions();
     });
   }
 
@@ -131,13 +107,7 @@ export class PermissionsComponent extends BaseWithChildDialogComponent implement
       columnDefs: [
         {
           ...ColumnDefinitions.Id,
-          cellRenderer: IdFieldComponent,
-          cellRendererParams: (() => {
-            const params: IdFieldParams<Permission> = {
-              tooltipGetter: (permission: Permission) => `ID: ${permission.Id}\nGUID: ${permission.Guid}`,
-            };
-            return params;
-          })(),
+          cellRendererParams: ColumnDefinitions.idFieldParamsTooltipGetter<Permission>()
         },
         {
           ...ColumnDefinitions.TextWide,

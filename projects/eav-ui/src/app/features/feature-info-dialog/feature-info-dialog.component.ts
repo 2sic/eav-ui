@@ -12,6 +12,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { SafeHtmlPipe } from '../../shared/pipes/safe-html.pipe';
+import { transient } from '../../core';
 
 @Component({
   selector: 'app-feature-info-dialog',
@@ -31,11 +32,12 @@ import { SafeHtmlPipe } from '../../shared/pipes/safe-html.pipe';
 export class FeatureInfoDialogComponent implements OnInit {
   viewModel$: Observable<Feature>;
 
+  private featureDetailService = transient(FeatureDetailService);
+
   constructor(
     @Inject(MAT_DIALOG_DATA) public dialogData: string,
     private dialogRef: MatDialogRef<FeatureInfoDialogComponent>,
     private snackBar: MatSnackBar,
-    private featureDetailService: FeatureDetailService,
   ) { }
 
   ngOnInit(): void {

@@ -1,6 +1,6 @@
-import { ItemIdentifierHeader } from 'projects/eav-ui/src/app/shared/models/edit-form.model';
 import { EavEntityDto } from '.';
 import { EavItem } from '../eav';
+import { ItemIdentifierHeader } from '../../../../shared/models/edit-form.model';
 
 /**
  * A bundle/set for an Entity.

@@ -1,19 +1,18 @@
-@if (viewModel$ | async; as vm) {
   <mat-card class="eav-header">
     <button mat-icon-button class="eav-exit-button" (click)="close()"
       [tippy]="(formConfig.config.isParentDialog ? 'Form.Buttons.Exit.Tip' : 'Form.Buttons.Return.Tip') | translate">
       <mat-icon class="eav-icon">{{ formConfig.config.isParentDialog ? 'clear' : 'arrow_back' }}</mat-icon>
     </button>
     <div class="eav-languages">
-      @if (vm.hasLanguages) {
+      @if (hasLanguages) {
         @defer {
           <app-language-switcher [disabled]="disabled"></app-language-switcher>
         }
       }
     </div>
-    @if (vm.readOnly) {
+    @if (readOnly().isReadOnly) {
       <mat-icon class="eav-hint-icon"
-        [tippy]="('General.ReadOnlyHint.' + vm.readOnlyReason) | translate" [tippyDisabled]="!vm.readOnlyReason">
+        [tippy]="('General.ReadOnlyHint.' + readOnly().reason) | translate" [tippyDisabled]="!readOnly().reason">
         lock
       </mat-icon>
     }
@@ -22,12 +21,11 @@
         file_copy
       </mat-icon>
     }
-    <button mat-button class="eav-publish-button" [disabled]="vm.readOnly" (click)="openPublishStatusDialog()"
-      [tippy]="'PublishStatus.' + vm.publishMode + '.Tip' | translate">
+    <button mat-button class="eav-publish-button" [disabled]="readOnly().isReadOnly" (click)="openPublishStatusDialog()"
+      [tippy]="'PublishStatus.' + publishMode() + '.Tip' | translate">
       <span class="eav-publish-mode">
         {{ 'PublishStatus.Label' | translate }}
-        <b>{{ 'PublishStatus.' + vm.publishMode | translate | uppercase }}</b>
+        <b>{{ 'PublishStatus.' + publishMode() | translate | uppercase }}</b>
       </span>
     </button>
   </mat-card>
-}

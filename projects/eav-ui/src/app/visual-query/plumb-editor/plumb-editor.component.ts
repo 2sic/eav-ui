@@ -1,25 +1,23 @@
 // tslint:disable-next-line:max-line-length
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { BaseComponent } from '../../shared/components/base.component';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { loadScripts } from '../../shared/helpers/load-scripts.helper';
 import { PipelineDataSource, PipelineResultStream, VisualDesignerData } from '../models';
 import { QueryDefinitionService } from '../services/query-definition.service';
-import { VisualQueryService } from '../services/visual-query.service';
+import { VisualQueryStateService } from '../services/visual-query.service';
 import { calculateTypeInfos } from './plumb-editor.helpers';
 import { PlumbEditorViewModel } from './plumb-editor.models';
 import { dataSrcIdPrefix, Plumber } from './plumber.helper';
 import { MatIconModule } from '@angular/material/icon';
 import { NgStyle, NgClass, AsyncPipe } from '@angular/common';
 import { JsonHelpers } from '../../shared/helpers/json.helpers';
-import { RxHelpers } from '../../shared/rxJs/rx.helpers';
 import { MousedownStopPropagationDirective } from '../../shared/directives/mousedown-stop-propagation.directive';
-import { EavLogger } from '../../shared/logging/eav-logger';
-
-const logThis = true;
-const nameOfThis = 'PlumbEditorComponent';
+import { classLog } from '../../shared/logging';
+import { mapUntilObjChanged } from '../../shared/rxJs/mapUntilChanged';
+import { transient } from '../../core';
 
 const jsPlumbUrl = 'https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.14.5/js/jsplumb.min.js';
 
@@ -38,6 +36,9 @@ const jsPlumbUrl = 'https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.14.5/js/jsp
   ],
 })
 export class PlumbEditorComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
+  
+  log = classLog({PlumbEditorComponent});
+
   @ViewChild('domRoot') private domRootRef: ElementRef<HTMLDivElement>;
   @ViewChildren('domDataSource') private domDataSourcesRef: QueryList<ElementRef<HTMLDivElement>>;
 
@@ -48,16 +49,15 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
   private scriptLoaded$ = new BehaviorSubject(false);
 
   viewModel$: Observable<PlumbEditorViewModel>;
+  
+  private queryDefinitionService = transient(QueryDefinitionService);
 
   constructor(
-    private visualQueryService: VisualQueryService,
-    private queryDefinitionService: QueryDefinitionService,
+    private visualQueryService: VisualQueryStateService,
     private changeDetectorRef: ChangeDetectorRef,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
-  ) {
-    super(new EavLogger(nameOfThis, logThis));
-  }
+  ) { super();}
 
   ngOnInit() {
     loadScripts([{ test: 'jsPlumb', src: jsPlumbUrl }], () => {
@@ -72,7 +72,8 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
 
     const pipelineDesignerData$ = this.visualQueryService.pipelineModel$.pipe(
       map(pipelineModel => JsonHelpers.tryParse(pipelineModel?.Pipeline.VisualDesignerData) ?? {}),
-      distinctUntilChanged(RxHelpers.objectsEqual),
+      mapUntilObjChanged(m => m),
+      // distinctUntilChanged(RxHelpers.objectsEqual),
     );
 
     this.viewModel$ = combineLatest([
@@ -82,7 +83,7 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
       this.visualQueryService.dataSourceConfigs$,
     ]).pipe(
       map(([pipelineModel, dataSources, pipelineDesignerData, dataSourceConfigs]) => {
-        if (pipelineModel == null || dataSources == null) { return; }
+        if (pipelineModel == null || dataSources == null) return;
 
         // workaround for jsPlumb not working with dom elements which it initialized on previously.
         // This wipes dom entirely and gives us new elements
@@ -169,7 +170,7 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
   }
 
   remove(pipelineDataSource: PipelineDataSource) {
-    if (!confirm(`Delete ${pipelineDataSource.Name} data source?`)) { return; }
+    if (!confirm(`Delete ${pipelineDataSource.Name} data source?`)) return;
 
     this.plumber.removeEndpointsOnDataSource(pipelineDataSource.EntityGuid);
     const connections = this.plumber.getAllConnections();
@@ -183,14 +184,14 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
 
   editName(dataSource: PipelineDataSource) {
     const newName = prompt('Rename data source', dataSource.Name)?.trim();
-    if (newName == null || newName === '') { return; }
+    if (newName == null || newName === '') return;
 
     this.visualQueryService.renameDataSource(dataSource.EntityGuid, newName);
   }
 
   editDescription(dataSource: PipelineDataSource) {
     const newDescription = prompt('Edit description', dataSource.Description)?.trim();
-    if (newDescription == null) { return; }
+    if (newDescription == null) return;
 
     this.visualQueryService.changeDataSourceDescription(dataSource.EntityGuid, newDescription);
   }

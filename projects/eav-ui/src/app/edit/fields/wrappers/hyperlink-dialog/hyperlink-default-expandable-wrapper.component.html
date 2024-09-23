@@ -1,0 +1,142 @@
+<!-- header -->
+<div [ngClass]="open() ? 'c-ew__container' : 'u-display-none'">
+  <div #backdrop class="c-ew__backdrop" (click)="closeDialog()"></div>
+  <div #dialog fxLayout="column" class="c-ew__dialog mat-elevation-z24 u-border-radius">
+    <div [ngClass]="{ 'c-ew__dialog-header mat-elevation-z2': open() }">
+      <mat-card appearance="raised" class="mat-elevation-z0" fxLayout="row">
+        <button mat-icon-button class="back-arrow" fxLayoutAlign="center center"
+          [tippy]="'Form.Buttons.Return.Tip' | translate" (click)="closeDialog()">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <span fxLayoutAlign="center center" class="title mat-headline-4">{{ basics().label }}</span>
+      </mat-card>
+    </div>
+    <div>
+      <div [@itemShrinkAnimation]="open() ? 'closed' : 'open'">
+      </div>
+      <div class="c-ew__dialog-content u-border-radius-bottom u-add-scrollbar u-hide-scrollbar"
+        [@contentExpandAnimation]="{
+          value: open() ? 'expanded' : 'closed',
+          params: { bottomPixels: calculateBottomPixels() }
+        }">
+        <ng-container #fieldComponent></ng-container>
+        <extended-fab-speed-dial class="adam">
+          <ng-template extendedFabSpeedDialTriggerContent>
+            <button extended-fab-speed-dial-trigger matRipple (click)="closeDialog()">
+              <mat-icon>done</mat-icon>
+              <span>{{ 'Form.Buttons.Return.Tip' | translate }}</span>
+            </button>
+          </ng-template>
+          <ng-template extendedFabSpeedDialActionsContent>
+            <button extended-fab-speed-dial-action matRipple [disabled]="formsStateService.saveButtonDisabled()"
+              (click)="saveAll(false)">
+              <span>{{ 'Form.Buttons.Save' | translate }}</span>
+              <mat-icon>save</mat-icon>
+            </button>
+            <button extended-fab-speed-dial-action matRipple [disabled]="formsStateService.saveButtonDisabled()"
+              (click)="saveAll(true)">
+              <span>{{ 'Form.Buttons.SaveAndClose' | translate }}</span>
+              <mat-icon>done_all</mat-icon>
+            </button>
+          </ng-template>
+        </extended-fab-speed-dial>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- preview -->
+@if (preview(); as preV) {
+<div class="c-hyperlink-default-field-preview">
+  <div class="c-ew__preview" fxLayout="row" fxLayoutAlign="start start" [ngClass]="{
+        'c-ew__preview--disabled': ui().disabled,
+        'c-ew__preview--last-in-group': config.isLastInGroup
+        }">
+    <!-- image / icon -->
+    <div class="thumbnail-before-input" [tippy]="'Fields.Hyperlink.Default.Fullscreen' | translate"
+      [tippyDisabled]="ui().disabled" [ngClass]="{
+          'icon-before-input': uiValue() && !preV.isImage,
+          'thumbnail-before-input--disabled': ui().disabled
+          }"
+      [ngStyle]="{ 'background-image': uiValue() && preV.isImage ? preV.thumbnailUrl : '' }"
+      (click)="expandDialog()">
+      @if (uiValue() && !preV.isImage) {
+        <mat-icon [tippy]="preV.url" tippyPlacement="right" [svgIcon]="preV.icon"></mat-icon>
+      }
+    </div>
+    <!-- field -->
+    <div class="c-ew__preview-field--short" fxFlex="auto">
+      <!-- input -->
+      <div class="hyperlink-input-link-wrapper">
+        <mat-form-field color="accent" class="eav-mat-form-field" [ngClass]="{
+              'mat-form-field-invalid': ui().touchedAndInvalid
+              }">
+          <input matInput class="eav-translate-on-dblclick" [tippy]="'Fields.Hyperlink.Default.Tooltip' | translate"
+            tippyPlacement="top" [placeholder]="basics().placeholder" (change)="setValue($event)"
+            [disabled]="ui().disabled" (blur)="markAsTouched()" [value]="uiValue()"
+            (keyup)="setValue($event)" appPasteClipboardImage [config]="config" [elementType]="'input'">
+          @if (buttonAdam() || buttonPage()) {
+            <div matTextSuffix fxLayoutAlign="center center">
+              <div class="c-ew__preview-suffix-text" fxHide fxShow.gt-xs [ngClass]="{
+                          'c-ew__preview-suffix-text--disabled': ui().disabled
+                          }">
+                {{ buttonAdam() ? ('Fields.Hyperlink.AdamFileManager.Hint' | translate) : '' }}
+              </div>
+              @if (buttonAdam()) {
+              <button mat-icon-button class="c-ew__preview-suffix-icon"
+                [tippy]="'Fields.Hyperlink.Default.Fullscreen' | translate" appClickStopPropagation
+                [disabled]="ui().disabled" (click)="expandDialog()">
+                <mat-icon svgIcon="apple-outlined"></mat-icon>
+              </button>
+              }
+              <button mat-icon-button class="c-ew__preview-suffix-icon" appClickStopPropagation
+                [disabled]="!adamItem()?._imageConfigurationContentType"
+                [ngClass]="{ 'metadata-exists': adamItem()?._imageConfigurationId > 0 }"
+                [tippy]="'Fields.Hyperlink.AdamFileManager.ImageSettings' | translate"
+                (click)="openImageConfiguration(adamItem())">
+                <mat-icon
+                  [tippy]="(enableImageConfiguration() ? 'Fields.Hyperlink.AdamFileManager.ImageSettingsUnavailable' : 'Fields.Hyperlink.AdamFileManager.ImageSettingsDisabled') | translate"
+                  [tippyDisabled]="adamItem()?._imageConfigurationContentType">filter_center_focus</mat-icon>
+              </button>
+              @if (buttonPage()) {
+              <button mat-icon-button class="c-ew__preview-suffix-icon"
+                [tippy]="'Fields.Hyperlink.Default.PageTip' | translate" appClickStopPropagation
+                [disabled]="ui().disabled" (click)="openPagePicker()">
+                <mat-icon svgIcon="sitemap"></mat-icon>
+              </button>
+            }
+          </div>
+          }
+          <mat-label [ngClass]="{ 'mat-error' : ui().touchedAndInvalid }">
+            {{basics().labelWithRequired}}
+          </mat-label>
+        </mat-form-field>
+        <!-- link absolutely positioned above input -->
+        @if (preV.floatingText) {
+          <div class="hyperlink-floating" fxHide fxShow.gt-xs>
+            <div class="hyperlink-floating__value">{{ uiValue() }}</div>
+            <div class="hyperlink-floating__url-box">
+              <a [href]="preV.url" target="_blank" tabindex="-1" class="hyperlink-floating__url"
+                [tippy]="preV.url">
+                <span>{{ preV.floatingText }}</span>
+              </a>
+            </div>
+          </div>
+        }
+      </div>
+      <!-- helper text and adam text -->
+      <div class="c__helper-wrapper">
+        <app-field-helper-text class="c__helper-wrapper--left" [hyperlinkDefaultWrapperFix]="true">
+        </app-field-helper-text>
+        @if (buttonAdam()) {
+          <div align="end" style="display: flex;" class="c-ew__preview-field-hint c__helper-wrapper--right" fxHide
+            fxShow.gt-xs>
+            <span>{{ adamSponsorI18nKey() | translate }}</span>
+            <app-feature-icon-text [featureNameId]="'NoSponsoredByToSic'"></app-feature-icon-text>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>
+}

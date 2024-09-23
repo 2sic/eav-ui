@@ -1,21 +1,19 @@
-import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, HostBinding, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NgForm, FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, catchError, concatMap, filter, forkJoin, map, of, share, Subscription, switchMap, toArray } from 'rxjs';
+import { BehaviorSubject, catchError, concatMap, filter, forkJoin, map, of, share, switchMap, toArray } from 'rxjs';
 import { fieldNameError, fieldNamePattern } from '../../app-administration/constants/field-name.patterns';
 import { ContentType } from '../../app-administration/models/content-type.model';
 import { ContentTypesService } from '../../app-administration/services/content-types.service';
 import { BaseComponent } from '../../shared/components/base.component';
-import { DataTypeConstants } from '../constants/data-type.constants';
-import { InputTypeStrict, InputTypeConstants } from '../constants/input-type.constants';
+import { DataTypeCatalog } from '../../shared/fields/data-type-catalog';
+import { InputTypeStrict, InputTypeCatalog } from '../../shared/fields/input-type-catalog';
 import { calculateTypeIcon, calculateTypeLabel } from '../content-type-fields.helpers';
-import { Field, FieldInputTypeOption } from '../models/field.model';
-import { ReservedNames } from '../models/reserved-names.model';
-import { ContentTypesFieldsService } from '../services/content-types-fields.service';
+import { Field, FieldInputTypeOption } from '../../shared/fields/field.model';
+import { ContentTypesFieldsService } from '../../shared/fields/content-types-fields.service';
 import { calculateDataTypes, DataType } from './edit-content-type-fields.helpers';
-import { GlobalConfigService } from '../../edit/shared/store/ngrx-data';
 import { AddSharingFieldsComponent } from '../add-sharing-fields/add-sharing-fields.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -28,6 +26,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
 import { ToggleDebugDirective } from '../../shared/directives/toggle-debug.directive';
+import { transient } from '../../core';
+import { GlobalConfigService } from '../../shared/services/global-config.service';
 
 @Component({
   selector: 'app-edit-content-type-fields',
@@ -57,7 +57,7 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
 
   fields: Partial<Field>[] = [];
   existingFields: Field[] = [];
-  reservedNames: ReservedNames;
+  reservedNames: Record<string, string> = {};
   editMode: 'name' | 'inputType';
   dataTypes: DataType[];
   filteredInputTypeOptions: FieldInputTypeOption[][] = [];
@@ -69,17 +69,17 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
   findLabel = calculateTypeLabel;
   loading$ = new BehaviorSubject(true);
   saving$ = new BehaviorSubject(false);
-  debugEnabled$ = this.globalConfigService.getDebugEnabled$();
+  isDebug = inject(GlobalConfigService).isDebug;
 
   private contentType: ContentType;
   private inputTypeOptions: FieldInputTypeOption[];
 
+  private contentTypesService = transient(ContentTypesService);
+  private contentTypesFieldsService = transient(ContentTypesFieldsService);
+
   constructor(
     private dialogRef: MatDialogRef<EditContentTypeFieldsComponent>,
     private route: ActivatedRoute,
-    private contentTypesService: ContentTypesService,
-    private contentTypesFieldsService: ContentTypesFieldsService,
-    private globalConfigService: GlobalConfigService,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
   ) {
@@ -113,15 +113,7 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
         this.inputTypeOptions = inputTypes;
         this.existingFields = fields;
 
-        const existingFields: ReservedNames = {};
-        fields.forEach(field => {
-          existingFields[field.StaticName] = 'Field with this name already exists';
-        });
-
-        this.reservedNames = {
-          ...reservedNames,
-          ...existingFields,
-        };
+        this.reservedNames = ReservedNamesValidatorDirective.assembleReservedNames(reservedNames, fields);
 
         if (this.editMode != null) {
           const editFieldId = this.route.snapshot.paramMap.get('id') ? parseInt(this.route.snapshot.paramMap.get('id'), 10) : null;
@@ -133,8 +125,8 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
           for (let i = 1; i <= 8; i++) {
             this.fields.push({
               Id: 0,
-              Type: DataTypeConstants.String,
-              InputType: InputTypeConstants.StringDefault,
+              Type: DataTypeCatalog.String,
+              InputType: InputTypeCatalog.StringDefault,
               StaticName: '',
               IsTitle: fields.length === 0,
               SortOrder: fields.length + i,
@@ -169,7 +161,7 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
   }
 
   resetInputType(index: number) {
-    let defaultInputType = this.fields[index].Type.toLocaleLowerCase() + InputTypeConstants.DefaultSuffix as InputTypeStrict;
+    let defaultInputType = this.fields[index].Type.toLocaleLowerCase() + InputTypeCatalog.DefaultSuffix as InputTypeStrict;
     const defaultExists = this.filteredInputTypeOptions[index].some(option => option.inputType === defaultInputType);
     if (!defaultExists)
       defaultInputType = this.filteredInputTypeOptions[index][0].inputType;

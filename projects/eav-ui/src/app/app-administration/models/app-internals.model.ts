@@ -1,5 +1,5 @@
 import { ContentItem } from "../../content-items/models/content-item.model";
-import { Field } from "../../content-type-fields/models/field.model";
+import { Field } from "../../shared/fields/field.model";
 import { MetadataDto } from "../../metadata"
 
 export interface AppInternals {

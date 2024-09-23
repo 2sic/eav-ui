@@ -1,14 +1,17 @@
 import { ServiceBase } from '../../../shared/services/service-base';
-import { EavLogger } from '../../../shared/logging/eav-logger';
-import { Injectable, inject, signal, Injector, OnDestroy, effect, ProviderToken, TypeProvider } from '@angular/core';
-import { FieldState } from '../../form/builder/fields-builder/field-state';
-import { FormConfigService } from '../services';
+import { Injectable, inject, signal, Injector, effect, computed, Signal } from '@angular/core';
+import { FieldState } from '../../fields/field-state';
+import { FormConfigService } from '../../form/form-config.service';
+import { classLog } from '../../../shared/logging';
 
-const logThis = false;
-const nameOfThis = 'FieldMask';
+const logSpecs = {
+  all: false,
+  initSignal: false,
+}
 
 const FieldsFind = /\[.*?\]/ig;
 const FieldUnwrap = /[\[\]]/ig;
+
 /**
  * Create a new FieldMask instance and access result with resolve
  * @example
@@ -20,108 +23,117 @@ const FieldUnwrap = /[\[\]]/ig;
  * @param overloadPreCleanValues a function which will "scrub" the found field-values
  */
 @Injectable()
-export class FieldMask extends ServiceBase implements OnDestroy {
-  public signal = signal<string>('');
+export class FieldMask extends ServiceBase /* for field-change subscription */ {
+  
+  log = classLog({FieldMask}, logSpecs);
 
-  public watch = false;
-
-  /** Fields used in the mask */
-  private fieldsUsedInMask: string[] = [];
-
-  private fieldState = inject(FieldState);
-
-  private controls = this.fieldState.group.controls;
-  private fieldConfig = this.fieldState.config;
-
-  protected formConfig = inject(FormConfigService);
-
-  private callback?: (newValue: string) => void;
-
-  private mask: string | null;
+  #fieldState = inject(FieldState);
+  #formConfig = inject(FormConfigService);
 
   constructor(private injector: Injector) {
-    super(new EavLogger(nameOfThis, logThis));
+    super();
     this.log.a('constructor');
   }
 
-  ngOnDestroy() {
-    this.destroy();
-  }
+  /**
+   * The result of the mask as a signal, for external use/subscribing.
+   */
+  public result = signal<string>('');
 
-  /** Attach any processing events before the mask is resolved the first time */
+  #controls = this.#fieldState.group.controls;
+  #fieldConfig = this.#fieldState.config;
+
+  /**
+   * The mask as a signal.
+   * This allows us to use a simple value or a possibly runtime-changing mask. 
+   */
+  #maskSignal = signal<Signal<string>>(signal<string>(''));
+
+  /**
+   * The final mask to use - either picking the signal or the text
+   * TODO: we should be able to simplify this to just use a signal
+   */
+  #mask = computed(() => this.#maskSignal()());
+
+  /** Fields used in the mask */
+  #fieldsUsedInMask = computed(() => this.#extractFieldNames(this.#mask()));
+
+  // #fieldValuesSignals = inject(FieldsSettingsService).fieldValues;
+
+  // // TODO create a multi-field signal?
+
+  // public result2 = computed(() => {
+  //   // listen to all the fields for changes
+  //   this.#fieldsUsedInMask().forEach(field => {
+
+  //   });
+  // });
+
+
+  /**
+   * Attach any processing events before the mask is resolved the first time
+   */
   public initPreClean(overloadPreCleanValues: (key: string, value: string) => string): this {
     this.log.a('initPreClean');
     this.preClean = overloadPreCleanValues;
     return this;
   }
 
-  /**
-   * attach a callback.
-   * Someday should simply be replaced to use the signal instead.
-   * @param callback 
-   * @returns 
-   */
-  public initCallback(callback: (newValue: string) => void): this {
-    this.log.a('initCallback');
-    this.callback = callback;
-    this.watch = true;
-    return this;
+  public init(name: string, mask: string): this {
+    return this.initSignal(name, signal(mask));
   }
 
-  public init(name: string, mask: string, watch?: boolean): this {
-    this.log.rename(`${this.log.name}-${name}`);
-    // mut happen before updateMask
-    if (watch != null)
-      this.watch = watch;
-    this.updateMask(mask);
-    return this;
+  public initSignal(name: string, mask: Signal<string>): this {
+    this.log.extendName(`-${name}`);
+    const l = this.log.fnIf('initSignal', { name, mask });
+    this.#maskSignal.set(mask);
+    this.#updateMaskFinal();
+    return l.r(this, 'first result:' + this.result());
   }
-  
+
+  /**
+   * Activate an aggressive change logger to debug what's happening.
+   * Should only be used in development, as it will log a lot of data to the console.
+   */
   public logChanges(): this {
     // use logger, but if not enabled, create new just for this
-    const l = this.log.enabled ? this.log : new EavLogger(nameOfThis, true);
-    effect(() => {
-      const latest = this.signal();
-      l.a(`Mask '${this.mask}' value changed to: ${latest}`);
-    }, { injector: this.injector });
+    const l = this.log.enabled ? this.log : classLog({FieldMask});
+    effect(() => l.a(`Mask '${this.#mask()}' value changed to: ${this.result()}`), { injector: this.injector });
     return this;
   }
 
-  
-  public updateMask(mask: string) {
-    this.mask = mask ?? '';
-    this.fieldsUsedInMask = this.extractFieldNames(this.mask);
-
+  #updateMaskFinal() {
     // bind auto-watch only if needed...
     // otherwise it's just on-demand
-    if (this.watch || this.callback)
-      this.watchAllFields();
-
-    this.onChange();
+    this.#watchAllFields();
+    this.#onChange();
   }
 
-  
 
-  /** Resolves a mask to the final value */
-  resolve(): string {
+
+  /**
+   * Process a mask to the get the final value
+   */
+  #process(): string {
 
     // if no mask, exit early
-    if (!hasPlaceholders(this.mask))
-      return this.mask;
+    if (!hasPlaceholders(this.#mask()))
+      return this.#mask();
 
-    let value = lowercaseInsideSquareBrackets(this.mask);
-    if (this.formConfig != null)
+    let value = lowercaseInsideSquareBrackets(this.#mask());
+
+    if (this.#formConfig != null)
       value = value
-        .replace('[app:appid]', this.formConfig.config.appId)
-        .replace('[app:zoneid]', this.formConfig.config.zoneId);
+        .replace('[app:appid]', this.#formConfig.config.appId.toString())
+        .replace('[app:zoneid]', this.#formConfig.config.zoneId.toString());
 
-    if (this.fieldConfig != null)
+    if (this.#fieldConfig != null)
       value = value
-        .replace('[guid]', this.fieldConfig.entityGuid)
-        .replace('[id]', this.fieldConfig.entityId.toString());
+        .replace('[guid]', this.#fieldConfig.entityGuid)
+        .replace('[id]', this.#fieldConfig.entityId.toString());
 
-    this.fieldsUsedInMask.forEach((e, i) => {
-      const replaceValue = this.controls.hasOwnProperty(e) && this.controls[e] && this.controls[e].value ? this.controls[e].value : '';
+    this.#fieldsUsedInMask().forEach((e, i) => {
+      const replaceValue = this.#controls?.[e]?.value ?? '';
       const cleaned = this.preClean(e, replaceValue);
       value = value.replace('[' + e.toLowerCase() + ']', cleaned);
     });
@@ -129,48 +141,43 @@ export class FieldMask extends ServiceBase implements OnDestroy {
   }
 
   /** Retrieves a list of all fields used in the mask */
-  private extractFieldNames(mask: string): string[] {
+  #extractFieldNames(mask: string): string[] {
     // exit early if mask very simple or not a mask
     if (!mask || !hasPlaceholders(mask))
       return [];
-    
-    const result: string[] = [];
+
     const matches = mask.match(FieldsFind);
-    if (matches)
-      matches.forEach((fieldName) => {
-        const staticName = fieldName.replace(FieldUnwrap, '');
-        result.push(staticName);
-      });
-    else
-      // TODO: ask is this good
-      result.push(this.mask);
-    return result;
+    
+    // TODO: ask is this good
+    if (!matches)
+      return [mask];
+    
+    const fields: string[] = matches.map(token => token.replace(FieldUnwrap, ''));
+    return fields;
   }
 
-  /** Default preClean function, if no other function was specified for this */
-  private preClean(key: string, value: string): string {
-    return value;
-  }
+  /**
+   * Default preClean function, if no other function was specified for this
+   * Will be replaced if need be.
+   */
+  private preClean(key: string, value: string): string { return value; }
 
   /** Change-event - will only fire if it really changes */
-  private onChange() {
-    const maybeNew = this.resolve();
-    if (this.signal() !== maybeNew) {
-      this.signal.set(maybeNew);
-      this.callback?.(maybeNew);
-    }
+  #onChange() {
+    const maybeNew = this.#process();
+    this.result.set(maybeNew);
   }
 
   /**
    * Add watcher and execute onChange.
    * Uses observables, since that's what angular provides on valueChanges.
    */
-  private watchAllFields() {
+  #watchAllFields() {
     // add a watch for each field in the field-mask
-    this.fieldsUsedInMask.forEach(field => {
-      const control = this.controls[field];
+    this.#fieldsUsedInMask().forEach(field => {
+      const control = this.#controls[field];
       if (!control) return;
-      const valueSub = control.valueChanges.subscribe(_ => this.onChange());
+      const valueSub = control.valueChanges.subscribe(_ => this.#onChange());
       this.subscriptions.add(valueSub);
     });
   }
@@ -183,5 +190,5 @@ function hasPlaceholders(mask: string): boolean {
 
 /** used for query parameters */
 function lowercaseInsideSquareBrackets(value: string) {
-  return value.replace(/\[([^\]]+)\]/g, (match, group) => `[${group.toLowerCase()}]`);
+  return value.replace(/\[([^\]]+)\]/g, (_, group) => `[${group.toLowerCase()}]`);
 }

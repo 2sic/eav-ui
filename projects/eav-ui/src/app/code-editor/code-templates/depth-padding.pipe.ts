@@ -2,8 +2,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
 
 @Pipe({
-    name: 'depthPadding',
-    standalone: true
+  name: 'depthPadding',
+  standalone: true
 })
 export class DepthPaddingPipe implements PipeTransform {
 

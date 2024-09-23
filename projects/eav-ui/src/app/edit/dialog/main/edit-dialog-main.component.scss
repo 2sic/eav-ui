@@ -61,54 +61,37 @@
 }
 
 .eav-dialog-content {
+  // Default parameters: max height, no footer
+  --edit-content-max-height: var(--edit-content-max-height-no-margins);
+  --edit-footer-height: 0px;
+  --edit-margins-vertical: var(--edit-dialog-margins-vertical);
+  --edit-safari-fix: 0px;
   margin: 0;
   padding: 0;
-  max-height: $edit-ui-dialog-max-height;
+  max-height: calc(var(--edit-content-max-height) - var(--edit-footer-height) - var(--edit-margins-vertical) + var(--edit-safari-fix));
   background-color: rgba(0, 0, 0, 0.06);
 
   @media (max-width: 600px) {
-    max-height: $edit-ui-dialog-max-height-mobile;
+    --edit-margins-vertical: 0px;
   }
 
   // override for expandable field header to be visible on safari
   // as main dialog header was above it otherwise
   &.hide-header-height-fix {
-    max-height: calc(#{$edit-ui-dialog-max-height} + #{$edit-ui-dialog-header-max-height}) !important;
-
-    @media (max-width: 600px) {
-      max-height: calc(#{$edit-ui-dialog-max-height-mobile} + #{$edit-ui-dialog-header-max-height}) !important;
-    }
-  }
-}
-
-.eav-dialog-content.debug-enabled {
-  max-height: $edit-ui-dialog-max-height-with-debug;
-
-  @media (max-width: 600px) {
-    max-height: $edit-ui-dialog-max-height-with-debug-mobile;
+    --edit-safari-fix: var(--edit-dialog-header-height);
   }
 
-  &.hide-header-height-fix {
-    max-height: calc(#{$edit-ui-dialog-max-height-with-debug} + #{$edit-ui-dialog-header-max-height}) !important;
+  // Debug footer is on
+  &.debug-enabled {
+    --edit-footer-height: var(--edit-footer-bar-height);
 
-    @media (max-width: 600px) {
-      max-height: calc(#{$edit-ui-dialog-max-height-with-debug-mobile} + #{$edit-ui-dialog-header-max-height}) !important;
-    }
-  }
-}
+    // Debug info is open
+    &.debug-info-is-open {
+      --edit-footer-height: calc(var(--edit-footer-bar-height) + var(--edit-footer-container-height-total));
 
-.eav-dialog-content.debug-enabled.debug-info-is-open {
-  max-height: calc(#{$edit-ui-dialog-max-height-with-debug} - #{$debug-info-container-total-height});
-
-  @media (max-width: 600px) {
-    max-height: calc(#{$edit-ui-dialog-max-height-with-debug-mobile} - #{$debug-info-container-total-height});
-  }
-
-  &.hide-header-height-fix {
-    max-height: calc(#{$edit-ui-dialog-max-height-with-debug} - #{$debug-info-container-total-height} + #{$edit-ui-dialog-header-max-height}) !important;
-
-    @media (max-width: 600px) {
-      max-height: calc(#{$edit-ui-dialog-max-height-with-debug-mobile} - #{$debug-info-container-total-height} + #{$edit-ui-dialog-header-max-height}) !important;
+      &.footer-xl {
+        --edit-footer-height: calc(var(--edit-footer-bar-height) + var(--edit-footer-container-height-total) + var(--edit-footer-container-height));
+      }
     }
   }
 }

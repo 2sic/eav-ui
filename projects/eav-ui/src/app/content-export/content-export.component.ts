@@ -3,9 +3,7 @@ import { MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, forkJoin } from 'rxjs';
 import { ContentType } from '../app-administration/models/content-type.model';
-import { AppDialogConfigService } from '../app-administration/services/app-dialog-config.service';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
-import { Language } from '../edit/shared/models';
 import { ContentExport } from './models/content-export.model';
 import { ContentExportService } from './services/content-export.service';
 import { AsyncPipe } from '@angular/common';
@@ -15,30 +13,32 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
+import { transient } from '../core';
+import { Language } from '../shared/models/language.model';
+import { DialogConfigAppService } from '../app-administration/services/dialog-config-app.service';
 
 @Component({
-    selector: 'app-content-export',
-    templateUrl: './content-export.component.html',
-    styleUrls: ['./content-export.component.scss'],
-    standalone: true,
-    imports: [
-        FormsModule,
-        MatFormFieldModule,
-        MatSelectModule,
-        MatOptionModule,
-        MatRadioModule,
-        MatDialogActions,
-        MatButtonModule,
-        AsyncPipe,
-    ],
-    providers: [
-        ContentExportService,
-        ContentTypesService,
-        AppDialogConfigService,
-    ],
+  selector: 'app-content-export',
+  templateUrl: './content-export.component.html',
+  styleUrls: ['./content-export.component.scss'],
+  standalone: true,
+  imports: [
+    FormsModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatRadioModule,
+    MatDialogActions,
+    MatButtonModule,
+    AsyncPipe,
+  ],
 })
 export class ContentExportComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
+
+  private contentExportService = transient(ContentExportService);
+  private contentTypesService = transient(ContentTypesService);
+  private dialogConfigSvc = transient(DialogConfigAppService);
 
   formValues: ContentExport;
   languages: Language[];
@@ -52,9 +52,6 @@ export class ContentExportComponent implements OnInit, OnDestroy {
   constructor(
     private dialogRef: MatDialogRef<ContentExportComponent>,
     private route: ActivatedRoute,
-    private contentExportService: ContentExportService,
-    private appDialogConfigService: AppDialogConfigService,
-    private contentTypesService: ContentTypesService,
   ) {
     const selectedIds = this.route.snapshot.paramMap.get('selectedIds');
     this.hasIdList = !!selectedIds;
@@ -66,7 +63,7 @@ export class ContentExportComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.loading$.next(true);
     const contentType$ = this.contentTypesService.retrieveContentType(this.contentTypeStaticName);
-    const dialogSettings$ = this.appDialogConfigService.getCurrent$();
+    const dialogSettings$ = this.dialogConfigSvc.getCurrent$();
     forkJoin([contentType$, dialogSettings$]).subscribe(([contentType, dialogSettings]) => {
       this.contentType$.next(contentType);
       this.languages = dialogSettings.Context.Language.List;

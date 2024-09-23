@@ -22,7 +22,7 @@ import 'tinymce/themes/silver';
 
 import { BehaviorSubject, distinctUntilChanged, Subscription } from 'rxjs';
 // tslint:disable-next-line: no-duplicate-imports
-import type { Editor } from 'tinymce/tinymce';
+import type { Editor, EditorEvent } from 'tinymce/tinymce';
 import { EavWindow } from '../../../eav-ui/src/app/shared/models/eav-window.model';
 import { Connector, EavCustomInputField, WysiwygReconfigure } from '../../../edit-types';
 import { TinyMceConfigurator } from '../config/tinymce-configurator';
@@ -37,11 +37,9 @@ import * as template from './editor.html';
 import * as styles from './editor.scss';
 import { fixMenuPositions } from './fix-menu-positions.helper';
 import * as skinOverrides from './skin-overrides.scss';
-import { EavLogger } from '../../../../projects/eav-ui/src/app/shared/logging/eav-logger';
 import { connectorToDisabled$, registerCustomElement } from './editor-helpers';
-
-const logThis = false;
-const nameOfThis = 'FieldStringWysiwygEditor';
+import { DropzoneWysiwyg } from '../../../eav-ui/src/app/edit/fields/wrappers/dropzone/dropzone-wysiwyg';
+import { classLog } from '../../../../projects/eav-ui/src/app/shared/logging';
 
 declare const window: EavWindow;
 
@@ -50,6 +48,9 @@ declare const window: EavWindow;
  * It is registered as a custom-element in the browser (below)
  */
 export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomInputField<string> {
+
+  log = classLog({ FieldStringWysiwygEditor });
+
   fieldInitialized = false;
   connector: Connector<string>;
   mode?: 'inline' | 'normal';
@@ -59,13 +60,16 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   configurator: TinyMceConfigurator;
 
   /** random, unique ID for this instance of the editor to keep them separate */
-  private instanceId = `${Math.floor(Math.random() * 99999)}`;
+  #instanceId = `${Math.floor(Math.random() * 99999)}`;
 
   /** class to uniquely identify this editor */
-  private containerClass = `tinymce-container-${this.instanceId}`;
+  #containerClass = `tinymce-container-${this.#instanceId}`;
 
   /** class to uniquely identify the toolbar area */
-  private toolbarContainerClass = `tinymce-toolbar-container-${this.instanceId}`;
+  #toolbarContainerClass = `tinymce-toolbar-container-${this.#instanceId}`;
+
+  /** Class to add to the DOM so the surrounding Dropzone does everything right */
+  #adamIntegrationClass = DropzoneWysiwyg.classToDetectWysiwyg;
 
   private editorContent: string; // saves editor content to prevent slow update when first using editor
   private pasteClipboardImage$ = new BehaviorSubject<boolean>(false);
@@ -75,8 +79,6 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   private firstInit: boolean;
   private dialogIsOpen: boolean;
   private menuObserver: MutationObserver;
-
-  private log = new EavLogger(nameOfThis, logThis);
 
   constructor() {
     super();
@@ -92,8 +94,8 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     this.log.a(`connectedCallback`);
 
     this.innerHTML = buildTemplate(template.default, styles.default + skinOverrides.default);
-    this.querySelector<HTMLDivElement>('.tinymce-container').classList.add(this.containerClass);
-    this.querySelector<HTMLDivElement>('.tinymce-toolbar-container').classList.add(this.toolbarContainerClass);
+    this.querySelector<HTMLDivElement>('.tinymce-container').classList.add(this.#containerClass, this.#adamIntegrationClass);
+    this.querySelector<HTMLDivElement>('.tinymce-toolbar-container').classList.add(this.#toolbarContainerClass);
     this.classList.add(this.mode === 'inline' ? 'inline-wysiwyg' : 'full-wysiwyg');
 
     // ensure it respects activated features for Paste-Image
@@ -113,22 +115,22 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
           src: `${tinyMceBaseUrl}/i18n/${tinyLang}.js`,
         },
       ],
-      () => this.tinyMceScriptLoaded(),
+      () => this.#tinyMceScriptLoaded(),
     );
 
     this.connector._experimental.dropzone.setConfig({ disabled: false });
   }
 
-  private tinyMceScriptLoaded(): void {
+  #tinyMceScriptLoaded(): void {
     this.log.a(`tinyMceScriptLoaded`);
 
     this.configurator = new TinyMceConfigurator(this.connector, this.reconfigure);
     const tinyOptions = this.configurator.buildOptions(
-      this.containerClass,
-      this.toolbarContainerClass,
+      this.#containerClass,
+      this.#toolbarContainerClass,
       this.mode === 'inline',
       // setup callback when the editor is initialized by TinyMCE
-      (editor: Editor) => this.tinyMceSetup(editor, tinyOptions),
+      (editor: Editor) => this.#tinyMceSetup(editor, tinyOptions),
     );
 
     this.firstInit = true;
@@ -138,7 +140,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   }
 
   /** This will initialized an instance of an editor. Everything else is kind of global. */
-  private tinyMceSetup(editor: Editor, rawEditorOptions: RawEditorOptionsExtended): void {
+  #tinyMceSetup(editor: Editor, rawEditorOptions: RawEditorOptionsExtended): void {
     this.editor = editor;
     editor.on('init', _event => {
       this.log.a(`TinyMCE initialized`, {editor});
@@ -196,7 +198,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     // called after TinyMCE editor is removed
     editor.on('remove', _event => {
       this.log.a(`TinyMCE removed`, _event);
-      this.clearData();
+      this.#clearData();
     });
 
     // called before PastePreProcess
@@ -218,31 +220,32 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
       }
     });
 
+    const handleFocus = (focused: boolean, _event: EditorEvent<unknown>) => {
+      this.classList.toggle('focused', focused);
+      this.log.a(`TinyMCE focused ${focused}`, _event);
+      if (this.mode === 'inline')
+        this.connector._experimental.setFocused(focused);
+    };
+
     editor.on('focus', _event => {
-      this.classList.add('focused');
-      this.log.a(`TinyMCE focused`, _event);
+      handleFocus(true, _event);
       if (!this.reconfigure?.disableAdam)
         attachAdam(editor, this.connector._experimental.adam);
-
-      if (this.mode === 'inline')
-        this.connector._experimental.setFocused(true);
     });
 
     editor.on('blur', _event => {
-      this.classList.remove('focused');
-      this.log.a(`TinyMCE blurred`, _event);
-      if (this.mode === 'inline')
-        this.connector._experimental.setFocused(false);
+      handleFocus(false, _event);
     });
 
     // on change, undo and redo, save/push the value
-    editor.on('change', () => this.saveValue());
-    editor.on('undo', () => this.saveValue());
-    editor.on('redo', () => this.saveValue());
+    ['change', 'undo', 'redo', 'input'].forEach(name => editor.on(name, () => this.#saveValue()));
+
+    // if the system has a reconfigure object, run it's code now
     this.reconfigure?.configureEditor?.(editor);
   }
 
-  private saveValue(): void {
+  #saveValue(): void {
+    const l = this.log.fn(`saveValue`);
     // Check what's new
     let newContent = this.editor.getContent();
 
@@ -270,9 +273,10 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
 
     // broadcast the change
     this.connector.data.update(this.editorContent);
+    l.end('done')
   }
 
-  private clearData(): void {
+  #clearData(): void {
     this.subscriptions.unsubscribe();
     this.editor?.destroy();
     this.editor?.remove();
@@ -283,8 +287,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
 
   disconnectedCallback(): void {
     this.log.a(`disconnectedCallback`);
-    this.clearData();
-    this.subscriptions.unsubscribe();
+    this.#clearData();
   }
 }
 

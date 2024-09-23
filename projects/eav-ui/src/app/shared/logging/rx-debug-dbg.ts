@@ -1,5 +1,5 @@
 import { Observable, tap } from 'rxjs';
-import { EavLogger } from './eav-logger';
+import { ClassLogger } from './class/class-logger';
 
 /**
  * Special debug helper for RxJS observables
@@ -11,7 +11,7 @@ export class RxTapDebug {
    * @param name name of the stream we're logging
    * @param jsonify will JSON.stringify the data if true - this is much faster as the browser doesn't block the debugger as much
    */
-  constructor(private logger: EavLogger, public name: string, private enabled = true, private jsonify: boolean = true) {}
+  constructor(private logger: ClassLogger, public name: string, private enabled = true, private jsonify: boolean = true) { }
 
   /**
    * Generate a rxjs tap function that logs the data with the current context
@@ -36,7 +36,7 @@ export class RxTapDebug {
           const showData = data == null
             ? data  // if null or undefined, just show it
             : this.jsonify ? JSON.parse(JSON.stringify(data)) : data;
-          return this.logger.a(label + ` #${counter++}`, {showData});
+          return this.logger.a(label + ` #${counter++}`, { showData });
         })
       );
   };
@@ -77,7 +77,7 @@ export class RxTapDebug {
    * @param subName optional sub-name, to distinguish between different uses
    * @returns
    */
-  distinctUntilChanged<T>(subName?: string) {return this.generateFn<T>('distinctUntilChanged', subName); }
+  distinctUntilChanged<T>(subName?: string) { return this.generateFn<T>('distinctUntilChanged', subName); }
 
 
   start<T>() { return this.generateFn<T>('start'); }

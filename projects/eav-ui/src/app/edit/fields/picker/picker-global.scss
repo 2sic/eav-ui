@@ -1,0 +1,43 @@
+// This file contains global picker CSS
+// It's necessary, because otherwise we can't affect styling of angular material components
+// inside the picker
+//
+// This file should be imported in the global theme.scss file
+
+// TODO: @SDV Find out why this works here, but not from picker-search.component.scss
+.picker-option-wrapper.mat-mdc-option .mdc-list-item__primary-text {
+  width: 100% !important;
+}
+
+.eav-tree-node .picker-option-wrapper {
+  width: 100% !important;
+}
+
+
+// Deep styling for Material Checkboxes in the Pickers
+
+mat-checkbox.picker-option-wrapper {
+  width: 100%;
+}
+
+mat-checkbox.picker-option-wrapper .mat-internal-form-field {
+  width: 100% !important;
+}
+
+mat-checkbox.picker-option-wrapper .mat-internal-form-field label {
+  width: 100% !important;
+}
+
+// Deep styling for Material Radio in the Pickers
+
+mat-radio-button.picker-option-wrapper {
+  width: 100%;
+}
+
+mat-radio-button.picker-option-wrapper .mat-internal-form-field {
+  width: 100% !important;
+}
+
+mat-radio-button.picker-option-wrapper .mat-internal-form-field label {
+  width: 100% !important;
+}

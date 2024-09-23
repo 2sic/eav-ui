@@ -18,7 +18,6 @@ $max-height: calc(100vh - #{$dialog-margin-top} - #{$dialog-margin-bottom});
     height: 48px;
     padding: 0px;
   }
-
 }
 
 .no-scrollbar {
@@ -30,7 +29,10 @@ $max-height: calc(100vh - #{$dialog-margin-top} - #{$dialog-margin-bottom});
 .note-dialog {
   .mat-mdc-dialog-container {
     padding: 0;
-    box-shadow: 0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%) !important;
+    box-shadow:
+      0px 2px 4px -1px rgb(0 0 0 / 20%),
+      0px 4px 5px 0px rgb(0 0 0 / 14%),
+      0px 1px 10px 0px rgb(0 0 0 / 12%) !important;
   }
 }
 
@@ -93,12 +95,13 @@ $max-height: calc(100vh - #{$dialog-margin-top} - #{$dialog-margin-bottom});
 //   padding: 0px 24px;
 // }
 
-.actions-box, .grid-more-actions-box, .grid-fab.mdc-fab::before {
+.actions-box,
+.grid-more-actions-box,
+.grid-fab.mdc-fab::before {
   padding-bottom: 24px;
 }
 
 .default-fonts {
-
   div,
   p,
   span,
@@ -239,7 +242,8 @@ $max-height: calc(100vh - #{$dialog-margin-top} - #{$dialog-margin-bottom});
     }
   }
 
-  .eav-dialog-description, .eav-dialog-tab-content {
+  .eav-dialog-description,
+  .eav-dialog-tab-content {
     padding: 0px $eav-dialog-padding;
   }
 
@@ -247,13 +251,28 @@ $max-height: calc(100vh - #{$dialog-margin-top} - #{$dialog-margin-bottom});
     padding: 0px $eav-dialog-padding $eav-dialog-padding $eav-dialog-padding;
   }
 
-  .eav-dialog-actions {
-    display: flex;
-    justify-content: space-between;
-  }
-
   .eav-raised-button-icon {
     margin: 0px !important;
+  }
+}
+
+.mat-mdc-dialog-actions.eav-dialog-actions {
+  display: flex;
+  justify-content: space-between;
+
+  .eav-dialog-actions-div {
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .eav-button {
+    &__with-icon {
+      .eav-icon {
+        font-size: 24px;
+        height: 24px;
+        width: 24px;
+      }
+    }
   }
 }
 

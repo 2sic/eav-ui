@@ -1,18 +1,13 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, Type, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NavigateFormResult } from '../../../edit/shared/models';
-import { consoleLogDev } from '../../helpers/console-log-angular.helper';
 import { DialogConfig } from '../../models/dialog-config.model';
 import { EavWindow } from '../../models/eav-window.model';
 import { Context } from '../../services/context';
-import { EavLogger } from '../../logging/eav-logger';
-import { BaseComponent } from '../base.component';
+import { classLog } from '../../logging';
+import { NavigateFormResult } from '../../../edit/routing/edit-routing.service';
 
 declare const window: EavWindow;
-
-const logThis = false;
-const nameOfThis = 'DialogEntryComponent';
 
 @Component({
   selector: 'app-dialog-entry',
@@ -21,12 +16,15 @@ const nameOfThis = 'DialogEntryComponent';
   standalone: true,
   imports: [],
   providers: [
-    Context,
+    Context, // this is used in the dialog to get the correct App
   ],
 })
-export class DialogEntryComponent extends BaseComponent implements OnInit, OnDestroy {
-  private dialogData: Record<string, any>;
-  private dialogRef: MatDialogRef<any>;
+export class DialogEntryComponent implements OnInit, OnDestroy {
+  
+  log = classLog({DialogEntryComponent});
+  
+  #dialogData: Record<string, any>;
+  #dialogRef: MatDialogRef<any>;
 
   constructor(
     private dialog: MatDialog,
@@ -36,22 +34,17 @@ export class DialogEntryComponent extends BaseComponent implements OnInit, OnDes
     private context: Context,
     private changeDetectorRef: ChangeDetectorRef,
   ) {
-    super(new EavLogger(nameOfThis, logThis));
     const navigation = this.router.getCurrentNavigation();
-    this.dialogData = navigation?.extras?.state || {};
+    this.#dialogData = navigation?.extras?.state || {};
   }
 
-  // 2dm experimental - may improve readability where this is used
-  // static routeFor(dialog: DialogConfig, data?: Data): Partial<Route> {
-  //   return { component: DialogEntryComponent, data: { ...data, dialog: dialog } };
-  // }
-
   ngOnInit() {
+    const l = this.log.fn('ngOnInit');
     const dialogConfig: DialogConfig = this.route.snapshot.data.dialog;
     if (dialogConfig == null)
       throw new Error(`Could not find config for dialog. Did you forget to add DialogConfig to route data?`);
 
-    consoleLogDev('Open dialog:', dialogConfig.name, 'Context id:', this.context.id, 'Context:', this.context);
+    l.a('Open dialog: '+ dialogConfig.name, { id: this.context.id, context: this.context });
 
     dialogConfig.getComponent().then(component => {
       // spm Workaround for "feature" where you can't open new dialog while last one is still opening
@@ -66,20 +59,19 @@ export class DialogEntryComponent extends BaseComponent implements OnInit, OnDes
   }
 
   ngOnDestroy() {
-    this.dialogRef.close();
-    super.ngOnDestroy();
+    this.#dialogRef.close();
   }
 
   private openDialogComponent(dialogConfig: DialogConfig, component: Type<any>) {
-    this.log.a(`Open dialog(initContext: ${dialogConfig.initContext})`, {name: dialogConfig.name, 'Contextid:': this.context.log.svcId, 'Context:': this.context});
+    this.log.a(`Open dialog(initContext: ${dialogConfig.initContext})`, { name: dialogConfig.name, 'Contextid:': this.context.log.svcId, 'Context:': this.context });
     if (dialogConfig.initContext)
       this.context.init(this.route);
 
-    this.dialogRef = this.dialog.open(component, {
+    this.#dialogRef = this.dialog.open(component, {
       autoFocus: false,
       backdropClass: 'dialog-backdrop',
       closeOnNavigation: false,
-      data: this.dialogData,
+      data: this.#dialogData,
       panelClass: [
         'dialog-panel',
         `dialog-panel-${dialogConfig.panelSize}`,
@@ -92,8 +84,8 @@ export class DialogEntryComponent extends BaseComponent implements OnInit, OnDes
       viewContainerRef: this.viewContainerRef,
     });
 
-    this.dialogRef.afterClosed().subscribe((data: any) => {
-      consoleLogDev('Dialog was closed:', dialogConfig.name, 'Data:', data);
+    this.#dialogRef.afterClosed().subscribe((data: any) => {
+      this.log.a('Dialog was closed - name:' + dialogConfig.name, { data });
 
       const navRes = data as NavigateFormResult;
       if (navRes?.navigateUrl != null) {

@@ -1,8 +1,7 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, RouterOutlet } from '@angular/router';
-import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
 import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';
 import { ViewUsageData } from '../../models/view-usage-data.model';
 import { ViewUsage } from '../../models/view-usage.model';
@@ -13,7 +12,6 @@ import { ViewsUsageIdComponent } from './views-usage-id/views-usage-id.component
 import { ViewsUsageStatusFilterComponent } from './views-usage-status-filter/views-usage-status-filter.component';
 import { buildData } from './views-usage.helpers';
 import { ColumnDefinitions } from '../../../shared/ag-grid/column-definitions';
-import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { SxcGridModule } from '../../../shared/modules/sxc-grid-module/sxc-grid.module';
@@ -29,18 +27,16 @@ import { transient } from '../../../core';
     MatButtonModule,
     MatIconModule,
     RouterOutlet,
-    AsyncPipe,
     SxcGridModule,
     TippyDirective,
   ],
 })
-export class ViewsUsageComponent implements OnInit, OnDestroy {
-  viewUsage$ = new BehaviorSubject<ViewUsage>(undefined);
-  viewTooltip$ = new BehaviorSubject(undefined);
-  data$ = new BehaviorSubject<ViewUsageData[]>(undefined);
+export class ViewsUsageComponent implements OnInit {
   gridOptions = this.buildGridOptions();
 
-  viewModel$: Observable<ViewsUsageViewModel>;
+  viewUsage = signal<ViewUsage>(undefined);
+  viewTooltip = signal(undefined);
+  data = signal<ViewUsageData[]>(undefined);
 
   private viewsService = transient(ViewsService);
 
@@ -52,23 +48,14 @@ export class ViewsUsageComponent implements OnInit, OnDestroy {
   ngOnInit() {
     const viewGuid = this.route.snapshot.paramMap.get('guid');
     this.viewsService.getUsage(viewGuid).subscribe(viewUsages => {
+
       const viewUsage = viewUsages[0];
-      this.viewUsage$.next(viewUsage);
+      this.viewUsage.set(viewUsage);
       const viewTooltip = `ID: ${viewUsage.Id}\nGUID: ${viewUsage.Guid}`;
-      this.viewTooltip$.next(viewTooltip);
+      this.viewTooltip.set(viewTooltip);
       const data = buildData(viewUsage);
-      this.data$.next(data);
+      this.data.set(data);
     });
-
-    this.viewModel$ = combineLatest([this.viewUsage$, this.viewTooltip$, this.data$]).pipe(
-      map(([viewUsage, viewTooltip, data]) => ({ viewUsage, viewTooltip, data }))
-    );
-  }
-
-  ngOnDestroy() {
-    this.viewUsage$.complete();
-    this.viewTooltip$.complete();
-    this.data$.complete();
   }
 
   closeDialog() {
@@ -108,11 +95,9 @@ export class ViewsUsageComponent implements OnInit, OnDestroy {
           onCellClicked: onNameClicked,
         },
         {
+          ...ColumnDefinitions.ItemsText,
           field: 'Language',
           width: 90,
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: 'agTextColumnFilter',
         },
         {
           field: 'Status',
@@ -125,10 +110,4 @@ export class ViewsUsageComponent implements OnInit, OnDestroy {
     };
     return gridOptions;
   }
-}
-
-interface ViewsUsageViewModel {
-  viewUsage: ViewUsage;
-  viewTooltip: any;
-  data: ViewUsageData[];
 }

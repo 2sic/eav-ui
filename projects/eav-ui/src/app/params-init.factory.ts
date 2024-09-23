@@ -2,8 +2,7 @@ import { Injector } from '@angular/core';
 import { Router } from '@angular/router';
 import { UrlHelpers } from './edit/shared/helpers/url.helpers';
 import { DialogTypeConstant, DialogTypeConstants } from './shared/constants/dialog-type.constants';
-// tslint:disable-next-line:max-line-length
-import { keyAppId, keyContentType, keyDialog, keyEditFields, keyExtras, keyItems, keyPipelineId, keyUrl, keyZoneId, prefix } from './shared/constants/session.constants';
+import { keyAppId, keyContentType, keyDialog, keyExtras, keyItems, keyPipelineId, keyUrl, keyZoneId, prefix } from './shared/constants/session.constants';
 import { convertFormToUrl } from './shared/helpers/url-prep.helper';
 import { ExtrasParam } from './shared/models/dialog-url-params.model';
 import { EavWindow } from './shared/models/eav-window.model';
@@ -13,7 +12,7 @@ declare const window: EavWindow;
 
 export function paramsInitFactory(injector: Injector): () => void {
   return () => {
-    console.log('Setting parameters config and clearing route');
+    // console.log('Setting parameters config and clearing route');
     const eavKeys = Object.keys(sessionStorage).filter(key => key.startsWith(prefix));
     const isParamsRoute = !window.location.hash.startsWith('#/');
     if (isParamsRoute) {
@@ -30,7 +29,7 @@ export function paramsInitFactory(injector: Injector): () => void {
       const queryParametersFromUrl = UrlHelpers.readQueryStringParameters(urlHash);
 
       for (const [paramKey, paramValue] of Object.entries(queryParametersFromUrl)) {
-        if (paramValue == null) { continue; }
+        if (paramValue == null) continue;
         sessionStorage.setItem(prefix + paramKey, paramValue);
       }
 

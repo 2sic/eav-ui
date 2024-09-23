@@ -1,18 +1,15 @@
 import { GridOptions, ICellRendererParams } from '@ag-grid-community/core';
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef, computed, inject, signal } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
-import { BehaviorSubject, catchError, combineLatest, map, Observable, of, shareReplay, startWith, Subject, switchMap } from 'rxjs';
+import { RouterOutlet } from '@angular/router';
+import { BehaviorSubject, catchError, combineLatest, map, Observable, of, shareReplay, startWith, Subject, switchMap, tap } from 'rxjs';
 import { FeatureNames } from '../../features/feature-names';
-import { BaseWithChildDialogComponent } from '../../shared/components/base-with-child-dialog.component';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { FileUploadDialogData } from '../../shared/components/file-upload-dialog';
-import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
-import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { Context } from '../../shared/services/context';
-import { FeaturesService } from '../../shared/services/features.service';
+import { FeaturesScopedService } from '../../features/features-scoped.service';
 import { App } from '../models/app.model';
 import { AppsListService } from '../services/apps-list.service';
 import { AppsListActionsComponent } from './apps-list-actions/apps-list-actions.component';
@@ -23,7 +20,6 @@ import { AppAdminHelpers } from '../../app-administration/app-admin-helpers';
 import { AppListCodeErrorIcons, AppListShowIcons } from './app-list-grid-config';
 import { AgBoolIconRenderer } from '../../shared/ag-grid/apps-list-show/ag-bool-icon-renderer.component';
 import { AgBoolCellIconsParams } from '../../shared/ag-grid/apps-list-show/ag-bool-icon-params';
-import { EavLogger } from '../../shared/logging/eav-logger';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -35,8 +31,9 @@ import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { transient } from '../../core';
-
-const logThis = false;
+import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
+import { classLog } from '../../shared/logging';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-apps-list',
@@ -54,27 +51,25 @@ const logThis = false;
     EcoFabSpeedDialActionsComponent,
     MatBadgeModule,
     RouterOutlet,
-    AsyncPipe,
     DragAndDropDirective,
     // WIP 2dm - needed for the lightspeed buttons to work
   ],
 })
-export class AppsListComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
-  apps$: Observable<App[]>;
-  fabOpen$ = new BehaviorSubject(false);
+export class AppsListComponent implements OnInit {
+
+  log = classLog({AppsListComponent});
+  fabOpen = signal(false);
+  apps = signal<App[]>([]);
+
   gridOptions = this.buildGridOptions();
 
-  private refreshApps$ = new Subject<void>();
+  public features = inject(FeaturesScopedService);
+  protected isAddFromFolderEnabled = this.features.isEnabled[FeatureNames.AppSyncWithSiteFiles];
 
-  viewModel$: Observable<AppsListViewModel>;
-  public features: FeaturesService = inject(FeaturesService);
-  public isAddFromFolderEnabled = this.features.isEnabled(FeatureNames.AppSyncWithSiteFiles);
-
-  private appsListService = transient(AppsListService);
+  #appsListSvc = transient(AppsListService);
+  #dialogRouter = transient(DialogRoutingService);
 
   constructor(
-    protected router: Router,
-    protected route: ActivatedRoute,
     private snackBar: MatSnackBar,
     private context: Context,
     // Services for showing features in the menu
@@ -82,36 +77,16 @@ export class AppsListComponent extends BaseWithChildDialogComponent implements O
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
   ) {
-    super(router, route, new EavLogger('AppsListComponent', logThis));
     ModuleRegistry.registerModules([ClientSideRowModelModule]);
   }
 
   ngOnInit(): void {
-    const appsLog = this.log.rxTap('apps$');
-    this.apps$ = this.refreshApps$.pipe(
-      appsLog.pipe(),
-      startWith(undefined),
-      switchMap(() => this.appsListService.getAll().pipe(catchError(() => of(undefined)))),
-      shareReplay(1),
-      appsLog.shareReplay(),
-    );
-
-    this.subscriptions.add(this.childDialogClosed$().subscribe(() => { this.refreshApps$.next(); }));
-    this.viewModel$ = combineLatest([this.apps$, this.fabOpen$]).pipe(
-      map(([apps, fabOpen]) => {
-        return { apps, fabOpen };
-      }),
-    );
-  }
-
-  ngOnDestroy(): void {
-    this.fabOpen$.complete();
-    this.refreshApps$.complete();
-    super.ngOnDestroy();
+    this.#loadApps();
+    this.#dialogRouter.doOnDialogClosed(() =>this.#loadApps());
   }
 
   openChange(open: boolean): void {
-    this.fabOpen$.next(open);
+    this.fabOpen.set(open);
   }
 
   browseCatalog(): void {
@@ -119,35 +94,35 @@ export class AppsListComponent extends BaseWithChildDialogComponent implements O
   }
 
   createApp(): void {
-    this.router.navigate(['create'], { relativeTo: this.route.parent.firstChild });
+    this.#dialogRouter.navParentFirstChild(['create']);
   }
 
   createInheritedApp(): void {
-    this.router.navigate(['create-inherited'], { relativeTo: this.route.parent.firstChild });
+    this.#dialogRouter.navParentFirstChild(['create-inherited']);
   }
 
   addFromFolder(): void {
-    this.router.navigate(['add-app-from-folder'], { relativeTo: this.route.parent.firstChild });
+    this.#dialogRouter.navParentFirstChild(['add-app-from-folder']);
   }
 
   importApp(files?: File[]): void {
     const dialogData: FileUploadDialogData = { files };
-    this.router.navigate(['import'], { relativeTo: this.route.parent.firstChild, state: dialogData });
+    this.#dialogRouter.navParentFirstChild(['import'], { state: dialogData });
   }
 
   private deleteApp(app: App): void {
     const result = prompt(`This cannot be undone. To really delete this app, type 'yes!' or type/paste the app-name here. Are you sure want to delete '${app.Name}' (${app.Id})?`);
-    if (result === null) { return; }
+    if (result === null) return;
     if (result === app.Name || result === 'yes!') {
       this.snackBar.open('Deleting...');
-      this.appsListService.delete(app.Id).subscribe({
+      this.#appsListSvc.delete(app.Id).subscribe({
         error: () => {
           this.snackBar.open('Delete failed. Please check console for more information', undefined, { duration: 3000 });
-          this.refreshApps$.next();
+          this.#loadApps();
         },
         next: () => {
           this.snackBar.open('Deleted', undefined, { duration: 2000 });
-          this.refreshApps$.next();
+          this.#loadApps();
         },
       });
     } else {
@@ -156,9 +131,9 @@ export class AppsListComponent extends BaseWithChildDialogComponent implements O
   }
 
   private flushApp(app: App): void {
-    if (!confirm(`Flush the App Cache for ${app.Name} (${app.Id})?`)) { return; }
+    if (!confirm(`Flush the App Cache for ${app.Name} (${app.Id})?`)) return;
     this.snackBar.open('Flushing cache...');
-    this.appsListService.flushCache(app.Id).subscribe({
+    this.#appsListSvc.flushCache(app.Id).subscribe({
       error: () => {
         this.snackBar.open('Cache flush failed. Please check console for more information', undefined, { duration: 3000 });
       },
@@ -170,11 +145,11 @@ export class AppsListComponent extends BaseWithChildDialogComponent implements O
 
   private openLightSpeed(app: App): void {
     const formUrl = convertFormToUrl(AppAdminHelpers.getLightSpeedEditParams(app.Id));
-    this.router.navigate([`${this.context.zoneId}/${app.Id}/edit/${formUrl}`], { relativeTo: this.route.parent.firstChild });
+    this.#dialogRouter.navParentFirstChild([`${this.context.zoneId}/${app.Id}/edit/${formUrl}`]);
   }
 
   private openApp(app: App): void {
-    this.router.navigate([app.Id.toString()], { relativeTo: this.route.parent.firstChild });
+    this.#dialogRouter.navParentFirstChild([app.Id.toString()]);
   }
 
   openLightSpeedFeatInfo() {
@@ -186,21 +161,11 @@ export class AppsListComponent extends BaseWithChildDialogComponent implements O
       ...defaultGridOptions,
       columnDefs: [
         {
-          ...ColumnDefinitions.Id,
-          cellRenderer: IdFieldComponent,
-          cellRendererParams: (() => {
-            const params: IdFieldParams<App> = {
-              tooltipGetter: (app) => `ID: ${app.Id}\nGUID: ${app.Guid}`,
-            };
-            return params;
-          })(),
+          ...ColumnDefinitions.IdWithDefaultRenderer,
+          cellRendererParams: ColumnDefinitions.idFieldParamsTooltipGetter<App>(),
         },
         {
           ...ColumnDefinitions.IconShow,
-          // valueGetter: (params) => {
-          //   const app: App = params.data;
-          //   return !app.IsHidden;
-          // },
           cellRenderer: AgBoolIconRenderer,
           cellRendererParams: (() => ({ settings: () => AppListShowIcons }))(),
         },
@@ -209,19 +174,19 @@ export class AppsListComponent extends BaseWithChildDialogComponent implements O
           field: 'Name',
           cellClass: 'apps-list-primary-action highlight'.split(' '),
           sort: 'asc',
-          onCellClicked: (params) => {
-            const app: App = params.data;
+          onCellClicked: (p) => {
+            const app: App = p.data;
             this.openApp(app);
           },
-          cellRenderer: (params: ICellRendererParams) => {
-            const app: App = params.data;
+          cellRenderer: (p: ICellRendererParams) => {
+            const app: App = p.data;
             return `
             <div class="container">
               ${app.Thumbnail
                 ? `<img class="image logo" src="${app.Thumbnail}?w=40&h=40&mode=crop"></img>`
-                : `<div class="image logo"><span class="material-icons-outlined">star_border</span></div>`
+                : `<div class="image logo"><span class="material-symbols-outlined">star</span></div>`
               }
-              <div class="text">${params.value}</div>
+              <div class="text">${p.value}</div>
             </div>
             `;
           },
@@ -265,9 +230,13 @@ export class AppsListComponent extends BaseWithChildDialogComponent implements O
     };
     return gridOptions;
   }
+
+  #loadApps(): void {
+    this.#appsListSvc.getAll().subscribe(apps => {
+      console.log('apps', apps);
+      this.apps.set(apps);
+    })
+  }
+
 }
 
-interface AppsListViewModel {
-  apps: App[];
-  fabOpen: any;
-}

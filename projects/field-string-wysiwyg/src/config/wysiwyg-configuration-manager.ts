@@ -1,5 +1,5 @@
-import { Connector } from 'projects/edit-types';
-import { InputTypeConstants } from '../../../eav-ui/src/app/content-type-fields/constants/input-type.constants';
+import { Connector } from '../../../edit-types';
+import { InputTypeCatalog } from '../../../eav-ui/src/app/shared/fields/input-type-catalog';
 import { StringWysiwyg } from '../../../edit-types/src/FieldSettings';
 import * as DialogModes from '../constants/display-modes';
 import * as EditModes from '../constants/edit-modes';
@@ -7,15 +7,11 @@ import { ConfigurationPresets, DefaultMode } from './defaults/defaults';
 import { ToolbarParser } from './toolbar-parser';
 import { WysiwygButtons, WysiwygFeatures } from './types';
 import { WysiwygConfiguration } from './types/wysiwyg-configurations';
-import { EavLogger } from '../../../../projects/eav-ui/src/app/shared/logging/eav-logger';
-
-const logThis = false;
-const nameOfThis = 'WysiwygConfigurationManager';
-
+import { classLog, ClassLogger } from '../../../../projects/eav-ui/src/app/shared/logging';
 
 export class WysiwygConfigurationManager {
 
-  private log = new EavLogger(nameOfThis, logThis);
+  log = classLog({ WysiwygConfigurationManager });
 
   constructor(
     private connector: Connector<string>,
@@ -41,7 +37,7 @@ export class WysiwygConfigurationManager {
 
     // 2. Feature detection
     // contentBlocks is on if the following field can hold inner-content items
-    const useContentBlocks = exp.allInputTypeNames[this.connector.field.index + 1]?.inputType === InputTypeConstants.EntityContentBlocks;
+    const useContentBlocks = exp.allInputTypeNames[this.connector.field.index + 1]?.inputType === InputTypeCatalog.EntityContentBlocks;
     const features: WysiwygFeatures = {
       ...preset.features,
       contentBlocks: useContentBlocks,
@@ -96,7 +92,7 @@ export class WysiwygConfigurationManager {
   }
 }
 
-function getPresetConfiguration(editMode: EditModes.WysiwygEditMode, displayMode: DialogModes.DisplayModes, log: EavLogger): WysiwygConfiguration {
+function getPresetConfiguration(editMode: EditModes.WysiwygEditMode, displayMode: DialogModes.DisplayModes, log: ClassLogger): WysiwygConfiguration {
 
   log.a('wysiwyg: getPresetConfiguration', { editMode, displayMode, ConfigurationPresets });
   // Find best match for modeConfig, if not found, rename and use default

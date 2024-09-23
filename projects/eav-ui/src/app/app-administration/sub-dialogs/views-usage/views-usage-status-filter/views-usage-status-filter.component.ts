@@ -57,7 +57,7 @@ export class ViewsUsageStatusFilterComponent implements IFilterAngularComp {
   }
 
   getModel(): ViewsUsageStatusFilterModel {
-    if (!this.isFilterActive()) { return; }
+    if (!this.isFilterActive()) return;
     return {
       filterType: 'views-usage-status',
       isVisible: this.isVisible,

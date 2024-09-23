@@ -1,40 +1,18 @@
-import { FieldValue } from '../../../../../../../edit-types';
-import { DesignerState } from '../../../formulas/models/formula-results.models';
-import { FormulaCacheItem, FormulaTarget } from '../../../formulas/models/formula.models';
-
-export interface FormulaDesignerViewModel {
-  entityOptions: EntityOption[];
-  fieldOptions: FieldOption[];
-  targetOptions: TargetOption[];
-  formula: FormulaCacheItem;
-  designer: DesignerState;
-  dataSnippets: DesignerSnippet[];
-  contextSnippets: DesignerSnippet[];
-  typings: string;
-  template: string;
-  result: FieldValue;
-  resultExists: boolean;
-  resultIsError: boolean;
-  // currently used only for UI to know when to display Result: promise(...)
-  resultIsOnlyPromise: boolean;
-  saving: boolean;
-}
-
-export interface SelectOptions {
-  entityOptions: EntityOption[];
-  fieldOptions: FieldOption[];
-  targetOptions: TargetOption[];
-}
+import { FormulaTarget } from '../../../formulas/targets/formula-targets';
+import { FormulaCacheItem } from '../../../formulas/cache/formula-cache.model';
 
 export interface EntityOption {
   entityGuid: string;
+  formulas: FormulaCacheItem[];
   hasFormula: boolean;
   label: string;
 }
 
 export interface FieldOption {
   fieldName: string;
+  formulas: FormulaCacheItem[];
   hasFormula: boolean;
+  inputType: string;
   label: string;
 }
 
@@ -53,6 +31,6 @@ export const SelectTargets = {
   Entity: 'entityGuid',
   Field: 'fieldValue',
   Target: 'formulaTarget',
-} as const;
+} as const /* the as const ensures that the keys/values can be strictly checked */;
 
 export type SelectTarget = typeof SelectTargets[keyof typeof SelectTargets];

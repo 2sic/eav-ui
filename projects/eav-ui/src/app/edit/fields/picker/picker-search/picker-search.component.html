@@ -1,0 +1,129 @@
+<!-- <div>
+  2dm sig: {{ selectedItem() | json }} <br>
+  2dm settings: {{ settings() | json }} <br>
+</div> -->
+<div>
+  <mat-form-field [formGroup]="fieldState.group" class="eav-mat-form-field" color="accent"
+    [ngClass]="{ 'mat-form-field-invalid': ui().touchedAndInvalid }"
+    (click)="filterSelectionList()">
+    <!-- The initial input showing the selected value - one only. As soon as there are more, this control won't show any more -->
+    <input matInput
+      class="eav-translate-on-dblclick"
+      #autocomplete
+      [matAutocomplete]="auto"
+      [value]="displaySelected(selectedItem())"
+      [placeholder]="getPlaceholder()"
+      [disabled]="ui().disabled || !settings().enableAddExisting"
+      (focus)="fetchEntities()"
+      (blur)="markAsTouched()"
+      (input)="filterSelectionList()"
+    >
+    <button mat-icon-button matSuffix class="entity-dropdown-button eav-suffix-button" disableRipple="true"
+      [disabled]="ui().disabled || !settings().enableAddExisting">
+      <mat-icon>arrow_drop_down</mat-icon>
+    </button>
+    @if (settings().enableEdit)
+    {
+      <button mat-icon-button matSuffix class="eav-suffix-button" [tippy]="'Fields.Picker.Edit' | translate"
+        [disabled]="ui().disabled || config.initialDisabled" appClickStopPropagation
+        (click)="edit(selectedItem()?.value, selectedItem()?.id)">
+        <mat-icon>edit</mat-icon>
+      </button>
+    }
+    @if (settings().enableDelete)
+    {
+      <button mat-icon-button matSuffix class="eav-suffix-button" [tippy]="'Fields.Picker.Delete' | translate"
+        [disabled]="ui().disabled" appClickStopPropagation (click)="deleteItem(0, selectedItem()?.value)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    }
+    @if (settings().enableRemove)
+    {
+      <button mat-icon-button matSuffix class="eav-suffix-button" [tippy]="'Fields.Picker.Remove' | translate"
+        [disabled]="ui().disabled" appClickStopPropagation (click)="removeItem(0)">
+        <mat-icon>do_not_disturb_on</mat-icon>
+      </button>
+    }
+    @if (settings().enableTextEntry)
+    {
+      <span matSuffix>
+        <ng-content select="[freeTextButtons]"></ng-content>
+      </span>
+    }
+    <mat-label [ngClass]="{ 'mat-error': ui().touchedAndInvalid }">
+      {{ basics().labelWithRequired }}
+    </mat-label>
+  </mat-form-field>
+
+  <mat-autocomplete #auto="matAutocomplete"
+    [displayWith]="displayFn.bind(this)"
+    [hideSingleSelectionIndicator]="true"
+    (optionSelected)="optionSelected($event, settings().allowMultiValue, selectedItem())"
+    (closed)="onClosed()" (opened)="onOpened(settings().showAsTree)"
+  >
+    @if (!settings().showAsTree)
+    {
+      <!-- List Display Mode -->
+      @for (item of filteredItems(); track item)
+      {
+        <mat-option [value]="item.value" class="picker-option-wrapper"
+          [disabled]="item.noSelect ? true : settings().enableReselect ? false : isOptionDisabled(item.value)"
+          [tippy]="item.tooltip" tippyShowDelay="500" [tippyDisabled]="!item.tooltip" [tippyAllowHtml]="true" [tippyArrow]="true">
+          <div class="picker-option-contents">
+            <span class="picker-option-label">{{ item.label ? item.label : item.value }}</span>
+            <div class="picker-option-info">
+              <app-picker-help [helpLink]="item.link"></app-picker-help>
+              <app-picker-icon-info [infoBox]="item.info"></app-picker-icon-info>
+            </div>
+          </div>
+        </mat-option>
+      }
+    }
+    @else
+    {
+      <!-- Tree Display Mode -->
+      <mat-tree [dataSource]="treeHelper.dataSource" [treeControl]="treeHelper.treeControl">
+        <mat-tree-node *matTreeNodeDef="let item;" matTreeNodePadding class="eav-tree-node">
+          <button mat-icon-button disabled></button>
+          <mat-option [value]="item.value" class="picker-option-wrapper"
+            [disabled]="treeHelper.disableOption(item, selectedItems(), settings().enableReselect)"
+            [tippy]="item.tooltip" tippyShowDelay="500" [tippyDisabled]="!item.tooltip" [tippyAllowHtml]="true" [tippyArrow]="true">
+            <div class="picker-option-contents">
+              <span class="picker-option-label">{{ item.label ? item.label : item.value }}</span>
+              <div class="picker-option-info">
+                <app-picker-help [helpLink]="item.helpLink"></app-picker-help>
+                <app-picker-icon-info [infoBox]="item.infoBox"></app-picker-icon-info>
+              </div>
+            </div>
+          </mat-option>
+        </mat-tree-node>
+        <mat-tree-node *matTreeNodeDef="let item;when: hasChild" matTreeNodePadding class="eav-tree-node">
+          <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'Toggle ' + item.name">
+            <mat-icon class="mat-icon-rtl-mirror">
+              {{treeHelper.treeControl.isExpanded(item) ? 'expand_more' : 'chevron_right'}}
+            </mat-icon>
+          </button>
+          <mat-option [value]="item.value" class="picker-option-wrapper"
+            [disabled]="treeHelper.disableOption(item, selectedItems(), settings().enableReselect)"
+            [tippy]="item.tooltip" tippyShowDelay="500" [tippyDisabled]="!item.tooltip" [tippyAllowHtml]="true" [tippyArrow]="true">
+            <div class="picker-option-contents">
+              <span class="picker-option-label">{{ item.label ? item.label : item.value }}</span>
+              <div class="picker-option-info">
+                <app-picker-help [helpLink]="item.helpLink"></app-picker-help>
+                <app-picker-icon-info [infoBox]="item.infoBox"></app-picker-icon-info>
+              </div>
+            </div>
+          </mat-option>
+        </mat-tree-node>
+      </mat-tree>
+    }
+  </mat-autocomplete>
+</div>
+
+<!-- Button to add null-item, in debug-mode only -->
+@if (debugEnabled())
+{
+  <div class="null-box">
+    debug: <span class="null-button" tippy="Add null-item" (click)="insertNull()">add null-item</span>
+  </div>
+}

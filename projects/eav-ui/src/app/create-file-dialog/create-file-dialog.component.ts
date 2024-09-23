@@ -2,7 +2,7 @@ import { Component, HostBinding, Inject, OnDestroy, OnInit } from '@angular/core
 import { UntypedFormControl, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 // tslint:disable-next-line:max-line-length
-import { asyncScheduler, BehaviorSubject, combineLatest, distinctUntilChanged, forkJoin, map, Observable, of, startWith, Subscription, switchMap, tap, throttleTime, timer } from 'rxjs';
+import { asyncScheduler, BehaviorSubject, combineLatest, distinctUntilChanged, forkJoin, map, Observable, of, startWith, switchMap, tap, throttleTime, timer } from 'rxjs';
 import { CreateFileDialogData, CreateFileDialogResult, CreateFileFormControls, CreateFileFormValues, CreateFileViewModel } from '.';
 import { PredefinedTemplate } from '../code-editor/models/predefined-template.model';
 import { Preview } from '../code-editor/models/preview.models';
@@ -18,6 +18,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FieldHintComponent } from '../shared/components/field-hint/field-hint.component';
 import { MatInputAutofocusDirective } from '../shared/directives/mat-input-autofocus.directive';
+import { transient } from '../core';
 
 @Component({
   selector: 'app-create-file-dialog',
@@ -38,9 +39,6 @@ import { MatInputAutofocusDirective } from '../shared/directives/mat-input-autof
     FieldHintComponent,
     MatInputAutofocusDirective,
   ],
-  providers: [
-    SourceService
-  ],
 })
 export class CreateFileDialogComponent extends BaseComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
@@ -53,10 +51,11 @@ export class CreateFileDialogComponent extends BaseComponent implements OnInit, 
   private templates$: BehaviorSubject<PredefinedTemplate[]>;
   private loadingPreview$: BehaviorSubject<boolean>;
 
+  private sourceService = transient(SourceService);
+
   constructor(
     @Inject(MAT_DIALOG_DATA) private dialogData: CreateFileDialogData,
     private dialogRef: MatDialogRef<CreateFileDialogComponent>,
-    private sourceService: SourceService,
   ) {
     super();
   }

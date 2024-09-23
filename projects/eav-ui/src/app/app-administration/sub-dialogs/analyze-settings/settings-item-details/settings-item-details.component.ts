@@ -1,18 +1,17 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
+import { Observable } from 'rxjs';
 import { defaultGridOptions } from '../../../../shared/constants/default-grid-options.constants';
 import { AnalyzeSettingsService } from '../../../services/analyze-settings.service';
 import { AnalyzeSettingsValueComponent } from '../analyze-settings-value/analyze-settings-value.component';
 import { AnalyzePart, SettingsStackItem } from '../analyze-settings.models';
-import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { SxcGridModule } from 'projects/eav-ui/src/app/shared/modules/sxc-grid-module/sxc-grid.module';
-import { ColumnDefinitions } from 'projects/eav-ui/src/app/shared/ag-grid/column-definitions';
-import { transient } from 'projects/eav-ui/src/app/core';
+import { SxcGridModule } from '../../../../shared/modules/sxc-grid-module/sxc-grid.module';
+import { ColumnDefinitions } from '../../../../shared/ag-grid/column-definitions';
+import { transient } from '../../../../core';
 
 @Component({
   selector: 'app-settings-item-details',
@@ -22,15 +21,16 @@ import { transient } from 'projects/eav-ui/src/app/core';
   imports: [
     MatButtonModule,
     MatIconModule,
-    AsyncPipe,
     SxcGridModule,
   ],
 })
-export class SettingsItemDetailsComponent implements OnInit, OnDestroy {
+export class SettingsItemDetailsComponent implements OnInit {
   part: AnalyzePart;
   selectedView: string;
   settingsItemKey: string;
-  stack$: BehaviorSubject<SettingsStackItem[]>;
+
+  stack = signal<SettingsStackItem[]>(undefined);
+
   gridOptions = this.buildGridOptions();
 
   viewModel$: Observable<SettingsItemDetailsViewModel>;
@@ -48,17 +48,9 @@ export class SettingsItemDetailsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.stack$ = new BehaviorSubject<SettingsStackItem[]>(undefined);
     this.analyzeSettingsService.getStack(this.part, this.settingsItemKey, this.selectedView, true).subscribe(stack => {
-      this.stack$.next(stack);
+      this.stack.set(stack);
     });
-    this.viewModel$ = combineLatest([this.stack$]).pipe(
-      map(([stack]) => ({ stack }))
-    );
-  }
-
-  ngOnDestroy(): void {
-    this.stack$.complete();
   }
 
   closeDialog(): void {

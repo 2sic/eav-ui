@@ -1,13 +1,19 @@
 <div class="actions-component">
-  @if (!field.EditInfo.ReadOnly) {
-    <div class="eav-grid-action-button highlight" matRipple tippy="Use as title field"
-      (click)="setTitle()">
-      <mat-icon>{{ isTitle ? 'star' : 'star_outline' }}</mat-icon>
+  @if (!field.EditInfo.ReadOnly)
+  {
+    <div class="eav-grid-action-button highlight {{ isTitle ? '' : suitableForTitle ? 'hover-only' : 'no-button' }}"
+      [attr.disabled]="isTitle || !suitableForTitle"
+      matRipple
+      tippy="Use as title field"
+      (click)="setTitle()"
+    >
+      <mat-icon>star</mat-icon>
     </div>
   }
-  @if (field.EditInfo.ReadOnly) {
+  @else
+  {
     <div class="eav-grid-action-button disabled">
-      <mat-icon>{{ isTitle ? 'star' : 'star_outline' }}</mat-icon>
+      <mat-icon>{{ isTitle ? 'star' : '' }}</mat-icon>
     </div>
   }
 </div>

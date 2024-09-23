@@ -4,8 +4,8 @@ import { Component } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { copyToClipboard } from '../../../../shared/helpers/copy-to-clipboard.helper';
 import { MatRippleModule } from '@angular/material/core';
-import { JsonHelpers } from 'projects/eav-ui/src/app/shared/helpers/json.helpers';
-import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
+import { JsonHelpers } from '../../../../shared/helpers/json.helpers';
+import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 
 @Component({
   selector: 'app-analyze-settings-value',

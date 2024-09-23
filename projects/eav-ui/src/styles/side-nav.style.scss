@@ -31,7 +31,7 @@ mat-toolbar {
     flex: 1 1 auto;
   }
 
-  .mat-icon-admin{
+  .mat-icon-admin {
     mat-icon {
       font-size: 16px;
       height: 16px;
@@ -43,11 +43,7 @@ mat-toolbar {
 mat-sidenav-container {
   height: 100vh;
 
-  // mat-sidenav-content{
-  //   background-color: white;
-  // }
-
-  // Sidenave
+  // SideNav
   mat-sidenav {
     width: 295px;
     border-right: 1px solid rgba(0, 0, 0, 0.1);

@@ -1,6 +1,5 @@
-import { Component, EventEmitter, Input, OnInit, Output, QueryList } from '@angular/core';
+import { Component, EventEmitter, inject, Output } from '@angular/core';
 import { EavWindow } from '../../../shared/models/eav-window.model';
-import { FormBuilderComponent } from '../../form/builder/form-builder/form-builder.component';
 import { DebugType, DebugTypes } from './edit-dialog-footer.models';
 import { LogsDumpComponent } from './logs-dump/logs-dump.component';
 import { FormulaDesignerComponent } from './formula-designer/formula-designer.component';
@@ -10,6 +9,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
+import { TippyDirective } from '../../../shared/directives/tippy.directive';
+import { UserSettings } from '../../../shared/user/user-settings.service';
+import { classLog } from '../../../shared/logging';
 
 declare const window: EavWindow;
 
@@ -27,22 +29,36 @@ declare const window: EavWindow;
     DataDumpComponent,
     FormulaDesignerComponent,
     LogsDumpComponent,
+    TippyDirective,
   ],
 })
-export class EditDialogFooterComponent implements OnInit {
-  @Input() formBuilderRefs: QueryList<FormBuilderComponent>;
-  @Output() private debugInfoOpened = new EventEmitter<boolean>();
+export class EditDialogFooterComponent {
 
+  log = classLog({EditDialogFooterComponent});
+  
   DebugTypes = DebugTypes;
-  activeDebug: DebugType;
   sxcVer = window.sxcVersion.substring(0, window.sxcVersion.lastIndexOf('.'));
+  
+  // Persisted user settings
+  static readonly userSettings = {
+    key: 'edit-dialog-footer',
+    data: { tab: null as DebugType, expanded: false, size: 0 }
+  };
+  #userSettings = inject(UserSettings).part(EditDialogFooterComponent.userSettings);
+  userSettings = this.#userSettings.data;
 
-  constructor() { }
+  toggleDialog(type: DebugType): void {
+    const s = this.userSettings();
+    const hideTab = s.tab === type;
+    const tab = hideTab ? null :  type;
+    const expanded = hideTab ? false : s.expanded;
+    const size = hideTab ? 0 : expanded ? 2 : 1;
+    this.#userSettings.setAll({ tab, expanded, size });
+  }
 
-  ngOnInit(): void { }
-
-  toggleDebugType(type: DebugType): void {
-    this.activeDebug = type !== this.activeDebug ? type : null;
-    this.debugInfoOpened.emit(this.activeDebug != null);
+  toggleSize(): void {
+    const expanded = !this.userSettings().expanded;
+    const size = expanded ? 2 : 1;
+    this.#userSettings.setMany({ expanded, size });
   }
 }

@@ -1,26 +1,21 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
-import { BehaviorSubject, combineLatest, map } from 'rxjs';
+import { RouterOutlet } from '@angular/router';
 import { ContentExportService } from '../../content-export/services/content-export.service';
 import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
 import { GoToMetadata } from '../../metadata';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
-import { BaseWithChildDialogComponent } from '../../shared/components/base-with-child-dialog.component';
 import { FileUploadDialogData } from '../../shared/components/file-upload-dialog';
-import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
-import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
-import { EditForm } from '../../shared/models/edit-form.model';
+import { EditForm, EditPrep } from '../../shared/models/edit-form.model';
 import { DialogService } from '../../shared/services/dialog.service';
 import { Query } from '../models/query.model';
 import { PipelinesService } from '../services/pipelines.service';
 import { QueriesActionsParams, QueryActions } from './queries-actions/queries-actions';
 import { QueriesActionsComponent } from './queries-actions/queries-actions.component';
-import { AppDialogConfigService } from '../services/app-dialog-config.service';
 import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -29,6 +24,9 @@ import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.mod
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
 import { transient } from '../../core';
+import { DialogConfigAppService } from '../services/dialog-config-app.service';
+import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
+import { signalObj } from '../../shared/signals/signal.utilities';
 
 @Component({
   selector: 'app-queries',
@@ -45,51 +43,40 @@ import { transient } from '../../core';
     DragAndDropDirective,
   ],
 })
-export class QueriesComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
+export class QueriesComponent implements OnInit {
 
-  private pipelinesService = transient(PipelinesService);
-  private contentExportService = transient(ContentExportService);
-  private dialogService = transient(DialogService);
+  #pipelineSvc = transient(PipelinesService);
+  #contentExportSvc = transient(ContentExportService);
+  #dialogSvc = transient(DialogService);
+  #dialogRouter = transient(DialogRoutingService);
+  #dialogConfigSvc = transient(DialogConfigAppService);
 
   enablePermissions!: boolean;
-  queries$ = new BehaviorSubject<Query[]>(undefined);
-  gridOptions = this.buildGridOptions();
+  public gridOptions = this.buildGridOptions();
 
-  viewModel$ = combineLatest([this.queries$]).pipe(
-    map(([queries]) => ({ queries }))
-  );
+  public queries = signalObj<Query[]>('queries', []);
 
   constructor(
-    protected router: Router,
-    protected route: ActivatedRoute,
     private snackBar: MatSnackBar,
-    private dialogConfigSvc: AppDialogConfigService,
   ) {
-    super(router, route);
   }
 
   ngOnInit() {
-    this.fetchQueries();
-    this.subscriptions.add(this.childDialogClosed$().subscribe(() => { this.fetchQueries(); }));
-    this.dialogConfigSvc.getCurrent$().subscribe(settings => {
+    this.#fetchQueries();
+    this.#dialogRouter.doOnDialogClosed(() => this.#fetchQueries());
+    this.#dialogConfigSvc.getCurrent$().subscribe(settings => {
       this.enablePermissions = settings.Context.Enable.AppPermissions;
     });
   }
 
-  ngOnDestroy() {
-    this.queries$.complete();
-    super.ngOnDestroy();
-  }
-
-  private fetchQueries() {
-    this.pipelinesService.getAll(eavConstants.contentTypes.query).subscribe((queries: Query[]) => {
-      this.queries$.next(queries);
-    });
+  #fetchQueries() {
+    this.#pipelineSvc.getAll(eavConstants.contentTypes.query)
+      .subscribe((queries: Query[]) => this.queries.set(queries));
   }
 
   importQuery(files?: File[]) {
     const dialogData: FileUploadDialogData = { files };
-    this.router.navigate(['import'], { relativeTo: this.route.parent.firstChild, state: dialogData });
+    this.#dialogRouter.navParentFirstChild(['import'], { state: dialogData });
   }
 
   /**
@@ -104,7 +91,7 @@ export class QueriesComponent extends BaseWithChildDialogComponent implements On
       case QueryActions.Metadata:
         return this.openMetadata(query);
       case QueryActions.Rest:
-        return this.router.navigate([GoToDevRest.getUrlQueryInAdmin(query.Guid)], { relativeTo: this.route.parent.firstChild });
+        return this.#dialogRouter.navParentFirstChild([GoToDevRest.getUrlQueryInAdmin(query.Guid)]);
       case QueryActions.Clone:
         return this.cloneQuery(query);
       case QueryActions.Permissions:
@@ -120,26 +107,17 @@ export class QueriesComponent extends BaseWithChildDialogComponent implements On
     const form: EditForm = {
       items: [
         query == null
-          ? {
-            ContentTypeName: eavConstants.contentTypes.query,
-            Prefill: {
-              TestParameters: eavConstants.pipelineDesigner.testParameters
-            }
-          }
-          : { EntityId: query.Id },
+          ? EditPrep.newFromType(eavConstants.contentTypes.query, { TestParameters: eavConstants.pipelineDesigner.testParameters })
+          : EditPrep.editId(query.Id),
       ],
     };
     const formUrl = convertFormToUrl(form);
-    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.parent.firstChild });
-  }
-
-  private enablePermissionsGetter() {
-    return this.enablePermissions;
+    this.#dialogRouter.navParentFirstChild([`edit/${formUrl}`]);
   }
 
   private openVisualQueryDesigner(query: Query) {
-    if (query._EditInfo.ReadOnly) { return; }
-    this.dialogService.openQueryDesigner(query.Id);
+    if (query._EditInfo.ReadOnly) return;
+    this.#dialogSvc.openQueryDesigner(query.Id);
   }
 
   private openMetadata(query: Query) {
@@ -147,31 +125,31 @@ export class QueriesComponent extends BaseWithChildDialogComponent implements On
       query.Guid,
       `Metadata for Query: ${query.Name} (${query.Id})`,
     );
-    this.router.navigate([url], { relativeTo: this.route.parent.firstChild });
+    this.#dialogRouter.navParentFirstChild([url]);
   }
 
   private cloneQuery(query: Query) {
     this.snackBar.open('Copying...');
-    this.pipelinesService.clonePipeline(query.Id).subscribe(() => {
+    this.#pipelineSvc.clonePipeline(query.Id).subscribe(() => {
       this.snackBar.open('Copied', null, { duration: 2000 });
-      this.fetchQueries();
+      this.#fetchQueries();
     });
   }
 
   private openPermissions(query: Query) {
-    this.router.navigate([GoToPermissions.getUrlEntity(query.Guid)], { relativeTo: this.route.parent.firstChild });
+    this.#dialogRouter.navParentFirstChild([GoToPermissions.getUrlEntity(query.Guid)]);
   }
 
   private exportQuery(query: Query) {
-    this.contentExportService.exportEntity(query.Id, 'Query', true);
+    this.#contentExportSvc.exportEntity(query.Id, 'Query', true);
   }
 
   private deleteQuery(query: Query) {
-    if (!confirm(`Delete Pipeline '${query.Name}' (${query.Id})?`)) { return; }
+    if (!confirm(`Delete Pipeline '${query.Name}' (${query.Id})?`)) return;
     this.snackBar.open('Deleting...');
-    this.pipelinesService.delete(query.Id).subscribe(res => {
+    this.#pipelineSvc.delete(query.Id).subscribe(res => {
       this.snackBar.open('Deleted', null, { duration: 2000 });
-      this.fetchQueries();
+      this.#fetchQueries();
     });
   }
 
@@ -180,29 +158,22 @@ export class QueriesComponent extends BaseWithChildDialogComponent implements On
       ...defaultGridOptions,
       columnDefs: [
         {
-          ...ColumnDefinitions.Id,
-          cellClass: (params) => {
-            const query: Query = params.data;
-            return `id-action no-padding no-outline ${query._EditInfo.ReadOnly ? 'disabled' : ''}`.split(' ');
+          ...ColumnDefinitions.IdWithDefaultRenderer,
+          cellClass: (p) => {
+            return `id-action no-padding no-outline ${p.data._EditInfo.ReadOnly ? 'disabled' : ''}`.split(' ');
           },
-          cellRenderer: IdFieldComponent,
-          cellRendererParams: (() => {
-            const params: IdFieldParams<Query> = {
-              tooltipGetter: (query) => `ID: ${query.Id}\nGUID: ${query.Guid}`,
-            };
-            return params;
-          })(),
+          cellRendererParams: ColumnDefinitions.idFieldParamsTooltipGetter<Query>(),
         },
         {
           ...ColumnDefinitions.TextWide,
           field: 'Name',
           sort: 'asc',
-          cellClass: (params) => {
-            const query: Query = params.data;
+          cellClass: (p) => {
+            const query: Query = p.data;
             return `${query._EditInfo.DisableEdit ? 'no-outline' : 'primary-action highlight'}`.split(' ');
           },
-          onCellClicked: (params) => {
-            const query: Query = params.data;
+          onCellClicked: (p) => {
+            const query: Query = p.data;
             this.openVisualQueryDesigner(query);
           },
         },
@@ -215,7 +186,7 @@ export class QueriesComponent extends BaseWithChildDialogComponent implements On
           cellRenderer: QueriesActionsComponent,
           cellRendererParams: (() => {
             const params: QueriesActionsParams = {
-              getEnablePermissions: () => this.enablePermissionsGetter(),
+              getEnablePermissions: () => this.enablePermissions,
               do: (action, query) => this.doMenuAction(action, query),
             };
             return params;

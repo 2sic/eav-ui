@@ -1,23 +1,21 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { Component, HostBinding, OnDestroy, OnInit, inject } from "@angular/core";
+import { Component, HostBinding, OnInit, inject, signal } from "@angular/core";
 import { MatDialogRef, MatDialogActions } from "@angular/material/dialog";
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { catchError, combineLatest, map, Observable, of, share, startWith, Subject, switchMap } from "rxjs";
 import { FeatureNames } from '../../features/feature-names';
-import { BaseComponent } from '../../shared/components/base.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from "../../shared/constants/default-grid-options.constants";
-import { FeaturesService } from '../../shared/services/features.service';
+import { FeaturesScopedService } from '../../features/features-scoped.service';
 import { PendingApp } from "../models/app.model";
 import { AppsListService } from "../services/apps-list.service";
 import { AppNameShowComponent } from './app-name-show/app-name-show.component';
 import { CheckboxCellComponent } from './checkbox-cell/checkbox-cell.component';
 import { CheckboxCellParams } from './checkbox-cell/checkbox-cell.model';
-import { AsyncPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { transient } from '../../core';
+import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 
 @Component({
   selector: 'app-add-app-from-folder',
@@ -27,48 +25,32 @@ import { transient } from '../../core';
   imports: [
     MatDialogActions,
     MatButtonModule,
-    AsyncPipe,
     FeatureTextInfoComponent,
     SxcGridModule,
   ],
 })
-export class AddAppFromFolderComponent extends BaseComponent implements OnInit, OnDestroy {
+export class AddAppFromFolderComponent implements OnInit {
   @HostBinding('className') hostClass = 'dialog-component';
 
   gridOptions = this.buildGridOptions();
-  pendingApps: PendingApp[] = [];
   installing: boolean = false;
 
-  private refreshApps$ = new Subject<void>();
+  pendingApps = signal<PendingApp[]>([]);
 
-  viewModel$: Observable<AddAppFromFolderViewModel>;
-
-  public features: FeaturesService = inject(FeaturesService);
-  private isAddFromFolderEnabled = this.features.isEnabled(FeatureNames.AppSyncWithSiteFiles);
+  public features = inject(FeaturesScopedService);
+  #isAddFromFolderEnabled = this.features.isEnabled[FeatureNames.AppSyncWithSiteFiles];
   private appsListService = transient(AppsListService);
 
   constructor(
     private dialogRef: MatDialogRef<AddAppFromFolderComponent>,
     private snackBar: MatSnackBar,
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
-    this.viewModel$ = combineLatest([
-      this.refreshApps$.pipe(
-        startWith(undefined),
-        switchMap(() => this.appsListService.getPendingApps().pipe(catchError(() => of(undefined)))),
-        share()
-      )
-    ]).pipe(
-      map(([pendingApps]) => ({ pendingApps })),
-    );
-  }
 
-  ngOnDestroy(): void {
-    this.refreshApps$.complete();
-    super.ngOnDestroy();
+    this.appsListService.getPendingApps().subscribe(apps => {
+      this.pendingApps.set(apps);
+    })
   }
 
   closeDialog(): void {
@@ -76,16 +58,20 @@ export class AddAppFromFolderComponent extends BaseComponent implements OnInit, 
   }
 
   onChange(app: PendingApp, enabled: boolean) {
+    const pendingAppsTemp = this.pendingApps();
+
     if (enabled)
-      this.pendingApps.push(app);
+      pendingAppsTemp.push(app);
     else
-      this.pendingApps.splice(this.pendingApps.indexOf(app), 1);
+      pendingAppsTemp.splice(pendingAppsTemp.indexOf(app), 1);
+
+    this.pendingApps.set(pendingAppsTemp);
   }
 
   install(): void {
     this.installing = true;
     this.snackBar.open('Installing', undefined, { duration: 2000 });
-    this.appsListService.installPendingApps(this.pendingApps).subscribe({
+    this.appsListService.installPendingApps(this.pendingApps()).subscribe({
       error: () => {
         this.installing = false;
         this.snackBar.open('Failed to install app. Please check console for more information', undefined, { duration: 3000 });
@@ -110,19 +96,17 @@ export class AddAppFromFolderComponent extends BaseComponent implements OnInit, 
           cellRenderer: CheckboxCellComponent,
           cellRendererParams: (() => {
             const params: CheckboxCellParams = {
-              isDisabled: !this.isAddFromFolderEnabled,
+              isDisabled: !this.#isAddFromFolderEnabled(),
               onChange: (app, enabled) => this.onChange(app, enabled),
             };
             return params;
           }),
         },
         {
+          ...ColumnDefinitions.ItemsText,
           field: 'Name',
           flex: 1,
-          cellClass: 'no-outline',
-          sortable: true,
           sort: 'asc',
-          filter: 'agTextColumnFilter',
           cellRenderer: AppNameShowComponent,
           cellRendererParams: (() => {
             const params: IdFieldParams<PendingApp> = {
@@ -137,6 +121,3 @@ export class AddAppFromFolderComponent extends BaseComponent implements OnInit, 
   }
 }
 
-interface AddAppFromFolderViewModel {
-  pendingApps: PendingApp[];
-}

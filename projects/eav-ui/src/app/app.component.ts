@@ -1,11 +1,12 @@
 import { Context as DnnContext, SxcAppComponent } from '@2sic.com/sxc-angular';
-import {  ChangeDetectionStrategy, Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
-import {  Title } from '@angular/platform-browser';
+import { ChangeDetectionStrategy, Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, NavigationEnd, Router, RouterModule } from '@angular/router';
 import { filter, map, Subscription } from 'rxjs';
 import { AppIconsService } from './shared/icons/app-icons.service';
 import { keyContentBlockId, keyModuleId } from './shared/constants/session.constants';
 import { Context } from './shared/services/context';
+import { transient } from './core';
 
 @Component({
   selector: 'app-root',
@@ -16,19 +17,20 @@ import { Context } from './shared/services/context';
   imports: [
     RouterModule,
   ],
-  providers: [],
 })
 export class AppComponent extends SxcAppComponent implements OnInit, OnDestroy {
   private subscription = new Subscription();
+
+  private titleService = transient(Title);
+
+  private appIconsService = transient(AppIconsService);
 
   constructor(
     el: ElementRef,
     dnnContext: DnnContext,
     private context: Context,
-    private titleService: Title,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private appIconsService: AppIconsService,
   ) {
     super(
       el,
@@ -50,17 +52,11 @@ export class AppComponent extends SxcAppComponent implements OnInit, OnDestroy {
         filter(event => event instanceof NavigationEnd),
         map(() => {
           let child = this.activatedRoute.firstChild;
-          while (child?.firstChild) {
+          while (child?.firstChild)
             child = child.firstChild;
-          }
-          if (child?.snapshot.data['title']) {
-            return child.snapshot.data['title'];
-          }
-          return appTitle;
+          return child?.snapshot.data['title'] ?? appTitle;
         }),
-      ).subscribe((title: string) => {
-        this.titleService.setTitle(title);
-      })
+      ).subscribe((title: string) => this.titleService.setTitle(title))
     );
   }
 

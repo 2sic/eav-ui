@@ -1,40 +1,37 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, computed, OnInit, signal, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
-import { BehaviorSubject, combineLatest, map, Observable, take } from 'rxjs';
+import { RouterOutlet } from '@angular/router';
+import { map, Observable, take } from 'rxjs';
 import { ContentItemsService } from '../content-items/services/content-items.service';
-import { EntitiesService } from '../content-items/services/entities.service';
-import { EavFor } from '../edit/shared/models/eav';
+import { EntityEditService } from '../shared/services/entity-edit.service';
+import { EavForInAdminUi } from '../edit/shared/models/eav';
 import { MetadataService } from '../permissions';
-import { BaseWithChildDialogComponent } from '../shared/components/base-with-child-dialog.component';
-import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
-import { IdFieldParams } from '../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
-import { eavConstants, MetadataKeyType } from '../shared/constants/eav.constants';
+import { MetadataKeyType } from '../shared/constants/eav.constants';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
-import { EditForm } from '../shared/models/edit-form.model';
+import { EditForm, EditPrep, ItemAddIdentifier } from '../shared/models/edit-form.model';
 import { ConfirmDeleteDialogComponent } from './confirm-delete-dialog/confirm-delete-dialog.component';
 import { ConfirmDeleteDialogData } from './confirm-delete-dialog/confirm-delete-dialog.models';
 import { MetadataActionsComponent } from './metadata-actions/metadata-actions.component';
 import { MetadataActionsParams } from './metadata-actions/metadata-actions.models';
 import { MetadataContentTypeComponent } from './metadata-content-type/metadata-content-type.component';
 import { MetadataSaveDialogComponent } from './metadata-save-dialog/metadata-save-dialog.component';
-import { MetadataDto, MetadataItem, MetadataRecommendation, MetadataViewModel } from './models/metadata.model';
+import { MetadataDto, MetadataItem, MetadataRecommendation } from './models/metadata.model';
 import { openFeatureDialog } from '../features/shared/base-feature.component';
 import { MatBadgeModule } from '@angular/material/badge';
-import { NgClass, AsyncPipe } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { EcoFabSpeedDialComponent, EcoFabSpeedDialTriggerComponent, EcoFabSpeedDialActionsComponent } from '@ecodev/fab-speed-dial';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
-import { EavLogger } from '../shared/logging/eav-logger';
 import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
 import { SafeHtmlPipe } from '../shared/pipes/safe-html.pipe';
-import { transient } from '../core';
+import { convert, transient } from '../core';
+import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
+import { classLog } from '../shared/logging';
 
-const logThis = false;
 @Component({
   selector: 'app-metadata',
   templateUrl: './metadata.component.html',
@@ -51,84 +48,52 @@ const logThis = false;
     EcoFabSpeedDialTriggerComponent,
     EcoFabSpeedDialActionsComponent,
     MatBadgeModule,
-    AsyncPipe,
     SafeHtmlPipe,
   ],
-  providers: [
-    MetadataService,
-  ]
 })
-export class MetadataComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
-  gridOptions = this.buildGridOptions();
+export class MetadataComponent implements OnInit {
 
-  private entitiesService = transient(EntitiesService);
-  private metadataService = transient(MetadataService);
-  private contentItemsService = transient(ContentItemsService);
+  log = classLog({MetadataComponent});
 
-
-
-  private metadataSet$ = new BehaviorSubject<MetadataDto>({ Items: [], Recommendations: [] } as MetadataDto);
-  private itemFor$ = new BehaviorSubject<EavFor | undefined>(undefined);
-  private fabOpen$ = new BehaviorSubject(false);
-  private targetType = parseInt(this.route.snapshot.paramMap.get('targetType'), 10);
-  private keyType = this.route.snapshot.paramMap.get('keyType') as MetadataKeyType;
-  private key = this.route.snapshot.paramMap.get('key');
-  title = decodeURIComponent(this.route.snapshot.paramMap.get('title') ?? '');
-  private contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
-  viewModel$: Observable<MetadataViewModel>;
+  #entitiesSvc = transient(EntityEditService);
+  #metadataSvc = transient(MetadataService);
+  #contentItemSvc = transient(ContentItemsService);
+  #dialogRoutes = transient(DialogRoutingService);
 
   constructor(
-    protected router: Router,
-    protected route: ActivatedRoute,
     private dialogRef: MatDialogRef<MetadataComponent>,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
-  ) {
-    super(router, route, new EavLogger('MetadataComponent', logThis));
-  }
+  ) { }
+
+  gridOptions = this.#buildGridOptions();
+
+  fabOpen = signal(false);
+  itemFor = signal<EavForInAdminUi | undefined>(undefined);
+
+  metadataSet = signal<MetadataDto>({ Items: [], Recommendations: [] } as MetadataDto);
+
+  recommendations = computed(() => {
+    const metadata = this.metadataSet();
+    return metadata.Recommendations.filter(r =>
+      metadata.Items.filter(i => i._Type.Id === r.Id).length < r.Count
+    );
+  });
+
+  #params = convert(this.#dialogRoutes.getParams(['targetType', 'keyType', 'key', 'title', 'contentTypeStaticName']), p => ({
+    targetType: parseInt(p.targetType, 10),
+    keyType: p.keyType as MetadataKeyType,
+    key: p.key,
+    contentTypeStaticName: p.contentTypeStaticName,
+  }));
+  protected title = decodeURIComponent(this.#dialogRoutes.getParam('title') ?? '');
 
   ngOnInit() {
-    this.fetchFor();
-    this.fetchMetadata();
-    this.subscriptions.add(
-      this.childDialogClosed$().subscribe(() => { this.fetchMetadata(); })
-    );
-
-    const logFilteredRecs = this.log.rxTap('filteredRecs$');
-    this.metadataSet$.subscribe((set) => {
-      this.log.a('test 2dm', { set });
-    });
-
-    const filteredRecs$ = this.metadataSet$.pipe(
-      logFilteredRecs.pipe(),
-      map((set) => set.Recommendations.filter(r => set.Items.filter(i => i._Type.Id === r.Id).length < r.Count)),
-      logFilteredRecs.map(),
-    );
-
-    const logViewModel = this.log.rxTap('viewModel$');
-    this.viewModel$ = combineLatest([this.metadataSet$, filteredRecs$, this.itemFor$, this.fabOpen$]).pipe(
-      logViewModel.pipe(),
-      map(([metadata, recommendations, itemFor, fabOpen]) => {
-        const viewModel: MetadataViewModel = {
-          metadata: metadata.Items,
-          recommendations,
-          itemFor,
-          fabOpen,
-        };
-        return viewModel;
-      }),
-      logViewModel.map(),
-    );
-  }
-
-  ngOnDestroy() {
-    this.log.a('destroying');
-    this.metadataSet$.complete();
-    this.itemFor$.complete();
-    this.fabOpen$.complete();
-    super.ngOnDestroy();
+    this.#fetchFor();
+    this.#fetchMetadata();
+    this.#dialogRoutes.doOnDialogClosed(() => this.#fetchMetadata());
   }
 
   closeDialog() {
@@ -136,7 +101,7 @@ export class MetadataComponent extends BaseWithChildDialogComponent implements O
   }
 
   openChange(open: boolean) {
-    this.fabOpen$.next(open);
+    this.fabOpen.set(open);
   }
 
   createMetadata(recommendation?: MetadataRecommendation) {
@@ -149,14 +114,14 @@ export class MetadataComponent extends BaseWithChildDialogComponent implements O
       // Feature is enabled, check if it's an empty metadata
       if (recommendation.CreateEmpty) {
         this.snackBar.open(`Creating ${recommendation.Name}...`);
-        this.entitiesService.create(recommendation.Id, { For: this.calculateItemFor() }).subscribe({
+        this.#entitiesSvc.create(recommendation.Id, { For: this.calculateItemFor('dummy').For }).subscribe({
           error: () => {
             this.snackBar.open(`Creating ${recommendation.Name} failed. Please check console for more info`, undefined, { duration: 3000 });
-            this.fetchMetadata();
+            this.#fetchMetadata();
           },
           next: () => {
             this.snackBar.open(`Created ${recommendation.Name}`, undefined, { duration: 3000 });
-            this.fetchMetadata();
+            this.#fetchMetadata();
           },
         });
       } else {
@@ -178,41 +143,31 @@ export class MetadataComponent extends BaseWithChildDialogComponent implements O
 
   private createMetadataForm(contentType: string) {
     const form: EditForm = {
-      items: [{
-        ContentTypeName: contentType,
-        For: this.calculateItemFor(),
-      }],
+      items: [this.calculateItemFor(contentType)],
     };
     const formUrl = convertFormToUrl(form);
-    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
+    this.#dialogRoutes.navRelative([`edit/${formUrl}`]);
     this.changeDetectorRef.markForCheck();
   }
 
-  private calculateItemFor(): EavFor {
-    const itemFor: EavFor = {
-      Target: Object.values(eavConstants.metadata).find(m => m.targetType === this.targetType)?.target ?? this.targetType.toString(),
-      TargetType: this.targetType,
-      ...(this.keyType === eavConstants.keyTypes.guid && { Guid: this.key }),
-      ...(this.keyType === eavConstants.keyTypes.number && { Number: parseInt(this.key, 10) }),
-      ...(this.keyType === eavConstants.keyTypes.string && { String: this.key }),
-    };
-    return itemFor;
+  private calculateItemFor(contentType: string): ItemAddIdentifier {
+    const x = EditPrep.constructMetadataInfo(this.#params.targetType, this.#params.keyType, this.#params.key);
+    return EditPrep.newMetadataFromInfo(contentType, x);
   }
 
-  private fetchFor() {
-    if (!this.contentTypeStaticName) { return; }
+  #fetchFor() {
+    if (!this.#params.contentTypeStaticName) return;
 
-    this.contentItemsService.getAll(this.contentTypeStaticName).subscribe(items => {
-      const item = items.find(i => i.Guid === this.key);
-      if (item?.For) {
-        this.itemFor$.next(item.For);
-      }
+    this.#contentItemSvc.getAll(this.#params.contentTypeStaticName).subscribe(items => {
+      const item = items.find(i => i.Guid === this.#params.key);
+      if (item?.For)
+        this.itemFor.set(item.For);
     });
   }
 
-  private fetchMetadata() {
+  #fetchMetadata() {
     const logGetMetadata = this.log.rxTap('getMetadata');
-    this.metadataService.getMetadata(this.targetType, this.keyType, this.key)
+    this.#metadataSvc.getMetadata(this.#params.targetType, this.#params.keyType, this.#params.key)
       .pipe(
         logGetMetadata.pipe(),
         take(1),
@@ -233,23 +188,26 @@ export class MetadataComponent extends BaseWithChildDialogComponent implements O
       // for reasons unknown to me. I've replaced it with the longhand
       // The problem occurs when the metadataSet$ is updated after the initial load.
       // .subscribe(this.metadataSet$);
-      .subscribe(data => this.metadataSet$.next(data));
+      .subscribe(data => {
+        this.metadataSet.set(data);
+      }
+      );
   }
 
-  private editMetadata(metadata: MetadataItem) {
+  #editMetadata(metadata: MetadataItem) {
     const form: EditForm = {
-      items: [{ EntityId: metadata.Id }],
+      items: [EditPrep.editId(metadata.Id)],
     };
     const formUrl = convertFormToUrl(form);
-    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
+    this.#dialogRoutes.navRelative([`edit/${formUrl}`]);
   }
 
-  private deleteMetadata(metadata: MetadataItem, confirmed = false) {
+  #deleteMetadata(metadata: MetadataItem, confirmed = false) {
     if (!confirmed) {
       const data: ConfirmDeleteDialogData = {
         entityId: metadata.Id,
         entityTitle: metadata.Title,
-        message: this.metadataSet$.value.Recommendations.find(r => r.Id === metadata._Type.Id)?.DeleteWarning,
+        message: this.metadataSet().Recommendations.find(r => r.Id === metadata._Type.Id)?.DeleteWarning,
       };
       const confirmationDialogRef = this.dialog.open(ConfirmDeleteDialogComponent, {
         autoFocus: false,
@@ -259,16 +217,16 @@ export class MetadataComponent extends BaseWithChildDialogComponent implements O
       });
       confirmationDialogRef.afterClosed().subscribe((isConfirmed: boolean) => {
         if (isConfirmed)
-          this.deleteMetadata(metadata, true);
+          this.#deleteMetadata(metadata, true);
       });
       return;
     }
 
     this.snackBar.open('Deleting...');
-    this.entitiesService.delete(metadata._Type.Id, metadata.Id, false).subscribe({
+    this.#entitiesSvc.delete(metadata._Type.Id, metadata.Id, false).subscribe({
       next: () => {
         this.snackBar.open('Deleted', null, { duration: 2000 });
-        this.fetchMetadata();
+        this.#fetchMetadata();
       },
       error: () => {
         this.snackBar.open('Delete failed. Please check console for more information', null, { duration: 3000 });
@@ -276,47 +234,32 @@ export class MetadataComponent extends BaseWithChildDialogComponent implements O
     });
   }
 
-  private buildGridOptions(): GridOptions {
+  #buildGridOptions(): GridOptions {
     const gridOptions: GridOptions = {
       ...defaultGridOptions,
       columnDefs: [
         {
-          ...ColumnDefinitions.Id,
-          cellRenderer: IdFieldComponent,
-          cellRendererParams: (() => {
-            const params: IdFieldParams<MetadataItem> = {
-              tooltipGetter: (metadata: MetadataItem) => `ID: ${metadata.Id}\nGUID: ${metadata.Guid}`,
-            };
-            return params;
-          })(),
+          ...ColumnDefinitions.IdWithDefaultRenderer,
+          cellRendererParams: ColumnDefinitions.idFieldParamsTooltipGetter<MetadataItem>()
         },
         {
           ...ColumnDefinitions.TextWide,
           field: 'Title',
-          onCellClicked: (params) => {
-            const metadata: MetadataItem = params.data;
-            this.editMetadata(metadata);
-          },
+          onCellClicked: (p: { data: MetadataItem }) => this.#editMetadata(p.data),
         },
         {
           ...ColumnDefinitions.TextWide,
           headerName: 'Content Type',
           field: 'ContentType',
-          valueGetter: (params) => {
-            const metadata: MetadataItem = params.data;
-            return `${metadata._Type.Name}${metadata._Type.Title !== metadata._Type.Name ? ` (${metadata._Type.Title})` : ''}`;
-          },
+          valueGetter: (p: { data: MetadataItem }) => `${p.data._Type.Name}${p.data._Type.Title !== p.data._Type.Name ? ` (${p.data._Type.Title})` : ''}`,
           cellRenderer: MetadataContentTypeComponent,
         },
         {
           ...ColumnDefinitions.ActionsPinnedRight1,
           cellRenderer: MetadataActionsComponent,
-          cellRendererParams: (() => {
-            const params: MetadataActionsParams = {
-              onDelete: (metadata) => this.deleteMetadata(metadata),
-            };
-            return params;
-          })(),
+          cellRendererParams: (() => ({
+            onDelete: (metadata) => this.#deleteMetadata(metadata),
+          } satisfies MetadataActionsParams))(),
         },
       ],
     };

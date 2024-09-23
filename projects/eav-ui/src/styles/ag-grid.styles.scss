@@ -165,16 +165,22 @@ ag-grid-angular {
 
   &.highlight:hover .ag-cell-value,
   .highlight:hover {
-    text-shadow: 2px 2px 4px #fff, 4px 4px 4px #666666;
+    text-shadow:
+      2px 2px 4px #fff,
+      4px 4px 4px #666666;
     // transform: translate(-1px, -1px);
     margin: -1px 1px 1px -1px;
 
     .chip {
-      box-shadow: 2px 2px 4px #fff, 4px 4px 4px #666666;
+      box-shadow:
+        2px 2px 4px #fff,
+        4px 4px 4px #666666;
     }
 
     .image {
-      box-shadow: 2px 2px 4px #fff, 4px 4px 4px #666666;
+      box-shadow:
+        2px 2px 4px #fff,
+        4px 4px 4px #666666;
     }
   }
 }
@@ -219,7 +225,6 @@ ag-grid-angular {
 
     // TODO: @SDV - clean up CSS use (low priority) if you don't have other tasks
   }
-
 
   .eav-grid-action-button {
     user-select: none;

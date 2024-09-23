@@ -1,0 +1,45 @@
+.eav-edit-input {
+  padding-bottom: 8px;
+}
+
+.eav-content-info {
+  &__title {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  &__subtitle {
+    font-size: 14px;
+    font-weight: bold;
+  }
+
+  &__list {
+    font-size: 14px;
+    list-style-type: none;
+  }
+
+  &__base {
+    padding: 0;
+  }
+
+  &__item {
+    border-top: 1px solid #ddd;
+    padding: 2px;
+  }
+}
+
+.eav-option-box {
+  margin: 8px 0;
+
+  &__text {
+    white-space: normal;
+    font-size: 14px;
+  }
+}
+
+.form-height {
+  max-height: calc(100vh - 24px - 56px - 200px);
+  overflow: auto;
+}
+
+

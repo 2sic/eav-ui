@@ -1,9 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { NavItem } from '../../models/nav-item.model';
 import { MatIconModule } from '@angular/material/icon';
 import { NgClass, NgIf } from '@angular/common';
-import tippy from 'tippy.js';
 import { TippyDirective } from '../../directives/tippy.directive';
 
 @Component({
@@ -32,17 +31,11 @@ export class NavItemListComponent implements OnInit {
   openChildMenu() {
     if (this.navItem.child?.length) {
 
-      this.router.events.subscribe((event: any) => {
-        if (event.routerEvent instanceof NavigationEnd) {
+      const urlSegments = this.router.url.split('/');
+      const matchingChild = this.navItem.child.find(child => urlSegments.includes(child.path));
 
-          const urlSegments = event.routerEvent.urlAfterRedirects.split('/');
-
-          const matchingChild = this.navItem.child.find(child => urlSegments.includes(child.path));
-          if (matchingChild) {
-            this.isOpenMenu = true;
-          }
-        }
-      });
+      if (matchingChild)
+        this.isOpenMenu = true;
     }
   }
 }

@@ -1,9 +1,8 @@
-import { Component, HostBinding, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostBinding, Inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogActions } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, combineLatest, forkJoin, map } from 'rxjs';
 import { ContentType } from '../app-administration/models/content-type.model';
-import { AppDialogConfigService } from '../app-administration/services/app-dialog-config.service';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { ContentImportDialogData } from './content-import-dialog.config';
 import { ContentImport, EvaluateContentResult, ImportContentResult } from './models/content-import.model';
@@ -13,6 +12,8 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { DragAndDropDirective } from '../shared/directives/drag-and-drop.directive';
+import { transient } from '../core';
+import { DialogConfigAppService } from '../app-administration/services/dialog-config-app.service';
 
 @Component({
   selector: 'app-content-import',
@@ -24,36 +25,30 @@ import { DragAndDropDirective } from '../shared/directives/drag-and-drop.directi
     MatButtonModule,
     MatRadioModule,
     MatDialogActions,
-    AsyncPipe,
     DragAndDropDirective,
   ],
-  providers: [
-    ContentImportService,
-    ContentTypesService,
-    AppDialogConfigService,
-  ],
 })
-export class ContentImportComponent implements OnInit, OnDestroy {
+export class ContentImportComponent implements OnInit {
   @HostBinding('className') hostClass = 'dialog-component';
 
+  private contentImportService = transient(ContentImportService);
+  private contentTypesService = transient(ContentTypesService);
+  private dialogConfigSvc = transient(DialogConfigAppService);
+
   formValues: ContentImport;
-  private contentType$ = new BehaviorSubject<ContentType>(null);
-  private loading$ = new BehaviorSubject(false);
+
   private viewStates = {
     waiting: 0,
     default: 1,
     evaluated: 2,
     imported: 3,
   };
-  private viewStateSelected$ = new BehaviorSubject<number>(this.viewStates.default);
-  private evaluationResult$ = new BehaviorSubject<EvaluateContentResult>(null);
-  private importResult$ = new BehaviorSubject<ImportContentResult>(null);
-  viewModel$ = combineLatest([
-    this.contentType$, this.loading$, this.viewStateSelected$, this.evaluationResult$, this.importResult$,
-  ]).pipe(
-    map(([contentType, loading, viewStateSelected, evaluationResult, importResult]) =>
-      ({ contentType, loading, viewStateSelected, evaluationResult, importResult })),
-  );
+
+  contentType = signal<ContentType>(null);
+  viewStateSelected = signal(this.viewStates.default);
+  evaluationResult = signal<EvaluateContentResult>(null);
+  importResult = signal<ImportContentResult>(null);
+
   errors: Record<number, string> = {
     0: 'Unknown error occured.',
     1: 'Selected content-type does not exist.',
@@ -72,17 +67,13 @@ export class ContentImportComponent implements OnInit, OnDestroy {
     @Inject(MAT_DIALOG_DATA) private dialogData: ContentImportDialogData,
     private dialogRef: MatDialogRef<ContentImportComponent>,
     private route: ActivatedRoute,
-    private contentImportService: ContentImportService,
-    private appDialogConfigService: AppDialogConfigService,
-    private contentTypesService: ContentTypesService,
   ) { }
 
   ngOnInit() {
-    this.loading$.next(true);
-    const contentType$ = this.contentTypesService.retrieveContentType(this.contentTypeStaticName);
-    const dialogSettings$ = this.appDialogConfigService.getCurrent$();
-    forkJoin([contentType$, dialogSettings$]).subscribe(([contentType, dialogSettings]) => {
-      this.contentType$.next(contentType);
+    const contentTypeTemp = this.contentTypesService.retrieveContentType(this.contentTypeStaticName);
+    const dialogSettings$ = this.dialogConfigSvc.getCurrent$();
+    forkJoin([contentTypeTemp, dialogSettings$]).subscribe(([contentType, dialogSettings]) => {
+      this.contentType.set(contentType);
       this.formValues = {
         defaultLanguage: dialogSettings.Context.Language.Primary,
         contentType: this.contentTypeStaticName,
@@ -90,16 +81,7 @@ export class ContentImportComponent implements OnInit, OnDestroy {
         resourcesReferences: 'Keep',
         clearEntities: 'None',
       };
-      this.loading$.next(false);
     });
-  }
-
-  ngOnDestroy() {
-    this.contentType$.complete();
-    this.loading$.complete();
-    this.viewStateSelected$.complete();
-    this.evaluationResult$.complete();
-    this.importResult$.complete();
   }
 
   closeDialog() {
@@ -107,24 +89,24 @@ export class ContentImportComponent implements OnInit, OnDestroy {
   }
 
   evaluateContent() {
-    this.viewStateSelected$.next(this.viewStates.waiting);
+    this.viewStateSelected.set(this.viewStates.waiting);
     this.contentImportService.evaluateContent(this.formValues).subscribe(result => {
-      this.evaluationResult$.next(result);
-      this.viewStateSelected$.next(this.viewStates.evaluated);
+      this.evaluationResult.set(result);
+      this.viewStateSelected.set(this.viewStates.evaluated);
     });
   }
 
   importContent() {
-    this.viewStateSelected$.next(this.viewStates.waiting);
+    this.viewStateSelected.set(this.viewStates.waiting);
     this.contentImportService.importContent(this.formValues).subscribe(result => {
-      this.importResult$.next(result);
-      this.viewStateSelected$.next(this.viewStates.imported);
+      this.importResult.set(result);
+      this.viewStateSelected.set(this.viewStates.imported);
     });
   }
 
   back() {
-    this.viewStateSelected$.next(this.viewStates.default);
-    this.evaluationResult$.next(null);
+    this.viewStateSelected.set(this.viewStates.default);
+    this.evaluationResult.set(null);
   }
 
   fileChange(event: Event) {

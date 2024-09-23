@@ -1,9 +1,15 @@
 // Custom Theming for Angular Material
 // For more information: https://material.angular.io/guide/theming
-@use '@angular/material' as mat;
+@use "@angular/material" as mat;
+
+// Styles from the Edit UI, which must be global
+// exact reasons not fully known, history...
 @import "../app/edit/assets/styles/variables.scss";
 @import "../app/edit/assets/styles/theme/material-colors.scss";
 @import "../app/edit/assets/styles/theme/override-mat-form-field-fill-typography.scss";
+
+// Edit Picker styles which affect Material components and must go "deep"
+@import "../app/edit/fields/picker/picker-global.scss";
 
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // For each palette, you can optionally specify a default, lighter, and darker hue.
@@ -14,7 +20,8 @@ $eav-ui-accent: mat.define-palette($mat-eav-item-dialog-secondary);
 // The warn palette is optional (defaults to red).
 $eav-ui-warn: mat.define-palette($mat-eav-item-dialog-error);
 
-$eav-ui-typography: mat.define-typography-config($font-family: '"Roboto", sans-serif',
+$eav-ui-typography: mat.define-typography-config(
+  $font-family: '"Roboto", sans-serif',
   $headline-1: mat.define-typography-level(112px, 112px, 300),
   $headline-2: mat.define-typography-level(56px, 56px, 400),
   $headline-3: mat.define-typography-level(45px, 48px, 400),
@@ -26,18 +33,23 @@ $eav-ui-typography: mat.define-typography-config($font-family: '"Roboto", sans-s
   $body-1: mat.define-typography-level(16px, 20px, 400),
   $body-2: mat.define-typography-level(16px, 20px, 400),
   $button: mat.define-typography-level(14px, 20px, 500),
-  $caption: mat.define-typography-level(12px, 16px, 400));
-  /* TODO(mdc-migration): No longer supported. Use `body-1` instead. $input: mat.define-typography-level(inherit, 1.25, 400));
+  $caption: mat.define-typography-level(12px, 16px, 400)
+);
+/* TODO(mdc-migration): No longer supported. Use `body-1` instead. $input: mat.define-typography-level(inherit, 1.25, 400));
  */
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as "color" or "typography".
-$eav-ui-theme: mat.define-light-theme((color: (primary: $eav-ui-primary,
+$eav-ui-theme: mat.define-light-theme(
+  (
+    color: (
+      primary: $eav-ui-primary,
       accent: $eav-ui-accent,
-      warn: $eav-ui-warn,
+      warn: $eav-ui-warn
     ),
     typography: $eav-ui-typography,
     // typography: $eav-ui-typography doesn't seem to work so I'm using old all-component-typographies
-  ));
+  )
+);
 
 @include mat.all-component-themes($eav-ui-theme);
 // @include mat.all-component-typographies($eav-ui-typography);
