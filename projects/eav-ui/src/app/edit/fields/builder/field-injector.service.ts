@@ -1,10 +1,10 @@
 import { BasicControlSettings } from './../../../../../../edit-types/src/BasicControlSettings';
-import { EnvironmentInjector, Injectable, Injector, Signal, createEnvironmentInjector, inject, runInInjectionContext, signal } from '@angular/core';
+import { EnvironmentInjector, Injectable, Injector, Signal, createEnvironmentInjector, inject, runInInjectionContext } from '@angular/core';
 import { FieldsSettingsService } from '../../state/fields-settings.service';
 import { FieldState } from '../../fields/field-state';
 import { EntityFormStateService } from '../../entity-form/entity-form-state.service';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { combineLatest, map, tap } from 'rxjs';
+import { combineLatest, tap } from 'rxjs';
 import { InputTypeHelpers } from '../../../shared/fields/input-type-helpers';
 import { mapUntilObjChanged } from '../../../shared/rxJs/mapUntilChanged';
 import { FieldConfigSet } from '../field-config-set.model';
@@ -67,8 +67,17 @@ export class FieldStateInjectorFactory {
     /** The UI Value changes. Since it can also contain arrays, so we're using the strong equal */
     const uiValue: Signal<FieldValue> = (() => {
       if (!control) return signalObj('value-change-empty', null);
-      const debouncedValue$ = control.valueChanges.pipe(mapUntilObjChanged(v => v));
-      return toSignal(debouncedValue$, { injector: this.#injector, initialValue: control.value});
+      const debouncedValue$ = control.valueChanges.pipe(
+        // tap(v => console.warn('2dm value change on UI - before equals', v)),
+        // distinctUntilChanged((p, c) => {
+        //   const eq = isEqual(p, c);
+        //   console.warn('2dm value change on UI - equals', p, c, eq);
+        //   return eq;
+        // }),
+        mapUntilObjChanged(v => v),
+        // tap(v => console.warn('2dm value change on UI - after equals', v)),
+      );
+      return toSignal(debouncedValue$, { injector: this.#injector, initialValue: control.value });
     })();
 
     const fieldState = new FieldState(
