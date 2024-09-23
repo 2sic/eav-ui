@@ -19,6 +19,7 @@ import { ItemValuesOfLanguage } from '../state/item-values-of-language.model';
 import { DebugFields } from '../edit-debug';
 import { FormulaFieldPickerHelper } from './formula-field-picker.helper';
 import { FieldDefaults } from '../shared/helpers';
+import { FeatureNames } from '../../features/feature-names';
 
 const logSpecs = {
   all: false,
@@ -66,12 +67,12 @@ export class FormulaRunField {
 
     // Get the latest formulas. Use untracked() to avoid tracking the reading of the formula-cache
     // TODO: should probably use untracked around all the calls in this class...WIP 2dm
-    const formulasAll = untracked(() => this.designerSvc.cache.getActive(this.entityGuid, fieldName, pickHelp.isSpecialPicker));
-    const grouped = groupBy(formulasAll, f => f.disabled ? 'disabled' : 'enabled');
-    if (grouped.disabled)
-      this.#showDisabledFormulasWarnings(grouped.disabled);
+    const fAll = untracked(() => this.designerSvc.cache.getActive(this.entityGuid, fieldName, pickHelp.isSpecialPicker));
+    const fGrouped = groupBy(fAll, f => f.disabled ? 'disabled' : 'enabled');
+    if (fGrouped.disabled)
+      this.#showDisabledFormulasWarnings(fGrouped.disabled);
 
-    const enabled = grouped.enabled ?? [];
+    const enabled = fGrouped.enabled ?? [];
 
     const noPromiseSleep = this.promiseHandler.filterFormulas(fieldName, enabled)
 
@@ -105,6 +106,10 @@ export class FormulaRunField {
       // possibly making invalid changes in formulas or if settings need to adjust
       // eg. custom bool labels which react to the value, etc.
       const settings = setUpdHelper.correctSettingsAfterChanges({ ...settingsCurrent, ...settingsUpdate }, value || valueBefore);
+
+      // If it's a new picker, make sure that requirement is set.
+      if (fAll.length > 0 && pickHelp.isSpecialPicker)
+        settings.requiredFeatures = [ ...settings.requiredFeatures ?? [], FeatureNames.PickerFormulas ];
       return l.r({ ...raw, settings, } satisfies FieldFormulasResult);
     }
   }
