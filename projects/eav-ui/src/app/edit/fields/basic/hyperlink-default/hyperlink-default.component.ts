@@ -9,7 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
 import { MatMenuModule } from '@angular/material/menu';
 import { ExtendedModule } from '@angular/flex-layout/extended';
-import { NgClass, AsyncPipe } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
@@ -42,7 +42,6 @@ import isEqual from 'lodash-es/isEqual';
     ReactiveFormsModule,
     MatInputModule,
     PasteClipboardImageDirective,
-    AsyncPipe,
     TranslateModule,
     TippyDirective,
   ],
@@ -66,7 +65,7 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
   protected enableImageConfiguration = computed(() => this.settings().EnableImageConfiguration, SignalEquals.bool);
 
   open = this.editRoutingService.isExpandedSignal(this.config.index, this.config.entityGuid);
-  
+
   constructor(
     eavService: FormConfigService,
     dialog: MatDialog,
