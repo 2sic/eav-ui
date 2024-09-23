@@ -58,7 +58,7 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
   @ViewChild(AgGridAngular) private gridRef?: AgGridAngular;
 
   disabled$ = new BehaviorSubject(false);
-  gridOptions = this.buildGridOptions();
+  gridOptions = this.#buildGridOptions();
 
   #refreshLicenses$ = new Subject<void>();
 
@@ -124,7 +124,7 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
     router.navigate([router.url.replace('license', '') + "/registration"]);
   }
 
-  private showFeatureDetails(feature: Feature): void {
+  #showFeatureDetails(feature: Feature): void {
     const data: FeatureDetailsDialogData = {
       feature,
     };
@@ -137,7 +137,7 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
     this.changeDetectorRef.markForCheck();
   }
 
-  private toggleFeature(feature: Feature, enabled: boolean): void {
+  #toggleFeature(feature: Feature, enabled: boolean): void {
     this.disabled$.next(true);
     const state: FeatureState = {
       FeatureGuid: feature.guid,
@@ -159,7 +159,7 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
   // 2. Also we should probably never add a valueGetter for the simple properties
   // ...not sure why it's even in here, my guess is copy-paste of code which wasn't understood properly
   // 3. I think the header-name should always be the first line, then the field
-  private buildGridOptions(): GridOptions {
+  #buildGridOptions(): GridOptions {
     const gridOptions: GridOptions = {
       ...defaultGridOptions,
       columnDefs: [
@@ -181,10 +181,11 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
         },
         {
           ...ColumnDefinitions.TextWideFlex3,
-          field: 'Name',
+          headerName: 'Name',
+          field: 'name',
           cellClass: 'primary-action highlight'.split(' '),
           onCellClicked: (params) => {
-            this.showFeatureDetails(params.data as Feature);
+            this.#showFeatureDetails(params.data as Feature);
           },
         },
         {
@@ -219,7 +220,7 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
           cellRendererParams: (() => {
             const params: FeaturesStatusParams & IdFieldParams<Feature> = {
               isDisabled: (feature) => !feature.isConfigurable || this.disabled$.value,
-              onToggle: (feature, enabled) => this.toggleFeature(feature, enabled),
+              onToggle: (feature, enabled) => this.#toggleFeature(feature, enabled),
               tooltipGetter: (feature: Feature) => feature.isConfigurable ? "Toggle off | default | on" : "This feature can't be configured",
             };
             return params;
