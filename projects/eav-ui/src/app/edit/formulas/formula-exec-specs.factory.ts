@@ -1,14 +1,14 @@
 import { inject, Injectable } from '@angular/core';
-import { FormulaExecutionSpecs } from './run/formula-objects-internal-data';
+import { FeaturesScopedService } from '../../features/features-scoped.service';
+import { ItemIdentifierShared } from '../../shared/models/edit-form.model';
 import { GlobalConfigService } from '../../shared/services/global-config.service';
 import { EditInitializerService } from '../form/edit-initializer.service';
 import { FormConfigService } from '../form/form-config.service';
 import { LanguageService } from '../localization/language.service';
-import { ItemService } from '../state/item.service';
-import { FeaturesScopedService } from '../../features/features-scoped.service';
 import { FieldsSettingsService } from '../state/fields-settings.service';
-import { ItemIdentifierShared } from '../../shared/models/edit-form.model';
+import { ItemService } from '../state/item.service';
 import { FormulaPropsParameters } from './formula-run-one-helpers.factory';
+import { FormulaExecutionSpecs } from './run/formula-objects-internal-data';
 
 /**
  * Factory for creating FormulaExecutionSpecs objects.
@@ -60,7 +60,7 @@ export class FormulaExecutionSpecsFactory {
       formConfig: this.formConfig,
       fieldsSettingsSvc: this.#settingsSvc,
       features: this.#features,
-      parameters: new FormulaPropsParameters(this.#clientData),
+      parameters: new FormulaPropsParameters(this.#clientData.ClientData.parameters),
       warningsObsolete: this.#warningsObsolete,
     } satisfies FormulaExecutionSpecs;
   }
