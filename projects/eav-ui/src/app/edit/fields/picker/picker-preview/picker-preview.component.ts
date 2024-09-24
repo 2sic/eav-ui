@@ -1,21 +1,20 @@
+import { NgClass, NgTemplateOutlet } from '@angular/common';
 import { Component } from '@angular/core';
-import { TranslateModule } from '@ngx-translate/core';
-import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
+import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatButtonModule } from '@angular/material/button';
-import { PickerTextComponent } from '../picker-text/picker-text.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { TippyDirective } from '../../../../shared/directives/tippy.directive';
+import { classLog } from '../../../../shared/logging';
+import { computedObj } from '../../../../shared/signals/signal.utilities';
+import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
+import { PickerCheckboxesComponent } from '../picker-checkboxes/picker-checkboxes.component';
+import { PickerPartBaseComponent } from '../picker-part-base.component';
+import { PickerPillsComponent } from '../picker-pills/picker-pills.component';
+import { PickerRadioComponent } from '../picker-radio/picker-radio.component';
 import { PickerSearchComponent } from '../picker-search/picker-search.component';
 import { PickerTextToggleComponent } from '../picker-text-toggle/picker-text-toggle.component';
-import { PickerPillsComponent } from '../picker-pills/picker-pills.component';
-import { FlexModule } from '@angular/flex-layout/flex';
-import { PickerPartBaseComponent } from '../picker-part-base.component';
-import { TippyDirective } from '../../../../shared/directives/tippy.directive';
-import { computedObj } from '../../../../shared/signals/signal.utilities';
-import { classLog } from '../../../../shared/logging';
-import { PickerCheckboxesComponent } from '../picker-checkboxes/picker-checkboxes.component';
-import { PickerRadioComponent } from '../picker-radio/picker-radio.component';
-import { NgClass, NgTemplateOutlet } from '@angular/common';
+import { PickerTextComponent } from '../picker-text/picker-text.component';
 
 @Component({
   selector: 'app-picker-preview',
@@ -25,7 +24,6 @@ import { NgClass, NgTemplateOutlet } from '@angular/common';
   imports: [
     NgTemplateOutlet,
     NgClass,
-    FlexModule,
     MatButtonModule,
     MatMenuModule,
     MatIconModule,
