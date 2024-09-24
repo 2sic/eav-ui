@@ -14,7 +14,7 @@
     'dnd-list': allowMultiValue()
     }">
     <!-- Normal list usually shows only one item, but can show "empty slot" / "null-item" in debug mode -->
-    @for (item of selectedItems(); track item.value; let index = $index) {
+    @for (item of selectedItems(); track (item.value + $index); let index = $index) {
       <div
         cdkDrag
         [ngClass]="{
