@@ -14,7 +14,6 @@ import { SignalEquals } from '../../../../shared/signals/signal-equals';
 @Component({
   selector: InputTypeCatalog.NumberDefault,
   templateUrl: './number-default.component.html',
-  styleUrls: ['./number-default.component.scss'],
   standalone: true,
   imports: [
     MatFormFieldModule,

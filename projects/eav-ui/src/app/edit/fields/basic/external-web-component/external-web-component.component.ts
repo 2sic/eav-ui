@@ -13,7 +13,6 @@ import { classLog } from '../../../../shared/logging';
 @Component({
   selector: InputTypeCatalog.ExternalWebComponent,
   templateUrl: './external-web-component.component.html',
-  styleUrls: ['./external-web-component.component.scss'],
   standalone: true,
   imports: [
     MatProgressSpinnerModule,
