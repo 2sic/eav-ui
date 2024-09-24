@@ -19,7 +19,8 @@
             <mat-checkbox
               class="picker-option-wrapper"
               (click)="select(item)"
-              [checked]="item.selected" [disabled]="item.noSelect"
+              [checked]="item.selected"
+              [disabled]="ui().disabled || item.noSelect"
               [tippy]="item.tooltip" tippyShowDelay="500" [tippyDisabled]="!item.tooltip" [tippyAllowHtml]="true" [tippyArrow]="true"
             >
               <div class="picker-option-contents">

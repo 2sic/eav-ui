@@ -18,7 +18,7 @@
             (click)="select(item)"
             [name]="name"
             [checked]="item.selected"
-            [disabled]="item.noSelect"
+            [disabled]="ui().disabled || item.noSelect"
             [tippy]="item.tooltip" tippyShowDelay="500" [tippyDisabled]="!item.tooltip" [tippyAllowHtml]="true" [tippyArrow]="true"
           >
             <div class="picker-option-contents">
