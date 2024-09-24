@@ -7,21 +7,21 @@ import cloneDeep from 'lodash-es/cloneDeep';
 import { BehaviorSubject, filter, fromEvent, Subject } from 'rxjs';
 import { ContentTypesService } from '../../app-administration/services/content-types.service';
 import { MetadataService } from '../../permissions/services/metadata.service';
-import { QueryDefinitionService } from './query-definition.service';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm, EditPrep } from '../../shared/models/edit-form.model';
+import { QueryDefinitionService } from './query-definition.service';
 // tslint:disable-next-line:max-line-length
+import { transient } from '../../core';
+import { isCtrlS } from '../../edit/dialog/main/keyboard-shortcuts';
+import { JsonHelpers } from '../../shared/helpers/json.helpers';
+import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
+import { ServiceBase } from '../../shared/services/service-base';
 import { DataSource, DataSourceConfig, DataSourceConfigs, DebugStreamInfo, PipelineDataSource, PipelineModel, PipelineResult, PipelineResultStream, StreamWire, VisualDesignerData } from '../models';
 import { QueryResultComponent } from '../query-result/query-result.component';
 import { QueryResultDialogData } from '../query-result/query-result.models';
 import { StreamErrorResultComponent } from '../stream-error-result/stream-error-result.component';
 import { StreamErrorResultDialogData } from '../stream-error-result/stream-error-result.models';
-import { JsonHelpers } from '../../shared/helpers/json.helpers';
-import { transient } from '../../core';
-import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
-import { ServiceBase } from '../../shared/services/service-base';
-import { isCtrlS } from '../../edit/dialog/main/keyboard-shortcuts';
 
 /**
  * Service containing the state for the visual query.
@@ -170,7 +170,7 @@ export class VisualQueryStateService extends ServiceBase implements OnDestroy {
         Object.entries(metadataItem).forEach(([attributeName, attributeValue]) => {
           if (attributeValue == null || attributeValue === '') return;
           if (['Created', 'Guid', 'Id', 'Modified', 'Title', '_Type'].includes(attributeName)) return;
-          if (Array.isArray(attributeValue) && attributeValue[0]?.Title != null && attributeValue[0]?.Id != null) {
+          if (Array.isArray(attributeValue) && attributeValue[0]?.Title !== null && attributeValue[0]?.Id !== null) {
             attributeValue = `${attributeValue[0].Title} (${attributeValue[0].Id})`;
           }
           const dataSourceConfig: DataSourceConfig = {

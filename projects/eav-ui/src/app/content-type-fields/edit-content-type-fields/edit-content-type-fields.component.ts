@@ -1,33 +1,33 @@
-import { Component, HostBinding, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { NgForm, FormsModule } from '@angular/forms';
-import { MatDialog, MatDialogRef, MatDialogActions } from '@angular/material/dialog';
+import { AsyncPipe, NgClass } from '@angular/common';
+import { AfterViewInit, Component, ElementRef, HostBinding, inject, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { FormsModule, NgForm } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatOptionModule } from '@angular/material/core';
+import { MatDialog, MatDialogActions, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { BehaviorSubject, catchError, concatMap, filter, forkJoin, map, of, share, switchMap, toArray } from 'rxjs';
 import { fieldNameError, fieldNamePattern } from '../../app-administration/constants/field-name.patterns';
 import { ContentType } from '../../app-administration/models/content-type.model';
 import { ContentTypesService } from '../../app-administration/services/content-types.service';
+import { transient } from '../../core';
 import { BaseComponent } from '../../shared/components/base.component';
-import { DataTypeCatalog } from '../../shared/fields/data-type-catalog';
-import { InputTypeStrict, InputTypeCatalog } from '../../shared/fields/input-type-catalog';
-import { calculateTypeIcon, calculateTypeLabel } from '../content-type-fields.helpers';
-import { Field, FieldInputTypeOption } from '../../shared/fields/field.model';
-import { ContentTypesFieldsService } from '../../shared/fields/content-types-fields.service';
-import { calculateDataTypes, DataType } from './edit-content-type-fields.helpers';
-import { AddSharingFieldsComponent } from '../add-sharing-fields/add-sharing-fields.component';
-import { TranslateModule } from '@ngx-translate/core';
-import { MatButtonModule } from '@angular/material/button';
-import { NgClass, AsyncPipe } from '@angular/common';
-import { MatOptionModule } from '@angular/material/core';
-import { MatIconModule } from '@angular/material/icon';
-import { MatSelectModule } from '@angular/material/select';
-import { ReservedNamesValidatorDirective } from './reserved-names.directive';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
 import { ToggleDebugDirective } from '../../shared/directives/toggle-debug.directive';
-import { transient } from '../../core';
+import { ContentTypesFieldsService } from '../../shared/fields/content-types-fields.service';
+import { DataTypeCatalog } from '../../shared/fields/data-type-catalog';
+import { Field, FieldInputTypeOption } from '../../shared/fields/field.model';
+import { InputTypeCatalog, InputTypeStrict } from '../../shared/fields/input-type-catalog';
 import { GlobalConfigService } from '../../shared/services/global-config.service';
+import { AddSharingFieldsComponent } from '../add-sharing-fields/add-sharing-fields.component';
+import { calculateTypeIcon, calculateTypeLabel } from '../content-type-fields.helpers';
+import { calculateDataTypes, DataType } from './edit-content-type-fields.helpers';
+import { ReservedNamesValidatorDirective } from './reserved-names.directive';
 
 @Component({
   selector: 'app-edit-content-type-fields',
@@ -51,9 +51,10 @@ import { GlobalConfigService } from '../../shared/services/global-config.service
     ToggleDebugDirective,
   ],
 })
-export class EditContentTypeFieldsComponent extends BaseComponent implements OnInit, OnDestroy {
+export class EditContentTypeFieldsComponent extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
   @HostBinding('className') hostClass = 'dialog-component';
   @ViewChild('ngForm', { read: NgForm }) private form: NgForm;
+  @ViewChildren('autoFocusInputField') autoFocusInputField!: QueryList<ElementRef>;
 
   fields: Partial<Field>[] = [];
   existingFields: Field[] = [];
@@ -94,6 +95,19 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
         this.closeDialog();
       })
     );
+  }
+
+  ngAfterViewInit(): void {
+    // Wait for the inputFields to be available
+    if (this.autoFocusInputField) {
+      setTimeout(() => {
+        this.autoFocusInputField.first.nativeElement.focus();
+      }, 150); // Delay execution to ensure the view is fully rendered
+    }
+  }
+
+  trackField(index: number, field: any): any {
+    return field.StaticName; // Replace with your unique field identifier
   }
 
   ngOnInit() {

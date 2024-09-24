@@ -1,3 +1,4 @@
-export interface AdamHintViewModel {
-  showAdamSponsor: boolean;
-}
+// TODO: @2dm Delete this file?
+//  interface AdamHintViewModel {
+//   showAdamSponsor: boolean;
+// }

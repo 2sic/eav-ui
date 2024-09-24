@@ -1,30 +1,32 @@
-import { Directive, ElementRef, NgZone, OnDestroy, OnInit } from '@angular/core';
+// TODO: @2dm Delete this file?
 
-@Directive({ selector: '[appMatFormFieldTextarea]', standalone: true })
-export class MatFormFieldTextareaDirective implements OnInit, OnDestroy {
-  private observer: ResizeObserver;
-  private debounce = 500;
-  private oldResizeTime = 0;
+// import { Directive, ElementRef, NgZone, OnDestroy, OnInit } from '@angular/core';
 
-  constructor(private elementRef: ElementRef<HTMLElement>, private zone: NgZone) { }
+// @Directive({ selector: '[appMatFormFieldTextarea]', standalone: true })
+// export class MatFormFieldTextareaDirective implements OnInit, OnDestroy {
+//   private observer: ResizeObserver;
+//   private debounce = 500;
+//   private oldResizeTime = 0;
 
-  ngOnInit() {
-    this.zone.runOutsideAngular(() => {
-      const matFormField = this.elementRef.nativeElement;
-      this.observer = new ResizeObserver(() => {
-        const newResizeTime = Date.now();
-        if (newResizeTime - this.oldResizeTime < this.debounce) return;
-        this.oldResizeTime = newResizeTime;
+//   constructor(private elementRef: ElementRef<HTMLElement>, private zone: NgZone) { }
 
-        const textarea = matFormField.querySelector('textarea');
-        const maxHeight = Math.floor((matFormField.getBoundingClientRect().height - 30) / 10) * 10;
-        textarea.style.height = `${maxHeight}px`;
-      });
-      this.observer.observe(matFormField);
-    });
-  }
+//   ngOnInit() {
+//     this.zone.runOutsideAngular(() => {
+//       const matFormField = this.elementRef.nativeElement;
+//       this.observer = new ResizeObserver(() => {
+//         const newResizeTime = Date.now();
+//         if (newResizeTime - this.oldResizeTime < this.debounce) return;
+//         this.oldResizeTime = newResizeTime;
 
-  ngOnDestroy() {
-    this.zone.runOutsideAngular(() => this.observer?.disconnect());
-  }
-}
+//         const textarea = matFormField.querySelector('textarea');
+//         const maxHeight = Math.floor((matFormField.getBoundingClientRect().height - 30) / 10) * 10;
+//         textarea.style.height = `${maxHeight}px`;
+//       });
+//       this.observer.observe(matFormField);
+//     });
+//   }
+
+//   ngOnDestroy() {
+//     this.zone.runOutsideAngular(() => this.observer?.disconnect());
+//   }
+// }

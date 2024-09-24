@@ -1,3 +1,5 @@
+// TODO: @2dm Delete this file?
+
 // import { Observable, pipe, UnaryFunction } from 'rxjs';
 // import { distinctUntilChanged, map } from 'rxjs/operators';
 
@@ -7,8 +9,8 @@
 
 // /**
 //  * Will only emit when the value returned by the selector function changes.
-//  * @param fn 
-//  * @returns 
+//  * @param fn
+//  * @returns
 //  */
 // export function select<T, R>(
 //     fn: (state: T) => R
