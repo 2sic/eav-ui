@@ -9,17 +9,16 @@
         "tsconfigRootDir": ".",
         "sourceType": "module"
       },
-      "plugins": ["@typescript-eslint", "eslint-plugin-import"],
+      "plugins": ["@typescript-eslint", "eslint-plugin-import", "@angular-eslint"],
       "extends": [
         "plugin:@typescript-eslint/recommended",
         "plugin:@angular-eslint/recommended"
       ],
       "rules": {
-        "@typescript-eslint/no-explicit-any": "warn",
-        "@typescript-eslint/explicit-module-boundary-types": "off",
-        // "import/order": ["error", { "groups": ["builtin", "external", "internal", "parent", "sibling", "index"] }],
-        "eqeqeq": ["error", "always"],
-        "semi":  ["error", "always"]
+        "import/no-duplicates": "error",
+        "max-len": ["warn", { "code": 140 }],
+        "semi": ["error", "always"],
+        "eqeqeq": ["error", "always"]
       }
     },
     {
