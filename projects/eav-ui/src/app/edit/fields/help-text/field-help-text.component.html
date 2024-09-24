@@ -6,9 +6,7 @@
     }"
   >
     @if (notes()) {
-      <mat-hint class="my-notes" (click)="toggleHint($event)"
-        [ngClass]="{ 'disabled': disabled() }"
-      >
+      <mat-hint class="my-notes" (click)="toggleHint($event)" [ngClass]="{ 'disabled': disabled() }">
         <div class="id-notes-container" [ngClass]="showExpand ? 'expandable': ''" appChangeAnchorTarget
           [innerHtml]="notes() | safeHtml">
         </div>
