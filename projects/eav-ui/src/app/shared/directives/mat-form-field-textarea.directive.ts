@@ -1,4 +1,4 @@
-// TODO:: @2dm Delete this file?
+// TODO: @2dm Delete this file?
 
 // import { Directive, ElementRef, NgZone, OnDestroy, OnInit } from '@angular/core';
 

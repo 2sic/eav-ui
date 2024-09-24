@@ -1,4 +1,4 @@
-// TODO:: @2dm Delete this file?
+// TODO: @2dm Delete this file?
 // import { DialogConfig } from '../../../shared/models/dialog-config.model';
 
 // export const registrationDialog: DialogConfig = {
