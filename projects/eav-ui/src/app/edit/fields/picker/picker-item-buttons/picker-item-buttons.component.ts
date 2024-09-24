@@ -31,9 +31,7 @@ export class PickerItemButtonsComponent extends PickerPartBaseComponent {
 
   index = input.required<number>();
 
-  constructor() {
-    super();
-  }
+  constructor() { super(); }
 
   /** Current applicable settings like "enableEdit" etc. */
   settings = computedObj('settings', () => {
@@ -52,4 +50,20 @@ export class PickerItemButtonsComponent extends PickerPartBaseComponent {
     };
   });
   
+
+  edit(entityGuid: string, entityId: number): void {
+    this.log.a(`edit guid: '${entityGuid}'; id: '${entityId}'`);
+    this.pickerData.source.editItem({ entityGuid, entityId }, null);
+  }
+
+  removeItem(index: number): void {
+    this.log.a(`removeItem index: '${index}'`);
+    this.pickerData.state.remove(index);
+  }
+
+  deleteItem(index: number, entityGuid: string): void {
+    this.log.a(`deleteItem index: '${index}'; entityGuid: '${entityGuid}'`);
+    this.pickerData.source.deleteItem({ index, entityGuid });
+  }
+
 }

@@ -204,7 +204,7 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
   optionSelected(event: MatAutocompleteSelectedEvent, allowMultiValue: boolean, selectedEntity: PickerItem): void {
     this.#logItemChecks.a('optionSelected', event.option.value);
     this.#newValue = event.option.value;
-    if (!allowMultiValue && selectedEntity) this.removeItem(0);
+    if (!allowMultiValue && selectedEntity) this.pickerData.state.flush();
     const selected: string = event.option.value;
     this.pickerData.state.add(selected);
     // @SDV - This is needed so after choosing option element is not focused (it gets focused by default so if blur is outside of setTimeout it will happen before refocus)

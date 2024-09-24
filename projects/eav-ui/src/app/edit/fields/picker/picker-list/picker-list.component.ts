@@ -1,4 +1,4 @@
-import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
+import { CdkDrag, CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
 import { NgClass } from '@angular/common';
 import { Component } from '@angular/core';
 import { ExtendedModule } from '@angular/flex-layout/extended';
@@ -39,16 +39,11 @@ export class PickerListComponent extends PickerPartBaseComponent {
 
   constructor() { super(); }
 
-  allowMultiValue = this.fieldState.setting('AllowMultiValue');
-
   drop(event: CdkDragDrop<PickerItem[]>): void {
-    const selectedEntities = this.pickerData.selectedAll();
-    moveItemInArray(selectedEntities, event.previousIndex, event.currentIndex);
-    const reorderIndexes: ReorderIndexes = {
+    this.pickerData.state.reorder({
       previousIndex: event.previousIndex,
       currentIndex: event.currentIndex,
-    };
-    this.pickerData.state.reorder(reorderIndexes);
+    } satisfies ReorderIndexes);
   }
 
 }

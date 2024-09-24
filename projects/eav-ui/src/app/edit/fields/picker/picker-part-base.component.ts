@@ -1,8 +1,8 @@
 import { Component, inject } from '@angular/core';
-import { FieldState } from '../../fields/field-state';
 import { classLog } from '../../../shared/logging';
-import { EditRoutingService } from '../../routing/edit-routing.service';
 import { computedObj } from '../../../shared/signals/signal.utilities';
+import { FieldState } from '../../fields/field-state';
+import { EditRoutingService } from '../../routing/edit-routing.service';
 
 /**
  * Base class for Picker Part Components.
@@ -69,22 +69,6 @@ export class PickerPartBaseComponent {
     this.log.a(`openNewEntityDialog: '${entityType}'`);
     this.pickerData.source.editItem(null, entityType);
   }
-
-  edit(entityGuid: string, entityId: number): void {
-    this.log.a(`edit guid: '${entityGuid}'; id: '${entityId}'`);
-    this.pickerData.source.editItem({ entityGuid, entityId }, null);
-  }
-
-  removeItem(index: number): void {
-    this.log.a(`removeItem index: '${index}'`);
-    this.pickerData.state.remove(index);
-  }
-
-  deleteItem(index: number, entityGuid: string): void {
-    this.log.a(`deleteItem index: '${index}'; entityGuid: '${entityGuid}'`);
-    this.pickerData.source.deleteItem({ index, entityGuid });
-  }
-
 
   //#endregion
 
