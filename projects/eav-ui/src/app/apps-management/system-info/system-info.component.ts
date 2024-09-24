@@ -1,37 +1,36 @@
+import { NgTemplateOutlet } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
-import { NgForm, FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { map, take } from 'rxjs';
+import { DialogConfigAppService } from '../../app-administration/services/dialog-config-app.service';
+import { transient } from '../../core';
 import { FeatureNames } from '../../features/feature-names';
+import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
+import { FeaturesScopedService } from '../../features/features-scoped.service';
+import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
+import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { copyToClipboard } from '../../shared/helpers/copy-to-clipboard.helper';
 import { EavWindow } from '../../shared/models/eav-window.model';
+import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { DialogService } from '../../shared/services/dialog.service';
-import { FeaturesScopedService } from '../../features/features-scoped.service';
 import { SiteLanguage } from '../models/site-language.model';
 import { SystemInfoSet } from '../models/system-info.model';
 import { SxcInsightsService } from '../services/sxc-insights.service';
 import { ZoneService } from '../services/zone.service';
 import { InfoTemplate } from './system-info.models';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatButtonModule } from '@angular/material/button';
-import { NgTemplateOutlet } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
-import { MatCardModule } from '@angular/material/card';
-import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
-import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
-import { TippyDirective } from '../../shared/directives/tippy.directive';
-import { transient } from '../../core';
-import { DialogConfigAppService } from '../../app-administration/services/dialog-config-app.service';
-import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 
 declare const window: EavWindow;
 
 @Component({
   selector: 'app-system-info',
   templateUrl: './system-info.component.html',
-  styleUrls: ['./system-info.component.scss'],
   standalone: true,
   imports: [
     MatCardModule,

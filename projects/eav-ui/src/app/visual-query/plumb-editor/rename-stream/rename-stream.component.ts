@@ -1,28 +1,27 @@
+import { NgClass } from '@angular/common';
 import { ChangeDetectorRef, Component, HostBinding, Inject, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialogActions } from '@angular/material/dialog';
+import { FormsModule, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatOptionModule } from '@angular/material/core';
+import { MAT_DIALOG_DATA, MatDialogActions, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { distinctUntilChanged, startWith } from 'rxjs';
 import { ContentTypesService } from '../../../app-administration/services';
+import { transient } from '../../../core';
 import { BaseComponent } from '../../../shared/components/base.component';
+import { FieldHintComponent } from '../../../shared/components/field-hint/field-hint.component';
 import { eavConstants, ScopeOption } from '../../../shared/constants/eav.constants';
+import { ClickStopPropagationDirective } from '../../../shared/directives/click-stop-propagation.directive';
 import { VisualQueryStateService } from '../../services/visual-query.service';
 import { RenameStreamDialogControls, RenameStreamDialogData, RenameStreamDialogFormValue } from './rename-stream.models';
-import { NgClass } from '@angular/common';
-import { MatOptionModule } from '@angular/material/core';
-import { MatSelectModule } from '@angular/material/select';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { FieldHintComponent } from '../../../shared/components/field-hint/field-hint.component';
-import { ClickStopPropagationDirective } from '../../../shared/directives/click-stop-propagation.directive';
-import { transient } from '../../../core';
 
 @Component({
   selector: 'app-rename-stream',
   templateUrl: './rename-stream.component.html',
-  styleUrls: ['./rename-stream.component.scss'],
   standalone: true,
   imports: [
     MatButtonModule,

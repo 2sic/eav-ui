@@ -5,15 +5,15 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
-import { PipelinesService } from '../services';
+import { RouterOutlet } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
+import { transient } from '../../core';
 import { DevRestQueryComponent } from '../../dev-rest/query/query.component';
 import { eavConstants } from '../../shared/constants/eav.constants';
-import { Query } from '../models';
-import { RouterOutlet } from '@angular/router';
-import { transient } from '../../core';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
+import { Query } from '../models';
+import { PipelinesService } from '../services';
 
 @Component({
   selector: 'app-web-api-rest-api',
@@ -30,7 +30,6 @@ import { DialogRoutingService } from '../../shared/routing/dialog-routing.servic
     SxcGridModule,
   ],
   templateUrl: './queries-rest-api.component.html',
-  styleUrl: './queries-rest-api.component.scss'
 })
 export class QueriesRestApiComponent {
   #pipelinesSvc = transient(PipelinesService);

@@ -1,27 +1,26 @@
 import { GridOptions } from '@ag-grid-community/core';
 import { Component, OnInit, signal } from '@angular/core';
-import { MatDialogRef, MatDialogActions } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogActions, MatDialogRef } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
+import { convert, transient } from '../core';
+import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
 import { eavConstants, MetadataKeyType } from '../shared/constants/eav.constants';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { EditForm, EditPrep } from '../shared/models/edit-form.model';
+import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
+import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
 import { Permission } from './models/permission.model';
 import { PermissionsActionsComponent } from './permissions-actions/permissions-actions.component';
 import { PermissionsActionsParams } from './permissions-actions/permissions-actions.models';
 import { PermissionsService } from './services/permissions.service';
-import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
-import { convert, transient } from '../core';
-import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
 
 @Component({
   selector: 'app-permissions',
   templateUrl: './permissions.component.html',
-  styleUrls: ['./permissions.component.scss'],
   standalone: true,
   imports: [
     MatButtonModule,

@@ -1,18 +1,17 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, Type, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
+import { NavigateFormResult } from '../../../edit/routing/edit-routing.service';
+import { classLog } from '../../logging';
 import { DialogConfig } from '../../models/dialog-config.model';
 import { EavWindow } from '../../models/eav-window.model';
 import { Context } from '../../services/context';
-import { classLog } from '../../logging';
-import { NavigateFormResult } from '../../../edit/routing/edit-routing.service';
 
 declare const window: EavWindow;
 
 @Component({
   selector: 'app-dialog-entry',
   templateUrl: './dialog-entry.component.html',
-  styleUrls: ['./dialog-entry.component.scss'],
   standalone: true,
   imports: [],
   providers: [

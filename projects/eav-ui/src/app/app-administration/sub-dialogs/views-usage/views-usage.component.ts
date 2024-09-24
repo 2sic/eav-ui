@@ -7,21 +7,20 @@ import { ViewUsageData } from '../../models/view-usage-data.model';
 import { ViewUsage } from '../../models/view-usage.model';
 import { ViewsService } from '../../services/views.service';
 // tslint:disable-next-line:max-line-length
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { transient } from '../../../core';
+import { ColumnDefinitions } from '../../../shared/ag-grid/column-definitions';
+import { TippyDirective } from '../../../shared/directives/tippy.directive';
+import { SxcGridModule } from '../../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { blockIdValueGetter, moduleIdClassGetter, moduleIdValueGetter, nameClassGetter, onNameClicked, pageIdClassGetter, pageIdValueGetter, statusCellRenderer } from './views-usage-grid.helpers';
 import { ViewsUsageIdComponent } from './views-usage-id/views-usage-id.component';
 import { ViewsUsageStatusFilterComponent } from './views-usage-status-filter/views-usage-status-filter.component';
 import { buildData } from './views-usage.helpers';
-import { ColumnDefinitions } from '../../../shared/ag-grid/column-definitions';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { SxcGridModule } from '../../../shared/modules/sxc-grid-module/sxc-grid.module';
-import { TippyDirective } from '../../../shared/directives/tippy.directive';
-import { transient } from '../../../core';
 
 @Component({
   selector: 'app-views-usage',
   templateUrl: './views-usage.component.html',
-  styleUrls: ['./views-usage.component.scss'],
   standalone: true,
   imports: [
     MatButtonModule,

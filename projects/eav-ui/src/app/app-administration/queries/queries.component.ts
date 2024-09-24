@@ -1,37 +1,36 @@
 import { GridOptions } from '@ag-grid-community/core';
+import { AsyncPipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogActions } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
 import { ContentExportService } from '../../content-export/services/content-export.service';
+import { transient } from '../../core';
 import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
 import { GoToMetadata } from '../../metadata';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
+import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { FileUploadDialogData } from '../../shared/components/file-upload-dialog';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { eavConstants } from '../../shared/constants/eav.constants';
+import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm, EditPrep } from '../../shared/models/edit-form.model';
+import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
+import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { DialogService } from '../../shared/services/dialog.service';
+import { signalObj } from '../../shared/signals/signal.utilities';
 import { Query } from '../models/query.model';
+import { DialogConfigAppService } from '../services/dialog-config-app.service';
 import { PipelinesService } from '../services/pipelines.service';
 import { QueriesActionsParams, QueryActions } from './queries-actions/queries-actions';
 import { QueriesActionsComponent } from './queries-actions/queries-actions.component';
-import { AsyncPipe } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDialogActions } from '@angular/material/dialog';
-import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
-import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
-import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
-import { transient } from '../../core';
-import { DialogConfigAppService } from '../services/dialog-config-app.service';
-import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
-import { signalObj } from '../../shared/signals/signal.utilities';
 
 @Component({
   selector: 'app-queries',
   templateUrl: './queries.component.html',
-  styleUrls: ['./queries.component.scss'],
   standalone: true,
   imports: [
     MatDialogActions,

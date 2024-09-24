@@ -1,13 +1,12 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { transient } from '../../../core';
 import { FileUploadDialogComponent, FileUploadDialogData, UploadTypes } from '../../../shared/components/file-upload-dialog';
 import { PipelinesService } from '../../services/pipelines.service';
-import { transient } from '../../../core';
 
 @Component({
   selector: 'app-import-query',
   templateUrl: './import-query.component.html',
-  styleUrls: ['./import-query.component.scss'],
   standalone: true,
   imports: [FileUploadDialogComponent,],
 })

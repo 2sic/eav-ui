@@ -1,23 +1,23 @@
 // tslint:disable-next-line:max-line-length
+import { AsyncPipe, NgClass, NgStyle } from '@angular/common';
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
+import { transient } from '../../core';
 import { BaseComponent } from '../../shared/components/base.component';
 import { eavConstants } from '../../shared/constants/eav.constants';
+import { MousedownStopPropagationDirective } from '../../shared/directives/mousedown-stop-propagation.directive';
+import { JsonHelpers } from '../../shared/helpers/json.helpers';
 import { loadScripts } from '../../shared/helpers/load-scripts.helper';
+import { classLog } from '../../shared/logging';
+import { mapUntilObjChanged } from '../../shared/rxJs/mapUntilChanged';
 import { PipelineDataSource, PipelineResultStream, VisualDesignerData } from '../models';
 import { QueryDefinitionService } from '../services/query-definition.service';
 import { VisualQueryStateService } from '../services/visual-query.service';
 import { calculateTypeInfos } from './plumb-editor.helpers';
 import { PlumbEditorViewModel } from './plumb-editor.models';
 import { dataSrcIdPrefix, Plumber } from './plumber.helper';
-import { MatIconModule } from '@angular/material/icon';
-import { NgStyle, NgClass, AsyncPipe } from '@angular/common';
-import { JsonHelpers } from '../../shared/helpers/json.helpers';
-import { MousedownStopPropagationDirective } from '../../shared/directives/mousedown-stop-propagation.directive';
-import { classLog } from '../../shared/logging';
-import { mapUntilObjChanged } from '../../shared/rxJs/mapUntilChanged';
-import { transient } from '../../core';
 
 const jsPlumbUrl = 'https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.14.5/js/jsplumb.min.js';
 
@@ -25,7 +25,6 @@ const jsPlumbUrl = 'https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.14.5/js/jsp
   selector: 'app-plumb-editor',
   templateUrl: './plumb-editor.component.html',
   styles: [':host { display: block; width: 100%; height: 100%; }'],
-  styleUrls: ['./plumb-editor.component.scss'],
   standalone: true,
   imports: [
     NgStyle,

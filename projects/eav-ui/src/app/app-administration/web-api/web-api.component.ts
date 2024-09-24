@@ -1,28 +1,27 @@
 import { GridOptions } from '@ag-grid-community/core';
 import { Component, OnInit, signal, ViewContainerRef } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogActions } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
 import { SourceService } from '../../code-editor/services/source.service';
+import { transient } from '../../core';
 import { CreateFileDialogComponent, CreateFileDialogData, CreateFileDialogResult } from '../../create-file-dialog';
+import { TrueFalseComponent } from '../../dev-rest/api/true-false/true-false.component';
+import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
+import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogService } from '../../shared/services/dialog.service';
 import { WebApi } from '../models/web-api.model';
+import { DialogConfigAppService } from '../services/dialog-config-app.service';
 import { WebApiActionsComponent } from './web-api-actions/web-api-actions.component';
 import { WebApiActionsParams } from './web-api-actions/web-api-actions.models';
-import { TrueFalseComponent } from '../../dev-rest/api/true-false/true-false.component';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatButtonModule } from '@angular/material/button';
-import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
-import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
-import { transient } from '../../core';
-import { DialogConfigAppService } from '../services/dialog-config-app.service';
 
 @Component({
   selector: 'app-web-api',
   templateUrl: './web-api.component.html',
-  styleUrls: ['./web-api.component.scss'],
   standalone: true,
   imports: [
     SxcGridModule,

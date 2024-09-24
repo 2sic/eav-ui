@@ -1,18 +1,18 @@
-import { Component } from '@angular/core';
-import { ContentTypesService } from '../services';
-import { BehaviorSubject } from 'rxjs';
-import { ContentType } from '../models';
-import { MatSelectModule } from '@angular/material/select';
 import { AsyncPipe } from '@angular/common';
+import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
-import { DevRestDataComponent } from '../../dev-rest/data/data.component';
+import { MatSelectModule } from '@angular/material/select';
 import { RouterOutlet } from '@angular/router';
+import { BehaviorSubject } from 'rxjs';
 import { transient } from '../../core';
+import { DevRestDataComponent } from '../../dev-rest/data/data.component';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
+import { ContentType } from '../models';
+import { ContentTypesService } from '../services';
 
 @Component({
   selector: 'app-data-rest-api',
@@ -29,7 +29,6 @@ import { DialogRoutingService } from '../../shared/routing/dialog-routing.servic
     SxcGridModule,
   ],
   templateUrl: './data-rest-api.component.html',
-  styleUrl: './data-rest-api.component.scss'
 })
 export class DataRestApiComponent {
   #contentTypesSvc = transient(ContentTypesService);

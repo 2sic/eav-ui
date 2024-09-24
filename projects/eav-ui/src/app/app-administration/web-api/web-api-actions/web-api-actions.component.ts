@@ -1,18 +1,17 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
-import { WebApi } from '../../models/web-api.model';
-import { WebApiActionsParams } from './web-api-actions.models';
+import { MatRippleModule } from '@angular/material/core';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GoToDevRest } from '../../../dev-rest/go-to-dev-rest';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatIconModule } from '@angular/material/icon';
-import { MatRippleModule } from '@angular/material/core';
+import { WebApi } from '../../models/web-api.model';
+import { WebApiActionsParams } from './web-api-actions.models';
 
 @Component({
   selector: 'app-web-api-actions',
   templateUrl: './web-api-actions.component.html',
-  styleUrls: ['./web-api-actions.component.scss'],
   standalone: true,
   imports: [
     MatRippleModule,
