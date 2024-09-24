@@ -8,7 +8,6 @@ import { classLog } from '../../../../shared/logging/logging';
 @Component({
   selector: InputTypeCatalog.EntityDefault,
   templateUrl: '../../picker/picker.component.html',
-  styleUrls: ['../../picker/picker.component.scss'],
   standalone: true,
   imports: PickerImports,
 })
