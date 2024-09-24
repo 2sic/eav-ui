@@ -1,5 +1,5 @@
 import { Injector, ProviderToken } from '@angular/core';
-import { transient } from '../../../core';
+import { Of, transient } from '../../../core';
 import { InputTypeCatalog, InputTypeStrict } from '../../../shared/fields/input-type-catalog';
 import { classLog } from '../../../shared/logging';
 import { FieldState } from '../field-state';
@@ -11,7 +11,7 @@ import { DataAdapterString } from './adapters/data-adapter-string';
 import { StateAdapter } from './adapters/state-adapter';
 import { StateAdapterEntity } from './adapters/state-adapter-entity';
 import { StateAdapterString } from './adapters/state-adapter-string';
-import { OfPickerConfig, PickerConfigs } from './constants/picker-config-model.constants';
+import { PickerConfigs } from './constants/picker-config-model.constants';
 import { PickerData } from './picker-data';
 
 /**
@@ -144,5 +144,5 @@ interface PartMap {
   sources: ProviderToken<unknown>[],
   states: ProviderToken<unknown>[],
   /** Force some string-sources to assume no-configuration, since the config is in the classic metadata, not in a DataSource config */
-  forcePickerConfig?: OfPickerConfig,
+  forcePickerConfig?: Of<typeof PickerConfigs>,
 }

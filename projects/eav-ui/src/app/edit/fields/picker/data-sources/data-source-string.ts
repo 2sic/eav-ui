@@ -1,9 +1,9 @@
-import { DataSourceBase, logSpecsDataSourceBase } from './data-source-base';
 import { Injectable } from '@angular/core';
-import { DataSourceMasksHelper } from './data-source-masks-helper';
+import { classLog } from '../../../../shared/logging/logging';
 import { EntityLight } from '../../../../shared/models/entity-basic';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
-import { classLog } from '../../../../shared/logging/logging';
+import { DataSourceBase, logSpecsDataSourceBase } from './data-source-base';
+import { DataSourceMasksHelper } from './data-source-masks-helper';
 
 const logSpecs = {
   ...logSpecsDataSourceBase,
@@ -15,7 +15,10 @@ export class DataSourceString extends DataSourceBase {
 
   log = classLog({DataSourceString}, logSpecs);
   
-  constructor() { super(); this.constructorEnd() }
+  constructor() {
+    super();
+    this.constructorEnd();
+  }
 
   loading = signalObj('loading', false);
 

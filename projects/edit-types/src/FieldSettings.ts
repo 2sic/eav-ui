@@ -1,6 +1,7 @@
-import { PickerOptionCustom } from './DropdownOption';
-import { FeatureNames } from '../../eav-ui/src/app/features/feature-names';
 import { Of } from '../../eav-ui/src/app/core';
+import { PickerConfigs } from '../../eav-ui/src/app/edit/fields/picker/constants/picker-config-model.constants';
+import { FeatureNames } from '../../eav-ui/src/app/features/feature-names';
+import { PickerOptionCustom } from './DropdownOption';
 
 /** */
 interface InternalSettings {
@@ -163,12 +164,12 @@ export interface StringDropdownQuery extends String {
   Query: string;
   StreamName: string;
   Value: string;
-  Label: string;
+  // Label: string;
   UrlParameters: string;
   EnableTextEntry: boolean;
   EnableEdit: boolean;
   EnableRemove: boolean;
-  AllowMultiValue: boolean;
+  // AllowMultiValue: boolean;
   Separator: string;
   MoreFields: string;
 }
@@ -223,7 +224,7 @@ export interface HyperlinkLibrary extends Hyperlink {
 }
 
 /**
- * @Entity
+ * @Entity field configuration
  */
 export interface Entity extends All {
   EntityType: string;
@@ -240,11 +241,10 @@ export interface Entity extends All {
   Prefill: string;
 
   MoreFields: string;
-  Label: string;
 }
 
 /**
- * @entity-query
+ * @entity-query field configuration
  */
 export interface EntityQuery extends Entity {
   Query: string;
@@ -304,15 +304,13 @@ export interface Boolean extends All {
   _label: string;
 }
 
+// export type PickerDataSourceType = 'UiPickerSourceCustomList' | 'UiPickerSourceCustomCsv' | 'UiPickerSourceQuery' | 'UiPickerSourceEntity';
+
 interface PickerSettings {
   PickerDisplayMode: 'list' | 'tree' | 'checkbox' | 'radio' | 'auto-inline';
   PickerDisplayConfiguration: string[]; //can only be one entity guid
   PickerTreeConfiguration: UiPickerModeTree;
-}
 
-export type PickerDataSourceType = 'UiPickerSourceCustomList' | 'UiPickerSourceCustomCsv' | 'UiPickerSourceQuery' | 'UiPickerSourceEntity';
-
-export interface EntityPicker extends EntityQuery, PickerSettings {
   EnableReselect: boolean;
   AllowMultiMin: number;
   AllowMultiMax: number;
@@ -320,23 +318,24 @@ export interface EntityPicker extends EntityQuery, PickerSettings {
   DataSources: string[];
   UiPickerSourceQuery: UiPickerSourceQuery;
 
+  DataSourceType: Of<typeof PickerConfigs>;// PickerDataSourceType;
+
+  /** Label to show or field-mask for label */
+  Label: string;
+
+  /** ItemInfo or field-mask for ItemInfo */
   ItemInformation: string;
+
+  /** ItemTooltip or field-mask for ItemTooltip */
   ItemTooltip: string;
+
+  /** ItemLink or field-mask for ItemLink */
   ItemLink: string;
-
-  DataSourceType: PickerDataSourceType;
 }
 
-export interface StringPicker extends StringDropdown, PickerSettings {
-  EnableReselect: boolean;
-  AllowMultiMin: number;
-  AllowMultiMax: number;
+interface EntityPicker extends EntityQuery, PickerSettings { }
 
-  DataSources: string[];
-  UiPickerSourceQuery: UiPickerSourceQuery;
-
-  DataSourceType: PickerDataSourceType;
-}
+interface StringPicker extends StringDropdown, PickerSettings { }
 
 export interface FieldSettings extends
   Boolean,
@@ -406,6 +405,20 @@ export interface UiPickerSourceEntity extends UiPickerSourceEntityAndQuery {
   ContentTypeNames: string;
 }
 
+interface UiPickerSource extends ConfigModel {
+  /** Label or field-mask for label */
+  Label: string;
+
+  /** ItemInfo or field-mask for ItemInfo */
+  ItemInformation: string;
+
+  /** ItemTooltip or field-mask for ItemTooltip */
+  ItemTooltip: string;
+
+  /** ItemLink or field-mask for ItemLink */
+  ItemLink: string;
+}
+
 export interface UiPickerSourceCustomList extends UiPickerSource {
   DropdownValues: string;
 }
@@ -420,17 +433,6 @@ export interface UiPickerSourceEntityAndQuery extends UiPickerSource {
 }
 
 
-
-interface UiPickerSource extends ConfigModel {
-  /** Label or field-mask for label */
-  Label: string;
-  /** ItemInfo or field-mask for ItemInfo */
-  ItemInformation: string;
-  /** ItemTooltip or field-mask for ItemTooltip */
-  ItemTooltip: string;
-  /** ItemLink or field-mask for ItemLink */
-  ItemLink: string;
-}
 
 interface ConfigModel {
   Title: string;

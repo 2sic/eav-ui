@@ -1,7 +1,7 @@
-import { FieldSettings } from './../../../../../../../edit-types/src/FieldSettings';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
-import { EntityPickerLogic } from '../entity-picker/entity-picker-logic';
+import { PickerLogicShared } from '../../picker/picker-logic-shared';
+import { FieldSettings } from './../../../../../../../edit-types/src/FieldSettings';
 
 export class EntityDefaultLogic extends FieldLogicBase {
   name = InputTypeCatalog.EntityDefault;
@@ -10,28 +10,17 @@ export class EntityDefaultLogic extends FieldLogicBase {
 
   update({ settings, tools }: FieldLogicUpdate): FieldSettings {
     
-    let fs = EntityDefaultLogic.setDefaultSettings({ ...settings });
+    const fsRaw = PickerLogicShared.setDefaultSettings({ ...settings });
     
-    fs.EntityType ??= '';
-    fs.CreateTypes = fs.EntityType;
-    fs.MoreFields ??= '';
+    fsRaw.EntityType ??= '';
+    fsRaw.CreateTypes = fsRaw.EntityType;
+    fsRaw.MoreFields ??= '';
 
-    fs = EntityPickerLogic.maybeOverrideEditRestrictions(fs, tools);
+    const fs = PickerLogicShared.maybeOverrideEditRestrictions(fsRaw, tools).fs;
     
     return fs;
   }
 
-  static setDefaultSettings(settings: FieldSettings): FieldSettings {
-    settings.AllowMultiValue ??= false;
-    settings.EnableEdit ??= true;
-    settings.EnableCreate ??= true;
-    settings.EnableAddExisting ??= true;
-    settings.EnableRemove ??= true;
-    settings.EnableDelete ??= false;
-    settings.Label ??= '';
-    settings.isDialog ??= false;
-    return settings;
-  }
 }
 
 FieldLogicBase.add(EntityDefaultLogic);
