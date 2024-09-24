@@ -7,8 +7,8 @@
 
 // /**
 //  * Will only emit when the value returned by the selector function changes.
-//  * @param fn 
-//  * @returns 
+//  * @param fn
+//  * @returns
 //  */
 // export function select<T, R>(
 //     fn: (state: T) => R

@@ -1,3 +1,3 @@
-export interface AdamHintViewModel {
-  showAdamSponsor: boolean;
-}
+//  interface AdamHintViewModel {
+//   showAdamSponsor: boolean;
+// }

@@ -9,13 +9,12 @@ import { ZoneService } from '../../services/zone.service';
 
 // Images/Icons
 import patronsLogo from '!raw-loader!./assets/2sxc-patrons.svg';
-import { AsyncPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { transient } from '../../../core';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';
-import { transient } from '../../../core';
 
 @Component({
   selector: 'app-registration',
