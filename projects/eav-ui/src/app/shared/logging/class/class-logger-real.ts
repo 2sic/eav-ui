@@ -105,7 +105,7 @@ export class ClassLoggerReal<TSpecs extends unknown = any> implements ClassLogge
 
   /**
    * 
-   * TODO: @2pp - refactor all uses to just use the fnCond method?
+   * TODO: @2pp - refactor all uses to just use the fnIf method? - but WAIT till delegate by 2dm
    * 
    * @param name 
    * @param data 
@@ -129,8 +129,6 @@ export class ClassLoggerReal<TSpecs extends unknown = any> implements ClassLogge
   /**
    * Create a logger function that will only log if the condition is true.
    * The condition must come from the specs object.
-   * 
-   * TODO: @2pp - refactor all uses to just use the fnCond method?
    */
   fnIf(key: BooleanKeys<TSpecs> & string, data?: RecordOrGenerator, message?: string): FnLogger {
     // create real logger if condition is true, or if this logger is disabled anyhow

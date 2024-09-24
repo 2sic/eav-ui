@@ -135,7 +135,7 @@ const partsMap: Record<string, PartMap> = {
     forcePickerConfig: PickerConfigs.UiPickerSourceEntity,
   },
   [InputTypeCatalog.EntityPicker]: {
-    sources: [DataAdapterEntity, DataAdapterQuery],
+    sources: [DataAdapterEntity, DataAdapterQuery, DataAdapterString],
     states: [StateAdapterEntity],
   },
 };
