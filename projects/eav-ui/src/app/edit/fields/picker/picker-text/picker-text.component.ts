@@ -1,25 +1,20 @@
 import { Component } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AsyncPipe } from '@angular/common';
-import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { FlexModule } from '@angular/flex-layout/flex';
-import { PickerPartBaseComponent } from '../picker-part-base.component';
-import { computedObj } from '../../../../shared/signals/signal.utilities';
+import { MatInputModule } from '@angular/material/input';
 import { classLog } from '../../../../shared/logging';
+import { computedObj } from '../../../../shared/signals/signal.utilities';
+import { PickerPartBaseComponent } from '../picker-part-base.component';
 
 @Component({
   selector: 'app-picker-text',
   templateUrl: './picker-text.component.html',
-  styleUrls: ['./picker-text.component.scss'],
   standalone: true,
   imports: [
-    FlexModule,
     MatFormFieldModule,
     FormsModule,
     ReactiveFormsModule,
     MatInputModule,
-    AsyncPipe,
   ],
 })
 export class PickerTextComponent extends PickerPartBaseComponent {
