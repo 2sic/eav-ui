@@ -1,60 +1,34 @@
 @import "../../assets/styles/variables.scss";
 @import "../../assets/styles/theme/material-colors.scss";
 
+// helper text
+// Note: 2024-09-24 2dm
+// The values seem very strange, especially with the extreme precision
+$helper-text-padding: 0.54em 0 13px 0;
+$helper-text-padding--last: 0.54em 0 5px 0;
+
 .my-main {
   padding: $helper-text-padding;
-}
+  font-size: 12px;
 
-.c-fht__container {
-  padding: $helper-text-padding;
-
-  &--no-hint {
-    padding: $helper-text-padding--no-hint;
-  }
-
-  &--last {
-    padding: $helper-text-padding--last;
-
-    &--no-hint {
-      padding: $helper-text-padding--last--no-hint;
-    }
-  }
-
-  &--hyperlink-default-wrapper-fix {
+  // Note: 2024-09-24 2dm
+  // this should apparently do something in the hyperlink-dialog, but I can't ever see it...
+  &.my-hyperlink-wrapper-fix {
     min-height: 22px;
   }
-
-  &-hint {
-    color: rgba($editUI-foreground-color, 0.44);
-
-    &--ellipsis {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-height: 16px;
-      // in global scss
-      // p {
-      //     margin-block-start: 0;
-      // }
-      color: blue;
-
-      p {
-        color: green;
-      }
-    }
-
-    &--disabled {
-      color: rgba($editUI-foreground-color, 0.24);
-    }
+  &.my-last-field {
+    padding: $helper-text-padding--last;
   }
 
-  &--input-invalid {
+  // Note: 2024-09-24 2dm
+  // This should probably put a border around the field, but I can't see it
+  // there is nothing in the code ATM which would make this visible
+  &.input-invalid {
     padding: 6px 12px 11px 12px;
     border: 2px;
     border-bottom-style: solid;
     border-color: map_get($mat-eav-item-dialog-error, 500);
   }
-
 }
 
 .mat-mdc-form-field-error.warning {
@@ -62,27 +36,32 @@
 }
 
 
+.my-notes {
+  color: rgba($editUI-foreground-color, 0.44);
 
+  &.disabled p:first-child {
+    font-style: italic;
+    color: rgba($editUI-foreground-color, 0.24);
+  }
 
-.c-fht__container {
-  font-size: 12px;
-}
+  p:first-child {
+    margin: 0px;
+  }
 
-.c-fht__container-hint--ellipsis p {
-  white-space: nowrap; 
-  overflow: hidden;
-  text-overflow: ellipsis;
-  width: 100%;
-  display: block;
-  margin: 0px;
-  padding: 0px;
-  color: red;
-}
+  .expandable {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-height: 16px;
 
-.c-fht__container-hint p:first-child {
-  margin: 0px;
-}
-
-.c-fht__container-hint--disabled p:first-child {
-  margin: 0px;
+    p {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 100%;
+      display: block;
+      margin: 0px;
+      padding: 0px;
+    }
+  }
 }

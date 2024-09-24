@@ -1,17 +1,15 @@
 @if (show()) {
-  <div class="c-fht__container" [ngClass]="{
-    'c-fht__container--no-hint': !notes() && !showErrors(),
-    'c-fht__container--last': fieldState.config.isLastInGroup,
-    'c-fht__container--last--no-hint': fieldState.config.isLastInGroup && !notes() && !showErrors(),
-    'c-fht__container--hyperlink-default-wrapper-fix': hyperlinkDefaultWrapperFix && !fieldState.config.isLastInGroup
+  <div class="c-fht__container my-main" [ngClass]="{
+      'my-last-field': fieldState.config.isLastInGroup,
+      'my-hyperlink-wrapper-fix': hyperlinkDefaultWrapperFix && !fieldState.config.isLastInGroup
     }"
   >
     @if (notes()) {
       <mat-hint class="mat-caption my-notes" (click)="toggleHint($event)"
-        [ngClass]="disabled() ? 'c-fht__container-hint--disabled' : 'c-fht__container-hint'" align="start"
+        [ngClass]="disabled() ? 'disabled' : ''" align="start"
         fxLayout="row" fxLayoutAlign="start start"
       >
-        <span class="id-notes-container" [ngClass]="{ 'c-fht__container-hint--ellipsis': showExpand }" appChangeAnchorTarget
+        <span class="id-notes-container" [ngClass]="showExpand ? 'expandable': ''" appChangeAnchorTarget
           [innerHtml]="notes() | safeHtml">
         </span>
       </mat-hint>
