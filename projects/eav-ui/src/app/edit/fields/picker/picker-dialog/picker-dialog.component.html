@@ -13,7 +13,7 @@
 
 <app-field-helper-text></app-field-helper-text>
 
-<!-- TODO: this looks like duplicate code! almost the same as in picker-preview -->
+<!-- Note: this is almost the same as in picker-preview, but the styling (FAB) and icons are a bit different -->
 <!-- add new entity -->
 @if (showAddNewEntityButtonInDialog()) {
   <div style="display: flex; justify-content: end;">
@@ -23,9 +23,9 @@
           <mat-icon>add</mat-icon>
         </button>
         <mat-menu #entityTypesMenu="matMenu">
-          @for (entityType of pickerData.state.typesForNew(); track entityType) {
-            <button mat-menu-item (click)="openNewEntityDialog(entityType.guid)">
-              <span>{{ entityType.label }}</span>
+          @for (ct of pickerData.state.typesForNew(); track ct) {
+            <button mat-menu-item (click)="openNewEntityDialog(ct.guid)">
+              <span>{{ ct.label }}</span>
             </button>
           }
         </mat-menu>

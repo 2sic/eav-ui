@@ -5,7 +5,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';
 import { computedObj } from '../../../shared/signals/signal.utilities';
-import { ValidationMsgHelper } from '../../shared/validation/validation-messages.helpers';
 import { ChangeAnchorTargetDirective } from '../directives/change-anchor-target.directive';
 import { FieldState } from '../field-state';
 
@@ -60,9 +59,9 @@ export class FieldHelperTextComponent {
 
   isEmpty = computedObj('isEmpty', () => !this.notes() && !this.showErrors());
 
-  errorMessage = computedObj('errorMessage', () => ValidationMsgHelper.getErrors(this.fieldState.ui(), this.fieldState.config));
+  errorMessage = computedObj('errorMessage', () => this.fieldState.ui().getErrors(this.fieldState.config));
 
-  warningMessage = computedObj('warningMessage', () => ValidationMsgHelper.getWarnings(this.fieldState.ui()));
+  warningMessage = computedObj('warningMessage', () => this.fieldState.ui().getWarnings());
 
   /**
    * Show the control if:

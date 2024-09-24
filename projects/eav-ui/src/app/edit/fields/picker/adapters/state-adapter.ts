@@ -120,7 +120,7 @@ export abstract class StateAdapter {
     const valueArray = [...this.values()];
     const modified = operation(valueArray);
     const newValue = this.mapper.toState(modified);
-    this.#fieldState.ui().set(newValue);
+    this.#fieldState.ui().setIfChanged(newValue);
     l.end('', { newValue });
   }
   
