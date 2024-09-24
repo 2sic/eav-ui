@@ -81,7 +81,7 @@ export class TippyDirective implements OnChanges, OnDestroy {
   // Experimental, try to prevent multiple Tippys from showing. Not working ATM.
   @HostListener(eventTippyShow, ['$event'])
   onTippyShow(event: CustomEvent): void {
-    console.warn('tippy-show event from', event);
+    // console.warn('tippy-show event from', event);
   }
 
   ngOnDestroy(): void {
