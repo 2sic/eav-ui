@@ -21,7 +21,6 @@ import { computedObj, signalObj } from '../../../../shared/signals/signal.utilit
 @Component({
   selector: InputTypeCatalog.NumberDropdown,
   templateUrl: './number-dropdown.component.html',
-  styleUrls: ['./number-dropdown.component.scss'],
   standalone: true,
   imports: [
     MatFormFieldModule,

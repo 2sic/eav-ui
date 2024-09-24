@@ -16,7 +16,6 @@ import { computedObj } from '../../../../shared/signals/signal.utilities';
 @Component({
   selector: 'app-picker-dialog',
   templateUrl: './picker-dialog.component.html',
-  styleUrls: ['./picker-dialog.component.scss'],
   standalone: true,
   imports: [
     PickerListComponent,

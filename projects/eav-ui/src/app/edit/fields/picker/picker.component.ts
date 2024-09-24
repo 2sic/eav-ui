@@ -11,7 +11,6 @@ import { classLog, ClassLogger } from '../../../shared/logging';
 @Component({
   // selector: none since it's a base class
   templateUrl: './picker.component.html',
-  styleUrls: ['./picker.component.scss'],
   standalone: true,
   imports: PickerImports,
 })

@@ -7,7 +7,6 @@ import { MatCardModule } from '@angular/material/card';
 @Component({
     selector: 'app-auto-translate-disabled-warning-dialog',
     templateUrl: './auto-translate-disabled-warning-dialog.component.html',
-    styleUrls: ['./auto-translate-disabled-warning-dialog.component.scss'],
     standalone: true,
     imports: [
         MatCardModule,

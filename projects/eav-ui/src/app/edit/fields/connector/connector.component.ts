@@ -7,7 +7,6 @@ import { classLog } from '../../../shared/logging';
 @Component({
   selector: 'app-connector',
   templateUrl: './connector.component.html',
-  styleUrls: ['./connector.component.scss'],
   standalone: true,
 })
 export class ConnectorComponent implements AfterViewInit {

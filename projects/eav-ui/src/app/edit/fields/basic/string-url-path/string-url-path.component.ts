@@ -16,7 +16,6 @@ import { classLog } from '../../../../shared/logging';
 @Component({
   selector: InputTypeCatalog.StringUrlPath,
   templateUrl: './string-url-path.component.html',
-  styleUrls: ['./string-url-path.component.scss'],
   standalone: true,
   imports: [
     MatFormFieldModule,
