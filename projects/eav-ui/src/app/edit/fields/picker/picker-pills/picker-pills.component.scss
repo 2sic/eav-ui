@@ -140,3 +140,15 @@
   text-overflow: ellipsis;
   padding: 0px;
 }
+
+.my-flex {
+  display: flex;
+  align-items: center;
+}
+
+.my-pills {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  box-sizing: border-box;
+}

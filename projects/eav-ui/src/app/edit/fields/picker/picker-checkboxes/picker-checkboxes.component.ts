@@ -1,6 +1,5 @@
 import { NgClass } from '@angular/common';
 import { Component } from '@angular/core';
-import { FlexModule } from '@angular/flex-layout/flex';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { MatRippleModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -20,7 +19,6 @@ import { PickerItemButtonsComponent } from '../picker-item-buttons/picker-item-b
   imports: [
     MatFormFieldModule,
     MatRippleModule,
-    FlexModule,
     MatCheckbox,
     NgClass,
     TippyDirective,
