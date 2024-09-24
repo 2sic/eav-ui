@@ -1,43 +1,40 @@
 
 <app-picker-list></app-picker-list>
-@if (!isInFreeTextMode())
-{
+
+@if (!isInFreeTextMode()) {
   <app-picker-search
     [showSelectedItem]="false"
     [showItemEditButtons]="false">
   </app-picker-search>
 } 
-@else
-{
+@else {
   <app-picker-text></app-picker-text>
 }
+
 <app-field-helper-text></app-field-helper-text>
+
+<!-- TODO: this looks like duplicate code! almost the same as in picker-preview -->
 <!-- add new entity -->
-@if (showAddNewEntityButtonInDialog())
-{
-  @if (pickerData.state.typesForNew().length > 1)
-  {
-    <div fxLayout="row" fxLayoutAlign="end center">
-      <button mat-mini-fab color="accent" [tippy]="'Fields.Picker.New' | translate"
-        [disabled]="ui().disabled || !features().create" [matMenuTriggerFor]="entityTypesMenu">
-        <mat-icon>add</mat-icon>
-      </button>
-      <mat-menu #entityTypesMenu="matMenu">
-        @for (entityType of pickerData.state.typesForNew(); track entityType) {
-          <button mat-menu-item (click)="openNewEntityDialog(entityType.guid)">
-            <span>{{ entityType.label }}</span>
-          </button>
-        }
-      </mat-menu>
-    </div>
-  }
-  @else
-  {
-    <div fxLayout="row" fxLayoutAlign="end center">
+@if (showAddNewEntityButtonInDialog()) {
+  <div style="display: flex; justify-content: end;">
+    @if (pickerData.state.typesForNew().length > 1) {
+        <button mat-mini-fab color="accent" [tippy]="'Fields.Picker.New' | translate"
+          [disabled]="ui().disabled || !features().create" [matMenuTriggerFor]="entityTypesMenu">
+          <mat-icon>add</mat-icon>
+        </button>
+        <mat-menu #entityTypesMenu="matMenu">
+          @for (entityType of pickerData.state.typesForNew(); track entityType) {
+            <button mat-menu-item (click)="openNewEntityDialog(entityType.guid)">
+              <span>{{ entityType.label }}</span>
+            </button>
+          }
+        </mat-menu>
+    }
+    @else {
       <button mat-mini-fab color="accent" [tippy]="'Fields.Picker.New' | translate"
         [disabled]="ui().disabled || !features().create" (click)="openNewEntityDialog(null)">
         <mat-icon>add</mat-icon>
       </button>
-    </div>
-  }
+    }
+  </div>
 }
