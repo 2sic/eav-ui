@@ -15,7 +15,7 @@
       [value]="displaySelected(selectedItem())"
       [placeholder]="getPlaceholder()"
       [disabled]="ui().disabled || !settings().enableAddExisting"
-      (focus)="fetchEntities()"
+      (focus)="pickerData.source.fetchItems()"
       (blur)="markAsTouched()"
       (input)="filterSelectionList()"
     >
@@ -33,11 +33,14 @@
       <mat-icon>arrow_drop_down</mat-icon>
     </button>
 
+    <!-- Toggle Text Mode -->
     @if (settings().enableTextEntry) {
       <span matSuffix>
         <ng-content select="[freeTextButtons]"></ng-content>
       </span>
     }
+
+    <!-- Help text / error messages -->
     <mat-label [ngClass]="{ 'mat-error': ui().touchedAndInvalid }">
       {{ basics().labelWithRequired }}
     </mat-label>

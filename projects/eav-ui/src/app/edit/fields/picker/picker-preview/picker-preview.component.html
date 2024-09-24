@@ -9,10 +9,12 @@
       }
       @case ('checkbox') {
         <app-picker-checkboxes>
+          <ng-container freeTextButtons *ngTemplateOutlet="textToggle; context: {$implicit: false}"></ng-container>
         </app-picker-checkboxes>
       }
       @case ('radio') {
         <app-picker-radio>
+          <ng-container freeTextButtons *ngTemplateOutlet="textToggle; context: {$implicit: false}"></ng-container>
         </app-picker-radio>
       }
       @case ('pills') {
@@ -29,9 +31,9 @@
   </div>
 
   <!-- Switch to text mode for radio/checkbox -->
-  @if ((mode() === 'radio' || mode() === 'checkbox') && enableTextEntry()) {
+  <!-- @if ((mode() === 'radio' || mode() === 'checkbox') && enableTextEntry()) {
     <ng-container freeTextButtons *ngTemplateOutlet="textToggle; context: {$implicit: false}"></ng-container>
-  }
+  } -->
 
   <!-- The edit / add buttons -->
   <div fxLayoutAlign="end end">
@@ -67,6 +69,8 @@
     }
   </div>
 </div>
+
+<!-- Help text for most controls (not radio/checkbox) -->
 @if (!skipHelpText()) {
   <app-field-helper-text></app-field-helper-text>
 }

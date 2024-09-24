@@ -1,14 +1,8 @@
 <div class="c-ew__preview-holder">
-  <mat-label class="c-ew__preview-label" [ngClass]="{
-    'mat-caption' : itemCount(),
-    'mat-empty' : !itemCount(),
-    'mat-error' : ui().touchedAndInvalid && !config.initialDisabled,
-    'color__primary' : !ui().touchedAndInvalid && !config.initialDisabled,
-    'color__label-disabled' : config.initialDisabled
-    }">
-    {{ basics().labelWithRequired }}
-  </mat-label>
-  <app-field-helper-text [flatIfEmpty]="true"></app-field-helper-text>
+  <app-picker-inline-header>
+    <ng-content freeTextButtons select="[freeTextButtons]"></ng-content>
+  </app-picker-inline-header>
+
   <!-- <div (click)="expandDialog()"
     [ngClass]="{
     'c-ew__preview--invalid' : ui().touchedAndInvalid,
@@ -31,8 +25,11 @@
               <div class="picker-option-info">
                 <app-picker-help [helpLink]="item.link"></app-picker-help>
                 <app-picker-icon-info [infoBox]="item.info"></app-picker-icon-info>
+                <!-- Action items such as edit, remove, delete -->
+                <app-picker-item-buttons class="my-item-actions" [show]="true" [item]="item" [index]="$index"></app-picker-item-buttons>
               </div>
             </div>
+
           </mat-radio-button>
         </div>
       }

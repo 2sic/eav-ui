@@ -139,7 +139,7 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
   }
 
   // 2024-04-30 2dm: seems this is always a string, will simplify the code
-  displayFn(value: string /* | string[] | PickerItem */): string {
+  displayFn(value: string): string {
     const selectedItem = this.selectedItem();
     this.#logItemChecks.a(`displayFn: value: '${value}'`, { selectedItem });
     // and probably clean up if it's stable for a few days
@@ -159,10 +159,6 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
 
   markAsTouched(): void {
     this.fieldState.ui().markTouched();
-  }
-
-  fetchEntities(): void {
-    this.pickerData.source.fetchItems();
   }
 
   filterSelectionList(): void {

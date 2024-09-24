@@ -9,10 +9,10 @@ import { PickerItem } from '../models/picker-item.model';
 import { PickerPartBaseComponent } from '../picker-part-base.component';
 
 @Component({
+  standalone: true,
   selector: 'app-picker-item-buttons',
   templateUrl: './picker-item-buttons.component.html',
   styleUrl: './picker-item-buttons.component.scss',
-  standalone: true,
   imports: [
     MatButtonModule,
     MatIconModule,
