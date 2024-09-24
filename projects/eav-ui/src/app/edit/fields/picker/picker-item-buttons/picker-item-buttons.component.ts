@@ -22,8 +22,6 @@ import { PickerPartBaseComponent } from '../picker-part-base.component';
   ],
 })
 export class PickerItemButtonsComponent extends PickerPartBaseComponent {
-  // note: may need to do something like
-  // https://stackoverflow.com/questions/38716105/angular2-render-component-without-its-wrapping-tag
 
   show = input.required<boolean>();
 
@@ -35,18 +33,14 @@ export class PickerItemButtonsComponent extends PickerPartBaseComponent {
 
   /** Current applicable settings like "enableEdit" etc. */
   settings = computedObj('settings', () => {
-    const selected = this.item();
-    const show = this.show() && !!selected;
-    const sts = this.fieldState.settings();
+    // note that selected can be null, since a item in the list can be null
+    const item = this.item();
+    const show = this.show() && !!item;
+    const s = this.fieldState.settings();
     return {
-      allowMultiValue: sts.AllowMultiValue,
-      enableAddExisting: sts.EnableAddExisting,
-      enableTextEntry: sts.EnableTextEntry,
-      enableEdit: sts.EnableEdit && show && !selected?.noEdit,
-      enableDelete: sts.EnableDelete && show && !selected?.noDelete,
-      enableRemove: sts.EnableRemove && show,
-      enableReselect: sts.EnableReselect,
-      showAsTree: sts.PickerDisplayMode === 'tree',
+      enableEdit: s.EnableEdit && show && !item?.noEdit,
+      enableDelete: s.EnableDelete && show && !item?.noDelete,
+      enableRemove: s.EnableRemove && show,
     };
   });
   
