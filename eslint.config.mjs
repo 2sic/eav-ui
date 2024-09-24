@@ -1,6 +1,7 @@
-// projects/eav-ui/src/eslint.config.js
-
 import js from '@eslint/js';
+import typescript from '@typescript-eslint/eslint-plugin';
+import parser from '@typescript-eslint/parser';
+import angular from '@angular-eslint/eslint-plugin';
 
 export default [
   js.configs.recommended,
@@ -14,10 +15,22 @@ export default [
       '/projects/field-custom-gps',
       '/projects/field-string-wysiwyg',
     ],
+    languageOptions: {
+      parser: parser,
+      parserOptions: {
+        project: './tsconfig.json', // Pfad zu deiner tsconfig.json
+        tsconfigRootDir: './', // Basisverzeichnis
+        sourceType: 'module', // Modultyp
+      },
+    },
+    plugins: {
+      typescript: typescript,
+      angular: angular,
+    },
     rules: {
-      eqeqeq: ['error', 'always'], // this is for === and !==
-      quotes: ['warn', 'single'], // this is for single quotes
-      semi: ['warn', 'always'], // this is for semicolons
+      eqeqeq: ['error', 'always'], // for === and !==
+      quotes: ['warn', 'single'], // for single quotes
+      semi: ['warn', 'always'], // for semicolons
     },
   },
 ];
