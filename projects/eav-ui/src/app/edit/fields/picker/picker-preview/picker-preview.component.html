@@ -1,4 +1,4 @@
-<div fxLayout="row" fxLayoutAlign="start top">
+<div fxLayout="row" fxLayoutAlign="start">
   <!-- The Input field / checkboxes etc. -->
   <div class="eav-mat-form-field">
     @switch (mode()) {
@@ -9,11 +9,13 @@
       }
       @case ('checkbox') {
         <app-picker-checkboxes>
+          <ng-container addNew *ngTemplateOutlet="addNew"></ng-container>
           <ng-container freeTextButtons *ngTemplateOutlet="textToggle; context: {$implicit: false}"></ng-container>
         </app-picker-checkboxes>
       }
       @case ('radio') {
         <app-picker-radio>
+          <ng-container addNew *ngTemplateOutlet="addNew"></ng-container>
           <ng-container freeTextButtons *ngTemplateOutlet="textToggle; context: {$implicit: false}"></ng-container>
         </app-picker-radio>
       }
@@ -30,44 +32,22 @@
     }
   </div>
 
-  <!-- Switch to text mode for radio/checkbox -->
-  <!-- @if ((mode() === 'radio' || mode() === 'checkbox') && enableTextEntry()) {
-    <ng-container freeTextButtons *ngTemplateOutlet="textToggle; context: {$implicit: false}"></ng-container>
-  } -->
-
   <!-- The edit / add buttons -->
-  <div fxLayoutAlign="end end">
-    <!-- create new entity to add to this list -->
-    @if (mySettings().showAddNewEntityButton) {
-      @if (pickerData.state.typesForNew().length > 1) {
-        <button mat-icon-button class="eav-suffix-button" [tippy]="'Fields.Picker.New' | translate"
-          [disabled]="ui().disabled || !features().create" [matMenuTriggerFor]="entityTypesMenu">
-          <mat-icon>add_circle_outline</mat-icon>
-        </button>
-        <mat-menu #entityTypesMenu="matMenu">
-          @for (ct of pickerData.state.typesForNew(); track ct) {
-            <button mat-menu-item (click)="openNewEntityDialog(ct.guid)">
-              <span>{{ ct.label }}</span>
-            </button>
-          }
-        </mat-menu>
-      }
-      @else {
-        <button mat-icon-button class="eav-suffix-button" [tippy]="'Fields.Picker.New' | translate"
-          [disabled]="ui().disabled || !features().create" (click)="openNewEntityDialog(null)">
-          <mat-icon>add_circle_outline</mat-icon>
+  @if ((mode() !== 'radio' || mode() !== 'checkbox')) {
+    <div>
+      <!-- create new entity to add to this list -->
+      <ng-container *ngTemplateOutlet="addNew"></ng-container>
+      <!-- Open dialog button -->
+      @if (mySettings().showGoToListDialogButton) {
+        <button mat-icon-button class="eav-suffix-button"
+          [disabled]="ui().disabled"
+          [tippy]="'Fields.Picker.OpenMultiselect' | translate"
+          (click)="expandDialog()">
+          <mat-icon>post_add</mat-icon>
         </button>
       }
-    }
-    @if (mySettings().showGoToListDialogButton) {
-      <button mat-icon-button class="eav-suffix-button"
-        [disabled]="ui().disabled"
-        [tippy]="'Fields.Picker.OpenMultiselect' | translate"
-        (click)="expandDialog()">
-        <mat-icon>post_add</mat-icon>
-      </button>
-    }
-  </div>
+    </div>
+  }
 </div>
 
 <!-- Help text for most controls (not radio/checkbox) -->
@@ -79,7 +59,7 @@
   <br>
 }
 
-<!-- Often used part to add the text-toggle to the control -->
+<!-- Part to add the text-toggle to the control -->
 <ng-template #textToggle let-showBoth>
   <span [ngClass]="{'picker-suffix-text': showBoth }">
     <app-picker-toggle-text 
@@ -90,4 +70,29 @@
     >
     </app-picker-toggle-text>
   </span>
+</ng-template>
+
+<!-- Part for the AddNew button, which will either open the edit, or first show a menu with all the options -->
+<ng-template #addNew>
+  @if (mySettings().showAddNewEntityButton) {
+    @if (pickerData.state.typesForNew().length > 1) {
+      <button mat-icon-button class="eav-suffix-button" [tippy]="'Fields.Picker.New' | translate"
+        [disabled]="ui().disabled || !features().create" [matMenuTriggerFor]="entityTypesMenu">
+        <mat-icon>add_circle_outline</mat-icon>
+      </button>
+      <mat-menu #entityTypesMenu="matMenu">
+        @for (ct of pickerData.state.typesForNew(); track ct) {
+          <button mat-menu-item (click)="openNewEntityDialog(ct.guid)">
+            <span>{{ ct.label }}</span>
+          </button>
+        }
+      </mat-menu>
+    }
+    @else {
+      <button mat-icon-button class="eav-suffix-button" [tippy]="'Fields.Picker.New' | translate"
+        [disabled]="ui().disabled || !features().create" (click)="openNewEntityDialog(null)">
+        <mat-icon>add_circle_outline</mat-icon>
+      </button>
+    }
+  }
 </ng-template>
