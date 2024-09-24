@@ -1,0 +1,57 @@
+<!-- 
+<button
+  mat-icon-button
+  matSuffix
+  class="picker-inline-button"
+  [tippy]="'Fields.Picker.Clear' | translate"
+  appClickStopPropagation
+>
+  <mat-icon>bolt</mat-icon>
+</button> -->
+
+
+@if (settings().enableEdit)
+{
+  <button
+    mat-icon-button
+    matSuffix
+    class="picker-inline-button"
+    [tippy]="'Fields.Picker.Edit' | translate"
+    [disabled]="ui().disabled || config.initialDisabled"
+    appClickStopPropagation
+    (click)="edit(item()?.value, item()?.id)"
+  >
+    <mat-icon>edit</mat-icon>
+  </button>
+}
+
+@if (settings().enableRemove)
+{
+  <button
+    mat-icon-button
+    matSuffix
+    class="picker-inline-button"
+    [tippy]="'Fields.Picker.Remove' | translate"
+    [disabled]="ui().disabled"
+    appClickStopPropagation
+    (click)="removeItem(index())"
+  >
+    <mat-icon>do_not_disturb_on</mat-icon>
+  </button>
+}
+
+
+@if (settings().enableDelete)
+{
+  <button
+    mat-icon-button
+    matSuffix
+    class="picker-inline-button"
+    [tippy]="'Fields.Picker.Delete' | translate"
+    [disabled]="ui().disabled"
+    appClickStopPropagation
+    (click)="deleteItem(0, item()?.value)"
+  >
+    <mat-icon>delete</mat-icon>
+  </button>
+}

@@ -18,32 +18,18 @@
       (blur)="markAsTouched()"
       (input)="filterSelectionList()"
     >
-    <button mat-icon-button matSuffix class="entity-dropdown-button eav-suffix-button" disableRipple="true"
-      [disabled]="ui().disabled || !settings().enableAddExisting">
+    <button
+      mat-icon-button
+      matSuffix
+      class="entity-dropdown-button picker-inline-button"
+      disableRipple="true"
+      [disabled]="ui().disabled || !settings().enableAddExisting"
+    >
       <mat-icon>arrow_drop_down</mat-icon>
     </button>
-    @if (settings().enableEdit)
-    {
-      <button mat-icon-button matSuffix class="eav-suffix-button" [tippy]="'Fields.Picker.Edit' | translate"
-        [disabled]="ui().disabled || config.initialDisabled" appClickStopPropagation
-        (click)="edit(selectedItem()?.value, selectedItem()?.id)">
-        <mat-icon>edit</mat-icon>
-      </button>
-    }
-    @if (settings().enableDelete)
-    {
-      <button mat-icon-button matSuffix class="eav-suffix-button" [tippy]="'Fields.Picker.Delete' | translate"
-        [disabled]="ui().disabled" appClickStopPropagation (click)="deleteItem(0, selectedItem()?.value)">
-        <mat-icon>delete</mat-icon>
-      </button>
-    }
-    @if (settings().enableRemove)
-    {
-      <button mat-icon-button matSuffix class="eav-suffix-button" [tippy]="'Fields.Picker.Remove' | translate"
-        [disabled]="ui().disabled" appClickStopPropagation (click)="removeItem(0)">
-        <mat-icon>do_not_disturb_on</mat-icon>
-      </button>
-    }
+
+    <app-picker-item-buttons matSuffix [show]="showItemEditButtons()" [item]="selectedItem()" [index]="0"></app-picker-item-buttons>
+
     @if (settings().enableTextEntry)
     {
       <span matSuffix>

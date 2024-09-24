@@ -1,28 +1,29 @@
-import { Component, ElementRef, OnInit, input, viewChild } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatAutocompleteSelectedEvent, MatAutocompleteModule } from '@angular/material/autocomplete';
-import { TranslateService, TranslateModule } from '@ngx-translate/core';
-import { MatTreeModule } from '@angular/material/tree';
-import { MatOptionModule } from '@angular/material/core';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatInputModule } from '@angular/material/input';
-import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass } from '@angular/common';
+import { Component, ElementRef, OnInit, input, viewChild } from '@angular/core';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatButtonModule } from '@angular/material/button';
+import { MatOptionModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { PickerTreeDataHelper } from '../picker-tree/picker-tree-data-helper';
-import { PickerTreeDataService } from '../picker-tree/picker-tree-data-service';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatTreeModule } from '@angular/material/tree';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { transient } from '../../../../core/transient';
+import { ClickStopPropagationDirective } from '../../../../shared/directives/click-stop-propagation.directive';
+import { TippyDirective } from '../../../../shared/directives/tippy.directive';
+import { classLog } from '../../../../shared/logging';
+import { GlobalConfigService } from '../../../../shared/services/global-config.service';
+import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
+import { PickerItem, PickerItemFactory } from '../models/picker-item.model';
 import { PickerTreeItem } from '../models/picker-tree.models';
 import { PickerIconHelpComponent } from "../picker-icon-help/picker-icon-help.component";
 import { PickerIconInfoComponent } from "../picker-icon-info/picker-icon-info.component";
+import { PickerItemButtonsComponent } from '../picker-item-buttons/picker-item-buttons.component';
 import { PickerPartBaseComponent } from '../picker-part-base.component';
-import { ClickStopPropagationDirective } from '../../../../shared/directives/click-stop-propagation.directive';
-import { TippyDirective } from '../../../../shared/directives/tippy.directive';
-import { PickerItem, PickerItemFactory } from '../models/picker-item.model';
-import { transient } from '../../../../core/transient';
-import { GlobalConfigService } from '../../../../shared/services/global-config.service';
-import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
-import { classLog } from '../../../../shared/logging';
+import { PickerTreeDataHelper } from '../picker-tree/picker-tree-data-helper';
+import { PickerTreeDataService } from '../picker-tree/picker-tree-data-service';
 
 @Component({
   selector: 'app-picker-search',
@@ -44,13 +45,18 @@ import { classLog } from '../../../../shared/logging';
     TranslateModule,
     PickerIconHelpComponent,
     PickerIconInfoComponent,
+    PickerItemButtonsComponent,
     ClickStopPropagationDirective,
     TippyDirective,
   ]
 })
 export class PickerSearchComponent extends PickerPartBaseComponent implements OnInit {
   
+  /** Main log */
   log = classLog({PickerSearchComponent});
+
+  /** Special log which would fire a lot for each item doing disabled checks etc. */
+  #logItemChecks = classLog({PickerSearchComponent}).extendName("-ItemChecks");
 
   //#region Inputs
 
@@ -61,6 +67,19 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
   showItemEditButtons = input.required<boolean>();
 
   //#endregion
+
+  /**
+   * The tree helper which is used by the tree display.
+   * Will only be initialized if we're really showing a tree.
+   */
+  #treeDataService = transient(PickerTreeDataService);
+  public treeHelper = transient(PickerTreeDataHelper);
+
+  constructor(
+    private translate: TranslateService,
+    private globalConfigService: GlobalConfigService,
+  ) { super(); }
+
 
   /** The input field for the search */
   autocomplete = viewChild.required<ElementRef<HTMLInputElement>>('autocomplete');
@@ -89,9 +108,6 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
       : [PickerItemFactory.message(this.translate, 'Fields.Picker.FilterNoResults', { search: filterInDom })];
   });
 
-  /** Special log which would fire a lot for each item doing disabled checks etc. */
-  #logItemChecks = classLog({PickerSearchComponent}).extendName("-ItemChecks");
-
   /** Debug status for UI, mainly to show "add-null" button */
   debugEnabled = this.globalConfigService.isDebug;
 
@@ -112,18 +128,6 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
     };
   });
 
-  /**
-   * The tree helper which is used by the tree display.
-   * Will only be initialized if we're really showing a tree.
-   */
-
-  #treeDataService = transient(PickerTreeDataService);
-  public treeHelper = transient(PickerTreeDataHelper);
-
-  constructor(
-    private translate: TranslateService,
-    private globalConfigService: GlobalConfigService,
-  ) { super(); }
 
   ngOnInit(): void {
     const fieldSettings = this.fieldState.settings;

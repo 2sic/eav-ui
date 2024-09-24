@@ -37,29 +37,38 @@
         <div class="item-actions">
           <!-- Disable edit only if it was disabled in the settings, not if disabled by language change -->
           @if (mySettings().enableEdit && !item.noEdit) {
-            <button mat-icon-button class="eav-action-button"
+            <button
+              mat-icon-button
+              class="eav-action-button"
               [tippy]="'Fields.Picker.Edit' | translate"
               [disabled]="config.initialDisabled"
               appMousedownStopPropagation
-              (click)="edit(item.value, item.id)">
+              (click)="edit(item.value, item.id)"
+            >
               <mat-icon>edit</mat-icon>
             </button>
           }
           @if (mySettings().enableDelete && !item.noDelete) {
-            <button mat-icon-button class="eav-action-button"
+            <button
+              mat-icon-button
+              class="eav-action-button"
               [tippy]="'Fields.Picker.Delete' | translate"
               [disabled]="ui().disabled"
               appMousedownStopPropagation
-              (click)="deleteItem(index, item.value)">
+              (click)="deleteItem(index, item.value)"
+            >
               <mat-icon>delete</mat-icon>
             </button>
           }
           @if (mySettings().enableRemove) {
-            <button mat-icon-button class="eav-action-button"
+            <button
+              mat-icon-button
+              class="eav-action-button"
               [tippy]="'Fields.Picker.Remove' | translate"
               [disabled]="ui().disabled"
               appMousedownStopPropagation
-              (click)="removeItem(index)">
+              (click)="removeItem(index)"
+            >
               <mat-icon>do_not_disturb_on</mat-icon>
             </button>
           }

@@ -1,13 +1,13 @@
-import { PickerItem } from './models/picker-item.model';
-import { StateAdapter } from "./adapters/state-adapter";
-import { TranslateService } from '@ngx-translate/core';
 import { Injectable, inject } from '@angular/core';
-import { PickerFeatures } from './picker-features.model';
-import { DataAdapterBase } from './adapters/data-adapter-base';
-import { computedObj, signalObj } from '../../../shared/signals/signal.utilities';
-import { classLog } from '../../../shared/logging';
+import { TranslateService } from '@ngx-translate/core';
 import { getWith } from '../../../core';
+import { classLog } from '../../../shared/logging';
+import { computedObj, signalObj } from '../../../shared/signals/signal.utilities';
 import { DebugFields } from '../../edit-debug';
+import { DataAdapterBase } from './adapters/data-adapter-base';
+import { StateAdapter } from "./adapters/state-adapter";
+import { PickerItem } from './models/picker-item.model';
+import { PickerFeatures } from './picker-features.model';
 
 const logSpecs = {
   all: true,
@@ -95,7 +95,7 @@ export class PickerData {
   //#region Selected Data
 
   /** Currently selected items. Must watch for ready. */
-  public selectedRaw = computedObj('selectedState', () => {
+  public selectedRaw = computedObj<PickerItem[]>('selectedState', () => {
     const l = this.log.fnIfInList('selectedRaw', 'fields', this.name);
     return !this.ready()
       ? l.r([], 'not ready')
