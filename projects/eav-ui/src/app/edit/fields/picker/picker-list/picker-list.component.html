@@ -10,11 +10,12 @@
     cdkDropList
     [cdkDropListDisabled]="!allowMultiValue() || ui().disabled"
     (cdkDropListDropped)="drop($event)"
+    class="my-list"
     [ngClass]="'my-list-' + (allowMultiValue() ? 'draggable' : 'static')"
   >
     <!-- Normal list usually shows only one item, but can show "empty slot" / "null-item" in debug mode -->
     @for (item of selectedItems(); track (item.value + $index); let index = $index) {
-      <div cdkDrag [ngClass]="('my-item-' + (allowMultiValue() ? 'draggable' : 'static')) + ' ' + (ui().disabled ? 'disabled' : '')">
+      <div cdkDrag class="my-item" [ngClass]="('my-item-' + (allowMultiValue() ? 'draggable' : 'static')) + ' ' + (ui().disabled ? 'disabled' : '')">
         <div class="item-title" [ngClass]="{ 'disabled': ui().disabled }">
           <!-- visual Drag-Handle if sortable -->
           @if (allowMultiValue()) {
@@ -28,7 +29,7 @@
             {{ item.label }}
           </span>
         </div>
-        <app-picker-item-buttons matSuffix class="item-actions" [show]="true" [item]="item" [index]="index"></app-picker-item-buttons>
+        <app-picker-item-buttons matSuffix class="my-item-actions" [show]="true" [item]="item" [index]="index"></app-picker-item-buttons>
       </div>
     }
   </div>

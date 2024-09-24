@@ -3,7 +3,7 @@
   2dm settings: {{ settings() | json }} <br>
 </div> -->
 <div>
-  <mat-form-field [formGroup]="fieldState.group" class="eav-mat-form-field" color="accent"
+  <mat-form-field [formGroup]="fieldState.group" class="eav-mat-form-field my-search" color="accent"
     [ngClass]="{ 'mat-form-field-invalid': ui().touchedAndInvalid }"
     (click)="filterSelectionList()"
   >
@@ -19,6 +19,10 @@
       (blur)="markAsTouched()"
       (input)="filterSelectionList()"
     >
+    <!-- Action items such as edit, remove, delete -->
+    <app-picker-item-buttons matSuffix class="my-item-actions" [show]="showItemEditButtons()" [item]="selectedItem()" [index]="0"></app-picker-item-buttons>
+
+    <!-- "v" button to open the drop-down -->
     <button
       mat-icon-button
       matSuffix
@@ -28,8 +32,6 @@
     >
       <mat-icon>arrow_drop_down</mat-icon>
     </button>
-
-    <app-picker-item-buttons matSuffix [show]="showItemEditButtons()" [item]="selectedItem()" [index]="0"></app-picker-item-buttons>
 
     @if (settings().enableTextEntry) {
       <span matSuffix>

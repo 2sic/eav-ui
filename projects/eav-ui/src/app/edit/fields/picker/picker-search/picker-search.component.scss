@@ -50,6 +50,11 @@
 
 @import '../styles/picker-options.scss';
 
+.my-search:not(:hover) {
+  .my-item-actions {
+    display: none;
+  }
+}
 
 
 
