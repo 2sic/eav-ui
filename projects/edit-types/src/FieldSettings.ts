@@ -88,7 +88,7 @@ interface All {
  * @String
  */
 interface String extends All {
-  DropdownValues: string;
+  /** Old input type for strings - was before the input type moved to '@All' so it must be preserved for all the old configs */
   InputType: string;
 }
 
@@ -105,7 +105,9 @@ export interface StringDefault extends String {
  * @string-dropdown
  */
 export interface StringDropdown extends String {
+  /** Configured Values for dropdown. Only used to load the initial possible options. Not used in controls. */
   DropdownValues: string;
+  /** Configured Value-format for dropdown. Only used to load the initial possible options. Not used in controls. */
   DropdownValuesFormat: '' | 'value-label';
   EnableTextEntry: boolean;
   _options: PickerOptionCustom[];

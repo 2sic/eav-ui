@@ -1,9 +1,13 @@
-import { FieldSettings, RelationshipParentChild, UiPickerModeTree, UiPickerSourceEntity, UiPickerSourceEntityAndQuery, UiPickerSourceQuery } from '../../../../../../edit-types/src/FieldSettings';
+import { FieldValue } from 'projects/edit-types';
+import { FieldSettings, RelationshipParentChild, UiPickerModeTree, UiPickerSourceCustomCsv, UiPickerSourceCustomList, UiPickerSourceEntity, UiPickerSourceEntityAndQuery, UiPickerSourceQuery } from '../../../../../../edit-types/src/FieldSettings';
 import { Of } from '../../../core';
+import { FeatureNames } from '../../../features/feature-names';
 import { EavEntity } from '../../shared/models/eav';
+import { calculateDropdownOptions } from '../basic/string-picker/string-picker.helpers';
 import { FieldLogicUpdate } from '../logic/field-logic-base';
 import { FieldLogicTools } from '../logic/field-logic-tools';
-import { PickerConfigs } from './constants/picker-config-model.constants';
+import { PickerConfigs, PickerSourcesCustom } from './constants/picker-config-model.constants';
+import { DataSourceParserCsv } from './data-sources/data-source-parser-csv';
 
 
 export class PickerLogicShared {
@@ -15,10 +19,12 @@ export class PickerLogicShared {
     settings.EnableEdit ??= true;
     settings.EnableCreate ??= true;
     settings.EnableAddExisting ??= true;
+    // if multi-value is ever allowed, then we must also enable remove...
     settings.EnableRemove ??= true;
     settings.EnableDelete ??= false;
     settings.Label ??= '';
     settings.isDialog ??= false;
+    settings.EnableTextEntry ??= false;
     return settings;
   }
 
@@ -35,38 +41,37 @@ export class PickerLogicShared {
     return { fs, overriding: true };
   }
 
-  preUpdate({ settings, tools }: FieldLogicUpdate) {
+  preUpdate({ settings, tools, value }: FieldLogicUpdate) {
    
     const fsDefaults = PickerLogicShared.setDefaultSettings({ ...settings });
 
     const { fs: fsRaw, overriding } = PickerLogicShared.maybeOverrideEditRestrictions(fsDefaults, tools);
 
-    const { fs, dataSourceTypeName, typeConfig } = new PickerLogicShared().getDataSourceAndSetupFieldSettings(fsRaw, tools);
+    const { fs, typeConfig } = new PickerLogicShared().getDataSourceAndSetupFieldSettings(value, fsRaw, tools);
 
-    return { fs, overriding, dataSourceTypeName, typeConfig };
+    return { fs, overriding, typeConfig };
   }
 
 
-  getDataSourceAndSetupFieldSettings(fs: FieldSettings, tools: FieldLogicTools) {
+  getDataSourceAndSetupFieldSettings(value: FieldValue, fs: FieldSettings, tools: FieldLogicTools) {
     const dataSources: EavEntity[] = (fs.DataSources?.length > 0)
       ? tools.contentTypeItemSvc.getMany(fs.DataSources)
       : [];
 
     // Transfer configuration
     const dataSource = dataSources[0];
-    const dataSourceTypeName = dataSource?.Type.Name as Of<typeof PickerConfigs>;
+    const typeName = dataSource?.Type.Name as Of<typeof PickerConfigs>;
+    fs.DataSourceType = typeName ?? '' as Of<typeof PickerConfigs>;
 
     // DataSource may not be configured yet, in which case the object is just {}
     const typeConfig = tools.reader.flatten<UiPickerSourceEntityAndQuery>(dataSource);
 
-    const isKnownType = Object.values(PickerConfigs).includes(dataSourceTypeName);
+    const isKnownType = Object.values(PickerConfigs).includes(typeName);
 
     if (!isKnownType) {
-      console.error(`Unknown picker source type: ${dataSourceTypeName}`);
-      return { fs, dataSourceTypeName, typeConfig };
+      console.error(`Unknown picker source type: ${typeName}`);
+      return { fs, typeConfig };
     }
-
-    fs.DataSourceType = dataSourceTypeName;
 
     // Properties to transfer from both query and entity
     fs.CreateTypes = typeConfig.CreateTypes ?? '';// possible multiple types
@@ -76,9 +81,11 @@ export class PickerLogicShared {
     fs.ItemTooltip = typeConfig.ItemTooltip ?? '';
     fs.ItemLink = typeConfig.ItemLink ?? '';
 
-    const sourceIsQuery = dataSourceTypeName === PickerConfigs.UiPickerSourceQuery;
-    const sourceIsEntity = dataSourceTypeName === PickerConfigs.UiPickerSourceEntity;
-    /** Query datasource */
+    const sourceIsQuery = typeName === PickerConfigs.UiPickerSourceQuery;
+    const sourceIsEntity = typeName === PickerConfigs.UiPickerSourceEntity;
+    const isCustomSource = Object.values(PickerSourcesCustom).includes(typeName as Of<typeof PickerSourcesCustom>);
+
+    /** Query Data Source */
     if (sourceIsQuery) {
       const specsQuery = typeConfig as UiPickerSourceQuery;
       fs.Query = specsQuery.Query ?? '';
@@ -89,10 +96,24 @@ export class PickerLogicShared {
       fs.Value = specsQuery.Value ?? '';
     }
 
-    /** Entity datasource */
+    /** Entity Data Source */
     if (sourceIsEntity) {
       const specsEntity = typeConfig as UiPickerSourceEntity;
       fs.EntityType = specsEntity.ContentTypeNames ?? '';// possible multiple types
+    }
+
+    if (isCustomSource) {
+      if (typeName === PickerConfigs.UiPickerSourceCustomList) {
+        const valuesRaw = (typeConfig as unknown as UiPickerSourceCustomList).Values ?? '';
+        // note that 'value-label' is the only format supported by the new picker config
+        fs._options ??= calculateDropdownOptions(value as string, 'string', 'value-label', valuesRaw) ?? [];
+      } else if (typeName === PickerConfigs.UiPickerSourceCustomCsv) {
+        // TODO: THIS should of course also be possible in Entity Pickers
+        const csv = (typeConfig as unknown as UiPickerSourceCustomCsv).Csv;
+        fs._options ??= new DataSourceParserCsv().parse(csv);
+        fs.requiredFeatures = [FeatureNames.PickerSourceCsv];
+      }
+
     }
 
     // If AllowMultiValue is false then EnableReselect must be false
@@ -111,34 +132,47 @@ export class PickerLogicShared {
     fs.PickerDisplayConfiguration ??= [];
 
     // Tree configuration WIP
+    fs.PickerTreeConfiguration = this.#getTreeConfigOnce(fs, tools);
+
+    return { fs, typeConfig };
+  }
+
+  /** Get the tree config, unless it was already created, in which case we reuse it. */
+  #getTreeConfigOnce(fs: FieldSettings, tools: FieldLogicTools): UiPickerModeTree {
+    if (fs.PickerTreeConfiguration)
+      return fs.PickerTreeConfiguration;
+
+    if (fs.PickerDisplayMode !== 'tree')
+      return null;
+
+    // Tree configuration WIP
     const pickerDisplayConfigurations: EavEntity[] = (fs.PickerDisplayConfiguration?.length > 0)
       ? tools.contentTypeItemSvc.getMany(fs.PickerDisplayConfiguration)
       : [];
 
     const pickerDisplayConfigName = pickerDisplayConfigurations[0]?.Type.Name;
 
-    if (pickerDisplayConfigName === PickerConfigs.UiPickerModeTree) {
-      const specsTree = tools.reader.flatten(pickerDisplayConfigurations[0]) as UiPickerModeTree;
-      const pickerTreeConfiguration: UiPickerModeTree = {
-        Title: specsTree.Title ?? '',
-        ConfigModel: PickerConfigs.UiPickerModeTree,
-        TreeRelationship: specsTree.TreeRelationship ?? RelationshipParentChild,
-        TreeBranchesStream: specsTree.TreeBranchesStream ?? 'Default',
-        TreeLeavesStream: specsTree.TreeLeavesStream ?? 'Default',
-        TreeParentIdField: specsTree.TreeParentIdField ?? 'Id',
-        TreeChildIdField: specsTree.TreeChildIdField ?? 'Id',
-        TreeParentChildRefField: specsTree.TreeParentChildRefField ?? 'Children',
-        TreeChildParentRefField: specsTree.TreeChildParentRefField ?? 'Parent',
-        TreeShowRoot: specsTree.TreeShowRoot ?? true, 
-        TreeDepthMax: specsTree.TreeDepthMax ?? 10,
-        TreeAllowSelectRoot: specsTree.TreeAllowSelectRoot ?? true,
-        TreeAllowSelectBranch: specsTree.TreeAllowSelectBranch ?? true,
-        TreeAllowSelectLeaf: specsTree.TreeAllowSelectLeaf ?? true,
-      };
-      fs.PickerTreeConfiguration = pickerTreeConfiguration;
-    }
+    if (pickerDisplayConfigName !== PickerConfigs.UiPickerModeTree)
+      return null;
 
-
-    return { fs, dataSourceTypeName, typeConfig };
+    const specs = tools.reader.flatten(pickerDisplayConfigurations[0]) as UiPickerModeTree;
+    const final: UiPickerModeTree = {
+      Title: specs.Title ?? '',
+      ConfigModel: PickerConfigs.UiPickerModeTree,
+      TreeRelationship: specs.TreeRelationship ?? RelationshipParentChild,
+      TreeBranchesStream: specs.TreeBranchesStream ?? 'Default',
+      TreeLeavesStream: specs.TreeLeavesStream ?? 'Default',
+      TreeParentIdField: specs.TreeParentIdField ?? 'Id',
+      TreeChildIdField: specs.TreeChildIdField ?? 'Id',
+      TreeParentChildRefField: specs.TreeParentChildRefField ?? 'Children',
+      TreeChildParentRefField: specs.TreeChildParentRefField ?? 'Parent',
+      TreeShowRoot: specs.TreeShowRoot ?? true, 
+      TreeDepthMax: specs.TreeDepthMax ?? 10,
+      TreeAllowSelectRoot: specs.TreeAllowSelectRoot ?? true,
+      TreeAllowSelectBranch: specs.TreeAllowSelectBranch ?? true,
+      TreeAllowSelectLeaf: specs.TreeAllowSelectLeaf ?? true,
+    } satisfies UiPickerModeTree;
+    return final;
   }
+
 }
