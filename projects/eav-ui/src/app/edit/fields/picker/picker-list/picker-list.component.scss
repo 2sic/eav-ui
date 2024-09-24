@@ -35,8 +35,8 @@
   }
 }
 
-.normal-list {
-  .normal-item {
+.my-list-static {
+  .my-item-static {
     height: 30px;
     display: flex;
     align-items: center;
@@ -67,14 +67,14 @@
   }
 }
 
-.dnd-list {
+.my-list-draggable {
   border: 1px solid #ccc;
   border-radius: 4px;
   overflow: hidden;
   margin-bottom: 32px;
 }
 
-.dnd-item {
+.my-item-draggable {
   height: 40px;
   border-bottom: 1px solid #ccc;
   padding: 0 8px;
@@ -143,6 +143,6 @@
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
-.dnd-list.cdk-drop-list-dragging .dnd-item:not(.cdk-drag-placeholder) {
+.my-list-draggable.cdk-drop-list-dragging .my-item-draggable:not(.cdk-drag-placeholder) {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }

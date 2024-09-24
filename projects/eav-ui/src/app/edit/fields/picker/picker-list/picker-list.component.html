@@ -6,23 +6,17 @@
   </mat-label>
 }
 @if (selectedItems().length > 0) {
-  <div cdkDropList
+  <div
+    cdkDropList
     [cdkDropListDisabled]="!allowMultiValue() || ui().disabled"
     (cdkDropListDropped)="drop($event)"
-    [ngClass]="{
-    'normal-list': !allowMultiValue(),
-    'dnd-list': allowMultiValue()
-    }">
+    [ngClass]="'my-list-' + (allowMultiValue() ? 'draggable' : 'static')"
+  >
     <!-- Normal list usually shows only one item, but can show "empty slot" / "null-item" in debug mode -->
     @for (item of selectedItems(); track (item.value + $index); let index = $index) {
-      <div
-        cdkDrag
-        [ngClass]="{
-          'normal-item': !allowMultiValue(),
-          'dnd-item': allowMultiValue(),
-          'disabled': ui().disabled
-        }">
+      <div cdkDrag [ngClass]="('my-item-' + (allowMultiValue() ? 'draggable' : 'static')) + ' ' + (ui().disabled ? 'disabled' : '')">
         <div class="item-title" [ngClass]="{ 'disabled': ui().disabled }">
+          <!-- visual Drag-Handle if sortable -->
           @if (allowMultiValue()) {
             <mat-icon class="item-title__icon"
               [tippy]="'Fields.Picker.DragMove' | translate"
