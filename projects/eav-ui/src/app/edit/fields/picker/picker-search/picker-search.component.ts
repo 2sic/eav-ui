@@ -113,18 +113,13 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
 
   /** Current applicable settings like "enableEdit" etc. */
   settings = computedObj('settings', () => {
-    const selected = this.selectedItem();
-    const show = this.showItemEditButtons() && !!selected;
-    const sts = this.fieldState.settings();
+    const s = this.fieldState.settings();
     return {
-      allowMultiValue: sts.AllowMultiValue,
-      enableAddExisting: sts.EnableAddExisting,
-      enableTextEntry: sts.EnableTextEntry,
-      enableEdit: sts.EnableEdit && show && !selected?.noEdit,
-      enableDelete: sts.EnableDelete && show && !selected?.noDelete,
-      enableRemove: sts.EnableRemove && show,
-      enableReselect: sts.EnableReselect,
-      showAsTree: sts.PickerDisplayMode === 'tree',
+      allowMultiValue: s.AllowMultiValue,
+      enableAddExisting: s.EnableAddExisting,
+      enableTextEntry: s.EnableTextEntry,
+      enableReselect: s.EnableReselect,
+      showAsTree: s.PickerDisplayMode === 'tree',
     };
   });
 
