@@ -1,24 +1,24 @@
 @if (show()) {
-  <div class="c-fht__container my-main" [ngClass]="{
+  <div class="my-main" [ngClass]="{
       'my-last-field': fieldState.config.isLastInGroup,
-      'my-hyperlink-wrapper-fix': hyperlinkDefaultWrapperFix && !fieldState.config.isLastInGroup
+      'my-hyperlink-wrapper-fix': hyperlinkDefaultWrapperFix && !fieldState.config.isLastInGroup,
+      'small-gap': smallGap(),
     }"
   >
     @if (notes()) {
-      <mat-hint class="mat-caption my-notes" (click)="toggleHint($event)"
-        [ngClass]="disabled() ? 'disabled' : ''" align="start"
-        fxLayout="row" fxLayoutAlign="start start"
+      <mat-hint class="my-notes" (click)="toggleHint($event)"
+        [ngClass]="{ 'disabled': disabled() }"
       >
-        <span class="id-notes-container" [ngClass]="showExpand ? 'expandable': ''" appChangeAnchorTarget
+        <div class="id-notes-container" [ngClass]="showExpand ? 'expandable': ''" appChangeAnchorTarget
           [innerHtml]="notes() | safeHtml">
-        </span>
+        </div>
       </mat-hint>
     }
     @if (showErrors() && errorMessage(); as error) {
-      <mat-error class="mat-caption">{{ error | translate: settings() }}</mat-error>
+      <mat-error class="">{{ error | translate: settings() }}</mat-error>
     }
     @if (!disableError && warningMessage(); as warning) {
-      <mat-error class="mat-caption warning">{{ warning | translate }}</mat-error>
+      <mat-error class="warning">{{ warning | translate }}</mat-error>
     }
   </div>
 }

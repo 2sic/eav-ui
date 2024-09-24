@@ -1,7 +1,6 @@
 import { NgClass } from '@angular/common';
 import { Component, Input, inject, input } from '@angular/core';
 import { ExtendedModule } from '@angular/flex-layout/extended';
-import { FlexModule } from '@angular/flex-layout/flex';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';
@@ -19,7 +18,6 @@ import { FieldState } from '../field-state';
     NgClass,
     ExtendedModule,
     MatFormFieldModule,
-    FlexModule,
     ChangeAnchorTargetDirective,
     TranslateModule,
     SafeHtmlPipe,
@@ -31,6 +29,8 @@ export class FieldHelperTextComponent {
 
   /** Make the control "flat" to not take space if there is nothing to show. */
   flatIfEmpty = input(false);
+
+  smallGap = input(false);
 
   protected fieldState = inject(FieldState);
 
@@ -49,6 +49,10 @@ export class FieldHelperTextComponent {
 
   showErrors = computedObj('showErrors', () => this.#invalid() && !this.disableError);
 
+  /**
+   * Notes with all p-tags updated to have the current components identifying class.
+   * This ensures that styles which are on this component will also affect the notes.
+   */
   notes = computedObj('notes', () => {
     const n = this.settings().Notes ?? '';
     return n.replace(/<p>/g, `<p _ngcontent-ng-${this.componentId}>`);

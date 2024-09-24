@@ -4,13 +4,17 @@
 // helper text
 // Note: 2024-09-24 2dm
 // The values seem very strange, especially with the extreme precision
-$helper-text-padding: 0.54em 0 13px 0;
-$helper-text-padding--last: 0.54em 0 5px 0;
+$helper-text-padding: 0.5em 0 13px 0;
+$helper-text-padding--last: 0.5em 0 5px 0;
 
 .my-main {
   padding: $helper-text-padding;
   font-size: 12px;
 
+  // Use a very small gap - ATM for radio/checkboxes where the label comes before the values
+  &.small-gap {
+    padding-bottom: 0px;
+  }
   // Note: 2024-09-24 2dm
   // this should apparently do something in the hyperlink-dialog, but I can't ever see it...
   &.my-hyperlink-wrapper-fix {
@@ -37,11 +41,13 @@ $helper-text-padding--last: 0.54em 0 5px 0;
 
 
 .my-notes {
-  color: rgba($editUI-foreground-color, 0.44);
+  color: rgba($editUI-foreground-color, 0.50);
+  // not sure why this is necessary, but as we removed the flex-helper
+  // the space above became too large
+  display: flex;
 
-  &.disabled p:first-child {
-    font-style: italic;
-    color: rgba($editUI-foreground-color, 0.24);
+  &.disabled .expandable p {
+    color: rgba($editUI-foreground-color, 0.25);
   }
 
   p:first-child {
@@ -55,9 +61,6 @@ $helper-text-padding--last: 0.54em 0 5px 0;
     max-height: 16px;
 
     p {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
       width: 100%;
       display: block;
       margin: 0px;
