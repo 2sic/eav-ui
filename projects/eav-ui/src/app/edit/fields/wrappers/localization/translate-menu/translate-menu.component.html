@@ -2,8 +2,8 @@
 
 @if (language().current !== language().primary)
 {
-  <div class="my-main-flex">
-    <div class="my-flex-right eav-shared-languages-container" [ngClass]="translationStateClass()">
+  <div class="my-flex-main">
+    <div class="my-flex-inside eav-shared-languages-container" [ngClass]="translationStateClass()">
       <div class="eav-shared-languages mat-caption" [ngClass]="{ 'eav-shared-languages--disabled': disabled() }">
         {{translationState().infoLabel ? (translationState().infoLabel | translate:{ languages:
         translationState().infoMessage }): '' }}

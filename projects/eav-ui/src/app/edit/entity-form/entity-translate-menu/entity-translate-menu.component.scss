@@ -4,3 +4,13 @@
   width: 20px;
   line-height: 20px;
 }
+
+.my-flex-main {
+  display: flex;
+  place-content: center end;
+}
+
+.my-flex-inside {
+  display: flex;
+  align-items: center;
+}

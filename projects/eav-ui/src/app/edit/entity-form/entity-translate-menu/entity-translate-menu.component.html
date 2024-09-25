@@ -1,9 +1,8 @@
 @if (language().current !== language().primary)
 {
-  <div fxLayoutAlign="end center">
-    <button mat-button fxLayoutAlign="end center" [disabled]="readOnly().isReadOnly || slotIsEmpty()"
-      [matMenuTriggerFor]="menu">
-      <span fxLayoutAlign="end center">
+  <div>
+    <button mat-button [disabled]="readOnly().isReadOnly || slotIsEmpty()" [matMenuTriggerFor]="menu">
+      <span class="my-flex-inside">
         {{ 'LangMenu.Translate' | translate | uppercase }}
         &nbsp;&nbsp;
         <mat-icon class="eav-translate-icon">translate</mat-icon>
