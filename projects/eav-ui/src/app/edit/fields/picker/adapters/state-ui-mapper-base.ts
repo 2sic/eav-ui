@@ -1,16 +1,16 @@
 import { Signal } from '@angular/core';
-import { FieldValue } from '../../../../../../../edit-types/src/FieldValue';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
+import { FieldValue } from '../../../../../../../edit-types/src/FieldValue';
 
 /**
  * Small helper class to do mapping between the state and the UI.
- * 
+ *
  * Basically the reason is that the UI sometimes needs a slightly different representation of the state.
- * 
+ *
  * This class should help map both ways.
  */
 export abstract class StateUiMapperBase<TState extends FieldValue = FieldValue, TUi extends FieldValue = FieldValue> {
-  
+
   constructor(protected fieldName?: string) { }
 
   abstract toUi(state: TState): TUi;
@@ -28,4 +28,5 @@ export abstract class StateUiMapperWithSettingsBase<TState extends FieldValue = 
   abstract toUi(state: TState): TUi;
 
   abstract toState(uiValue: TUi): TState;
+
 }
