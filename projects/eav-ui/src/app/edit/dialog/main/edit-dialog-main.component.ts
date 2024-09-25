@@ -313,7 +313,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
       if (isCtrlS(event)) {
         event.preventDefault();
         if (!this.formsStateService.readOnly().isReadOnly)
-          this.saveAll(false);
+          this.saveAll(event.altKey);
         return;
       }
     });
