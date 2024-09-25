@@ -12,8 +12,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { LogManager } from '../../../../shared/logging/log-manager';
 import { LoggingService, LogSeverities } from '../../../shared/services/logging.service';
-import { ConfigEditorDialogComponent } from './config-editor-dialog/config-editor-dialog.component';
-import { SpecsEditorDialogComponent } from './specs-editor-dialog/specs-editor-dialog.component';
+import { ConfigEditorDialogComponent } from '../logs-config/config-editor-dialog/config-editor-dialog.component';
+import { SpecsEditorDialogComponent } from '../logs-config/specs-editor-dialog/specs-editor-dialog.component';
 
 @Component({
   selector: 'app-logs-config',
