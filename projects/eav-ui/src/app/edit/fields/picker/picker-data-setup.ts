@@ -1,6 +1,6 @@
 import { Injector, ProviderToken } from '@angular/core';
 import { Of, transient } from '../../../core';
-import { InputTypeCatalog, InputTypeStrict } from '../../../shared/fields/input-type-catalog';
+import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
 import { classLog } from '../../../shared/logging';
 import { FieldState } from '../field-state';
 import { DataAdapterBase } from './adapters/data-adapter-base';
@@ -61,7 +61,7 @@ export class PickerDataSetup {
     return l.rSilent(pickerData);
   }
 
-  #getStateAdapter(inputType: InputTypeStrict): StateAdapterString {
+  #getStateAdapter(inputType: Of<typeof InputTypeCatalog>): StateAdapterString {
     const type = partsMap[inputType]?.states?.[0];
     if (!type)
       throw new Error(`No State Adapter found for inputTypeSpecs: ${inputType}`);
@@ -69,7 +69,7 @@ export class PickerDataSetup {
     return transient(type, this.#injector) as StateAdapterString;
   }
 
-  #getSourceAdapter(inputType: InputTypeStrict, dataSourceType: string, state: StateAdapter): DataAdapterBase {
+  #getSourceAdapter(inputType: Of<typeof InputTypeCatalog>, dataSourceType: string, state: StateAdapter): DataAdapterBase {
     const l = this.log.fn('getSourceAdapter', { inputType, dataSourceType });
     // Get config for allowed sources / adapters for the current inputType
     const parts = partsMap[inputType];
@@ -83,7 +83,7 @@ export class PickerDataSetup {
     return l.r(result);
   }
 
-  #throwIfSourceAdapterNotAllowed(inputType: InputTypeStrict, dataSourceType: ProviderToken<unknown>): boolean {
+  #throwIfSourceAdapterNotAllowed(inputType: Of<typeof InputTypeCatalog>, dataSourceType: ProviderToken<unknown>): boolean {
     // Empty is always allowed, as it's usually for errors / missing configs
     if (dataSourceType === DataAdapterEmpty) return false;
     if (partsMap[inputType]?.sources?.includes(dataSourceType)) return false;

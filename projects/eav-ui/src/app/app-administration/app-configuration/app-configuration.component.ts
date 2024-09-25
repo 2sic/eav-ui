@@ -1,37 +1,37 @@
+import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef, inject } from '@angular/core';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
+import { Observable, Subject, map } from 'rxjs';
 import { ContentItemsService } from '../../content-items/services/content-items.service';
+import { Of, transient } from '../../core';
+import { FeatureNames } from '../../features/feature-names';
+import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
+import { FeaturesScopedService } from '../../features/features-scoped.service';
+import { openFeatureDialog } from '../../features/shared/base-feature.component';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
-import { eavConstants, SystemSettingsScope, SystemSettingsScopes } from '../../shared/constants/eav.constants';
+import { SystemSettingsScopes, eavConstants } from '../../shared/constants/eav.constants';
+import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { AppScopes } from '../../shared/models/dialog-context.models';
 import { DialogSettings } from '../../shared/models/dialog-settings.model';
 import { EditForm, EditPrep } from '../../shared/models/edit-form.model';
+import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { Context } from '../../shared/services/context';
 import { DialogService } from '../../shared/services/dialog.service';
-import { FeaturesScopedService } from '../../features/features-scoped.service';
 import { AppAdminHelpers } from '../app-admin-helpers';
 import { ContentTypeEdit } from '../models';
+import { AppInternals } from '../models/app-internals.model';
 import { ContentTypesService } from '../services';
 import { AppInternalsService } from '../services/app-internals.service';
-import { AnalyzePart, AnalyzeParts } from '../sub-dialogs/analyze-settings/analyze-settings.models';
-import { Subject, Observable, map } from 'rxjs';
-import { AppInternals } from '../models/app-internals.model';
-import { FeatureNames } from '../../features/feature-names';
-import { openFeatureDialog } from '../../features/shared/base-feature.component';
-import { MatDialog } from '@angular/material/dialog';
-import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
-import { AppConfigurationCardComponent } from './app-configuration-card/app-configuration-card.component';
-import { NgTemplateOutlet, AsyncPipe } from '@angular/common';
-import { MatBadgeModule } from '@angular/material/badge';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatCardModule } from '@angular/material/card';
-import { TippyDirective } from '../../shared/directives/tippy.directive';
-import { transient } from '../../core';
 import { DialogConfigAppService } from '../services/dialog-config-app.service';
-import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
+import { AnalyzeParts } from '../sub-dialogs/analyze-settings/analyze-settings.models';
+import { AppConfigurationCardComponent } from './app-configuration-card/app-configuration-card.component';
 
 @Component({
   selector: 'app-app-configuration',
@@ -131,7 +131,7 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     this.snackBar.dismiss();
   }
 
-  edit(staticName: string, systemSettingsScope?: SystemSettingsScope) {
+  edit(staticName: string, systemSettingsScope?: Of<typeof SystemSettingsScopes>) {
     this.#contentItemsService.getAll(staticName).subscribe(contentItems => {
       let form: EditForm;
 
@@ -213,7 +213,7 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
       openFeatureDialog(this.dialog, FeatureNames.PermissionsByLanguage, this.viewContainerRef, this.changeDetectorRef);
   }
 
-  analyze(part: AnalyzePart) {
+  analyze(part: Of<typeof AnalyzeParts>) {
     this.#dialogRouter.navParentFirstChild([`analyze/${part}`]);
   }
 

@@ -2,14 +2,15 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import cloneDeep from 'lodash-es/cloneDeep';
 import { map, Observable } from 'rxjs';
+import { Of } from '../../core';
+import { webApiFieldsAll } from '../../shared/fields/content-types-fields.service';
 import { DataTypeCatalog } from '../../shared/fields/data-type-catalog';
 import { Field } from '../../shared/fields/field.model';
-import { webApiFieldsAll } from '../../shared/fields/content-types-fields.service';
+import { InputTypeCatalog } from '../../shared/fields/input-type-catalog';
+import { HttpServiceBase } from '../../shared/services/http-service-base';
 import { MoreSnippet, SetSnippet, SetSnippetLink, Snippet, SnippetsSets, SnippetsSubSubSets } from '../models/snippet.model';
 import { SourceView } from '../models/source-view.model';
 import { Tooltip } from '../models/tooltip.model';
-import { InputTypeStrict } from '../../shared/fields/input-type-catalog';
-import { HttpServiceBase } from '../../shared/services/http-service-base';
 
 export const inlineHelp = 'admin/Code/InlineHelp';
 
@@ -290,7 +291,7 @@ export class SnippetsService extends HttpServiceBase {
     target: SnippetsSubSubSets,
     prefix: string,
     fieldname: string,
-    inputType: InputTypeStrict,
+    inputType: Of<typeof InputTypeCatalog>,
     snipDefaults: SetSnippet,
     inputTypeSnippets: Record<string, Snippet[]>,
   ): void {

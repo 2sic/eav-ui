@@ -23,9 +23,6 @@ export const WrappersCatalog = {
   LocalizationWrapper: 'app-localization-wrapper', // default
 } as const /* the as const ensures that the keys/values can be strictly checked */;
 
-export type Wrapper = typeof WrappersCatalog[keyof typeof WrappersCatalog];
-
-
 export const WrappersLocalizationOnly: FieldMetadataModel = {
   wrappers: [WrappersCatalog.LocalizationWrapper],
 };

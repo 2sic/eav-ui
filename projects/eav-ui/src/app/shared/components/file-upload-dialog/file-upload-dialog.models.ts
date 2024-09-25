@@ -1,4 +1,5 @@
 import { Observable } from 'rxjs';
+import { Of } from '../../../core';
 
 export interface FileUploadDialogData {
   title?: string;
@@ -15,7 +16,7 @@ export interface FileUploadResult {
 }
 
 export interface FileUploadResultMessage {
-  MessageType: FileUploadMessageType;
+  MessageType: Of<typeof FileUploadMessageTypes>;
   Text: string;
 }
 
@@ -25,8 +26,6 @@ export const FileUploadMessageTypes = {
   Error: 2,
 } as const /* the as const ensures that the keys/values can be strictly checked */;
 
-export type FileUploadMessageType = typeof FileUploadMessageTypes[keyof typeof FileUploadMessageTypes];
-
 export const UploadTypes = {
   App: 0,
   AppPart: 1,
@@ -35,5 +34,3 @@ export const UploadTypes = {
   Query: 4,
   View: 5,
 } as const /* the as const ensures that the keys/values can be strictly checked */;
-
-export type UploadTypes = typeof UploadTypes[keyof typeof UploadTypes];

@@ -5,10 +5,10 @@ import { MatDialogActions, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
-import { convert, transient } from '../core';
+import { convert, Of, transient } from '../core';
 import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
-import { eavConstants, MetadataKeyType } from '../shared/constants/eav.constants';
+import { eavConstants, MetadataKeyTypes } from '../shared/constants/eav.constants';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { EditForm, EditPrep } from '../shared/models/edit-form.model';
 import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
@@ -38,7 +38,7 @@ export class PermissionsComponent implements OnInit {
 
   #params = convert(this.#dialogRoutes.getParams(['targetType', 'keyType', 'key']), p => ({
     targetType: parseInt(p.targetType, 10),
-    keyType: p.keyType as MetadataKeyType,
+    keyType: p.keyType as Of<typeof MetadataKeyTypes>,
     key: p.key,
   }));
 

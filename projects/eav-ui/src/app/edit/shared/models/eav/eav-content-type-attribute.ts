@@ -1,9 +1,10 @@
 import { EavEntity, EavEntityAttributes } from '.';
+import { Of } from '../../../../core';
+import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { EavContentTypeAttributesDto } from '../json-format-v1';
-import { InputTypeStrict } from '../../../../shared/fields/input-type-catalog';
 
 export class EavContentTypeAttribute {
-  InputType: InputTypeStrict;
+  InputType: Of<typeof InputTypeCatalog>;
   IsTitle: boolean;
   Metadata: EavEntity[];
   Name: string;

@@ -1,15 +1,17 @@
+import { AsyncPipe, NgClass } from '@angular/common';
 import { Component } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
-import { TranslateModule } from '@ngx-translate/core';
-import { MatIconModule } from '@angular/material/icon';
 import { ExtendedModule } from '@angular/flex-layout/extended';
-import { NgClass, AsyncPipe } from '@angular/common';
-import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
+import { MatDialogRef } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { TranslateModule } from '@ngx-translate/core';
+import { Of } from '../../../../core';
 import { FormConfigService } from '../../../form/form-config.service';
-import { PublishMode, PublishModes } from '../../main/edit-dialog-main.models';
 import { FormPublishingService } from '../../../form/form-publishing.service';
+import { PublishModes } from '../../main/edit-dialog-main.models';
 import { isCtrlS } from '../../main/keyboard-shortcuts';
+
 
 @Component({
     selector: 'app-publish-status-dialog',
@@ -43,7 +45,7 @@ export class PublishStatusDialogComponent {
     });
   }
 
-  setPublishMode(publishMode: PublishMode) {
+  setPublishMode(publishMode: Of<typeof PublishModes>) {
     this.publishStatusService.setPublishMode(publishMode, this.formConfig.config.formId, this.formConfig);
     this.closeDialog();
   }

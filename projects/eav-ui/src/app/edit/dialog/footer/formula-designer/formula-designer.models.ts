@@ -1,5 +1,6 @@
-import { FormulaTarget } from '../../../formulas/targets/formula-targets';
+import { Of } from '../../../../core';
 import { FormulaCacheItem } from '../../../formulas/cache/formula-cache.model';
+import { FormulaTargets } from '../../../formulas/targets/formula-targets';
 
 export interface EntityOption {
   entityGuid: string;
@@ -19,7 +20,7 @@ export interface FieldOption {
 export interface TargetOption {
   hasFormula: boolean;
   label: string;
-  target: FormulaTarget;
+  target: Of<typeof FormulaTargets>;
 }
 
 export interface DesignerSnippet {
@@ -32,5 +33,3 @@ export const SelectTargets = {
   Field: 'fieldValue',
   Target: 'formulaTarget',
 } as const /* the as const ensures that the keys/values can be strictly checked */;
-
-export type SelectTarget = typeof SelectTargets[keyof typeof SelectTargets];

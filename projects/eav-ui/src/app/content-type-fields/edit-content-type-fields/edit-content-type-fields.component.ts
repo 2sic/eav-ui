@@ -15,14 +15,14 @@ import { BehaviorSubject, catchError, concatMap, filter, forkJoin, map, of, shar
 import { fieldNameError, fieldNamePattern } from '../../app-administration/constants/field-name.patterns';
 import { ContentType } from '../../app-administration/models/content-type.model';
 import { ContentTypesService } from '../../app-administration/services/content-types.service';
-import { transient } from '../../core';
+import { Of, transient } from '../../core';
 import { BaseComponent } from '../../shared/components/base.component';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
 import { ToggleDebugDirective } from '../../shared/directives/toggle-debug.directive';
 import { ContentTypesFieldsService } from '../../shared/fields/content-types-fields.service';
 import { DataTypeCatalog } from '../../shared/fields/data-type-catalog';
 import { Field, FieldInputTypeOption } from '../../shared/fields/field.model';
-import { InputTypeCatalog, InputTypeStrict } from '../../shared/fields/input-type-catalog';
+import { InputTypeCatalog } from '../../shared/fields/input-type-catalog';
 import { GlobalConfigService } from '../../shared/services/global-config.service';
 import { AddSharingFieldsComponent } from '../add-sharing-fields/add-sharing-fields.component';
 import { calculateTypeIcon, calculateTypeLabel } from '../content-type-fields.helpers';
@@ -175,7 +175,7 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
   }
 
   resetInputType(index: number) {
-    let defaultInputType = this.fields[index].Type.toLocaleLowerCase() + InputTypeCatalog.DefaultSuffix as InputTypeStrict;
+    let defaultInputType = this.fields[index].Type.toLocaleLowerCase() + InputTypeCatalog.DefaultSuffix as Of<typeof InputTypeCatalog>;
     const defaultExists = this.filteredInputTypeOptions[index].some(option => option.inputType === defaultInputType);
     if (!defaultExists)
       defaultInputType = this.filteredInputTypeOptions[index][0].inputType;

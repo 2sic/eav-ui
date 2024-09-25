@@ -1,7 +1,7 @@
 import { AdamItem } from '../../../../../../edit-types';
 import { DialogContext } from '../../../app-administration/models';
 import { InputTypeMetadata } from '../../../shared/fields/input-type-metadata.model';
-import { EavContentType, EavEntity, EavItem } from '../../shared/models/eav';
+import { EavContentType, EavEntity } from '../../shared/models/eav';
 import { EavContentTypeDto, EavEntityBundleDto, EavEntityDto } from '../../shared/models/json-format-v1';
 
 
@@ -20,8 +20,6 @@ export const PublishModes = {
   Hide: 'hide',
   Branch: 'branch',
 } as const /* the as const ensures that the keys/values can be strictly checked */;
-
-export type PublishMode = typeof PublishModes[keyof typeof PublishModes];
 
 
 export interface EavEditLoadDto extends EavPublishStatus {

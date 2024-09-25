@@ -1,5 +1,6 @@
+import { Of } from '../../eav-ui/src/app/core';
 import { FieldConfigSet } from '../../eav-ui/src/app/edit/fields/field-config-set.model';
-import { InputTypeStrict } from '../../eav-ui/src/app/shared/fields/input-type-catalog';
+import { InputTypeCatalog } from '../../eav-ui/src/app/shared/fields/input-type-catalog';
 import { FieldSettings } from './FieldSettings';
 
 export interface FieldConfig {
@@ -22,7 +23,7 @@ export interface FieldConfig {
   /**
    * Input type of the field. e.g. string-default, string-dropdown, etc.
    */
-  inputType: InputTypeStrict;
+  inputType: Of<typeof InputTypeCatalog>;
   /**
    * Data type of the field. e.g. String, Hyperlink, Entity, etc.
    */

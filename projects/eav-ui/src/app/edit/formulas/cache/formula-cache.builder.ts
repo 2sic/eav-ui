@@ -1,30 +1,30 @@
+import { Sxc } from '@2sic.com/2sxc-typings';
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, combineLatest, filter, from, map, switchMap } from 'rxjs';
 import { FieldSettings } from '../../../../../../edit-types';
-import { EntityReader, ContentTypeSettingsHelpers } from '../../shared/helpers';
-import { EavItem } from '../../shared/models/eav/eav-item';
-import { FormulaSourceCodeHelper } from './source-code-helper';
-import { FormulaFunction } from '../formula-definitions';
-import { FormulaDefaultTargets, FormulaSpecialPickerTargets, FormulaTarget, SettingsFormulaPrefix } from '../targets/formula-targets';
-import { FormulaV1CtxApp, FormulaV1CtxTargetEntity, FormulaV1CtxUser } from '../run/formula-run-context.model';
-import { FormulaCacheItem } from './formula-cache.model';
-import { FormulaCacheItemConstants } from './formula-cache.model';
-import { FieldValueOrResultRaw, FormulaIdentifier } from '../results/formula-results.models';
-import { ServiceBase } from '../../../shared/services/service-base';
-import { FormConfigService } from '../../form/form-config.service';
-import { LoggingService, LogSeverities } from '../../shared/services/logging.service';
-import { ItemService } from '../../state/item.service';
-import { ContentTypeService } from '../../shared/content-types/content-type.service';
-import { ContentTypeItemService } from '../../shared/content-types/content-type-item.service';
-import { FormulaCacheService } from './formula-cache.service';
-import { Sxc } from '@2sic.com/2sxc-typings';
-import { InputTypeService } from '../../shared/input-types/input-type.service';
-import { InputTypeSpecs } from '../../shared/input-types/input-type-specs.model';
-import { FieldsSettingsHelpers } from '../../state/field-settings.helper';
+import { Of } from '../../../core';
 import { classLog } from '../../../shared/logging';
 import { DialogContextUser } from '../../../shared/models/dialog-context.models';
+import { ServiceBase } from '../../../shared/services/service-base';
+import { FormConfigService } from '../../form/form-config.service';
+import { ContentTypeItemService } from '../../shared/content-types/content-type-item.service';
+import { ContentTypeService } from '../../shared/content-types/content-type.service';
+import { ContentTypeSettingsHelpers, EntityReader } from '../../shared/helpers';
+import { InputTypeSpecs } from '../../shared/input-types/input-type-specs.model';
+import { InputTypeService } from '../../shared/input-types/input-type.service';
+import { EavItem } from '../../shared/models/eav/eav-item';
+import { LoggingService, LogSeverities } from '../../shared/services/logging.service';
+import { FieldsSettingsHelpers } from '../../state/field-settings.helper';
+import { ItemService } from '../../state/item.service';
+import { FormulaFunction } from '../formula-definitions';
 import { FormulaPromise } from '../promise/formula-promise-result.model';
+import { FieldValueOrResultRaw, FormulaIdentifier } from '../results/formula-results.models';
+import { FormulaV1CtxApp, FormulaV1CtxTargetEntity, FormulaV1CtxUser } from '../run/formula-run-context.model';
+import { FormulaDefaultTargets, FormulaSpecialPickerTargets, FormulaTargets, SettingsFormulaPrefix } from '../targets/formula-targets';
+import { FormulaCacheItem, FormulaCacheItemConstants } from './formula-cache.model';
+import { FormulaCacheService } from './formula-cache.service';
+import { FormulaSourceCodeHelper } from './source-code-helper';
 
 const logSpecs = {
   all: false,
@@ -87,7 +87,7 @@ export class FormulaCacheBuilder extends ServiceBase {
           if (!sourceCode) 
             continue;
 
-          const target: FormulaTarget = reader.getBestValue<string>(fEntity.Attributes.Target);
+          const target: Of<typeof FormulaTargets> = reader.getBestValue<string>(fEntity.Attributes.Target);
 
           // create cleaned formula function, or if this fails, add info to log & results
           let formulaFunction: FormulaFunction;
@@ -130,7 +130,7 @@ export class FormulaCacheBuilder extends ServiceBase {
   }
 
 
-  #inputTypeSpecsForCacheItem(target: FormulaTarget, inputType: InputTypeSpecs): Pick<FormulaCacheItem, 'inputType' | 'isNewPicker' | 'disabled' | 'disabledReason'> {
+  #inputTypeSpecsForCacheItem(target: Of<typeof FormulaTargets>, inputType: InputTypeSpecs): Pick<FormulaCacheItem, 'inputType' | 'isNewPicker' | 'disabled' | 'disabledReason'> {
 
     // Disable picker checks WIP
     /* if (!inputType.isNewPicker) */
@@ -140,7 +140,7 @@ export class FormulaCacheBuilder extends ServiceBase {
     //   : { isNewPicker: true, disabled: false, disabledReason: '' };
   }
 
-  #targetInfoForCacheItem(target: FormulaTarget): Pick<FormulaCacheItem, 'isSetting' | 'settingName' | 'isValue' | 'isValidation'> {
+  #targetInfoForCacheItem(target: Of<typeof FormulaTargets>): Pick<FormulaCacheItem, 'isSetting' | 'settingName' | 'isValue' | 'isValidation'> {
     return target.startsWith(SettingsFormulaPrefix)
       ? { isSetting: true, settingName: target.substring(SettingsFormulaPrefix.length), isValue: false, isValidation: false }
       : { isSetting: false, settingName: '', isValue: target === FormulaDefaultTargets.Value, isValidation: target === FormulaDefaultTargets.Validation };
