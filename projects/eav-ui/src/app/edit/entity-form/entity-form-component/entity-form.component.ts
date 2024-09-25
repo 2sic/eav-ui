@@ -1,6 +1,5 @@
 import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
 import { AfterViewChecked, Component, ElementRef, inject, input, Input, OnDestroy, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
-import { FlexModule } from '@angular/flex-layout/flex';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogRef, MatDialogState } from '@angular/material/dialog';
@@ -49,7 +48,6 @@ const logSpecs = {
   standalone: true,
   imports: [
     MatCardModule,
-    FlexModule,
     MatIconModule,
     MatButtonModule,
     CdkDrag,
@@ -200,7 +198,7 @@ export class EntityFormComponent implements OnInit, AfterViewChecked, OnDestroy 
       closeOnNavigation: false,
       position: {
         top: `${triggerPosition.bottom}px`,
-        left: `${triggerPosition.left}px`,
+        left: `${triggerPosition.left - 200}px`,
       },
       viewContainerRef: this.viewContainerRef,
       panelClass: 'note-dialog',

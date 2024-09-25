@@ -123,3 +123,15 @@ $border-radius: 8px;
   padding-left: 8px;
   padding-right: 8px;
 }
+
+.my-title-bar-outer {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.my-title-bar {
+  display: flex;
+  // make sure it takes up the full width so icons come at the end
+  flex: auto;
+}
