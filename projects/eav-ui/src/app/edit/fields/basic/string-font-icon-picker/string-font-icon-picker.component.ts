@@ -58,7 +58,7 @@ export class StringFontIconPickerComponent {
   #iconOptions = signalObj<IconOption[]>('iconOptions', []);
 
   /** The icons after filtering */
-  protected filteredIcons = computedObj('filteredIcons', () => {
+  protected filteredIcons = computedObj<IconOption[]>('filteredIcons', () => {
     const search = this.uiValue();
     const filtered = search
       ? this.#iconOptions().filter(icon => icon.search?.includes(search.toLocaleLowerCase()) ?? false)
