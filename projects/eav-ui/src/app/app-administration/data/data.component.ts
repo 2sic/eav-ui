@@ -1,45 +1,45 @@
 import { GridOptions } from '@ag-grid-community/core';
 import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatOptionModule } from '@angular/material/core';
+import { MatDialogActions } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { NavigationEnd, RouterOutlet } from '@angular/router';
 import { filter, from, map, startWith, take } from 'rxjs';
 import { ContentExportService } from '../../content-export/services/content-export.service';
 import { ContentImportDialogData } from '../../content-import/content-import-dialog.config';
+import { transient } from '../../core';
 import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
 import { GoToMetadata } from '../../metadata';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
+import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
+import { BaseComponent } from '../../shared/components/base.component';
 import { FileUploadDialogData } from '../../shared/components/file-upload-dialog';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { dropdownInsertValue } from '../../shared/constants/dropdown-insert-value.constant';
 import { eavConstants } from '../../shared/constants/eav.constants';
+import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
 import { toString } from '../../shared/helpers/file-to-base64.helper';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm, EditPrep } from '../../shared/models/edit-form.model';
+import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
+import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
+import { mapUntilChanged } from '../../shared/rxJs/mapUntilChanged';
+import { GlobalConfigService } from '../../shared/services/global-config.service';
 import { ContentType } from '../models/content-type.model';
+import { ScopeDetailsDto } from '../models/scopedetails.dto';
 import { ContentTypesService } from '../services/content-types.service';
+import { DialogConfigAppService } from '../services/dialog-config-app.service';
 import { DataActionsComponent } from './data-actions/data-actions.component';
 import { DataActionsParams } from './data-actions/data-actions.models';
 import { DataFieldsComponent } from './data-fields/data-fields.component';
 import { DataFieldsParams } from './data-fields/data-fields.models';
 import { DataItemsComponent } from './data-items/data-items.component';
 import { DataItemsParams } from './data-items/data-items.models';
-import { ScopeDetailsDto } from '../models/scopedetails.dto';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatOptionModule } from '@angular/material/core';
-import { FormsModule } from '@angular/forms';
-import { MatSelectModule } from '@angular/material/select';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatDialogActions } from '@angular/material/dialog';
-import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
-import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
-import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
-import { transient } from '../../core';
-import { mapUntilChanged } from '../../shared/rxJs/mapUntilChanged';
-import { GlobalConfigService } from '../../shared/services/global-config.service';
-import { DialogConfigAppService } from '../services/dialog-config-app.service';
-import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
-import { BaseComponent } from '../../shared/components/base.component';
 
 @Component({
   selector: 'app-data',
@@ -70,10 +70,10 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
   #dialogRouter = transient(DialogRoutingService);
 
   constructor() { super(); }
+
   contentTypes = signal<ContentType[]>(undefined);
   scope = signal<string>(undefined);
   scopeOptions = signal<ScopeDetailsDto[]>([]);
-
 
   /** Possible scopes - the ones from the backend + manually entered scopes by the current user */
   gridOptions = this.#buildGridOptions();
@@ -88,10 +88,6 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
     this.#dialogConfigSvc.getCurrent$().subscribe(data => {
       this.enablePermissions = data.Context.Enable.AppPermissions;
     });
-  }
-
-  ngOnDestroy() {
-    super.ngOnDestroy();
   }
 
   filesDropped(files: File[]) {
@@ -172,91 +168,18 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
     const sourceName = window.prompt('To create a ghost content-type enter source static name / id - this is a very advanced operation - read more about it on 2sxc.org/help?tag=ghost');
     if (!sourceName) return;
     this.#snackBar.open('Saving...');
-    this.#contentTypeSvc.createGhost(sourceName).subscribe(res => {
+    this.#contentTypeSvc.createGhost(sourceName).subscribe(_ => {
       this.#snackBar.open('Saved', null, { duration: 2000 });
       this.#fetchContentTypes();
     });
   }
 
   changeScope(newScope: string) {
-    console.log("trigger")
     if (newScope === dropdownInsertValue) {
       newScope = prompt('This is an advanced feature to show content-types of another scope. Don\'t use this if you don\'t know what you\'re doing, as content-types of other scopes are usually hidden for a good reason.') || eavConstants.scopes.default.value;
     }
     this.#dialogRouter.navRelative(['..', newScope]);
   }
-
-  //#region Actions in the grid
-
-  #addItem(contentType: ContentType) {
-    const form: EditForm = {
-      items: [EditPrep.newFromType(contentType.StaticName)],
-    };
-    const formUrl = convertFormToUrl(form);
-    this.#dialogRouter.navParentFirstChild([`edit/${formUrl}`]);
-  }
-
-  #editFields(contentType: ContentType) {
-    this.#dialogRouter.navParentFirstChild([`fields/${contentType.StaticName}`]);
-  }
-
-  #createOrEditMetadata(contentType: ContentType) {
-    const form: EditForm = {
-      items: [
-        !contentType.Properties
-          ? {
-              ...EditPrep.newMetadata(contentType.StaticName, eavConstants.contentTypes.contentType, eavConstants.metadata.contentType),
-              Prefill: {
-                Label: contentType.Name,
-                Description: contentType.Description
-              },
-            }
-          : EditPrep.editId(contentType.Properties.Id),
-      ],
-    };
-    const formUrl = convertFormToUrl(form);
-    this.#dialogRouter.navParentFirstChild([`edit/${formUrl}`]);
-  }
-
-  #openMetadata(contentType: ContentType) {
-    const url = GoToMetadata.getUrlContentType(
-      contentType.StaticName,
-      `Metadata for Content Type: ${contentType.Name} (${contentType.Id})`,
-    );
-    this.#dialogRouter.navParentFirstChild([url]);
-  }
-
-  #openRestApi(contentType: ContentType) {
-    this.#dialogRouter.navParentFirstChild([GoToDevRest.getUrlData(contentType)]);
-  }
-
-  #exportType(contentType: ContentType) {
-    this.#contentExportSvc.exportJson(contentType.StaticName);
-  }
-
-  #openDataExport(contentType: ContentType) {
-    this.#dialogRouter.navParentFirstChild([`export/${contentType.StaticName}`]);
-  }
-
-  #openDataImport(contentType: ContentType, files?: File[]) {
-    const contentImportData: ContentImportDialogData = { files };
-    this.#dialogRouter.navParentFirstChild([`${contentType.StaticName}/import`], { state: contentImportData });
-  }
-
-  #openPermissions(contentType: ContentType) {
-    this.#dialogRouter.navParentFirstChild([GoToPermissions.getUrlContentType(contentType.StaticName)]);
-  }
-
-  #deleteContentType(contentType: ContentType) {
-    if (!confirm(`Are you sure you want to delete '${contentType.Name}' (${contentType.Id})?`)) return;
-    this.#snackBar.open('Deleting...');
-    this.#contentTypeSvc.delete(contentType).subscribe(result => {
-      this.#snackBar.open('Deleted', null, { duration: 2000 });
-      this.#fetchContentTypes();
-    });
-  }
-
-  //#endregion
 
   /**
    * Refreshes the scope when the route changes.
@@ -291,6 +214,8 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
     );
   }
 
+  //#region Grid
+
   #buildGridOptions(): GridOptions {
     const gridOptions: GridOptions = {
       ...defaultGridOptions,
@@ -318,24 +243,18 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
           ...ColumnDefinitions.Items,
           field: 'Items',
           cellRenderer: DataItemsComponent,
-          cellRendererParams: (() => {
-            const params: DataItemsParams = {
-              onShowItems: (contentType) => this.#showContentItems(contentType),
-              onAddItem: (contentType) => this.#addItem(contentType),
-            };
-            return params;
-          })(),
+          cellRendererParams: (() => ({
+            onShowItems: (contentType) => this.#showContentItems(contentType),
+            onAddItem: (contentType) => this.#addItem(contentType),
+          } satisfies DataItemsParams))(),
         },
         {
           ...ColumnDefinitions.Fields,
           field: 'Fields',
           cellRenderer: DataFieldsComponent,
-          cellRendererParams: (() => {
-            const params: DataFieldsParams = {
-              onEditFields: (contentType) => this.#editFields(contentType),
-            };
-            return params;
-          })(),
+          cellRendererParams: (() => ({
+            onEditFields: (contentType) => this.#editFields(contentType),
+          } satisfies DataFieldsParams))(),
         },
         {
           ...ColumnDefinitions.TextWideMin100,
@@ -380,4 +299,79 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
     };
     return gridOptions;
   }
+
+  //#endregion
+
+  //#region Actions in the grid
+
+  #addItem(contentType: ContentType) {
+    const form: EditForm = {
+      items: [EditPrep.newFromType(contentType.StaticName)],
+    };
+    const formUrl = convertFormToUrl(form);
+    this.#dialogRouter.navParentFirstChild([`edit/${formUrl}`]);
+  }
+
+  #editFields(contentType: ContentType) {
+    this.#dialogRouter.navParentFirstChild([`fields/${contentType.StaticName}`]);
+  }
+
+
+  #createOrEditMetadata(contentType: ContentType) {
+    const form: EditForm = {
+      items: [
+        !contentType.Properties
+          ? {
+              ...EditPrep.newMetadata(contentType.StaticName, eavConstants.contentTypes.contentType, eavConstants.metadata.contentType),
+              Prefill: {
+                Label: contentType.Name,
+                Description: contentType.Description
+              },
+            }
+          : EditPrep.editId(contentType.Properties.Id),
+      ],
+    };
+    const formUrl = convertFormToUrl(form);
+    this.#dialogRouter.navParentFirstChild([`edit/${formUrl}`]);
+  }
+
+  #openPermissions(contentType: ContentType) {
+    this.#dialogRouter.navParentFirstChild([GoToPermissions.getUrlContentType(contentType.StaticName)]);
+  }
+
+  #openMetadata(contentType: ContentType) {
+    const url = GoToMetadata.getUrlContentType(
+      contentType.StaticName,
+      `Metadata for Content Type: ${contentType.Name} (${contentType.Id})`,
+    );
+    this.#dialogRouter.navParentFirstChild([url]);
+  }
+
+  #openRestApi(contentType: ContentType) {
+    this.#dialogRouter.navParentFirstChild([GoToDevRest.getUrlData(contentType)]);
+  }
+
+  #exportType(contentType: ContentType) {
+    this.#contentExportSvc.exportJson(contentType.StaticName);
+  }
+
+  #openDataExport(contentType: ContentType) {
+    this.#dialogRouter.navParentFirstChild([`export/${contentType.StaticName}`]);
+  }
+
+  #openDataImport(contentType: ContentType, files?: File[]) {
+    const contentImportData: ContentImportDialogData = { files };
+    this.#dialogRouter.navParentFirstChild([`${contentType.StaticName}/import`], { state: contentImportData });
+  }
+
+  #deleteContentType(contentType: ContentType) {
+    if (!confirm(`Are you sure you want to delete '${contentType.Name}' (${contentType.Id})?`)) return;
+    this.#snackBar.open('Deleting...');
+    this.#contentTypeSvc.delete(contentType).subscribe(result => {
+      this.#snackBar.open('Deleted', null, { duration: 2000 });
+      this.#fetchContentTypes();
+    });
+  }
+
+  //#endregion
 }
