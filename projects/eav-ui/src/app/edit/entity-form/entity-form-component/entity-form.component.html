@@ -1,4 +1,4 @@
-<!-- 
+<!--
  Header containing title, notes, slot empty toggle, metadata-for information, history button and translate menu
 -->
 <mat-card appearance="raised" class="eav-card-group-parent shadow-bottom-z-1">
@@ -76,7 +76,8 @@
           </div>
         }
         <div class="eav-layout-grid__cell--span-12">
-          <ng-container appEditControlsBuilder></ng-container>
+          <!-- Inputs index weiter geben -->
+          <div appEditControlsBuilder [attr.data-index]="index"></div>
         </div>
       </div>
     </div>
