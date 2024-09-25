@@ -39,7 +39,7 @@ export class InputTypeHelpers {
   static isGroupStart(inputType: Of<typeof InputTypeCatalog>): boolean {
     return inputType === InputTypeCatalog.EmptyDefault;
   }
-  
+
   static isGroupEnd(inputType: Of<typeof InputTypeCatalog>): boolean {
     return inputType === InputTypeCatalog.EmptyEnd;
   }

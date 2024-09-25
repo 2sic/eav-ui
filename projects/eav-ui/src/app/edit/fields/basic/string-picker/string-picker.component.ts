@@ -13,7 +13,7 @@ import { StringPickerLogic } from './string-picker-logic';
 })
 export class StringPickerComponent extends PickerComponent implements OnInit, OnDestroy {
 
-  log = classLog({StringPickerComponent}, PickerComponent.logSpecs);
+  log = classLog({ StringPickerComponent }, PickerComponent.logSpecs);
 
   constructor() {
     super();

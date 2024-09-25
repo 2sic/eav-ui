@@ -33,6 +33,7 @@ export class WrapperHelper {
       InputTypeCatalog.StringDropdown,
       InputTypeCatalog.EntityPicker,
       InputTypeCatalog.StringPicker,
+      InputTypeCatalog.NumberPicker,
       // || (inputType === InputTypeConstants.WIPNumberPicker);
     ];
     const isEntityOrStringDropdownType = inputsEntityOrStringDropdown.includes(inputType);
