@@ -4,5 +4,5 @@ export function isEscape(event: KeyboardEvent): boolean {
 }
 
 export function isCtrlS(event: KeyboardEvent): boolean {
-  return event.key === 's' && (event.ctrlKey || event.metaKey);
+  return (event.key === 's' || event.key === 'S') && (event.ctrlKey || event.metaKey);
 }
