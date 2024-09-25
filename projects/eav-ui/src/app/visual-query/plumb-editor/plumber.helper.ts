@@ -1,12 +1,18 @@
 import { ChangeDetectorRef, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { eavConstants } from '../../shared/constants/eav.constants';
+import { classLog } from '../../shared/logging';
 import { EavWindow } from '../../shared/models/eav-window.model';
 import { DataSource, PipelineDataSource, PipelineModel, PipelineResult, PipelineResultStream, StreamWire, VisualDesignerData } from '../models';
-import { EndpointInfo, PlumbType } from './plumb-editor.models';
+import { EndpointsHelper } from './endpoints.helper';
+import { PlumbType } from './plumb-editor.models';
 import { RenameStreamComponent } from './rename-stream/rename-stream.component';
 import { RenameStreamDialogData } from './rename-stream/rename-stream.models';
-import { classLog } from '../../shared/logging';
+
+const logSpecs = {
+  all: true,
+  addEndpoint: true,
+}
 
 declare const window: EavWindow;
 
@@ -16,7 +22,7 @@ const endPointsWhereWeRotate = 3;
 
 export class Plumber {
 
-  log = classLog({Plumber});
+  log = classLog({Plumber}, logSpecs, true);
 
   private instance: PlumbType;
   private lineCount = 0;
@@ -39,6 +45,8 @@ export class Plumber {
   private bulkDelete = false;
   private dialogRef: MatDialogRef<RenameStreamComponent>;
 
+  #endpoints: EndpointsHelper;
+
   constructor(
     private jsPlumbRoot: HTMLElement,
     private pipelineModel: PipelineModel,
@@ -50,6 +58,7 @@ export class Plumber {
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
   ) {
+    this.#endpoints = new EndpointsHelper(this);
     this.instance = window.jsPlumb.getInstance(this.getInstanceDefaults(this.jsPlumbRoot));
     this.instance.batch(() => {
       this.initDomDataSources();
@@ -189,13 +198,13 @@ export class Plumber {
 
       // Make DataSource a Target for new Endpoints (if .In is an Array)
       if (dataSource.In) {
-        const targetEndpointUnlimited = this.buildTargetEndpoint(pipelineDataSource.EntityGuid);
+        const targetEndpointUnlimited = this.#endpoints.buildTargetEndpoint(pipelineDataSource.EntityGuid);
         targetEndpointUnlimited.maxConnections = -1;
         this.instance.makeTarget(domDataSource, targetEndpointUnlimited);
       }
 
       if (dataSource.DynamicOut)
-        this.instance.makeSource(domDataSource, this.buildSourceEndpoint(pipelineDataSource.EntityGuid), { filter: '.add-endpoint' });
+        this.instance.makeSource(domDataSource, this.#endpoints.buildSourceEndpoint(pipelineDataSource.EntityGuid), { filter: '.add-endpoint' });
     }
     l.end();
   }
@@ -254,19 +263,19 @@ export class Plumber {
   }
 
   private addEndpoint(domDataSource: HTMLElement, endpointName: string, isIn: boolean, pipelineDataSource: PipelineDataSource, count: number = 0) {
-    const l = this.log.fnCond(false, 'addEndpoint', { endpointName, isIn, pipelineDataSource });
+    const l = this.log.fnIf('addEndpoint', { endpointName, isIn, pipelineDataSource });
     const dataSource = this.dataSources.find(d => d.PartAssemblyAndType === pipelineDataSource.PartAssemblyAndType);
     const connectionList = isIn ? dataSource.In : dataSource.Out;
-    const isDynamic = connectionList?.some(name => this.getEndpointInfo(name, false));
+    const hasDynamic = connectionList?.some(name => this.#endpoints.getEndpointInfo(name, false));
     // const count = connectionList?.length ?? -1;
-    const endpointInfo = this.getEndpointInfo(endpointName, isDynamic);
+    const endpointInfo = this.#endpoints.getEndpointInfo(endpointName, hasDynamic);
     
-    l.a(`endpointInfo ${count}`, { dataSource, connectionList, isDynamic, count, endpointInfo });
+    l.a(`endpointInfo ${count}`, { dataSource, connectionList, isDynamic: hasDynamic, count, endpointInfo });
 
     // if (endpointName === "DEBUG") debugger;
 
     let style: string;
-    if (isDynamic)
+    if (hasDynamic)
       style = 'dynamic';
     else if (!endpointInfo.required)
       style = '';
@@ -283,8 +292,8 @@ export class Plumber {
     const uuid = domDataSource.id + (isIn ? '_in_' : '_out_') + endpointInfo.name;
     const angled = count > endPointsWhereWeRotate;
     const model = isIn
-      ? this.buildTargetEndpoint(pipelineDataSource.EntityGuid, style)
-      : this.buildSourceEndpoint(pipelineDataSource.EntityGuid, style);
+      ? this.#endpoints.buildTargetEndpoint(pipelineDataSource.EntityGuid, style)
+      : this.#endpoints.buildSourceEndpoint(pipelineDataSource.EntityGuid, style);
     // Endpoints on Out-DataSource must be always enabled
     const params = {
       uuid,
@@ -300,57 +309,7 @@ export class Plumber {
     l.end("end", {count, angled, overlay});
   }
 
-  private buildSourceEndpoint(pipelineDataSourceGuid: string, style?: string) {
-    const isSource = true;
-    const sourceEndpoint = {
-      paintStyle: { fill: 'transparent', radius: 10 },
-      cssClass: 'sourceEndpoint ' + style ?? '',
-      maxConnections: -1,
-      isSource,
-      anchor: ['Continuous', { faces: ['top'] }],
-      overlays: this.getEndpointOverlays(isSource),
-      events: {
-        click: (endpointOrOverlay: PlumbType) => {
-          this.onChangeLabel(endpointOrOverlay, isSource, pipelineDataSourceGuid);
-        },
-      },
-    };
-    return sourceEndpoint;
-  }
-
-  private buildTargetEndpoint(pipelineDataSourceGuid: string, style?: string) {
-    const isSource = false;
-    const targetEndpoint = {
-      paintStyle: { fill: 'transparent', radius: 10 },
-      cssClass: 'targetEndpoint ' + (style ?? ' '), // + (angled ? 'angled' : ''),
-      maxConnections: 1,
-      isTarget: !isSource,
-      anchor: ['Continuous', { faces: ['bottom'] }],
-      overlays: this.getEndpointOverlays(isSource),
-      dropOptions: { hoverClass: 'hover', activeClass: 'active' },
-      events: {
-        click: (endpointOrOverlay: PlumbType) => {
-          this.onChangeLabel(endpointOrOverlay, isSource, pipelineDataSourceGuid);
-        },
-      },
-    };
-    return targetEndpoint;
-  }
-
-  private getEndpointOverlays(isSource: boolean) {
-    return [
-      [
-        'Label', {
-          id: 'endpointLabel',
-          location: [0.5, isSource ? 0 : 1],
-          label: 'Default',
-          cssClass: isSource ? 'endpointSourceLabel' : 'endpointTargetLabel',
-        },
-      ],
-    ];
-  }
-
-  private onChangeLabel(endpointOrOverlay: PlumbType, isSource: boolean, pipelineDataSourceGuid: string) {
+  public onChangeLabel(endpointOrOverlay: PlumbType, isSource: boolean, pipelineDataSourceGuid: string) {
     if (!this.pipelineModel.Pipeline.AllowEdit) return;
 
     const overlay: PlumbType = endpointOrOverlay.getOverlay ? endpointOrOverlay.getOverlay('endpointLabel') : endpointOrOverlay;
@@ -382,7 +341,7 @@ export class Plumber {
       );
       const dataSource = this.dataSources.find(ds => ds.PartAssemblyAndType === pipelineDataSource.PartAssemblyAndType);
       const label: string = info.targetEndpoint.getOverlay('endpointLabel').label;
-      const isDynamic = !dataSource.In.some(name => this.getEndpointInfo(name, false).name === label);
+      const isDynamic = !dataSource.In.some(name => this.#endpoints.getEndpointInfo(name, false).name === label);
       if (isDynamic) {
         this.instance.deleteEndpoint(info.targetEndpoint);
         setTimeout(() => { this.onConnectionsChanged(); });
@@ -415,25 +374,6 @@ export class Plumber {
     });
   }
 
-  private getEndpointInfo(endpointName: string, isDynamic: boolean): EndpointInfo {
-    let name: string;
-    let required: boolean;
-
-    if (isDynamic) {
-      name = endpointName;
-      required = false;
-    } else {
-      const trimmed = endpointName.trim();
-      required = trimmed.endsWith('*');
-      name = !required ? trimmed : trimmed.substring(0, trimmed.length - 1);
-    }
-
-    const endpointInfo: EndpointInfo = {
-      name,
-      required,
-    };
-    return endpointInfo;
-  }
 }
 
 // https://stackoverflow.com/questions/14446511/most-efficient-method-to-groupby-on-an-array-of-objects
