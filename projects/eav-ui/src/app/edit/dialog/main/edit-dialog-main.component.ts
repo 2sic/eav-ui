@@ -320,20 +320,18 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
   }
 
   #snackBarYouHaveUnsavedChanges() {
-    const snackBarData: UnsavedChangesSnackBarData = {
-      save: false,
-    };
     const snackBarRef = this.snackBar.openFromComponent(SnackBarUnsavedChangesComponent, {
-      data: snackBarData,
+      data: {
+        save: false,
+      } satisfies UnsavedChangesSnackBarData,
       duration: 5000,
     });
 
     snackBarRef.onAction().subscribe(() => {
-      if ((snackBarRef.containerInstance.snackBarConfig.data as UnsavedChangesSnackBarData).save) {
+      if ((snackBarRef.containerInstance.snackBarConfig.data as UnsavedChangesSnackBarData).save)
         this.saveAll(true);
-      } else {
+      else
         this.closeDialog(true);
-      }
     });
   }
 }
