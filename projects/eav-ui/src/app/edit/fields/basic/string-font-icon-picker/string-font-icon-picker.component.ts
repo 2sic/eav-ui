@@ -1,21 +1,21 @@
-import { Component, computed, effect, inject, Injector, signal } from '@angular/core';
+import { CdkFixedSizeVirtualScroll, CdkVirtualForOf, CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
+import { Component, effect, inject, Injector } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatOptionModule } from '@angular/material/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { getWith } from '../../../../core/object-utilities';
+import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
+import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
+import { ScriptsLoaderService } from '../../../shared/services/scripts-loader.service';
+import { FieldMetadata } from '../../field-metadata.decorator';
+import { FieldState } from '../../field-state';
+import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
+import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
 import { StringFontIconPickerLogic } from './string-font-icon-picker-logic';
 import { findAllIconsInCss } from './string-font-icon-picker.helpers';
 import { IconOption } from './string-font-icon-picker.models';
-import { MatOptionModule } from '@angular/material/core';
-import { CdkVirtualScrollViewport, CdkFixedSizeVirtualScroll, CdkVirtualForOf } from '@angular/cdk/scrolling';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatInputModule } from '@angular/material/input';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
-import { FieldState } from '../../field-state';
-import { FieldMetadata } from '../../field-metadata.decorator';
-import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
-import { SignalEquals } from '../../../../shared/signals/signal-equals';
-import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
-import { ScriptsLoaderService } from '../../../shared/services/scripts-loader.service';
 
 @Component({
   selector: InputTypeCatalog.StringFontIconPicker,
@@ -39,6 +39,11 @@ import { ScriptsLoaderService } from '../../../shared/services/scripts-loader.se
 export class StringFontIconPickerComponent {
 
   #fieldState = inject(FieldState) as FieldState<string>;
+  #injector = inject(Injector);
+
+  constructor(private scriptsLoaderService: ScriptsLoaderService) {
+    StringFontIconPickerLogic.importMe();
+  }
 
   protected group = this.#fieldState.group;
   protected config = this.#fieldState.config;
@@ -47,11 +52,13 @@ export class StringFontIconPickerComponent {
   #settings = this.#fieldState.settings;
   protected basics = this.#fieldState.basics;
 
-  protected previewCss = computed(() => this.#settings().PreviewCss, SignalEquals.string);
+  protected previewCss = this.#fieldState.setting('PreviewCss');
 
-  #iconOptions = signal<IconOption[]>([], { equal: RxHelpers.arraysEqual });
+  /** The possible icons before filtering */
+  #iconOptions = signalObj<IconOption[]>('iconOptions', []);
 
-  filteredIcons = computed(() => {
+  /** The icons after filtering */
+  protected filteredIcons = computedObj('filteredIcons', () => {
     const search = this.uiValue();
     const filtered = search
       ? this.#iconOptions().filter(icon => icon.search?.includes(search.toLocaleLowerCase()) ?? false)
@@ -59,22 +66,18 @@ export class StringFontIconPickerComponent {
     return filtered;
   });
 
-  #injector = inject(Injector);
-
-  constructor(private scriptsLoaderService: ScriptsLoaderService) {
-    StringFontIconPickerLogic.importMe();
-  }
-
+  /**
+   * Loading icons is done in an effect, because it relies on a callback
+   */
   ngOnInit() {
-    const fileLoadSettings = computed(() => {
-      const s = this.#settings();
-      return {
-        Files: s.Files,
-        CssPrefix: s.CssPrefix,
-        ShowPrefix: s.ShowPrefix,
-      };
-    }, { equal: RxHelpers.objectsEqual });
+    // Get Relevant settings and make debounce so it only fires if these change
+    const fileLoadSettings = computedObj('fileLoadSettings', () => getWith(this.#settings(), s => ({
+      Files: s.Files,
+      CssPrefix: s.CssPrefix,
+      ShowPrefix: s.ShowPrefix,
+    })));
 
+    // run effect to load the icons when ready
     effect(() => {
       const settings = fileLoadSettings();
       this.scriptsLoaderService.load(settings.Files.split('\n'), () => {
