@@ -12,12 +12,12 @@ import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/sl
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, merge, Observable, startWith } from 'rxjs';
 import { ContentType } from '../../app-administration/models';
 import { ContentTypesService } from '../../app-administration/services';
-import { transient } from '../../core';
+import { Of, transient } from '../../core';
 import { UiControl } from '../../edit/shared/controls/ui-control';
 import { BaseComponent } from '../../shared/components/base.component';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
 import { dropdownInsertValue } from '../../shared/constants/dropdown-insert-value.constant';
-import { eavConstants, MetadataKeyType, ScopeOption } from '../../shared/constants/eav.constants';
+import { eavConstants, MetadataKeyTypes, ScopeOption } from '../../shared/constants/eav.constants';
 import { ClickStopPropagationDirective } from '../../shared/directives/click-stop-propagation.directive';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { mapUntilObjChanged } from '../../shared/rxJs/mapUntilChanged';
@@ -61,10 +61,10 @@ export class CreateMetadataDialogComponent extends BaseComponent implements OnIn
   targetTypeOptions: TargetTypeOption[];
 
   /** Constants from metadata definitions */
-  private keyTypeOptions: MetadataKeyType[];
+  private keyTypeOptions: Of<typeof MetadataKeyTypes>[];
   private guidedMode$: BehaviorSubject<boolean>;
   /** Currently available options */
-  private keyTypeOptions$: BehaviorSubject<MetadataKeyType[]>;
+  private keyTypeOptions$: BehaviorSubject<Of<typeof MetadataKeyTypes>[]>;
   private scopeOptions$: BehaviorSubject<ScopeOption[]>;
   private contentItems$: BehaviorSubject<ContentItem[]>;
   private contentTypes$: BehaviorSubject<ContentType[]>;
@@ -84,7 +84,7 @@ export class CreateMetadataDialogComponent extends BaseComponent implements OnIn
     this.targetTypeOptions = Object.values(eavConstants.metadata).map(option => ({ ...option }));
     this.keyTypeOptions = Object.values(eavConstants.keyTypes);
 
-    this.keyTypeOptions$ = new BehaviorSubject<MetadataKeyType[]>([]);
+    this.keyTypeOptions$ = new BehaviorSubject<Of<typeof MetadataKeyTypes>[]>([]);
     this.scopeOptions$ = new BehaviorSubject<ScopeOption[]>([]);
     this.guidedMode$ = new BehaviorSubject(true);
     this.contentItems$ = new BehaviorSubject<ContentItem[]>([]);

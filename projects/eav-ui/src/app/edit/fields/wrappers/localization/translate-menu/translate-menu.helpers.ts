@@ -1,8 +1,9 @@
-import { TranslationLink, TranslationLinks } from '../../../../localization/translation-link.constants';
+import { Of } from '../../../../../core';
+import { TranslationLinks } from '../../../../localization/translation-link.constants';
 
 export class TranslateMenuHelpers {
 
-  static getTranslationStateClass(linkType: TranslationLink) {
+  static getTranslationStateClass(linkType: Of<typeof TranslationLinks>) {
     switch (linkType) {
       case TranslationLinks.MissingDefaultLangValue:
         return 'localization-missing-default-lang-value';

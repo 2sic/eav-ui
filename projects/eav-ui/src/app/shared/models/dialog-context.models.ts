@@ -1,4 +1,5 @@
 import { PermissionsCount } from '../../app-administration/models/permissions-count.model';
+import { Of } from '../../core';
 import { Language } from './language.model';
 
 export interface DialogContextApp {
@@ -15,7 +16,7 @@ export interface DialogContextApp {
   IsSiteApp: boolean;
   Name: string;
   Permissions: PermissionsCount;
-  SettingsScope: AppScope;
+  SettingsScope: Of<typeof AppScopes>;
   Url: string;
   SharedUrl: string;
 
@@ -35,7 +36,6 @@ export const AppScopes = {
   Global: 'Global',
 } as const /* the as const ensures that the keys/values can be strictly checked */;
 
-export type AppScope = typeof AppScopes[keyof typeof AppScopes];
 
 export interface DialogContextEnable {
   /** Determines if app admin should show app-permissions (true for Apps, false for Content and Global) */

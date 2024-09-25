@@ -1,11 +1,12 @@
 import { Sxc } from '@2sic.com/2sxc-typings';
-import { FormulaFunction, FormulaVersion } from '../formula-definitions';
-import { FormulaV1CtxTargetEntity, FormulaV1CtxUser, FormulaV1CtxApp } from '../run/formula-run-context.model';
 import { BehaviorSubject } from 'rxjs';
-import { FormulaIdentifier, FieldValueOrResultRaw } from '../results/formula-results.models';
-import { InputTypeSpecs } from '../../shared/input-types/input-type-specs.model';
 import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
+import { Of } from '../../../core';
+import { InputTypeSpecs } from '../../shared/input-types/input-type-specs.model';
+import { FormulaFunction, FormulaVersions } from '../formula-definitions';
 import { FormulaPromise } from '../promise/formula-promise-result.model';
+import { FieldValueOrResultRaw, FormulaIdentifier } from '../results/formula-results.models';
+import { FormulaV1CtxApp, FormulaV1CtxTargetEntity, FormulaV1CtxUser } from '../run/formula-run-context.model';
 
 /**
  * Formula Cached Values which are re-used across formulas of the same entity.
@@ -44,7 +45,7 @@ export interface FormulaCacheItem extends FormulaCacheItemConstants, FormulaIden
   sourceCodeId: number;
 
   /** Formula version - v1 or v2 */
-  version: FormulaVersion;
+  version: Of<typeof FormulaVersions>;
 
   /** Information about the input type, so the formula can adjust to it new v18.01 */
   inputType: InputTypeSpecs;

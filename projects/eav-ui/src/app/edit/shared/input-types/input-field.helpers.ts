@@ -1,5 +1,6 @@
 import { FieldSettings, FieldValue } from '../../../../../../edit-types';
-import { InputTypeStrict, InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
+import { Of } from '../../../core';
+import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
 import { classLog } from '../../../shared/logging';
 import { ItemIdentifierShared } from '../../../shared/models/edit-form.model';
 
@@ -12,7 +13,7 @@ export class FieldDefaults {
 
   constructor(
     private name: string,
-    private inputType: InputTypeStrict,
+    private inputType: Of<typeof InputTypeCatalog>,
     private settings: FieldSettings,
     private itemHeader?: Pick<ItemIdentifierShared, "Prefill">,
   ) { }

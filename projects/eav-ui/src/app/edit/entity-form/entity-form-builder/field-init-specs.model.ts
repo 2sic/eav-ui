@@ -1,12 +1,13 @@
 import { AbstractControl } from '@angular/forms';
-import { InputTypeStrict } from '../../../shared/fields/input-type-catalog';
-import { FieldProps } from '../../state/fields-configs.model';
 import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
+import { Of } from '../../../core';
+import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
+import { FieldProps } from '../../state/fields-configs.model';
 
 export interface FieldInitSpecs {
   name: string;
   props: FieldProps;
-  inputType: InputTypeStrict;
+  inputType: Of<typeof InputTypeCatalog>;
   value: FieldValue;
   hasControl: boolean;
   control: AbstractControl;

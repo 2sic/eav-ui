@@ -1,9 +1,10 @@
 import { Injectable, Signal } from '@angular/core';
-import { FormConfigService } from './form-config.service';
-import { PublishStatus, PublishMode, PublishModes, EavPublishStatus } from '../dialog/main/edit-dialog-main.models';
-import { ComputedCacheHelper } from '../../shared/signals/computed-cache';
-import { SignalStoreBase } from '../shared/store/signal-store-base';
+import { Of } from '../../core';
 import { classLog } from '../../shared/logging';
+import { ComputedCacheHelper } from '../../shared/signals/computed-cache';
+import { EavPublishStatus, PublishModes, PublishStatus } from '../dialog/main/edit-dialog-main.models';
+import { SignalStoreBase } from '../shared/store/signal-store-base';
+import { FormConfigService } from './form-config.service';
 
 @Injectable({ providedIn: 'root' })
 export class FormPublishingService extends SignalStoreBase<number, PublishStatus> {
@@ -14,10 +15,10 @@ export class FormPublishingService extends SignalStoreBase<number, PublishStatus
 
   override getId = (item: PublishStatus) => item.formId;
 
-  setPublishMode(publishMode: PublishMode, formId: number, eavService: FormConfigService): void {
+  setPublishMode(publishMode: Of<typeof PublishModes>, formId: number, eavService: FormConfigService): void {
     // if publish mode is prohibited, set default
     if (eavService.config.versioningOptions[publishMode] == null) {
-      publishMode = Object.keys(eavService.config.versioningOptions)[0] as PublishMode;
+      publishMode = Object.keys(eavService.config.versioningOptions)[0] as Of<typeof PublishModes>;
     }
     const publishStatus: PublishStatus = {
       formId,
@@ -27,15 +28,15 @@ export class FormPublishingService extends SignalStoreBase<number, PublishStatus
     this.add(publishStatus);
   }
 
-  getPublishMode(formId: number): Signal<PublishMode> {
+  getPublishMode(formId: number): Signal<Of<typeof PublishModes>> {
     return this.#signalsPublishModeCache.getOrCreate(formId, () => this.toPublishMode(this.get(formId)));
   }
-  #signalsPublishModeCache = new ComputedCacheHelper<number, PublishMode>('publishMode');
+  #signalsPublishModeCache = new ComputedCacheHelper<number, Of<typeof PublishModes>>('publishMode');
 
   
   /** Convert the booleans to the appropriate "verb" */
-  public toPublishMode(publishStatus: EavPublishStatus): PublishMode {
-    const publishMode: PublishMode = publishStatus.DraftShouldBranch
+  public toPublishMode(publishStatus: EavPublishStatus): Of<typeof PublishModes> {
+    const publishMode: Of<typeof PublishModes> = publishStatus.DraftShouldBranch
       ? PublishModes.Branch
       : publishStatus.IsPublished
         ? PublishModes.Show

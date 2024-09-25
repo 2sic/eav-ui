@@ -15,8 +15,6 @@ export const Explorers = {
   Snippets: 'Snippets',
 } as const /* the as const ensures that the keys/values can be strictly checked */;
 
-export type ExplorerOption = typeof Explorers[keyof typeof Explorers];
-
 export interface ViewInfo {
   viewKey: ViewKey;
   view?: SourceView;

@@ -1,12 +1,13 @@
+import { Signal } from '@angular/core';
 import { AbstractControl, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { FieldSettings } from '../../../../../../edit-types';
-import { InputTypeCatalog, InputTypeStrict } from '../../../shared/fields/input-type-catalog';
-import { ItemFieldVisibility } from '../../state/item-field-visibility';
+import { Of } from '../../../core';
+import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
 import { AdamControl } from '../../fields/basic/hyperlink-library/hyperlink-library.models';
 import { convertValueToArray } from '../../fields/picker/picker.helpers';
 import { FieldsSettingsService } from '../../state/fields-settings.service';
-import { Signal } from '@angular/core';
+import { ItemFieldVisibility } from '../../state/item-field-visibility';
 
 
 /** Slightly enhanced standard Abstract Control with additional warnings */
@@ -22,7 +23,7 @@ export class ValidationHelpers {
     return this.#shouldIgnoreValidators(settings) ? false : settings.Required;
   }
 
-  public static getValidators(specs: ValidationHelperSpecs, inputType: InputTypeStrict): ValidatorFn[] {
+  public static getValidators(specs: ValidationHelperSpecs, inputType: Of<typeof InputTypeCatalog>): ValidatorFn[] {
     // TODO: merge all validators in a single function? Should be faster
     const validators: ValidatorFn[] = [
       inputType !== InputTypeCatalog.HyperlinkLibrary
@@ -198,7 +199,7 @@ function countValues(control: AbstractControl, s: FieldSettings): number {
 export class ValidationHelperSpecs {
   constructor(
     public fieldName: string,
-    public inputType: InputTypeStrict,
+    public inputType: Of<typeof InputTypeCatalog>,
     public settings: Signal<FieldSettings>,
     // public properties: Signal<FieldProps>,
     // TODO: GET RID OF THIS as soon as we have a signal for the fieldProps

@@ -1,19 +1,17 @@
-import { Component, Inject } from '@angular/core';
-import { MatDialogModule } from '@angular/material/dialog';
-import { FormsModule } from '@angular/forms';
-import { MonacoEditorComponent } from '../../../../../monaco-editor/monaco-editor.component';
-import { MatButtonModule } from '@angular/material/button';
 import { ClipboardModule } from '@angular/cdk/clipboard';
-import { MatIconModule } from '@angular/material/icon';
-import { TippyDirective } from '../../../../../shared/directives/tippy.directive';
+import { Component, HostBinding, Inject } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import {
   MAT_DIALOG_DATA,
   MatDialogActions,
   MatDialogClose,
-  MatDialogContent,
-  MatDialogRef,
-  MatDialogTitle,
+  MatDialogContent, MatDialogModule, MatDialogRef,
+  MatDialogTitle
 } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MonacoEditorComponent } from '../../../../../monaco-editor/monaco-editor.component';
+import { TippyDirective } from '../../../../../shared/directives/tippy.directive';
 @Component({
   standalone: true,
   imports: [
@@ -33,6 +31,9 @@ import {
   templateUrl: './config-editor-dialog.component.html',
 })
 export class ConfigEditorDialogComponent {
+
+  @HostBinding('className') hostClass = 'dialog-component';
+  
   selectedConfig: string;
   focused = false;
   editorOptions = {

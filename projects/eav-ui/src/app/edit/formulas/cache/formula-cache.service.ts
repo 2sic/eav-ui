@@ -1,14 +1,13 @@
 import { Injectable, untracked } from '@angular/core';
 import { FieldValue } from '../../../../../../edit-types';
-import { FormulaDefaultTargetValues, FormulaNewPickerTargetValues, FormulaOptionalTargetValues, FormulaTarget } from '../targets/formula-targets';
-import { FormulaCacheItem } from './formula-cache.model';
-import { FormulaIdentifier } from '../results/formula-results.models';
-import { FormulaResultCacheItem } from './formula-cache.model';
-import { signalObj } from '../../../shared/signals/signal.utilities';
-import { FormulaCacheBuilder } from './formula-cache.builder';
-import { transient } from '../../../core';
+import { Of, transient } from '../../../core';
 import { classLog } from '../../../shared/logging';
+import { signalObj } from '../../../shared/signals/signal.utilities';
 import { DebugFields } from '../../edit-debug';
+import { FormulaIdentifier } from '../results/formula-results.models';
+import { FormulaDefaultTargetValues, FormulaNewPickerTargetValues, FormulaOptionalTargetValues, FormulaTargets } from '../targets/formula-targets';
+import { FormulaCacheBuilder } from './formula-cache.builder';
+import { FormulaCacheItem, FormulaResultCacheItem } from './formula-cache.model';
 
 const logSpecs = {
   all: true,
@@ -49,7 +48,7 @@ export class FormulaCacheService {
    * @param allowDraft
    * @returns Filtered formula array
    */
-  #findFormulas(entityGuid?: string, fieldName?: string, target?: FormulaTarget[], allowDraft?: boolean): FormulaCacheItem[] {
+  #findFormulas(entityGuid?: string, fieldName?: string, target?: Of<typeof FormulaTargets>[], allowDraft?: boolean): FormulaCacheItem[] {
     return this.formulas().filter(f =>
         (entityGuid ? f.entityGuid === entityGuid : true)
         && (fieldName ? f.fieldName === fieldName : true)

@@ -2,6 +2,7 @@ import { Injectable, OnDestroy, Signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { Of } from '../../../core';
 
 /**
  * Logging service - ATM not really used, but would be great
@@ -21,7 +22,7 @@ export class LoggingService implements OnDestroy {
     this.logs$.complete();
   }
 
-  addLog(severity: LogSeverity, label: string, error: any): void {
+  addLog(severity: Of<typeof LogSeverities>, label: string, error: any): void {
     const newLogEntry: LogEntry = {
       error,
       label,
@@ -62,7 +63,7 @@ export class LoggingService implements OnDestroy {
 export interface LogEntry {
   error: any;
   label: string;
-  severity: LogSeverity;
+  severity: Of<typeof LogSeverities>;
   time: number;
 }
 
@@ -71,5 +72,3 @@ export const LogSeverities = {
   Log: 'log',
   Warn: 'warn',
 } as const /* the as const ensures that the keys/values can be strictly checked */;
-
-export type LogSeverity = typeof LogSeverities[keyof typeof LogSeverities];

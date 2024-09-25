@@ -1,17 +1,18 @@
-import { Component, EventEmitter, inject, Output } from '@angular/core';
-import { EavWindow } from '../../../shared/models/eav-window.model';
-import { DebugType, DebugTypes } from './edit-dialog-footer.models';
-import { LogsDumpComponent } from './logs-dump/logs-dump.component';
-import { FormulaDesignerComponent } from './formula-designer/formula-designer.component';
-import { DataDumpComponent } from './data-dump/data-dump.component';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass } from '@angular/common';
+import { Component, inject } from '@angular/core';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { Of } from '../../../core';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
-import { UserSettings } from '../../../shared/user/user-settings.service';
 import { classLog } from '../../../shared/logging';
+import { EavWindow } from '../../../shared/models/eav-window.model';
+import { UserSettings } from '../../../shared/user/user-settings.service';
+import { DataDumpComponent } from './data-dump/data-dump.component';
+import { DebugTypes } from './edit-dialog-footer.models';
+import { FormulaDesignerComponent } from './formula-designer/formula-designer.component';
+import { LogsDumpComponent } from './logs-dump/logs-dump.component';
 
 declare const window: EavWindow;
 
@@ -42,12 +43,12 @@ export class EditDialogFooterComponent {
   // Persisted user settings
   static readonly userSettings = {
     key: 'edit-dialog-footer',
-    data: { tab: null as DebugType, expanded: false, size: 0 }
+    data: { tab: null as Of<typeof DebugTypes>, expanded: false, size: 0 }
   };
   #userSettings = inject(UserSettings).part(EditDialogFooterComponent.userSettings);
   userSettings = this.#userSettings.data;
 
-  toggleDialog(type: DebugType): void {
+  toggleDialog(type: Of<typeof DebugTypes>): void {
     const s = this.userSettings();
     const hideTab = s.tab === type;
     const tab = hideTab ? null :  type;

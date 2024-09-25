@@ -1,19 +1,20 @@
+import { AsyncPipe, NgClass } from '@angular/common';
 import { Component, computed, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { TranslationStateCore } from '../../../../localization/translate-state.model';
-import { getTemplateLanguages } from './translate-menu-dialog.helpers';
-import { TranslateMenuDialogData } from './translate-menu-dialog.models';
-import { TranslateModule } from '@ngx-translate/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 import { ExtendedModule } from '@angular/flex-layout/extended';
-import { NgClass, AsyncPipe } from '@angular/common';
-import { MatListModule } from '@angular/material/list';
+import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { TranslationLink, TranslationLinks } from '../../../../localization/translation-link.constants';
-import { FieldsTranslateService } from '../../../../state/fields-translate.service';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { TranslateModule } from '@ngx-translate/core';
+import { Of } from '../../../../../core';
 import { TranslateHelperComponent } from '../../../../../shared/components/translate-helper.component';
 import { isCtrlS } from '../../../../dialog/main/keyboard-shortcuts';
+import { TranslationStateCore } from '../../../../localization/translate-state.model';
+import { TranslationLinks } from '../../../../localization/translation-link.constants';
+import { FieldsTranslateService } from '../../../../state/fields-translate.service';
+import { getTemplateLanguages } from './translate-menu-dialog.helpers';
+import { TranslateMenuDialogData } from './translate-menu-dialog.models';
 
 interface TranslationInfo {
   showLanguageSelection: boolean;
@@ -60,7 +61,7 @@ export class TranslateMenuDialogComponent extends TranslateHelperComponent {
     });
   }
 
-  setLinkType(linkType: TranslationLink): void {
+  setLinkType(linkType: Of<typeof TranslationLinks>): void {
     const newTranslationState: TranslationStateCore = {
       linkType,
       language: this.noLanguageRequired.includes(linkType) ? '' : this.translationStateSignal().language,

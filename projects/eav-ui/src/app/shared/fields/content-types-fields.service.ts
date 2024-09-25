@@ -2,10 +2,11 @@ import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
 import { ContentType } from '../../app-administration/models/content-type.model';
 import { webApiTypeRoot } from '../../app-administration/services/content-types.service';
-import { Field, FieldInputTypeOption } from './field.model';
-import { InputTypeMetadata } from './input-type-metadata.model';
-import { InputTypeStrict } from './input-type-catalog';
+import { Of } from '../../core';
 import { HttpServiceBase } from '../services/http-service-base';
+import { Field, FieldInputTypeOption } from './field.model';
+import { InputTypeCatalog } from './input-type-catalog';
+import { InputTypeMetadata } from './input-type-metadata.model';
 
 export const webApiFieldsRoot = 'admin/field/';
 export const webApiFieldsAll = 'admin/field/all';
@@ -187,7 +188,7 @@ export class ContentTypesFieldsService extends HttpServiceBase {
     });
   }
 
-  updateInputType(id: number, staticName: string, inputType: InputTypeStrict) {
+  updateInputType(id: number, staticName: string, inputType: Of<typeof InputTypeCatalog>) {
     return this.http.post<boolean>(this.apiUrl(webApiFieldsRoot + 'InputType'), null, {
       params: { appId: this.appId, attributeId: id.toString(), field: staticName, inputType }
     });

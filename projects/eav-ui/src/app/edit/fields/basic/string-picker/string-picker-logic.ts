@@ -1,13 +1,13 @@
 import { Of } from 'projects/eav-ui/src/app/core';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
-import { InputTypeCatalog, InputTypeStrict } from '../../../../shared/fields/input-type-catalog';
+import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { classLog } from '../../../../shared/logging';
 import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
 import { PickerSourcesCustom } from '../../picker/constants/picker-config-model.constants';
 import { PickerLogicShared } from '../../picker/picker-logic-shared';
 
 export class StringPickerLogic extends FieldLogicBase {
-  name: InputTypeStrict = InputTypeCatalog.StringPicker;
+  name: Of<typeof InputTypeCatalog> = InputTypeCatalog.StringPicker;
 
   constructor() { super({StringPickerLogic}); }
 

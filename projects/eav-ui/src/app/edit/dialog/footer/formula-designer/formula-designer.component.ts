@@ -1,36 +1,37 @@
+import { JsonPipe, NgClass } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatOptionModule } from '@angular/material/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import type * as Monaco from 'monaco-editor';
-import { EntityEditService } from '../../../../shared/services/entity-edit.service';
+import { Of } from '../../../../core';
+import { transient } from '../../../../core/transient';
+import { MonacoEditorComponent } from '../../../../monaco-editor/monaco-editor.component';
 import { eavConstants } from '../../../../shared/constants/eav.constants';
+import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { copyToClipboard } from '../../../../shared/helpers/copy-to-clipboard.helper';
+import { classLog } from '../../../../shared/logging';
+import { EditPrep } from '../../../../shared/models/edit-form.model';
+import { EntityEditService } from '../../../../shared/services/entity-edit.service';
+import { FormConfigService } from '../../../form/form-config.service';
+import { DesignerState } from '../../../formulas/designer/designer-state.model';
 import { FormulaDesignerService } from '../../../formulas/designer/formula-designer.service';
 import { defaultFormula, defaultListItemFormula } from '../../../formulas/formula-definitions';
-import { FormulaNewPickerTargets, FormulaTarget } from '../../../formulas/targets/formula-targets';
-import { SelectTarget, SelectTargets } from './formula-designer.models';
 import { FormulaIdentifier } from '../../../formulas/results/formula-results.models';
-import { DesignerState } from '../../../formulas/designer/designer-state.model';
-import { SnippetLabelSizePipe } from './snippet-label-size.pipe';
-import { MatMenuModule } from '@angular/material/menu';
-import { MonacoEditorComponent } from '../../../../monaco-editor/monaco-editor.component';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatInputModule } from '@angular/material/input';
-import { ExtendedModule } from '@angular/flex-layout/extended';
-import { NgClass, JsonPipe } from '@angular/common';
-import { MatOptionModule } from '@angular/material/core';
-import { FormsModule } from '@angular/forms';
-import { MatSelectModule } from '@angular/material/select';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { TippyDirective } from '../../../../shared/directives/tippy.directive';
-import { transient } from '../../../../core/transient';
-import { FormConfigService } from '../../../form/form-config.service';
-import { ItemService } from '../../../state/item.service';
+import { FormulaNewPickerTargets, FormulaTargets } from '../../../formulas/targets/formula-targets';
 import { ContentTypeService } from '../../../shared/content-types/content-type.service';
-import { EditPrep } from '../../../../shared/models/edit-form.model';
-import { classLog } from '../../../../shared/logging';
+import { ItemService } from '../../../state/item.service';
+import { SelectTargets } from './formula-designer.models';
+import { SnippetLabelSizePipe } from './snippet-label-size.pipe';
 
 @Component({
   selector: 'app-formula-designer',
@@ -128,7 +129,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     this.#designerSvc.setDesignerOpen(false);
   }
 
-  selectedChanged(target: SelectTarget, value: string | FormulaTarget): void {
+  selectedChanged(target: Of<typeof SelectTargets>, value: string | Of<typeof FormulaTargets>): void {
     const newState: DesignerState = {
       ...this.#designerSvc.designerState(),
       editMode: false,
@@ -143,7 +144,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
         newState.fieldName = value;
         break;
       case SelectTargets.Target:
-        newState.target = value as FormulaTarget;
+        newState.target = value as Of<typeof FormulaTargets>;
         break;
     }
 

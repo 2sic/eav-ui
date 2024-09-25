@@ -1,5 +1,6 @@
 import { DialogContext } from '../../app-administration/models';
-import { EditSettings, PublishMode } from '../dialog/main/edit-dialog-main.models';
+import { Of } from '../../core';
+import { EditSettings, PublishModes } from '../dialog/main/edit-dialog-main.models';
 
 /** 
  * IMPORTANT! These are constants that form was loaded with. They do not change while form is running
@@ -30,5 +31,5 @@ export interface FormConfiguration {
 }
 
 
-export interface VersioningOptions extends Partial<Record<PublishMode, boolean>> {
+export interface VersioningOptions extends Partial<Record<Of<typeof PublishModes>, boolean>> {
 }

@@ -1,4 +1,5 @@
-import { FormulaVersions, runFormulaPrefix, FormulaVersion, FormulaFunction } from '../formula-definitions';
+import { Of } from '../../../core';
+import { FormulaFunction, FormulaVersions, runFormulaPrefix } from '../formula-definitions';
 
 /**
  * Contains methods for building formulas.
@@ -51,13 +52,13 @@ export class FormulaSourceCodeHelper {
    * @param formula Formula text
    * @returns If formula is V1 or V2
    */
-  static findFormulaVersion(formula: string): FormulaVersion {
+  static findFormulaVersion(formula: string): Of<typeof FormulaVersions> {
     const cleanFormula = this.#cleanFormula(formula);
     const versionPart = cleanFormula.substring(runFormulaPrefix.length, cleanFormula.indexOf('(')).trim();
     const validVersions = Object.values(FormulaVersions);
 
-    return (validVersions).includes(versionPart as FormulaVersion)
-      ? versionPart as FormulaVersion
+    return (validVersions).includes(versionPart as Of<typeof FormulaVersions>)
+      ? versionPart as Of<typeof FormulaVersions>
       : undefined;
   }
 

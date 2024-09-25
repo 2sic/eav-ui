@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
-import { InputTypeMetadata } from '../../../shared/fields/input-type-metadata.model';
-import { EavContentTypeAttribute } from '../models/eav';
 import { AttributeInputType } from '../../../../../../edit-types/src/InputTypeName';
-import { InputTypeStrict } from '../../../shared/fields/input-type-catalog';
-import { InputTypeSpecs } from './input-type-specs.model';
-import { SignalStoreBase } from '../store/signal-store-base';
+import { Of } from '../../../core';
+import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
 import { InputTypeHelpers } from '../../../shared/fields/input-type-helpers';
+import { InputTypeMetadata } from '../../../shared/fields/input-type-metadata.model';
 import { classLog } from '../../../shared/logging';
+import { EavContentTypeAttribute } from '../models/eav';
+import { SignalStoreBase } from '../store/signal-store-base';
+import { InputTypeSpecs } from './input-type-specs.model';
 
 @Injectable({ providedIn: 'root' })
 export class InputTypeService extends SignalStoreBase<string, InputTypeMetadata> {
@@ -38,7 +39,7 @@ export class InputTypeService extends SignalStoreBase<string, InputTypeMetadata>
 
   private getSpecsInternal(attribute: EavContentTypeAttribute, inputTypes: InputTypeMetadata[]): InputTypeSpecs {
     const inputTypeMetadata = inputTypes.find(i => i.Type === attribute.InputType);
-    const inputType = attribute.InputType as InputTypeStrict;
+    const inputType = attribute.InputType as Of<typeof InputTypeCatalog>;
     const calculated: InputTypeSpecs = {
       inputType,
       isExternal: !!inputTypeMetadata?.AngularAssets,

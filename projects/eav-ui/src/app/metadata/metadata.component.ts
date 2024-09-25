@@ -1,17 +1,29 @@
 import { GridOptions } from '@ag-grid-community/core';
+import { NgClass } from '@angular/common';
 import { ChangeDetectorRef, Component, computed, OnInit, signal, ViewContainerRef } from '@angular/core';
-import { MatDialog, MatDialogRef, MatDialogActions } from '@angular/material/dialog';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogActions, MatDialogRef } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
-import { map, Observable, take } from 'rxjs';
+import { EcoFabSpeedDialActionsComponent, EcoFabSpeedDialComponent, EcoFabSpeedDialTriggerComponent } from '@ecodev/fab-speed-dial';
+import { map, take } from 'rxjs';
 import { ContentItemsService } from '../content-items/services/content-items.service';
-import { EntityEditService } from '../shared/services/entity-edit.service';
+import { convert, Of, transient } from '../core';
 import { EavForInAdminUi } from '../edit/shared/models/eav';
+import { openFeatureDialog } from '../features/shared/base-feature.component';
 import { MetadataService } from '../permissions';
+import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
-import { MetadataKeyType } from '../shared/constants/eav.constants';
+import { MetadataKeyTypes } from '../shared/constants/eav.constants';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
+import { classLog } from '../shared/logging';
 import { EditForm, EditPrep, ItemAddIdentifier } from '../shared/models/edit-form.model';
+import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
+import { SafeHtmlPipe } from '../shared/pipes/safe-html.pipe';
+import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
+import { EntityEditService } from '../shared/services/entity-edit.service';
 import { ConfirmDeleteDialogComponent } from './confirm-delete-dialog/confirm-delete-dialog.component';
 import { ConfirmDeleteDialogData } from './confirm-delete-dialog/confirm-delete-dialog.models';
 import { MetadataActionsComponent } from './metadata-actions/metadata-actions.component';
@@ -19,18 +31,6 @@ import { MetadataActionsParams } from './metadata-actions/metadata-actions.model
 import { MetadataContentTypeComponent } from './metadata-content-type/metadata-content-type.component';
 import { MetadataSaveDialogComponent } from './metadata-save-dialog/metadata-save-dialog.component';
 import { MetadataDto, MetadataItem, MetadataRecommendation } from './models/metadata.model';
-import { openFeatureDialog } from '../features/shared/base-feature.component';
-import { MatBadgeModule } from '@angular/material/badge';
-import { NgClass } from '@angular/common';
-import { EcoFabSpeedDialComponent, EcoFabSpeedDialTriggerComponent, EcoFabSpeedDialActionsComponent } from '@ecodev/fab-speed-dial';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
-import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
-import { SafeHtmlPipe } from '../shared/pipes/safe-html.pipe';
-import { convert, transient } from '../core';
-import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
-import { classLog } from '../shared/logging';
 
 @Component({
   selector: 'app-metadata',
@@ -84,7 +84,7 @@ export class MetadataComponent implements OnInit {
 
   #params = convert(this.#dialogRoutes.getParams(['targetType', 'keyType', 'key', 'title', 'contentTypeStaticName']), p => ({
     targetType: parseInt(p.targetType, 10),
-    keyType: p.keyType as MetadataKeyType,
+    keyType: p.keyType as Of<typeof MetadataKeyTypes>,
     key: p.key,
     contentTypeStaticName: p.contentTypeStaticName,
   }));

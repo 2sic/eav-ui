@@ -1,14 +1,15 @@
 import { FieldSettings } from '../../../../../../edit-types';
+import { Of } from '../../../core';
 import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
-import { InputTypeSpecs } from '../../shared/input-types/input-type-specs.model';
 import { InputTypeHelpers } from '../../../shared/fields/input-type-helpers';
-import { Wrapper, WrappersCatalog } from './wrappers.constants';
+import { InputTypeSpecs } from '../../shared/input-types/input-type-specs.model';
+import { WrappersCatalog } from './wrappers.constants';
 
 const logThis = false;
 
 export class WrapperHelper {
 
-  static getWrappers(settings: FieldSettings, inputTypeSpecs: InputTypeSpecs): Wrapper[] {
+  static getWrappers(settings: FieldSettings, inputTypeSpecs: InputTypeSpecs): Of<typeof WrappersCatalog>[] {
     const inputType = inputTypeSpecs.inputType;
 
     if (InputTypeHelpers.isMessage(inputType))
@@ -19,7 +20,7 @@ export class WrapperHelper {
       return [WrappersCatalog.CollapsibleWrapper];
 
     // Start with default wrappers for all controls
-    const wrappers: Wrapper[] = [
+    const wrappers: Of<typeof WrappersCatalog>[] = [
       WrappersCatalog.HiddenWrapper
     ];
 

@@ -5,7 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { LogEntry, LoggingService, LogSeverities } from '../../../shared/services/logging.service';
-import { LogsConfigComponent } from "../log-config/logs-config.component";
+import { LogsConfigComponent } from "../logs-config/logs-config.component";
 
 @Component({
   selector: 'app-logs-dump',

@@ -1,20 +1,20 @@
+import { NgClass } from '@angular/common';
 import { ChangeDetectorRef, Component, effect, ElementRef, HostBinding, Inject, Input, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { DomSanitizer } from '@angular/platform-browser';
 import { catchError, filter, fromEvent, map, of, switchMap, take, tap } from 'rxjs';
+import { Of, transient } from '../../../core';
+import { DragAndDropDirective } from '../../directives/drag-and-drop.directive';
+import { CrossWindowMessage, InstallPackage, InstallSettings, SpecsForInstaller } from '../../models/installer-models';
+import { SafeHtmlPipe } from '../../pipes/safe-html.pipe';
+import { Context } from '../../services/context';
+import { AppInstallSettingsService } from '../../services/getting-started.service';
+import { InstallerService } from '../../services/installer.service';
 import { BaseComponent } from '../base.component';
 import { FileUploadDialogData, FileUploadMessageTypes, FileUploadResult, UploadTypes } from './file-upload-dialog.models';
-import { AppInstallSettingsService } from '../../services/getting-started.service';
-import { DomSanitizer } from '@angular/platform-browser';
-import { Context } from '../../services/context';
-import { CrossWindowMessage, InstallPackage, InstallSettings, SpecsForInstaller } from '../../models/installer-models';
-import { InstallerService } from '../../services/installer.service';
-import {  NgClass } from '@angular/common';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { SafeHtmlPipe } from '../../pipes/safe-html.pipe';
-import { DragAndDropDirective } from '../../directives/drag-and-drop.directive';
-import { MatButtonModule } from '@angular/material/button';
-import { transient } from '../../../core';
 
 
 @Component({
@@ -34,7 +34,7 @@ import { transient } from '../../../core';
 export class FileUploadDialogComponent extends BaseComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
-  @Input() uploadType: UploadTypes;
+  @Input() uploadType: Of<typeof UploadTypes>;
 
   @ViewChild('installerWindow') installerWindow: ElementRef;
 
