@@ -3,9 +3,10 @@
   2dm settings: {{ settings() | json }} <br>
 </div> -->
 <div>
-  <mat-form-field [formGroup]="fieldState.group" class="eav-mat-form-field" color="accent"
+  <mat-form-field [formGroup]="fieldState.group" class="eav-mat-form-field my-search" color="accent"
     [ngClass]="{ 'mat-form-field-invalid': ui().touchedAndInvalid }"
-    (click)="filterSelectionList()">
+    (click)="filterSelectionList()"
+  >
     <!-- The initial input showing the selected value - one only. As soon as there are more, this control won't show any more -->
     <input matInput
       class="eav-translate-on-dblclick"
@@ -14,42 +15,32 @@
       [value]="displaySelected(selectedItem())"
       [placeholder]="getPlaceholder()"
       [disabled]="ui().disabled || !settings().enableAddExisting"
-      (focus)="fetchEntities()"
+      (focus)="pickerData.source.fetchItems()"
       (blur)="markAsTouched()"
       (input)="filterSelectionList()"
     >
-    <button mat-icon-button matSuffix class="entity-dropdown-button eav-suffix-button" disableRipple="true"
-      [disabled]="ui().disabled || !settings().enableAddExisting">
+    <!-- Action items such as edit, remove, delete -->
+    <app-picker-item-buttons matSuffix class="my-item-actions" [show]="showItemEditButtons()" [item]="selectedItem()" [index]="0"></app-picker-item-buttons>
+
+    <!-- "v" button to open the drop-down -->
+    <button
+      mat-icon-button
+      matSuffix
+      class="entity-dropdown-button picker-inline-button"
+      disableRipple="true"
+      [disabled]="ui().disabled || !settings().enableAddExisting"
+    >
       <mat-icon>arrow_drop_down</mat-icon>
     </button>
-    @if (settings().enableEdit)
-    {
-      <button mat-icon-button matSuffix class="eav-suffix-button" [tippy]="'Fields.Picker.Edit' | translate"
-        [disabled]="ui().disabled || config.initialDisabled" appClickStopPropagation
-        (click)="edit(selectedItem()?.value, selectedItem()?.id)">
-        <mat-icon>edit</mat-icon>
-      </button>
-    }
-    @if (settings().enableDelete)
-    {
-      <button mat-icon-button matSuffix class="eav-suffix-button" [tippy]="'Fields.Picker.Delete' | translate"
-        [disabled]="ui().disabled" appClickStopPropagation (click)="deleteItem(0, selectedItem()?.value)">
-        <mat-icon>delete</mat-icon>
-      </button>
-    }
-    @if (settings().enableRemove)
-    {
-      <button mat-icon-button matSuffix class="eav-suffix-button" [tippy]="'Fields.Picker.Remove' | translate"
-        [disabled]="ui().disabled" appClickStopPropagation (click)="removeItem(0)">
-        <mat-icon>do_not_disturb_on</mat-icon>
-      </button>
-    }
-    @if (settings().enableTextEntry)
-    {
+
+    <!-- Toggle Text Mode -->
+    @if (settings().enableTextEntry) {
       <span matSuffix>
         <ng-content select="[freeTextButtons]"></ng-content>
       </span>
     }
+
+    <!-- Help text / error messages -->
     <mat-label [ngClass]="{ 'mat-error': ui().touchedAndInvalid }">
       {{ basics().labelWithRequired }}
     </mat-label>
@@ -61,11 +52,9 @@
     (optionSelected)="optionSelected($event, settings().allowMultiValue, selectedItem())"
     (closed)="onClosed()" (opened)="onOpened(settings().showAsTree)"
   >
-    @if (!settings().showAsTree)
-    {
+    @if (!settings().showAsTree) {
       <!-- List Display Mode -->
-      @for (item of filteredItems(); track item)
-      {
+      @for (item of filteredItems(); track item) {
         <mat-option [value]="item.value" class="picker-option-wrapper"
           [disabled]="item.noSelect ? true : settings().enableReselect ? false : isOptionDisabled(item.value)"
           [tippy]="item.tooltip" tippyShowDelay="500" [tippyDisabled]="!item.tooltip" [tippyAllowHtml]="true" [tippyArrow]="true">
@@ -79,8 +68,7 @@
         </mat-option>
       }
     }
-    @else
-    {
+    @else {
       <!-- Tree Display Mode -->
       <mat-tree [dataSource]="treeHelper.dataSource" [treeControl]="treeHelper.treeControl">
         <mat-tree-node *matTreeNodeDef="let item;" matTreeNodePadding class="eav-tree-node">
@@ -121,8 +109,7 @@
 </div>
 
 <!-- Button to add null-item, in debug-mode only -->
-@if (debugEnabled())
-{
+@if (debugEnabled()) {
   <div class="null-box">
     debug: <span class="null-button" tippy="Add null-item" (click)="insertNull()">add null-item</span>
   </div>

@@ -87,7 +87,7 @@
       color: rgba($editUI-foreground-color, 0.44);
     }
 
-    .color__label-disabled {
+    .my-label-disabled {
       color: $editUI-label-disabled-color;
     }
 
@@ -139,4 +139,16 @@
   white-space: nowrap;
   text-overflow: ellipsis;
   padding: 0px;
+}
+
+.my-flex {
+  display: flex;
+  align-items: center;
+}
+
+.my-pills {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  box-sizing: border-box;
 }

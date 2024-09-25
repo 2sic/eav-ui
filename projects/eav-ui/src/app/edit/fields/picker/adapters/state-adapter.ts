@@ -1,13 +1,13 @@
-import { ReorderIndexes } from '../picker-list/reorder-index.models';
-import { correctStringEmptyValue } from '../picker.helpers';
-import { DeleteEntityProps } from '../models/picker.models';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { Injectable, inject } from '@angular/core';
-import { PickerFeatures } from '../picker-features.model';
-import { FieldState } from '../../field-state';
-import { FormConfigService } from '../../../form/form-config.service';
-import { signalObj, computedObj } from '../../../../shared/signals/signal.utilities';
 import { classLog } from '../../../../shared/logging';
+import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
+import { FormConfigService } from '../../../form/form-config.service';
+import { FieldState } from '../../field-state';
+import { DeleteEntityProps } from '../models/picker.models';
+import { PickerFeatures } from '../picker-features.model';
+import { ReorderIndexes } from '../picker-list/reorder-index.models';
+import { correctStringEmptyValue } from '../picker.helpers';
 import { StateUiMapperBase } from './state-ui-mapper-base';
 
 export const logSpecsStateAdapter = {
@@ -120,7 +120,7 @@ export abstract class StateAdapter {
     const valueArray = [...this.values()];
     const modified = operation(valueArray);
     const newValue = this.mapper.toState(modified);
-    this.#fieldState.ui().set(newValue);
+    this.#fieldState.ui().setIfChanged(newValue);
     l.end('', { newValue });
   }
   
@@ -132,6 +132,10 @@ export abstract class StateAdapter {
   public set(values: string[]): void {
     this.log.fnIf('set', { values });
     this.#updateValue(() => values);
+  }
+
+  public flush(): void {
+    this.set([]);
   }
 
   public reorder(reorderIndexes: ReorderIndexes) {

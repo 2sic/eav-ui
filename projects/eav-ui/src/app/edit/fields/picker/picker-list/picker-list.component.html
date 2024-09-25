@@ -1,29 +1,24 @@
 
-@if (!mySettings().allowMultiValue) {
+@if (!allowMultiValue()) {
   <mat-label class="field-label"
     [ngClass]="{ 'disabled': ui().disabled }">
     {{ basics().labelWithRequired }}
   </mat-label>
 }
 @if (selectedItems().length > 0) {
-  <div cdkDropList
-    [cdkDropListDisabled]="!mySettings().allowMultiValue || ui().disabled"
+  <div
+    cdkDropList
+    [cdkDropListDisabled]="!allowMultiValue() || ui().disabled"
     (cdkDropListDropped)="drop($event)"
-    [ngClass]="{
-    'normal-list': !mySettings().allowMultiValue,
-    'dnd-list': mySettings().allowMultiValue
-    }">
+    class="my-list"
+    [ngClass]="'my-list-' + (allowMultiValue() ? 'draggable' : 'static')"
+  >
     <!-- Normal list usually shows only one item, but can show "empty slot" / "null-item" in debug mode -->
-    @for (item of selectedItems(); track item.value; let index = $index) {
-      <div
-        cdkDrag
-        [ngClass]="{
-          'normal-item': !mySettings().allowMultiValue,
-          'dnd-item': mySettings().allowMultiValue,
-          'disabled': ui().disabled
-        }">
+    @for (item of selectedItems(); track (item.value + $index); let index = $index) {
+      <div cdkDrag class="my-item" [ngClass]="('my-item-' + (allowMultiValue() ? 'draggable' : 'static')) + ' ' + (ui().disabled ? 'disabled' : '')">
         <div class="item-title" [ngClass]="{ 'disabled': ui().disabled }">
-          @if (mySettings().allowMultiValue) {
+          <!-- visual Drag-Handle if sortable -->
+          @if (allowMultiValue()) {
             <mat-icon class="item-title__icon"
               [tippy]="'Fields.Picker.DragMove' | translate"
               [tippyDisabled]="ui().disabled">
@@ -34,36 +29,7 @@
             {{ item.label }}
           </span>
         </div>
-        <div class="item-actions">
-          <!-- Disable edit only if it was disabled in the settings, not if disabled by language change -->
-          @if (mySettings().enableEdit && !item.noEdit) {
-            <button mat-icon-button class="eav-action-button"
-              [tippy]="'Fields.Picker.Edit' | translate"
-              [disabled]="config.initialDisabled"
-              appMousedownStopPropagation
-              (click)="edit(item.value, item.id)">
-              <mat-icon>edit</mat-icon>
-            </button>
-          }
-          @if (mySettings().enableDelete && !item.noDelete) {
-            <button mat-icon-button class="eav-action-button"
-              [tippy]="'Fields.Picker.Delete' | translate"
-              [disabled]="ui().disabled"
-              appMousedownStopPropagation
-              (click)="deleteItem(index, item.value)">
-              <mat-icon>delete</mat-icon>
-            </button>
-          }
-          @if (mySettings().enableRemove) {
-            <button mat-icon-button class="eav-action-button"
-              [tippy]="'Fields.Picker.Remove' | translate"
-              [disabled]="ui().disabled"
-              appMousedownStopPropagation
-              (click)="removeItem(index)">
-              <mat-icon>do_not_disturb_on</mat-icon>
-            </button>
-          }
-        </div>
+        <app-picker-item-buttons matSuffix class="my-item-actions" [show]="true" [item]="item" [index]="index"></app-picker-item-buttons>
       </div>
     }
   </div>

@@ -1,11 +1,17 @@
-.eav-div-around-picker {
-  width: 100%;
-}
 
-.eav-suffix-button {
+.picker-inline-button {
   scale: calc(4/5);
+  margin-left: -4px;
+  margin-right: -4px;
 }
 
 .picker-suffix-text {
   min-width: 80px;
+}
+
+.my-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0;
 }

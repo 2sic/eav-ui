@@ -35,8 +35,8 @@
   }
 }
 
-.normal-list {
-  .normal-item {
+.my-list-static {
+  .my-item-static {
     height: 30px;
     display: flex;
     align-items: center;
@@ -60,21 +60,21 @@
         margin-top: -2px;
       }
 
-      .item-actions {
+      .my-item-actions {
         margin-top: -2px;
       }
     }
   }
 }
 
-.dnd-list {
+.my-list-draggable {
   border: 1px solid #ccc;
   border-radius: 4px;
   overflow: hidden;
   margin-bottom: 32px;
 }
 
-.dnd-item {
+.my-item-draggable {
   height: 40px;
   border-bottom: 1px solid #ccc;
   padding: 0 8px;
@@ -123,14 +123,21 @@
   }
 }
 
-.item-actions {
-  flex-shrink: 0;
+/*#region Item actions */
 
-  .eav-action-button {
-    scale: calc(4/5);
-    margin: 0px -4px;
+// Item action buttons should be at the end of the line
+.my-item-actions {
+  flex-shrink: 0;
+}
+
+// Item actions only visible on hover
+.my-item:not(:hover) {
+  .my-item-actions {
+    display: none;
   }
 }
+
+/*#endregion */
 
 .cdk-drag-preview {
   box-sizing: border-box;
@@ -148,6 +155,6 @@
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
-.dnd-list.cdk-drop-list-dragging .dnd-item:not(.cdk-drag-placeholder) {
+.my-list-draggable.cdk-drop-list-dragging .my-item-draggable:not(.cdk-drag-placeholder) {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
