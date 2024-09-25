@@ -120,6 +120,10 @@ const partsMap: Record<string, PartMap> = {
     states: [StateAdapterNumber],
     forcePickerConfig: PickerConfigs.UiPickerSourceCustomList,
   },
+  [InputTypeCatalog.NumberPicker]: {
+    sources: [DataAdapterString, DataAdapterQuery, DataAdapterEntity],
+    states: [StateAdapterNumber],
+  },
   [InputTypeCatalog.StringDropdownQuery]: {
     sources: [DataAdapterQuery],
     states: [StateAdapterString],
