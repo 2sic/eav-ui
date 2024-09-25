@@ -13,7 +13,7 @@ export class StringPickerLogic extends FieldLogicBase {
 
   update(specs: FieldLogicUpdate<string>): FieldSettings {
     
-    var log = classLog({StringPickerLogic}, null, true);
+    var log = classLog({StringPickerLogic}, null);
 
     const l = log.fn('update', { specs });
 
