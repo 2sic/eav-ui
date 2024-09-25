@@ -229,7 +229,6 @@ export class AppsListComponent implements OnInit {
 
   #loadApps(): void {
     this.#appsListSvc.getAll().subscribe(apps => {
-      console.log('apps', apps);
       this.apps.set(apps);
     })
   }

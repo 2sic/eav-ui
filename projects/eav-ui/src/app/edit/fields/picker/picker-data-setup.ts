@@ -10,6 +10,7 @@ import { DataAdapterQuery } from './adapters/data-adapter-query';
 import { DataAdapterString } from './adapters/data-adapter-string';
 import { StateAdapter } from './adapters/state-adapter';
 import { StateAdapterEntity } from './adapters/state-adapter-entity';
+import { StateAdapterNumber } from './adapters/state-adapter-number';
 import { StateAdapterString } from './adapters/state-adapter-string';
 import { PickerConfigs } from './constants/picker-config-model.constants';
 import { PickerData } from './picker-data';
@@ -21,7 +22,7 @@ import { PickerData } from './picker-data';
  */
 export class PickerDataSetup {
 
-  log = classLog({PickerDataSetup}, null);
+  log = classLog({ PickerDataSetup }, null);
 
   constructor(injector: Injector) {
     this.#injector = injector;
@@ -33,7 +34,7 @@ export class PickerDataSetup {
   // 1. Final control (eg. StringPickerComponent) gets services which it will use using transient(...)
   // ... and also importMe on the logic
   // 2. PickerComponent.ngOnInit() will
-  // ... 
+  // ...
   // 3. The control will override initAdaptersAndViewModel()
   // 3.1 init state with
   // ... it will also attach a CALLBACK! for focused?
@@ -54,7 +55,7 @@ export class PickerDataSetup {
     const source = this.#getSourceAdapter(inputType, dataSourceType, state);
 
     pickerData.setup(fieldState.name, state, source);
-    
+
     // l.end('ok', { state, source });
 
     pickerData.source.onAfterViewInit()
@@ -112,6 +113,11 @@ const partsMap: Record<string, PartMap> = {
   [InputTypeCatalog.StringDropdown]: {
     sources: [DataAdapterString],
     states: [StateAdapterString],
+    forcePickerConfig: PickerConfigs.UiPickerSourceCustomList,
+  },
+  [InputTypeCatalog.NumberDropdown]: {
+    sources: [DataAdapterString],
+    states: [StateAdapterNumber],
     forcePickerConfig: PickerConfigs.UiPickerSourceCustomList,
   },
   [InputTypeCatalog.StringDropdownQuery]: {

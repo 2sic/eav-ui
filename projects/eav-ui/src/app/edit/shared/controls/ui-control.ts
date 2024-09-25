@@ -15,7 +15,7 @@ const logSpecs = {
   set: false,
   disable: false,
   getErrors: true,
-  fields: [...DebugFields],
+  fields: [...DebugFields, 'minValue'],
 };
 
 const pfx = 'ValidationMessage.';
@@ -26,7 +26,7 @@ const pfx = 'ValidationMessage.';
  */
 export class UiControl {
 
-  log = classLog({UiControl}, logSpecs);
+  log = classLog({UiControl}, logSpecs, true);
 
   constructor(
     public control: AbstractControl,
@@ -55,7 +55,7 @@ export class UiControl {
   //#endregion
 
   //#region methods
-  
+
   markTouched(): void {
     this.log.aIfInList('fields', this.name, null, 'markTouched');
     UiControl.markTouched(this.control);
@@ -80,7 +80,7 @@ export class UiControl {
     if (!control.dirty && !FieldValueHelpers.fieldValuesAreEqual(before, newValue))
       control.markAsDirty();
 
-    // Set value must happen at the end, otherwise errors will be late by one cycle 
+    // Set value must happen at the end, otherwise errors will be late by one cycle
     // for example, they could show "required" after the value was
     control.patchValue(newValue);
   }
@@ -118,7 +118,7 @@ export class UiControl {
   /** Calculates error message */
   getErrors(config: FieldConfigSet): string {
     const control = this.control;
-    const l = this.log.fnIf('getErrors', { control, config });
+    const l = this.log.fnIfInList('getErrors', 'fields', config.fieldName, { control, config });
     if (!control.invalid) return l.r('', 'valid');
     if (!control.dirty && !control.touched) return l.r('', 'not dirty or touched');
 
@@ -131,7 +131,7 @@ export class UiControl {
 
     return l.r('', 'no error');
   }
-  
+
   #warningMessages: Record<string, string> = {
     jsonWarning: `${pfx}JsonWarning`,
     formulaWarning: `${pfx}NotValid`,
@@ -141,7 +141,7 @@ export class UiControl {
     const control = this.control as AbstractControlPro;
     if (control._warning$.value == null) { return ''; }
     if (!control.dirty && !control.touched) { return ''; }
-    
+
     let warning = '';
     for (const warningKey of Object.keys(control._warning$.value)) {
       warning = (warningKey === 'formulaWarning')

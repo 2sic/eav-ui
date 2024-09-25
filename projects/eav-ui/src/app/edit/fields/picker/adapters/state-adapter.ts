@@ -26,13 +26,13 @@ export const logSpecsStateAdapter = {
 
 @Injectable()
 export abstract class StateAdapter {
-  
+
   //#region Setup / Inject / Logs
 
   log = classLog({StateAdapter}, logSpecsStateAdapter, false);
-  
+
   public formConfigSvc = inject(FormConfigService);
-  #fieldState = inject(FieldState) as FieldState<string | string[]>;
+  #fieldState = inject(FieldState) as FieldState<number | string | string[]>;
 
   constructor() { }
 
@@ -82,7 +82,7 @@ export abstract class StateAdapter {
       const uiValue = this.#fieldState.uiValue();
       l.a('selectedItems', { uiValue, sAndO });
 
-      return correctStringEmptyValue(uiValue, sAndO.separator, sAndO.options);
+      return correctStringEmptyValue(this.mapper.toUi(uiValue), sAndO.options);
     });
   })();
 
@@ -104,7 +104,7 @@ export abstract class StateAdapter {
    * Mapper to convert between the state and the UI - must be added by inheriting class.
    * On the UI side, must always be an array of strings.
    */
-  public abstract mapper: StateUiMapperBase<string | string[], string[]>;
+  public abstract mapper: StateUiMapperBase<number | string | string[], string[]>;
 
   /** Signal with the current values in the picker, as an array */
   public values = computedObj('ids', () => this.mapper.toUi(this.#fieldState.uiValue()));
@@ -123,7 +123,7 @@ export abstract class StateAdapter {
     this.#fieldState.ui().setIfChanged(newValue);
     l.end('', { newValue });
   }
-  
+
   public add(value: string): void {
     this.log.fnIf('add', { value });
     this.#updateValue(list => (this.settings().AllowMultiValue) ? [...list, value] : [value]);
