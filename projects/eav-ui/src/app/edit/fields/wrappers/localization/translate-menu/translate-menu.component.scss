@@ -58,9 +58,12 @@
   }
 }
 
-// .feature-item {
-//   display: flex;
-//   flex-direction: row;
-//   align-items: baseline;
-//   // justify-content: end;
-// }
+.my-main-flex {
+  display: flex;
+  place-content: center end;
+}
+
+.my-flex-right {
+  display: flex;
+  align-items: center;
+}
