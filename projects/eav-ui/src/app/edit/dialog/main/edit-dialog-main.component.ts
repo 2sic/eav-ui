@@ -313,27 +313,25 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
       if (isCtrlS(event)) {
         event.preventDefault();
         if (!this.formsStateService.readOnly().isReadOnly)
-          this.saveAll(false);
+          this.saveAll(event.altKey);
         return;
       }
     });
   }
 
   #snackBarYouHaveUnsavedChanges() {
-    const snackBarData: UnsavedChangesSnackBarData = {
-      save: false,
-    };
     const snackBarRef = this.snackBar.openFromComponent(SnackBarUnsavedChangesComponent, {
-      data: snackBarData,
+      data: {
+        save: false,
+      } satisfies UnsavedChangesSnackBarData,
       duration: 5000,
     });
 
     snackBarRef.onAction().subscribe(() => {
-      if ((snackBarRef.containerInstance.snackBarConfig.data as UnsavedChangesSnackBarData).save) {
+      if ((snackBarRef.containerInstance.snackBarConfig.data as UnsavedChangesSnackBarData).save)
         this.saveAll(true);
-      } else {
+      else
         this.closeDialog(true);
-      }
     });
   }
 }

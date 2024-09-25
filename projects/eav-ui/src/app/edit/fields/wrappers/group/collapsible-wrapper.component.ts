@@ -1,16 +1,15 @@
-import { Component, ViewChild, ViewContainerRef, computed, inject } from '@angular/core';
-import { EmptyDefaultLogic } from './collapsible-wrapper-logic';
-import { ChangeAnchorTargetDirective } from '../../directives/change-anchor-target.directive';
-import { MatIconModule } from '@angular/material/icon';
-import { FlexModule } from '@angular/flex-layout/flex';
-import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass } from '@angular/common';
+import { Component, ViewChild, ViewContainerRef, computed, inject } from '@angular/core';
+import { ExtendedModule } from '@angular/flex-layout/extended';
 import { MatCardModule } from '@angular/material/card';
-import { FieldState } from '../../field-state';
+import { MatIconModule } from '@angular/material/icon';
+import { classLog } from '../../../../shared/logging';
 import { SafeHtmlPipe } from '../../../../shared/pipes/safe-html.pipe';
 import { FieldsSettingsService } from '../../../state/fields-settings.service';
+import { ChangeAnchorTargetDirective } from '../../directives/change-anchor-target.directive';
+import { FieldState } from '../../field-state';
 import { WrappersCatalog } from '../wrappers.constants';
-import { classLog } from '../../../../shared/logging';
+import { EmptyDefaultLogic } from './collapsible-wrapper-logic';
 
 
 @Component({
@@ -22,7 +21,6 @@ import { classLog } from '../../../../shared/logging';
     MatCardModule,
     NgClass,
     ExtendedModule,
-    FlexModule,
     MatIconModule,
     ChangeAnchorTargetDirective,
     SafeHtmlPipe,
