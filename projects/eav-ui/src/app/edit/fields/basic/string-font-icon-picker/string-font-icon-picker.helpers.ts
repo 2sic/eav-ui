@@ -1,10 +1,20 @@
+import { classLog } from 'projects/eav-ui/src/app/shared/logging';
 import { IconOption } from './string-font-icon-picker.models';
 
-/** Calculates available css classes with className prefix. WARNING: Expensive operation */
-export function findAllIconsInCss(classPrefix: string, showPrefix: boolean) {
+const specs = {
+  findAllIconsInCss: true,
+};
 
-  if (!classPrefix)
-    return [];
+/** Calculates available css classes with className prefix. WARNING: Expensive operation */
+export function findAllIconsInCss(classPrefix: string, showPrefix?: boolean, valueRaw?: string, value?: string): IconOption[] {
+
+  const _selector = classPrefix;
+  const _valueRaw = valueRaw;
+  const _value = value;
+
+  const log = classLog({ findAllIconsInCss }, specs);
+
+  if (!classPrefix) return [];
 
   const truncateLabel = showPrefix ? 0 : classPrefix.length - 1;
 
@@ -32,18 +42,31 @@ export function findAllIconsInCss(classPrefix: string, showPrefix: boolean) {
 
       const selector = rule.selectorText;
       const fullClass = selector.substring(0, selector.indexOf(':'));
-      const iconClass = fullClass.replace('.', '');
+      const iconClass = fullClass.replace('.', '').trim(); // Trim whitespace
+      //
+      const value = iconClass;
+      const valueRaw = "." + iconClass;
+
+      // Skip empty icon classes
+      if (!iconClass) continue;
+
       if (duplicateDetector[iconClass]) continue;
+
 
       foundList.push({
         rule,
         class: iconClass,
-        search: iconClass?.toLowerCase(),
+        search: iconClass.toLowerCase(),
         label: iconClass.substring(truncateLabel),
+        _selector: _selector,
+        _valueRaw: _valueRaw, // new valueRaw for Picker
+        _value: _value, // new Value
       });
       duplicateDetector[iconClass] = true;
     }
   }
+
+  log.fnIf('findAllIconsInCss', { classPrefix, showPrefix, foundList });
 
   return foundList;
 }

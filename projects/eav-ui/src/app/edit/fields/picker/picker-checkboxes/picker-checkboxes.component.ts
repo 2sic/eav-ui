@@ -1,4 +1,4 @@
-import { NgClass } from '@angular/common';
+import { JsonPipe, NgClass } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { MatRippleModule } from '@angular/material/core';
@@ -26,6 +26,7 @@ import { PickerItemButtonsComponent } from '../picker-item-buttons/picker-item-b
     PickerIconInfoComponent,
     PickerItemButtonsComponent,
     PickerInlineHeaderComponent,
+    JsonPipe,
   ],
 })
 export class PickerCheckboxesComponent extends PickerInlineBaseComponent {

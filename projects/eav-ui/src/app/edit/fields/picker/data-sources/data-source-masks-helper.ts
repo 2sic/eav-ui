@@ -22,9 +22,9 @@ const logSpecs = {
  * Masks are strings with placeholders, vs. just the name of the field to show.
  */
 export class DataSourceMasksHelper {
-  
-  log = classLog({DataSourceMasksHelper}, logSpecs, false);
-  
+
+  log = classLog({ DataSourceMasksHelper }, logSpecs, false);
+
   constructor(
     private name: string,
     private settings: DataSourceMaskSettings,
@@ -57,6 +57,10 @@ export class DataSourceMasksHelper {
     // Figure out Value to use if we don't use masks - fallback is to use the Guid
     const value = (() => {
       if (mustUseGuid) return entity.Guid;
+
+      // @2dg, not tested in all use case
+      if (entity[masks.value] === undefined) return entity.Value;
+
       const maybe = entity[masks.value];
       // the value could be an empty string (pickers); not sure if it can be null though
       return maybe !== undefined ? `${maybe}` : entity.Guid;

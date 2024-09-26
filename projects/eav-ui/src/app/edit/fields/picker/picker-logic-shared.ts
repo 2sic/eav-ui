@@ -1,7 +1,8 @@
 import { FieldValue } from 'projects/edit-types';
-import { FieldSettings, RelationshipParentChild, UiPickerModeTree, UiPickerSourceCustomCsv, UiPickerSourceCustomList, UiPickerSourceEntity, UiPickerSourceEntityAndQuery, UiPickerSourceQuery } from '../../../../../../edit-types/src/FieldSettings';
+import { FieldSettings, RelationshipParentChild, UiPickerModeTree, UiPickerSourceCss, UiPickerSourceCustomCsv, UiPickerSourceCustomList, UiPickerSourceEntity, UiPickerSourceEntityAndQuery, UiPickerSourceQuery } from '../../../../../../edit-types/src/FieldSettings';
 import { Of } from '../../../core';
 import { FeatureNames } from '../../../features/feature-names';
+import { classLog } from '../../../shared/logging';
 import { EavEntity } from '../../shared/models/eav';
 import { calculateDropdownOptions } from '../basic/string-picker/string-picker.helpers';
 import { FieldLogicUpdate } from '../logic/field-logic-base';
@@ -9,9 +10,16 @@ import { FieldLogicTools } from '../logic/field-logic-tools';
 import { PickerConfigs, PickerSourcesCustom } from './constants/picker-config-model.constants';
 import { DataSourceParserCsv } from './data-sources/data-source-parser-csv';
 
+const logSpecs = {
+  all: true,
+  getDataSourceAndSetupFieldSettings: true,
+  data: true,
+};
 
 export class PickerLogicShared {
-  
+
+  log = classLog({ PickerLogicShared }, logSpecs);
+
   constructor() { }
 
   static setDefaultSettings(settings: FieldSettings): FieldSettings {
@@ -42,21 +50,24 @@ export class PickerLogicShared {
   }
 
   preUpdate({ settings, tools, value }: FieldLogicUpdate) {
-   
+
     const fsDefaults = PickerLogicShared.setDefaultSettings({ ...settings });
 
     const { fs: fsRaw, overriding } = PickerLogicShared.maybeOverrideEditRestrictions(fsDefaults, tools);
 
-    const { fs, typeConfig } = new PickerLogicShared().getDataSourceAndSetupFieldSettings(value, fsRaw, tools);
+    const { fs, typeConfig } = new PickerLogicShared().#getDataSourceAndSetupFieldSettings(value, fsRaw, tools);
 
     return { fs, overriding, typeConfig };
   }
 
 
-  getDataSourceAndSetupFieldSettings(value: FieldValue, fs: FieldSettings, tools: FieldLogicTools) {
+  #getDataSourceAndSetupFieldSettings(value: FieldValue, fs: FieldSettings, tools: FieldLogicTools) {
     const dataSources: EavEntity[] = (fs.DataSources?.length > 0)
       ? tools.contentTypeItemSvc.getMany(fs.DataSources)
       : [];
+
+
+    const l = this.log.fnIf('getDataSourceAndSetupFieldSettings', { dataSources, fs, value });
 
     // Transfer configuration
     const dataSource = dataSources[0];
@@ -67,6 +78,8 @@ export class PickerLogicShared {
     const typeConfig = tools.reader.flatten<UiPickerSourceEntityAndQuery>(dataSource);
 
     const isKnownType = Object.values(PickerConfigs).includes(typeName);
+
+    l.values({ typeName, isKnownType, dataSources, typeConfig });
 
     if (!isKnownType) {
       console.error(`Unknown picker source type: ${typeName}`);
@@ -83,6 +96,10 @@ export class PickerLogicShared {
 
     const sourceIsQuery = typeName === PickerConfigs.UiPickerSourceQuery;
     const sourceIsEntity = typeName === PickerConfigs.UiPickerSourceEntity;
+    const sourceIsCss = typeName === PickerConfigs.UiPickerSourceCss;
+
+    l.values({ sourceIsQuery, sourceIsEntity, sourceIsCss });
+
     const isCustomSource = Object.values(PickerSourcesCustom).includes(typeName as Of<typeof PickerSourcesCustom>);
 
     /** Query Data Source */
@@ -102,7 +119,17 @@ export class PickerLogicShared {
       fs.EntityType = specsEntity.ContentTypeNames ?? '';// possible multiple types
     }
 
+    /** Css File Data Source */
+    if (sourceIsCss) {
+      const specsCss = typeConfig as UiPickerSourceCss;
+      fs.CssSourceFile = specsCss.CssSourceFile ?? '';
+      fs.CssSelectorFilter = specsCss.CssSelectorFilter ?? '';
+      fs.Value = specsCss.Value ?? '';
+      fs.ValuePreview = specsCss.ValuePreview ?? '';
+    }
+
     if (isCustomSource) {
+      console.log('Custom Source Data Source');
       if (typeName === PickerConfigs.UiPickerSourceCustomList) {
         const valuesRaw = (typeConfig as unknown as UiPickerSourceCustomList).Values ?? '';
         // note that 'value-label' is the only format supported by the new picker config
@@ -166,7 +193,7 @@ export class PickerLogicShared {
       TreeChildIdField: specs.TreeChildIdField ?? 'Id',
       TreeParentChildRefField: specs.TreeParentChildRefField ?? 'Children',
       TreeChildParentRefField: specs.TreeChildParentRefField ?? 'Parent',
-      TreeShowRoot: specs.TreeShowRoot ?? true, 
+      TreeShowRoot: specs.TreeShowRoot ?? true,
       TreeDepthMax: specs.TreeDepthMax ?? 10,
       TreeAllowSelectRoot: specs.TreeAllowSelectRoot ?? true,
       TreeAllowSelectBranch: specs.TreeAllowSelectBranch ?? true,

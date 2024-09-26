@@ -22,6 +22,8 @@ export const logSpecsDataSourceBase = {
   triggerGetAll: false,
   addToRefresh: false,
   fields: [...DebugFields],
+  newIconOptions: false,
+  fileLoadSettings: false,
 }
 
 @Injectable()

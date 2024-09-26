@@ -177,6 +177,19 @@ export interface StringDropdownQuery extends String {
 }
 
 /**
+ * TODO: 2dg, check if this correct
+ */
+export interface StringCssPicker extends String {
+  CssSourceFile: string;
+  CssSelectorFilter: string;
+  Value: string;
+  ValuePreview: string;
+  ItemInformation: string;
+  ItemTooltip: string;
+  ItemLink: string;
+}
+
+/**
  * @string-font-icon-picker
  */
 export interface StringFontIconPicker extends String {
@@ -359,6 +372,7 @@ export interface FieldSettings extends
   StringWysiwyg,
   EntityPicker,
   StringPicker,
+  StringCssPicker,
   InternalSettings { }
 
 export interface UiPickerSourceCustomList extends ConfigModel {
@@ -405,6 +419,23 @@ export interface UiPickerSourceQuery extends UiPickerSourceEntityAndQuery {
 
 export interface UiPickerSourceEntity extends UiPickerSourceEntityAndQuery {
   ContentTypeNames: string;
+}
+
+export interface UiPickerSourceCss extends UiPickerSourceEntityAndQuery {
+  CssSourceFile: string;
+  CssSelectorFilter: string;
+  Value: string;
+  ValuePreview: string;
+
+  /** ItemInfo or field-mask for ItemInfo */
+  ItemInformation: string;
+
+  /** ItemTooltip or field-mask for ItemTooltip */
+  ItemTooltip: string;
+
+  /** ItemLink or field-mask for ItemLink */
+  ItemLink: string;
+
 }
 
 interface UiPickerSource extends ConfigModel {
