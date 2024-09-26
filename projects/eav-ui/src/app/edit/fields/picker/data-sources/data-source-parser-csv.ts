@@ -9,7 +9,7 @@ const logSpecs = {
 
 export class DataSourceParserCsv {
   
-  log = classLog({DataSourceParserCsv}, logSpecs, true);
+  log = classLog({DataSourceParserCsv}, logSpecs);
 
   constructor() { }
 
