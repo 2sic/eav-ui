@@ -4,7 +4,6 @@ import { InputTypeMetadata } from '../../../shared/fields/input-type-metadata.mo
 import { EavContentType, EavEntity } from '../../shared/models/eav';
 import { EavContentTypeDto, EavEntityBundleDto, EavEntityDto } from '../../shared/models/json-format-v1';
 
-
 export interface EavPublishStatus {
   DraftShouldBranch: boolean;
   IsPublished: boolean;
@@ -76,25 +75,6 @@ export interface Prefetch {
   /** NgRx store helper */
   _guid?: string;
 }
-
-// #RemovePickerDataCacheService
-// /**
-//  * temporary interface till backend is updated again to match latest requirements.
-//  * Should then be replaced with EntityBasic
-//  */
-// export interface PrefetchEntity {
-//   Id: number,
-//   Value: string,
-//   Text: string,
-// }
-// /** Temporary till the models are somehow in sync again */
-// export function prefetchItemToPickerItem(item: PrefetchEntity): PickerItem {
-//   return {
-//     id: item.Id,
-//     label: item.Text,
-//     value: item.Value,
-//   };
-// }
 
 export interface PrefetchAdams {
   [entityGuid: string]: {
