@@ -1,15 +1,19 @@
-import { Directive, ElementRef, HostListener, Input, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
+import { Directive, ElementRef, Input, OnChanges, OnDestroy, Optional, SimpleChanges } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import tippy, { Instance, Placement, Props } from 'tippy.js';
 
-const eventTippyShow = 'tippy-show';
+// const eventTippyShow = 'tippy-show';
 
 @Directive({
-  selector: '[tippy]',
+  selector: '[tippy], [tippyTranslate]',
   standalone: true
 })
 export class TippyDirective implements OnChanges, OnDestroy {
-  /** Message to show in Tippy */
+  /** Message to show in Tippy - raw */
   @Input() tippy: string | null | undefined;
+
+  /** Message to show in Tippy - auto translated */
+  @Input() tippyTranslate: string | null | undefined;
 
   /** disable Tippy */
   @Input() tippyDisabled: string | boolean | null | undefined;
@@ -36,7 +40,11 @@ export class TippyDirective implements OnChanges, OnDestroy {
 
   #tooltip: Instance<Props>;
 
-  constructor(private elementRef: ElementRef<HTMLElement>) { }
+  constructor(
+    private elementRef: ElementRef<HTMLElement>,
+    /** New 18.02 */
+    @Optional() private translate: TranslateService,  // ATM optional, as we're not 100% sure that it's always registered
+  ) { }
 
   ngOnChanges(changes: SimpleChanges): void {
     // Init Tooltip on first round
@@ -49,21 +57,27 @@ export class TippyDirective implements OnChanges, OnDestroy {
         theme: '2sxc',
         allowHTML: !!this.tippyAllowHtml,
         // Experimental, try to prevent multiple Tippys from showing. Not working ATM.
-        onShow: (instance) => {
-          const msg = new CustomEvent(eventTippyShow, { detail: { instance } });
-          this.elementRef.nativeElement.parentElement.dispatchEvent(msg);
-        },
+        // onShow: (instance) => {
+        //   const msg = new CustomEvent(eventTippyShow, { detail: { instance } });
+        //   this.elementRef.nativeElement.parentElement.dispatchEvent(msg);
+        // },
       });
 
-    if (changes['tippy'] != null || changes['tippyFontSize'] != null) {
-      if (!this.tippyAllowHtml) {
-        this.#tooltip.setContent(this.tippy);
-        return;
-      }
-      const html = this.tippyFontSize === 'larger'
-        ? `<div style="font-size: larger">${this.tippy}</div>`
-        : this.tippy;
-      this.#tooltip.setContent(html);
+    if (changes['tippy'] != null || changes['tippyTranslate'] != null || changes['tippyFontSize'] != null) {
+      const contents = this.tippyTranslate
+        ? this.translate?.instant(this.tippyTranslate) ?? this.tippyTranslate // temp with null-check in case the service is missing ATM
+        : this.tippy ?? '';
+
+      if (!contents)
+        this.#tooltip.disable();
+
+      const body = !this.tippyAllowHtml
+        ? contents
+        : this.tippyFontSize === 'larger'
+          ? `<div style="font-size: larger">${contents}</div>`
+          : contents;
+
+      this.#tooltip.setContent(body);
     }
 
     if (changes['tippyDisabled'] != null)
@@ -79,10 +93,10 @@ export class TippyDirective implements OnChanges, OnDestroy {
   }
 
   // Experimental, try to prevent multiple Tippys from showing. Not working ATM.
-  @HostListener(eventTippyShow, ['$event'])
-  onTippyShow(event: CustomEvent): void {
-    // console.warn('tippy-show event from', event);
-  }
+  // @HostListener(eventTippyShow, ['$event'])
+  // onTippyShow(event: CustomEvent): void {
+  //   // console.warn('tippy-show event from', event);
+  // }
 
   ngOnDestroy(): void {
     this.#tooltip?.destroy();
