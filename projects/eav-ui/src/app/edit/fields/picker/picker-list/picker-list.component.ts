@@ -5,7 +5,6 @@ import { ExtendedModule } from '@angular/flex-layout/extended';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { TranslateModule } from '@ngx-translate/core';
 import { MousedownStopPropagationDirective } from '../../../../shared/directives/mousedown-stop-propagation.directive';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { classLog } from '../../../../shared/logging';
@@ -21,7 +20,6 @@ import { ReorderIndexes } from './reorder-index.models';
   standalone: true,
   imports: [
     MatFormFieldModule,
-    TranslateModule,
     ExtendedModule,
     MatIconModule,
     MatButtonModule,

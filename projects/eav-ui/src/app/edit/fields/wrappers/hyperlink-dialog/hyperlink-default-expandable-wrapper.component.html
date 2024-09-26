@@ -86,7 +86,7 @@
               </div>
               @if (buttonAdam()) {
               <button mat-icon-button class="c-ew__preview-suffix-icon"
-                [tippy]="'Fields.Hyperlink.Default.Fullscreen' | translate" appClickStopPropagation
+                tippyTranslate="Fields.Hyperlink.Default.Fullscreen" appClickStopPropagation
                 [disabled]="ui().disabled" (click)="expandDialog()">
                 <mat-icon svgIcon="apple-outlined"></mat-icon>
               </button>
@@ -94,15 +94,15 @@
               <button mat-icon-button class="c-ew__preview-suffix-icon" appClickStopPropagation
                 [disabled]="!adamItem()?._imageConfigurationContentType"
                 [ngClass]="{ 'metadata-exists': adamItem()?._imageConfigurationId > 0 }"
-                [tippy]="'Fields.Hyperlink.AdamFileManager.ImageSettings' | translate"
+                tippyTranslate="Fields.Hyperlink.AdamFileManager.ImageSettings"
                 (click)="openImageConfiguration(adamItem())">
                 <mat-icon
-                  [tippy]="(enableImageConfiguration() ? 'Fields.Hyperlink.AdamFileManager.ImageSettingsUnavailable' : 'Fields.Hyperlink.AdamFileManager.ImageSettingsDisabled') | translate"
+                  [tippyTranslate]="(enableImageConfiguration() ? 'Fields.Hyperlink.AdamFileManager.ImageSettingsUnavailable' : 'Fields.Hyperlink.AdamFileManager.ImageSettingsDisabled')"
                   [tippyDisabled]="adamItem()?._imageConfigurationContentType">filter_center_focus</mat-icon>
               </button>
               @if (buttonPage()) {
               <button mat-icon-button class="c-ew__preview-suffix-icon"
-                [tippy]="'Fields.Hyperlink.Default.PageTip' | translate" appClickStopPropagation
+                tippyTranslate="Fields.Hyperlink.Default.PageTip" appClickStopPropagation
                 [disabled]="ui().disabled" (click)="openPagePicker()">
                 <mat-icon svgIcon="sitemap"></mat-icon>
               </button>

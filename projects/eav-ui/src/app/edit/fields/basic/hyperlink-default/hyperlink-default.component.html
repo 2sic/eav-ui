@@ -12,7 +12,7 @@
         [tippy]="'Fields.Hyperlink.AdamFileManager.ImageSettings' | translate"
         (click)="openImageConfiguration(adamItem())">
         <mat-icon
-          [tippy]="(enableImageConfiguration() ? 'Fields.Hyperlink.AdamFileManager.ImageSettingsUnavailable' : 'Fields.Hyperlink.AdamFileManager.ImageSettingsDisabled') | translate"
+          [tippyTranslate]="enableImageConfiguration() ? 'Fields.Hyperlink.AdamFileManager.ImageSettingsUnavailable' : 'Fields.Hyperlink.AdamFileManager.ImageSettingsDisabled'"
           [tippyDisabled]="adamItem()?._imageConfigurationContentType">filter_center_focus</mat-icon>
       </button>
       @if (buttonPage()) {

@@ -1,17 +1,17 @@
-import { Component, computed, EventEmitter, inject, Input, Output, ViewContainerRef } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { PublishStatusDialogComponent } from './publish-status-dialog/publish-status-dialog.component';
-import { TranslateModule } from '@ngx-translate/core';
 import { AsyncPipe, UpperCasePipe } from '@angular/common';
-import { LanguageSwitcherComponent } from './language-switcher/language-switcher.component';
-import { MatIconModule } from '@angular/material/icon';
+import { Component, computed, EventEmitter, inject, Input, Output, ViewContainerRef } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { TranslateModule } from '@ngx-translate/core';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { FormConfigService } from '../../form/form-config.service';
+import { FormPublishingService } from '../../form/form-publishing.service';
 import { FormsStateService } from '../../form/forms-state.service';
 import { LanguageService } from '../../localization/language.service';
-import { FormPublishingService } from '../../form/form-publishing.service';
+import { LanguageSwitcherComponent } from './language-switcher/language-switcher.component';
+import { PublishStatusDialogComponent } from './publish-status-dialog/publish-status-dialog.component';
 
 @Component({
   selector: 'app-edit-dialog-header',

@@ -7,7 +7,7 @@
     mat-icon-button
     matSuffix
     class="picker-inline-button"
-    [tippyTranslate]="'Fields.Picker.Edit'"
+    tippyTranslate="Fields.Picker.Edit"
     [disabled]="ui().disabled || config.initialDisabled"
     appClickStopPropagation
     (click)="edit(item().value, item().id)"
@@ -22,7 +22,7 @@
     mat-icon-button
     matSuffix
     class="picker-inline-button"
-    [tippyTranslate]="'Fields.Picker.Remove'"
+    tippyTranslate="Fields.Picker.Remove"
     [disabled]="ui().disabled"
     appClickStopPropagation
     (click)="removeItem(index())"
@@ -38,7 +38,7 @@
     mat-icon-button
     matSuffix
     class="picker-inline-button"
-    [tippyTranslate]="'Fields.Picker.Delete'"
+    tippyTranslate="Fields.Picker.Delete"
     [disabled]="ui().disabled"
     appClickStopPropagation
     (click)="deleteItem(index(), item().value)"

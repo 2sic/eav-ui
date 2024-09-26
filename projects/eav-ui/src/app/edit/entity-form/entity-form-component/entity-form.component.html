@@ -16,8 +16,8 @@
     <!-- Notes button -->
     @if (ctSettings().showNotes) {
       <button type="button" #noteTrigger mat-icon-button class="eav-note {{ noteProps().triggerClass }}"
-        [disabled]="readOnly()" [tippy]="noteProps().tooltip | translate"
-        [tippyDisabled]="readOnly() || !noteProps().tooltip" [disableRipple]="noteProps().itemNotSaved"
+        [disabled]="readOnly()" [tippyTranslate]="noteProps().tooltip"
+        [tippyDisabled]="readOnly()" [disableRipple]="noteProps().itemNotSaved"
         (pointerenter)="noteProps().note ? toggleNote($event) : null"
         (pointerleave)="noteProps().note ? toggleNote($event) : null"
         (click)="noteProps().note ? toggleNote($event) : editNote()">

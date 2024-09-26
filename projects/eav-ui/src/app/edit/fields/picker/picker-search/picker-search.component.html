@@ -57,7 +57,7 @@
       @for (item of filteredItems(); track item) {
         <mat-option [value]="item.value" class="picker-option-wrapper"
           [disabled]="item.noSelect ? true : settings().enableReselect ? false : isOptionDisabled(item.value)"
-          [tippy]="item.tooltip" tippyShowDelay="500" [tippyDisabled]="!item.tooltip" [tippyAllowHtml]="true" [tippyArrow]="true">
+          [tippy]="item.tooltip" tippyShowDelay="500" [tippyAllowHtml]="true" [tippyArrow]="true">
           <div class="picker-option-contents">
             <span class="picker-option-label">{{ item.label ? item.label : item.value }}</span>
             <div class="picker-option-info">
@@ -75,7 +75,7 @@
           <button mat-icon-button disabled></button>
           <mat-option [value]="item.value" class="picker-option-wrapper"
             [disabled]="treeHelper.disableOption(item, selectedItems(), settings().enableReselect)"
-            [tippy]="item.tooltip" tippyShowDelay="500" [tippyDisabled]="!item.tooltip" [tippyAllowHtml]="true" [tippyArrow]="true">
+            [tippy]="item.tooltip" tippyShowDelay="500" [tippyAllowHtml]="true" [tippyArrow]="true">
             <div class="picker-option-contents">
               <span class="picker-option-label">{{ item.label ? item.label : item.value }}</span>
               <div class="picker-option-info">
@@ -93,7 +93,7 @@
           </button>
           <mat-option [value]="item.value" class="picker-option-wrapper"
             [disabled]="treeHelper.disableOption(item, selectedItems(), settings().enableReselect)"
-            [tippy]="item.tooltip" tippyShowDelay="500" [tippyDisabled]="!item.tooltip" [tippyAllowHtml]="true" [tippyArrow]="true">
+            [tippy]="item.tooltip" tippyShowDelay="500" [tippyAllowHtml]="true" [tippyArrow]="true">
             <div class="picker-option-contents">
               <span class="picker-option-label">{{ item.label ? item.label : item.value }}</span>
               <div class="picker-option-info">
