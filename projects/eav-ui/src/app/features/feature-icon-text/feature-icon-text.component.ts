@@ -1,9 +1,7 @@
 import { Component } from '@angular/core';
-import { FeatureComponentBase } from '../shared/base-feature.component';
-import { TranslateModule } from '@ngx-translate/core';
-import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
+import { FeatureComponentBase } from '../shared/base-feature.component';
 
 @Component({
   selector: 'app-feature-icon-text',
@@ -12,8 +10,6 @@ import { TippyDirective } from '../../shared/directives/tippy.directive';
   standalone: true,
   imports: [
     MatIconModule,
-    AsyncPipe,
-    TranslateModule,
     TippyDirective,
   ],
 })

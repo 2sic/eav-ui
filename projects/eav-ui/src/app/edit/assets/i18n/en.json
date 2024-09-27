@@ -288,7 +288,7 @@
     "FeatureNotActivated": "This cool feature is not enabled",
     "ClickToFindOutMore": "Click to find out more...",
     "FindOutMore": "Find out more",
-    "Tooltip": "Feature: {{Name}} ({{NameId}})",
+    "Tooltip": "Feature: {{name}} ({{nameId}})",
     "Close": "Close"
   },
   "License-EditUi-Warning-Label": "License ⚠️",

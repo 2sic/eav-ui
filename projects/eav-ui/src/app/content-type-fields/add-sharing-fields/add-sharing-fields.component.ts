@@ -1,27 +1,27 @@
-import { ChangeDetectorRef, Component, HostBinding, Inject, OnDestroy, OnInit, ViewChild, ViewContainerRef, inject } from '@angular/core';
-import { BaseComponent } from '../../shared/components/base.component';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatDialogActions } from '@angular/material/dialog';
-import { Field } from '../../shared/fields/field.model';
-import { ContentTypesFieldsService } from '../../shared/fields/content-types-fields.service';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { BehaviorSubject, catchError, concatMap, filter, of, toArray } from 'rxjs';
-import { ContentType } from '../../app-administration/models';
-import { fieldNameError, fieldNamePattern } from '../../app-administration/constants/field-name.patterns';
-import { NgForm, FormsModule } from '@angular/forms';
-import { FeaturesScopedService } from '../../features/features-scoped.service';
-import { FeatureNames } from '../../features/feature-names';
-import { openFeatureDialog } from '../../features/shared/base-feature.component';
-import { TranslateModule } from '@ngx-translate/core';
 import { AsyncPipe } from '@angular/common';
-import { ReservedNamesValidatorDirective } from '../edit-content-type-fields/reserved-names.directive';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { ChangeDetectorRef, Component, HostBinding, Inject, OnDestroy, OnInit, ViewChild, ViewContainerRef, inject } from '@angular/core';
+import { FormsModule, NgForm } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { FeatureIconIndicatorComponent } from '../../features/feature-icon-indicator/feature-icon-indicator.component';
-import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogActions, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { TranslateModule } from '@ngx-translate/core';
+import { BehaviorSubject, catchError, concatMap, filter, of, toArray } from 'rxjs';
+import { fieldNameError, fieldNamePattern } from '../../app-administration/constants/field-name.patterns';
+import { ContentType } from '../../app-administration/models';
 import { transient } from '../../core';
+import { FeatureIconIndicatorComponent } from '../../features/feature-icon-indicator/feature-icon-indicator.component';
+import { FeatureNames } from '../../features/feature-names';
+import { FeaturesScopedService } from '../../features/features-scoped.service';
+import { openFeatureDialog } from '../../features/shared/base-feature.component';
+import { BaseComponent } from '../../shared/components/base.component';
+import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
+import { ContentTypesFieldsService } from '../../shared/fields/content-types-fields.service';
+import { Field } from '../../shared/fields/field.model';
+import { ReservedNamesValidatorDirective } from '../edit-content-type-fields/reserved-names.directive';
 
 @Component({
   selector: 'app-add-sharing-fields',
@@ -62,7 +62,7 @@ export class AddSharingFieldsComponent extends BaseComponent implements OnInit, 
 
   #contentTypesFieldsSvc = transient(ContentTypesFieldsService);
 
-  #fieldShareConfigManagement = this.#features.isEnabled[FeatureNames.FieldShareConfigManagement];
+  #fieldShareConfigManagement = this.#features.isEnabled[FeatureNames.ContentTypeFieldsReuseDefinitions];
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public dialogData: { contentType: ContentType, existingFields: Field[] },
@@ -126,7 +126,7 @@ export class AddSharingFieldsComponent extends BaseComponent implements OnInit, 
   // When API gets created we will need to send the selected fields to the API
   save() {
     if (!this.#fieldShareConfigManagement()) {
-      openFeatureDialog(this.dialog, FeatureNames.FieldShareConfigManagement, this.viewContainerRef, this.changeDetectorRef);
+      openFeatureDialog(this.dialog, FeatureNames.ContentTypeFieldsReuseDefinitions, this.viewContainerRef, this.changeDetectorRef);
     } else {
       this.saving$.next(true);
       this.snackBar.open('Saving...');

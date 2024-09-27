@@ -1,20 +1,17 @@
-import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewContainerRef, inject, signal } from '@angular/core';
-import { BaseComponent } from '../../shared/components/base.component';
-import { Field } from '../../shared/fields/field.model';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { ContentTypesFieldsService } from '../../shared/fields/content-types-fields.service';
-import { SharingOrInheriting } from './share-or-inherit-dialog-models';
-import { openFeatureDialog } from '../../features/shared/base-feature.component';
-import { FeaturesScopedService } from '../../features/features-scoped.service';
-import { FeatureNames } from '../../features/feature-names';
-import { TranslateModule } from '@ngx-translate/core';
 import { NgClass } from '@angular/common';
-import { MatTableModule } from '@angular/material/table';
-import { MatCardModule } from '@angular/material/card';
-import { MatIconModule } from '@angular/material/icon';
+import { Component, Inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { FeatureIconIndicatorComponent } from '../../features/feature-icon-indicator/feature-icon-indicator.component';
+import { MatCardModule } from '@angular/material/card';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTableModule } from '@angular/material/table';
+import { TranslateModule } from '@ngx-translate/core';
 import { transient } from '../../core/transient';
+import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
+import { BaseComponent } from '../../shared/components/base.component';
+import { ContentTypesFieldsService } from '../../shared/fields/content-types-fields.service';
+import { Field } from '../../shared/fields/field.model';
+import { SharingOrInheriting } from './share-or-inherit-dialog-models';
 
 @Component({
   selector: 'app-share-or-inherit-dialog',
@@ -28,7 +25,7 @@ import { transient } from '../../core/transient';
     MatTableModule,
     NgClass,
     TranslateModule,
-    FeatureIconIndicatorComponent
+    FeatureTextInfoComponent,
   ],
 })
 export class ShareOrInheritDialogComponent extends BaseComponent implements OnInit, OnDestroy {
@@ -39,22 +36,14 @@ export class ShareOrInheritDialogComponent extends BaseComponent implements OnIn
   initialState: SharingOrInheriting = SharingOrInheriting.None;
   sharingOrInheriting = SharingOrInheriting;
   guid: string = null;
-  isSaveDisabled: boolean = true;
 
   shareableFields = signal<Field[]>(undefined);
 
-  public features = inject(FeaturesScopedService);
-  #fieldShareConfigManagement = this.features.isEnabled[FeatureNames.FieldShareConfigManagement];
-
-  private contentTypesFieldsService = transient(ContentTypesFieldsService);
+  #contentTypesFieldsSvc = transient(ContentTypesFieldsService);
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public dialogData: Field,
-    private dialogRef: MatDialogRef<ShareOrInheritDialogComponent>,
-    // All this is just for the feature dialog
-    private dialog: MatDialog,
-    private viewContainerRef: ViewContainerRef,
-    private changeDetectorRef: ChangeDetectorRef,
+    protected dialog: MatDialogRef<ShareOrInheritDialogComponent>,
   ) {
     super();
   }
@@ -67,11 +56,8 @@ export class ShareOrInheritDialogComponent extends BaseComponent implements OnIn
         : SharingOrInheriting.Inheriting;
     if (this.initialState === SharingOrInheriting.None) {
       this.title = 'SharingOrInheriting.TitleNone';
-      const shareableFieldsTemp$ = this.contentTypesFieldsService.getShareableFieldsFor(this.dialogData.AttributeId);
-
-      shareableFieldsTemp$.subscribe((shareableFields) => {
-        this.shareableFields.set(shareableFields);
-      });
+      this.#contentTypesFieldsSvc.getShareableFieldsFor(this.dialogData.AttributeId)
+        .subscribe(fields => this.shareableFields.set(fields));
 
     } else if (this.initialState === SharingOrInheriting.Sharing) {
       this.title = 'SharingOrInheriting.TitleSharing';
@@ -85,36 +71,25 @@ export class ShareOrInheritDialogComponent extends BaseComponent implements OnIn
   chooseShare() {
     this.guid = null;
     this.state = SharingOrInheriting.Sharing;
-    this.isSaveDisabled = false;
   }
 
   chooseInherit() {
     this.guid = null;
     this.state = SharingOrInheriting.Inheriting;
-    this.isSaveDisabled = true;
   }
 
   inheritField(field: Field) {
     this.guid = field.Guid;
-    this.isSaveDisabled = false;
   }
 
   save() {
-    if (!this.#fieldShareConfigManagement()) {
-      openFeatureDialog(this.dialog, FeatureNames.FieldShareConfigManagement, this.viewContainerRef, this.changeDetectorRef);
-      return;
-    }
-
     if (this.state == SharingOrInheriting.Sharing) {
-      this.subscriptions.add(this.contentTypesFieldsService.share(this.dialogData.Id)
-        .subscribe(() => this.dialogRef.close()));
+      this.subscriptions.add(this.#contentTypesFieldsSvc.share(this.dialogData.Id)
+        .subscribe(() => this.dialog.close()));
     } else if (this.state == SharingOrInheriting.Inheriting) {
-      this.subscriptions.add(this.contentTypesFieldsService.inherit(this.dialogData.Id, this.guid)
-        .subscribe(() => this.dialogRef.close()));
+      this.subscriptions.add(this.#contentTypesFieldsSvc.inherit(this.dialogData.Id, this.guid)
+        .subscribe(() => this.dialog.close()));
     }
   }
 
-  closeDialog() {
-    this.dialogRef.close();
-  }
 }
