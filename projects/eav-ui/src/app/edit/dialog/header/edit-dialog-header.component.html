@@ -1,7 +1,6 @@
   <mat-card class="eav-header">
-    <button mat-icon-button class="eav-exit-button" (click)="close()"
-      [tippy]="(formConfig.config.isParentDialog ? 'Form.Buttons.Exit.Tip' : 'Form.Buttons.Return.Tip') | translate">
-      <mat-icon class="eav-icon">{{ formConfig.config.isParentDialog ? 'clear' : 'arrow_back' }}</mat-icon>
+    <button mat-icon-button class="eav-exit-button" (click)="close()" [tippyTranslate]="'Form.Buttons.' + (config.isParentDialog ? 'Exit' : 'Return') + '.Tip'">
+      <mat-icon class="eav-icon">{{ config.isParentDialog ? 'clear' : 'arrow_back' }}</mat-icon>
     </button>
     <div class="eav-languages">
       @if (hasLanguages) {
@@ -15,16 +14,21 @@
         lock
       </mat-icon>
     }
-    @if (formConfig.config.isCopy) {
+    @if (config.isCopy) {
       <mat-icon class="eav-hint-icon" tippyTranslate="General.CopyHint">
         file_copy
       </mat-icon>
     }
     <button mat-button class="eav-publish-button" [disabled]="readOnly().isReadOnly" (click)="openPublishStatusDialog()"
-      [tippyTranslate]="'PublishStatus.' + publishMode() + '.Tip' | translate">
+      [tippyTranslate]="'PublishStatus.' + publishMode() + '.Tip'">
       <span class="eav-publish-mode">
         {{ 'PublishStatus.Label' | translate }}
         <b>{{ 'PublishStatus.' + publishMode() | translate | uppercase }}</b>
       </span>
     </button>
+    @if (showLicenseWarning()) {
+      <button mat-button tippyTranslate="License-EditUi-Warning-Tooltip" (click)="openUnlicensedDialog()">
+        {{ 'License-EditUi-Warning-Label' | translate }} ⚠️
+      </button>
+    }
   </mat-card>

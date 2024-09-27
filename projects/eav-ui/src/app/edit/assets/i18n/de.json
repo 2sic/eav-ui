@@ -241,5 +241,7 @@
   },
   "Features": {
     "NotActivated": "Diese Funktion ist nicht aktiviert - mehr erfahren"
-  }
+  },
+  "License-EditUi-Warning-Label": "Lizenz ⚠️",
+  "License-EditUi-Warning-Tooltip": "Du verwendest Funktionen, die nicht lizenziert sind."
 }

@@ -29,6 +29,8 @@ export interface EavEditLoadDto extends EavPublishStatus {
   Items: EavEntityBundleDto[];
   Prefetch?: Prefetch;
   Settings: EditSettingsDto;
+
+  RequiredFeatures?: Record<string, string[]>;
 }
 
 export interface EditSettings {

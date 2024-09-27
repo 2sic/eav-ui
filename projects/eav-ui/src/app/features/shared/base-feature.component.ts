@@ -1,8 +1,8 @@
 import { ChangeDetectorRef, Directive, Input, ViewContainerRef, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { FeaturesScopedService } from '../features-scoped.service';
+import { BehaviorSubject, Observable, combineLatest, map, switchMap } from 'rxjs';
 import { FeatureInfoDialogComponent } from '../feature-info-dialog/feature-info-dialog.component';
-import { BehaviorSubject, switchMap, Observable, map, combineLatest } from 'rxjs';
+import { FeaturesScopedService } from '../features-scoped.service';
 import { FeatureSummary } from '../models';
 
 @Directive()
@@ -52,5 +52,5 @@ export function openFeatureDialog(dialog: MatDialog, featureId: string, viewCont
     width: '400px',
   });
 
-  changeDetectorRef.markForCheck();
+  changeDetectorRef?.markForCheck();
 }

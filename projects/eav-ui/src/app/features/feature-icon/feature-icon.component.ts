@@ -1,14 +1,13 @@
-import { Component } from '@angular/core';
-import { FeatureComponentBase } from '../shared/base-feature.component';
-import { TranslateModule } from '@ngx-translate/core';
 import { AsyncPipe } from '@angular/common';
+import { Component } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
+import { TranslateModule } from '@ngx-translate/core';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
+import { FeatureComponentBase } from '../shared/base-feature.component';
 
 @Component({
   selector: 'app-feature-icon',
   templateUrl: './feature-icon.component.html',
-  styleUrls: ['./feature-icon.component.scss'],
   standalone: true,
   imports: [
     MatIconModule,

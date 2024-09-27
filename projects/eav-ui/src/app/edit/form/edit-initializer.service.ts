@@ -1,35 +1,35 @@
-import { ContentTypeItemService } from '../shared/content-types/content-type-item.service';
 import { Injectable, signal } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
+import { transient } from '../../core';
+import { FeaturesScopedService } from '../../features/features-scoped.service';
+import { InputTypeHelpers } from '../../shared/fields/input-type-helpers';
 import { UpdateEnvVarsFromDialogSettings } from '../../shared/helpers/update-env-vars-from-dialog-settings.helper';
 import { convertUrlToForm } from '../../shared/helpers/url-prep.helper';
-import { FeaturesScopedService } from '../../features/features-scoped.service';
+import { classLog } from '../../shared/logging';
+import { ItemAddIdentifier } from '../../shared/models/edit-form.model';
 import { calculateIsParentDialog, sortLanguages } from '../dialog/main/edit-dialog-main.helpers';
 import { EavEditLoadDto } from '../dialog/main/edit-dialog-main.models';
-import { EditUrlParams } from '../routing/edit-url-params.model';
-import { EntityReader } from '../shared/helpers';
-import { EavEntity } from '../shared/models/eav/eav-entity';
-import { ItemAddIdentifier } from '../../shared/models/edit-form.model';
 import { FieldLogicManager } from '../fields/logic/field-logic-manager';
-import { EavContentType } from '../shared/models/eav/eav-content-type';
-import { FormDataService } from './form-data.service';
-import { InputTypeHelpers } from '../../shared/fields/input-type-helpers';
 import { FieldReader } from '../localization/field-reader';
-import { FormConfigService } from './form-config.service';
-import { ItemValuesOfLanguage } from '../state/item-values-of-language.model';
-import { transient } from '../../core';
-import { AdamCacheService } from '../shared/adam/adam-cache.service';
-import { ContentTypeService } from '../shared/content-types/content-type.service';
-import { ItemService } from '../state/item.service';
-import { InputTypeService } from '../shared/input-types/input-type.service';
-import { FormPublishingService } from './form-publishing.service';
 import { LanguageService } from '../localization/language.service';
-import { FormLanguageService } from './form-language.service';
+import { EditUrlParams } from '../routing/edit-url-params.model';
+import { AdamCacheService } from '../shared/adam/adam-cache.service';
 import { LinkCacheService } from '../shared/adam/link-cache.service';
+import { ContentTypeItemService } from '../shared/content-types/content-type-item.service';
+import { ContentTypeService } from '../shared/content-types/content-type.service';
+import { EntityReader } from '../shared/helpers';
+import { InputTypeService } from '../shared/input-types/input-type.service';
+import { EavContentType } from '../shared/models/eav/eav-content-type';
+import { EavEntity } from '../shared/models/eav/eav-entity';
 import { FieldsSettingsHelpers } from '../state/field-settings.helper';
-import { classLog } from '../../shared/logging';
+import { ItemValuesOfLanguage } from '../state/item-values-of-language.model';
+import { ItemService } from '../state/item.service';
+import { FormConfigService } from './form-config.service';
+import { FormDataService } from './form-data.service';
+import { FormLanguageService } from './form-language.service';
+import { FormPublishingService } from './form-publishing.service';
 
 const logSpecs = {
   all: false,
@@ -115,7 +115,7 @@ export class EditInitializerService {
 
 
       // SDV: document what's happening here
-      this.featuresService.load(formData.Context);
+      this.featuresService.load(formData.Context, formData);
       UpdateEnvVarsFromDialogSettings(formData.Context.App);
       this.#importLoadedData(formData);
       this.#keepInitialValues();
