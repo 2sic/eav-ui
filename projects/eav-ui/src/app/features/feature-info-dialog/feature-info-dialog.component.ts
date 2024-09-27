@@ -28,6 +28,12 @@ import { FeatureDetailService } from '../services/feature-detail.service';
 })
 export class FeatureInfoDialogComponent {
 
+  // TODO: THIS component shows the same details as the FeatureDetailsDialogComponent
+  // TODO: @2pp pls change to just load the feature, then include the <app-feature-details-dialog [specs]="{ feature: ..., showStatus: true, showGuid: false, ...">
+  // So the end result is a simple @if (...) <app-feature-details-dialog [specs]="{ feature: ... }>
+  // for an example of the tag how it's used, check out FeaturesUsedButUnlicensedComponent
+  // but this file will basically just have 3 lines of html
+
   #featureDetailSvc = transient(FeatureDetailService);
 
   constructor(
