@@ -1,15 +1,13 @@
 import { Injectable, Signal, inject, signal } from '@angular/core';
+import { Observable } from 'rxjs';
 import { DialogContext } from '../../app-administration/models';
 import { keyPartOfPage, keyPublishing, partOfPageDefault } from '../../shared/constants/session.constants';
+import { classLog } from '../../shared/logging';
 import { Context } from '../../shared/services/context';
 import { EditSettings } from '../dialog/main/edit-dialog-main.models';
-import { Observable } from 'rxjs';
+import { FormConfiguration, VersioningOptions } from './form-configuration.model';
 import { FormLanguageService } from './form-language.service';
 import { FormLanguageComplete, FormLanguagesConfig } from './form-languages.model';
-import { FormConfiguration, VersioningOptions } from './form-configuration.model';
-import { classLog } from '../../shared/logging';
-
-export const webApiEditRoot = 'cms/edit/';
 
 /**
  * Service which tell us about a single edit-form configuration.

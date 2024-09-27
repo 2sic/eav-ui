@@ -8,9 +8,9 @@ import { Field, FieldInputTypeOption } from './field.model';
 import { InputTypeCatalog } from './input-type-catalog';
 import { InputTypeMetadata } from './input-type-metadata.model';
 
-export const webApiFieldsRoot = 'admin/field/';
+const webApiFieldsRoot = 'admin/field/';
 export const webApiFieldsAll = 'admin/field/all';
-export const webApiFieldsGetShared = 'admin/field/GetSharedFields';
+const webApiFieldsGetShared = 'admin/field/GetSharedFields';
 
 @Injectable()
 export class ContentTypesFieldsService extends HttpServiceBase {

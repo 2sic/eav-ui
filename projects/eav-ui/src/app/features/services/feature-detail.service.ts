@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Feature } from '../models';
 import { HttpServiceBase } from '../../shared/services/http-service-base';
+import { Feature } from '../models';
 
-export const webApiRoot = "admin/feature/";
+const webApiFeatureDetails = "admin/feature/details";
 
 @Injectable()
 export class FeatureDetailService extends HttpServiceBase {
 
-  getFeatureDetails(featureNameId: string): Observable<Feature> {
-    return this.http.get<Feature>(this.apiUrl(webApiRoot + 'details'), {
-      params: { nameId: featureNameId }
+  getFeatureDetails(nameId: string): Observable<Feature> {
+    return this.http.get<Feature>(this.apiUrl(webApiFeatureDetails), {
+      params: { nameId }
     });
   }
 }
