@@ -32,7 +32,7 @@ export class FeatureInfoDialogComponent {
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public dialogData: string,
-    private dialogRef: MatDialogRef<FeatureInfoDialogComponent>,
+    protected dialog: MatDialogRef<FeatureInfoDialogComponent>,
     private snackBar: MatSnackBar,
   ) {
     this.#featureDetailSvc.getFeatureDetails(this.dialogData).subscribe(f => this.featureDetails.set(f));
@@ -43,13 +43,5 @@ export class FeatureInfoDialogComponent {
   copyToClipboard(text: string): void {
     copyToClipboard(text);
     this.snackBar.open('Copied to clipboard', null, { duration: 2000 });
-  }
-
-  findOutMore(link: string): void {
-    window.open(link, '_blank');
-  }
-
-  closeDialog(): void {
-    this.dialogRef.close();
   }
 }

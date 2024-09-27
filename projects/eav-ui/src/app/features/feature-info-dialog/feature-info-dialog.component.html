@@ -21,12 +21,11 @@
       }
     </mat-card-content>
     <mat-card-actions align="end">
-      <button mat-raised-button color="accent"
-        class="eav-card-action-button" (click)="findOutMore(feat.link)">
+      <a [href]="feat.link" target="_blank" mat-raised-button color="accent" class="eav-card-action-button">
         <mat-icon>open_in_new</mat-icon>
         {{ "Features.FindOutMore" | translate }}
-      </button>
-      <button mat-raised-button class="eav-card-action-button" (click)="closeDialog()">
+      </a>
+      <button mat-raised-button class="eav-card-action-button" (click)="dialog.close()">
         {{ "Features.Close" | translate }}
       </button>
     </mat-card-actions>
