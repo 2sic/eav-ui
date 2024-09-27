@@ -25,17 +25,11 @@ export class FeatureDetailsDialogComponent {
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public dialogData: FeatureDetailsDialogData,
-    private dialogRef: MatDialogRef<FeatureDetailsDialogComponent>,
+    protected dialog: MatDialogRef<FeatureDetailsDialogComponent>,
     private snackBar: MatSnackBar,
   ) { }
 
-  closeDialog(): void {
-    this.dialogRef.close();
-  }
-
-  findOutMore(link: string): void {
-    window.open(link, '_blank');
-  }
+  protected feature = this.dialogData.feature;
 
   copyToClipboard(text: string): void {
     copyToClipboard(text);

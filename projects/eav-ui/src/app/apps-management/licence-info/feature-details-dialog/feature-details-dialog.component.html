@@ -1,41 +1,37 @@
 <mat-card>
   <mat-card-header>
-    <mat-card-title>{{ dialogData.feature.name }}</mat-card-title>
+    <mat-card-title>{{ feature.name }}</mat-card-title>
   </mat-card-header>
   <mat-card-content>
-    <p [innerHtml]="dialogData.feature.description | safeHtml"></p>
-    @if (dialogData.feature.nameId; as id) {
-      <div class="eav-info-row">
-        <div class="eav-info-row__label">ID:</div>
-        <div class="eav-info-row__value">
-          <span [tippy]="id" (click)="copyToClipboard(id)">{{ id }}</span>
-        </div>
+    <p [innerHtml]="feature.description | safeHtml"></p>
+    <!-- Name ID -->
+    <div class="eav-info-row">
+      <div class="eav-info-row__label">ID:</div>
+      <div class="eav-info-row__value">
+        <span (click)="copyToClipboard(feature.nameId)">{{ feature.nameId }}</span>
       </div>
-    }
-    @if (dialogData.feature.guid; as guid) {
-      <div class="eav-info-row">
-        <div class="eav-info-row__label">GUID:</div>
-        <div class="eav-info-row__value eav_click">
-          <span [tippy]="guid" (click)="copyToClipboard(guid)">{{ guid }}</span>
-        </div>
+    </div>
+    <!-- GUID -->
+    <div class="eav-info-row">
+      <div class="eav-info-row__label">GUID:</div>
+      <div class="eav-info-row__value eav_click">
+        <span (click)="copyToClipboard(feature.guid)">{{ feature.guid }}</span>
       </div>
-    }
-    @if ((dialogData.feature.security.Impact + ': ' + dialogData.feature.security.Message); as security) {
-      <div class="eav-info-row">
-        <div class="eav-info-row__label">Security Rating:</div>
-        <div class="eav-info-row__value">
-          <span>{{ security }}</span>
-        </div>
+    </div>
+    <!-- Security Rating -->
+    <div class="eav-info-row">
+      <div class="eav-info-row__label">Security Rating:</div>
+      <div class="eav-info-row__value">
+        <span>{{ feature.security.Impact + ': ' + feature.security.Message }}</span>
       </div>
-    }
+    </div>
   </mat-card-content>
   <mat-card-actions align="end">
-    <button mat-raised-button class="eav-card-action-button" color="accent"
-      (click)="findOutMore(dialogData.feature.link)">
+    <a [href]="feature.link" target="_blank" mat-raised-button class="eav-card-action-button" color="accent">
       <mat-icon>open_in_new</mat-icon>
       Find out more
-    </button>
-    <button mat-raised-button class="eav-card-action-button" (click)="closeDialog()">
+    </a>
+    <button mat-raised-button class="eav-card-action-button" (click)="dialog.close()">
       Close
     </button>
   </mat-card-actions>

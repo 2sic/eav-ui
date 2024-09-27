@@ -24,14 +24,10 @@
       height: 100%;
     }
 
-    .eav-button {
-      &__with-icon {
-        .eav-icon {
-          font-size: $eav-button-icon-font-size;
-          height: $eav-button-icon-height;
-          width: $eav-button-icon-width;
-        }
-      }
+    .eav-button__with-icon .eav-icon {
+      font-size: $eav-button-icon-font-size;
+      height: $eav-button-icon-height;
+      width: $eav-button-icon-width;
     }
   }
 }
@@ -39,31 +35,56 @@
 .eav-info-row {
   display: flex;
 
-  &__label {
-    flex: 1;
-    font-weight: 500;
+  // &__label {
+  //   flex: 1;
+  //   font-weight: 500;
 
-    &.eav-long {
-      flex: 2;
-    }
-  }
+  //   &.eav-long {
+  //     flex: 2;
+  //   }
+  // }
 
-  &__value {
-    flex: 3;
+  // &__value {
+  //   flex: 3;
 
-    .eav-click {
-      cursor: pointer;
-    }
+  //   .eav-click {
+  //     cursor: pointer;
+  //   }
 
-    &__span {
-      word-break: break-all;
-    }
-  }
+  //   &__span {
+  //     word-break: break-all;
+  //   }
+  // }
 
-  &__link {
-    margin-left: $eav-margin-space;
+  // &__link {
+  //   margin-left: $eav-margin-space;
+  // }
+}
+.eav-info-row__label {
+  flex: 1;
+  font-weight: 500;
+
+  &.eav-long {
+    flex: 2;
   }
 }
+
+.eav-info-row__value {
+  flex: 3;
+
+  .eav-click {
+    cursor: pointer;
+  }
+}
+
+.eav-info-row__value__span {
+  word-break: break-all;
+}
+
+.eav-info-row__link {
+  margin-left: $eav-margin-space;
+}
+
 
 .eav-card-action-button {
   margin-left: 8px;
