@@ -31,6 +31,12 @@ export class FeatureDetailsDialogComponent {
 
   protected feature = this.dialogData.feature;
 
+  // TODO: @2pp - this code is duplicated in ca. 6 places
+  // Please create a simple ClipboardService for this
+  // and the use ca. like this
+  // protected clipboard = transient(ClipboardService);
+  // ... in the HTML then
+  // (click)="clipboard.copyToClipboard('your text')"
   copyToClipboard(text: string): void {
     copyToClipboard(text);
     this.snackBar.open('Copied to clipboard', null, { duration: 2000 });
