@@ -155,7 +155,8 @@ export class EditControlsBuilderDirective implements OnInit, OnDestroy {
       this.#generateAndAttachField(previewType, pickerPreviewContainerRef, wrapperInfo.injectors);
     }
     // Set only the first input to be focused, if it is the first input
-    if (this.#firstInputFocused === false && this.index === 0) {
+    console.log('2dm autofocus', fieldProps.settings.noAutoFocus);
+    if (this.#firstInputFocused === false && this.index === 0 && fieldProps.settings.noAutoFocus !== true) {
       this.#setAutoFocus(componentRef);
       this.#firstInputFocused = true;
     }

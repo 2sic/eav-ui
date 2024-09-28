@@ -58,6 +58,8 @@ export class PickerLogicShared {
       ? tools.contentTypeItemSvc.getMany(fs.DataSources)
       : [];
 
+    fs.noAutoFocus = true;
+
     // Transfer configuration
     const dataSource = dataSources[0];
     const typeName = dataSource?.Type.Name as Of<typeof PickerConfigs>;
