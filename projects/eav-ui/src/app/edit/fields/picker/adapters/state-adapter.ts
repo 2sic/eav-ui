@@ -158,13 +158,9 @@ export abstract class StateAdapter {
       return [...list];
     });
 
-    if (!this.values().length) {
-      // move back to component
-      setTimeout(() => {
-        console.log('trying to call focus');
-        this.#focusOnSearchComponent();
-      });
-    }
+    // If we have no items left, set focus back to the search component, since this is usually wanted
+    if (!this.values().length)
+      setTimeout(() => this.#focusOnSearchComponent());
   }
 
   public doAfterDelete(props: DeleteEntityProps) {
