@@ -1,14 +1,27 @@
 <div class="eav-dialog eav-no-scrollbar">
   <div class="eav-dialog-header">
     <div class="eav-dialog-header__title">
-      {{ "SharingOrInheriting.TitleAddFieldsWhichInherit" | translate}}
+      {{ "SharingOrInheriting.TitleAddFieldsWhichInherit" | translate}} (new v18)
     </div>
   </div>
   <div class="eav-dialog-content">
-    <span>{{ "SharingOrInheriting.PickFieldsToInheritFrom" | translate }}</span>
+    <p>
+      Shared fields allow you to compose a content-type using fields which were defined in another content-type.
+      These fields exist on this content-type, but use the definition incl. label and all other specs from the original field.
+    </p>
+    <p>
+      This is a bit like <strong>Content-Type Inheritance</strong>, but instead of inheritance we're using <strong>composition</strong>, which is much more powerful.
+    </p>
+    <p>
+      {{ "SharingOrInheriting.PickFieldsToInheritFrom" | translate }}
+      <br>
+      <em>
+        Note that if this app doesn't have published/shared field definitions, the list below will be empty. 
+      </em>
+    </p>
     <div class="eav-tables-div">
       <mat-card class="eav-table-div-left">
-        <table mat-table [dataSource]="shareableFields" class="eav-fields-table">
+        <table mat-table [dataSource]="shareableFields">
           <ng-container matColumnDef="contentType">
             <th mat-header-cell *matHeaderCellDef> <b>Content Type</b> </th>
             <td mat-cell *matCellDef="let field" class="eav-table-cell"> {{field.ContentType.Name}} </td>
@@ -30,14 +43,14 @@
                 (click)="selectField(field)">Select</button> </td>
           </ng-container>
 
-          <tr mat-header-row *matHeaderRowDef="displayedShareableFieldsColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedShareableFieldsColumns;"></tr>
+          <tr mat-header-row *matHeaderRowDef="optionsColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: optionsColumns;"></tr>
         </table>
       </mat-card>
 
       <mat-card class="eav-table-div-right">
         <form #ngForm="ngForm">
-          <table mat-table [dataSource]="selectedFields" class="eav-fields-table">
+          <table mat-table [dataSource]="selectedFields">
             <ng-container matColumnDef="newName">
               <th mat-header-cell *matHeaderCellDef> <b>New Name</b> </th>
               <td mat-cell *matCellDef="let item; index as i" class="eav-table-cell">
@@ -71,21 +84,26 @@
                   (click)="removeField(item)">Remove</button> </td>
             </ng-container>
 
-            <tr mat-header-row *matHeaderRowDef="displayedSelectedFieldsColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedSelectedFieldsColumns;"></tr>
+            <tr mat-header-row *matHeaderRowDef="selectedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: selectedColumns;"></tr>
           </table>
         </form>
       </mat-card>
     </div>
+
+    <!-- Show feature warning -->
+    <app-feature-text-info [featureNameId]="'ContentTypeFieldsReuseDefinitions'" [asInfo]="true">
+      <em>
+        Even if the feature is not licensed, it will always work but show warnings.
+      </em>
+    </app-feature-text-info>  
+
+    <!-- Save buttons -->
     <mat-dialog-actions align="end">
-      <button mat-raised-button type="button" (click)="closeDialog()">Cancel</button>
+      <button mat-raised-button type="button" (click)="dialog.close()">Cancel</button>
       <button mat-raised-button type="submit" color="accent"
-        [disabled]="!ngForm.form.valid || selectedFields.data.length == 0 || (saving$ | async)" (click)="save()">
-        <div class="eav-button-feature">
-          <span>Save</span>
-          <app-feature-icon-indicator class="eav-button-feature-icon"
-            [featureNameId]="'ContentTypeFieldsReuseDefinitions'"></app-feature-icon-indicator>
-        </div>
+        [disabled]="!ngForm.form.valid || selectedFields.data.length == 0 || saving()" (click)="save()">
+        Save
       </button>
     </mat-dialog-actions>
   </div>

@@ -241,9 +241,7 @@
     "TitleNone": "Share or inherit?",
     "TitleSharing": "Field Metadata Sharing",
     "TitleInheriting": "Field Inherits Metadata",
-    "MessageSharing": "Shared as:",
-    "MessageInheriting": "Inherits from:",
-    "AddSharedField": "Add shared field (BETA)",
+    "AddSharedField": "Add shared fields",
     "PickFieldsToInheritFrom": "Pick original fields which we'll inherit from"
   },
   "Extension.TinyMce": {

@@ -1,17 +1,30 @@
 import { ColumnApi, FilterChangedEvent, GridApi, GridOptions, GridReadyEvent, ICellRendererParams, RowClassParams, RowDragEvent, SortChangedEvent } from '@ag-grid-community/core';
+import { NgClass } from '@angular/common';
 import { Component, OnInit, signal } from '@angular/core';
-import { MatDialog, MatDialogRef, MatDialogActions } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogActions, MatDialogRef } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { forkJoin, of } from 'rxjs';
 import { ContentType } from '../app-administration/models/content-type.model';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
+import { transient } from '../core';
 import { GoToMetadata } from '../metadata';
 import { GoToPermissions } from '../permissions/go-to-permissions';
+import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
 import { eavConstants } from '../shared/constants/eav.constants';
+import { ToggleDebugDirective } from '../shared/directives/toggle-debug.directive';
+import { ContentTypesFieldsService } from '../shared/fields/content-types-fields.service';
+import { Field } from '../shared/fields/field.model';
+import { InputTypeHelpers } from '../shared/fields/input-type-helpers';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
-import { ItemAddIdentifier, EditForm, ItemEditIdentifier, ItemIdentifier, EditPrep } from '../shared/models/edit-form.model';
+import { EditForm, EditPrep, ItemAddIdentifier, ItemEditIdentifier, ItemIdentifier } from '../shared/models/edit-form.model';
+import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
+import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
+import { AddSharingFieldsComponent } from './add-sharing-fields/add-sharing-fields.component';
 import { ContentTypeFieldsActionsComponent } from './content-type-fields-actions/content-type-fields-actions.component';
 import { ContentTypeFieldsActionsParams } from './content-type-fields-actions/content-type-fields-actions.models';
 import { ContentTypeFieldsInputTypeComponent } from './content-type-fields-input-type/content-type-fields-input-type.component';
@@ -20,18 +33,7 @@ import { ContentTypeFieldsSpecialComponent } from './content-type-fields-special
 import { ContentTypeFieldsTitleComponent } from './content-type-fields-title/content-type-fields-title.component';
 import { ContentTypeFieldsTitleParams } from './content-type-fields-title/content-type-fields-title.models';
 import { ContentTypeFieldsTypeComponent } from './content-type-fields-type/content-type-fields-type.component';
-import { Field } from '../shared/fields/field.model';
-import { ContentTypesFieldsService } from '../shared/fields/content-types-fields.service';
 import { ShareOrInheritDialogComponent } from './share-or-inherit-dialog/share-or-inherit-dialog.component';
-import { NgClass } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
-import { ToggleDebugDirective } from '../shared/directives/toggle-debug.directive';
-import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
-import { transient } from '../core';
-import { InputTypeHelpers } from '../shared/fields/input-type-helpers';
-import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
 
 @Component({
   selector: 'app-content-type-fields',
@@ -45,6 +47,7 @@ import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
     MatDialogActions,
     ToggleDebugDirective,
     SxcGridModule,
+    TranslateModule,
   ],
 })
 export class ContentTypeFieldsComponent implements OnInit {
@@ -153,6 +156,14 @@ export class ContentTypeFieldsComponent implements OnInit {
     this.#dialogRouter.navRelative([`add/${this.contentTypeStaticName}`]);
   }
 
+  addSharedField() {
+    this.dialog.open(AddSharingFieldsComponent, {
+      autoFocus: false,
+      width: '1600px',
+      data: { contentType: this.contentType, existingFields: this.fields() }
+    });
+  }
+
   private nameCellRenderer(params: Omit<ICellRendererParams, 'data'> & { data: Field }) {
     const inputType = params.data.InputType;
 
@@ -189,20 +200,7 @@ export class ContentTypeFieldsComponent implements OnInit {
     });
   }
 
-  private editFieldMetadata(field: Field) {
-    // 2023-11-10 @2dm #ConfigTypesFromBackend
-    // https://github.com/2sic/2sxc/issues/3205
-    // Keep old code in till 2024-01 for ref in case something breaks
-    // console.warn('2dm - editFieldMetadata', field);
-    // console.warn('2dm - editFieldMetadata', field.ConfigTypes);
-    // const form: EditForm = {
-    //   items: [
-    //     this.createItemDefinition(field, 'All'),
-    //     this.createItemDefinition(field, field.Type),
-    //     this.createItemDefinition(field, field.InputType),
-    //   ],
-    // };
-
+  #editFieldMetadata(field: Field) {
     // If this field is inherited and therefor has no own metadata, show a snackbar and exit
     if (field.SysSettings?.InheritMetadataOf) {
       if (!Object.keys(field.ConfigTypes).length) {
@@ -217,14 +215,14 @@ export class ContentTypeFieldsComponent implements OnInit {
       this.snackBar.open('This field is shared, so changing it will affect all other fields inheriting it.', null, { duration: 5000 });
 
     const form: EditForm = {
-      items: Object.keys(field.ConfigTypes).map((t) => this.createItemDefinition(field, t))
+      items: Object.keys(field.ConfigTypes).map((t) => this.#createItemDefinition(field, t))
     };
     // console.warn('2dm - editFieldMetadata', field.ConfigTypes, form);
     const formUrl = convertFormToUrl(form);
     this.#dialogRouter.navRelative([`edit/${formUrl}`]);
   }
 
-  private createItemDefinition(field: Field, metadataType: string): ItemAddIdentifier | ItemEditIdentifier {
+  #createItemDefinition(field: Field, metadataType: string): ItemAddIdentifier | ItemEditIdentifier {
     // The keys could start with an @ but may not, and in some cases we need it, others we don't
     const keyForMdLookup = metadataType.replace('@', '');
     const newItemTypeName = ('@' + metadataType).replace('@@', '@');
@@ -240,7 +238,7 @@ export class ContentTypeFieldsComponent implements OnInit {
   }
 
 
-  private setTitle(field: Field) {
+  #setTitle(field: Field) {
     this.snackBar.open('Setting title...');
     this.contentTypesFieldsService.setTitle(field, this.contentType()).subscribe(() => {
       this.snackBar.open('Title set', null, { duration: 2000 });
@@ -248,15 +246,15 @@ export class ContentTypeFieldsComponent implements OnInit {
     });
   }
 
-  private changeInputType(field: Field) {
+  #changeInputType(field: Field) {
     this.#dialogRouter.navRelative([`update/${this.contentTypeStaticName}/${field.Id}/inputType`]);
   }
 
-  private rename(field: Field) {
+  #rename(field: Field) {
     this.#dialogRouter.navRelative([`update/${this.contentTypeStaticName}/${field.Id}/name`]);
   }
 
-  private delete(field: Field) {
+  #delete(field: Field) {
     if (!confirm(`Are you sure you want to delete '${field.StaticName}' (${field.Id})?`)) return;
     this.snackBar.open('Deleting...');
     this.contentTypesFieldsService.delete(field, this.contentType()).subscribe(() => {
@@ -324,14 +322,14 @@ export class ContentTypeFieldsComponent implements OnInit {
           valueGetter: (p: { data: Field }) => p.data.IsTitle,
           cellRenderer: ContentTypeFieldsTitleComponent,
           cellRendererParams: (() => ({
-            onSetTitle: (field) => this.setTitle(field),
+            onSetTitle: (field) => this.#setTitle(field),
           } satisfies ContentTypeFieldsTitleParams))(),
         },
         {
           ...ColumnDefinitions.TextWidePrimary,
           headerName: 'Name',
           field: 'StaticName',
-          onCellClicked: (p: { data: Field }) => this.editFieldMetadata(p.data),
+          onCellClicked: (p: { data: Field }) => this.#editFieldMetadata(p.data),
           cellRenderer: (params: ICellRendererParams) => this.nameCellRenderer(params),
         },
         {
@@ -350,7 +348,7 @@ export class ContentTypeFieldsComponent implements OnInit {
           valueGetter: (p: { data: Field }) => p.data.InputType.substring(p.data.InputType.indexOf('-') + 1),
           cellRenderer: ContentTypeFieldsInputTypeComponent,
           cellRendererParams: (() => ({
-            onChangeInputType: (field) => this.changeInputType(field),
+            onChangeInputType: (field) => this.#changeInputType(field),
           } satisfies ContentTypeFieldsInputTypeParams))(),
         },
         {
@@ -384,8 +382,8 @@ export class ContentTypeFieldsComponent implements OnInit {
           cellRendererParams: (() => ({
             do: (verb, field) => {
               switch (verb) {
-                case 'rename': this.rename(field); break;
-                case 'delete': this.delete(field); break;
+                case 'rename': this.#rename(field); break;
+                case 'delete': this.#delete(field); break;
                 case 'permissions': this.openPermissions(field); break;
                 case 'metadata': this.openMetadata(field); break;
                 case 'shareOrInherit': this.shareOrInherit(field); break;

@@ -9,11 +9,32 @@
   </div>
   <div class="eav-dialog-content">
     @switch (initialState) {
-      @case (sharingOrInheriting.Sharing)  {
-        <div>{{ message | translate }} {{ dialogData.Guid }}</div>
+      @case (sharingOrInheriting.Sharing) {
+        <p>
+          This field is published so it can be shared by other Content Types.
+          As such you cannot configure anything here, but just review the information.
+        </p>
+        <div>Global Identifier: {{ dialogData.Guid }}</div>
       }
-      @case (sharingOrInheriting.Inheriting)  {
-        <div>{{ message | translate }} {{ dialogData.SysSettings.InheritMetadataOf }}</div>
+      @case (sharingOrInheriting.Inheriting) {
+        <p>
+          This field is inheriting it's definition from another previously shared field.
+        </p>
+        <h4>Inherits Definition from</h4>
+        <ol>
+          @for (s of inherited(); track s.complete) {
+            <li>{{ s.complete }}</li>
+          }
+        </ol>
+        @if (notInherited().length) {
+          <h4>Not Inherited Definitions</h4>
+          <p>The following definitions are not inherited, so you can specify them on this field:</p>
+          <ol>
+            @for (s of notInherited(); track s) {
+              <li>{{ s }}</li>
+            }
+          </ol>
+        }
       }
       @case (sharingOrInheriting.None) {
         <p>
@@ -26,101 +47,79 @@
         </ul>
         <br>
         <div>
-          @if (state == sharingOrInheriting.None) {
-            <button mat-raised-button type="button" class="eav-dialog-action-button" (click)="chooseShare()">
-              Share
-            </button>
-          }
-          @if (state == sharingOrInheriting.None) {
-            <button mat-raised-button type="button" (click)="chooseInherit()">
-              Inherit
-            </button>
-          }
-          @if (state == sharingOrInheriting.Sharing) {
-            <span>This will share the field definition</span>
-          }
-          @if (state == sharingOrInheriting.Inheriting) {
-            <mat-card class="eav-table-div">
-              <table mat-table [dataSource]="shareableFields()" class="mat-elevation-z8 eav-fields-table">
-                <ng-container matColumnDef="contentType">
-                  <th mat-header-cell *matHeaderCellDef> <b>Content Type</b> </th>
-                  <td mat-cell *matCellDef="let field"> {{field.ContentType.Name}} </td>
-                </ng-container>
-                <ng-container matColumnDef="name">
-                  <th mat-header-cell *matHeaderCellDef> <b>Name</b> </th>
-                  <td mat-cell *matCellDef="let field"> {{field.StaticName}} </td>
-                </ng-container>
-                <ng-container matColumnDef="type">
-                  <th mat-header-cell *matHeaderCellDef> <b>Type</b> </th>
-                  <td mat-cell *matCellDef="let field"> {{field.Type}} </td>
-                </ng-container>
-                <tr mat-header-row *matHeaderRowDef="displayedShareableFieldsColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayedShareableFieldsColumns;"
-                [ngClass]="{'eav-selected-row': guid === row.Guid}" (click)="inheritField(row)"></tr>
-              </table>
-            </mat-card>
+          <button mat-raised-button type="button" class="eav-dialog-action-button" [color]="state == sharingOrInheriting.Sharing ? 'accent' : ''" (click)="setShare()">
+            Share
+          </button>  
+
+          <button mat-raised-button type="button" class="eav-dialog-action-button" [color]="state == sharingOrInheriting.Inheriting ? 'accent' : ''"(click)="startInherit()">
+            Inherit
+          </button>
+          @switch (state) {
+            @case (sharingOrInheriting.Sharing) {
+              <p>
+                This will share the field definition for others to use.
+                Save to complete the operation.
+              </p>
+            }
+            @case (sharingOrInheriting.Inheriting) {
+              <p>
+                The following fields have the same data type and share their definitions.
+                Select one to inherit from. Some notes:
+                <br>
+              </p>
+              <ul>
+                <li>
+                  Inheriting will remove/ignore all current definition of this field such as label, hidden, etc.
+                </li>
+                <li>
+                  If the field you want to inherit the definition from is missing from this list,
+                  it's either a different data type or it's not shared.
+                </li>
+              </ul>
+              <mat-card class="my-options-wrapper">
+                <table mat-table [dataSource]="shareableFields()" class="mat-elevation-z8">
+                  <!-- Column Definition "Content Type" -->
+                  <ng-container matColumnDef="contentType">
+                    <th mat-header-cell *matHeaderCellDef> <b>Content Type</b> </th>
+                    <td mat-cell *matCellDef="let field"> {{field.ContentType.Name}} </td>
+                  </ng-container>
+                  <!-- Column Definition "Name" -->
+                  <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef> <b>Name</b> </th>
+                    <td mat-cell *matCellDef="let field"> {{field.StaticName}} </td>
+                  </ng-container>
+                  <!-- Column Definition "Type" -->
+                  <ng-container matColumnDef="type">
+                    <th mat-header-cell *matHeaderCellDef> <b>Type</b> </th>
+                    <td mat-cell *matCellDef="let field"> {{field.Type}} </td>
+                  </ng-container>
+                  <!-- Header Row -->
+                  <tr mat-header-row *matHeaderRowDef="optionsColumns"></tr>
+                  <!-- Repeater for each row -->
+                  <tr mat-row *matRowDef="let row; columns: optionsColumns;" [ngClass]="{ 'my-selected': guid === row.Guid }" (click)="inheritField(row)">
+                  </tr>
+                </table>
+              </mat-card>
+            }
           }
         </div>  
       }
     }
-    <!-- @if (initialState == sharingOrInheriting.Sharing) {
-      <div>{{ message | translate }} {{ dialogData.Guid }}</div>
-    } -->
-    <!-- @if (initialState == sharingOrInheriting.Inheriting) {
-      <div>{{ message | translate }} {{
-      dialogData.SysSettings.InheritMetadataOf }}</div>
-    } -->
-    <!-- @if (initialState == sharingOrInheriting.None) {
-      <div>
-        @if (state == sharingOrInheriting.None) {
-          <button mat-raised-button type="button" class="eav-dialog-action-button"
-          (click)="chooseShare()">Share</button>
-        }
-        @if (state == sharingOrInheriting.None) {
-          <button mat-raised-button type="button"
-          (click)="chooseInherit()">Inherit</button>
-        }
-        @if (state == sharingOrInheriting.Sharing) {
-          <span>This will share the field definition</span>
-        }
-        @if (state == sharingOrInheriting.Inheriting) {
-          <mat-card class="eav-table-div">
-            <table mat-table [dataSource]="shareableFields()" class="mat-elevation-z8 eav-fields-table">
-              <ng-container matColumnDef="contentType">
-                <th mat-header-cell *matHeaderCellDef> <b>Content Type</b> </th>
-                <td mat-cell *matCellDef="let field"> {{field.ContentType.Name}} </td>
-              </ng-container>
-              <ng-container matColumnDef="name">
-                <th mat-header-cell *matHeaderCellDef> <b>Name</b> </th>
-                <td mat-cell *matCellDef="let field"> {{field.StaticName}} </td>
-              </ng-container>
-              <ng-container matColumnDef="type">
-                <th mat-header-cell *matHeaderCellDef> <b>Type</b> </th>
-                <td mat-cell *matCellDef="let field"> {{field.Type}} </td>
-              </ng-container>
-              <tr mat-header-row *matHeaderRowDef="displayedShareableFieldsColumns"></tr>
-              <tr mat-row *matRowDef="let row; columns: displayedShareableFieldsColumns;"
-              [ngClass]="{'eav-selected-row': guid === row.Guid}" (click)="inheritField(row)"></tr>
-            </table>
-          </mat-card>
-        }
-      </div>
-    } -->
   </div>
-  <!-- If not inheriting yet, show cancel/save buttons -->
-  <!-- <app-feature-icon-text class="eav-button-feature-icon" [featureNameId]="'ContentTypeFieldsReuseDefinitions'"></app-feature-icon-text> -->
 
-  <app-feature-text-info class="eav-button-feature" [featureNameId]="'ContentTypeFieldsReuseDefinitions'"></app-feature-text-info>
+  <app-feature-text-info [featureNameId]="'ContentTypeFieldsReuseDefinitions'" [asInfo]="true">
+    <em>
+      Even if the feature is not licensed, it will always work but show warnings.
+    </em>
+  </app-feature-text-info>
+  
+  <div class="my-actions">
 
-  @if (initialState == sharingOrInheriting.None) {
-    <div class="eav-dialog-actions-custom">
+    @if (initialState == sharingOrInheriting.None) {
       <button mat-raised-button type="button" class="eav-dialog-action-button" (click)="dialog.close()">Cancel</button>
       <button mat-raised-button type="submit" color="accent" class="eav-dialog-action-button" (click)="save()">
-        <div class="eav-button-feature">
-          <span>Save</span>
-          <!-- <app-feature-icon-indicator class="eav-button-feature-icon" [featureNameId]="'ContentTypeFieldsReuseDefinitions'"></app-feature-icon-indicator> -->
-        </div>
+        <span>Save</span>
       </button>
-    </div>
-  }
+    }
+  </div>
 </div>

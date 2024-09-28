@@ -1,9 +1,9 @@
 import { AsyncPipe, NgClass } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, HostBinding, inject, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostBinding, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
-import { MatDialog, MatDialogActions, MatDialogRef } from '@angular/material/dialog';
+import { MatDialogActions, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -18,13 +18,10 @@ import { ContentTypesService } from '../../app-administration/services/content-t
 import { Of, transient } from '../../core';
 import { BaseComponent } from '../../shared/components/base.component';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
-import { ToggleDebugDirective } from '../../shared/directives/toggle-debug.directive';
 import { ContentTypesFieldsService } from '../../shared/fields/content-types-fields.service';
 import { DataTypeCatalog } from '../../shared/fields/data-type-catalog';
 import { Field, FieldInputTypeOption } from '../../shared/fields/field.model';
 import { InputTypeCatalog } from '../../shared/fields/input-type-catalog';
-import { GlobalConfigService } from '../../shared/services/global-config.service';
-import { AddSharingFieldsComponent } from '../add-sharing-fields/add-sharing-fields.component';
 import { calculateTypeIcon, calculateTypeLabel } from '../content-type-fields.helpers';
 import { calculateDataTypes, DataType } from './edit-content-type-fields.helpers';
 import { ReservedNamesValidatorDirective } from './reserved-names.directive';
@@ -48,7 +45,6 @@ import { ReservedNamesValidatorDirective } from './reserved-names.directive';
     AsyncPipe,
     TranslateModule,
     FieldHintComponent,
-    ToggleDebugDirective,
   ],
 })
 export class EditContentTypeFieldsComponent extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
@@ -57,7 +53,6 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
   @ViewChildren('autoFocusInputField') autoFocusInputField!: QueryList<ElementRef>;
 
   fields: Partial<Field>[] = [];
-  existingFields: Field[] = [];
   reservedNames: Record<string, string> = {};
   editMode: 'name' | 'inputType';
   dataTypes: DataType[];
@@ -70,29 +65,28 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
   findLabel = calculateTypeLabel;
   loading$ = new BehaviorSubject(true);
   saving$ = new BehaviorSubject(false);
-  isDebug = inject(GlobalConfigService).isDebug;
 
-  private contentType: ContentType;
-  private inputTypeOptions: FieldInputTypeOption[];
+  #contentType: ContentType;
+  #inputTypeOptions: FieldInputTypeOption[];
 
-  private contentTypesService = transient(ContentTypesService);
-  private contentTypesFieldsService = transient(ContentTypesFieldsService);
+  #contentTypesSvc = transient(ContentTypesService);
+  #contentTypesFieldsSvc = transient(ContentTypesFieldsService);
 
   constructor(
-    private dialogRef: MatDialogRef<EditContentTypeFieldsComponent>,
+    protected dialog: MatDialogRef<EditContentTypeFieldsComponent>,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
-    private dialog: MatDialog,
+    // private matDialog: MatDialog,
   ) {
     super();
-    this.dialogRef.disableClose = true;
+    this.dialog.disableClose = true;
     this.subscriptions.add(
-      this.dialogRef.backdropClick().subscribe(event => {
+      this.dialog.backdropClick().subscribe(event => {
         if (this.form.dirty) {
           const confirmed = confirm('You have unsaved changes. Are you sure you want to close this dialog?');
           if (!confirmed) return;
         }
-        this.closeDialog();
+        this.dialog.close();
       })
     );
   }
@@ -102,7 +96,7 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
     if (this.autoFocusInputField) {
       setTimeout(() => {
         this.autoFocusInputField.first.nativeElement.focus();
-      }, 150); // Delay execution to ensure the view is fully rendered
+      }, 250); // Delay execution to ensure the view is fully rendered
     }
   }
 
@@ -114,20 +108,20 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
     this.editMode = this.route.snapshot.paramMap.get('editMode') as 'name' | 'inputType';
 
     const contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
-    const contentType$ = this.contentTypesService.retrieveContentType(contentTypeStaticName).pipe(share());
-    const fields$ = contentType$.pipe(switchMap(contentType => this.contentTypesFieldsService.getFields(contentType.StaticName)));
-    const dataTypes$ = this.contentTypesFieldsService.typeListRetrieve().pipe(map(rawDataTypes => calculateDataTypes(rawDataTypes)));
-    const inputTypes$ = this.contentTypesFieldsService.getInputTypesList();
-    const reservedNames$ = this.contentTypesFieldsService.getReservedNames();
+    const contentType$ = this.#contentTypesSvc.retrieveContentType(contentTypeStaticName).pipe(share());
+    const fields$ = contentType$.pipe(switchMap(contentType => this.#contentTypesFieldsSvc.getFields(contentType.StaticName)));
+    const dataTypes$ = this.#contentTypesFieldsSvc.typeListRetrieve().pipe(map(rawDataTypes => calculateDataTypes(rawDataTypes)));
+    const inputTypes$ = this.#contentTypesFieldsSvc.getInputTypesList();
+    const reservedNames$ = this.#contentTypesFieldsSvc.getReservedNames();
 
     forkJoin([contentType$, fields$, dataTypes$, inputTypes$, reservedNames$]).subscribe(
       ([contentType, fields, dataTypes, inputTypes, reservedNames]) => {
-        this.contentType = contentType;
+        this.#contentType = contentType;
         this.dataTypes = dataTypes;
-        this.inputTypeOptions = inputTypes;
-        this.existingFields = fields;
+        this.#inputTypeOptions = inputTypes;
+        // this.existingFields = fields;
 
-        this.reservedNames = ReservedNamesValidatorDirective.assembleReservedNames(reservedNames, fields);
+        this.reservedNames = ReservedNamesValidatorDirective.mergeReserved(reservedNames, fields);
 
         if (this.editMode != null) {
           const editFieldId = this.route.snapshot.paramMap.get('id') ? parseInt(this.route.snapshot.paramMap.get('id'), 10) : null;
@@ -164,12 +158,12 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
     super.ngOnDestroy();
   }
 
-  closeDialog() {
-    this.dialogRef.close();
-  }
+  // closeDialog() {
+  //   this.dialog.close();
+  // }
 
   filterInputTypeOptions(index: number) {
-    this.filteredInputTypeOptions[index] = this.inputTypeOptions.filter(
+    this.filteredInputTypeOptions[index] = this.#inputTypeOptions.filter(
       option => option.dataType === this.fields[index].Type.toLocaleLowerCase()
     );
   }
@@ -184,7 +178,7 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
 
   calculateHints(index: number) {
     const selectedDataType = this.dataTypes.find(dataType => dataType.name === this.fields[index].Type);
-    const selectedInputType = this.inputTypeOptions.find(inputTypeOption => inputTypeOption.inputType === this.fields[index].InputType);
+    const selectedInputType = this.#inputTypeOptions.find(inputTypeOption => inputTypeOption.inputType === this.fields[index].InputType);
     this.dataTypeHints[index] = selectedDataType?.description ?? '';
     this.inputTypeHints[index] = selectedInputType?.isObsolete
       ? `OBSOLETE - ${selectedInputType.obsoleteMessage}`
@@ -192,47 +186,43 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
   }
 
   getInputTypeOption(inputName: string) {
-    return this.inputTypeOptions.find(option => option.inputType === inputName);
+    return this.#inputTypeOptions.find(option => option.inputType === inputName);
   }
 
-  addSharedField() {
-    this.dialog.open(AddSharingFieldsComponent, {
-      autoFocus: false,
-      width: '1600px',
-      data: { contentType: this.contentType, existingFields: this.existingFields }
-    });
-  }
+  // addSharedField() {
+  //   this.matDialog.open(AddSharingFieldsComponent, {
+  //     autoFocus: false,
+  //     width: '1600px',
+  //     data: { contentType: this.#contentType, existingFields: this.existingFields }
+  //   });
+  // }
 
   save() {
     this.saving$.next(true);
     this.snackBar.open('Saving...');
+
+    const doneAndClose = () => {
+      this.saving$.next(false);
+      this.snackBar.open('Saved', null, { duration: 2000 });
+      this.dialog.close();
+    }
     if (this.editMode != null) {
       const field = this.fields[0];
       if (this.editMode === 'name') {
-        this.contentTypesFieldsService.rename(field.Id, this.contentType.Id, field.StaticName).subscribe(() => {
-          this.saving$.next(false);
-          this.snackBar.open('Saved', null, { duration: 2000 });
-          this.closeDialog();
-        });
+        this.#contentTypesFieldsSvc.rename(field.Id, this.#contentType.Id, field.StaticName)
+          .subscribe(() => doneAndClose());
       } else if (this.editMode === 'inputType') {
-        this.contentTypesFieldsService.updateInputType(field.Id, field.StaticName, field.InputType).subscribe(() => {
-          this.saving$.next(false);
-          this.snackBar.open('Saved', null, { duration: 2000 });
-          this.closeDialog();
-        });
+        this.#contentTypesFieldsSvc.updateInputType(field.Id, field.StaticName, field.InputType)
+          .subscribe(() => doneAndClose());
       }
     } else {
       of(...this.fields).pipe(
         filter(field => !!field.StaticName),
         concatMap(field =>
-          this.contentTypesFieldsService.add(field, this.contentType.Id).pipe(catchError(error => of(null)))
+          this.#contentTypesFieldsSvc.add(field, this.#contentType.Id).pipe(catchError(error => of(null)))
         ),
         toArray(),
-      ).subscribe(_ => {
-        this.saving$.next(false);
-        this.snackBar.open('Saved', null, { duration: 2000 });
-        this.closeDialog();
-      });
+      ).subscribe(() => doneAndClose());
     }
   }
 }
