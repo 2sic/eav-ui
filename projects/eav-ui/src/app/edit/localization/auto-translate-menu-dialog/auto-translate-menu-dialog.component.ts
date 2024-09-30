@@ -1,25 +1,25 @@
+import { AsyncPipe, NgClass } from '@angular/common';
 import { Component, Inject, OnInit, computed, inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { MatCardModule } from '@angular/material/card';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { SnackBarWarningDemoComponent } from '../snack-bar-warning-demo/snack-bar-warning-demo.component';
-import { getTemplateLanguages, getTemplateLanguagesWithContent } from '../../fields/wrappers/localization/translate-menu-dialog/translate-menu-dialog.helpers';
-import { TranslateMenuDialogData } from '../../fields/wrappers/localization/translate-menu-dialog/translate-menu-dialog.models';
-import { TranslationStateCore } from '../translate-state.model';
+import { TranslateModule } from '@ngx-translate/core';
+import { FeatureNames } from '../../../features/feature-names';
+import { FeatureTextInfoComponent } from '../../../features/feature-text-info/feature-text-info.component';
+import { FeaturesScopedService } from '../../../features/features-scoped.service';
+import { TranslateHelperComponent } from '../../../shared/components/translate-helper.component';
 import { EditApiKeyPaths } from '../../../shared/constants/eav.constants';
 import { ApiKeySpecs } from '../../../shared/models/dialog-context.models';
-import { TranslateModule } from '@ngx-translate/core';
-import { MatIconModule } from '@angular/material/icon';
-import { ExtendedModule } from '@angular/flex-layout/extended';
-import { NgClass, AsyncPipe } from '@angular/common';
-import { MatListModule } from '@angular/material/list';
-import { FeatureTextInfoComponent } from '../../../features/feature-text-info/feature-text-info.component';
-import { MatCardModule } from '@angular/material/card';
-import { FeatureNames } from '../../../features/feature-names';
-import { FeaturesScopedService } from '../../../features/features-scoped.service';
 import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';
-import { FieldsTranslateService } from '../../state/fields-translate.service';
-import { TranslateHelperComponent } from '../../../shared/components/translate-helper.component';
 import { isCtrlS } from '../../dialog/main/keyboard-shortcuts';
+import { getTemplateLanguages, getTemplateLanguagesWithContent } from '../../fields/wrappers/localization/translate-menu-dialog/translate-menu-dialog.helpers';
+import { TranslateMenuDialogData } from '../../fields/wrappers/localization/translate-menu-dialog/translate-menu-dialog.models';
+import { FieldsTranslateService } from '../../state/fields-translate.service';
+import { SnackBarWarningDemoComponent } from '../snack-bar-warning-demo/snack-bar-warning-demo.component';
+import { TranslationStateCore } from '../translate-state.model';
 
 @Component({
   selector: 'app-auto-translate-menu-dialog',
@@ -55,13 +55,13 @@ export class AutoTranslateMenuDialogComponent extends TranslateHelperComponent i
   });
 
   constructor(
-    private dialogRef: MatDialogRef<AutoTranslateMenuDialogComponent>,
+    private dialog: MatDialogRef<AutoTranslateMenuDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public dialogData: TranslateMenuDialogData,
     private fieldsTranslateService: FieldsTranslateService,
     private snackBar: MatSnackBar,
   ) {
     super(dialogData);
-    this.dialogRef.keydownEvents().subscribe(event => {
+    this.dialog.keydownEvents().subscribe(event => {
       if (isCtrlS(event))
         event.preventDefault();
     });
@@ -71,7 +71,7 @@ export class AutoTranslateMenuDialogComponent extends TranslateHelperComponent i
 
     // If not enabled, ensure that after closed ...??? @STV
     if (this.isTranslateWithGoogleFeatureEnabled())
-      this.dialogRef.afterClosed().subscribe(() => this.snackBar.dismiss());
+      this.dialog.afterClosed().subscribe(() => this.snackBar.dismiss());
 
     // If the demo API key is being used, show snackbar warning
     const apiKeyInfo = this.formConfig.settings.Values[EditApiKeyPaths.GoogleTranslate] as ApiKeySpecs;
@@ -98,7 +98,7 @@ export class AutoTranslateMenuDialogComponent extends TranslateHelperComponent i
   }
 
   private closeDialog() {
-    this.dialogRef.close();
+    this.dialog.close();
   }
 
 }

@@ -47,7 +47,7 @@ export class LogsConfigComponent {
 
   constructor(
     private loggingService: LoggingService,
-    private dialog: MatDialog,
+    private matDialog: MatDialog,
     private snackBar: MatSnackBar
   ) { this.loadConfigsFromStateManager(); }
 
@@ -144,7 +144,7 @@ export class LogsConfigComponent {
     const configData = this.logManager.state.cache[fullConfigKey];
 
     if (configData) {
-      this.dialog.open(ConfigEditorDialogComponent, {
+      this.matDialog.open(ConfigEditorDialogComponent, {
         width: '800px',
         data: { configData },
       });
@@ -163,7 +163,7 @@ export class LogsConfigComponent {
 
   openLogSpecs(logKey: string): void {
     let logSpecs = this.allLogs[logKey].specs;
-    const dialogRef = this.dialog.open(SpecsEditorDialogComponent, {
+    const dialogRef = this.matDialog.open(SpecsEditorDialogComponent, {
       width: '800px',
       data: { logSpecs: logSpecs },
     });

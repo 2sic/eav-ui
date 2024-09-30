@@ -35,11 +35,11 @@ export class PublishStatusDialogComponent {
   protected options = this.formConfig.config.versioningOptions;
 
   constructor(
-    private dialogRef: MatDialogRef<PublishStatusDialogComponent>,
+    private dialog: MatDialogRef<PublishStatusDialogComponent>,
     private publishStatusService: FormPublishingService,
     private formConfig: FormConfigService,
   ) {
-    this.dialogRef.keydownEvents().subscribe(event => {
+    this.dialog.keydownEvents().subscribe(event => {
       if (isCtrlS(event))
         event.preventDefault();
     });
@@ -51,6 +51,6 @@ export class PublishStatusDialogComponent {
   }
 
   private closeDialog() {
-    this.dialogRef.close();
+    this.dialog.close();
   }
 }

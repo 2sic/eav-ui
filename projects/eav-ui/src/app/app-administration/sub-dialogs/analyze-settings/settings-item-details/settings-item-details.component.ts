@@ -38,7 +38,7 @@ export class SettingsItemDetailsComponent implements OnInit {
   private analyzeSettingsService = transient(AnalyzeSettingsService);
 
   constructor(
-    private dialogRef: MatDialogRef<SettingsItemDetailsComponent>,
+    private dialog: MatDialogRef<SettingsItemDetailsComponent>,
     private route: ActivatedRoute,
   ) {
     this.part = this.route.snapshot.parent.paramMap.get('part') as Of<typeof AnalyzeParts>;
@@ -54,7 +54,7 @@ export class SettingsItemDetailsComponent implements OnInit {
   }
 
   closeDialog(): void {
-    this.dialogRef.close();
+    this.dialog.close();
   }
 
   private buildGridOptions(): GridOptions {

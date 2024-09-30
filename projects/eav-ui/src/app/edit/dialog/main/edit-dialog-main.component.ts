@@ -96,7 +96,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
   protected viewInitiated = signal(false);
 
   constructor(
-    private dialogRef: MatDialogRef<EditEntryComponent>,
+    private dialog: MatDialogRef<EditEntryComponent>,
     private contentTypeItemService: ContentTypeItemService,
     private contentTypeService: ContentTypeService,
     private inputTypeService: InputTypeService,
@@ -113,7 +113,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
     private formulaDesignerService: FormulaDesignerService,
   ) {
     super();
-    this.dialogRef.disableClose = true;
+    this.dialog.disableClose = true;
 
     // Watch to save based on messages from sub-dialogs.
     effect(() => {
@@ -200,11 +200,11 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
 
   closeDialog(forceClose?: boolean) {
     if (forceClose) {
-      this.dialogRef.close(this.#formConfig.config.createMode ? this.#saveResult : undefined);
+      this.dialog.close(this.#formConfig.config.createMode ? this.#saveResult : undefined);
     } else if (!this.formsStateService.readOnly().isReadOnly && this.formsStateService.formsAreDirty()) {
       this.#snackBarYouHaveUnsavedChanges();
     } else {
-      this.dialogRef.close(this.#formConfig.config.createMode ? this.#saveResult : undefined);
+      this.dialog.close(this.#formConfig.config.createMode ? this.#saveResult : undefined);
     }
   }
 
@@ -299,12 +299,12 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
     );
 
     this.subscriptions.add(
-      this.dialogRef.backdropClick().subscribe(_ => this.closeDialog())
+      this.dialog.backdropClick().subscribe(_ => this.closeDialog())
     );
   }
 
   #watchKeyboardShortcuts() {
-    this.dialogRef.keydownEvents().subscribe(event => {
+    this.dialog.keydownEvents().subscribe(event => {
       if (isEscape(event)) {
         this.closeDialog();
         return;

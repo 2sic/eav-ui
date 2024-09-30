@@ -1,24 +1,24 @@
 import { Component, HostBinding, Inject, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { FormsModule, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 // tslint:disable-next-line:max-line-length
+import { AsyncPipe, NgClass } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatOptionModule } from '@angular/material/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
 import { asyncScheduler, BehaviorSubject, combineLatest, distinctUntilChanged, forkJoin, map, Observable, of, startWith, switchMap, tap, throttleTime, timer } from 'rxjs';
 import { CreateFileDialogData, CreateFileDialogResult, CreateFileFormControls, CreateFileFormValues, CreateFileViewModel } from '.';
 import { PredefinedTemplate } from '../code-editor/models/predefined-template.model';
 import { Preview } from '../code-editor/models/preview.models';
 import { SourceService } from '../code-editor/services/source.service';
+import { transient } from '../core';
 import { SanitizeHelper } from '../edit/shared/helpers';
 import { BaseComponent } from '../shared/components/base.component';
-import { NgClass, AsyncPipe } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatInputModule } from '@angular/material/input';
-import { MatOptionModule } from '@angular/material/core';
-import { MatSelectModule } from '@angular/material/select';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { FieldHintComponent } from '../shared/components/field-hint/field-hint.component';
 import { MatInputAutofocusDirective } from '../shared/directives/mat-input-autofocus.directive';
-import { transient } from '../core';
 
 @Component({
   selector: 'app-create-file-dialog',
@@ -55,7 +55,7 @@ export class CreateFileDialogComponent extends BaseComponent implements OnInit, 
 
   constructor(
     @Inject(MAT_DIALOG_DATA) private dialogData: CreateFileDialogData,
-    private dialogRef: MatDialogRef<CreateFileDialogComponent>,
+    private dialog: MatDialogRef<CreateFileDialogComponent>,
   ) {
     super();
   }
@@ -76,7 +76,7 @@ export class CreateFileDialogComponent extends BaseComponent implements OnInit, 
   }
 
   closeDialog(result?: CreateFileDialogResult): void {
-    this.dialogRef.close(result);
+    this.dialog.close(result);
   }
 
   confirm(): void {

@@ -54,7 +54,7 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
   constructor(
     private visualQueryService: VisualQueryStateService,
     private changeDetectorRef: ChangeDetectorRef,
-    private dialog: MatDialog,
+    private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
   ) { super();}
 
@@ -121,7 +121,7 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
           this.onConnectionsChanged.bind(this),
           this.onDragend.bind(this),
           this.onDebugStream.bind(this),
-          this.dialog,
+          this.matDialog,
           this.viewContainerRef,
           this.changeDetectorRef,
         );

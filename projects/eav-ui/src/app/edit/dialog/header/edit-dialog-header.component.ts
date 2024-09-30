@@ -38,7 +38,7 @@ export class EditDialogHeaderComponent {
   #features = inject(FeaturesScopedService);
 
   constructor(
-    private dialog: MatDialog,
+    private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private languageService: LanguageService,
     private publishStatusService: FormPublishingService,
@@ -61,7 +61,7 @@ export class EditDialogHeaderComponent {
   }
 
   openPublishStatusDialog() {
-    this.dialog.open(PublishStatusDialogComponent, {
+    this.matDialog.open(PublishStatusDialogComponent, {
       autoFocus: false,
       viewContainerRef: this.viewContainerRef,
       width: '350px',
@@ -69,7 +69,7 @@ export class EditDialogHeaderComponent {
   }
 
   openUnlicensedDialog() {
-    openFeaturesUsedButUnlicensedDialog(this.dialog, this.viewContainerRef);
+    openFeaturesUsedButUnlicensedDialog(this.matDialog, this.viewContainerRef);
   }
 
 }

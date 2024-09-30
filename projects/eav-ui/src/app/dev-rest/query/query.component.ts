@@ -67,14 +67,14 @@ export class DevRestQueryComponent extends DevRestBase<DevRestQueryViewModel> im
   constructor(
     /** Context for this dialog. Used for appId, zoneId, tabId, etc. */
     context: Context,
-    dialogRef: MatDialogRef<DevRestQueryComponent>,
+    dialog: MatDialogRef<DevRestQueryComponent>,
     router: Router,
     route: ActivatedRoute,
     dnnContext: DnnContext,
   ) {
     const permissionsService = transient(PermissionsService);
 
-    super(context, dialogRef, dnnContext, router, route, permissionsService);
+    super(context, dialog, dnnContext, router, route, permissionsService);
 
     this.isSideNavContent = this.router.url.includes(GoToDevRest.routeQuery);
 

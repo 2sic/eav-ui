@@ -42,7 +42,7 @@ export class RegistrationComponent implements OnInit {
 
   constructor(
     private snackBar: MatSnackBar,
-    private dialog: MatDialog,
+    private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
   ) { }
 
@@ -85,7 +85,7 @@ export class RegistrationComponent implements OnInit {
       allowedFileTypes: 'json',
       upload$: (files) => this.#featuresConfigSvc.uploadLicense(files[0]),
     };
-    const dialogRef = this.dialog.open(FileUploadDialogComponent, {
+    const dialogRef = this.matDialog.open(FileUploadDialogComponent, {
       data,
       autoFocus: false,
       viewContainerRef: this.viewContainerRef,

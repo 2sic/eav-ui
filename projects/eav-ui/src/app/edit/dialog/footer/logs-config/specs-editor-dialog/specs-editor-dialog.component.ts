@@ -47,18 +47,18 @@ export class SpecsEditorDialogComponent {
   filename = 'log-specs.json';
 
   constructor(
-    public dialogRef: MatDialogRef<SpecsEditorDialogComponent>,
+    public dialog: MatDialogRef<SpecsEditorDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.logSpecs = JSON.stringify(data.logSpecs, null, 2);
   }
 
   onClose(): void {
-    this.dialogRef.close();
+    this.dialog.close();
   }
 
   onSave(): void {
-    this.dialogRef.close(this.logSpecs);
+    this.dialog.close(this.logSpecs);
   }
 
   onValueChanged(newValue: string): void {

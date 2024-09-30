@@ -46,7 +46,7 @@ export class CreateAppComponent implements OnInit, OnDestroy {
   private appsListService = transient(AppsListService);
 
   constructor(
-    private dialogRef: MatDialogRef<CreateAppComponent>,
+    private dialog: MatDialogRef<CreateAppComponent>,
     private snackBar: MatSnackBar,
   ) {
     this.form = this.buildForm();
@@ -64,7 +64,7 @@ export class CreateAppComponent implements OnInit, OnDestroy {
   }
 
   closeDialog(): void {
-    this.dialogRef.close();
+    this.dialog.close();
   }
 
   create(): void {

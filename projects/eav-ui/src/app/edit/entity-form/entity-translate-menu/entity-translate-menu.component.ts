@@ -37,7 +37,7 @@ export class EntityTranslateMenuComponent {
   protected readOnly = this.formsStateService.readOnly;
 
   constructor(
-    private dialog: MatDialog,
+    private matDialog: MatDialog,
     private itemService: ItemService,
     private eavService: FormConfigService,
     private fieldTranslateSvc: FieldsTranslateService,
@@ -91,14 +91,14 @@ export class EntityTranslateMenuComponent {
         isTranslateMany: true,
         translatableFields: autoTransFields,
       };
-      this.dialog.open(AutoTranslateMenuDialogComponent, {
+      this.matDialog.open(AutoTranslateMenuDialogComponent, {
         autoFocus: false,
         data: dialogData,
         viewContainerRef: this.viewContainerRef,
         width: '400px',
       });
     } else {
-      this.dialog.open(AutoTranslateDisabledWarningDialog, {
+      this.matDialog.open(AutoTranslateDisabledWarningDialog, {
         autoFocus: false,
         data: { isAutoTranslateAll: true },
         viewContainerRef: this.viewContainerRef,

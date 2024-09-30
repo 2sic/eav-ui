@@ -40,7 +40,7 @@ export class ViewsUsageComponent implements OnInit {
   private viewsService = transient(ViewsService);
 
   constructor(
-    private dialogRef: MatDialogRef<ViewsUsageComponent>,
+    private dialog: MatDialogRef<ViewsUsageComponent>,
     private route: ActivatedRoute,
   ) { }
 
@@ -58,7 +58,7 @@ export class ViewsUsageComponent implements OnInit {
   }
 
   closeDialog() {
-    this.dialogRef.close();
+    this.dialog.close();
   }
 
   private buildGridOptions(): GridOptions {

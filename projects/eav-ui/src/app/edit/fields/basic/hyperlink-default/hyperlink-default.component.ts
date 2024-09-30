@@ -1,29 +1,29 @@
-import { ChangeDetectorRef, Component, computed, effect, OnInit, ViewContainerRef } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { HyperlinkDefaultBaseComponent } from './hyperlink-default-base.component';
-import { HyperlinkDefaultLogic } from './hyperlink-default-logic';
-import { TranslateModule } from '@ngx-translate/core';
-import { MatInputModule } from '@angular/material/input';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatCardModule } from '@angular/material/card';
-import { MatMenuModule } from '@angular/material/menu';
-import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
+import { ChangeDetectorRef, Component, computed, effect, OnInit, ViewContainerRef } from '@angular/core';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { FieldMetadata } from '../../field-metadata.decorator';
-import { WrappersCatalog } from '../../wrappers/wrappers.constants';
-import { PasteClipboardImageDirective } from '../../directives/paste-clipboard-image.directive';
-import { TippyDirective } from '../../../../shared/directives/tippy.directive';
-import { SignalEquals } from '../../../../shared/signals/signal-equals';
+import { MatCardModule } from '@angular/material/card';
+import { MatDialog } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
+import { TranslateModule } from '@ngx-translate/core';
+import isEqual from 'lodash-es/isEqual';
 import { AdamItem } from '../../../../../../../edit-types/src/AdamItem';
+import { TippyDirective } from '../../../../shared/directives/tippy.directive';
+import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
+import { SignalEquals } from '../../../../shared/signals/signal-equals';
 import { FormConfigService } from '../../../form/form-config.service';
 import { FormsStateService } from '../../../form/forms-state.service';
 import { EditRoutingService } from '../../../routing/edit-routing.service';
 import { LinkCacheService } from '../../../shared/adam/link-cache.service';
-import isEqual from 'lodash-es/isEqual';
+import { PasteClipboardImageDirective } from '../../directives/paste-clipboard-image.directive';
+import { FieldMetadata } from '../../field-metadata.decorator';
+import { WrappersCatalog } from '../../wrappers/wrappers.constants';
+import { HyperlinkDefaultBaseComponent } from './hyperlink-default-base.component';
+import { HyperlinkDefaultLogic } from './hyperlink-default-logic';
 
 @Component({
   selector: InputTypeCatalog.HyperlinkDefault,
@@ -68,7 +68,7 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
 
   constructor(
     eavService: FormConfigService,
-    dialog: MatDialog,
+    matDialog: MatDialog,
     viewContainerRef: ViewContainerRef,
     changeDetectorRef: ChangeDetectorRef,
     linkCacheService: LinkCacheService,
@@ -77,7 +77,7 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
   ) {
     super(
       eavService,
-      dialog,
+      matDialog,
       viewContainerRef,
       changeDetectorRef,
       linkCacheService,

@@ -1,31 +1,31 @@
 import { Context as DnnContext } from '@2sic.com/sxc-angular';
+import { AsyncPipe } from '@angular/common';
 import { Component, HostBinding, Input, OnDestroy } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialogRef } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, combineLatest, filter, map, share, switchMap } from 'rxjs';
 import { generateApiCalls } from '..';
-import { ContentTypesService } from '../../app-administration/services';
-import { PermissionsService } from '../../permissions';
-import { Context } from '../../shared/services/context';
-import { DevRestBase } from '../dev-rest-base.component';
-import { GoToDevRest } from '../go-to-dev-rest';
-import { DevRestDataViewModel } from './data-template-vars';
-import { AsyncPipe } from '@angular/common';
-import { DevRestHttpHeadersComponent } from '../tab-headers/tab-headers.component';
-import { DevRestTabPermissionsComponent } from '../tab-permissions/tab-permissions.component';
-import { DevRestUrlsAndCodeComponent } from '../dev-rest-urls-and-code/dev-rest-urls-and-code.component';
-import { DevRestTabExamplesComponent } from '../tab-examples/tab-examples.component';
-import { DevRestTabIntroductionComponent } from '../tab-introduction/tab-introduction.component';
-import { DevRestDataIntroductionComponent } from './introduction/introduction.component';
-import { MatTabsModule } from '@angular/material/tabs';
-import { SelectorWithHelpComponent } from '../selector-with-help/selector-with-help.component';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { ContentType } from '../../app-administration/models';
-import { EntityLightIdentifier } from '../../shared/models/entity-basic';
+import { ContentTypesService } from '../../app-administration/services';
 import { transient } from '../../core';
+import { PermissionsService } from '../../permissions';
+import { TippyDirective } from '../../shared/directives/tippy.directive';
+import { EntityLightIdentifier } from '../../shared/models/entity-basic';
+import { Context } from '../../shared/services/context';
 import { EntityService } from '../../shared/services/entity.service';
+import { DevRestBase } from '../dev-rest-base.component';
+import { DevRestUrlsAndCodeComponent } from '../dev-rest-urls-and-code/dev-rest-urls-and-code.component';
+import { GoToDevRest } from '../go-to-dev-rest';
+import { SelectorWithHelpComponent } from '../selector-with-help/selector-with-help.component';
+import { DevRestTabExamplesComponent } from '../tab-examples/tab-examples.component';
+import { DevRestHttpHeadersComponent } from '../tab-headers/tab-headers.component';
+import { DevRestTabIntroductionComponent } from '../tab-introduction/tab-introduction.component';
+import { DevRestTabPermissionsComponent } from '../tab-permissions/tab-permissions.component';
+import { DevRestDataViewModel } from './data-template-vars';
+import { DevRestDataIntroductionComponent } from './introduction/introduction.component';
 
 
 const pathToContent = 'app/{appname}/data/{typename}';
@@ -62,7 +62,7 @@ export class DevRestDataComponent extends DevRestBase<DevRestDataViewModel> impl
 
 
   constructor(
-    dialogRef: MatDialogRef<DevRestDataComponent>,
+    dialog: MatDialogRef<DevRestDataComponent>,
     router: Router,
     route: ActivatedRoute,
 
@@ -72,7 +72,7 @@ export class DevRestDataComponent extends DevRestBase<DevRestDataViewModel> impl
     dnnContext: DnnContext,
   ) {
     const permissionsService = transient(PermissionsService);
-    super(context, dialogRef, dnnContext, router, route, permissionsService);
+    super(context, dialog, dnnContext, router, route, permissionsService);
 
     const contentType$ = route.paramMap.pipe(
       map(pm => pm.get(GoToDevRest.paramTypeName)),

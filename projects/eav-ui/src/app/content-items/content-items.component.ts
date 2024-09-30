@@ -1,7 +1,9 @@
 import { ColDef, GridApi, GridOptions, GridReadyEvent, ValueGetterParams } from '@ag-grid-community/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectorRef, Component, inject, OnDestroy, OnInit, signal, ViewContainerRef } from '@angular/core';
-import { MatDialog, MatDialogRef, MatDialogActions } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogActions, MatDialogRef } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
 import { BehaviorSubject, filter, take } from 'rxjs';
@@ -9,16 +11,26 @@ import { ContentType } from '../app-administration/models/content-type.model';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { ContentExportService } from '../content-export/services/content-export.service';
 import { ContentImportDialogData } from '../content-import/content-import-dialog.config';
-import { DataTypeCatalog } from '../shared/fields/data-type-catalog';
-import { Field } from '../shared/fields/field.model';
+import { transient } from '../core';
 import { GoToMetadata } from '../metadata';
+import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
 import { BooleanFilterComponent } from '../shared/components/boolean-filter/boolean-filter.component';
 import { EntityFilterComponent } from '../shared/components/entity-filter/entity-filter.component';
 import { FileUploadDialogData } from '../shared/components/file-upload-dialog';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
 import { keyFilters } from '../shared/constants/session.constants';
+import { DragAndDropDirective } from '../shared/directives/drag-and-drop.directive';
+import { ToggleDebugDirective } from '../shared/directives/toggle-debug.directive';
+import { DataTypeCatalog } from '../shared/fields/data-type-catalog';
+import { Field } from '../shared/fields/field.model';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
+import { classLog } from '../shared/logging';
 import { EditForm, EditPrep } from '../shared/models/edit-form.model';
+import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
+import { SafeHtmlPipe } from '../shared/pipes/safe-html.pipe';
+import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
+import { EntityEditService } from '../shared/services/entity-edit.service';
+import { GlobalConfigService } from '../shared/services/global-config.service';
 import { ContentItemsActionsComponent } from './content-items-actions/content-items-actions.component';
 import { ContentItemsActionsParams } from './content-items-actions/content-items-actions.models';
 import { ContentItemsEntityComponent } from './content-items-entity/content-items-entity.component';
@@ -33,18 +45,6 @@ import { ExtendedColDef } from './models/extended-col-def.model';
 import { PubMetaFilterComponent } from './pub-meta-filter/pub-meta-filter.component';
 import { PubMeta } from './pub-meta-filter/pub-meta-filter.model';
 import { ContentItemsService } from './services/content-items.service';
-import { EntityEditService } from '../shared/services/entity-edit.service';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
-import { SafeHtmlPipe } from '../shared/pipes/safe-html.pipe';
-import { DragAndDropDirective } from '../shared/directives/drag-and-drop.directive';
-import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
-import { ToggleDebugDirective } from '../shared/directives/toggle-debug.directive';
-import { transient } from '../core';
-import { GlobalConfigService } from '../shared/services/global-config.service';
-import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
-import { classLog } from '../shared/logging';
 
 @Component({
   selector: 'app-content-items',
@@ -74,9 +74,9 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   #dialogRouter = transient(DialogRoutingService);
 
   constructor(
-    private dialogRef: MatDialogRef<ContentItemsComponent>,
+    private dialog: MatDialogRef<ContentItemsComponent>,
     private snackBar: MatSnackBar,
-    private dialog: MatDialog,
+    private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
   ) { }
@@ -103,7 +103,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   }
 
   closeDialog() {
-    this.dialogRef.close();
+    this.dialog.close();
   }
 
   onGridReady(params: GridReadyEvent) {
@@ -207,7 +207,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   }
 
   createMetadata() {
-    const metadataDialogRef = this.dialog.open(CreateMetadataDialogComponent, {
+    const metadataDialogRef = this.matDialog.open(CreateMetadataDialogComponent, {
       autoFocus: false,
       viewContainerRef: this.viewContainerRef,
       width: '650px',

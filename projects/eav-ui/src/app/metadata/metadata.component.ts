@@ -61,9 +61,9 @@ export class MetadataComponent implements OnInit {
   #dialogRoutes = transient(DialogRoutingService);
 
   constructor(
-    private dialogRef: MatDialogRef<MetadataComponent>,
+    private dialog: MatDialogRef<MetadataComponent>,
     private snackBar: MatSnackBar,
-    private dialog: MatDialog,
+    private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
   ) { }
@@ -97,7 +97,7 @@ export class MetadataComponent implements OnInit {
   }
 
   closeDialog() {
-    this.dialogRef.close();
+    this.dialog.close();
   }
 
   openChange(open: boolean) {
@@ -108,7 +108,7 @@ export class MetadataComponent implements OnInit {
     if (recommendation) {
       // If the feature is not enabled, open the info dialog instead of metadata
       if (!recommendation.Enabled) {
-        openFeatureDialog(this.dialog, recommendation.MissingFeature, this.viewContainerRef, this.changeDetectorRef);
+        openFeatureDialog(this.matDialog, recommendation.MissingFeature, this.viewContainerRef, this.changeDetectorRef);
         return;
       }
       // Feature is enabled, check if it's an empty metadata
@@ -130,7 +130,7 @@ export class MetadataComponent implements OnInit {
       }
       return;
     }
-    const metadataDialogRef = this.dialog.open(MetadataSaveDialogComponent, {
+    const metadataDialogRef = this.matDialog.open(MetadataSaveDialogComponent, {
       autoFocus: false,
       viewContainerRef: this.viewContainerRef,
       width: '650px',
@@ -209,7 +209,7 @@ export class MetadataComponent implements OnInit {
         entityTitle: metadata.Title,
         message: this.metadataSet().Recommendations.find(r => r.Id === metadata._Type.Id)?.DeleteWarning,
       };
-      const confirmationDialogRef = this.dialog.open(ConfirmDeleteDialogComponent, {
+      const confirmationDialogRef = this.matDialog.open(ConfirmDeleteDialogComponent, {
         autoFocus: false,
         data,
         viewContainerRef: this.viewContainerRef,

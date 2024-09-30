@@ -69,7 +69,7 @@ export class AppsListComponent implements OnInit {
     private snackBar: MatSnackBar,
     private context: Context,
     // Services for showing features in the menu
-    private dialog: MatDialog,
+    private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
   ) {
@@ -149,7 +149,7 @@ export class AppsListComponent implements OnInit {
   }
 
   openLightSpeedFeatInfo() {
-    openFeatureDialog(this.dialog, FeatureNames.LightSpeed, this.viewContainerRef, this.changeDetectorRef);
+    openFeatureDialog(this.matDialog, FeatureNames.LightSpeed, this.viewContainerRef, this.changeDetectorRef);
   }
 
   private buildGridOptions(): GridOptions {

@@ -46,7 +46,7 @@ export class WebApiComponent implements OnInit {
 
   constructor(
     private snackBar: MatSnackBar,
-    private dialog: MatDialog,
+    private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
   ) { }
 
@@ -83,7 +83,7 @@ export class WebApiComponent implements OnInit {
       global,
       purpose: 'Api',
     };
-    const createFileDialogRef = this.dialog.open(CreateFileDialogComponent, {
+    const createFileDialogRef = this.matDialog.open(CreateFileDialogComponent, {
       autoFocus: false,
       data: createFileDialogData,
       viewContainerRef: this.viewContainerRef,

@@ -1,36 +1,36 @@
 import { Context as DnnContext } from '@2sic.com/sxc-angular';
 import { animate, state, style, transition, trigger } from '@angular/animations';
+import { AsyncPipe, NgClass } from '@angular/common';
 import { ChangeDetectorRef, Component, computed, effect, EventEmitter, inject, OnInit, Output, signal, ViewContainerRef } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { AdamConfig, AdamItem } from '../../../../../../../../edit-types';
-import { eavConstants } from '../../../../../shared/constants/eav.constants';
-import { EditForm, EditPrep } from '../../../../../shared/models/edit-form.model';
-import { FileTypeHelpers } from '../../../../shared/helpers';
-import { AdamConfigInstance } from './adam-browser.models';
-import { TranslateModule } from '@ngx-translate/core';
-import { MatBadgeModule } from '@angular/material/badge';
-import { PasteClipboardImageDirective } from '../../../directives/paste-clipboard-image.directive';
-import { MatIconModule } from '@angular/material/icon';
 import { ExtendedModule } from '@angular/flex-layout/extended';
-import { NgClass, AsyncPipe } from '@angular/common';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { TranslateModule } from '@ngx-translate/core';
+import isEqual from 'lodash-es/isEqual';
+import { AdamConfig, AdamItem } from '../../../../../../../../edit-types';
+import { transient } from '../../../../../core/transient';
+import { FeatureNames } from '../../../../../features/feature-names';
+import { FeaturesScopedService } from '../../../../../features/features-scoped.service';
+import { openFeatureDialog } from '../../../../../features/shared/base-feature.component';
+import { eavConstants } from '../../../../../shared/constants/eav.constants';
 import { ClickStopPropagationDirective } from '../../../../../shared/directives/click-stop-propagation.directive';
 import { TippyDirective } from '../../../../../shared/directives/tippy.directive';
-import { FeaturesScopedService } from '../../../../../features/features-scoped.service';
-import { FeatureNames } from '../../../../../features/feature-names';
-import { openFeatureDialog } from '../../../../../features/shared/base-feature.component';
-import { FieldState } from '../../../field-state';
-import { FormsStateService } from '../../../../form/forms-state.service';
-import { EditRoutingService } from '../../../../routing/edit-routing.service';
-import { AdamService } from '../../../../shared/adam/adam.service';
-import { fixDropzone } from './dropzone-helper';
-import { AdamCacheService } from '../../../../shared/adam/adam-cache.service';
-import { LinkCacheService } from '../../../../shared/adam/link-cache.service';
-import isEqual from 'lodash-es/isEqual';
-import { AdamConnector } from './adam-connector';
-import { transient } from '../../../../../core/transient';
+import { classLog } from '../../../../../shared/logging';
+import { EditForm, EditPrep } from '../../../../../shared/models/edit-form.model';
 import { DialogRoutingService } from '../../../../../shared/routing/dialog-routing.service';
 import { signalObj } from '../../../../../shared/signals/signal.utilities';
-import { classLog } from '../../../../../shared/logging';
+import { FormsStateService } from '../../../../form/forms-state.service';
+import { EditRoutingService } from '../../../../routing/edit-routing.service';
+import { AdamCacheService } from '../../../../shared/adam/adam-cache.service';
+import { AdamService } from '../../../../shared/adam/adam.service';
+import { LinkCacheService } from '../../../../shared/adam/link-cache.service';
+import { FileTypeHelpers } from '../../../../shared/helpers';
+import { PasteClipboardImageDirective } from '../../../directives/paste-clipboard-image.directive';
+import { FieldState } from '../../../field-state';
+import { AdamConfigInstance } from './adam-browser.models';
+import { AdamConnector } from './adam-connector';
+import { fixDropzone } from './dropzone-helper';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -106,7 +106,7 @@ export class AdamBrowserComponent implements OnInit {
     private adamCacheService: AdamCacheService,
     private linkCacheService: LinkCacheService,
     private formsStateService: FormsStateService,
-    private dialog: MatDialog,
+    private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef
   ) {
@@ -254,7 +254,7 @@ export class AdamBrowserComponent implements OnInit {
 
   openFeatureInfoDialog() {
     if (!this.isPasteImageFromClipboardEnabled())
-      openFeatureDialog(this.dialog, FeatureNames.PasteImageFromClipboard, this.viewContainerRef, this.changeDetectorRef);
+      openFeatureDialog(this.matDialog, FeatureNames.PasteImageFromClipboard, this.viewContainerRef, this.changeDetectorRef);
   }
 
   private processFetchedItems(items: AdamItem[], adamConfig: AdamConfig): void {

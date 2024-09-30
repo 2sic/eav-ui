@@ -50,12 +50,12 @@ export class TranslateMenuDialogComponent extends TranslateHelperComponent {
   });
 
   constructor(
-    private dialogRef: MatDialogRef<TranslateMenuDialogComponent>,
+    private dialog: MatDialogRef<TranslateMenuDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public dialogData: TranslateMenuDialogData,
     public fieldsTranslateService: FieldsTranslateService,
   ) {
     super(dialogData); //
-    this.dialogRef.keydownEvents().subscribe(event => {
+    this.dialog.keydownEvents().subscribe(event => {
       if (isCtrlS(event))
         event.preventDefault();
     });
@@ -105,6 +105,6 @@ export class TranslateMenuDialogComponent extends TranslateHelperComponent {
   }
 
   private closeDialog() {
-    this.dialogRef.close();
+    this.dialog.close();
   }
 }

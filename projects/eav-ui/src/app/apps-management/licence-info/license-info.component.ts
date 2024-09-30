@@ -67,7 +67,7 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
   #dialogRouter = transient(DialogRoutingService);
 
   constructor(
-    private dialog: MatDialog,
+    private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
   ) {
@@ -129,7 +129,7 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
       showGuid: true,
       showStatus: true,
     };
-    this.dialog.open(FeatureDetailsDialogComponent, {
+    this.matDialog.open(FeatureDetailsDialogComponent, {
       autoFocus: false,
       data,
       viewContainerRef: this.viewContainerRef,

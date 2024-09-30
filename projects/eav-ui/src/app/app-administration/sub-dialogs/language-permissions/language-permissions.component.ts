@@ -37,7 +37,7 @@ export class LanguagePermissionsComponent implements OnInit {
   #dialogRouting = transient(DialogRoutingService);
 
   constructor(
-    private dialogRef: MatDialogRef<LanguagePermissionsComponent>,
+    private dialog: MatDialogRef<LanguagePermissionsComponent>,
   ) { }
 
   ngOnInit(): void {
@@ -46,7 +46,7 @@ export class LanguagePermissionsComponent implements OnInit {
   }
 
   closeDialog(): void {
-    this.dialogRef.close();
+    this.dialog.close();
   }
 
   openPermissions(language: SiteLanguagePermissions): void {

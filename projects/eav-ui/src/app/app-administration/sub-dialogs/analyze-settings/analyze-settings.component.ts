@@ -51,7 +51,7 @@ export class AnalyzeSettingsComponent implements OnInit {
   stack = signal<SettingsStackItem[]>([]);
 
   constructor(
-    private dialogRef: MatDialogRef<AnalyzeSettingsComponent>,
+    private dialog: MatDialogRef<AnalyzeSettingsComponent>,
   ) {
     this.part = this.#dialogRouter.getParam('part') as Of<typeof AnalyzeParts>;
   }
@@ -62,7 +62,7 @@ export class AnalyzeSettingsComponent implements OnInit {
   }
 
   closeDialog(): void {
-    this.dialogRef.close();
+    this.dialog.close();
   }
 
   changeView(viewGuid: string): void {

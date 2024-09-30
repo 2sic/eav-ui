@@ -57,7 +57,7 @@ export class FileUploadDialogComponent extends BaseComponent implements OnInit, 
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public dialogData: FileUploadDialogData,
-    private dialogRef: MatDialogRef<FileUploadDialogComponent>,
+    private dialog: MatDialogRef<FileUploadDialogComponent>,
     private snackBar: MatSnackBar,
     private sanitizer: DomSanitizer,
     private context: Context,
@@ -196,7 +196,7 @@ Please try again later or check how to manually install content-templates: https
   }
 
   closeDialog(refresh?: boolean): void {
-    this.dialogRef.close(refresh);
+    this.dialog.close(refresh);
   }
 
   filesDropped(files: File[]): void {

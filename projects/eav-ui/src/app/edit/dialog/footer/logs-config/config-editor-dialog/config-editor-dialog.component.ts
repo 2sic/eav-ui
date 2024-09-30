@@ -47,7 +47,7 @@ export class ConfigEditorDialogComponent {
   filename = 'exported-config.json';
 
   constructor(
-    public dialogRef: MatDialogRef<ConfigEditorDialogComponent>,
+    public dialog: MatDialogRef<ConfigEditorDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.selectedConfig = JSON.stringify(data.configData, null, 2);

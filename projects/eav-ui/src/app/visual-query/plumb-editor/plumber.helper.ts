@@ -43,7 +43,7 @@ export class Plumber {
   private maxCols = this.lineColors.length - 1;
   private uuidColorMap: Record<string, any> = {};
   private bulkDelete = false;
-  private dialogRef: MatDialogRef<RenameStreamComponent>;
+  private dialog: MatDialogRef<RenameStreamComponent>;
 
   #endpoints: EndpointsHelper;
 
@@ -54,7 +54,7 @@ export class Plumber {
     private onConnectionsChanged: () => void,
     private onDragend: (pipelineDataSourceGuid: string, position: VisualDesignerData) => void,
     private onDebugStream: (stream: PipelineResultStream) => void,
-    private dialog: MatDialog,
+    private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
   ) {
@@ -71,7 +71,7 @@ export class Plumber {
   }
 
   destroy() {
-    this.dialogRef?.close();
+    this.dialog?.close();
     this.instance.reset();
     this.instance.unbindContainer();
   }
@@ -318,13 +318,13 @@ export class Plumber {
       isSource,
       label: overlay.label,
     };
-    this.dialogRef = this.dialog.open(RenameStreamComponent, {
+    this.dialog = this.matDialog.open(RenameStreamComponent, {
       autoFocus: false,
       data,
       viewContainerRef: this.viewContainerRef,
       width: '650px',
     });
-    this.dialogRef.afterClosed().subscribe(newLabel => {
+    this.dialog.afterClosed().subscribe(newLabel => {
       if (!newLabel) return;
       overlay.setLabel(newLabel);
       setTimeout(() => { this.onConnectionsChanged(); });

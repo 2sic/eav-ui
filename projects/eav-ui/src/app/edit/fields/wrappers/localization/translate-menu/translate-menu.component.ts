@@ -57,7 +57,7 @@ export class TranslateMenuComponent {
   );
 
   constructor(
-    private dialog: MatDialog,
+    private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private formConfig: FormConfigService,
     private fieldsTranslate: FieldsTranslateService,
@@ -77,7 +77,7 @@ export class TranslateMenuComponent {
 
   openAutoTranslateMenuDialog(translationState: TranslationState): void {
     if (this.#fieldState.settings().DisableAutoTranslation) {
-      this.dialog.open(AutoTranslateDisabledWarningDialog, {
+      this.matDialog.open(AutoTranslateDisabledWarningDialog, {
         autoFocus: false,
         data: { isAutoTranslateAll: false },
         viewContainerRef: this.viewContainerRef,
@@ -97,7 +97,7 @@ export class TranslateMenuComponent {
         linkType: translationState.linkType,
       },
     };
-    this.dialog.open(component, {
+    this.matDialog.open(component, {
       autoFocus: false,
       data: dialogData,
       viewContainerRef: this.viewContainerRef,

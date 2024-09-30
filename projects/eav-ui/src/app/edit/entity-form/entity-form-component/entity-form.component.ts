@@ -132,7 +132,7 @@ export class EntityFormComponent implements OnInit, AfterViewChecked, OnDestroy 
   constructor(
     private itemSvc: ItemService,
     private editRoutingSvc: EditRoutingService,
-    private dialog: MatDialog,
+    private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
   ) {
   }
@@ -190,7 +190,7 @@ export class EntityFormComponent implements OnInit, AfterViewChecked, OnDestroy 
 
   openNote() {
     const triggerPosition = this.noteTriggerRef.nativeElement.getBoundingClientRect();
-    this.noteRef = this.dialog.open(this.noteTemplateRef, {
+    this.noteRef = this.matDialog.open(this.noteTemplateRef, {
       autoFocus: false,
       hasBackdrop: false,
       disableClose: true,

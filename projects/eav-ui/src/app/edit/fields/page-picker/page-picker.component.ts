@@ -1,19 +1,19 @@
+import { NgClass, NgTemplateOutlet } from '@angular/common';
 import { Component, computed, Inject, OnInit, signal } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialogActions } from '@angular/material/dialog';
-import { TranslateService, TranslateModule } from '@ngx-translate/core';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { FormsModule } from '@angular/forms';
+import { MAT_DIALOG_DATA, MatDialogActions, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { FieldValue, PagePickerResult } from '../../../../../../edit-types';
+import { transient } from '../../../core';
+import { TippyDirective } from '../../../shared/directives/tippy.directive';
+import { ArrayHelpers } from '../../../shared/helpers/array.helpers';
+import { QueryService } from '../../../shared/services/query.service';
 import { buildPageSearch, buildPageTree } from './page-picker.helpers';
 import { PageEntity, PagePickerDialogData, PageSearchItem, PageTreeItem } from './page-picker.models';
-import { MatIconModule } from '@angular/material/icon';
-import { ExtendedModule } from '@angular/flex-layout/extended';
-import { NgTemplateOutlet, NgClass } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { ArrayHelpers } from '../../../shared/helpers/array.helpers';
-import { TippyDirective } from '../../../shared/directives/tippy.directive';
-import { transient } from '../../../core';
-import { QueryService } from '../../../shared/services/query.service';
 
 @Component({
   selector: 'app-page-picker',
@@ -51,7 +51,7 @@ export class PagePickerComponent implements OnInit {
 
   constructor(
     @Inject(MAT_DIALOG_DATA) private dialogData: PagePickerDialogData,
-    private dialogRef: MatDialogRef<PagePickerComponent>,
+    private dialog: MatDialogRef<PagePickerComponent>,
     private translate: TranslateService,
   ) { }
 
@@ -82,7 +82,7 @@ export class PagePickerComponent implements OnInit {
 
   private closeDialog(pageId?: number): void {
     if (pageId == null) {
-      this.dialogRef.close();
+      this.dialog.close();
       return;
     }
 
@@ -91,7 +91,7 @@ export class PagePickerComponent implements OnInit {
       id: page.id.toString(),
       name: page.name,
     };
-    this.dialogRef.close(result);
+    this.dialog.close(result);
   }
 
   private fetchPages(): void {

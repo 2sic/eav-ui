@@ -1,20 +1,20 @@
 import { ChangeDetectorRef, Component, Injector, OnInit, ViewContainerRef, effect, inject, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Preview } from './hyperlink-default.models';
-import { FieldState } from '../../field-state';
-import { UrlHelpers, FileTypeHelpers } from '../../../shared/helpers';
-import { PagePicker } from '../../page-picker/page-picker.helper';
 import { AdamItem } from '../../../../../../../edit-types/src/AdamItem';
-import { EditForm, EditPrep } from '../../../../shared/models/edit-form.model';
+import { transient } from '../../../../core/transient';
 import { eavConstants } from '../../../../shared/constants/eav.constants';
+import { classLog } from '../../../../shared/logging';
+import { EditForm, EditPrep } from '../../../../shared/models/edit-form.model';
+import { computedObj } from '../../../../shared/signals/signal.utilities';
 import { FormConfigService } from '../../../form/form-config.service';
 import { FormsStateService } from '../../../form/forms-state.service';
-import { AdamService } from '../../../shared/adam/adam.service';
 import { EditRoutingService } from '../../../routing/edit-routing.service';
+import { AdamService } from '../../../shared/adam/adam.service';
 import { LinkCacheService } from '../../../shared/adam/link-cache.service';
-import { transient } from '../../../../core/transient';
-import { classLog } from '../../../../shared/logging';
-import { computedObj } from '../../../../shared/signals/signal.utilities';
+import { FileTypeHelpers, UrlHelpers } from '../../../shared/helpers';
+import { FieldState } from '../../field-state';
+import { PagePicker } from '../../page-picker/page-picker.helper';
+import { Preview } from './hyperlink-default.models';
 
 @Component({
   selector: 'app-base-field-hyperlink-component',
@@ -50,7 +50,7 @@ export class HyperlinkDefaultBaseComponent implements OnInit {
 
   constructor(
     private formConfig: FormConfigService,
-    public dialog: MatDialog,
+    public matDialog: MatDialog,
     public viewContainerRef: ViewContainerRef,
     public changeDetectorRef: ChangeDetectorRef,
     public linkCacheService: LinkCacheService,
@@ -82,7 +82,7 @@ export class HyperlinkDefaultBaseComponent implements OnInit {
 
 
   openPagePicker() {
-    PagePicker.open(this.config, this.group, this.dialog, this.viewContainerRef, this.changeDetectorRef, (page) => {
+    PagePicker.open(this.config, this.group, this.matDialog, this.viewContainerRef, this.changeDetectorRef, (page) => {
       // convert to page:xyz format (if it wasn't cancelled)
       if (!page) return;
       this.fieldState.ui().set(`page:${page.id}`);

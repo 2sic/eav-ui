@@ -1,8 +1,8 @@
-import { Component, Inject, Input, OnDestroy, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { TranslateModule } from '@ngx-translate/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-auto-translate-disabled-warning-dialog',
@@ -18,7 +18,7 @@ export class AutoTranslateDisabledWarningDialog implements OnInit {
   // @Input() public isAutoTranslateAll: boolean;
 
   constructor(
-    private dialogRef: MatDialogRef<AutoTranslateDisabledWarningDialog>,
+    private dialog: MatDialogRef<AutoTranslateDisabledWarningDialog>,
     @Inject(MAT_DIALOG_DATA) public dialogData: any,
   ) {
   }
@@ -27,6 +27,6 @@ export class AutoTranslateDisabledWarningDialog implements OnInit {
   }
 
   closeDialog() {
-    this.dialogRef.close();
+    this.dialog.close();
   }
 }

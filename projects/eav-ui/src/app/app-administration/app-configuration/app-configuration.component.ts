@@ -87,7 +87,7 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
   constructor(
     private context: Context,
     private snackBar: MatSnackBar,
-    private dialog: MatDialog,
+    private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
   ) {
@@ -210,7 +210,7 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     if (enabled)
       this.#dialogRouter.navParentFirstChild(['language-permissions']);
     else
-      openFeatureDialog(this.dialog, FeatureNames.PermissionsByLanguage, this.viewContainerRef, this.changeDetectorRef);
+      openFeatureDialog(this.matDialog, FeatureNames.PermissionsByLanguage, this.viewContainerRef, this.changeDetectorRef);
   }
 
   analyze(part: Of<typeof AnalyzeParts>) {

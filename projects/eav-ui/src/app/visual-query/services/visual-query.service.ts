@@ -49,7 +49,7 @@ export class VisualQueryStateService extends ServiceBase implements OnDestroy {
 
   constructor(
     private snackBar: MatSnackBar,
-    private dialog: MatDialog,
+    private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private zone: NgZone,
     private changeDetectorRef: ChangeDetectorRef,
@@ -311,7 +311,7 @@ export class VisualQueryStateService extends ServiceBase implements OnDestroy {
       debugStream,
       top,
     };
-    this.dialog.open(QueryResultComponent, {
+    this.matDialog.open(QueryResultComponent, {
       autoFocus: false,
       backdropClass: 'dialog-backdrop',
       closeOnNavigation: false,
@@ -329,7 +329,7 @@ export class VisualQueryStateService extends ServiceBase implements OnDestroy {
     const dialogData: StreamErrorResultDialogData = {
       errorData: stream.ErrorData,
     };
-    this.dialog.open(StreamErrorResultComponent, {
+    this.matDialog.open(StreamErrorResultComponent, {
       autoFocus: false,
       backdropClass: 'dialog-backdrop',
       closeOnNavigation: false,

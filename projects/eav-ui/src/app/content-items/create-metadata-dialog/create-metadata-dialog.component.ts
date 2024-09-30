@@ -74,7 +74,7 @@ export class CreateMetadataDialogComponent extends BaseComponent implements OnIn
   
   private contentTypesService = transient(ContentTypesService);
   constructor(
-    private dialogRef: MatDialogRef<CreateMetadataDialogComponent>,
+    private dialog: MatDialogRef<CreateMetadataDialogComponent>,
     private context: Context,
   ) {
     super();
@@ -233,7 +233,7 @@ export class CreateMetadataDialogComponent extends BaseComponent implements OnIn
   }
 
   closeDialog(result?: MetadataInfo): void {
-    this.dialogRef.close(result);
+    this.dialog.close(result);
   }
 
   toggleGuidedKey(event: boolean): void {

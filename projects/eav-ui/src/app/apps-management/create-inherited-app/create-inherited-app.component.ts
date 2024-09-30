@@ -39,7 +39,7 @@ export class CreateInheritedAppComponent implements OnInit{
   private appsListService = transient(AppsListService);
 
   constructor(
-    private dialogRef: MatDialogRef<CreateInheritedAppComponent>,
+    private dialog: MatDialogRef<CreateInheritedAppComponent>,
     private snackBar: MatSnackBar,
   ) {
     this.form = this.buildForm();
@@ -51,7 +51,7 @@ export class CreateInheritedAppComponent implements OnInit{
   }
 
   closeDialog(): void {
-    this.dialogRef.close();
+    this.dialog.close();
   }
 
   create(): void {

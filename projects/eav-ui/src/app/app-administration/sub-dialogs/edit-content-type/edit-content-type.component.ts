@@ -1,27 +1,27 @@
-import { AfterViewInit, Component, HostBinding, inject } from '@angular/core';
-import { MatDialogRef, MatDialogActions } from '@angular/material/dialog';
+import { AsyncPipe } from '@angular/common';
+import { AfterViewInit, Component, HostBinding } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatOptionModule } from '@angular/material/core';
+import { MatDialogActions, MatDialogRef } from '@angular/material/dialog';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
+import { transient } from '../../../core';
+import { FieldHintComponent } from '../../../shared/components/field-hint/field-hint.component';
 import { dropdownInsertValue } from '../../../shared/constants/dropdown-insert-value.constant';
 import { eavConstants, ScopeOption } from '../../../shared/constants/eav.constants';
+import { ClickStopPropagationDirective } from '../../../shared/directives/click-stop-propagation.directive';
+import { TippyDirective } from '../../../shared/directives/tippy.directive';
+import { classLog } from '../../../shared/logging';
+import { computedObj, httpToSignal, signalObj } from '../../../shared/signals/signal.utilities';
 import { contentTypeNameError, contentTypeNamePattern } from '../../constants/content-type.patterns';
 import { ContentTypeEdit } from '../../models/content-type.model';
 import { ContentTypesService } from '../../services/content-types.service';
-import { AsyncPipe } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatOptionModule } from '@angular/material/core';
-import { MatSelectModule } from '@angular/material/select';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { FormsModule } from '@angular/forms';
-import { FieldHintComponent } from '../../../shared/components/field-hint/field-hint.component';
-import { ClickStopPropagationDirective } from '../../../shared/directives/click-stop-propagation.directive';
-import { TippyDirective } from '../../../shared/directives/tippy.directive';
-import { transient } from '../../../core';
-import { httpToSignal, computedObj, signalObj } from '../../../shared/signals/signal.utilities';
-import { classLog } from '../../../shared/logging';
 
 @Component({
   selector: 'app-edit-content-type',
@@ -57,7 +57,7 @@ export class EditContentTypeComponent implements AfterViewInit {
   #typeNameId = this.route.snapshot.paramMap.get('contentTypeStaticName');
 
   constructor(
-    private dialogRef: MatDialogRef<EditContentTypeComponent>,
+    private dialog: MatDialogRef<EditContentTypeComponent>,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
   ) {
@@ -135,7 +135,7 @@ export class EditContentTypeComponent implements AfterViewInit {
   }
 
   closeDialog() {
-    this.dialogRef.close();
+    this.dialog.close();
   }
 
   changeContentTypeName(newName: string) {

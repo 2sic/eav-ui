@@ -1,21 +1,21 @@
+import { AsyncPipe } from '@angular/common';
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
-import { MatDialogRef, MatDialogActions } from '@angular/material/dialog';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatOptionModule } from '@angular/material/core';
+import { MatDialogActions, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatSelectModule } from '@angular/material/select';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, forkJoin } from 'rxjs';
 import { ContentType } from '../app-administration/models/content-type.model';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
-import { ContentExport } from './models/content-export.model';
-import { ContentExportService } from './services/content-export.service';
-import { AsyncPipe } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
-import { MatRadioModule } from '@angular/material/radio';
-import { MatOptionModule } from '@angular/material/core';
-import { MatSelectModule } from '@angular/material/select';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { FormsModule } from '@angular/forms';
+import { DialogConfigAppService } from '../app-administration/services/dialog-config-app.service';
 import { transient } from '../core';
 import { Language } from '../shared/models/language.model';
-import { DialogConfigAppService } from '../app-administration/services/dialog-config-app.service';
+import { ContentExport } from './models/content-export.model';
+import { ContentExportService } from './services/content-export.service';
 
 @Component({
   selector: 'app-content-export',
@@ -50,7 +50,7 @@ export class ContentExportComponent implements OnInit, OnDestroy {
   private contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
 
   constructor(
-    private dialogRef: MatDialogRef<ContentExportComponent>,
+    private dialog: MatDialogRef<ContentExportComponent>,
     private route: ActivatedRoute,
   ) {
     const selectedIds = this.route.snapshot.paramMap.get('selectedIds');
@@ -86,7 +86,7 @@ export class ContentExportComponent implements OnInit, OnDestroy {
   }
 
   closeDialog() {
-    this.dialogRef.close();
+    this.dialog.close();
   }
 
   exportContent() {

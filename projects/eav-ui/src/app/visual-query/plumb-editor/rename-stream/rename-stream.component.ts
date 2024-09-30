@@ -55,7 +55,7 @@ export class RenameStreamComponent extends BaseComponent implements OnInit, OnDe
   
   constructor(
     @Inject(MAT_DIALOG_DATA) private dialogData: RenameStreamDialogData,
-    private dialogRef: MatDialogRef<RenameStreamComponent>,
+    private dialog: MatDialogRef<RenameStreamComponent>,
     private visualQueryService: VisualQueryStateService,
     private changeDetectorRef: ChangeDetectorRef,
   ) {
@@ -71,7 +71,7 @@ export class RenameStreamComponent extends BaseComponent implements OnInit, OnDe
   }
 
   closeDialog(label?: string): void {
-    this.dialogRef.close(label);
+    this.dialog.close(label);
   }
 
   toggleGuidedLabel(guidedLabel: boolean): void {

@@ -1,19 +1,19 @@
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
-import { RouterOutlet } from '@angular/router';
-import { Context } from '../../shared/services/context';
-import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { MediaMatcher } from '@angular/cdk/layout';
-import { DialogConfigGlobalService } from '../../app-administration/services';
-import { AppsManagementNavItems } from './managment-nav-items';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { BreadcrumbModule } from 'xng-breadcrumb';
+import { MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { RouterOutlet } from '@angular/router';
+import { BreadcrumbModule } from 'xng-breadcrumb';
+import { DialogConfigGlobalService } from '../../app-administration/services';
+import { transient } from '../../core';
 import { NavItemListComponent } from '../../shared/components/nav-item-list/nav-item-list.component';
 import { ToggleDebugDirective } from '../../shared/directives/toggle-debug.directive';
-import { transient } from '../../core';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
+import { Context } from '../../shared/services/context';
+import { AppsManagementNavItems } from './managment-nav-items';
 
 @Component({
   selector: 'app-apps-management-nav',
@@ -45,7 +45,7 @@ export class AppsManagementNavComponent implements OnInit {
   #dialogClose = transient(DialogRoutingService);
 
   constructor(
-    private dialogRef: MatDialogRef<AppsManagementNavComponent>,
+    private dialog: MatDialogRef<AppsManagementNavComponent>,
     private context: Context,
     private media: MediaMatcher,
   ) {
@@ -64,7 +64,7 @@ export class AppsManagementNavComponent implements OnInit {
   }
 
   closeDialog() {
-    this.dialogRef.close();
+    this.dialog.close();
   }
 
   private fetchDialogSettings() {

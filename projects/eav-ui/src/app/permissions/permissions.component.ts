@@ -49,7 +49,7 @@ export class PermissionsComponent implements OnInit {
   };
 
   constructor(
-    private dialogRef: MatDialogRef<PermissionsComponent>,
+    private dialog: MatDialogRef<PermissionsComponent>,
     private snackBar: MatSnackBar,
   ) {
   }
@@ -60,7 +60,7 @@ export class PermissionsComponent implements OnInit {
   }
 
   closeDialog() {
-    this.dialogRef.close();
+    this.dialog.close();
   }
 
   #fetchPermissions() {

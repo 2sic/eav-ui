@@ -104,7 +104,7 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
     private zone: NgZone,
-    private dialog: MatDialog,
+    private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
   ) {
     super();
@@ -255,7 +255,7 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
       global: params.isShared,
       purpose: params.folder === 'api' || params.folder?.startsWith('api/') ? 'Api' : undefined,
     };
-    const createFileDialogRef = this.dialog.open(CreateFileDialogComponent, {
+    const createFileDialogRef = this.matDialog.open(CreateFileDialogComponent, {
       autoFocus: false,
       data: createFileDialogData,
       viewContainerRef: this.viewContainerRef,
