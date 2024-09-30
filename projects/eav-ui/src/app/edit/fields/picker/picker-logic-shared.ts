@@ -1,5 +1,6 @@
 import { FieldValue } from 'projects/edit-types';
-import { FieldSettings, RelationshipParentChild, UiPickerModeTree, UiPickerSourceCss, UiPickerSourceCustomCsv, UiPickerSourceCustomList, UiPickerSourceEntity, UiPickerSourceEntityAndQuery, UiPickerSourceQuery } from '../../../../../../edit-types/src/FieldSettings';
+import { FieldSettings, UiPickerSourceCss, UiPickerSourceCustomCsv, UiPickerSourceCustomList, UiPickerSourceEntity, UiPickerSourceQuery, UiPickerSourcesAll } from '../../../../../../edit-types/src/FieldSettings';
+import { RelationshipParentChild, UiPickerModeTree } from '../../../../../../edit-types/src/PickerModeTree';
 import { Of } from '../../../core';
 import { FeatureNames } from '../../../features/feature-names';
 import { classLog } from '../../../shared/logging';
@@ -74,7 +75,7 @@ export class PickerLogicShared {
     fs.DataSourceType = typeName ?? '' as Of<typeof PickerConfigs>;
 
     // DataSource may not be configured yet, in which case the object is just {}
-    const typeConfig = tools.reader.flatten<UiPickerSourceEntityAndQuery>(dataSource);
+    const typeConfig = tools.reader.flatten<UiPickerSourcesAll>(dataSource);
 
     const isKnownType = Object.values(PickerConfigs).includes(typeName);
 
@@ -94,6 +95,7 @@ export class PickerLogicShared {
     fs.ItemInformation = typeConfig.ItemInformation ?? '';
     fs.ItemTooltip = typeConfig.ItemTooltip ?? '';
     fs.ItemLink = typeConfig.ItemLink ?? '';
+    fs.PickerPreviewType = typeConfig.PickerPreviewType ?? '';
 
     const sourceIsQuery = typeName === PickerConfigs.UiPickerSourceQuery;
     const sourceIsEntity = typeName === PickerConfigs.UiPickerSourceEntity;

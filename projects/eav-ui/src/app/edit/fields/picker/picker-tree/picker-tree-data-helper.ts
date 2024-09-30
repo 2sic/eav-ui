@@ -1,10 +1,10 @@
-import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
-import { PickerTreeItem } from '../models/picker-tree.models';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { Injectable } from '@angular/core';
-import { RelationshipChildParent, RelationshipParentChild, UiPickerModeTree } from '../../../../../../../edit-types/src/FieldSettings';
-import { PickerItem } from '../models/picker-item.model';
+import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
+import { RelationshipChildParent, RelationshipParentChild, UiPickerModeTree } from '../../../../../../../edit-types/src/PickerModeTree';
 import { classLog } from '../../../../shared/logging';
+import { PickerItem } from '../models/picker-item.model';
+import { PickerTreeItem } from '../models/picker-tree.models';
 
 @Injectable()
 export class PickerTreeDataHelper {

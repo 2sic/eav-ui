@@ -12,7 +12,7 @@
   >
     <!-- Show Icon or Image -->
     <div class="show-input-container">
-      <app-picker-preview-type [item]="getSelectedItem(selectedItem()?.value)"></app-picker-preview-type>
+      <app-picker-preview-type [item]="getSelectedItem(selectedItem()?.value)" [settings]="fieldState.settings()"></app-picker-preview-type>
 
       <!-- The initial input showing the selected value - one only. As soon as there are more, this control won't show any more -->
       <input
@@ -89,7 +89,7 @@
             - move/remove css (imports in SCSS) where not needed any more
           -->
           <!-- Show Preview Label -->
-          <app-picker-preview-label [item]="item"></app-picker-preview-label>
+          <app-picker-preview-label [item]="item" [settings]="fieldState.settings()"></app-picker-preview-label>
         </mat-option>
       }
     } @else {
@@ -107,7 +107,7 @@
             [tippyArrow]="true"
           >
             <!-- Show Preview Label -->
-            <app-picker-preview-label [item]="item"></app-picker-preview-label>
+            <app-picker-preview-label [item]="item" [settings]="fieldState.settings()"></app-picker-preview-label>
           </mat-option>
         </mat-tree-node>
         <mat-tree-node *matTreeNodeDef="let item; when: hasChild" matTreeNodePadding class="eav-tree-node">
@@ -126,7 +126,7 @@
             [tippyArrow]="true"
           >
             <!-- Show Preview Label -->
-            <app-picker-preview-label [item]="item"></app-picker-preview-label>
+            <app-picker-preview-label [item]="item" [settings]="fieldState.settings()"></app-picker-preview-label>
           </mat-option>
         </mat-tree-node>
       </mat-tree>

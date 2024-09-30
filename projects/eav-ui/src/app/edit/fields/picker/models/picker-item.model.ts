@@ -12,7 +12,7 @@ export interface PickerItem {
   valuePreview?: string;
 
   /** Maybe the setting for the visualizer - eg. "none", "text", "icon-font", "icon-svg", "image" */
-  previewType?: string;
+  // previewType?: string;
 
   /** The HTML to show in the preview */
   previewHtml?: string;

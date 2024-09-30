@@ -1,5 +1,6 @@
-import { Component, Input } from '@angular/core';
-import { PickerItem } from 'projects/edit-types';
+import { Component, input } from '@angular/core';
+import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
+import { PickerItem } from '../models/picker-item.model';
 
 @Component({
   selector: 'app-picker-preview-type',
@@ -11,10 +12,12 @@ import { PickerItem } from 'projects/edit-types';
 })
 export class PickerPreviewTypeComponent {
 
-  @Input() item: PickerItem;
+  item = input.required<PickerItem>();
+
+  settings = input.required<FieldSettings>();
 
   replaceDot(value: string): string {
-    return value.replace(/\./g, '');
+    return value?.replace(/\./g, '');
   }
 
 }

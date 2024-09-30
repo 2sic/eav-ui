@@ -1,9 +1,10 @@
 import { Injectable, Injector, Signal, effect, runInInjectionContext } from '@angular/core';
+import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
+import { RelationshipParentChild } from '../../../../../../../edit-types/src/PickerModeTree';
+import { classLog } from '../../../../shared/logging';
+import { PickerItem } from '../models/picker-item.model';
 import { PickerTreeItem } from '../models/picker-tree.models';
 import { PickerTreeDataHelper } from './picker-tree-data-helper';
-import { FieldSettings, RelationshipParentChild } from '../../../../../../../edit-types/src/FieldSettings';
-import { PickerItem } from '../models/picker-item.model';
-import { classLog } from '../../../../shared/logging';
 
 @Injectable()
 export class PickerTreeDataService {

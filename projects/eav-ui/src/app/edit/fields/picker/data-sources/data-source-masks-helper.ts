@@ -79,7 +79,7 @@ export class DataSourceMasksHelper {
         entity: entity,
         value,
         valuePreview: value,
-        previewType: 'text',
+        // previewType: 'text',
         label,
         tooltip: masks.tooltip,
         info: masks.info,
@@ -93,7 +93,7 @@ export class DataSourceMasksHelper {
     const fromMasks = this.#parseMasks(masks, entity);
 
     // If the original was not a mask, look up the field
-    const finalLabel = masks.label.includes('[') ? fromMasks.title : label;
+    const finalLabel = masks.label.includes('[') ? fromMasks.label : label;
 
     return l.r({
       id: entity.Id,
@@ -106,9 +106,9 @@ export class DataSourceMasksHelper {
   }
 
   /** Process all placeholders in all masks to get tooltip, info, link and title */
-  #parseMasks(masks: DataSourceMasks, data: Record<string, any>) {
+  #parseMasks(masks: DataSourceMasks, data: Record<string, any>): Partial<PickerItem> {
     const l = this.log.fnIf('parseMasks', { masks, data });
-    let title = masks.label;
+    let label = masks.label;
 
     // If we have placeholders, but the feature is not enabled, warn about it
     if (!this.#featInfoWarned && !this.#featInfoEnabled && `${masks.tooltip}${masks.info}${masks.link}`.length > 0) {
@@ -123,7 +123,7 @@ export class DataSourceMasksHelper {
     let info = useInfos ? masks.info : '';
     let link = useInfos ? masks.link : '';
     let valuePreview = masks.valuePreview;
-    let previewType = useInfos ? masks.previewType : ''; // TODO: @2dg, not sure if this is correct
+    // let previewType = useInfos ? masks.previewType : ''; // TODO: @2dg, not sure if this is correct
 
     Object.keys(data).forEach(key => {
       // must check for null and use '' instead
@@ -135,12 +135,12 @@ export class DataSourceMasksHelper {
       tooltip = tooltip.replace(search, value);
       info = info.replace(search, value);
       link = link.replace(search, value);
-      title = title.replace(search, value);
+      label = label.replace(search, value);
       valuePreview = valuePreview.replace(search, value);
-      previewType = data.PreviewType ?? 'text'; // TODO: @2dg, not sure if this is correct
+      // previewType = data.PreviewType ?? 'text'; // TODO: @2dg, not sure if this is correct
     });
 
-    return l.r({ title, tooltip, info, link, valuePreview, previewType });
+    return l.r({ label, tooltip, info, link, valuePreview } satisfies Partial<PickerItem>, 'result');
   }
 
   /** Get the mask - if possibly from current objects cache */

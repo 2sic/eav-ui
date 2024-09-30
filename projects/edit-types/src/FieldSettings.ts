@@ -2,6 +2,7 @@ import { Of } from '../../eav-ui/src/app/core';
 import { PickerConfigs } from '../../eav-ui/src/app/edit/fields/picker/constants/picker-config-model.constants';
 import { FeatureNames } from '../../eav-ui/src/app/features/feature-names';
 import { PickerOptionCustom } from './DropdownOption';
+import { PickerSourceBase, UiPickerModeTree } from './PickerModeTree';
 
 /** */
 interface InternalSettings {
@@ -199,6 +200,9 @@ export interface StringCssPicker extends String {
   ItemInformation: string;
   ItemTooltip: string;
   ItemLink: string;
+
+  /** Maybe the setting for the visualizer - eg. "none", "text", "icon-font", "icon-svg", "image" */
+  PickerPreviewType: string;
 }
 
 /**
@@ -331,8 +335,6 @@ export interface Boolean extends All {
   _label: string;
 }
 
-// export type PickerDataSourceType = 'UiPickerSourceCustomList' | 'UiPickerSourceCustomCsv' | 'UiPickerSourceQuery' | 'UiPickerSourceEntity';
-
 interface PickerSettings {
   PickerDisplayMode: 'list' | 'tree' | 'checkbox' | 'radio' | 'auto-inline';
   PickerDisplayConfiguration: string[]; //can only be one entity guid
@@ -387,11 +389,11 @@ export interface FieldSettings extends
   StringCssPicker,
   InternalSettings { }
 
-export interface UiPickerSourceCustomList extends ConfigModel {
+export interface UiPickerSourceCustomList extends PickerSourceBase {
   Values: string;
 }
 
-export interface UiPickerSourceQuery extends ConfigModel {
+export interface UiPickerSourceQuery extends PickerSourceBase {
   Query: string;
   QueryParameters: string;
   StreamName: string;
@@ -399,26 +401,6 @@ export interface UiPickerSourceQuery extends ConfigModel {
   Label: string;
   CreateTypes: string;
   MoreFields: string;
-}
-
-export const RelationshipParentChild = 'parent-child';
-export const RelationshipChildParent = 'child-parent';
-
-export interface UiPickerModeTree extends ConfigModel {
-  TreeRelationship: typeof RelationshipParentChild | typeof RelationshipChildParent ; //child-parent or parent-child
-  TreeBranchesStream: string;
-  TreeLeavesStream: string;
-  TreeParentIdField: string;
-  TreeChildIdField: string;
-  TreeParentChildRefField: string;
-  TreeChildParentRefField: string;
-
-  TreeShowRoot: boolean;
-  TreeDepthMax: number;
-
-  TreeAllowSelectRoot: boolean;
-  TreeAllowSelectBranch: boolean;
-  TreeAllowSelectLeaf: boolean;
 }
 
 export interface UiPickerSourceQuery extends UiPickerSourceEntityAndQuery {
@@ -449,9 +431,11 @@ export interface UiPickerSourceCss extends UiPickerSourceEntityAndQuery {
   /** ItemLink or field-mask for ItemLink */
   ItemLink: string;
 
+  PickerPreviewType?: string;
+
 }
 
-interface UiPickerSource extends ConfigModel {
+interface UiPickerSource extends PickerSourceBase {
   /** Label or field-mask for label */
   Label: string;
 
@@ -478,10 +462,11 @@ export interface UiPickerSourceEntityAndQuery extends UiPickerSource {
   MoreFields: string;
 }
 
+export interface UiPickerSourcesAll extends
+  UiPickerSourceCustomList,
+  UiPickerSourceCustomCsv,
+  UiPickerSourceEntity,
+  UiPickerSourceQuery,
+  UiPickerSourceCss { }
 
 
-interface ConfigModel {
-  Title: string;
-
-  ConfigModel: 'UiPickerModeTree';
-}
