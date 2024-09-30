@@ -4,13 +4,13 @@ import { PickerItem } from '../models/picker-item.model';
 import { PickerIconHelpComponent } from '../picker-icon-help/picker-icon-help.component';
 import { PickerIconInfoComponent } from '../picker-icon-info/picker-icon-info.component';
 import { PickerItemButtonsComponent } from '../picker-item-buttons/picker-item-buttons.component';
-import { PickerPreviewTypeComponent } from '../picker-preview-type/picker-preview-type.component';
+import { PickerValuePreviewComponent } from '../picker-value-preview/picker-value-preview.component';
 
 @Component({
   selector: 'app-picker-preview-label',
   standalone: true,
   imports: [
-    PickerPreviewTypeComponent,
+    PickerValuePreviewComponent,
     PickerIconHelpComponent,
     PickerIconInfoComponent,
     PickerItemButtonsComponent,

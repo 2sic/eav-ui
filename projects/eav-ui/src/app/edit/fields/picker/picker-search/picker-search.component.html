@@ -12,7 +12,7 @@
   >
     <!-- Show Icon or Image -->
     <div class="show-input-container">
-      <app-picker-preview-type [item]="getSelectedItem(selectedItem()?.value)" [settings]="fieldState.settings()"></app-picker-preview-type>
+      <app-picker-value-preview [item]="getSelectedItem(selectedItem()?.value)" [settings]="fieldState.settings()"></app-picker-value-preview>
 
       <!-- The initial input showing the selected value - one only. As soon as there are more, this control won't show any more -->
       <input

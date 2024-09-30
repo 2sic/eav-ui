@@ -21,9 +21,9 @@ import { PickerTreeItem } from '../models/picker-tree.models';
 import { PickerItemButtonsComponent } from '../picker-item-buttons/picker-item-buttons.component';
 import { PickerPartBaseComponent } from '../picker-part-base.component';
 import { PickerPreviewLabelComponent } from '../picker-preview-label/picker-preview-label.component';
-import { PickerPreviewTypeComponent } from '../picker-preview-type/picker-preview-type.component';
 import { PickerTreeDataHelper } from '../picker-tree/picker-tree-data-helper';
 import { PickerTreeDataService } from '../picker-tree/picker-tree-data-service';
+import { PickerValuePreviewComponent } from '../picker-value-preview/picker-value-preview.component';
 
 @Component({
   selector: 'app-picker-search',
@@ -47,7 +47,7 @@ import { PickerTreeDataService } from '../picker-tree/picker-tree-data-service';
     ClickStopPropagationDirective,
     TippyDirective,
     PickerPreviewLabelComponent,
-    PickerPreviewTypeComponent,
+    PickerValuePreviewComponent,
   ]
 })
 export class PickerSearchComponent extends PickerPartBaseComponent implements OnInit {
