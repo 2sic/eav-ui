@@ -131,7 +131,6 @@ export class PickerLogicShared {
     }
 
     if (isCustomSource) {
-      console.log('Custom Source Data Source');
       if (typeName === PickerConfigs.UiPickerSourceCustomList) {
         const valuesRaw = (typeConfig as unknown as UiPickerSourceCustomList).Values ?? '';
         // note that 'value-label' is the only format supported by the new picker config
