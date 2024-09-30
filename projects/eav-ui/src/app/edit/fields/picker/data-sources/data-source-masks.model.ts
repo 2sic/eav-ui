@@ -22,6 +22,10 @@ export interface DataSourceMasks {
   /** The value value or mask */
   value: string;
 
+  /** Example: Icon Prefix + Value .fas .fa-wine-bottle  */
   valuePreview: string;
+
+  /** Change Type, Text, icon, svg, image */
+  previewType: string;
 };
 

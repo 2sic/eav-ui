@@ -1,4 +1,4 @@
-import { NgClass } from '@angular/common';
+import { JsonPipe, NgClass } from '@angular/common';
 import { Component, ElementRef, OnInit, input, viewChild } from '@angular/core';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -22,6 +22,7 @@ import { PickerIconHelpComponent } from "../picker-icon-help/picker-icon-help.co
 import { PickerIconInfoComponent } from "../picker-icon-info/picker-icon-info.component";
 import { PickerItemButtonsComponent } from '../picker-item-buttons/picker-item-buttons.component';
 import { PickerPartBaseComponent } from '../picker-part-base.component';
+import { PickerPreviewTypeComponent } from '../picker-preview-type/picker-preview-type.component';
 import { PickerTreeDataHelper } from '../picker-tree/picker-tree-data-helper';
 import { PickerTreeDataService } from '../picker-tree/picker-tree-data-service';
 
@@ -48,10 +49,12 @@ import { PickerTreeDataService } from '../picker-tree/picker-tree-data-service';
     PickerItemButtonsComponent,
     ClickStopPropagationDirective,
     TippyDirective,
+    PickerPreviewTypeComponent,
+    JsonPipe,
   ]
 })
 export class PickerSearchComponent extends PickerPartBaseComponent implements OnInit {
-  
+
   /** Main log */
   log = classLog({PickerSearchComponent});
 
@@ -245,5 +248,9 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
   }
 
   hasChild = (_: number, item: PickerTreeItem) => this.treeHelper.hasChild(_, item);
+
+  getSelectedItem(value: string): PickerItem {
+    return this.pickerData.optionsAll().find(ae => ae.value === value);
+  }
 
 }

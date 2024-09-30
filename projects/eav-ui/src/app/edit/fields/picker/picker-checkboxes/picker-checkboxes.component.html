@@ -11,10 +11,9 @@
     }"> -->
 
   @for (item of options(); track item.value) {
-    <pre>
-        {{ item | json }}
-      </pre
-    >
+    <!-- <pre>
+      {{ item | json }}
+    </pre> -->
 
     <mat-checkbox
       class="picker-option-wrapper"
@@ -27,31 +26,12 @@
       [tippyArrow]="true"
     >
       <div class="picker-option-contents">
-
-        <!-- Type String -->
-        <!-- Old Code, without Icon
-          <span class="picker-option-label">{{ item.label ? item.label : item.value }}</span> -->
-
-          <!-- Type Font Icon -->
-        <!-- New Code with Icon Logic, Temp @2dg -->
-        <div class="icon-option">
-          <i class="icon-preview {{ replaceDot(item.valuePreview) }}"></i>
-          <span> {{ item.label ? item.label : item.value }}</span>
+        <!-- Preview Type -->
+        <div class="picker-option">
+          <!-- Show Icon or Image -->
+          <app-picker-preview-type [item]="item"></app-picker-preview-type>
+          <span class="picker-option-label"> {{ item.label ? item.label : item.value }}</span>
         </div>
-
-        <!-- Type SVG Icon -->
-        <!-- <div class="icon-option">
-          <span> {{ item.label ? item.label : item.value }}</span>
-        </div> -->
-
-
-        <!-- Type Image -->
-         <!-- <div class="image-option">
-          <img class="picker-option-image" [src]="item.image" alt="item.label ? item.label : item.value">
-          <span class="picker-option-label">{{ item.label ? item.label : item.value }}</span>
-         </div> -->
-
-
 
         <div class="picker-option-info">
           <app-picker-help [helpLink]="item.link"></app-picker-help>

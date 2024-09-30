@@ -195,6 +195,7 @@ export interface StringCssPicker extends String {
   CssSelectorFilter: string;
   Value: string;
   ValuePreview: string;
+  PreviewType: string;
   ItemInformation: string;
   ItemTooltip: string;
   ItemLink: string;
@@ -437,6 +438,7 @@ export interface UiPickerSourceCss extends UiPickerSourceEntityAndQuery {
   CssSelectorFilter: string;
   Value: string;
   ValuePreview: string;
+  PreviewType: string;
 
   /** ItemInfo or field-mask for ItemInfo */
   ItemInformation: string;

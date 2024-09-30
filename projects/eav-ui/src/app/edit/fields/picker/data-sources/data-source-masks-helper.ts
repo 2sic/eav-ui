@@ -79,6 +79,7 @@ export class DataSourceMasksHelper {
         entity: entity,
         value,
         valuePreview: value,
+        previewType: 'text',
         label,
         tooltip: masks.tooltip,
         info: masks.info,
@@ -125,6 +126,7 @@ export class DataSourceMasksHelper {
     let info = useInfos ? masks.info : '';
     let link = useInfos ? masks.link : '';
     let valuePreview = masks.valuePreview;
+    let previewType = useInfos ? masks.previewType : ''; // TODO: @2dg, not sure if this is correct
 
     Object.keys(data).forEach(key => {
       // must check for null and use '' instead
@@ -138,11 +140,10 @@ export class DataSourceMasksHelper {
       link = link.replace(search, value);
       title = title.replace(search, value);
       valuePreview = valuePreview.replace(search, value);
+      previewType = data.PreviewType ?? 'text'; // TODO: @2dg, not sure if this is correct
     });
 
-    // TODO: decide what to do if the feature is not enabled, and we need the valuePreview
-
-    return l.r({ title, tooltip, info, link, valuePreview });
+    return l.r({ title, tooltip, info, link, valuePreview, previewType });
   }
 
   /** Get the mask - if possibly from current objects cache */
@@ -169,6 +170,7 @@ export class DataSourceMasksHelper {
     const label = settings.Label ?? '';
     const value = settings.Value ?? '';
     const valuePreview = settings.ValuePreview ?? '';
+    const previewType = settings.ValuePreview ?? '';
     const hasPlaceholders = (tooltip + info + link + label + valuePreview).includes('[');
     const result: DataSourceMasks = {
       hasPlaceholders,
@@ -178,6 +180,7 @@ export class DataSourceMasksHelper {
       label,
       value,
       valuePreview,
+      previewType,
     };
     return l.r(result, 'result');
   }
@@ -189,7 +192,8 @@ export class DataSourceMasksHelper {
       ItemLink: settings.ItemLink,
       Label: settings.Label,
       Value: settings.Value,
-      ValuePreview: settings.ValuePreview
+      ValuePreview: settings.ValuePreview,
+      PreviewType: settings.ValuePreview,
     };
   }
 }
@@ -201,4 +205,5 @@ interface DataSourceMaskSettings {
   Label: string;
   Value: string;
   ValuePreview: string;
+  PreviewType: string;
 }

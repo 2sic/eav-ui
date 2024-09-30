@@ -10,6 +10,7 @@ import { PickerIconInfoComponent } from '../picker-icon-info/picker-icon-info.co
 import { PickerInlineBaseComponent } from '../picker-inline/picker-inline-base.component';
 import { PickerInlineHeaderComponent } from '../picker-inline/picker-inline-header.component';
 import { PickerItemButtonsComponent } from '../picker-item-buttons/picker-item-buttons.component';
+import { PickerPreviewTypeComponent } from '../picker-preview-type/picker-preview-type.component';
 
 @Component({
   selector: 'app-picker-checkboxes',
@@ -27,6 +28,7 @@ import { PickerItemButtonsComponent } from '../picker-item-buttons/picker-item-b
     PickerItemButtonsComponent,
     PickerInlineHeaderComponent,
     JsonPipe,
+    PickerPreviewTypeComponent
   ],
 })
 export class PickerCheckboxesComponent extends PickerInlineBaseComponent {
@@ -34,10 +36,6 @@ export class PickerCheckboxesComponent extends PickerInlineBaseComponent {
   constructor() {
     super();
     this.fieldState.requireFeature(FeatureNames.PickerUiCheckbox);
-  }
-
-  replaceDot(value: string): string {
-    return value.replace(/\./g, '');
   }
 
 }

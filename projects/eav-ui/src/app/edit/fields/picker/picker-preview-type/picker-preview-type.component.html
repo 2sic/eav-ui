@@ -1,0 +1,16 @@
+<!-- Type Text for String are Default -->
+
+<!-- Type Font Icon -->
+@if (item?.previewType === "font-icon") {
+  <i class="icon-preview {{ replaceDot(item.valuePreview) }}"></i>
+}
+<!--  Type SVG Icon -->
+@if (item?.previewType === "svg") {
+  <!-- TODO:  -->
+  <!-- SVG noch offen -->
+}
+<!-- Type Image -->
+@if (item?.previewType === "image") {
+  <!-- TODO:  -->
+  <!-- <img class="picker-option-image" [src]="item.image" alt="item.label ? item.label : item.value"> -->
+}

@@ -75,6 +75,7 @@ export class DataSourceCss extends DataSourceBase {
         Value: option.class,
         ValueRaw: option.valueRaw,
         Selector: option.selector,
+        PreviewType: "font-icon",
       };
 
       l.values({ entity });
