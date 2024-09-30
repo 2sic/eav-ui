@@ -10,7 +10,7 @@ import { DataAdapterBase } from "./data-adapter-base";
 @Injectable()
 export class DataAdapterCss extends DataAdapterBase {
 
-  log = classLog({ DataAdapterCss }, DataAdapterBase.logSpecs, true);
+  log = classLog({ DataAdapterCss }, DataAdapterBase.logSpecs);
 
   constructor() {
     super();

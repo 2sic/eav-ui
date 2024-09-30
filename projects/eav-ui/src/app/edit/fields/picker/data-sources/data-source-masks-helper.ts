@@ -10,11 +10,11 @@ import { DataSourceMasks } from './data-source-masks.model';
 
 const logSpecs = {
   all: false,
-  entity2PickerItem: true,
+  entity2PickerItem: false,
   getMasks: false,
   patchMasks: false,
   parseMasks: false,
-  buildMasks: true,
+  buildMasks: false,
 }
 
 /**
@@ -23,7 +23,7 @@ const logSpecs = {
  */
 export class DataSourceMasksHelper {
 
-  log = classLog({ DataSourceMasksHelper }, logSpecs, true);
+  log = classLog({ DataSourceMasksHelper }, logSpecs);
 
   constructor(
     private name: string,
