@@ -128,7 +128,7 @@ export class PickerLogicShared {
       fs.CssSourceFile = specsCss.CssSourceFile ?? '';
       fs.CssSelectorFilter = specsCss.CssSelectorFilter ?? '';
       fs.Value = specsCss.Value ?? '';
-      fs.ValuePreview = specsCss.ValuePreview ?? '';
+      fs.PreviewValue = specsCss.PreviewValue ?? '';
       fs.PreviewType = specsCss.PreviewType ?? 'text';
     }
 

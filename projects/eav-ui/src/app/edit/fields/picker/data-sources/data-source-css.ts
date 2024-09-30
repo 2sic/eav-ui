@@ -30,7 +30,7 @@ export class DataSourceCss extends DataSourceBase {
   fileLoadSettings = computedObj('fileLoadSettings', () => getWith(this.#settings(), s => ({
     CssSourceFile: s.CssSourceFile,
     CssSelectorFilter: s.CssSelectorFilter,
-    ValuePreview: s.ValuePreview,
+    PreviewValue: s.PreviewValue,
     Value: s.Value,
   })));
 

@@ -14,7 +14,7 @@ const logSpecs = {
   all: false,
   mergeGenericSettings: true,
   getDefaultSettings: false,
-  fields: [...DebugFields],
+  fields: [...DebugFields, 'GroupPreview'],
 };
 
 /**
@@ -25,7 +25,7 @@ const logSpecs = {
 export class FieldsSettingsHelpers {
 
   // TODO: conditionally create logger based on source name
-  log = classLog({FieldsSettingsHelpers}, logSpecs);
+  log = classLog({FieldsSettingsHelpers}, logSpecs, true);
 
   constructor(source: string) { }
 
@@ -36,7 +36,7 @@ export class FieldsSettingsHelpers {
    * @param genericSettings 
    */
   mergeGenericSettings(fieldName: string, settings: FieldSettings): FieldSettings {
-    const l = this.log.fnIfInList('mergeGenericSettings', 'fields', fieldName, { fieldName });
+    const l = this.log.fnIfInList('mergeGenericSettings', 'fields', fieldName, { fieldName, settings });
     const asWithGenericSettings = settings as unknown as { SettingsGeneric: string };
     if (asWithGenericSettings.SettingsGeneric == null)
       return l.r(settings, 'No generic settings');

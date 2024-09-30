@@ -3,7 +3,7 @@
 <!-- Type Font Icon -->
 @switch (settings().PickerPreviewType) {
   @case ("icon-css") {
-    <i class="icon-preview {{ replaceDot(item()?.valuePreview) }}"></i>
+    <i class="icon-preview {{ replaceDot(item()?.previewValue) }}"></i>
   }
   <!--  Type SVG Icon -->
   @case ("svg") {
