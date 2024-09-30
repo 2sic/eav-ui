@@ -1,13 +1,13 @@
-import { Observable, map, of } from "rxjs";
-import { TranslateService } from "@ngx-translate/core";
 import { Injectable, inject } from '@angular/core';
-import { DataWithLoading } from '../models/data-with-loading';
-import { DataSourceEntityQueryBase, logSpecsDataSourceEntityQueryBase } from './data-source-entity-query-base';
-import { FormConfigService } from '../../../form/form-config.service';
-import { PickerItem, PickerItemFactory } from '../models/picker-item.model';
+import { TranslateService } from "@ngx-translate/core";
+import { Observable, map, of } from "rxjs";
+import { classLog } from '../../../../shared/logging/logging';
 import { QueryStreams } from '../../../../shared/models/query-stream.model';
 import { computedObj } from '../../../../shared/signals/signal.utilities';
-import { classLog } from '../../../../shared/logging/logging';
+import { FormConfigService } from '../../../form/form-config.service';
+import { DataWithLoading } from '../models/data-with-loading';
+import { PickerItem, PickerItemFactory } from '../models/picker-item.model';
+import { DataSourceEntityQueryBase, logSpecsDataSourceEntityQueryBase } from './data-source-entity-query-base';
 
 // TODO: NEXT STEPS
 // 5. afterwards check all edge cases.
@@ -35,9 +35,10 @@ export class DataSourceQuery extends DataSourceEntityQueryBase {
    */
   #isForStringField = this.fieldState.config.inputTypeSpecs.isString;
 
-  /** Get the data from a query - all or only the ones listed in the guids */
-  public override getFromBackend(params: string, guids: string[], purposeForLog: string)
-    : Observable<DataWithLoading<PickerItem[]>> {
+  /**
+   * Get the data from a query - all or only the ones listed in the guids
+   */
+  protected override getFromBackend(params: string, guids: string[], purposeForLog: string): Observable<DataWithLoading<PickerItem[]>> {
     var l = this.log.fnIfInList('getFromBackend', 'fields', this.fieldName, { params, guids }, purposeForLog);
     // If the configuration isn't complete, the query can be empty
     const sets = this.settings();
@@ -51,6 +52,7 @@ export class DataSourceQuery extends DataSourceEntityQueryBase {
 
     // If no query, return a dummy item with a message
     const source: Observable<DataWithLoading<QueryStreams>> = (() => {
+      // If we don't have a query, return a dummy item
       if (!queryUrl) {
         l.a('noQueryUrl - will create dummy item');
         return of<DataWithLoading<QueryStreams>>({
@@ -66,8 +68,9 @@ export class DataSourceQuery extends DataSourceEntityQueryBase {
           loading: false,
         });
       }
+
+      // We have query (default case), get the data
       l.a('queryUrl for request', { queryUrl });
-      // Default case, get the data
       return this.querySvc
         .getAvailableEntities(queryUrl, params, this.fieldsToRetrieve(this.settings()), guids)
         .pipe(

@@ -1,14 +1,14 @@
-import { PickerItem } from './../models/picker-item.model';
-import { Observable, Subject, combineLatest, distinctUntilChanged, filter, map, mergeMap } from "rxjs";
-import { DataSourceBase, logSpecsDataSourceBase } from './data-source-base';
 import { Injectable, WritableSignal } from '@angular/core';
-import { DataWithLoading } from '../models/data-with-loading';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { Observable, combineLatest, distinctUntilChanged, filter, map, switchMap } from "rxjs";
+import { transient } from '../../../../core';
+import { ClassLogger } from '../../../../shared/logging';
 import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 import { QueryService } from '../../../../shared/services/query.service';
-import { transient } from '../../../../core';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
-import { ClassLogger } from '../../../../shared/logging';
+import { DataWithLoading } from '../models/data-with-loading';
+import { PickerItem } from './../models/picker-item.model';
+import { DataSourceBase, logSpecsDataSourceBase } from './data-source-base';
 
 export const logSpecsDataSourceEntityQueryBase: typeof logSpecsDataSourceBase & any = {
   ...logSpecsDataSourceBase,
@@ -54,7 +54,7 @@ export abstract class DataSourceEntityQueryBase extends DataSourceBase {
   #paramsDebounced$ = this.#typeOrParams$.pipe(distinctUntilChanged());
 
   /** Get the data from a query - all or only the ones listed in the guids */
-  abstract getFromBackend(params: string, guids: string[], purposeForLog: string) : Observable<DataWithLoading<PickerItem[]>>;
+  protected abstract getFromBackend(params: string, guids: string[], purposeForLog: string) : Observable<DataWithLoading<PickerItem[]>>;
 
 
   // /**
@@ -116,7 +116,10 @@ export abstract class DataSourceEntityQueryBase extends DataSourceBase {
     this.#paramsDebounced$,
     this.getAll$.pipe(distinctUntilChanged(), filter(getAll => !!getAll), map(x => [])),
   ]).pipe(
-    mergeMap(([typeName]) => this.getFromBackend(typeName, [], 'getAll')),
+    // SwitchMap ensures that only the latest request is processed
+    // This is important if parameters change, so that the old request is not used
+    // Otherwise it can lead to scenarios where the old result is used, if the first request takes longer.
+    switchMap(([typeName]) => this.getFromBackend(typeName, [], 'getAll')),
   ), { initialValue: this.noItemsLoadingFalse });
 
   #prefetchNew = signalObj<DataWithLoading<PickerItem[]>>('prefetchNow', this.noItemsLoadingFalse);
