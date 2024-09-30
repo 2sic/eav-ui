@@ -20,10 +20,10 @@ import { PickerItem, PickerItemFactory } from '../models/picker-item.model';
 import { PickerTreeItem } from '../models/picker-tree.models';
 import { PickerItemButtonsComponent } from '../picker-item-buttons/picker-item-buttons.component';
 import { PickerPreviewLabelComponent } from '../picker-item-label/picker-item-label.component';
+import { PickerItemPreviewComponent } from '../picker-item-preview/picker-item-preview.component';
 import { PickerPartBaseComponent } from '../picker-part-base.component';
 import { PickerTreeDataHelper } from '../picker-tree/picker-tree-data-helper';
 import { PickerTreeDataService } from '../picker-tree/picker-tree-data-service';
-import { PickerValuePreviewComponent } from '../picker-value-preview/picker-value-preview.component';
 
 @Component({
   selector: 'app-picker-search',
@@ -47,7 +47,7 @@ import { PickerValuePreviewComponent } from '../picker-value-preview/picker-valu
     ClickStopPropagationDirective,
     TippyDirective,
     PickerPreviewLabelComponent,
-    PickerValuePreviewComponent,
+    PickerItemPreviewComponent,
   ]
 })
 export class PickerSearchComponent extends PickerPartBaseComponent implements OnInit {

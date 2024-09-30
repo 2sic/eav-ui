@@ -4,13 +4,13 @@ import { PickerItem } from '../models/picker-item.model';
 import { PickerIconHelpComponent } from '../picker-icon-help/picker-icon-help.component';
 import { PickerIconInfoComponent } from '../picker-icon-info/picker-icon-info.component';
 import { PickerItemButtonsComponent } from '../picker-item-buttons/picker-item-buttons.component';
-import { PickerValuePreviewComponent } from '../picker-value-preview/picker-value-preview.component';
+import { PickerItemPreviewComponent } from '../picker-item-preview/picker-item-preview.component';
 
 @Component({
   selector: 'app-picker-item-label',
   standalone: true,
   imports: [
-    PickerValuePreviewComponent,
+    PickerItemPreviewComponent,
     PickerIconHelpComponent,
     PickerIconInfoComponent,
     PickerItemButtonsComponent,
@@ -25,7 +25,7 @@ export class PickerPreviewLabelComponent {
   settings = input.required<FieldSettings>();
 
   show = input<boolean>(false);
-  
+
   index = input<number>(0);
 
 }

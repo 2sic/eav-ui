@@ -3,12 +3,12 @@ import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings
 import { PickerItem } from '../models/picker-item.model';
 
 @Component({
-  selector: 'app-picker-value-preview',
-  templateUrl: './picker-value-preview.component.html',
-  styleUrl: './picker-value-preview.component.scss',
+  selector: 'app-picker-item-preview',
+  templateUrl: './picker-item-preview.component.html',
+  styleUrl: './picker-item-preview.component.scss',
   standalone: true,
 })
-export class PickerValuePreviewComponent {
+export class PickerItemPreviewComponent {
 
   item = input.required<PickerItem>();
 
