@@ -21,5 +21,7 @@ export interface DataSourceMasks {
 
   /** The value value or mask */
   value: string;
+
+  valuePreview: string;
 };
 

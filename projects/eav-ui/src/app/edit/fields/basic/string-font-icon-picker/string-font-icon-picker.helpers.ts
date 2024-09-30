@@ -6,17 +6,13 @@ const specs = {
 };
 
 /** Calculates available css classes with className prefix. WARNING: Expensive operation */
-export function findAllIconsInCss(classPrefix: string, showPrefix?: boolean, valueRaw?: string, value?: string): IconOption[] {
-
-  const _selector = classPrefix;
-  const _valueRaw = valueRaw;
-  const _value = value;
+export function findAllIconsInCss(cssSelector: string, showPrefix?: boolean): IconOption[] {
 
   const log = classLog({ findAllIconsInCss }, specs);
 
-  if (!classPrefix) return [];
+  if (!cssSelector) return [];
 
-  const truncateLabel = showPrefix ? 0 : classPrefix.length - 1;
+  const truncateLabel = showPrefix ? 0 : cssSelector.length - 1;
 
   const foundList: IconOption[] = [];
   const duplicateDetector: Record<string, boolean> = {};
@@ -38,13 +34,12 @@ export function findAllIconsInCss(classPrefix: string, showPrefix?: boolean, val
     if (!rules) continue;
 
     for (const rule of Array.from(rules) as CSSStyleRule[]) {
-      if (!(rule.selectorText && rule.selectorText.startsWith(classPrefix))) continue;
+      if (!(rule.selectorText && rule.selectorText.startsWith(cssSelector)))
+        continue;
 
       const selector = rule.selectorText;
       const fullClass = selector.substring(0, selector.indexOf(':'));
       const iconClass = fullClass.replace('.', '').trim(); // Trim whitespace
-      //
-      const value = iconClass;
       const valueRaw = "." + iconClass;
 
       // Skip empty icon classes
@@ -58,15 +53,14 @@ export function findAllIconsInCss(classPrefix: string, showPrefix?: boolean, val
         class: iconClass,
         search: iconClass.toLowerCase(),
         label: iconClass.substring(truncateLabel),
-        _selector: _selector,
-        _valueRaw: _valueRaw, // new valueRaw for Picker
-        _value: _value, // new Value
+        selector: selector,
+        valueRaw: valueRaw, // new valueRaw for Picker
       });
       duplicateDetector[iconClass] = true;
     }
   }
 
-  log.fnIf('findAllIconsInCss', { classPrefix, showPrefix, foundList });
+  log.fnIf('findAllIconsInCss', { classPrefix: cssSelector, showPrefix, foundList });
 
   return foundList;
 }

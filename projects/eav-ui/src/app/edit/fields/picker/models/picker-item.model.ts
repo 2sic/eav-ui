@@ -8,6 +8,15 @@ export interface PickerItem {
   /** The value to store */
   value: string;
 
+  /** TODO: @2dg later should be required */
+  valuePreview?: string;
+
+  /** Maybe the setting for the visualizer - eg. "none", "text", "icon-font", "icon-svg", "image" */
+  previewType?: string;
+
+  /** The HTML to show in the preview */
+  previewHtml?: string;
+
   /**
    * The entity Id, only used to enable edit etc. if the item is an entity.
    */
@@ -29,7 +38,7 @@ export interface PickerItem {
    * Prevent select of this item for whatever reason, v16
    * It was originally added so "no query" message will be shown in the dropdown.
    * This property does not come from the server, but must be added by code.
-   * 
+   *
    * TODO: this is not quite correct, the UI seems to use and then look if re-select is allowed,
    * but it's usually true for error messages...
    */

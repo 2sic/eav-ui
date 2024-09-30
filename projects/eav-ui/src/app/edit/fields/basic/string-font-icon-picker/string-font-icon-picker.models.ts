@@ -7,8 +7,8 @@ export interface IconOption {
   label: string;
 
   /** Optional: Icon class for new Picker */
-  _valueRaw?: string;
-  _selector?: string;
-  _value?: string;
+  valueRaw?: string;
+  selector?: string;
+  value?: string;
 
 }

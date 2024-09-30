@@ -12,7 +12,7 @@ import { DataSourceMasksHelper } from './data-source-masks-helper';
 const logSpecs = {
   ...logSpecsDataSourceBase,
   data: false,
-  newIconOptions: true,
+  newIconOptions: false,
   fileLoadSettings: false,
   fields: [...logSpecsDataSourceBase.fields, '*'],
 };
@@ -20,7 +20,7 @@ const logSpecs = {
 @Injectable()
 export class DataSourceCss extends DataSourceBase {
 
-  log = classLog({ DataSourceCss }, logSpecs, true);
+  log = classLog({ DataSourceCss }, logSpecs);
 
   loading = signalObj('loading', false);
 
@@ -41,10 +41,11 @@ export class DataSourceCss extends DataSourceBase {
 
     this.log.fnIf('fileLoadSettings', this.fileLoadSettings());
 
+    // TODO: @2dg maybe no effect necessary, as the settings should already be available
     effect(() => {
       const settings = this.fileLoadSettings();
       this.scriptsLoaderService.load(settings.CssSourceFile.split('\n'), () => {
-        const newIconOptions = findAllIconsInCss(settings.CssSelectorFilter, false, settings.ValuePreview, settings.Value);
+        const newIconOptions = findAllIconsInCss(settings.CssSelectorFilter, false);
         this.log.fnIf('newIconOptions', { settings, newIconOptions });
         this.#iconOptions.set(newIconOptions);
       });
@@ -71,9 +72,9 @@ export class DataSourceCss extends DataSourceBase {
         Id: null,
         Guid: null,
         Title: option.label,
-        Value: option.class, // kein . / string
-        ValueRaw: option._valueRaw,
-        Selector: option._selector,
+        Value: option.class,
+        ValueRaw: option.valueRaw,
+        Selector: option.selector,
       };
 
       l.values({ entity });

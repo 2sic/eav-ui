@@ -10,38 +10,57 @@
     'c-ew__preview--disabled': config.initialDisabled
     }"> -->
 
-    @for (item of options(); track item.value) {
+  @for (item of options(); track item.value) {
+    <pre>
+        {{ item | json }}
+      </pre
+    >
 
-      <pre>
-        {{item | json}}
-      </pre>
+    <mat-checkbox
+      class="picker-option-wrapper"
+      (click)="select(item)"
+      [checked]="item.selected"
+      [disabled]="ui().disabled || item.noSelect"
+      [tippy]="item.tooltip"
+      tippyShowDelay="500"
+      [tippyAllowHtml]="true"
+      [tippyArrow]="true"
+    >
+      <div class="picker-option-contents">
 
-      <mat-checkbox
-        class="picker-option-wrapper"
-        (click)="select(item)"
-        [checked]="item.selected"
-        [disabled]="ui().disabled || item.noSelect"
-        [tippy]="item.tooltip" tippyShowDelay="500" [tippyAllowHtml]="true" [tippyArrow]="true"
-      >
-        <div class="picker-option-contents">
-
-          <!-- Old Code, without Icon
+        <!-- Type String -->
+        <!-- Old Code, without Icon
           <span class="picker-option-label">{{ item.label ? item.label : item.value }}</span> -->
 
-          <!-- New Code with Icon Logic, Temp @2dg -->
-          <div class="icon-option">
-            <i class="icon-preview fas {{ item.label }}"></i>
-            <span> {{ item.label ? item.label : item.value }}</span>
-          </div>
-
-          <div class="picker-option-info">
-            <app-picker-help [helpLink]="item.link"></app-picker-help>
-            <app-picker-icon-info [infoBox]="item.info"></app-picker-icon-info>
-            <!-- Action items such as edit, remove, delete -->
-            <app-picker-item-buttons class="my-item-actions" [show]="true" [item]="item" [index]="$index"></app-picker-item-buttons>
-          </div>
+          <!-- Type Font Icon -->
+        <!-- New Code with Icon Logic, Temp @2dg -->
+        <div class="icon-option">
+          <i class="icon-preview {{ replaceDot(item.valuePreview) }}"></i>
+          <span> {{ item.label ? item.label : item.value }}</span>
         </div>
-      </mat-checkbox>
-    }
+
+        <!-- Type SVG Icon -->
+        <!-- <div class="icon-option">
+          <span> {{ item.label ? item.label : item.value }}</span>
+        </div> -->
+
+
+        <!-- Type Image -->
+         <!-- <div class="image-option">
+          <img class="picker-option-image" [src]="item.image" alt="item.label ? item.label : item.value">
+          <span class="picker-option-label">{{ item.label ? item.label : item.value }}</span>
+         </div> -->
+
+
+
+        <div class="picker-option-info">
+          <app-picker-help [helpLink]="item.link"></app-picker-help>
+          <app-picker-icon-info [infoBox]="item.info"></app-picker-icon-info>
+          <!-- Action items such as edit, remove, delete -->
+          <app-picker-item-buttons class="my-item-actions" [show]="true" [item]="item" [index]="$index"></app-picker-item-buttons>
+        </div>
+      </div>
+    </mat-checkbox>
+  }
   <!-- </div> -->
 </div>

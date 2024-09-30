@@ -78,6 +78,8 @@ export class PickerLogicShared {
 
     const isKnownType = Object.values(PickerConfigs).includes(typeName);
 
+    const l = this.log.fn('dataSources', { dataSources });
+
     l.values({ typeName, isKnownType, dataSources, typeConfig });
 
     if (!isKnownType) {

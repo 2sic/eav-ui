@@ -35,4 +35,9 @@ export class PickerCheckboxesComponent extends PickerInlineBaseComponent {
     super();
     this.fieldState.requireFeature(FeatureNames.PickerUiCheckbox);
   }
+
+  replaceDot(value: string): string {
+    return value.replace(/\./g, '');
+  }
+
 }
