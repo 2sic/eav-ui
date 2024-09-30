@@ -29,7 +29,7 @@
     "angular-lint": "ng lint"
   },
   "dependencies": {
-    "@2sic.com/sxc-angular": "^14.7.1",
+    "@2sic.com/sxc-angular": "^18.0.0",
     "@ag-grid-community/angular": "^29.2.0",
     "@ag-grid-community/client-side-row-model": "^29.2.0",
     "@ag-grid-community/styles": "^29.2.0",
