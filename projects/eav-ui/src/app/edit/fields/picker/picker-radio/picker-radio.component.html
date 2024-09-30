@@ -24,22 +24,8 @@
           [tippyAllowHtml]="true"
           [tippyArrow]="true"
         >
-          <div class="picker-option-contents">
-
-            <!-- Preview Type -->
-            <div class="picker-option">
-              <!-- Show Icon or Image -->
-              <app-picker-preview-type [item]="item"></app-picker-preview-type>
-              <span class="picker-option-label"> {{ item.label ? item.label : item.value }}</span>
-            </div>
-
-            <div class="picker-option-info">
-              <app-picker-help [helpLink]="item.link"></app-picker-help>
-              <app-picker-icon-info [infoBox]="item.info"></app-picker-icon-info>
-              <!-- Action items such as edit, remove, delete -->
-              <app-picker-item-buttons class="my-item-actions" [show]="true" [item]="item" [index]="$index"></app-picker-item-buttons>
-            </div>
-          </div>
+          <!-- Show Preview Label -->
+          <app-picker-preview-label [item]="item" [show]="true" [index]="$index"></app-picker-preview-label>
         </mat-radio-button>
       </div>
     }

@@ -10,10 +10,6 @@
     [ngClass]="{ 'mat-form-field-invalid': ui().touchedAndInvalid }"
     (click)="filterSelectionList()"
   >
-    <!-- <pre>
-    {{ getSelectedItem(selectedItem().value)?.previewType | json }}
-  </pre> -->
-
     <!-- Show Icon or Image -->
     <div class="show-input-container">
       <app-picker-preview-type [item]="getSelectedItem(selectedItem()?.value)"></app-picker-preview-type>
@@ -92,19 +88,8 @@
             - remove imports where not needed any more
             - move/remove css (imports in SCSS) where not needed any more
           -->
-          <div class="picker-option-contents">
-            <!-- Preview Type -->
-            <div class="picker-option">
-              <!-- Show Icon or Image -->
-              <app-picker-preview-type [item]="item"></app-picker-preview-type>
-              <span class="picker-option-label"> {{ item.label ? item.label : item.value }}</span>
-            </div>
-
-            <div class="picker-option-info">
-              <app-picker-help [helpLink]="item.link"></app-picker-help>
-              <app-picker-icon-info [infoBox]="item.info"></app-picker-icon-info>
-            </div>
-          </div>
+          <!-- Show Preview Label -->
+          <app-picker-preview-label [item]="item"></app-picker-preview-label>
         </mat-option>
       }
     } @else {
@@ -121,18 +106,8 @@
             [tippyAllowHtml]="true"
             [tippyArrow]="true"
           >
-            <div class="picker-option-contents">
-              <!-- Preview Type -->
-              <div class="picker-option">
-                <!-- Show Icon or Image -->
-                <app-picker-preview-type [item]="item"></app-picker-preview-type>
-                <span class="picker-option-label"> {{ item.label ? item.label : item.value }}</span>
-              </div>
-              <div class="picker-option-info">
-                <app-picker-help [helpLink]="item.link"></app-picker-help>
-                <app-picker-icon-info [infoBox]="item.info"></app-picker-icon-info>
-              </div>
-            </div>
+            <!-- Show Preview Label -->
+            <app-picker-preview-label [item]="item"></app-picker-preview-label>
           </mat-option>
         </mat-tree-node>
         <mat-tree-node *matTreeNodeDef="let item; when: hasChild" matTreeNodePadding class="eav-tree-node">
@@ -150,18 +125,8 @@
             [tippyAllowHtml]="true"
             [tippyArrow]="true"
           >
-            <div class="picker-option-contents">
-              <!-- Preview Type -->
-              <div class="picker-option">
-                <!-- Show Icon or Image -->
-                <app-picker-preview-type [item]="item"></app-picker-preview-type>
-                <span class="picker-option-label"> {{ item.label ? item.label : item.value }}</span>
-              </div>
-              <div class="picker-option-info">
-                <app-picker-help [helpLink]="item.link"></app-picker-help>
-                <app-picker-icon-info [infoBox]="item.info"></app-picker-icon-info>
-              </div>
-            </div>
+            <!-- Show Preview Label -->
+            <app-picker-preview-label [item]="item"></app-picker-preview-label>
           </mat-option>
         </mat-tree-node>
       </mat-tree>

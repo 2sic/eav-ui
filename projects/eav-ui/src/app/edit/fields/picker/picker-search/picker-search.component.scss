@@ -51,8 +51,6 @@
 // Import the inline button for the 'v' button in the dropdown
 @import "../picker-item-buttons/picker-item-buttons.component.scss";
 
-@import "../styles/picker-options.scss";
-
 .my-search:not(:hover) {
   .my-item-actions {
     display: none;
