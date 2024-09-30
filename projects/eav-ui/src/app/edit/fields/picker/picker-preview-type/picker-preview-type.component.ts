@@ -4,11 +4,9 @@ import { PickerItem } from '../models/picker-item.model';
 
 @Component({
   selector: 'app-picker-preview-type',
-  standalone: true,
-  imports: [
-  ],
   templateUrl: './picker-preview-type.component.html',
-  styleUrl: './picker-preview-type.component.scss'
+  styleUrl: './picker-preview-type.component.scss',
+  standalone: true,
 })
 export class PickerPreviewTypeComponent {
 
