@@ -1,14 +1,19 @@
 import { FieldSettings, FieldValue } from '../../../../../../edit-types';
-import { classLog } from '../../../shared/logging';
-import { ClassLogger } from '../../../shared/logging';
+import { classLog, ClassLogger } from '../../../shared/logging';
+import { DebugFields } from '../../edit-debug';
 import { FieldLogicManager } from './field-logic-manager';
 import { FieldLogicTools } from './field-logic-tools';
 
-type LogicConstructor = new (...args: any[]) => FieldLogicBase;
+const logSpecs = {
+  all: false,
+  fields: [...DebugFields],
+}
 
 export abstract class FieldLogicBase {
 
+  /** Logger - lazy created on first access if not yet created */
   get log() { return this.#log ??= classLog({FieldLogicBase}).extendName(`[${this.name}]`) };
+  
   #log: ClassLogger;
 
   constructor(inheritingClass: Record<string, unknown> | string, logThis?: boolean) {
@@ -80,3 +85,5 @@ export interface FieldLogicUpdate<T = FieldValue> {
   /** The field value which the settings-update sometimes needs to know, eg. to indicated selected option in a dropdown */
   value?: T;
 }
+
+type LogicConstructor = new (...args: any[]) => FieldLogicBase;

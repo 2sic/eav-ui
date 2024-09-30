@@ -9,7 +9,8 @@ export const DebugFields: string[] = !environment.production
   // ? ['StringPicker']
   // ? ['NumberInputAddUntillDevisibleBy5']
   // ? ['WysiwygConfiguration']
-  ? ['Items']
+  // ? ['Items']
+  ? ['ViewController']
   // ? ['Title']
   // ? [] // no fields
   // ? ['*'] // all fields

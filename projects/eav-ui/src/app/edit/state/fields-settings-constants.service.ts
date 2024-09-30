@@ -1,16 +1,16 @@
 import { Injectable, Signal } from '@angular/core';
 import { FieldSettings } from '../../../../../edit-types';
-import { FieldLogicManager } from '../fields/logic/field-logic-manager';
-import { EntityReader } from '../shared/helpers';
-import { EavItem, EavContentType } from '../shared/models/eav';
-import { FormConfigService } from '../form/form-config.service';
-import { ItemFieldVisibility } from './item-field-visibility';
-import { FieldConstants, FieldConstantsOfLanguage } from './fields-configs.model';
-import { InputTypeService } from '../shared/input-types/input-type.service';
-import { FieldsSettingsHelpers } from './field-settings.helper';
 import { classLog } from '../../shared/logging';
 import { computedObj } from '../../shared/signals/signal.utilities';
+import { FieldLogicManager } from '../fields/logic/field-logic-manager';
+import { FormConfigService } from '../form/form-config.service';
+import { EntityReader } from '../shared/helpers';
+import { InputTypeService } from '../shared/input-types/input-type.service';
+import { EavContentType, EavItem } from '../shared/models/eav';
+import { FieldsSettingsHelpers } from './field-settings.helper';
+import { FieldConstants, FieldConstantsOfLanguage } from './fields-configs.model';
 import { FieldsSettingsService } from './fields-settings.service';
+import { ItemFieldVisibility } from './item-field-visibility';
 
 const logSpecs = {
   all: false,
@@ -73,7 +73,7 @@ export class FieldsSettingsConstantsService {
 
       // Construct the constants with settings and everything
       // using the EntityReader with the current language
-      const mergeRaw = reader.flattenAll<FieldSettings>(ctAttrib.Metadata);
+      const mergeRaw = reader.flatten<FieldSettings>(ctAttrib.Metadata);
 
       // Sometimes the metadata doesn't have the input type (empty string), so we'll add the attribute.InputType just in case...
       mergeRaw.InputType = ctAttrib.InputType;
@@ -112,7 +112,7 @@ export class FieldsSettingsConstantsService {
     const constFieldParts = contentType.Attributes.map((attr, index) => {
       const fieldName = attr.Name;
       // metadata in the initial language with all the core settings
-      const metadata = mdMerger.flattenAll<FieldSettings>(attr.Metadata);
+      const metadata = mdMerger.flatten<FieldSettings>(attr.Metadata);
       const initialSettings = this.#fieldSettingsHelper.getDefaultSettings(metadata);
 
       const inputTypeSpecs = this.inputTypeSvc.getSpecs(attr);

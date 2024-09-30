@@ -72,7 +72,7 @@ export class FormulaCacheBuilder extends ServiceBase {
       const contentType = this.contentTypeService.getContentTypeOfItem(item);
       for (const attribute of contentType.Attributes) {
         // Get field settings
-        const settings = fss.getDefaultSettings(reader.flattenAll<FieldSettings>(attribute.Metadata));
+        const settings = fss.getDefaultSettings(reader.flatten<FieldSettings>(attribute.Metadata));
 
         // get input type specs
         const inputType = this.inputTypes.getSpecs(attribute);

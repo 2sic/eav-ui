@@ -1,9 +1,9 @@
-import { EntityReader } from '../shared/helpers';
 import { ItemIdentifierEditConfig } from '../../shared/models/edit-form.model';
-import { EavContentType } from '../shared/models/eav';
-import { FieldReader } from '../localization/field-reader';
-import { ContentTypeSettings } from './content-type-settings.model';
 import { FormLanguage } from '../form/form-languages.model';
+import { FieldReader } from '../localization/field-reader';
+import { EntityReader } from '../shared/helpers';
+import { EavContentType } from '../shared/models/eav';
+import { ContentTypeSettings } from './content-type-settings.model';
 
 export class ContentTypeSettingsHelpers {
 
@@ -12,7 +12,7 @@ export class ContentTypeSettingsHelpers {
    * @returns 
    */
   static getDefaultSettings(reader: EntityReader, contentType: EavContentType, itemHeader: ItemIdentifierEditConfig): ContentTypeSettings {
-    const metadata = reader.flattenAll<ContentTypeSettings>(contentType.Metadata);
+    const metadata = reader.flatten<ContentTypeSettings>(contentType.Metadata);
     const defaultSettings = { ...metadata };
     defaultSettings.Description ??= '';
     defaultSettings.EditInstructions ??= '';

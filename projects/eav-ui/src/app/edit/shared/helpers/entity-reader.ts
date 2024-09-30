@@ -1,8 +1,8 @@
-import { EavEntity, EavEntityAttributes, EavField } from '../models/eav';
-import { ItemValuesOfLanguage } from '../../state/item-values-of-language.model';
-import { FormLanguage } from '../../form/form-languages.model';
 import { classLog } from '../../../shared/logging';
+import { FormLanguage } from '../../form/form-languages.model';
 import { FieldReader } from '../../localization/field-reader';
+import { ItemValuesOfLanguage } from '../../state/item-values-of-language.model';
+import { EavEntity, EavEntityAttributes, EavField } from '../models/eav';
 
 const logSpecs = {
   all: false,
@@ -39,12 +39,12 @@ export class EntityReader implements FormLanguage {
     // return LocalizationHelpers.translate<T>(this, attributeValues as EavField<T>, defaultValue);
   }
 
-  public flatten<T>(metadataItem: EavEntity): T {
-    return this.flattenAll<T>([metadataItem]);
-  }
+  public flatten<T>(metadata: EavEntity | EavEntity[]): T {
+    if (metadata == null)
+      return {} as T;
 
-  public flattenAll<T>(metadataItems: EavEntity[]): T {
-    if (metadataItems == null || metadataItems.length === 0 || metadataItems[0] == null)
+    const metadataItems = Array.isArray(metadata) ? metadata : [metadata];
+    if (metadataItems.length === 0 || metadataItems[0] == null)
       return {} as T;
 
     const merged: Record<string, any> = {};

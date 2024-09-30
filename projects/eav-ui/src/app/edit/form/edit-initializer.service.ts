@@ -228,7 +228,7 @@ export class EditInitializerService {
 
         const attributeValues = item.Entity.Attributes[ctAttribute.Name];
         const fieldSettings = fss.getDefaultSettings(
-          new EntityReader(language.primary, language.primary).flattenAll(ctAttribute.Metadata)
+          new EntityReader(language.primary, language.primary).flatten(ctAttribute.Metadata)
         );
 
         if (languages.length === 0) {

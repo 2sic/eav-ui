@@ -1,23 +1,23 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { transient } from '../../core';
+import { classLog } from '../../shared/logging';
+import { ItemIdentifierShared } from '../../shared/models/edit-form.model';
+import { DebugFields } from '../edit-debug';
 import { EavContentType, EavContentTypeAttribute } from '../shared/models/eav';
+import { LoggingService } from '../shared/services/logging.service';
+import { FieldsSettingsHelpers } from '../state/field-settings.helper';
+import { FieldProps } from '../state/fields-configs.model';
+import { FieldsPropsEngine } from '../state/fields-properties-engine';
+import { FieldsPropsEngineCycle } from '../state/fields-properties-engine-cycle';
+import { FieldsSettingsService } from '../state/fields-settings.service';
+import { ItemValuesOfLanguage } from '../state/item-values-of-language.model';
 import { FormulaDesignerService } from './designer/formula-designer.service';
+import { FormulaExecutionSpecsFactory } from './formula-exec-specs.factory';
+import { FormulaRunField } from './formula-run-field';
 import { FormulaRunOneHelpersFactory } from './formula-run-one-helpers.factory';
 import { FormulaPromiseHandler } from './promise/formula-promise-handler';
 import { NameValuePair } from './results/formula-results.models';
-import { FieldsSettingsHelpers } from '../state/field-settings.helper';
-import { FieldsSettingsService } from '../state/fields-settings.service';
-import { LoggingService } from '../shared/services/logging.service';
-import { FieldProps } from '../state/fields-configs.model';
-import { ItemValuesOfLanguage } from '../state/item-values-of-language.model';
-import { FieldsPropsEngine } from '../state/fields-properties-engine';
-import { FieldsPropsEngineCycle } from '../state/fields-properties-engine-cycle';
-import { classLog } from '../../shared/logging';
-import { FormulaExecutionSpecsFactory } from './formula-exec-specs.factory';
-import { transient } from '../../core';
-import { FormulaRunField } from './formula-run-field';
-import { DebugFields } from '../edit-debug';
-import { ItemIdentifierShared } from '../../shared/models/edit-form.model';
 
 const logSpecs = {
   all: false,
@@ -25,7 +25,7 @@ const logSpecs = {
   runAllFields: true,
   runFormula: false,
   runOneFieldOrInitSettings: false,
-  fields: [...DebugFields, 'StringPicker'], // or '*' for all
+  fields: [...DebugFields], // or '*' for all
 };
 
 /**
@@ -46,7 +46,14 @@ export class FormulaEngine {
     private translate: TranslateService,
   ) { }
 
-  init(entityGuid: string, clientData: Pick<ItemIdentifierShared, "ClientData">, settingsSvc: FieldsSettingsService, promiseHandler: FormulaPromiseHandler, contentType: EavContentType, ctTitle: string) {
+  init(
+    entityGuid: string,
+    clientData: Pick<ItemIdentifierShared, "ClientData">,
+    settingsSvc: FieldsSettingsService,
+    promiseHandler: FormulaPromiseHandler,
+    contentType: EavContentType,
+    ctTitle: string
+  ) {
     this.#entityGuid = entityGuid;
     this.#promiseHandler = promiseHandler;
     this.#attributes = contentType.Attributes;
@@ -79,7 +86,7 @@ export class FormulaEngine {
 
       const fieldConstants = cycle.getFieldConstants(attr.Name);
       const latestSettings = cycle.getFieldSettingsInCycle(fieldConstants);
-      const settingsUpdateHelper = cycle.updateHelper.create(attr, fieldConstants, values);
+      const settingsUpdateHelper = cycle.updateHelper.create(attr.Name, attr, fieldConstants, values);
 
       const propsBefore = cycle.fieldProps[attr.Name] ?? {} as FieldProps;
 
@@ -107,7 +114,7 @@ export class FormulaEngine {
       if (allResults.fields)
         fieldUpdates.push(...allResults.fields);
 
-      const debugDetails = this.log.specs.fields?.includes(attr.Name) || this.log.specs.fields?.includes('*');
+      const debugDetails = lAttr.enabled; // this.log.specs.fields?.includes(attr.Name) || this.log.specs.fields?.includes('*');
       const translationState = fss.getTranslationState(values, fixed.DisableTranslation, engine.languages, debugDetails);
 
       if (allResults.options.list)
