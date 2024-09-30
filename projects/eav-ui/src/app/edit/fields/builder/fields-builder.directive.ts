@@ -155,7 +155,7 @@ export class EditControlsBuilderDirective implements OnInit, OnDestroy {
       this.#generateAndAttachField(previewType, pickerPreviewContainerRef, wrapperInfo.injectors);
     }
     // Set only the first input to be focused, if it is the first input
-    if (this.#firstInputFocused === false && this.index === 0) {
+    if (this.#firstInputFocused === false && this.index === 0 && fieldProps.settings.noAutoFocus !== true) {
       this.#setAutoFocus(componentRef);
       this.#firstInputFocused = true;
     }
@@ -167,9 +167,9 @@ export class EditControlsBuilderDirective implements OnInit, OnDestroy {
       const nativeElement = componentRef.location.nativeElement.querySelector('input');
       if (nativeElement) {
         this.renderer.setAttribute(nativeElement, 'autofocus', 'true');
-        nativeElement.focus(); // Focus the input element
+        nativeElement?.focus(); // Focus the input element - with null check in case we're too early
       }
-    }, 150); // Wait for the input to be created before focusing
+    }, 250); // Wait for the input to be created before focusing
 
   }
 

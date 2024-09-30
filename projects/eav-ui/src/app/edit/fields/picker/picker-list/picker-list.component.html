@@ -20,7 +20,7 @@
           <!-- visual Drag-Handle if sortable -->
           @if (allowMultiValue()) {
             <mat-icon class="item-title__icon"
-              [tippy]="'Fields.Picker.DragMove' | translate"
+              tippyTranslate="Fields.Picker.DragMove"
               [tippyDisabled]="ui().disabled">
               drag_handle
             </mat-icon>

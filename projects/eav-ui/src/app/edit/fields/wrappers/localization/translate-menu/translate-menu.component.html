@@ -8,7 +8,7 @@
         {{translationState().infoLabel ? (translationState().infoLabel | translate:{ languages:
         translationState().infoMessage }): '' }}
       </div>
-      <div [tippy]="'LangMenu.NotTranslatable' | translate" [tippyDisabled]="!disableTranslateButtonSignal()" [tippyPlacement]="'top'">
+      <div tippyTranslate="LangMenu.NotTranslatable" [tippyDisabled]="!disableTranslateButtonSignal()" tippyPlacement="top">
         <button mat-icon-button class="eav-translate-icon-button" [matMenuTriggerFor]="menu"
           [disabled]="disableTranslateButtonSignal()" [ngClass]="{ 'hidden': hideTranslateButton }">
           <mat-icon class="eav-translate-icon">translate</mat-icon>

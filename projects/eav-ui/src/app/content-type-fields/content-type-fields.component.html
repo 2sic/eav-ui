@@ -21,6 +21,9 @@
     </div>
   </div>
   <mat-dialog-actions align="end">
+    <!-- @if (isDebug()) { -->
+      <button mat-raised-button type="button" (click)="addSharedField()">{{ "SharingOrInheriting.AddSharedField" | translate }}</button>
+    <!-- } -->
     <button mat-fab mat-elevation-z24 class="grid-fab" tippy="Add fields"
       [disabled]="contentType() == null || contentType().EditInfo.ReadOnly" (click)="add()">
       <mat-icon>add</mat-icon>

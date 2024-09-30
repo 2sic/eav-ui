@@ -1,5 +1,6 @@
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { Injectable, inject } from '@angular/core';
+import { getWith } from '../../../../core';
 import { classLog } from '../../../../shared/logging';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
 import { FormConfigService } from '../../../form/form-config.service';
@@ -12,16 +13,17 @@ import { StateUiMapperBase } from './state-ui-mapper-base';
 
 export const logSpecsStateAdapter = {
   all: false,
-  updateValue: true,
+  updateValue: false,
   add: false,
-  set: true,
-  remove: true,
-  reorder: true,
-  doAfterDelete: true,
-  selectedItems: true,
-  sepAndOpts: true,
-  createEntityTypes: true,
-  attachCallback: true,
+  set: false,
+  remove: false,
+  reorder: false,
+  doAfterDelete: false,
+  selectedItems: false,
+  sepAndOpts: false,
+  createEntityTypes: false,
+  attachCallback: false,
+  typesForNew: true,
 };
 
 @Injectable()
@@ -29,9 +31,9 @@ export abstract class StateAdapter {
 
   //#region Setup / Inject / Logs
 
-  log = classLog({StateAdapter}, logSpecsStateAdapter, false);
+  log = classLog({StateAdapter}, logSpecsStateAdapter);
 
-  public formConfigSvc = inject(FormConfigService);
+  #formConfigSvc = inject(FormConfigService);
   #fieldState = inject(FieldState) as FieldState<number | string | string[]>;
 
   constructor() { }
@@ -44,27 +46,30 @@ export abstract class StateAdapter {
 
   public features = signalObj('features', {} as Partial<PickerFeatures>);
 
+  #createTypesRaw = computedObj('createTypesRaw',
+    () => getWith(this.settings().CreateTypes,
+      ts => ts.split(ts.indexOf('\n') > -1 ? '\n' : ',')).filter(Boolean));
+
   /**  List of entity types to create for the (+) button; ATM exclusively used in the new pickers for selecting the source. */
-  public typesForNew = computedObj('createEntityTypes', () => {
-    const types = this.settings().CreateTypes;
-    // Get / split the types from the configuration
-    const raw = types
-      ? types
-        .split(types.indexOf('\n') > -1 ? '\n' : ',')   // use either \n or , as delimiter
-        .map((guid: string) => ({ label: null, guid }))
-      : []
+  public typesForNew = computedObj('typesForNew', () => {
+    const raw = this.#createTypesRaw().map((guid: string) => ({ label: null, guid }));
+    
+    const l = this.log.fnIf('typesForNew', { raw });
+
+    // return [];
     // Augment with additional label and guid if we have this
     const updated = raw.map(orig => {
       const guid = orig.guid;
-      const ct = this.formConfigSvc.settings.ContentTypes
+      const ct = this.#formConfigSvc.settings.ContentTypes
         .find(ct => ct.Id === guid || ct.Name == guid);
       return {
         ...orig,
-        label: ct?.Name ?? guid + " (not found)",
+        // replace is a bit temporary, as the names are a bit long...
+        label: (ct?.Title ?? ct?.Name ?? guid + " (not found)").replace('UI Picker Source - ', ''),
         guid: ct?.Id ?? guid,
       }
     });
-    return updated;
+    return l.r(updated);
   });
 
   /** Signal with all the currently selected items */
@@ -153,13 +158,9 @@ export abstract class StateAdapter {
       return [...list];
     });
 
-    if (!this.values().length) {
-      // move back to component
-      setTimeout(() => {
-        console.log('trying to call focus');
-        this.#focusOnSearchComponent();
-      });
-    }
+    // If we have no items left, set focus back to the search component, since this is usually wanted
+    if (!this.values().length)
+      setTimeout(() => this.#focusOnSearchComponent());
   }
 
   public doAfterDelete(props: DeleteEntityProps) {

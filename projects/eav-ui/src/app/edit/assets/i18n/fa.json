@@ -234,9 +234,7 @@
     "TitleNone": "اشتراک یا ارث بری؟",
     "TitleSharing": "اشتراک گذاری متادیتا فیلد",
     "TitleInheriting": "فیلد متادیتا را به ارث می برد",
-    "MessageSharing": "به اشتراک گذاشته شده به عنوان:",
-    "MessageInheriting": "ارث برده از:",
-    "AddSharedField": "افزودن فیلد به اشتراک گذاشته شده (آزمایشی)",
+    "AddSharedField": "افزودن فیلد به اشتراک گذاشته شده",
     "PickFieldsToInheritFrom": "فیلدهای اصلی را انتخاب کنید که از آنها به ارث می بریم"
   },
   "Extension.TinyMce": {

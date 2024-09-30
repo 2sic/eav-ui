@@ -66,8 +66,7 @@ export class PickerLogicShared {
       ? tools.contentTypeItemSvc.getMany(fs.DataSources)
       : [];
 
-
-    const l = this.log.fnIf('getDataSourceAndSetupFieldSettings', { dataSources, fs, value });
+    fs.noAutoFocus = true;
 
     // Transfer configuration
     const dataSource = dataSources[0];

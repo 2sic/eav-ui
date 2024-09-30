@@ -1,7 +1,5 @@
-import { AsyncPipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { TranslateModule } from '@ngx-translate/core';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { FeatureComponentBase } from '../shared/base-feature.component';
 
@@ -11,8 +9,6 @@ import { FeatureComponentBase } from '../shared/base-feature.component';
   standalone: true,
   imports: [
     MatIconModule,
-    AsyncPipe,
-    TranslateModule,
     TippyDirective,
   ],
 })

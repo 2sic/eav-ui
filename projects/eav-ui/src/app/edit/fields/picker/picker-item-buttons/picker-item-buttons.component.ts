@@ -1,7 +1,6 @@
 import { Component, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { TranslateModule } from '@ngx-translate/core';
 import { ClickStopPropagationDirective } from '../../../../shared/directives/click-stop-propagation.directive';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { computedObj } from '../../../../shared/signals/signal.utilities';
@@ -16,7 +15,6 @@ import { PickerPartBaseComponent } from '../picker-part-base.component';
   imports: [
     MatButtonModule,
     MatIconModule,
-    TranslateModule,
     TippyDirective,
     ClickStopPropagationDirective,
   ],

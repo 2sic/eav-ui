@@ -12,4 +12,7 @@ export interface EavContentTypeDto {
   Metadata: EavEntityDto[];
   Name: string;
   Scope: string;
+
+  /** WIP v18.02 */
+  Title: string;
 }

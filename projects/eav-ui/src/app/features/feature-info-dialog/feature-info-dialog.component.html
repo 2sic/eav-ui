@@ -1,17 +1,17 @@
-@if (viewModel$ | async; as feature) {
+@if (featureDetails(); as feat) {
   <mat-card>
     <mat-card-header>
-      <mat-card-title>{{ feature.name }}</mat-card-title>
+      <mat-card-title>{{ feat.name }}</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <p [innerHtml]="feature.description | safeHtml"></p>
+      <p [innerHtml]="feat.description | safeHtml"></p>
       <div class="eav-info-row">
         <div class="eav-info-row__label">{{ "Features.Status" | translate }}:</div>
         <div class="eav-info-row__value">
-          <span>{{ (feature.isEnabled ? "Features.Active" : "Features.NotActive") | translate }}</span>
+          <span>{{ (feat.isEnabled ? "Features.Active" : "Features.NotActive") | translate }}</span>
         </div>
       </div>
-      @if (feature.nameId; as id) {
+      @if (feat.nameId; as id) {
         <div class="eav-info-row">
           <div class="eav-info-row__label">ID:</div>
           <div class="eav-info-row__value eav_click">
@@ -21,12 +21,11 @@
       }
     </mat-card-content>
     <mat-card-actions align="end">
-      <button mat-raised-button color="accent"
-        class="eav-card-action-button" (click)="findOutMore(feature.link)">
+      <a [href]="feat.link" target="_blank" mat-raised-button color="accent" class="eav-card-action-button">
         <mat-icon>open_in_new</mat-icon>
         {{ "Features.FindOutMore" | translate }}
-      </button>
-      <button mat-raised-button class="eav-card-action-button" (click)="closeDialog()">
+      </a>
+      <button mat-raised-button class="eav-card-action-button" (click)="dialog.close()">
         {{ "Features.Close" | translate }}
       </button>
     </mat-card-actions>

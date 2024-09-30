@@ -1,14 +1,15 @@
 import { Injectable, Signal, signal } from '@angular/core';
-import { map, Observable } from 'rxjs';
-import { DialogContext } from '../shared/models/dialog-settings.model';
-import { FeatureSummary } from './models/feature-summary.model';
 import { toObservable } from '@angular/core/rxjs-interop';
+import { map, Observable } from 'rxjs';
 import { DialogConfigAppService } from '../app-administration/services/dialog-config-app.service';
 import { Of, transient } from '../core';
+import { EavEditLoadDto } from '../edit/dialog/main/edit-dialog-main.models';
 import { classLog } from '../shared/logging';
-import { computedObj } from '../shared/signals/signal.utilities';
+import { DialogContext } from '../shared/models/dialog-settings.model';
 import { ComputedCacheHelper } from '../shared/signals/computed-cache';
+import { computedObj, signalObj } from '../shared/signals/signal.utilities';
 import { FeatureNames } from './feature-names';
+import { FeatureSummary } from './models/feature-summary.model';
 
 const logSpecs = {
   all: true,
@@ -16,6 +17,7 @@ const logSpecs = {
   load: false,
   getAll: false,
   getSignal: false,
+  unlicensedFeatures: true,
 };
 
 // TODO: @2dg - try to refactor the observables away so it only provides signals
@@ -47,10 +49,23 @@ export class FeaturesScopedService {
   private dialogContext = signal<DialogContext>(null);
   private dialogContext$ = toObservable(this.dialogContext);
 
+  public requiredFeatures = signalObj<Record<string, string[]>>('requiredFeatures', {});
 
-  load(dialogContext: DialogContext) {
-    this.log.fnIf('load', { dialogContext });
+  public unlicensedFeatures = computedObj('unlicensedFeatures', () => {
+    const req = this.requiredFeatures();
+    const allowed = this.getAll()().filter(f => f.allowUse);
+    const missing = Object.keys(req).filter(nameId => !allowed.some(f => f.nameId === nameId));
+    this.log.aIf('unlicensedFeatures', { req, allowed, missing });
+    return missing;
+  });
+
+  public hasUnlicensedFeatures = computedObj('hasUnlicensedFeatures', () => this.unlicensedFeatures().length > 0);
+
+  load(dialogContext: DialogContext, formData?: EavEditLoadDto) {
+    this.log.fnIf('load', { formData, dialogContext });
     this.dialogContext.set(dialogContext);
+    if (formData)
+      this.requiredFeatures.set(formData.RequiredFeatures ?? {});
   }
 
   getAll(): Signal<FeatureSummary[]> {
@@ -65,10 +80,14 @@ export class FeaturesScopedService {
     );
   }
 
+  getCurrent(featureNameId: string): FeatureSummary {
+    return this.dialogContext()?.Features.find(f => f.nameId === featureNameId);
+  }
+
   // FYI: Not in use yet, if ever needed, should be changed to use a ComputedCacheHelper
   getSignal(featureNameId: string): Signal<FeatureSummary> {
     this.log.fnIf('getSignal', { featureNameId });
-    return computedObj('feature-' + featureNameId, () => this.dialogContext()?.Features.find(f => f.nameId === featureNameId));
+    return computedObj('feature-' + featureNameId, () => this.getCurrent(featureNameId));
   }
 
   isEnabled$(nameId: string): Observable<boolean> {

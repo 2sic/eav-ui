@@ -1,45 +1,35 @@
-import { ChangeDetectorRef, Directive, Input, ViewContainerRef, inject } from '@angular/core';
+import { ChangeDetectorRef, Directive, ViewContainerRef, inject, input } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { FeaturesScopedService } from '../features-scoped.service';
+import { computedObj } from '../../shared/signals/signal.utilities';
 import { FeatureInfoDialogComponent } from '../feature-info-dialog/feature-info-dialog.component';
-import { BehaviorSubject, switchMap, Observable, map, combineLatest } from 'rxjs';
-import { FeatureSummary } from '../models';
+import { FeaturesScopedService } from '../features-scoped.service';
 
 @Directive()
 export class FeatureComponentBase {
-  // TODO: @2dg - convert this to signal using 'input(...)'
+
   /** Feature NameId to check */
-  @Input()
-  public set featureNameId(value: string) { this.featureNameId$.next(value); }
-  protected featureNameId$ = new BehaviorSubject<string>(null);
+  featureNameId = input.required<string>();
 
-  // TODO: @2dg - convert this to signal using 'input(...)'
-  /** By default, it will show if it's false - here we can change it to show if true */
-  @Input()
-  public set showIf(value: boolean) { this.showIf$.next(value == true); }
-  protected showIf$ = new BehaviorSubject<boolean>(false);
+  /** When to show it - typically when it is _not_ enabled (default) */
+  showIf = input<boolean>(false);
 
-  #dialog = inject(MatDialog);
+  #matDialog = inject(MatDialog);
   #viewContainerRef = inject(ViewContainerRef);
   #changeDetectorRef = inject(ChangeDetectorRef);
   #featuresService = inject(FeaturesScopedService);
 
-  constructor() {
-    this.feature$ = this.featureNameId$.pipe(
-      switchMap(featName => this.#featuresService.get$(featName))
-    );
-    this.show$ = combineLatest([this.feature$, this.showIf$]).pipe(
-      map(([feat, showIf]) => showIf == (feat?.isEnabled ?? false))
-    );
-  }
+  constructor() { }
 
-  // TODO: @2dg - convert this to signal
-  // Note that this is a base class, so the change will affect a few components
-  feature$: Observable<FeatureSummary>;
-  show$: Observable<boolean>;
+  feature = computedObj('feature', () => this.#featuresService.getCurrent(this.featureNameId()));
+
+  show = computedObj('show', () => {
+    const feat = this.feature();
+    if (feat == null) return false;
+    return this.showIf() == (feat?.isEnabled ?? false);
+  })
 
   openDialog() {
-    openFeatureDialog(this.#dialog, this.featureNameId$.value, this.#viewContainerRef, this.#changeDetectorRef);
+    openFeatureDialog(this.#matDialog, this.featureNameId(), this.#viewContainerRef, this.#changeDetectorRef);
   }
 }
 
@@ -52,5 +42,5 @@ export function openFeatureDialog(dialog: MatDialog, featureId: string, viewCont
     width: '400px',
   });
 
-  changeDetectorRef.markForCheck();
+  changeDetectorRef?.markForCheck();
 }

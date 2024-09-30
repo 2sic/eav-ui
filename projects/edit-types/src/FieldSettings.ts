@@ -81,7 +81,18 @@ interface All {
   /** Determines if this field really exists or not */
   IsEphemeral: boolean;
 
+  /**
+   * List of features required by this field.
+   * Mainly for license warnings.
+   * @internal - don't show in any docs
+   */
   requiredFeatures: Of<typeof FeatureNames>[];
+
+  /**
+   * New marker to prevent auto-focus on dropdowns if they are the first field.
+   * It's often null/undefined, but must be true if we want to prevent an auto-focus.
+   */
+  noAutoFocus?: boolean;
 }
 
 /**

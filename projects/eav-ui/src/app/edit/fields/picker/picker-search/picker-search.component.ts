@@ -60,6 +60,9 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
 
   //#region Inputs
 
+  /** The input field for the search */
+  autocomplete = viewChild.required<ElementRef<HTMLInputElement>>('autocomplete');
+
   /** Determine if the input field shows the selected items. eg. not when in dialog where it's just a search-box */
   showSelectedItem = input.required<boolean>();
 
@@ -80,9 +83,6 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
     private globalConfigService: GlobalConfigService,
   ) { super(); }
 
-
-  /** The input field for the search */
-  autocomplete = viewChild.required<ElementRef<HTMLInputElement>>('autocomplete');
 
   #newValue: string = null;
 
@@ -131,8 +131,16 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
       // Only doing this the first time, as these settings are not expected to change
       this.#treeDataService.init(fieldSettings, this.pickerData.optionsAll);
       this.treeHelper = this.#treeDataService.treeHelper;
+
     }
+    this.pickerData.state.attachCallback(() => this.focusOnSearchComponent());
   }
+
+  focusOnSearchComponent(): void {
+    this.log.fnIf('focusOnSearchComponent');
+    this.autocomplete()?.nativeElement.focus();
+  }
+
 
   displaySelected(item: PickerItem): string {
     return this.showSelectedItem() ? (item?.label ?? '') : '';

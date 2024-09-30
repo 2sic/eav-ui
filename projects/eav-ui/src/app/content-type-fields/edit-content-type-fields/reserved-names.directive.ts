@@ -20,10 +20,10 @@ export class ReservedNamesValidatorDirective implements Validator {
     return reservedName ? { reservedNames: this.reservedNames[reservedName] } : null;
   }
 
-  static assembleReservedNames(reservedNames: Record<string, string>, fields: Field[]) {
+  static mergeReserved(reservedNames: Record<string, string>, fields: Field[]) {
     const existingFields: Record<string, string> = {};
     fields.forEach(field => {
-      existingFields[field.StaticName] = 'Field with this name already exists';
+      existingFields[field.StaticName] = 'this field already exists';
     });
     return {
       ...reservedNames,

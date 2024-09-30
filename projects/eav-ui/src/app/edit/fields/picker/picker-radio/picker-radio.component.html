@@ -19,7 +19,7 @@
             [name]="name"
             [checked]="item.selected"
             [disabled]="ui().disabled || item.noSelect"
-            [tippy]="item.tooltip" tippyShowDelay="500" [tippyDisabled]="!item.tooltip" [tippyAllowHtml]="true" [tippyArrow]="true"
+            [tippy]="item.tooltip" tippyShowDelay="500" [tippyAllowHtml]="true" [tippyArrow]="true"
           >
             <div class="picker-option-contents">
               <span class="picker-option-label">{{ item.label ? item.label : item.value }}</span>

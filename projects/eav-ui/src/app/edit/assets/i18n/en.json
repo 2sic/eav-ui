@@ -241,9 +241,7 @@
     "TitleNone": "Share or inherit?",
     "TitleSharing": "Field Metadata Sharing",
     "TitleInheriting": "Field Inherits Metadata",
-    "MessageSharing": "Shared as:",
-    "MessageInheriting": "Inherits from:",
-    "AddSharedField": "Add shared field (BETA)",
+    "AddSharedField": "Add shared fields",
     "PickFieldsToInheritFrom": "Pick original fields which we'll inherit from"
   },
   "Extension.TinyMce": {
@@ -288,7 +286,9 @@
     "FeatureNotActivated": "This cool feature is not enabled",
     "ClickToFindOutMore": "Click to find out more...",
     "FindOutMore": "Find out more",
-    "Tooltip": "Feature: {{Name}} ({{NameId}})",
+    "Tooltip": "Feature: {{name}} ({{nameId}})",
     "Close": "Close"
-  }
+  },
+  "License-EditUi-Warning-Label": "License ⚠️",
+  "License-EditUi-Warning-Tooltip": "You're using features which are not licensed."
 }
