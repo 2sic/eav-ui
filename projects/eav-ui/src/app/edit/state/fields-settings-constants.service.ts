@@ -2,6 +2,7 @@ import { Injectable, Signal } from '@angular/core';
 import { FieldSettings } from '../../../../../edit-types';
 import { classLog } from '../../shared/logging';
 import { computedObj } from '../../shared/signals/signal.utilities';
+import { DebugFields } from '../edit-debug';
 import { FieldLogicManager } from '../fields/logic/field-logic-manager';
 import { FormConfigService } from '../form/form-config.service';
 import { EntityReader } from '../shared/helpers';
@@ -14,8 +15,12 @@ import { ItemFieldVisibility } from './item-field-visibility';
 
 const logSpecs = {
   all: false,
-  staticPartsOfLanguage: false,
-  constantFieldParts: true,
+  stablePartsOfLanguage: false,
+  stablePartOfField: true,
+  constantPartsOfField: false,
+  constantFieldParts: false,
+  staticPartsOfField: false,
+  fields: [...DebugFields],
 }
 
 /**
@@ -23,7 +28,8 @@ const logSpecs = {
  */
 @Injectable()
 export class FieldsSettingsConstantsService {
-  log = classLog({FieldsSettingsConstantsService}, logSpecs);
+
+  log = classLog({FieldsSettingsConstantsService}, logSpecs, true);
 
   constructor(
     private formConfig: FormConfigService,
@@ -59,34 +65,40 @@ export class FieldsSettingsConstantsService {
     const constParts = this.#constantPartsOfField(guid, id, typeNameId);
 
     return computedObj('stableDataOfLanguage',
-      () => this.#staticPartsOfLanguage(this.#entityReaderCurrent(), constParts)
+      () => this.#stablePartsOfLanguage(this.#entityReaderCurrent(), constParts)
     );
   }
 
-  #staticPartsOfLanguage(reader: EntityReader, fieldConstants: FieldConstants[]) {
+  #stablePartsOfLanguage(reader: EntityReader, fieldConstants: FieldConstants[]) {
     const contentType = this.#contentType;
-    const l = this.log.fnIf('staticPartsOfLanguage', { contentType, entityReader: reader });
+    const l = this.log.fnIf('stablePartsOfLanguage', { contentType, entityReader: reader });
 
-    const constPartOfLanguage = contentType.Attributes.map((ctAttrib) => {
+    const constPartOfLanguage = contentType.Attributes.map(attr => {
+      const fieldName = attr.Name;
+      const lInner = this.log.fnIfInList('stablePartOfField', 'fields', fieldName, { fieldName });
+
       // Input Type config in the current language
-      const inputType = this.inputTypeSvc.get(ctAttrib.InputType);
+      const inputType = this.inputTypeSvc.get(attr.InputType);
 
       // Construct the constants with settings and everything
       // using the EntityReader with the current language
-      const mergeRaw = reader.flatten<FieldSettings>(ctAttrib.Metadata);
+      const merged = reader.flatten<FieldSettings>(attr.Metadata);
+
+      // Also integrate the generic settings
+      const withGeneric = this.#fieldSettingsHelper.mergeGenericSettings(fieldName, merged);
 
       // Sometimes the metadata doesn't have the input type (empty string), so we'll add the attribute.InputType just in case...
-      mergeRaw.InputType = ctAttrib.InputType;
-      mergeRaw.VisibleDisabled = this.#itemFieldVisibility.isVisibleDisabled(ctAttrib.Name);
-      const settingsInitial = this.#fieldSettingsHelper.getDefaultSettings(mergeRaw);
+      withGeneric.InputType = attr.InputType;
+      withGeneric.VisibleDisabled = this.#itemFieldVisibility.isVisibleDisabled(attr.Name);
+      const settingsInitial = this.#fieldSettingsHelper.getDefaultSettings(withGeneric);
       const constantFieldParts: FieldConstantsOfLanguage = {
-        ...fieldConstants.find(c => c.fieldName === ctAttrib.Name),
+        ...fieldConstants.find(c => c.fieldName === attr.Name),
         settingsInitial,
         inputTypeConfiguration: inputType,
         language: reader.current,
       };
 
-      return constantFieldParts;
+      return lInner.r(constantFieldParts);
     });
 
     const constPartsWithGroupVisibility = this.#itemFieldVisibility.makeParentGroupsVisible(constPartOfLanguage);
@@ -96,7 +108,7 @@ export class FieldsSettingsConstantsService {
 
   #constantPartsOfField(entityGuid: string, entityId: number, contentTypeNameId: string): FieldConstants[] {
     const contentType = this.#contentType;
-    const l = this.log.fnIf('constantFieldParts', { entityGuid, entityId, contentTypeNameId });
+    const l = this.log.fnIf('constantPartsOfField', { entityGuid, entityId, contentTypeNameId });
     // Get the form languages - but we only need default & initial, so we don't have to observe
     const language = this.formConfig.language();
     
@@ -111,13 +123,15 @@ export class FieldsSettingsConstantsService {
 
     const constFieldParts = contentType.Attributes.map((attr, index) => {
       const fieldName = attr.Name;
-      // metadata in the initial language with all the core settings
+      const lInner = this.log.fnIfInList('constantFieldParts', 'fields', fieldName, { fieldName, index });
+      // metadata in the initial language with all the core settings - just for initialDisabled!
       const metadata = mdMerger.flatten<FieldSettings>(attr.Metadata);
       const initialSettings = this.#fieldSettingsHelper.getDefaultSettings(metadata);
+      const initialDisabled = initialSettings.Disabled ?? false;
 
       const inputTypeSpecs = this.inputTypeSvc.getSpecs(attr);
 
-      l.a('details', { fieldName, contentType, language, attr, initialSettings, inputTypeSpecs });
+      lInner.a('details', { fieldName, contentType, language, attr, initialSettings, inputTypeSpecs });
 
       const logic = FieldLogicManager.singleton().get(attr.InputType);
 
@@ -129,7 +143,7 @@ export class FieldsSettingsConstantsService {
         fieldName,
         index,
         dropzonePreviewsClass: `dropzone-previews-${eavConfig.formId}-${index}`,
-        initialDisabled: initialSettings.Disabled ?? false,
+        initialDisabled,
         inputTypeSpecs,
         isLastInGroup: this.#fieldSettingsHelper.isLastInGroup(contentType, attr),
         type: attr.Type,
@@ -137,7 +151,7 @@ export class FieldsSettingsConstantsService {
         pickerData: () => allPickers[fieldName] ?? null,
       };
 
-      return constants;
+      return lInner.r(constants);
     });
     return l.r(constFieldParts);
   }
