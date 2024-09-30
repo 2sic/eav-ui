@@ -8,9 +8,11 @@ import { DataSourceEntityQueryBase, logSpecsDataSourceEntityQueryBase } from './
 @Injectable()
 export class DataSourceEntity extends DataSourceEntityQueryBase {
 
-  log = classLog({DataSourceEntity}, logSpecsDataSourceEntityQueryBase);
+  log = classLog({ DataSourceEntity }, logSpecsDataSourceEntityQueryBase);
 
-  constructor() { super(); this.constructorEnd(); }
+  constructor() {
+    super(); this.constructorEnd();
+  }
 
   /**
    * Get the data from the backend using the built-in get-Entities query

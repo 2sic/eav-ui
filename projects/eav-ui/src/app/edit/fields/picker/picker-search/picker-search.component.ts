@@ -18,10 +18,10 @@ import { GlobalConfigService } from '../../../../shared/services/global-config.s
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
 import { PickerItem, PickerItemFactory } from '../models/picker-item.model';
 import { PickerTreeItem } from '../models/picker-tree.models';
-import { PickerIconHelpComponent } from "../picker-icon-help/picker-icon-help.component";
-import { PickerIconInfoComponent } from "../picker-icon-info/picker-icon-info.component";
 import { PickerItemButtonsComponent } from '../picker-item-buttons/picker-item-buttons.component';
 import { PickerPartBaseComponent } from '../picker-part-base.component';
+import { PickerPreviewLabelComponent } from '../picker-preview-label/picker-preview-label.component';
+import { PickerPreviewTypeComponent } from '../picker-preview-type/picker-preview-type.component';
 import { PickerTreeDataHelper } from '../picker-tree/picker-tree-data-helper';
 import { PickerTreeDataService } from '../picker-tree/picker-tree-data-service';
 
@@ -43,20 +43,20 @@ import { PickerTreeDataService } from '../picker-tree/picker-tree-data-service';
     MatOptionModule,
     MatTreeModule,
     TranslateModule,
-    PickerIconHelpComponent,
-    PickerIconInfoComponent,
     PickerItemButtonsComponent,
     ClickStopPropagationDirective,
     TippyDirective,
+    PickerPreviewLabelComponent,
+    PickerPreviewTypeComponent,
   ]
 })
 export class PickerSearchComponent extends PickerPartBaseComponent implements OnInit {
-  
+
   /** Main log */
-  log = classLog({PickerSearchComponent});
+  log = classLog({ PickerSearchComponent });
 
   /** Special log which would fire a lot for each item doing disabled checks etc. */
-  #logItemChecks = classLog({PickerSearchComponent}).extendName("-ItemChecks");
+  #logItemChecks = classLog({ PickerSearchComponent }).extendName("-ItemChecks");
 
   //#region Inputs
 
@@ -245,5 +245,9 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
   }
 
   hasChild = (_: number, item: PickerTreeItem) => this.treeHelper.hasChild(_, item);
+
+  getSelectedItem(value: string): PickerItem {
+    return this.pickerData.optionsAll().find(ae => ae.value === value);
+  }
 
 }

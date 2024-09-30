@@ -22,3 +22,8 @@
 .picker-option-wrapper:hover .picker-option-info {
   display: block;
 }
+
+.picker-option {
+  display: flex;
+  align-items: center;
+}

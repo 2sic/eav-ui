@@ -1,9 +1,9 @@
-import { DataSourceEntity } from "../data-sources/data-source-entity";
-import { DataAdapterEntityBase } from "./data-adapter-entity-base";
 import { Injectable } from '@angular/core';
 import { transient } from '../../../../core/transient';
-import { DataAdapterBase } from './data-adapter-base';
 import { classLog } from '../../../../shared/logging/logging';
+import { DataSourceEntity } from "../data-sources/data-source-entity";
+import { DataAdapterBase } from './data-adapter-base';
+import { DataAdapterEntityBase } from "./data-adapter-entity-base";
 
 @Injectable()
 export class DataAdapterEntity extends DataAdapterEntityBase {

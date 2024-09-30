@@ -1,15 +1,15 @@
-import { DeleteEntityProps } from '../models/picker.models';
 import { Signal } from '@angular/core';
-import { PickerFeatures } from '../picker-features.model';
-import { DataSourceBase } from '../data-sources/data-source-base';
-import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
-import { StateAdapter } from './state-adapter';
-import { PickerItem } from '../models/picker-item.model';
 import { ClassLogger } from '../../../../shared/logging';
+import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
 import { DebugFields } from '../../../edit-debug';
+import { DataSourceBase } from '../data-sources/data-source-base';
+import { PickerItem } from '../models/picker-item.model';
+import { DeleteEntityProps } from '../models/picker.models';
+import { PickerFeatures } from '../picker-features.model';
+import { StateAdapter } from './state-adapter';
 
 export abstract class DataAdapterBase {
-  
+
   /** Log Specs to be used as a basis for all inheriting classes */
   static logSpecs = {
     all: false,
@@ -17,6 +17,7 @@ export abstract class DataAdapterBase {
     connectState: false,
     initPrefetch: true,
     fetchItems: false,
+    constructor: true,
     fields: [...DebugFields],
   };
 

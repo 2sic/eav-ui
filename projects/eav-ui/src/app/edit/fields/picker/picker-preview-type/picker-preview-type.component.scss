@@ -1,0 +1,16 @@
+@import "../styles/picker-options.scss";
+
+.icon-preview {
+  display: flex;
+  height: 18px;
+  margin-right: 8px;
+}
+
+.image-preview {
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
+  border-radius: 2px;
+  object-fit: cover;
+  object-position: center;
+}

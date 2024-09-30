@@ -1,0 +1,7 @@
+@import "../styles/picker-options.scss";
+
+.picker-option-contents:not(:hover) {
+  .my-item-actions {
+    display: none;
+  }
+}

@@ -1,12 +1,18 @@
+import { classLog } from 'projects/eav-ui/src/app/shared/logging';
 import { IconOption } from './string-font-icon-picker.models';
 
+const specs = {
+  findAllIconsInCss: true,
+};
+
 /** Calculates available css classes with className prefix. WARNING: Expensive operation */
-export function findAllIconsInCss(classPrefix: string, showPrefix: boolean) {
+export function findAllIconsInCss(cssSelector: string, showPrefix?: boolean): IconOption[] {
 
-  if (!classPrefix)
-    return [];
+  const log = classLog({ findAllIconsInCss }, specs);
 
-  const truncateLabel = showPrefix ? 0 : classPrefix.length - 1;
+  if (!cssSelector) return [];
+
+  const truncateLabel = showPrefix ? 0 : cssSelector.length - 1;
 
   const foundList: IconOption[] = [];
   const duplicateDetector: Record<string, boolean> = {};
@@ -28,22 +34,33 @@ export function findAllIconsInCss(classPrefix: string, showPrefix: boolean) {
     if (!rules) continue;
 
     for (const rule of Array.from(rules) as CSSStyleRule[]) {
-      if (!(rule.selectorText && rule.selectorText.startsWith(classPrefix))) continue;
+      if (!(rule.selectorText && rule.selectorText.startsWith(cssSelector)))
+        continue;
 
       const selector = rule.selectorText;
       const fullClass = selector.substring(0, selector.indexOf(':'));
-      const iconClass = fullClass.replace('.', '');
+      const iconClass = fullClass.replace('.', '').trim(); // Trim whitespace
+      const valueRaw = "." + iconClass;
+
+      // Skip empty icon classes
+      if (!iconClass) continue;
+
       if (duplicateDetector[iconClass]) continue;
+
 
       foundList.push({
         rule,
         class: iconClass,
-        search: iconClass?.toLowerCase(),
+        search: iconClass.toLowerCase(),
         label: iconClass.substring(truncateLabel),
+        selector: selector,
+        valueRaw: valueRaw, // new valueRaw for Picker
       });
       duplicateDetector[iconClass] = true;
     }
   }
+
+  log.fnIf('findAllIconsInCss', { classPrefix: cssSelector, showPrefix, foundList });
 
   return foundList;
 }

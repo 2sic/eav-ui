@@ -5,11 +5,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatRadioButton } from '@angular/material/radio';
 import { FeatureNames } from '../../../../features/feature-names';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
-import { PickerIconHelpComponent } from '../picker-icon-help/picker-icon-help.component';
-import { PickerIconInfoComponent } from '../picker-icon-info/picker-icon-info.component';
 import { PickerInlineBaseComponent } from '../picker-inline/picker-inline-base.component';
 import { PickerInlineHeaderComponent } from '../picker-inline/picker-inline-header.component';
-import { PickerItemButtonsComponent } from '../picker-item-buttons/picker-item-buttons.component';
+import { PickerPreviewLabelComponent } from '../picker-preview-label/picker-preview-label.component';
 
 @Component({
   selector: 'app-picker-radio',
@@ -23,10 +21,8 @@ import { PickerItemButtonsComponent } from '../picker-item-buttons/picker-item-b
     NgClass,
     TippyDirective,
     // FieldHelperTextComponent,
-    PickerIconHelpComponent,
-    PickerIconInfoComponent,
-    PickerItemButtonsComponent,
     PickerInlineHeaderComponent,
+    PickerPreviewLabelComponent,
   ],
 })
 export class PickerRadioComponent extends PickerInlineBaseComponent {

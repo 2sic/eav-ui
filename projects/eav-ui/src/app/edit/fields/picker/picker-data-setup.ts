@@ -4,6 +4,7 @@ import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
 import { classLog } from '../../../shared/logging';
 import { FieldState } from '../field-state';
 import { DataAdapterBase } from './adapters/data-adapter-base';
+import { DataAdapterCss } from './adapters/data-adapter-css';
 import { DataAdapterEmpty } from './adapters/data-adapter-empty';
 import { DataAdapterEntity } from './adapters/data-adapter-entity';
 import { DataAdapterQuery } from './adapters/data-adapter-query';
@@ -96,6 +97,7 @@ export class PickerDataSetup {
 const mapNameToDataAdapter: Record<string, ProviderToken<DataAdapterBase>> = {
   [PickerConfigs.UiPickerSourceCustomList]: DataAdapterString,
   [PickerConfigs.UiPickerSourceCustomCsv]: DataAdapterString,
+  [PickerConfigs.UiPickerSourceCss]: DataAdapterCss,
   [PickerConfigs.UiPickerSourceQuery]: DataAdapterQuery,
   [PickerConfigs.UiPickerSourceEntity]: DataAdapterEntity,
 };
@@ -107,7 +109,7 @@ const mapNameToDataAdapter: Record<string, ProviderToken<DataAdapterBase>> = {
  */
 const partsMap: Record<string, PartMap> = {
   [InputTypeCatalog.StringPicker]: {
-    sources: [DataAdapterString, DataAdapterQuery, DataAdapterEntity],
+    sources: [DataAdapterString, DataAdapterQuery, DataAdapterEntity, DataAdapterCss],
     states: [StateAdapterString],
   },
   [InputTypeCatalog.StringDropdown]: {

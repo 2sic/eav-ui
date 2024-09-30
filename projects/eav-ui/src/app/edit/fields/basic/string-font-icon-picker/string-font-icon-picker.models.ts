@@ -5,4 +5,10 @@ export interface IconOption {
   search: string;
   /** Label for showing in the dropdown */
   label: string;
+
+  /** Optional: Icon class for new Picker */
+  valueRaw?: string;
+  selector?: string;
+  value?: string;
+
 }

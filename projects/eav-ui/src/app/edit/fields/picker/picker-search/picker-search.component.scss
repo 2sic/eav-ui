@@ -44,20 +44,18 @@
   }
 }
 
+.show-input-container {
+  display: flex;
+}
+
 // Import the inline button for the 'v' button in the dropdown
-@import '../picker-item-buttons/picker-item-buttons.component.scss';
-
-
-@import '../styles/picker-options.scss';
+@import "../picker-item-buttons/picker-item-buttons.component.scss";
 
 .my-search:not(:hover) {
   .my-item-actions {
     display: none;
   }
 }
-
-
-
 
 // 2024-09-17 2dm - moved here from _override-mat-form-field-fill-typography.scss
 // But unclear why this exists, purpose can't be determined
