@@ -7,7 +7,7 @@ import { PickerItemButtonsComponent } from '../picker-item-buttons/picker-item-b
 import { PickerValuePreviewComponent } from '../picker-value-preview/picker-value-preview.component';
 
 @Component({
-  selector: 'app-picker-preview-label',
+  selector: 'app-picker-item-label',
   standalone: true,
   imports: [
     PickerValuePreviewComponent,
@@ -15,14 +15,17 @@ import { PickerValuePreviewComponent } from '../picker-value-preview/picker-valu
     PickerIconInfoComponent,
     PickerItemButtonsComponent,
   ],
-  templateUrl: './picker-preview-label.component.html',
-  styleUrl: './picker-preview-label.component.scss'
+  templateUrl: './picker-item-label.component.html',
+  styleUrl: './picker-item-label.component.scss'
 })
 export class PickerPreviewLabelComponent {
 
   item = input.required<PickerItem>();
+
   settings = input.required<FieldSettings>();
+
   show = input<boolean>(false);
+  
   index = input<number>(0);
 
 }

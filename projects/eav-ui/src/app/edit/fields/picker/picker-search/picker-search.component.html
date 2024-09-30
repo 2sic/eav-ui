@@ -89,7 +89,7 @@
             - move/remove css (imports in SCSS) where not needed any more
           -->
           <!-- Show Preview Label -->
-          <app-picker-preview-label [item]="item" [settings]="fieldState.settings()"></app-picker-preview-label>
+          <app-picker-item-label [item]="item" [settings]="fieldState.settings()"></app-picker-item-label>
         </mat-option>
       }
     } @else {
@@ -107,7 +107,7 @@
             [tippyArrow]="true"
           >
             <!-- Show Preview Label -->
-            <app-picker-preview-label [item]="item" [settings]="fieldState.settings()"></app-picker-preview-label>
+            <app-picker-item-label [item]="item" [settings]="fieldState.settings()"></app-picker-item-label>
           </mat-option>
         </mat-tree-node>
         <mat-tree-node *matTreeNodeDef="let item; when: hasChild" matTreeNodePadding class="eav-tree-node">
@@ -126,7 +126,7 @@
             [tippyArrow]="true"
           >
             <!-- Show Preview Label -->
-            <app-picker-preview-label [item]="item" [settings]="fieldState.settings()"></app-picker-preview-label>
+            <app-picker-item-label [item]="item" [settings]="fieldState.settings()"></app-picker-item-label>
           </mat-option>
         </mat-tree-node>
       </mat-tree>

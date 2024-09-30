@@ -7,7 +7,7 @@ import { FeatureNames } from '../../../../features/feature-names';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { PickerInlineBaseComponent } from '../picker-inline/picker-inline-base.component';
 import { PickerInlineHeaderComponent } from '../picker-inline/picker-inline-header.component';
-import { PickerPreviewLabelComponent } from '../picker-preview-label/picker-preview-label.component';
+import { PickerPreviewLabelComponent } from '../picker-item-label/picker-item-label.component';
 
 @Component({
   selector: 'app-picker-checkboxes',
