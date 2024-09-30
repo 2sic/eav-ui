@@ -6,7 +6,7 @@ import { StateUiMapperStringArray } from './state-ui-mapper-string-array';
 @Injectable()
 export class StateAdapterString extends StateAdapter {
 
-  log = classLog({ StateAdapterString }, logSpecsStateAdapter, true);
+  log = classLog({ StateAdapterString }, logSpecsStateAdapter, false);
 
   constructor() { super(); }
 
