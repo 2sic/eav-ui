@@ -26,7 +26,7 @@ const pfx = 'ValidationMessage.';
  */
 export class UiControl {
 
-  log = classLog({UiControl}, logSpecs, true);
+  log = classLog({UiControl}, logSpecs);
 
   constructor(
     public control: AbstractControl,

@@ -119,7 +119,7 @@ export class EditInitializerService {
       UpdateEnvVarsFromDialogSettings(formData.Context.App);
       this.#importLoadedData(formData);
       this.#keepInitialValues();
-      this.initMissingValues();
+      this.#initMissingValues();
 
       this.loaded.set(true);
     });
@@ -183,20 +183,20 @@ export class EditInitializerService {
     for (const item of items)
       for (const currentLang of allLangs) {
         const formValues = new EntityReader(currentLang, language.primary).currentValues(item.Entity.Attributes);
-        this.initialFormValues[this.initialValuesCacheKey(item.Entity.Guid, currentLang)] = formValues;
+        this.initialFormValues[this.#initialValuesCacheKey(item.Entity.Guid, currentLang)] = formValues;
       }
   }
 
-  private initialValuesCacheKey(entityGuid: string, language: string): string {
+  #initialValuesCacheKey(entityGuid: string, language: string): string {
     return `entityGuid:${entityGuid}:language:${language}`;
   }
 
   getInitialValues(entityGuid: string, language: string): ItemValuesOfLanguage {
-    return this.initialFormValues[this.initialValuesCacheKey(entityGuid, language)];
+    return this.initialFormValues[this.#initialValuesCacheKey(entityGuid, language)];
   }
   //#endregion
 
-  private initMissingValues(): void {
+  #initMissingValues(): void {
     const l = this.log.fnIf('initMissingValues');
 
     const updater = this.itemService.updater;
@@ -233,7 +233,6 @@ export class EditInitializerService {
 
         if (languages.length === 0) {
           l.a(`${currentName} languages none, simple init`);
-          // const firstValue = LocalizationHelpers.getBestValue(attributeValues, '*', /* '*',*/ BestValueModes.Default);
           const firstValue = new FieldReader(attributeValues, '*').currentOrDefaultOrAny?.Value;
           if (logic.isValueEmpty(firstValue, isCreateMode))
             updater.setDefaultValue(item, ctAttribute, inputType, fieldSettings, languages, language.primary);
@@ -242,7 +241,6 @@ export class EditInitializerService {
 
           // check if there is a value for the generic / all language
           const disableI18n = inputType?.DisableI18n;
-          // const noLanguageValue = LocalizationHelpers.getBestValue(attributeValues, '*', /* '*', */ BestValueModes.Strict);
           const noLanguageValue = new FieldReader(attributeValues, '*').currentOrDefault?.Value;
           l.a(currentName, { disableI18n, noLanguageValue });
           if (!disableI18n && noLanguageValue !== undefined) {
@@ -262,12 +260,6 @@ export class EditInitializerService {
             continue;
           }
 
-          // const defaultLanguageValue = LocalizationHelpers.getBestValue(
-          //   attributeValues,
-          //   language.primary,
-          //   // language.primary,
-          //   BestValueModes.Strict,
-          // );
           const defaultLanguageValue = new FieldReader(attributeValues, language.primary).currentOrDefault?.Value;
 
           const valueIsEmpty = logic.isValueEmpty(defaultLanguageValue, isCreateMode);

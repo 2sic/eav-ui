@@ -60,7 +60,7 @@ export class FieldSettingsUpdateHelperFactory {
  */
 export class FieldSettingsUpdateHelper {
 
-  log = classLog({FieldSettingsUpdateHelper}, logSpecs, true);
+  log = classLog({FieldSettingsUpdateHelper}, logSpecs);
 
   constructor(
     private fieldName: string,
