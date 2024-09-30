@@ -90,20 +90,17 @@ export class DataSourceMasksHelper {
     }
 
     // Prepare the masks
-    const parsed = this.#parseMasks(masks, entity);
+    const fromMasks = this.#parseMasks(masks, entity);
 
     // If the original was not a mask, look up the field
-    const finalLabel = masks.label.includes('[') ? parsed.title : label;
+    const finalLabel = masks.label.includes('[') ? fromMasks.title : label;
 
     return l.r({
       id: entity.Id,
       entity: entity,
-      ...parsed,
+      ...fromMasks,
       value,
       label: finalLabel,
-      // tooltip,
-      // info,
-      // link,
       sourceStreamName: streamName ?? null,
     } as PickerItem, 'with masks');
   }

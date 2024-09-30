@@ -53,118 +53,111 @@ import { ShareOrInheritDialogComponent } from './share-or-inherit-dialog/share-o
 export class ContentTypeFieldsComponent implements OnInit {
 
   #dialogRouter = transient(DialogRoutingService);
+  #contentTypesSvc = transient(ContentTypesService);
+  #contentTypesFieldsSvc = transient(ContentTypesFieldsService);
+
+  constructor(
+    protected dialog: MatDialogRef<ContentTypeFieldsComponent>,
+    private snackBar: MatSnackBar,
+    private matDialog: MatDialog,
+  ) { }
 
   contentType = signal<ContentType>(undefined);
   fields = signal<Field[]>(undefined);
 
-  gridOptions = this.buildGridOptions();
+  gridOptions = this.#buildGridOptions();
   sortApplied = false;
   filterApplied = false;
 
-  private gridApi: GridApi;
-  private columnApi: ColumnApi;
-  private rowDragSuppressed = false;
-  private contentTypeStaticName = this.#dialogRouter.getParam('contentTypeStaticName');
+  #gridApi: GridApi;
+  #columnApi: ColumnApi;
+  #rowDragSuppressed = false;
+  #contentTypeStaticName = this.#dialogRouter.getParam('contentTypeStaticName');
 
-  private contentTypesService = transient(ContentTypesService);
-  private contentTypesFieldsService = transient(ContentTypesFieldsService);
-
-  constructor(
-    private dialogRef: MatDialogRef<ContentTypeFieldsComponent>,
-    private snackBar: MatSnackBar,
-    private dialog: MatDialog,
-  ) {
-  }
 
   ngOnInit() {
-    this.fetchFields();
-    this.#dialogRouter.doOnDialogClosed(() => this.fetchFields());
-  }
-
-  closeDialog() {
-    this.dialogRef.close();
+    this.#fetchFields();
+    this.#dialogRouter.doOnDialogClosed(() => this.#fetchFields());
   }
 
   onGridReady(params: GridReadyEvent) {
-    this.gridApi = params.api;
-    this.columnApi = params.columnApi;
+    this.#gridApi = params.api;
+    this.#columnApi = params.columnApi;
   }
 
-  onRowDragEnter(event: RowDragEvent) {
-    this.gridApi.setEnableCellTextSelection(false);
+  onRowDragEnter(_: RowDragEvent) {
+    this.#gridApi.setEnableCellTextSelection(false);
   }
 
-  onRowDragEnd(event: RowDragEvent) {
-    this.gridApi.setSuppressRowDrag(true);
+  onRowDragEnd(_: RowDragEvent) {
+    this.#gridApi.setSuppressRowDrag(true);
     const idArray = this.fields().map(field => field.Id);
-    this.contentTypesFieldsService.reOrder(idArray, this.contentType()).subscribe(() => {
-      this.fetchFields(() => {
-        this.gridApi.setEnableCellTextSelection(true);
-        this.gridApi.setSuppressRowDrag(false);
+    this.#contentTypesFieldsSvc.reOrder(idArray, this.contentType()).subscribe(() => {
+      this.#fetchFields(() => {
+        this.#gridApi.setEnableCellTextSelection(true);
+        this.#gridApi.setSuppressRowDrag(false);
       });
     });
   }
 
   onRowDragMove(event: RowDragEvent) {
-    const movingNode = event.node;
-    const overNode = event.overNode;
+    const overNode = event.overNode as { data: Field };
     if (!overNode) return;
-    const rowNeedsToMove = movingNode !== overNode;
-    if (rowNeedsToMove) {
-      const movingData: Field = movingNode.data;
-      const overData: Field = overNode.data;
-      const newFields = [...this.fields()];
-      const fromIndex = newFields.indexOf(movingData);
-      const toIndex = newFields.indexOf(overData);
-      this.moveInArray(newFields, fromIndex, toIndex);
-      this.fields.set(newFields);
-      this.gridApi.clearFocusedCell();
-    }
+    const movingNode = event.node as { data: Field };
+    if (movingNode === overNode) return;
+
+    const newFields = [...this.fields()];
+    const fromIndex = newFields.indexOf(movingNode.data);
+    const toIndex = newFields.indexOf(overNode.data);
+    const reordered = this.#moveInArray(newFields, fromIndex, toIndex);
+    this.fields.set(reordered);
+    this.#gridApi.clearFocusedCell();
   }
 
-  private moveInArray(arr: Field[], fromIndex: number, toIndex: number) {
+  #moveInArray(arr: Field[], fromIndex: number, toIndex: number) {
     const element = arr[fromIndex];
     arr.splice(fromIndex, 1);
     arr.splice(toIndex, 0, element);
+    return [...arr];
   }
 
-  onSortChanged(params: SortChangedEvent) {
-    const columnStates = this.columnApi.getColumnState();
+  onSortChanged(_: SortChangedEvent) {
+    const columnStates = this.#columnApi.getColumnState();
     this.sortApplied = columnStates.some(state => state.sort != null);
-    this.suppressRowDrag();
+    this.#suppressRowDrag();
   }
 
-  onFilterChanged(params: FilterChangedEvent) {
-    const filterModel = this.gridApi.getFilterModel();
+  onFilterChanged(_: FilterChangedEvent) {
+    const filterModel = this.#gridApi.getFilterModel();
     const fieldsFiltered = Object.keys(filterModel);
     this.filterApplied = fieldsFiltered.length > 0;
-    this.suppressRowDrag();
+    this.#suppressRowDrag();
   }
 
-  private suppressRowDrag() {
+  #suppressRowDrag() {
     const shouldSuppress = this.sortApplied || this.filterApplied;
-    if (shouldSuppress && !this.rowDragSuppressed) {
-      this.rowDragSuppressed = true;
-      this.gridApi.setSuppressRowDrag(true);
-    } else if (!shouldSuppress && this.rowDragSuppressed) {
-      this.rowDragSuppressed = false;
-      this.gridApi.setSuppressRowDrag(false);
+    if (shouldSuppress && !this.#rowDragSuppressed) {
+      this.#rowDragSuppressed = true;
+      this.#gridApi.setSuppressRowDrag(true);
+    } else if (!shouldSuppress && this.#rowDragSuppressed) {
+      this.#rowDragSuppressed = false;
+      this.#gridApi.setSuppressRowDrag(false);
     }
   }
 
   add() {
-    this.#dialogRouter.navRelative([`add/${this.contentTypeStaticName}`]);
+    this.#dialogRouter.navRelative([`add/${this.#contentTypeStaticName}`]);
   }
 
   addSharedField() {
-    this.dialog.open(AddSharingFieldsComponent, {
+    this.matDialog.open(AddSharingFieldsComponent, {
       autoFocus: false,
       width: '1600px',
-      data: { contentType: this.contentType, existingFields: this.fields() }
-    });
+      data: { contentType: this.contentType(), existingFields: this.fields() }
+    }).afterClosed().subscribe(() => this.#fetchFields());
   }
 
-  private nameCellRenderer(params: Omit<ICellRendererParams, 'data'> & { data: Field }) {
+  #nameCellRenderer(params: Omit<ICellRendererParams, 'data'> & { data: Field }) {
     const inputType = params.data.InputType;
 
     if (InputTypeHelpers.endsPreviousGroup(inputType))
@@ -187,11 +180,11 @@ export class ContentTypeFieldsComponent implements OnInit {
     return isGroupOpen ? `<span class="is-in-group">${params.value}</span>` : params.value;
   }
 
-  private fetchFields(callback?: () => void) {
+  #fetchFields(callback?: () => void) {
     const contentTypeTemp = this.contentType() == null
-      ? this.contentTypesService.retrieveContentType(this.contentTypeStaticName)
+      ? this.#contentTypesSvc.retrieveContentType(this.#contentTypeStaticName)
       : of(this.contentType());
-    const fieldsTemp = this.contentTypesFieldsService.getFields(this.contentTypeStaticName);
+    const fieldsTemp = this.#contentTypesFieldsSvc.getFields(this.#contentTypeStaticName);
     forkJoin([contentTypeTemp, fieldsTemp]).subscribe(([contentType, fields]) => {
       this.contentType.set(contentType);
       this.fields.set(fields);
@@ -240,34 +233,34 @@ export class ContentTypeFieldsComponent implements OnInit {
 
   #setTitle(field: Field) {
     this.snackBar.open('Setting title...');
-    this.contentTypesFieldsService.setTitle(field, this.contentType()).subscribe(() => {
+    this.#contentTypesFieldsSvc.setTitle(field, this.contentType()).subscribe(() => {
       this.snackBar.open('Title set', null, { duration: 2000 });
-      this.fetchFields();
+      this.#fetchFields();
     });
   }
 
   #changeInputType(field: Field) {
-    this.#dialogRouter.navRelative([`update/${this.contentTypeStaticName}/${field.Id}/inputType`]);
+    this.#dialogRouter.navRelative([`update/${this.#contentTypeStaticName}/${field.Id}/inputType`]);
   }
 
   #rename(field: Field) {
-    this.#dialogRouter.navRelative([`update/${this.contentTypeStaticName}/${field.Id}/name`]);
+    this.#dialogRouter.navRelative([`update/${this.#contentTypeStaticName}/${field.Id}/name`]);
   }
 
   #delete(field: Field) {
     if (!confirm(`Are you sure you want to delete '${field.StaticName}' (${field.Id})?`)) return;
     this.snackBar.open('Deleting...');
-    this.contentTypesFieldsService.delete(field, this.contentType()).subscribe(() => {
+    this.#contentTypesFieldsSvc.delete(field, this.contentType()).subscribe(() => {
       this.snackBar.open('Deleted', null, { duration: 2000 });
-      this.fetchFields();
+      this.#fetchFields();
     });
   }
 
-  private openPermissions(field: Field) {
+  #openPermissions(field: Field) {
     this.#dialogRouter.navRelative([GoToPermissions.getUrlAttribute(field.Id)]);
   }
 
-  private openImageConfiguration(field: Field) {
+  #openImageConfiguration(field: Field) {
     const imgConfig = field.imageConfiguration;
     if (imgConfig?.isRecommended != true)
       throw new Error('This field does not expect to have an image configuration');
@@ -279,7 +272,7 @@ export class ContentTypeFieldsComponent implements OnInit {
     this.#dialogRouter.navRelative([`edit/${formUrl}`]);
   }
 
-  private openMetadata(field: Field) {
+  #openMetadata(field: Field) {
     const url = GoToMetadata.getUrlAttribute(
       field.Id,
       `Metadata for Field: ${field.StaticName} (${field.Id})`,
@@ -287,18 +280,18 @@ export class ContentTypeFieldsComponent implements OnInit {
     this.#dialogRouter.navRelative([url]);
   }
 
-  private shareOrInherit(field: Field) {
-    const shareOrInheritDialogRef = this.dialog.open(ShareOrInheritDialogComponent, {
+  #shareOrInherit(field: Field) {
+    const shareOrInheritDialogRef = this.matDialog.open(ShareOrInheritDialogComponent, {
       autoFocus: false,
       width: '800px',
       data: field,
     });
-    shareOrInheritDialogRef.afterClosed().subscribe(() => this.fetchFields());
+    shareOrInheritDialogRef.afterClosed().subscribe(() => this.#fetchFields());
   }
 
   //#region Grid Options
 
-  private buildGridOptions(): GridOptions {
+  #buildGridOptions(): GridOptions {
     const gridOptions: GridOptions = {
       ...defaultGridOptions,
       getRowClass(params: RowClassParams) {
@@ -330,7 +323,7 @@ export class ContentTypeFieldsComponent implements OnInit {
           headerName: 'Name',
           field: 'StaticName',
           onCellClicked: (p: { data: Field }) => this.#editFieldMetadata(p.data),
-          cellRenderer: (params: ICellRendererParams) => this.nameCellRenderer(params),
+          cellRenderer: (params: ICellRendererParams) => this.#nameCellRenderer(params),
         },
         {
           ...ColumnDefinitions.ItemsText,
@@ -384,10 +377,10 @@ export class ContentTypeFieldsComponent implements OnInit {
               switch (verb) {
                 case 'rename': this.#rename(field); break;
                 case 'delete': this.#delete(field); break;
-                case 'permissions': this.openPermissions(field); break;
-                case 'metadata': this.openMetadata(field); break;
-                case 'shareOrInherit': this.shareOrInherit(field); break;
-                case 'image': this.openImageConfiguration(field); break;
+                case 'permissions': this.#openPermissions(field); break;
+                case 'metadata': this.#openMetadata(field); break;
+                case 'shareOrInherit': this.#shareOrInherit(field); break;
+                case 'image': this.#openImageConfiguration(field); break;
               }
             }
           } satisfies ContentTypeFieldsActionsParams))(),

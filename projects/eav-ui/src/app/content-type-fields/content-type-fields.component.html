@@ -3,7 +3,7 @@
     <div class="eav-dialog-header__title">
       {{ contentType()?.Label || contentType()?.Name }} Fields
     </div>
-    <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
+    <button mat-icon-button tippy="Close dialog" (click)="dialog.close()">
       <mat-icon>close</mat-icon>
     </button>
   </div>

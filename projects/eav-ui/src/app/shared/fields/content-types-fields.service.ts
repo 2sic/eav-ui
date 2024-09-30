@@ -1,60 +1,74 @@
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
 import { ContentType } from '../../app-administration/models/content-type.model';
-import { webApiTypeRoot } from '../../app-administration/services/content-types.service';
 import { Of } from '../../core';
 import { HttpServiceBase } from '../services/http-service-base';
 import { Field, FieldInputTypeOption } from './field.model';
 import { InputTypeCatalog } from './input-type-catalog';
 import { InputTypeMetadata } from './input-type-metadata.model';
 
-const webApiFieldsRoot = 'admin/field/';
 export const webApiFieldsAll = 'admin/field/all';
+
+// All WebApi paths - to easily search/find when looking for where these are used
+const webApiDataTypes = 'admin/field/DataTypes';
+const webApiReservedNames = 'admin/field/ReservedNames';
+const webApiAddInheritedField = 'admin/field/AddInheritedField';
+const webApiInputTypes = 'admin/field/InputTypes';
+const webApiInputType = 'admin/field/InputType';
+const webApiShare = 'admin/field/Share';
+const webApiInherit = 'admin/field/Inherit';
+const webApiSort = 'admin/field/Sort';
+const webApiSetTitle = 'admin/field/SetTitle';
+const webApiRename = 'admin/field/Rename';
+const webApiDelete = 'admin/field/Delete';
+const webApiAdd = 'admin/field/Add';
 const webApiFieldsGetShared = 'admin/field/GetSharedFields';
 
 @Injectable()
 export class ContentTypesFieldsService extends HttpServiceBase {
 
+  protected paramsAppId(more: Record<string, string | number | boolean | ReadonlyArray<string | number | boolean>> = {}) {
+    return {
+      params: {
+        appid: this.appId,
+        ...more,
+      },
+    };
+  }
+
   typeListRetrieve() {
-    return this.http.get<string[]>(this.apiUrl(webApiFieldsRoot + 'DataTypes'), {
-      params: { appid: this.appId }
-    });
+    return this.http.get<string[]>(this.apiUrl(webApiDataTypes), this.paramsAppId());
   }
 
   getInputTypesList() {
     return this.http
-      .get<InputTypeMetadata[]>(this.apiUrl(webApiFieldsRoot + 'InputTypes'), { params: { appid: this.appId } })
+      .get<InputTypeMetadata[]>(this.apiUrl(webApiInputTypes), this.paramsAppId())
       .pipe(
         map(inputConfigs => {
-          const inputTypeOptions = inputConfigs.map(config => {
-            const option: FieldInputTypeOption = {
-              dataType: config.Type.substring(0, config.Type.indexOf('-')),
-              inputType: config.Type,
-              label: config.Label,
-              description: config.Description,
-              isDefault: config.IsDefault,
-              isObsolete: config.IsObsolete,
-              isRecommended: config.IsRecommended,
-              obsoleteMessage: config.ObsoleteMessage,
-              icon: config.IsDefault ? 'star' : config.IsRecommended ? 'star_outline' : null,
-            };
-            return option;
-          });
+          const inputTypeOptions = inputConfigs.map(config => ({
+            dataType: config.Type.substring(0, config.Type.indexOf('-')),
+            inputType: config.Type,
+            label: config.Label,
+            description: config.Description,
+            isDefault: config.IsDefault,
+            isObsolete: config.IsObsolete,
+            isRecommended: config.IsRecommended,
+            obsoleteMessage: config.ObsoleteMessage,
+            icon: config.IsDefault ? 'star' : config.IsRecommended ? 'star_outline' : null,
+          } satisfies FieldInputTypeOption));
           return inputTypeOptions;
         }),
       );
   }
 
   getReservedNames() {
-    return this.http.get<Record<string, string>>(this.apiUrl(webApiFieldsRoot + 'ReservedNames'));
+    return this.http.get<Record<string, string>>(this.apiUrl(webApiReservedNames));
   }
 
   /** Get all fields for some content type */
   getFields(contentTypeStaticName: string) {
     return this.http
-      .get<Field[]>(this.apiUrl(webApiFieldsAll), {
-        params: { appid: this.appId, staticName: contentTypeStaticName },
-      })
+      .get<Field[]>(this.apiUrl(webApiFieldsAll), this.paramsAppId({ staticName: contentTypeStaticName }))
       .pipe(
         map(fields => {
           if (fields) {
@@ -74,9 +88,7 @@ export class ContentTypesFieldsService extends HttpServiceBase {
 
   /** Get all possible sharable fields for a new sharing */
   getShareableFields() {
-    return this.http.get<Field[]>(this.apiUrl(webApiFieldsGetShared), {
-      params: { appid: this.appId },
-    });
+    return this.http.get<Field[]>(this.apiUrl(webApiFieldsGetShared), this.paramsAppId());
   }
 
   /**
@@ -87,29 +99,29 @@ export class ContentTypesFieldsService extends HttpServiceBase {
    * @param attributeId the existing attributeId which will receive the new metadata
    */
   getShareableFieldsFor(attributeId: number) {
-    // TODO: @SDV - do the same as in getShareableFields()
-    // but add parameter attributeId to the webapi call
-    // I'll create the backend afterwards
-    return this.http
-      .get<Field[]>(this.apiUrl(webApiFieldsGetShared), {
-        params: { appid: this.appId, attributeId: attributeId.toString() },
-      });
+    return this.http.get<Field[]>(this.apiUrl(webApiFieldsGetShared), this.paramsAppId({ attributeId }));
   }
 
-  addInheritedField(targetContentTypeId: number, sourceContentTypeStaticName: string, sourceFieldGuid: string, newName: string) {
-    return this.http.post<number>(this.apiUrl(webApiFieldsRoot + 'AddInheritedField'), null, {
-      params: {
-        AppId: this.appId,
-        ContentTypeId: targetContentTypeId.toString(),
-        SourceType: sourceContentTypeStaticName,
-        SourceField: sourceFieldGuid,
-        name: newName,
-      }
-    });
+  addInheritedField(targetContentTypeId: number, sourceType: string, sourceFieldGuid: string /* guid */, name: string) {
+    return this.http.post<number>(this.apiUrl(webApiAddInheritedField), null, this.paramsAppId({
+      contentTypeId: targetContentTypeId.toString(),
+      sourceType,
+      sourceField: sourceFieldGuid,
+      name,
+    }));
+    // {
+    //   params: {
+    //     AppId: this.appId,
+    //     ContentTypeId: targetContentTypeId.toString(),
+    //     SourceType: sourceContentTypeStaticName,
+    //     SourceField: sourceFieldGuid,
+    //     name: newName,
+    //   }
+    // });
   }
 
   share(attributeId: number, share: boolean = true) {
-    return this.http.post<null>(this.apiUrl(webApiFieldsRoot + 'Share'), null, {
+    return this.http.post<null>(this.apiUrl(webApiShare), null, {
       params: {
         appid: this.appId,
         attributeId: attributeId.toString(),
@@ -119,7 +131,7 @@ export class ContentTypesFieldsService extends HttpServiceBase {
   }
 
   inherit(attributeId: number, sourceFieldGuid: string) {
-    return this.http.post<null>(this.apiUrl(webApiFieldsRoot + 'Inherit'), null, {
+    return this.http.post<null>(this.apiUrl(webApiInherit), null, {
       params: {
         appid: this.appId,
         attributeId: attributeId.toString(),
@@ -129,7 +141,7 @@ export class ContentTypesFieldsService extends HttpServiceBase {
   }
 
   reOrder(idArray: number[], contentType: ContentType) {
-    return this.http.post<boolean>(this.apiUrl(webApiFieldsRoot + 'Sort'), null, {
+    return this.http.post<boolean>(this.apiUrl(webApiSort), null, {
       params: {
         appid: this.appId,
         contentTypeId: contentType.Id.toString(),
@@ -139,7 +151,7 @@ export class ContentTypesFieldsService extends HttpServiceBase {
   }
 
   setTitle(item: Field, contentType: ContentType) {
-    return this.http.post<null>(this.apiUrl(webApiTypeRoot + 'SetTitle'), null, {
+    return this.http.post<null>(this.apiUrl(webApiSetTitle), null, {
       params: {
         appid: this.appId,
         contentTypeId: contentType.Id.toString(),
@@ -149,7 +161,7 @@ export class ContentTypesFieldsService extends HttpServiceBase {
   }
 
   rename(fieldId: number, contentTypeId: number, newName: string) {
-    return this.http.post<null>(this.apiUrl(webApiFieldsRoot + 'Rename'), null, {
+    return this.http.post<null>(this.apiUrl(webApiRename), null, {
       params: {
         appid: this.appId,
         contentTypeId: contentTypeId.toString(),
@@ -160,11 +172,10 @@ export class ContentTypesFieldsService extends HttpServiceBase {
   }
 
   delete(item: Field, contentType: ContentType) {
-    if (item.IsTitle) {
+    if (item.IsTitle)
       throw new Error('Can\'t delete Title');
-    }
 
-    return this.http.delete<boolean>(this.apiUrl(webApiFieldsRoot + 'Delete'), {
+    return this.http.delete<boolean>(this.apiUrl(webApiDelete), {
       params: {
         appid: this.appId,
         contentTypeId: contentType.Id.toString(),
@@ -174,7 +185,7 @@ export class ContentTypesFieldsService extends HttpServiceBase {
   }
 
   add(newField: Partial<Field>, contentTypeId: number) {
-    return this.http.post<number>(this.apiUrl(webApiFieldsRoot + 'Add'), null, {
+    return this.http.post<number>(this.apiUrl(webApiAdd), null, {
       params: {
         AppId: this.appId,
         ContentTypeId: contentTypeId.toString(),
@@ -188,9 +199,9 @@ export class ContentTypesFieldsService extends HttpServiceBase {
     });
   }
 
-  updateInputType(id: number, staticName: string, inputType: Of<typeof InputTypeCatalog>) {
-    return this.http.post<boolean>(this.apiUrl(webApiFieldsRoot + 'InputType'), null, {
-      params: { appId: this.appId, attributeId: id.toString(), field: staticName, inputType }
+  updateInputType(attributeId: number, field: string, inputType: Of<typeof InputTypeCatalog>) {
+    return this.http.post<boolean>(this.apiUrl(webApiInputType), null, {
+      params: { appId: this.appId, attributeId, field, inputType }
     });
   }
 }
