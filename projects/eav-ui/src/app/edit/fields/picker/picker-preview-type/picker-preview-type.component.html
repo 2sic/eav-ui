@@ -1,12 +1,11 @@
 <!-- Type Text for String are Default -->
-
 <!-- Type Font Icon -->
-@if (item?.previewType === "font-icon") {
-  <i class="icon-preview {{ replaceDot(item.valuePreview) }}"></i>
+@if (item?.pickerPreviewType === "icon-css") {
+  <i class="icon-preview {{ replaceDot(item.previewValue) }}"></i>
 }
 
 <!--  Type SVG Icon -->
-@if (item?.previewType === "svg") {
+@if (item?.pickerPreviewType === "svg") {
   <!-- TODO: @2dg SVG noch offen -->
   <svg class="icon-preview" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000">
     <path
@@ -15,8 +14,13 @@
   </svg>
 }
 
+<!-- Type text-css -->
+@if (item?.pickerPreviewType === "text-css") {
+  <!-- TODO: @2dg text-css  -->
+}
+
 <!-- Type Image -->
-@if (item?.previewType === "image") {
+@if (item?.pickerPreviewType === "image") {
   <!-- TODO: @2dg Image  -->
   <img class="image-preview" src="https://picsum.photos/seed/picsum/200/300" alt="item.label ? item.label : item.value" />
 }

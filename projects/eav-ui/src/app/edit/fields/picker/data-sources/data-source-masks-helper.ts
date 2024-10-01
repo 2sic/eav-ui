@@ -78,8 +78,8 @@ export class DataSourceMasksHelper {
         id: entity.Id,
         entity: entity,
         value,
-        valuePreview: value,
-        previewType: 'text',
+        previewValue: value,
+        pickerPreviewType: 'text',
         label,
         tooltip: masks.tooltip,
         info: masks.info,
@@ -125,8 +125,8 @@ export class DataSourceMasksHelper {
     let tooltip = useInfos ? masks.tooltip : '';
     let info = useInfos ? masks.info : '';
     let link = useInfos ? masks.link : '';
-    let valuePreview = masks.valuePreview;
-    let previewType = useInfos ? masks.previewType : ''; // TODO: @2dg, not sure if this is correct
+    let previewValue = masks.previewValue;
+    let pickerPreviewType = useInfos ? masks.pickerPreviewType : ''; // TODO: @2dg, not sure if this is correct
 
     Object.keys(data).forEach(key => {
       // must check for null and use '' instead
@@ -139,11 +139,12 @@ export class DataSourceMasksHelper {
       info = info.replace(search, value);
       link = link.replace(search, value);
       title = title.replace(search, value);
-      valuePreview = valuePreview.replace(search, value);
-      previewType = data.PreviewType ?? 'text'; // TODO: @2dg, not sure if this is correct
+      previewValue = previewValue.replace(search, value);
+      pickerPreviewType = data.PickerPreviewType ?? ''; // TODO: @2dg, not sure if this is correct
     });
 
-    return l.r({ title, tooltip, info, link, valuePreview, previewType });
+
+    return l.r({ title, tooltip, info, link, previewValue, pickerPreviewType });
   }
 
   /** Get the mask - if possibly from current objects cache */
@@ -169,9 +170,9 @@ export class DataSourceMasksHelper {
     const link = settings.ItemLink ?? '';
     const label = settings.Label ?? '';
     const value = settings.Value ?? '';
-    const valuePreview = settings.ValuePreview ?? '';
-    const previewType = settings.ValuePreview ?? '';
-    const hasPlaceholders = (tooltip + info + link + label + valuePreview).includes('[');
+    const previewValue  = settings.PreviewValue  ?? '';
+    const pickerPreviewType = settings.PreviewValue ?? '';
+    const hasPlaceholders = (tooltip + info + link + label + previewValue).includes('[');
     const result: DataSourceMasks = {
       hasPlaceholders,
       tooltip,
@@ -179,8 +180,8 @@ export class DataSourceMasksHelper {
       link,
       label,
       value,
-      valuePreview,
-      previewType,
+      previewValue,
+      pickerPreviewType,
     };
     return l.r(result, 'result');
   }
@@ -192,8 +193,8 @@ export class DataSourceMasksHelper {
       ItemLink: settings.ItemLink,
       Label: settings.Label,
       Value: settings.Value,
-      ValuePreview: settings.ValuePreview,
-      PreviewType: settings.ValuePreview,
+      PreviewValue: settings.PreviewValue,
+      PickerPreviewType: settings.PreviewValue,
     };
   }
 }
@@ -204,6 +205,6 @@ interface DataSourceMaskSettings {
   ItemLink: string;
   Label: string;
   Value: string;
-  ValuePreview: string;
-  PreviewType: string;
+  PreviewValue: string;
+  PickerPreviewType: string;
 }

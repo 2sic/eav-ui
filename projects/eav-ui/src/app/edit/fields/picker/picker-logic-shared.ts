@@ -126,8 +126,10 @@ export class PickerLogicShared {
       fs.CssSourceFile = specsCss.CssSourceFile ?? '';
       fs.CssSelectorFilter = specsCss.CssSelectorFilter ?? '';
       fs.Value = specsCss.Value ?? '';
-      fs.ValuePreview = specsCss.ValuePreview ?? '';
-      fs.PreviewType = specsCss.PreviewType ?? 'text';
+      fs.PreviewValue = specsCss.PreviewValue ?? '';
+      fs.PickerPreviewType = specsCss.PickerPreviewType ?? '';
+
+      console.log("2dg", specsCss)
     }
 
     if (isCustomSource) {
