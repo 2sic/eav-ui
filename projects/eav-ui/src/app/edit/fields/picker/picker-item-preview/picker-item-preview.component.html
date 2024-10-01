@@ -15,11 +15,11 @@
   }
   <!-- Type Image -->
   @case ("image") {
-    <!-- TODO: @2dg Image  -->
-    <img [ngxTippy]="tippyTemplate" class="image-preview" src="https://picsum.photos/seed/picsum/200/300" [alt]="item().value" />
+    <!-- TODO:: Resize Image -->
+    <img [ngxTippy]="tippyTemplate" class="image-preview" [src]="item().previewValue" [alt]="item().value" />
     <!-- Tippy to Show Big Image -->
     <div #tippyTemplate class="tippy-custom">
-      <img class="image-tippy" src="https://picsum.photos/seed/picsum/200/300" [alt]="item().value" />
+      <img class="image-tippy" [src]="item().previewValue" [alt]="item().value" />
     </div>
   }
 }
