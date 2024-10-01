@@ -387,6 +387,7 @@ export interface FieldSettings extends
   EntityPicker,
   StringPicker,
   StringCssPicker,
+  UiPickerSourceCsv,
   InternalSettings { }
 
 export interface UiPickerSourceCustomList extends PickerSourceBase {
@@ -420,7 +421,6 @@ export interface UiPickerSourceCss extends UiPickerSourceEntityAndQuery {
   CssSelectorFilter: string;
   Value: string;
   PreviewValue: string;
-  PreviewType: string;
 
   /** ItemInfo or field-mask for ItemInfo */
   ItemInformation: string;
@@ -433,6 +433,10 @@ export interface UiPickerSourceCss extends UiPickerSourceEntityAndQuery {
 
   PickerPreviewType?: string;
 
+}
+
+export interface UiPickerSourceCsv extends UiPickerSourceEntityAndQuery {
+  PreviewValue: string;
 }
 
 interface UiPickerSource extends PickerSourceBase {

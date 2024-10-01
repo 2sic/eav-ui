@@ -29,7 +29,7 @@ export class DataSourceMasksHelper {
     private name: string,
     private settings: DataSourceMaskSettings,
     features: FeaturesScopedService,
-    formConfig: FormConfigService,
+    private formConfig: FormConfigService,
     parentLog: { enableChildren: boolean }, enableLog?: boolean
   ) {
     this.log.forceEnable(enableLog ?? parentLog.enableChildren ?? false);
@@ -69,7 +69,7 @@ export class DataSourceMasksHelper {
     // Figure out Title Value if we don't use masks - fallback is to use the title, or the value with asterisk
     const label = (() => {
       const maybeTitle = entity[masks.label];
-      return maybeTitle ? `${maybeTitle}` : entity.Title ? `${entity.Title}` : `${value} *`; // If there is no title, use value with '*'
+      return maybeTitle ? `${maybeTitle}` : entity.Title ? `${entity.Title}` : `${value}`; // If there is no title, use value with '*'
     })();
 
     // If we don't have masks, we are done
@@ -115,7 +115,6 @@ export class DataSourceMasksHelper {
       const msgAddOn = this.#isDeveloper
         ? `It is enabled for developers, but will be disabled for normal users until it's licensed.`
         : '';
-      console.warn(`The field '${this.name}' has placeholders for info/tooltip/link, but the feature '${FeatureNames.PickerUiMoreInfo}' is not enabled. ${msgAddOn}`, { masks });
       this.#featInfoWarned = true;
     }
     const useInfos = this.#featInfoEnabled || this.#isDeveloper;
@@ -132,6 +131,16 @@ export class DataSourceMasksHelper {
       // replace all occurrences of [Item:Key] with value - should be case insensitive
       const search = new RegExp(`\\[Item:${key}\\]`, 'gi');
 
+
+      // TODO:: @2dm, check if this are the correct or use
+      if (previewValue.includes("App:Path")) {
+        // var x = ScriptsLoaderService.resolveUrlTokens(previewValue, this.formConfig.config)
+        const portalRoot = (this.formConfig.config.portalRoot).replace(/\/$/, '');
+        const appUrl = portalRoot + this.formConfig.config.appRoot;
+        previewValue = previewValue.replace("[App:Path]", appUrl);
+      }
+
+
       tooltip = tooltip.replace(search, value);
       info = info.replace(search, value);
       link = link.replace(search, value);
@@ -139,6 +148,8 @@ export class DataSourceMasksHelper {
       previewValue = previewValue.replace(search, value);
       // previewType = data.PreviewType ?? 'text'; // TODO: @2dg, not sure if this is correct
     });
+
+    console.log("2dg", previewValue)
 
     return l.r({ label, tooltip, info, link, previewValue } satisfies Partial<PickerItem>, 'result');
   }
@@ -179,6 +190,7 @@ export class DataSourceMasksHelper {
       previewValue,
       // previewType,
     };
+
     return l.r(result, 'result');
   }
 

@@ -1,5 +1,5 @@
 import { FieldValue } from 'projects/edit-types';
-import { FieldSettings, UiPickerSourceCss, UiPickerSourceCustomCsv, UiPickerSourceCustomList, UiPickerSourceEntity, UiPickerSourceQuery, UiPickerSourcesAll } from '../../../../../../edit-types/src/FieldSettings';
+import { FieldSettings, UiPickerSourceCss, UiPickerSourceCsv, UiPickerSourceCustomCsv, UiPickerSourceCustomList, UiPickerSourceEntity, UiPickerSourceQuery, UiPickerSourcesAll } from '../../../../../../edit-types/src/FieldSettings';
 import { RelationshipParentChild, UiPickerModeTree } from '../../../../../../edit-types/src/PickerModeTree';
 import { Of } from '../../../core';
 import { FeatureNames } from '../../../features/feature-names';
@@ -129,7 +129,6 @@ export class PickerLogicShared {
       fs.CssSelectorFilter = specsCss.CssSelectorFilter ?? '';
       fs.Value = specsCss.Value ?? '';
       fs.PreviewValue = specsCss.PreviewValue ?? '';
-      fs.PreviewType = specsCss.PreviewType ?? 'text';
     }
 
     if (isCustomSource) {
@@ -140,8 +139,10 @@ export class PickerLogicShared {
       } else if (typeName === PickerConfigs.UiPickerSourceCustomCsv) {
         // TODO: THIS should of course also be possible in Entity Pickers
         const csv = (typeConfig as unknown as UiPickerSourceCustomCsv).Csv;
+        const csvSpec = typeConfig as UiPickerSourceCsv; // add new interFace for csv
         fs._options ??= new DataSourceParserCsv().parse(csv);
         fs.requiredFeatures = [FeatureNames.PickerSourceCsv];
+        fs.PreviewValue = csvSpec.PreviewValue ?? '';
       }
 
     }

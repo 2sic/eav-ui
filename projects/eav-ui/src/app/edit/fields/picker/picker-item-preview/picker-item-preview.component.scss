@@ -14,3 +14,20 @@
   object-fit: cover;
   object-position: center;
 }
+
+::ng-deep {
+  .tippy-content {
+    padding: 6px !important;
+  }
+}
+
+.tippy-custom {
+  background-color: white !important;
+  .image-tippy {
+    width: 140px;
+    height: 140px;
+    border-radius: 2px;
+    object-fit: cover;
+    object-position: center;
+  }
+}
