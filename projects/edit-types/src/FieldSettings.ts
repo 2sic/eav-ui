@@ -2,7 +2,7 @@ import { Of } from '../../eav-ui/src/app/core';
 import { PickerConfigs } from '../../eav-ui/src/app/edit/fields/picker/constants/picker-config-model.constants';
 import { FeatureNames } from '../../eav-ui/src/app/features/feature-names';
 import { PickerOptionCustom } from './DropdownOption';
-import { PickerSourceBase, UiPickerModeTree } from './PickerModeTree';
+import { UiPickerModeTree } from './PickerModeTree';
 
 /** */
 interface InternalSettings {
@@ -402,7 +402,7 @@ export interface PickerSourceCss extends String, PickerSourceCommon {
 
   
 
-export interface PickerSourceCustomList extends PickerSourceBase {
+export interface PickerSourceCustomList {
   Values: string;
 }
 
@@ -424,15 +424,8 @@ export interface PickerSourceEntity extends PickerSourceEntityAndQuery {
   ContentTypeNames: string;
 }
 
-export interface PickerSourceCss extends PickerSourceCommon {
-  CssSourceFile: string;
-  CssSelectorFilter: string;
-  Value: string;
-  PreviewValue: string;
-  PreviewType: string;
-}
 
-interface UiPickerSource extends PickerSourceBase, PickerSourceCommonWithLabel {
+interface UiPickerSource extends PickerSourceCommonWithLabel {
 }
 
 export interface PickerSourceCustomList extends UiPickerSource {
