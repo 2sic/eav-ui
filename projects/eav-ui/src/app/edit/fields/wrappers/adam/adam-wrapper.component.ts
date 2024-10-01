@@ -28,7 +28,6 @@ export class AdamWrapperComponent implements OnInit {
   protected config = this.fieldState.config;
   
   open = this.editRoutingService.isExpandedSignal(this.config.index, this.config.entityGuid);
-  applyEmptyClass = false; // TODO: @2pp - get value from fieldState
 
   constructor(private editRoutingService: EditRoutingService) { }
 
