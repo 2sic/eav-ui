@@ -1,6 +1,7 @@
 import { FieldValue } from 'projects/edit-types';
-import { FieldSettings, PickerSourceCss, PickerSourceCustomCsv, PickerSourceCustomList, PickerSourceEntity, PickerSourceQuery, UiPickerSourcesAll } from '../../../../../../edit-types/src/FieldSettings';
+import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
 import { RelationshipParentChild, UiPickerModeTree } from '../../../../../../edit-types/src/PickerModeTree';
+import { FieldSettingsWithPickerSource, PickerSourceCss, PickerSourceCustomCsv, PickerSourceCustomList, PickerSourceEntity, PickerSourceQuery, UiPickerSourcesAll } from '../../../../../../edit-types/src/PickerSources';
 import { Of } from '../../../core';
 import { FeatureNames } from '../../../features/feature-names';
 import { classLog } from '../../../shared/logging';
@@ -62,10 +63,14 @@ export class PickerLogicShared {
   }
 
 
-  #getDataSourceAndSetupFieldSettings(value: FieldValue, fs: FieldSettings, tools: FieldLogicTools) {
+  #getDataSourceAndSetupFieldSettings(value: FieldValue, fsBasic: FieldSettings, tools: FieldLogicTools) {
+    // Define field settings to be a merged FieldSettings and PickerSources
+    const fs = fsBasic as FieldSettingsWithPickerSource;
+
     const dataSources: EavEntity[] = (fs.DataSources?.length > 0)
       ? tools.contentTypeItemSvc.getMany(fs.DataSources)
       : [];
+
 
     fs.noAutoFocus = true;
 

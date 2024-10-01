@@ -1,6 +1,7 @@
 import { inject, Injectable, Signal } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
+import { FieldValue } from '../../../../../../../edit-types/src/FieldValue';
+import { FieldSettingsWithPickerSource } from '../../../../../../../edit-types/src/PickerSources';
 import { FeaturesScopedService } from '../../../../features/features-scoped.service';
 import { classLog, ClassLogger } from '../../../../shared/logging';
 import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
@@ -32,7 +33,7 @@ export abstract class DataSourceBase extends ServiceBase {
   abstract log: ClassLogger<typeof logSpecsDataSourceBase>;
 
   /** Field State with settings etc. */
-  protected fieldState = inject(FieldState);
+  protected fieldState = inject(FieldState) as FieldState<FieldValue, FieldSettingsWithPickerSource>;
 
   /** For feature checks in the info/tooltip etc. of picker data */
   protected features = inject(FeaturesScopedService);
@@ -104,7 +105,7 @@ export abstract class DataSourceBase extends ServiceBase {
     return new DataSourceMasksHelper(this.fieldName, this.settings(), this.features, this.formConfig, this.log, enableLog);
   }
 
-  protected fieldsToRetrieve(settings: FieldSettings): string {
+  protected fieldsToRetrieve(settings: FieldSettingsWithPickerSource): string {
     return this.fieldsHelper.fieldListToRetrieveFromServer(settings);
   }
 

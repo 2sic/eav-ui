@@ -1,6 +1,6 @@
 import { Component, input } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
-import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
+import { FieldSettingsWithPickerSource } from '../../../../../../../edit-types/src/PickerSources';
 import { PickerItem } from '../models/picker-item.model';
 
 @Component({
@@ -16,7 +16,7 @@ export class PickerItemPreviewComponent {
 
   item = input.required<PickerItem>();
 
-  settings = input.required<FieldSettings>();
+  settings = input.required<FieldSettingsWithPickerSource>();
 
   replaceDot(value: string): string {
     return value?.replace(/\./g, '');

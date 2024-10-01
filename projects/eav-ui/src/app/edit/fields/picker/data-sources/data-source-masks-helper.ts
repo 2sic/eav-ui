@@ -1,4 +1,4 @@
-import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
+import { FieldSettingsWithPickerSource } from '../../../../../../../edit-types/src/PickerSources';
 import { FeatureNames } from '../../../../features/feature-names';
 import { FeaturesScopedService } from '../../../../features/features-scoped.service';
 import { classLog } from '../../../../shared/logging/logging';
@@ -182,7 +182,7 @@ export class DataSourceMasksHelper {
     return l.r(result, 'result');
   }
 
-  static maskSettings(settings: FieldSettings): DataSourceMaskSettings {
+  static maskSettings(settings: FieldSettingsWithPickerSource): DataSourceMaskSettings {
     return {
       ItemTooltip: settings.ItemTooltip,
       ItemInformation: settings.ItemInformation,

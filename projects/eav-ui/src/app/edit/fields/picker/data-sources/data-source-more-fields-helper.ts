@@ -1,6 +1,6 @@
-import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
-import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
+import { FieldSettingsWithPickerSource } from '../../../../../../../edit-types/src/PickerSources';
 import { classLog } from '../../../../shared/logging';
+import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 
 /**
  * Helper class for data source, to figure out all the fields we need to retrieve from the server.
@@ -8,7 +8,7 @@ import { classLog } from '../../../../shared/logging';
 export class DataSourceMoreFieldsHelper {
   log = classLog({DataSourceMoreFieldsHelper});
 
-  fieldListToRetrieveFromServer(settings: FieldSettings): string {
+  fieldListToRetrieveFromServer(settings: FieldSettingsWithPickerSource): string {
     this.log.a('fieldListToRetrieveFromServer', { settings });
 
     const treeConfig = settings.PickerTreeConfiguration;

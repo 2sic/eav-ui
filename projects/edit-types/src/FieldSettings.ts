@@ -329,7 +329,6 @@ interface PickerSettings {
   AllowMultiMax: number;
 
   DataSources: string[];
-  UiPickerSourceQuery: PickerSourceQuery;
 
   DataSourceType: Of<typeof PickerConfigs>;
 
@@ -364,76 +363,5 @@ export interface FieldSettings extends
   StringWysiwyg,
   EntityPicker,
   StringPicker,
-  PickerSourceCss,
   InternalSettings { }
-
-
-
-/** These properties are on basically all picker sources */
-interface PickerSourceCommon {
-  /** ItemInfo or field-mask for ItemInfo */
-  ItemInformation: string;
-
-  /** ItemTooltip or field-mask for ItemTooltip */
-  ItemTooltip: string;
-
-  /** ItemLink or field-mask for ItemLink */
-  ItemLink: string;
-}
-
-interface PickerSourceCommonWithLabel {
-  /** Label or field-mask for label */
-  Label: string;
-}
-
-
-/**
- * Picker Source Custom CSS
- */
-export interface PickerSourceCss extends String, PickerSourceCommon {
-  CssSourceFile: string;
-  CssSelectorFilter: string;
-  Value: string;
-  PreviewValue: string;
-
-  /** Maybe the setting for the visualizer - eg. "none", "text", "icon-font", "icon-svg", "image" */
-  PreviewType: string;
-}
-
-  
-
-export interface PickerSourceCustomList {
-  Values: string;
-}
-
-
-interface PickerSourceEntityAndQuery extends PickerSourceCommonWithLabel {
-  CreateTypes: string;
-  MoreFields: string;
-}
-
-export interface PickerSourceQuery extends PickerSourceEntityAndQuery {
-  Query: string;
-  QueryParameters: string;
-  StreamName: string;
-  Value: string;
-  Label: string;
-}
-
-export interface PickerSourceEntity extends PickerSourceEntityAndQuery {
-  ContentTypeNames: string;
-}
-
-export interface PickerSourceCustomCsv extends PickerSourceCommonWithLabel {
-  Csv: string;
-}
-
-
-export interface UiPickerSourcesAll extends
-  PickerSourceCustomList,
-  PickerSourceCustomCsv,
-  PickerSourceEntity,
-  PickerSourceQuery,
-  PickerSourceCss { }
-
 
