@@ -407,7 +407,7 @@ export interface PickerSourceCustomList {
 }
 
 
-interface PickerSourceEntityAndQuery extends UiPickerSource {
+interface PickerSourceEntityAndQuery extends PickerSourceCommonWithLabel {
   CreateTypes: string;
   MoreFields: string;
 }
@@ -424,19 +424,7 @@ export interface PickerSourceEntity extends PickerSourceEntityAndQuery {
   ContentTypeNames: string;
 }
 
-
-interface UiPickerSource extends PickerSourceCommonWithLabel {
-}
-
-export interface PickerSourceCustomList extends UiPickerSource {
-  // TODO: @2dm - this should be renamed!
-  // Probably to "CustomList"
-  DropdownValues: string;
-}
-
-export interface PickerSourceCustomCsv extends UiPickerSource {
-  // TODO: @2dm - this should be renamed!
-  // Probably to "CustomList"
+export interface PickerSourceCustomCsv extends PickerSourceCommonWithLabel {
   Csv: string;
 }
 
