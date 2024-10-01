@@ -1,5 +1,5 @@
 import { FieldValue } from 'projects/edit-types';
-import { FieldSettings, UiPickerSourceCss, UiPickerSourceCustomCsv, UiPickerSourceCustomList, UiPickerSourceEntity, UiPickerSourceQuery, UiPickerSourcesAll } from '../../../../../../edit-types/src/FieldSettings';
+import { FieldSettings, PickerSourceCss, PickerSourceCustomCsv, PickerSourceCustomList, PickerSourceEntity, PickerSourceQuery, UiPickerSourcesAll } from '../../../../../../edit-types/src/FieldSettings';
 import { RelationshipParentChild, UiPickerModeTree } from '../../../../../../edit-types/src/PickerModeTree';
 import { Of } from '../../../core';
 import { FeatureNames } from '../../../features/feature-names';
@@ -95,7 +95,7 @@ export class PickerLogicShared {
     fs.ItemInformation = typeConfig.ItemInformation ?? '';
     fs.ItemTooltip = typeConfig.ItemTooltip ?? '';
     fs.ItemLink = typeConfig.ItemLink ?? '';
-    fs.PickerPreviewType = typeConfig.PickerPreviewType ?? '';
+    fs.PreviewType = typeConfig.PreviewType ?? '';
 
     const sourceIsQuery = typeName === PickerConfigs.UiPickerSourceQuery;
     const sourceIsEntity = typeName === PickerConfigs.UiPickerSourceEntity;
@@ -107,7 +107,7 @@ export class PickerLogicShared {
 
     /** Query Data Source */
     if (sourceIsQuery) {
-      const specsQuery = typeConfig as UiPickerSourceQuery;
+      const specsQuery = typeConfig as PickerSourceQuery;
       fs.Query = specsQuery.Query ?? '';
       fs.StreamName = specsQuery.StreamName ?? 'Default';// stream name could be multiple stream names
       fs.UrlParameters = specsQuery.QueryParameters ?? '';
@@ -118,28 +118,29 @@ export class PickerLogicShared {
 
     /** Entity Data Source */
     if (sourceIsEntity) {
-      const specsEntity = typeConfig as UiPickerSourceEntity;
+      const specsEntity = typeConfig as PickerSourceEntity;
       fs.EntityType = specsEntity.ContentTypeNames ?? '';// possible multiple types
     }
 
+    // Do this for all, as it's a common property - e.g. Css, AppAssets, etc.
+    const specsCss = typeConfig as PickerSourceCss;
+    fs.PreviewValue = specsCss.PreviewValue ?? '';
+
     /** Css File Data Source */
     if (sourceIsCss) {
-      const specsCss = typeConfig as UiPickerSourceCss;
       fs.CssSourceFile = specsCss.CssSourceFile ?? '';
       fs.CssSelectorFilter = specsCss.CssSelectorFilter ?? '';
       fs.Value = specsCss.Value ?? '';
-      fs.PreviewValue = specsCss.PreviewValue ?? '';
-      fs.PreviewType = specsCss.PreviewType ?? 'text';
     }
 
     if (isCustomSource) {
       if (typeName === PickerConfigs.UiPickerSourceCustomList) {
-        const valuesRaw = (typeConfig as unknown as UiPickerSourceCustomList).Values ?? '';
+        const valuesRaw = (typeConfig as unknown as PickerSourceCustomList).Values ?? '';
         // note that 'value-label' is the only format supported by the new picker config
         fs._options ??= calculateDropdownOptions(value as string, 'string', 'value-label', valuesRaw) ?? [];
       } else if (typeName === PickerConfigs.UiPickerSourceCustomCsv) {
         // TODO: THIS should of course also be possible in Entity Pickers
-        const csv = (typeConfig as unknown as UiPickerSourceCustomCsv).Csv;
+        const csv = (typeConfig as unknown as PickerSourceCustomCsv).Csv;
         fs._options ??= new DataSourceParserCsv().parse(csv);
         fs.requiredFeatures = [FeatureNames.PickerSourceCsv];
       }

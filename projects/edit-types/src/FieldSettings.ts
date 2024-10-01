@@ -188,22 +188,6 @@ export interface StringDropdownQuery extends String {
   MoreFields: string;
 }
 
-/**
- * @string-css-picker
- */
-export interface StringCssPicker extends String {
-  CssSourceFile: string;
-  CssSelectorFilter: string;
-  Value: string;
-  PreviewValue: string;
-  PreviewType: string;
-  ItemInformation: string;
-  ItemTooltip: string;
-  ItemLink: string;
-
-  /** Maybe the setting for the visualizer - eg. "none", "text", "icon-font", "icon-svg", "image" */
-  PickerPreviewType: string;
-}
 
 /**
  * @string-font-icon-picker
@@ -345,22 +329,16 @@ interface PickerSettings {
   AllowMultiMax: number;
 
   DataSources: string[];
-  UiPickerSourceQuery: UiPickerSourceQuery;
+  UiPickerSourceQuery: PickerSourceQuery;
 
-  DataSourceType: Of<typeof PickerConfigs>;// PickerDataSourceType;
+  DataSourceType: Of<typeof PickerConfigs>;
 
+  // TODO: THIS SHOULD NOT BE ON THIS CLASS
   /** Label to show or field-mask for label */
   Label: string;
 
-  /** ItemInfo or field-mask for ItemInfo */
-  ItemInformation: string;
-
-  /** ItemTooltip or field-mask for ItemTooltip */
-  ItemTooltip: string;
-
-  /** ItemLink or field-mask for ItemLink */
-  ItemLink: string;
 }
+
 
 interface EntityPicker extends EntityQuery, PickerSettings { }
 
@@ -386,87 +364,95 @@ export interface FieldSettings extends
   StringWysiwyg,
   EntityPicker,
   StringPicker,
-  StringCssPicker,
+  PickerSourceCss,
   InternalSettings { }
 
-export interface UiPickerSourceCustomList extends PickerSourceBase {
+
+
+/** These properties are on basically all picker sources */
+interface PickerSourceCommon {
+  /** ItemInfo or field-mask for ItemInfo */
+  ItemInformation: string;
+
+  /** ItemTooltip or field-mask for ItemTooltip */
+  ItemTooltip: string;
+
+  /** ItemLink or field-mask for ItemLink */
+  ItemLink: string;
+}
+
+interface PickerSourceCommonWithLabel {
+  /** Label or field-mask for label */
+  Label: string;
+}
+
+
+/**
+ * Picker Source Custom CSS
+ */
+export interface PickerSourceCss extends String, PickerSourceCommon {
+  CssSourceFile: string;
+  CssSelectorFilter: string;
+  Value: string;
+  PreviewValue: string;
+
+  /** Maybe the setting for the visualizer - eg. "none", "text", "icon-font", "icon-svg", "image" */
+  PreviewType: string;
+}
+
+  
+
+export interface PickerSourceCustomList extends PickerSourceBase {
   Values: string;
 }
 
-export interface UiPickerSourceQuery extends PickerSourceBase {
-  Query: string;
-  QueryParameters: string;
-  StreamName: string;
-  Value: string;
-  Label: string;
+
+interface PickerSourceEntityAndQuery extends UiPickerSource {
   CreateTypes: string;
   MoreFields: string;
 }
 
-export interface UiPickerSourceQuery extends UiPickerSourceEntityAndQuery {
+export interface PickerSourceQuery extends PickerSourceEntityAndQuery {
   Query: string;
   QueryParameters: string;
   StreamName: string;
-  Label: string;
   Value: string;
+  Label: string;
 }
 
-export interface UiPickerSourceEntity extends UiPickerSourceEntityAndQuery {
+export interface PickerSourceEntity extends PickerSourceEntityAndQuery {
   ContentTypeNames: string;
 }
 
-export interface UiPickerSourceCss extends UiPickerSourceEntityAndQuery {
+export interface PickerSourceCss extends PickerSourceCommon {
   CssSourceFile: string;
   CssSelectorFilter: string;
   Value: string;
   PreviewValue: string;
   PreviewType: string;
-
-  /** ItemInfo or field-mask for ItemInfo */
-  ItemInformation: string;
-
-  /** ItemTooltip or field-mask for ItemTooltip */
-  ItemTooltip: string;
-
-  /** ItemLink or field-mask for ItemLink */
-  ItemLink: string;
-
-  PickerPreviewType?: string;
-
 }
 
-interface UiPickerSource extends PickerSourceBase {
-  /** Label or field-mask for label */
-  Label: string;
-
-  /** ItemInfo or field-mask for ItemInfo */
-  ItemInformation: string;
-
-  /** ItemTooltip or field-mask for ItemTooltip */
-  ItemTooltip: string;
-
-  /** ItemLink or field-mask for ItemLink */
-  ItemLink: string;
+interface UiPickerSource extends PickerSourceBase, PickerSourceCommonWithLabel {
 }
 
-export interface UiPickerSourceCustomList extends UiPickerSource {
+export interface PickerSourceCustomList extends UiPickerSource {
+  // TODO: @2dm - this should be renamed!
+  // Probably to "CustomList"
   DropdownValues: string;
 }
 
-export interface UiPickerSourceCustomCsv extends UiPickerSource {
+export interface PickerSourceCustomCsv extends UiPickerSource {
+  // TODO: @2dm - this should be renamed!
+  // Probably to "CustomList"
   Csv: string;
 }
 
-export interface UiPickerSourceEntityAndQuery extends UiPickerSource {
-  CreateTypes: string;
-  MoreFields: string;
-}
 
 export interface UiPickerSourcesAll extends
-  UiPickerSourceCustomList,
-  UiPickerSourceCustomCsv,
-  UiPickerSourceEntity,
-  UiPickerSourceQuery,
-  UiPickerSourceCss { }
+  PickerSourceCustomList,
+  PickerSourceCustomCsv,
+  PickerSourceEntity,
+  PickerSourceQuery,
+  PickerSourceCss { }
 
 

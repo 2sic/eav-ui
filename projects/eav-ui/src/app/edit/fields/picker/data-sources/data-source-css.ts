@@ -76,7 +76,6 @@ export class DataSourceCss extends DataSourceBase {
         Value: option.class,
         ValueRaw: option.valueRaw,
         Selector: option.selector,
-        PickerPreviewType: this.#settings().PickerPreviewType,
       };
 
       l.values({ entity });
