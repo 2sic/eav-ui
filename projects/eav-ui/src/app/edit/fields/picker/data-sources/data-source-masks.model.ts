@@ -26,6 +26,6 @@ export interface DataSourceMasks {
   previewValue: string;
 
   /** Change Type, Text, icon, svg, image */
-  pickerPreviewType: string;
+  // pickerPreviewType: string;
 };
 
