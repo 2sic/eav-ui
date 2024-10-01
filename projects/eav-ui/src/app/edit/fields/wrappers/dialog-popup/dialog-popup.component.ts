@@ -1,5 +1,5 @@
 import { CommonModule, NgClass, NgStyle } from '@angular/common';
-import { AfterViewInit, ChangeDetectorRef, Component, computed, inject, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, computed, ElementRef, inject, Input, NgZone, ViewChild, ViewContainerRef } from '@angular/core';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { FlexModule } from '@angular/flex-layout/flex';
 import { MatButtonModule } from '@angular/material/button';
@@ -14,8 +14,8 @@ import { FeatureIconTextComponent } from '../../../../features/feature-icon-text
 import { FeatureNames } from '../../../../features/feature-names';
 import { FeaturesScopedService } from '../../../../features/features-scoped.service';
 import { ClickStopPropagationDirective } from '../../../../shared/directives/click-stop-propagation.directive';
+import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { ExtendedFabSpeedDialImports } from '../../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
-import { SignalEquals } from '../../../../shared/signals/signal-equals';
 import { FormConfigService } from '../../../form/form-config.service';
 import { FormsStateService } from '../../../form/forms-state.service';
 import { EditRoutingService } from '../../../routing/edit-routing.service';
@@ -24,16 +24,14 @@ import { HyperlinkDefaultBaseComponent } from '../../basic/hyperlink-default/hyp
 import { PasteClipboardImageDirective } from '../../directives/paste-clipboard-image.directive';
 import { FieldState } from '../../field-state';
 import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
-import { DialogPopupComponent } from '../dialog-popup/dialog-popup.component';
 import { DropzoneDraggingHelper } from '../dropzone-dragging.helper';
 import { ContentExpandAnimation } from '../expand-dialog/content-expand.animation';
 import { WrappersCatalog } from '../wrappers.constants';
-import { TippyDirective } from './../../../../shared/directives/tippy.directive';
 
 @Component({
-  selector: WrappersCatalog.HyperlinkDefaultExpandableWrapper,
-  templateUrl: './hyperlink-default-expandable-wrapper.component.html',
-  styleUrls: ['./hyperlink-default-expandable-wrapper.component.scss'],
+  selector: WrappersCatalog.DialogPopup,
+  templateUrl: './dialog-popup.component.html',
+  styleUrls: ['./dialog-popup.component.scss'],
   animations: [ContentExpandAnimation],
   standalone: true,
   imports: [
@@ -54,23 +52,21 @@ import { TippyDirective } from './../../../../shared/directives/tippy.directive'
     ClickStopPropagationDirective,
     ...ExtendedFabSpeedDialImports,
     TippyDirective,
-    DialogPopupComponent,
     CommonModule,
-],
+  ],
 })
 // tslint:disable-next-line:max-line-length
-export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefaultBaseComponent implements OnInit, AfterViewInit, OnDestroy {
-  @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
+export class DialogPopupComponent extends HyperlinkDefaultBaseComponent {
+  @ViewChild('backdrop') private backdropRef: ElementRef;
+  @ViewChild('dialog') private dialogRef: ElementRef;
 
   protected fieldState = inject(FieldState);
-  public config = this.fieldState.config;
-  protected basics = this.fieldState.basics;
-
-  protected buttonAdam = computed(() => this.fieldState.settings().Buttons.includes('adam'), SignalEquals.bool);
-  protected buttonPage = computed(() => this.fieldState.settings().Buttons.includes('page'), SignalEquals.bool);
-  protected enableImageConfiguration = computed(() => this.fieldState.settings().EnableImageConfiguration, SignalEquals.bool);
 
   open = this.editRoutingService.isExpandedSignal(this.config.index, this.config.entityGuid);
+  public config = this.fieldState.config;
+  public basics = this.fieldState.basics;
+
+  @Input() applyEmptyClass: Boolean;
 
   private dropzoneDraggingHelper: DropzoneDraggingHelper;
 
@@ -81,9 +77,9 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
     changeDetectorRef: ChangeDetectorRef,
     linkCacheService: LinkCacheService,
     editRoutingService: EditRoutingService,
-    private zone: NgZone,
     public formsStateService: FormsStateService,
     private featuresService: FeaturesScopedService,
+    private zone: NgZone,
   ) {
     super(
       eavService,
@@ -96,31 +92,31 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
     );
   }
 
-  #hideAdamSponsor = this.featuresService.isEnabled[FeatureNames.NoSponsoredByToSic];
-  adamSponsorI18nKey = computed(() => this.#hideAdamSponsor()
-    ? 'Fields.Hyperlink.AdamFileManager.Name'
-    : 'Fields.Hyperlink.Default.Sponsor'
-  );
-
   ngAfterViewInit() {
     this.dropzoneDraggingHelper = new DropzoneDraggingHelper(this.zone);
+    this.dropzoneDraggingHelper.attach(this.backdropRef.nativeElement);
+    this.dropzoneDraggingHelper.attach(this.dialogRef.nativeElement);
   }
 
   ngOnDestroy() {
     this.dropzoneDraggingHelper.detach();
   }
 
-  markAsTouched() {
-    this.fieldState.ui().markTouched();
+  #hideAdamSponsor = this.featuresService.isEnabled[FeatureNames.NoSponsoredByToSic];
+  adamSponsorI18nKey = computed(() => this.#hideAdamSponsor()
+    ? 'Fields.Hyperlink.AdamFileManager.Name'
+    : 'Fields.Hyperlink.Default.Sponsor'
+  );
+
+  calculateBottomPixels() {
+    return window.innerWidth > 600 ? '100px' : '50px';
   }
 
-  setValue(event: Event) {
-    const newValue = (event.target as HTMLInputElement).value;
-    this.fieldState.ui().setIfChanged(newValue);
+  closeDialog() {
+    this.editRoutingService.expand(false, this.config.index, this.config.entityGuid);
   }
 
-  expandDialog() {
-    if (this.fieldState.ui().disabled) return;
-    this.editRoutingService.expand(true, this.config.index, this.config.entityGuid);
+  saveAll(close: boolean) {
+    this.formsStateService.triggerSave(close);
   }
 }

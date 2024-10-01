@@ -1,17 +1,17 @@
 import { Injectable, OnDestroy, Signal } from '@angular/core';
-import { filter, map, Subject } from 'rxjs';
-import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
-import { EditForm } from '../../shared/models/edit-form.model';
-import { EditUrlParams } from './edit-url-params.model';
-import { UrlHelpers } from '../shared/helpers';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { filter, map, Subject } from 'rxjs';
+import { transient } from '../../core';
+import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
+import { classLog } from '../../shared/logging';
+import { EditForm } from '../../shared/models/edit-form.model';
+import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { mapUntilChanged } from '../../shared/rxJs/mapUntilChanged';
+import { ServiceBase } from '../../shared/services/service-base';
 import { FormConfigService } from '../form/form-config.service';
 import { FormLanguageService } from '../form/form-language.service';
-import { ServiceBase } from '../../shared/services/service-base';
-import { transient } from '../../core';
-import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
-import { classLog } from '../../shared/logging';
+import { UrlHelpers } from '../shared/helpers';
+import { EditUrlParams } from './edit-url-params.model';
 
 const logSpecs = {
   all: false,
@@ -186,7 +186,6 @@ export class EditRoutingService extends ServiceBase implements OnDestroy {
       })
     );
   }
-
 }
 
 export interface NavigateFormResult {
