@@ -1,4 +1,5 @@
 import { Component, input } from '@angular/core';
+import { MatIcon } from '@angular/material/icon';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { PickerItem } from '../models/picker-item.model';
 
@@ -7,6 +8,9 @@ import { PickerItem } from '../models/picker-item.model';
   templateUrl: './picker-item-preview.component.html',
   styleUrl: './picker-item-preview.component.scss',
   standalone: true,
+  imports: [
+    MatIcon,
+  ]
 })
 export class PickerItemPreviewComponent {
 
