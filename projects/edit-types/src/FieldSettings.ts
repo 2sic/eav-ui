@@ -189,7 +189,7 @@ export interface StringDropdownQuery extends String {
 }
 
 /**
- * TODO: 2dg, check if this correct
+ * @string-css-picker
  */
 export interface StringCssPicker extends String {
   CssSourceFile: string;

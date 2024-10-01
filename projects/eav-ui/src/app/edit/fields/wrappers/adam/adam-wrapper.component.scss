@@ -48,3 +48,47 @@
     animation: spinner .6s linear infinite;
   }
 }
+
+.c-ew__dialog-content, .adam-in-popup {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+  .adam-dialog-content {
+    flex: 1 1 auto;
+    overflow: scroll;
+    // Hide scroll
+    -ms-overflow-style: none; // IE 10+
+    overflow: -moz-scrollbars-none; // Firefox
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none; // Safari and Chrome
+    }
+  }
+
+  adam-browser {
+    background: white;
+    z-index: 2;
+  }
+
+  adam-hint {
+    z-index: 3;
+  }
+}
+
+.c-ew__dialog-content--empty {
+  adam-browser {
+    flex: 1 1 100%;
+    overflow: scroll;
+
+    // hide scroll bar
+    -ms-overflow-style: none; // IE 10+
+    overflow: -moz-scrollbars-none; // Firefox
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none; // Safari and Chrome
+    }
+  }
+}

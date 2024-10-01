@@ -84,6 +84,34 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
   #dialogConfigSvc = transient(DialogConfigAppService);
   #dialogRouter = transient(DialogRoutingService);
 
+  // TODO:: WIP
+  // loadData = signal(0);
+
+  // viewModelSig = computed(() => {
+  //   const load = this.loadData(); // Signal aufrufen
+  //   const s = this.#appInternalsService.getAppInternalsSig(); // Signal aufrufen
+  //   console.log('2dg computed', s.FieldAll.AppSettings?.length, load);
+
+  //   const props = s.EntityLists;
+  //   const lsTypeName = eavConstants.appMetadata.LightSpeed.ContentTypeName;
+
+  //   const result: AppConfigurationViewModel = {
+  //     appLightSpeedCount: s.MetadataList.Items.filter(i => i._Type.Name === lsTypeName).length,
+  //     systemSettingsCount: this.isPrimary
+  //       ? props.SettingsSystem.filter(i => i.SettingsEntityScope === SystemSettingsScopes.Site).length
+  //       : props.SettingsSystem.filter(i => !i.SettingsEntityScope).length,
+  //     customSettingsCount: props.AppSettings?.length,
+  //     customSettingsFieldsCount: s.FieldAll.AppSettings?.length,
+  //     systemResourcesCount: this.isPrimary
+  //       ? props.ResourcesSystem.filter(i => i.SettingsEntityScope === SystemSettingsScopes.Site).length
+  //       : props.ResourcesSystem.filter(i => !i.SettingsEntityScope).length,
+  //     customResourcesCount: props.AppResources?.length,
+  //     customResourcesFieldsCount: s.FieldAll.AppResources?.length,
+  //   };
+
+  //   return result;
+  // });
+
   constructor(
     private context: Context,
     private snackBar: MatSnackBar,
@@ -149,8 +177,8 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
             items: [
               systemSettingsEntity == null
                 ? EditPrep.newFromType(staticName, {
-                    ...(systemSettingsScope === SystemSettingsScopes.Site && { SettingsEntityScope: SystemSettingsScopes.Site }),
-                  })
+                  ...(systemSettingsScope === SystemSettingsScopes.Site && { SettingsEntityScope: SystemSettingsScopes.Site }),
+                })
                 : EditPrep.editId(systemSettingsEntity.Id)
             ],
           };
@@ -218,6 +246,10 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
   }
 
   private fetchSettings() {
+    // TODO:: WIP
+    // const x = this.loadData();
+    // this.loadData.set(x +1);
+
     const getObservable = this.#appInternalsService.getAppInternals();
     getObservable.subscribe(x => {
       // 2dm - New mode for Reactive UI

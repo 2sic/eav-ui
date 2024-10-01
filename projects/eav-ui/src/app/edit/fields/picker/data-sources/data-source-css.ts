@@ -62,6 +62,7 @@ export class DataSourceCss extends DataSourceBase {
   })();
 
   data = computedObj('data', () => {
+
     const options = this.#iconOptions();
 
     const maskHelper = this.#dataMaskHelper;
@@ -75,7 +76,7 @@ export class DataSourceCss extends DataSourceBase {
         Value: option.class,
         ValueRaw: option.valueRaw,
         Selector: option.selector,
-        PreviewType: "font-icon",
+        PickerPreviewType: this.#settings().PickerPreviewType,
       };
 
       l.values({ entity });
