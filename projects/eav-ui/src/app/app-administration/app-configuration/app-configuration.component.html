@@ -1,4 +1,11 @@
 @if (viewModel$ | async; as vm) {
+
+  <!-- TODO:: @2dg WIP Sig -->
+  <!-- <pre>
+    <span>Test1:{{vm.customSettingsFieldsCount}}</span>
+    <span>Test2:{{viewModelSig().customSettingsFieldsCount}}</span>
+  </pre> -->
+
   @if (isGlobal || isPrimary) {
     <div class="alert alert-info scope-info">
       @if (isGlobal) {

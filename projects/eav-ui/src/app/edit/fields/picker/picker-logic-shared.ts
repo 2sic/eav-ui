@@ -128,8 +128,6 @@ export class PickerLogicShared {
       fs.Value = specsCss.Value ?? '';
       fs.PreviewValue = specsCss.PreviewValue ?? '';
       fs.PickerPreviewType = specsCss.PickerPreviewType ?? '';
-
-      console.log("2dg", specsCss)
     }
 
     if (isCustomSource) {
