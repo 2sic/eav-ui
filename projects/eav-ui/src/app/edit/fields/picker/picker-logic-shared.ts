@@ -1,7 +1,7 @@
 import { FieldValue } from 'projects/edit-types';
 import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
 import { RelationshipParentChild, UiPickerModeTree } from '../../../../../../edit-types/src/PickerModeTree';
-import { FieldSettingsWithPickerSource, PickerSourceCss, PickerSourceCustomCsv, PickerSourceCustomList, PickerSourceEntity, PickerSourceQuery, UiPickerSourcesAll } from '../../../../../../edit-types/src/PickerSources';
+import { FieldSettingsWithPickerSource, PickerSourceCustomCsv, PickerSourceCustomList, PickerSourceEntity, PickerSourceQuery, UiPickerSourcesAll } from '../../../../../../edit-types/src/PickerSources';
 import { Of } from '../../../core';
 import { FeatureNames } from '../../../features/feature-names';
 import { classLog } from '../../../shared/logging';
@@ -9,7 +9,7 @@ import { EavEntity } from '../../shared/models/eav';
 import { calculateDropdownOptions } from '../basic/string-picker/string-picker.helpers';
 import { FieldLogicUpdate } from '../logic/field-logic-base';
 import { FieldLogicTools } from '../logic/field-logic-tools';
-import { PickerConfigs, PickerSourcesCustom } from './constants/picker-config-model.constants';
+import { PickerConfigs, PickerSourcesCustom, UiPickerModeIsTree } from './constants/picker-config-model.constants';
 import { DataSourceParserCsv } from './data-sources/data-source-parser-csv';
 
 const logSpecs = {
@@ -105,8 +105,9 @@ export class PickerLogicShared {
     const sourceIsQuery = typeName === PickerConfigs.UiPickerSourceQuery;
     const sourceIsEntity = typeName === PickerConfigs.UiPickerSourceEntity;
     const sourceIsCss = typeName === PickerConfigs.UiPickerSourceCss;
+    const sourceIsAppAssets = typeName === PickerConfigs.UiPickerSourceAppAssets;
 
-    l.values({ sourceIsQuery, sourceIsEntity, sourceIsCss });
+    l.values({ sourceIsQuery, sourceIsEntity, sourceIsCss, sourceIsAppAssets });
 
     const isCustomSource = Object.values(PickerSourcesCustom).includes(typeName as Of<typeof PickerSourcesCustom>);
 
@@ -128,14 +129,20 @@ export class PickerLogicShared {
     }
 
     // Do this for all, as it's a common property - e.g. Css, AppAssets, etc.
-    const specsCss = typeConfig as PickerSourceCss;
-    fs.PreviewValue = specsCss.PreviewValue ?? '';
+    fs.PreviewValue = typeConfig.PreviewValue ?? '';
 
     /** Css File Data Source */
     if (sourceIsCss) {
-      fs.CssSourceFile = specsCss.CssSourceFile ?? '';
-      fs.CssSelectorFilter = specsCss.CssSelectorFilter ?? '';
-      fs.Value = specsCss.Value ?? '';
+      fs.CssSourceFile = typeConfig.CssSourceFile ?? '';
+      fs.CssSelectorFilter = typeConfig.CssSelectorFilter ?? '';
+      fs.Value = typeConfig.Value ?? '';
+    }
+
+    /** App Assets Source */
+    if (sourceIsAppAssets) {
+      fs.AppAssetsRootFolder = typeConfig.AppAssetsRootFolder ?? '/';
+      fs.AppAssetsFileFilter = typeConfig.AppAssetsFileFilter ?? '*.*';
+      fs.AppAssetsType = typeConfig.AppAssetsType ?? 'files';
     }
 
     if (isCustomSource) {
@@ -149,7 +156,6 @@ export class PickerLogicShared {
         fs._options ??= new DataSourceParserCsv().parse(csv);
         fs.requiredFeatures = [FeatureNames.PickerSourceCsv];
       }
-
     }
 
     // If AllowMultiValue is false then EnableReselect must be false
@@ -188,13 +194,13 @@ export class PickerLogicShared {
 
     const pickerDisplayConfigName = pickerDisplayConfigurations[0]?.Type.Name;
 
-    if (pickerDisplayConfigName !== PickerConfigs.UiPickerModeTree)
+    if (pickerDisplayConfigName !== UiPickerModeIsTree)
       return null;
 
     const specs = tools.reader.flatten(pickerDisplayConfigurations[0]) as UiPickerModeTree;
     const final: UiPickerModeTree = {
       Title: specs.Title ?? '',
-      ConfigModel: PickerConfigs.UiPickerModeTree,
+      ConfigModel: UiPickerModeIsTree,
       TreeRelationship: specs.TreeRelationship ?? RelationshipParentChild,
       TreeBranchesStream: specs.TreeBranchesStream ?? 'Default',
       TreeLeavesStream: specs.TreeLeavesStream ?? 'Default',

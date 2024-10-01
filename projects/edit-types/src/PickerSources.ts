@@ -19,18 +19,23 @@ interface PickerSourceCommonWithLabel {
   Label: string;
 }
 
+interface HasPreviewType {
+  /** Maybe the setting for the visualizer - eg. "none", "text", "icon-font", "icon-svg", "image" */
+  PreviewType: string;
+}
+
+interface HasPreviewTypeAndValue extends HasPreviewType {
+  /** PreviewValue or field-mask for PreviewValue */
+  PreviewValue: string;
+}
 
 /**
  * Picker Source Custom CSS
  */
-export interface PickerSourceCss extends String, PickerSourceCommon {
+export interface PickerSourceCss extends String, PickerSourceCommon, HasPreviewTypeAndValue {
   CssSourceFile: string;
   CssSelectorFilter: string;
   Value: string;
-  PreviewValue: string;
-
-  /** Maybe the setting for the visualizer - eg. "none", "text", "icon-font", "icon-svg", "image" */
-  PreviewType: string;
 }
 
   
@@ -61,13 +66,29 @@ export interface PickerSourceCustomCsv extends PickerSourceCommonWithLabel {
   Csv: string;
 }
 
+/**
+ * This will use the query 'System.AppAssets' with the following parameters:
+ * - ?rootFolder=...&fileFilter=...&assetType=...
+ */
+export interface PickerSourceAppAssets extends PickerSourceCommon, HasPreviewType {
+  /** e.g. '/', '/icons/' */
+  AppAssetsRootFolder: string,
+
+  AppAssetsType: 'files' | 'folders' | 'all',
+
+  /** e.g. '*.svg' */
+  AppAssetsFileFilter: string,
+}
+
 
 export interface UiPickerSourcesAll extends
   PickerSourceCustomList,
   PickerSourceCustomCsv,
   PickerSourceEntity,
   PickerSourceQuery,
-  PickerSourceCss { }
+  PickerSourceCss,
+  PickerSourceAppAssets
+  { }
 
 /**
  * We want to have a clear type for field Settings which have more properties,
