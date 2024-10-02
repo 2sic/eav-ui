@@ -67,7 +67,7 @@ import { fixDropzone } from './dropzone-helper';
 })
 export class AdamBrowserComponent implements OnInit {
 
-  log = classLog({AdamBrowserComponent});
+  log = classLog({ AdamBrowserComponent });
 
   @Output() openUpload = new EventEmitter<null>();
 

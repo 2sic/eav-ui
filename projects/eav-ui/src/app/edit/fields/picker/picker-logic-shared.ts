@@ -100,7 +100,7 @@ export class PickerLogicShared {
     fs.ItemInformation = typeConfig.ItemInformation ?? '';
     fs.ItemTooltip = typeConfig.ItemTooltip ?? '';
     fs.ItemLink = typeConfig.ItemLink ?? '';
-    fs.PreviewType = typeConfig.PreviewType ?? '';
+    fs.PickerPreviewType = typeConfig.PickerPreviewType ?? '';
 
     const sourceIsQuery = typeName === PickerConfigs.UiPickerSourceQuery;
     const sourceIsEntity = typeName === PickerConfigs.UiPickerSourceEntity;
@@ -155,6 +155,7 @@ export class PickerLogicShared {
         const csv = (typeConfig as unknown as PickerSourceCustomCsv).Csv;
         fs._options ??= new DataSourceParserCsv().parse(csv);
         fs.requiredFeatures = [FeatureNames.PickerSourceCsv];
+        fs.PreviewValue = typeConfig.PreviewValue ?? '';
       }
     }
 

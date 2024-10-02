@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { EavWindow } from '../../../shared/models/eav-window.model';
-import { UrlHelpers } from '../helpers';
 import { classLog } from '../../../shared/logging';
+import { EavWindow } from '../../../shared/models/eav-window.model';
 import { FormConfigService } from '../../form/form-config.service';
 import { FormConfiguration } from '../../form/form-configuration.model';
+import { UrlHelpers } from '../helpers';
 
 const logSpecs = {
   all: false,
@@ -33,7 +33,7 @@ interface LoadFile {
  */
 @Injectable()
 export class ScriptsLoaderService {
-  
+
   log = classLog({ScriptsLoaderService}, logSpecs);
 
   #loadedFiles: LoadFile[] = [];

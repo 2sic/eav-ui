@@ -1,5 +1,5 @@
 import { CommonModule, JsonPipe, NgClass, NgStyle } from '@angular/common';
-import { ChangeDetectorRef, Component, computed, ElementRef, inject, NgZone, signal, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, computed, ElementRef, inject, NgZone, OnDestroy, signal, ViewChild, ViewContainerRef } from '@angular/core';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { FlexModule } from '@angular/flex-layout/flex';
 import { MatButtonModule } from '@angular/material/button';
@@ -9,13 +9,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
 import { transient } from '../../../../core/transient';
-import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { vh } from '../../../../shared/helpers/viewport.helpers';
 import { classLog } from '../../../../shared/logging';
 import { ExtendedFabSpeedDialImports } from '../../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
 import { FormsStateService } from '../../../form/forms-state.service';
-import { EditRoutingService } from '../../../routing/edit-routing.service';
 import { ConnectorHelper } from '../../connector/connector.helper';
 import { FieldState } from '../../field-state';
 import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
@@ -44,13 +42,12 @@ import { PreviewHeight } from './expandable-wrapper.models';
     FieldHelperTextComponent,
     TranslateModule,
     JsonPipe,
-    TippyDirective,
     ...ExtendedFabSpeedDialImports,
     DialogPopupComponent,
     CommonModule,
   ],
 })
-export class ExpandableWrapperComponent {
+export class ExpandableWrapperComponent implements AfterViewInit, OnDestroy {
   
   log = classLog({ExpandableWrapperComponent});
 
@@ -62,8 +59,6 @@ export class ExpandableWrapperComponent {
   protected fieldState = inject(FieldState);
   public config = this.fieldState.config;
   protected basics = this.fieldState.basics;
-  
-  open = this.editRoutingService.isExpandedSignal(this.config.index, this.config.entityGuid);
 
   protected settings = this.fieldState.settings;
   protected ui = this.fieldState.ui;
@@ -103,7 +98,6 @@ export class ExpandableWrapperComponent {
   private dropzoneDraggingHelper: DropzoneDraggingHelper;
 
   constructor(
-    private editRoutingService: EditRoutingService,
     private changeDetectorRef: ChangeDetectorRef,
     private viewContainerRef: ViewContainerRef,
     private zone: NgZone,

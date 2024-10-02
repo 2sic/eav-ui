@@ -1,5 +1,5 @@
 import { CommonModule, NgClass, NgStyle } from '@angular/common';
-import { Component, computed, inject, NgZone, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, computed, inject, NgZone, OnDestroy, ViewChild, ViewContainerRef } from '@angular/core';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { FlexModule } from '@angular/flex-layout/flex';
 import { MatButtonModule } from '@angular/material/button';
@@ -12,7 +12,6 @@ import { AdamItem } from '../../../../../../../edit-types';
 import { FeatureIconTextComponent } from '../../../../features/feature-icon-text/feature-icon-text.component';
 import { FeatureNames } from '../../../../features/feature-names';
 import { FeaturesScopedService } from '../../../../features/features-scoped.service';
-import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { ExtendedFabSpeedDialImports } from '../../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
 import { SignalEquals } from '../../../../shared/signals/signal-equals';
 import { FormsStateService } from '../../../form/forms-state.service';
@@ -44,13 +43,12 @@ import { WrappersCatalog } from '../wrappers.constants';
     FeatureIconTextComponent,
     TranslateModule,
     ...ExtendedFabSpeedDialImports,
-    TippyDirective,
     DialogPopupComponent,
     CommonModule,
   ],
 })
 // tslint:disable-next-line:max-line-length
-export class HyperlinkLibraryExpandableWrapperComponent {
+export class HyperlinkLibraryExpandableWrapperComponent implements AfterViewInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 
   protected fieldState = inject(FieldState);
@@ -59,8 +57,6 @@ export class HyperlinkLibraryExpandableWrapperComponent {
 
   protected ui = this.fieldState.ui;
   protected uiValue = this.fieldState.uiValue;
-  
-  open = this.editRoutingService.isExpandedSignal(this.config.index, this.config.entityGuid);
 
   protected items = computed(() => this.config.adam.items().slice(0, 9));
   protected itemsNumber = computed(() => this.config.adam.items().length, SignalEquals.number);
