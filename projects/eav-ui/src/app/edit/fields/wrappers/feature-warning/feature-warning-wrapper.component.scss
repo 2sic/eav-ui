@@ -7,9 +7,10 @@
 // inspired by https://stackoverflow.com/questions/14387690/how-can-i-show-only-corner-borders
 // not quite sure how it works ;)
 .mark {
-  border-right: 1px solid #f0ad4e;
+  // Color based on the color of the windows 🛡️ icon
+  border-right: 2px solid #00A6ED; // #f0ad4e;
 
-  --s: 5px; /* the size on the corner */
+  --s: 2px; /* the size on the corner */
   mask:
     conic-gradient(at var(--s) var(--s),#0000 75%,#000 0)
     0 0/calc(100% - var(--s)) calc(100% - var(--s)),
