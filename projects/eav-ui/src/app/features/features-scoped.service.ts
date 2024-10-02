@@ -16,7 +16,6 @@ const logSpecs = {
   constructor: false,
   load: false,
   getAll: false,
-  getSignal: false,
   unlicensedFeatures: true,
 };
 
@@ -44,15 +43,31 @@ export class FeaturesScopedService {
     this.#dialogConfigSvc.getCurrent$().subscribe(ds => this.load(ds.Context));
   }
 
-  // new 2dm WIP
+  load(dialogContext: DialogContext, formData?: EavEditLoadDto) {
+    this.log.fnIf('load', { formData, dialogContext });
+    this.#dialogContext.set(dialogContext);
+    this.#reqFeaturesForm.set(formData?.RequiredFeatures ?? {} as Record<Of<typeof FeatureNames>, string[]>);
+  }
+
   // Provide context information and ensure that previously added data is always available
-  private dialogContext = signal<DialogContext>(null);
-  private dialogContext$ = toObservable(this.dialogContext);
+  #dialogContext = signal<DialogContext>(null);
 
-  public requiredFeatures = signalObj<Record<string, string[]>>('requiredFeatures', {});
+  /** Required features specified by the entire form */
+  #reqFeaturesForm = signalObj('reqFeaturesForm', {} as Record<Of<typeof FeatureNames>, string[]>);
 
-  public unlicensedFeatures = computedObj('unlicensedFeatures', () => {
-    const req = this.requiredFeatures();
+  /** Required features specified by specific fields */
+  #reqFeaturesFields = signalObj('reqFeaturesFields', {} as Record<Of<typeof FeatureNames>, string[]>);
+
+  /** All required features merged */
+  #reqFeatures = computedObj<Record<Of<typeof FeatureNames>, string[]>>('requiredFeatures', () => {
+    const req = this.#reqFeaturesForm();
+    const fields = this.#reqFeaturesFields();
+    return {...req, ...fields};
+  });
+
+
+  public unlicensedFeatures = computedObj<string[]>('unlicensedFeatures', () => {
+    const req = this.#reqFeatures();
     const allowed = this.getAll()().filter(f => f.allowUse);
     const missing = Object.keys(req).filter(nameId => !allowed.some(f => f.nameId === nameId));
     this.log.aIf('unlicensedFeatures', { req, allowed, missing });
@@ -61,44 +76,20 @@ export class FeaturesScopedService {
 
   public hasUnlicensedFeatures = computedObj('hasUnlicensedFeatures', () => this.unlicensedFeatures().length > 0);
 
-  load(dialogContext: DialogContext, formData?: EavEditLoadDto) {
-    this.log.fnIf('load', { formData, dialogContext });
-    this.dialogContext.set(dialogContext);
-    if (formData)
-      this.requiredFeatures.set(formData.RequiredFeatures ?? {});
-  }
-
   getAll(): Signal<FeatureSummary[]> {
     this.log.fnIf('getAll');
-    return computedObj('all-features', () => this.dialogContext()?.Features ?? []);
-  }
-
-  // TODO: @2dm - only used once, should be able to remove in ca. 20 mins
-  get$(featureNameId: string): Observable<FeatureSummary> {
-    return this.dialogContext$.pipe(
-      map(dc => dc?.Features.find(f => f.nameId === featureNameId))
-    );
+    return computedObj('all-features', () => this.#dialogContext()?.Features ?? []);
   }
 
   getCurrent(featureNameId: string): FeatureSummary {
-    return this.dialogContext()?.Features.find(f => f.nameId === featureNameId);
-  }
-
-  // FYI: Not in use yet, if ever needed, should be changed to use a ComputedCacheHelper
-  getSignal(featureNameId: string): Signal<FeatureSummary> {
-    this.log.fnIf('getSignal', { featureNameId });
-    return computedObj('feature-' + featureNameId, () => this.getCurrent(featureNameId));
-  }
-
-  isEnabled$(nameId: string): Observable<boolean> {
-    return this.get$(nameId).pipe(map(f => f?.isEnabled ?? false));
+    return this.#dialogContext()?.Features.find(f => f.nameId === featureNameId);
   }
 
   /**
    * Property providing enabled, which behaves like a Record<string, Signal<boolean>>.
    */
   public isEnabled = new ComputedCacheHelper<Of<typeof FeatureNames>, boolean>('isEnabledCache').buildProxy(nameId => () => {
-    return this.dialogContext()?.Features.find(f => f.nameId === nameId)?.isEnabled ?? false;
+    return this.#dialogContext()?.Features.find(f => f.nameId === nameId)?.isEnabled ?? false;
   });
 
   /**
@@ -108,6 +99,25 @@ export class FeaturesScopedService {
    * - but in edge cases it is allowed, eg. when editing data on a system content-type
    */
   public allowUse = new ComputedCacheHelper<Of<typeof FeatureNames>, boolean>('isEnabledCache').buildProxy(nameId => () => {
-    return this.dialogContext()?.Features.find(f => f.nameId === nameId)?.allowUse ?? false;
+    return this.#dialogContext()?.Features.find(f => f.nameId === nameId)?.allowUse ?? false;
   });
+
+  //#region Observables - TODO: remove soon
+
+  #dialogContext$ = toObservable(this.#dialogContext);
+
+  // TODO: @2dm - only used once, should be able to remove in ca. 30 mins
+  // Basically it's used in WYSIWYG to detect if the paste-feature is enabled
+  #get$(featureNameId: string): Observable<FeatureSummary> {
+    return this.#dialogContext$.pipe(
+      map(dc => dc?.Features.find(f => f.nameId === featureNameId))
+    );
+  }
+
+  isEnabled$(nameId: string): Observable<boolean> {
+    return this.#get$(nameId).pipe(map(f => f?.isEnabled ?? false));
+  }
+
+  //#endregion
+
 }
