@@ -100,7 +100,7 @@ export class PickerLogicShared {
     fs.ItemInformation = typeConfig.ItemInformation ?? '';
     fs.ItemTooltip = typeConfig.ItemTooltip ?? '';
     fs.ItemLink = typeConfig.ItemLink ?? '';
-    fs.PickerPreviewType = typeConfig.PickerPreviewType ?? '';
+    fs.PreviewType = typeConfig.PreviewType ?? '';
 
     const sourceIsQuery = typeName === PickerConfigs.UiPickerSourceQuery;
     const sourceIsEntity = typeName === PickerConfigs.UiPickerSourceEntity;

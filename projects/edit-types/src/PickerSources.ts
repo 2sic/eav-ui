@@ -21,7 +21,7 @@ interface PickerSourceCommonWithLabel {
 
 interface HasPreviewType {
   /** Maybe the setting for the visualizer - eg. "none", "text", "icon-font", "icon-svg", "image" */
-  PickerPreviewType: string;
+  PreviewType: string;
 }
 
 interface HasPreviewTypeAndValue extends HasPreviewType {
