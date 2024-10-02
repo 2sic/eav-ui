@@ -24,10 +24,10 @@ import { Subscription } from 'rxjs';
 // tslint:disable-next-line: no-duplicate-imports
 import type { Editor, EditorEvent } from 'tinymce/tinymce';
 import { classLog } from '../../../../projects/eav-ui/src/app/shared/logging';
-import { DropzoneWysiwyg } from '../../../eav-ui/src/app/edit/fields/wrappers/dropzone/dropzone-wysiwyg';
 import { EavWindow } from '../../../eav-ui/src/app/shared/models/eav-window.model';
 import { Connector, EavCustomInputField, WysiwygReconfigure } from '../../../edit-types';
 import { tinyMceBaseUrl, wysiwygEditorHtmlTag } from '../../internal-constants';
+import { WysiwygConstants } from '../../shared/wysiwyg.constants';
 import { RawEditorOptionsExtended } from '../config/raw-editor-options-extended';
 import { TinyMceConfigurator } from '../config/tinymce-configurator';
 import { TranslationsLoader } from '../config/translation-loader';
@@ -78,7 +78,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   #toolbarContainerClass = `tinymce-toolbar-container-${this.#instanceId}`;
 
   /** Class to add to the DOM so the surrounding Dropzone does everything right */
-  #adamIntegrationClass = DropzoneWysiwyg.classToDetectWysiwyg;
+  #adamIntegrationClass = WysiwygConstants.classToDetectWysiwyg;
 
   #editorContent: string; // saves editor content to prevent slow update when first using editor
   #subscriptions = new Subscription();
