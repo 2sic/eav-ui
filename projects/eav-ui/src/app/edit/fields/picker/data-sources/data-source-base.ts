@@ -1,5 +1,6 @@
 import { inject, Injectable, Signal } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { FieldSettings } from '../../../../../../../edit-types/';
 import { FieldValue } from '../../../../../../../edit-types/src/FieldValue';
 import { FieldSettingsWithPickerSource } from '../../../../../../../edit-types/src/PickerSources';
 import { FeaturesScopedService } from '../../../../features/features-scoped.service';
@@ -101,8 +102,8 @@ export abstract class DataSourceBase extends ServiceBase {
     l.end();
   }
 
-  protected createMaskHelper(enableLog?: boolean): DataSourceMasksHelper {
-    return new DataSourceMasksHelper(this.fieldName, this.settings(), this.features, this.formConfig, this.log, enableLog);
+  protected createMaskHelper(moreSettings?: Partial<FieldSettings>, enableLog?: boolean): DataSourceMasksHelper {
+    return new DataSourceMasksHelper(this.fieldName, {...this.settings(), ...moreSettings }, this.features, this.formConfig, this.log, enableLog);
   }
 
   protected fieldsToRetrieve(settings: FieldSettingsWithPickerSource): string {

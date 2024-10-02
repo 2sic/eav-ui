@@ -50,6 +50,7 @@ export class DataSourceMasksHelper {
   entity2PickerItem({ entity, streamName, mustUseGuid }
     : { entity: EntityLight; streamName: string | undefined; mustUseGuid: boolean; }
   ): PickerItem {
+
     const l = this.log.fnIf('entity2PickerItem', { entity, streamName, mustUseGuid });
     // Check if we have masks, if yes
     const masks = this.#getMasks();
@@ -64,7 +65,15 @@ export class DataSourceMasksHelper {
       const maybe = entity[masks.value];
       // the value could be an empty string (pickers); not sure if it can be null though
       return maybe !== undefined ? `${maybe}` : entity.Guid;
+
     })();
+
+    // @2dg remove
+    // if (entity.value === undefined) {
+    //   console.log("2dg undefined ", masks.value)
+    // }
+
+    // console.log("2dg entity ", entity)
 
     // Figure out Title Value if we don't use masks - fallback is to use the title, or the value with asterisk
     const label = (() => {
@@ -121,10 +130,11 @@ export class DataSourceMasksHelper {
     let info = useInfos ? masks.info : '';
     let link = useInfos ? masks.link : '';
     let previewValue = masks.previewValue;
+    // let value = masks.value; // @2dg remove
 
     Object.keys(data).forEach(key => {
       // must check for null and use '' instead
-      const value = data[key] ?? '';
+      const valueItem = data[key] ?? '';
 
       // replace all occurrences of [Item:Key] with value - should be case insensitive
       const search = new RegExp(`\\[Item:${key}\\]`, 'gi');
@@ -137,12 +147,12 @@ export class DataSourceMasksHelper {
         previewValue = previewValue.replace("[App:Path]", appUrl);
       }
 
-
-      tooltip = tooltip.replace(search, value);
-      info = info.replace(search, value);
-      link = link.replace(search, value);
-      label = label.replace(search, value);
-      previewValue = previewValue.replace(search, value);
+      tooltip = tooltip.replace(search, valueItem);
+      info = info.replace(search, valueItem);
+      link = link.replace(search, valueItem);
+      label = label.replace(search, valueItem);
+      previewValue = previewValue.replace(search, valueItem);
+      // value = valueItem.replace(search, valueItem); // @2dg remove
     });
 
     return l.r({ label, tooltip, info, link, previewValue } satisfies Partial<PickerItem>, 'result');

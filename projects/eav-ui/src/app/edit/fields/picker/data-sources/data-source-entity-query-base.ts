@@ -27,7 +27,7 @@ export const logSpecsDataSourceEntityQueryBase: typeof logSpecsDataSourceBase & 
  */
 @Injectable()
 export abstract class DataSourceEntityQueryBase extends DataSourceBase {
-  
+
   //#region Inject and blank constructor
 
   abstract log: ClassLogger<typeof logSpecsDataSourceEntityQueryBase>;

@@ -3,6 +3,7 @@ import { Of, transient } from '../../../core';
 import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
 import { classLog } from '../../../shared/logging';
 import { FieldState } from '../field-state';
+import { DataAdapterAppAssets } from './adapters/data-adapter-app-assets';
 import { DataAdapterBase } from './adapters/data-adapter-base';
 import { DataAdapterCss } from './adapters/data-adapter-css';
 import { DataAdapterEmpty } from './adapters/data-adapter-empty';
@@ -100,6 +101,8 @@ const mapNameToDataAdapter: Record<string, ProviderToken<DataAdapterBase>> = {
   [PickerConfigs.UiPickerSourceCss]: DataAdapterCss,
   [PickerConfigs.UiPickerSourceQuery]: DataAdapterQuery,
   [PickerConfigs.UiPickerSourceEntity]: DataAdapterEntity,
+  [PickerConfigs.UiPickerSourceAppAssets]: DataAdapterAppAssets,
+
 };
 
 /**
@@ -109,7 +112,7 @@ const mapNameToDataAdapter: Record<string, ProviderToken<DataAdapterBase>> = {
  */
 const partsMap: Record<string, PartMap> = {
   [InputTypeCatalog.StringPicker]: {
-    sources: [DataAdapterString, DataAdapterQuery, DataAdapterEntity, DataAdapterCss],
+    sources: [DataAdapterString, DataAdapterQuery, DataAdapterEntity, DataAdapterCss, DataAdapterAppAssets],
     states: [StateAdapterString],
   },
   [InputTypeCatalog.StringDropdown]: {
