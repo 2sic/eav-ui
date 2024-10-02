@@ -1,7 +1,7 @@
 <!-- Type Text for String are Default -->
 
 <!-- Type Font Icon -->
-@switch (settings().PreviewType) {
+@switch (settings().PickerPreviewType) {
   @case ("icon-css") {
     <i class="icon-preview {{ replaceDot(item()?.previewValue) }}"></i>
   }
@@ -20,11 +20,11 @@
   }
   <!-- Type Image -->
   @case ("image") {
-    <!-- TODO:: Resize Image -->
-    <img [ngxTippy]="tippyTemplate" class="image-preview" [src]="item().previewValue" [alt]="item().value" />
+    <!-- Small Image Preview -->
+    <img [ngxTippy]="tippyTemplate" class="image-preview" [src]="imageResize(item().previewValue, 24, 24)" [alt]="item().value" />
     <!-- Tippy to Show Big Image -->
     <div #tippyTemplate class="tippy-custom">
-      <img class="image-tippy" [src]="item().previewValue" [alt]="item().value" />
+      <img class="image-tippy" [src]="imageResize(item().previewValue, 140, 140)" [alt]="item().value" />
     </div>
   }
 }

@@ -79,7 +79,6 @@ export class DataSourceMasksHelper {
         entity: entity,
         value,
         previewValue: value,
-        // previewType: 'text',
         label,
         tooltip: masks.tooltip,
         info: masks.info,
@@ -122,7 +121,6 @@ export class DataSourceMasksHelper {
     let info = useInfos ? masks.info : '';
     let link = useInfos ? masks.link : '';
     let previewValue = masks.previewValue;
-    // let previewType = useInfos ? masks.previewType : ''; // TODO: @2dg, not sure if this is correct
 
     Object.keys(data).forEach(key => {
       // must check for null and use '' instead
@@ -130,7 +128,6 @@ export class DataSourceMasksHelper {
 
       // replace all occurrences of [Item:Key] with value - should be case insensitive
       const search = new RegExp(`\\[Item:${key}\\]`, 'gi');
-
 
       // TODO:: @2dm, check if this are the correct or use
       if (previewValue.includes("App:Path")) {
@@ -146,10 +143,7 @@ export class DataSourceMasksHelper {
       link = link.replace(search, value);
       label = label.replace(search, value);
       previewValue = previewValue.replace(search, value);
-      // previewType = data.PreviewType ?? 'text'; // TODO: @2dg, not sure if this is correct
     });
-
-    console.log("2dg", previewValue)
 
     return l.r({ label, tooltip, info, link, previewValue } satisfies Partial<PickerItem>, 'result');
   }
@@ -200,7 +194,6 @@ export class DataSourceMasksHelper {
       Label: settings.Label,
       Value: settings.Value,
       PreviewValue: settings.PreviewValue,
-      PreviewType: settings.PreviewValue,
     };
   }
 }
@@ -212,5 +205,4 @@ interface DataSourceMaskSettings {
   Label: string;
   Value: string;
   PreviewValue: string;
-  PreviewType: string;
 }
