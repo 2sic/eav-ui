@@ -289,6 +289,6 @@
     "Tooltip": "Feature: {{name}} ({{nameId}})",
     "Close": "Close"
   },
-  "License-EditUi-Warning-Label": "License ⚠️",
+  "License-EditUi-Warning-Label": "Preview",
   "License-EditUi-Warning-Tooltip": "You're using features which are not licensed."
 }

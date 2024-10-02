@@ -20,7 +20,6 @@ import { PickerPreviewLabelComponent } from '../picker-item-label/picker-item-la
     MatRadioButton,
     NgClass,
     TippyDirective,
-    // FieldHelperTextComponent,
     PickerInlineHeaderComponent,
     PickerPreviewLabelComponent,
   ],
@@ -32,6 +31,7 @@ export class PickerRadioComponent extends PickerInlineBaseComponent {
     this.fieldState.requireFeature(FeatureNames.PickerUiRadio);
   }
 
+  /** Name is used to group the radio buttons together in the form */
   name = this.fieldState.name;
 
 }

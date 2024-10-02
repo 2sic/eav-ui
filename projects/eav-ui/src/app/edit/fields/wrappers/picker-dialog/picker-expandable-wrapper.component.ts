@@ -1,6 +1,6 @@
 import { CdkScrollable } from '@angular/cdk/scrolling';
 import { CommonModule, NgClass } from '@angular/common';
-import { Component, inject, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, inject, ViewChild, ViewContainerRef } from '@angular/core';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { FlexModule } from '@angular/flex-layout/flex';
 import { MatButtonModule } from '@angular/material/button';
@@ -41,14 +41,13 @@ import { WrappersCatalog } from '../wrappers.constants';
     CommonModule,
   ],
 })
-export class PickerExpandableWrapperComponent implements OnInit {
+export class PickerExpandableWrapperComponent {
 
   log = classLog({PickerExpandableWrapperComponent});
 
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild('previewComponent', { static: true, read: ViewContainerRef }) previewComponent: ViewContainerRef;
 
-  open = signal(false);
   protected fieldState = inject(FieldState);
   public config = this.fieldState.config;
   protected basics = this.fieldState.basics;
@@ -58,12 +57,4 @@ export class PickerExpandableWrapperComponent implements OnInit {
     public formsStateService: FormsStateService,
     private fieldsSettingsService: FieldsSettingsService,
   ) { }
-
-  ngOnInit() {
-    this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid)
-      .subscribe(isOpen => {
-        this.open.set(isOpen);
-        this.fieldsSettingsService.updateSetting(this.config.fieldName, { isDialog: isOpen }, "PickerExpandableWrapper");
-      });
-  }
 }

@@ -1,9 +1,10 @@
-import { Signal } from '@angular/core';
+import { effect, Injector, Signal } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { FieldSettings, FieldValue } from '../../../../../edit-types';
 import { BasicControlSettings } from '../../../../../edit-types/src/BasicControlSettings';
 import { Of } from '../../core';
 import { FeatureNames } from '../../features/feature-names';
+import { FeaturesScopedService } from '../../features/features-scoped.service';
 import { computedObj, signalObj } from '../../shared/signals/signal.utilities';
 import { TranslationState } from '../localization/translate-state.model';
 import { UiControl } from '../shared/controls/ui-control';
@@ -43,10 +44,29 @@ export class FieldState<TValue extends FieldValue = FieldValue, TSettings extend
     public translationState: Signal<TranslationState>,
 
     pickerData: PickerData,
+
+    featuresSvc: FeaturesScopedService,
+
+    injectorForEffects: Injector,
   ) {
     this.#pickerData = pickerData;
+
+    // Required Features Transfer
+    effect(() => {
+      const reqFeaturesFromSettings = this.requiredFeatures();
+      if (reqFeaturesFromSettings.length == 0)
+        return;
+      for (const feature of reqFeaturesFromSettings)
+        featuresSvc.requireFeature(feature, `Used in field ${this.name}`);
+    }, { allowSignalWrites: true, injector: injectorForEffects });
+
   }
 
+  /**
+   * Picker Data - will throw an error if accessed on a field which doesn't have PickerData
+   * @readonly
+   * @type {PickerData}
+   */
   get pickerData(): PickerData {
     if (this.#pickerData)
       return this.#pickerData;

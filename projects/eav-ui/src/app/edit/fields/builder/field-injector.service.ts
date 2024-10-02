@@ -1,21 +1,22 @@
-import { BasicControlSettings } from './../../../../../../edit-types/src/BasicControlSettings';
 import { EnvironmentInjector, Injectable, Injector, Signal, createEnvironmentInjector, inject, runInInjectionContext } from '@angular/core';
-import { FieldsSettingsService } from '../../state/fields-settings.service';
-import { FieldState } from '../../fields/field-state';
-import { EntityFormStateService } from '../../entity-form/entity-form-state.service';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { AbstractControl } from '@angular/forms';
 import { combineLatest, tap } from 'rxjs';
+import { FieldSettings, FieldValue } from '../../../../../../edit-types';
+import { FeaturesScopedService } from '../../../features/features-scoped.service';
 import { InputTypeHelpers } from '../../../shared/fields/input-type-helpers';
+import { classLog } from '../../../shared/logging';
 import { mapUntilObjChanged } from '../../../shared/rxJs/mapUntilChanged';
-import { FieldConfigSet } from '../field-config-set.model';
+import { computedObj, signalObj } from '../../../shared/signals/signal.utilities';
+import { DebugFields } from '../../edit-debug';
+import { EntityFormStateService } from '../../entity-form/entity-form-state.service';
+import { FieldState } from '../../fields/field-state';
 import { UiControl } from '../../shared/controls/ui-control';
 import { InputTypeSpecs } from '../../shared/input-types/input-type-specs.model';
-import { FieldSettings, FieldValue } from '../../../../../../edit-types';
-import { computedObj, signalObj } from '../../../shared/signals/signal.utilities';
-import { classLog } from '../../../shared/logging';
+import { FieldsSettingsService } from '../../state/fields-settings.service';
+import { FieldConfigSet } from '../field-config-set.model';
+import { BasicControlSettings } from './../../../../../../edit-types/src/BasicControlSettings';
 import { InjectorBundle } from './injector-bundle.model';
-import { AbstractControl } from '@angular/forms';
-import { DebugFields } from '../../edit-debug';
 
 const logSpecs = {
   getInjectors: true,
@@ -37,6 +38,7 @@ export class FieldStateInjectorFactory {
   #envInjector = inject(EnvironmentInjector);
   #fieldsSettingsSvc = inject(FieldsSettingsService);
   #entityForm = inject(EntityFormStateService);
+  #featuresSvc = inject(FeaturesScopedService);
 
   constructor() { }
 
@@ -90,6 +92,8 @@ export class FieldStateInjectorFactory {
       uiValue,
       this.#fieldsSettingsSvc.translationState[name],
       this.#fieldsSettingsSvc.pickerData[name] ?? null,
+      this.#featuresSvc,
+      this.#injector,
     );
 
     return l.r(this.#createInjectors(fieldState));
