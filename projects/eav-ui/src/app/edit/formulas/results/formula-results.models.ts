@@ -1,6 +1,6 @@
+import { Of } from '../../../../../../core';
 import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
 import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
-import { Of } from '../../../core';
 import { PickerItem } from '../../fields/picker/models/picker-item.model';
 import { FieldPropsPicker } from '../../state/fields-configs.model';
 import { FormulaFieldValidation, FormulaTargets } from '../targets/formula-targets';

@@ -1,6 +1,6 @@
+import { Of } from '../../../../../../core';
 import { AdamItem } from '../../../../../../edit-types';
 import { DialogContext } from '../../../app-administration/models';
-import { Of } from '../../../core';
 import { FeatureNames } from '../../../features/feature-names';
 import { InputTypeMetadata } from '../../../shared/fields/input-type-metadata.model';
 import { EavContentType, EavEntity } from '../../shared/models/eav';

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Of } from '../../core';
+import { Of } from '../../../../../core';
 import { MetadataDto } from '../../metadata';
 import { MetadataKeyTypes } from '../../shared/constants/eav.constants';
 import { HttpServiceBase } from '../../shared/services/http-service-base';

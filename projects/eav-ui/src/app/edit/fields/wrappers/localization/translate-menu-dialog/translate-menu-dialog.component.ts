@@ -7,7 +7,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { TranslateModule } from '@ngx-translate/core';
-import { Of } from '../../../../../core';
+import { Of } from '../../../../../../../../core';
 import { TranslateHelperComponent } from '../../../../../shared/components/translate-helper.component';
 import { isCtrlS } from '../../../../dialog/main/keyboard-shortcuts';
 import { TranslationStateCore } from '../../../../localization/translate-state.model';

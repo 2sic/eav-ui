@@ -11,7 +11,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
-import { transient } from '../../../core';
+import { transient } from '../../../../../../core';
 import { FieldHintComponent } from '../../../shared/components/field-hint/field-hint.component';
 import { dropdownInsertValue } from '../../../shared/constants/dropdown-insert-value.constant';
 import { eavConstants, ScopeOption } from '../../../shared/constants/eav.constants';

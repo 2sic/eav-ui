@@ -3,7 +3,7 @@ import { Component, HostBinding, OnInit, inject, signal } from "@angular/core";
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogActions, MatDialogRef } from "@angular/material/dialog";
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { transient } from '../../core';
+import { transient } from '../../../../../core';
 import { FeatureNames } from '../../features/feature-names';
 import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
 import { FeaturesScopedService } from '../../features/features-scoped.service';

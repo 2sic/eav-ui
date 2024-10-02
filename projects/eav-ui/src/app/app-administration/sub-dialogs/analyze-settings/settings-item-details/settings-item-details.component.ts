@@ -5,7 +5,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
-import { Of, transient } from '../../../../core';
+import { Of, transient } from '../../../../../../../core';
 import { ColumnDefinitions } from '../../../../shared/ag-grid/column-definitions';
 import { defaultGridOptions } from '../../../../shared/constants/default-grid-options.constants';
 import { SxcGridModule } from '../../../../shared/modules/sxc-grid-module/sxc-grid.module';

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import cloneDeep from 'lodash-es/cloneDeep';
 import { map, Observable } from 'rxjs';
-import { Of } from '../../core';
+import { Of } from '../../../../../core';
 import { webApiFieldsAll } from '../../shared/fields/content-types-fields.service';
 import { DataTypeCatalog } from '../../shared/fields/data-type-catalog';
 import { Field } from '../../shared/fields/field.model';

@@ -1,11 +1,11 @@
-import { DataAdapterBase } from "./data-adapter-base";
-import { DeleteEntityProps } from "../models/picker.models";
-import { DataSourceString } from "../data-sources/data-source-string";
 import { Injectable } from '@angular/core';
-import { PickerFeatures } from '../picker-features.model';
-import { transient } from '../../../../core/transient';
-import { signalObj } from '../../../../shared/signals/signal.utilities';
+import { transient } from '../../../../../../../core/transient';
 import { classLog } from '../../../../shared/logging/logging';
+import { signalObj } from '../../../../shared/signals/signal.utilities';
+import { DataSourceString } from "../data-sources/data-source-string";
+import { DeleteEntityProps } from "../models/picker.models";
+import { PickerFeatures } from '../picker-features.model';
+import { DataAdapterBase } from "./data-adapter-base";
 
 @Injectable()
 export class DataAdapterString extends DataAdapterBase {

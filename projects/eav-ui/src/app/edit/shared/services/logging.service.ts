@@ -2,7 +2,7 @@ import { Injectable, OnDestroy, Signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Of } from '../../../core';
+import { Of } from '../../../../../../core';
 
 /**
  * Logging service - ATM not really used, but would be great

@@ -12,7 +12,7 @@ import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm, EditPrep } from '../../shared/models/edit-form.model';
 import { QueryDefinitionService } from './query-definition.service';
 // tslint:disable-next-line:max-line-length
-import { transient } from '../../core';
+import { transient } from '../../../../../core';
 import { isCtrlS } from '../../edit/dialog/main/keyboard-shortcuts';
 import { JsonHelpers } from '../../shared/helpers/json.helpers';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';

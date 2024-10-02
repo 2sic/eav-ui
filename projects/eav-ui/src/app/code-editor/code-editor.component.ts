@@ -9,7 +9,7 @@ import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import type * as Monaco from 'monaco-editor';
 import { forkJoin, fromEvent, of, share, switchMap } from 'rxjs';
-import { Of, transient } from '../core';
+import { Of, transient } from '../../../../core';
 import { CreateFileDialogComponent, CreateFileDialogData, CreateFileDialogResult } from '../create-file-dialog';
 import { isCtrlS } from '../edit/dialog/main/keyboard-shortcuts';
 import { MonacoEditorComponent } from '../monaco-editor';

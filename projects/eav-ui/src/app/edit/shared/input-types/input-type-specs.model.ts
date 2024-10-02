@@ -1,4 +1,4 @@
-import { Of } from '../../../core';
+import { Of } from '../../../../../../core';
 import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
 import { InputTypeMetadata } from '../../../shared/fields/input-type-metadata.model';
 

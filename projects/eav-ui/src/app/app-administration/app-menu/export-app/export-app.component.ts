@@ -1,16 +1,16 @@
 import { Component, computed, inject, model, OnInit, signal } from '@angular/core';
-import { MatDialogActions } from '@angular/material/dialog';
-import { AppInfo } from '../../models/app-info.model';
-import { ExportAppService } from '../../services/export-app.service';
-import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { transient } from '../../../core';
+import { MatDialogActions } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { FeaturesScopedService } from '../../../features/features-scoped.service';
-import { FeatureNames } from '../../../features/feature-names';
+import { transient } from '../../../../../../core';
 import { FeatureIconIndicatorComponent } from '../../../features/feature-icon-indicator/feature-icon-indicator.component';
 import { FeatureIconComponent } from '../../../features/feature-icon/feature-icon.component';
+import { FeatureNames } from '../../../features/feature-names';
+import { FeaturesScopedService } from '../../../features/features-scoped.service';
+import { AppInfo } from '../../models/app-info.model';
+import { ExportAppService } from '../../services/export-app.service';
 
 @Component({
   selector: 'app-export-app',

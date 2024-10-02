@@ -10,7 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
-import { convert, transient } from '../core';
+import { convert, transient } from '../../../../core';
 import { ContentGroupAdd } from '../manage-content-list/models/content-group.model';
 import { ContentGroupService } from '../manage-content-list/services/content-group.service';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';

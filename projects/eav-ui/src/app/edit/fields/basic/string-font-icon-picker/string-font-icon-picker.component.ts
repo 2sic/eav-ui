@@ -5,7 +5,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatOptionModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { getWith } from '../../../../core/object-utilities';
+import { getWith } from '../../../../../../../core/object-utilities';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
 import { ScriptsLoaderService } from '../../../shared/services/scripts-loader.service';

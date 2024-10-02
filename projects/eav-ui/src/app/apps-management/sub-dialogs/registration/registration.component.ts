@@ -12,7 +12,7 @@ import patronsLogo from '!raw-loader!./assets/2sxc-patrons.svg';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
-import { transient } from '../../../core';
+import { transient } from '../../../../../../core';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';
 

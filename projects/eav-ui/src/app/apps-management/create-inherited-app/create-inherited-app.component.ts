@@ -7,7 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
-import { transient } from '../../core';
+import { transient } from '../../../../../core';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
 import { App } from '../models/app.model';
 import { AppsListService } from '../services/apps-list.service';

@@ -1,4 +1,4 @@
-import { Of } from '../../../../../core';
+import { Of } from '../../../../../../../../core';
 import { FormLanguage, Language } from '../../../../form/form-languages.model';
 import { FieldReader } from '../../../../localization/field-reader';
 import { TranslationLinks } from '../../../../localization/translation-link.constants';

@@ -1,5 +1,5 @@
 import { effect, Injectable } from '@angular/core';
-import { getWith } from 'projects/eav-ui/src/app/core';
+import { getWith } from 'projects/core';
 import { EntityLight } from 'projects/eav-ui/src/app/shared/models/entity-basic';
 import { classLog } from '../../../../shared/logging/logging';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';

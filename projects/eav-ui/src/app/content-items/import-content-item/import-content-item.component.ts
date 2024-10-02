@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { transient } from '../../core';
+import { transient } from '../../../../../core';
 import { FileUploadDialogComponent, FileUploadDialogData, UploadTypes } from '../../shared/components/file-upload-dialog';
 import { ContentItemsService } from '../services/content-items.service';
 

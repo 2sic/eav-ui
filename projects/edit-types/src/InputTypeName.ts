@@ -1,5 +1,5 @@
 
-import { Of } from '../../eav-ui/src/app/core';
+import { Of } from '../../core';
 import { InputTypeCatalog } from '../../eav-ui/src/app/shared/fields/input-type-catalog';
 
 export interface AttributeInputType {

@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { getWith } from '../../../core';
+import { getWith } from '../../../../../../core';
 import { classLog } from '../../../shared/logging';
 import { computedObj, signalObj } from '../../../shared/signals/signal.utilities';
 import { DebugFields } from '../../edit-debug';

@@ -1,6 +1,6 @@
 import { Component, inject, Inject, signal } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Of } from '../../core';
+import { Of } from '../../../../../core';
 import { I18nKeys } from '../../edit/fields/wrappers/localization/translate-menu-dialog/translate-menu-dialog.constants';
 import { findI18nKey } from '../../edit/fields/wrappers/localization/translate-menu-dialog/translate-menu-dialog.helpers';
 import { TranslateMenuDialogData } from '../../edit/fields/wrappers/localization/translate-menu-dialog/translate-menu-dialog.models';
