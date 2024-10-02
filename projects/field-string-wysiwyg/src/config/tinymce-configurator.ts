@@ -1,14 +1,19 @@
-import { BehaviorSubject, distinctUntilChanged, Subscription } from 'rxjs';
 import type { Editor } from 'tinymce';
+import { classLog } from '../../../../projects/eav-ui/src/app/shared/logging';
 import { EavWindow } from '../../../eav-ui/src/app/shared/models/eav-window.model';
 import { AddOnSettings, Connector, StringWysiwyg, WysiwygReconfigure } from '../../../edit-types';
-import * as DisplayModes from '../constants/display-modes'
+import * as DisplayModes from '../constants/display-modes';
 import * as contentStyle from '../editor/tinymce-content.scss';
 import { DefaultAddOnSettings, DefaultPaste } from './defaults';
 import { RawEditorOptionsExtended } from './raw-editor-options-extended';
 import { TranslationsLoader } from './translation-loader';
 import { WysiwygConfigurationManager } from './wysiwyg-configuration-manager';
-import { classLog } from '../../../../projects/eav-ui/src/app/shared/logging';
+
+const logSpecs = {
+  all: false,
+  constructor: true,
+  isWysiwygPasteFormatted$: false,
+};
 
 declare const window: EavWindow;
 const reconfigErr = `Very likely an error in your reconfigure code. Check https://go.2sxc.org/field-wysiwyg`;
@@ -16,18 +21,17 @@ const reconfigErr = `Very likely an error in your reconfigure code. Check https:
 /** This object will configure the TinyMCE */
 export class TinyMceConfigurator {
   
-  log = classLog({ TinyMceConfigurator });
+  log = classLog({ TinyMceConfigurator }, logSpecs);
   
   addOnSettings: AddOnSettings = { ...DefaultAddOnSettings };
 
-  private language: string;
-  private isWysiwygPasteFormatted$ = new BehaviorSubject<boolean>(false);
-  private subscription = new Subscription();
+  #language: string;
+  #isWysiwygPasteFormatted = this.connector._experimental.isFeatureEnabled['WysiwygPasteFormatted'];
 
   constructor(private connector: Connector<string>, private reconfigure: WysiwygReconfigure) {
-    this.log.a('TinyMceConfigurator', { connector, reconfigure });
+    this.log.fnIf('constructor', { connector, reconfigure, pastFormatted: this.#isWysiwygPasteFormatted() });
 
-    this.language = this.connector._experimental.translateService.currentLang;
+    this.#language = this.connector._experimental.translateService.currentLang;
 
     // call optional reconfiguration
     if (reconfigure) {
@@ -41,21 +45,12 @@ export class TinyMceConfigurator {
       }
 
       this.addOnSettings = reconfigure.configureAddOns?.(this.addOnSettings) || this.addOnSettings;
-      // if (reconfigure.optionsInit) reconfigure.optionsInit(this.options, this.instance);
     }
 
-    this.warnAboutCommonSettingsIssues();
-
-    const pasteFormatted$ = this.connector._experimental.isFeatureEnabled$('WysiwygPasteFormatted')
-      .pipe(distinctUntilChanged());
-
-    if (this.log.enabled)
-      this.subscription.add(pasteFormatted$.subscribe(v => this.log.a(`isWysiwygPasteFormatted$: ${v}`)));
-
-    this.subscription.add(pasteFormatted$.subscribe(this.isWysiwygPasteFormatted$));
+    this.#warnAboutCommonSettingsIssues();
   }
 
-  private warnAboutCommonSettingsIssues(): void {
+  #warnAboutCommonSettingsIssues(): void {
     const contentCss = this.connector.field.settings.ContentCss;
     if (contentCss && contentCss?.toLocaleLowerCase().includes('file:'))
       console.error(`Found a setting for wysiwyg ContentCss but it should be a real link, got this instead: '${contentCss}'`);
@@ -94,8 +89,8 @@ export class TinyMceConfigurator {
       content_css: contentCssFile,
       setup,
       configManager: configManager,
-      ...TranslationsLoader.getLanguageOptions(this.language),
-      ...(this.isWysiwygPasteFormatted$.value ? DefaultPaste.formattedText : {}),
+      ...TranslationsLoader.getLanguageOptions(this.#language),
+      ...(this.#isWysiwygPasteFormatted() ? DefaultPaste.formattedText : {}),
       ...DefaultPaste.images(exp.dropzone, exp.adam),
       promotion: false,
       block_unsupported_drop: false,
@@ -112,7 +107,7 @@ export class TinyMceConfigurator {
   }
 
   addTranslations(): void {
-    TranslationsLoader.addTranslations(this.language, this.connector._experimental.translateService);
-    this.reconfigure?.addTranslations?.(window.tinymce, this.language);
+    TranslationsLoader.addTranslations(this.#language, this.connector._experimental.translateService);
+    this.reconfigure?.addTranslations?.(window.tinymce, this.#language);
   }
 }

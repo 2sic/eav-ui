@@ -1,6 +1,4 @@
 import { Injectable, Signal, signal } from '@angular/core';
-import { toObservable } from '@angular/core/rxjs-interop';
-import { map, Observable } from 'rxjs';
 import { DialogConfigAppService } from '../app-administration/services/dialog-config-app.service';
 import { Of, transient } from '../core';
 import { EavEditLoadDto } from '../edit/dialog/main/edit-dialog-main.models';
@@ -112,23 +110,5 @@ export class FeaturesScopedService {
   public allowUse = new ComputedCacheHelper<Of<typeof FeatureNames>, boolean>('isEnabledCache').buildProxy(nameId => () => {
     return this.#dialogContext()?.Features.find(f => f.nameId === nameId)?.allowUse ?? false;
   });
-
-  //#region Observables - TODO: remove soon
-
-  #dialogContext$ = toObservable(this.#dialogContext);
-
-  // TODO: @2dm - only used once, should be able to remove in ca. 30 mins
-  // Basically it's used in WYSIWYG to detect if the paste-feature is enabled
-  #get$(featureNameId: string): Observable<FeatureSummary> {
-    return this.#dialogContext$.pipe(
-      map(dc => dc?.Features.find(f => f.nameId === featureNameId))
-    );
-  }
-
-  isEnabled$(nameId: string): Observable<boolean> {
-    return this.#get$(nameId).pipe(map(f => f?.isEnabled ?? false));
-  }
-
-  //#endregion
 
 }
