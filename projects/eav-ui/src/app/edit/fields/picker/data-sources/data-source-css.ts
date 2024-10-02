@@ -38,7 +38,6 @@ export class DataSourceCss extends DataSourceBase {
   constructor(private scriptsLoaderService: ScriptsLoaderService) {
     super();
     this.constructorEnd();
-
     this.log.fnIf('fileLoadSettings', this.fileLoadSettings());
 
     // TODO: @2dg maybe no effect necessary, as the settings should already be available
@@ -76,7 +75,6 @@ export class DataSourceCss extends DataSourceBase {
         Value: option.class,
         ValueRaw: option.valueRaw,
         Selector: option.selector,
-        PickerPreviewType: this.#settings().PickerPreviewType,
       };
 
       l.values({ entity });

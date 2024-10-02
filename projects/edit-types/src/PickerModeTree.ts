@@ -1,5 +1,5 @@
 
-export interface PickerSourceBase {
+interface PickerSourceBase {
   Title: string;
 
   ConfigModel: 'UiPickerModeTree';
