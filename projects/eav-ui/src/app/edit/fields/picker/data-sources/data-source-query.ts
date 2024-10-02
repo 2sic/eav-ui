@@ -105,7 +105,7 @@ export class DataSourceQuery extends DataSourceEntityQueryBase {
         return; // TODO: @SDV test if this acts like continue or break
       }
 
-      items = items.concat(data[stream].map(entity => this.createMaskHelper().entity2PickerItem({
+      items = items.concat(data[stream].map(entity => this.createMaskHelper().data2PickerItem({
         entity,
         streamName: stream,
         valueMustUseGuid: valueMustBeGuid

@@ -47,7 +47,7 @@ export class DataSourceMasksHelper {
   #masks: DataSourceMasks;
 
   /** Convert an Entity data to Picker-Item, processing any masks */
-  entity2PickerItem({ entity, streamName, valueMustUseGuid }
+  data2PickerItem({ entity, streamName, valueMustUseGuid }
     : { entity: EntityLight; streamName: string | undefined; valueMustUseGuid: boolean; }
   ): PickerItem {
 
