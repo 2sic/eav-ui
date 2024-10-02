@@ -10,7 +10,7 @@ import { DataSourceMasks } from './data-source-masks.model';
 
 const logSpecs = {
   all: false,
-  entity2PickerItem: false,
+  data2PickerItem: false,
   getMasks: false,
   patchMasks: false,
   parseMasks: false,
@@ -23,7 +23,7 @@ const logSpecs = {
  */
 export class DataSourceMasksHelper {
 
-  log = classLog({ DataSourceMasksHelper }, logSpecs);
+  log = classLog({DataSourceMasksHelper}, logSpecs);
 
   constructor(
     private name: string,
@@ -51,7 +51,7 @@ export class DataSourceMasksHelper {
     : { entity: EntityLight; streamName: string | undefined; valueMustUseGuid: boolean; }
   ): PickerItem {
 
-    const l = this.log.fnIf('entity2PickerItem', { entity, streamName, valueMustUseGuid });
+    const l = this.log.fnIf('data2PickerItem', { entity, streamName, valueMustUseGuid });
     // Check if we have masks, if yes
     const masks = this.#getMasks();
 
