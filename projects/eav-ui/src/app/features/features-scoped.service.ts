@@ -12,10 +12,11 @@ import { FeatureNames } from './feature-names';
 import { FeatureSummary } from './models/feature-summary.model';
 
 const logSpecs = {
-  all: true,
+  all: false,
   constructor: false,
   load: false,
   getAll: false,
+  requireFeature: true,
   unlicensedFeatures: true,
 };
 
@@ -34,7 +35,7 @@ const logSpecs = {
 @Injectable()
 export class FeaturesScopedService {
 
-  log = classLog({FeaturesScopedService}, logSpecs);
+  log = classLog({FeaturesScopedService}, logSpecs, true);
 
   #dialogConfigSvc = transient(DialogConfigAppService);
 
@@ -64,6 +65,16 @@ export class FeaturesScopedService {
     const fields = this.#reqFeaturesFields();
     return {...req, ...fields};
   });
+
+  requireFeature(feature: Of<typeof FeatureNames>, reason: string) {
+    const l = this.log.fnIf('requireFeature', { feature, reason });
+    const current = this.#reqFeaturesFields();
+    if (!Object.keys(current).includes(feature))
+      this.#reqFeaturesFields.update(current => ({...current, [feature]: [reason]}));
+    else if (!current[feature].includes(reason))
+      this.#reqFeaturesFields.update(current => ({...current, [feature]: [...current[feature], reason]}));
+    l.end('final', this.#reqFeaturesFields());
+  }
 
 
   public unlicensedFeatures = computedObj<string[]>('unlicensedFeatures', () => {

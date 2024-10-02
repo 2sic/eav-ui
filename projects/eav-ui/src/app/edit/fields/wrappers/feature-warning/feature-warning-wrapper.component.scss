@@ -3,9 +3,34 @@
   display: none;
 }
 
+// Just add border to the top right corner
+// inspired by https://stackoverflow.com/questions/14387690/how-can-i-show-only-corner-borders
+// not quite sure how it works ;)
 .mark {
-  border: 1px solid #f0ad4e;
+  border-right: 1px solid #f0ad4e;
+
+  --s: 5px; /* the size on the corner */
+  mask:
+    conic-gradient(at var(--s) var(--s),#0000 75%,#000 0)
+    0 0/calc(100% - var(--s)) calc(100% - var(--s)),
+    linear-gradient(#000 0 0) content-box;
 }
+
+
+
+// Trying something like https://stackoverflow.com/questions/20964278/css-dots-in-corners-of-div
+// but not quite working - WIP
+// .mark:after {
+//   content: "";
+//   position: absolute;
+//   height: 100%;
+//   width: 20px;
+//   top: 0px;
+//   background-image: radial-gradient(circle at center, red 2px, transparent 2px); 
+//   background-size: 20px 20px;
+//   background-position: top center;
+//   background-repeat: no-repeat;
+// }
 
 .mark .feature-warning {
   display: block;
