@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { transient } from '../../../../../../../core/transient';
-import { classLog } from '../../../../shared/logging/logging';
+import { classLog } from '../../../../shared/logging';
 import { signalObj } from '../../../../shared/signals/signal.utilities';
 import { DataSourceEmpty } from '../data-sources/data-source-empty';
 import { DeleteEntityProps } from "../models/picker.models";

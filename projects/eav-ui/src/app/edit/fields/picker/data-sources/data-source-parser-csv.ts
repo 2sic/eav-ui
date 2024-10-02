@@ -1,6 +1,6 @@
 import Papa from 'papaparse';
 import { PickerOptionCustomExtended } from '../../../../../../../edit-types';
-import { classLog } from '../../../../shared/logging/logging';
+import { classLog } from '../../../../shared/logging';
 
 const logSpecs = {
   all: false,

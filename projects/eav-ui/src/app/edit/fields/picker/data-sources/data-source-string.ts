@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { classLog } from '../../../../shared/logging/logging';
+import { classLog } from '../../../../shared/logging';
 import { EntityLight } from '../../../../shared/models/entity-basic';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
 import { DataSourceBase, logSpecsDataSourceBase } from './data-source-base';
