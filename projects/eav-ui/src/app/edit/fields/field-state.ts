@@ -1,20 +1,20 @@
-import { FieldSettings, FieldValue } from '../../../../../edit-types';
-import { UntypedFormGroup } from '@angular/forms';
 import { Signal } from '@angular/core';
-import { FieldConfigSet } from './field-config-set.model';
+import { UntypedFormGroup } from '@angular/forms';
+import { FieldSettings, FieldValue } from '../../../../../edit-types';
 import { BasicControlSettings } from '../../../../../edit-types/src/BasicControlSettings';
-import { UiControl } from '../shared/controls/ui-control';
-import { PickerData } from './picker/picker-data';
-import { TranslationState } from '../localization/translate-state.model';
-import { computedObj, signalObj } from '../../shared/signals/signal.utilities';
-import { FeatureNames } from '../../features/feature-names';
 import { Of } from '../../core';
+import { FeatureNames } from '../../features/feature-names';
+import { computedObj, signalObj } from '../../shared/signals/signal.utilities';
+import { TranslationState } from '../localization/translate-state.model';
+import { UiControl } from '../shared/controls/ui-control';
+import { FieldConfigSet } from './field-config-set.model';
+import { PickerData } from './picker/picker-data';
 
 /**
  * This is provided / injected at the fields-builder for every single field.
  * So any control or service within that field, which requests this service, will get one containing exactly that fields.
  */
-export class FieldState<T extends FieldValue = FieldValue> {
+export class FieldState<TValue extends FieldValue = FieldValue, TSettings extends FieldSettings = FieldSettings> {
   constructor(
     /** The fields technical name to access settings etc. */
     public name: string,
@@ -26,7 +26,7 @@ export class FieldState<T extends FieldValue = FieldValue> {
     public group: UntypedFormGroup,
 
     /** The settings as a signal - use this for most cases */
-    public settings: Signal<FieldSettings>,
+    public settings: Signal<TSettings>,
 
     /** The basic settings - use this for most cases as it will change less than the settings signal */
     public basics: Signal<BasicControlSettings>,
@@ -38,7 +38,7 @@ export class FieldState<T extends FieldValue = FieldValue> {
     public ui: Signal<UiControl>,
 
     /** The value of the field in the UI control as a signal */
-    public uiValue: Signal<T>,
+    public uiValue: Signal<TValue>,
 
     public translationState: Signal<TranslationState>,
 

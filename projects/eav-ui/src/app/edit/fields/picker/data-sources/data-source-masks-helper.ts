@@ -1,4 +1,4 @@
-import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
+import { FieldSettingsWithPickerSource } from '../../../../../../../edit-types/src/PickerSources';
 import { FeatureNames } from '../../../../features/feature-names';
 import { FeaturesScopedService } from '../../../../features/features-scoped.service';
 import { classLog } from '../../../../shared/logging/logging';
@@ -178,7 +178,6 @@ export class DataSourceMasksHelper {
     const label = settings.Label ?? '';
     const value = settings.Value ?? '';
     const previewValue = settings.PreviewValue ?? '';
-    // const previewType = settings.PreviewValue ?? '';
     const hasPlaceholders = (tooltip + info + link + label + previewValue).includes('[');
     const result: DataSourceMasks = {
       hasPlaceholders,
@@ -188,13 +187,12 @@ export class DataSourceMasksHelper {
       label,
       value,
       previewValue,
-      // previewType,
     };
 
     return l.r(result, 'result');
   }
 
-  static maskSettings(settings: FieldSettings): DataSourceMaskSettings {
+  static maskSettings(settings: FieldSettingsWithPickerSource): DataSourceMaskSettings {
     return {
       ItemTooltip: settings.ItemTooltip,
       ItemInformation: settings.ItemInformation,

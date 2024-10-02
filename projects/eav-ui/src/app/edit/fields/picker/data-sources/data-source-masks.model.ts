@@ -24,8 +24,5 @@ export interface DataSourceMasks {
 
   /** Example: Icon Prefix + Value .fas .fa-wine-bottle  */
   previewValue: string;
-
-  /** Change Type, Text, icon, svg, image */
-  // pickerPreviewType: string;
 };
 

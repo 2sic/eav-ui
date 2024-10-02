@@ -2,7 +2,7 @@ import { Of } from '../../eav-ui/src/app/core';
 import { PickerConfigs } from '../../eav-ui/src/app/edit/fields/picker/constants/picker-config-model.constants';
 import { FeatureNames } from '../../eav-ui/src/app/features/feature-names';
 import { PickerOptionCustom } from './DropdownOption';
-import { PickerSourceBase, UiPickerModeTree } from './PickerModeTree';
+import { UiPickerModeTree } from './PickerModeTree';
 
 /** */
 interface InternalSettings {
@@ -188,22 +188,6 @@ export interface StringDropdownQuery extends String {
   MoreFields: string;
 }
 
-/**
- * @string-css-picker
- */
-export interface StringCssPicker extends String {
-  CssSourceFile: string;
-  CssSelectorFilter: string;
-  Value: string;
-  PreviewValue: string;
-  PreviewType: string;
-  ItemInformation: string;
-  ItemTooltip: string;
-  ItemLink: string;
-
-  /** Maybe the setting for the visualizer - eg. "none", "text", "icon-font", "icon-svg", "image" */
-  PickerPreviewType: string;
-}
 
 /**
  * @string-font-icon-picker
@@ -345,22 +329,15 @@ interface PickerSettings {
   AllowMultiMax: number;
 
   DataSources: string[];
-  UiPickerSourceQuery: UiPickerSourceQuery;
 
-  DataSourceType: Of<typeof PickerConfigs>;// PickerDataSourceType;
+  DataSourceType: Of<typeof PickerConfigs>;
 
+  // TODO: THIS SHOULD NOT BE ON THIS CLASS
   /** Label to show or field-mask for label */
   Label: string;
 
-  /** ItemInfo or field-mask for ItemInfo */
-  ItemInformation: string;
-
-  /** ItemTooltip or field-mask for ItemTooltip */
-  ItemTooltip: string;
-
-  /** ItemLink or field-mask for ItemLink */
-  ItemLink: string;
 }
+
 
 interface EntityPicker extends EntityQuery, PickerSettings { }
 
@@ -386,91 +363,5 @@ export interface FieldSettings extends
   StringWysiwyg,
   EntityPicker,
   StringPicker,
-  StringCssPicker,
-  UiPickerSourceCsv,
   InternalSettings { }
-
-export interface UiPickerSourceCustomList extends PickerSourceBase {
-  Values: string;
-}
-
-export interface UiPickerSourceQuery extends PickerSourceBase {
-  Query: string;
-  QueryParameters: string;
-  StreamName: string;
-  Value: string;
-  Label: string;
-  CreateTypes: string;
-  MoreFields: string;
-}
-
-export interface UiPickerSourceQuery extends UiPickerSourceEntityAndQuery {
-  Query: string;
-  QueryParameters: string;
-  StreamName: string;
-  Label: string;
-  Value: string;
-}
-
-export interface UiPickerSourceEntity extends UiPickerSourceEntityAndQuery {
-  ContentTypeNames: string;
-}
-
-export interface UiPickerSourceCss extends UiPickerSourceEntityAndQuery {
-  CssSourceFile: string;
-  CssSelectorFilter: string;
-  Value: string;
-  PreviewValue: string;
-
-  /** ItemInfo or field-mask for ItemInfo */
-  ItemInformation: string;
-
-  /** ItemTooltip or field-mask for ItemTooltip */
-  ItemTooltip: string;
-
-  /** ItemLink or field-mask for ItemLink */
-  ItemLink: string;
-
-  PickerPreviewType?: string;
-
-}
-
-export interface UiPickerSourceCsv extends UiPickerSourceEntityAndQuery {
-  PreviewValue: string;
-}
-
-interface UiPickerSource extends PickerSourceBase {
-  /** Label or field-mask for label */
-  Label: string;
-
-  /** ItemInfo or field-mask for ItemInfo */
-  ItemInformation: string;
-
-  /** ItemTooltip or field-mask for ItemTooltip */
-  ItemTooltip: string;
-
-  /** ItemLink or field-mask for ItemLink */
-  ItemLink: string;
-}
-
-export interface UiPickerSourceCustomList extends UiPickerSource {
-  DropdownValues: string;
-}
-
-export interface UiPickerSourceCustomCsv extends UiPickerSource {
-  Csv: string;
-}
-
-export interface UiPickerSourceEntityAndQuery extends UiPickerSource {
-  CreateTypes: string;
-  MoreFields: string;
-}
-
-export interface UiPickerSourcesAll extends
-  UiPickerSourceCustomList,
-  UiPickerSourceCustomCsv,
-  UiPickerSourceEntity,
-  UiPickerSourceQuery,
-  UiPickerSourceCss { }
-
 
