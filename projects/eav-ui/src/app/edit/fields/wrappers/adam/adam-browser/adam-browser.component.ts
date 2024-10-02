@@ -306,6 +306,7 @@ export class AdamBrowserComponent implements OnInit {
 
   toggle(usePortalRoot: boolean, showImagesOnly: boolean) {
     const newConfig: AdamConfig = { ...this.adamConfig(), ...{ usePortalRoot, showImagesOnly } };
+
     if (isEqual(newConfig, this.adamConfig()))
       newConfig.autoLoad = !newConfig.autoLoad;
 

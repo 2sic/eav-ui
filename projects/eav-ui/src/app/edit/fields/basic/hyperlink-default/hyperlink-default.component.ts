@@ -110,7 +110,6 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
     // Should probably be in ngOnInit, because this.config.adam is created late
     this.config.adam.onItemClick = (item: AdamItem) => { this.setValue(item); };
     this.config.adam.onItemUpload = (item: AdamItem) => { this.setValue(item); };
-
   }
 
   toggleAdam(usePortalRoot: boolean, showImagesOnly: boolean) {
