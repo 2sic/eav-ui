@@ -23,7 +23,10 @@ export class DataSourceQuery extends DataSourceEntityQueryBase {
 
   #translate = inject(TranslateService);
 
-  constructor() { super(); this.constructorEnd() }
+  constructor() {
+    super();
+    this.constructorEnd();
+  }
 
   protected formState = inject(FormConfigService);
   #appId = Number(this.formState.config.appId);

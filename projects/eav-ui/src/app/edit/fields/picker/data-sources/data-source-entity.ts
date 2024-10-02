@@ -11,7 +11,8 @@ export class DataSourceEntity extends DataSourceEntityQueryBase {
   log = classLog({ DataSourceEntity }, logSpecsDataSourceEntityQueryBase);
 
   constructor() {
-    super(); this.constructorEnd();
+    super();
+    this.constructorEnd();
   }
 
   /**
