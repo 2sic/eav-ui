@@ -47,17 +47,17 @@ export class DataSourceMasksHelper {
   #masks: DataSourceMasks;
 
   /** Convert an Entity data to Picker-Item, processing any masks */
-  entity2PickerItem({ entity, streamName, mustUseGuid }
-    : { entity: EntityLight; streamName: string | undefined; mustUseGuid: boolean; }
+  entity2PickerItem({ entity, streamName, valueMustUseGuid }
+    : { entity: EntityLight; streamName: string | undefined; valueMustUseGuid: boolean; }
   ): PickerItem {
 
-    const l = this.log.fnIf('entity2PickerItem', { entity, streamName, mustUseGuid });
+    const l = this.log.fnIf('entity2PickerItem', { entity, streamName, valueMustUseGuid });
     // Check if we have masks, if yes
     const masks = this.#getMasks();
 
     // Figure out Value to use if we don't use masks - fallback is to use the Guid
     const value = (() => {
-      if (mustUseGuid) return entity.Guid;
+      if (valueMustUseGuid) return entity.Guid;
 
       // @2dg, not tested in all use case
       if (entity[masks.value] === undefined) return entity.Value;

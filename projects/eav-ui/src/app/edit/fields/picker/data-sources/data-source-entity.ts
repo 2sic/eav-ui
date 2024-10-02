@@ -26,7 +26,7 @@ export class DataSourceEntity extends DataSourceEntityQueryBase {
         // tap(list => l.a('getEntities', { typeName, list })),
         map(list => {
           const fieldMask = this.createMaskHelper();
-          const data = list.Default.map(entity => fieldMask.entity2PickerItem({ entity, streamName: null, mustUseGuid: true }));
+          const data = list.Default.map(entity => fieldMask.entity2PickerItem({ entity, streamName: null, valueMustUseGuid: true }));
           return { data, loading: false } as DataWithLoading<PickerItem[]>;
         }),
       )

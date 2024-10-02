@@ -39,7 +39,7 @@ export class DataSourceString extends DataSourceBase {
         Guid: null,
         ...option,  // Must contain at least Title / Value
       };
-      const pickerItem = maskHelper.entity2PickerItem({ entity, streamName: null, mustUseGuid: false });
+      const pickerItem = maskHelper.entity2PickerItem({ entity, streamName: null, valueMustUseGuid: false });
       l.a('one item', { entity, pickerItem });
       return pickerItem;
     });

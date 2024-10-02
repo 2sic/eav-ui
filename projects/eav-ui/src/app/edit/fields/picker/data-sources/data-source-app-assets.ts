@@ -26,7 +26,7 @@ export class DataSourceAppAssets extends DataSourceEntityQueryBase {
     var data = this.querySvc.getFromQuery('System.AppFiles/Default', `rootFolder=${rootFolder}&type=${type}&filter=${fileFilter}`, '').pipe(
       map(list => {
         const fieldMask = this.createMaskHelper({ Value: 'Name' });
-        const data = list.Default.map(entity => fieldMask.entity2PickerItem({ entity, streamName: null, mustUseGuid: false }));
+        const data = list.Default.map(entity => fieldMask.entity2PickerItem({ entity, streamName: null, valueMustUseGuid: false }));
         return { data, loading: false } as DataWithLoading<PickerItem[]>;
       })
     );

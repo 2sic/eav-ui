@@ -79,7 +79,7 @@ export class DataSourceCss extends DataSourceBase {
 
       l.values({ entity });
 
-      const pickerItem = maskHelper.entity2PickerItem({ entity, streamName: null, mustUseGuid: false });
+      const pickerItem = maskHelper.entity2PickerItem({ entity, streamName: null, valueMustUseGuid: false });
       l.a('one item', { entity, pickerItem });
       return pickerItem;
     });

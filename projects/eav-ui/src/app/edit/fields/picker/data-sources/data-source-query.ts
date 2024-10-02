@@ -108,7 +108,7 @@ export class DataSourceQuery extends DataSourceEntityQueryBase {
       items = items.concat(data[stream].map(entity => this.createMaskHelper().entity2PickerItem({
         entity,
         streamName: stream,
-        mustUseGuid: valueMustBeGuid
+        valueMustUseGuid: valueMustBeGuid
       })));
     });
     return l.r([...errors, ...this.#setDisableEdit(items)]);
