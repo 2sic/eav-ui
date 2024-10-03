@@ -1,7 +1,6 @@
-import { Injectable, untracked } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { transient } from '../../../../../../../core/transient';
 import { classLog } from '../../../../shared/logging';
-import { computedObj } from '../../../../shared/signals/signal.utilities';
 import { FieldMask } from '../../../shared/helpers/field-mask.helper';
 import { DataSourceQuery } from "../data-sources/data-source-query";
 import { PickerItemFactory } from '../models/picker-item.model';
@@ -17,19 +16,15 @@ export class DataAdapterQuery extends DataAdapterEntityBase {
 
   constructor() { super(); }
 
-  /** Url Parameters - often mask - from settings */
-  #maskTemplate = computedObj('urlParametersSettings', () => this.fieldState.settings().UrlParameters);
-
-  /** This is a text or mask containing all query parameters. Since it's a mask, it can also contain values from the current item */
-  #paramsMaskLazy = computedObj('paramsMaskLazy', () => {
-    const urlParameters = this.#maskTemplate();
-    // Note: untracked so that the creation of the mask (which has signals) doesn't trigger additional computations
-    const fieldMask = untracked(() => transient(FieldMask, this.injector).init(this.log.name, urlParameters));
-    return fieldMask;
-  });
+  /**
+   * Url Parameters - often mask - from settings
+   * This is a text or mask containing all query parameters.
+   * Since it's a mask, it can also contain values from the current item
+   */
+  #paramsMaskLazy = transient(FieldMask).initSignal(this.log.name, this.fieldState.setting('UrlParameters'));
 
   override syncParams(): void {
-    this.dataSourceRaw.setParams(this.#paramsMaskLazy()?.result());
+    this.dataSourceRaw.setParams(this.#paramsMaskLazy?.result());
   }
 
   fetchItems(): void {

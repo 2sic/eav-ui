@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from "@angular/common/http";
-import { Injector, inject, untracked } from '@angular/core';
+import { Injector, inject } from '@angular/core';
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
 import { take } from 'rxjs';
@@ -37,22 +37,14 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
 
   //#endregion
 
-  /** Content Type Mask */
-  #maskTemplate = computedObj('typeMaskFromSettings', () => this.fieldState.settings().EntityType);
-
   /**
+   * Content Type Mask
    * This is a text or mask containing all query parameters.
    * Since it's a mask, it can also contain values from the current item
    */
-  #paramsMaskLazy = computedObj('paramsMaskLazy', () => {
-    const typeMask = this.#maskTemplate();
-    // Note: untracked so that the creation of the mask (which has signals) doesn't trigger additional computations
-    const fieldMask = untracked(() => transient(FieldMask, this.injector).init('PickerSource-EntityType', typeMask));
-    return fieldMask;
-  });
+  #paramsMaskLazy = transient(FieldMask).initSignal('PickerSource-EntityType', this.fieldState.setting('EntityType'));
 
-
-  protected contentType = computedObj('contentType', () => this.#paramsMaskLazy()?.result() ?? '');
+  protected contentType = computedObj('contentType', () => this.#paramsMaskLazy?.result() ?? '');
 
   #createEntityTypes = computedObj('createEntityTypes', () => this.fieldState.settings().CreateTypes);
 
