@@ -18,6 +18,7 @@ export const FeatureNames = {
   PickerUiCheckbox: 'PickerUiCheckbox',
   PickerUiRadio: 'PickerUiRadio',
   PickerSourceCsv: 'PickerSourceCsv',
+  PickerSourceAppAssets: 'PickerSourceAppAssets',
   PickerFormulas: 'PickerFormulas',
   PickerUiMoreInfo: 'PickerUiMoreInfo',
 } as const /* the as const ensures that the keys/values can be strictly checked */;

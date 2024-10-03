@@ -143,6 +143,7 @@ export class PickerLogicShared {
       fs.AppAssetsRootFolder = typeConfig.AppAssetsRootFolder ?? '/';
       fs.AppAssetsFileFilter = typeConfig.AppAssetsFileFilter ?? '*.*';
       fs.AppAssetsType = typeConfig.AppAssetsType ?? 'files';
+      fs.requiredFeatures = [FeatureNames.PickerSourceAppAssets];
     }
 
     if (isCustomSource) {
