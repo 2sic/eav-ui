@@ -89,7 +89,7 @@ export class PickerLogicShared {
     l.values({ typeName, isKnownType, dataSources, typeConfig });
 
     if (!isKnownType) {
-      console.error(`Unknown picker source type: ${typeName}`);
+      console.error(`Unknown picker source type: '${typeName}' on field ${fs.Name}`);
       return { fs, typeConfig };
     }
 
