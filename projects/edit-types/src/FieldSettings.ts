@@ -252,8 +252,10 @@ export interface Entity extends All {
   EnableDelete: boolean;
   /**
    * Prefill values / mask - new in 11.11.03
+   * Note 2024-10-03 2dm - I believe this was never implemented
+   * but I can't be sure. There seems to be no type or reference to this, so I'll try to remove it for now.
    */
-  Prefill: string;
+  // Prefill: string;
 
   MoreFields: string;
 }

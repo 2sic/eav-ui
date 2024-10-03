@@ -84,7 +84,11 @@ export class FieldState<TValue extends FieldValue = FieldValue, TSettings extend
    * @returns the signal for that property, with isEqual change detection and name
    */
   setting<K extends keyof FieldSettings>(name: K): Signal<FieldSettings[K]> {
-    return computedObj(name, () => this.settings()[name]);
+    return computedObj(name as string, () => this.settings()[name]);
+  }
+
+  settingExt<TSet extends FieldSettings, K extends keyof TSet>(name: K): Signal<TSet[K]> {
+    return computedObj(name as string, () => (this.settings() as unknown as TSet)[name]);
   }
 
   //#region Required Features

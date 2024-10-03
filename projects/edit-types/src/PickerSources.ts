@@ -45,6 +45,14 @@ export interface PickerSourceCustomList {
 
 interface PickerSourceEntityAndQuery extends PickerSourceCommonWithLabel {
   CreateTypes: string;
+  /** WIP */
+  CreatePrefill: string;
+  /** WIP */
+  CreateParameters: string;
+  /** WIP */
+  EditParameters: string;
+  
+  /** Additional fields to retrieve for whatever purpose... */
   MoreFields: string;
 }
 

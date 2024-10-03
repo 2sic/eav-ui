@@ -7,7 +7,8 @@ import { DataAdapterEntityBase } from "./data-adapter-entity-base";
 
 @Injectable()
 export class DataAdapterEntity extends DataAdapterEntityBase {
-  log = classLog({DataAdapterEntity}, DataAdapterBase.logSpecs);
+
+  log = classLog({DataAdapterEntity}, DataAdapterBase.logSpecs, true);
 
   protected dataSourceRaw = transient(DataSourceEntity);
 

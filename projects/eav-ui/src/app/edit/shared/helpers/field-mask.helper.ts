@@ -1,15 +1,17 @@
+import { Injectable, Injector, Signal, computed, effect, inject, signal } from '@angular/core';
+import { classLog } from '../../../shared/logging';
 import { ServiceBase } from '../../../shared/services/service-base';
-import { Injectable, inject, signal, Injector, effect, computed, Signal } from '@angular/core';
 import { FieldState } from '../../fields/field-state';
 import { FormConfigService } from '../../form/form-config.service';
-import { classLog } from '../../../shared/logging';
 
 const logSpecs = {
   all: false,
   initSignal: false,
 }
 
-const FieldsFind = /\[.*?\]/ig;
+const dataPrefix = 'data';
+const FieldsFindNoPrefix = /\[.*?\]/ig;
+const FieldsFindPrefix = /\[[a-zA-Z]+\:.*?\]/ig;
 const FieldUnwrap = /[\[\]]/ig;
 
 /**
@@ -42,6 +44,7 @@ export class FieldMask extends ServiceBase /* for field-change subscription */ {
 
   #controls = this.#fieldState.group.controls;
   #fieldConfig = this.#fieldState.config;
+  #requirePrefix = false;
 
   /**
    * The mask as a signal.
@@ -57,6 +60,9 @@ export class FieldMask extends ServiceBase /* for field-change subscription */ {
 
   /** Fields used in the mask */
   #fieldsUsedInMask = computed(() => this.#extractFieldNames(this.#mask()));
+
+  /** Fields used in the mask */
+  #fieldsUsedInMask2 = computed(() => this.#extractFieldNames2(this.#mask()));
 
   // #fieldValuesSignals = inject(FieldsSettingsService).fieldValues;
 
@@ -79,7 +85,7 @@ export class FieldMask extends ServiceBase /* for field-change subscription */ {
     return this;
   }
 
-  public init(name: string, mask: string): this {
+  public init(name: string, mask: string, requirePrefix: boolean = false): this {
     return this.initSignal(name, signal(mask));
   }
 
@@ -122,19 +128,27 @@ export class FieldMask extends ServiceBase /* for field-change subscription */ {
 
     let value = lowercaseInsideSquareBrackets(this.#mask());
 
+    // If we have form info (which we usually do), replace the placeholders
     if (this.#formConfig != null)
       value = value
         .replace('[app:appid]', this.#formConfig.config.appId.toString())
         .replace('[app:zoneid]', this.#formConfig.config.zoneId.toString());
 
+    // If we have field info (which we usually do), replace the placeholders
     if (this.#fieldConfig != null)
       value = value
         .replace('[guid]', this.#fieldConfig.entityGuid)
         .replace('[id]', this.#fieldConfig.entityId.toString());
 
+    const dataPlaceholders = this.#fieldsUsedInMask2().data;
+    if (!dataPlaceholders)
+      return value;
     this.#fieldsUsedInMask().forEach((e, i) => {
       const replaceValue = this.#controls?.[e]?.value ?? '';
       const cleaned = this.preClean(e, replaceValue);
+      // New with prefix 'data:'
+      value = value.replace('[data:' + e.toLowerCase() + ']', cleaned);
+      // Old without prefix - only if allowed (for compatibility)
       value = value.replace('[' + e.toLowerCase() + ']', cleaned);
     });
     return value;
@@ -146,7 +160,7 @@ export class FieldMask extends ServiceBase /* for field-change subscription */ {
     if (!mask || !hasPlaceholders(mask))
       return [];
 
-    const matches = mask.match(FieldsFind);
+    const matches = mask.match(FieldsFindNoPrefix);
     
     // TODO: ask is this good
     if (!matches)
@@ -154,6 +168,27 @@ export class FieldMask extends ServiceBase /* for field-change subscription */ {
     
     const fields: string[] = matches.map(token => token.replace(FieldUnwrap, ''));
     return fields;
+  }
+
+  /** Retrieves a list of all fields used in the mask */
+  #extractFieldNames2(mask: string): Record<string, string[]> {
+    // exit early if mask very simple or not a mask
+    if (!mask || !hasPlaceholders(mask))
+      return {};
+
+    const matches = mask.match(FieldsFindNoPrefix);
+    
+    if (!matches)
+      return {};
+      // Previous result with comment "ask if this is good" - probably never did anything
+      // Note that possibly the idea was that if there were no full placeholders, 
+      // maybe it should just use the value (eg. "Name") as the placeholder
+      // but that doesn't make sense, since it would have already exited early before
+      // Keep these notes till EOY 2024 just in case we missed something.
+      // return [mask];
+    
+    const fields: string[] = matches.map(token => token.replace(FieldUnwrap, ''));
+    return { data: fields };
   }
 
   /**

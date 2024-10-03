@@ -1,9 +1,10 @@
 import { HttpErrorResponse } from "@angular/common/http";
-import { Injector, inject } from '@angular/core';
+import { inject } from '@angular/core';
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
 import { take } from 'rxjs';
 import { transient } from '../../../../../../../core/transient';
+import { FieldSettingsWithPickerSource } from '../../../../../../../edit-types/src/PickerSources';
 import { EditForm, EditPrep } from "../../../../../app/shared/models/edit-form.model";
 import { EntityService } from "../../../../../app/shared/services/entity.service";
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
@@ -26,7 +27,6 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
   #editRoutingService = inject(EditRoutingService);
   protected translate = inject(TranslateService);
   #snackBar = inject(MatSnackBar);
-  protected injector = inject(Injector);
   protected fieldState = inject(FieldState);
   protected group = inject(EntityFormStateService).formGroup;
   #entityService = transient(EntityService);
@@ -161,26 +161,28 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
    * In future we may add more features like dates etc.
    * new 11.11.03
    */
+  #prefillMask = transient(FieldMask).initSignal('Prefill', this.fieldState.settingExt<FieldSettingsWithPickerSource, 'CreatePrefill'>('CreatePrefill'));
   #getPrefill(): Record<string, string> {
-    this.log.a('getPrefill');
+    const l = this.log.fnIf('getPrefill');
     // still very experimental, and to avoid errors try to catch any mistakes
     try {
-      const prefillRaw = this.fieldState.settings().Prefill;
-      const prefillMask = transient(FieldMask, this.injector).init('Prefill', prefillRaw);
-      const prefill = prefillMask.result();
-      prefillMask.destroy();
-      if (!prefill || !prefill.trim()) { return null; }
-      const result: Record<string, string> = {};
-      prefill.split('\n').forEach(line => {
-        const parts = line.split('=');
-        if (parts.length === 2 && parts[0] && parts[1]) {
-          result[parts[0]] = parts[1];
-        }
-      });
-      return result;
+      const prefill = this.#prefillMask.result();
+      l.a('prefill', { prefill });
+      if (!prefill || !prefill.trim())
+        return l.r(null, 'no prefill');
+
+      // note: 2024-10-03 old code split for '\n' but I had to add '&'
+      // not sure if the \n is even relevant, so for now I'll remove it
+      const result = Object.fromEntries(
+        prefill.split('&')
+          .map(line => line.split('='))
+          .filter(parts => parts.length === 2 && parts[0] && parts[1])
+        ) as Record<string, string>;
+      
+      return l.r(result);
     } catch {
       console.error('Error in getting Prefill for new entity. Will skip prefill.');
-      return null;
+      return l.rSilent(null, 'error');
     }
   }
 }

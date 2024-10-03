@@ -20,7 +20,7 @@ const logSpecs = {
 
 export class PickerLogicShared {
 
-  log = classLog({ PickerLogicShared }, logSpecs);
+  log = classLog({ PickerLogicShared }, logSpecs, true);
 
   constructor() { }
 

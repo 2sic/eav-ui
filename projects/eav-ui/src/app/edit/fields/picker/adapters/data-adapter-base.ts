@@ -18,6 +18,7 @@ export abstract class DataAdapterBase {
     initPrefetch: true,
     fetchItems: false,
     constructor: true,
+    getPrefill: true, // for create Entity & query
     fields: [...DebugFields],
   };
 
