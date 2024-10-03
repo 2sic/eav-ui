@@ -1,7 +1,7 @@
 import { effect, Injectable } from '@angular/core';
-import { getWith } from 'projects/eav-ui/src/app/core';
+import { getWith } from 'projects/core';
 import { EntityLight } from 'projects/eav-ui/src/app/shared/models/entity-basic';
-import { classLog } from '../../../../shared/logging/logging';
+import { classLog } from '../../../../shared/logging';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
 import { ScriptsLoaderService } from '../../../shared/services/scripts-loader.service';
 import { findAllIconsInCss } from '../../basic/string-font-icon-picker/string-font-icon-picker.helpers';
@@ -80,7 +80,7 @@ export class DataSourceCss extends DataSourceBase {
 
       l.values({ entity });
 
-      const pickerItem = maskHelper.entity2PickerItem({ entity, streamName: null, mustUseGuid: false });
+      const pickerItem = maskHelper.data2PickerItem({ entity, streamName: null, valueMustUseGuid: false });
       l.a('one item', { entity, pickerItem });
       return pickerItem;
     });

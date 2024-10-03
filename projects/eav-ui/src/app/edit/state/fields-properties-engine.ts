@@ -1,28 +1,28 @@
-import { FieldConstantsOfLanguage, FieldProps } from './fields-configs.model';
-import { ItemValuesOfLanguage } from './item-values-of-language.model';
-import { EntityReader } from '../shared/helpers';
-import { FormLanguage } from '../form/form-languages.model';
-import { FieldSettingsUpdateHelperFactory } from './fields-settings-update.helpers';
-import { FormulaPromiseHandler } from '../formulas/promise/formula-promise-handler';
-import { FormulaEngine } from '../formulas/formula-engine';
-import { EavContentType, EavEntityAttributes, EavItem } from '../shared/models/eav';
-import { FieldsValuesModifiedHelper } from './fields-values-modified.helper';
-import { FieldsPropsEngineCycle } from './fields-properties-engine-cycle';
 import { inject, Injectable, Signal } from '@angular/core';
-import { FormConfigService } from '../form/form-config.service';
+import { transient } from '../../../../../core/transient';
+import { classLog } from '../../shared/logging';
 import { GlobalConfigService } from '../../shared/services/global-config.service';
-import { FormsStateService } from '../form/forms-state.service';
-import { ContentTypeItemService } from '../shared/content-types/content-type-item.service';
-import { ItemService } from './item.service';
+import { computedObj } from '../../shared/signals/signal.utilities';
 import { FieldLogicTools } from '../fields/logic/field-logic-tools';
-import { transient } from '../../core/transient';
+import { PickerData } from '../fields/picker/picker-data';
+import { PickerDataFactory } from '../fields/picker/picker-data.factory';
+import { FormConfigService } from '../form/form-config.service';
+import { FormLanguage } from '../form/form-languages.model';
+import { FormsStateService } from '../form/forms-state.service';
+import { FormulaEngine } from '../formulas/formula-engine';
+import { FormulaPromiseHandler } from '../formulas/promise/formula-promise-handler';
+import { ContentTypeItemService } from '../shared/content-types/content-type-item.service';
+import { EntityReader } from '../shared/helpers';
+import { EavContentType, EavEntityAttributes, EavItem } from '../shared/models/eav';
+import { FieldConstantsOfLanguage, FieldProps } from './fields-configs.model';
+import { FieldsPropsEngineCycle } from './fields-properties-engine-cycle';
 import { FieldsSettingsConstantsService } from './fields-settings-constants.service';
+import { FieldSettingsUpdateHelperFactory } from './fields-settings-update.helpers';
 import { FieldsSettingsService } from './fields-settings.service';
 import { FieldsSignalsHelper } from './fields-signals.helper';
-import { computedObj } from '../../shared/signals/signal.utilities';
-import { classLog } from '../../shared/logging';
-import { PickerDataFactory } from '../fields/picker/picker-data.factory';
-import { PickerData } from '../fields/picker/picker-data';
+import { FieldsValuesModifiedHelper } from './fields-values-modified.helper';
+import { ItemValuesOfLanguage } from './item-values-of-language.model';
+import { ItemService } from './item.service';
 
 const logSpecs = {
   all: false,

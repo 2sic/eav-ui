@@ -4,7 +4,7 @@ import { AsyncPipe } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogActions } from '@angular/material/dialog';
 import { catchError, map, Observable, of, share, startWith, Subject, switchMap } from 'rxjs';
-import { transient } from '../../core';
+import { transient } from '../../../../../core';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';

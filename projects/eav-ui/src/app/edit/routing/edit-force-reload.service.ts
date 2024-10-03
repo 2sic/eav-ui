@@ -1,14 +1,14 @@
 import { inject, Injectable, OnDestroy } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { filter, map, Subscription } from 'rxjs';
+import { transient } from '../../../../../core';
 import { ItemHistoryResult } from '../../item-history/models/item-history-result.model';
+import { classLog } from '../../shared/logging';
+import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { EditEntryComponent } from '../dialog/entry/edit-entry.component';
-import { EditUrlParams } from './edit-url-params.model';
 import { UrlHelpers } from '../shared/helpers';
 import { NavigateFormResult } from './edit-routing.service';
-import { transient } from '../../core';
-import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
-import { classLog } from '../../shared/logging';
+import { EditUrlParams } from './edit-url-params.model';
 
 const logSpecs = {
   all: true,

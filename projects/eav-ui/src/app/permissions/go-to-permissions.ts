@@ -1,5 +1,5 @@
 import { Route } from '@angular/router';
-import { Of } from '../core';
+import { Of } from '../../../../core';
 import { eavConstants, MetadataKeyTypes } from '../shared/constants/eav.constants';
 
 export class GoToPermissions {

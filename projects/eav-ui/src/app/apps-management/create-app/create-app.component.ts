@@ -10,7 +10,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
 import { BehaviorSubject, Observable, map } from 'rxjs';
-import { transient } from '../../core';
+import { transient } from '../../../../../core';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
 import { appNameError, appNamePattern } from '../constants/app.patterns';
 import { AppsListService } from '../services/apps-list.service';

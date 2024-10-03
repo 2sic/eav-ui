@@ -1,4 +1,4 @@
-import { Of } from "../../core";
+import { Of } from "../../../../../core";
 
 export const MetadataKeyTypes = {
   Guid: 'guid',

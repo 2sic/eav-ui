@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
+import { Of } from '../../../../../core';
 import { ContentType } from '../../app-administration/models/content-type.model';
-import { Of } from '../../core';
 import { HttpServiceBase } from '../services/http-service-base';
 import { Field, FieldInputTypeOption } from './field.model';
 import { InputTypeCatalog } from './input-type-catalog';

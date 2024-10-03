@@ -1,5 +1,5 @@
 import { EavEntityDto } from '.';
-import { Of } from '../../../../core';
+import { Of } from '../../../../../../../core';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 
 /**

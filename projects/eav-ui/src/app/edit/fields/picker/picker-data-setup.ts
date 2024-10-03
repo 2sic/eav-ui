@@ -1,5 +1,5 @@
 import { Injector, ProviderToken } from '@angular/core';
-import { Of, transient } from '../../../core';
+import { Of, transient } from '../../../../../../core';
 import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
 import { classLog } from '../../../shared/logging';
 import { FieldState } from '../field-state';

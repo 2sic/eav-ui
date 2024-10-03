@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { classLog } from '../../../../shared/logging/logging';
+import { classLog } from '../../../../shared/logging';
 import { EntityLight } from '../../../../shared/models/entity-basic';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
 import { DataSourceBase, logSpecsDataSourceBase } from './data-source-base';
@@ -39,7 +39,7 @@ export class DataSourceString extends DataSourceBase {
         Guid: null,
         ...option,  // Must contain at least Title / Value
       };
-      const pickerItem = maskHelper.entity2PickerItem({ entity, streamName: null, mustUseGuid: false });
+      const pickerItem = maskHelper.data2PickerItem({ entity, streamName: null, valueMustUseGuid: false });
       l.a('one item', { entity, pickerItem });
       return pickerItem;
     });

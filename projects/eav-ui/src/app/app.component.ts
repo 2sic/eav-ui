@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, ElementRef, OnDestroy, OnInit } fro
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, NavigationEnd, Router, RouterModule } from '@angular/router';
 import { filter, map, Subscription } from 'rxjs';
-import { transient } from './core';
+import { transient } from '../../../core';
 import { keyContentBlockId, keyModuleId } from './shared/constants/session.constants';
 import { AppIconsService } from './shared/icons/app-icons.service';
 import { Context } from './shared/services/context';

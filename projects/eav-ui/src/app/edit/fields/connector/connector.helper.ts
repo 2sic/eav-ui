@@ -1,30 +1,30 @@
-import { FieldValue } from './../../../../../../edit-types/src/FieldValue';
-import { toFieldConfig } from './../../../../../../edit-types/src/FieldConfig';
-import { ExperimentalProps } from './../../../../../../edit-types/src/ExperimentalProps';
 import { ChangeDetectorRef, ElementRef, Injectable, Injector, NgZone, OnDestroy, ViewContainerRef, computed, effect, inject } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
+import isEqual from 'lodash-es/isEqual';
 import { distinctUntilChanged, startWith } from 'rxjs';
-import { ConnectorHost, ConnectorInstance } from './connector-instance.model';
+import { transient } from '../../../../../../core';
 import { EavCustomInputField } from '../../../../../../edit-types/src/EavCustomInputField';
-import { FieldMask } from '../../shared/helpers';
-import { FieldState } from '../field-state';
-import { PagePicker } from '../page-picker/page-picker.helper';
-import { transient } from '../../../core';
 import { FeatureNames } from '../../../features/feature-names';
-import { openFeatureDialog } from '../../../features/shared/base-feature.component';
 import { FeaturesScopedService } from '../../../features/features-scoped.service';
+import { openFeatureDialog } from '../../../features/shared/base-feature.component';
+import { classLog } from '../../../shared/logging';
 import { ServiceBase } from '../../../shared/services/service-base';
 import { FormConfigService } from '../../form/form-config.service';
 import { EditRoutingService } from '../../routing/edit-routing.service';
 import { AdamService } from '../../shared/adam/adam.service';
 import { ContentTypeService } from '../../shared/content-types/content-type.service';
-import { InputTypeService } from '../../shared/input-types/input-type.service';
-import isEqual from 'lodash-es/isEqual';
-import { classLog } from '../../../shared/logging';
 import { UiControl } from '../../shared/controls/ui-control';
+import { FieldMask } from '../../shared/helpers';
+import { InputTypeService } from '../../shared/input-types/input-type.service';
+import { FieldState } from '../field-state';
+import { PagePicker } from '../page-picker/page-picker.helper';
+import { ExperimentalProps } from './../../../../../../edit-types/src/ExperimentalProps';
+import { toFieldConfig } from './../../../../../../edit-types/src/FieldConfig';
+import { FieldValue } from './../../../../../../edit-types/src/FieldValue';
+import { ConnectorHost, ConnectorInstance } from './connector-instance.model';
 
 const logSpecs = {
   all: false,
@@ -140,7 +140,7 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
         lEx.fn('updateField', { name, value });
         this.#zone.run(() => { this.#updateControl(value, this.#group.controls[name]); });
       },
-      isFeatureEnabled$: (nameId) => this.#featuresService.isEnabled$(nameId),
+      isFeatureEnabled: this.#featuresService.isEnabled,
       setFocused: (focused) => {
         lEx.fn('setFocused', { focused });
         this.#zone.run(() => { this.#config.focused$.next(focused); });

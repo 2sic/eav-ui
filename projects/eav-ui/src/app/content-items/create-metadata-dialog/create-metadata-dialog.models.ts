@@ -1,5 +1,5 @@
+import { Of } from '../../../../../core';
 import { ContentType } from '../../app-administration/models';
-import { Of } from '../../core';
 import { MetadataKeyTypes, ScopeOption } from '../../shared/constants/eav.constants';
 import { ContentItem } from '../models/content-item.model';
 

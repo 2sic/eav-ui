@@ -6,7 +6,7 @@ import { MatDialog, MatDialogRef, MatDialogState } from '@angular/material/dialo
 import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { transient } from '../../../core';
+import { transient } from '../../../../../../core';
 import { FeatureNames } from '../../../features/feature-names';
 import { FeaturesScopedService } from '../../../features/features-scoped.service';
 import { eavConstants } from '../../../shared/constants/eav.constants';

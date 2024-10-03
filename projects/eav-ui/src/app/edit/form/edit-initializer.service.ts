@@ -2,7 +2,7 @@ import { Injectable, signal } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { transient } from '../../core';
+import { transient } from '../../../../../core';
 import { FeaturesScopedService } from '../../features/features-scoped.service';
 import { InputTypeHelpers } from '../../shared/fields/input-type-helpers';
 import { UpdateEnvVarsFromDialogSettings } from '../../shared/helpers/update-env-vars-from-dialog-settings.helper';

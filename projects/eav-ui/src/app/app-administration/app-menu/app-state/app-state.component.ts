@@ -1,19 +1,19 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatDialogActions } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
+import { transient } from '../../../../../../core';
+import { FeatureTextInfoComponent } from '../../../features/feature-text-info/feature-text-info.component';
 import { DialogSettings } from '../../../shared/models/dialog-settings.model';
+import { DialogConfigAppService } from '../../services/dialog-config-app.service';
 import { ExportAppService } from '../../services/export-app.service';
 import { ImportAppPartsService } from '../../services/import-app-parts.service';
-import { FeatureTextInfoComponent } from '../../../features/feature-text-info/feature-text-info.component';
-import { FormsModule } from '@angular/forms';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatCardModule } from '@angular/material/card';
-import { transient } from '../../../core';
-import { MatDialogActions } from '@angular/material/dialog';
-import { DialogConfigAppService } from '../../services/dialog-config-app.service';
 
 @Component({
   selector: 'app-app-state',

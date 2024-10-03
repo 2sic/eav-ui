@@ -10,7 +10,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import 'reflect-metadata';
 import { delay, fromEvent, of, startWith } from 'rxjs';
-import { transient } from '../../../core';
+import { transient } from '../../../../../../core';
 import { BaseComponent } from '../../../shared/components/base.component';
 import { ToggleDebugDirective } from '../../../shared/directives/toggle-debug.directive';
 import { classLog } from '../../../shared/logging';

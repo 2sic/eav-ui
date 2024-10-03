@@ -1,6 +1,6 @@
 import { Injectable, untracked } from '@angular/core';
-import { transient } from '../../../../core/transient';
-import { classLog } from '../../../../shared/logging/logging';
+import { transient } from '../../../../../../../core/transient';
+import { classLog } from '../../../../shared/logging';
 import { computedObj } from '../../../../shared/signals/signal.utilities';
 import { FieldMask } from '../../../shared/helpers/field-mask.helper';
 import { DataSourceQuery } from "../data-sources/data-source-query";

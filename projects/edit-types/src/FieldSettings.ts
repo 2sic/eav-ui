@@ -1,4 +1,4 @@
-import { Of } from '../../eav-ui/src/app/core';
+import { Of } from '../../core';
 import { PickerConfigs } from '../../eav-ui/src/app/edit/fields/picker/constants/picker-config-model.constants';
 import { FeatureNames } from '../../eav-ui/src/app/features/feature-names';
 import { PickerOptionCustom } from './DropdownOption';

@@ -9,7 +9,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterOutlet } from '@angular/router';
 import { BehaviorSubject, catchError, forkJoin, map, Observable, of, share, startWith, Subject, switchMap, tap, timer } from 'rxjs';
-import { transient } from '../../core';
+import { transient } from '../../../../../core';
 import { ExpirationExtension } from '../../features/expiration-extension';
 import { FeatureState } from '../../features/models';
 import { Feature } from '../../features/models/feature.model';

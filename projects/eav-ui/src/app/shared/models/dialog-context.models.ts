@@ -1,5 +1,5 @@
+import { Of } from '../../../../../core';
 import { PermissionsCount } from '../../app-administration/models/permissions-count.model';
-import { Of } from '../../core';
 import { Language } from './language.model';
 
 export interface DialogContextApp {

@@ -1,5 +1,5 @@
+import { Of } from '../../../../../core';
 import { MetadataInfo } from '../../content-items/create-metadata-dialog/create-metadata-dialog.models';
-import { Of } from '../../core';
 import { EavFor } from '../../edit/shared/models/eav';
 import { eavConstants, MetadataKeyDefinition, MetadataKeyTypes } from '../constants/eav.constants';
 import { EditInfo } from './edit-info';

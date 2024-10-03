@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { Of } from '../../core';
+import { Of } from '../../../../../core';
 import { webApiAppRoot } from '../../import-app/services/import-app.service';
 import { HttpServiceBase } from '../../shared/services/http-service-base';
 import { AnalyzeParts, SettingsStackItem } from '../sub-dialogs/analyze-settings/analyze-settings.models';

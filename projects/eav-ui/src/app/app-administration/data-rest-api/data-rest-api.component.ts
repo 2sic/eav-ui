@@ -7,7 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { RouterOutlet } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
-import { transient } from '../../core';
+import { transient } from '../../../../../core';
 import { DevRestDataComponent } from '../../dev-rest/data/data.component';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';

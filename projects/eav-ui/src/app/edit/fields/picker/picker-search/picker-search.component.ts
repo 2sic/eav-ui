@@ -10,7 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatTreeModule } from '@angular/material/tree';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { transient } from '../../../../core/transient';
+import { transient } from '../../../../../../../core/transient';
 import { ClickStopPropagationDirective } from '../../../../shared/directives/click-stop-propagation.directive';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { classLog } from '../../../../shared/logging';

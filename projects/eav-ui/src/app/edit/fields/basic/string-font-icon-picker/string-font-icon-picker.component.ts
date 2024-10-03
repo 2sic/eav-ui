@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { classLog } from 'projects/eav-ui/src/app/shared/logging';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldMetadata } from '../../field-metadata.decorator';
 import { PickerImports } from '../../picker/picker-providers.constant';

@@ -1,5 +1,5 @@
+import { Of } from '../../../../../core';
 import { DialogContext } from '../../app-administration/models';
-import { Of } from '../../core';
 import { EditSettings, PublishModes } from '../dialog/main/edit-dialog-main.models';
 
 /** 

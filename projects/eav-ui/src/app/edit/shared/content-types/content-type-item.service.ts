@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
+import { classLog } from '../../../shared/logging';
 import { EavEntity } from '../models/eav';
 import { EavEntityDto } from '../models/json-format-v1';
 import { SignalStoreBase } from '../store/signal-store-base';
-import { classLog } from '../../../shared/logging/logging';
 
 /**
  * Content-Type Items are additional entities which the ContentType info needs.

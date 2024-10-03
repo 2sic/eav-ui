@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { TranslateService } from "@ngx-translate/core";
 import { Observable, map, of } from "rxjs";
-import { classLog } from '../../../../shared/logging/logging';
+import { classLog } from '../../../../shared/logging';
 import { QueryStreams } from '../../../../shared/models/query-stream.model';
 import { computedObj } from '../../../../shared/signals/signal.utilities';
 import { FormConfigService } from '../../../form/form-config.service';
@@ -23,7 +23,10 @@ export class DataSourceQuery extends DataSourceEntityQueryBase {
 
   #translate = inject(TranslateService);
 
-  constructor() { super(); this.constructorEnd() }
+  constructor() {
+    super();
+    this.constructorEnd();
+  }
 
   protected formState = inject(FormConfigService);
   #appId = Number(this.formState.config.appId);
@@ -102,10 +105,10 @@ export class DataSourceQuery extends DataSourceEntityQueryBase {
         return; // TODO: @SDV test if this acts like continue or break
       }
 
-      items = items.concat(data[stream].map(entity => this.createMaskHelper().entity2PickerItem({
+      items = items.concat(data[stream].map(entity => this.createMaskHelper().data2PickerItem({
         entity,
         streamName: stream,
-        mustUseGuid: valueMustBeGuid
+        valueMustUseGuid: valueMustBeGuid
       })));
     });
     return l.r([...errors, ...this.#setDisableEdit(items)]);

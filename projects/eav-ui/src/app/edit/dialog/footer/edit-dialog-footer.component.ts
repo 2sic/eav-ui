@@ -4,7 +4,7 @@ import { ExtendedModule } from '@angular/flex-layout/extended';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
-import { Of } from '../../../core';
+import { Of } from '../../../../../../core';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { classLog } from '../../../shared/logging';
 import { EavWindow } from '../../../shared/models/eav-window.model';

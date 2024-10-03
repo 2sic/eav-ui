@@ -5,7 +5,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateModule } from '@ngx-translate/core';
-import { transient } from '../../core';
+import { transient } from '../../../../../core';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { copyToClipboard } from '../../shared/helpers/copy-to-clipboard.helper';
 import { SafeHtmlPipe } from '../../shared/pipes/safe-html.pipe';

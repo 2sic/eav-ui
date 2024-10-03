@@ -1,6 +1,6 @@
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { Injectable, inject } from '@angular/core';
-import { getWith } from '../../../../core';
+import { getWith } from '../../../../../../../core';
 import { classLog } from '../../../../shared/logging';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
 import { FormConfigService } from '../../../form/form-config.service';
