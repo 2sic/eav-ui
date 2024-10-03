@@ -7,6 +7,7 @@ import { FormConfigService } from '../../form/form-config.service';
 const logSpecs = {
   all: false,
   initSignal: false,
+  watchAllFields: true,
 }
 
 const dataPrefix = 'data';
@@ -27,7 +28,7 @@ const FieldUnwrap = /[\[\]]/ig;
 @Injectable()
 export class FieldMask extends ServiceBase /* for field-change subscription */ {
   
-  log = classLog({FieldMask}, logSpecs);
+  log = classLog({FieldMask}, logSpecs, true);
 
   #fieldState = inject(FieldState);
   #formConfig = inject(FormConfigService);
@@ -60,9 +61,6 @@ export class FieldMask extends ServiceBase /* for field-change subscription */ {
 
   /** Fields used in the mask */
   #fieldsUsedInMask = computed(() => this.#extractFieldNames(this.#mask()));
-
-  /** Fields used in the mask */
-  #fieldsUsedInMask2 = computed(() => this.#extractFieldNames2(this.#mask()));
 
   // #fieldValuesSignals = inject(FieldsSettingsService).fieldValues;
 
@@ -138,12 +136,15 @@ export class FieldMask extends ServiceBase /* for field-change subscription */ {
     if (this.#fieldConfig != null)
       value = value
         .replace('[guid]', this.#fieldConfig.entityGuid)
-        .replace('[id]', this.#fieldConfig.entityId.toString());
+        .replace('[data:guid]', this.#fieldConfig.entityGuid)
+        .replace('[id]', this.#fieldConfig.entityId.toString())
+        .replace('[data:id]', this.#fieldConfig.entityId.toString());
 
-    const dataPlaceholders = this.#fieldsUsedInMask2().data;
+    const dataPlaceholders = this.#fieldsUsedInMask().data;
     if (!dataPlaceholders)
       return value;
-    this.#fieldsUsedInMask().forEach((e, i) => {
+
+    dataPlaceholders.forEach((e, i) => {
       const replaceValue = this.#controls?.[e]?.value ?? '';
       const cleaned = this.preClean(e, replaceValue);
       // New with prefix 'data:'
@@ -155,23 +156,7 @@ export class FieldMask extends ServiceBase /* for field-change subscription */ {
   }
 
   /** Retrieves a list of all fields used in the mask */
-  #extractFieldNames(mask: string): string[] {
-    // exit early if mask very simple or not a mask
-    if (!mask || !hasPlaceholders(mask))
-      return [];
-
-    const matches = mask.match(FieldsFindNoPrefix);
-    
-    // TODO: ask is this good
-    if (!matches)
-      return [mask];
-    
-    const fields: string[] = matches.map(token => token.replace(FieldUnwrap, ''));
-    return fields;
-  }
-
-  /** Retrieves a list of all fields used in the mask */
-  #extractFieldNames2(mask: string): Record<string, string[]> {
+  #extractFieldNames(mask: string): Record<string, string[]> {
     // exit early if mask very simple or not a mask
     if (!mask || !hasPlaceholders(mask))
       return {};
@@ -180,12 +165,6 @@ export class FieldMask extends ServiceBase /* for field-change subscription */ {
     
     if (!matches)
       return {};
-      // Previous result with comment "ask if this is good" - probably never did anything
-      // Note that possibly the idea was that if there were no full placeholders, 
-      // maybe it should just use the value (eg. "Name") as the placeholder
-      // but that doesn't make sense, since it would have already exited early before
-      // Keep these notes till EOY 2024 just in case we missed something.
-      // return [mask];
     
     const fields: string[] = matches.map(token => token.replace(FieldUnwrap, ''));
     return { data: fields };
@@ -208,13 +187,21 @@ export class FieldMask extends ServiceBase /* for field-change subscription */ {
    * Uses observables, since that's what angular provides on valueChanges.
    */
   #watchAllFields() {
+    const l = this.log.fnIf('watchAllFields');
+    const dataPlaceholders = this.#fieldsUsedInMask().data;
+    if (!dataPlaceholders)
+      return l.end('no data placeholders');
+
     // add a watch for each field in the field-mask
-    this.#fieldsUsedInMask().forEach(field => {
-      const control = this.#controls[field];
-      if (!control) return;
-      const valueSub = control.valueChanges.subscribe(_ => this.#onChange());
-      this.subscriptions.add(valueSub);
-    });
+    const controls = dataPlaceholders
+      .map(f => this.#controls[f])
+      .filter(f => f != null);
+
+    if (controls.length == 0)
+      return l.end('no fields to watch');
+
+    controls.forEach(c => this.subscriptions.add(c.valueChanges.subscribe(_ => this.#onChange())));
+    l.end();
   }
 }
 
