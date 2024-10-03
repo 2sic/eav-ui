@@ -3,7 +3,6 @@ import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { TranslateModule } from '@ngx-translate/core';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { classLog } from '../../../../shared/logging';
 import { computedObj } from '../../../../shared/signals/signal.utilities';
@@ -27,7 +26,6 @@ import { PickerTextComponent } from '../picker-text/picker-text.component';
     MatButtonModule,
     MatMenuModule,
     MatIconModule,
-    TranslateModule,
     TippyDirective,
     PickerPillsComponent,
     PickerTextToggleComponent,
@@ -39,8 +37,8 @@ import { PickerTextComponent } from '../picker-text/picker-text.component';
   ],
 })
 export class PickerPreviewComponent extends PickerPartBaseComponent {
-  
-  log = classLog({PickerPreviewComponent});
+
+  log = classLog({ PickerPreviewComponent });
 
   constructor() { super(); }
 

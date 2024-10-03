@@ -15,20 +15,32 @@
 
     <!-- Notes button -->
     @if (ctSettings().showNotes) {
-      <button type="button" #noteTrigger mat-icon-button class="eav-note {{ noteProps().triggerClass }}"
-        [disabled]="readOnly()" [tippyTranslate]="noteProps().tooltip"
-        [tippyDisabled]="readOnly()" [disableRipple]="noteProps().itemNotSaved"
+      <button
+        type="button"
+        #noteTrigger
+        mat-icon-button
+        class="eav-note {{ noteProps().triggerClass }}"
+        [disabled]="readOnly()"
+        [tippyTranslate]="noteProps().tooltip"
+        [tippyDisabled]="readOnly()"
+        [disableRipple]="noteProps().itemNotSaved"
         (pointerenter)="noteProps().note ? toggleNote($event) : null"
         (pointerleave)="noteProps().note ? toggleNote($event) : null"
-        (click)="noteProps().note ? toggleNote($event) : editNote()">
+        (click)="noteProps().note ? toggleNote($event) : editNote()"
+      >
         <mat-icon>{{ noteProps().iconName }}</mat-icon>
       </button>
     }
 
     <!-- Note template to show on demand -->
     <ng-template #noteTemplate>
-      <div class="eav-note-wrapper {{ noteProps().noteClass }}" cdkDrag cdkDragRootElement=".cdk-overlay-pane"
-        cdkDragBoundary="body" (pointerdown)="noteTouched = true">
+      <div
+        class="eav-note-wrapper {{ noteProps().noteClass }}"
+        cdkDrag
+        cdkDragRootElement=".cdk-overlay-pane"
+        cdkDragBoundary="body"
+        (pointerdown)="noteTouched = true"
+      >
         <div class="eav-note-actions" cdkDragHandle>
           <button mat-icon-button appMousedownStopPropagation (click)="editNote(noteProps().note)">
             <mat-icon>edit</mat-icon>
@@ -46,10 +58,14 @@
 
     <!-- Slot Empty Toggle -->
     @if (ctSettings().slotCanBeEmpty) {
-      <mat-slide-toggle class="empty-slot-toggle" (change)="toggleSlotIsEmpty()"
-        [checked]="!ctSettings().slotIsEmpty" [disabled]="readOnly() || (languages().current !== languages().primary)"
-        [tippy]="(!ctSettings().slotIsEmpty ? 'ItemCard.SlotUsedTrue' : 'ItemCard.SlotUsedFalse') | translate"
-        [tippyDisabled]="readOnly() || (languages().current !== languages().primary)">
+      <mat-slide-toggle
+        class="empty-slot-toggle"
+        (change)="toggleSlotIsEmpty()"
+        [checked]="!ctSettings().slotIsEmpty"
+        [disabled]="readOnly() || languages().current !== languages().primary"
+        [tippyTranslate]="!ctSettings().slotIsEmpty ? 'ItemCard.SlotUsedTrue' : 'ItemCard.SlotUsedFalse'"
+        [tippyDisabled]="readOnly() || languages().current !== languages().primary"
+      >
       </mat-slide-toggle>
     }
 
@@ -62,13 +78,11 @@
 
     <!-- History Button -->
     @if (formConfig.config.enableHistory) {
-      <button type="button" mat-icon-button [tippy]="'Form.Buttons.History.Tip' | translate"
-        [disabled]="readOnly()" (click)="openHistory()">
+      <button type="button" mat-icon-button tippyTranslate="Form.Buttons.History.Tip" [disabled]="readOnly()" (click)="openHistory()">
         <mat-icon>history</mat-icon>
       </button>
     }
-    <app-entity-translate-menu [entityGuid]="entityGuid()">
-    </app-entity-translate-menu>
+    <app-entity-translate-menu [entityGuid]="entityGuid()"> </app-entity-translate-menu>
   </div>
   <mat-card-content class="eav-card-content-group-parent" [style.display]="collapse ? 'none' : 'block'">
     <div class="eav-layout-grid">

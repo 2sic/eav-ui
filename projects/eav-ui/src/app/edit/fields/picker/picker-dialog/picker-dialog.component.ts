@@ -3,7 +3,6 @@ import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { TranslateModule } from '@ngx-translate/core';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { computedObj } from '../../../../shared/signals/signal.utilities';
 import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
@@ -25,7 +24,6 @@ import { PickerTextComponent } from '../picker-text/picker-text.component';
     MatMenuModule,
     MatIconModule,
     AsyncPipe,
-    TranslateModule,
     TippyDirective,
   ],
 })

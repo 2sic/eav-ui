@@ -2,29 +2,29 @@
   <!-- The Input field / checkboxes etc. -->
   <div class="eav-mat-form-field">
     @switch (mode()) {
-      @case ('text') {
+      @case ("text") {
         <app-picker-text>
           <ng-container freeTextButtons *ngTemplateOutlet="textToggle"></ng-container>
         </app-picker-text>
       }
-      @case ('checkbox') {
+      @case ("checkbox") {
         <app-picker-checkboxes>
           <ng-container addNew *ngTemplateOutlet="addNew"></ng-container>
-          <ng-container freeTextButtons *ngTemplateOutlet="textToggle; context: {$implicit: false}"></ng-container>
+          <ng-container freeTextButtons *ngTemplateOutlet="textToggle; context: { $implicit: false }"></ng-container>
         </app-picker-checkboxes>
       }
-      @case ('radio') {
+      @case ("radio") {
         <app-picker-radio>
           <ng-container addNew *ngTemplateOutlet="addNew"></ng-container>
-          <ng-container freeTextButtons *ngTemplateOutlet="textToggle; context: {$implicit: false}"></ng-container>
+          <ng-container freeTextButtons *ngTemplateOutlet="textToggle; context: { $implicit: false }"></ng-container>
         </app-picker-radio>
       }
-      @case ('pills') {
+      @case ("pills") {
         <app-picker-pills>
           <ng-container freeTextButtons *ngTemplateOutlet="textToggle"></ng-container>
         </app-picker-pills>
       }
-      @case ('search') {
+      @case ("search") {
         <app-picker-search [showSelectedItem]="true" [showItemEditButtons]="true">
           <ng-container freeTextButtons *ngTemplateOutlet="textToggle"></ng-container>
         </app-picker-search>
@@ -33,16 +33,19 @@
   </div>
 
   <!-- The edit / add buttons -->
-  @if ((mode() !== 'radio' && mode() !== 'checkbox')) {
+  @if (mode() !== "radio" && mode() !== "checkbox") {
     <div class="my-flex">
       <!-- create new entity to add to this list -->
       <ng-container *ngTemplateOutlet="addNew"></ng-container>
       <!-- Open dialog button -->
       @if (mySettings().showGoToListDialogButton) {
-        <button mat-icon-button class="picker-inline-button"
+        <button
+          mat-icon-button
+          class="picker-inline-button"
           [disabled]="ui().disabled"
-          [tippy]="'Fields.Picker.OpenMultiselect' | translate"
-          (click)="expandDialog()">
+          tippyTranslate="Fields.Picker.OpenMultiselect"
+          (click)="expandDialog()"
+        >
           <mat-icon>post_add</mat-icon>
         </button>
       }
@@ -53,16 +56,15 @@
 <!-- Help text for most controls (not radio/checkbox) -->
 @if (!skipHelpText()) {
   <app-field-helper-text></app-field-helper-text>
-}
-@else {
+} @else {
   <!-- Cheap spacer if no help text, should probably be done better some day -->
-  <br>
+  <br />
 }
 
 <!-- Part to add the text-toggle to the control -->
 <ng-template #textToggle let-showBoth>
-  <span [ngClass]="{'picker-suffix-text': showBoth }">
-    <app-picker-toggle-text 
+  <span [ngClass]="{ 'picker-suffix-text': showBoth }">
+    <app-picker-toggle-text
       [csDisabled]="ui().disabled"
       [allowText]="mySettings().enableTextEntry"
       [isTextMode]="isInFreeTextMode()"
@@ -76,8 +78,13 @@
 <ng-template #addNew>
   @if (mySettings().showAddNewEntityButton) {
     @if (pickerData.state.typesForNew().length > 1) {
-      <button mat-icon-button class="picker-inline-button" [tippy]="'Fields.Picker.New' | translate"
-        [disabled]="ui().disabled || !features().create" [matMenuTriggerFor]="entityTypesMenu">
+      <button
+        mat-icon-button
+        class="picker-inline-button"
+        tippyTranslate="Fields.Picker.New"
+        [disabled]="ui().disabled || !features().create"
+        [matMenuTriggerFor]="entityTypesMenu"
+      >
         <mat-icon>add_circle_outline</mat-icon>
       </button>
       <mat-menu #entityTypesMenu="matMenu">
@@ -87,10 +94,14 @@
           </button>
         }
       </mat-menu>
-    }
-    @else {
-      <button mat-icon-button class="picker-inline-button" [tippy]="'Fields.Picker.New' | translate"
-        [disabled]="ui().disabled || !features().create" (click)="openNewEntityDialog(null)">
+    } @else {
+      <button
+        mat-icon-button
+        class="picker-inline-button"
+        tippyTranslate="Fields.Picker.New"
+        [disabled]="ui().disabled || !features().create"
+        (click)="openNewEntityDialog(null)"
+      >
         <mat-icon>add_circle_outline</mat-icon>
       </button>
     }

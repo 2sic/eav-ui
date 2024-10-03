@@ -1,14 +1,15 @@
+<!-- TODO: @2pp - translations aren't loading or made? -->
 @if (header() && items()) {
   <div class="eav-dialog eav-no-scrollbar">
     <div class="eav-dialog-header">
-      <div class="eav-dialog-header__title">{{'ManageContentList.Title' | translate}}</div>
+      <div class="eav-dialog-header__title">{{ 'ManageContentList.Title' | translate }}</div>
     </div>
     <div class="eav-dialog-content">
       <router-outlet></router-outlet>
       <div class="dialog-component-content fancy-scrollbar-light" cdkScrollable>
         @if (header()) {
           <p>
-            {{'ManageContentList.Description' | translate}}
+            {{ 'ManageContentList.Description' | translate }}
           </p>
           <p>
             @if (header().Type) {
@@ -16,16 +17,16 @@
               <button mat-icon-button tippy="Edit header" (click)="editHeader()">
                 <mat-icon>edit</mat-icon>
               </button>
-            }
-            @else {
-              {{'ManageContentList.NoHeader' | translate}}
+            } @else {
+              {{ 'ManageContentList.NoHeader' | translate }}
             }
           </p>
         }
         @if (items()) {
           <p class="eav-sort-title">
-            {{ 'ManageContentList.' + (reordered() ? 'ListHasBeenReordered' : (items()?.length < 25 ? 'SortItems' : 'SortLotsOfItems'))
-              | translate
+            {{
+              'ManageContentList.' + (reordered() ? 'ListHasBeenReordered' : items()?.length < 25 ? 'SortItems' : 'SortLotsOfItems')
+                | translate
             }}
           </p>
         }
@@ -33,30 +34,48 @@
         <!-- Items - with drag-and-drop -->
         <div class="eav-dnd-list" cdkDropList (cdkDropListDropped)="drop($event)">
           <!-- we use both Index and Id because all demo items have Id=0 -->
-          @for (item of items(); track (item.Index + '+' + item.Id)) {
+          @for (item of items(); track item.Index + '+' + item.Id) {
             <div class="eav-dnd-item" cdkDrag>
               <div class="eav-dnd-item__title">
                 <mat-icon class="eav-dnd-item__title-icon" tippy="Drag to reorder the list">drag_handle</mat-icon>
-                <span class="eav-dnd-item__title-text" tippy="{{ item.Title }} ({{ item.Id }})">
-                  {{ item.Title }} ({{ item.Id }})
-                </span>
+                <span class="eav-dnd-item__title-text" tippy="{{ item.Title }} ({{ item.Id }})"> {{ item.Title }} ({{ item.Id }}) </span>
               </div>
               <div>
                 <!-- most buttons should only exist if it has a real ID, except for remove - which should also remove null-entries -->
-                <button mat-icon-button [tippy]="'Fields.Picker.AddExistingItem' | translate" appMousedownStopPropagation
-                  [disabled]="item.Id === 0" (click)="addFromExisting(item.Index)">
+                <button
+                  mat-icon-button
+                  tippyTranslate="Fields.Picker.AddExistingItem"
+                  appMousedownStopPropagation
+                  [disabled]="item.Id === 0"
+                  (click)="addFromExisting(item.Index)"
+                >
                   <mat-icon>playlist_add</mat-icon>
                 </button>
-                <button mat-icon-button [tippy]="'Fields.Picker.AddItemBelow' | translate" appMousedownStopPropagation
-                  [disabled]="item.Id === 0 || reordered()" (click)="addBelow(item.Index)">
+                <button
+                  mat-icon-button
+                  tippyTranslate="Fields.Picker.AddItemBelow"
+                  appMousedownStopPropagation
+                  [disabled]="item.Id === 0 || reordered()"
+                  (click)="addBelow(item.Index)"
+                >
                   <mat-icon>add</mat-icon>
                 </button>
-                <button mat-icon-button [tippy]="'Fields.Picker.Remove' | translate" appMousedownStopPropagation
-                  [disabled]="reordered()" (click)="remove(item)">
+                <button
+                  mat-icon-button
+                  tippyTranslate="Fields.Picker.Remove"
+                  appMousedownStopPropagation
+                  [disabled]="reordered()"
+                  (click)="remove(item)"
+                >
                   <mat-icon>remove</mat-icon>
                 </button>
-                <button mat-icon-button [tippy]="'Fields.Picker.Edit' | translate" appMousedownStopPropagation
-                  [disabled]="item.Id === 0" (click)="editItem(item.Id)">
+                <button
+                  mat-icon-button
+                  tippyTranslate="Fields.Picker.Edit"
+                  appMousedownStopPropagation
+                  [disabled]="item.Id === 0"
+                  (click)="editItem(item.Id)"
+                >
                   <mat-icon>edit</mat-icon>
                 </button>
               </div>
@@ -66,9 +85,9 @@
       </div>
     </div>
     <mat-dialog-actions align="end">
-      <button mat-raised-button (click)="closeDialog()">{{'General.Buttons.Cancel' | translate}}</button>
-      <button mat-raised-button color="accent" (click)="saveList()">{{'General.Buttons.Save' | translate}}</button>
-      <button mat-raised-button color="accent" (click)="saveAndCloseList()" [tippy]="'Form.Buttons.SaveAndClose' | translate">
+      <button mat-raised-button (click)="closeDialog()">{{ 'General.Buttons.Cancel' | translate }}</button>
+      <button mat-raised-button color="accent" (click)="saveList()">{{ 'General.Buttons.Save' | translate }}</button>
+      <button mat-raised-button color="accent" (click)="saveAndCloseList()" tippyTranslate="Form.Buttons.SaveAndClose">
         <mat-icon class="eav-raised-button-icon">done</mat-icon>
       </button>
     </mat-dialog-actions>

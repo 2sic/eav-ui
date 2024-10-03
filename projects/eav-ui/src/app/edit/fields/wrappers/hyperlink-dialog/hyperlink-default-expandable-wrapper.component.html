@@ -4,97 +4,143 @@
 
 <!-- preview -->
 @if (preview(); as preV) {
-<div class="c-hyperlink-default-field-preview">
-  <div class="c-ew__preview" fxLayout="row" fxLayoutAlign="start start" [ngClass]="{
+  <div class="c-hyperlink-default-field-preview">
+    <div
+      class="c-ew__preview"
+      fxLayout="row"
+      fxLayoutAlign="start start"
+      [ngClass]="{
         'c-ew__preview--disabled': ui().disabled,
-        'c-ew__preview--last-in-group': config.isLastInGroup
-        }">
-    <!-- image / icon -->
-    <div class="thumbnail-before-input" [tippy]="'Fields.Hyperlink.Default.Fullscreen' | translate"
-      [tippyDisabled]="ui().disabled" [ngClass]="{
+        'c-ew__preview--last-in-group': config.isLastInGroup,
+      }"
+    >
+      <!-- image / icon -->
+      <div
+        class="thumbnail-before-input"
+        tippyTranslate="Fields.Hyperlink.Default.Fullscreen"
+        [tippyDisabled]="ui().disabled"
+        [ngClass]="{
           'icon-before-input': uiValue() && !preV.isImage,
-          'thumbnail-before-input--disabled': ui().disabled
-          }"
-      [ngStyle]="{ 'background-image': uiValue() && preV.isImage ? preV.thumbnailUrl : '' }"
-      (click)="expandDialog()">
-      @if (uiValue() && !preV.isImage) {
-        <mat-icon [tippy]="preV.url" tippyPlacement="right" [svgIcon]="preV.icon"></mat-icon>
-      }
-    </div>
-    <!-- field -->
-    <div class="c-ew__preview-field--short" fxFlex="auto">
-      <!-- input -->
-      <div class="hyperlink-input-link-wrapper">
-        <mat-form-field color="accent" class="eav-mat-form-field" [ngClass]="{
-              'mat-form-field-invalid': ui().touchedAndInvalid
-              }">
-          <input matInput class="eav-translate-on-dblclick" [tippy]="'Fields.Hyperlink.Default.Tooltip' | translate"
-            tippyPlacement="top" [placeholder]="basics().placeholder" (change)="setValue($event)"
-            [disabled]="ui().disabled" (blur)="markAsTouched()" [value]="uiValue()"
-            (keyup)="setValue($event)" appPasteClipboardImage [config]="config" [elementType]="'input'">
-          @if (buttonAdam() || buttonPage()) {
-            <div matTextSuffix fxLayoutAlign="center center">
-              <div class="c-ew__preview-suffix-text" fxHide fxShow.gt-xs [ngClass]="{
-                          'c-ew__preview-suffix-text--disabled': ui().disabled
-                          }">
-                {{ buttonAdam() ? ('Fields.Hyperlink.AdamFileManager.Hint' | translate) : '' }}
-              </div>
-              <!-- Open Dialog -->
-              @if (buttonAdam()) {
-              <button mat-icon-button class="c-ew__preview-suffix-icon"
-                tippyTranslate="Fields.Hyperlink.Default.Fullscreen" appClickStopPropagation
-                [disabled]="ui().disabled" (click)="expandDialog()">
-                <mat-icon svgIcon="apple-outlined"></mat-icon>
-              </button>
-              }
-              <button mat-icon-button class="c-ew__preview-suffix-icon" appClickStopPropagation
-                [disabled]="!adamItem()?._imageConfigurationContentType"
-                [ngClass]="{ 'metadata-exists': adamItem()?._imageConfigurationId > 0 }"
-                tippyTranslate="Fields.Hyperlink.AdamFileManager.ImageSettings"
-                (click)="openImageConfiguration(adamItem())">
-                <mat-icon
-                  [tippyTranslate]="(enableImageConfiguration() ? 'Fields.Hyperlink.AdamFileManager.ImageSettingsUnavailable' : 'Fields.Hyperlink.AdamFileManager.ImageSettingsDisabled')"
-                  [tippyDisabled]="adamItem()?._imageConfigurationContentType">filter_center_focus</mat-icon>
-              </button>
-              @if (buttonPage()) {
-              <button mat-icon-button class="c-ew__preview-suffix-icon"
-                tippyTranslate="Fields.Hyperlink.Default.PageTip" appClickStopPropagation
-                [disabled]="ui().disabled" (click)="openPagePicker()">
-                <mat-icon svgIcon="sitemap"></mat-icon>
-              </button>
-            }
-          </div>
-          }
-          <mat-label [ngClass]="{ 'mat-error' : ui().touchedAndInvalid }">
-            {{basics().labelWithRequired}}
-          </mat-label>
-        </mat-form-field>
-        <!-- link absolutely positioned above input -->
-        @if (preV.floatingText) {
-          <div class="hyperlink-floating" fxHide fxShow.gt-xs>
-            <div class="hyperlink-floating__value">{{ uiValue() }}</div>
-            <div class="hyperlink-floating__url-box">
-              <a [href]="preV.url" target="_blank" tabindex="-1" class="hyperlink-floating__url"
-                [tippy]="preV.url">
-                <span>{{ preV.floatingText }}</span>
-              </a>
-            </div>
-          </div>
+          'thumbnail-before-input--disabled': ui().disabled,
+        }"
+        [ngStyle]="{ 'background-image': uiValue() && preV.isImage ? preV.thumbnailUrl : '' }"
+        (click)="expandDialog()"
+      >
+        @if (uiValue() && !preV.isImage) {
+          <mat-icon [tippy]="preV.url" tippyPlacement="right" [svgIcon]="preV.icon"></mat-icon>
         }
       </div>
-      <!-- helper text and adam text -->
-      <div class="c__helper-wrapper">
-        <app-field-helper-text class="c__helper-wrapper--left" [hyperlinkDefaultWrapperFix]="true">
-        </app-field-helper-text>
-        @if (buttonAdam()) {
-          <div align="end" style="display: flex;" class="c-ew__preview-field-hint c__helper-wrapper--right" fxHide
-            fxShow.gt-xs>
-            <span>{{ adamSponsorI18nKey() | translate }}</span>
-            <app-feature-icon-text [featureNameId]="'NoSponsoredByToSic'"></app-feature-icon-text>
-          </div>
-        }
+      <!-- field -->
+      <div class="c-ew__preview-field--short" fxFlex="auto">
+        <!-- input -->
+        <div class="hyperlink-input-link-wrapper">
+          <mat-form-field
+            color="accent"
+            class="eav-mat-form-field"
+            [ngClass]="{
+              'mat-form-field-invalid': ui().touchedAndInvalid,
+            }"
+          >
+            <input
+              matInput
+              class="eav-translate-on-dblclick"
+              tippyTranslate="Fields.Hyperlink.Default.Tooltip"
+              tippyPlacement="top"
+              [placeholder]="basics().placeholder"
+              (change)="setValue($event)"
+              [disabled]="ui().disabled"
+              (blur)="markAsTouched()"
+              [value]="uiValue()"
+              (keyup)="setValue($event)"
+              appPasteClipboardImage
+              [config]="config"
+              [elementType]="'input'"
+            />
+            @if (buttonAdam() || buttonPage()) {
+              <div matTextSuffix fxLayoutAlign="center center">
+                <div
+                  class="c-ew__preview-suffix-text"
+                  fxHide
+                  fxShow.gt-xs
+                  [ngClass]="{
+                    'c-ew__preview-suffix-text--disabled': ui().disabled,
+                  }"
+                >
+                  {{ buttonAdam() ? ("Fields.Hyperlink.AdamFileManager.Hint" | translate) : "" }}
+                </div>
+                <!-- Open Dialog -->
+                @if (buttonAdam()) {
+                  <button
+                    mat-icon-button
+                    class="c-ew__preview-suffix-icon"
+                    tippyTranslate="Fields.Hyperlink.Default.Fullscreen"
+                    appClickStopPropagation
+                    [disabled]="ui().disabled"
+                    (click)="expandDialog()"
+                  >
+                    <mat-icon svgIcon="apple-outlined"></mat-icon>
+                  </button>
+                }
+                <button
+                  mat-icon-button
+                  class="c-ew__preview-suffix-icon"
+                  appClickStopPropagation
+                  [disabled]="!adamItem()?._imageConfigurationContentType"
+                  [ngClass]="{ 'metadata-exists': adamItem()?._imageConfigurationId > 0 }"
+                  tippyTranslate="Fields.Hyperlink.AdamFileManager.ImageSettings"
+                  (click)="openImageConfiguration(adamItem())"
+                >
+                  <mat-icon
+                    [tippyTranslate]="
+                      enableImageConfiguration()
+                        ? 'Fields.Hyperlink.AdamFileManager.ImageSettingsUnavailable'
+                        : 'Fields.Hyperlink.AdamFileManager.ImageSettingsDisabled'
+                    "
+                    [tippyDisabled]="adamItem()?._imageConfigurationContentType"
+                    >filter_center_focus</mat-icon
+                  >
+                </button>
+                @if (buttonPage()) {
+                  <button
+                    mat-icon-button
+                    class="c-ew__preview-suffix-icon"
+                    tippyTranslate="Fields.Hyperlink.Default.PageTip"
+                    appClickStopPropagation
+                    [disabled]="ui().disabled"
+                    (click)="openPagePicker()"
+                  >
+                    <mat-icon svgIcon="sitemap"></mat-icon>
+                  </button>
+                }
+              </div>
+            }
+            <mat-label [ngClass]="{ 'mat-error': ui().touchedAndInvalid }">
+              {{ basics().labelWithRequired }}
+            </mat-label>
+          </mat-form-field>
+          <!-- link absolutely positioned above input -->
+          @if (preV.floatingText) {
+            <div class="hyperlink-floating" fxHide fxShow.gt-xs>
+              <div class="hyperlink-floating__value">{{ uiValue() }}</div>
+              <div class="hyperlink-floating__url-box">
+                <a [href]="preV.url" target="_blank" tabindex="-1" class="hyperlink-floating__url" [tippy]="preV.url">
+                  <span>{{ preV.floatingText }}</span>
+                </a>
+              </div>
+            </div>
+          }
+        </div>
+        <!-- helper text and adam text -->
+        <div class="c__helper-wrapper">
+          <app-field-helper-text class="c__helper-wrapper--left" [hyperlinkDefaultWrapperFix]="true"> </app-field-helper-text>
+          @if (buttonAdam()) {
+            <div align="end" style="display: flex" class="c-ew__preview-field-hint c__helper-wrapper--right" fxHide fxShow.gt-xs>
+              <span>{{ adamSponsorI18nKey() | translate }}</span>
+              <app-feature-icon-text [featureNameId]="'NoSponsoredByToSic'"></app-feature-icon-text>
+            </div>
+          }
+        </div>
       </div>
     </div>
   </div>
-</div>
 }
