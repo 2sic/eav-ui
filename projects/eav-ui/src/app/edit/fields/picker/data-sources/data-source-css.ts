@@ -12,7 +12,7 @@ import { DataSourceMasksHelper } from './data-source-masks-helper';
 const logSpecs = {
   ...logSpecsDataSourceBase,
   data: false,
-  newIconOptions: false,
+  newIconOptions: true,
   fileLoadSettings: false,
   fields: [...logSpecsDataSourceBase.fields, '*'],
 };
@@ -20,20 +20,7 @@ const logSpecs = {
 @Injectable()
 export class DataSourceCss extends DataSourceBase {
 
-  log = classLog({ DataSourceCss }, logSpecs);
-
-  loading = signalObj('loading', false);
-
-  #settings = this.fieldState.settings;
-  #iconOptions = signalObj<IconOption[]>('iconOptions', []);
-
-  fileLoadSettings = computedObj('fileLoadSettings', () => getWith(this.#settings(), s => ({
-    CssSourceFile: s.CssSourceFile,
-    CssSelectorFilter: s.CssSelectorFilter,
-    PreviewValue: s.PreviewValue,
-    Value: s.Value,
-  })));
-
+  log = classLog({ DataSourceCss }, logSpecs, true);
 
   constructor(private scriptsLoaderService: ScriptsLoaderService) {
     super();
@@ -49,7 +36,21 @@ export class DataSourceCss extends DataSourceBase {
         this.#iconOptions.set(newIconOptions);
       });
     }, { allowSignalWrites: true });
+
   }
+
+  loading = signalObj('loading', false);
+
+  #settings = this.fieldState.settings;
+  #iconOptions = signalObj<IconOption[]>('iconOptions', []);
+
+  fileLoadSettings = computedObj('fileLoadSettings', () => getWith(this.#settings(), s => ({
+    CssSourceFile: s.CssSourceFile,
+    CssSelectorFilter: s.CssSelectorFilter,
+    PreviewValue: s.PreviewValue,
+    Value: s.Value,
+  })));
+
 
 
   #dataMaskHelper = (() => {

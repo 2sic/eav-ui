@@ -12,14 +12,14 @@ export class DataAdapterCss extends DataAdapterBase {
 
   log = classLog({ DataAdapterCss }, DataAdapterBase.logSpecs);
 
+  protected dataSourceRaw = transient(DataSourceCss);
+
   constructor() {
     super();
     this.log.fnIf('constructor');
   }
 
   public features = signalObj('features', { edit: false, create: false, delete: false, } satisfies Partial<PickerFeatures>);
-
-  protected dataSourceRaw = transient(DataSourceCss);
 
   /** should never be needed as we have synchronously all data in settings */
   override initPrefetch(prefetchGuids: string[]): void { }

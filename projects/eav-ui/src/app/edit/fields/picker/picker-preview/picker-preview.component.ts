@@ -39,7 +39,7 @@ import { PickerTextComponent } from '../picker-text/picker-text.component';
   ],
 })
 export class PickerPreviewComponent extends PickerPartBaseComponent {
-  
+
   log = classLog({PickerPreviewComponent});
 
   constructor() { super(); }

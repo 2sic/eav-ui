@@ -12,7 +12,7 @@ import { EditRoutingService } from '../../routing/edit-routing.service';
   template: '',
 })
 export class PickerPartBaseComponent {
-  
+
   //#region Setup: Logging, inject, constructor
 
   log = classLog({PickerPartBaseComponent});
@@ -35,7 +35,6 @@ export class PickerPartBaseComponent {
 
   //#endregion
 
-  
   /** Picker Data Bundle with Source and state etc. */
   protected pickerData = this.fieldState.pickerData;
 

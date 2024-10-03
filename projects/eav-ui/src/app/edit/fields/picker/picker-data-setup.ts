@@ -79,6 +79,7 @@ export class PickerDataSetup {
 
     // The config type is either the forced type (from defaults for old pickers) or the specified type
     const dsType = parts.forcePickerConfig ?? dataSourceType;
+    l.a(`use config type`, { dataSourceType, forcePickerConfig: parts.forcePickerConfig, dsType });
 
     const dataAdapterType = mapNameToDataAdapter[dsType] ?? DataAdapterEmpty;
     this.#throwIfSourceAdapterNotAllowed(inputType, dataAdapterType);
@@ -102,7 +103,6 @@ const mapNameToDataAdapter: Record<string, ProviderToken<DataAdapterBase>> = {
   [PickerConfigs.UiPickerSourceQuery]: DataAdapterQuery,
   [PickerConfigs.UiPickerSourceEntity]: DataAdapterEntity,
   [PickerConfigs.UiPickerSourceAppAssets]: DataAdapterAppAssets,
-
 };
 
 /**
@@ -120,11 +120,19 @@ const partsMap: Record<string, PartMap> = {
     states: [StateAdapterString],
     forcePickerConfig: PickerConfigs.UiPickerSourceCustomList,
   },
+
+  [InputTypeCatalog.StringFontIconPicker]: {
+    sources: [DataAdapterCss],
+    states: [StateAdapterString],
+    forcePickerConfig: PickerConfigs.UiPickerSourceCss,
+  },
+
   [InputTypeCatalog.NumberDropdown]: {
     sources: [DataAdapterString],
     states: [StateAdapterNumber],
     forcePickerConfig: PickerConfigs.UiPickerSourceCustomList,
   },
+
   [InputTypeCatalog.NumberPicker]: {
     sources: [DataAdapterString, DataAdapterQuery, DataAdapterEntity],
     states: [StateAdapterNumber],

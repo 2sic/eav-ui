@@ -68,13 +68,6 @@ export class DataSourceMasksHelper {
 
     })();
 
-    // @2dg remove
-    // if (entity.value === undefined) {
-    //   console.log("2dg undefined ", masks.value)
-    // }
-
-    // console.log("2dg entity ", entity)
-
     // Figure out Title Value if we don't use masks - fallback is to use the title, or the value with asterisk
     const label = (() => {
       const maybeTitle = entity[masks.label];

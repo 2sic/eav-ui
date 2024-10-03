@@ -20,7 +20,7 @@ export class FieldDefaults {
 
   /** Include itemHeader if you need data from prefill, and set onlyPrefill if you only need parsed prefill */
   getDefaultOrPrefillValue(onlyPrefill?: boolean): FieldValue {
-    
+
     const inputType = this.inputType;
     const name = this.name;
     const settings = this.settings;

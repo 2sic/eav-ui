@@ -363,5 +363,6 @@ export interface FieldSettings extends
   StringWysiwyg,
   EntityPicker,
   StringPicker,
-  InternalSettings { }
+  InternalSettings {
+}
 

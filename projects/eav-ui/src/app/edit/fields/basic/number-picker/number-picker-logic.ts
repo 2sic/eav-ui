@@ -8,7 +8,7 @@ import { StringPickerLogic } from '../string-picker/string-picker-logic';
 export class NumberPickerLogic extends FieldLogicBase {
   name: Of<typeof InputTypeCatalog> = InputTypeCatalog.NumberPicker;
 
-  constructor() { super({NumberPickerLogic}); }
+  constructor() { super({ NumberPickerLogic }); }
 
   update(specs: FieldLogicUpdate<string>): FieldSettings {
 

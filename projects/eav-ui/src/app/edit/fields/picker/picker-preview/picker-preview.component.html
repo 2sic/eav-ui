@@ -62,7 +62,7 @@
 <!-- Part to add the text-toggle to the control -->
 <ng-template #textToggle let-showBoth>
   <span [ngClass]="{'picker-suffix-text': showBoth }">
-    <app-picker-toggle-text 
+    <app-picker-toggle-text
       [csDisabled]="ui().disabled"
       [allowText]="mySettings().enableTextEntry"
       [isTextMode]="isInFreeTextMode()"

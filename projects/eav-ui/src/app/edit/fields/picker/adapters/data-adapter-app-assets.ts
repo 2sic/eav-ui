@@ -11,6 +11,8 @@ export class DataAdapterAppAssets extends DataAdapterEntityBase {
 
   protected dataSourceRaw = transient(DataSourceAppAssets);
 
+  constructor() { super();}
+
   override syncParams(): void {
     this.dataSourceRaw.setParams(this.contentType());
   }
