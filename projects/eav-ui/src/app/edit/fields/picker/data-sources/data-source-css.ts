@@ -1,7 +1,7 @@
 import { effect, Injectable } from '@angular/core';
-import { getWith } from 'projects/eav-ui/src/app/core';
+import { getWith } from 'projects/core';
 import { EntityLight } from 'projects/eav-ui/src/app/shared/models/entity-basic';
-import { classLog } from '../../../../shared/logging/logging';
+import { classLog } from '../../../../shared/logging';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
 import { ScriptsLoaderService } from '../../../shared/services/scripts-loader.service';
 import { findAllIconsInCss } from '../../basic/string-font-icon-picker/string-font-icon-picker.helpers';
@@ -12,7 +12,7 @@ import { DataSourceMasksHelper } from './data-source-masks-helper';
 const logSpecs = {
   ...logSpecsDataSourceBase,
   data: false,
-  newIconOptions: false,
+  newIconOptions: true,
   fileLoadSettings: false,
   fields: [...logSpecsDataSourceBase.fields, '*'],
 };
@@ -20,20 +20,7 @@ const logSpecs = {
 @Injectable()
 export class DataSourceCss extends DataSourceBase {
 
-  log = classLog({ DataSourceCss }, logSpecs);
-
-  loading = signalObj('loading', false);
-
-  #settings = this.fieldState.settings;
-  #iconOptions = signalObj<IconOption[]>('iconOptions', []);
-
-  fileLoadSettings = computedObj('fileLoadSettings', () => getWith(this.#settings(), s => ({
-    CssSourceFile: s.CssSourceFile,
-    CssSelectorFilter: s.CssSelectorFilter,
-    PreviewValue: s.PreviewValue,
-    Value: s.Value,
-  })));
-
+  log = classLog({ DataSourceCss }, logSpecs, true);
 
   constructor(private scriptsLoaderService: ScriptsLoaderService) {
     super();
@@ -49,7 +36,21 @@ export class DataSourceCss extends DataSourceBase {
         this.#iconOptions.set(newIconOptions);
       });
     }, { allowSignalWrites: true });
+
   }
+
+  loading = signalObj('loading', false);
+
+  #settings = this.fieldState.settings;
+  #iconOptions = signalObj<IconOption[]>('iconOptions', []);
+
+  fileLoadSettings = computedObj('fileLoadSettings', () => getWith(this.#settings(), s => ({
+    CssSourceFile: s.CssSourceFile,
+    CssSelectorFilter: s.CssSelectorFilter,
+    PreviewValue: s.PreviewValue,
+    Value: s.Value,
+  })));
+
 
 
   #dataMaskHelper = (() => {
@@ -79,7 +80,7 @@ export class DataSourceCss extends DataSourceBase {
 
       l.values({ entity });
 
-      const pickerItem = maskHelper.entity2PickerItem({ entity, streamName: null, mustUseGuid: false });
+      const pickerItem = maskHelper.data2PickerItem({ entity, streamName: null, valueMustUseGuid: false });
       l.a('one item', { entity, pickerItem });
       return pickerItem;
     });

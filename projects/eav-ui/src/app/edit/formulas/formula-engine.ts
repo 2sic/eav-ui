@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { transient } from '../../core';
+import { transient } from '../../../../../core';
 import { classLog } from '../../shared/logging';
 import { ItemIdentifierShared } from '../../shared/models/edit-form.model';
 import { DebugFields } from '../edit-debug';

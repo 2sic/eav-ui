@@ -8,7 +8,7 @@ import { MatRippleModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
-import { transient } from '../../../../core/transient';
+import { transient } from '../../../../../../../core/transient';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { vh } from '../../../../shared/helpers/viewport.helpers';
 import { classLog } from '../../../../shared/logging';

@@ -1,4 +1,4 @@
-import { Of } from 'projects/eav-ui/src/app/core';
+import { Of } from 'projects/core';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
@@ -8,7 +8,7 @@ import { StringPickerLogic } from '../string-picker/string-picker-logic';
 export class NumberPickerLogic extends FieldLogicBase {
   name: Of<typeof InputTypeCatalog> = InputTypeCatalog.NumberPicker;
 
-  constructor() { super({NumberPickerLogic}); }
+  constructor() { super({ NumberPickerLogic }); }
 
   update(specs: FieldLogicUpdate<string>): FieldSettings {
 

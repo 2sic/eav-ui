@@ -1,7 +1,7 @@
 import { Injectable, WritableSignal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { Observable, combineLatest, distinctUntilChanged, filter, map, switchMap } from "rxjs";
-import { transient } from '../../../../core';
+import { transient } from '../../../../../../../core';
 import { ClassLogger } from '../../../../shared/logging';
 import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 import { QueryService } from '../../../../shared/services/query.service';
@@ -27,7 +27,7 @@ export const logSpecsDataSourceEntityQueryBase: typeof logSpecsDataSourceBase & 
  */
 @Injectable()
 export abstract class DataSourceEntityQueryBase extends DataSourceBase {
-  
+
   //#region Inject and blank constructor
 
   abstract log: ClassLogger<typeof logSpecsDataSourceEntityQueryBase>;

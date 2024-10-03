@@ -5,10 +5,10 @@ import { MAT_DIALOG_DATA, MatDialogActions, MatDialogRef } from '@angular/materi
 import { MatRadioModule } from '@angular/material/radio';
 import { ActivatedRoute } from '@angular/router';
 import { forkJoin } from 'rxjs';
+import { transient } from '../../../../core';
 import { ContentType } from '../app-administration/models/content-type.model';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { DialogConfigAppService } from '../app-administration/services/dialog-config-app.service';
-import { transient } from '../core';
 import { DragAndDropDirective } from '../shared/directives/drag-and-drop.directive';
 import { ContentImportDialogData } from './content-import-dialog.config';
 import { ContentImport, EvaluateContentResult, ImportContentResult } from './models/content-import.model';

@@ -58,25 +58,25 @@
         @if (showAdam()) {
           <button mat-menu-item (click)="toggleAdam(false, false)">
             <mat-icon svgIcon="apple-outlined"></mat-icon>
-            <span>{{ 'Fields.Hyperlink.Default.MenuAdam' | translate }}</span>
+            <span>{{ "Fields.Hyperlink.Default.MenuAdam" | translate }}</span>
           </button>
         }
         @if (showPagePicker()) {
           <button mat-menu-item (click)="openPagePicker()">
             <mat-icon svgIcon="sitemap"></mat-icon>
-            <span>{{ 'Fields.Hyperlink.Default.MenuPage' | translate }}</span>
+            <span>{{ "Fields.Hyperlink.Default.MenuPage" | translate }}</span>
           </button>
         }
         @if (showImageManager()) {
           <button mat-menu-item (click)="toggleAdam(true, true)">
             <mat-icon svgIcon="file-image"></mat-icon>
-            <span>{{ 'Fields.Hyperlink.Default.MenuImage' | translate }}</span>
+            <span>{{ "Fields.Hyperlink.Default.MenuImage" | translate }}</span>
           </button>
         }
         @if (showFileManager()) {
           <button mat-menu-item (click)="toggleAdam(true, false)">
             <mat-icon svgIcon="file"></mat-icon>
-            <span>{{ 'Fields.Hyperlink.Default.MenuDocs' | translate }}</span>
+            <span>{{ "Fields.Hyperlink.Default.MenuDocs" | translate }}</span>
           </button>
         }
       </ng-template>

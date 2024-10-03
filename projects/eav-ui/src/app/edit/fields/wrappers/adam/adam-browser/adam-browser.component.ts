@@ -8,8 +8,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
 import isEqual from 'lodash-es/isEqual';
+import { transient } from '../../../../../../../../core/transient';
 import { AdamConfig, AdamItem } from '../../../../../../../../edit-types';
-import { transient } from '../../../../../core/transient';
 import { FeatureNames } from '../../../../../features/feature-names';
 import { FeaturesScopedService } from '../../../../../features/features-scoped.service';
 import { openFeatureDialog } from '../../../../../features/shared/base-feature.component';
@@ -306,6 +306,7 @@ export class AdamBrowserComponent implements OnInit {
 
   toggle(usePortalRoot: boolean, showImagesOnly: boolean) {
     const newConfig: AdamConfig = { ...this.adamConfig(), ...{ usePortalRoot, showImagesOnly } };
+
     if (isEqual(newConfig, this.adamConfig()))
       newConfig.autoLoad = !newConfig.autoLoad;
 

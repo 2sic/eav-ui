@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
 import { transient } from '../../../../../../../core/transient';
 import { classLog } from '../../../../shared/logging';
-import { DataSourceEntity } from "../data-sources/data-source-entity";
+import { DataSourceAppAssets } from '../data-sources/data-source-app-assets';
 import { DataAdapterBase } from './data-adapter-base';
 import { DataAdapterEntityBase } from "./data-adapter-entity-base";
 
 @Injectable()
-export class DataAdapterEntity extends DataAdapterEntityBase {
-  log = classLog({DataAdapterEntity}, DataAdapterBase.logSpecs);
+export class DataAdapterAppAssets extends DataAdapterEntityBase {
+  log = classLog({ DataAdapterAppAssets }, DataAdapterBase.logSpecs);
 
-  protected dataSourceRaw = transient(DataSourceEntity);
+  protected dataSourceRaw = transient(DataSourceAppAssets);
 
-  constructor() { super(); }
+  constructor() { super();}
 
   override syncParams(): void {
     this.dataSourceRaw.setParams(this.contentType());

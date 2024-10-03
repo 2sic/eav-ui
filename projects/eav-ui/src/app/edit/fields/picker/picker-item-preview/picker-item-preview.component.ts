@@ -21,7 +21,7 @@ export class PickerItemPreviewComponent {
   settings = input.required<FieldSettingsWithPickerSource>();
 
   replaceDot(value: string): string {
-    return value?.replace(/\./g, '');
+    return value?.replace(/\./g, '') ;
   }
 
   imageResize(originalImage: string, width: number, height: number): string {

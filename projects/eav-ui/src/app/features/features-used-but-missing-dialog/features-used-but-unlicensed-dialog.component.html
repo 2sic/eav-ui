@@ -1,12 +1,20 @@
 <mat-card>
   <mat-card-header>
-    <mat-card-title>Features in Use, but not Licensed</mat-card-title>
+    <mat-card-title>Preview of Features which are not Licensed</mat-card-title>
   </mat-card-header>
   <mat-card-content>
     <p>
-      Some features are used but not licensed. 
-      Please contact your account manager to get them licensed.
+      99% of all features in 2sxc are free.
+      But some very advanced features are only for patrons (supporters) and enterprise customers.
+      You are permitted to try these features, but to really use them you must get a license.
     </p>
+    <p>
+      This message should remind you 😉 of that.
+      <br>
+      Please contact your account manager to get them licensed, or visit the
+      <a href="https://patrons.2sxc.org/" target="_blank">patrons</a> to learn more.
+    </p>
+    <p>The following features are currently in preview:</p>
     @for (f of features(); track f.nameId) {
       <app-feature-details-dialog [specs]="{ feature: f, showGuid: false, showStatus: true, showClose: false }"></app-feature-details-dialog>
     }

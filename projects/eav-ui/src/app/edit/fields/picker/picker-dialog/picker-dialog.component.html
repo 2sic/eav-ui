@@ -1,8 +1,12 @@
 <app-picker-list></app-picker-list>
 
 @if (!isInFreeTextMode()) {
-  <app-picker-search [showSelectedItem]="false" [showItemEditButtons]="false"> </app-picker-search>
-} @else {
+  <app-picker-search
+    [showSelectedItem]="false"
+    [showItemEditButtons]="false">
+  </app-picker-search>
+}
+@else {
   <app-picker-text></app-picker-text>
 }
 <app-field-helper-text></app-field-helper-text>

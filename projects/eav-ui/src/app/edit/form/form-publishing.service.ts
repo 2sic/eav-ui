@@ -1,5 +1,5 @@
 import { Injectable, Signal } from '@angular/core';
-import { Of } from '../../core';
+import { Of } from '../../../../../core';
 import { classLog } from '../../shared/logging';
 import { ComputedCacheHelper } from '../../shared/signals/computed-cache';
 import { EavPublishStatus, PublishModes, PublishStatus } from '../dialog/main/edit-dialog-main.models';

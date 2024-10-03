@@ -1,4 +1,4 @@
-import { Of } from '../../core';
+import { Of } from '../../../../../core';
 import { InputTypeCatalog } from './input-type-catalog';
 
 const empty: Of<typeof InputTypeCatalog>[] = [InputTypeCatalog.EmptyDefault, InputTypeCatalog.EmptyEnd, InputTypeCatalog.EmptyMessage];
@@ -8,6 +8,7 @@ const ends: Of<typeof InputTypeCatalog>[] = [InputTypeCatalog.EmptyDefault, Inpu
 const oldValuePickers: Of<typeof InputTypeCatalog>[] = [
   InputTypeCatalog.StringDropdown,
   InputTypeCatalog.NumberDropdown,
+  InputTypeCatalog.StringFontIconPicker,
 ];
 
 const oldEntityPickers: Of<typeof InputTypeCatalog>[] = [

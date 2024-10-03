@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { map, Observable } from "rxjs";
-import { classLog } from '../../../../shared/logging/logging';
+import { classLog } from '../../../../shared/logging';
 import { DataWithLoading } from '../models/data-with-loading';
 import { PickerItem } from '../models/picker-item.model';
 import { DataSourceEntityQueryBase, logSpecsDataSourceEntityQueryBase } from './data-source-entity-query-base';
@@ -11,7 +11,8 @@ export class DataSourceEntity extends DataSourceEntityQueryBase {
   log = classLog({ DataSourceEntity }, logSpecsDataSourceEntityQueryBase);
 
   constructor() {
-    super(); this.constructorEnd();
+    super();
+    this.constructorEnd();
   }
 
   /**
@@ -25,7 +26,7 @@ export class DataSourceEntity extends DataSourceEntityQueryBase {
         // tap(list => l.a('getEntities', { typeName, list })),
         map(list => {
           const fieldMask = this.createMaskHelper();
-          const data = list.Default.map(entity => fieldMask.entity2PickerItem({ entity, streamName: null, mustUseGuid: true }));
+          const data = list.Default.map(entity => fieldMask.data2PickerItem({ entity, streamName: null, valueMustUseGuid: true }));
           return { data, loading: false } as DataWithLoading<PickerItem[]>;
         }),
       )

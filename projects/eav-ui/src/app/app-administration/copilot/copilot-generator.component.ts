@@ -1,16 +1,16 @@
+import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, Input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
-import { Context } from '../../shared/services/context';
-import { map, take } from 'rxjs';
-import { CommonModule } from '@angular/common';
-import { RichResult } from '../../shared/models/rich-result';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { map, take } from 'rxjs';
+import { transient } from '../../../../../core';
+import { RichResult } from '../../shared/models/rich-result';
+import { Context } from '../../shared/services/context';
 import { CopilotService } from './copilot-service';
-import { transient } from '../../core';
 
 @Component({
   selector: 'app-copilot-generator',

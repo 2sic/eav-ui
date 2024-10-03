@@ -1,5 +1,5 @@
+import { Of } from '../../../../../../core';
 import { FieldSettings, FieldValue } from '../../../../../../edit-types';
-import { Of } from '../../../core';
 import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
 import { classLog } from '../../../shared/logging';
 import { ItemIdentifierShared } from '../../../shared/models/edit-form.model';
@@ -20,7 +20,7 @@ export class FieldDefaults {
 
   /** Include itemHeader if you need data from prefill, and set onlyPrefill if you only need parsed prefill */
   getDefaultOrPrefillValue(onlyPrefill?: boolean): FieldValue {
-    
+
     const inputType = this.inputType;
     const name = this.name;
     const settings = this.settings;

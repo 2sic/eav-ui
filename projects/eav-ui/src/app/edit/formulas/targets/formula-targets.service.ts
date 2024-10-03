@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Of } from '../../../core';
+import { Of } from '../../../../../../core';
 import { InputTypeHelpers } from '../../../shared/fields/input-type-helpers';
 import { TargetOption } from '../../dialog/footer/formula-designer/formula-designer.models';
 import { ContentTypeService } from '../../shared/content-types/content-type.service';

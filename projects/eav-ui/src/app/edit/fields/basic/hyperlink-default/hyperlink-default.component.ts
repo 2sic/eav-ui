@@ -10,7 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { TranslateModule } from '@ngx-translate/core';
-import isEqual from 'lodash-es/isEqual';
+import { computedObj } from 'projects/eav-ui/src/app/shared/signals/signal.utilities';
 import { AdamItem } from '../../../../../../../edit-types/src/AdamItem';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
@@ -88,14 +88,14 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
 
     // ADAM Settings, in a way which ensures they only fire on relevant changes
     // must be in constructor for effect() to work
-    const adamSettings = computed(() => {
+    const adamSettings = computedObj('adamSettings', () => {
       const s = this.fieldState.settings();
       return {
         rootSubfolder: s.Paths,
         fileFilter: s.FileFilter,
         autoLoad: true,
       };
-    }, { equal: isEqual});
+    });
 
     effect(() => {
       const config = adamSettings();
@@ -110,7 +110,6 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
     // Should probably be in ngOnInit, because this.config.adam is created late
     this.config.adam.onItemClick = (item: AdamItem) => { this.setValue(item); };
     this.config.adam.onItemUpload = (item: AdamItem) => { this.setValue(item); };
-
   }
 
   toggleAdam(usePortalRoot: boolean, showImagesOnly: boolean) {

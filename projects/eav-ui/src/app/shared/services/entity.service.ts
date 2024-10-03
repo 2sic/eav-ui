@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { filter, map, Observable, shareReplay, switchMap } from 'rxjs';
-import { classLog } from '../logging';
+import { transient } from '../../../../../core';
 import { EntityLightIdentifier } from '../../shared/models/entity-basic';
-import { QueryService } from './query.service';
-import { transient } from '../../core';
+import { classLog } from '../logging';
 import { HttpServiceBase } from './http-service-base';
+import { QueryService } from './query.service';
 
 const logSpecs = {
   all: false,

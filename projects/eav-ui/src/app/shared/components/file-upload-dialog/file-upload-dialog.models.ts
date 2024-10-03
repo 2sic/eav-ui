@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { Of } from '../../../core';
+import { Of } from '../../../../../../core';
 
 export interface FileUploadDialogData {
   title?: string;

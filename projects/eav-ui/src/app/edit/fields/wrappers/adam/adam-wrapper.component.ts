@@ -26,13 +26,14 @@ export class AdamWrapperComponent implements OnInit {
 
   protected fieldState = inject(FieldState);
   protected config = this.fieldState.config;
-  
+
   open = this.editRoutingService.isExpandedSignal(this.config.index, this.config.entityGuid);
 
   constructor(private editRoutingService: EditRoutingService) { }
 
   fullscreenAdam: boolean;
   adamDisabled = this.config.adam.isDisabled;
+
 
   ngOnInit() {
     this.fullscreenAdam = this.config.inputTypeSpecs.inputType === InputTypeCatalog.HyperlinkLibrary;

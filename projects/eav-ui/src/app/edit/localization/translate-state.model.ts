@@ -1,4 +1,4 @@
-import { Of } from '../../core';
+import { Of } from '../../../../../core';
 import { TranslationLinks } from './translation-link.constants';
 
 export interface TranslationStateCore {

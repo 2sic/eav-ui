@@ -1,8 +1,8 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, inject, ViewChild, ViewContainerRef } from '@angular/core';
-import { ConnectorHelper } from './connector.helper';
-import { FieldState } from '../field-state';
-import { transient } from '../../../core/transient';
+import { transient } from '../../../../../../core/transient';
 import { classLog } from '../../../shared/logging';
+import { FieldState } from '../field-state';
+import { ConnectorHelper } from './connector.helper';
 
 @Component({
   selector: 'app-connector',

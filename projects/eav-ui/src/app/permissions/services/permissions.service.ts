@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { Of, transient } from '../../core';
+import { Of, transient } from '../../../../../core';
 import { eavConstants, MetadataKeyTypes } from '../../shared/constants/eav.constants';
 import { EntityEditService } from '../../shared/services/entity-edit.service';
 import { Permission } from '../models/permission.model';

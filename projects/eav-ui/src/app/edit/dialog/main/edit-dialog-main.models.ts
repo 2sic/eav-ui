@@ -1,5 +1,7 @@
+import { Of } from '../../../../../../core';
 import { AdamItem } from '../../../../../../edit-types';
 import { DialogContext } from '../../../app-administration/models';
+import { FeatureNames } from '../../../features/feature-names';
 import { InputTypeMetadata } from '../../../shared/fields/input-type-metadata.model';
 import { EavContentType, EavEntity } from '../../shared/models/eav';
 import { EavContentTypeDto, EavEntityBundleDto, EavEntityDto } from '../../shared/models/json-format-v1';
@@ -30,7 +32,7 @@ export interface EavEditLoadDto extends EavPublishStatus {
   Prefetch?: Prefetch;
   Settings: EditSettingsDto;
 
-  RequiredFeatures?: Record<string, string[]>;
+  RequiredFeatures?: Record<Of<typeof FeatureNames>, string[]>;
 }
 
 export interface EditSettings {

@@ -9,7 +9,7 @@ import { ViewsService } from '../../services/views.service';
 // tslint:disable-next-line:max-line-length
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { transient } from '../../../core';
+import { transient } from '../../../../../../core';
 import { ColumnDefinitions } from '../../../shared/ag-grid/column-definitions';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { SxcGridModule } from '../../../shared/modules/sxc-grid-module/sxc-grid.module';

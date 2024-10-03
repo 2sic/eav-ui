@@ -1,7 +1,7 @@
 import { Sxc } from '@2sic.com/2sxc-typings';
 import { BehaviorSubject } from 'rxjs';
+import { Of } from '../../../../../../core';
 import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
-import { Of } from '../../../core';
 import { InputTypeSpecs } from '../../shared/input-types/input-type-specs.model';
 import { FormulaFunction, FormulaVersions } from '../formula-definitions';
 import { FormulaPromise } from '../promise/formula-promise-result.model';

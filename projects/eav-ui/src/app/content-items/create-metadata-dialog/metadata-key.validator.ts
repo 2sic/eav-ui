@@ -1,5 +1,5 @@
 import { AbstractControl, UntypedFormGroup, ValidationErrors, ValidatorFn } from '@angular/forms';
-import { Of } from '../../core';
+import { Of } from '../../../../../core';
 import { eavConstants, MetadataKeyTypes } from '../../shared/constants/eav.constants';
 import { guidRegex } from '../../shared/constants/guid.constants';
 

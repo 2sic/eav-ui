@@ -1,6 +1,6 @@
 import { AbstractControl } from '@angular/forms';
+import { Of } from '../../../../../../core';
 import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
-import { Of } from '../../../core';
 import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
 import { FieldProps } from '../../state/fields-configs.model';
 

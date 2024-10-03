@@ -1,4 +1,5 @@
 <div class="dropzone" [@adamShowAnimate]="adamConfig()?.autoLoad ? 'open' : 'closed'">
+
   @if (adamConfig()?.autoLoad && expanded()) {
     <div
       [ngClass]="{

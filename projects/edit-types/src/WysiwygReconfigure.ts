@@ -1,6 +1,6 @@
-import type { Editor, RawEditorOptions, TinyMCE } from 'tinymce';
-import { AddOnSettings } from './AddOnSettings';
+import type { Editor, TinyMCE } from 'tinymce';
 import { RawEditorOptionsExtended } from '../../field-string-wysiwyg/src/config/raw-editor-options-extended';
+import { AddOnSettings } from './AddOnSettings';
 
 export interface WysiwygReconfigure {
   /**

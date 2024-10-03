@@ -1,8 +1,8 @@
 import { FieldValue } from 'projects/edit-types';
+import { Of } from '../../../../../../core';
 import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
 import { RelationshipParentChild, UiPickerModeTree } from '../../../../../../edit-types/src/PickerModeTree';
 import { FieldSettingsWithPickerSource, PickerSourceCustomCsv, PickerSourceCustomList, PickerSourceEntity, PickerSourceQuery, UiPickerSourcesAll } from '../../../../../../edit-types/src/PickerSources';
-import { Of } from '../../../core';
 import { FeatureNames } from '../../../features/feature-names';
 import { classLog } from '../../../shared/logging';
 import { EavEntity } from '../../shared/models/eav';
@@ -100,7 +100,7 @@ export class PickerLogicShared {
     fs.ItemInformation = typeConfig.ItemInformation ?? '';
     fs.ItemTooltip = typeConfig.ItemTooltip ?? '';
     fs.ItemLink = typeConfig.ItemLink ?? '';
-    fs.PickerPreviewType = typeConfig.PickerPreviewType ?? '';
+    fs.PreviewType = typeConfig.PreviewType ?? '';
 
     const sourceIsQuery = typeName === PickerConfigs.UiPickerSourceQuery;
     const sourceIsEntity = typeName === PickerConfigs.UiPickerSourceEntity;

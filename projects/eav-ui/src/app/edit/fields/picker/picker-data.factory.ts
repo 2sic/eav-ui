@@ -1,11 +1,11 @@
 import { Injectable, Injector } from '@angular/core';
-import { transient } from '../../../core';
+import { transient } from '../../../../../../core';
 import { InputTypeHelpers } from '../../../shared/fields/input-type-helpers';
-import { InputTypeSpecs } from '../../shared/input-types/input-type-specs.model';
-import { PickerData } from './picker-data';
 import { classLog } from '../../../shared/logging';
+import { InputTypeSpecs } from '../../shared/input-types/input-type-specs.model';
 import { InputTypeService } from '../../shared/input-types/input-type.service';
 import { EavContentTypeAttribute } from '../../shared/models/eav';
+import { PickerData } from './picker-data';
 
 /**
  * Factory for **creating** PickerData instances.

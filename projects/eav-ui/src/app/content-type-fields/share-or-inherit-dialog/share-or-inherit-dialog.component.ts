@@ -7,7 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { TranslateModule } from '@ngx-translate/core';
 import groupBy from 'lodash-es/groupBy';
-import { transient } from '../../core/transient';
+import { transient } from '../../../../../core/transient';
 import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
 import { ContentTypesFieldsService } from '../../shared/fields/content-types-fields.service';
 import { Field } from '../../shared/fields/field.model';

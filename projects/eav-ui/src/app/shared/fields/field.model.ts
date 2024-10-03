@@ -1,5 +1,5 @@
+import { Of } from '../../../../../core';
 import { PermissionsCount } from '../../app-administration/models/permissions-count.model';
-import { Of } from '../../core';
 import { EavType } from '../../edit/shared/models/eav/eav-type';
 import { EditInfo } from '../models/edit-info';
 import { InputTypeCatalog } from './input-type-catalog';

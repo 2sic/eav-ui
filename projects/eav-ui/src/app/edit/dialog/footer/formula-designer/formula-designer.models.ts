@@ -1,4 +1,4 @@
-import { Of } from '../../../../core';
+import { Of } from '../../../../../../../core';
 import { FormulaCacheItem } from '../../../formulas/cache/formula-cache.model';
 import { FormulaTargets } from '../../../formulas/targets/formula-targets';
 

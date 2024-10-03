@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
+import { Of } from '../../../../../../core';
 import { AttributeInputType } from '../../../../../../edit-types/src/InputTypeName';
-import { Of } from '../../../core';
 import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
 import { InputTypeHelpers } from '../../../shared/fields/input-type-helpers';
 import { InputTypeMetadata } from '../../../shared/fields/input-type-metadata.model';

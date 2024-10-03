@@ -6,7 +6,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { TranslateModule } from '@ngx-translate/core';
-import { Of } from '../../../../core';
+import { Of } from '../../../../../../../core';
 import { FormConfigService } from '../../../form/form-config.service';
 import { FormPublishingService } from '../../../form/form-publishing.service';
 import { PublishModes } from '../../main/edit-dialog-main.models';

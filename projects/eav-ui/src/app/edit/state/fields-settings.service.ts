@@ -1,23 +1,23 @@
 import { computed, effect, inject, Injectable, signal, Signal, WritableSignal } from '@angular/core';
+import { transient } from '../../../../../core';
 import { FieldSettings } from '../../../../../edit-types';
+import { classLog } from '../../shared/logging';
+import { ComputedAnalyzer } from '../../shared/signals/computed-analyzer';
+import { ComputedCacheHelper } from '../../shared/signals/computed-cache';
+import { computedObj, signalObj } from '../../shared/signals/signal.utilities';
+import { PickerData } from '../fields/picker/picker-data';
+import { FormConfigService } from '../form/form-config.service';
+import { FormLanguageService } from '../form/form-language.service';
+import { TranslationState } from '../localization/translate-state.model';
+import { ContentTypeService } from '../shared/content-types/content-type.service';
 import { ContentTypeSettingsHelpers } from '../shared/helpers';
 import { EavItem } from '../shared/models/eav';
-import { transient } from '../../core';
-import { FormConfigService } from '../form/form-config.service';
 import { FieldProps } from './fields-configs.model';
-import { TranslationState } from '../localization/translate-state.model';
-import { FormLanguageService } from '../form/form-language.service';
-import { ContentTypeService } from '../shared/content-types/content-type.service';
-import { ItemService } from './item.service';
-import { ComputedCacheHelper } from '../../shared/signals/computed-cache';
 import { FieldsPropsEngine } from './fields-properties-engine';
 import { FieldsPropertiesUpdates } from './fields-properties-updates';
-import { FieldsSignalsHelper } from './fields-signals.helper';
-import { computedObj, signalObj } from '../../shared/signals/signal.utilities';
-import { ComputedAnalyzer } from '../../shared/signals/computed-analyzer';
-import { classLog } from '../../shared/logging';
-import { PickerData } from '../fields/picker/picker-data';
 import { FieldSettingsPickerUpdater } from './fields-settings-picker-updater';
+import { FieldsSignalsHelper } from './fields-signals.helper';
+import { ItemService } from './item.service';
 
 const logSpecs = {
   effectTransferPickerData: true,

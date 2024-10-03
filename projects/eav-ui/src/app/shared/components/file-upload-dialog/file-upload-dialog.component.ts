@@ -6,7 +6,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DomSanitizer } from '@angular/platform-browser';
 import { catchError, filter, fromEvent, map, of, switchMap, take, tap } from 'rxjs';
-import { Of, transient } from '../../../core';
+import { Of, transient } from '../../../../../../core';
 import { DragAndDropDirective } from '../../directives/drag-and-drop.directive';
 import { CrossWindowMessage, InstallPackage, InstallSettings, SpecsForInstaller } from '../../models/installer-models';
 import { SafeHtmlPipe } from '../../pipes/safe-html.pipe';

@@ -1,8 +1,9 @@
 import { Injector, ProviderToken } from '@angular/core';
-import { Of, transient } from '../../../core';
+import { Of, transient } from '../../../../../../core';
 import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
 import { classLog } from '../../../shared/logging';
 import { FieldState } from '../field-state';
+import { DataAdapterAppAssets } from './adapters/data-adapter-app-assets';
 import { DataAdapterBase } from './adapters/data-adapter-base';
 import { DataAdapterCss } from './adapters/data-adapter-css';
 import { DataAdapterEmpty } from './adapters/data-adapter-empty';
@@ -78,6 +79,7 @@ export class PickerDataSetup {
 
     // The config type is either the forced type (from defaults for old pickers) or the specified type
     const dsType = parts.forcePickerConfig ?? dataSourceType;
+    l.a(`use config type`, { dataSourceType, forcePickerConfig: parts.forcePickerConfig, dsType });
 
     const dataAdapterType = mapNameToDataAdapter[dsType] ?? DataAdapterEmpty;
     this.#throwIfSourceAdapterNotAllowed(inputType, dataAdapterType);
@@ -100,6 +102,7 @@ const mapNameToDataAdapter: Record<string, ProviderToken<DataAdapterBase>> = {
   [PickerConfigs.UiPickerSourceCss]: DataAdapterCss,
   [PickerConfigs.UiPickerSourceQuery]: DataAdapterQuery,
   [PickerConfigs.UiPickerSourceEntity]: DataAdapterEntity,
+  [PickerConfigs.UiPickerSourceAppAssets]: DataAdapterAppAssets,
 };
 
 /**
@@ -109,7 +112,7 @@ const mapNameToDataAdapter: Record<string, ProviderToken<DataAdapterBase>> = {
  */
 const partsMap: Record<string, PartMap> = {
   [InputTypeCatalog.StringPicker]: {
-    sources: [DataAdapterString, DataAdapterQuery, DataAdapterEntity, DataAdapterCss],
+    sources: [DataAdapterString, DataAdapterQuery, DataAdapterEntity, DataAdapterCss, DataAdapterAppAssets],
     states: [StateAdapterString],
   },
   [InputTypeCatalog.StringDropdown]: {
@@ -117,11 +120,19 @@ const partsMap: Record<string, PartMap> = {
     states: [StateAdapterString],
     forcePickerConfig: PickerConfigs.UiPickerSourceCustomList,
   },
+
+  [InputTypeCatalog.StringFontIconPicker]: {
+    sources: [DataAdapterCss],
+    states: [StateAdapterString],
+    forcePickerConfig: PickerConfigs.UiPickerSourceCss,
+  },
+
   [InputTypeCatalog.NumberDropdown]: {
     sources: [DataAdapterString],
     states: [StateAdapterNumber],
     forcePickerConfig: PickerConfigs.UiPickerSourceCustomList,
   },
+
   [InputTypeCatalog.NumberPicker]: {
     sources: [DataAdapterString, DataAdapterQuery, DataAdapterEntity],
     states: [StateAdapterNumber],

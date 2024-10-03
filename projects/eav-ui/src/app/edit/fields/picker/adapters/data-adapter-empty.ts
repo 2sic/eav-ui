@@ -1,21 +1,23 @@
-import { DataAdapterBase } from "./data-adapter-base";
-import { DeleteEntityProps } from "../models/picker.models";
 import { Injectable } from '@angular/core';
-import { DataSourceEmpty } from '../data-sources/data-source-empty';
-import { PickerFeatures } from '../picker-features.model';
-import { transient } from '../../../../core/transient';
+import { transient } from '../../../../../../../core/transient';
+import { classLog } from '../../../../shared/logging';
 import { signalObj } from '../../../../shared/signals/signal.utilities';
+import { DataSourceEmpty } from '../data-sources/data-source-empty';
+import { DeleteEntityProps } from "../models/picker.models";
+import { PickerFeatures } from '../picker-features.model';
+import { DataAdapterBase } from "./data-adapter-base";
 import { StateAdapter } from './state-adapter';
-import { classLog } from '../../../../shared/logging/logging';
 
 @Injectable()
 export class DataAdapterEmpty extends DataAdapterBase {
 
   log = classLog({DataAdapterEmpty}, DataAdapterBase.logSpecs);
-  
-  public features = signalObj('features', { edit: false, create: false, delete: false, } satisfies Partial<PickerFeatures>);
 
   protected dataSourceRaw = transient(DataSourceEmpty);
+
+  constructor() { super();}
+
+  public features = signalObj('features', { edit: false, create: false, delete: false, } satisfies Partial<PickerFeatures>);
 
   public override connectState(state: StateAdapter): this {
     this.dataSourceRaw.preSetup("Error: configuration missing");

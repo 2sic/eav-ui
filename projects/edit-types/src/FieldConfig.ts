@@ -1,4 +1,4 @@
-import { Of } from '../../eav-ui/src/app/core';
+import { Of } from '../../core';
 import { FieldConfigSet } from '../../eav-ui/src/app/edit/fields/field-config-set.model';
 import { InputTypeCatalog } from '../../eav-ui/src/app/shared/fields/input-type-catalog';
 import { FieldSettings } from './FieldSettings';

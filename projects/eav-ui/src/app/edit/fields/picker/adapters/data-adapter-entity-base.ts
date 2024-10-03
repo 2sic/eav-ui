@@ -1,22 +1,22 @@
 import { HttpErrorResponse } from "@angular/common/http";
-import { EditForm, EditPrep } from "../../../../../app/shared/models/edit-form.model";
-import { DeleteEntityProps } from "../models/picker.models";
-import { DataAdapterBase } from "./data-adapter-base";
+import { Injector, inject, untracked } from '@angular/core';
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
-import { PickerFeatures } from '../picker-features.model';
-import { Injector, inject, untracked } from '@angular/core';
-import { PickerItem, PickerItemFactory } from '../models/picker-item.model';
-import { DataSourceEntityQueryBase } from '../data-sources/data-source-entity-query-base';
-import { EntityFormStateService } from '../../../entity-form/entity-form-state.service';
-import { FieldState } from '../../field-state';
-import { FieldMask } from '../../../shared/helpers';
-import { transient } from '../../../../core/transient';
-import { FormConfigService } from '../../../form/form-config.service';
-import { EditRoutingService } from '../../../routing/edit-routing.service';
+import { take } from 'rxjs';
+import { transient } from '../../../../../../../core/transient';
+import { EditForm, EditPrep } from "../../../../../app/shared/models/edit-form.model";
 import { EntityService } from "../../../../../app/shared/services/entity.service";
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
-import { take } from 'rxjs';
+import { EntityFormStateService } from '../../../entity-form/entity-form-state.service';
+import { FormConfigService } from '../../../form/form-config.service';
+import { EditRoutingService } from '../../../routing/edit-routing.service';
+import { FieldMask } from '../../../shared/helpers';
+import { FieldState } from '../../field-state';
+import { DataSourceEntityQueryBase } from '../data-sources/data-source-entity-query-base';
+import { PickerItem, PickerItemFactory } from '../models/picker-item.model';
+import { DeleteEntityProps } from "../models/picker.models";
+import { PickerFeatures } from '../picker-features.model';
+import { DataAdapterBase } from "./data-adapter-base";
 
 export abstract class DataAdapterEntityBase extends DataAdapterBase {
 
@@ -30,6 +30,8 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
   protected fieldState = inject(FieldState);
   protected group = inject(EntityFormStateService).formGroup;
   #entityService = transient(EntityService);
+
+  constructor() { super();}
 
   protected name = this.fieldState.name;
 
@@ -104,7 +106,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
         : [EditPrep.editId(this.optionsOrHints().find(item => item.value === editGuid)?.id ?? editParams.entityId)]
     };
     const config = this.fieldState.config;
-    
+
     // Open the form
     this.#editRoutingService.open(config.index, config.entityGuid, form);
 

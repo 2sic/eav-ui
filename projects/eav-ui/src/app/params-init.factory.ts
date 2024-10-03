@@ -1,6 +1,6 @@
 import { Injector } from '@angular/core';
 import { Router } from '@angular/router';
-import { Of } from './core';
+import { Of } from '../../../core';
 import { UrlHelpers } from './edit/shared/helpers/url.helpers';
 import { DialogTypeConstants } from './shared/constants/dialog-type.constants';
 import { keyAppId, keyContentType, keyDialog, keyExtras, keyItems, keyPipelineId, keyUrl, keyZoneId, prefix } from './shared/constants/session.constants';
