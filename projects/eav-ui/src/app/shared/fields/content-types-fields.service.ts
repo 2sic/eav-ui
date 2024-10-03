@@ -110,15 +110,6 @@ export class ContentTypesFieldsService extends HttpServiceBase {
       sourceField: sourceFieldGuid,
       name,
     }));
-    // {
-    //   params: {
-    //     AppId: this.appId,
-    //     ContentTypeId: targetContentTypeId.toString(),
-    //     SourceType: sourceContentTypeStaticName,
-    //     SourceField: sourceFieldGuid,
-    //     name: newName,
-    //   }
-    // });
   }
 
   share(attributeId: number, share: boolean = true) {
