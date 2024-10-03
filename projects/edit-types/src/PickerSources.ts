@@ -1,7 +1,5 @@
 import { FieldSettings } from './FieldSettings';
 
-
-
 /** These properties are on basically all picker sources */
 interface PickerSourceCommon {
   /** ItemInfo or field-mask for ItemInfo */
@@ -32,7 +30,7 @@ interface HasPreviewTypeAndValue extends HasPreviewType {
 /**
  * Picker Source Custom CSS
  */
-export interface PickerSourceCss extends String, PickerSourceCommon, HasPreviewTypeAndValue {
+export interface PickerSourceCss extends PickerSourceCommon, HasPreviewTypeAndValue {
   CssSourceFile: string;
   CssSelectorFilter: string;
   Value: string;

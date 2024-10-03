@@ -33,7 +33,7 @@ const logSpecs = {
 @Injectable()
 export class FeaturesScopedService {
 
-  log = classLog({FeaturesScopedService}, logSpecs, true);
+  log = classLog({FeaturesScopedService}, logSpecs);
 
   #dialogConfigSvc = transient(DialogConfigAppService);
 
