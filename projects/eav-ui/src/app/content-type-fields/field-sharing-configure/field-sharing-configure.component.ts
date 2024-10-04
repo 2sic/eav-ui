@@ -1,4 +1,4 @@
-import { NgClass } from '@angular/common';
+import { NgClass, NgTemplateOutlet } from '@angular/common';
 import { Component, Inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -8,18 +8,27 @@ import { MatTableModule } from '@angular/material/table';
 import { TranslateModule } from '@ngx-translate/core';
 import groupBy from 'lodash-es/groupBy';
 import { transient } from '../../../../../core/transient';
+import { FeatureIconTextComponent } from '../../features/feature-icon-text/feature-icon-text.component';
+import { FeatureNames } from '../../features/feature-names';
 import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
+import { FeaturesScopedService } from '../../features/features-scoped.service';
 import { ContentTypesFieldsService } from '../../shared/fields/content-types-fields.service';
 import { Field } from '../../shared/fields/field.model';
-import { computedObj } from '../../shared/signals/signal.utilities';
-import { SharingOrInheriting } from './share-or-inherit-dialog-models';
+import { classLog } from '../../shared/logging';
+import { computedObj, signalObj } from '../../shared/signals/signal.utilities';
+import { SharingOrInheriting } from './field-sharing-configure.enums';
+
+const logSpecs = {
+  all: true,
+  constructor: true,
+}
 
 const noInheritGuid = '00000000-0000-0000-0000-000000000000';
 
 @Component({
-  selector: 'app-share-or-inherit-dialog',
-  templateUrl: './share-or-inherit-dialog.component.html',
-  styleUrls: ['./share-or-inherit-dialog.component.scss'],
+  selector: 'app-field-sharing-configure',
+  templateUrl: './field-sharing-configure.component.html',
+  styleUrls: ['./field-sharing-configure.component.scss'],
   standalone: true,
   imports: [
     MatButtonModule,
@@ -27,20 +36,39 @@ const noInheritGuid = '00000000-0000-0000-0000-000000000000';
     MatCardModule,
     MatTableModule,
     NgClass,
+    NgTemplateOutlet,
     TranslateModule,
-    // FeatureIconIndicatorComponent,
-    // FeatureIconTextComponent,
     FeatureTextInfoComponent,
+    FeatureIconTextComponent,
   ],
 })
 export class ShareOrInheritDialogComponent {
+
+  log = classLog({ShareOrInheritDialogComponent}, logSpecs, true);
 
   #contentTypesFieldsSvc = transient(ContentTypesFieldsService);
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public dialogData: Field,
+    public features: FeaturesScopedService,
     protected dialog: MatDialogRef<ShareOrInheritDialogComponent>,
-  ) { }
+  ) {
+    const l = this.log.fnIf('constructor', {dialogData});
+
+    const sysS = dialogData.SysSettings;
+    if (sysS) {
+      if (sysS.Share)
+        this.#contentTypesFieldsSvc.getDescendants(dialogData.Id)
+          .subscribe(fields => this.details.set(fields));
+      else if (sysS.InheritMetadataOf)
+        this.#contentTypesFieldsSvc.getAncestors(dialogData.Id)
+          .subscribe(fields => this.details.set(fields));
+    }
+  }
+
+  requiredFeature = FeatureNames.ContentTypeFieldsReuseDefinitions;
+
+  details = signalObj<Field[]>('details', []);
 
   optionsColumns: string[] = ['contentType', 'name', 'type'];
   message: string;
