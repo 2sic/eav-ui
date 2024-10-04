@@ -1,10 +1,18 @@
-@import "../../../assets/styles/variables.scss";
-@import "../../../assets/styles/theme/material-colors.scss";
+@import '../../../assets/styles/variables.scss';
+@import '../../../assets/styles/theme/material-colors.scss';
 
 $hyperlink-default-height: 78px;
 
 .metadata-exists {
   color: $blue-accent-color;
+}
+
+// Ensures correct layout
+.c-ew__preview--hyperlink {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
 }
 
 .c-ew__preview {
@@ -43,6 +51,7 @@ $hyperlink-default-height: 78px;
 }
 
 .c-ew__preview-field--short {
+  flex: 1 1 auto;
   // spm width 1% is required. Otherwise field breaks
   width: 1%;
   padding: 0;
@@ -59,6 +68,12 @@ $hyperlink-default-height: 78px;
   .c-ew__preview-field-hint {
     color: $editUI-label-disabled-color;
   }
+}
+
+.c-ew__preview-suffix {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .c-ew__preview-suffix-text {
