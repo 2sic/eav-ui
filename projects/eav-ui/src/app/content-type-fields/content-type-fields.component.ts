@@ -24,7 +24,6 @@ import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { EditForm, EditPrep, ItemAddIdentifier, ItemEditIdentifier, ItemIdentifier } from '../shared/models/edit-form.model';
 import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
-import { AddSharingFieldsComponent } from './add-sharing-fields/add-sharing-fields.component';
 import { ContentTypeFieldsActionsComponent } from './content-type-fields-actions/content-type-fields-actions.component';
 import { ContentTypeFieldsActionsParams } from './content-type-fields-actions/content-type-fields-actions.models';
 import { ContentTypeFieldsInputTypeComponent } from './content-type-fields-input-type/content-type-fields-input-type.component';
@@ -33,7 +32,8 @@ import { ContentTypeFieldsSpecialComponent } from './content-type-fields-special
 import { ContentTypeFieldsTitleComponent } from './content-type-fields-title/content-type-fields-title.component';
 import { ContentTypeFieldsTitleParams } from './content-type-fields-title/content-type-fields-title.models';
 import { ContentTypeFieldsTypeComponent } from './content-type-fields-type/content-type-fields-type.component';
-import { ShareOrInheritDialogComponent } from './share-or-inherit-dialog/share-or-inherit-dialog.component';
+import { FieldSharingAddMany } from './field-sharing-add-many/field-sharing-add-many.component';
+import { ShareOrInheritDialogComponent } from './field-sharing-configure/field-sharing-configure.component';
 
 @Component({
   selector: 'app-content-type-fields',
@@ -150,7 +150,7 @@ export class ContentTypeFieldsComponent implements OnInit {
   }
 
   addSharedField() {
-    this.matDialog.open(AddSharingFieldsComponent, {
+    this.matDialog.open(FieldSharingAddMany, {
       autoFocus: false,
       width: '1600px',
       data: { contentType: this.contentType(), existingFields: this.fields() }

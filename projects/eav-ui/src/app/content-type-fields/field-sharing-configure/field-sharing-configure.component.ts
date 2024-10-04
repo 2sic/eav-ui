@@ -12,14 +12,14 @@ import { FeatureTextInfoComponent } from '../../features/feature-text-info/featu
 import { ContentTypesFieldsService } from '../../shared/fields/content-types-fields.service';
 import { Field } from '../../shared/fields/field.model';
 import { computedObj } from '../../shared/signals/signal.utilities';
-import { SharingOrInheriting } from './share-or-inherit-dialog-models';
+import { SharingOrInheriting } from './field-sharing-configure.enums';
 
 const noInheritGuid = '00000000-0000-0000-0000-000000000000';
 
 @Component({
-  selector: 'app-share-or-inherit-dialog',
-  templateUrl: './share-or-inherit-dialog.component.html',
-  styleUrls: ['./share-or-inherit-dialog.component.scss'],
+  selector: 'app-field-sharing-configure',
+  templateUrl: './field-sharing-configure.component.html',
+  styleUrls: ['./field-sharing-configure.component.scss'],
   standalone: true,
   imports: [
     MatButtonModule,
@@ -28,8 +28,6 @@ const noInheritGuid = '00000000-0000-0000-0000-000000000000';
     MatTableModule,
     NgClass,
     TranslateModule,
-    // FeatureIconIndicatorComponent,
-    // FeatureIconTextComponent,
     FeatureTextInfoComponent,
   ],
 })
