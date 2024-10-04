@@ -1,18 +1,12 @@
 <div [ngClass]="open() ? 'c-ew__container' : 'u-display-none'">
   <div #backdrop class="c-ew__backdrop" (click)="closeDialog()"></div>
-  <div #dialog fxLayout="column" class="c-ew__dialog mat-elevation-z24 u-border-radius">
+  <div #dialog class="c-ew__dialog mat-elevation-z24 u-border-radius">
     <div [ngClass]="{ 'c-ew__dialog-header mat-elevation-z2': open() }">
-      <mat-card appearance="raised" class="mat-elevation-z0" fxLayout="row">
-        <button
-          mat-icon-button
-          class="back-arrow"
-          fxLayoutAlign="center center"
-          tippyTranslate="Form.Buttons.Return.Tip"
-          (click)="closeDialog()"
-        >
+      <mat-card appearance="raised" class="mat-elevation-z0">
+        <button mat-icon-button class="back-arrow" tippyTranslate="Form.Buttons.Return.Tip" (click)="closeDialog()">
           <mat-icon>arrow_back</mat-icon>
         </button>
-        <span fxLayoutAlign="center center" class="title mat-headline-4">{{ basics().label }}</span>
+        <span class="title mat-headline-4">{{ basics().label }}</span>
       </mat-card>
     </div>
     <div>
@@ -33,16 +27,16 @@
           <ng-template extendedFabSpeedDialTriggerContent>
             <button extended-fab-speed-dial-trigger matRipple (click)="closeDialog()">
               <mat-icon>done</mat-icon>
-              <span>{{ "Form.Buttons.Return.Tip" | translate }}</span>
+              <span>{{ 'Form.Buttons.Return.Tip' | translate }}</span>
             </button>
           </ng-template>
           <ng-template extendedFabSpeedDialActionsContent>
             <button extended-fab-speed-dial-action matRipple [disabled]="formsStateService.saveButtonDisabled()" (click)="saveAll(false)">
-              <span>{{ "Form.Buttons.Save" | translate }}</span>
+              <span>{{ 'Form.Buttons.Save' | translate }}</span>
               <mat-icon>save</mat-icon>
             </button>
             <button extended-fab-speed-dial-action matRipple [disabled]="formsStateService.saveButtonDisabled()" (click)="saveAll(true)">
-              <span>{{ "Form.Buttons.SaveAndClose" | translate }}</span>
+              <span>{{ 'Form.Buttons.SaveAndClose' | translate }}</span>
               <mat-icon>done_all</mat-icon>
             </button>
           </ng-template>

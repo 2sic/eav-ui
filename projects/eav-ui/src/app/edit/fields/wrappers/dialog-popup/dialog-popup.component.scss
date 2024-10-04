@@ -1,5 +1,5 @@
-@import "../../../assets/styles/variables.scss";
-@import "../../../assets/styles/theme/material-colors.scss";
+@import '../../../assets/styles/variables.scss';
+@import '../../../assets/styles/theme/material-colors.scss';
 
 .c-ew__container {
   border-radius: $edit-ui-dialog-border-radius;
@@ -16,6 +16,11 @@
   display: flex;
 }
 
+.mat-elevation-z0 {
+  display: flex;
+  flex-direction: row;
+}
+
 .c-ew__backdrop {
   position: fixed;
   top: 0;
@@ -28,8 +33,8 @@
 
 .c-ew__dialog {
   z-index: 3;
-  flex-direction: column;
   display: flex;
+  flex-direction: column;
   max-width: $edit-ui-dialog-max-width;
   width: 100vw;
   margin-top: 24px;

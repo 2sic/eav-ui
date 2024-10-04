@@ -1,7 +1,6 @@
 import { CommonModule, NgClass, NgStyle } from '@angular/common';
 import { AfterViewInit, Component, computed, inject, NgZone, OnDestroy, ViewChild, ViewContainerRef } from '@angular/core';
 import { ExtendedModule } from '@angular/flex-layout/extended';
-import { FlexModule } from '@angular/flex-layout/flex';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatRippleModule } from '@angular/material/core';
@@ -32,7 +31,6 @@ import { WrappersCatalog } from '../wrappers.constants';
   imports: [
     NgClass,
     ExtendedModule,
-    FlexModule,
     MatCardModule,
     MatButtonModule,
     MatIconModule,
