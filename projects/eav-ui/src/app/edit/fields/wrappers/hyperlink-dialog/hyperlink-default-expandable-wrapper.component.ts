@@ -1,7 +1,6 @@
 import { CommonModule, NgClass, NgStyle } from '@angular/common';
 import { AfterViewInit, ChangeDetectorRef, Component, computed, inject, NgZone, OnDestroy, ViewChild, ViewContainerRef } from '@angular/core';
 import { ExtendedModule } from '@angular/flex-layout/extended';
-import { FlexModule } from '@angular/flex-layout/flex';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatRippleModule } from '@angular/material/core';
@@ -39,7 +38,6 @@ import { TippyDirective } from './../../../../shared/directives/tippy.directive'
   imports: [
     NgClass,
     ExtendedModule,
-    FlexModule,
     MatCardModule,
     MatButtonModule,
     MatIconModule,
@@ -56,7 +54,7 @@ import { TippyDirective } from './../../../../shared/directives/tippy.directive'
     TippyDirective,
     DialogPopupComponent,
     CommonModule,
-],
+  ],
 })
 // tslint:disable-next-line:max-line-length
 export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefaultBaseComponent implements AfterViewInit, OnDestroy {
@@ -69,7 +67,7 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
   protected buttonAdam = computed(() => this.fieldState.settings().Buttons.includes('adam'), SignalEquals.bool);
   protected buttonPage = computed(() => this.fieldState.settings().Buttons.includes('page'), SignalEquals.bool);
   protected enableImageConfiguration = computed(() => this.fieldState.settings().EnableImageConfiguration, SignalEquals.bool);
-  
+
   private dropzoneDraggingHelper: DropzoneDraggingHelper;
 
   constructor(
