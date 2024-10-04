@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { ChangeDetectorRef, Component, HostBinding, Inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, HostBinding, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
@@ -39,19 +39,19 @@ import { RenameStreamDialogControls, RenameStreamDialogData, RenameStreamDialogF
     ClickStopPropagationDirective,
   ],
 })
-export class RenameStreamComponent extends BaseComponent implements OnInit {
+export class RenameStreamComponent extends BaseComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
   form: UntypedFormGroup;
   controls: RenameStreamDialogControls;
   isSource = this.dialogData.isSource;
-  pipelineResultExists = this.visualQueryService.queryResult != null;
+  pipelineResultExists = this.visualQueryService.pipelineResult != null;
   scopeOptions: ScopeOption[] = [];
   labelOptions: string[] = [];
   guidedLabel = true;
   advancedMode = false;
 
-  #contentTypesSvc = transient(ContentTypesService);
+  private contentTypesService = transient(ContentTypesService);
   
   constructor(
     @Inject(MAT_DIALOG_DATA) private dialogData: RenameStreamDialogData,
@@ -63,7 +63,11 @@ export class RenameStreamComponent extends BaseComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.#buildForm();
+    this.buildForm();
+  }
+
+  ngOnDestroy(): void {
+    super.ngOnDestroy();
   }
 
   closeDialog(label?: string): void {
@@ -83,33 +87,32 @@ export class RenameStreamComponent extends BaseComponent implements OnInit {
     this.closeDialog(formValue.label);
   }
 
-  #buildForm(): void {
+  private buildForm(): void {
     this.form = new UntypedFormGroup({
       label: new UntypedFormControl(this.dialogData.label, Validators.required),
       scope: new UntypedFormControl(eavConstants.scopes.default.value),
     });
     this.controls = this.form.controls as any;
 
-    if (!this.isSource || !this.pipelineResultExists)
-      return;
+    if (!this.isSource || !this.pipelineResultExists) return;
 
     this.subscriptions.add(
       this.controls.scope.valueChanges.pipe(
         startWith<string>(this.controls.scope.value),
         distinctUntilChanged(),
       ).subscribe(scope => {
-        this.labelOptions = Object.values(this.visualQueryService.queryResult.Sources)
+        this.labelOptions = Object.values(this.visualQueryService.pipelineResult.Sources)
           .find(source => source.Guid === this.dialogData.pipelineDataSourceGuid).Out
           .filter(out => out.Scope === scope)
           .map(out => out.Name);
-
-        if (!this.labelOptions.includes(this.controls.label.value) && this.controls.label.value != null)
+        if (!this.labelOptions.includes(this.controls.label.value) && this.controls.label.value != null) {
           this.controls.label.patchValue(null);
+        }
       })
     );
 
-    this.#contentTypesSvc.getScopes().subscribe(scopes => {
-      const sourceOut = Object.values(this.visualQueryService.queryResult.Sources)
+    this.contentTypesService.getScopes().subscribe(scopes => {
+      const sourceOut = Object.values(this.visualQueryService.pipelineResult.Sources)
         .find(source => source.Guid === this.dialogData.pipelineDataSourceGuid).Out;
       const filtered = scopes.filter(s => sourceOut.some(o => o.Scope === s.value));
       this.scopeOptions = filtered;
