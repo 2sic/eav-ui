@@ -24,9 +24,9 @@ import { signalObj } from '../../shared/signals/signal.utilities';
 import { ReservedNamesValidatorDirective } from '../edit-content-type-fields/reserved-names.directive';
 
 @Component({
-  selector: 'app-field-sharing-add-many',
-  templateUrl: './field-sharing-add-many.component.html',
-  styleUrls: ['./field-sharing-add-many.component.scss'],
+  selector: 'app-add-sharing-fields',
+  templateUrl: './add-sharing-fields.component.html',
+  styleUrls: ['./add-sharing-fields.component.scss'],
   standalone: true,
   imports: [
     MatCardModule,
@@ -42,7 +42,7 @@ import { ReservedNamesValidatorDirective } from '../edit-content-type-fields/res
     FieldHintComponent,
   ],
 })
-export class FieldSharingAddMany extends BaseComponent implements OnInit {
+export class AddSharingFieldsComponent extends BaseComponent implements OnInit {
   @HostBinding('className') hostClass = 'dialog-component';
   @ViewChild('ngForm', { read: NgForm }) private form: NgForm;
 
@@ -52,7 +52,7 @@ export class FieldSharingAddMany extends BaseComponent implements OnInit {
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public dialogData: { contentType: ContentType, existingFields: Field[] },
-    protected dialog: MatDialogRef<FieldSharingAddMany>,
+    protected dialog: MatDialogRef<AddSharingFieldsComponent>,
     private snackBar: MatSnackBar,
     // All this is just for the feature dialog
     private matDialog: MatDialog,

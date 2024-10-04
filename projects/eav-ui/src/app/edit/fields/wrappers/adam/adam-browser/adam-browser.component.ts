@@ -21,6 +21,7 @@ import { EditForm, EditPrep } from '../../../../../shared/models/edit-form.model
 import { DialogRoutingService } from '../../../../../shared/routing/dialog-routing.service';
 import { signalObj } from '../../../../../shared/signals/signal.utilities';
 import { FormsStateService } from '../../../../form/forms-state.service';
+import { EditRoutingService } from '../../../../routing/edit-routing.service';
 import { AdamCacheService } from '../../../../shared/adam/adam-cache.service';
 import { AdamService } from '../../../../shared/adam/adam.service';
 import { LinkCacheService } from '../../../../shared/adam/link-cache.service';
@@ -94,11 +95,14 @@ export class AdamBrowserComponent implements OnInit {
   public features = inject(FeaturesScopedService);
   protected isPasteImageFromClipboardEnabled = this.features.isEnabled[FeatureNames.PasteImageFromClipboard];
 
+  protected expanded = this.editRoutingService.isExpandedSignal(this.config.index, this.config.entityGuid)
+
   #adamService = transient(AdamService);
   #dialogRouter = transient(DialogRoutingService);
 
   constructor(
     private dnnContext: DnnContext,
+    private editRoutingService: EditRoutingService,
     private adamCacheService: AdamCacheService,
     private linkCacheService: LinkCacheService,
     private formsStateService: FormsStateService,
@@ -156,7 +160,7 @@ export class AdamBrowserComponent implements OnInit {
           : EditPrep.newMetadata(adamItem.ReferenceId, contentTypeName, eavConstants.metadata.cmsObject),
       ],
     };
-    this.fieldState.isOpen;
+    this.editRoutingService.open(this.config.index, this.config.entityGuid, form);
   }
 
   goUp() {

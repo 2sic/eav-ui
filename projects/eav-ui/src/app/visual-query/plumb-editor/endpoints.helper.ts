@@ -54,7 +54,7 @@ export class EndpointsHelper {
     const isSource = true;
     const sourceEndpoint = {
       paintStyle: { fill: 'transparent', radius: 10 },
-      cssClass: 'sourceEndpoint ' + (style ?? ''),
+      cssClass: 'sourceEndpoint ' + style ?? '',
       maxConnections: -1,
       isSource,
       anchor: ['Continuous', { faces: ['top'] }],

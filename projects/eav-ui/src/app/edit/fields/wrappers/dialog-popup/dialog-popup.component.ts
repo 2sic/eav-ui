@@ -57,7 +57,7 @@ export class DialogPopupComponent {
     private zone: NgZone,
   ) { }
 
-  open = this.fieldState.isOpen
+  open = this.editRoutingService.isExpandedSignal(this.config.index, this.config.entityGuid);
 
   ngAfterViewInit() {
     this.dropzoneDraggingHelper = new DropzoneDraggingHelper(this.zone);

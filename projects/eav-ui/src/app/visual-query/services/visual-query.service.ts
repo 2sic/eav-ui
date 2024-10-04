@@ -38,14 +38,10 @@ export class VisualQueryStateService extends ServiceBase implements OnDestroy {
 
 
   pipelineModel$ = new BehaviorSubject<PipelineModel>(null);
-  // TODO: @2pp - make a signal for this
-  // - basically it's only used as a value, or as a value which ends up in a viewModel$
-  // - this should be fairly easy, pls discuss w/2dm if you don't understand
   dataSources$ = new BehaviorSubject<DataSource[]>(null);
   putEntityCountOnConnections$ = new Subject<PipelineResult>();
-  // TODO: @2pp - make a signal for this, same situation, basically just used in HTML on viewModel$
   dataSourceConfigs$ = new BehaviorSubject<DataSourceConfigs>({});
-  queryResult?: PipelineResult;
+  pipelineResult?: PipelineResult;
 
   #pipelineId = parseInt(this.#dialogRoute.getParam('pipelineId'), 10);
   #refreshPipeline = false;
@@ -69,19 +65,19 @@ export class VisualQueryStateService extends ServiceBase implements OnDestroy {
   }
 
   init() {
-    this.#fetchDataSources(() => this.#fetchPipeline(true, true, false));
-    this.#attachKeyboardSave();
+    this.fetchDataSources(() => this.fetchPipeline(true, true, false));
+    this.attachKeyboardSave();
     this.#dialogRoute.doOnDialogClosed(() => {
       if (this.#refreshPipeline || this.#refreshDataSourceConfigs)
-        this.#fetchPipeline(this.#refreshPipeline, this.#refreshDataSourceConfigs, this.#refreshPipeline);
+        this.fetchPipeline(this.#refreshPipeline, this.#refreshDataSourceConfigs, this.#refreshPipeline);
       this.#refreshPipeline = false;
       this.#refreshDataSourceConfigs = false;
     });
   }
 
-  public editPipelineEntity() {
+  editPipelineEntity() {
     // save Pipeline, then open Edit Dialog
-    this.#savePipeline(() => {
+    this.savePipeline(() => {
       const form: EditForm = {
         items: [EditPrep.editId(this.pipelineModel$.value.Pipeline.EntityId)],
       };
@@ -91,82 +87,81 @@ export class VisualQueryStateService extends ServiceBase implements OnDestroy {
     });
   }
 
-  public saveAndRun(save: boolean, run: boolean): void {
-    if (save && run)
-      return this.#savePipeline(() => this.runPipeline());
-
-    if (save)
-      return this.#savePipeline();
-    
-    if (run)
-      return this.runPipeline();
+  saveAndRun(save: boolean, run: boolean) {
+    if (save && run) {
+      this.savePipeline(() => { this.runPipeline(); });
+    } else if (save) {
+      this.savePipeline();
+    } else if (run) {
+      this.runPipeline();
+    }
   }
 
   showDataSourceDetails(showDetails: boolean) {
-    const query = cloneDeep(this.pipelineModel$.value);
-    const designerData: Record<string, any> = JsonHelpers.tryParse(query.Pipeline.VisualDesignerData) ?? {};
-    designerData.ShowDataSourceDetails = showDetails;
-    query.Pipeline.VisualDesignerData = JSON.stringify(designerData);
-    this.pipelineModel$.next(query);
+    const pipelineModel = cloneDeep(this.pipelineModel$.value);
+    const visualDesignerData: Record<string, any> = JsonHelpers.tryParse(pipelineModel.Pipeline.VisualDesignerData) ?? {};
+    visualDesignerData.ShowDataSourceDetails = showDetails;
+    pipelineModel.Pipeline.VisualDesignerData = JSON.stringify(visualDesignerData);
+    this.pipelineModel$.next(pipelineModel);
   }
 
   addDataSource(dataSource: DataSource) {
-    const query = cloneDeep(this.pipelineModel$.value);
-    const newSource: PipelineDataSource = {
+    const pipelineModel = cloneDeep(this.pipelineModel$.value);
+    const newPipelineDataSource: PipelineDataSource = {
       Description: '',
-      EntityGuid: 'unsaved' + (query.DataSources.length + 1),
+      EntityGuid: 'unsaved' + (pipelineModel.DataSources.length + 1),
       EntityId: undefined,
       Name: dataSource.Name,
       PartAssemblyAndType: dataSource.PartAssemblyAndType,
       VisualDesignerData: { Top: 100, Left: 100 },
     };
-    query.DataSources.push(newSource);
-    this.pipelineModel$.next(query);
-    this.#savePipeline();
+    pipelineModel.DataSources.push(newPipelineDataSource);
+    this.pipelineModel$.next(pipelineModel);
+    this.savePipeline();
   }
 
   removeDataSource(pipelineDataSourceGuid: string, connections: StreamWire[], streamsOut: string) {
-    const query = cloneDeep(this.pipelineModel$.value);
-    query.DataSources = query.DataSources.filter(pipelineDS => pipelineDS.EntityGuid !== pipelineDataSourceGuid);
-    query.Pipeline.StreamWiring = connections;
-    query.Pipeline.StreamsOut = streamsOut;
-    this.pipelineModel$.next(query);
+    const pipelineModel = cloneDeep(this.pipelineModel$.value);
+    pipelineModel.DataSources = pipelineModel.DataSources.filter(pipelineDS => pipelineDS.EntityGuid !== pipelineDataSourceGuid);
+    pipelineModel.Pipeline.StreamWiring = connections;
+    pipelineModel.Pipeline.StreamsOut = streamsOut;
+    this.pipelineModel$.next(pipelineModel);
   }
 
   renameDataSource(pipelineDataSourceGuid: string, name: string) {
-    const query = cloneDeep(this.pipelineModel$.value);
-    const dataSource = query.DataSources.find(pipelineDS => pipelineDS.EntityGuid === pipelineDataSourceGuid);
-    dataSource.Name = name;
-    this.pipelineModel$.next(query);
+    const pipelineModel = cloneDeep(this.pipelineModel$.value);
+    const pipelineDataSource = pipelineModel.DataSources.find(pipelineDS => pipelineDS.EntityGuid === pipelineDataSourceGuid);
+    pipelineDataSource.Name = name;
+    this.pipelineModel$.next(pipelineModel);
   }
 
   changeDataSourceDescription(pipelineDataSourceGuid: string, description: string) {
-    const query = cloneDeep(this.pipelineModel$.value);
-    const dataSource = query.DataSources.find(pipelineDS => pipelineDS.EntityGuid === pipelineDataSourceGuid);
-    dataSource.Description = description;
-    this.pipelineModel$.next(query);
+    const pipelineModel = cloneDeep(this.pipelineModel$.value);
+    const pipelineDataSource = pipelineModel.DataSources.find(pipelineDS => pipelineDS.EntityGuid === pipelineDataSourceGuid);
+    pipelineDataSource.Description = description;
+    this.pipelineModel$.next(pipelineModel);
   }
 
   changeConnections(connections: StreamWire[], streamsOut: string) {
-    const query = cloneDeep(this.pipelineModel$.value);
-    query.Pipeline.StreamWiring = connections;
-    query.Pipeline.StreamsOut = streamsOut;
-    this.pipelineModel$.next(query);
+    const pipelineModel = cloneDeep(this.pipelineModel$.value);
+    pipelineModel.Pipeline.StreamWiring = connections;
+    pipelineModel.Pipeline.StreamsOut = streamsOut;
+    this.pipelineModel$.next(pipelineModel);
   }
 
   changeDataSourcePosition(pipelineDataSourceGuid: string, position: VisualDesignerData) {
-    const query = cloneDeep(this.pipelineModel$.value);
-    const dataSource = query.DataSources.find(pipelineDS => pipelineDS.EntityGuid === pipelineDataSourceGuid);
-    if (!dataSource) {
+    const pipelineModel = cloneDeep(this.pipelineModel$.value);
+    const pipelineDataSource = pipelineModel.DataSources.find(pipelineDS => pipelineDS.EntityGuid === pipelineDataSourceGuid);
+    if (!pipelineDataSource) {
       // spm NOTE: fixes problem where dataSource position can't be updated if dataSource with guid unsavedXX gets saved while dragging.
       // Can happen if dataSource is just added and user drags it and save happens.
       return;
     }
-    dataSource.VisualDesignerData = { ...dataSource.VisualDesignerData, ...position };
-    this.pipelineModel$.next(query);
+    pipelineDataSource.VisualDesignerData = { ...pipelineDataSource.VisualDesignerData, ...position };
+    this.pipelineModel$.next(pipelineModel);
   }
 
-  #calculateDataSourceConfigs(dataSources: PipelineDataSource[]) {
+  private calculateDataSourceConfigs(dataSources: PipelineDataSource[]) {
     const dataSourceConfigs: DataSourceConfigs = {};
     dataSources.forEach(dataSource => {
       if (dataSource.EntityId == null) return;
@@ -192,7 +187,8 @@ export class VisualQueryStateService extends ServiceBase implements OnDestroy {
   editDataSource(pipelineDataSource: PipelineDataSource) {
     const dataSource = this.dataSources$.value.find(ds => ds.PartAssemblyAndType === pipelineDataSource.PartAssemblyAndType);
     const contentTypeName = dataSource.ContentType;
-    const { targetType, keyType } = eavConstants.metadata.entity;
+    const targetType = eavConstants.metadata.entity.targetType;
+    const keyType = eavConstants.metadata.entity.keyType;
     const key = pipelineDataSource.EntityGuid;
 
     // query for existing Entity
@@ -230,7 +226,7 @@ export class VisualQueryStateService extends ServiceBase implements OnDestroy {
     });
   }
 
-  #savePipeline(callback?: () => void) {
+  private savePipeline(callback?: () => void) {
     this.snackBar.open('Saving...');
     this.#queryDefSvc.savePipeline(this.pipelineModel$.value).subscribe({
       next: pipelineModel => {
@@ -249,8 +245,8 @@ export class VisualQueryStateService extends ServiceBase implements OnDestroy {
     this.#queryDefSvc.runPipeline(this.pipelineModel$.value.Pipeline.EntityId, top).subscribe({
       next: pipelineResult => {
         this.snackBar.open('Query worked', null, { duration: 2000 });
-        this.queryResult = pipelineResult;
-        this.#showQueryResult(pipelineResult, top);
+        this.pipelineResult = pipelineResult;
+        this.showQueryResult(pipelineResult, top);
         console.warn(pipelineResult);
         // push cloned pipelineModel to reset jsPlumb
         this.pipelineModel$.next(cloneDeep(this.pipelineModel$.value));
@@ -262,12 +258,13 @@ export class VisualQueryStateService extends ServiceBase implements OnDestroy {
     });
   }
 
-  debugStream(stream: PipelineResultStream, top = 25): void {
-    if (stream.Error)
-      return this.#showStreamErrorResult(stream);
-
-    if (stream.Count === 0)
+  debugStream(stream: PipelineResultStream, top = 25) {
+    if (stream.Error) {
+      this.showStreamErrorResult(stream);
       return;
+    }
+
+    if (stream.Count === 0) return;
 
     this.snackBar.open('Running stream...');
     const pipelineId = this.pipelineModel$.value.Pipeline.EntityId;
@@ -281,33 +278,34 @@ export class VisualQueryStateService extends ServiceBase implements OnDestroy {
           sourceName: pipelineDataSource.Name,
           original: stream,
         };
-        this.#showQueryResult(streamResult, top, debugStream);
+        this.showQueryResult(streamResult, top, debugStream);
         console.warn(streamResult);
       },
-      error: (_: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         this.snackBar.open('Stream failed', null, { duration: 2000 });
       },
     });
   }
 
-  #fetchPipeline(refreshPipeline: boolean, refreshDataSourceConfigs: boolean, showSnackBar: boolean) {
-    if (showSnackBar)
+  private fetchPipeline(refreshPipeline: boolean, refreshDataSourceConfigs: boolean, showSnackBar: boolean) {
+    if (showSnackBar) {
       this.snackBar.open('Reloading query, please wait...');
-
+    }
     this.#queryDefSvc.fetchPipeline(this.#pipelineId, this.dataSources$.value).subscribe(pipelineModel => {
-      if (showSnackBar)
+      if (showSnackBar) {
         this.snackBar.open('Query reloaded', null, { duration: 2000 });
-
+      }
       this.#titleSvc.setTitle(`${pipelineModel.Pipeline.Name} - Visual Query`);
-      if (refreshPipeline)
+      if (refreshPipeline) {
         this.pipelineModel$.next(pipelineModel);
-
-      if (refreshDataSourceConfigs)
-        this.#calculateDataSourceConfigs(pipelineModel.DataSources);
+      }
+      if (refreshDataSourceConfigs) {
+        this.calculateDataSourceConfigs(pipelineModel.DataSources);
+      }
     });
   }
 
-  #showQueryResult(result: PipelineResult, top: number, debugStream?: DebugStreamInfo) {
+  private showQueryResult(result: PipelineResult, top: number, debugStream?: DebugStreamInfo) {
     const dialogData: QueryResultDialogData = {
       result,
       debugStream,
@@ -327,7 +325,7 @@ export class VisualQueryStateService extends ServiceBase implements OnDestroy {
     this.changeDetectorRef.markForCheck();
   }
 
-  #showStreamErrorResult(stream: PipelineResultStream) {
+  private showStreamErrorResult(stream: PipelineResultStream) {
     const dialogData: StreamErrorResultDialogData = {
       errorData: stream.ErrorData,
     };
@@ -345,14 +343,14 @@ export class VisualQueryStateService extends ServiceBase implements OnDestroy {
     this.changeDetectorRef.markForCheck();
   }
 
-  #fetchDataSources(callback?: () => void) {
+  private fetchDataSources(callback?: () => void) {
     this.#queryDefSvc.fetchDataSources().subscribe(dataSources => {
       this.dataSources$.next(dataSources);
       callback();
     });
   }
 
-  #attachKeyboardSave() {
+  private attachKeyboardSave() {
     this.zone.runOutsideAngular(() => {
       this.subscriptions.add(
         fromEvent<KeyboardEvent>(window, 'keydown').pipe(
@@ -360,7 +358,7 @@ export class VisualQueryStateService extends ServiceBase implements OnDestroy {
           filter(event => isCtrlS(event)),
         ).subscribe(event => {
           event.preventDefault();
-          this.zone.run(() => { this.#savePipeline(); });
+          this.zone.run(() => { this.savePipeline(); });
         })
       );
     });

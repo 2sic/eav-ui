@@ -17,7 +17,7 @@ import { classLog } from '../../../shared/logging';
 import { ExtendedFabSpeedDialImports } from '../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
 import { GlobalConfigService } from '../../../shared/services/global-config.service';
 import { computedWithPrev } from '../../../shared/signals/signal.utilities';
-import { UserPreferences } from '../../../shared/user/user-preferences.service';
+import { UserSettings } from '../../../shared/user/user-settings.service';
 import { LoadIconsService } from '../../assets/icons/load-icons.service';
 import { EntityFormBuilderComponent } from '../../entity-form/entity-form-builder/form-builder.component';
 import { PickerTreeDataHelper } from '../../fields/picker/picker-tree/picker-tree-data-helper';
@@ -103,8 +103,8 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
   #formConfig = inject(FormConfigService);
 
   /** Signal to tell the UI if the footer should show and/or the footer needs more space (changes CSS) */
-  #prefManager = inject(UserPreferences).part(footerPreferences)
-  footerSize = computed(() => this.#prefManager.data().size);
+  #footerUserSettings = inject(UserSettings).part(footerPreferences)
+  footerSize = computed(() => this.#footerUserSettings.data().size);
 
   #loadIconsService = transient(LoadIconsService);
   #formDataService = transient(FormDataService);
@@ -133,7 +133,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
     this.dialog.disableClose = true;
 
     // Initialize default user preferences for footer show/hide
-    const pref = this.#prefManager;
+    const pref = this.#footerUserSettings;
     if (pref.data().pinned == null)
       pref.set('pinned', this.#formConfig.config.dialogContext.User?.IsSystemAdmin ?? false);
 
@@ -164,7 +164,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
     }
 
     // If debug is false, and was never modified, show based on system admin status
-    return !this.#debugWasModified && this.#prefManager.data().pinned;
+    return !this.#debugWasModified && this.#footerUserSettings.data().pinned;
   });
 
   /** Show footer once or more - basically stays true if it was ever shown */
