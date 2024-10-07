@@ -1,7 +1,6 @@
 import { CommonModule, NgClass } from '@angular/common';
 import { Component, computed, ElementRef, inject, Input, NgZone, ViewChild } from '@angular/core';
 import { ExtendedModule } from '@angular/flex-layout';
-import { FlexModule } from '@angular/flex-layout/flex';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatRippleModule } from '@angular/material/core';
@@ -28,7 +27,6 @@ import { WrappersCatalog } from '../wrappers.constants';
     NgClass,
     ExtendedModule,
     MatCardModule,
-    FlexModule,
     MatRippleModule,
     MatButtonModule,
     MatIconModule,
@@ -59,7 +57,7 @@ export class DialogPopupComponent {
     private zone: NgZone,
   ) { }
 
-  open = this.editRoutingService.isExpandedSignal(this.config.index, this.config.entityGuid);
+  open = this.fieldState.isOpen
 
   ngAfterViewInit() {
     this.dropzoneDraggingHelper = new DropzoneDraggingHelper(this.zone);

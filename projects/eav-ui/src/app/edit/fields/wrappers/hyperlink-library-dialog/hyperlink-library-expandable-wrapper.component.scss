@@ -119,15 +119,32 @@ $label-top: 26px;
 }
 
 .c-ew__preview-content {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 2px;
   overflow: hidden;
 }
 
 .c-ew__preview-hint {
   width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
 }
 
 .c-ew__preview-hint-text {
-  color: rgba($editUI-foreground-color, 0.44);
+  color: rgba($editUI-foreground-color, 0.44);  
+  display: none;
+}
+
+// Show the element for screen widths greater than 600px (gt-xs)
+@media (min-width: 600px) {
+  .c-ew__preview-hint-text {
+    display: block;
+  }
 }
 
 .c-ew__preview--invalid {

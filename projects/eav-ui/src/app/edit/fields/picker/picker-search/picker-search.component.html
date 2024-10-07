@@ -52,7 +52,7 @@
     </button>
 
     <!-- Toggle Text Mode -->
-    @if (settings().enableTextEntry) {
+    @if (features().textEntry) {
       <span matSuffix>
         <ng-content select="[freeTextButtons]"></ng-content>
       </span>
@@ -68,7 +68,7 @@
     #auto="matAutocomplete"
     [displayWith]="displayFn.bind(this)"
     [hideSingleSelectionIndicator]="true"
-    (optionSelected)="optionSelected($event, settings().allowMultiValue, selectedItem())"
+    (optionSelected)="optionSelected($event, selectedItem())"
     (closed)="onClosed()"
     (opened)="onOpened(settings().showAsTree)"
   >

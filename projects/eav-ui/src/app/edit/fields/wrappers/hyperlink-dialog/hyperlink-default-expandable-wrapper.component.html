@@ -6,9 +6,7 @@
 @if (preview(); as preV) {
   <div class="c-hyperlink-default-field-preview">
     <div
-      class="c-ew__preview"
-      fxLayout="row"
-      fxLayoutAlign="start start"
+      class="c-ew__preview c-ew__preview--hyperlink"
       [ngClass]="{
         'c-ew__preview--disabled': ui().disabled,
         'c-ew__preview--last-in-group': config.isLastInGroup,
@@ -31,7 +29,7 @@
         }
       </div>
       <!-- field -->
-      <div class="c-ew__preview-field--short" fxFlex="auto">
+      <div class="c-ew__preview-field--short">
         <!-- input -->
         <div class="hyperlink-input-link-wrapper">
           <mat-form-field
@@ -57,16 +55,14 @@
               [elementType]="'input'"
             />
             @if (buttonAdam() || buttonPage()) {
-              <div matTextSuffix fxLayoutAlign="center center">
+              <div matTextSuffix class="c-ew__preview-suffix">
                 <div
                   class="c-ew__preview-suffix-text"
-                  fxHide
-                  fxShow.gt-xs
                   [ngClass]="{
                     'c-ew__preview-suffix-text--disabled': ui().disabled,
                   }"
                 >
-                  {{ buttonAdam() ? ("Fields.Hyperlink.AdamFileManager.Hint" | translate) : "" }}
+                  {{ buttonAdam() ? ('Fields.Hyperlink.AdamFileManager.Hint' | translate) : '' }}
                 </div>
                 <!-- Open Dialog -->
                 @if (buttonAdam()) {
@@ -120,7 +116,7 @@
           </mat-form-field>
           <!-- link absolutely positioned above input -->
           @if (preV.floatingText) {
-            <div class="hyperlink-floating" fxHide fxShow.gt-xs>
+            <div class="hyperlink-floating">
               <div class="hyperlink-floating__value">{{ uiValue() }}</div>
               <div class="hyperlink-floating__url-box">
                 <a [href]="preV.url" target="_blank" tabindex="-1" class="hyperlink-floating__url" [tippy]="preV.url">
@@ -134,7 +130,7 @@
         <div class="c__helper-wrapper">
           <app-field-helper-text class="c__helper-wrapper--left" [hyperlinkDefaultWrapperFix]="true"> </app-field-helper-text>
           @if (buttonAdam()) {
-            <div align="end" style="display: flex" class="c-ew__preview-field-hint c__helper-wrapper--right" fxHide fxShow.gt-xs>
+            <div align="end" style="display: flex" class="c-ew__preview-field-hint c__helper-wrapper--right">
               <span>{{ adamSponsorI18nKey() | translate }}</span>
               <app-feature-icon-text [featureNameId]="'NoSponsoredByToSic'"></app-feature-icon-text>
             </div>

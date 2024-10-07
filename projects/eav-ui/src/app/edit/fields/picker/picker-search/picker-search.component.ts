@@ -25,6 +25,12 @@ import { PickerPartBaseComponent } from '../picker-part-base.component';
 import { PickerTreeDataHelper } from '../picker-tree/picker-tree-data-helper';
 import { PickerTreeDataService } from '../picker-tree/picker-tree-data-service';
 
+const logSpecs = {
+  all: true,
+  optionSelected: true,
+  focusOnSearchComponent: false,
+}
+
 @Component({
   selector: 'app-picker-search',
   templateUrl: './picker-search.component.html',
@@ -53,7 +59,7 @@ import { PickerTreeDataService } from '../picker-tree/picker-tree-data-service';
 export class PickerSearchComponent extends PickerPartBaseComponent implements OnInit {
 
   /** Main log */
-  log = classLog({ PickerSearchComponent });
+  log = classLog({ PickerSearchComponent }, logSpecs, true);
 
   /** Special log which would fire a lot for each item doing disabled checks etc. */
   #logItemChecks = classLog({ PickerSearchComponent }).extendName("-ItemChecks");
@@ -115,9 +121,7 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
   settings = computedObj('settings', () => {
     const s = this.fieldState.settings();
     return {
-      allowMultiValue: s.AllowMultiValue,
       enableAddExisting: s.EnableAddExisting,
-      enableTextEntry: s.EnableTextEntry,
       enableReselect: s.EnableReselect,
       showAsTree: s.PickerDisplayMode === 'tree',
     };
@@ -205,10 +209,14 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
     }
   }
 
-  optionSelected(event: MatAutocompleteSelectedEvent, allowMultiValue: boolean, selectedEntity: PickerItem): void {
-    this.#logItemChecks.a('optionSelected', event.option.value);
+  optionSelected(event: MatAutocompleteSelectedEvent, selectedEntity: PickerItem): void {
+    const features = this.features();
+    const l = this.log.fnIf('optionSelected', { value: event.option.value, features });
     this.#newValue = event.option.value;
-    if (!allowMultiValue && selectedEntity) this.pickerData.state.flush();
+    if (!features.multiValue && selectedEntity) {
+      l.a('no multiValue, will flush previous selection');
+      this.pickerData.state.flush();
+    }
     const selected: string = event.option.value;
     this.pickerData.state.add(selected);
     // @SDV - This is needed so after choosing option element is not focused (it gets focused by default so if blur is outside of setTimeout it will happen before refocus)

@@ -11,6 +11,7 @@ import { computedObj, signalObj } from '../../../shared/signals/signal.utilities
 import { DebugFields } from '../../edit-debug';
 import { EntityFormStateService } from '../../entity-form/entity-form-state.service';
 import { FieldState } from '../../fields/field-state';
+import { EditRoutingService } from '../../routing/edit-routing.service';
 import { UiControl } from '../../shared/controls/ui-control';
 import { InputTypeSpecs } from '../../shared/input-types/input-type-specs.model';
 import { FieldsSettingsService } from '../../state/fields-settings.service';
@@ -39,6 +40,8 @@ export class FieldStateInjectorFactory {
   #fieldsSettingsSvc = inject(FieldsSettingsService);
   #entityForm = inject(EntityFormStateService);
   #featuresSvc = inject(FeaturesScopedService);
+
+  #editRoutingService = inject(EditRoutingService);
 
   constructor() { }
 
@@ -91,6 +94,7 @@ export class FieldStateInjectorFactory {
       controlStatusChangeSignal,
       uiValue,
       this.#fieldsSettingsSvc.translationState[name],
+      this.#editRoutingService.isExpandedSignal(fieldConfig.index, fieldConfig.entityGuid, this.#injector),
       this.#fieldsSettingsSvc.pickerData[name] ?? null,
       this.#featuresSvc,
       this.#injector,

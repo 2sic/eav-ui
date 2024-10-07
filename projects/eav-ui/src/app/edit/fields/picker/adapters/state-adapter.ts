@@ -1,5 +1,5 @@
 import { moveItemInArray } from '@angular/cdk/drag-drop';
-import { Injectable, inject } from '@angular/core';
+import { Injectable, Signal, inject } from '@angular/core';
 import { getWith } from '../../../../../../../core';
 import { classLog } from '../../../../shared/logging';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
@@ -44,7 +44,12 @@ export abstract class StateAdapter {
 
   public isInFreeTextMode = signalObj('isInFreeTextMode', false);
 
-  public features = signalObj('features', {} as Partial<PickerFeatures>);
+  /** The features this source will broadcast, to be merged with other features */
+  public myFeatures = signalObj('features', {} as Partial<PickerFeatures>);
+
+  /** The final valid features, must be provided by the picker-data */
+  public features: Signal<PickerFeatures>;
+
 
   #createTypesRaw = computedObj('createTypesRaw',
     () => getWith(this.settings().CreateTypes,
@@ -131,7 +136,7 @@ export abstract class StateAdapter {
 
   public add(value: string): void {
     this.log.fnIf('add', { value });
-    this.#updateValue(list => (this.settings().AllowMultiValue) ? [...list, value] : [value]);
+    this.#updateValue(list => (this.features().multiValue) ? [...list, value] : [value]);
   }
 
   public set(values: string[]): void {
@@ -174,20 +179,3 @@ export abstract class StateAdapter {
     this.isInFreeTextMode.update(p => !p);
   }
 }
-
-// 2024-06-20 Keep in case we need it later
-
-// Temp centralize logic if pickerList should show, but not in use yet.
-// Commented out, till we need it, then refactor to signals
-// var allowMultiValue$ = this.settings$.pipe(mapUntilChanged(settings => settings.AllowMultiValue));
-// this.shouldPickerListBeShown$ = combineLatest([
-//   this.isExpanded$,
-//   allowMultiValue$,
-//   selectedItems$,
-// ]).pipe(
-//   map(([isExpanded, allowMultiValue, selectedItems]) => {
-//     return !this.isInFreeTextMode()
-//       && ((selectedItems.length > 0 && allowMultiValue) || (selectedItems.length > 1 && !allowMultiValue))
-//       && (!allowMultiValue || (allowMultiValue && isExpanded));
-//   })
-// );

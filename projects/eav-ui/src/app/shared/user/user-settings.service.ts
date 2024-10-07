@@ -1,6 +1,6 @@
 import { Injectable, signal, WritableSignal } from '@angular/core';
-import { StateManagerLocal, StateManagerSession } from './state-manager';
 import { classLog } from '../logging';
+import { StateManagerLocal, StateManagerSession } from './state-manager';
 
 const storeKey = 'user-settings';
 
@@ -69,6 +69,11 @@ export class UserSettingsPart<T extends Record<string, unknown>> {
 
   set<K extends keyof T>(key: K, value: T[K]) {
     this.#data.update(data => ({ ...data, [key]: value }));
+    this.#save();
+  }
+
+  toggle<K extends keyof T>(key: K) {
+    this.#data.update(data => ({ ...data, [key]: !data[key] }));
     this.#save();
   }
 

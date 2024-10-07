@@ -1,6 +1,7 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, Signal, inject } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { getWith } from '../../../../../../core';
+import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
 import { classLog } from '../../../shared/logging';
 import { computedObj, signalObj } from '../../../shared/signals/signal.utilities';
 import { DebugFields } from '../../edit-debug';
@@ -10,15 +11,17 @@ import { PickerItem } from './models/picker-item.model';
 import { PickerFeatures } from './picker-features.model';
 
 const logSpecs = {
-  all: true,
-  setup: true,
-  addInfosFromSourceForUi: true,
-  optionsWithMissing: true,
+  all: false,
+  setup: false,
+  addInfosFromSourceForUi: false,
+  optionsWithMissing: false,
   selectedRaw: false,
   selectedOverride: false,
   selectedState: false,
-  fields: [...DebugFields],
+  features: true,
+  fields: [...DebugFields, '*'],
 }
+
 /**
  * Manages the data for the picker component.
  * This is quite complex, because there are many combinations of where the configuration and data can come from,
@@ -29,7 +32,7 @@ export class PickerData {
 
   //#region Constructor, Log, Services, Setup
   
-  log = classLog({PickerData}, logSpecs);
+  log = classLog({PickerData}, logSpecs, true);
 
   #translate = inject(TranslateService);
 
@@ -38,11 +41,18 @@ export class PickerData {
   constructor() { }
 
   /** Setup to load initial values and initialize the state */
-  public setup(name: string, state: StateAdapter, source: DataAdapterBase): this {
+  public setup(name: string, settings: Signal<FieldSettings>, state: StateAdapter, source: DataAdapterBase): this {
     const l = this.log.fnIfInList('setup', 'fields', name, { name, state, source });
+
+    // Setup this object
     this.name = name;
+    this.#settingsLazy.set(settings);
     this.state = state;
     this.source = source;
+
+    // Setup the State so it is able to do it's work based on data it wouldn't have otherwise
+    this.state.features = this.features;
+
     this.ready.set(true);
     // 1. Init Prefetch - for Entity Picker
     // This will place the prefetch items into the available-items list
@@ -133,9 +143,22 @@ export class PickerData {
 
   //#endregion
 
-  /** Signal containing the features of the picker, basically to accumulate features such as "canEdit" */
-  public features = computedObj('features', () => PickerFeatures.merge(this.source.features(), this.state.features()));
+  #settingsLazy = signalObj<Signal<FieldSettings>>('settingsLazy', null);
 
+  #featuresFromSettings = computedObj('featuresFromSettings', () => {
+    const s = this.#settingsLazy()();
+    return {
+      textEntry: s.EnableTextEntry,
+      multiValue: s.AllowMultiValue,
+    } satisfies Partial<PickerFeatures>;
+  });
+
+  /** Signal containing the features of the picker, basically to accumulate features such as "canEdit" */
+  public features = computedObj('features', () => {
+    const mergeSourceAndState = PickerFeatures.merge(this.source.myFeatures(), this.state.myFeatures());
+    const mergeSettings = PickerFeatures.merge(mergeSourceAndState, this.#featuresFromSettings());
+    return mergeSettings;
+  });
 
   public addNewlyCreatedItem(result: Record<string, number>) {
     const newItemGuid = Object.keys(result)[0];
