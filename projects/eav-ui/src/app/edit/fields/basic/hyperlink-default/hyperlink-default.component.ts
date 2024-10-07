@@ -1,6 +1,5 @@
 import { NgClass } from '@angular/common';
 import { ChangeDetectorRef, Component, computed, effect, OnInit, ViewContainerRef } from '@angular/core';
-import { ExtendedModule } from '@angular/flex-layout/extended';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -33,7 +32,6 @@ import { HyperlinkDefaultLogic } from './hyperlink-default-logic';
     MatButtonModule,
     MatIconModule,
     NgClass,
-    ExtendedModule,
     MatMenuModule,
     MatCardModule,
     MatFormFieldModule,

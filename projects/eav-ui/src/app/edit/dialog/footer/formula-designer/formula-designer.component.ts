@@ -1,7 +1,6 @@
 import { JsonPipe, NgClass } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
-import { ExtendedModule } from '@angular/flex-layout/extended';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
@@ -44,7 +43,6 @@ import { SnippetLabelSizePipe } from './snippet-label-size.pipe';
     FormsModule,
     MatOptionModule,
     NgClass,
-    ExtendedModule,
     MatInputModule,
     MatButtonModule,
     MatIconModule,

@@ -1,16 +1,15 @@
-import { Component } from '@angular/core';
-import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
-import { FieldMetadata } from '../../field-metadata.decorator';
-import { BooleanTristateLogic } from './boolean-tristate-logic';
-import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
-import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass } from '@angular/common';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { Component } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FieldState } from '../../field-state';
-import { BooleanBaseComponent } from '../boolean-default/boolean-base.component';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { computedObj } from '../../../../shared/signals/signal.utilities';
+import { FieldMetadata } from '../../field-metadata.decorator';
+import { FieldState } from '../../field-state';
+import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
+import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
+import { BooleanBaseComponent } from '../boolean-default/boolean-base.component';
+import { BooleanTristateLogic } from './boolean-tristate-logic';
 
 @Component({
   selector: InputTypeCatalog.BooleanTristate,
@@ -22,7 +21,6 @@ import { computedObj } from '../../../../shared/signals/signal.utilities';
     ReactiveFormsModule,
     MatSlideToggleModule,
     NgClass,
-    ExtendedModule,
     FieldHelperTextComponent,
   ],
 })

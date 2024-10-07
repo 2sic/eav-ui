@@ -1,6 +1,5 @@
 import { NgClass } from '@angular/common';
 import { Component, Input, inject, input } from '@angular/core';
-import { ExtendedModule } from '@angular/flex-layout/extended';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';
@@ -15,7 +14,6 @@ import { FieldState } from '../field-state';
   standalone: true,
   imports: [
     NgClass,
-    ExtendedModule,
     MatFormFieldModule,
     ChangeAnchorTargetDirective,
     TranslateModule,

@@ -1,6 +1,5 @@
 import { NgClass } from '@angular/common';
 import { Component } from '@angular/core';
-import { ExtendedModule } from '@angular/flex-layout/extended';
 import { MatRippleModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatListModule } from '@angular/material/list';
@@ -14,7 +13,6 @@ import { PickerPartBaseComponent } from '../picker-part-base.component';
   imports: [
     MatFormFieldModule,
     NgClass,
-    ExtendedModule,
     MatRippleModule,
     MatListModule,
   ],

@@ -1,6 +1,5 @@
 import { NgClass } from '@angular/common';
 import { Component, ElementRef, OnInit, input, viewChild } from '@angular/core';
-import { ExtendedModule } from '@angular/flex-layout/extended';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
@@ -41,7 +40,6 @@ const logSpecs = {
     FormsModule,
     ReactiveFormsModule,
     NgClass,
-    ExtendedModule,
     MatInputModule,
     MatAutocompleteModule,
     MatButtonModule,

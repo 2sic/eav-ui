@@ -1,6 +1,5 @@
 import { NgClass } from '@angular/common';
 import { Component, ElementRef, inject, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
-import { ExtendedModule } from '@angular/flex-layout/extended';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldState } from '../../field-state';
 import { WrappersCatalog } from '../wrappers.constants';
@@ -15,7 +14,6 @@ import { AdamHintComponent } from './adam-hint/adam-hint.component';
   imports: [
     AdamBrowserComponent,
     NgClass,
-    ExtendedModule,
     AdamHintComponent,
   ],
 })
