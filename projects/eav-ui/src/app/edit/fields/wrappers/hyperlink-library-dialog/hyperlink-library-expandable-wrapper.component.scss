@@ -136,15 +136,7 @@ $label-top: 26px;
 }
 
 .c-ew__preview-hint-text {
-  color: rgba($editUI-foreground-color, 0.44);  
-  display: none;
-}
-
-// Show the element for screen widths greater than 600px (gt-xs)
-@media (min-width: 600px) {
-  .c-ew__preview-hint-text {
-    display: block;
-  }
+  color: rgba($editUI-foreground-color, 0.44);
 }
 
 .c-ew__preview--invalid {

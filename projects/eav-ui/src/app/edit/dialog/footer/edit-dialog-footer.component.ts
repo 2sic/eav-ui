@@ -7,7 +7,7 @@ import { Of } from '../../../../../../core';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { classLog } from '../../../shared/logging';
 import { EavWindow } from '../../../shared/models/eav-window.model';
-import { UserSettings } from '../../../shared/user/user-settings.service';
+import { UserPreferences } from '../../../shared/user/user-preferences.service';
 import { DataDumpComponent } from './data-dump/data-dump.component';
 import { DebugTypes } from './edit-dialog-footer.models';
 import { footerPreferences } from './footer-preferences';
@@ -40,7 +40,7 @@ export class EditDialogFooterComponent {
 
   sxcVer = window.sxcVersion.substring(0, window.sxcVersion.lastIndexOf('.'));
   
-  prefManager = inject(UserSettings).part(footerPreferences);
+  prefManager = inject(UserPreferences).part(footerPreferences);
   preferences = this.prefManager.data;
 
   toggleDialog(type: Of<typeof DebugTypes>): void {

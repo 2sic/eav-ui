@@ -5,9 +5,9 @@ import { StateManagerLocal, StateManagerSession } from './state-manager';
 const storeKey = 'user-settings';
 
 @Injectable({ providedIn: 'root' })
-export class UserSettings {
+export class UserPreferences {
 
-  log = classLog({UserSettings});
+  log = classLog({UserPreferences});
 
   constructor() {
     this.log.fn('constructor');
@@ -27,32 +27,25 @@ export class UserSettings {
     (longTerm ? this.local : this.session).add(key, value);
   }
 
-  part<T extends Record<string, unknown>>({ key, data }: { key: string; data: T; }): UserSettingsPart<T> {
+  part<T extends Record<string, unknown>>({ key, data }: { key: string; data: T; }): UserPreferencesPart<T> {
     return this.#getPart(key, data, true);
   }
 
-  #getPart<T extends Record<string, unknown>>(key: string, data: T, longTerm = false): UserSettingsPart<T> {
-    if (this.#partCache[key]) return this.#partCache[key] as unknown as UserSettingsPart<T>;
-    const created = new UserSettingsPart(this, key, data, longTerm);
+  #getPart<T extends Record<string, unknown>>(key: string, data: T, longTerm = false): UserPreferencesPart<T> {
+    if (this.#partCache[key]) return this.#partCache[key] as unknown as UserPreferencesPart<T>;
+    const created = new UserPreferencesPart(this, key, data, longTerm);
     this.#partCache[key] = created;
-    return created as unknown as UserSettingsPart<T>;
+    return created as unknown as UserPreferencesPart<T>;
   }
-  #partCache: Record<string, UserSettingsPart<Record<string, unknown>>> = {};
+  #partCache: Record<string, UserPreferencesPart<Record<string, unknown>>> = {};
 
-  // partSession<T extends Record<string, unknown>>(key: string, data: T) {
-  //   return this.part(key, data, false);
-  // }
-
-  // partLocal<T extends Record<string, unknown>>(key: string, data: T) {
-  //   return this.part(key, data, true);
-  // }
 }
 
-export class UserSettingsPart<T extends Record<string, unknown>> {
+class UserPreferencesPart<T extends Record<string, unknown>> {
 
-  log = classLog({UserSettingsPart});
+  log = classLog({UserPreferencesPart});
   
-  constructor(private userSettings: UserSettings, private storeKey: string, data: T, private longTerm = false) {
+  constructor(private userSettings: UserPreferences, private storeKey: string, data: T, private longTerm = false) {
     const merged = { ...data, ...userSettings.get<T>(storeKey, longTerm) };
     this.log.fn('constructor', merged);
     this.#data = signal<T>(merged);
