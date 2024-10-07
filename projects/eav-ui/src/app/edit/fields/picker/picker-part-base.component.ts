@@ -1,6 +1,4 @@
 import { Component, inject } from '@angular/core';
-import { FieldValue } from 'projects/edit-types';
-import { FieldSettingsWithPickerSource } from '../../../../../../edit-types/src/PickerSources';
 import { classLog } from '../../../shared/logging';
 import { computedObj } from '../../../shared/signals/signal.utilities';
 import { FieldState } from '../../fields/field-state';
@@ -20,7 +18,7 @@ export class PickerPartBaseComponent {
   log = classLog({PickerPartBaseComponent});
 
   /** Entire Field State */
-  protected fieldState = inject(FieldState) as FieldState<FieldValue, FieldSettingsWithPickerSource>;
+  protected fieldState = inject(FieldState);
 
   /** Routing service to open edit-dialogs for entities where necessary */
   editRoutingService = inject(EditRoutingService);
@@ -32,6 +30,8 @@ export class PickerPartBaseComponent {
   //#region Settings - simple values
 
   protected enableTextEntry = this.fieldState.setting('EnableTextEntry');
+
+  protected allowMultiValue = this.fieldState.setting('AllowMultiValue');
 
   //#endregion
 

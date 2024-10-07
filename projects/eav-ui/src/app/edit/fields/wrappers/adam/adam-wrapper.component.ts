@@ -1,7 +1,7 @@
 import { NgClass } from '@angular/common';
 import { Component, ElementRef, inject, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
-import { ExtendedModule } from '@angular/flex-layout/extended';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
+import { EditRoutingService } from '../../../routing/edit-routing.service';
 import { FieldState } from '../../field-state';
 import { WrappersCatalog } from '../wrappers.constants';
 import { AdamBrowserComponent } from './adam-browser/adam-browser.component';
@@ -15,7 +15,6 @@ import { AdamHintComponent } from './adam-hint/adam-hint.component';
   imports: [
     AdamBrowserComponent,
     NgClass,
-    ExtendedModule,
     AdamHintComponent,
   ],
 })
@@ -26,7 +25,9 @@ export class AdamWrapperComponent implements OnInit {
   protected fieldState = inject(FieldState);
   protected config = this.fieldState.config;
 
-  constructor() { }
+  open = this.editRoutingService.isExpandedSignal(this.config.index, this.config.entityGuid);
+
+  constructor(private editRoutingService: EditRoutingService) { }
 
   fullscreenAdam: boolean;
   adamDisabled = this.config.adam.isDisabled;

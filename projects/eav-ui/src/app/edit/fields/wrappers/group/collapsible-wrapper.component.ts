@@ -1,6 +1,5 @@
 import { NgClass } from '@angular/common';
 import { Component, ViewChild, ViewContainerRef, computed, inject } from '@angular/core';
-import { ExtendedModule } from '@angular/flex-layout/extended';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { classLog } from '../../../../shared/logging';
@@ -20,7 +19,6 @@ import { EmptyDefaultLogic } from './collapsible-wrapper-logic';
   imports: [
     MatCardModule,
     NgClass,
-    ExtendedModule,
     MatIconModule,
     ChangeAnchorTargetDirective,
     SafeHtmlPipe,

@@ -1,4 +1,4 @@
-import { Injectable, Injector, OnDestroy, Signal } from '@angular/core';
+import { Injectable, OnDestroy, Signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, Subject } from 'rxjs';
 import { transient } from '../../../../../core';
@@ -88,8 +88,7 @@ export class EditRoutingService extends ServiceBase implements OnDestroy {
     );
   }
 
-  // TODO: @2pp - if this is only used in the field-injector.service, then make injector required
-  isExpandedSignal(fieldId: number, entityGuid: string, injector?: Injector): Signal<boolean> {
+  isExpandedSignal(fieldId: number, entityGuid: string): Signal<boolean> {
     // Create a unique key by combining fieldId and entityGuid, then check cache
     const key = `${fieldId}-${entityGuid}`;
     const cached = this.#signalsExpandedCache[key];
@@ -97,7 +96,7 @@ export class EditRoutingService extends ServiceBase implements OnDestroy {
 
     // Get the observable and convert it to a signal
     const obs = this.isExpanded$(fieldId, entityGuid);
-    return this.#signalsExpandedCache[key] = toSignal(obs, { injector });
+    return this.#signalsExpandedCache[key] = toSignal(obs);
   }
   #signalsExpandedCache: Record<string, Signal<boolean>> = {};
 

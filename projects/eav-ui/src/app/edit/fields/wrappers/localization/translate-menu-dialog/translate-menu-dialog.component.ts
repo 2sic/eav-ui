@@ -1,6 +1,5 @@
 import { AsyncPipe, NgClass } from '@angular/common';
 import { Component, computed, Inject } from '@angular/core';
-import { ExtendedModule } from '@angular/flex-layout/extended';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -31,7 +30,6 @@ interface TranslationInfo {
     MatCardModule,
     MatListModule,
     NgClass,
-    ExtendedModule,
     MatIconModule,
     MatButtonModule,
     AsyncPipe,

@@ -8,6 +8,7 @@ import { EditForm, EditPrep } from '../../../../shared/models/edit-form.model';
 import { computedObj } from '../../../../shared/signals/signal.utilities';
 import { FormConfigService } from '../../../form/form-config.service';
 import { FormsStateService } from '../../../form/forms-state.service';
+import { EditRoutingService } from '../../../routing/edit-routing.service';
 import { AdamService } from '../../../shared/adam/adam.service';
 import { LinkCacheService } from '../../../shared/adam/link-cache.service';
 import { FileTypeHelpers, UrlHelpers } from '../../../shared/helpers';
@@ -53,6 +54,7 @@ export class HyperlinkDefaultBaseComponent implements OnInit {
     public viewContainerRef: ViewContainerRef,
     public changeDetectorRef: ChangeDetectorRef,
     public linkCacheService: LinkCacheService,
+    public editRoutingService: EditRoutingService,
     public formsStateService: FormsStateService,
   ) { }
 
@@ -98,7 +100,7 @@ export class HyperlinkDefaultBaseComponent implements OnInit {
           : EditPrep.newMetadata(adamItem.ReferenceId, adamItem._imageConfigurationContentType, eavConstants.metadata.cmsObject),
       ],
     };
-    this.fieldState.isOpen
+    this.editRoutingService.open(this.config.index, this.config.entityGuid, form);
   }
 
   private fetchLink(value: string) {

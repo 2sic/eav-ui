@@ -1,6 +1,5 @@
 import { CommonModule, NgClass, NgStyle } from '@angular/common';
 import { AfterViewInit, ChangeDetectorRef, Component, computed, inject, NgZone, OnDestroy, ViewChild, ViewContainerRef } from '@angular/core';
-import { ExtendedModule } from '@angular/flex-layout/extended';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatRippleModule } from '@angular/material/core';
@@ -37,7 +36,6 @@ import { TippyDirective } from './../../../../shared/directives/tippy.directive'
   standalone: true,
   imports: [
     NgClass,
-    ExtendedModule,
     MatCardModule,
     MatButtonModule,
     MatIconModule,
@@ -69,7 +67,6 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
   protected enableImageConfiguration = computed(() => this.fieldState.settings().EnableImageConfiguration, SignalEquals.bool);
   
   private dropzoneDraggingHelper: DropzoneDraggingHelper;
-  private editRoutingService: EditRoutingService;
 
   constructor(
     eavService: FormConfigService,
@@ -88,9 +85,9 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
       viewContainerRef,
       changeDetectorRef,
       linkCacheService,
+      editRoutingService,
       formsStateService,
     );
-    this.editRoutingService = editRoutingService;
   }
 
   #hideAdamSponsor = this.featuresService.isEnabled[FeatureNames.NoSponsoredByToSic];

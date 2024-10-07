@@ -30,12 +30,11 @@ import { PickerTextComponent } from '../picker-text/picker-text.component';
 export class PickerDialogComponent extends PickerPartBaseComponent {
 
   protected showAddNewEntityButtonInDialog = computedObj('showAddNewEntityButtonInDialog', () => {
-    const features = this.features();
     const settings = this.fieldState.settings();
     const showAddNew = !this.isInFreeTextMode()
       && settings.EnableCreate
       && settings.CreateTypes
-      && features.multiValue;
+      && settings.AllowMultiValue;
     return showAddNew;
   });
 

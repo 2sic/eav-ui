@@ -1,5 +1,4 @@
 import { Injector, ProviderToken } from '@angular/core';
-import { FieldValue } from 'projects/edit-types';
 import { Of, transient } from '../../../../../../core';
 import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
 import { classLog } from '../../../shared/logging';
@@ -47,7 +46,7 @@ export class PickerDataSetup {
    * Note that it can't be called when fields are being created, but must be called from inside each field.
    * Reason is that objects created later on through DI will need the FieldState and other context objects to be injected.
    */
-  setupPickerData(pickerData: PickerData, fieldState: FieldState<FieldValue>): PickerData {
+  setupPickerData(pickerData: PickerData, fieldState: FieldState<any>): PickerData {
     const inputType = fieldState.config.inputTypeSpecs.inputType;
     const l = this.log.fn('createPickerAdapters', { pickerData, fieldState, inputType });
 
@@ -57,7 +56,7 @@ export class PickerDataSetup {
     const dataSourceType = fieldState.settings().DataSourceType;
     const source = this.#getSourceAdapter(inputType, dataSourceType, state);
 
-    pickerData.setup(fieldState.name, fieldState.settings, state, source);
+    pickerData.setup(fieldState.name, state, source);
 
     // l.end('ok', { state, source });
 

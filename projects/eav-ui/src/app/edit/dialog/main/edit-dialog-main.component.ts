@@ -2,7 +2,6 @@ import { CdkScrollable } from '@angular/cdk/scrolling';
 import { AsyncPipe, NgClass } from '@angular/common';
 import { AfterViewInit, Component, computed, effect, inject, OnDestroy, OnInit, QueryList, signal, ViewChildren } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { ExtendedModule } from '@angular/flex-layout/extended';
 import { MatRippleModule } from '@angular/material/core';
 import { MatDialogActions, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -70,7 +69,6 @@ const logSpecs = {
   imports: [
     MatDialogActions,
     NgClass,
-    ExtendedModule,
     EditDialogHeaderComponent,
     CdkScrollable,
     FormSlideDirective,

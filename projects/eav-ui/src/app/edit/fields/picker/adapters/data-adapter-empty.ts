@@ -17,7 +17,7 @@ export class DataAdapterEmpty extends DataAdapterBase {
 
   constructor() { super();}
 
-  public myFeatures = signalObj('features', { edit: false, create: false, delete: false, } satisfies Partial<PickerFeatures>);
+  public features = signalObj('features', { edit: false, create: false, delete: false, } satisfies Partial<PickerFeatures>);
 
   public override connectState(state: StateAdapter): this {
     this.dataSourceRaw.preSetup("Error: configuration missing");

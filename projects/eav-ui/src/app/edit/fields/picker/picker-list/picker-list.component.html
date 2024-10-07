@@ -1,5 +1,5 @@
 
-@if (!features().multiValue) {
+@if (!allowMultiValue()) {
   <mat-label class="field-label"
     [ngClass]="{ 'disabled': ui().disabled }">
     {{ basics().labelWithRequired }}
@@ -8,17 +8,17 @@
 @if (selectedItems().length > 0) {
   <div
     cdkDropList
-    [cdkDropListDisabled]="!features().multiValue || ui().disabled"
+    [cdkDropListDisabled]="!allowMultiValue() || ui().disabled"
     (cdkDropListDropped)="drop($event)"
     class="my-list"
-    [ngClass]="'my-list-' + (features().multiValue ? 'draggable' : 'static')"
+    [ngClass]="'my-list-' + (allowMultiValue() ? 'draggable' : 'static')"
   >
     <!-- Normal list usually shows only one item, but can show "empty slot" / "null-item" in debug mode -->
     @for (item of selectedItems(); track (item.value + $index); let index = $index) {
-      <div cdkDrag class="my-item" [ngClass]="('my-item-' + (features().multiValue ? 'draggable' : 'static')) + ' ' + (ui().disabled ? 'disabled' : '')">
+      <div cdkDrag class="my-item" [ngClass]="('my-item-' + (allowMultiValue() ? 'draggable' : 'static')) + ' ' + (ui().disabled ? 'disabled' : '')">
         <div class="item-title" [ngClass]="{ 'disabled': ui().disabled }">
           <!-- visual Drag-Handle if sortable -->
-          @if (features().multiValue) {
+          @if (allowMultiValue()) {
             <mat-icon class="item-title__icon"
               tippyTranslate="Fields.Picker.DragMove"
               [tippyDisabled]="ui().disabled">

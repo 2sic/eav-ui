@@ -27,7 +27,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
   #editRoutingService = inject(EditRoutingService);
   protected translate = inject(TranslateService);
   #snackBar = inject(MatSnackBar);
-  protected fieldState = inject(FieldState) as FieldState<string[], FieldSettingsWithPickerSource>;
+  protected fieldState = inject(FieldState);
   protected group = inject(EntityFormStateService).formGroup;
   #entityService = transient(EntityService);
 
@@ -49,7 +49,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
   #createEntityTypes = computedObj('createEntityTypes', () => this.fieldState.settings().CreateTypes);
 
   /** The features depend on contentType names being available to support create */
-  public myFeatures = computedObj<Partial<PickerFeatures>>('features', () => {
+  public features = computedObj<Partial<PickerFeatures>>('features', () => {
     // if we don't know the content-type, we can't create new entities
     const disableCreate = !this.contentType() && !this.#createEntityTypes();
     return { create: !disableCreate } satisfies Partial<PickerFeatures>;

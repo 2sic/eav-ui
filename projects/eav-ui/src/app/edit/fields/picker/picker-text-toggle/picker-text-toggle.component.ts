@@ -1,6 +1,5 @@
 import { NgClass } from '@angular/common';
 import { Component, inject, input, Input } from '@angular/core';
-import { ExtendedModule } from '@angular/flex-layout/extended';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -17,7 +16,6 @@ import { FieldState } from '../../field-state';
     MatFormFieldModule,
     MatButtonModule,
     NgClass,
-    ExtendedModule,
     MatIconModule,
     ClickStopPropagationDirective,
     TippyDirective,

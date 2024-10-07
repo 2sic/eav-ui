@@ -1,7 +1,6 @@
 import { CdkScrollable } from '@angular/cdk/scrolling';
 import { CommonModule, NgClass } from '@angular/common';
 import { Component, inject, ViewChild, ViewContainerRef } from '@angular/core';
-import { ExtendedModule } from '@angular/flex-layout/extended';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatRippleModule } from '@angular/material/core';
@@ -26,7 +25,6 @@ import { WrappersCatalog } from '../wrappers.constants';
   standalone: true,
   imports: [
     NgClass,
-    ExtendedModule,
     MatCardModule,
     MatButtonModule,
     MatIconModule,

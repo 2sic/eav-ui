@@ -1,15 +1,14 @@
 import { Context as DnnContext } from '@2sic.com/sxc-angular';
+import { NgClass } from '@angular/common';
 import { AfterViewInit, Component, computed, inject, signal, ViewChild, ViewContainerRef } from '@angular/core';
 import { DropzoneDirective, DropzoneModule } from 'ngx-dropzone-wrapper';
 import { AdamItem, DropzoneConfigExt } from '../../../../../../../edit-types';
-import { DropzoneConfigInstance, DropzoneType } from './dropzone-wrapper.models';
-import { ExtendedModule } from '@angular/flex-layout/extended';
-import { NgClass } from '@angular/common';
-import { FieldState } from '../../field-state';
-import { FormConfigService } from '../../../form/form-config.service';
-import { WrappersCatalog } from '../wrappers.constants';
-import { DropzoneWysiwyg } from './dropzone-wysiwyg';
 import { classLog } from '../../../../shared/logging';
+import { FormConfigService } from '../../../form/form-config.service';
+import { FieldState } from '../../field-state';
+import { WrappersCatalog } from '../wrappers.constants';
+import { DropzoneConfigInstance, DropzoneType } from './dropzone-wrapper.models';
+import { DropzoneWysiwyg } from './dropzone-wysiwyg';
 
 @Component({
   selector: WrappersCatalog.DropzoneWrapper,
@@ -18,7 +17,6 @@ import { classLog } from '../../../../shared/logging';
   standalone: true,
   imports: [
     NgClass,
-    ExtendedModule,
     DropzoneModule,
   ],
 })

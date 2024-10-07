@@ -43,9 +43,6 @@ export class FieldState<TValue extends FieldValue = FieldValue, TSettings extend
 
     public translationState: Signal<TranslationState>,
 
-    /** Signal if a dialog (popup) of this field is open, like a hyperlink-dialog */
-    public isOpen: Signal<boolean>,
-
     pickerData: PickerData,
 
     featuresSvc: FeaturesScopedService,

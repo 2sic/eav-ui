@@ -1,12 +1,3 @@
 .eav-card {
   padding: 16px;
 }
-
-::ng-deep .eav-layout-grid {
-  padding: 16px;
-
-  .mat-mdc-card {
-    height: calc(100% - 32px);
-  }
-}
-

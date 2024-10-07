@@ -56,7 +56,7 @@ export class PickerPreviewComponent extends PickerPartBaseComponent {
 
 
         // Multi-value should automatically use checkboxes
-        if (this.features().multiValue) return 'checkbox';
+        if (this.allowMultiValue()) return 'checkbox';
         return 'radio';
       case 'list':
       default:
@@ -68,6 +68,21 @@ export class PickerPreviewComponent extends PickerPartBaseComponent {
   skipHelpText = computedObj('helpTextOnTop', () => {
     const mode = this.mode();
     return mode === 'radio' || mode === 'checkbox';
+  });
+
+  mySettings = computedObj('mySettings', () => {
+    const settings = this.fieldState.settings();
+    const showAddNewEntityButton = settings.CreateTypes && settings.EnableCreate;
+    const showGoToListDialogButton = settings.AllowMultiValue;
+    return {
+      allowMultiValue: settings.AllowMultiValue,
+      enableEdit: settings.EnableEdit,
+      enableCreate: settings.EnableCreate,
+      createTypes: settings.CreateTypes,
+      enableTextEntry: settings.EnableTextEntry,
+      showAddNewEntityButton,
+      showGoToListDialogButton,
+    };
   });
 
 }

@@ -38,7 +38,7 @@ export abstract class PickerInlineBaseComponent extends PickerPartBaseComponent 
   select(item: PickerItem) {
     const l = this.log.fn('select', { item });
     if (item.noSelect) return l.end('noSelect, exit early');
-    const allowMulti = this.features().multiValue;
+    const allowMulti = this.allowMultiValue();
     if (!allowMulti) {
       this.pickerData.state.set([item.value]);
       return l.end('no-multi', { item, allowMulti });
