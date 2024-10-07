@@ -78,12 +78,12 @@ export interface PickerSourceCustomCsv extends PickerSourceCommonWithLabel {
  */
 export interface PickerSourceAppAssets extends PickerSourceCommon, HasPreviewType {
   /** e.g. '/', '/icons/' */
-  AppAssetsRootFolder: string,
+  AssetsRootFolder: string,
 
-  AppAssetsType: 'files' | 'folders' | 'all',
+  AssetsType: 'files' | 'folders' | 'all',
 
   /** e.g. '*.svg' */
-  AppAssetsFileFilter: string,
+  AssetsFileFilter: string,
 }
 
 
