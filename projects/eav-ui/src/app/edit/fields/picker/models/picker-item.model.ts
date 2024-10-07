@@ -28,6 +28,8 @@ export interface PickerItem {
    */
   noEdit?: boolean;
 
+  noRemove?: boolean;
+
   /**
    * Prevent delete of this item for whatever reason, v15
    * This property does not come from the server, but must be added by code.

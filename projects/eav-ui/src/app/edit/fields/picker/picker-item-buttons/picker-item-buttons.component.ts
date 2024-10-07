@@ -5,6 +5,7 @@ import { ClickStopPropagationDirective } from '../../../../shared/directives/cli
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { computedObj } from '../../../../shared/signals/signal.utilities';
 import { PickerItem } from '../models/picker-item.model';
+import { PickerFeaturesItem } from '../picker-features.model';
 import { PickerPartBaseComponent } from '../picker-part-base.component';
 
 @Component({
@@ -25,20 +26,23 @@ export class PickerItemButtonsComponent extends PickerPartBaseComponent {
 
   item = input.required<PickerItem>();
 
+  uiFeatures = input<Partial<PickerFeaturesItem>>(null);
+
   index = input.required<number>();
 
   constructor() { super(); }
 
   /** Current applicable settings like "enableEdit" etc. */
-  settings = computedObj('settings', () => {
+  buttons = computedObj('buttons', () => {
     // note that selected can be null, since a item in the list can be null
     const item = this.item();
     const show = this.show() && !!item;
-    const s = this.fieldState.settings();
+    const f = this.features();
+    const uif = this.uiFeatures();
     return {
-      enableEdit: s.EnableEdit && show && !item?.noEdit,
-      enableDelete: s.EnableDelete && show && !item?.noDelete,
-      enableRemove: s.EnableRemove && show,
+      edit: f.edit && uif?.edit != false && show && !item?.noEdit,
+      remove: f.remove && uif?.remove != false && show && !item?.noRemove,
+      delete: f.delete && uif?.delete != false && show && !item?.noDelete,
     };
   });
   

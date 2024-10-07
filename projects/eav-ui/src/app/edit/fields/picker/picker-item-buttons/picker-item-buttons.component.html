@@ -1,5 +1,5 @@
 
-@if (settings().enableEdit)
+@if (buttons().edit)
 {
   <!-- Disable edit only if it was disabled in the settings, not if disabled by language change -->
   <!-- note: not sure if the above comment is applied in this code, as it still uses ui().disabled -->
@@ -16,7 +16,7 @@
   </button>
 }
 
-@if (settings().enableRemove)
+@if (buttons().remove)
 {
   <button
     mat-icon-button
@@ -32,7 +32,7 @@
 }
 
 
-@if (settings().enableDelete)
+@if (buttons().delete)
 {
   <button
     mat-icon-button

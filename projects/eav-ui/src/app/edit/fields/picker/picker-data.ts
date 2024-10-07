@@ -1,4 +1,4 @@
-import { Injectable, Signal, inject } from '@angular/core';
+import { inject, Injectable, Signal } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { getWith } from '../../../../../../core';
 import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
@@ -8,7 +8,7 @@ import { DebugFields } from '../../edit-debug';
 import { DataAdapterBase } from './adapters/data-adapter-base';
 import { StateAdapter } from "./adapters/state-adapter";
 import { PickerItem } from './models/picker-item.model';
-import { PickerFeatures, PickerFeaturesForControl } from './picker-features.model';
+import { mergePickerFeatures, PickerFeatures, PickerFeaturesForControl } from './picker-features.model';
 
 const logSpecs = {
   all: false,
@@ -151,13 +151,15 @@ export class PickerData {
       textEntry: s.EnableTextEntry,
       multiValue: s.AllowMultiValue,
       create: s.EnableCreate && !!s.CreateTypes,
+      remove: s.EnableRemove,
+      delete: s.EnableDelete,
     } satisfies Partial<PickerFeatures>;
   });
 
   /** Signal containing the features of the picker, basically to accumulate features such as "canEdit" */
   public features = computedObj<PickerFeaturesForControl>('features', () => {
-    const mergeSourceAndState = PickerFeatures.merge(this.source.myFeatures(), this.state.myFeatures());
-    const mergeSettings = PickerFeatures.merge(mergeSourceAndState, this.#featuresFromSettings());
+    const mergeSourceAndState = mergePickerFeatures(this.source.myFeatures(), this.state.myFeatures());
+    const mergeSettings = mergePickerFeatures(mergeSourceAndState, this.#featuresFromSettings());
     const forControl = {
       ...mergeSettings,
       showGoToListDialogButton: mergeSettings.multiValue,
