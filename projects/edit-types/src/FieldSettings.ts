@@ -342,6 +342,10 @@ interface EntityPicker extends EntityQuery, PickerSettings { }
 
 interface StringPicker extends StringDropdown, PickerSettings { }
 
+// Note: ATM this field settings is too big, it pretends to have all fields of all possible settings
+// while in reality it's always a sub-set.
+// We should gradually remove most special types from the main type and ensure it's
+// retyped when specific settings are needed.
 export interface FieldSettings extends
   Boolean,
   CustomGps,
@@ -356,7 +360,7 @@ export interface FieldSettings extends
   StringDefault,
   StringDropdown,
   StringDropdownQuery,
-  StringFontIconPicker,
+  // StringFontIconPicker,
   StringTemplatePicker,
   StringUrlPath,
   StringWysiwyg,

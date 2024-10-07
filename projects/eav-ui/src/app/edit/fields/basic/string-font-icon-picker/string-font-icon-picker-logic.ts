@@ -1,5 +1,5 @@
 import { FieldSettingsWithPickerSource } from 'projects/edit-types/src/PickerSources';
-import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
+import { FieldSettings, StringFontIconPicker } from '../../../../../../../edit-types/src/FieldSettings';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
 
@@ -11,14 +11,15 @@ export class StringFontIconPickerLogic extends FieldLogicBase {
   update({ fieldName, settings }: FieldLogicUpdate): FieldSettings {
     const l = this.log.fnIfInList('update', 'fields', fieldName, { fieldName, settings });
     const fixedSettings: FieldSettingsWithPickerSource = { ...settings } as FieldSettingsWithPickerSource;
+    const oldSettings = fixedSettings as unknown as StringFontIconPicker;
     ///// OLD Settings
     // fixedSettings.Files ??= '';
     // fixedSettings.CssPrefix ??= '';
     // fixedSettings.ShowPrefix ??= false;
 
-    fixedSettings.CssSourceFile = fixedSettings.Files ?? '';
-    fixedSettings.CssSelectorFilter = fixedSettings.CssPrefix ?? '';
-    fixedSettings.PreviewValue = fixedSettings.PreviewCss + ' [Item:Value]';
+    fixedSettings.CssSourceFile = oldSettings.Files ?? '';
+    fixedSettings.CssSelectorFilter = oldSettings.CssPrefix ?? '';
+    fixedSettings.PreviewValue = oldSettings.PreviewCss + ' [Item:Value]';
 
     fixedSettings.PreviewType ='icon-css';
     fixedSettings.EnableTextEntry = false;
