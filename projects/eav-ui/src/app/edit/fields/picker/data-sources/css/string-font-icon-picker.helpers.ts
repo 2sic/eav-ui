@@ -2,14 +2,17 @@ import { classLog } from 'projects/eav-ui/src/app/shared/logging';
 import { IconOption } from './string-font-icon-picker.models';
 
 
-const specs = {
+const logSpecs = {
+  all: true,
   findAllIconsInCss: true,
 };
 
 /** Calculates available css classes with className prefix. WARNING: Expensive operation */
 export function findAllIconsInCss(cssSelector: string, showPrefix?: boolean): IconOption[] {
 
-  const log = classLog({ findAllIconsInCss }, specs);
+  const log = classLog({ findAllIconsInCss }, logSpecs, true);
+
+  const l = log.fnIf('findAllIconsInCss', { cssSelector, showPrefix });
 
   if (!cssSelector) return [];
 
@@ -61,7 +64,7 @@ export function findAllIconsInCss(cssSelector: string, showPrefix?: boolean): Ic
     }
   }
 
-  log.fnIf('findAllIconsInCss', { classPrefix: cssSelector, showPrefix, foundList });
+  l.a('findAllIconsInCss', { classPrefix: cssSelector, showPrefix, foundList });
 
-  return foundList;
+  return l.r(foundList);
 }
