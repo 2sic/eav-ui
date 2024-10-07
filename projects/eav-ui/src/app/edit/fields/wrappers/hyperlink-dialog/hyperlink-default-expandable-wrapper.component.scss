@@ -1,10 +1,17 @@
-@import "../../../assets/styles/variables.scss";
-@import "../../../assets/styles/theme/material-colors.scss";
+@import '../../../assets/styles/variables.scss';
+@import '../../../assets/styles/theme/material-colors.scss';
 
 $hyperlink-default-height: 78px;
 
 .metadata-exists {
   color: $blue-accent-color;
+}
+
+.c-ew__preview--hyperlink {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
 }
 
 .c-ew__preview {
@@ -43,6 +50,7 @@ $hyperlink-default-height: 78px;
 }
 
 .c-ew__preview-field--short {
+  flex: 1 1 auto;
   // spm width 1% is required. Otherwise field breaks
   width: 1%;
   padding: 0;
@@ -61,6 +69,12 @@ $hyperlink-default-height: 78px;
   }
 }
 
+.c-ew__preview-suffix {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .c-ew__preview-suffix-text {
   font-size: 12px;
   line-height: 14px;
@@ -73,32 +87,25 @@ $hyperlink-default-height: 78px;
   color: $editUI-label-disabled-color;
 }
 
-// These used to be handled by fxLayout
-.hyperlink-floating,
-.c-ew__preview-field-hint,
-.c-ew__preview-suffix-text {
-  display: none;
-}
-
-// Show the element for screen widths greater than 600px (gt-xs)
-@media (min-width: 600px) {
-  .hyperlink-floating,
-  .c-ew__preview-field-hint,
-  .c-ew__preview-suffix-text {
-    display: block;
-  }
-}
-
-
 @media (min-width: 601px) {
   .c-ew__preview-suffix-icon {
     top: 0 !important;
+  }
+
+  .hyperlink-floating,
+  .c-ew__preview-field-hint.c__helper-wrapper--right {
+    display: flex;
   }
 }
 
 @media (max-width: 600px) {
   .c-ew__preview-suffix-icon {
     top: 10px !important;
+  }
+
+  .hyperlink-floating,
+  .c-ew__preview-field-hint.c__helper-wrapper--right {
+    display: none;
   }
 }
 
