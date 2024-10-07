@@ -7,7 +7,6 @@ $hyperlink-default-height: 78px;
   color: $blue-accent-color;
 }
 
-// Ensures correct layout
 .c-ew__preview--hyperlink {
   display: flex;
   flex-direction: row;
@@ -88,32 +87,25 @@ $hyperlink-default-height: 78px;
   color: $editUI-label-disabled-color;
 }
 
-// These used to be handled by fxLayout
-.hyperlink-floating,
-.c-ew__preview-field-hint,
-.c-ew__preview-suffix-text {
-  display: none;
-}
-
-// Show the element for screen widths greater than 600px (gt-xs)
-@media (min-width: 600px) {
-  .hyperlink-floating,
-  .c-ew__preview-field-hint,
-  .c-ew__preview-suffix-text {
-    display: block;
-  }
-}
-
-
 @media (min-width: 601px) {
   .c-ew__preview-suffix-icon {
     top: 0 !important;
+  }
+
+  .hyperlink-floating,
+  .c-ew__preview-field-hint.c__helper-wrapper--right {
+    display: flex;
   }
 }
 
 @media (max-width: 600px) {
   .c-ew__preview-suffix-icon {
     top: 10px !important;
+  }
+
+  .hyperlink-floating,
+  .c-ew__preview-field-hint.c__helper-wrapper--right {
+    display: none;
   }
 }
 
