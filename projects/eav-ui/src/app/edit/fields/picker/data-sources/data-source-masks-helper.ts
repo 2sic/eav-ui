@@ -74,13 +74,19 @@ export class DataSourceMasksHelper {
       return maybeTitle ? `${maybeTitle}` : entity.Title ? `${entity.Title}` : `${value}`; // If there is no title, use value with '*'
     })();
 
+    const previewValue = (() => {
+      const maybePreview = entity[masks.previewValue];
+      if (maybePreview) return maybePreview;
+      return value;
+    })();
+
     // If we don't have masks, we are done
     if (!masks.hasPlaceholders) {
       const result: PickerItem = {
         id: entity.Id,
         entity: entity,
         value,
-        previewValue: value,
+        previewValue,
         label,
         tooltip: masks.tooltip,
         info: masks.info,

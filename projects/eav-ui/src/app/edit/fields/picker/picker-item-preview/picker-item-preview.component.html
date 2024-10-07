@@ -1,30 +1,32 @@
 <!-- Type Text for String are Default -->
 
 <!-- Type Font Icon -->
-@switch (settings().PreviewType) {
-  @case ("icon-css") {
-    <i class="icon-preview {{ replaceDot(item()?.previewValue) }}"></i>
-  }
-  <!-- Type Material Icon -->
-  @case ("icon-symbol") {
-    <!-- TODO: ATM it can only take material icons, but in future it should be able to also take other icons, in which case the tag would have to be reworked... -->
-    <mat-icon>{{ item()?.previewValue }}</mat-icon> &nbsp;
-  }
-  <!--  Type SVG Icon -->
-  @case ("svg") {
-    <img [ngxTippy]="tippyTemplate" class="image-preview" [src]="item().previewValue" [alt]="item().value" />
-    <!-- Tippy to Show Big Image -->
-    <div #tippyTemplate class="tippy-custom">
-      <img class="image-tippy" [src]="item().previewValue" [alt]="item().value" />
-    </div>
-  }
-  <!-- Type Image -->
-  @case ("image") {
-    <!-- Small Image Preview -->
-    <img [ngxTippy]="tippyTemplate" class="image-preview" [src]="imageResize(item().previewValue, 24, 24)" [alt]="item().value" />
-    <!-- Tippy to Show Big Image -->
-    <div #tippyTemplate class="tippy-custom">
-      <img class="image-tippy" [src]="imageResize(item().previewValue, 140, 140)" [alt]="item().value" />
-    </div>
+@if (item()) {
+  @switch (settings().PreviewType) {
+    @case ("icon-css") {
+      <i class="icon-preview {{ replaceDot(item().previewValue) }}"></i>
+    }
+    <!-- Type Material Icon -->
+    @case ("icon-symbol") {
+      <!-- TODO: ATM it can only take material icons, but in future it should be able to also take other icons, in which case the tag would have to be reworked... -->
+      <mat-icon>{{ item().previewValue }}</mat-icon> &nbsp;
+    }
+    <!--  Type SVG Icon -->
+    @case ("svg") {
+      <img [ngxTippy]="tippyTemplate" class="image-preview" [src]="item().previewValue" [alt]="item().value" />
+      <!-- Tippy to Show Big Image -->
+      <div #tippyTemplate class="tippy-custom">
+        <img class="image-tippy" [src]="item().previewValue" [alt]="item().value" />
+      </div>
+    }
+    <!-- Type Image -->
+    @case ("image") {
+      <!-- Small Image Preview -->
+      <img [ngxTippy]="tippyTemplate" class="image-preview" [src]="imageResize(item().previewValue, 24, 24)" [alt]="item().value" />
+      <!-- Tippy to Show Big Image -->
+      <div #tippyTemplate class="tippy-custom">
+        <img class="image-tippy" [src]="imageResize(item().previewValue, 140, 140)" [alt]="item().value" />
+      </div>
+    }
   }
 }
