@@ -1,6 +1,5 @@
 import { AsyncPipe, DatePipe, NgClass } from '@angular/common';
 import { Component } from '@angular/core';
-import { ExtendedModule } from '@angular/flex-layout/extended';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
@@ -14,7 +13,6 @@ import { LogsConfigComponent } from "../logs-config/logs-config.component";
   standalone: true,
   imports: [
     NgClass,
-    ExtendedModule,
     AsyncPipe,
     DatePipe,
     MatIconModule,

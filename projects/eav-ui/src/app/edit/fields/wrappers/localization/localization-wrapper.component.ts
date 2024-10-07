@@ -1,11 +1,10 @@
+import { NgClass } from '@angular/common';
 import { Component, inject, ViewChild, ViewContainerRef } from '@angular/core';
 import { TranslateMenuComponent } from '../../../fields/wrappers/localization/translate-menu/translate-menu.component';
-import { ExtendedModule } from '@angular/flex-layout/extended';
-import { NgClass } from '@angular/common';
-import { FieldState } from '../../field-state';
 import { FormConfigService } from '../../../form/form-config.service';
 import { FormsStateService } from '../../../form/forms-state.service';
 import { EditRoutingService } from '../../../routing/edit-routing.service';
+import { FieldState } from '../../field-state';
 import { WrappersCatalog } from '../wrappers.constants';
 
 @Component({
@@ -15,7 +14,6 @@ import { WrappersCatalog } from '../wrappers.constants';
   standalone: true,
   imports: [
     NgClass,
-    ExtendedModule,
     TranslateMenuComponent,
   ],
 })

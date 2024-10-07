@@ -1,16 +1,14 @@
-import { Component, computed, inject } from '@angular/core';
-import { StringDefaultLogic } from './string-default-logic';
-import { MatInputModule } from '@angular/material/input';
-import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, NgStyle } from '@angular/common';
+import { Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
-import { FieldState } from '../../field-state';
 import { FieldMetadata } from '../../field-metadata.decorator';
+import { FieldState } from '../../field-state';
+import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
 import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
-import { SignalEquals } from '../../../../shared/signals/signal-equals';
+import { StringDefaultLogic } from './string-default-logic';
 
 @Component({
   selector: InputTypeCatalog.StringDefault,
@@ -22,7 +20,6 @@ import { SignalEquals } from '../../../../shared/signals/signal-equals';
     FormsModule,
     ReactiveFormsModule,
     NgClass,
-    ExtendedModule,
     MatInputModule,
     NgStyle,
     FieldHelperTextComponent,

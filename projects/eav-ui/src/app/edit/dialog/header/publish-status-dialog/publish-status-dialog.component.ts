@@ -1,6 +1,5 @@
 import { AsyncPipe, NgClass } from '@angular/common';
 import { Component } from '@angular/core';
-import { ExtendedModule } from '@angular/flex-layout/extended';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -22,7 +21,6 @@ import { isCtrlS } from '../../main/keyboard-shortcuts';
         MatCardModule,
         MatListModule,
         NgClass,
-        ExtendedModule,
         MatIconModule,
         AsyncPipe,
         TranslateModule,

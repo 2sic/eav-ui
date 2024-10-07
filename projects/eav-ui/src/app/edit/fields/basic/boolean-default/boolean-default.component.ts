@@ -1,15 +1,14 @@
-import { Component } from '@angular/core';
-import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
-import { FieldMetadata } from '../../field-metadata.decorator';
-import { BooleanDefaultLogic } from './boolean-default-logic';
-import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass } from '@angular/common';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { Component } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { BooleanBaseComponent } from './boolean-base.component';
 import { computedObj } from '../../../../shared/signals/signal.utilities';
+import { FieldMetadata } from '../../field-metadata.decorator';
+import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
+import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
+import { BooleanBaseComponent } from './boolean-base.component';
+import { BooleanDefaultLogic } from './boolean-default-logic';
 
 @Component({
   selector: InputTypeCatalog.BooleanDefault,
@@ -21,7 +20,6 @@ import { computedObj } from '../../../../shared/signals/signal.utilities';
     ReactiveFormsModule,
     MatSlideToggleModule,
     NgClass,
-    ExtendedModule,
     FieldHelperTextComponent,
   ],
 })

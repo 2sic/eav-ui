@@ -1,6 +1,5 @@
 import { NgClass } from '@angular/common';
 import { Component, inject, Input, ViewContainerRef } from '@angular/core';
-import { ExtendedModule } from '@angular/flex-layout/extended';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -28,7 +27,6 @@ import { TranslateMenuHelpers } from './translate-menu.helpers';
   standalone: true,
   imports: [
     NgClass,
-    ExtendedModule,
     MatButtonModule,
     MatMenuModule,
     MatIconModule,

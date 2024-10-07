@@ -2,7 +2,6 @@ import { Context as DnnContext } from '@2sic.com/sxc-angular';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { AsyncPipe, NgClass } from '@angular/common';
 import { ChangeDetectorRef, Component, computed, effect, EventEmitter, inject, OnInit, Output, signal, ViewContainerRef } from '@angular/core';
-import { ExtendedModule } from '@angular/flex-layout/extended';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -55,7 +54,6 @@ import { fixDropzone } from './dropzone-helper';
   standalone: true,
   imports: [
     NgClass,
-    ExtendedModule,
     MatIconModule,
     PasteClipboardImageDirective,
     MatBadgeModule,
