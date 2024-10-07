@@ -108,7 +108,7 @@ export class FieldSettingsUpdateHelper {
       || settings.DisableTranslation;
 
     // Correct these fresh settings with FieldLogics of this field
-    const fixed = constantFieldPart.logic?.update({ settings: settings, value: fieldValue, tools: this.fieldLogicTools }) ?? settings;
+    const fixed = constantFieldPart.logic?.update({ fieldName: this.fieldName, settings: settings, value: fieldValue, tools: this.fieldLogicTools }) ?? settings;
 
     return l.r(fixed);
   }
