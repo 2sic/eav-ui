@@ -51,9 +51,8 @@ export abstract class PickerComponent extends BaseComponent implements OnInit, O
    * since this control is used both for preview and dialog.
    */
   showPreview = computedObj('showPreview', () => {
-    const s = this.#fieldState.settings();
-    console.warn('showPreview', s.isDialog);
-    return !s.AllowMultiValue || (s.AllowMultiValue && !this.#fieldState.isOpen());
+    const s = this.#pickerData.features();
+    return !s.multiValue || (s.multiValue && !this.#fieldState.isOpen());
   });
 
   ngOnInit(): void {
