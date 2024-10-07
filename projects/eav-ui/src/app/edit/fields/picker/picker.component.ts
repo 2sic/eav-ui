@@ -1,4 +1,6 @@
 import { Component, inject, Injector, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
+import { FieldSettingsWithPickerSource } from '../../../../../../edit-types/src/PickerSources';
 import { BaseComponent } from '../../../shared/components/base.component';
 import { classLog, ClassLogger } from '../../../shared/logging';
 import { computedObj } from '../../../shared/signals/signal.utilities';
@@ -40,7 +42,7 @@ export abstract class PickerComponent extends BaseComponent implements OnInit, O
   /** The injector is used by most children to get transient one-time objects */
   #injector = inject(Injector);
   #editRoutingService = inject(EditRoutingService);
-  #fieldState = inject(FieldState);
+  #fieldState = inject(FieldState) as FieldState<FieldValue, FieldSettingsWithPickerSource>;
 
   #pickerData = this.#fieldState.pickerData;
 

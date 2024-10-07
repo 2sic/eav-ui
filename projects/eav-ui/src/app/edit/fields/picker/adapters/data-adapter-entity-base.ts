@@ -27,7 +27,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
   #editRoutingService = inject(EditRoutingService);
   protected translate = inject(TranslateService);
   #snackBar = inject(MatSnackBar);
-  protected fieldState = inject(FieldState);
+  protected fieldState = inject(FieldState) as FieldState<string[], FieldSettingsWithPickerSource>;
   protected group = inject(EntityFormStateService).formGroup;
   #entityService = transient(EntityService);
 
