@@ -25,7 +25,8 @@ export interface FormConfiguration {
   isCopy: boolean;
   enableHistory: boolean;
   enableFormulaSave: boolean;
-  overrideEditRestrictions: boolean;
+  /** True if for example debug mode allows to edit things which normally are not allowed */
+  removeEditRestrictions: boolean;
   dialogContext: DialogContext;
   settings: EditSettings;
 }

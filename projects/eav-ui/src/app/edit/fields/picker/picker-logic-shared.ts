@@ -37,9 +37,9 @@ export class PickerLogicShared {
     return settings;
   }
 
-  static maybeOverrideEditRestrictions(fs: FieldSettings, tools: FieldLogicTools): { fs: FieldSettings, overriding: boolean } {
-    if (!(tools.eavConfig.overrideEditRestrictions && tools.debug))
-      return { fs, overriding: false };
+  static maybeOverrideEditRestrictions(fs: FieldSettings, tools: FieldLogicTools): { fs: FieldSettings, removeEditRestrictions: boolean } {
+    if (!(tools.eavConfig.removeEditRestrictions && tools.debug))
+      return { fs, removeEditRestrictions: false };
 
     console.log(`SystemAdmin + Debug: Overriding edit restrictions for field \'${fs.Name}\' (EntityType: \'${fs.EntityType}\').`);
     fs.EnableEdit = true;
@@ -47,18 +47,18 @@ export class PickerLogicShared {
     fs.EnableAddExisting = true;
     fs.EnableRemove = true;
     fs.EnableDelete = true;
-    return { fs, overriding: true };
+    return { fs, removeEditRestrictions: true };
   }
 
   preUpdate({ settings, tools, value }: FieldLogicUpdate) {
 
     const fsDefaults = PickerLogicShared.setDefaultSettings({ ...settings });
 
-    const { fs: fsRaw, overriding } = PickerLogicShared.maybeOverrideEditRestrictions(fsDefaults, tools);
+    const { fs: fsRaw, removeEditRestrictions } = PickerLogicShared.maybeOverrideEditRestrictions(fsDefaults, tools);
 
     const { fs, typeConfig } = new PickerLogicShared().#getDataSourceAndSetupFieldSettings(value, fsRaw, tools);
 
-    return { fs, overriding, typeConfig };
+    return { fs, removeEditRestrictions, typeConfig };
   }
 
 

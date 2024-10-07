@@ -38,7 +38,7 @@
       <!-- create new entity to add to this list -->
       <ng-container *ngTemplateOutlet="addNew"></ng-container>
       <!-- Open dialog button -->
-      @if (mySettings().showGoToListDialogButton) {
+      @if (features().showGoToListDialogButton) {
         <button
           mat-icon-button
           class="picker-inline-button"
@@ -76,7 +76,7 @@
 
 <!-- Part for the AddNew button, which will either open the edit, or first show a menu with all the options -->
 <ng-template #addNew>
-  @if (mySettings().showAddNewEntityButton) {
+  @if (features().showAddNewButton) {
     @if (pickerData.state.typesForNew().length > 1) {
       <button
         mat-icon-button

@@ -91,7 +91,7 @@ export class FormConfigService {
       isCopy,
       enableHistory,
       enableFormulaSave: dialogContext.Enable.FormulaSave ?? false,
-      overrideEditRestrictions: dialogContext.Enable.OverrideEditRestrictions ?? false,
+      removeEditRestrictions: dialogContext.Enable.OverrideEditRestrictions ?? false,
       dialogContext,
       settings,
     };

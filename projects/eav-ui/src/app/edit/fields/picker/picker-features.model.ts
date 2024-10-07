@@ -63,3 +63,13 @@ export class PickerFeatures {
   //   });
   // }
 }
+
+export interface PickerFeaturesForControl extends PickerFeatures {
+  /**
+   * Determines if the control should also show the "Go to List" button.
+   * This depends on multi-select and in future also on the sortability of the list.
+   */
+  showGoToListDialogButton: boolean;
+
+  showAddNewButton: boolean;
+}

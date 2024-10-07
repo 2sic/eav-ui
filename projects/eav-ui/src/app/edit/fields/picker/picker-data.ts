@@ -8,7 +8,7 @@ import { DebugFields } from '../../edit-debug';
 import { DataAdapterBase } from './adapters/data-adapter-base';
 import { StateAdapter } from "./adapters/state-adapter";
 import { PickerItem } from './models/picker-item.model';
-import { PickerFeatures } from './picker-features.model';
+import { PickerFeatures, PickerFeaturesForControl } from './picker-features.model';
 
 const logSpecs = {
   all: false,
@@ -150,14 +150,20 @@ export class PickerData {
     return {
       textEntry: s.EnableTextEntry,
       multiValue: s.AllowMultiValue,
+      create: s.EnableCreate && !!s.CreateTypes,
     } satisfies Partial<PickerFeatures>;
   });
 
   /** Signal containing the features of the picker, basically to accumulate features such as "canEdit" */
-  public features = computedObj('features', () => {
+  public features = computedObj<PickerFeaturesForControl>('features', () => {
     const mergeSourceAndState = PickerFeatures.merge(this.source.myFeatures(), this.state.myFeatures());
     const mergeSettings = PickerFeatures.merge(mergeSourceAndState, this.#featuresFromSettings());
-    return mergeSettings;
+    const forControl = {
+      ...mergeSettings,
+      showGoToListDialogButton: mergeSettings.multiValue,
+      showAddNewButton: mergeSettings.create,
+    } satisfies PickerFeaturesForControl;
+    return forControl;
   });
 
   public addNewlyCreatedItem(result: Record<string, number>) {

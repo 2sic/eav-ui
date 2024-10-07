@@ -17,7 +17,7 @@ export class StringPickerLogic extends FieldLogicBase {
 
     const l = log.fn('update', { specs });
 
-    const { fs, overriding, typeConfig } = new PickerLogicShared().preUpdate(specs);
+    const { fs, removeEditRestrictions, typeConfig } = new PickerLogicShared().preUpdate(specs);
 
     fs.Separator ??= '\n'; //'\\n';
     if (fs.Separator == '\\n') fs.Separator = '\n'; //buggy temp double-slash-n
@@ -28,7 +28,7 @@ export class StringPickerLogic extends FieldLogicBase {
     l.a(`type: ${typeName}`, { typeConfig, isCustomSource });
 
     if (isCustomSource) {
-      if (!overriding) {
+      if (!removeEditRestrictions) {
         fs.EnableEdit = false;
         fs.EnableCreate = false;
         fs.EnableDelete = false;

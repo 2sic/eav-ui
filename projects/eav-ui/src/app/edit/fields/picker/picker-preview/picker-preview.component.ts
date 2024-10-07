@@ -70,18 +70,4 @@ export class PickerPreviewComponent extends PickerPartBaseComponent {
     return mode === 'radio' || mode === 'checkbox';
   });
 
-  mySettings = computedObj('mySettings', () => {
-    const features = this.features();
-    const settings = this.fieldState.settings();
-    const showAddNewEntityButton = settings.CreateTypes && settings.EnableCreate;
-    const showGoToListDialogButton = features.multiValue;
-    return {
-      enableEdit: settings.EnableEdit,
-      enableCreate: settings.EnableCreate,
-      createTypes: settings.CreateTypes,
-      showAddNewEntityButton,
-      showGoToListDialogButton,
-    };
-  });
-
 }
