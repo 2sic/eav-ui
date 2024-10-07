@@ -1,6 +1,6 @@
 @if (loading()) {
   <mat-spinner color="accent"></mat-spinner>
 }
-@else if (isExpanded()) {
+@else if (this.fieldState.isOpen()) {
   <app-connector></app-connector>
 }

@@ -24,9 +24,6 @@ const webApiRename = 'admin/field/Rename';
 const webApiDelete = 'admin/field/Delete';
 const webApiAdd = 'admin/field/Add';
 const webApiFieldsGetShared = 'admin/field/GetSharedFields';
-const webApiGetAncestors = 'admin/field/GetAncestors';
-const webApiGetDescendants = 'admin/field/GetDescendants';
-
 
 @Injectable()
 export class ContentTypesFieldsService extends HttpServiceBase {
@@ -97,24 +94,13 @@ export class ContentTypesFieldsService extends HttpServiceBase {
 
   /**
    * Get sharable fields which are possible for this attribute.
+   * 
    * Reason is that eg. a bool-attribute can only receive metadata from a bool attribute, etc.
+   * 
    * @param attributeId the existing attributeId which will receive the new metadata
    */
   getShareableFieldsFor(attributeId: number) {
-    return this.#getShareinfo(webApiFieldsGetShared, attributeId);
-    // return this.http.get<Field[]>(this.apiUrl(webApiFieldsGetShared), this.paramsAppId({ attributeId }));
-  }
-
-  getAncestors(attributeId: number) {
-    return this.#getShareinfo(webApiGetAncestors, attributeId);
-  }
-
-  getDescendants(attributeId: number) {
-    return this.#getShareinfo(webApiGetDescendants, attributeId);
-  }
-
-  #getShareinfo(endpoint: string, attributeId: number) {
-    return this.http.get<Field[]>(this.apiUrl(endpoint), this.paramsAppId({ attributeId }));
+    return this.http.get<Field[]>(this.apiUrl(webApiFieldsGetShared), this.paramsAppId({ attributeId }));
   }
 
   addInheritedField(targetContentTypeId: number, sourceType: string, sourceFieldGuid: string /* guid */, name: string) {
