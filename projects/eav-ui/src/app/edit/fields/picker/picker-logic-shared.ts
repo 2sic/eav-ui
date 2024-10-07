@@ -33,7 +33,6 @@ export class PickerLogicShared {
     settings.EnableRemove ??= true;
     settings.EnableDelete ??= false;
     settings.Label ??= '';
-    settings.isDialog ??= false;
     settings.EnableTextEntry ??= false;
     return settings;
   }

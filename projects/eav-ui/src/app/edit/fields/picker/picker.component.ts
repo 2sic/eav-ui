@@ -50,7 +50,6 @@ export abstract class PickerComponent extends BaseComponent implements OnInit, O
    */
   showPreview = computedObj('showPreview', () => {
     const s = this.#fieldState.settings();
-    console.warn('showPreview', s.isDialog);
     return !s.AllowMultiValue || (s.AllowMultiValue && !this.#fieldState.isOpen());
   });
 

@@ -21,9 +21,6 @@ interface InternalSettings {
   /** This is the combined calculation of forced disabled and configured disabled */
   uiDisabled: boolean;
 
-  /** Ui is currently in a popup dialog */
-  isDialog?: boolean;
-
   /**
    * The value is currently required.
    * This is calculated at runtime, often based on visibility etc.
