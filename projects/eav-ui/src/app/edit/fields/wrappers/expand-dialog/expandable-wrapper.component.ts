@@ -1,6 +1,5 @@
 import { CommonModule, JsonPipe, NgClass, NgStyle } from '@angular/common';
 import { AfterViewInit, ChangeDetectorRef, Component, computed, ElementRef, inject, NgZone, OnDestroy, signal, ViewChild, ViewContainerRef } from '@angular/core';
-import { ExtendedModule } from '@angular/flex-layout/extended';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatRippleModule } from '@angular/material/core';
@@ -30,7 +29,6 @@ import { PreviewHeight } from './expandable-wrapper.models';
   standalone: true,
   imports: [
     NgClass,
-    ExtendedModule,
     MatCardModule,
     MatButtonModule,
     MatIconModule,

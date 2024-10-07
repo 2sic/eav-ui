@@ -1,6 +1,5 @@
 import { NgClass, NgTemplateOutlet } from '@angular/common';
 import { Component, computed, Inject, OnInit, signal } from '@angular/core';
-import { ExtendedModule } from '@angular/flex-layout/extended';
 import { FormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogActions, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -26,7 +25,6 @@ import { PageEntity, PagePickerDialogData, PageSearchItem, PageTreeItem } from '
     FormsModule,
     NgTemplateOutlet,
     NgClass,
-    ExtendedModule,
     MatIconModule,
     MatDialogActions,
     TranslateModule,

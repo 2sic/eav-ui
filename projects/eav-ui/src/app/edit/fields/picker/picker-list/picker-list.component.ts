@@ -1,7 +1,6 @@
 import { CdkDrag, CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
 import { NgClass } from '@angular/common';
 import { Component } from '@angular/core';
-import { ExtendedModule } from '@angular/flex-layout/extended';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -20,7 +19,6 @@ import { ReorderIndexes } from './reorder-index.models';
   standalone: true,
   imports: [
     MatFormFieldModule,
-    ExtendedModule,
     MatIconModule,
     MatButtonModule,
     NgClass,
