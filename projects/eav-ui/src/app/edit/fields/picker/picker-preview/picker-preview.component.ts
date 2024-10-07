@@ -56,7 +56,7 @@ export class PickerPreviewComponent extends PickerPartBaseComponent {
 
 
         // Multi-value should automatically use checkboxes
-        if (this.allowMultiValue()) return 'checkbox';
+        if (this.features().multiValue) return 'checkbox';
         return 'radio';
       case 'list':
       default:
@@ -71,11 +71,11 @@ export class PickerPreviewComponent extends PickerPartBaseComponent {
   });
 
   mySettings = computedObj('mySettings', () => {
+    const features = this.features();
     const settings = this.fieldState.settings();
     const showAddNewEntityButton = settings.CreateTypes && settings.EnableCreate;
-    const showGoToListDialogButton = settings.AllowMultiValue;
+    const showGoToListDialogButton = features.multiValue;
     return {
-      allowMultiValue: settings.AllowMultiValue,
       enableEdit: settings.EnableEdit,
       enableCreate: settings.EnableCreate,
       createTypes: settings.CreateTypes,

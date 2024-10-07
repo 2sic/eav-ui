@@ -131,7 +131,7 @@ export abstract class StateAdapter {
 
   public add(value: string): void {
     this.log.fnIf('add', { value });
-    this.#updateValue(list => (this.settings().AllowMultiValue) ? [...list, value] : [value]);
+    this.#updateValue(list => (this.features().multiValue) ? [...list, value] : [value]);
   }
 
   public set(values: string[]): void {
@@ -174,20 +174,3 @@ export abstract class StateAdapter {
     this.isInFreeTextMode.update(p => !p);
   }
 }
-
-// 2024-06-20 Keep in case we need it later
-
-// Temp centralize logic if pickerList should show, but not in use yet.
-// Commented out, till we need it, then refactor to signals
-// var allowMultiValue$ = this.settings$.pipe(mapUntilChanged(settings => settings.AllowMultiValue));
-// this.shouldPickerListBeShown$ = combineLatest([
-//   this.isExpanded$,
-//   allowMultiValue$,
-//   selectedItems$,
-// ]).pipe(
-//   map(([isExpanded, allowMultiValue, selectedItems]) => {
-//     return !this.isInFreeTextMode()
-//       && ((selectedItems.length > 0 && allowMultiValue) || (selectedItems.length > 1 && !allowMultiValue))
-//       && (!allowMultiValue || (allowMultiValue && isExpanded));
-//   })
-// );

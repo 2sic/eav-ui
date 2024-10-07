@@ -33,8 +33,6 @@ export class PickerPartBaseComponent {
 
   protected enableTextEntry = this.fieldState.setting('EnableTextEntry');
 
-  protected allowMultiValue = this.fieldState.setting('AllowMultiValue');
-
   //#endregion
 
   /** Picker Data Bundle with Source and state etc. */
