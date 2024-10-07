@@ -12,7 +12,7 @@ export class StateAdapterNumber extends StateAdapter {
 
   constructor() { super(); }
 
-  public override features = signalObj('features', { multiValue: false } satisfies Partial<PickerFeatures>);
+  public override myFeatures = signalObj('features', { multiValue: false } satisfies Partial<PickerFeatures>);
 
   // Map the state (string to number array) and UI (number to string array)
   mapper = new StateUiMapperNumberArray('todo field name', this.settings);

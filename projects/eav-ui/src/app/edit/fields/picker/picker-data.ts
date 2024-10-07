@@ -42,10 +42,16 @@ export class PickerData {
   /** Setup to load initial values and initialize the state */
   public setup(name: string, settings: Signal<FieldSettings>, state: StateAdapter, source: DataAdapterBase): this {
     const l = this.log.fnIfInList('setup', 'fields', name, { name, state, source });
+
+    // Setup this object
     this.name = name;
     this.#settingsLazy.set(settings);
     this.state = state;
     this.source = source;
+
+    // Setup the State so it is able to do it's work based on data it wouldn't have otherwise
+    this.state.features = this.features;
+
     this.ready.set(true);
     // 1. Init Prefetch - for Entity Picker
     // This will place the prefetch items into the available-items list
@@ -148,7 +154,7 @@ export class PickerData {
 
   /** Signal containing the features of the picker, basically to accumulate features such as "canEdit" */
   public features = computedObj('features', () => {
-    const mergeSourceAndState = PickerFeatures.merge(this.source.features(), this.state.features());
+    const mergeSourceAndState = PickerFeatures.merge(this.source.myFeatures(), this.state.myFeatures());
     const mergeSettings = PickerFeatures.merge(mergeSourceAndState, this.#featuresFromSettings());
     return mergeSettings;
   });

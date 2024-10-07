@@ -1,5 +1,5 @@
 import { moveItemInArray } from '@angular/cdk/drag-drop';
-import { Injectable, inject } from '@angular/core';
+import { Injectable, Signal, inject } from '@angular/core';
 import { getWith } from '../../../../../../../core';
 import { classLog } from '../../../../shared/logging';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
@@ -44,7 +44,12 @@ export abstract class StateAdapter {
 
   public isInFreeTextMode = signalObj('isInFreeTextMode', false);
 
-  public features = signalObj('features', {} as Partial<PickerFeatures>);
+  /** The features this source will broadcast, to be merged with other features */
+  public myFeatures = signalObj('features', {} as Partial<PickerFeatures>);
+
+  /** The final valid features, must be provided by the picker-data */
+  public features: Signal<PickerFeatures>;
+
 
   #createTypesRaw = computedObj('createTypesRaw',
     () => getWith(this.settings().CreateTypes,

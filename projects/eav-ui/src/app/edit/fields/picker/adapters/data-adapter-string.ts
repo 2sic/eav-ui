@@ -16,7 +16,7 @@ export class DataAdapterString extends DataAdapterBase {
 
   constructor() { super();}
 
-  public features = signalObj('features', { edit: false, create: false, delete: false, } satisfies Partial<PickerFeatures>);
+  public myFeatures = signalObj('features', { edit: false, create: false, delete: false, } satisfies Partial<PickerFeatures>);
 
 
   /** should never be needed as we have synchronously all data in settings */

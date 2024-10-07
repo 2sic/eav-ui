@@ -27,7 +27,7 @@ export abstract class DataAdapterBase {
   constructor() { }
 
   /** Picker Features of this DataAdapter - must be implemented by every data source to communicate it's features */
-  public abstract features: Signal<Partial<PickerFeatures>>;
+  public abstract myFeatures: Signal<Partial<PickerFeatures>>;
 
   /** a signal for data-sources - may not need a signal, if it's unchanging... */
   public dataSource = signalObj<DataSourceBase>('dataSource', null satisfies DataSourceBase);

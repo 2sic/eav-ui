@@ -49,7 +49,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
   #createEntityTypes = computedObj('createEntityTypes', () => this.fieldState.settings().CreateTypes);
 
   /** The features depend on contentType names being available to support create */
-  public features = computedObj<Partial<PickerFeatures>>('features', () => {
+  public myFeatures = computedObj<Partial<PickerFeatures>>('features', () => {
     // if we don't know the content-type, we can't create new entities
     const disableCreate = !this.contentType() && !this.#createEntityTypes();
     return { create: !disableCreate } satisfies Partial<PickerFeatures>;
