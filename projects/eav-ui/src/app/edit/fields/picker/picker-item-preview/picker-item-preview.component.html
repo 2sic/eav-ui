@@ -13,7 +13,6 @@
     }
     <!--  Type SVG Icon -->
     @case ("svg") {
-      preview: {{ item().previewValue }}
       <img [ngxTippy]="tippyTemplate" class="image-preview" [src]="item().previewValue" [alt]="item().value" />
       <!-- Tippy to Show Big Image -->
       <div #tippyTemplate class="tippy-custom">
