@@ -6,23 +6,22 @@ import { FieldLogicTools } from './field-logic-tools';
 
 const logSpecs = {
   all: false,
-  fields: [...DebugFields],
+  constructor: true,
+  update: true,
+  fields: [...DebugFields, 'Icon'],
 }
 
 export abstract class FieldLogicBase {
 
   /** Logger - lazy created on first access if not yet created */
-  get log() { return this.#log ??= classLog({FieldLogicBase}).extendName(`[${this.name}]`) };
+  get log() { return this.#log ??= classLog({FieldLogicBase}, logSpecs).extendName(`[${this.name}]`) };
   
-  #log: ClassLogger;
+  #log: ClassLogger<typeof logSpecs>;
 
   constructor(inheritingClass: Record<string, unknown> | string, logThis?: boolean) {
-    if(!this.name)
-      return
-    
-    this.#log = classLog(inheritingClass ?? {FieldLogicBase}, null, logThis);
+    this.#log = classLog(inheritingClass ?? {FieldLogicBase}, logSpecs, logThis);
     this.name ??= this.#log.name;
-    this.log.a(`constructor for ${inheritingClass}`);
+    this.log.fnIf('constructor');
   }
 
   /** Input type name */
@@ -76,6 +75,9 @@ export abstract class FieldLogicBase {
 }
 
 export interface FieldLogicUpdate<T = FieldValue> {
+  /** The field name, to better debug */
+  fieldName: string;
+
   /** Settings before logic update */
   settings: FieldSettings;
 

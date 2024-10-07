@@ -6,9 +6,10 @@ import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
 export class StringFontIconPickerLogic extends FieldLogicBase {
   name = InputTypeCatalog.StringFontIconPicker;
 
-  constructor() { super({ StringFontIconPickerLogic }); }
+  constructor() { super({ StringFontIconPickerLogic }, true); }
 
-  update({ settings }: FieldLogicUpdate): FieldSettings {
+  update({ fieldName, settings }: FieldLogicUpdate): FieldSettings {
+    const l = this.log.fnIfInList('update', 'fields', fieldName, { fieldName, settings });
     const fixedSettings: FieldSettingsWithPickerSource = { ...settings } as FieldSettingsWithPickerSource;
     ///// OLD Settings
     // fixedSettings.Files ??= '';
@@ -28,8 +29,7 @@ export class StringFontIconPickerLogic extends FieldLogicBase {
     // fixedSettings.Label = fixedSettings.ShowPrefix
     // ? `${fixedSettings.CssPrefix} [Item:Value]`
     // : "[Item:Value]";;
-
-    return fixedSettings;
+    return l.r(fixedSettings);
   }
 }
 

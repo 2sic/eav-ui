@@ -8,9 +8,9 @@ export class EntityQueryLogic extends FieldLogicBase {
 
   constructor() { super({ EntityQueryLogic }); }
 
-  update({ settings, tools, value }: FieldLogicUpdate<string[]>): FieldSettings {
+  update(updateSpecs: FieldLogicUpdate<string[]>): FieldSettings {
     const entityDefaultLogic = FieldLogicManager.singleton().get(InputTypeCatalog.EntityDefault);
-    const fixedSettings = entityDefaultLogic.update({ settings, value, tools });
+    const fixedSettings = entityDefaultLogic.update(updateSpecs);
     fixedSettings.Query ??= '';
     fixedSettings.StreamName ||= 'Default';
     fixedSettings.UrlParameters ??= '';
