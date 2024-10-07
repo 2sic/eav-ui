@@ -79,7 +79,6 @@ export class PickerPreviewComponent extends PickerPartBaseComponent {
       enableEdit: settings.EnableEdit,
       enableCreate: settings.EnableCreate,
       createTypes: settings.CreateTypes,
-      enableTextEntry: settings.EnableTextEntry,
       showAddNewEntityButton,
       showGoToListDialogButton,
     };

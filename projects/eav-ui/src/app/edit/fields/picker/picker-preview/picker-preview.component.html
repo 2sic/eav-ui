@@ -66,7 +66,7 @@
   <span [ngClass]="{ 'picker-suffix-text': showBoth }">
     <app-picker-toggle-text
       [csDisabled]="ui().disabled"
-      [allowText]="mySettings().enableTextEntry"
+      [allowText]="features().textEntry"
       [isTextMode]="isInFreeTextMode()"
       [showBoth]="showBoth ?? true"
     >

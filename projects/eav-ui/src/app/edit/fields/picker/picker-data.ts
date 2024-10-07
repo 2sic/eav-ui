@@ -21,6 +21,7 @@ const logSpecs = {
   features: true,
   fields: [...DebugFields, '*'],
 }
+
 /**
  * Manages the data for the picker component.
  * This is quite complex, because there are many combinations of where the configuration and data can come from,

@@ -122,7 +122,6 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
     const s = this.fieldState.settings();
     return {
       enableAddExisting: s.EnableAddExisting,
-      enableTextEntry: s.EnableTextEntry,
       enableReselect: s.EnableReselect,
       showAsTree: s.PickerDisplayMode === 'tree',
     };

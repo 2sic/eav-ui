@@ -52,7 +52,7 @@
     </button>
 
     <!-- Toggle Text Mode -->
-    @if (settings().enableTextEntry) {
+    @if (features().textEntry) {
       <span matSuffix>
         <ng-content select="[freeTextButtons]"></ng-content>
       </span>
