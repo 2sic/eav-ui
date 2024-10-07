@@ -1,6 +1,7 @@
 import { classLog } from 'projects/eav-ui/src/app/shared/logging';
 import { IconOption } from './string-font-icon-picker.models';
 
+
 const specs = {
   findAllIconsInCss: true,
 };

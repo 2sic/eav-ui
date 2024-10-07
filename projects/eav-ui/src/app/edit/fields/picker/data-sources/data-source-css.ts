@@ -4,8 +4,8 @@ import { EntityLight } from 'projects/eav-ui/src/app/shared/models/entity-basic'
 import { classLog } from '../../../../shared/logging';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
 import { ScriptsLoaderService } from '../../../shared/services/scripts-loader.service';
-import { findAllIconsInCss } from '../../basic/string-font-icon-picker/string-font-icon-picker.helpers';
-import { IconOption } from '../../basic/string-font-icon-picker/string-font-icon-picker.models';
+import { findAllIconsInCss } from './css/string-font-icon-picker.helpers';
+import { IconOption } from './css/string-font-icon-picker.models';
 import { DataSourceBase, logSpecsDataSourceBase } from './data-source-base';
 import { DataSourceMasksHelper } from './data-source-masks-helper';
 
