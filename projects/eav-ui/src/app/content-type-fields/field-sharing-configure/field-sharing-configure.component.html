@@ -14,18 +14,26 @@
           This field is published so it can be shared by other Content Types.
           As such you cannot configure anything here, but just review the information.
         </p>
-        <div>Global Identifier: {{ dialogData.Guid }}</div>
+        <div>
+          Global Identifier: <strong>{{ dialogData.Guid }}</strong>
+        </div>
+        <h4>Inherited by</h4>
+        <ng-container *ngTemplateOutlet="detailsOrWarning"></ng-container>
       }
       @case (sharingOrInheriting.Inheriting) {
         <p>
           This field is inheriting it's definition from another previously shared field.
         </p>
         <h4>Inherits Definition from</h4>
-        <ol>
-          @for (s of inherited(); track s.complete) {
-            <li>{{ s.complete }}</li>
-          }
-        </ol>
+        @if (!features.isEnabled[requiredFeature]()) {
+          <ol>
+            @for (s of inherited(); track s.complete) {
+              <li>{{ s.complete }}</li>
+            }
+          </ol>
+        }
+        <ng-container *ngTemplateOutlet="detailsOrWarning"></ng-container>
+        
         @if (notInherited().length) {
           <h4>Not Inherited Definitions</h4>
           <p>The following definitions are not inherited, so you can specify them on this field:</p>
@@ -107,7 +115,7 @@
     }
   </div>
 
-  <app-feature-text-info [featureNameId]="'ContentTypeFieldsReuseDefinitions'" [asInfo]="true">
+  <app-feature-text-info [featureNameId]="requiredFeature" [asInfo]="true">
     <em>
       Even if the feature is not licensed, it will always work but show warnings.
     </em>
@@ -123,3 +131,35 @@
     }
   </div>
 </div>
+
+<!-- Reusable part showing a list of ancestors or descendants - or showing a license warning to see more -->
+<ng-template #detailsOrWarning>
+  @if (features.isEnabled[requiredFeature]()) {
+    @if (details().length) {
+      <ul>
+        @for (field of details(); track field.AttributeId) {
+          <li>
+            Guid: <strong>{{ field.Guid }}</strong>
+            <br>
+            Content Type: <strong>{{ field.ContentType.Name }}</strong>
+            <br>
+            Field: <strong>{{ field.StaticName }}</strong> ({{ field.AttributeId }})
+          </li>
+        }
+      </ul>
+    }
+    @else {
+      <em>
+        No details available. This field probably does not have any inheriting fields.
+      </em>
+    }
+  }
+  @else {
+    <em>
+      You can get more details about the parents by enabling the feature
+      <br>
+      {{ requiredFeature }}
+      <app-feature-icon-text [featureNameId]="requiredFeature"></app-feature-icon-text>.
+    </em>
+  }
+</ng-template>
