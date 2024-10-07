@@ -1,6 +1,6 @@
 <div class="dropzone" [@adamShowAnimate]="adamConfig()?.autoLoad ? 'open' : 'closed'">
 
-  @if (adamConfig()?.autoLoad && expanded()) {
+  @if (adamConfig()?.autoLoad && this.fieldState.isOpen()) {
     <div
       [ngClass]="{
         'adam-scope-site': adamConfig().usePortalRoot,

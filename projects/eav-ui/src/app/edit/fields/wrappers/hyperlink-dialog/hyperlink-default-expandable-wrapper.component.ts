@@ -67,6 +67,7 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
   protected enableImageConfiguration = computed(() => this.fieldState.settings().EnableImageConfiguration, SignalEquals.bool);
   
   private dropzoneDraggingHelper: DropzoneDraggingHelper;
+  private editRoutingService: EditRoutingService;
 
   constructor(
     eavService: FormConfigService,
@@ -85,9 +86,9 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
       viewContainerRef,
       changeDetectorRef,
       linkCacheService,
-      editRoutingService,
       formsStateService,
     );
+    this.editRoutingService = editRoutingService;
   }
 
   #hideAdamSponsor = this.featuresService.isEnabled[FeatureNames.NoSponsoredByToSic];

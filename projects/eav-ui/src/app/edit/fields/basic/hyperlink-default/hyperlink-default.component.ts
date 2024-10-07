@@ -16,7 +16,6 @@ import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { SignalEquals } from '../../../../shared/signals/signal-equals';
 import { FormConfigService } from '../../../form/form-config.service';
 import { FormsStateService } from '../../../form/forms-state.service';
-import { EditRoutingService } from '../../../routing/edit-routing.service';
 import { LinkCacheService } from '../../../shared/adam/link-cache.service';
 import { PasteClipboardImageDirective } from '../../directives/paste-clipboard-image.directive';
 import { FieldMetadata } from '../../field-metadata.decorator';
@@ -62,15 +61,12 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
   protected showFileManager = computed(() => this.settings().ShowFileManager, SignalEquals.bool);
   protected enableImageConfiguration = computed(() => this.settings().EnableImageConfiguration, SignalEquals.bool);
 
-  open = this.editRoutingService.isExpandedSignal(this.config.index, this.config.entityGuid);
-
   constructor(
     eavService: FormConfigService,
     matDialog: MatDialog,
     viewContainerRef: ViewContainerRef,
     changeDetectorRef: ChangeDetectorRef,
     linkCacheService: LinkCacheService,
-    editRoutingService: EditRoutingService,
     formsStateService: FormsStateService,
   ) {
     super(
@@ -79,7 +75,6 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
       viewContainerRef,
       changeDetectorRef,
       linkCacheService,
-      editRoutingService,
       formsStateService,
     );
     HyperlinkDefaultLogic.importMe();
