@@ -19,7 +19,7 @@ export class DataSourceAppAssets extends DataSourceEntityQueryBase {
   * Get the data from the Query System.AppFiles/Default
   */
   protected override getFromBackend(_typeName: string, _guids: string[], purposeForLog: string): Observable<DataWithLoading<PickerItem[]>> {
-    const { AppAssetsRootFolder: rootFolder, AppAssetsFileFilter: fileFilter, AppAssetsType: type } = this.settings();
+    const { AssetsRootFolder: rootFolder, AssetsFileFilter: fileFilter, AssetsType: type } = this.settings();
 
     var l = this.log.fnIf('getFromBackend', null, purposeForLog);
 

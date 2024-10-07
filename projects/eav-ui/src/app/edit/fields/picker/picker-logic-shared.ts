@@ -139,9 +139,9 @@ export class PickerLogicShared {
 
     /** App Assets Source */
     if (sourceIsAppAssets) {
-      fs.AppAssetsRootFolder = typeConfig.AppAssetsRootFolder ?? '/';
-      fs.AppAssetsFileFilter = typeConfig.AppAssetsFileFilter ?? '*.*';
-      fs.AppAssetsType = typeConfig.AppAssetsType ?? 'files';
+      fs.AssetsRootFolder = typeConfig.AssetsRootFolder ?? '/';
+      fs.AssetsFileFilter = typeConfig.AssetsFileFilter ?? '*.*';
+      fs.AssetsType = typeConfig.AssetsType ?? 'files';
       fs.requiredFeatures = [FeatureNames.PickerSourceAppAssets];
     }
 
