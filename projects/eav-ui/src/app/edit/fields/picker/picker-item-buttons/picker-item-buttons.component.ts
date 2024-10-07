@@ -22,13 +22,17 @@ import { PickerPartBaseComponent } from '../picker-part-base.component';
 })
 export class PickerItemButtonsComponent extends PickerPartBaseComponent {
 
+  /** The item to show the label/buttons for */
+  item = input.required<PickerItem>();
+  
+  /** The item index, important for certain button actions */
+  index = input.required<number>();
+
+  /** If the buttons should show or not - I believe ATM it's always true */
   show = input.required<boolean>();
 
-  item = input.required<PickerItem>();
-
+  /** UI Features can let the control determine that certain buttons shouldn't be available, eg. "remove" on radio-button */
   uiFeatures = input<Partial<PickerFeaturesItem>>(null);
-
-  index = input.required<number>();
 
   constructor() { super(); }
 

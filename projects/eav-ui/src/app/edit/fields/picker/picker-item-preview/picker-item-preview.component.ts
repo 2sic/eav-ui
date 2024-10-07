@@ -37,14 +37,12 @@ export class PickerItemPreviewComponent {
       .replace(/height=\d+/g, `height=${height}`);
 
     // If width is not present, add it
-    if (!optimizedImage.includes('width=')) {
+    if (!optimizedImage.includes('width='))
       optimizedImage += (optimizedImage.includes('?') ? '&' : '?') + `width=${width}`;
-    }
 
     // If height is not present, add it
-    if (!optimizedImage.includes('height=')) {
+    if (!optimizedImage.includes('height='))
       optimizedImage += (optimizedImage.includes('?') ? '&' : '?') + `height=${height}`;
-    }
 
     return optimizedImage;
   }

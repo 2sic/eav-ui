@@ -20,15 +20,19 @@ import { PickerItemPreviewComponent } from '../picker-item-preview/picker-item-p
   styleUrl: './picker-item-label.component.scss'
 })
 export class PickerPreviewLabelComponent {
-
+  /** The item to show the label/buttons for */
   item = input.required<PickerItem>();
 
+  /** The item index, important for certain button actions */
+  index = input<number>(0);
+
+  /** Settings, mainly for the preview feature such as icon etc. */
   settings = input.required<FieldSettingsWithPickerSource>();
 
+  /** UI Features can let the control determine that certain buttons shouldn't be available, eg. "remove" on radio-button */
   uiFeatures = input<Partial<PickerFeaturesItem>>(null);
 
+  /** If the buttons should show or not - I believe ATM it's always true */
   show = input<boolean>(false);
-
-  index = input<number>(0);
 
 }
