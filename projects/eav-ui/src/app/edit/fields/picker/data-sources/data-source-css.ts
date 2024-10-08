@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
+import { EntityLight } from 'projects/edit-types/src/EntityLight';
 import { getWith } from '../../../../../../../core/object-utilities';
-import { EntityLight } from '../../../../../../../edit-types/src/EntityLight';
 import { classLog } from '../../../../shared/logging';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
 import { ScriptsLoaderService } from '../../../shared/services/scripts-loader.service';
 import { findAllIconsInCss } from './css/string-font-icon-picker.helpers';
-import { IconOption } from './css/string-font-icon-picker.models';
 import { DataSourceBase, logSpecsDataSourceBase } from './data-source-base';
 import { DataSourceMasksHelper } from './data-source-masks-helper';
 
@@ -31,7 +30,7 @@ export class DataSourceCss extends DataSourceBase {
     this.scriptsLoaderService.load(settings.CssSourceFile.split('\n'), () => {
       const newIconOptions = findAllIconsInCss(settings.CssSelectorFilter, false);
       this.log.fnIf('newIconOptions', { settings, newIconOptions });
-      this.#iconOptions.set(newIconOptions);
+      this.#iconEntities.set(newIconOptions);
     });
 
   }
@@ -39,7 +38,7 @@ export class DataSourceCss extends DataSourceBase {
   loading = signalObj('loading', false);
 
   #settings = this.fieldState.settings;
-  #iconOptions = signalObj<IconOption[]>('iconOptions', []);
+  #iconEntities = signalObj<EntityLight[]>('iconOptions', []);
 
   fileLoadSettings = computedObj('fileLoadSettings', () => getWith(this.#settings(), s => ({
     CssSourceFile: s.CssSourceFile,
@@ -59,23 +58,12 @@ export class DataSourceCss extends DataSourceBase {
 
   data = computedObj('data', () => {
 
-    const options = this.#iconOptions();
-
+    const options = this.#iconEntities();
     const maskHelper = this.#dataMaskHelper;
+
     const l = this.log.fnIfInList('data', 'fields', this.fieldName, { options, maskHelper });
 
-    const result = options.map(option => {
-      const entity: EntityLight = {
-        Id: null,
-        Guid: null,
-        Title: option.label,
-        Value: option.class,
-        ValueRaw: option.valueRaw,
-        Selector: option.selector,
-      };
-
-      l.values({ entity });
-
+    const result = options.map(entity => {
       const pickerItem = maskHelper.data2PickerItem({ entity, streamName: null, valueMustUseGuid: false });
       l.a('one item', { entity, pickerItem });
       return pickerItem;

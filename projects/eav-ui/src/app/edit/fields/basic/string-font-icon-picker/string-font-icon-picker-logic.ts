@@ -3,6 +3,7 @@ import { FieldSettingsPicker, FieldSettingsPickerMasks, FieldSettingsStringFontI
 import { PickerSourceCss } from '../../../../../../../edit-types/src/PickerSources';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
+import { buildRegExFromPrefixAndSuffix } from '../../picker/data-sources/css/string-font-icon-picker.helpers';
 
 /**
  * Logic for the StringFontIconPicker field.
@@ -33,6 +34,7 @@ export class StringFontIconPickerLogic extends FieldLogicBase {
     // Note: the original Files was multi-line. We assume it was never used, but we can't be sure.
     fs.CssSourceFile = raw.Files ?? '';
     fs.CssSelectorFilter = raw.CssPrefix ?? '';
+    fs.CssSelectorFilter = buildRegExFromPrefixAndSuffix(raw.CssPrefix ?? '', ':');
     fs.PreviewValue = `${raw.PreviewCss} [Item:Value]`;
 
     fs.PreviewType ='icon-css';
@@ -42,10 +44,9 @@ export class StringFontIconPickerLogic extends FieldLogicBase {
 
     fs.noAutoFocus = true;
 
-    // TODO: @2dg Label
-    fs.Label = raw.ShowPrefix
-      ? 'Value'
-      : 'Title';
+    // The label should either be the entire class, or just the part after the prefix
+    // These values will be in the `Value` or `Title` fields, respectively.
+    fs.Label = raw.ShowPrefix ? 'Value' : 'Title';
     return l.r(fs);
   }
 }
