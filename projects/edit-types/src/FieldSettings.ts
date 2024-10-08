@@ -362,7 +362,7 @@ export interface FieldSettings extends
   StringDropdownQuery,
   // StringFontIconPicker,
   // StringTemplatePicker,
-  StringUrlPath,
+  // StringUrlPath,
   // StringWysiwyg,
   EntityPicker,
   StringPicker,
