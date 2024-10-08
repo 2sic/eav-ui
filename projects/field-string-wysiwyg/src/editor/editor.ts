@@ -57,7 +57,7 @@ const logSpecs = {
  */
 export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomInputField<string> {
 
-  log = classLog({ FieldStringWysiwygEditor }, logSpecs, true);
+  log = classLog({ FieldStringWysiwygEditor }, logSpecs);
 
   fieldInitialized = false;
   connector: Connector<string>;

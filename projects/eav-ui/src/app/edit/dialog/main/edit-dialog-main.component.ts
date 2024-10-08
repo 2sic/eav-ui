@@ -93,7 +93,7 @@ const logSpecs = {
 })
 export class EditDialogMainComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  log = classLog({EditDialogMainComponent}, logSpecs, true);
+  log = classLog({EditDialogMainComponent}, logSpecs);
 
   @ViewChildren(EntityFormBuilderComponent) formBuilderRefs: QueryList<EntityFormBuilderComponent>;
 
