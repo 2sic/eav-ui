@@ -38,7 +38,6 @@ export class PickerLogicShared {
     s.EnableTextEntry ??= false;
 
     s.noAutoFocus = true;
-    console.warn('noAutoFocus is set to true for all pickers');
 
     return s;
   }
