@@ -199,7 +199,7 @@ export interface StringFontIconPicker extends String {
 /**
  * @Number
  */
-export interface Number extends All {
+export interface FieldSettingsNumber extends All {
   Decimals: number;
   Min: number;
   Max: number;
@@ -279,7 +279,7 @@ export interface EmptyDefault extends All {
 /**
  * @DateTime
  */
-export interface DateTime extends All {
+export interface FieldSettingsDateTime extends All {
   UseTimePicker: boolean;
 }
 
@@ -308,7 +308,7 @@ export interface CustomGps extends All {
 /**
  * @Boolean
  */
-export interface Boolean extends All {
+export interface FieldSettingsBoolean extends All {
   TitleTrue: string;
   TitleFalse: string;
   TitleIndeterminate: string;
@@ -346,6 +346,7 @@ interface StringPicker extends StringDropdown, PickerSettings { }
 // We should gradually remove most special types from the main type and ensure it's
 // retyped when specific settings are needed.
 export interface FieldSettings extends
+  All,
   // Boolean,
   // CustomGps,
   // CustomJsonEditor,

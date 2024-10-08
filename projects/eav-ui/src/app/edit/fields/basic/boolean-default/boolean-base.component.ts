@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { Boolean, FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
+import { FieldSettings, FieldSettingsBoolean } from '../../../../../../../edit-types/src/FieldSettings';
 import { FieldState } from '../../field-state';
 
 @Component({
@@ -9,7 +9,7 @@ import { FieldState } from '../../field-state';
 // @FieldMetadata({ ...WrappersLocalizationOnly })
 export abstract class BooleanBaseComponent {
 
-  fieldState = inject(FieldState) as FieldState<boolean, FieldSettings & Boolean>;
+  fieldState = inject(FieldState) as FieldState<boolean, FieldSettings & FieldSettingsBoolean>;
 
   group = this.fieldState.group;
   ui = this.fieldState.ui;

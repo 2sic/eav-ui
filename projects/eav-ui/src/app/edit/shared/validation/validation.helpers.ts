@@ -2,7 +2,7 @@ import { Signal } from '@angular/core';
 import { AbstractControl, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { Of } from '../../../../../../core';
-import { CustomJsonEditor, FieldSettings, Number } from '../../../../../../edit-types';
+import { CustomJsonEditor, FieldSettings, FieldSettingsNumber } from '../../../../../../edit-types';
 import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
 import { AdamControl } from '../../fields/basic/hyperlink-library/hyperlink-library.models';
 import { convertValueToArray } from '../../fields/picker/picker.helpers';
@@ -86,7 +86,7 @@ export class ValidationHelpers {
 
   static #decimals(specs: ValidationHelperSpecs): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      const s = this.#ensureWarningsAndGetSettingsIfNoIgnore(control, specs) as FieldSettings & Number;
+      const s = this.#ensureWarningsAndGetSettingsIfNoIgnore(control, specs) as FieldSettings & FieldSettingsNumber;
       if (s?.Decimals == null || s.Decimals < 0) return null;
       if (control.value == null) return null;
 
@@ -98,7 +98,7 @@ export class ValidationHelpers {
 
   static #numberMin(specs: ValidationHelperSpecs): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      const s = this.#ensureWarningsAndGetSettingsIfNoIgnore(control, specs) as FieldSettings & Number;
+      const s = this.#ensureWarningsAndGetSettingsIfNoIgnore(control, specs) as FieldSettings & FieldSettingsNumber;
       if (s?.Min == null) return null;
 
       return Validators.min(s.Min)(control);
@@ -107,7 +107,7 @@ export class ValidationHelpers {
 
   static #numberMax(specs: ValidationHelperSpecs): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      const s = this.#ensureWarningsAndGetSettingsIfNoIgnore(control, specs) as FieldSettings & Number;
+      const s = this.#ensureWarningsAndGetSettingsIfNoIgnore(control, specs) as FieldSettings & FieldSettingsNumber;
       if (s?.Max == null) return null;
 
       return Validators.max(s.Max)(control);
