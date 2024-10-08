@@ -1,5 +1,4 @@
 <div class="dropzone" [@adamShowAnimate]="adamConfig()?.autoLoad ? 'open' : 'closed'">
-
   @if (adamConfig()?.autoLoad && this.fieldState.isOpen()) {
     <div
       [ngClass]="{
@@ -13,7 +12,7 @@
           <div class="dz-image adam-browse-background-icon adam-browse-background">
             <mat-icon>cloud_upload</mat-icon>
             <div class="adam-upload-label">
-              {{ "Fields.Hyperlink.AdamFileManager.UploadLabel" | translate }}
+              {{ 'Fields.Hyperlink.AdamFileManager.UploadLabel' | translate }}
               &nbsp;
               @if (adamConfig().usePortalRoot) {
                 <mat-icon>public</mat-icon>
@@ -51,10 +50,10 @@
             <div class="adam-upload-label">
               {{
                 !isPasteImageFromClipboardEnabled()
-                  ? "Fields.Hyperlink.AdamFileManager.UploadPasteLabel"
-                  : pasteDiv.classList.contains("pastable-focus")
-                    ? "Fields.Hyperlink.AdamFileManager.UploadPasteFocusedLabel"
-                    : ("Fields.Hyperlink.AdamFileManager.UploadPasteLabel" | translate)
+                  ? 'Fields.Hyperlink.AdamFileManager.UploadPasteLabel'
+                  : pasteDiv.classList.contains('pastable-focus')
+                    ? 'Fields.Hyperlink.AdamFileManager.UploadPasteFocusedLabel'
+                    : ('Fields.Hyperlink.AdamFileManager.UploadPasteLabel' | translate)
               }}
             </div>
           </div>
@@ -65,17 +64,17 @@
         <div class="dz-preview" (click)="addFolder()" tippyTranslate="Fields.Hyperlink.AdamFileManager.NewFolderTip">
           <div class="dz-image adam-browse-background-icon adam-browse-background">
             <mat-icon svgIcon="folder-plus"></mat-icon>
-            <div class="adam-short-label">{{ "Fields.Hyperlink.AdamFileManager.NewFolder" | translate }}</div>
+            <div class="adam-short-label">{{ 'Fields.Hyperlink.AdamFileManager.NewFolder' | translate }}</div>
           </div>
           <div class="dz-details" style="opacity: 1"></div>
         </div>
       }
       <!-- browse up a folder -->
-      @if (adamConfig().subfolder !== "" || (adamConfig().usePortalRoot && adamConfig().subfolder !== adamConfig().rootSubfolder)) {
+      @if (adamConfig().subfolder !== '' || (adamConfig().usePortalRoot && adamConfig().subfolder !== adamConfig().rootSubfolder)) {
         <div class="dz-preview" (click)="goUp()" tippyTranslate="Fields.Hyperlink.AdamFileManager.BackFolderTip">
           <div class="dz-image adam-browse-background-icon adam-browse-background">
             <mat-icon svgIcon="folder"></mat-icon>
-            <div class="adam-short-label">{{ "Fields.Hyperlink.AdamFileManager.BackFolder" | translate }}</div>
+            <div class="adam-short-label">{{ 'Fields.Hyperlink.AdamFileManager.BackFolder' | translate }}</div>
           </div>
           <div class="adam-background adam-browse-background-icon">
             <mat-icon class="adam-back-folder-arrow">arrow_back</mat-icon>
@@ -136,7 +135,7 @@
               'disable-select': !adamConfig().enableSelect,
             }"
           >
-            @if (item.Type !== "image") {
+            @if (item.Type !== 'image') {
               <div class="dz-image adam-blur adam-browse-background-icon adam-browse-background">
                 <mat-icon>{{ item._icon }}</mat-icon>
                 <div class="adam-short-label">{{ item.Name }}</div>
@@ -174,8 +173,10 @@
               </div>
               <a class="adam-link-button" target="_blank" [href]="item.Url" appClickStopPropagation>
                 <mat-icon tippyTranslate="Fields.Hyperlink.AdamFileManager.Show">open_in_new</mat-icon>
+                <!-- TODO: @2pp - ensure works (maybe in production?) -->
               </a>
-              @if (item.Type === "image") {
+              @if (item.Type === 'image') {
+                <!-- TODO: @2pp - ensure works (maybe in production?) -->
                 <mat-icon
                   class="image-configuration-button"
                   appClickStopPropagation
