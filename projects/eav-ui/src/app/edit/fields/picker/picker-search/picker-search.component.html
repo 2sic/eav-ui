@@ -74,7 +74,7 @@
   >
     @if (!settings().showAsTree) {
       <!-- List Display Mode -->
-      @for (item of filteredItems(); track item) {
+      @for (item of filteredItems(); track item.value) {
         <mat-option
           [value]="item.value"
           class="picker-option-wrapper"

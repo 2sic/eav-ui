@@ -57,7 +57,7 @@ const logSpecs = {
 export class PickerSearchComponent extends PickerPartBaseComponent implements OnInit {
 
   /** Main log */
-  log = classLog({ PickerSearchComponent }, logSpecs, true);
+  log = classLog({ PickerSearchComponent }, logSpecs);
 
   /** Special log which would fire a lot for each item doing disabled checks etc. */
   #logItemChecks = classLog(`PickerSearchComponent-ItemChecks`); //.extendName("-ItemChecks");
