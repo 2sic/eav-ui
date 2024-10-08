@@ -1,6 +1,6 @@
-import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
+import { FieldSettings, Hyperlink } from '../../../../../../../edit-types/src/FieldSettings';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
+import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
 
 export class HyperlinkDefaultLogic extends FieldLogicBase {
   name = InputTypeCatalog.HyperlinkDefault;
@@ -8,13 +8,13 @@ export class HyperlinkDefaultLogic extends FieldLogicBase {
   constructor() { super({ HyperlinkDefaultLogic }); }
 
   update({ settings }: FieldLogicUpdate): FieldSettings {
-    const fixedSettings: FieldSettings = { ...settings };
+    const fixedSettings = { ...settings } as unknown as Hyperlink;
     fixedSettings.Buttons ||= 'adam,more';
     fixedSettings.FileFilter ??= '';
     fixedSettings.Paths ??= '';
     fixedSettings.ServerResourceMapping ??= '';
     fixedSettings.EnableImageConfiguration ??= true; // 2022-11-08 v14.12 changed default to true // false;
-    return fixedSettings;
+    return fixedSettings as unknown as FieldSettings;
   }
 }
 
