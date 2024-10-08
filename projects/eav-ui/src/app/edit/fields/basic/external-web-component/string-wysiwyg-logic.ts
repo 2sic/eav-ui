@@ -1,9 +1,9 @@
-import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
-import { FieldLogicWithValueInit } from '../../logic/field-logic-with-init';
-import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
+import { AdamItem } from '../../../../../../../edit-types/src/AdamItem';
 import { FieldSettings, StringWysiwyg } from '../../../../../../../edit-types/src/FieldSettings';
 import { FieldValue } from '../../../../../../../edit-types/src/FieldValue';
-import { AdamItem } from '../../../../../../../edit-types/src/AdamItem';
+import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
+import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
+import { FieldLogicWithValueInit } from '../../logic/field-logic-with-init';
 
 
 export class StringWysiwygLogic extends FieldLogicBase implements FieldLogicWithValueInit {
@@ -14,7 +14,7 @@ export class StringWysiwygLogic extends FieldLogicBase implements FieldLogicWith
   canAutoTranslate = true;
 
   update({ settings, tools }: FieldLogicUpdate): FieldSettings {
-    const fixedSettings: StringWysiwyg = { ...settings };
+    const fixedSettings = { ...settings } as unknown as StringWysiwyg;
     // If the `Dialog` setting is blank, it means start inline (default) and allow switching to dialog.
     fixedSettings._allowDialog ??= fixedSettings.Dialog == null || fixedSettings.Dialog === '';
     fixedSettings.Dialog ||= 'inline';
@@ -29,7 +29,7 @@ export class StringWysiwygLogic extends FieldLogicBase implements FieldLogicWith
       Json: '',
     });
 
-    return fixedSettings as FieldSettings;
+    return fixedSettings as unknown as FieldSettings;
   }
 
   /** Checks if dataCmsId is same as file name and if it is switches img src with adam item url */

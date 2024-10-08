@@ -51,7 +51,7 @@ export class TinyMceConfigurator {
   }
 
   #warnAboutCommonSettingsIssues(): void {
-    const contentCss = this.connector.field.settings.ContentCss;
+    const contentCss = (this.connector.field.settings as unknown as StringWysiwyg).ContentCss;
     if (contentCss && contentCss?.toLocaleLowerCase().includes('file:'))
       console.error(`Found a setting for wysiwyg ContentCss but it should be a real link, got this instead: '${contentCss}'`);
   }
@@ -62,7 +62,7 @@ export class TinyMceConfigurator {
     const exp = connector._experimental;
     // Create a TinyMceModeConfig object with bool only
     // Then pass this object into the build(...) below, replacing the original 3 parameters
-    const fieldSettings = connector.field.settings as StringWysiwyg;
+    const fieldSettings = connector.field.settings as unknown as StringWysiwyg;
 
     // 2. Get the preset configuration for this mode
     const configManager = new WysiwygConfigurationManager(connector, fieldSettings);

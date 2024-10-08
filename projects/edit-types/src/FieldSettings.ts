@@ -363,7 +363,7 @@ export interface FieldSettings extends
   // StringFontIconPicker,
   StringTemplatePicker,
   StringUrlPath,
-  StringWysiwyg,
+  // StringWysiwyg,
   EntityPicker,
   StringPicker,
   InternalSettings { }
