@@ -6,10 +6,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { DateTimeAdapter, OwlDateTimeModule } from '@danielmoncada/angular-datetime-picker';
 import { OwlDayJsDateTimeModule } from '@danielmoncada/angular-datetime-picker-dayjs-adapter';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateService } from '@ngx-translate/core';
 import dayjs, { Dayjs } from 'dayjs';
 import utc from 'dayjs/plugin/utc'; // 'neutral' time for OwlDateTime picker
 import { transient } from '../../../../../../../core/transient';
+import { DateTime, FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { classLog } from '../../../../shared/logging';
@@ -45,7 +46,7 @@ export class DatetimeDefaultComponent {
 
   log = classLog({DatetimeDefaultComponent});
 
-  protected fieldState = inject(FieldState) as FieldState<string>;
+  protected fieldState = inject(FieldState) as FieldState<string, FieldSettings & DateTime>;
 
   protected group = this.fieldState.group;
 

@@ -349,7 +349,7 @@ export interface FieldSettings extends
   Boolean,
   // CustomGps,
   // CustomJsonEditor,
-  DateTime,
+  // DateTime,
   // EmptyDefault,
   Entity,
   EntityQuery,
