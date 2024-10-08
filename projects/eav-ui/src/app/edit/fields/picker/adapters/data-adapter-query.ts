@@ -21,7 +21,7 @@ export class DataAdapterQuery extends DataAdapterEntityBase {
    * This is a text or mask containing all query parameters.
    * Since it's a mask, it can also contain values from the current item
    */
-  #paramsMaskLazy = transient(FieldMask).initSignal(this.log.name, this.fieldState.setting('UrlParameters'));
+  #paramsMaskLazy = transient(FieldMask).initSignal(this.log.name, this.fieldState.settingExt('UrlParameters'));
 
   override syncParams(): void {
     this.dataSourceRaw.setParams(this.#paramsMaskLazy?.result());

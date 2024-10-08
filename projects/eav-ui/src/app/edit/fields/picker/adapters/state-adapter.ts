@@ -1,6 +1,7 @@
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { Injectable, Signal, inject } from '@angular/core';
 import { getWith } from '../../../../../../../core';
+import { FieldSettings, FieldSettingsPickerMerged } from '../../../../../../../edit-types/src/FieldSettings';
 import { classLog } from '../../../../shared/logging';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
 import { FormConfigService } from '../../../form/form-config.service';
@@ -34,7 +35,7 @@ export abstract class StateAdapter {
   log = classLog({StateAdapter}, logSpecsStateAdapter);
 
   #formConfigSvc = inject(FormConfigService);
-  #fieldState = inject(FieldState) as FieldState<number | string | string[]>;
+  #fieldState = inject(FieldState) as FieldState<number | string | string[], FieldSettings & FieldSettingsPickerMerged>;
 
   constructor() { }
 

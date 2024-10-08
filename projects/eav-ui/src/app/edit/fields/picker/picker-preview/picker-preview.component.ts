@@ -42,7 +42,7 @@ export class PickerPreviewComponent extends PickerPartBaseComponent {
 
   constructor() { super(); }
 
-  #pickerMode = this.fieldState.setting('PickerDisplayMode');
+  #pickerMode = this.fieldState.settingExt('PickerDisplayMode');
 
   mode = computedObj('mode', () => {
     if (this.isInFreeTextMode()) return 'text';

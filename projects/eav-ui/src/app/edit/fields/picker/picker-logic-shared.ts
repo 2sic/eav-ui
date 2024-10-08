@@ -1,5 +1,5 @@
 import { Of } from '../../../../../../core';
-import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
+import { FieldSettings, FieldSettingsEntity, FieldSettingsPicker, FieldSettingsPickerMerged } from '../../../../../../edit-types/src/FieldSettings';
 import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
 import { RelationshipParentChild, UiPickerModeTree } from '../../../../../../edit-types/src/PickerModeTree';
 import { FieldSettingsWithPickerSource, PickerSourceCustomCsv, PickerSourceCustomList, PickerSourceEntity, PickerSourceQuery, UiPickerSourcesAll } from '../../../../../../edit-types/src/PickerSources';
@@ -25,23 +25,25 @@ export class PickerLogicShared {
   constructor() { }
 
   static setDefaultSettings(settings: FieldSettings): FieldSettings {
-    settings.AllowMultiValue ??= false;
-    settings.EnableEdit ??= true;
-    settings.EnableCreate ??= true;
-    settings.EnableAddExisting ??= true;
+    const s = settings as FieldSettings & FieldSettingsPickerMerged;
+    s.AllowMultiValue ??= false;
+    s.EnableEdit ??= true;
+    s.EnableCreate ??= true;
+    s.EnableAddExisting ??= true;
     // if multi-value is ever allowed, then we must also enable remove...
-    settings.EnableRemove ??= true;
-    settings.EnableDelete ??= false;
-    settings.Label ??= '';
-    settings.EnableTextEntry ??= false;
+    s.EnableRemove ??= true;
+    s.EnableDelete ??= false;
+    s.Label ??= '';
+    s.EnableTextEntry ??= false;
 
-    settings.noAutoFocus = true;
+    s.noAutoFocus = true;
     console.warn('noAutoFocus is set to true for all pickers');
 
-    return settings;
+    return s;
   }
 
-  static maybeOverrideEditRestrictions(fs: FieldSettings, tools: FieldLogicTools): { fs: FieldSettings, removeEditRestrictions: boolean } {
+  static maybeOverrideEditRestrictions(fsUntyped: FieldSettings, tools: FieldLogicTools): { fs: FieldSettings, removeEditRestrictions: boolean } {
+    const fs = fsUntyped as FieldSettings & FieldSettingsPickerMerged;
     if (!(tools.eavConfig.removeEditRestrictions && tools.debug))
       return { fs, removeEditRestrictions: false };
 
@@ -68,7 +70,7 @@ export class PickerLogicShared {
 
   #getDataSourceAndSetupFieldSettings(value: FieldValue, fsBasic: FieldSettings, tools: FieldLogicTools) {
     // Define field settings to be a merged FieldSettings and PickerSources
-    const fs = fsBasic as FieldSettingsWithPickerSource;
+    const fs = fsBasic as FieldSettingsWithPickerSource & FieldSettingsPickerMerged;
 
     const dataSources: EavEntity[] = (fs.DataSources?.length > 0)
       ? tools.contentTypeItemSvc.getMany(fs.DataSources)
@@ -125,7 +127,7 @@ export class PickerLogicShared {
     /** Entity Data Source */
     if (sourceIsEntity) {
       const specsEntity = typeConfig as PickerSourceEntity;
-      fs.EntityType = specsEntity.ContentTypeNames ?? '';// possible multiple types
+      (fs as unknown as FieldSettingsEntity).EntityType = specsEntity.ContentTypeNames ?? '';// possible multiple types
     }
 
     // Do this for all, as it's a common property - e.g. Css, AppAssets, etc.
@@ -182,7 +184,7 @@ export class PickerLogicShared {
   }
 
   /** Get the tree config, unless it was already created, in which case we reuse it. */
-  #getTreeConfigOnce(fs: FieldSettings, tools: FieldLogicTools): UiPickerModeTree {
+  #getTreeConfigOnce(fs: FieldSettings & FieldSettingsPicker, tools: FieldLogicTools): UiPickerModeTree {
     if (fs.PickerTreeConfiguration)
       return fs.PickerTreeConfiguration;
 

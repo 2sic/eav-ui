@@ -1,3 +1,4 @@
+import { FieldSettingsPicker, FieldSettingsPickerMasks } from '../../../../../../../edit-types/src/FieldSettings';
 import { FieldSettingsWithPickerSource } from '../../../../../../../edit-types/src/PickerSources';
 import { classLog } from '../../../../shared/logging';
 import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
@@ -11,9 +12,10 @@ export class DataSourceMoreFieldsHelper {
   fieldListToRetrieveFromServer(settings: FieldSettingsWithPickerSource): string {
     this.log.a('fieldListToRetrieveFromServer', { settings });
 
-    const treeConfig = settings.PickerTreeConfiguration;
-    const moreFields = settings.MoreFields?.split(',') ?? [];
-    const queryFields = [settings.Value, settings.Label];
+    const treeConfig = (settings as FieldSettingsWithPickerSource & FieldSettingsPicker).PickerTreeConfiguration;
+    const maskSettings = settings as FieldSettingsWithPickerSource & FieldSettingsPickerMasks;
+    const moreFields = maskSettings.MoreFields?.split(',') ?? [];
+    const queryFields = [maskSettings.Value, maskSettings.Label];
     const treeFields = [
       treeConfig?.TreeChildIdField,
       treeConfig?.TreeParentIdField,

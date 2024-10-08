@@ -2,7 +2,7 @@ import { Signal } from '@angular/core';
 import { AbstractControl, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { Of } from '../../../../../../core';
-import { CustomJsonEditor, FieldSettings, FieldSettingsNumber } from '../../../../../../edit-types/src/FieldSettings';
+import { CustomJsonEditor, FieldSettings, FieldSettingsNumber, FieldSettingsOptionsWip, FieldSettingsPicker, FieldSettingsPickerStringList } from '../../../../../../edit-types/src/FieldSettings';
 import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
 import { AdamControl } from '../../fields/basic/hyperlink-library/hyperlink-library.models';
 import { convertValueToArray } from '../../fields/picker/picker.helpers';
@@ -51,7 +51,7 @@ export class ValidationHelpers {
       control._warning$ = new BehaviorSubject<ValidationErrors>(null);
   }
 
-  static #ensureWarningsAndGetSettingsIfNoIgnore(control: AbstractControl, specs: ValidationHelperSpecs): FieldSettings {
+  static #ensureWarningsAndGetSettingsIfNoIgnore(control: AbstractControl, specs: ValidationHelperSpecs) {
     this.ensureWarning(control);
     const settings = specs.settings();
     if (this.#shouldIgnoreValidators(settings)) return null;
@@ -86,7 +86,7 @@ export class ValidationHelpers {
 
   static #decimals(specs: ValidationHelperSpecs): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      const s = this.#ensureWarningsAndGetSettingsIfNoIgnore(control, specs) as FieldSettings & FieldSettingsNumber;
+      const s = this.#ensureWarningsAndGetSettingsIfNoIgnore(control, specs);
       if (s?.Decimals == null || s.Decimals < 0) return null;
       if (control.value == null) return null;
 
@@ -98,7 +98,7 @@ export class ValidationHelpers {
 
   static #numberMin(specs: ValidationHelperSpecs): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      const s = this.#ensureWarningsAndGetSettingsIfNoIgnore(control, specs) as FieldSettings & FieldSettingsNumber;
+      const s = this.#ensureWarningsAndGetSettingsIfNoIgnore(control, specs);
       if (s?.Min == null) return null;
 
       return Validators.min(s.Min)(control);
@@ -107,7 +107,7 @@ export class ValidationHelpers {
 
   static #numberMax(specs: ValidationHelperSpecs): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      const s = this.#ensureWarningsAndGetSettingsIfNoIgnore(control, specs) as FieldSettings & FieldSettingsNumber;
+      const s = this.#ensureWarningsAndGetSettingsIfNoIgnore(control, specs);
       if (s?.Max == null) return null;
 
       return Validators.max(s.Max)(control);
@@ -189,7 +189,7 @@ export class ValidationHelpers {
   }
 }
 
-function countValues(control: AbstractControl, s: FieldSettings): number {
+function countValues(control: AbstractControl, s: FieldSettings & FieldSettingsOptionsWip & FieldSettingsPickerStringList): number {
   return Array.isArray(control.value)
     ? control.value.length
     : convertValueToArray(control.value, s.Separator, s._options).length;
@@ -200,9 +200,12 @@ export class ValidationHelperSpecs {
   constructor(
     public fieldName: string,
     public inputType: Of<typeof InputTypeCatalog>,
-    public settings: Signal<FieldSettings>,
+    settings: Signal<FieldSettings>,
     // public properties: Signal<FieldProps>,
     // TODO: GET RID OF THIS as soon as we have a signal for the fieldProps
     public fieldsSettingsService: FieldsSettingsService
-  ) { }
+  ) {
+    this.settings = settings as Signal<FieldSettings & FieldSettingsPickerStringList & CustomJsonEditor & FieldSettingsNumber & FieldSettingsPicker & FieldSettingsOptionsWip>;
+  }
+  settings: Signal<FieldSettings & FieldSettingsPickerStringList & CustomJsonEditor & FieldSettingsNumber & FieldSettingsPicker & FieldSettingsOptionsWip>;
 }

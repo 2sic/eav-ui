@@ -1,5 +1,5 @@
 import { Of } from '../../../../../../core';
-import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
+import { FieldSettings, FieldSettingsPickerMerged } from '../../../../../../edit-types/src/FieldSettings';
 import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
 import { InputTypeHelpers } from '../../../shared/fields/input-type-helpers';
 import { InputTypeSpecs } from '../../shared/input-types/input-type-specs.model';
@@ -44,7 +44,7 @@ export class WrapperHelper {
       wrappers.push(WrappersCatalog.FeatureWarningWrapper);
       // i18n
       wrappers.push(WrappersCatalog.LocalizationWrapper);
-      const allowMultiValue = settings.AllowMultiValue ?? false;
+      const allowMultiValue = (settings as FieldSettings & FieldSettingsPickerMerged).AllowMultiValue ?? false;
       if (allowMultiValue || inputType === InputTypeCatalog.EntityContentBlocks)
         wrappers.push(WrappersCatalog.PickerExpandableWrapper);
     }

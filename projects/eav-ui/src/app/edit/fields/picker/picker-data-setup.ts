@@ -1,5 +1,6 @@
 import { Injector, ProviderToken } from '@angular/core';
 import { Of, transient } from '../../../../../../core';
+import { FieldSettings, FieldSettingsPicker } from '../../../../../../edit-types/src/FieldSettings';
 import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
 import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
 import { classLog } from '../../../shared/logging';
@@ -54,7 +55,7 @@ export class PickerDataSetup {
     // First get the state, since the sources will depend on it.
     const state = this.#getStateAdapter(inputType);
 
-    const dataSourceType = fieldState.settings().DataSourceType;
+    const dataSourceType = (fieldState.settings() as FieldSettings & FieldSettingsPicker).DataSourceType;
     const source = this.#getSourceAdapter(inputType, dataSourceType, state);
 
     pickerData.setup(fieldState.name, fieldState.settings, state, source);

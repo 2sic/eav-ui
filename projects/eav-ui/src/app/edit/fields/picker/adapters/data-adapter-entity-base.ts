@@ -2,6 +2,7 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { inject } from '@angular/core';
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
+import { FieldSettingsPickerMerged } from 'projects/edit-types/index-for-documentation';
 import { take } from 'rxjs';
 import { transient } from '../../../../../../../core/transient';
 import { FieldSettingsWithPickerSource } from '../../../../../../../edit-types/src/PickerSources';
@@ -27,7 +28,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
   #editRoutingService = inject(EditRoutingService);
   protected translate = inject(TranslateService);
   #snackBar = inject(MatSnackBar);
-  protected fieldState = inject(FieldState) as FieldState<string[], FieldSettingsWithPickerSource>;
+  protected fieldState = inject(FieldState) as FieldState<string[], FieldSettingsWithPickerSource & FieldSettingsPickerMerged>;
   protected group = inject(EntityFormStateService).formGroup;
   #entityService = transient(EntityService);
 
@@ -42,7 +43,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
    * This is a text or mask containing all query parameters.
    * Since it's a mask, it can also contain values from the current item
    */
-  #paramsMaskLazy = transient(FieldMask).initSignal('PickerSource-EntityType', this.fieldState.setting('EntityType'));
+  #paramsMaskLazy = transient(FieldMask).initSignal('PickerSource-EntityType', this.fieldState.settingExt('EntityType'));
 
   protected contentType = computedObj('contentType', () => this.#paramsMaskLazy?.result() ?? '');
 

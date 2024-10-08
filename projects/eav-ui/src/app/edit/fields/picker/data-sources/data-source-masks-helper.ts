@@ -1,4 +1,5 @@
 import { EntityLight } from '../../../../../../../edit-types/src/EntityLight';
+import { FieldSettingsPickerMasks } from '../../../../../../../edit-types/src/FieldSettings';
 import { FieldSettingsWithPickerSource } from '../../../../../../../edit-types/src/PickerSources';
 import { FeatureNames } from '../../../../features/feature-names';
 import { FeaturesScopedService } from '../../../../features/features-scoped.service';
@@ -195,7 +196,8 @@ export class DataSourceMasksHelper {
     return l.r(result, 'result');
   }
 
-  static maskSettings(settings: FieldSettingsWithPickerSource): DataSourceMaskSettings {
+  // TODO: UNCLEAR IF THIS IS ACTUALLY USED
+  static maskSettings(settings: FieldSettingsWithPickerSource & FieldSettingsPickerMasks): DataSourceMaskSettings {
     return {
       ItemTooltip: settings.ItemTooltip,
       ItemInformation: settings.ItemInformation,

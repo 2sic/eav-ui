@@ -1,7 +1,7 @@
 import { inject, Injectable, Signal } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { getWith } from '../../../../../../core';
-import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
+import { FieldSettings, FieldSettingsPickerMerged } from '../../../../../../edit-types/src/FieldSettings';
 import { classLog } from '../../../shared/logging';
 import { computedObj, signalObj } from '../../../shared/signals/signal.utilities';
 import { DebugFields } from '../../edit-debug';
@@ -46,7 +46,7 @@ export class PickerData {
 
     // Setup this object
     this.name = name;
-    this.#settingsLazy.set(settings);
+    this.#settingsLazy.set(settings as Signal<FieldSettings & FieldSettingsPickerMerged>);
     this.state = state;
     this.source = source;
 
@@ -143,7 +143,7 @@ export class PickerData {
 
   //#endregion
 
-  #settingsLazy = signalObj<Signal<FieldSettings>>('settingsLazy', null);
+  #settingsLazy = signalObj<Signal<FieldSettings & FieldSettingsPickerMerged>>('settingsLazy', null);
 
   #featuresFromSettings = computedObj('featuresFromSettings', () => {
     const s = this.#settingsLazy()();

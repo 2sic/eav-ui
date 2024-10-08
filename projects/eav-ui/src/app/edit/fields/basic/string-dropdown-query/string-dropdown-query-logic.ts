@@ -1,4 +1,4 @@
-import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
+import { FieldSettings, FieldSettingsPickerMasks, FieldSettingsPickerStringList } from '../../../../../../../edit-types/src/FieldSettings';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
 import { FieldLogicManager } from '../../logic/field-logic-manager';
@@ -10,11 +10,13 @@ export class StringDropdownQueryLogic extends FieldLogicBase {
 
   update(specs: FieldLogicUpdate<string[]>): FieldSettings {
     const entityDefaultLogic = FieldLogicManager.singleton().get(InputTypeCatalog.EntityDefault);
-    const fixedSettings = entityDefaultLogic.update(specs);
-    fixedSettings.Value ??= '';
-    fixedSettings.Label ??= '';
+    const fixedSettings = entityDefaultLogic.update(specs) as FieldSettings & FieldSettingsPickerMasks & FieldSettingsPickerStringList;
     fixedSettings.Separator ||= ',';
-    fixedSettings.MoreFields ??= '';
+
+    // New features should not be supported in this old input, so commented out
+    // fixedSettings.Value ??= '';
+    // fixedSettings.Label ??= '';
+    // fixedSettings.MoreFields ??= '';
     return fixedSettings;
   }
 }
