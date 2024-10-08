@@ -355,7 +355,7 @@ export interface FieldSettings extends
   Entity,
   EntityQuery,
   // Hyperlink,
-  HyperlinkLibrary,
+  // HyperlinkLibrary,
   Number,
   StringDefault,
   // StringDropdown,

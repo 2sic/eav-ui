@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, Injector, OnInit, ViewContainerRef, effec
 import { MatDialog } from '@angular/material/dialog';
 import { transient } from '../../../../../../../core/transient';
 import { AdamItem } from '../../../../../../../edit-types/src/AdamItem';
+import { FieldSettings, Hyperlink, HyperlinkLibrary } from '../../../../../../../edit-types/src/FieldSettings';
 import { eavConstants } from '../../../../shared/constants/eav.constants';
 import { classLog } from '../../../../shared/logging';
 import { EditForm, EditPrep } from '../../../../shared/models/edit-form.model';
@@ -34,7 +35,7 @@ export class HyperlinkDefaultBaseComponent implements OnInit {
     icon: '',
   });
 
-  protected fieldState = inject(FieldState) as FieldState<string>;
+  protected fieldState = inject(FieldState) as FieldState<string, FieldSettings & Hyperlink & HyperlinkLibrary>;
 
   protected settings = this.fieldState.settings;
   protected basics = this.fieldState.basics;
