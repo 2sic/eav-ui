@@ -60,7 +60,7 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
   log = classLog({ PickerSearchComponent }, logSpecs, true);
 
   /** Special log which would fire a lot for each item doing disabled checks etc. */
-  #logItemChecks = classLog({ PickerSearchComponent }).extendName("-ItemChecks");
+  #logItemChecks = classLog(`PickerSearchComponent-ItemChecks`); //.extendName("-ItemChecks");
 
   //#region Inputs
 

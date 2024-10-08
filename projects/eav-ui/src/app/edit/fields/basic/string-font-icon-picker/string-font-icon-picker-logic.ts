@@ -1,8 +1,16 @@
-import { FieldSettingsWithPickerSource } from 'projects/edit-types/src/PickerSources';
+import { PickerSourceCss } from 'projects/edit-types/src/PickerSources';
 import { FieldSettings, StringFontIconPicker } from '../../../../../../../edit-types/src/FieldSettings';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
 
+/**
+ * Logic for the StringFontIconPicker field.
+ * This is an older field, which was standalone till ca. v18.01.
+ * 
+ * In v18.02 it was changed to use the standard picker,
+ * so it now ports the configuration from the names in the old config entity
+ * to how the new picker expects them.
+ */
 export class StringFontIconPickerLogic extends FieldLogicBase {
   name = InputTypeCatalog.StringFontIconPicker;
 
@@ -10,27 +18,33 @@ export class StringFontIconPickerLogic extends FieldLogicBase {
 
   update({ fieldName, settings }: FieldLogicUpdate): FieldSettings {
     const l = this.log.fnIfInList('update', 'fields', fieldName, { fieldName, settings });
-    const fixedSettings: FieldSettingsWithPickerSource = { ...settings } as FieldSettingsWithPickerSource;
-    const oldSettings = fixedSettings as unknown as StringFontIconPicker;
+
+    // Cast settings to type which knows about the properties
+    // and the raw settings which show what values can be read
+    const fs = { ...settings } as unknown as FieldSettings & PickerSourceCss;
+    const raw = fs as unknown as StringFontIconPicker;
+
     ///// OLD Settings
     // fixedSettings.Files ??= '';
     // fixedSettings.CssPrefix ??= '';
     // fixedSettings.ShowPrefix ??= false;
 
-    fixedSettings.CssSourceFile = oldSettings.Files ?? '';
-    fixedSettings.CssSelectorFilter = oldSettings.CssPrefix ?? '';
-    fixedSettings.PreviewValue = oldSettings.PreviewCss + ' [Item:Value]';
+    // Note: the original Files was multi-line. We assume it was never used, but we can't be sure.
+    fs.CssSourceFile = raw.Files ?? '';
+    fs.CssSelectorFilter = raw.CssPrefix ?? '';
+    fs.PreviewValue = `${raw.PreviewCss} [Item:Value]`;
 
-    fixedSettings.PreviewType ='icon-css';
-    fixedSettings.EnableTextEntry = false;
-    fixedSettings.EnableAddExisting = false;
+    fs.PreviewType ='icon-css';
+    fs.EnableTextEntry = false;
+    fs.EnableAddExisting = true;
+    fs.AllowMultiValue = false;
 
     // TODO: @2dg Label
-    fixedSettings.Label = "Test";
+    fs.Label = "Test";
     // fixedSettings.Label = fixedSettings.ShowPrefix
     // ? `${fixedSettings.CssPrefix} [Item:Value]`
     // : "[Item:Value]";;
-    return l.r(fixedSettings);
+    return l.r(fs);
   }
 }
 
