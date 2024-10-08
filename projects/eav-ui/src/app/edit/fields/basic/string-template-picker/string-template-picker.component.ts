@@ -9,6 +9,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { TranslateModule } from '@ngx-translate/core';
 import { take } from 'rxjs';
 import { transient } from '../../../../../../../core/transient';
+import { FieldSettings, StringTemplatePicker } from '../../../../../../../edit-types/src/FieldSettings';
 import { SourceService } from '../../../../code-editor/services/source.service';
 import { CreateFileDialogComponent } from '../../../../create-file-dialog/create-file-dialog.component';
 import { CreateFileDialogData, CreateFileDialogResult } from '../../../../create-file-dialog/create-file-dialog.models';
@@ -45,14 +46,14 @@ export class StringTemplatePickerComponent {
   
   log = classLog({StringTemplatePickerComponent});
 
-  #fieldState = inject(FieldState) as FieldState<string>;
+  #fieldState = inject(FieldState) as FieldState<string, FieldSettings & StringTemplatePicker>;
 
   // needed to create more FieldMasks as needed
   #injector = inject(Injector);
 
   // If we have a configured type, use that, otherwise use the field mask
   // We'll still use the field-mask (even though it wouldn't be needed) to keep the logic simple
-  #typeMask = transient(FieldMask).init('String-TypeMask', this.#fieldState.settings().FileType ?? '[Type]');
+  #typeMask = transient(FieldMask).init('typeMask', this.#fieldState.settings().FileType ?? '[Type]');
 
   #locationMask = transient(FieldMask).init('String-LocationMask', '[Location]');
 
