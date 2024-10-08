@@ -14,7 +14,7 @@ export class StringWysiwygLogic extends FieldLogicBase implements FieldLogicWith
   canAutoTranslate = true;
 
   update({ settings, tools }: FieldLogicUpdate): FieldSettings {
-    const fixedSettings = { ...settings } as unknown as StringWysiwyg;
+    const fixedSettings = { ...settings } as FieldSettings & StringWysiwyg;
     // If the `Dialog` setting is blank, it means start inline (default) and allow switching to dialog.
     fixedSettings._allowDialog ??= fixedSettings.Dialog == null || fixedSettings.Dialog === '';
     fixedSettings.Dialog ||= 'inline';
@@ -29,7 +29,7 @@ export class StringWysiwygLogic extends FieldLogicBase implements FieldLogicWith
       Json: '',
     });
 
-    return fixedSettings as unknown as FieldSettings;
+    return fixedSettings;
   }
 
   /** Checks if dataCmsId is same as file name and if it is switches img src with adam item url */

@@ -8,13 +8,13 @@ export class HyperlinkDefaultLogic extends FieldLogicBase {
   constructor() { super({ HyperlinkDefaultLogic }); }
 
   update({ settings }: FieldLogicUpdate): FieldSettings {
-    const fixedSettings = { ...settings } as unknown as Hyperlink;
+    const fixedSettings = { ...settings } as FieldSettings & Hyperlink;
     fixedSettings.Buttons ||= 'adam,more';
     fixedSettings.FileFilter ??= '';
     fixedSettings.Paths ??= '';
     fixedSettings.ServerResourceMapping ??= '';
     fixedSettings.EnableImageConfiguration ??= true; // 2022-11-08 v14.12 changed default to true // false;
-    return fixedSettings as unknown as FieldSettings;
+    return fixedSettings;
   }
 }
 

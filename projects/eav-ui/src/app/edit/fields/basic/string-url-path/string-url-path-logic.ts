@@ -8,10 +8,10 @@ export class StringUrlPathLogic extends FieldLogicBase {
   constructor() { super({ InputTypeCatalog }); }
 
   update({ settings }: FieldLogicUpdate): FieldSettings {
-    const fixedSettings = { ...settings } as unknown as StringUrlPath;
+    const fixedSettings = { ...settings } as FieldSettings & StringUrlPath;
     fixedSettings.AutoGenerateMask ??= null;
     fixedSettings.AllowSlashes ??= false;
-    return fixedSettings as unknown as FieldSettings;
+    return fixedSettings;
   }
 }
 
