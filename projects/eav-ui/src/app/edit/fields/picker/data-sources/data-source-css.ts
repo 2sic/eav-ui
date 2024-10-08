@@ -1,4 +1,4 @@
-import { effect, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { getWith } from '../../../../../../../core/object-utilities';
 import { EntityLight } from '../../../../../../../edit-types/src/EntityLight';
 import { classLog } from '../../../../shared/logging';
@@ -27,15 +27,12 @@ export class DataSourceCss extends DataSourceBase {
     this.constructorEnd();
     this.log.fnIf('fileLoadSettings', this.fileLoadSettings());
 
-    // TODO: @2dg maybe no effect necessary, as the settings should already be available
-    effect(() => {
-      const settings = this.fileLoadSettings();
-      this.scriptsLoaderService.load(settings.CssSourceFile.split('\n'), () => {
-        const newIconOptions = findAllIconsInCss(settings.CssSelectorFilter, false);
-        this.log.fnIf('newIconOptions', { settings, newIconOptions });
-        this.#iconOptions.set(newIconOptions);
-      });
-    }, { allowSignalWrites: true });
+    const settings = this.fileLoadSettings();
+    this.scriptsLoaderService.load(settings.CssSourceFile.split('\n'), () => {
+      const newIconOptions = findAllIconsInCss(settings.CssSelectorFilter, false);
+      this.log.fnIf('newIconOptions', { settings, newIconOptions });
+      this.#iconOptions.set(newIconOptions);
+    });
 
   }
 
@@ -55,9 +52,8 @@ export class DataSourceCss extends DataSourceBase {
 
   #dataMaskHelper = (() => {
     // Make sure the converter/builder uses the "Value" field for the final 'value'
-    const maskHelper = new DataSourceMasksHelper(this.fieldName, this.settings(), this.features, this.formConfig, this.log);
-
-    maskHelper.patchMasks({ label: 'Value' })
+    const s = this.settings();
+    const maskHelper = new DataSourceMasksHelper(this.fieldName, { ...s, Label: s.Label || 'Value' }, this.features, this.formConfig, this.log);
     return maskHelper;
   })();
 

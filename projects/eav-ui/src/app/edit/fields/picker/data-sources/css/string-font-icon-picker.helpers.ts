@@ -4,13 +4,13 @@ import { IconOption } from './string-font-icon-picker.models';
 
 const logSpecs = {
   all: true,
-  findAllIconsInCss: true,
+  findAllIconsInCss: false,
 };
 
 /** Calculates available css classes with className prefix. WARNING: Expensive operation */
 export function findAllIconsInCss(cssSelector: string, showPrefix?: boolean): IconOption[] {
 
-  const log = classLog({ findAllIconsInCss }, logSpecs, true);
+  const log = classLog({ findAllIconsInCss }, logSpecs);
 
   const l = log.fnIf('findAllIconsInCss', { cssSelector, showPrefix });
 

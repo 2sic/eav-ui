@@ -1,6 +1,4 @@
 import { EntityLight } from '../../../../../../../edit-types/src/EntityLight';
-import { FieldSettingsPickerMasks } from '../../../../../../../edit-types/src/FieldSettings-Pickers';
-import { FieldSettingsWithPickerSource } from '../../../../../../../edit-types/src/PickerSources';
 import { FeatureNames } from '../../../../features/feature-names';
 import { FeaturesScopedService } from '../../../../features/features-scoped.service';
 import { classLog } from '../../../../shared/logging';
@@ -66,7 +64,6 @@ export class DataSourceMasksHelper {
       const maybe = entity[masks.value];
       // the value could be an empty string (pickers); not sure if it can be null though
       return maybe !== undefined ? `${maybe}` : entity.Guid;
-
     })();
 
     // Figure out Title Value if we don't use masks - fallback is to use the title, or the value with asterisk
@@ -80,6 +77,8 @@ export class DataSourceMasksHelper {
       if (maybePreview) return maybePreview;
       return value;
     })();
+
+    l.a('debug values', { masks, value, label, previewValue, hasPlaceholders: masks.hasPlaceholders });
 
     // If we don't have masks, we are done
     if (!masks.hasPlaceholders) {
@@ -166,6 +165,7 @@ export class DataSourceMasksHelper {
     return this.#masks;
   }
 
+  // TODO: WE can probably get rid of this now, by just supplying the setting on creation of the object
   /** modify/patch the current objects mask */
   public patchMasks(patch: Partial<DataSourceMasks>) {
     this.#masks = { ...this.#getMasks(), ...patch };
@@ -196,17 +196,6 @@ export class DataSourceMasksHelper {
     return l.r(result, 'result');
   }
 
-  // TODO: UNCLEAR IF THIS IS ACTUALLY USED
-  static maskSettings(settings: FieldSettingsWithPickerSource & FieldSettingsPickerMasks): DataSourceMaskSettings {
-    return {
-      ItemTooltip: settings.ItemTooltip,
-      ItemInformation: settings.ItemInformation,
-      ItemLink: settings.ItemLink,
-      Label: settings.Label,
-      Value: settings.Value,
-      PreviewValue: settings.PreviewValue,
-    };
-  }
 }
 
 interface DataSourceMaskSettings {

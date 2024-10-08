@@ -15,14 +15,14 @@ import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
 export class StringFontIconPickerLogic extends FieldLogicBase {
   name = InputTypeCatalog.StringFontIconPicker;
 
-  constructor() { super({ StringFontIconPickerLogic }, true); }
+  constructor() { super({ StringFontIconPickerLogic }); }
 
   update({ fieldName, settings }: FieldLogicUpdate): FieldSettings {
     const l = this.log.fnIfInList('update', 'fields', fieldName, { fieldName, settings });
 
     // Cast settings to type which knows about the properties
     // and the raw settings which show what values can be read
-    const fs = { ...settings } as unknown as FieldSettings & FieldSettingsPickerMasks & PickerSourceCss & FieldSettingsPicker;
+    const fs = { ...settings } as FieldSettings & FieldSettingsPickerMasks & PickerSourceCss & FieldSettingsPicker;
     const raw = fs as unknown as FieldSettingsStringFontIconPicker;
 
     ///// OLD Settings
@@ -40,11 +40,12 @@ export class StringFontIconPickerLogic extends FieldLogicBase {
     fs.EnableAddExisting = true;
     fs.AllowMultiValue = false;
 
+    fs.noAutoFocus = true;
+
     // TODO: @2dg Label
-    fs.Label = "Test";
-    // fixedSettings.Label = fixedSettings.ShowPrefix
-    // ? `${fixedSettings.CssPrefix} [Item:Value]`
-    // : "[Item:Value]";;
+    fs.Label = raw.ShowPrefix
+      ? 'Value'
+      : 'Title';
     return l.r(fs);
   }
 }
