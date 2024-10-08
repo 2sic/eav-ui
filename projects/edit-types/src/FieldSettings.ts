@@ -104,7 +104,7 @@ interface String extends All {
 /**
  * @string-default
  */
-export interface StringDefault extends String {
+export interface FieldSettingsStringDefault extends String {
   InputFontFamily: '' | 'monospace';
   RowCount: number;
   TextWrapping: '' | 'pre';
@@ -357,7 +357,7 @@ export interface FieldSettings extends
   // Hyperlink,
   // HyperlinkLibrary,
   // Number,
-  StringDefault,
+  // FieldSettingsStringDefault,
   // StringDropdown,
   StringDropdownQuery,
   // StringFontIconPicker,
