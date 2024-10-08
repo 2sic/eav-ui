@@ -346,7 +346,7 @@ interface StringPicker extends StringDropdown, PickerSettings { }
 // We should gradually remove most special types from the main type and ensure it's
 // retyped when specific settings are needed.
 export interface FieldSettings extends
-  Boolean,
+  // Boolean,
   // CustomGps,
   // CustomJsonEditor,
   // DateTime,

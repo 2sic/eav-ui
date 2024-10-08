@@ -90,9 +90,13 @@ export class FieldState<TValue extends FieldValue = FieldValue, TSettings extend
     return computedObj(name as string, () => this.settings()[name]);
   }
 
-  settingExt<TSet extends FieldSettings, K extends keyof TSet>(name: K): Signal<TSet[K]> {
-    return computedObj(name as string, () => (this.settings() as unknown as TSet)[name]);
+  settingExt<K extends keyof TSettings>(name: K): Signal<TSettings[K]> {
+    return computedObj(name as string, () => this.settings()[name]);
   }
+
+  // settingExt<TSet extends FieldSettings, K extends keyof TSet>(name: K): Signal<TSet[K]> {
+  //   return computedObj(name as string, () => (this.settings() as unknown as TSet)[name]);
+  // }
 
   //#region Required Features
 

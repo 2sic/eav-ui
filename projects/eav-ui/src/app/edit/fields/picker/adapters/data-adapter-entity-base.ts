@@ -162,7 +162,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
 
   /** Quick helper */
   #getExtSetting<K extends keyof FieldSettingsWithPickerSource>(name: K) {
-    return this.fieldState.settingExt<FieldSettingsWithPickerSource, typeof name>(name);
+    return this.fieldState.settingExt(name);
   }
 
   /**
