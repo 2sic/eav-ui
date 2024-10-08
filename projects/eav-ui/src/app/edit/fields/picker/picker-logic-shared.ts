@@ -34,6 +34,10 @@ export class PickerLogicShared {
     settings.EnableDelete ??= false;
     settings.Label ??= '';
     settings.EnableTextEntry ??= false;
+
+    settings.noAutoFocus = true;
+    console.warn('noAutoFocus is set to true for all pickers');
+
     return settings;
   }
 
@@ -69,9 +73,6 @@ export class PickerLogicShared {
     const dataSources: EavEntity[] = (fs.DataSources?.length > 0)
       ? tools.contentTypeItemSvc.getMany(fs.DataSources)
       : [];
-
-
-    fs.noAutoFocus = true;
 
     // Transfer configuration
     const dataSource = dataSources[0];
