@@ -1,6 +1,5 @@
 import type { Editor } from 'tinymce';
 import { classLog } from '../../../../projects/eav-ui/src/app/shared/logging';
-import { EavWindow } from '../../../eav-ui/src/app/shared/models/eav-window.model';
 import { AddOnSettings, Connector, StringWysiwyg, WysiwygReconfigure } from '../../../edit-types';
 import * as DisplayModes from '../constants/display-modes';
 import * as contentStyle from '../editor/tinymce-content.scss';
@@ -15,7 +14,6 @@ const logSpecs = {
   isWysiwygPasteFormatted$: false,
 };
 
-declare const window: EavWindow;
 const reconfigErr = `Very likely an error in your reconfigure code. Check https://go.2sxc.org/field-wysiwyg`;
 
 /** This object will configure the TinyMCE */

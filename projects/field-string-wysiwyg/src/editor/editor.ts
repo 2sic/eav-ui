@@ -24,7 +24,6 @@ import { Subscription } from 'rxjs';
 // tslint:disable-next-line: no-duplicate-imports
 import type { Editor, EditorEvent } from 'tinymce/tinymce';
 import { classLog } from '../../../../projects/eav-ui/src/app/shared/logging';
-import { EavWindow } from '../../../eav-ui/src/app/shared/models/eav-window.model';
 import { Connector, EavCustomInputField, WysiwygReconfigure } from '../../../edit-types';
 import { tinyMceBaseUrl, wysiwygEditorHtmlTag } from '../../internal-constants';
 import { WysiwygConstants } from '../../shared/wysiwyg.constants';
@@ -49,8 +48,6 @@ const logSpecs = {
   TinyMceInitialized: false,
   PastePreProcess: true,
 };
-
-declare const window: EavWindow;
 
 /**
  * Class which is an HTML element containing the WYSIWYG editor.

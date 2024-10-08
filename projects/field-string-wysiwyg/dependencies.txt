@@ -34,7 +34,6 @@ projects/eav-ui/src/app/shared/logging/log-manager.ts → projects/eav-ui/src/ap
 projects/eav-ui/src/app/shared/logging/log-manager.ts → projects/eav-ui/src/app/shared/logging/log-specs.ts
 projects/eav-ui/src/app/shared/user/state-manager.ts → projects/eav-ui/src/app/shared/logging/log-specs.ts
 projects/field-string-wysiwyg/src/editor/editor.ts → projects/eav-ui/src/app/shared/logging/index.ts
-projects/field-string-wysiwyg/src/editor/editor.ts → projects/eav-ui/src/app/shared/models/eav-window.model.ts
 projects/field-string-wysiwyg/src/editor/editor.ts → projects/field-string-wysiwyg/src/config/raw-editor-options-extended.ts
 projects/field-string-wysiwyg/src/editor/editor.ts → projects/field-string-wysiwyg/src/config/tinymce-configurator.ts
 projects/field-string-wysiwyg/src/editor/editor.ts → projects/field-string-wysiwyg/src/config/translation-loader.ts
@@ -82,7 +81,6 @@ projects/field-string-wysiwyg/src/config/toolbar-parser.ts → projects/field-st
 projects/field-string-wysiwyg/src/config/toolbar-parser.ts → projects/field-string-wysiwyg/src/constants/rich-wysiwyg.ts
 projects/field-string-wysiwyg/src/config/toolbar-parser.ts → projects/field-string-wysiwyg/src/config/types/wysiwyg-configurations.ts
 projects/field-string-wysiwyg/src/config/tinymce-configurator.ts → projects/eav-ui/src/app/shared/logging/index.ts
-projects/field-string-wysiwyg/src/config/tinymce-configurator.ts → projects/eav-ui/src/app/shared/models/eav-window.model.ts
 projects/field-string-wysiwyg/src/config/tinymce-configurator.ts → projects/field-string-wysiwyg/src/constants/display-modes.ts
 projects/field-string-wysiwyg/src/config/tinymce-configurator.ts → projects/field-string-wysiwyg/src/editor/tinymce-content.scss
 projects/field-string-wysiwyg/src/config/tinymce-configurator.ts → projects/field-string-wysiwyg/src/config/defaults/index.ts
@@ -94,7 +92,6 @@ projects/field-string-wysiwyg/src/config/defaults/index.ts → projects/field-st
 projects/field-string-wysiwyg/src/config/defaults/index.ts → projects/field-string-wysiwyg/src/config/defaults/default-tinymce-paste.ts
 projects/field-string-wysiwyg/src/config/defaults/index.ts → projects/field-string-wysiwyg/src/config/defaults/default-toolbar-config.ts
 projects/field-string-wysiwyg/src/config/defaults/default-tinymce-paste.ts → projects/eav-ui/src/app/shared/logging/index.ts
-projects/field-string-wysiwyg/src/config/translation-loader.ts → projects/eav-ui/src/app/shared/models/eav-window.model.ts
 projects/field-string-wysiwyg/src/config/ui-registry/add-everything-to-registry.ts → projects/field-string-wysiwyg/src/editor/load-icons.helper.ts
 projects/field-string-wysiwyg/src/config/ui-registry/add-everything-to-registry.ts → projects/field-string-wysiwyg/src/config/ui-registry/add-to-registry-base.ts
 projects/field-string-wysiwyg/src/config/ui-registry/add-everything-to-registry.ts → projects/field-string-wysiwyg/src/config/ui-registry/add-to-registry-blocks.ts

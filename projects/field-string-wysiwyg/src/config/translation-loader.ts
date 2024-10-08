@@ -1,7 +1,4 @@
 import type { TranslateService } from '@ngx-translate/core';
-import { EavWindow } from '../../../eav-ui/src/app/shared/models/eav-window.model';
-
-declare const window: EavWindow;
 
 export class TranslationsLoader {
   private static i18nPrefix = 'Extension.TinyMce';
