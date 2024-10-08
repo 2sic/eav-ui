@@ -1,6 +1,7 @@
 import { ElementEventListener } from '../../../eav-ui/src/app/edit/shared/controls/element-event-listener.model';
 import { classLog } from '../../../eav-ui/src/app/shared/logging';
-import { Connector, EavCustomInputField } from '../../../edit-types/index-for-documentation';
+import { Connector } from '../../../edit-types/src/Connector';
+import { EavCustomInputField } from '../../../edit-types/src/EavCustomInputField';
 import { buildTemplate, customGpsIcons, parseLatLng } from '../shared/helpers';
 import { CoordinatesDto } from './coordinates';
 import * as template from './preview.html';
