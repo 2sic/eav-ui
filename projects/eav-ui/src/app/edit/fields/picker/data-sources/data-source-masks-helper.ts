@@ -1,5 +1,5 @@
 import { EntityLight } from '../../../../../../../edit-types/src/EntityLight';
-import { FieldSettingsPickerMasks } from '../../../../../../../edit-types/src/FieldSettings';
+import { FieldSettingsPickerMasks } from '../../../../../../../edit-types/src/FieldSettings-Pickers';
 import { FieldSettingsWithPickerSource } from '../../../../../../../edit-types/src/PickerSources';
 import { FeatureNames } from '../../../../features/feature-names';
 import { FeaturesScopedService } from '../../../../features/features-scoped.service';

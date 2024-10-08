@@ -1,8 +1,12 @@
 import { Signal } from '@angular/core';
 import { AbstractControl, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { CustomJsonEditor } from 'projects/edit-types/src/FieldSettings-CustomJsonEditor';
+import { FieldSettingsNumber } from 'projects/edit-types/src/FieldSettings-Number';
+import { FieldSettingsPicker } from 'projects/edit-types/src/FieldSettings-Pickers';
 import { BehaviorSubject } from 'rxjs';
 import { Of } from '../../../../../../core';
-import { CustomJsonEditor, FieldSettings, FieldSettingsNumber, FieldSettingsOptionsWip, FieldSettingsPicker, FieldSettingsSharedSeparator } from '../../../../../../edit-types/src/FieldSettings';
+import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
+import { FieldSettingsOptionsWip, FieldSettingsSharedSeparator } from '../../../../../../edit-types/src/FieldSettings-Pickers';
 import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
 import { AdamControl } from '../../fields/basic/hyperlink-library/hyperlink-library.models';
 import { convertValueToArray } from '../../fields/picker/picker.helpers';

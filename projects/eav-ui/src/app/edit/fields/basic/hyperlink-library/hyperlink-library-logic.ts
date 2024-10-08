@@ -1,4 +1,5 @@
-import { FieldSettings, HyperlinkLibrary } from '../../../../../../../edit-types/src/FieldSettings';
+import { HyperlinkLibrary } from 'projects/edit-types/src/FieldSettings-Hyperlink';
+import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
 

@@ -1,8 +1,9 @@
 import { ChangeDetectorRef, Component, Injector, OnInit, ViewContainerRef, effect, inject, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { Hyperlink, HyperlinkLibrary } from 'projects/edit-types/src/FieldSettings-Hyperlink';
 import { transient } from '../../../../../../../core/transient';
 import { AdamItem } from '../../../../../../../edit-types/src/AdamItem';
-import { FieldSettings, Hyperlink, HyperlinkLibrary } from '../../../../../../../edit-types/src/FieldSettings';
+import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { eavConstants } from '../../../../shared/constants/eav.constants';
 import { classLog } from '../../../../shared/logging';
 import { EditForm, EditPrep } from '../../../../shared/models/edit-form.model';

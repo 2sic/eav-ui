@@ -1,10 +1,11 @@
+import { CustomGps } from 'projects/edit-types/src/FieldSettings-CustomGps';
 import { ElementEventListener } from '../../../eav-ui/src/app/edit/shared/controls/element-event-listener.model';
 import { EditApiKeyPaths } from '../../../eav-ui/src/app/shared/constants/eav.constants';
 import { classLog } from '../../../eav-ui/src/app/shared/logging';
 import { ApiKeySpecs } from '../../../eav-ui/src/app/shared/models/dialog-context.models';
 import { Connector } from '../../../edit-types/src/Connector';
 import { EavCustomInputField } from '../../../edit-types/src/EavCustomInputField';
-import { CustomGps, FieldSettings } from '../../../edit-types/src/FieldSettings';
+import { FieldSettings } from '../../../edit-types/src/FieldSettings';
 import { IFieldMask } from '../../../edit-types/src/IFieldMask';
 import { CoordinatesDto } from '../preview/coordinates';
 import { buildTemplate, parseLatLng, stringifyLatLng } from '../shared/helpers';

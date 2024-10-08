@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { FieldSettingsPickerMerged } from '../../../../../../edit-types/src/FieldSettings';
+import { FieldSettingsPickerMerged } from '../../../../../../edit-types/src/FieldSettings-Pickers';
 import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
 import { FieldSettingsWithPickerSource } from '../../../../../../edit-types/src/PickerSources';
 import { classLog } from '../../../shared/logging';

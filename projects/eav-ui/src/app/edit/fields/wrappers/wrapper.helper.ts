@@ -1,5 +1,6 @@
 import { Of } from '../../../../../../core';
-import { FieldSettings, FieldSettingsPickerMerged } from '../../../../../../edit-types/src/FieldSettings';
+import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
+import { FieldSettingsPickerMerged } from '../../../../../../edit-types/src/FieldSettings-Pickers';
 import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
 import { InputTypeHelpers } from '../../../shared/fields/input-type-helpers';
 import { InputTypeSpecs } from '../../shared/input-types/input-type-specs.model';

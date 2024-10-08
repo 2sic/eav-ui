@@ -1,4 +1,5 @@
-import { FieldSettings, StringUrlPath } from '../../../../../../../edit-types/src/FieldSettings';
+import { StringUrlPath } from 'projects/edit-types/src/FieldSettings-String';
+import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
 

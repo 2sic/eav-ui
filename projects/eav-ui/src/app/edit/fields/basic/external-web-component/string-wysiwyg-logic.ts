@@ -1,5 +1,6 @@
+import { StringWysiwyg } from 'projects/edit-types/src/FieldSettings-String';
 import { AdamItem } from '../../../../../../../edit-types/src/AdamItem';
-import { FieldSettings, StringWysiwyg } from '../../../../../../../edit-types/src/FieldSettings';
+import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { FieldValue } from '../../../../../../../edit-types/src/FieldValue';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';

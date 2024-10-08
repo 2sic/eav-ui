@@ -1,4 +1,5 @@
-import { EmptyDefault, FieldSettings } from '../../../../../edit-types/src/FieldSettings';
+import { EmptyDefault } from 'projects/edit-types/src/FieldSettings-EmptyDefault';
+import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
 import { InputTypeHelpers } from '../../shared/fields/input-type-helpers';
 import { classLog } from '../../shared/logging';
 import { DebugFields } from '../edit-debug';

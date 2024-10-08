@@ -3,6 +3,7 @@ import { Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { FieldSettingsStringDefault } from 'projects/edit-types/src/FieldSettings-String';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { computedObj } from '../../../../shared/signals/signal.utilities';
@@ -10,7 +11,6 @@ import { FieldMetadata } from '../../field-metadata.decorator';
 import { FieldState } from '../../field-state';
 import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
 import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
-import { FieldSettingsStringDefault } from './../../../../../../../edit-types/src/FieldSettings';
 import { StringDefaultLogic } from './string-default-logic';
 
 @Component({

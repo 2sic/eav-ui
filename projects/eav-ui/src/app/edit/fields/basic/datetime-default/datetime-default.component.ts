@@ -9,8 +9,9 @@ import { OwlDayJsDateTimeModule } from '@danielmoncada/angular-datetime-picker-d
 import { TranslateService } from '@ngx-translate/core';
 import dayjs, { Dayjs } from 'dayjs';
 import utc from 'dayjs/plugin/utc'; // 'neutral' time for OwlDateTime picker
+import { FieldSettingsDateTime } from 'projects/edit-types/src/FieldSettings-DateTime';
 import { transient } from '../../../../../../../core/transient';
-import { FieldSettings, FieldSettingsDateTime } from '../../../../../../../edit-types/src/FieldSettings';
+import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { classLog } from '../../../../shared/logging';

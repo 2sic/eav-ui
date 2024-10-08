@@ -1,7 +1,7 @@
+import { StringWysiwyg } from 'projects/edit-types/src/FieldSettings-String';
 import { classLog, ClassLogger } from '../../../../projects/eav-ui/src/app/shared/logging';
 import { InputTypeCatalog } from '../../../eav-ui/src/app/shared/fields/input-type-catalog';
 import { Connector } from '../../../edit-types/src/Connector';
-import { StringWysiwyg } from '../../../edit-types/src/FieldSettings';
 import * as DialogModes from '../constants/display-modes';
 import * as EditModes from '../constants/edit-modes';
 import { ConfigurationPresets, DefaultMode } from './defaults/defaults';

@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
-import { FieldSettings, FieldSettingsBoolean } from '../../../../../../../edit-types/src/FieldSettings';
+import { FieldSettingsBoolean } from 'projects/edit-types/src/FieldSettings-Boolean';
+import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { FieldState } from '../../field-state';
 
 @Component({

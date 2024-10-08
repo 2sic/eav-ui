@@ -1,7 +1,7 @@
+import { StringWysiwyg } from 'projects/edit-types/src/FieldSettings-String';
 import { classLog } from '../../../../projects/eav-ui/src/app/shared/logging';
 import { Connector } from '../../../edit-types/src/Connector';
 import { EavCustomInputField } from '../../../edit-types/src/EavCustomInputField';
-import { StringWysiwyg } from '../../../edit-types/src/FieldSettings';
 import { WysiwygReconfigure } from '../../../edit-types/src/WysiwygReconfigure';
 import { wysiwygEditorHtmlTag } from '../../internal-constants';
 import { FieldStringWysiwygEditor } from '../editor/editor';

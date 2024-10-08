@@ -1,5 +1,6 @@
 import { Of } from '../../../../../../core';
-import { FieldSettings, FieldSettingsEntity, FieldSettingsPicker, FieldSettingsPickerMerged } from '../../../../../../edit-types/src/FieldSettings';
+import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
+import { FieldSettingsEntity, FieldSettingsPicker, FieldSettingsPickerMerged } from '../../../../../../edit-types/src/FieldSettings-Pickers';
 import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
 import { RelationshipParentChild, UiPickerModeTree } from '../../../../../../edit-types/src/PickerModeTree';
 import { FieldSettingsWithPickerSource, PickerSourceCustomCsv, PickerSourceCustomList, PickerSourceEntity, PickerSourceQuery, UiPickerSourcesAll } from '../../../../../../edit-types/src/PickerSources';

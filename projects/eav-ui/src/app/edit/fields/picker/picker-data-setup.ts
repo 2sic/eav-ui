@@ -1,6 +1,7 @@
 import { Injector, ProviderToken } from '@angular/core';
+import { FieldSettingsPicker } from 'projects/edit-types/src/FieldSettings-Pickers';
 import { Of, transient } from '../../../../../../core';
-import { FieldSettings, FieldSettingsPicker } from '../../../../../../edit-types/src/FieldSettings';
+import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
 import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
 import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
 import { classLog } from '../../../shared/logging';

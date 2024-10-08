@@ -1,4 +1,5 @@
-import { EmptyDefault, FieldSettings } from './FieldSettings';
+import { FieldSettings } from './FieldSettings';
+import { EmptyDefault } from './FieldSettings-EmptyDefault';
 
 /**
  * Goal of this is to provide the basic settings for a control

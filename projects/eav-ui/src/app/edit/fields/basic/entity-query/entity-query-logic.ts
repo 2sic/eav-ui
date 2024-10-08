@@ -1,8 +1,9 @@
+import { FieldSettingsEntityQuery } from '../../../../../../../edit-types/src/FieldSettings-Pickers';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
 import { FieldLogicManager } from '../../logic/field-logic-manager';
 import { EntityDefaultLogic } from '../entity-default/entity-default-logic';
-import { FieldSettings, FieldSettingsEntityQuery } from './../../../../../../../edit-types/src/FieldSettings';
+import { FieldSettings } from './../../../../../../../edit-types/src/FieldSettings';
 
 export class EntityQueryLogic extends FieldLogicBase {
   name = InputTypeCatalog.EntityQuery;

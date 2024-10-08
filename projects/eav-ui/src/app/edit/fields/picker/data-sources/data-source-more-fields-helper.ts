@@ -1,4 +1,4 @@
-import { FieldSettingsPicker, FieldSettingsPickerMasks } from '../../../../../../../edit-types/src/FieldSettings';
+import { FieldSettingsPicker, FieldSettingsPickerMasks } from '../../../../../../../edit-types/src/FieldSettings-Pickers';
 import { FieldSettingsWithPickerSource } from '../../../../../../../edit-types/src/PickerSources';
 import { classLog } from '../../../../shared/logging';
 import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';

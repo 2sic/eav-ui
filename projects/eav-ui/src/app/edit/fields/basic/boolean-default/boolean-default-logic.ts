@@ -1,6 +1,7 @@
+import { FieldSettingsBoolean } from 'projects/edit-types/src/FieldSettings-Boolean';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
-import { FieldSettings, FieldSettingsBoolean } from './../../../../../../../edit-types/src/FieldSettings';
+import { FieldSettings } from './../../../../../../../edit-types/src/FieldSettings';
 
 export class BooleanDefaultLogic extends FieldLogicBase {
   name = InputTypeCatalog.BooleanDefault;

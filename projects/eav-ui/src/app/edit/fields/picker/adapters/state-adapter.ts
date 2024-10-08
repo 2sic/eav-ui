@@ -1,7 +1,8 @@
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { Injectable, Signal, inject } from '@angular/core';
 import { getWith } from '../../../../../../../core';
-import { FieldSettings, FieldSettingsPickerMerged } from '../../../../../../../edit-types/src/FieldSettings';
+import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
+import { FieldSettingsPickerMerged } from '../../../../../../../edit-types/src/FieldSettings-Pickers';
 import { classLog } from '../../../../shared/logging';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
 import { FormConfigService } from '../../../form/form-config.service';

@@ -1,5 +1,6 @@
 import { Signal } from '@angular/core';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
+import { FieldSettingsSharedSeparator } from '../../../../../../../edit-types/src/FieldSettings-Pickers';
 import { FieldValue } from '../../../../../../../edit-types/src/FieldValue';
 
 /**
@@ -21,7 +22,7 @@ export abstract class StateUiMapperBase<TState extends FieldValue = FieldValue, 
 
 export abstract class StateUiMapperWithSettingsBase<TState extends FieldValue = FieldValue, TUi extends FieldValue = FieldValue>
   extends StateUiMapperBase<TState, TUi> {
-  constructor(fieldName: string, protected settings: Signal<FieldSettings>) {
+  constructor(fieldName: string, protected settings: Signal<FieldSettings & FieldSettingsSharedSeparator>) {
     super(fieldName);
   }
 
