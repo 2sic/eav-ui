@@ -1,6 +1,6 @@
 import { Injector, ProviderToken } from '@angular/core';
-import { FieldValue } from 'projects/edit-types';
 import { Of, transient } from '../../../../../../core';
+import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
 import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
 import { classLog } from '../../../shared/logging';
 import { FieldState } from '../field-state';

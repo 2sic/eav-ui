@@ -1,4 +1,4 @@
-import { classLog } from 'projects/eav-ui/src/app/shared/logging';
+import { classLog } from '../../../../../shared/logging/logging';
 import { IconOption } from './string-font-icon-picker.models';
 
 

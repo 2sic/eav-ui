@@ -2,8 +2,7 @@ import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
 import { MatRippleModule } from '@angular/material/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { transient } from 'projects/core';
+import { transient } from '../../../../../../../core/transient';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { JsonHelpers } from '../../../../shared/helpers/json.helpers';
 import { ClipboardService } from '../../../../shared/services/clipboard.service';
@@ -13,12 +12,15 @@ import { ClipboardService } from '../../../../shared/services/clipboard.service'
   templateUrl: './analyze-settings-value.component.html',
   styleUrls: ['./analyze-settings-value.component.scss'],
   standalone: true,
-  imports: [MatRippleModule, TippyDirective,],
+  imports: [
+    MatRippleModule,
+    TippyDirective,
+  ],
 })
 export class AnalyzeSettingsValueComponent implements ICellRendererAngularComp {
   value: string;
 
-  constructor(private snackBar: MatSnackBar) { }
+  constructor() { }
 
   protected clipboard = transient(ClipboardService);
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { signalObj } from 'projects/eav-ui/src/app/shared/signals/signal.utilities';
 import { classLog } from "../../../../shared/logging";
+import { signalObj } from '../../../../shared/signals/signal.utilities';
 import { PickerFeatures } from '../picker-features.model';
 import { logSpecsStateAdapter, StateAdapter } from "./state-adapter";
 import { StateUiMapperNumberArray } from './state-ui-mapper-number-array';

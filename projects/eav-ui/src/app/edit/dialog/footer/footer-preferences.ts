@@ -1,4 +1,4 @@
-import { Of } from 'projects/core';
+import { Of } from '../../../../../../core/type-utilities';
 import { DebugTypes } from './edit-dialog-footer.models';
 
 /**

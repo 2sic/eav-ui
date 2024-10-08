@@ -1,5 +1,5 @@
-import { PickerSourceCss } from 'projects/edit-types/src/PickerSources';
 import { FieldSettings, StringFontIconPicker } from '../../../../../../../edit-types/src/FieldSettings';
+import { PickerSourceCss } from '../../../../../../../edit-types/src/PickerSources';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
 

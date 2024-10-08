@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { FieldValue } from 'projects/edit-types';
+import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
 import { FieldSettingsWithPickerSource } from '../../../../../../edit-types/src/PickerSources';
 import { classLog } from '../../../shared/logging';
 import { computedObj } from '../../../shared/signals/signal.utilities';

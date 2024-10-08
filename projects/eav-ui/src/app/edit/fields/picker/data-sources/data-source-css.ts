@@ -1,7 +1,7 @@
 import { effect, Injectable } from '@angular/core';
-import { getWith } from 'projects/core';
-import { EntityLight } from 'projects/eav-ui/src/app/shared/models/entity-basic';
+import { getWith } from '../../../../../../../core/object-utilities';
 import { classLog } from '../../../../shared/logging';
+import { EntityLight } from '../../../../shared/models/entity-basic';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
 import { ScriptsLoaderService } from '../../../shared/services/scripts-loader.service';
 import { findAllIconsInCss } from './css/string-font-icon-picker.helpers';

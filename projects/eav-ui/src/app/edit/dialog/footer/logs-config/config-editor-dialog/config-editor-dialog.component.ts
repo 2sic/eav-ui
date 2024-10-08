@@ -10,7 +10,7 @@ import {
   MatDialogTitle
 } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { transient } from 'projects/core';
+import { transient } from '../../../../../../../../core/transient';
 import { ClipboardService } from '../../../../..//shared/services/clipboard.service';
 import { MonacoEditorComponent } from '../../../../../monaco-editor/monaco-editor.component';
 import { TippyDirective } from '../../../../../shared/directives/tippy.directive';
