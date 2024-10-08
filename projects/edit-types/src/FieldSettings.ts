@@ -350,7 +350,7 @@ export interface FieldSettings extends
   // CustomGps,
   // CustomJsonEditor,
   DateTime,
-  EmptyDefault,
+  // EmptyDefault,
   Entity,
   EntityQuery,
   // Hyperlink,

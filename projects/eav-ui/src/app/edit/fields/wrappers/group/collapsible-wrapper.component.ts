@@ -2,6 +2,7 @@ import { NgClass } from '@angular/common';
 import { Component, ViewChild, ViewContainerRef, computed, inject } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
+import { EmptyDefault, FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { classLog } from '../../../../shared/logging';
 import { SafeHtmlPipe } from '../../../../shared/pipes/safe-html.pipe';
 import { FieldsSettingsService } from '../../../state/fields-settings.service';
@@ -47,6 +48,6 @@ export class CollapsibleWrapperComponent {
   toggleCollapse(): void {
     const before = this.collapsed();
     this.log.a('toggleCollapse', { before })
-    this.#fieldsSettingsSvc.updateSetting(this.#fieldState.name, { Collapsed: !before }, "CollapsibleWrapperComponent");
+    this.#fieldsSettingsSvc.updateSetting<FieldSettings & EmptyDefault>(this.#fieldState.name, { Collapsed: !before }, "CollapsibleWrapperComponent");
   }
 }

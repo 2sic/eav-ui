@@ -1,4 +1,4 @@
-import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
+import { EmptyDefault, FieldSettings } from '../../../../../edit-types/src/FieldSettings';
 import { InputTypeHelpers } from '../../shared/fields/input-type-helpers';
 import { classLog } from '../../shared/logging';
 import { DebugFields } from '../edit-debug';
@@ -51,7 +51,7 @@ export class FieldsSettingsHelpers {
   }
 
   getDefaultSettings(settings: FieldSettings): FieldSettings {
-    const defSettings = AllDeprecated.moveDeprecatedSettings({ ...settings });
+    const defSettings = AllDeprecated.moveDeprecatedSettings({ ...settings }) as FieldSettings & EmptyDefault;
     // update @All settings
     defSettings.Name ??= '';
     defSettings.Placeholder ??= '';

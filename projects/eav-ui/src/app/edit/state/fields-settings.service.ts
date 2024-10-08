@@ -253,7 +253,7 @@ export class FieldsSettingsService {
    * Modify a setting, ATM just to set collapsed / dialog-open states.
    * Note that this change won't fire the formulas - which may not be correct.
    */
-  updateSetting(fieldName: string, update: Partial<FieldSettings>, source: string): void {
+  updateSetting<T extends FieldSettings>(fieldName: string, update: Partial<T>, source: string): void {
     this.#fieldsPropsUpdate.updateSetting(fieldName, update, source, this.allProps);
     
     // Retrigger formulas if the queue was empty (otherwise it was already retriggered and will run soon)

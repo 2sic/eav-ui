@@ -1,4 +1,4 @@
-import { FieldSettings } from '../../../../../../../edit-types';
+import { EmptyDefault, FieldSettings } from '../../../../../../../edit-types';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
 
@@ -8,7 +8,7 @@ export class EmptyDefaultLogic extends FieldLogicBase {
   constructor() { super({ EmptyDefaultLogic }); }
 
   update({ settings }: FieldLogicUpdate): FieldSettings {
-    const fixedSettings: FieldSettings = { ...settings };
+    const fixedSettings = { ...settings } as FieldSettings & EmptyDefault;
     fixedSettings.Visible ??= true;
     fixedSettings.Collapsed ??= false;
     fixedSettings.Notes ??= '';
