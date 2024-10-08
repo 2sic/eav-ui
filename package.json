@@ -27,7 +27,10 @@
     "docs-prepare": "npx compodoc -p tsconfig.doc.json --disableRoutesGraph -s",
     "ci": "npm ci --legacy-peer-deps",
     "source-map-explorer-example": "node_modules/.bin/source-map-explorer C:/Projects/2sxc/2sxc-sources/_latest C:/Projects/2sxc/2sxc-sources/_latest/dist/ng-edit/default-projects_eav-ui_src_app_edit_edit_module_ts.27ddea5d6f2512d1*",
-    "angular-lint": "ng lint"
+    "angular-lint": "ng lint",
+    "// this requires": "GraphVis - not installed",
+    "dependencies-wysiwyg": "npx depcruise projects/field-string-wysiwyg/src/field-string-wysiwyg/field-string-wysiwyg.ts --output-type dot | dot -T svg > dependency-graph.svg",
+    "dependencies-wysiwyg-text": "npx depcruise projects/field-string-wysiwyg/src/field-string-wysiwyg/field-string-wysiwyg.ts --include-only \"^src\" -T text > projects/field-string-wysiwyg/dependencies.txt"
   },
   "dependencies": {
     "@2sic.com/sxc-angular": "^18.0.0",
@@ -88,6 +91,7 @@
     "codelyzer": "^6.0.2",
     "concurrently": "^9.0.1",
     "copy-webpack-plugin": "^10.2.4",
+    "dependency-cruiser": "^16.4.2",
     "eslint": "^9.11.1",
     "eslint-plugin-import": "^2.30.0",
     "fs-extra": "^10.0.1",
