@@ -358,7 +358,7 @@ export interface FieldSettings extends
   HyperlinkLibrary,
   Number,
   StringDefault,
-  StringDropdown,
+  // StringDropdown,
   StringDropdownQuery,
   // StringFontIconPicker,
   // StringTemplatePicker,
