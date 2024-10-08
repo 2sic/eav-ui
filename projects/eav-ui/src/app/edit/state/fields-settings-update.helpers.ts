@@ -1,5 +1,6 @@
 import { Signal } from '@angular/core';
-import { FieldSettings, FieldValue } from '../../../../../edit-types';
+import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
+import { FieldValue } from '../../../../../edit-types/src/FieldValue';
 import { classLog } from '../../shared/logging';
 import { DebugFields } from '../edit-debug';
 import { FieldLogicTools } from '../fields/logic/field-logic-tools';

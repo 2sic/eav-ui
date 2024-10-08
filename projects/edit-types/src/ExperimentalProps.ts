@@ -2,10 +2,10 @@ import { Injector, Signal } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
-import { FieldMask } from '../../eav-ui/src/app/edit/shared/helpers';
 import { Adam } from './Adam';
 import { Dropzone } from './Dropzone';
 import { FieldValue } from './FieldValue';
+import { IFieldMask } from './IFieldMask';
 import { AttributeInputType } from './InputTypeName';
 import { PagePickerResult } from './PagePickerResult';
 
@@ -26,7 +26,7 @@ export interface ExperimentalProps {
   getSettings(name: string): any;
   
   /** 2024-06-20 2dm - temporary solutions as GPS needs the mask */
-  getFieldMask(mask: string, name?: string, watch?: boolean): FieldMask;
+  getFieldMask(mask: string, name?: string, watch?: boolean): IFieldMask;
 
   /** 2024-09-03 v18 2dm - injector so effects can be used */
   injector: Injector;

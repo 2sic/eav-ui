@@ -1,5 +1,5 @@
 import { Of } from '../../../../../../core';
-import { AdamItem } from '../../../../../../edit-types';
+import { AdamItem } from '../../../../../../edit-types/src/AdamItem';
 import { DialogContext } from '../../../app-administration/models';
 import { FeatureNames } from '../../../features/feature-names';
 import { InputTypeMetadata } from '../../../shared/fields/input-type-metadata.model';

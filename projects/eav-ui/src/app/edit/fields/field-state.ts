@@ -1,8 +1,9 @@
 import { effect, Injector, Signal } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { Of } from '../../../../../core';
-import { FieldSettings, FieldValue } from '../../../../../edit-types';
 import { BasicControlSettings } from '../../../../../edit-types/src/BasicControlSettings';
+import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
+import { FieldValue } from '../../../../../edit-types/src/FieldValue';
 import { FeatureNames } from '../../features/feature-names';
 import { FeaturesScopedService } from '../../features/features-scoped.service';
 import { computedObj, signalObj } from '../../shared/signals/signal.utilities';

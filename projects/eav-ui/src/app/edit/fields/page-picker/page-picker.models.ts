@@ -1,6 +1,6 @@
 import { UntypedFormGroup } from '@angular/forms';
+import { EntityLightIdentifier } from '../../../../../../edit-types/src/EntityLight';
 import { FieldConfigSet } from '../field-config-set.model';
-import { EntityLightIdentifier } from '../../../shared/models/entity-basic';
 
 export interface PagePickerDialogData {
   config: FieldConfigSet;

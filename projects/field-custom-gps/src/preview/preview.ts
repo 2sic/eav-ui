@@ -1,10 +1,10 @@
 import { ElementEventListener } from '../../../eav-ui/src/app/edit/shared/controls/element-event-listener.model';
-import { Connector, EavCustomInputField } from '../../../edit-types';
+import { classLog } from '../../../eav-ui/src/app/shared/logging';
+import { Connector, EavCustomInputField } from '../../../edit-types/index-for-documentation';
 import { buildTemplate, customGpsIcons, parseLatLng } from '../shared/helpers';
+import { CoordinatesDto } from './coordinates';
 import * as template from './preview.html';
 import * as styles from './preview.scss';
-import { CoordinatesDto } from './coordinates';
-import { classLog } from '../../../eav-ui/src/app/shared/logging';
 
 const gpsTag = 'field-custom-gps';
 

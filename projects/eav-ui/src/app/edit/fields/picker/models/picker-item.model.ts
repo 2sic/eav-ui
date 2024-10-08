@@ -1,5 +1,5 @@
 import { TranslateService } from '@ngx-translate/core';
-import { EntityLight } from '../../../../shared/models/entity-basic';
+import { EntityLight } from '../../../../../../../edit-types/src/EntityLight';
 
 export interface PickerItem {
   /** The title to show in the dropdown */

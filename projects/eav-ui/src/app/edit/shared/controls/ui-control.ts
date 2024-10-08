@@ -1,6 +1,6 @@
 import { AbstractControl } from '@angular/forms';
 import isEqual from 'lodash-es/isEqual';
-import { FieldValue } from '../../../../../../edit-types';
+import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
 import { classLog } from '../../../shared/logging';
 import { DebugFields } from '../../edit-debug';
 import { FieldConfigSet } from '../../fields/field-config-set.model';

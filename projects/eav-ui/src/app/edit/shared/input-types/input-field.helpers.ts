@@ -1,5 +1,6 @@
 import { Of } from '../../../../../../core';
-import { FieldSettings, FieldValue } from '../../../../../../edit-types';
+import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
+import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
 import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
 import { classLog } from '../../../shared/logging';
 import { ItemIdentifierShared } from '../../../shared/models/edit-form.model';

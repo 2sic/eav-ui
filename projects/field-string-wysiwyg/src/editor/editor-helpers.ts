@@ -1,6 +1,6 @@
-import { mapUntilChanged } from '../../../eav-ui/src/app/shared/rxJs/mapUntilChanged';
-import { Connector } from '../../../edit-types';
 import { Observable } from 'rxjs';
+import { mapUntilChanged } from '../../../eav-ui/src/app/shared/rxJs/mapUntilChanged';
+import { Connector } from '../../../edit-types/index-for-documentation';
 
 export function connectorToDisabled$(connector: Connector<string>): Observable<boolean> {
   return connector.field$.pipe(

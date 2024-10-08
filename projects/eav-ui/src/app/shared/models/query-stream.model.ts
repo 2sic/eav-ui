@@ -1,4 +1,4 @@
-import { EntityLightIdentifier } from "./entity-basic";
+import { EntityLightIdentifier } from "../../../../../edit-types/src/EntityLight";
 
 
 export interface QueryStreams {

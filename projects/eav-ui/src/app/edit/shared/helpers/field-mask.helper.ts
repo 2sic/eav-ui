@@ -1,4 +1,5 @@
 import { Injectable, Injector, Signal, computed, effect, inject, signal } from '@angular/core';
+import { IFieldMask } from '../../../../../../edit-types/src/IFieldMask';
 import { classLog } from '../../../shared/logging';
 import { ServiceBase } from '../../../shared/services/service-base';
 import { FieldState } from '../../fields/field-state';
@@ -25,8 +26,9 @@ const FieldUnwrap = /[\[\]]/ig;
  * @param model usually FormGroup controls, passed into here
  * @param overloadPreCleanValues a function which will "scrub" the found field-values
  */
+
 @Injectable()
-export class FieldMask extends ServiceBase /* for field-change subscription */ {
+export class FieldMask extends ServiceBase implements IFieldMask /* for field-change subscription */ {
   
   log = classLog({FieldMask}, logSpecs);
 

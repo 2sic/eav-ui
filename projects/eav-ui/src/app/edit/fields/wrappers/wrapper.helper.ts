@@ -1,5 +1,5 @@
 import { Of } from '../../../../../../core';
-import { FieldSettings } from '../../../../../../edit-types';
+import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
 import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
 import { InputTypeHelpers } from '../../../shared/fields/input-type-helpers';
 import { InputTypeSpecs } from '../../shared/input-types/input-type-specs.model';

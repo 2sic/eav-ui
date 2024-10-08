@@ -1,6 +1,6 @@
 import type { RawEditorOptions } from 'tinymce';
-import { Adam, AdamItem, Dropzone } from '../../../../edit-types';
 import { classLog } from '../../../../../projects/eav-ui/src/app/shared/logging';
+import { Adam, AdamItem, Dropzone } from '../../../../edit-types/index-for-documentation';
 
 export class DefaultPaste {
   

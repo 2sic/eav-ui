@@ -1,11 +1,11 @@
 import { Subscription } from 'rxjs';
 import { ElementEventListener } from '../../../eav-ui/src/app/edit/shared/controls/element-event-listener.model';
-import { Connector, EavCustomInputField } from '../../../edit-types';
+import { classLog } from '../../../eav-ui/src/app/shared/logging';
+import { Connector, EavCustomInputField } from '../../../edit-types/index-for-documentation';
+import { connectorToDisabled$, registerCustomElement } from '../editor/editor-helpers';
 import { buildTemplate } from '../shared/helpers';
 import * as template from './preview.html';
 import * as styles from './preview.scss';
-import { classLog } from '../../../eav-ui/src/app/shared/logging';
-import { connectorToDisabled$, registerCustomElement } from '../editor/editor-helpers';
 
 export const wysiwygPreviewTag = 'field-string-wysiwyg-preview';
 

@@ -2,7 +2,8 @@ import { EnvironmentInjector, Injectable, Injector, Signal, createEnvironmentInj
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { AbstractControl } from '@angular/forms';
 import { combineLatest, tap } from 'rxjs';
-import { FieldSettings, FieldValue } from '../../../../../../edit-types';
+import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
+import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
 import { FeaturesScopedService } from '../../../features/features-scoped.service';
 import { InputTypeHelpers } from '../../../shared/fields/input-type-helpers';
 import { classLog } from '../../../shared/logging';

@@ -1,5 +1,5 @@
 import { Injectable, Signal } from '@angular/core';
-import { FieldSettings } from '../../../../../edit-types';
+import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
 import { classLog } from '../../shared/logging';
 import { computedObj } from '../../shared/signals/signal.utilities';
 import { DebugFields } from '../edit-debug';

@@ -1,4 +1,4 @@
-import { DropzoneConfigExt } from '../../../../../../../../edit-types';
+import { DropzoneConfigExt } from '../../../../../../../../edit-types/src/DropzoneConfigExt';
 import { UrlHelpers } from '../../../../shared/helpers';
 import { FieldConfigSet } from '../../../field-config-set.model';
 import { AdamConfigInstance } from './adam-browser.models';

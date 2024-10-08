@@ -1,16 +1,17 @@
-import { ItemEditIdentifier, ItemIdentifierHeader } from '../../shared/models/edit-form.model';
-import { SaveResult } from './save-result.model';
-import { ItemService } from './item.service';
-import { EavContentTypeAttribute, EavDimension, EavEntity, EavItem, EavValue } from '../shared/models/eav';
-import { FieldSettings, FieldValue } from '../../../../../edit-types';
-import { FieldReader } from '../localization/field-reader';
-import { FormLanguage, Language } from '../form/form-languages.model';
-import { EntityReader, FieldDefaults } from '../shared/helpers';
+import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
+import { FieldValue } from '../../../../../edit-types/src/FieldValue';
 import { InputTypeMetadata } from '../../shared/fields/input-type-metadata.model';
-import { ItemValuesOfLanguage } from './item-values-of-language.model';
-import { FieldValueHelpers } from '../shared/helpers/field-value.helpers';
-import { FieldWriter } from '../localization/field-writer';
 import { classLog } from '../../shared/logging';
+import { ItemEditIdentifier, ItemIdentifierHeader } from '../../shared/models/edit-form.model';
+import { FormLanguage, Language } from '../form/form-languages.model';
+import { FieldReader } from '../localization/field-reader';
+import { FieldWriter } from '../localization/field-writer';
+import { EntityReader, FieldDefaults } from '../shared/helpers';
+import { FieldValueHelpers } from '../shared/helpers/field-value.helpers';
+import { EavContentTypeAttribute, EavDimension, EavEntity, EavItem, EavValue } from '../shared/models/eav';
+import { ItemValuesOfLanguage } from './item-values-of-language.model';
+import { ItemService } from './item.service';
+import { SaveResult } from './save-result.model';
 
 const logSpecs = {
   all: true,

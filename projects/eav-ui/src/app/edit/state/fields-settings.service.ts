@@ -1,6 +1,6 @@
 import { computed, effect, inject, Injectable, signal, Signal, WritableSignal } from '@angular/core';
 import { transient } from '../../../../../core';
-import { FieldSettings } from '../../../../../edit-types';
+import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
 import { classLog } from '../../shared/logging';
 import { ComputedAnalyzer } from '../../shared/signals/computed-analyzer';
 import { ComputedCacheHelper } from '../../shared/signals/computed-cache';

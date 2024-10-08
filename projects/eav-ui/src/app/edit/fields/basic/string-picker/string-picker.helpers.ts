@@ -1,4 +1,5 @@
-import { PickerOptionCustom } from '../../../../../../../edit-types';
+import { PickerOptionCustom } from '../../../../../../../edit-types/src/DropdownOption';
+
 
 /**
  * For String-Picker field - will prepare settings (usually in the form of multiline-CSV)

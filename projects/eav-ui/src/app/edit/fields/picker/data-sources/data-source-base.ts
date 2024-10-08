@@ -1,6 +1,6 @@
 import { inject, Injectable, Signal } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { FieldSettings } from '../../../../../../../edit-types/';
+import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { FieldValue } from '../../../../../../../edit-types/src/FieldValue';
 import { FieldSettingsWithPickerSource } from '../../../../../../../edit-types/src/PickerSources';
 import { FeaturesScopedService } from '../../../../features/features-scoped.service';

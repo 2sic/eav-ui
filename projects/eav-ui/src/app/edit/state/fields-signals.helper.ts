@@ -1,12 +1,12 @@
 import { effect, Injectable, Signal } from '@angular/core';
-import { EavEntityAttributes } from '../shared/models/eav';
-import { EntityReader } from '../shared/helpers';
-import { ComputedCacheHelper } from '../../shared/signals/computed-cache';
-import { FieldValue } from '../../../../../edit-types';
-import { ItemService } from './item.service';
+import { FieldValue } from '../../../../../edit-types/src/FieldValue';
 import { difference } from '../../shared/helpers/difference';
-import { computedObj, signalObj } from '../../shared/signals/signal.utilities';
 import { classLog } from '../../shared/logging';
+import { ComputedCacheHelper } from '../../shared/signals/computed-cache';
+import { computedObj, signalObj } from '../../shared/signals/signal.utilities';
+import { EntityReader } from '../shared/helpers';
+import { EavEntityAttributes } from '../shared/models/eav';
+import { ItemService } from './item.service';
 
 @Injectable()
 export class FieldsSignalsHelper {

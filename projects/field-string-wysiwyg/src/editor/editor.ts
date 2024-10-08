@@ -24,7 +24,7 @@ import { Subscription } from 'rxjs';
 // tslint:disable-next-line: no-duplicate-imports
 import type { Editor, EditorEvent } from 'tinymce/tinymce';
 import { classLog } from '../../../../projects/eav-ui/src/app/shared/logging';
-import { Connector, EavCustomInputField, WysiwygReconfigure } from '../../../edit-types';
+import { Connector, EavCustomInputField, WysiwygReconfigure } from '../../../edit-types/index-for-documentation';
 import { tinyMceBaseUrl, wysiwygEditorHtmlTag } from '../../internal-constants';
 import { WysiwygConstants } from '../../shared/wysiwyg.constants';
 import { RawEditorOptionsExtended } from '../config/raw-editor-options-extended';

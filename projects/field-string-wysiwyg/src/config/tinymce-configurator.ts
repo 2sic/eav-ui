@@ -1,6 +1,6 @@
 import type { Editor } from 'tinymce';
 import { classLog } from '../../../../projects/eav-ui/src/app/shared/logging';
-import { AddOnSettings, Connector, StringWysiwyg, WysiwygReconfigure } from '../../../edit-types';
+import { AddOnSettings, Connector, StringWysiwyg, WysiwygReconfigure } from '../../../edit-types/index-for-documentation';
 import * as DisplayModes from '../constants/display-modes';
 import * as contentStyle from '../editor/tinymce-content.scss';
 import { DefaultAddOnSettings, DefaultPaste } from './defaults';

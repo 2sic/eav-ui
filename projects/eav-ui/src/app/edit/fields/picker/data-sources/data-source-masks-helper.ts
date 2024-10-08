@@ -1,8 +1,8 @@
+import { EntityLight } from '../../../../../../../edit-types/src/EntityLight';
 import { FieldSettingsWithPickerSource } from '../../../../../../../edit-types/src/PickerSources';
 import { FeatureNames } from '../../../../features/feature-names';
 import { FeaturesScopedService } from '../../../../features/features-scoped.service';
 import { classLog } from '../../../../shared/logging';
-import { EntityLight } from '../../../../shared/models/entity-basic';
 import { FormConfigService } from '../../../form/form-config.service';
 import { PickerItem } from '../models/picker-item.model';
 import { DataSourceHelpers } from './data-source-helpers';

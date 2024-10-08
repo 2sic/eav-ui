@@ -6,7 +6,7 @@ import { MatRippleModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
-import { AdamItem } from '../../../../../../../edit-types';
+import { AdamItem } from '../../../../../../../edit-types/src/AdamItem';
 import { FeatureIconTextComponent } from '../../../../features/feature-icon-text/feature-icon-text.component';
 import { FeatureNames } from '../../../../features/feature-names';
 import { FeaturesScopedService } from '../../../../features/features-scoped.service';

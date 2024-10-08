@@ -2,7 +2,7 @@ import { ChangeDetectorRef, ViewContainerRef } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { take } from 'rxjs';
-import { PagePickerResult } from '../../../../../../edit-types';
+import { PagePickerResult } from '../../../../../../edit-types/src/PagePickerResult';
 import { FieldConfigSet } from '../field-config-set.model';
 import { PagePickerComponent } from './page-picker.component';
 import { PagePickerDialogData } from './page-picker.models';

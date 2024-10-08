@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { filter, map, Observable, shareReplay, switchMap } from 'rxjs';
 import { transient } from '../../../../../core';
-import { EntityLightIdentifier } from '../../shared/models/entity-basic';
+import { EntityLightIdentifier } from '../../../../../edit-types/src/EntityLight';
 import { classLog } from '../logging';
 import { HttpServiceBase } from './http-service-base';
 import { QueryService } from './query.service';

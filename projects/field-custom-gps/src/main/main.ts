@@ -1,9 +1,9 @@
 import { ElementEventListener } from '../../../eav-ui/src/app/edit/shared/controls/element-event-listener.model';
-import { FieldMask } from '../../../eav-ui/src/app/edit/shared/helpers/field-mask.helper';
 import { EditApiKeyPaths } from '../../../eav-ui/src/app/shared/constants/eav.constants';
 import { classLog } from '../../../eav-ui/src/app/shared/logging';
 import { ApiKeySpecs } from '../../../eav-ui/src/app/shared/models/dialog-context.models';
-import { Connector, CustomGps, EavCustomInputField, FieldSettings } from '../../../edit-types';
+import { Connector, CustomGps, EavCustomInputField, FieldSettings } from '../../../edit-types/index-for-documentation';
+import { IFieldMask } from '../../../edit-types/src/IFieldMask';
 import { CoordinatesDto } from '../preview/coordinates';
 import { buildTemplate, parseLatLng, stringifyLatLng } from '../shared/helpers';
 import * as template from './main.html';
@@ -18,7 +18,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
   fieldInitialized: boolean;
   connector: Connector<string>;
 
-  private addressMask: FieldMask;
+  private addressMask: IFieldMask;
   private geocoder: google.maps.Geocoder;
   private iconSearch: HTMLAnchorElement;
   private latFieldName: string;

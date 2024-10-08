@@ -1,4 +1,4 @@
-import { AddOnSettings } from '../../../../edit-types';
+import { AddOnSettings } from '../../../../edit-types/index-for-documentation';
 
 export const DefaultAddOnSettings: AddOnSettings = {
   enabled: true,

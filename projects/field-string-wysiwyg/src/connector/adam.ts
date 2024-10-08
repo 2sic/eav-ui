@@ -1,5 +1,5 @@
 import type { Editor } from 'tinymce';
-import { Adam, AdamItem } from '../../../edit-types';
+import { Adam, AdamItem } from '../../../edit-types/index-for-documentation';
 
 export function attachAdam(editor: Editor, adam: Adam): void {
   adam.onItemClick = (item) => {
