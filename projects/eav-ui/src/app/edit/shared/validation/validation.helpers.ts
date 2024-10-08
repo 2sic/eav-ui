@@ -2,7 +2,7 @@ import { Signal } from '@angular/core';
 import { AbstractControl, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { Of } from '../../../../../../core';
-import { CustomJsonEditor, FieldSettings, FieldSettingsNumber, FieldSettingsOptionsWip, FieldSettingsPicker, FieldSettingsPickerStringList } from '../../../../../../edit-types/src/FieldSettings';
+import { CustomJsonEditor, FieldSettings, FieldSettingsNumber, FieldSettingsOptionsWip, FieldSettingsPicker, FieldSettingsSharedSeparator } from '../../../../../../edit-types/src/FieldSettings';
 import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
 import { AdamControl } from '../../fields/basic/hyperlink-library/hyperlink-library.models';
 import { convertValueToArray } from '../../fields/picker/picker.helpers';
@@ -189,7 +189,7 @@ export class ValidationHelpers {
   }
 }
 
-function countValues(control: AbstractControl, s: FieldSettings & FieldSettingsOptionsWip & FieldSettingsPickerStringList): number {
+function countValues(control: AbstractControl, s: FieldSettings & FieldSettingsOptionsWip & FieldSettingsSharedSeparator): number {
   return Array.isArray(control.value)
     ? control.value.length
     : convertValueToArray(control.value, s.Separator, s._options).length;
@@ -205,7 +205,7 @@ export class ValidationHelperSpecs {
     // TODO: GET RID OF THIS as soon as we have a signal for the fieldProps
     public fieldsSettingsService: FieldsSettingsService
   ) {
-    this.settings = settings as Signal<FieldSettings & FieldSettingsPickerStringList & CustomJsonEditor & FieldSettingsNumber & FieldSettingsPicker & FieldSettingsOptionsWip>;
+    this.settings = settings as Signal<FieldSettings & FieldSettingsSharedSeparator & CustomJsonEditor & FieldSettingsNumber & FieldSettingsPicker & FieldSettingsOptionsWip>;
   }
-  settings: Signal<FieldSettings & FieldSettingsPickerStringList & CustomJsonEditor & FieldSettingsNumber & FieldSettingsPicker & FieldSettingsOptionsWip>;
+  settings: Signal<FieldSettings & FieldSettingsSharedSeparator & CustomJsonEditor & FieldSettingsNumber & FieldSettingsPicker & FieldSettingsOptionsWip>;
 }

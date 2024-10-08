@@ -1,7 +1,8 @@
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
 import { FieldLogicManager } from '../../logic/field-logic-manager';
-import { FieldSettings, FieldSettingsPickerMerged } from './../../../../../../../edit-types/src/FieldSettings';
+import { EntityDefaultLogic } from '../entity-default/entity-default-logic';
+import { FieldSettings, FieldSettingsEntityQuery } from './../../../../../../../edit-types/src/FieldSettings';
 
 export class EntityQueryLogic extends FieldLogicBase {
   name = InputTypeCatalog.EntityQuery;
@@ -9,16 +10,12 @@ export class EntityQueryLogic extends FieldLogicBase {
   constructor() { super({ EntityQueryLogic }); }
 
   update(updateSpecs: FieldLogicUpdate<string[]>): FieldSettings {
-    const entityDefaultLogic = FieldLogicManager.singleton().get(InputTypeCatalog.EntityDefault);
-    const fixedSettings = entityDefaultLogic.update(updateSpecs) as FieldSettings & FieldSettingsPickerMerged;
-    fixedSettings.Query ??= '';
-    fixedSettings.StreamName ||= 'Default';
-    fixedSettings.UrlParameters ??= '';
-
-    // fixedSettings.MoreFields ??= '';
-    // fixedSettings.Label ??= '';
-
-    return fixedSettings;
+    const entityDefaultLogic = FieldLogicManager.singleton().get(InputTypeCatalog.EntityDefault) as EntityDefaultLogic;
+    const s = entityDefaultLogic.update(updateSpecs) as FieldSettings & FieldSettingsEntityQuery;
+    s.Query ??= '';
+    s.StreamName ||= 'Default';
+    s.UrlParameters ??= '';
+    return s;
   }
 }
 

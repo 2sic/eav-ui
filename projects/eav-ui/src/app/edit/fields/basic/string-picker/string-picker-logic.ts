@@ -23,7 +23,7 @@ export class StringPickerLogic extends FieldLogicBase {
     if (fs.Separator == '\\n') fs.Separator = '\n'; //buggy temp double-slash-n
 
     /** Dropdown data source aka custom-list picker */
-    const typeName = fs.DataSourceType;
+    const typeName = fs.dataSourceType;
     const isCustomSource = Object.values(PickerSourcesCustom).includes(typeName as Of<typeof PickerSourcesCustom>);
     l.a(`type: ${typeName}`, { typeConfig, isCustomSource });
 

@@ -16,9 +16,12 @@ export class EntityContentBlocksLogic extends FieldLogicBase {
     fs.EnableAddExisting = false;
     fs.EnableCreate = false;
     fs.EnableEdit = false;
+    fs.Visible = false;
+
+    // Both the query type and create-type are the same
     fs.EntityType = 'ContentGroupReference';
     fs.CreateTypes = fs.EntityType;
-    fs.Visible = false;
+
     return fs;
   }
 }

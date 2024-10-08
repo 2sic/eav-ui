@@ -79,7 +79,7 @@ export class PickerLogicShared {
     // Transfer configuration
     const dataSource = dataSources[0];
     const typeName = dataSource?.Type.Name as Of<typeof PickerConfigs>;
-    fs.DataSourceType = typeName ?? '' as Of<typeof PickerConfigs>;
+    fs.dataSourceType = typeName ?? '' as Of<typeof PickerConfigs>;
 
     // DataSource may not be configured yet, in which case the object is just {}
     const typeConfig = tools.reader.flatten<UiPickerSourcesAll>(dataSource);
@@ -154,7 +154,6 @@ export class PickerLogicShared {
         // note that 'value-label' is the only format supported by the new picker config
         fs._options ??= calculateDropdownOptions(value as string, 'string', 'value-label', valuesRaw) ?? [];
       } else if (typeName === PickerConfigs.UiPickerSourceCustomCsv) {
-        // TODO: THIS should of course also be possible in Entity Pickers
         const csv = (typeConfig as unknown as PickerSourceCustomCsv).Csv;
         fs._options ??= new DataSourceParserCsv().parse(csv);
         fs.requiredFeatures = [FeatureNames.PickerSourceCsv];

@@ -17,8 +17,11 @@ export class StringDropdownLogic extends FieldLogicBase {
     // fixedSettings.DropdownValues ??= '';
     // fixedSettings.DropdownValuesFormat ??= '';// maybe we should change this to 'value-label' in the future
     fixedSettings._options = calculateDropdownOptions(value, this.type, fixedSettings.DropdownValuesFormat || '', fixedSettings.DropdownValues || '');
+    
+    // Both the query type and create-type are the same
     fixedSettings.EntityType ??= '';
     fixedSettings.CreateTypes = fixedSettings.EntityType;
+
     fixedSettings.EnableEdit ??= false;
     fixedSettings.EnableCreate ??= false;
     // fixedSettings.EnableAddExisting ??= true;

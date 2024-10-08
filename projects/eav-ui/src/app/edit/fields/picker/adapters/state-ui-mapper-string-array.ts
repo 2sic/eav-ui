@@ -1,4 +1,4 @@
-import { FieldSettings, FieldSettingsPickerStringList } from '../../../../../../../edit-types/src/FieldSettings';
+import { FieldSettings, FieldSettingsSharedSeparator } from '../../../../../../../edit-types/src/FieldSettings';
 import { convertArrayToString } from '../picker.helpers';
 import { StateUiMapperWithSettingsBase } from './state-ui-mapper-base';
 
@@ -14,7 +14,7 @@ export class StateUiMapperStringArray extends StateUiMapperWithSettingsBase<stri
   toUi(state: string): string[] {
     return (state == null || state === '')
       ? []
-      : state.split((this.settings() as FieldSettings & FieldSettingsPickerStringList).Separator) ?? [];
+      : state.split((this.settings() as FieldSettings & FieldSettingsSharedSeparator).Separator) ?? [];
   }
 
   /**
@@ -23,6 +23,6 @@ export class StateUiMapperStringArray extends StateUiMapperWithSettingsBase<stri
   toState(uiValue: string[]): string {
     return (uiValue == null || uiValue.length === 0) 
       ? ''
-      : convertArrayToString(uiValue, (this.settings() as FieldSettings & FieldSettingsPickerStringList).Separator);
+      : convertArrayToString(uiValue, (this.settings() as FieldSettings & FieldSettingsSharedSeparator).Separator);
   }
 }

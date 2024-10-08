@@ -4,6 +4,8 @@ import { FeatureNames } from '../../eav-ui/src/app/features/feature-names';
 import { PickerOptionCustom } from './DropdownOption';
 import { UiPickerModeTree } from './PickerModeTree';
 
+//#region All and InternalSettings + final FieldSettings
+
 /** */
 interface InternalSettings {
   /** Ui is disabled for translation reasons - detected at runtime */
@@ -94,10 +96,21 @@ interface All {
 }
 
 /**
+ * The Field Settings which every field has, containing `@All` and `@InternalSettings`.
+ */
+export interface FieldSettings extends 
+  All,
+  InternalSettings { }
+
+//#endregion
+
+//#region Normal Strings (non-pickers)
+
+/**
  * @String - for compatibility only.
  * ATM not used as it's normally empty, but old configs still have this value set.
  */
-interface FieldSettingsString extends All {
+interface FieldSettingsString {
   /** Old input type for strings - was before the input type moved to '@All' so it must be preserved for all the old configs */
   InputType: string;
 }
@@ -105,32 +118,25 @@ interface FieldSettingsString extends All {
 /**
  * @string-default
  */
-export interface FieldSettingsStringDefault extends FieldSettingsString {
+export interface FieldSettingsStringDefault {
+  /** The font to use; default is normal, monospace means Courier-New */
   InputFontFamily: '' | 'monospace';
+
+  /**
+   * Amount of rows to show.
+   * * if null, 0 or 1 will use single-line.
+   * -1 is a special multi-line which is only 1 line tall at first (new v18.02 and not released, but used in the old icon-font-picker)
+   */
   RowCount: number;
+
+  /** How text should wrap. For CSV it is usually pre, so it doesn't wrap till you have an enter */
   TextWrapping: '' | 'pre';
-}
-
-/**
- * @string-dropdown
- */
-export interface StringDropdown extends FieldSettingsString, FieldSettingsOptionsWip {
-  /** Configured Values for dropdown. Only used to load the initial possible options. Not used in controls. */
-  DropdownValues: string;
-  /** Configured Value-format for dropdown. Only used to load the initial possible options. Not used in controls. */
-  DropdownValuesFormat: '' | 'value-label';
-  EnableTextEntry: boolean;
-  // _options: PickerOptionCustom[];
-}
-
-export interface FieldSettingsOptionsWip {
-  _options: PickerOptionCustom[];
 }
 
 /**
  * @string-url-path
  */
-export interface StringUrlPath extends FieldSettingsString {
+export interface StringUrlPath {
   AutoGenerateMask: string;
   AllowSlashes: boolean;
 }
@@ -138,8 +144,11 @@ export interface StringUrlPath extends FieldSettingsString {
 /**
  * @string-template-picker
  * New in 12.02
+ * This is kind of a picker, but it has 2 requirements
+ * 1. select a file from a list of files (this could be done now with an App-Assets picker)
+ * 2. open a dialog to create a new file (currently not supported in the generic pickers, maybe changed some day) 
  */
-export interface StringTemplatePicker extends FieldSettingsString {
+export interface StringTemplatePicker {
   /** Contains the extension for which the file picker should filter. If not set, use preset mechanisms */
   FileType: string;
 }
@@ -147,7 +156,7 @@ export interface StringTemplatePicker extends FieldSettingsString {
 /**
  * @string-wysiwyg
  */
-export interface StringWysiwyg extends FieldSettingsString {
+export interface StringWysiwyg {
   Dialog: '' | 'dialog' | 'inline';
   ButtonSource: "" | "true" | "false";
   ButtonAdvanced: "" | "true" | "false";
@@ -171,56 +180,14 @@ export interface StringWysiwyg extends FieldSettingsString {
   _allowDialog: boolean;
 }
 
-export interface FieldSettingsPickerMasks {
-  Value: string;
-  /** Label to show or field-mask for label */
-  Label: string;
+//#endregion
 
-  /** Additional fields which may not be directly used by a mask, but should be available for further use like in Formulas */
-  MoreFields: string;
-}
-
-export interface FieldSettingsPickerStringList {
-  Separator: string;
-}
-
-/**
- * @string-dropdown-query
- */
-export interface StringDropdownQuery extends FieldSettingsString, FieldSettingsPickerWithQuery, FieldSettingsPickerMasks, FieldSettingsPickerStringList {
-  EnableTextEntry: boolean;
-  EnableEdit: boolean;
-  EnableRemove: boolean;
-  MoreFields: string;
-}
-
-
-/**
- * @string-font-icon-picker
- */
-export interface StringFontIconPicker extends FieldSettingsString {
-  CssPrefix: string;
-  PreviewCss: string;
-  Files: string;
-  ShowPrefix?: boolean;
-}
-
-/**
- * @Number
- */
-export interface FieldSettingsNumber extends All {
-  Decimals: number;
-  Min: number;
-  Max: number;
-  AddressMask: string;
-  ValidationRegEx: string;
-  ValidationRegExJavaScript: string;
-}
+//#region Hyperlink
 
 /**
  * @Hyperlink
  */
-export interface Hyperlink extends All {
+export interface Hyperlink {
   FileFilter: string;
   /** @deprecated */
   DefaultDialog: string;
@@ -243,63 +210,57 @@ export interface HyperlinkLibrary extends Hyperlink {
   MetadataContentTypes: string;
 }
 
-export interface FieldSettingsPickerCreate {
-  CreateTypes: string;
-  EnableCreate: boolean;
-}
+//#endregion
 
-export interface FieldSettingsEntityList {
-  EnableEdit: boolean;
-  EnableDelete: boolean;
-}
-
-// interface FieldSettings
-/**
- * @Entity field configuration
- */
-export interface FieldSettingsEntity extends All {
-  EntityType: string;
-  // TODO: REMOVE
-  // AllowMultiValue: boolean;
-  // EnableAddExisting: boolean;
-  // EnableRemove: boolean;
-}
-
-export interface FieldSettingsPickerWithQuery {
-  Query: string;
-  StreamName: string;
-  UrlParameters: string;
-}
+//#region Number Classic (without pickers)
 
 /**
- * @entity-query field configuration
+ * @Number
  */
-export interface EntityQuery extends
-  FieldSettingsEntity,
-  FieldSettingsEntityList,
-  FieldSettingsPickerWithQuery { }
+export interface FieldSettingsNumber {
+  Decimals: number;
+  Min: number;
+  Max: number;
+  AddressMask: string;
+  ValidationRegEx: string;
+  ValidationRegExJavaScript: string;
+}
+
+//#endregion
+
+//#region Empty
 
 /**
  * @empty-default
  */
-export interface EmptyDefault extends All {
+export interface EmptyDefault {
   /** @deprecated */
   DefaultCollapsed: boolean;
   /** DefaultCollapsed is copied to Collapsed and then deleted  */
   Collapsed: boolean;
 }
 
+// Note that empty-end / empty-message don't have additional fields
+
+//#endregion
+
+//#region DateTime
+
 /**
  * @DateTime
  */
-export interface FieldSettingsDateTime extends All {
+export interface FieldSettingsDateTime {
   UseTimePicker: boolean;
 }
+
+//#endregion
+
+//#region Custom Fields
 
 /**
  * @custom-json-editor
  */
-export interface CustomJsonEditor extends All {
+export interface CustomJsonEditor {
   Rows: number;
   JsonValidation: 'strict' | 'light' | 'none';
   JsonSchemaMode: 'strict' | 'light' | 'none';
@@ -312,38 +273,98 @@ export interface CustomJsonEditor extends All {
 /**
  * @custom-gps
  */
-export interface CustomGps extends All {
+export interface CustomGps {
   LatField: string;
   LongField: string;
   AddressMask: string;
 }
 
+//#endregion
+
+
+//#region Boolean
+
 /**
  * @Boolean
  */
-export interface FieldSettingsBoolean extends All {
+export interface FieldSettingsBoolean {
   TitleTrue: string;
   TitleFalse: string;
   TitleIndeterminate: string;
   ReverseToggle?: boolean;
-  /** Label for Boolean fields */
+  /** Label for Boolean fields, calculated on the fly by the logic */
   _label: string;
 }
 
-export interface FieldSettingsPicker {
-  PickerDisplayMode: 'list' | 'tree' | 'checkbox' | 'radio' | 'auto-inline';
-  PickerDisplayConfiguration: string[]; //can only be one entity guid
-  PickerTreeConfiguration: UiPickerModeTree;
+//#endregion
 
-  EnableTextEntry: boolean;
-  EnableReselect: boolean;
 
+//#region Picker Shared Field Sets
+
+/**
+ * WIP type to hold the _options.
+ * They should be moved to the data-source (not the initialization logic),
+ * but ATM they are also used in validators, which would not have access to these.
+ * Must find a better way to fix this.
+ */
+export interface FieldSettingsOptionsWip {
+  _options: PickerOptionCustom[];
+}
+
+export interface FieldSettingsPickerMasks {
+  /** The value mask - typically empty or the name of a field to use. */
+  Value: string;
+  /** Label to show or field-mask for label */
+  Label: string;
+
+  /** Additional fields which may not be directly used by a mask, but should be available for further use like in Formulas */
+  MoreFields: string;
+}
+
+/** Separator, shared by string-dropdown and string-picker */
+export interface FieldSettingsSharedSeparator {
+  Separator: string;
+}
+
+interface FieldSettingsSharedTextEntry {
+}
+
+export interface FieldSettingsSharedCreate {
+  CreateTypes: string;
+  EnableCreate: boolean;
+}
+
+interface FieldSettingsEntityList {
+  EnableEdit: boolean;
+  EnableDelete: boolean;
+}
+
+interface FieldSettingsSharedQuery {
+  Query: string;
+  StreamName: string;
+  UrlParameters: string;
+}
+
+interface FieldSettingsPickerMulti {
   /** Allow selecting multiple values */
   AllowMultiValue: boolean;
+
   /** If multi-value is allowed, specify a minimum */
   AllowMultiMin: number;
+
   /** If multi-value is allowed, specify a maximum */
   AllowMultiMax: number;
+
+  /** Enable to select a previously selected item - only used in the new pickers */
+  EnableReselect: boolean;
+}
+
+interface FieldSettingsPickerOptions {
+  /** Enable edit features on the options and selected items */
+  EnableEdit: boolean;
+
+  /** Allow delete of entities */
+  EnableDelete: boolean;
 
   /** Allow selecting existing data. This is false, if the data should only be created and used on a single fields. */
   EnableAddExisting: boolean;
@@ -351,9 +372,93 @@ export interface FieldSettingsPicker {
   /** Allow removing previously selected items. Not quite sure what the consequence would be if false, should research/document */
   EnableRemove: boolean;
 
+  /** Allow manual entry of another value */
+  EnableTextEntry: boolean;
+}
+
+
+//#endregion
+
+
+/**
+ * @string-dropdown
+ */
+export interface StringDropdown extends FieldSettingsOptionsWip, Pick<FieldSettingsPickerOptions, 'EnableTextEntry'> {
+  /** Configured Values for dropdown. Only used to load the initial possible options. Not used in controls. */
+  DropdownValues: string;
+  /** Configured Value-format for dropdown. Only used to load the initial possible options. Not used in controls. */
+  DropdownValuesFormat: '' | 'value-label';
+}
+
+
+/**
+ * @string-dropdown-query
+ */
+export interface StringDropdownQuery extends
+  FieldSettingsSharedQuery,                           // Three fields from here
+  Pick<FieldSettingsPickerMasks, 'Value' | 'Label'>,  // Two fields from here
+  FieldSettingsSharedSeparator,
+  Pick<FieldSettingsPickerOptions, 'EnableEdit' | 'EnableRemove' | 'EnableTextEntry'> { }
+
+
+/**
+ * @string-font-icon-picker
+ */
+export interface FieldSettingsStringFontIconPicker {
+  CssPrefix: string;
+  PreviewCss: string;
+  Files: string;
+  ShowPrefix?: boolean;
+}
+
+
+// interface FieldSettings
+/**
+ * @Entity field configuration
+ */
+export interface FieldSettingsEntity extends
+  Pick<FieldSettingsPickerMulti, 'AllowMultiValue'>,
+  Pick<FieldSettingsPickerOptions, 'EnableEdit' | 'EnableAddExisting' | 'EnableRemove' | 'EnableDelete'>,
+  Pick<FieldSettingsSharedCreate, 'EnableCreate'> {
+  
+  /**
+   * The entity-type to query and to use if create is enabled.
+   * It's only available on the old content-type, as the picker setup has a different name for this (as it allows multiple types).
+   */
+  EntityType: string;
+
+  /** Note: this exists as a hidden "beta" field and we'll remove it, but it could be in use in Swiss-School-System; check/fix that before we remove */
+  // Prefill: string;
+}
+
+
+/**
+ * @entity-query field configuration.
+ * It just has the 3 fields of the shared query.
+ */
+export interface FieldSettingsEntityQuery extends FieldSettingsSharedQuery { }
+
+
+
+export interface FieldSettingsPicker extends FieldSettingsPickerOptions, FieldSettingsPickerMulti {
+  /**
+   * List of DataSource Configurations.
+   * ATM only one can be used, but the data model may some day support having more.
+   */
   DataSources: string[];
 
-  DataSourceType: Of<typeof PickerConfigs>;
+  /**
+   * The main type of the data source - based on the configuration which was selected
+   * This is calculated, not a direct value from the configuration.
+   */
+  dataSourceType: Of<typeof PickerConfigs>;
+
+  /**
+   * How the picker should be displayed. `list` is the default / empty value.
+   */
+  PickerDisplayMode: 'list' | 'tree' | 'checkbox' | 'radio' | 'auto-inline';
+  PickerDisplayConfiguration: string[]; //can only be one entity guid
+  PickerTreeConfiguration: UiPickerModeTree;
 }
 
 export interface FieldSettingsPickerMerged extends
@@ -361,9 +466,9 @@ export interface FieldSettingsPickerMerged extends
   FieldSettingsEntity,
   FieldSettingsEntityList,
   FieldSettingsPickerMasks,
-  FieldSettingsPickerCreate,
-  FieldSettingsPickerWithQuery,
-  FieldSettingsPickerStringList,
+  FieldSettingsSharedCreate,
+  FieldSettingsSharedQuery,
+  FieldSettingsSharedSeparator,
   FieldSettingsOptionsWip
    { }
 
@@ -371,11 +476,4 @@ export interface FieldSettingsPickerMerged extends
 // interface EntityPicker extends EntityQuery, FieldSettingsPicker { }
 
 // interface StringPicker extends StringDropdown, FieldSettingsPicker { }
-
-/**
- * The Field Settings which every field has, containing `@All` and `@InternalSettings`.
- */
-export interface FieldSettings extends
-  All,
-  InternalSettings { }
 

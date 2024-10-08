@@ -55,7 +55,7 @@ export class PickerDataSetup {
     // First get the state, since the sources will depend on it.
     const state = this.#getStateAdapter(inputType);
 
-    const dataSourceType = (fieldState.settings() as FieldSettings & FieldSettingsPicker).DataSourceType;
+    const dataSourceType = (fieldState.settings() as FieldSettings & FieldSettingsPicker).dataSourceType;
     const source = this.#getSourceAdapter(inputType, dataSourceType, state);
 
     pickerData.setup(fieldState.name, fieldState.settings, state, source);

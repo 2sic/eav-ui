@@ -1,4 +1,4 @@
-import { FieldSettings, FieldSettingsPicker, FieldSettingsPickerMasks, StringFontIconPicker } from '../../../../../../../edit-types/src/FieldSettings';
+import { FieldSettings, FieldSettingsPicker, FieldSettingsPickerMasks, FieldSettingsStringFontIconPicker } from '../../../../../../../edit-types/src/FieldSettings';
 import { PickerSourceCss } from '../../../../../../../edit-types/src/PickerSources';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
@@ -22,7 +22,7 @@ export class StringFontIconPickerLogic extends FieldLogicBase {
     // Cast settings to type which knows about the properties
     // and the raw settings which show what values can be read
     const fs = { ...settings } as unknown as FieldSettings & FieldSettingsPickerMasks & PickerSourceCss & FieldSettingsPicker;
-    const raw = fs as unknown as StringFontIconPicker;
+    const raw = fs as unknown as FieldSettingsStringFontIconPicker;
 
     ///// OLD Settings
     // fixedSettings.Files ??= '';

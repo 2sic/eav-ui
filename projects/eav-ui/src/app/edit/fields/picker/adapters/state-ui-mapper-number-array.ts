@@ -1,4 +1,4 @@
-import { FieldSettings, FieldSettingsPickerStringList } from '../../../../../../../edit-types/src/FieldSettings';
+import { FieldSettings, FieldSettingsSharedSeparator } from '../../../../../../../edit-types/src/FieldSettings';
 import { convertArrayToString } from '../picker.helpers';
 import { StateUiMapperWithSettingsBase } from './state-ui-mapper-base';
 
@@ -23,7 +23,7 @@ export class StateUiMapperNumberArray extends StateUiMapperWithSettingsBase<numb
   toState(uiValue: string[]): number {
     const stringValue = (uiValue == null || uiValue.length === 0)
       ? ''
-      : convertArrayToString(uiValue, (this.settings() as FieldSettings & FieldSettingsPickerStringList).Separator);
+      : convertArrayToString(uiValue, (this.settings() as FieldSettings & FieldSettingsSharedSeparator).Separator);
 
     const parsedNumber = Number(stringValue);
     return isNaN(parsedNumber) ? null : parsedNumber;
