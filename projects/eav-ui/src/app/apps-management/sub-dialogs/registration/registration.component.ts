@@ -1,20 +1,18 @@
+import patronsLogo from '!raw-loader!./assets/2sxc-patrons.svg';
 import { Component, HostBinding, OnInit, signal, ViewContainerRef } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { transient } from '../../../../../../core';
 import { FileUploadDialogComponent, FileUploadDialogData } from '../../../shared/components/file-upload-dialog';
-import { copyToClipboard } from '../../../shared/helpers/copy-to-clipboard.helper';
+import { TippyDirective } from '../../../shared/directives/tippy.directive';
+import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';
+import { ClipboardService } from '../../../shared/services/clipboard.service';
 import { SystemInfoSet } from '../../models/system-info.model';
 import { FeaturesConfigService } from '../../services/features-config.service';
 import { ZoneService } from '../../services/zone.service';
-
-// Images/Icons
-import patronsLogo from '!raw-loader!./assets/2sxc-patrons.svg';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatIconModule } from '@angular/material/icon';
-import { transient } from '../../../../../../core';
-import { TippyDirective } from '../../../shared/directives/tippy.directive';
-import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';
 
 @Component({
   selector: 'app-registration',
@@ -46,13 +44,10 @@ export class RegistrationComponent implements OnInit {
     private viewContainerRef: ViewContainerRef,
   ) { }
 
+  protected clipboard = transient(ClipboardService);
+
   ngOnInit(): void {
     this.#loadSystemInfo();
-  }
-
-  copyToClipboard(text: string): void {
-    copyToClipboard(text);
-    this.snackBar.open('Copied to clipboard', null, { duration: 2000 });
   }
 
   openLicenseRegistration(systemInfoSet: SystemInfoSet): void {

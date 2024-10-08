@@ -1,5 +1,5 @@
 @if (id) {
-  <div matRipple class="id-box highlight" [tippy]="tooltip" (click)="copy()">
+  <div matRipple class="id-box highlight" [tippy]="tooltip" (click)="clipboard.copyToClipboard(tooltip)">
     <span class="id">{{ id }}</span>
     <mat-icon class="icon">file_copy</mat-icon>
   </div>

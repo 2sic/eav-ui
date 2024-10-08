@@ -10,34 +10,34 @@
       <div class="eav-info-row__label">Name:</div>
       <div class="eav-info-row__value">
         <span [tippy]="'Click to copy to clipboard'"
-          (click)="copyToClipboard(contentItem().DisplayName)">{{formatValue(contentItem()?.DisplayName)}}</span>
+          (click)="clipboard.copyToClipboard(contentItem().DisplayName)">{{formatValue(contentItem()?.DisplayName)}}</span>
       </div>
     </div>
     <div class="eav-info-row">
       <div class="eav-info-row__label">Folder:</div>
       <div class="eav-info-row__value">
         <span [tippy]="'Click to copy to clipboard'"
-          (click)="copyToClipboard(contentItem().Folder)">{{formatValue(contentItem()?.Folder)}}</span>
+          (click)="clipboard.copyToClipboard(contentItem().Folder)">{{formatValue(contentItem()?.Folder)}}</span>
       </div>
     </div>
     <div class="eav-info-row">
       <div class="eav-info-row__label">Version:</div>
       <div class="eav-info-row__value">
         <span [tippy]="'Click to copy to clipboard'"
-          (click)="copyToClipboard(contentItem().Version)">{{formatValue(contentItem()?.Version)}}</span>
+          (click)="clipboard.copyToClipboard(contentItem().Version)">{{formatValue(contentItem()?.Version)}}</span>
       </div>
     </div>
     <div class="eav-info-row">
       <div class="eav-info-row__label">For</div>
       <div class="eav-info-row__value">
         <b>2sxc: </b><span [tippy]="'Click to copy to clipboard'"
-          (click)="copyToClipboard(contentItem().RequiredVersion)"> {{formatValue(contentItem()?.RequiredVersion)}}
+          (click)="clipboard.copyToClipboard(contentItem().RequiredVersion)"> {{formatValue(contentItem()?.RequiredVersion)}}
         </span>
         <b> DNN: </b><span [tippy]="'Click to copy to clipboard'"
-          (click)="copyToClipboard(contentItem().RequiredDnnVersion)">
+          (click)="clipboard.copyToClipboard(contentItem().RequiredDnnVersion)">
           {{formatValue(contentItem()?.RequiredDnnVersion)}} </span>
         <b> Oqt: </b><span [tippy]="'Click to copy to clipboard'"
-          (click)="copyToClipboard(contentItem().RequiredOqtaneVersion)">
+          (click)="clipboard.copyToClipboard(contentItem().RequiredOqtaneVersion)">
           {{formatValue(contentItem()?.RequiredOqtaneVersion)}} </span>
       </div>
     </div>

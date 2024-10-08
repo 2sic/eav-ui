@@ -14,7 +14,7 @@
         <div class="eav-info-row__label">{{ info.label }}:</div>
         <div class="eav-info-row__value">
           <span class="eav-info-row__value__span eav-click" [tippy]="info.value"
-            (click)="copyToClipboard(info.value)">{{ info.value }}</span>
+            (click)="clipboard.copyToClipboard(info.value)">{{ info.value }}</span>
           @if (info.link) {
           <a class="eav-info-row__link" [routerLink]="['/']" (click)="openSideNavPath(info.link.url)">
             {{ info.link.label }}
@@ -52,7 +52,7 @@
       <div class="eav-info-row">
         <div class="eav-info-row__label">{{ info.label }}:</div>
         <div class="eav-info-row__value">
-          <span [tippy]="info.value" (click)="copyToClipboard(info.value)">{{ info.value }}</span>
+          <span [tippy]="info.value" (click)="clipboard.copyToClipboard(info.value)">{{ info.value }}</span>
           @if (info.link) {
           @if (info.link.target === 'angular') {
           <a [routerLink]="['/']" class="eav-info-row__link" (click)="openSideNavPath(info.link.url)">
@@ -194,7 +194,7 @@
       <div class="eav-info-row">
         <div class="eav-info-row__label eav-long">{{ info.label }}:</div>
         <div class="eav-info-row__value">
-          <span [tippy]="info.value" (click)="copyToClipboard(info.value)">{{ info.value }}</span>
+          <span [tippy]="info.value" (click)="clipboard.copyToClipboard(info.value)">{{ info.value }}</span>
           @if (info.link) {
           @if (info.link.target === 'angular') {
           <a class="eav-info-row__link" [routerLink]="info.link.url">

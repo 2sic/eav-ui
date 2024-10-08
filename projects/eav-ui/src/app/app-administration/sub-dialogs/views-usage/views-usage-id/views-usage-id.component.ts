@@ -1,11 +1,11 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { copyToClipboard } from '../../../../shared/helpers/copy-to-clipboard.helper';
-import { MatIconModule } from '@angular/material/icon';
 import { MatRippleModule } from '@angular/material/core';
+import { MatIconModule } from '@angular/material/icon';
+import { transient } from 'projects/core';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
+import { ClipboardService } from '../../../../shared/services/clipboard.service';
 
 @Component({
   selector: 'app-views-usage-id',
@@ -22,7 +22,9 @@ export class ViewsUsageIdComponent implements ICellRendererAngularComp {
   tooltip: string;
   id: string;
 
-  constructor(private snackBar: MatSnackBar) { }
+  constructor() { }
+
+  protected clipboard = transient(ClipboardService);
 
   agInit(params: ICellRendererParams) {
     this.tooltip = params.value;
@@ -33,10 +35,5 @@ export class ViewsUsageIdComponent implements ICellRendererAngularComp {
 
   refresh(params?: any): boolean {
     return true;
-  }
-
-  copy() {
-    copyToClipboard(this.tooltip);
-    this.snackBar.open('Copied to clipboard', null, { duration: 2000 });
   }
 }

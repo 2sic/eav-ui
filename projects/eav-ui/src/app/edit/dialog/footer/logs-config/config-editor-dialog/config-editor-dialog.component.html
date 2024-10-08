@@ -14,7 +14,7 @@
   </div>
   <mat-dialog-actions>
     <button mat-button mat-dialog-close>Close</button>
-    <button mat-icon-button [cdkCopyToClipboard]="selectedConfig" tippy="Copy Config To Clipboard">
+    <button mat-icon-button (click)="clipboard.copyToClipboard(selectedConfig)" tippy="Copy Config To Clipboard">
       <mat-icon>content_copy</mat-icon>
     </button>
   </mat-dialog-actions>

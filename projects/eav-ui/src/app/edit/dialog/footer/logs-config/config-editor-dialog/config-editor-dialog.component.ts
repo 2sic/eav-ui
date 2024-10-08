@@ -10,6 +10,8 @@ import {
   MatDialogTitle
 } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { transient } from 'projects/core';
+import { ClipboardService } from '../../../../..//shared/services/clipboard.service';
 import { MonacoEditorComponent } from '../../../../../monaco-editor/monaco-editor.component';
 import { TippyDirective } from '../../../../../shared/directives/tippy.directive';
 @Component({
@@ -52,6 +54,8 @@ export class ConfigEditorDialogComponent {
   ) {
     this.selectedConfig = JSON.stringify(data.configData, null, 2);
   }
+  
+  protected clipboard = transient(ClipboardService);
 
   onFocused(focused: boolean): void {
     this.focused = focused;

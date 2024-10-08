@@ -8,15 +8,15 @@
     <div class="eav-info-row">
       <div class="eav-info-row__label">ID:</div>
       <div class="eav-info-row__value">
-        <span (click)="copyToClipboard(feature().nameId)">{{ feature().nameId }}</span>
+        <span (click)="clipboard.copyToClipboard(feature().nameId)">{{ feature().nameId }}</span>
       </div>
     </div>
     <!-- Status -->
     @if (mySpecs().showStatus) {
       <div class="eav-info-row">
-        <div class="eav-info-row__label">{{ "Features.Status" | translate }}:</div>
+        <div class="eav-info-row__label">{{ 'Features.Status' | translate }}:</div>
         <div class="eav-info-row__value">
-          <span>{{ (feature().isEnabled ? "Features.Active" : "Features.NotActive") | translate }}</span>
+          <span>{{ (feature().isEnabled ? 'Features.Active' : 'Features.NotActive') | translate }}</span>
         </div>
       </div>
     }
@@ -25,7 +25,7 @@
       <div class="eav-info-row">
         <div class="eav-info-row__label">GUID:</div>
         <div class="eav-info-row__value eav_click">
-          <span (click)="copyToClipboard(feature().guid)">{{ feature().guid }}</span>
+          <span (click)="clipboard.copyToClipboard(feature().guid)">{{ feature().guid }}</span>
         </div>
       </div>
     }
@@ -42,10 +42,8 @@
       <mat-icon>open_in_new</mat-icon>
       Find out more
     </a>
-    @if (mySpecs().showClose != false) {     
-      <button mat-raised-button class="eav-card-action-button" (click)="dialog.close()">
-        Close
-      </button>
+    @if (mySpecs().showClose != false) {
+      <button mat-raised-button class="eav-card-action-button" (click)="dialog.close()">Close</button>
     }
   </mat-card-actions>
 </mat-card>

@@ -7,8 +7,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateModule } from '@ngx-translate/core';
 import { transient } from '../../../../../core';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
-import { copyToClipboard } from '../../shared/helpers/copy-to-clipboard.helper';
 import { SafeHtmlPipe } from '../../shared/pipes/safe-html.pipe';
+import { ClipboardService } from '../../shared/services/clipboard.service';
 import { signalObj } from '../../shared/signals/signal.utilities';
 import { Feature } from '../models';
 import { FeatureDetailService } from '../services/feature-detail.service';
@@ -46,8 +46,5 @@ export class FeatureInfoDialogComponent {
 
   protected featureDetails = signalObj<Feature>('feature', null);
 
-  copyToClipboard(text: string): void {
-    copyToClipboard(text);
-    this.snackBar.open('Copied to clipboard', null, { duration: 2000 });
-  }
+  protected clipboard = transient(ClipboardService);
 }

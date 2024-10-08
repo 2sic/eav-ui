@@ -1,10 +1,10 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { copyToClipboard } from '../../../../shared/helpers/copy-to-clipboard.helper';
 import { MatRippleModule } from '@angular/material/core';
+import { transient } from 'projects/core';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
+import { ClipboardService } from '../../../../shared/services/clipboard.service';
 
 @Component({
   selector: 'app-analyze-settings-key',
@@ -19,7 +19,9 @@ import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 export class AnalyzeSettingsKeyComponent implements ICellRendererAngularComp {
   key: string;
 
-  constructor(private snackBar: MatSnackBar) { }
+  constructor() { }
+
+  protected clipboard = transient(ClipboardService);
 
   agInit(params: ICellRendererParams) {
     this.key = params.value;
@@ -27,10 +29,5 @@ export class AnalyzeSettingsKeyComponent implements ICellRendererAngularComp {
 
   refresh(params?: any): boolean {
     return true;
-  }
-
-  copy() {
-    copyToClipboard(this.key);
-    this.snackBar.open('Copied to clipboard', null, { duration: 2000 });
   }
 }

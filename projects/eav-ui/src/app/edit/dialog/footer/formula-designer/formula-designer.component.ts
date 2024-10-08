@@ -17,9 +17,9 @@ import { transient } from '../../../../../../../core/transient';
 import { MonacoEditorComponent } from '../../../../monaco-editor/monaco-editor.component';
 import { eavConstants } from '../../../../shared/constants/eav.constants';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
-import { copyToClipboard } from '../../../../shared/helpers/copy-to-clipboard.helper';
 import { classLog } from '../../../../shared/logging';
 import { EditPrep } from '../../../../shared/models/edit-form.model';
+import { ClipboardService } from '../../../../shared/services/clipboard.service';
 import { EntityEditService } from '../../../../shared/services/entity-edit.service';
 import { FormConfigService } from '../../../form/form-config.service';
 import { DesignerState } from '../../../formulas/designer/designer-state.model';
@@ -68,6 +68,8 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     private contentTypeService: ContentTypeService,
     private translate: TranslateService,
   ) { }
+
+  protected clipboard = transient(ClipboardService);
 
   SelectTargets = SelectTargets;
   loadError = false;
@@ -159,11 +161,6 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
 
   onFocused(focused: boolean): void {
     this.focused = focused;
-  }
-
-  copyToClipboard(text: string): void {
-    copyToClipboard(text);
-    this.snackBar.open('Copied to clipboard', null, { duration: 2000 });
   }
 
   toggleEdit(): void {

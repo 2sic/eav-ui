@@ -26,7 +26,7 @@
       systemInfoSet().License.Owner : "this system is not yet registered" }}
       <br>
       <b>Fingerprint:</b> <span [tippy]="'Click to copy to clipboard'"
-        (click)="copyToClipboard(systemInfoSet().System.Fingerprint)"> {{ systemInfoSet().System.Fingerprint
+        (click)="clipboard.copyToClipboard(systemInfoSet().System.Fingerprint)"> {{ systemInfoSet().System.Fingerprint
         }}</span>
       <br>
       <br>

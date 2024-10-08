@@ -11,11 +11,11 @@ import { ContentItemsService } from '../../../content-items/services/content-ite
 import { GoToMetadata } from '../../../metadata';
 import { eavConstants } from '../../../shared/constants/eav.constants';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
-import { copyToClipboard } from '../../../shared/helpers/copy-to-clipboard.helper';
 import { convertFormToUrl } from '../../../shared/helpers/url-prep.helper';
 import { DialogSettings } from '../../../shared/models/dialog-settings.model';
 import { EditForm, EditPrep } from '../../../shared/models/edit-form.model';
 import { DialogRoutingService } from '../../../shared/routing/dialog-routing.service';
+import { ClipboardService } from '../../../shared/services/clipboard.service';
 import { Context } from '../../../shared/services/context';
 import { AppInternals } from '../../models/app-internals.model';
 import { AppInternalsService } from '../../services/app-internals.service';
@@ -62,10 +62,7 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
     this.snackBar.dismiss();
   }
 
-  copyToClipboard(text: string): void {
-    copyToClipboard(text);
-    this.snackBar.open('Copied to clipboard', null, { duration: 2000 });
-  }
+  protected clipboard = transient(ClipboardService);
 
   edit() {
     const staticName = eavConstants.contentTypes.appConfiguration;

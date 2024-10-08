@@ -16,9 +16,9 @@ import { FeatureTextInfoComponent } from '../../features/feature-text-info/featu
 import { FeaturesScopedService } from '../../features/features-scoped.service';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
-import { copyToClipboard } from '../../shared/helpers/copy-to-clipboard.helper';
 import { EavWindow } from '../../shared/models/eav-window.model';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
+import { ClipboardService } from '../../shared/services/clipboard.service';
 import { DialogService } from '../../shared/services/dialog.service';
 import { SiteLanguage } from '../models/site-language.model';
 import { SystemInfoSet } from '../models/system-info.model';
@@ -173,8 +173,9 @@ export class SystemInfoComponent implements OnInit {
 
   constructor(
     private snackBar: MatSnackBar,
-  ) {
-  }
+  ) { }
+  
+  protected clipboard = transient(ClipboardService);
 
   ngOnInit(): void {
     this.getSystemInfo();
@@ -183,11 +184,6 @@ export class SystemInfoComponent implements OnInit {
       this.getSystemInfo();
       this.getLanguages();
     });
-  }
-
-  copyToClipboard(text: string): void {
-    copyToClipboard(text);
-    this.snackBar.open('Copied to clipboard', null, { duration: 2000 });
   }
 
   openSiteSettings(): void {
