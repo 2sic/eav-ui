@@ -1,12 +1,20 @@
 import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
+import { classLog } from '../../../shared/logging';
 import { EavWindow } from '../../../shared/models/eav-window.model';
 import { FieldLogicBase } from './field-logic-base';
 import { UnknownLogic } from './field-logic-unknown';
+
+const logSpecs = {
+  all: false,
+  get: true,
+}
 
 declare const window: EavWindow;
 
 export class FieldLogicManager {
   private logics: Record<string, FieldLogicBase> = {};
+
+  log = classLog({FieldLogicManager}, logSpecs);
 
   private constructor() {
     // add unknown as a fallback for all scenarios
@@ -24,7 +32,9 @@ export class FieldLogicManager {
 
   /** Get settings logic for input type */
   get(inputTypeName: string): FieldLogicBase {
-    return this.logics[inputTypeName] ?? null;
+    const l = this.log.fnIf('get', { inputTypeName });
+    const r = this.logics[inputTypeName] ?? null;
+    return l.r(r);
   }
 
   /** Get or use unknown - temporary solution v16.04 to prevent any scenario where there is none */
