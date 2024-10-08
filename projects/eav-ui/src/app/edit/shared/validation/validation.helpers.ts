@@ -2,7 +2,7 @@ import { Signal } from '@angular/core';
 import { AbstractControl, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { Of } from '../../../../../../core';
-import { FieldSettings } from '../../../../../../edit-types';
+import { CustomJsonEditor, FieldSettings } from '../../../../../../edit-types';
 import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
 import { AdamControl } from '../../fields/basic/hyperlink-library/hyperlink-library.models';
 import { convertValueToArray } from '../../fields/picker/picker.helpers';
@@ -136,7 +136,7 @@ export class ValidationHelpers {
       const settings = specs.settings();
       let error: boolean;
       let warning: boolean;
-      const jsonMode = settings.JsonValidation;
+      const jsonMode = (settings as FieldSettings & CustomJsonEditor).JsonValidation;
 
       if (this.#shouldIgnoreValidators(settings) || jsonMode === 'none' || !control.value) {
         error = false;

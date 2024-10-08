@@ -349,7 +349,7 @@ interface StringPicker extends StringDropdown, PickerSettings { }
 export interface FieldSettings extends
   Boolean,
   CustomGps,
-  CustomJsonEditor,
+  // CustomJsonEditor,
   DateTime,
   EmptyDefault,
   Entity,
