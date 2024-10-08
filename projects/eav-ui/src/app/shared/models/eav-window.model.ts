@@ -1,7 +1,5 @@
 import type { SxcGlobal } from '@2sic.com/2sxc-typings';
 import type { TinyMCE } from 'tinymce';
-import { FieldLogicManager } from '../../edit/fields/logic/field-logic-manager';
-import { PlumbType } from '../../visual-query/plumb-editor/plumb-editor.models';
 
 export type RequirejsType = any;
 
@@ -10,8 +8,10 @@ interface EavWindowProps {
   /** requirejs */
   define: RequirejsType;
   draggingClass: string;
-  eavFieldLogicManager: FieldLogicManager;
-  jsPlumb: PlumbType;
+  // 2024-10-08 2dm removed since it causes dependencies on fieldLogicManager for anything that uses the EavWindow
+  // eavFieldLogicManager: FieldLogicManager;
+  // 2024-10-08 2dm removed since it causes dependencies on jsPlumb for anything that uses the EavWindow
+  // jsPlumb: PlumbType;
   parent: Window & {
     $2sxc: {
       totalPopup: {

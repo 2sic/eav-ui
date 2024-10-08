@@ -2,8 +2,8 @@ import { ChangeDetectorRef, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { classLog } from '../../shared/logging';
-import { EavWindow } from '../../shared/models/eav-window.model';
 import { DataSource, PipelineDataSource, PipelineModel, PipelineResult, PipelineResultStream, StreamWire, VisualDesignerData } from '../models';
+import { WindowWithJsPlumb } from '../window';
 import { EndpointsHelper } from './endpoints.helper';
 import { PlumbType } from './plumb-editor.models';
 import { RenameStreamComponent } from './rename-stream/rename-stream.component';
@@ -14,7 +14,7 @@ const logSpecs = {
   addEndpoint: true,
 }
 
-declare const window: EavWindow;
+declare const window: WindowWithJsPlumb;
 
 export const dataSrcIdPrefix = 'dataSource_';
 

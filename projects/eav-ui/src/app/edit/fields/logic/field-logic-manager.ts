@@ -1,6 +1,5 @@
 import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
 import { classLog } from '../../../shared/logging';
-import { EavWindow } from '../../../shared/models/eav-window.model';
 import { FieldLogicBase } from './field-logic-base';
 import { UnknownLogic } from './field-logic-unknown';
 
@@ -9,7 +8,13 @@ const logSpecs = {
   get: true,
 }
 
-declare const window: EavWindow;
+// declare const window; //: EavWindow;
+
+declare global {
+  interface Window {
+    eavFieldLogicManager: FieldLogicManager;
+  }
+}
 
 export class FieldLogicManager {
   private logics: Record<string, FieldLogicBase> = {};
