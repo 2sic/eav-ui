@@ -303,7 +303,6 @@ export interface CustomGps extends All {
   LatField: string;
   LongField: string;
   AddressMask: string;
-  "Address Mask": string;
 }
 
 /**
@@ -348,7 +347,7 @@ interface StringPicker extends StringDropdown, PickerSettings { }
 // retyped when specific settings are needed.
 export interface FieldSettings extends
   Boolean,
-  CustomGps,
+  // CustomGps,
   // CustomJsonEditor,
   DateTime,
   EmptyDefault,
