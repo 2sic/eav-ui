@@ -7,6 +7,8 @@ import isEqual from 'lodash-es/isEqual';
 import { distinctUntilChanged, startWith } from 'rxjs';
 import { transient } from '../../../../../../core';
 import { EavCustomInputField } from '../../../../../../edit-types/src/EavCustomInputField';
+import { FieldConfig } from '../../../../../../edit-types/src/FieldConfig';
+import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
 import { FeatureNames } from '../../../features/feature-names';
 import { FeaturesScopedService } from '../../../features/features-scoped.service';
 import { openFeatureDialog } from '../../../features/shared/base-feature.component';
@@ -19,10 +21,10 @@ import { ContentTypeService } from '../../shared/content-types/content-type.serv
 import { UiControl } from '../../shared/controls/ui-control';
 import { FieldMask } from '../../shared/helpers';
 import { InputTypeService } from '../../shared/input-types/input-type.service';
+import { FieldConfigSet } from '../field-config-set.model';
 import { FieldState } from '../field-state';
 import { PagePicker } from '../page-picker/page-picker.helper';
 import { ExperimentalProps } from './../../../../../../edit-types/src/ExperimentalProps';
-import { toFieldConfig } from './../../../../../../edit-types/src/FieldConfig';
 import { FieldValue } from './../../../../../../edit-types/src/FieldValue';
 import { ConnectorHost, ConnectorInstance } from './connector-instance.model';
 
@@ -101,7 +103,7 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
 
     effect(() => {
       const s = this.#fieldState.settings();
-      const field = connector.field;
+      const field = connector.field as FieldConfig;
       field.settings = s;
       field.label = s.Name;
       field.placeholder = s.Placeholder;
@@ -199,4 +201,25 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
         .subscribe(() => openFeatureDialog(this.#dialog, FeatureNames.PasteImageFromClipboard, this.#viewContainerRef, this.#changeDetectorRef));
     }
   }
+}
+
+/**
+ * This function must stay here and not be in the edit-types folder,
+ * otherwise too many dependencies are added because the FieldConfigSet is used.
+ * @param config 
+ * @param settings 
+ * @returns 
+ */
+function toFieldConfig(config: FieldConfigSet, settings: FieldSettings): FieldConfig {
+  return {
+    name: config.fieldName,
+    index: config.index,
+    label: settings.Name,
+    placeholder: settings.Placeholder,
+    inputType: config.inputTypeSpecs.inputType,
+    type: config.type,
+    required: settings.valueRequired,
+    disabled: config.initialDisabled,
+    settings,
+  } satisfies FieldConfig;
 }

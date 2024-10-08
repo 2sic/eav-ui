@@ -1,8 +1,8 @@
 import { Observable } from 'rxjs';
 import { ConnectorData } from './ConnectorData';
-import { FieldConfig } from './FieldConfig';
-import { ExperimentalProps } from './ExperimentalProps';
 import { ConnectorDialog } from './ConnectorDialog';
+import { ExperimentalProps } from './ExperimentalProps';
+import { FieldConfig } from './FieldConfig';
 
 export interface Connector<T> {
 
