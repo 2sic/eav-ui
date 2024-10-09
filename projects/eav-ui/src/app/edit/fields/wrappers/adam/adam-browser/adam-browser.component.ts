@@ -21,6 +21,7 @@ import { EditForm, EditPrep } from '../../../../../shared/models/edit-form.model
 import { DialogRoutingService } from '../../../../../shared/routing/dialog-routing.service';
 import { signalObj } from '../../../../../shared/signals/signal.utilities';
 import { FormsStateService } from '../../../../form/forms-state.service';
+import { EditRoutingService } from '../../../../routing/edit-routing.service';
 import { AdamCacheService } from '../../../../shared/adam/adam-cache.service';
 import { AdamService } from '../../../../shared/adam/adam.service';
 import { LinkCacheService } from '../../../../shared/adam/link-cache.service';
@@ -30,6 +31,11 @@ import { FieldState } from '../../../field-state';
 import { AdamConfigInstance } from './adam-browser.models';
 import { AdamConnector } from './adam-connector';
 import { fixDropzone } from './dropzone-helper';
+
+const logSpecs = {
+  all: true,
+  editItemMetadata: true,
+}
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -65,7 +71,7 @@ import { fixDropzone } from './dropzone-helper';
 })
 export class AdamBrowserComponent implements OnInit {
 
-  log = classLog({ AdamBrowserComponent });
+  log = classLog({ AdamBrowserComponent }, logSpecs);
 
   @Output() openUpload = new EventEmitter<null>();
 
@@ -90,8 +96,10 @@ export class AdamBrowserComponent implements OnInit {
     return cnf.allowEdit && !((cnf.subfolder === '' || cnf.usePortalRoot && cnf.subfolder === cnf.rootSubfolder) && !cnf.allowAssetsInRoot)
   });
 
-  public features = inject(FeaturesScopedService);
-  protected isPasteImageFromClipboardEnabled = this.features.isEnabled[FeatureNames.PasteImageFromClipboard];
+  #editRoutingService = inject(EditRoutingService);
+
+  #features = inject(FeaturesScopedService);
+  protected isPasteImageFromClipboardEnabled = this.#features.isEnabled[FeatureNames.PasteImageFromClipboard];
 
   #adamService = transient(AdamService);
   #dialogRouter = transient(DialogRoutingService);
@@ -103,7 +111,7 @@ export class AdamBrowserComponent implements OnInit {
     private formsStateService: FormsStateService,
     private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
-    private changeDetectorRef: ChangeDetectorRef
+    private changeDetectorRef: ChangeDetectorRef,
   ) {
     // Ensure that we fetch items when we have the configuration
     effect(() => {
@@ -145,8 +153,9 @@ export class AdamBrowserComponent implements OnInit {
   }
 
   editItemMetadata(adamItem: AdamItem, contentTypeName: string, metadataId: number) {
+    const l = this.log.fnIf('editItemMetadata', {adamItem, contentTypeName, metadataId});
     if (this.formsStateService.readOnly().isReadOnly || !contentTypeName)
-      return;
+      return l.end('readonly or no content type');
 
     const form: EditForm = {
       items: [
@@ -155,7 +164,7 @@ export class AdamBrowserComponent implements OnInit {
           : EditPrep.newMetadata(adamItem.ReferenceId, contentTypeName, eavConstants.metadata.cmsObject),
       ],
     };
-    this.fieldState.isOpen;
+    this.#editRoutingService.open(this.config.index, this.config.entityGuid, form);
   }
 
   goUp() {
