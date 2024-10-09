@@ -58,11 +58,6 @@ export const FormulaTargets = {
   ...FormulaNewPickerTargets,
 } as const /* the as const ensures that the keys/values can be strictly checked */;
 
-/** All possible KEYS for targets for formulas (merged) */
-export type FormulaTarget = (typeof FormulaTargets)[keyof typeof FormulaTargets];
-
-
-
 /** Validation object interface */
 export interface FormulaFieldValidation {
   severity: '' | 'error' | 'warning';

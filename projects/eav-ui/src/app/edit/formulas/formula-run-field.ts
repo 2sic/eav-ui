@@ -1,25 +1,25 @@
 import { untracked } from '@angular/core';
-import { FormulaDesignerService } from './designer/formula-designer.service';
-import { FormulaRunOneHelpersFactory } from './formula-run-one-helpers.factory';
-import { FormulaFunctionV1, FormulaVersions } from './formula-definitions';
-import { FormulaFieldValidation } from './targets/formula-targets';
-import { FormulaCacheItem } from './cache/formula-cache.model';
-import { FormulaSettingsHelper } from './results/formula-settings.helper';
-import { FormulaPromiseHandler } from './promise/formula-promise-handler';
-import { FieldFormulasResult, FieldFormulasResultPartialSettings, FieldFormulasResultRaw } from './results/formula-results.models';
-import { ItemIdentifierShared } from '../../shared/models/edit-form.model';
-import { FormulaExecutionSpecsWithRunParams, FormulaExecutionSpecs, FormulaRunParameters } from './run/formula-objects-internal-data';
-import { FieldSettingsUpdateHelper } from '../state/fields-settings-update.helpers';
+import groupBy from 'lodash-es/groupBy';
 import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
 import { FieldValue } from '../../../../../edit-types/src/FieldValue';
-import { FieldConstantsOfLanguage, FieldProps, FieldPropsPicker } from '../state/fields-configs.model';
-import { classLog } from '../../shared/logging';
-import groupBy from 'lodash-es/groupBy';
-import { ItemValuesOfLanguage } from '../state/item-values-of-language.model';
-import { DebugFields } from '../edit-debug';
-import { FormulaFieldPickerHelper } from './formula-field-picker.helper';
-import { FieldDefaults } from '../shared/helpers';
 import { FeatureNames } from '../../features/feature-names';
+import { classLog } from '../../shared/logging';
+import { ItemIdentifierShared } from '../../shared/models/edit-form.model';
+import { DebugFields } from '../edit-debug';
+import { FieldDefaults } from '../shared/helpers';
+import { FieldConstantsOfLanguage, FieldProps, FieldPropsPicker } from '../state/fields-configs.model';
+import { FieldSettingsUpdateHelper } from '../state/fields-settings-update.helpers';
+import { ItemValuesOfLanguage } from '../state/item-values-of-language.model';
+import { FormulaCacheItem } from './cache/formula-cache.model';
+import { FormulaDesignerService } from './designer/formula-designer.service';
+import { FormulaFunctionV1, FormulaVersions } from './formula-definitions';
+import { FormulaFieldPickerHelper } from './formula-field-picker.helper';
+import { FormulaRunOneHelpersFactory } from './formula-run-one-helpers.factory';
+import { FormulaPromiseHandler } from './promise/formula-promise-handler';
+import { FieldFormulasResult, FieldFormulasResultPartialSettings, FieldFormulasResultRaw } from './results/formula-results.models';
+import { FormulaSettingsHelper } from './results/formula-settings.helper';
+import { FormulaExecutionSpecs, FormulaExecutionSpecsWithRunParams, FormulaRunParameters } from './run/formula-objects-internal-data';
+import { FormulaFieldValidation } from './targets/formula-targets';
 
 const logSpecs = {
   all: false,
@@ -27,7 +27,7 @@ const logSpecs = {
   runAllOfField: true,
   runOrInitSettings: true,
   getPickerInfos: false,
-  fields: [...DebugFields, '*'], // will be replaced by shared list below
+  fields: [...DebugFields], // will be replaced by shared list below
 };
 
 /**

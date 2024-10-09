@@ -1,7 +1,9 @@
-import { Adam, AdamConfig, AdamItem } from '../../../../../../../../edit-types';
-import { AdamBrowserComponent } from './adam-browser.component';
 import { computed, signal } from '@angular/core';
+import { Adam } from '../../../../../../../../edit-types/src/Adam';
+import { AdamConfig } from '../../../../../../../../edit-types/src/AdamConfig';
+import { AdamItem } from '../../../../../../../../edit-types/src/AdamItem';
 import { classLog } from '../../../../../shared/logging';
+import { AdamBrowserComponent } from './adam-browser.component';
 
 /**
  * Helper to connect ADAM.

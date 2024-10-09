@@ -1,44 +1,40 @@
-import { GridOptions, ICellRendererParams } from '@ag-grid-community/core';
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef, computed, inject, signal } from '@angular/core';
+import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
+import { GridOptions, ICellRendererParams, ModuleRegistry } from '@ag-grid-community/core';
+import { NgClass } from '@angular/common';
+import { ChangeDetectorRef, Component, inject, OnInit, signal, ViewContainerRef } from '@angular/core';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogActions } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
-import { BehaviorSubject, catchError, combineLatest, map, Observable, of, shareReplay, startWith, Subject, switchMap, tap } from 'rxjs';
+import { EcoFabSpeedDialActionsComponent, EcoFabSpeedDialComponent, EcoFabSpeedDialTriggerComponent } from '@ecodev/fab-speed-dial';
+import { transient } from '../../../../../core';
+import { AppAdminHelpers } from '../../app-administration/app-admin-helpers';
 import { FeatureNames } from '../../features/feature-names';
+import { FeaturesScopedService } from '../../features/features-scoped.service';
+import { openFeatureDialog } from '../../features/shared/base-feature.component';
+import { AgBoolCellIconsParams } from '../../shared/ag-grid/apps-list-show/ag-bool-icon-params';
+import { AgBoolIconRenderer } from '../../shared/ag-grid/apps-list-show/ag-bool-icon-renderer.component';
+import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { FileUploadDialogData } from '../../shared/components/file-upload-dialog';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
+import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
+import { classLog } from '../../shared/logging';
+import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
+import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { Context } from '../../shared/services/context';
-import { FeaturesScopedService } from '../../features/features-scoped.service';
 import { App } from '../models/app.model';
 import { AppsListService } from '../services/apps-list.service';
+import { AppListCodeErrorIcons, AppListShowIcons } from './app-list-grid-config';
 import { AppsListActionsComponent } from './apps-list-actions/apps-list-actions.component';
 import { AppsListActionsParams } from './apps-list-actions/apps-list-actions.models';
-import { openFeatureDialog } from '../../features/shared/base-feature.component';
-import { MatDialog, MatDialogActions } from '@angular/material/dialog';
-import { AppAdminHelpers } from '../../app-administration/app-admin-helpers';
-import { AppListCodeErrorIcons, AppListShowIcons } from './app-list-grid-config';
-import { AgBoolIconRenderer } from '../../shared/ag-grid/apps-list-show/ag-bool-icon-renderer.component';
-import { AgBoolCellIconsParams } from '../../shared/ag-grid/apps-list-show/ag-bool-icon-params';
-import { MatBadgeModule } from '@angular/material/badge';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { NgClass, AsyncPipe } from '@angular/common';
-import { EcoFabSpeedDialComponent, EcoFabSpeedDialTriggerComponent, EcoFabSpeedDialActionsComponent } from '@ecodev/fab-speed-dial';
-import { ModuleRegistry } from '@ag-grid-community/core';
-import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
-import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
-import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
-import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
-import { transient } from '../../core';
-import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
-import { classLog } from '../../shared/logging';
-import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-apps-list',
   templateUrl: './apps-list.component.html',
-  styleUrls: ['./apps-list.component.scss'],
   standalone: true,
   imports: [
     SxcGridModule,
@@ -73,7 +69,7 @@ export class AppsListComponent implements OnInit {
     private snackBar: MatSnackBar,
     private context: Context,
     // Services for showing features in the menu
-    private dialog: MatDialog,
+    private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
   ) {
@@ -153,7 +149,7 @@ export class AppsListComponent implements OnInit {
   }
 
   openLightSpeedFeatInfo() {
-    openFeatureDialog(this.dialog, FeatureNames.LightSpeed, this.viewContainerRef, this.changeDetectorRef);
+    openFeatureDialog(this.matDialog, FeatureNames.LightSpeed, this.viewContainerRef, this.changeDetectorRef);
   }
 
   private buildGridOptions(): GridOptions {
@@ -233,7 +229,6 @@ export class AppsListComponent implements OnInit {
 
   #loadApps(): void {
     this.#appsListSvc.getAll().subscribe(apps => {
-      console.log('apps', apps);
       this.apps.set(apps);
     })
   }

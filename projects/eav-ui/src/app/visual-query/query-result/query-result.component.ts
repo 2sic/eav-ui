@@ -1,12 +1,12 @@
+import { JsonPipe, KeyValuePipe } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTabsModule } from '@angular/material/tabs';
 import { DebugStreamInfo, PipelineResultQuery, PipelineResultSources, PipelineResultStream } from '../models';
 import { VisualQueryStateService } from '../services/visual-query.service';
 import { QueryResultDialogData } from './query-result.models';
-import { JsonPipe, KeyValuePipe } from '@angular/common';
-import { MatTabsModule } from '@angular/material/tabs';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-query-result',
@@ -34,7 +34,7 @@ export class QueryResultComponent implements OnInit {
 
   constructor(
     @Inject(MAT_DIALOG_DATA) private dialogData: QueryResultDialogData,
-    private dialogRef: MatDialogRef<QueryResultComponent>,
+    private dialog: MatDialogRef<QueryResultComponent>,
     private visualQueryService: VisualQueryStateService,
   ) { }
 
@@ -54,7 +54,7 @@ export class QueryResultComponent implements OnInit {
   }
 
   closeDialog() {
-    this.dialogRef.close();
+    this.dialog.close();
   }
 
   show(top: number) {

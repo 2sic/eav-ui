@@ -20,11 +20,9 @@ export const WrappersCatalog = {
   FeatureWarningWrapper: 'app-feat-warnings-wrapper', // default
   HyperlinkDefaultExpandableWrapper: 'app-hyperlink-default-expandable-wrapper', // hyperlink specific
   HyperlinkLibraryExpandableWrapper: 'app-hyperlink-library-expandable-wrapper', // hyperlink specific
+  DialogPopup: 'app-dialog-popup', // hyperlink specific
   LocalizationWrapper: 'app-localization-wrapper', // default
 } as const /* the as const ensures that the keys/values can be strictly checked */;
-
-export type Wrapper = typeof WrappersCatalog[keyof typeof WrappersCatalog];
-
 
 export const WrappersLocalizationOnly: FieldMetadataModel = {
   wrappers: [WrappersCatalog.LocalizationWrapper],

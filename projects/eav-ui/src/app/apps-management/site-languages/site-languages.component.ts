@@ -1,25 +1,23 @@
-import { GridOptions } from '@ag-grid-community/core';
+import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
+import { GridOptions, ModuleRegistry } from '@ag-grid-community/core';
+import { AsyncPipe } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { MatDialogActions } from '@angular/material/dialog';
 import { catchError, map, Observable, of, share, startWith, Subject, switchMap } from 'rxjs';
+import { transient } from '../../../../../core';
+import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
+import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { SiteLanguage } from '../models/site-language.model';
 import { ZoneService } from '../services/zone.service';
 import { SiteLanguagesStatusComponent } from './site-languages-status/site-languages-status.component';
 import { SiteLanguagesStatusParams } from './site-languages-status/site-languages-status.models';
-import { AsyncPipe } from '@angular/common';
-import { MatDialogActions } from '@angular/material/dialog';
-import { ModuleRegistry } from '@ag-grid-community/core';
-import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
-import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
-import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
-import { transient } from '../../core';
 
 @Component({
   selector: 'app-site-languages',
   templateUrl: './site-languages.component.html',
-  styleUrls: ['./site-languages.component.scss'],
   standalone: true,
   imports: [
     MatDialogActions,

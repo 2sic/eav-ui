@@ -1,23 +1,22 @@
-import { CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag } from '@angular/cdk/drag-drop';
+import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
+import { CdkScrollable } from '@angular/cdk/scrolling';
 import { Component, HostBinding, OnInit } from '@angular/core';
-import { MatDialogRef, MatDialogActions, MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogActions, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { convert, transient } from '../../../../core';
+import { DialogConfigAppService } from '../app-administration/services/dialog-config-app.service';
+import { MousedownStopPropagationDirective } from '../shared/directives/mousedown-stop-propagation.directive';
+import { TippyDirective } from '../shared/directives/tippy.directive';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { EditForm, EditPrep } from '../shared/models/edit-form.model';
-import { ContentGroup } from './models/content-group.model';
-import { GroupHeader } from './models/group-header.model';
-import { ContentGroupService } from './services/content-group.service';
-import { TranslateService, TranslateModule } from '@ngx-translate/core';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { CdkScrollable } from '@angular/cdk/scrolling';
-import { TippyDirective } from '../shared/directives/tippy.directive';
-import { MousedownStopPropagationDirective } from '../shared/directives/mousedown-stop-propagation.directive';
-import { convert, transient } from '../core';
-import { DialogConfigAppService } from '../app-administration/services/dialog-config-app.service';
 import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
 import { signalObj } from '../shared/signals/signal.utilities';
+import { GroupHeader } from './models/group-header.model';
+import { ContentGroupService } from './services/content-group.service';
 
 @Component({
   selector: 'app-manage-content-list',
@@ -46,7 +45,7 @@ export class ManageContentListComponent implements OnInit {
   #dialogConfigSvc = transient(DialogConfigAppService);
 
   constructor(
-    private dialogRef: MatDialogRef<ManageContentListComponent>,
+    private dialog: MatDialogRef<ManageContentListComponent>,
     private snackBar: MatSnackBar,
     private translate: TranslateService,
   ) { }
@@ -80,7 +79,7 @@ export class ManageContentListComponent implements OnInit {
   }
 
   protected closeDialog() {
-    this.dialogRef.close();
+    this.dialog.close();
   }
 
   protected saveList() {

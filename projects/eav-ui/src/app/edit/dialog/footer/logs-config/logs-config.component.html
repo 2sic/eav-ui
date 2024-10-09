@@ -1,0 +1,47 @@
+<div class="log-content fancy-scrollbar-light">
+  <div class="menu">
+    <button mat-button tippy="Toggles All Logs" (click)="checkAll()">
+      Toggle All
+    </button>
+
+    <div>
+      <button mat-icon-button (click)="saveConfig()" tippy="Save Configuration">
+        <mat-icon>save</mat-icon>
+      </button>
+      <button
+      mat-icon-button
+      [disabled]="selectedConfig === null"
+      (click)="exportConfig()"
+      tippy="Export configuration"
+      >
+      <mat-icon>ios_share</mat-icon>
+    </button>
+    <mat-form-field color="accent">
+      <mat-label>Configurations</mat-label>
+      <mat-select
+        [(value)]="selectedConfig"
+        (selectionChange)="onConfigSelected($event.value)"
+      >
+        <mat-option *ngFor="let config of configs" [value]="config">
+          {{ config }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    </div>
+  </div>
+  <div *ngFor="let log of allLogs | keyvalue">
+    <label>
+      <input
+        type="checkbox"
+        [id]="log.key"
+        [name]="log.key"
+        [checked]="isChecked(log.key)"
+        (change)="toggleConfig(log.key)"
+      />
+      {{ log.key }}
+      <button *ngIf="hasLogSpecs(log.key)" (click)="openLogSpecs(log.key)" tippy="Edit Log Specs">
+        <mat-icon class="specs-icon">data_object</mat-icon>
+      </button>
+    </label>
+  </div>
+</div>

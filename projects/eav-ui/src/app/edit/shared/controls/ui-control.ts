@@ -1,17 +1,24 @@
 import { AbstractControl } from '@angular/forms';
-import { FieldValue } from '../../../../../../edit-types';
+import isEqual from 'lodash-es/isEqual';
+import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
 import { classLog } from '../../../shared/logging';
-import { FieldValueHelpers } from '../helpers/field-value.helpers';
 import { DebugFields } from '../../edit-debug';
+import { FieldConfigSet } from '../../fields/field-config-set.model';
+import { FieldValueHelpers } from '../helpers/field-value.helpers';
+import { ValidationMsgHelper } from '../validation/validation-messages.helpers';
+import { AbstractControlPro } from '../validation/validation.helpers';
 
 const logSpecs = {
   all: true,
-  constructor: true,
-  markTouched: true,
-  set: true,
-  disable: true,
-  fields: [...DebugFields],
+  constructor: false,
+  markTouched: false,
+  set: false,
+  disable: false,
+  getErrors: true,
+  fields: [...DebugFields, 'minValue'],
 };
+
+const pfx = 'ValidationMessage.';
 
 /**
  * Provides information about the UI Control, but NOT the value.
@@ -19,7 +26,7 @@ const logSpecs = {
  */
 export class UiControl {
 
-  log = classLog({UiControl}, logSpecs, false);
+  log = classLog({UiControl}, logSpecs);
 
   constructor(
     public control: AbstractControl,
@@ -48,7 +55,7 @@ export class UiControl {
   //#endregion
 
   //#region methods
-  
+
   markTouched(): void {
     this.log.aIfInList('fields', this.name, null, 'markTouched');
     UiControl.markTouched(this.control);
@@ -57,7 +64,7 @@ export class UiControl {
   setIfChanged(newValue: FieldValue): void {
     const before = this.control.value;
     this.log.aIfInList('fields', this.name, { before, newValue }, 'setIfChanged');
-    if (newValue === this.control.value) return;
+    if (isEqual(newValue, this.control.value)) return;
     this.set(newValue);
   }
 
@@ -67,16 +74,15 @@ export class UiControl {
     const before = control.value;
     this.log.aIfInList('fields', this.name, { before, newValue }, 'set');
 
-    control.patchValue(newValue);
-    
     if (!control.touched)
       control.markAsTouched();
 
     if (!control.dirty && !FieldValueHelpers.fieldValuesAreEqual(before, newValue))
       control.markAsDirty();
 
-    // control.patchValue(newValue);
-    // control.updateValueAndValidity();
+    // Set value must happen at the end, otherwise errors will be late by one cycle
+    // for example, they could show "required" after the value was
+    control.patchValue(newValue);
   }
 
   disable(disable: boolean): void {
@@ -108,4 +114,41 @@ export class UiControl {
       control.enable();
   }
   //#endregion
+
+  /** Calculates error message */
+  getErrors(config: FieldConfigSet): string {
+    const control = this.control;
+    const l = this.log.fnIfInList('getErrors', 'fields', config.fieldName, { control, config });
+    if (!control.invalid) return l.r('', 'valid');
+    if (!control.dirty && !control.touched) return l.r('', 'not dirty or touched');
+
+    for (const errorKey of Object.keys(control.errors)) {
+      const error = (errorKey === 'formulaError')
+        ? control.errors['formulaMessage'] ?? ValidationMsgHelper.validationMessages[errorKey]?.(config)
+        : ValidationMsgHelper.validationMessages[errorKey]?.(config);
+      if (error) return l.r(error, 'error found');
+    }
+
+    return l.r('', 'no error');
+  }
+
+  #warningMessages: Record<string, string> = {
+    jsonWarning: `${pfx}JsonWarning`,
+    formulaWarning: `${pfx}NotValid`,
+  };
+
+  getWarnings(): string {
+    const control = this.control as AbstractControlPro;
+    if (control._warning$.value == null) { return ''; }
+    if (!control.dirty && !control.touched) { return ''; }
+
+    let warning = '';
+    for (const warningKey of Object.keys(control._warning$.value)) {
+      warning = (warningKey === 'formulaWarning')
+        ? control._warning$.value['formulaMessage'] ?? this.#warningMessages[warningKey]
+        : this.#warningMessages[warningKey];
+      if (warning) break;
+    }
+    return warning;
+  }
 }

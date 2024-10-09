@@ -1,8 +1,7 @@
-import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
+import { EntityLight } from '../../../../../../../edit-types/src/EntityLight';
 import { FeatureNames } from '../../../../features/feature-names';
 import { FeaturesScopedService } from '../../../../features/features-scoped.service';
-import { classLog } from '../../../../shared/logging/logging';
-import { EntityLight } from '../../../../shared/models/entity-basic';
+import { classLog } from '../../../../shared/logging';
 import { FormConfigService } from '../../../form/form-config.service';
 import { PickerItem } from '../models/picker-item.model';
 import { DataSourceHelpers } from './data-source-helpers';
@@ -10,11 +9,11 @@ import { DataSourceMasks } from './data-source-masks.model';
 
 const logSpecs = {
   all: false,
-  entity2PickerItem: false,
+  data2PickerItem: false,
   getMasks: false,
   patchMasks: false,
   parseMasks: false,
-  buildMasks: true,
+  buildMasks: false,
 }
 
 /**
@@ -22,14 +21,14 @@ const logSpecs = {
  * Masks are strings with placeholders, vs. just the name of the field to show.
  */
 export class DataSourceMasksHelper {
-  
-  log = classLog({DataSourceMasksHelper}, logSpecs, false);
-  
+
+  log = classLog({DataSourceMasksHelper}, logSpecs);
+
   constructor(
     private name: string,
     private settings: DataSourceMaskSettings,
     features: FeaturesScopedService,
-    formConfig: FormConfigService,
+    private formConfig: FormConfigService,
     parentLog: { enableChildren: boolean }, enableLog?: boolean
   ) {
     this.log.forceEnable(enableLog ?? parentLog.enableChildren ?? false);
@@ -47,16 +46,21 @@ export class DataSourceMasksHelper {
   #masks: DataSourceMasks;
 
   /** Convert an Entity data to Picker-Item, processing any masks */
-  entity2PickerItem({ entity, streamName, mustUseGuid }
-    : { entity: EntityLight; streamName: string | undefined; mustUseGuid: boolean; }
+  data2PickerItem({ entity, streamName, valueMustUseGuid }
+    : { entity: EntityLight; streamName: string | undefined; valueMustUseGuid: boolean; }
   ): PickerItem {
-    const l = this.log.fnIf('entity2PickerItem', { entity, streamName, mustUseGuid });
+
+    const l = this.log.fnIf('data2PickerItem', { entity, streamName, valueMustUseGuid });
     // Check if we have masks, if yes
-    const masks = this.getMasks();
+    const masks = this.#getMasks();
 
     // Figure out Value to use if we don't use masks - fallback is to use the Guid
     const value = (() => {
-      if (mustUseGuid) return entity.Guid;
+      if (valueMustUseGuid) return entity.Guid;
+
+      // @2dg, not tested in all use case
+      if (entity[masks.value] === undefined) return entity.Value;
+
       const maybe = entity[masks.value];
       // the value could be an empty string (pickers); not sure if it can be null though
       return maybe !== undefined ? `${maybe}` : entity.Guid;
@@ -65,8 +69,16 @@ export class DataSourceMasksHelper {
     // Figure out Title Value if we don't use masks - fallback is to use the title, or the value with asterisk
     const label = (() => {
       const maybeTitle = entity[masks.label];
-      return maybeTitle ? `${maybeTitle}` : entity.Title ? `${entity.Title}` : `${value} *`; // If there is no title, use value with '*'
+      return maybeTitle ? `${maybeTitle}` : entity.Title ? `${entity.Title}` : `${value}`; // If there is no title, use value with '*'
     })();
+
+    const previewValue = (() => {
+      const maybePreview = entity[masks.previewValue];
+      if (maybePreview) return maybePreview;
+      return value;
+    })();
+
+    l.a('debug values', { masks, value, label, previewValue, hasPlaceholders: masks.hasPlaceholders });
 
     // If we don't have masks, we are done
     if (!masks.hasPlaceholders) {
@@ -74,6 +86,7 @@ export class DataSourceMasksHelper {
         id: entity.Id,
         entity: entity,
         value,
+        previewValue,
         label,
         tooltip: masks.tooltip,
         info: masks.info,
@@ -84,97 +97,105 @@ export class DataSourceMasksHelper {
     }
 
     // Prepare the masks
-    const { title, tooltip, info, helpLink } = this.#parseMasks(masks, entity);
+    const fromMasks = this.#parseMasks(masks, entity);
 
     // If the original was not a mask, look up the field
-    const finalLabel = masks.label.includes('[') ? title : label;
+    const finalLabel = masks.label.includes('[') ? fromMasks.label : label;
 
     return l.r({
       id: entity.Id,
       entity: entity,
+      ...fromMasks,
       value,
       label: finalLabel,
-      tooltip,
-      info: info,
-      link: helpLink,
       sourceStreamName: streamName ?? null,
     } as PickerItem, 'with masks');
   }
 
   /** Process all placeholders in all masks to get tooltip, info, link and title */
-  #parseMasks(masks: DataSourceMasks, data: Record<string, any>) {
+  #parseMasks(masks: DataSourceMasks, data: Record<string, any>): Partial<PickerItem> {
     const l = this.log.fnIf('parseMasks', { masks, data });
-    let title = masks.label;
+    let label = masks.label;
+
+    // If we have placeholders, but the feature is not enabled, warn about it
     if (!this.#featInfoWarned && !this.#featInfoEnabled && `${masks.tooltip}${masks.info}${masks.link}`.length > 0) {
       const msgAddOn = this.#isDeveloper
         ? `It is enabled for developers, but will be disabled for normal users until it's licensed.`
         : '';
-      console.warn(`The field '${this.name}' has placeholders for info/tooltip/link, but the feature '${FeatureNames.PickerUiMoreInfo}' is not enabled. ${msgAddOn}`, { masks });
       this.#featInfoWarned = true;
     }
     const useInfos = this.#featInfoEnabled || this.#isDeveloper;
     let tooltip = useInfos ? masks.tooltip : '';
     let info = useInfos ? masks.info : '';
-    let helpLink = useInfos ? masks.link : '';
+    let link = useInfos ? masks.link : '';
+    let previewValue = masks.previewValue;
+    // let value = masks.value; // @2dg remove
 
     Object.keys(data).forEach(key => {
       // must check for null and use '' instead
-      const value = data[key] ?? '';
+      const valueItem = data[key] ?? '';
 
       // replace all occurrences of [Item:Key] with value - should be case insensitive
       const search = new RegExp(`\\[Item:${key}\\]`, 'gi');
 
-      tooltip = tooltip.replace(search, value);
-      info = info.replace(search, value);
-      helpLink = helpLink.replace(search, value);
-      title = title.replace(search, value);
+      // TODO:: @2dm, check if this are the correct or use
+      if (previewValue.includes("App:Path")) {
+        // var x = ScriptsLoaderService.resolveUrlTokens(previewValue, this.formConfig.config)
+        const portalRoot = (this.formConfig.config.portalRoot).replace(/\/$/, '');
+        const appUrl = portalRoot + this.formConfig.config.appRoot;
+        previewValue = previewValue.replace("[App:Path]", appUrl);
+      }
+
+      tooltip = tooltip.replace(search, valueItem);
+      info = info.replace(search, valueItem);
+      link = link.replace(search, valueItem);
+      label = label.replace(search, valueItem);
+      previewValue = previewValue.replace(search, valueItem);
+      // value = valueItem.replace(search, valueItem); // @2dg remove
     });
-    return l.r({ title, tooltip, info, helpLink });
+
+    return l.r({ label, tooltip, info, link, previewValue } satisfies Partial<PickerItem>, 'result');
   }
 
   /** Get the mask - if possibly from current objects cache */
-  public getMasks() {
+  #getMasks() {
     if (!!this.#masks) return this.#masks;
     this.#masks = this.#buildMasks();
     this.log.aIf('getMasks', { masks: this.#masks });
     return this.#masks;
   }
 
+  // TODO: WE can probably get rid of this now, by just supplying the setting on creation of the object
   /** modify/patch the current objects mask */
   public patchMasks(patch: Partial<DataSourceMasks>) {
-    this.#masks = { ...this.getMasks(), ...patch };
+    this.#masks = { ...this.#getMasks(), ...patch };
     this.log.aIf('patchMasks', { masks: this.#masks });
   }
 
   #buildMasks(): DataSourceMasks {
     const settings = this.settings;
     const l = this.log.fnIf('buildMasks', { settings });
-    const tooltipMask = !!settings.ItemTooltip ? this.#helpers.stripHtml(settings.ItemTooltip) : '';
-    const infoMask = !!settings.ItemInformation ? this.#helpers.stripHtml(settings.ItemInformation) : '';
-    const linkMask = settings.ItemLink ?? '';
-    const labelMask = settings.Label ?? '';
-    const valueMask = settings.Value ?? '';
-    const hasPlaceholders = (tooltipMask + infoMask + linkMask + labelMask).includes('[');
+    // Figure out the masks
+    const tooltip = !!settings.ItemTooltip ? this.#helpers.stripHtml(settings.ItemTooltip) : '';
+    const info = !!settings.ItemInformation ? this.#helpers.stripHtml(settings.ItemInformation) : '';
+    const link = settings.ItemLink ?? '';
+    const label = settings.Label ?? '';
+    const value = settings.Value ?? '';
+    const previewValue = settings.PreviewValue ?? '';
+    const hasPlaceholders = (tooltip + info + link + label + previewValue).includes('[');
     const result: DataSourceMasks = {
       hasPlaceholders,
-      tooltip: tooltipMask,
-      info: infoMask,
-      link: linkMask,
-      label: labelMask,
-      value: valueMask,
+      tooltip,
+      info,
+      link,
+      label,
+      value,
+      previewValue,
     };
+
     return l.r(result, 'result');
   }
 
-  static maskSettings(settings: FieldSettings): DataSourceMaskSettings {
-    return {
-      ItemTooltip: settings.ItemTooltip,
-      ItemInformation: settings.ItemInformation,
-      ItemLink: settings.ItemLink,
-      Label: settings.Label,
-      Value: settings.Value,
-    };
-  }
 }
 
 interface DataSourceMaskSettings {
@@ -183,4 +204,5 @@ interface DataSourceMaskSettings {
   ItemLink: string;
   Label: string;
   Value: string;
+  PreviewValue: string;
 }

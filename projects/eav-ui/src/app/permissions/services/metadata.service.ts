@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { Of } from '../../../../../core';
 import { MetadataDto } from '../../metadata';
-import { MetadataKeyType } from '../../shared/constants/eav.constants';
+import { MetadataKeyTypes } from '../../shared/constants/eav.constants';
 import { HttpServiceBase } from '../../shared/services/http-service-base';
 
 const webApiRoot = 'admin/metadata/get';
@@ -15,7 +16,7 @@ export class MetadataService extends HttpServiceBase  {
    * @param key key of target metadata item is for
    * @param contentTypeName name of content type where permissions are stored. If blank, backend returns all metadata except permissions
    */
-  getMetadata(targetType: number, keyType: MetadataKeyType, key: string | number, contentTypeName?: string): Observable<MetadataDto> {
+  getMetadata(targetType: number, keyType: Of<typeof MetadataKeyTypes>, key: string | number, contentTypeName?: string): Observable<MetadataDto> {
     return this.http.get<MetadataDto>(this.apiUrl(webApiRoot), {
       params: {
         appId: this.appId,

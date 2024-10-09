@@ -1,12 +1,15 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+// TODO: @2dm Delete this file?
+// Delete EmptyRouteComponent and Folder
 
-@Component({
-  selector: 'app-empty-route',
-  templateUrl: './empty-route.component.html',
-  standalone: true,
-  imports: [RouterOutlet],
-})
-export class EmptyRouteComponent {
-  constructor() { }
-}
+// import { Component } from '@angular/core';
+// import { RouterOutlet } from '@angular/router';
+
+// @Component({
+//   selector: 'app-empty-route',
+//   templateUrl: './empty-route.component.html',
+//   standalone: true,
+//   imports: [RouterOutlet],
+// })
+// export class EmptyRouteComponent {
+//   constructor() { }
+// }

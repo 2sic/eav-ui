@@ -1,0 +1,48 @@
+
+@if (buttons().edit)
+{
+  <!-- Disable edit only if it was disabled in the settings, not if disabled by language change -->
+  <!-- note: not sure if the above comment is applied in this code, as it still uses ui().disabled -->
+  <button
+    mat-icon-button
+    matSuffix
+    class="picker-inline-button"
+    tippyTranslate="Fields.Picker.Edit"
+    [disabled]="ui().disabled || config.initialDisabled"
+    appClickStopPropagation
+    (click)="edit(item().value, item().id)"
+  >
+    <mat-icon>edit</mat-icon>
+  </button>
+}
+
+@if (buttons().remove)
+{
+  <button
+    mat-icon-button
+    matSuffix
+    class="picker-inline-button"
+    tippyTranslate="Fields.Picker.Remove"
+    [disabled]="ui().disabled"
+    appClickStopPropagation
+    (click)="removeItem(index())"
+  >
+    <mat-icon>do_not_disturb_on</mat-icon>
+  </button>
+}
+
+
+@if (buttons().delete)
+{
+  <button
+    mat-icon-button
+    matSuffix
+    class="picker-inline-button"
+    tippyTranslate="Fields.Picker.Delete"
+    [disabled]="ui().disabled"
+    appClickStopPropagation
+    (click)="deleteItem(index(), item().value)"
+  >
+    <mat-icon>delete</mat-icon>
+  </button>
+}

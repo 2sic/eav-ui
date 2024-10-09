@@ -1,6 +1,7 @@
-import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
-import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
+import { StringUrlPath } from 'projects/edit-types/src/FieldSettings-String';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
+import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
+import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
 
 export class StringUrlPathLogic extends FieldLogicBase {
   name = InputTypeCatalog.StringUrlPath;
@@ -8,7 +9,7 @@ export class StringUrlPathLogic extends FieldLogicBase {
   constructor() { super({ InputTypeCatalog }); }
 
   update({ settings }: FieldLogicUpdate): FieldSettings {
-    const fixedSettings: FieldSettings = { ...settings };
+    const fixedSettings = { ...settings } as FieldSettings & StringUrlPath;
     fixedSettings.AutoGenerateMask ??= null;
     fixedSettings.AllowSlashes ??= false;
     return fixedSettings;

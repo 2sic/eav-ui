@@ -18,10 +18,10 @@
           @if (!delayForm())
           {
           <div class="eav-layout-grid__cell--span-12" appFormSlide>
-            @for (item of items(); track item.Entity.Guid)
+            @for (item of items(); track item.Entity.Guid; let i = $index)
             {
             <div>
-              <app-edit-entity-form-builder [entityGuid]="item.Entity.Guid"></app-edit-entity-form-builder>
+              <app-edit-entity-form-builder [entityGuid]="item.Entity.Guid" [index]="i"></app-edit-entity-form-builder>
             </div>
             }
           </div>

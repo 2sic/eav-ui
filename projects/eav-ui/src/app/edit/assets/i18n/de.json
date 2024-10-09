@@ -1,8 +1,8 @@
 {
   "Form": {
     "Buttons": {
-      "Save": "Speichern (CTRL + S)",
-      "SaveAndClose": "Speichern und schliessen",
+      "Save": "Speichern (ctrl + s)",
+      "SaveAndClose": "Speichern und schliessen (ctrl + alt + s)",
       "Exit.Tip": "Verlassen - bei Änderungen wird zum Speichern aufgefordert",
       "Return.Tip": "Zurück zum vorherigen Dialog",
       "History.Tip": "Änderungen / Vorversionen",
@@ -241,5 +241,7 @@
   },
   "Features": {
     "NotActivated": "Diese Funktion ist nicht aktiviert - mehr erfahren"
-  }
+  },
+  "License-EditUi-Warning-Label": "Vorschau",
+  "License-EditUi-Warning-Tooltip": "Du verwendest Funktionen, die nicht lizenziert sind."
 }

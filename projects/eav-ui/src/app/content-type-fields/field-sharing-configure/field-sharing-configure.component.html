@@ -1,0 +1,165 @@
+<div class="eav-dialog eav-no-scrollbar">
+  <div class="eav-dialog-header">
+    <div class="eav-dialog-header__title">
+      {{ title | translate }}
+    </div>
+    <button mat-icon-button tippy="Close dialog" (click)="dialog.close()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <div class="eav-dialog-content">
+    @switch (initialState) {
+      @case (sharingOrInheriting.Sharing) {
+        <p>
+          This field is published so it can be shared by other Content Types.
+          As such you cannot configure anything here, but just review the information.
+        </p>
+        <div>
+          Global Identifier: <strong>{{ dialogData.Guid }}</strong>
+        </div>
+        <h4>Inherited by</h4>
+        <ng-container *ngTemplateOutlet="detailsOrWarning"></ng-container>
+      }
+      @case (sharingOrInheriting.Inheriting) {
+        <p>
+          This field is inheriting it's definition from another previously shared field.
+        </p>
+        <h4>Inherits Definition from</h4>
+        @if (!features.isEnabled[requiredFeature]()) {
+          <ol>
+            @for (s of inherited(); track s.complete) {
+              <li>{{ s.complete }}</li>
+            }
+          </ol>
+        }
+        <ng-container *ngTemplateOutlet="detailsOrWarning"></ng-container>
+        
+        @if (notInherited().length) {
+          <h4>Not Inherited Definitions</h4>
+          <p>The following definitions are not inherited, so you can specify them on this field:</p>
+          <ol>
+            @for (s of notInherited(); track s) {
+              <li>{{ s }}</li>
+            }
+          </ol>
+        }
+      }
+      @case (sharingOrInheriting.None) {
+        <p>
+          This field is currently not shared or inherited.
+          You can choose to:
+        </p>
+        <ul>
+          <li>Make it public (<strong>share</strong>) so it can be re-used by other Content Types</li>
+          <li>Change it to <strong>inherit</strong> it's definition from another previously shared field</li>
+        </ul>
+        <br>
+        <div>
+          <button mat-raised-button type="button" class="eav-dialog-action-button" [color]="state == sharingOrInheriting.Sharing ? 'accent' : ''" (click)="setShare()">
+            Share
+          </button>  
+
+          <button mat-raised-button type="button" class="eav-dialog-action-button" [color]="state == sharingOrInheriting.Inheriting ? 'accent' : ''"(click)="startInherit()">
+            Inherit
+          </button>
+          @switch (state) {
+            @case (sharingOrInheriting.Sharing) {
+              <p>
+                This will share the field definition for others to use.
+                Save to complete the operation.
+              </p>
+            }
+            @case (sharingOrInheriting.Inheriting) {
+              <p>
+                The following fields have the same data type and share their definitions.
+                Select one to inherit from. Some notes:
+                <br>
+              </p>
+              <ul>
+                <li>
+                  Inheriting will remove/ignore all current definition of this field such as label, hidden, etc.
+                </li>
+                <li>
+                  If the field you want to inherit the definition from is missing from this list,
+                  it's either a different data type or it's not shared.
+                </li>
+              </ul>
+              <mat-card class="my-options-wrapper">
+                <table mat-table [dataSource]="shareableFields()" class="mat-elevation-z8">
+                  <!-- Column Definition "Content Type" -->
+                  <ng-container matColumnDef="contentType">
+                    <th mat-header-cell *matHeaderCellDef> <b>Content Type</b> </th>
+                    <td mat-cell *matCellDef="let field"> {{field.ContentType.Name}} </td>
+                  </ng-container>
+                  <!-- Column Definition "Name" -->
+                  <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef> <b>Name</b> </th>
+                    <td mat-cell *matCellDef="let field"> {{field.StaticName}} </td>
+                  </ng-container>
+                  <!-- Column Definition "Type" -->
+                  <ng-container matColumnDef="type">
+                    <th mat-header-cell *matHeaderCellDef> <b>Type</b> </th>
+                    <td mat-cell *matCellDef="let field"> {{field.Type}} </td>
+                  </ng-container>
+                  <!-- Header Row -->
+                  <tr mat-header-row *matHeaderRowDef="optionsColumns"></tr>
+                  <!-- Repeater for each row -->
+                  <tr mat-row *matRowDef="let row; columns: optionsColumns;" [ngClass]="{ 'my-selected': guid === row.Guid }" (click)="inheritField(row)">
+                  </tr>
+                </table>
+              </mat-card>
+            }
+          }
+        </div>  
+      }
+    }
+  </div>
+
+  <app-feature-text-info [featureNameId]="requiredFeature" [asInfo]="true">
+    <em>
+      Even if the feature is not licensed, it will always work but show warnings.
+    </em>
+  </app-feature-text-info>
+  
+  <div class="my-actions">
+
+    @if (initialState == sharingOrInheriting.None) {
+      <button mat-raised-button type="button" class="eav-dialog-action-button" (click)="dialog.close()">Cancel</button>
+      <button mat-raised-button type="submit" color="accent" class="eav-dialog-action-button" (click)="save()">
+        <span>Save</span>
+      </button>
+    }
+  </div>
+</div>
+
+<!-- Reusable part showing a list of ancestors or descendants - or showing a license warning to see more -->
+<ng-template #detailsOrWarning>
+  @if (features.isEnabled[requiredFeature]()) {
+    @if (details().length) {
+      <ul>
+        @for (field of details(); track field.AttributeId) {
+          <li>
+            Guid: <strong>{{ field.Guid }}</strong>
+            <br>
+            Content Type: <strong>{{ field.ContentType.Name }}</strong>
+            <br>
+            Field: <strong>{{ field.StaticName }}</strong> ({{ field.AttributeId }})
+          </li>
+        }
+      </ul>
+    }
+    @else {
+      <em>
+        No details available. This field probably does not have any inheriting fields.
+      </em>
+    }
+  }
+  @else {
+    <em>
+      You can get more details about the parents by enabling the feature
+      <br>
+      {{ requiredFeature }}
+      <app-feature-icon-text [featureNameId]="requiredFeature"></app-feature-icon-text>.
+    </em>
+  }
+</ng-template>

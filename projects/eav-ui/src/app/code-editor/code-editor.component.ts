@@ -1,37 +1,37 @@
+import { NgClass } from '@angular/common';
 import { Component, computed, effect, NgZone, OnDestroy, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import type * as Monaco from 'monaco-editor';
 import { forkJoin, fromEvent, of, share, switchMap } from 'rxjs';
+import { Of, transient } from '../../../../core';
 import { CreateFileDialogComponent, CreateFileDialogData, CreateFileDialogResult } from '../create-file-dialog';
+import { isCtrlS } from '../edit/dialog/main/keyboard-shortcuts';
 import { MonacoEditorComponent } from '../monaco-editor';
+import { MonacoEditorComponent as MonacoEditorComponent_1 } from '../monaco-editor/monaco-editor.component';
 import { BaseComponent } from '../shared/components/base.component';
 import { keyIsShared, keyItems } from '../shared/constants/session.constants';
+import { ClickStopPropagationDirective } from '../shared/directives/click-stop-propagation.directive';
+import { TippyDirective } from '../shared/directives/tippy.directive';
+import { ToggleDebugDirective } from '../shared/directives/toggle-debug.directive';
 import { ViewOrFileIdentifier } from '../shared/models/edit-form.model';
+import { RxHelpers } from '../shared/rxJs/rx.helpers';
 import { Context } from '../shared/services/context';
 import { CodeAndEditionWarningsComponent } from './code-and-edition-warnings/code-and-edition-warnings.component';
 import { CodeAndEditionWarningsSnackBarData } from './code-and-edition-warnings/code-and-edition-warnings.models';
-import { ExplorerOption, Explorers, Tab, ViewInfo, ViewKey } from './code-editor.models';
+import { Explorers, Tab, ViewInfo, ViewKey } from './code-editor.models';
+import { CodeSnippetsComponent } from './code-snippets/code-snippets.component';
+import { CodeTemplatesComponent } from './code-templates/code-templates.component';
 import { CreateTemplateParams } from './code-templates/code-templates.models';
 import { FileAsset } from './models/file-asset.model';
 import { SourceView } from './models/source-view.model';
 import { SnippetsService } from './services/snippets.service';
 import { SourceService } from './services/source.service';
-import { MatButtonModule } from '@angular/material/button';
-import { MonacoEditorComponent as MonacoEditorComponent_1 } from '../monaco-editor/monaco-editor.component';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { CodeSnippetsComponent } from './code-snippets/code-snippets.component';
-import { CodeTemplatesComponent } from './code-templates/code-templates.component';
-import { MatIconModule } from '@angular/material/icon';
-import { NgClass } from '@angular/common';
-import { ClickStopPropagationDirective } from '../shared/directives/click-stop-propagation.directive';
-import { RxHelpers } from '../shared/rxJs/rx.helpers';
-import { TippyDirective } from '../shared/directives/tippy.directive';
-import { ToggleDebugDirective } from '../shared/directives/toggle-debug.directive';
-import { transient } from '../core';
-import { isCtrlS } from '../edit/dialog/main/keyboard-shortcuts';
 
 @Component({
   selector: 'app-code-editor',
@@ -55,7 +55,7 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
   @ViewChild(MonacoEditorComponent) private monacoEditorRef: MonacoEditorComponent;
 
   Explorers = Explorers;
-  activeExplorer: ExplorerOption = Explorers.Templates;
+  activeExplorer: Of<typeof Explorers> = Explorers.Templates;
   monacoOptions: Monaco.editor.IStandaloneEditorConstructionOptions = {
     theme: '2sxc-dark',
     tabSize: 2,
@@ -104,7 +104,7 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
     private zone: NgZone,
-    private dialog: MatDialog,
+    private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
   ) {
     super();
@@ -226,7 +226,7 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
     super.ngOnDestroy();
   }
 
-  toggleExplorer(explorer: ExplorerOption): void {
+  toggleExplorer(explorer: Of<typeof Explorers>): void {
     this.activeExplorer = (this.activeExplorer !== explorer) ? explorer : null;
   }
 
@@ -255,7 +255,7 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
       global: params.isShared,
       purpose: params.folder === 'api' || params.folder?.startsWith('api/') ? 'Api' : undefined,
     };
-    const createFileDialogRef = this.dialog.open(CreateFileDialogComponent, {
+    const createFileDialogRef = this.matDialog.open(CreateFileDialogComponent, {
       autoFocus: false,
       data: createFileDialogData,
       viewContainerRef: this.viewContainerRef,

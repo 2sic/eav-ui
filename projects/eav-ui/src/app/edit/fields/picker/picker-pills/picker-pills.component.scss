@@ -12,6 +12,8 @@
   transition: none;
 }
 
+$label-top: 16px;
+
 %field-border--invalid {
   padding: 0;
   border-bottom: 2px solid $field-border-color--invalid;
@@ -28,74 +30,71 @@
   background-repeat: repeat-x;
 }
 
-.c-ew {
-  &__preview {
-    position: relative;
-    // min-height: 36px;
-    $label-top: 16px;
-    cursor: pointer;
+.c-ew__preview {
+  position: relative;
+  // min-height: 36px;
+  cursor: pointer;
 
-    @extend %field-border;
+  @extend %field-border;
 
-    &:hover:not(.c-ew__preview--disabled):not(.c-ew__preview--invalid) {
-      @extend %field-border--hover;
-    }
-
-    &-holder {
-      position: relative;
-      margin-top: calc(#{$label-top});
-    }
-
-    &-label {
-      top: -$label-top;
-      position: absolute;
-      z-index: 1;
-      pointer-events: none;
-      font-size: 12px;
-      line-height: 14px;
-    }
-
-    &-label:not(.mat-error) {
-      color: rgba($editUI-foreground-color, 0.44);
-    }
-
-    &-container {
-      overflow: hidden;
-      height: 100%;
-      // max-height: 95px;// 119px minus paddings
-      -webkit-align-content: center;
-      align-content: center;
-
-      &--empty {
-        padding: 6px 0 0 0;
-      }
-    }
-
-    &--invalid {
-      @extend %field-border--invalid;
-    }
-
-    &--disabled {
-      @extend %field-border--disabled;
-    }
-
-    .color__accent {
-      color: map_get($mat-eav-item-dialog-secondary, 500);
-    }
-
-    .color__primary {
-      color: rgba($editUI-foreground-color, 0.44);
-    }
-
-    .color__label-disabled {
-      color: $editUI-label-disabled-color;
-    }
-
-    mat-empty {
-      height: 48px;
-      padding: 24px 0 0 0;
-    }
+  &:hover:not(.c-ew__preview--disabled):not(.c-ew__preview--invalid) {
+    @extend %field-border--hover;
   }
+
+  .color__accent {
+    color: map_get($mat-eav-item-dialog-secondary, 500);
+  }
+
+  .color__primary {
+    color: rgba($editUI-foreground-color, 0.44);
+  }
+
+  .my-label-disabled {
+    color: $editUI-label-disabled-color;
+  }
+
+  mat-empty {
+    height: 48px;
+    padding: 24px 0 0 0;
+  }
+}
+
+.c-ew__preview-holder {
+  position: relative;
+  margin-top: calc(#{$label-top});
+}
+
+.c-ew__preview-label {
+  top: -$label-top;
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+  font-size: 12px;
+  line-height: 14px;
+}
+
+.c-ew__preview-label:not(.mat-error) {
+  color: rgba($editUI-foreground-color, 0.44);
+}
+
+.c-ew__preview-container {
+  overflow: hidden;
+  height: 100%;
+  // max-height: 95px;// 119px minus paddings
+  -webkit-align-content: center;
+  align-content: center;
+}
+
+.c-ew__preview-container--empty {
+  padding: 6px 0 0 0;
+}
+
+.c-ew__preview--invalid {
+  @extend %field-border--invalid;
+}
+
+.c-ew__preview--disabled {
+  @extend %field-border--disabled;
 }
 
 .eav-more-entities {
@@ -138,5 +137,17 @@
   line-height: 16px;
   white-space: nowrap;
   text-overflow: ellipsis;
-  padding: 0px;
+  padding: 0 16px;
+}
+
+.my-flex {
+  display: flex;
+  align-items: center;
+}
+
+.my-pills {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  box-sizing: border-box;
 }

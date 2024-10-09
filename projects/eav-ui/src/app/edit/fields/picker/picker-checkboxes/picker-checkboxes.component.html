@@ -1,43 +1,29 @@
 <div class="c-ew__preview-holder">
-  <mat-label class="c-ew__preview-label" [ngClass]="{
-    'mat-caption' : itemCount(),
-    'mat-empty' : !itemCount(),
-    'mat-error' : ui().touchedAndInvalid && !config.initialDisabled,
-    'color__primary' : !ui().touchedAndInvalid && !config.initialDisabled,
-    'color__label-disabled' : config.initialDisabled
-    }">
-    {{ basics().labelWithRequired }}
-  </mat-label>
-  <app-field-helper-text [flatIfEmpty]="true"></app-field-helper-text>
+  <app-picker-inline-header>
+    <ng-content addNew select="[addNew]"></ng-content>
+    <ng-content freeTextButtons select="[freeTextButtons]"></ng-content>
+  </app-picker-inline-header>
+
   <!-- <div (click)="expandDialog()"
     [ngClass]="{
     'c-ew__preview--invalid' : ui().touchedAndInvalid,
     'c-ew__preview--disabled': config.initialDisabled
     }"> -->
 
-
-    <!-- <div> -->
-      <!-- <div fxLayout="row" fxLayoutAlign="start center"> -->
-
-        @for (item of options(); track item.value) {
-          <div>
-            <mat-checkbox
-              class="picker-option-wrapper"
-              (click)="select(item)"
-              [checked]="item.selected" [disabled]="item.noSelect"
-              [tippy]="item.tooltip" tippyShowDelay="500" [tippyDisabled]="!item.tooltip" [tippyAllowHtml]="true" [tippyArrow]="true"
-            >
-              <div class="picker-option-contents">
-                <span class="picker-option-label">{{ item.label ? item.label : item.value }}</span>
-                <div class="picker-option-info">
-                  <app-picker-help [helpLink]="item.link"></app-picker-help>
-                  <app-picker-icon-info [infoBox]="item.info"></app-picker-icon-info>
-                </div>
-              </div>
-            </mat-checkbox>
-          </div>
-        }
-      <!-- </div> -->
-    <!-- </div> -->
+  @for (item of options(); track item.value) {
+    <mat-checkbox
+      class="picker-option-wrapper"
+      (click)="select(item)"
+      [checked]="item.selected"
+      [disabled]="ui().disabled || item.noSelect"
+      [tippy]="item.tooltip"
+      tippyShowDelay="500"
+      [tippyAllowHtml]="true"
+      [tippyArrow]="true"
+    >
+      <!-- Show Label -->
+      <app-picker-item-label [item]="item" [show]="true" [index]="$index" [settings]="fieldState.settings()" [uiFeatures]="{ remove: false }"></app-picker-item-label>
+    </mat-checkbox>
+  }
   <!-- </div> -->
 </div>

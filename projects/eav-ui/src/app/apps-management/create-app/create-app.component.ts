@@ -1,24 +1,23 @@
-import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDialogRef, MatDialogActions } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { BehaviorSubject, Observable, map } from 'rxjs';
-import { appNameError, appNamePattern } from '../constants/app.patterns';
-import { AppsListService } from '../services/apps-list.service';
 import { AsyncPipe } from '@angular/common';
+import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
+import { FormsModule, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
-import { MatSelectModule } from '@angular/material/select';
-import { MatInputModule } from '@angular/material/input';
+import { MatDialogActions, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
+import { BehaviorSubject, Observable, map } from 'rxjs';
+import { transient } from '../../../../../core';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
-import { transient } from '../../core';
+import { appNameError, appNamePattern } from '../constants/app.patterns';
+import { AppsListService } from '../services/apps-list.service';
 
 @Component({
   selector: 'app-create-app',
   templateUrl: './create-app.component.html',
-  styleUrls: ['./create-app.component.scss'],
   standalone: true,
   imports: [
     RouterOutlet,
@@ -47,7 +46,7 @@ export class CreateAppComponent implements OnInit, OnDestroy {
   private appsListService = transient(AppsListService);
 
   constructor(
-    private dialogRef: MatDialogRef<CreateAppComponent>,
+    private dialog: MatDialogRef<CreateAppComponent>,
     private snackBar: MatSnackBar,
   ) {
     this.form = this.buildForm();
@@ -65,7 +64,7 @@ export class CreateAppComponent implements OnInit, OnDestroy {
   }
 
   closeDialog(): void {
-    this.dialogRef.close();
+    this.dialog.close();
   }
 
   create(): void {

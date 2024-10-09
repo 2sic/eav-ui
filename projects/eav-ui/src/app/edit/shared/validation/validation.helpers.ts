@@ -1,12 +1,17 @@
+import { Signal } from '@angular/core';
 import { AbstractControl, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { CustomJsonEditor } from 'projects/edit-types/src/FieldSettings-CustomJsonEditor';
+import { FieldSettingsNumber } from 'projects/edit-types/src/FieldSettings-Number';
+import { FieldSettingsPicker } from 'projects/edit-types/src/FieldSettings-Pickers';
 import { BehaviorSubject } from 'rxjs';
-import { FieldSettings } from '../../../../../../edit-types';
-import { InputTypeCatalog, InputTypeStrict } from '../../../shared/fields/input-type-catalog';
-import { ItemFieldVisibility } from '../../state/item-field-visibility';
+import { Of } from '../../../../../../core';
+import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
+import { FieldSettingsOptionsWip, FieldSettingsSharedSeparator } from '../../../../../../edit-types/src/FieldSettings-Pickers';
+import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
 import { AdamControl } from '../../fields/basic/hyperlink-library/hyperlink-library.models';
 import { convertValueToArray } from '../../fields/picker/picker.helpers';
 import { FieldsSettingsService } from '../../state/fields-settings.service';
-import { Signal } from '@angular/core';
+import { ItemFieldVisibility } from '../../state/item-field-visibility';
 
 
 /** Slightly enhanced standard Abstract Control with additional warnings */
@@ -22,7 +27,7 @@ export class ValidationHelpers {
     return this.#shouldIgnoreValidators(settings) ? false : settings.Required;
   }
 
-  public static getValidators(specs: ValidationHelperSpecs, inputType: InputTypeStrict): ValidatorFn[] {
+  public static getValidators(specs: ValidationHelperSpecs, inputType: Of<typeof InputTypeCatalog>): ValidatorFn[] {
     // TODO: merge all validators in a single function? Should be faster
     const validators: ValidatorFn[] = [
       inputType !== InputTypeCatalog.HyperlinkLibrary
@@ -50,7 +55,7 @@ export class ValidationHelpers {
       control._warning$ = new BehaviorSubject<ValidationErrors>(null);
   }
 
-  static #ensureWarningsAndGetSettingsIfNoIgnore(control: AbstractControl, specs: ValidationHelperSpecs): FieldSettings {
+  static #ensureWarningsAndGetSettingsIfNoIgnore(control: AbstractControl, specs: ValidationHelperSpecs) {
     this.ensureWarning(control);
     const settings = specs.settings();
     if (this.#shouldIgnoreValidators(settings)) return null;
@@ -135,7 +140,7 @@ export class ValidationHelpers {
       const settings = specs.settings();
       let error: boolean;
       let warning: boolean;
-      const jsonMode = settings.JsonValidation;
+      const jsonMode = (settings as FieldSettings & CustomJsonEditor).JsonValidation;
 
       if (this.#shouldIgnoreValidators(settings) || jsonMode === 'none' || !control.value) {
         error = false;
@@ -188,7 +193,7 @@ export class ValidationHelpers {
   }
 }
 
-function countValues(control: AbstractControl, s: FieldSettings): number {
+function countValues(control: AbstractControl, s: FieldSettings & FieldSettingsOptionsWip & FieldSettingsSharedSeparator): number {
   return Array.isArray(control.value)
     ? control.value.length
     : convertValueToArray(control.value, s.Separator, s._options).length;
@@ -198,10 +203,13 @@ function countValues(control: AbstractControl, s: FieldSettings): number {
 export class ValidationHelperSpecs {
   constructor(
     public fieldName: string,
-    public inputType: InputTypeStrict,
-    public settings: Signal<FieldSettings>,
+    public inputType: Of<typeof InputTypeCatalog>,
+    settings: Signal<FieldSettings>,
     // public properties: Signal<FieldProps>,
     // TODO: GET RID OF THIS as soon as we have a signal for the fieldProps
     public fieldsSettingsService: FieldsSettingsService
-  ) { }
+  ) {
+    this.settings = settings as Signal<FieldSettings & FieldSettingsSharedSeparator & CustomJsonEditor & FieldSettingsNumber & FieldSettingsPicker & FieldSettingsOptionsWip>;
+  }
+  settings: Signal<FieldSettings & FieldSettingsSharedSeparator & CustomJsonEditor & FieldSettingsNumber & FieldSettingsPicker & FieldSettingsOptionsWip>;
 }

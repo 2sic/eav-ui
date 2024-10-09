@@ -1,21 +1,21 @@
 import { GridOptions } from '@ag-grid-community/core';
 import { Component, HostBinding, OnInit, inject, signal } from "@angular/core";
-import { MatDialogRef, MatDialogActions } from "@angular/material/dialog";
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogActions, MatDialogRef } from "@angular/material/dialog";
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { transient } from '../../../../../core';
 import { FeatureNames } from '../../features/feature-names';
+import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
+import { FeaturesScopedService } from '../../features/features-scoped.service';
+import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from "../../shared/constants/default-grid-options.constants";
-import { FeaturesScopedService } from '../../features/features-scoped.service';
+import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { PendingApp } from "../models/app.model";
 import { AppsListService } from "../services/apps-list.service";
 import { AppNameShowComponent } from './app-name-show/app-name-show.component';
 import { CheckboxCellComponent } from './checkbox-cell/checkbox-cell.component';
 import { CheckboxCellParams } from './checkbox-cell/checkbox-cell.model';
-import { MatButtonModule } from '@angular/material/button';
-import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
-import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
-import { transient } from '../../core';
-import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 
 @Component({
   selector: 'app-add-app-from-folder',
@@ -42,7 +42,7 @@ export class AddAppFromFolderComponent implements OnInit {
   private appsListService = transient(AppsListService);
 
   constructor(
-    private dialogRef: MatDialogRef<AddAppFromFolderComponent>,
+    private dialog: MatDialogRef<AddAppFromFolderComponent>,
     private snackBar: MatSnackBar,
   ) {}
 
@@ -54,7 +54,7 @@ export class AddAppFromFolderComponent implements OnInit {
   }
 
   closeDialog(): void {
-    this.dialogRef.close();
+    this.dialog.close();
   }
 
   onChange(app: PendingApp, enabled: boolean) {

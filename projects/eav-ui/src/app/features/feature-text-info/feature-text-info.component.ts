@@ -1,11 +1,9 @@
-import { Component, Input } from '@angular/core';
-import { FeatureSummary } from '../models';
-import { FeatureComponentBase } from '../shared/base-feature.component';
-import { BehaviorSubject, map, Observable, combineLatest } from 'rxjs';
-import { TranslateModule } from '@ngx-translate/core';
-import { AsyncPipe } from '@angular/common';
+import { Component, input } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
+import { TranslateModule } from '@ngx-translate/core';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
+import { computedObj } from '../../shared/signals/signal.utilities';
+import { FeatureComponentBase } from '../shared/base-feature.component';
 
 @Component({
   selector: 'app-feature-text-info',
@@ -14,34 +12,14 @@ import { TippyDirective } from '../../shared/directives/tippy.directive';
   standalone: true,
   imports: [
     MatIconModule,
-    AsyncPipe,
     TranslateModule,
     TippyDirective,
   ],
 })
 export class FeatureTextInfoComponent extends FeatureComponentBase {
-  @Input()
-  public set asInfo(value: boolean) { this.asInfo$.next(value); }
-  asInfo$ = new BehaviorSubject<boolean>(false);
+  asInfo = input<boolean>(false);
 
-  viewModel$: Observable<FeatureTextInfoViewModel>;
+  constructor() { super(); }
 
-  constructor() {
-    super();
-    this.viewModel$ = combineLatest([this.feature$, this.asInfo$, this.show$]).pipe(
-      map(([feature, asInfo, show]) =>
-      ({
-        feature,
-        icon: asInfo ? 'info' : 'warning',
-        show
-      }))
-    );
-  }
-
-}
-
-interface FeatureTextInfoViewModel {
-  feature: FeatureSummary;
-  icon: string;
-  show: boolean;
+  icon = computedObj('icon', () => this.asInfo() ? 'info' : 'warning');
 }

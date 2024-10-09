@@ -1,21 +1,20 @@
 import { Component, HostBinding, OnInit, signal } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDialogRef, MatDialogActions } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { App } from '../models/app.model';
-import { AppsListService } from '../services/apps-list.service';
+import { FormsModule, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
-import { MatSelectModule } from '@angular/material/select';
+import { MatDialogActions, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
+import { transient } from '../../../../../core';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
-import { transient } from '../../core';
+import { App } from '../models/app.model';
+import { AppsListService } from '../services/apps-list.service';
 
 @Component({
   selector: 'app-create-inherited-app',
   templateUrl: './create-inherited-app.component.html',
-  styleUrls: ['./create-inherited-app.component.scss'],
   standalone: true,
   imports: [
     RouterOutlet,
@@ -40,7 +39,7 @@ export class CreateInheritedAppComponent implements OnInit{
   private appsListService = transient(AppsListService);
 
   constructor(
-    private dialogRef: MatDialogRef<CreateInheritedAppComponent>,
+    private dialog: MatDialogRef<CreateInheritedAppComponent>,
     private snackBar: MatSnackBar,
   ) {
     this.form = this.buildForm();
@@ -52,7 +51,7 @@ export class CreateInheritedAppComponent implements OnInit{
   }
 
   closeDialog(): void {
-    this.dialogRef.close();
+    this.dialog.close();
   }
 
   create(): void {

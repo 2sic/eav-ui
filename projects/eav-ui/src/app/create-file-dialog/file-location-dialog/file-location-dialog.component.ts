@@ -1,12 +1,12 @@
 import { Component, HostBinding, OnInit } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
-import { FileLocationFormValues } from '..';
+import { FormsModule, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatOptionModule } from '@angular/material/core';
-import { MatSelectModule } from '@angular/material/select';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
+import { MatOptionModule } from '@angular/material/core';
+import { MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { FileLocationFormValues } from '..';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
 
 @Component({
@@ -30,7 +30,7 @@ export class FileLocationDialogComponent implements OnInit {
 
   form: UntypedFormGroup;
 
-  constructor(private dialogRef: MatDialogRef<FileLocationDialogComponent>) { }
+  constructor(private dialog: MatDialogRef<FileLocationDialogComponent>) { }
 
   ngOnInit(): void {
     this.form = new UntypedFormGroup({
@@ -39,7 +39,7 @@ export class FileLocationDialogComponent implements OnInit {
   }
 
   closeDialog(isShared?: boolean): void {
-    this.dialogRef.close(isShared);
+    this.dialog.close(isShared);
   }
 
   confirm(): void {

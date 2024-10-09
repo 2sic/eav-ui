@@ -1,29 +1,34 @@
 @if (!useTimePicker()) {
   <!-- Date-Picker only - use the classic Angular-Material date picker -->
   <mat-form-field [formGroup]="group" color="accent" class="eav-mat-form-field">
-    <input matInput class="eav-translate-on-dblclick"
+    <input
+      matInput
+      class="eav-translate-on-dblclick"
       [disabled]="ui().disabled"
       [matDatepicker]="picker"
       [placeholder]="basics().placeholder"
-      [required]="basics().required" [value]="uiValue()"
-      (dateChange)="updateValue($event)">
-    <mat-datepicker-toggle matTextSuffix [for]="picker" [tippy]="'Fields.DateTime.Open' | translate">
-    </mat-datepicker-toggle>
+      [required]="basics().required"
+      [value]="uiValue()"
+      (dateChange)="updateValue($event)"
+    />
+    <mat-datepicker-toggle matTextSuffix [for]="picker" tippyTranslate="Fields.DateTime.Open"> </mat-datepicker-toggle>
     <mat-datepicker #picker></mat-datepicker>
     <mat-label>{{ basics().label }}</mat-label>
   </mat-form-field>
-}
-@else {
+} @else {
   <!-- Date & Time Picker - use the OWL picker (not ideal, but looks similar)  -->
   <mat-form-field [formGroup]="group" color="accent" class="eav-mat-form-field">
-    <input matInput class="eav-translate-on-dblclick"
+    <input
+      matInput
+      class="eav-translate-on-dblclick"
       [disabled]="ui().disabled"
       [owlDateTime]="owlPicker"
       [placeholder]="basics().placeholder"
-      [required]="basics().required" [value]="valueForTimePicker()"
-      (dateTimeChange)="updateValue($event)">
-    <mat-datepicker-toggle matTextSuffix [owlDateTimeTrigger]="owlPicker" [tippy]="'Fields.DateTime.Open' | translate">
-    </mat-datepicker-toggle>
+      [required]="basics().required"
+      [value]="valueForTimePicker()"
+      (dateTimeChange)="updateValue($event)"
+    />
+    <mat-datepicker-toggle matTextSuffix [owlDateTimeTrigger]="owlPicker" tippyTranslate="Fields.DateTime.Open"> </mat-datepicker-toggle>
     <owl-date-time #owlPicker></owl-date-time>
     <mat-label>{{ basics().label }}</mat-label>
   </mat-form-field>

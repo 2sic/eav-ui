@@ -1,22 +1,22 @@
+import { NgClass } from '@angular/common';
 import { ChangeDetectorRef, Component, effect, ElementRef, HostBinding, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
-import { FileUploadDialogComponent, FileUploadDialogData, FileUploadMessageTypes, FileUploadResult, UploadTypes } from '../../../shared/components/file-upload-dialog';
-import { ImportAppPartsService } from '../../services/import-app-parts.service';
-import { transient } from '../../../core';
-import { BehaviorSubject, catchError, combineLatest, filter, fromEvent, map, Observable, of, switchMap, take, tap } from 'rxjs';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DomSanitizer } from '@angular/platform-browser';
-import { InstallPackage, InstallSettings, CrossWindowMessage, SpecsForInstaller } from '../../../shared/models/installer-models';
+import { BehaviorSubject, catchError, filter, fromEvent, map, of, switchMap, take, tap } from 'rxjs';
+import { transient } from '../../../../../../core';
+import { BaseComponent } from '../../../shared/components/base.component';
+import { FileUploadDialogComponent, FileUploadDialogData, FileUploadMessageTypes, FileUploadResult, UploadTypes } from '../../../shared/components/file-upload-dialog';
+import { DragAndDropDirective } from '../../../shared/directives/drag-and-drop.directive';
+import { CrossWindowMessage, InstallPackage, InstallSettings, SpecsForInstaller } from '../../../shared/models/installer-models';
+import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';
+import { Context } from '../../../shared/services/context';
 import { AppInstallSettingsService } from '../../../shared/services/getting-started.service';
 import { InstallerService } from '../../../shared/services/installer.service';
-import { BaseComponent } from '../../../shared/components/base.component';
-import { Context } from '../../../shared/services/context';
-import { NgClass } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { DragAndDropDirective } from '../../../shared/directives/drag-and-drop.directive';
-import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';
-import { MatIconModule } from '@angular/material/icon';
+import { ImportAppPartsService } from '../../services/import-app-parts.service';
 
 @Component({
   selector: 'app-import-app-parts',

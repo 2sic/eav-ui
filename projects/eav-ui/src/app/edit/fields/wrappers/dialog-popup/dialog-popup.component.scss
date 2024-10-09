@@ -1,0 +1,95 @@
+@import '../../../assets/styles/variables.scss';
+@import '../../../assets/styles/theme/material-colors.scss';
+
+.c-ew__container {
+  border-radius: $edit-ui-dialog-border-radius;
+  position: fixed;
+  z-index: 2;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  align-items: self-start;
+  justify-content: center;
+  display: flex;
+}
+
+.mat-elevation-z0 {
+  display: flex;
+  flex-direction: row;
+}
+
+.c-ew__backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.c-ew__dialog {
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  max-width: $edit-ui-dialog-max-width;
+  width: 100vw;
+  margin-top: 24px;
+  min-height: $expandable-wrapper-max-height;
+  max-height: $expandable-wrapper-max-height;
+
+  @media (max-width: 600px) {
+    margin-top: 0;
+    min-height: $expandable-wrapper-max-height-mobile;
+    max-height: $expandable-wrapper-max-height-mobile;
+  }
+
+  padding: 0;
+
+  .mat-mdc-dialog-actions {
+    padding: 16px;
+  }
+}
+
+.c-ew__dialog-header {
+  z-index: 4;
+  border-radius: $edit-ui-dialog-border-radius $edit-ui-dialog-border-radius 0 0;
+
+  .mat-mdc-card {
+    border-radius: $edit-ui-dialog-border-radius $edit-ui-dialog-border-radius 0 0;
+    padding: 16px;
+    align-items: center;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    height: 52px;
+    z-index: 1;
+
+    .back-arrow {
+      scale: calc(2 / 3);
+    }
+
+    .title {
+      font-size: 16px;
+      font-weight: 500;
+      margin-top: 1px;
+      line-height: 20px;
+    }
+  }
+}
+
+.c-ew__dialog-content {
+  position: relative;
+  background: map_get($mat-eav-item-dialog-background, 50);
+  border-radius: 0 0 $edit-ui-dialog-border-radius $edit-ui-dialog-border-radius;
+
+  .eav-layout-grid {
+    padding: 16px;
+
+    .mat-mdc-card {
+      height: calc(100% - 32px);
+    }
+  }
+}

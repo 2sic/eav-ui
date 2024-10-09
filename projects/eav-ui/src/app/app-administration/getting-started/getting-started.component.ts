@@ -1,8 +1,8 @@
+import { AsyncPipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { map } from 'rxjs';
-import { AsyncPipe } from '@angular/common';
+import { transient } from '../../../../../core';
 import { SafeResourceUrlPipe } from '../../shared/pipes/safe-resource-url';
-import { transient } from '../../core';
 import { DialogConfigAppService } from '../services/dialog-config-app.service';
 
 @Component({

@@ -1,22 +1,24 @@
 import { HttpErrorResponse } from "@angular/common/http";
-import { EditForm, EditPrep } from "../../../../../app/shared/models/edit-form.model";
-import { DeleteEntityProps } from "../models/picker.models";
-import { DataAdapterBase } from "./data-adapter-base";
+import { inject } from '@angular/core';
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
-import { PickerFeatures } from '../picker-features.model';
-import { Injector, inject, untracked } from '@angular/core';
-import { PickerItem, PickerItemFactory } from '../models/picker-item.model';
-import { DataSourceEntityQueryBase } from '../data-sources/data-source-entity-query-base';
-import { EntityFormStateService } from '../../../entity-form/entity-form-state.service';
-import { FieldState } from '../../field-state';
-import { FieldMask } from '../../../shared/helpers';
-import { transient } from '../../../../core/transient';
-import { FormConfigService } from '../../../form/form-config.service';
-import { EditRoutingService } from '../../../routing/edit-routing.service';
+import { take } from 'rxjs';
+import { transient } from '../../../../../../../core/transient';
+import { FieldSettingsPickerMerged } from '../../../../../../../edit-types/src/FieldSettings-Pickers';
+import { FieldSettingsWithPickerSource } from '../../../../../../../edit-types/src/PickerSources';
+import { EditForm, EditPrep } from "../../../../../app/shared/models/edit-form.model";
 import { EntityService } from "../../../../../app/shared/services/entity.service";
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
-import { take } from 'rxjs';
+import { EntityFormStateService } from '../../../entity-form/entity-form-state.service';
+import { FormConfigService } from '../../../form/form-config.service';
+import { EditRoutingService } from '../../../routing/edit-routing.service';
+import { FieldMask } from '../../../shared/helpers';
+import { FieldState } from '../../field-state';
+import { DataSourceEntityQueryBase } from '../data-sources/data-source-entity-query-base';
+import { PickerItem, PickerItemFactory } from '../models/picker-item.model';
+import { DeleteEntityProps } from "../models/picker.models";
+import { PickerFeatures } from '../picker-features.model';
+import { DataAdapterBase } from "./data-adapter-base";
 
 export abstract class DataAdapterEntityBase extends DataAdapterBase {
 
@@ -26,36 +28,29 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
   #editRoutingService = inject(EditRoutingService);
   protected translate = inject(TranslateService);
   #snackBar = inject(MatSnackBar);
-  protected injector = inject(Injector);
-  protected fieldState = inject(FieldState);
+  protected fieldState = inject(FieldState) as FieldState<string[], FieldSettingsWithPickerSource & FieldSettingsPickerMerged>;
   protected group = inject(EntityFormStateService).formGroup;
   #entityService = transient(EntityService);
+
+  constructor() { super();}
 
   protected name = this.fieldState.name;
 
   //#endregion
 
-  /** Content Type Mask */
-  #maskTemplate = computedObj('typeMaskFromSettings', () => this.fieldState.settings().EntityType);
-
   /**
+   * Content Type Mask
    * This is a text or mask containing all query parameters.
    * Since it's a mask, it can also contain values from the current item
    */
-  #paramsMaskLazy = computedObj('paramsMaskLazy', () => {
-    const typeMask = this.#maskTemplate();
-    // Note: untracked so that the creation of the mask (which has signals) doesn't trigger additional computations
-    const fieldMask = untracked(() => transient(FieldMask, this.injector).init('PickerSource-EntityType', typeMask));
-    return fieldMask;
-  });
+  #paramsMaskLazy = transient(FieldMask).initSignal('PickerSource-EntityType', this.fieldState.settingExt('EntityType'));
 
-
-  protected contentType = computedObj('contentType', () => this.#paramsMaskLazy()?.result() ?? '');
+  protected contentType = computedObj('contentType', () => this.#paramsMaskLazy?.result() ?? '');
 
   #createEntityTypes = computedObj('createEntityTypes', () => this.fieldState.settings().CreateTypes);
 
   /** The features depend on contentType names being available to support create */
-  public features = computedObj<Partial<PickerFeatures>>('features', () => {
+  public myFeatures = computedObj<Partial<PickerFeatures>>('features', () => {
     // if we don't know the content-type, we can't create new entities
     const disableCreate = !this.contentType() && !this.#createEntityTypes();
     return { create: !disableCreate } satisfies Partial<PickerFeatures>;
@@ -98,13 +93,19 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
   editItem(editParams: { entityGuid: string, entityId: number }, entityType: string): void {
     const l = this.log.fn('editItem', { editParams });
     const editGuid = editParams?.entityGuid;
+    const formParams = this.#urlToObject(editGuid == null ? this.#createParams.result() : this.#editParams.result());
     const form: EditForm = {
-      items: (editGuid == null)
-        ? [EditPrep.newFromType(entityType ?? this.contentType(), this.#getPrefill())]
-        : [EditPrep.editId(this.optionsOrHints().find(item => item.value === editGuid)?.id ?? editParams.entityId)]
+      items: [
+        {
+          ...(editGuid == null)
+            ? EditPrep.newFromType(entityType ?? this.contentType(), this.#urlToObject(this.#prefill.result()))
+            : EditPrep.editId(this.optionsOrHints().find(item => item.value === editGuid)?.id ?? editParams.entityId),
+          ...( formParams ? { ClientData: { parameters: formParams } } : {} ),
+        },
+      ],
     };
     const config = this.fieldState.config;
-    
+
     // Open the form
     this.#editRoutingService.open(config.index, config.entityGuid, form);
 
@@ -142,7 +143,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
         this.deleteCallback(props); // removes value from selected values
         this.#deletedItemsGuids.update(p => [...p, props.entityGuid]);
       },
-      error: (error1: HttpErrorResponse) => {
+      error: (_: HttpErrorResponse) => {
         this.#snackBar.dismiss();
         if (!confirm(this.translate.instant('Data.Delete.Question', { title, id }))) return;
         this.#snackBar.open(this.translate.instant('Message.Deleting'));
@@ -152,12 +153,17 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
             this.deleteCallback(props); // removes value from selected values
             this.#deletedItemsGuids.update(p => [...p, props.entityGuid]);
           },
-          error: (error2: HttpErrorResponse) => {
+          error: (_: HttpErrorResponse) => {
             this.#snackBar.open(this.translate.instant('Message.DeleteError'), null, { duration: 2000 });
           }
         });
       }
     });
+  }
+
+  /** Quick helper */
+  #getExtSetting<K extends keyof FieldSettingsWithPickerSource>(name: K) {
+    return this.fieldState.settingExt(name);
   }
 
   /**
@@ -167,27 +173,27 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
    * In future we may add more features like dates etc.
    * new 11.11.03
    */
-  #getPrefill(): Record<string, string> {
-    this.log.a('getPrefill');
-    // still very experimental, and to avoid errors try to catch any mistakes
-    try {
-      const prefillRaw = this.fieldState.settings().Prefill;
-      const prefillMask = transient(FieldMask, this.injector).init('Prefill', prefillRaw);
-      const prefill = prefillMask.result();
-      prefillMask.destroy();
-      if (!prefill || !prefill.trim()) { return null; }
-      const result: Record<string, string> = {};
-      prefill.split('\n').forEach(line => {
-        const parts = line.split('=');
-        if (parts.length === 2 && parts[0] && parts[1]) {
-          result[parts[0]] = parts[1];
-        }
-      });
-      return result;
-    } catch {
-      console.error('Error in getting Prefill for new entity. Will skip prefill.');
-      return null;
-    }
+  // #prefill = transient(FieldMask).initSignal('Prefill', this.fieldState.settingExt<FieldSettingsWithPickerSource, 'CreatePrefill'>('CreatePrefill'));
+  #prefill = transient(FieldMask).initSignal('Prefill', this.#getExtSetting('CreatePrefill'));
+  #createParams = transient(FieldMask).initSignal('CreateParams', this.#getExtSetting('CreateParameters'));
+  #editParams = transient(FieldMask).initSignal('CreateParams', this.#getExtSetting('EditParameters'));
+
+
+  #urlToObject(prefill: string) {
+    const l = this.log.fnIf('getPrefill', { prefill});
+    if (!prefill || !prefill.trim())
+      return l.r(null, 'empty');
+
+    // note: 2024-10-03 old code split for '\n' but I had to add '&'
+    // not sure if the \n is even relevant, so for now I'll remove it
+    const result = Object.fromEntries(
+      prefill.split('&')
+        .map(line => line.split('='))
+        .filter(parts => parts.length === 2 && parts[0] && parts[1])
+      ) as Record<string, string>;
+    
+    return l.r(result);
+    
   }
 }
 

@@ -1,5 +1,5 @@
-import { Adam } from '../../../../edit-types';
 import { Editor } from 'tinymce';
+import { Adam } from '../../../../edit-types/src/Adam';
 import { wysiwygEditorHtmlTag } from '../../../internal-constants';
 import * as DialogModes from '../../constants/display-modes';
 import * as EditModes from '../../constants/edit-modes';

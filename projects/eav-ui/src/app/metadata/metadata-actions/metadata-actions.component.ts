@@ -1,15 +1,14 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
+import { MatRippleModule } from '@angular/material/core';
+import { MatIconModule } from '@angular/material/icon';
 import { MetadataItem } from '../models/metadata.model';
 import { MetadataActionsParams } from './metadata-actions.models';
-import { MatIconModule } from '@angular/material/icon';
-import { MatRippleModule } from '@angular/material/core';
 
 @Component({
   selector: 'app-metadata-actions',
   templateUrl: './metadata-actions.component.html',
-  styleUrls: ['./metadata-actions.component.scss'],
   standalone: true,
   imports: [
     MatRippleModule,

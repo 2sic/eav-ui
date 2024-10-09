@@ -1,16 +1,15 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatRippleModule } from '@angular/material/core';
+import { MatIconModule } from '@angular/material/icon';
 import { SiteLanguagePermissions } from '../../../../apps-management/models/site-language.model';
 import { LanguagesPermissionsActionsParams } from './languages-permissions-actions.models';
-import { MatBadgeModule } from '@angular/material/badge';
-import { MatIconModule } from '@angular/material/icon';
-import { MatRippleModule } from '@angular/material/core';
 
 @Component({
   selector: 'app-languages-permissions-actions',
   templateUrl: './languages-permissions-actions.component.html',
-  styleUrls: ['./languages-permissions-actions.component.scss'],
   standalone: true,
   imports: [
     MatRippleModule,

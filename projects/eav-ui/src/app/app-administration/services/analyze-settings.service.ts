@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
+import { Of } from '../../../../../core';
 import { webApiAppRoot } from '../../import-app/services/import-app.service';
-import { AnalyzePart, SettingsStackItem } from '../sub-dialogs/analyze-settings/analyze-settings.models';
 import { HttpServiceBase } from '../../shared/services/http-service-base';
+import { AnalyzeParts, SettingsStackItem } from '../sub-dialogs/analyze-settings/analyze-settings.models';
 
 @Injectable()
 export class AnalyzeSettingsService extends HttpServiceBase {
 
-  getStack(part: AnalyzePart, key?: string, view?: string, stringifyValue = false): Observable<SettingsStackItem[]> {
+  getStack(part: Of<typeof AnalyzeParts>, key?: string, view?: string, stringifyValue = false): Observable<SettingsStackItem[]> {
     return this.http.get<SettingsStackItem[]>(
       this.apiUrl(webApiAppRoot + 'GetStack'),{
       params: {

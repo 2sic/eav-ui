@@ -1,24 +1,24 @@
+import { NgClass } from '@angular/common';
 import { Component, HostBinding, OnInit, signal } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatOptionModule } from '@angular/material/core';
 import { MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { distinctUntilChanged, startWith } from 'rxjs';
+import { transient } from '../../../../../core';
 import { ContentType } from '../../app-administration/models';
 import { ContentTypesService } from '../../app-administration/services';
+import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
 import { dropdownInsertValue } from '../../shared/constants/dropdown-insert-value.constant';
 import { eavConstants, ScopeOption } from '../../shared/constants/eav.constants';
-import { MetadataSaveFormValues } from './metadata-save-dialog.models';
-import { MatIconModule } from '@angular/material/icon';
-import { NgClass } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
-import { MatInputModule } from '@angular/material/input';
-import { MatOptionModule } from '@angular/material/core';
-import { MatSelectModule } from '@angular/material/select';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatCardModule } from '@angular/material/card';
-import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
 import { ClickStopPropagationDirective } from '../../shared/directives/click-stop-propagation.directive';
-import { transient } from '../../core';
+import { MetadataSaveFormValues } from './metadata-save-dialog.models';
 
 @Component({
   selector: 'app-metadata-save-dialog',
@@ -55,7 +55,7 @@ export class MetadataSaveDialogComponent implements OnInit {
   private contentTypesService = transient(ContentTypesService);
 
   constructor(
-    private dialogRef: MatDialogRef<MetadataSaveDialogComponent>,
+    private dialog: MatDialogRef<MetadataSaveDialogComponent>,
   ) { }
 
   ngOnInit(): void {
@@ -64,7 +64,7 @@ export class MetadataSaveDialogComponent implements OnInit {
   }
 
   closeDialog(contentType?: string): void {
-    this.dialogRef.close(contentType);
+    this.dialog.close(contentType);
   }
 
   toggleGuidedContentType(guidedContentType: boolean): void {

@@ -1,24 +1,28 @@
-import { PickerItem } from './models/picker-item.model';
-import { StateAdapter } from "./adapters/state-adapter";
+import { inject, Injectable, Signal } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Injectable, inject } from '@angular/core';
-import { PickerFeatures } from './picker-features.model';
-import { DataAdapterBase } from './adapters/data-adapter-base';
-import { computedObj, signalObj } from '../../../shared/signals/signal.utilities';
+import { getWith } from '../../../../../../core';
+import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
+import { FieldSettingsPickerMerged } from '../../../../../../edit-types/src/FieldSettings-Pickers';
 import { classLog } from '../../../shared/logging';
-import { getWith } from '../../../core';
+import { computedObj, signalObj } from '../../../shared/signals/signal.utilities';
 import { DebugFields } from '../../edit-debug';
+import { DataAdapterBase } from './adapters/data-adapter-base';
+import { StateAdapter } from "./adapters/state-adapter";
+import { PickerItem } from './models/picker-item.model';
+import { mergePickerFeatures, PickerFeatures, PickerFeaturesForControl } from './picker-features.model';
 
 const logSpecs = {
-  all: true,
-  setup: true,
-  addInfosFromSourceForUi: true,
-  optionsWithMissing: true,
+  all: false,
+  setup: false,
+  addInfosFromSourceForUi: false,
+  optionsWithMissing: false,
   selectedRaw: false,
   selectedOverride: false,
   selectedState: false,
-  fields: [...DebugFields],
+  features: true,
+  fields: [...DebugFields, '*'],
 }
+
 /**
  * Manages the data for the picker component.
  * This is quite complex, because there are many combinations of where the configuration and data can come from,
@@ -29,7 +33,7 @@ export class PickerData {
 
   //#region Constructor, Log, Services, Setup
   
-  log = classLog({PickerData}, logSpecs);
+  log = classLog({PickerData}, logSpecs, true);
 
   #translate = inject(TranslateService);
 
@@ -38,11 +42,18 @@ export class PickerData {
   constructor() { }
 
   /** Setup to load initial values and initialize the state */
-  public setup(name: string, state: StateAdapter, source: DataAdapterBase): this {
+  public setup(name: string, settings: Signal<FieldSettings>, state: StateAdapter, source: DataAdapterBase): this {
     const l = this.log.fnIfInList('setup', 'fields', name, { name, state, source });
+
+    // Setup this object
     this.name = name;
+    this.#settingsLazy.set(settings as Signal<FieldSettings & FieldSettingsPickerMerged>);
     this.state = state;
     this.source = source;
+
+    // Setup the State so it is able to do it's work based on data it wouldn't have otherwise
+    this.state.features = this.features;
+
     this.ready.set(true);
     // 1. Init Prefetch - for Entity Picker
     // This will place the prefetch items into the available-items list
@@ -95,7 +106,7 @@ export class PickerData {
   //#region Selected Data
 
   /** Currently selected items. Must watch for ready. */
-  public selectedRaw = computedObj('selectedState', () => {
+  public selectedRaw = computedObj<PickerItem[]>('selectedState', () => {
     const l = this.log.fnIfInList('selectedRaw', 'fields', this.name);
     return !this.ready()
       ? l.r([], 'not ready')
@@ -133,9 +144,30 @@ export class PickerData {
 
   //#endregion
 
-  /** Signal containing the features of the picker, basically to accumulate features such as "canEdit" */
-  public features = computedObj('features', () => PickerFeatures.merge(this.source.features(), this.state.features()));
+  #settingsLazy = signalObj<Signal<FieldSettings & FieldSettingsPickerMerged>>('settingsLazy', null);
 
+  #featuresFromSettings = computedObj('featuresFromSettings', () => {
+    const s = this.#settingsLazy()();
+    return {
+      textEntry: s.EnableTextEntry,
+      multiValue: s.AllowMultiValue,
+      create: s.EnableCreate && !!s.CreateTypes,
+      remove: s.EnableRemove,
+      delete: s.EnableDelete,
+    } satisfies Partial<PickerFeatures>;
+  });
+
+  /** Signal containing the features of the picker, basically to accumulate features such as "canEdit" */
+  public features = computedObj<PickerFeaturesForControl>('features', () => {
+    const mergeSourceAndState = mergePickerFeatures(this.source.myFeatures(), this.state.myFeatures());
+    const mergeSettings = mergePickerFeatures(mergeSourceAndState, this.#featuresFromSettings());
+    const forControl = {
+      ...mergeSettings,
+      showGoToListDialogButton: mergeSettings.multiValue,
+      showAddNewButton: mergeSettings.create,
+    } satisfies PickerFeaturesForControl;
+    return forControl;
+  });
 
   public addNewlyCreatedItem(result: Record<string, number>) {
     const newItemGuid = Object.keys(result)[0];

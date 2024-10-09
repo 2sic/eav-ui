@@ -1,19 +1,19 @@
-import { AbstractControlPro } from './../../shared/validation/validation.helpers';
-import { Component, Injector, Input, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, inject, Injector, Input, OnDestroy, OnInit } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { EntityFormComponent } from '../entity-form-component/entity-form.component';
-import { EntityFormStateService } from '../entity-form-state.service';
+import { filter, map, Observable, take } from 'rxjs';
+import { transient } from '../../../../../../core';
+import { classLog } from '../../../shared/logging';
 import { FormulaDesignerService } from '../../formulas/designer/formula-designer.service';
 import { FieldsSettingsService } from '../../state/fields-settings.service';
 import { FieldsTranslateService } from '../../state/fields-translate.service';
-import { FormFieldsBuilderService } from './form-fields-builder.service';
-import { transient } from '../../../core';
-import { FormFieldsSyncService } from './form-fields-sync.service';
-import { classLog } from '../../../shared/logging';
+import { EntityFormComponent } from '../entity-form-component/entity-form.component';
+import { EntityFormStateService } from '../entity-form-state.service';
 import { EntityFormSyncService } from '../entity-form-sync.service';
-import { filter, map, Observable, take } from 'rxjs';
+import { AbstractControlPro } from './../../shared/validation/validation.helpers';
 import { FieldInitSpecs } from './field-init-specs.model';
-import { toObservable } from '@angular/core/rxjs-interop';
+import { FormFieldsBuilderService } from './form-fields-builder.service';
+import { FormFieldsSyncService } from './form-fields-sync.service';
 
 const logSpecs = {
   all: true,
@@ -41,6 +41,8 @@ const logSpecs = {
 export class EntityFormBuilderComponent implements OnInit, OnDestroy {
 
   @Input() entityGuid: string;
+  @Input() index: number;
+
 
   log = classLog({EntityFormBuilderComponent}, logSpecs);
 
@@ -74,7 +76,7 @@ export class EntityFormBuilderComponent implements OnInit, OnDestroy {
     ftp$.pipe(take(1)).subscribe(allFields => this.#formFieldsBuilderService.createFields(entityGuid, this.form, allFields));
 
     this.#fieldsSyncSvc.keepFieldsAndStateInSync(this.form, ftp$);
-    
+
     // Sync state to parent: dirty, isValid, value changes
     this.#formSyncSvc.setupSync(entityGuid);
 

@@ -1,38 +1,42 @@
+import { moveItemInArray } from '@angular/cdk/drag-drop';
+import { Injectable, Signal, inject } from '@angular/core';
+import { getWith } from '../../../../../../../core';
+import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
+import { FieldSettingsPickerMerged } from '../../../../../../../edit-types/src/FieldSettings-Pickers';
+import { classLog } from '../../../../shared/logging';
+import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
+import { FormConfigService } from '../../../form/form-config.service';
+import { FieldState } from '../../field-state';
+import { DeleteEntityProps } from '../models/picker.models';
+import { PickerFeatures } from '../picker-features.model';
 import { ReorderIndexes } from '../picker-list/reorder-index.models';
 import { correctStringEmptyValue } from '../picker.helpers';
-import { DeleteEntityProps } from '../models/picker.models';
-import { moveItemInArray } from '@angular/cdk/drag-drop';
-import { Injectable, inject } from '@angular/core';
-import { PickerFeatures } from '../picker-features.model';
-import { FieldState } from '../../field-state';
-import { FormConfigService } from '../../../form/form-config.service';
-import { signalObj, computedObj } from '../../../../shared/signals/signal.utilities';
-import { classLog } from '../../../../shared/logging';
 import { StateUiMapperBase } from './state-ui-mapper-base';
 
 export const logSpecsStateAdapter = {
   all: false,
-  updateValue: true,
+  updateValue: false,
   add: false,
-  set: true,
-  remove: true,
-  reorder: true,
-  doAfterDelete: true,
-  selectedItems: true,
-  sepAndOpts: true,
-  createEntityTypes: true,
-  attachCallback: true,
+  set: false,
+  remove: false,
+  reorder: false,
+  doAfterDelete: false,
+  selectedItems: false,
+  sepAndOpts: false,
+  createEntityTypes: false,
+  attachCallback: false,
+  typesForNew: true,
 };
 
 @Injectable()
 export abstract class StateAdapter {
-  
+
   //#region Setup / Inject / Logs
 
-  log = classLog({StateAdapter}, logSpecsStateAdapter, false);
-  
-  public formConfigSvc = inject(FormConfigService);
-  #fieldState = inject(FieldState) as FieldState<string | string[]>;
+  log = classLog({StateAdapter}, logSpecsStateAdapter);
+
+  #formConfigSvc = inject(FormConfigService);
+  #fieldState = inject(FieldState) as FieldState<number | string | string[], FieldSettings & FieldSettingsPickerMerged>;
 
   constructor() { }
 
@@ -42,29 +46,37 @@ export abstract class StateAdapter {
 
   public isInFreeTextMode = signalObj('isInFreeTextMode', false);
 
-  public features = signalObj('features', {} as Partial<PickerFeatures>);
+  /** The features this source will broadcast, to be merged with other features */
+  public myFeatures = signalObj('features', {} as Partial<PickerFeatures>);
+
+  /** The final valid features, must be provided by the picker-data */
+  public features: Signal<PickerFeatures>;
+
+
+  #createTypesRaw = computedObj('createTypesRaw',
+    () => getWith(this.settings().CreateTypes,
+      ts => ts.split(ts.indexOf('\n') > -1 ? '\n' : ',')).filter(Boolean));
 
   /**  List of entity types to create for the (+) button; ATM exclusively used in the new pickers for selecting the source. */
-  public typesForNew = computedObj('createEntityTypes', () => {
-    const types = this.settings().CreateTypes;
-    // Get / split the types from the configuration
-    const raw = types
-      ? types
-        .split(types.indexOf('\n') > -1 ? '\n' : ',')   // use either \n or , as delimiter
-        .map((guid: string) => ({ label: null, guid }))
-      : []
+  public typesForNew = computedObj('typesForNew', () => {
+    const raw = this.#createTypesRaw().map((guid: string) => ({ label: null, guid }));
+    
+    const l = this.log.fnIf('typesForNew', { raw });
+
+    // return [];
     // Augment with additional label and guid if we have this
     const updated = raw.map(orig => {
       const guid = orig.guid;
-      const ct = this.formConfigSvc.settings.ContentTypes
+      const ct = this.#formConfigSvc.settings.ContentTypes
         .find(ct => ct.Id === guid || ct.Name == guid);
       return {
         ...orig,
-        label: ct?.Name ?? guid + " (not found)",
+        // replace is a bit temporary, as the names are a bit long...
+        label: (ct?.Title ?? ct?.Name ?? guid + " (not found)").replace('UI Picker Source - ', ''),
         guid: ct?.Id ?? guid,
       }
     });
-    return updated;
+    return l.r(updated);
   });
 
   /** Signal with all the currently selected items */
@@ -82,7 +94,7 @@ export abstract class StateAdapter {
       const uiValue = this.#fieldState.uiValue();
       l.a('selectedItems', { uiValue, sAndO });
 
-      return correctStringEmptyValue(uiValue, sAndO.separator, sAndO.options);
+      return correctStringEmptyValue(this.mapper.toUi(uiValue), sAndO.options);
     });
   })();
 
@@ -104,7 +116,7 @@ export abstract class StateAdapter {
    * Mapper to convert between the state and the UI - must be added by inheriting class.
    * On the UI side, must always be an array of strings.
    */
-  public abstract mapper: StateUiMapperBase<string | string[], string[]>;
+  public abstract mapper: StateUiMapperBase<number | string | string[], string[]>;
 
   /** Signal with the current values in the picker, as an array */
   public values = computedObj('ids', () => this.mapper.toUi(this.#fieldState.uiValue()));
@@ -120,18 +132,22 @@ export abstract class StateAdapter {
     const valueArray = [...this.values()];
     const modified = operation(valueArray);
     const newValue = this.mapper.toState(modified);
-    this.#fieldState.ui().set(newValue);
+    this.#fieldState.ui().setIfChanged(newValue);
     l.end('', { newValue });
   }
-  
+
   public add(value: string): void {
     this.log.fnIf('add', { value });
-    this.#updateValue(list => (this.settings().AllowMultiValue) ? [...list, value] : [value]);
+    this.#updateValue(list => (this.features().multiValue) ? [...list, value] : [value]);
   }
 
   public set(values: string[]): void {
     this.log.fnIf('set', { values });
     this.#updateValue(() => values);
+  }
+
+  public flush(): void {
+    this.set([]);
   }
 
   public reorder(reorderIndexes: ReorderIndexes) {
@@ -149,13 +165,9 @@ export abstract class StateAdapter {
       return [...list];
     });
 
-    if (!this.values().length) {
-      // move back to component
-      setTimeout(() => {
-        console.log('trying to call focus');
-        this.#focusOnSearchComponent();
-      });
-    }
+    // If we have no items left, set focus back to the search component, since this is usually wanted
+    if (!this.values().length)
+      setTimeout(() => this.#focusOnSearchComponent());
   }
 
   public doAfterDelete(props: DeleteEntityProps) {
@@ -169,20 +181,3 @@ export abstract class StateAdapter {
     this.isInFreeTextMode.update(p => !p);
   }
 }
-
-// 2024-06-20 Keep in case we need it later
-
-// Temp centralize logic if pickerList should show, but not in use yet.
-// Commented out, till we need it, then refactor to signals
-// var allowMultiValue$ = this.settings$.pipe(mapUntilChanged(settings => settings.AllowMultiValue));
-// this.shouldPickerListBeShown$ = combineLatest([
-//   this.isExpanded$,
-//   allowMultiValue$,
-//   selectedItems$,
-// ]).pipe(
-//   map(([isExpanded, allowMultiValue, selectedItems]) => {
-//     return !this.isInFreeTextMode()
-//       && ((selectedItems.length > 0 && allowMultiValue) || (selectedItems.length > 1 && !allowMultiValue))
-//       && (!allowMultiValue || (allowMultiValue && isExpanded));
-//   })
-// );

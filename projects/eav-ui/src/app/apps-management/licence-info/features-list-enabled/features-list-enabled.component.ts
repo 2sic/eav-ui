@@ -6,7 +6,6 @@ import { MatIconModule } from '@angular/material/icon';
 @Component({
   selector: 'app-features-list-enabled',
   templateUrl: './features-list-enabled.component.html',
-  styleUrls: ['./features-list-enabled.component.scss'],
   standalone: true,
   imports: [MatIconModule],
 })

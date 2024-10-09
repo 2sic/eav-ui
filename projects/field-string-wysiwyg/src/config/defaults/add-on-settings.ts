@@ -1,4 +1,4 @@
-import { AddOnSettings } from '../../../../edit-types';
+import { AddOnSettings } from '../../../../edit-types/src/AddOnSettings';
 
 export const DefaultAddOnSettings: AddOnSettings = {
   enabled: true,

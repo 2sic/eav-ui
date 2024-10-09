@@ -18,7 +18,9 @@ export class ClickStopPropagationDirective {
   onClick(event: MouseEvent): void {
     this.log.a('onClick', { event });
     event.stopPropagation();
-    event.preventDefault();
+
+    // This should never be added here, as it's often on a link, and the default behavior (link open) should happen
+    // event.preventDefault();
   }
 
 }

@@ -1,19 +1,17 @@
-import { Component, inject, signal } from '@angular/core';
-import { CustomGpsLogic } from './custom-gps-logic';
-import { StringWysiwygLogic } from './string-wysiwyg-logic';
 import { AsyncPipe } from '@angular/common';
+import { Component, inject, signal } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { FieldState } from '../../field-state';
-import { ConnectorComponent } from '../../connector/connector.component';
-import { ScriptsLoaderService } from '../../../shared/services/scripts-loader.service';
-import { EditRoutingService } from '../../../routing/edit-routing.service';
 import { classLog } from '../../../../shared/logging';
+import { ScriptsLoaderService } from '../../../shared/services/scripts-loader.service';
+import { ConnectorComponent } from '../../connector/connector.component';
+import { FieldState } from '../../field-state';
+import { CustomGpsLogic } from './custom-gps-logic';
+import { StringWysiwygLogic } from './string-wysiwyg-logic';
 
 @Component({
   selector: InputTypeCatalog.ExternalWebComponent,
   templateUrl: './external-web-component.component.html',
-  styleUrls: ['./external-web-component.component.scss'],
   standalone: true,
   imports: [
     MatProgressSpinnerModule,
@@ -27,13 +25,11 @@ export class ExternalWebComponentComponent {
 
   protected fieldState = inject(FieldState);
   protected config = this.fieldState.config;
-
-  protected isExpanded = this.editRoutingService.isExpandedSignal(this.config.index, this.config.entityGuid);
+ 
   protected loading = signal<boolean>(true)
 
   constructor(
     private scriptsLoaderService: ScriptsLoaderService,
-    private editRoutingService: EditRoutingService,
   ) {
     StringWysiwygLogic.importMe();
     CustomGpsLogic.importMe();

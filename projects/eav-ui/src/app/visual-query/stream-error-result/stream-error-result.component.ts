@@ -1,11 +1,11 @@
+import { JsonPipe } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialogActions } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MAT_DIALOG_DATA, MatDialogActions, MatDialogRef } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { EavWindow } from '../../shared/models/eav-window.model';
 import { StreamErrorData } from '../models';
 import { StreamErrorResultDialogData } from './stream-error-result.models';
-import { JsonPipe } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
 
 declare const window: EavWindow;
 
@@ -26,7 +26,7 @@ export class StreamErrorResultComponent implements OnInit {
 
   constructor(
     @Inject(MAT_DIALOG_DATA) private dialogData: StreamErrorResultDialogData,
-    private dialogRef: MatDialogRef<StreamErrorResultComponent>,
+    private dialog: MatDialogRef<StreamErrorResultComponent>,
   ) { }
 
   ngOnInit() {
@@ -34,7 +34,7 @@ export class StreamErrorResultComponent implements OnInit {
   }
 
   closeDialog() {
-    this.dialogRef.close();
+    this.dialog.close();
   }
 
   openInsights() {

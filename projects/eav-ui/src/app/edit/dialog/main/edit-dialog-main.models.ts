@@ -1,9 +1,10 @@
-import { AdamItem } from '../../../../../../edit-types';
+import { Of } from '../../../../../../core';
+import { AdamItem } from '../../../../../../edit-types/src/AdamItem';
 import { DialogContext } from '../../../app-administration/models';
+import { FeatureNames } from '../../../features/feature-names';
 import { InputTypeMetadata } from '../../../shared/fields/input-type-metadata.model';
-import { EavContentType, EavEntity, EavItem } from '../../shared/models/eav';
+import { EavContentType, EavEntity } from '../../shared/models/eav';
 import { EavContentTypeDto, EavEntityBundleDto, EavEntityDto } from '../../shared/models/json-format-v1';
-
 
 export interface EavPublishStatus {
   DraftShouldBranch: boolean;
@@ -21,8 +22,6 @@ export const PublishModes = {
   Branch: 'branch',
 } as const /* the as const ensures that the keys/values can be strictly checked */;
 
-export type PublishMode = typeof PublishModes[keyof typeof PublishModes];
-
 
 export interface EavEditLoadDto extends EavPublishStatus {
   ContentTypeItems: EavEntityDto[];
@@ -32,6 +31,8 @@ export interface EavEditLoadDto extends EavPublishStatus {
   Items: EavEntityBundleDto[];
   Prefetch?: Prefetch;
   Settings: EditSettingsDto;
+
+  RequiredFeatures?: Record<Of<typeof FeatureNames>, string[]>;
 }
 
 export interface EditSettings {
@@ -78,25 +79,6 @@ export interface Prefetch {
   /** NgRx store helper */
   _guid?: string;
 }
-
-// #RemovePickerDataCacheService
-// /**
-//  * temporary interface till backend is updated again to match latest requirements.
-//  * Should then be replaced with EntityBasic
-//  */
-// export interface PrefetchEntity {
-//   Id: number,
-//   Value: string,
-//   Text: string,
-// }
-// /** Temporary till the models are somehow in sync again */
-// export function prefetchItemToPickerItem(item: PrefetchEntity): PickerItem {
-//   return {
-//     id: item.Id,
-//     label: item.Text,
-//     value: item.Value,
-//   };
-// }
 
 export interface PrefetchAdams {
   [entityGuid: string]: {

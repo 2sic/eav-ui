@@ -2,16 +2,16 @@ import { ChangeDetectorRef, ViewContainerRef } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { take } from 'rxjs';
-import { PagePickerResult } from '../../../../../../edit-types';
+import { PagePickerResult } from '../../../../../../edit-types/src/PagePickerResult';
+import { FieldConfigSet } from '../field-config-set.model';
 import { PagePickerComponent } from './page-picker.component';
 import { PagePickerDialogData } from './page-picker.models';
-import { FieldConfigSet } from '../field-config-set.model';
 
 export class PagePicker {
   static open(
     config: FieldConfigSet,
     group: UntypedFormGroup,
-    dialog: MatDialog,
+    matDialog: MatDialog,
     viewContainerRef: ViewContainerRef,
     changeDetectorRef: ChangeDetectorRef,
     callback: (value: PagePickerResult) => void,
@@ -20,7 +20,7 @@ export class PagePicker {
       config,
       group,
     };
-    const dialogRef = dialog.open(PagePickerComponent, {
+    const dialogRef = matDialog.open(PagePickerComponent, {
       autoFocus: false,
       data: dialogData,
       viewContainerRef,

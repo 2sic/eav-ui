@@ -1,4 +1,5 @@
 import { FieldSettings } from './FieldSettings';
+import { EmptyDefault } from './FieldSettings-EmptyDefault';
 
 /**
  * Goal of this is to provide the basic settings for a control
@@ -42,7 +43,7 @@ export class BasicControlSettings {
     const visibilityRaw = s?.Visible ?? true;
     const visibilityDisabled = s?.VisibleDisabled ?? false;
     const visible = visibilityRaw && !visibilityDisabled;
-    const collapsed = s?.Collapsed ?? false;
+    const collapsed = (s as FieldSettings & EmptyDefault)?.Collapsed ?? false;
     // if (label == 'loading...') {
     //   console.log('s', s);
     // }

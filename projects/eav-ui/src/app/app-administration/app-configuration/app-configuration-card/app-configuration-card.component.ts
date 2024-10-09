@@ -1,24 +1,24 @@
+import { NgTemplateOutlet } from '@angular/common';
 import { Component, Input, OnDestroy, OnInit, signal } from '@angular/core';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { transient } from '../../../../../../core';
+import { ContentItem } from '../../../content-items/models/content-item.model';
 import { ContentItemsService } from '../../../content-items/services/content-items.service';
 import { GoToMetadata } from '../../../metadata';
 import { eavConstants } from '../../../shared/constants/eav.constants';
+import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { convertFormToUrl } from '../../../shared/helpers/url-prep.helper';
 import { DialogSettings } from '../../../shared/models/dialog-settings.model';
 import { EditForm, EditPrep } from '../../../shared/models/edit-form.model';
-import { Context } from '../../../shared/services/context';
-import { AppInternalsService } from '../../services/app-internals.service';
-import { AppInternals } from '../../models/app-internals.model';
-import { copyToClipboard } from '../../../shared/helpers/copy-to-clipboard.helper';
-import { MatBadgeModule } from '@angular/material/badge';
-import { MatButtonModule } from '@angular/material/button';
-import { NgTemplateOutlet } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
-import { MatCardModule } from '@angular/material/card';
-import { TippyDirective } from '../../../shared/directives/tippy.directive';
-import { transient } from '../../../core';
 import { DialogRoutingService } from '../../../shared/routing/dialog-routing.service';
-import { ContentItem } from '../../../content-items/models/content-item.model';
+import { ClipboardService } from '../../../shared/services/clipboard.service';
+import { Context } from '../../../shared/services/context';
+import { AppInternals } from '../../models/app-internals.model';
+import { AppInternalsService } from '../../services/app-internals.service';
 
 @Component({
   selector: 'app-app-configuration-card',
@@ -62,10 +62,7 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
     this.snackBar.dismiss();
   }
 
-  copyToClipboard(text: string): void {
-    copyToClipboard(text);
-    this.snackBar.open('Copied to clipboard', null, { duration: 2000 });
-  }
+  protected clipboard = transient(ClipboardService);
 
   edit() {
     const staticName = eavConstants.contentTypes.appConfiguration;

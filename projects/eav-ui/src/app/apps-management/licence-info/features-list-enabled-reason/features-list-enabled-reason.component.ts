@@ -7,7 +7,6 @@ import { TippyDirective } from '../../../shared/directives/tippy.directive';
 @Component({
   selector: 'app-features-list-enabled-reason',
   templateUrl: './features-list-enabled-reason.component.html',
-  styleUrls: ['./features-list-enabled-reason.component.scss'],
   standalone: true,
   imports: [TippyDirective],
 })

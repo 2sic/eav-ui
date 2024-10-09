@@ -1,6 +1,6 @@
 import Papa from 'papaparse';
-import { PickerOptionCustomExtended } from '../../../../../../../edit-types';
-import { classLog } from '../../../../shared/logging/logging';
+import { PickerOptionCustomExtended } from '../../../../../../../edit-types/src/DropdownOption';
+import { classLog } from '../../../../shared/logging';
 
 const logSpecs = {
   all: false,
@@ -9,7 +9,7 @@ const logSpecs = {
 
 export class DataSourceParserCsv {
   
-  log = classLog({DataSourceParserCsv}, logSpecs, true);
+  log = classLog({DataSourceParserCsv}, logSpecs);
 
   constructor() { }
 

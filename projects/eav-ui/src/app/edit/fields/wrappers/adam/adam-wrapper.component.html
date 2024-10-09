@@ -1,13 +1,17 @@
-<div class="adam-dialog-container">
+<div [ngClass]="{ 'adam-in-popup': this.fieldState.isOpen(), 'c-ew__dialog-content--empty': fullscreenAdam }">
   <div class="adam-dialog-content">
     <ng-container #fieldComponent></ng-container>
   </div>
-  <adam-browser (openUpload)="openUpload()" class="u-shadow-top" [ngClass]="{
-    'adam-browser-container--short u-hide-scrollbar': !fullscreenAdam,
-    'u-display-none': adamDisabled()
-  }">
+  <adam-browser
+    (openUpload)="openUpload()"
+    class="u-shadow-top"
+    [ngClass]="{
+      'adam-browser-container--short u-hide-scrollbar': !fullscreenAdam,
+      'u-display-none': adamDisabled(),
+    }"
+  >
   </adam-browser>
-  <div class="{{ config.dropzonePreviewsClass }}" [ngClass]="{ 'u-display-none': adamDisabled() }">  
+  <div class="{{ config.dropzonePreviewsClass }}" [ngClass]="{ 'u-display-none': adamDisabled() }">
     <div class="dropzone-previews"></div>
     <span #invisibleClickable class="invisible-clickable" data-note="just a fake, invisible area for dropzone"></span>
   </div>

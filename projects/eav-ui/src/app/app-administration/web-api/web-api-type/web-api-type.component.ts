@@ -6,7 +6,6 @@ import { MatIconModule } from '@angular/material/icon';
 @Component({
   selector: 'app-web-api-type',
   templateUrl: './web-api-type.component.html',
-  styleUrls: ['./web-api-type.component.scss'],
   standalone: true,
   imports: [MatIconModule],
 })

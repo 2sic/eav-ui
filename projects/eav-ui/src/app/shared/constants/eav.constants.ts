@@ -1,10 +1,10 @@
-const MetadataKeyTypes = {
+import { Of } from "../../../../../core";
+
+export const MetadataKeyTypes = {
   Guid: 'guid',
   String: 'string',
   Number: 'number',
 } as const /* the as const ensures that the keys/values can be strictly checked */;
-
-export type MetadataKeyType = typeof MetadataKeyTypes[keyof typeof MetadataKeyTypes];
 
 export interface ScopeOption {
   name: string;
@@ -16,7 +16,6 @@ export const SystemSettingsScopes = {
   Site: 'site',
 } as const /* the as const ensures that the keys/values can be strictly checked */;
 
-export type SystemSettingsScope = typeof SystemSettingsScopes[keyof typeof SystemSettingsScopes];
 
 export const EditApiKeyPaths = {
   GoogleTranslate: 'Settings.GoogleTranslate.ApiKey',
@@ -27,7 +26,7 @@ export interface MetadataKeyDefinition {
   targetType: number;
   target: string;
   label: string;
-  keyType: MetadataKeyType;
+  keyType: Of<typeof MetadataKeyTypes>;
   hint?: string;
 }
 

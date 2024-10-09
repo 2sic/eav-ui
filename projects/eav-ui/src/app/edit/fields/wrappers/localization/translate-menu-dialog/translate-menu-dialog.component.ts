@@ -1,19 +1,19 @@
+import { AsyncPipe, NgClass } from '@angular/common';
 import { Component, computed, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { TranslationStateCore } from '../../../../localization/translate-state.model';
-import { getTemplateLanguages } from './translate-menu-dialog.helpers';
-import { TranslateMenuDialogData } from './translate-menu-dialog.models';
-import { TranslateModule } from '@ngx-translate/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { ExtendedModule } from '@angular/flex-layout/extended';
-import { NgClass, AsyncPipe } from '@angular/common';
-import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
-import { TranslationLink, TranslationLinks } from '../../../../localization/translation-link.constants';
-import { FieldsTranslateService } from '../../../../state/fields-translate.service';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { TranslateModule } from '@ngx-translate/core';
+import { Of } from '../../../../../../../../core';
 import { TranslateHelperComponent } from '../../../../../shared/components/translate-helper.component';
 import { isCtrlS } from '../../../../dialog/main/keyboard-shortcuts';
+import { TranslationStateCore } from '../../../../localization/translate-state.model';
+import { TranslationLinks } from '../../../../localization/translation-link.constants';
+import { FieldsTranslateService } from '../../../../state/fields-translate.service';
+import { getTemplateLanguages } from './translate-menu-dialog.helpers';
+import { TranslateMenuDialogData } from './translate-menu-dialog.models';
 
 interface TranslationInfo {
   showLanguageSelection: boolean;
@@ -30,7 +30,6 @@ interface TranslationInfo {
     MatCardModule,
     MatListModule,
     NgClass,
-    ExtendedModule,
     MatIconModule,
     MatButtonModule,
     AsyncPipe,
@@ -49,18 +48,18 @@ export class TranslateMenuDialogComponent extends TranslateHelperComponent {
   });
 
   constructor(
-    private dialogRef: MatDialogRef<TranslateMenuDialogComponent>,
+    private dialog: MatDialogRef<TranslateMenuDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public dialogData: TranslateMenuDialogData,
     public fieldsTranslateService: FieldsTranslateService,
   ) {
     super(dialogData); //
-    this.dialogRef.keydownEvents().subscribe(event => {
+    this.dialog.keydownEvents().subscribe(event => {
       if (isCtrlS(event))
         event.preventDefault();
     });
   }
 
-  setLinkType(linkType: TranslationLink): void {
+  setLinkType(linkType: Of<typeof TranslationLinks>): void {
     const newTranslationState: TranslationStateCore = {
       linkType,
       language: this.noLanguageRequired.includes(linkType) ? '' : this.translationStateSignal().language,
@@ -104,6 +103,6 @@ export class TranslateMenuDialogComponent extends TranslateHelperComponent {
   }
 
   private closeDialog() {
-    this.dialogRef.close();
+    this.dialog.close();
   }
 }

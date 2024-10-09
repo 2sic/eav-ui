@@ -1,5 +1,5 @@
-@import "../../../assets/styles/variables.scss";
-@import "../../../assets/styles/theme/material-colors.scss";
+@import '../../../assets/styles/variables.scss';
+@import '../../../assets/styles/theme/material-colors.scss';
 
 $hyperlink-default-height: 78px;
 
@@ -7,30 +7,15 @@ $hyperlink-default-height: 78px;
   color: $blue-accent-color;
 }
 
+// Ensures correct layout
+.c-ew__preview--hyperlink {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
 .c-ew__preview {
-  // padding-top: 12px;
-
-  &-field {
-    &--short {
-      // spm width 1% is required. Otherwise field breaks
-      width: 1%;
-      padding: 0;
-      padding-left: 8px;
-      margin-top: -4px;
-    }
-
-    &-hint {
-      color: rgba($editUI-foreground-color, 0.44);
-      font-size: 12px;
-    }
-  }
-
-  &--disabled {
-    .c-ew__preview-field-hint {
-      color: $editUI-label-disabled-color;
-    }
-  }
-
   .thumbnail-before-input {
     background-color: rgba($editUI-foreground-color, 0.08);
     width: $hyperlink-default-height;
@@ -54,55 +39,91 @@ $hyperlink-default-height: 78px;
         color: rgba($editUI-foreground-color, 0.44);
       }
     }
-
-    &--disabled {
-      cursor: default;
-
-      .c-ew__preview-field-hint {
-        color: $editUI-label-disabled-color;
-      }
-    }
   }
 
-  &-suffix-text {
-    font-size: 12px;
-    line-height: 14px;
-    color: map_get($mat-eav-item-dialog-secondary, 300);
-    user-select: none;
-    cursor: text;
+  .thumbnail-before-input--disabled {
+    cursor: default;
 
-    &--disabled {
+    .c-ew__preview-field-hint {
       color: $editUI-label-disabled-color;
     }
   }
+}
 
-  @media (min-width: 601px) {
-    &-suffix-icon {
-      top: 0 !important;
-    }
+.c-ew__preview-field--short {
+  flex: 1 1 auto;
+  // spm width 1% is required. Otherwise field breaks
+  width: 1%;
+  padding: 0;
+  padding-left: 8px;
+  margin-top: -4px;
+}
+
+.c-ew__preview-field-hint {
+  color: rgba($editUI-foreground-color, 0.44);
+  font-size: 12px;
+}
+
+.c-ew__preview--disabled {
+  .c-ew__preview-field-hint {
+    color: $editUI-label-disabled-color;
+  }
+}
+
+.c-ew__preview-suffix {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.c-ew__preview-suffix-text {
+  font-size: 12px;
+  line-height: 14px;
+  color: map_get($mat-eav-item-dialog-secondary, 300);
+  user-select: none;
+  cursor: text;
+}
+
+.c-ew__preview-suffix-text--disabled {
+  color: $editUI-label-disabled-color;
+}
+
+@media (min-width: 601px) {
+  .c-ew__preview-suffix-icon {
+    top: 0 !important;
   }
 
-  @media (max-width: 600px) {
-    &-suffix-icon {
-      top: 10px !important;
-    }
+  .hyperlink-floating,
+  .c-ew__preview-field-hint.c__helper-wrapper--right {
+    display: flex;
+  }
+}
+
+@media (max-width: 600px) {
+  .c-ew__preview-suffix-icon {
+    top: 10px !important;
+  }
+
+  .hyperlink-floating,
+  .c-ew__preview-field-hint.c__helper-wrapper--right {
+    display: none;
   }
 }
 
 .c__helper-wrapper {
   display: flex;
   width: 100%;
+}
 
-  &--left {
-    flex: auto;
-    // spm width 1% is required. Otherwise field breaks
-    width: 1%;
-  }
+.c__helper-wrapper--left {
+  flex: auto;
+  // spm width 1% is required. Otherwise field breaks
+  width: 1%;
+}
 
-  &--right {
-    flex: 0 0 auto;
-    padding-top: 0.54166667em;
-    padding-left: 12px;
-    line-height: 16px;
-  }
+.c__helper-wrapper--right {
+  flex: 0 0 auto;
+  padding-top: 0.54166667em;
+  padding-left: 12px;
+  line-height: 16px;
 }

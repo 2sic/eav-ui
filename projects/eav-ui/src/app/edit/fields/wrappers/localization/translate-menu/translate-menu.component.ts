@@ -1,26 +1,24 @@
+import { NgClass } from '@angular/common';
 import { Component, inject, Input, ViewContainerRef } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { TranslateModule } from '@ngx-translate/core';
+import { FeatureIconIndicatorComponent } from '../../../../../features/feature-icon-indicator/feature-icon-indicator.component';
+import { TippyDirective } from '../../../../../shared/directives/tippy.directive';
+import { computedObj } from '../../../../../shared/signals/signal.utilities';
+import { FormConfigService } from '../../../../form/form-config.service';
+import { FormsStateService } from '../../../../form/forms-state.service';
 import { AutoTranslateDisabledWarningDialog } from '../../../../localization/auto-translate-disabled-warning-dialog/auto-translate-disabled-warning-dialog.component';
 import { AutoTranslateMenuDialogComponent } from '../../../../localization/auto-translate-menu-dialog/auto-translate-menu-dialog.component';
+import { TranslationState } from '../../../../localization/translate-state.model';
+import { TranslationLinks } from '../../../../localization/translation-link.constants';
+import { FieldsTranslateService } from '../../../../state/fields-translate.service';
+import { FieldState } from '../../../field-state';
 import { TranslateMenuDialogComponent } from '../translate-menu-dialog/translate-menu-dialog.component';
 import { TranslateMenuDialogData } from '../translate-menu-dialog/translate-menu-dialog.models';
 import { TranslateMenuHelpers } from './translate-menu.helpers';
-import { TranslateModule } from '@ngx-translate/core';
-import { FeatureIconIndicatorComponent } from '../../../../../features/feature-icon-indicator/feature-icon-indicator.component';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatButtonModule } from '@angular/material/button';
-import { ExtendedModule } from '@angular/flex-layout/extended';
-import { NgClass } from '@angular/common';
-import { FlexModule } from '@angular/flex-layout/flex';
-import { TippyDirective } from '../../../../../shared/directives/tippy.directive';
-import { FieldState } from '../../../field-state';
-import { TranslationLinks } from '../../../../localization/translation-link.constants';
-import { FieldsTranslateService } from '../../../../state/fields-translate.service';
-import { FormConfigService } from '../../../../form/form-config.service';
-import { FormsStateService } from '../../../../form/forms-state.service';
-import { TranslationState } from '../../../../localization/translate-state.model';
-import { computedObj } from '../../../../../shared/signals/signal.utilities';
 
 @Component({
   selector: 'app-translate-menu',
@@ -28,9 +26,7 @@ import { computedObj } from '../../../../../shared/signals/signal.utilities';
   styleUrls: ['./translate-menu.component.scss'],
   standalone: true,
   imports: [
-    FlexModule,
     NgClass,
-    ExtendedModule,
     MatButtonModule,
     MatMenuModule,
     MatIconModule,
@@ -59,7 +55,7 @@ export class TranslateMenuComponent {
   );
 
   constructor(
-    private dialog: MatDialog,
+    private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private formConfig: FormConfigService,
     private fieldsTranslate: FieldsTranslateService,
@@ -79,7 +75,7 @@ export class TranslateMenuComponent {
 
   openAutoTranslateMenuDialog(translationState: TranslationState): void {
     if (this.#fieldState.settings().DisableAutoTranslation) {
-      this.dialog.open(AutoTranslateDisabledWarningDialog, {
+      this.matDialog.open(AutoTranslateDisabledWarningDialog, {
         autoFocus: false,
         data: { isAutoTranslateAll: false },
         viewContainerRef: this.viewContainerRef,
@@ -99,7 +95,7 @@ export class TranslateMenuComponent {
         linkType: translationState.linkType,
       },
     };
-    this.dialog.open(component, {
+    this.matDialog.open(component, {
       autoFocus: false,
       data: dialogData,
       viewContainerRef: this.viewContainerRef,

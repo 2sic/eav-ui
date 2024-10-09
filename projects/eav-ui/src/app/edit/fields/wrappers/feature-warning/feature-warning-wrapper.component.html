@@ -1,7 +1,8 @@
 <!-- <pre>Wrapper.FeatureWarning Start - rEQ1: '{{ requiredFeatures()[0] }}'</pre> -->
 <div [ngClass]="{ mark: requiredFeatures().length }">
   <ng-container #fieldComponent></ng-container>
-  @if (requiredFeatures().length > 0) {
+  <!-- 2dm: for now, don't show the required features on the field, as we have it in the entire form -->
+  @if (false && requiredFeatures().length > 0) {
     <div class="feature-warning">
       This uses features which are not licensed:
       @for (feature of requiredFeatures(); track feature) {

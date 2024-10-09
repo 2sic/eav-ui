@@ -1,37 +1,36 @@
+import { AsyncPipe, NgClass, NgTemplateOutlet } from '@angular/common';
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDialogRef, MatDialogActions } from '@angular/material/dialog';
+import { FormsModule, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatOptionModule } from '@angular/material/core';
+import { MatDialogActions, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, merge, Observable, startWith } from 'rxjs';
+import { Of, transient } from '../../../../../core';
 import { ContentType } from '../../app-administration/models';
 import { ContentTypesService } from '../../app-administration/services';
+import { UiControl } from '../../edit/shared/controls/ui-control';
 import { BaseComponent } from '../../shared/components/base.component';
+import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
 import { dropdownInsertValue } from '../../shared/constants/dropdown-insert-value.constant';
-import { eavConstants, MetadataKeyType, ScopeOption } from '../../shared/constants/eav.constants';
+import { eavConstants, MetadataKeyTypes, ScopeOption } from '../../shared/constants/eav.constants';
+import { ClickStopPropagationDirective } from '../../shared/directives/click-stop-propagation.directive';
+import { TippyDirective } from '../../shared/directives/tippy.directive';
+import { mapUntilObjChanged } from '../../shared/rxJs/mapUntilChanged';
+import { RxHelpers } from '../../shared/rxJs/rx.helpers';
 import { Context } from '../../shared/services/context';
 import { ContentItem } from '../models/content-item.model';
 import { ContentItemsService } from '../services/content-items.service';
 import { MetadataDialogViewModel, MetadataFormValues, MetadataInfo, TargetTypeOption } from './create-metadata-dialog.models';
 import { metadataKeyValidator } from './metadata-key.validator';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { NgTemplateOutlet, NgClass, AsyncPipe } from '@angular/common';
-import { MatInputModule } from '@angular/material/input';
-import { MatOptionModule } from '@angular/material/core';
-import { MatSelectModule } from '@angular/material/select';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
-import { ClickStopPropagationDirective } from '../../shared/directives/click-stop-propagation.directive';
-import { RxHelpers } from '../../shared/rxJs/rx.helpers';
-import { TippyDirective } from '../../shared/directives/tippy.directive';
-import { mapUntilObjChanged } from '../../shared/rxJs/mapUntilChanged';
-import { transient } from '../../core';
-import { UiControl } from '../../edit/shared/controls/ui-control';
 
 @Component({
   selector: 'app-create-metadata-dialog',
   templateUrl: './create-metadata-dialog.component.html',
-  styleUrls: ['./create-metadata-dialog.component.scss'],
   standalone: true,
   imports: [
     FormsModule,
@@ -62,10 +61,10 @@ export class CreateMetadataDialogComponent extends BaseComponent implements OnIn
   targetTypeOptions: TargetTypeOption[];
 
   /** Constants from metadata definitions */
-  private keyTypeOptions: MetadataKeyType[];
+  private keyTypeOptions: Of<typeof MetadataKeyTypes>[];
   private guidedMode$: BehaviorSubject<boolean>;
   /** Currently available options */
-  private keyTypeOptions$: BehaviorSubject<MetadataKeyType[]>;
+  private keyTypeOptions$: BehaviorSubject<Of<typeof MetadataKeyTypes>[]>;
   private scopeOptions$: BehaviorSubject<ScopeOption[]>;
   private contentItems$: BehaviorSubject<ContentItem[]>;
   private contentTypes$: BehaviorSubject<ContentType[]>;
@@ -75,7 +74,7 @@ export class CreateMetadataDialogComponent extends BaseComponent implements OnIn
   
   private contentTypesService = transient(ContentTypesService);
   constructor(
-    private dialogRef: MatDialogRef<CreateMetadataDialogComponent>,
+    private dialog: MatDialogRef<CreateMetadataDialogComponent>,
     private context: Context,
   ) {
     super();
@@ -85,7 +84,7 @@ export class CreateMetadataDialogComponent extends BaseComponent implements OnIn
     this.targetTypeOptions = Object.values(eavConstants.metadata).map(option => ({ ...option }));
     this.keyTypeOptions = Object.values(eavConstants.keyTypes);
 
-    this.keyTypeOptions$ = new BehaviorSubject<MetadataKeyType[]>([]);
+    this.keyTypeOptions$ = new BehaviorSubject<Of<typeof MetadataKeyTypes>[]>([]);
     this.scopeOptions$ = new BehaviorSubject<ScopeOption[]>([]);
     this.guidedMode$ = new BehaviorSubject(true);
     this.contentItems$ = new BehaviorSubject<ContentItem[]>([]);
@@ -234,7 +233,7 @@ export class CreateMetadataDialogComponent extends BaseComponent implements OnIn
   }
 
   closeDialog(result?: MetadataInfo): void {
-    this.dialogRef.close(result);
+    this.dialog.close(result);
   }
 
   toggleGuidedKey(event: boolean): void {

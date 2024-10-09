@@ -1,21 +1,16 @@
+import groupBy from 'lodash-es/groupBy';
 import { PickerOptionCustom } from '../../../../../../edit-types/src/DropdownOption';
-import { PickerItem } from './models/picker-item.model';
 import { guidRegex } from '../../../shared/constants/guid.constants';
 import { classLog } from '../../../shared/logging';
-import groupBy from 'lodash-es/groupBy';
+import { PickerItem } from './models/picker-item.model';
 
 export function correctStringEmptyValue(
-  fieldValue: string | string[],
-  separator: string,
+  valueAsArray: string[], // The value as an array of strings from state-adapter mapper
   dropdownOptions: PickerOptionCustom[] // Options are used only for legacy use case is where the value is an empty string
 ): PickerItem[] {
-  
+
   const log = classLog({correctStringEmptyValue}, null);
 
-  const valueAsArray = typeof fieldValue === 'string'
-    ? convertValueToArray(fieldValue, separator, dropdownOptions)
-    : fieldValue ?? [];
-  
   const result = valueAsArray.map(value => {
     const option = dropdownOptions?.find(o => o.Value == value);
     return ({
@@ -26,13 +21,11 @@ export function correctStringEmptyValue(
       id: null,
       label: option?.Title ?? value,
       tooltip: `${value}`,
-      value: value,
+      value: value?.toString() ?? '', // safe to-string
     } satisfies PickerItem);
   });
 
   log.a('correctStringEmptyValue', {
-    fieldValue,
-    separator,
     dropdownOptions,
     valueAsArray,
     result,

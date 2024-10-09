@@ -1,0 +1,21 @@
+<div class="eav-dialog">
+  <div class="eav-dialog-header">
+    <div class="eav-dialog-header__title">Configs Exporter</div>
+  </div>
+  <div class="eav-dialog-content">
+    <app-monaco-editor
+      [filename]="filename"
+      [value]="selectedConfig"
+      [options]="editorOptions"
+      (focused)="onFocused(true)"
+      (blurred)="onFocused(false)"
+      style="height: 300px; width: 100%"
+    />
+  </div>
+  <mat-dialog-actions>
+    <button mat-button mat-dialog-close>Close</button>
+    <button mat-icon-button (click)="clipboard.copyToClipboard(selectedConfig)" tippy="Copy Config To Clipboard">
+      <mat-icon>content_copy</mat-icon>
+    </button>
+  </mat-dialog-actions>
+</div>

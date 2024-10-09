@@ -1,6 +1,10 @@
-<span class="error-message">{{ 'Errors.UnsavedChanges' | translate }}</span>
+<!-- The message -->
+<span class="error-message">
+  {{ 'Errors.UnsavedChanges' | translate }}
+</span>
 
-<div fxLayoutAlign="end end">
+<!-- The save / exit buttons -->
+<div class="my-flex-right">
   <button mat-button color="primary" (click)="saveChanges(false)">
     {{ 'General.Buttons.NotSave' | translate | uppercase }}
   </button>

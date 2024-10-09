@@ -1,7 +1,8 @@
 import { Injector } from '@angular/core';
 import { Router } from '@angular/router';
+import { Of } from '../../../core';
 import { UrlHelpers } from './edit/shared/helpers/url.helpers';
-import { DialogTypeConstant, DialogTypeConstants } from './shared/constants/dialog-type.constants';
+import { DialogTypeConstants } from './shared/constants/dialog-type.constants';
 import { keyAppId, keyContentType, keyDialog, keyExtras, keyItems, keyPipelineId, keyUrl, keyZoneId, prefix } from './shared/constants/session.constants';
 import { convertFormToUrl } from './shared/helpers/url-prep.helper';
 import { ExtrasParam } from './shared/models/dialog-url-params.model';
@@ -37,7 +38,7 @@ export function paramsInitFactory(injector: Injector): () => void {
       const router = injector.get(Router);
       const zoneId = sessionStorage.getItem(keyZoneId);
       const appId = sessionStorage.getItem(keyAppId);
-      const dialog = sessionStorage.getItem(keyDialog) as DialogTypeConstant;
+      const dialog = sessionStorage.getItem(keyDialog) as Of<typeof DialogTypeConstants>;
       const contentType = sessionStorage.getItem(keyContentType);
       const items = sessionStorage.getItem(keyItems);
       switch (dialog) {

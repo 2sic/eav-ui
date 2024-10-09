@@ -1,4 +1,4 @@
-import { environment } from './../../../environments/environment.prod';
+import { environment } from './../../../environments/environment';
 import { ClassLogger } from './class/class-logger';
 import { ClassLoggerNoop } from './class/class-logger-noop';
 import { ClassLoggerReal } from './class/class-logger-real';

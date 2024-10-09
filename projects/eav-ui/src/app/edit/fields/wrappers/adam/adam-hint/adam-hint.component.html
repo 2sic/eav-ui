@@ -1,16 +1,21 @@
 <mat-divider></mat-divider>
 
 <div class="hint-box u-border-radius-bottom mat-caption u-shadow-top">
-  <div class="hint-box__hint">{{ 'Fields.Hyperlink.AdamFileManager.Hint' | translate }}</div>
+  <div class="hint-box__hint">{{ "Fields.Hyperlink.AdamFileManager.Hint" | translate }}</div>
   <div class="hint-box__sponsor">
-    <a href="https://2sxc.org/help?tag=adam" target="_blank" tabindex="-1" class="adam-link"
-      [tippy]="'Fields.Hyperlink.AdamFileManager.HelpTooltip' | translate">
+    <a
+      href="https://2sxc.org/help?tag=adam"
+      target="_blank"
+      tabindex="-1"
+      class="adam-link"
+      tippyTranslate="Fields.Hyperlink.AdamFileManager.HelpTooltip"
+    >
       <mat-icon svgIcon="apple-outlined"></mat-icon>
-      <span>{{ 'Fields.Hyperlink.AdamFileManager.Name' | translate }}</span>
+      <span>{{ "Fields.Hyperlink.AdamFileManager.Name" | translate }}</span>
     </a>
     @if (!hideAdamSponsor()) {
       &nbsp;
-      <span>{{ 'Fields.Hyperlink.AdamFileManager.SponsorLine' | translate }}</span>
+      <span>{{ "Fields.Hyperlink.AdamFileManager.SponsorLine" | translate }}</span>
       &nbsp;
       <a href="https://www.2sic.com" target="_blank" tabindex="-1">2sic.com</a>
     }

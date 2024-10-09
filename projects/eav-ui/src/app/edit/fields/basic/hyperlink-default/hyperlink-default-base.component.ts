@@ -1,20 +1,22 @@
 import { ChangeDetectorRef, Component, Injector, OnInit, ViewContainerRef, effect, inject, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Preview } from './hyperlink-default.models';
-import { FieldState } from '../../field-state';
-import { UrlHelpers, FileTypeHelpers } from '../../../shared/helpers';
-import { PagePicker } from '../../page-picker/page-picker.helper';
+import { Hyperlink, HyperlinkLibrary } from 'projects/edit-types/src/FieldSettings-Hyperlink';
+import { transient } from '../../../../../../../core/transient';
 import { AdamItem } from '../../../../../../../edit-types/src/AdamItem';
-import { EditForm, EditPrep } from '../../../../shared/models/edit-form.model';
+import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { eavConstants } from '../../../../shared/constants/eav.constants';
+import { classLog } from '../../../../shared/logging';
+import { EditForm, EditPrep } from '../../../../shared/models/edit-form.model';
+import { computedObj } from '../../../../shared/signals/signal.utilities';
 import { FormConfigService } from '../../../form/form-config.service';
 import { FormsStateService } from '../../../form/forms-state.service';
-import { AdamService } from '../../../shared/adam/adam.service';
 import { EditRoutingService } from '../../../routing/edit-routing.service';
+import { AdamService } from '../../../shared/adam/adam.service';
 import { LinkCacheService } from '../../../shared/adam/link-cache.service';
-import { transient } from '../../../../core/transient';
-import { classLog } from '../../../../shared/logging';
-import { computedObj } from '../../../../shared/signals/signal.utilities';
+import { FileTypeHelpers, UrlHelpers } from '../../../shared/helpers';
+import { FieldState } from '../../field-state';
+import { PagePicker } from '../../page-picker/page-picker.helper';
+import { Preview } from './hyperlink-default.models';
 
 @Component({
   selector: 'app-base-field-hyperlink-component',
@@ -35,7 +37,7 @@ export class HyperlinkDefaultBaseComponent implements OnInit {
     icon: '',
   });
 
-  protected fieldState = inject(FieldState) as FieldState<string>;
+  protected fieldState = inject(FieldState) as FieldState<string, FieldSettings & Hyperlink & HyperlinkLibrary>;
 
   protected settings = this.fieldState.settings;
   protected basics = this.fieldState.basics;
@@ -44,17 +46,17 @@ export class HyperlinkDefaultBaseComponent implements OnInit {
   protected ui = this.fieldState.ui;
   protected uiValue = this.fieldState.uiValue;
 
-  private injector = inject(Injector);
+  #injector = inject(Injector);
+  #editRoutingService = inject(EditRoutingService);
 
   public adamService = transient(AdamService);
 
   constructor(
     private formConfig: FormConfigService,
-    public dialog: MatDialog,
+    public matDialog: MatDialog,
     public viewContainerRef: ViewContainerRef,
     public changeDetectorRef: ChangeDetectorRef,
     public linkCacheService: LinkCacheService,
-    public editRoutingService: EditRoutingService,
     public formsStateService: FormsStateService,
   ) { }
 
@@ -63,7 +65,7 @@ export class HyperlinkDefaultBaseComponent implements OnInit {
       this.log.a('controlStatus effect');
       const status = this.fieldState.uiValue();
       this.fetchLink(status);
-    }, { injector: this.injector, allowSignalWrites: true });
+    }, { injector: this.#injector, allowSignalWrites: true });
   }
 
   adamItem = computedObj('adamItem', () => {
@@ -82,7 +84,7 @@ export class HyperlinkDefaultBaseComponent implements OnInit {
 
 
   openPagePicker() {
-    PagePicker.open(this.config, this.group, this.dialog, this.viewContainerRef, this.changeDetectorRef, (page) => {
+    PagePicker.open(this.config, this.group, this.matDialog, this.viewContainerRef, this.changeDetectorRef, (page) => {
       // convert to page:xyz format (if it wasn't cancelled)
       if (!page) return;
       this.fieldState.ui().set(`page:${page.id}`);
@@ -100,7 +102,7 @@ export class HyperlinkDefaultBaseComponent implements OnInit {
           : EditPrep.newMetadata(adamItem.ReferenceId, adamItem._imageConfigurationContentType, eavConstants.metadata.cmsObject),
       ],
     };
-    this.editRoutingService.open(this.config.index, this.config.entityGuid, form);
+    this.#editRoutingService.open(this.config.index, this.config.entityGuid, form);
   }
 
   private fetchLink(value: string) {

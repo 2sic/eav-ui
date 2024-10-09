@@ -5,6 +5,11 @@
  * This is just for consistency.
  */
 
-export * from './logging';
 export { ClassLogger } from './class/class-logger';
 export { FnLogger } from './fn/fn-logger.interface';
+export * from './logging';
+
+export const commonSpecs = {
+  all: false,
+  constructor: false,
+};

@@ -1,20 +1,20 @@
+import { Injectable, Signal } from "@angular/core";
+import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
+import { classLog } from '../../../shared/logging';
+import { DebugFields } from '../../edit-debug';
 import { EavContentType } from "../../shared/models/eav";
-import { FormulaPromiseResult } from "./formula-promise-result.model";
+import { FieldProps } from '../../state/fields-configs.model';
+import { FieldsPropsEngineCycle } from '../../state/fields-properties-engine-cycle';
+import { FieldsSettingsService } from '../../state/fields-settings.service';
+import { FieldsValuesModifiedHelper } from '../../state/fields-values-modified.helper';
+import { ItemValuesOfLanguage } from '../../state/item-values-of-language.model';
+import { ItemService } from '../../state/item.service';
+import { FormulaCacheItem } from '../cache/formula-cache.model';
+import { FieldFormulasResultRaw, FieldValueOrResultRaw } from "../results/formula-results.models";
 import { FormulaSettingsHelper } from "../results/formula-settings.helper";
 import { FormulaValueCorrections } from "../results/formula-value-corrections.helper";
 import { SettingsFormulaPrefix } from '../targets/formula-targets';
-import { FormulaCacheItem } from '../cache/formula-cache.model';
-import { Injectable, Signal } from "@angular/core";
-import { FieldFormulasResultRaw, FieldValueOrResultRaw } from "../results/formula-results.models";
-import { ItemService } from '../../state/item.service';
-import { FieldsSettingsService } from '../../state/fields-settings.service';
-import { FieldProps } from '../../state/fields-configs.model';
-import { ItemValuesOfLanguage } from '../../state/item-values-of-language.model';
-import { FieldsValuesModifiedHelper } from '../../state/fields-values-modified.helper';
-import { FieldsPropsEngineCycle } from '../../state/fields-properties-engine-cycle';
-import { classLog } from '../../../shared/logging';
-import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
-import { DebugFields } from '../../edit-debug';
+import { FormulaPromiseResult } from "./formula-promise-result.model";
 
 const logSpecs = {
   all: false,
@@ -210,7 +210,7 @@ export class FormulaPromiseHandler {
           const attribute = contentType.Attributes.find(a => a.Name === fieldName);
 
           // Prepare helper which the formula will need to verify if the field is visible
-          const setUpdHelper = cycle.updateHelper.create(attribute, constantFieldPart, itemAttributes[fieldName]);
+          const setUpdHelper = cycle.updateHelper.create(fieldName, attribute, constantFieldPart, itemAttributes[fieldName]);
 
           const mergedSettings = { ...settingsCurrent, ...settingsNew };
           const updatedSettings = setUpdHelper.correctSettingsAfterChanges(mergedSettings, cycle.values[fieldName]);

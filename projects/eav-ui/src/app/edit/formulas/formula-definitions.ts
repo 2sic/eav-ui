@@ -48,6 +48,4 @@ export const FormulaVersions = {
   V2: 'v2',
 } as const /* the as const ensures that the keys/values can be strictly checked */;
 
-export type FormulaVersion = (typeof FormulaVersions)[keyof typeof FormulaVersions];
-
 //#endregion

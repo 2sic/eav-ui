@@ -1,15 +1,15 @@
-import { DeleteEntityProps } from '../models/picker.models';
 import { Signal } from '@angular/core';
-import { PickerFeatures } from '../picker-features.model';
-import { DataSourceBase } from '../data-sources/data-source-base';
-import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
-import { StateAdapter } from './state-adapter';
-import { PickerItem } from '../models/picker-item.model';
 import { ClassLogger } from '../../../../shared/logging';
+import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
 import { DebugFields } from '../../../edit-debug';
+import { DataSourceBase } from '../data-sources/data-source-base';
+import { PickerItem } from '../models/picker-item.model';
+import { DeleteEntityProps } from '../models/picker.models';
+import { PickerFeatures } from '../picker-features.model';
+import { StateAdapter } from './state-adapter';
 
 export abstract class DataAdapterBase {
-  
+
   /** Log Specs to be used as a basis for all inheriting classes */
   static logSpecs = {
     all: false,
@@ -17,6 +17,8 @@ export abstract class DataAdapterBase {
     connectState: false,
     initPrefetch: true,
     fetchItems: false,
+    constructor: true,
+    getPrefill: true, // for create Entity & query
     fields: [...DebugFields],
   };
 
@@ -25,7 +27,7 @@ export abstract class DataAdapterBase {
   constructor() { }
 
   /** Picker Features of this DataAdapter - must be implemented by every data source to communicate it's features */
-  public abstract features: Signal<Partial<PickerFeatures>>;
+  public abstract myFeatures: Signal<Partial<PickerFeatures>>;
 
   /** a signal for data-sources - may not need a signal, if it's unchanging... */
   public dataSource = signalObj<DataSourceBase>('dataSource', null satisfies DataSourceBase);

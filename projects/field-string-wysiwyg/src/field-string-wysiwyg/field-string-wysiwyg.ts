@@ -1,10 +1,13 @@
-import { Connector, EavCustomInputField, WysiwygReconfigure } from '../../../edit-types';
+import { StringWysiwyg } from 'projects/edit-types/src/FieldSettings-String';
+import { classLog } from '../../../../projects/eav-ui/src/app/shared/logging';
+import { Connector } from '../../../edit-types/src/Connector';
+import { EavCustomInputField } from '../../../edit-types/src/EavCustomInputField';
+import { WysiwygReconfigure } from '../../../edit-types/src/WysiwygReconfigure';
 import { wysiwygEditorHtmlTag } from '../../internal-constants';
 import { FieldStringWysiwygEditor } from '../editor/editor';
 import { registerCustomElement } from '../editor/editor-helpers';
 import { FieldStringWysiwygPreview, wysiwygPreviewTag } from '../preview/preview';
 import * as styles from './field-string-wysiwyg.scss';
-import { classLog } from '../../../../projects/eav-ui/src/app/shared/logging';
 
 const wysiwygTag = 'field-string-wysiwyg';
 
@@ -46,7 +49,7 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
     if ((this.mode ?? attrMode) != null)
       return this.mode === 'preview' || attrMode === 'preview';
 
-    return this.connector.field.settings?.Dialog === 'dialog';
+    return (this.connector.field.settings as unknown as StringWysiwyg)?.Dialog === 'dialog';
   }
 
   private createPreview(): void {

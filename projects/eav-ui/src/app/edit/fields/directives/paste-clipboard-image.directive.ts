@@ -35,7 +35,7 @@ export class PasteClipboardImageDirective implements OnInit, OnDestroy {
     private features: FeaturesScopedService,
     private snackBar: MatSnackBar,
     private translate: TranslateService,
-    private dialog: MatDialog,
+    private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
   ) {
@@ -77,7 +77,7 @@ export class PasteClipboardImageDirective implements OnInit, OnDestroy {
       l.end('started upload');
     } else {
       this.snackBar.open(this.translate.instant('Message.PastingFilesIsNotEnabled'), this.translate.instant('Message.FindOutMore'), { duration: 3000 }).onAction().subscribe(() => {
-        openFeatureDialog(this.dialog, FeatureNames.PasteImageFromClipboard, this.viewContainerRef, this.changeDetectorRef);
+        openFeatureDialog(this.matDialog, FeatureNames.PasteImageFromClipboard, this.viewContainerRef, this.changeDetectorRef);
       });
       l.end('not enabled, showing snackbar');
     }

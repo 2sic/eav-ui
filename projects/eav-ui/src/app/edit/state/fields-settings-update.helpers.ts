@@ -1,19 +1,24 @@
 import { Signal } from '@angular/core';
-import { FieldSettings, FieldValue } from '../../../../../edit-types';
-import { FieldLogicTools } from '../fields/logic/field-logic-tools';
-import { EavContentTypeAttribute, EavEntity, EavField } from '../shared/models/eav';
-import { FieldReader } from '../localization/field-reader';
-import { ValidationHelpers } from '../shared/validation/validation.helpers';
-import { MetadataDecorators } from './metadata-decorators.constants';
-import { FieldConstantsOfLanguage } from './fields-configs.model';
-import { FormLanguage } from '../form/form-languages.model';
+import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
+import { FieldValue } from '../../../../../edit-types/src/FieldValue';
 import { classLog } from '../../shared/logging';
+import { DebugFields } from '../edit-debug';
+import { FieldLogicTools } from '../fields/logic/field-logic-tools';
+import { FormLanguage } from '../form/form-languages.model';
+import { FieldReader } from '../localization/field-reader';
+import { EavContentTypeAttribute, EavEntity, EavField } from '../shared/models/eav';
+import { ValidationHelpers } from '../shared/validation/validation.helpers';
+import { FieldConstantsOfLanguage } from './fields-configs.model';
+import { MetadataDecorators } from './metadata-decorators.constants';
 
 const logSpecs = {
+  all: false,
   correctSettingsAfterChanges: true,
-  schemaDisablesTranslation: true,
-  getDisabledBecauseTranslations: true,
+  schemaDisablesTranslation: false,
+  getDisabledBecauseTranslations: false,
+  fields: [...DebugFields], // or '*' for all
 };
+
 export class FieldSettingsUpdateHelperFactory {
   log = classLog({FieldSettingsUpdateHelperFactory});
   constructor(
@@ -25,14 +30,16 @@ export class FieldSettingsUpdateHelperFactory {
     /** Info that the form is read-only */
     private formReadOnly: boolean,
     private slotIsEmpty: Signal<boolean>,
-  ) {}
+  ) { }
 
   create(
+    fieldName: string,
     attribute: EavContentTypeAttribute,
     constantFieldPart: FieldConstantsOfLanguage,
     attributeValues: EavField<any>,
   ): FieldSettingsUpdateHelper {
     return new FieldSettingsUpdateHelper(
+      fieldName,
       this.contentTypeMetadata,
       this.language,
       this.fieldLogicTools,
@@ -57,6 +64,7 @@ export class FieldSettingsUpdateHelper {
   log = classLog({FieldSettingsUpdateHelper}, logSpecs);
 
   constructor(
+    private fieldName: string,
     // General & Content Type Info
     private contentTypeMetadata: EavEntity[],
     private language: FormLanguage,
@@ -79,7 +87,7 @@ export class FieldSettingsUpdateHelper {
    * @returns Corrected settings
    */
   correctSettingsAfterChanges(settings: FieldSettings, fieldValue: FieldValue): FieldSettings {
-    const l = this.log.fnIf('correctSettingsAfterChanges');
+    const l = this.log.fnIfInList('correctSettingsAfterChanges', 'fields', this.fieldName, () => ({ settings, fieldValue }));
 
     const constantFieldPart = this.constantFieldPart;
     const slotIsEmpty = this.formSlotIsEmpty();
@@ -101,15 +109,15 @@ export class FieldSettingsUpdateHelper {
       || settings.DisableTranslation;
 
     // Correct these fresh settings with FieldLogics of this field
-    const fixed = constantFieldPart.logic?.update({ settings: settings, value: fieldValue, tools: this.fieldLogicTools }) ?? settings;
+    const fixed = constantFieldPart.logic?.update({ fieldName: this.fieldName, settings: settings, value: fieldValue, tools: this.fieldLogicTools }) ?? settings;
 
-    return fixed;
+    return l.r(fixed);
   }
 
 
   /** Find if DisableTranslation is true in any setting and in any language */
   #schemaDisablesTranslation(): boolean {
-    const l = this.log.fnIf('schemaDisablesTranslation');
+    const l = this.log.fnIfInList('schemaDisablesTranslation', 'fields', this.fieldName);
     const contentTypeMetadata = this.contentTypeMetadata;
     const inputType = this.constantFieldPart.inputTypeConfiguration;
     const attributeValues = this.attributeValues;
@@ -139,7 +147,7 @@ export class FieldSettingsUpdateHelper {
   }
 
   #getDisabledBecauseTranslations(disableTranslation: boolean): boolean {
-    const l = this.log.fnIf('getDisabledBecauseTranslations');
+    const l = this.log.fnIfInList('getDisabledBecauseTranslations', 'fields', this.fieldName);
     const attributeValues = this.attributeValues;
     const language = this.language;
     // On primary edit is never disabled by translations

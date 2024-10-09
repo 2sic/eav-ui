@@ -1,20 +1,20 @@
-import { ComponentRef, Directive, OnDestroy, OnInit, Type, ViewContainerRef, effect, inject, signal, untracked } from '@angular/core';
+import { ComponentRef, Directive, ElementRef, OnDestroy, OnInit, Renderer2, Type, ViewContainerRef, effect, inject, signal, untracked } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { transient } from '../../../../../../core';
 import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
-import { CustomDefaultComponent } from '../basic/custom-default/custom-default.component';
-import { PickerExpandableWrapperComponent } from '../../fields/wrappers/picker-dialog/picker-expandable-wrapper.component';
-import { InputComponents } from '../../fields/input-components.constant';
-import { InjectorBundle } from './injector-bundle.model';
-import { FieldStateInjectorFactory } from './field-injector.service';
 import { InputTypeHelpers } from '../../../shared/fields/input-type-helpers';
-import { transient } from '../../../core';
+import { classLog } from '../../../shared/logging';
+import { EntityFormStateService } from '../../entity-form/entity-form-state.service';
+import { InputComponents } from '../../fields/input-components.constant';
+import { PickerExpandableWrapperComponent } from '../../fields/wrappers/picker-dialog/picker-expandable-wrapper.component';
+import { FieldProps } from '../../state/fields-configs.model';
+import { FieldsSettingsService } from '../../state/fields-settings.service';
+import { CustomDefaultComponent } from '../basic/custom-default/custom-default.component';
 import { FieldConfigSet } from '../field-config-set.model';
 import { FieldMetadataKey, FieldMetadataModel } from '../field-metadata.decorator';
-import { FieldsSettingsService } from '../../state/fields-settings.service';
-import { FieldProps } from '../../state/fields-configs.model';
-import { EntityFormStateService } from '../../entity-form/entity-form-state.service';
 import { AdamConnector } from '../wrappers/adam/adam-browser/adam-connector';
-import { classLog } from '../../../shared/logging';
+import { FieldStateInjectorFactory } from './field-injector.service';
+import { InjectorBundle } from './injector-bundle.model';
 
 const logSpecs = {
   all: false,
@@ -29,9 +29,15 @@ const logSpecs = {
   selector: '[appEditControlsBuilder]',
   standalone: true,
 })
-export class EditControlsBuilderDirective  implements OnInit, OnDestroy {
+export class EditControlsBuilderDirective implements OnInit, OnDestroy {
 
-  log = classLog({EditControlsBuilderDirective}, logSpecs);
+  index: number;
+
+  // In the class, inject Renderer2
+  private renderer = inject(Renderer2);
+  #firstInputFocused = false;
+
+  log = classLog({ EditControlsBuilderDirective }, logSpecs);
 
   /** Service to create custom injectors for each field */
   #fieldInjectorFac = transient(FieldStateInjectorFactory);
@@ -42,7 +48,8 @@ export class EditControlsBuilderDirective  implements OnInit, OnDestroy {
   /** Service to get all settings for each field */
   #fieldsSettingsSvc = inject(FieldsSettingsService);
 
-  constructor(private formConfigService: EntityFormStateService) {
+
+  constructor(private formConfigService: EntityFormStateService, private el: ElementRef) {
     effect(() => {
       const onInitReady = this.onInitReady();
       const controlsCreated = this.formConfigService.controlsCreated();
@@ -63,6 +70,8 @@ export class EditControlsBuilderDirective  implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.onInitReady.set(true);
+    // Get the Index from the HTML element attribute
+    this.index = parseInt(this.el.nativeElement.getAttribute('data-index'));
   }
 
   createControls() {
@@ -135,7 +144,8 @@ export class EditControlsBuilderDirective  implements OnInit, OnDestroy {
 
     // generate the real input field component
     // this.log.a('createComponent - add component', { componentType });
-    this.#generateAndAttachField(componentType, wrapperInfo.contentsRef, wrapperInfo.injectors);
+    const componentRef = this.#generateAndAttachField(componentType, wrapperInfo.contentsRef, wrapperInfo.injectors);
+
 
     // generate the picker preview component if it exists
     const pickerPreviewContainerRef = (wrapperInfo.wrapperRef?.instance as PickerExpandableWrapperComponent)?.previewComponent;
@@ -144,10 +154,27 @@ export class EditControlsBuilderDirective  implements OnInit, OnDestroy {
       this.log.a('createComponent - add preview', { previewType });
       this.#generateAndAttachField(previewType, pickerPreviewContainerRef, wrapperInfo.injectors);
     }
+    // Set only the first input to be focused, if it is the first input
+    if (this.#firstInputFocused === false && this.index === 0 && fieldProps.settings.noAutoFocus !== true) {
+      this.#setAutoFocus(componentRef);
+      this.#firstInputFocused = true;
+    }
   }
 
-  #generateAndAttachField(componentType: Type<any>, container: ViewContainerRef, injectors: InjectorBundle) {
-    container.createComponent(componentType, injectors);
+  #setAutoFocus(componentRef: ComponentRef<any>) {
+    setTimeout(() => {
+      // Get the input element from the component
+      const nativeElement = componentRef.location.nativeElement.querySelector('input');
+      if (nativeElement) {
+        this.renderer.setAttribute(nativeElement, 'autofocus', 'true');
+        nativeElement?.focus(); // Focus the input element - with null check in case we're too early
+      }
+    }, 250); // Wait for the input to be created before focusing
+
+  }
+
+  #generateAndAttachField(componentType: Type<any>, container: ViewContainerRef, injectors: InjectorBundle): ComponentRef<any> {
+    return container.createComponent(componentType, injectors); // Return the ComponentRef
   }
 
   #createWrappers(outerWrapper: DynamicControlInfo, wrappers: string[]): DynamicControlInfo {

@@ -1,23 +1,28 @@
 // tslint:disable-next-line:max-line-length
+import { AsyncPipe, NgClass, NgStyle } from '@angular/common';
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
+import { transient } from '../../../../../core';
 import { BaseComponent } from '../../shared/components/base.component';
 import { eavConstants } from '../../shared/constants/eav.constants';
+import { MousedownStopPropagationDirective } from '../../shared/directives/mousedown-stop-propagation.directive';
+import { JsonHelpers } from '../../shared/helpers/json.helpers';
 import { loadScripts } from '../../shared/helpers/load-scripts.helper';
+import { classLog } from '../../shared/logging';
+import { mapUntilObjChanged } from '../../shared/rxJs/mapUntilChanged';
 import { PipelineDataSource, PipelineResultStream, VisualDesignerData } from '../models';
 import { QueryDefinitionService } from '../services/query-definition.service';
 import { VisualQueryStateService } from '../services/visual-query.service';
 import { calculateTypeInfos } from './plumb-editor.helpers';
 import { PlumbEditorViewModel } from './plumb-editor.models';
 import { dataSrcIdPrefix, Plumber } from './plumber.helper';
-import { MatIconModule } from '@angular/material/icon';
-import { NgStyle, NgClass, AsyncPipe } from '@angular/common';
-import { JsonHelpers } from '../../shared/helpers/json.helpers';
-import { MousedownStopPropagationDirective } from '../../shared/directives/mousedown-stop-propagation.directive';
-import { classLog } from '../../shared/logging';
-import { mapUntilObjChanged } from '../../shared/rxJs/mapUntilChanged';
-import { transient } from '../../core';
+
+const logSpecs = {
+  all: false,
+  ngAfterViewInit: false,
+}
 
 const jsPlumbUrl = 'https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.14.5/js/jsplumb.min.js';
 
@@ -25,7 +30,6 @@ const jsPlumbUrl = 'https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.14.5/js/jsp
   selector: 'app-plumb-editor',
   templateUrl: './plumb-editor.component.html',
   styles: [':host { display: block; width: 100%; height: 100%; }'],
-  styleUrls: ['./plumb-editor.component.scss'],
   standalone: true,
   imports: [
     NgStyle,
@@ -37,7 +41,7 @@ const jsPlumbUrl = 'https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.14.5/js/jsp
 })
 export class PlumbEditorComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
   
-  log = classLog({PlumbEditorComponent});
+  log = classLog({PlumbEditorComponent}, logSpecs);
 
   @ViewChild('domRoot') private domRootRef: ElementRef<HTMLDivElement>;
   @ViewChildren('domDataSource') private domDataSourcesRef: QueryList<ElementRef<HTMLDivElement>>;
@@ -45,35 +49,33 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
   dataSrcIdPrefix = dataSrcIdPrefix;
   hardReset = false;
 
-  private plumber: Plumber;
-  private scriptLoaded$ = new BehaviorSubject(false);
+  #plumber: Plumber;
+  #scriptLoaded$ = new BehaviorSubject(false);
 
   viewModel$: Observable<PlumbEditorViewModel>;
   
-  private queryDefinitionService = transient(QueryDefinitionService);
+  #queryDefinitionSvc = transient(QueryDefinitionService);
 
   constructor(
     private visualQueryService: VisualQueryStateService,
     private changeDetectorRef: ChangeDetectorRef,
-    private dialog: MatDialog,
+    private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
   ) { super();}
 
   ngOnInit() {
     loadScripts([{ test: 'jsPlumb', src: jsPlumbUrl }], () => {
-      this.scriptLoaded$.next(true);
+      this.#scriptLoaded$.next(true);
     });
 
     this.subscriptions.add(
       this.visualQueryService.putEntityCountOnConnections$.subscribe(result => {
-        this.plumber.putEntityCountOnConnections(result);
+        this.#plumber.putEntityCountOnConnections(result);
       })
     );
 
     const pipelineDesignerData$ = this.visualQueryService.pipelineModel$.pipe(
-      map(pipelineModel => JsonHelpers.tryParse(pipelineModel?.Pipeline.VisualDesignerData) ?? {}),
-      mapUntilObjChanged(m => m),
-      // distinctUntilChanged(RxHelpers.objectsEqual),
+      mapUntilObjChanged(pipelineModel => JsonHelpers.tryParse(pipelineModel?.Pipeline.VisualDesignerData) ?? {}),
     );
 
     this.viewModel$ = combineLatest([
@@ -103,26 +105,26 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
   }
 
   ngAfterViewInit() {
-    const l = this.log.fn('ngAfterViewInit');
+    const l = this.log.fnIf('ngAfterViewInit');
     // https://stackoverflow.com/questions/37087864/execute-a-function-when-ngfor-finished-in-angular-2/37088348#37088348
     const domDataSourcesLoaded$ = this.domDataSourcesRef.changes.pipe(map(() => true));
 
     this.subscriptions.add(
-      combineLatest([this.scriptLoaded$, domDataSourcesLoaded$]).subscribe(([scriptLoaded, domDataSourcesLoaded]) => {
+      combineLatest([this.#scriptLoaded$, domDataSourcesLoaded$]).subscribe(([scriptLoaded, domDataSourcesLoaded]) => {
         if (!scriptLoaded || !domDataSourcesLoaded)
           return;
 
-        this.log.a('scriptLoaded and domDataSourcesLoaded', { scriptLoaded, domDataSourcesLoaded });
+        l.a('scriptLoaded and domDataSourcesLoaded', { scriptLoaded, domDataSourcesLoaded });
 
-        this.plumber?.destroy();
-        this.plumber = new Plumber(
+        this.#plumber?.destroy();
+        this.#plumber = new Plumber(
           this.domRootRef.nativeElement,
           this.visualQueryService.pipelineModel$.value,
           this.visualQueryService.dataSources$.value,
           this.onConnectionsChanged.bind(this),
           this.onDragend.bind(this),
           this.onDebugStream.bind(this),
-          this.dialog,
+          this.matDialog,
           this.viewContainerRef,
           this.changeDetectorRef,
         );
@@ -132,14 +134,14 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
   }
 
   ngOnDestroy() {
-    this.plumber?.destroy();
-    this.scriptLoaded$.complete();
+    this.#plumber?.destroy();
+    this.#scriptLoaded$.complete();
     super.ngOnDestroy();
   }
 
   onConnectionsChanged() {
-    const connections = this.plumber.getAllConnections();
-    const streamsOut = this.plumber.getStreamsOut();
+    const connections = this.#plumber.getAllConnections();
+    const streamsOut = this.#plumber.getStreamsOut();
     this.visualQueryService.changeConnections(connections, streamsOut);
   }
 
@@ -151,18 +153,17 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
     this.visualQueryService.debugStream(stream);
   }
 
-  configureDataSource(dataSource: PipelineDataSource) {
+  configureDataSource(dataSource: PipelineDataSource): void {
     // ensure dataSource entity is saved
-    if (dataSource.EntityGuid.includes('unsaved')) {
-      this.visualQueryService.saveAndRun(true, false);
-    } else {
-      this.visualQueryService.editDataSource(dataSource);
-    }
+    if (dataSource.EntityGuid.includes('unsaved'))
+      return this.visualQueryService.saveAndRun(true, false);
+
+    this.visualQueryService.editDataSource(dataSource);
   }
 
   getTypeName(partAssemblyAndType: string) {
     const dataSource = this.visualQueryService.dataSources$.value.find(ds => ds.PartAssemblyAndType === partAssemblyAndType);
-    return this.queryDefinitionService.typeNameFilter(dataSource?.TypeNameForUi || partAssemblyAndType, 'className');
+    return this.#queryDefinitionSvc.typeNameFilter(dataSource?.TypeNameForUi || partAssemblyAndType, 'className');
   }
 
   isOutDataSource(pipelineDataSource: PipelineDataSource) {
@@ -172,9 +173,9 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
   remove(pipelineDataSource: PipelineDataSource) {
     if (!confirm(`Delete ${pipelineDataSource.Name} data source?`)) return;
 
-    this.plumber.removeEndpointsOnDataSource(pipelineDataSource.EntityGuid);
-    const connections = this.plumber.getAllConnections();
-    const streamsOut = this.plumber.getStreamsOut();
+    this.#plumber.removeEndpointsOnDataSource(pipelineDataSource.EntityGuid);
+    const connections = this.#plumber.getAllConnections();
+    const streamsOut = this.#plumber.getStreamsOut();
     this.visualQueryService.removeDataSource(pipelineDataSource.EntityGuid, connections, streamsOut);
   }
 

@@ -1,6 +1,10 @@
 @import "../../../assets/styles/variables.scss";
 @import "../../../assets/styles/theme/material-colors.scss";
 
+$min-height: 36px;
+$max-height: 50vh;
+$label-top: 14px;
+
 %field-border {
   margin-bottom: 1px;
   border-bottom: 1px solid $field-border-color--initial;
@@ -35,134 +39,85 @@
   background-repeat: repeat-x;
 }
 
-.c-ew {
-  $min-height: 36px;
-  $max-height: 50vh;
-  $label-top: 14px;
+.c-ew__preview {
+  position: relative;
+  min-height: $min-height;
+  max-height: $max-height;
+  font-size: 14px;
 
-  &__preview {
-    position: relative;
-    min-height: $min-height;
-    max-height: $max-height;
-    font-size: 14px;
+  @extend %field-border;
 
-    @extend %field-border;
-
-    &:hover:not(.c-ew__preview--disabled):not(.c-ew__preview--invalid) {
-      @extend %field-border--hover;
-    }
-
-    &-holder {
-      position: relative;
-      margin-top: calc(#{$label-top} + 12px);
-    }
-
-    &-label {
-      top: -$label-top;
-      position: absolute;
-      z-index: 1;
-      pointer-events: none;
-      font-size: 12px;
-      line-height: 14px;
-
-      &:not(.mat-mdc-form-field-error) {
-        color: rgba($editUI-foreground-color, 0.44);
-      }
-
-      &--focused:not(.mat-mdc-form-field-error) {
-        color: map_get($mat-eav-item-dialog-secondary, 500) !important;
-      }
-    }
-
-    &-container {
-      overflow: hidden;
-      min-height: inherit;
-      max-height: inherit;
-    }
-
-    &-content {
-      position: relative;
-      overflow-x: hidden;
-      overflow-y: scroll;
-      min-height: $min-height;
-      max-height: $max-height;
-
-      &--disabled {
-        pointer-events: none;
-        color: $editUI-field-disabled-color;
-      }
-    }
-
-    &--focused:not(.c-ew__preview--invalid) {
-      @extend %field-border--focused;
-    }
-
-    &--invalid {
-      @extend %field-border--invalid;
-    }
-
-    &--disabled {
-      @extend %field-border--disabled;
-    }
-
-    .color__accent {
-      color: map_get($mat-eav-item-dialog-secondary, 500);
-    }
-
-    .color__primary {
-      color: rgba($editUI-foreground-color, 0.44);
-    }
-
-    .color__label-disabled {
-      color: $editUI-label-disabled-color;
-    }
-
-    mat-empty {
-      height: 48px;
-      padding: 24px 0 0 0;
-    }
+  &:hover:not(.c-ew__preview--disabled):not(.c-ew__preview--invalid) {
+    @extend %field-border--hover;
   }
 
-  &__container {
-    border-radius: $edit-ui-dialog-border-radius;
-    position: fixed;
-    z-index: 2;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: 100%;
-    height: 100%;
-    align-items: self-start;
-    justify-content: center;
-    display: flex;
+  .color__accent {
+    color: map_get($mat-eav-item-dialog-secondary, 500);
   }
 
-  &__dialog {
-    flex-direction: column;
-    display: flex;
-    max-width: $edit-ui-dialog-max-width;
-    width: 100vw;
-    margin-top: 24px;
-    min-height: $expandable-wrapper-max-height;
-    max-height: $expandable-wrapper-max-height;
-
-    @media (max-width: 600px) {
-      margin-top: 0;
-      min-height: $expandable-wrapper-max-height-mobile;
-      max-height: $expandable-wrapper-max-height-mobile;
-    }
-
-    padding: 0;
-
-    .mat-mdc-dialog-actions {
-      padding: 16px;
-    }
-
-    &-content {
-      position: relative;
-      // border-radius: $edit-ui-input-border-radius;
-      background: map_get($mat-eav-item-dialog-background, 50);
-    }
+  .color__primary {
+    color: rgba($editUI-foreground-color, 0.44);
   }
+
+  .my-label-disabled {
+    color: $editUI-label-disabled-color;
+  }
+
+  mat-empty {
+    height: 48px;
+    padding: 24px 0 0 0;
+  }
+}
+
+.c-ew__preview-holder {
+  position: relative;
+  margin-top: calc(#{$label-top} + 12px);
+}
+
+.c-ew__preview-label {
+  top: -$label-top;
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+  font-size: 12px;
+  line-height: 14px;
+
+  &:not(.mat-mdc-form-field-error) {
+    color: rgba($editUI-foreground-color, 0.44);
+  }
+}
+
+.c-ew__preview-label--focused:not(.mat-mdc-form-field-error) {
+  color: map_get($mat-eav-item-dialog-secondary, 500) !important;
+}
+
+.c-ew__preview-container {
+  overflow: hidden;
+  min-height: inherit;
+  max-height: inherit;
+}
+
+.c-ew__preview-content {
+  position: relative;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  min-height: $min-height;
+  max-height: $max-height;
+}
+
+.c-ew__preview-content--disabled {
+  pointer-events: none;
+  color: $editUI-field-disabled-color;
+}
+
+.c-ew__preview--focused:not(.c-ew__preview--invalid) {
+  @extend %field-border--focused;
+}
+
+.c-ew__preview--invalid {
+  @extend %field-border--invalid;
+}
+
+.c-ew__preview--disabled {
+  @extend %field-border--disabled;
 }

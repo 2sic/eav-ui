@@ -1,7 +1,8 @@
+import { Of } from '../../../../../core';
 import { PermissionsCount } from '../../app-administration/models/permissions-count.model';
 import { EavType } from '../../edit/shared/models/eav/eav-type';
 import { EditInfo } from '../models/edit-info';
-import { InputTypeStrict } from './input-type-catalog';
+import { InputTypeCatalog } from './input-type-catalog';
 import { InputTypeMetadata } from './input-type-metadata.model';
 
 export interface Field {
@@ -9,7 +10,7 @@ export interface Field {
   EditInfo: EditInfo;
   HasFormulas: boolean;
   Id: number;
-  InputType: InputTypeStrict;
+  InputType: Of<typeof InputTypeCatalog>;
   InputTypeConfig: InputTypeMetadata;
   IsEphemeral: boolean;
   IsTitle: boolean;
@@ -59,7 +60,7 @@ export interface FieldInputTypeOption {
   dataType: string;
   description: string;
   icon?: string;
-  inputType: InputTypeStrict;
+  inputType: Of<typeof InputTypeCatalog>;
   isDefault?: boolean;
   isObsolete?: boolean;
   isRecommended?: boolean;

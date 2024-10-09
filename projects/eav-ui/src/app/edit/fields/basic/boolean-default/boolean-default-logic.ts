@@ -1,6 +1,7 @@
-import { FieldSettings } from './../../../../../../../edit-types/src/FieldSettings';
-import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
+import { FieldSettingsBoolean } from 'projects/edit-types/src/FieldSettings-Boolean';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
+import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
+import { FieldSettings } from './../../../../../../../edit-types/src/FieldSettings';
 
 export class BooleanDefaultLogic extends FieldLogicBase {
   name = InputTypeCatalog.BooleanDefault;
@@ -8,14 +9,14 @@ export class BooleanDefaultLogic extends FieldLogicBase {
   constructor() { super({ BooleanDefaultLogic }); }
 
   update({ settings, value }: FieldLogicUpdate<boolean>): FieldSettings {
-    const fixedSettings: FieldSettings = { ...settings };
+    const fixedSettings = { ...settings } as FieldSettings & FieldSettingsBoolean;
     fixedSettings.ReverseToggle ??= false;
-    fixedSettings._label = this.calculateLabel(value, fixedSettings);
+    fixedSettings._label = this.#calculateLabel(value, fixedSettings);
     // fixedSettings.DisableAutoTranslation = true;
     return fixedSettings;
   }
 
-  private calculateLabel(value: boolean, settings: FieldSettings): string {
+  #calculateLabel(value: boolean, settings: FieldSettings & FieldSettingsBoolean): string {
     if (value === true && settings.TitleTrue)
       return settings.TitleTrue;
     if (value === false && settings.TitleFalse)

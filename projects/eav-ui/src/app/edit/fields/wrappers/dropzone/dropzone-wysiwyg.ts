@@ -1,10 +1,10 @@
+import { WysiwygConstants } from '../../../../../../../field-string-wysiwyg/shared/wysiwyg.constants';
+
+
 /**
  * Special helper / constants so Dropzone works together with the WYSIWYG editor
  */
 export class DropzoneWysiwyg {
-
-  /** Constant to mark the WYSIWYG dom tag */
-  static readonly classToDetectWysiwyg = "class-distinguish-from-adam-dropzone";
 
   /** If the last drop was on a WYSIWYG field */
   isStringWysiwyg = false;
@@ -28,9 +28,9 @@ export class DropzoneWysiwyg {
     // Traverse the DOM to see if we can find the wysiwyg editor
     do {
       if (element == null) return false;
-      if (element?.classList.contains(this.classToDetectWysiwyg)) return true;
+      if (element?.classList.contains(WysiwygConstants.classToDetectWysiwyg)) return true;
       element = element.parentElement;
-    } while (!element?.classList.contains(this.classToDetectWysiwyg) || element.parentElement != document.body);
+    } while (!element?.classList.contains(WysiwygConstants.classToDetectWysiwyg) || element.parentElement != document.body);
     return false;
   }
 

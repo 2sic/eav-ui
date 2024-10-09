@@ -1,25 +1,24 @@
 import { GridOptions } from '@ag-grid-community/core';
 import { Component, OnInit, signal } from '@angular/core';
-import { MatDialogRef, MatDialogActions } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogActions, MatDialogRef } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { RouterOutlet } from '@angular/router';
+import { transient } from '../../../../../../core';
 import { SiteLanguagePermissions } from '../../../apps-management/models/site-language.model';
 import { ZoneService } from '../../../apps-management/services/zone.service';
 import { GoToPermissions } from '../../../permissions';
+import { ColumnDefinitions } from '../../../shared/ag-grid/column-definitions';
 import { IdFieldParams } from '../../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';
+import { SxcGridModule } from '../../../shared/modules/sxc-grid-module/sxc-grid.module';
+import { DialogRoutingService } from '../../../shared/routing/dialog-routing.service';
 import { LanguagesPermissionsActionsComponent } from './languages-permissions-actions/languages-permissions-actions.component';
 import { LanguagesPermissionsActionsParams } from './languages-permissions-actions/languages-permissions-actions.models';
-import { ColumnDefinitions } from '../../../shared/ag-grid/column-definitions';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { SxcGridModule } from '../../../shared/modules/sxc-grid-module/sxc-grid.module';
-import { transient } from '../../../core';
-import { DialogRoutingService } from '../../../shared/routing/dialog-routing.service';
 
 @Component({
   selector: 'app-language-permissions',
   templateUrl: './language-permissions.component.html',
-  styleUrls: ['./language-permissions.component.scss'],
   standalone: true,
   imports: [
     MatButtonModule,
@@ -38,7 +37,7 @@ export class LanguagePermissionsComponent implements OnInit {
   #dialogRouting = transient(DialogRoutingService);
 
   constructor(
-    private dialogRef: MatDialogRef<LanguagePermissionsComponent>,
+    private dialog: MatDialogRef<LanguagePermissionsComponent>,
   ) { }
 
   ngOnInit(): void {
@@ -47,7 +46,7 @@ export class LanguagePermissionsComponent implements OnInit {
   }
 
   closeDialog(): void {
-    this.dialogRef.close();
+    this.dialog.close();
   }
 
   openPermissions(language: SiteLanguagePermissions): void {

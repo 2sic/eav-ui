@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { AdamItem } from '../../../../../../edit-types';
+import { AdamItem } from '../../../../../../edit-types/src/AdamItem';
+import { classLog } from '../../../shared/logging';
 import { LinkInfo, PrefetchAdams, PrefetchLinks } from '../../dialog/main/edit-dialog-main.models';
 import { SignalStoreBase } from '../store/signal-store-base';
-import { classLog } from '../../../shared/logging';
 
 /**
  * The link Cache will store info to all links incl. file references (ADAM)

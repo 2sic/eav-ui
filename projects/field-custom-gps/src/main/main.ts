@@ -1,13 +1,16 @@
-import { FieldMask } from '../../../eav-ui/src/app/edit/shared/helpers/field-mask.helper';
+import { CustomGps } from 'projects/edit-types/src/FieldSettings-CustomGps';
 import { ElementEventListener } from '../../../eav-ui/src/app/edit/shared/controls/element-event-listener.model';
-import { Connector, EavCustomInputField } from '../../../edit-types';
+import { EditApiKeyPaths } from '../../../eav-ui/src/app/shared/constants/eav.constants';
+import { classLog } from '../../../eav-ui/src/app/shared/logging';
+import { ApiKeySpecs } from '../../../eav-ui/src/app/shared/models/dialog-context.models';
+import { Connector } from '../../../edit-types/src/Connector';
+import { EavCustomInputField } from '../../../edit-types/src/EavCustomInputField';
+import { FieldSettings } from '../../../edit-types/src/FieldSettings';
+import { IFieldMask } from '../../../edit-types/src/IFieldMask';
 import { CoordinatesDto } from '../preview/coordinates';
 import { buildTemplate, parseLatLng, stringifyLatLng } from '../shared/helpers';
 import * as template from './main.html';
 import * as styles from './main.scss';
-import { EditApiKeyPaths } from '../../../eav-ui/src/app/shared/constants/eav.constants';
-import { ApiKeySpecs } from '../../../eav-ui/src/app/shared/models/dialog-context.models';
-import { classLog } from '../../../eav-ui/src/app/shared/logging';
 
 const gpsDialogTag = 'field-custom-gps-dialog';
 
@@ -18,7 +21,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
   fieldInitialized: boolean;
   connector: Connector<string>;
 
-  private addressMask: FieldMask;
+  private addressMask: IFieldMask;
   private geocoder: google.maps.Geocoder;
   private iconSearch: HTMLAnchorElement;
   private latFieldName: string;
@@ -54,14 +57,15 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
 
     const expConnector = this.connector._experimental;
     const allInputNames = expConnector.allInputTypeNames.map(inputType => inputType.name);
-    if (allInputNames.includes(this.connector.field.settings.LatField)) {
-      this.latFieldName = this.connector.field.settings.LatField;
+    const settings = this.connector.field.settings as FieldSettings & CustomGps & { 'Address Mask': string };
+    if (allInputNames.includes(settings.LatField)) {
+      this.latFieldName = settings.LatField;
     }
-    if (allInputNames.includes(this.connector.field.settings.LongField)) {
-      this.lngFieldName = this.connector.field.settings.LongField;
+    if (allInputNames.includes(settings.LongField)) {
+      this.lngFieldName = settings.LongField;
     }
 
-    const addressMaskSetting = this.connector.field.settings.AddressMask || this.connector.field.settings['Address Mask'];
+    const addressMaskSetting = settings.AddressMask || settings['Address Mask'];
     this.addressMask = expConnector.getFieldMask(addressMaskSetting, 'Gps');
     this.log.a(`${gpsDialogTag} addressMask:`, {addressMaskSetting});
     if (addressMaskSetting) {

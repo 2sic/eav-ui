@@ -22,17 +22,18 @@ export function calculateTypeInfos(pipelineDataSources: PipelineDataSource[], da
 
   for (const pipelineDataSource of pipelineDataSources) {
     let typeInfo: TypeInfo;
-    const dataSource = dataSources.find(ds => ds.PartAssemblyAndType === pipelineDataSource.PartAssemblyAndType);
-    if (dataSource) {
-      typeInfo = { ...(dataSource.PrimaryType ? guiTypes[dataSource.PrimaryType] : guiTypes.Unknown) };
-      if (dataSource.Icon != null) { typeInfo.Icon = dataSource.Icon; }
-      if (dataSource.DynamicIn != null) { typeInfo.DynamicIn = dataSource.DynamicIn; }
-      if (dataSource.DynamicOut != null) { typeInfo.DynamicOut = dataSource.DynamicOut; }
-      if (dataSource.HelpLink != null) { typeInfo.HelpLink = dataSource.HelpLink; }
-      if (dataSource.EnableConfig != null) { typeInfo.EnableConfig = dataSource.EnableConfig; }
-      if (dataSource.UiHint != null) { typeInfo.UiHint = dataSource.UiHint; }
+    const ds = dataSources.find(ds => ds.PartAssemblyAndType === pipelineDataSource.PartAssemblyAndType);
+    if (ds) {
+      typeInfo = { ...(ds.PrimaryType ? guiTypes[ds.PrimaryType] : guiTypes.Unknown) };
+      if (ds.Icon != null) { typeInfo.Icon = ds.Icon; }
+      if (ds.DynamicIn != null) { typeInfo.DynamicIn = ds.DynamicIn; }
+      if (ds.DynamicOut != null) { typeInfo.DynamicOut = ds.DynamicOut; }
+      if (ds.HelpLink != null) { typeInfo.HelpLink = ds.HelpLink; }
+      if (ds.EnableConfig != null) { typeInfo.EnableConfig = ds.EnableConfig; }
+      if (ds.UiHint != null) { typeInfo.UiHint = ds.UiHint; }
     }
-    if (!typeInfo) { typeInfo = { ...guiTypes.Unknown }; }
+    if (!typeInfo)
+      typeInfo = { ...guiTypes.Unknown };
     typeInfos[pipelineDataSource.EntityGuid] = typeInfo;
   }
 

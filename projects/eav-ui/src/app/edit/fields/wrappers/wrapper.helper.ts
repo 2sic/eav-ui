@@ -1,14 +1,16 @@
-import { FieldSettings } from '../../../../../../edit-types';
+import { Of } from '../../../../../../core';
+import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
+import { FieldSettingsPickerMerged } from '../../../../../../edit-types/src/FieldSettings-Pickers';
 import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
-import { InputTypeSpecs } from '../../shared/input-types/input-type-specs.model';
 import { InputTypeHelpers } from '../../../shared/fields/input-type-helpers';
-import { Wrapper, WrappersCatalog } from './wrappers.constants';
+import { InputTypeSpecs } from '../../shared/input-types/input-type-specs.model';
+import { WrappersCatalog } from './wrappers.constants';
 
 const logThis = false;
 
 export class WrapperHelper {
 
-  static getWrappers(settings: FieldSettings, inputTypeSpecs: InputTypeSpecs): Wrapper[] {
+  static getWrappers(settings: FieldSettings, inputTypeSpecs: InputTypeSpecs): Of<typeof WrappersCatalog>[] {
     const inputType = inputTypeSpecs.inputType;
 
     if (InputTypeHelpers.isMessage(inputType))
@@ -19,7 +21,7 @@ export class WrapperHelper {
       return [WrappersCatalog.CollapsibleWrapper];
 
     // Start with default wrappers for all controls
-    const wrappers: Wrapper[] = [
+    const wrappers: Of<typeof WrappersCatalog>[] = [
       WrappersCatalog.HiddenWrapper
     ];
 
@@ -32,6 +34,8 @@ export class WrapperHelper {
       InputTypeCatalog.StringDropdown,
       InputTypeCatalog.EntityPicker,
       InputTypeCatalog.StringPicker,
+      InputTypeCatalog.NumberPicker,
+      // InputTypeCatalog.StringFontIconPicker,
       // || (inputType === InputTypeConstants.WIPNumberPicker);
     ];
     const isEntityOrStringDropdownType = inputsEntityOrStringDropdown.includes(inputType);
@@ -41,7 +45,7 @@ export class WrapperHelper {
       wrappers.push(WrappersCatalog.FeatureWarningWrapper);
       // i18n
       wrappers.push(WrappersCatalog.LocalizationWrapper);
-      const allowMultiValue = settings.AllowMultiValue ?? false;
+      const allowMultiValue = (settings as FieldSettings & FieldSettingsPickerMerged).AllowMultiValue ?? false;
       if (allowMultiValue || inputType === InputTypeCatalog.EntityContentBlocks)
         wrappers.push(WrappersCatalog.PickerExpandableWrapper);
     }

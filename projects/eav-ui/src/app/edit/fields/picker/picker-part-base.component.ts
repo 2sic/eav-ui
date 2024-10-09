@@ -1,8 +1,11 @@
 import { Component, inject } from '@angular/core';
-import { FieldState } from '../../fields/field-state';
+import { FieldSettingsPickerMerged } from '../../../../../../edit-types/src/FieldSettings-Pickers';
+import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
+import { FieldSettingsWithPickerSource } from '../../../../../../edit-types/src/PickerSources';
 import { classLog } from '../../../shared/logging';
-import { EditRoutingService } from '../../routing/edit-routing.service';
 import { computedObj } from '../../../shared/signals/signal.utilities';
+import { FieldState } from '../../fields/field-state';
+import { EditRoutingService } from '../../routing/edit-routing.service';
 
 /**
  * Base class for Picker Part Components.
@@ -12,13 +15,13 @@ import { computedObj } from '../../../shared/signals/signal.utilities';
   template: '',
 })
 export class PickerPartBaseComponent {
-  
+
   //#region Setup: Logging, inject, constructor
 
   log = classLog({PickerPartBaseComponent});
 
   /** Entire Field State */
-  protected fieldState = inject(FieldState);
+  protected fieldState = inject(FieldState) as FieldState<FieldValue, FieldSettingsWithPickerSource & FieldSettingsPickerMerged>;
 
   /** Routing service to open edit-dialogs for entities where necessary */
   editRoutingService = inject(EditRoutingService);
@@ -29,13 +32,10 @@ export class PickerPartBaseComponent {
 
   //#region Settings - simple values
 
-  protected enableTextEntry = this.fieldState.setting('EnableTextEntry');
-
-  protected allowMultiValue = this.fieldState.setting('AllowMultiValue');
+  protected enableTextEntry = this.fieldState.settingExt('EnableTextEntry');
 
   //#endregion
 
-  
   /** Picker Data Bundle with Source and state etc. */
   protected pickerData = this.fieldState.pickerData;
 
@@ -69,22 +69,6 @@ export class PickerPartBaseComponent {
     this.log.a(`openNewEntityDialog: '${entityType}'`);
     this.pickerData.source.editItem(null, entityType);
   }
-
-  edit(entityGuid: string, entityId: number): void {
-    this.log.a(`edit guid: '${entityGuid}'; id: '${entityId}'`);
-    this.pickerData.source.editItem({ entityGuid, entityId }, null);
-  }
-
-  removeItem(index: number): void {
-    this.log.a(`removeItem index: '${index}'`);
-    this.pickerData.state.remove(index);
-  }
-
-  deleteItem(index: number, entityGuid: string): void {
-    this.log.a(`deleteItem index: '${index}'; entityGuid: '${entityGuid}'`);
-    this.pickerData.source.deleteItem({ index, entityGuid });
-  }
-
 
   //#endregion
 

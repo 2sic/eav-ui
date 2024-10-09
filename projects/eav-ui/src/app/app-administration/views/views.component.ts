@@ -1,36 +1,35 @@
 import polymorphLogo from '!url-loader!./polymorph-logo.png';
 import { GridOptions } from '@ag-grid-community/core';
 import { ChangeDetectorRef, Component, OnInit, signal, ViewContainerRef } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogActions } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
+import { transient } from '../../../../../core';
+import { FeatureNames } from '../../features/feature-names';
+import { openFeatureDialog } from '../../features/shared/base-feature.component';
 import { GoToMetadata } from '../../metadata';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
+import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { FileUploadDialogData } from '../../shared/components/file-upload-dialog';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { eavConstants } from '../../shared/constants/eav.constants';
+import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm, EditPrep } from '../../shared/models/edit-form.model';
+import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
+import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { DialogService } from '../../shared/services/dialog.service';
 import { Polymorphism } from '../models/polymorphism.model';
 import { View, ViewEntity } from '../models/view.model';
+import { DialogConfigAppService } from '../services/dialog-config-app.service';
 import { ViewsService } from '../services/views.service';
 import { ViewsActionsComponent } from './views-actions/views-actions.component';
 import { ViewActionsParams } from './views-actions/views-actions.models';
 import { ViewsShowComponent } from './views-show/views-show.component';
 import { ViewsTypeComponent } from './views-type/views-type.component';
 import { calculateViewType } from './views.helpers';
-import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
-import { openFeatureDialog } from '../../features/shared/base-feature.component';
-import { FeatureNames } from '../../features/feature-names';
-import { MatDialog } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDialogActions } from '@angular/material/dialog';
-import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
-import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
-import { transient } from '../../core';
-import { DialogConfigAppService } from '../services/dialog-config-app.service';
-import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 
 @Component({
   selector: 'app-views',
@@ -69,7 +68,7 @@ export class ViewsComponent implements OnInit {
   constructor(
     private snackBar: MatSnackBar,
     // For Lightspeed buttons - new 17.10 - may need to merge better w/code changes 2dg
-    private dialog: MatDialog,
+    private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
   ) {
@@ -228,7 +227,7 @@ export class ViewsComponent implements OnInit {
 
     // Helper function for actions in the table below
     const openLightSpeedFeatInfo = () =>
-      openFeatureDialog(this.dialog, FeatureNames.LightSpeed, this.viewContainerRef, this.changeDetectorRef);
+      openFeatureDialog(this.matDialog, FeatureNames.LightSpeed, this.viewContainerRef, this.changeDetectorRef);
 
     const gridOptions: GridOptions = {
       ...defaultGridOptions,

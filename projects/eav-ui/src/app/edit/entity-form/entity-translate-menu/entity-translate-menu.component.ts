@@ -1,20 +1,19 @@
-import { Component, computed, inject, input, OnInit, ViewContainerRef } from '@angular/core';
+import { UpperCasePipe } from '@angular/common';
+import { Component, computed, inject, input, ViewContainerRef } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
-import { AutoTranslateDisabledWarningDialog } from '../../localization/auto-translate-disabled-warning-dialog/auto-translate-disabled-warning-dialog.component';
-import { AutoTranslateMenuDialogComponent } from '../../localization/auto-translate-menu-dialog/auto-translate-menu-dialog.component';
-import { TranslateMenuDialogConfig, TranslateMenuDialogData } from '../../fields/wrappers/localization/translate-menu-dialog/translate-menu-dialog.models';
-import { TranslateModule } from '@ngx-translate/core';
-import { AsyncPipe, UpperCasePipe } from '@angular/common';
-import { FeatureIconIndicatorComponent } from '../../../features/feature-icon-indicator/feature-icon-indicator.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatButtonModule } from '@angular/material/button';
-import { FlexModule } from '@angular/flex-layout/flex';
-import { FieldsSettingsService } from '../../state/fields-settings.service';
-import { FieldsTranslateService } from '../../state/fields-translate.service';
+import { TranslateModule } from '@ngx-translate/core';
+import { FeatureIconIndicatorComponent } from '../../../features/feature-icon-indicator/feature-icon-indicator.component';
+import { SignalEquals } from '../../../shared/signals/signal-equals';
+import { TranslateMenuDialogConfig, TranslateMenuDialogData } from '../../fields/wrappers/localization/translate-menu-dialog/translate-menu-dialog.models';
 import { FormConfigService } from '../../form/form-config.service';
 import { FormsStateService } from '../../form/forms-state.service';
-import { SignalEquals } from '../../../shared/signals/signal-equals';
+import { AutoTranslateDisabledWarningDialog } from '../../localization/auto-translate-disabled-warning-dialog/auto-translate-disabled-warning-dialog.component';
+import { AutoTranslateMenuDialogComponent } from '../../localization/auto-translate-menu-dialog/auto-translate-menu-dialog.component';
+import { FieldsSettingsService } from '../../state/fields-settings.service';
+import { FieldsTranslateService } from '../../state/fields-translate.service';
 import { ItemService } from '../../state/item.service';
 
 @Component({
@@ -23,12 +22,10 @@ import { ItemService } from '../../state/item.service';
   styleUrls: ['./entity-translate-menu.component.scss'],
   standalone: true,
   imports: [
-    FlexModule,
     MatButtonModule,
     MatMenuModule,
     MatIconModule,
     FeatureIconIndicatorComponent,
-    AsyncPipe,
     UpperCasePipe,
     TranslateModule,
   ],
@@ -40,7 +37,7 @@ export class EntityTranslateMenuComponent {
   protected readOnly = this.formsStateService.readOnly;
 
   constructor(
-    private dialog: MatDialog,
+    private matDialog: MatDialog,
     private itemService: ItemService,
     private eavService: FormConfigService,
     private fieldTranslateSvc: FieldsTranslateService,
@@ -94,14 +91,14 @@ export class EntityTranslateMenuComponent {
         isTranslateMany: true,
         translatableFields: autoTransFields,
       };
-      this.dialog.open(AutoTranslateMenuDialogComponent, {
+      this.matDialog.open(AutoTranslateMenuDialogComponent, {
         autoFocus: false,
         data: dialogData,
         viewContainerRef: this.viewContainerRef,
         width: '400px',
       });
     } else {
-      this.dialog.open(AutoTranslateDisabledWarningDialog, {
+      this.matDialog.open(AutoTranslateDisabledWarningDialog, {
         autoFocus: false,
         data: { isAutoTranslateAll: true },
         viewContainerRef: this.viewContainerRef,

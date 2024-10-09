@@ -1,20 +1,22 @@
-import { FieldSettings, FieldValue } from '../../../../../edit-types';
+import { effect, Injector, Signal } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
-import { Signal } from '@angular/core';
-import { FieldConfigSet } from './field-config-set.model';
+import { Of } from '../../../../../core';
 import { BasicControlSettings } from '../../../../../edit-types/src/BasicControlSettings';
-import { UiControl } from '../shared/controls/ui-control';
-import { PickerData } from './picker/picker-data';
-import { TranslationState } from '../localization/translate-state.model';
-import { computedObj, signalObj } from '../../shared/signals/signal.utilities';
+import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
+import { FieldValue } from '../../../../../edit-types/src/FieldValue';
 import { FeatureNames } from '../../features/feature-names';
-import { Of } from '../../core';
+import { FeaturesScopedService } from '../../features/features-scoped.service';
+import { computedObj, signalObj } from '../../shared/signals/signal.utilities';
+import { TranslationState } from '../localization/translate-state.model';
+import { UiControl } from '../shared/controls/ui-control';
+import { FieldConfigSet } from './field-config-set.model';
+import { PickerData } from './picker/picker-data';
 
 /**
  * This is provided / injected at the fields-builder for every single field.
  * So any control or service within that field, which requests this service, will get one containing exactly that fields.
  */
-export class FieldState<T extends FieldValue = FieldValue> {
+export class FieldState<TValue extends FieldValue = FieldValue, TSettings extends FieldSettings = FieldSettings> {
   constructor(
     /** The fields technical name to access settings etc. */
     public name: string,
@@ -26,7 +28,7 @@ export class FieldState<T extends FieldValue = FieldValue> {
     public group: UntypedFormGroup,
 
     /** The settings as a signal - use this for most cases */
-    public settings: Signal<FieldSettings>,
+    public settings: Signal<TSettings>,
 
     /** The basic settings - use this for most cases as it will change less than the settings signal */
     public basics: Signal<BasicControlSettings>,
@@ -38,15 +40,37 @@ export class FieldState<T extends FieldValue = FieldValue> {
     public ui: Signal<UiControl>,
 
     /** The value of the field in the UI control as a signal */
-    public uiValue: Signal<T>,
+    public uiValue: Signal<TValue>,
 
     public translationState: Signal<TranslationState>,
 
+    /** Signal if a dialog (popup) of this field is open, like a hyperlink-dialog */
+    public isOpen: Signal<boolean>,
+
     pickerData: PickerData,
+
+    featuresSvc: FeaturesScopedService,
+
+    injectorForEffects: Injector,
   ) {
     this.#pickerData = pickerData;
+
+    // Required Features Transfer
+    effect(() => {
+      const reqFeaturesFromSettings = this.requiredFeatures();
+      if (reqFeaturesFromSettings.length == 0)
+        return;
+      for (const feature of reqFeaturesFromSettings)
+        featuresSvc.requireFeature(feature, `Used in field ${this.name}`);
+    }, { allowSignalWrites: true, injector: injectorForEffects });
+
   }
 
+  /**
+   * Picker Data - will throw an error if accessed on a field which doesn't have PickerData
+   * @readonly
+   * @type {PickerData}
+   */
   get pickerData(): PickerData {
     if (this.#pickerData)
       return this.#pickerData;
@@ -64,8 +88,16 @@ export class FieldState<T extends FieldValue = FieldValue> {
    * @returns the signal for that property, with isEqual change detection and name
    */
   setting<K extends keyof FieldSettings>(name: K): Signal<FieldSettings[K]> {
-    return computedObj(name, () => this.settings()[name]);
+    return computedObj(name as string, () => this.settings()[name]);
   }
+
+  settingExt<K extends keyof TSettings>(name: K): Signal<TSettings[K]> {
+    return computedObj(name as string, () => this.settings()[name]);
+  }
+
+  // settingExt<TSet extends FieldSettings, K extends keyof TSet>(name: K): Signal<TSet[K]> {
+  //   return computedObj(name as string, () => (this.settings() as unknown as TSet)[name]);
+  // }
 
   //#region Required Features
 

@@ -1,38 +1,37 @@
 import { AgGridAngular } from '@ag-grid-community/angular';
-import { GridOptions } from '@ag-grid-community/core';
+import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
+import { GridOptions, ModuleRegistry } from '@ag-grid-community/core';
+import { AsyncPipe, NgClass } from '@angular/common';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogActions } from '@angular/material/dialog';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatIconModule } from '@angular/material/icon';
 import { RouterOutlet } from '@angular/router';
 import { BehaviorSubject, catchError, forkJoin, map, Observable, of, share, startWith, Subject, switchMap, tap, timer } from 'rxjs';
+import { transient } from '../../../../../core';
+import { ExpirationExtension } from '../../features/expiration-extension';
 import { FeatureState } from '../../features/models';
+import { Feature } from '../../features/models/feature.model';
+import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
-import { Feature } from '../../features/models/feature.model';
+import { TippyDirective } from '../../shared/directives/tippy.directive';
+import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
+import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { License } from '../models/license.model';
+import { FeaturesConfigService } from '../services/features-config.service';
+import { ActiveFeaturesCountPipe } from './active-features-count.pipe';
+import { AgGridHeightDirective } from './ag-grid-height.directive';
 import { FeatureDetailsDialogComponent } from './feature-details-dialog/feature-details-dialog.component';
 import { FeatureDetailsDialogData } from './feature-details-dialog/feature-details-dialog.models';
 import { FeaturesListEnabledReasonComponent } from './features-list-enabled-reason/features-list-enabled-reason.component';
 import { FeaturesListEnabledComponent } from './features-list-enabled/features-list-enabled.component';
 import { FeaturesStatusComponent } from './features-status/features-status.component';
 import { FeaturesStatusParams } from './features-status/features-status.models';
-import { ExpirationExtension } from '../../features/expiration-extension';
-import { ActiveFeaturesCountPipe } from './active-features-count.pipe';
 import { LicensesOrderPipe } from './licenses-order.pipe';
-import { MatButtonModule } from '@angular/material/button';
-import { AgGridHeightDirective } from './ag-grid-height.directive';
-import { NgClass, AsyncPipe } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { TippyDirective } from '../../shared/directives/tippy.directive';
-import { FeaturesConfigService } from '../services/features-config.service';
-import { ModuleRegistry } from '@ag-grid-community/core';
-import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
-import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
-import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
-import { transient } from '../../core';
-import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 
 @Component({
   selector: 'app-license-info',
@@ -68,7 +67,7 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
   #dialogRouter = transient(DialogRoutingService);
 
   constructor(
-    private dialog: MatDialog,
+    private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
   ) {
@@ -127,8 +126,10 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
   #showFeatureDetails(feature: Feature): void {
     const data: FeatureDetailsDialogData = {
       feature,
+      showGuid: true,
+      showStatus: true,
     };
-    this.dialog.open(FeatureDetailsDialogComponent, {
+    this.matDialog.open(FeatureDetailsDialogComponent, {
       autoFocus: false,
       data,
       viewContainerRef: this.viewContainerRef,

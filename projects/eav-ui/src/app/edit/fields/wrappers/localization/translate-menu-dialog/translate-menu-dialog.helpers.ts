@@ -1,16 +1,17 @@
-import { TranslationLink, TranslationLinks } from '../../../../localization/translation-link.constants';
-import { FieldReader } from '../../../../localization/field-reader';
-import { EavEntityAttributes } from '../../../../shared/models/eav';
-import { I18nKey, I18nKeys } from './translate-menu-dialog.constants';
-import { TranslateMenuDialogTemplateLanguage } from './translate-menu-dialog.models';
+import { Of } from '../../../../../../../../core';
 import { FormLanguage, Language } from '../../../../form/form-languages.model';
+import { FieldReader } from '../../../../localization/field-reader';
+import { TranslationLinks } from '../../../../localization/translation-link.constants';
+import { EavEntityAttributes } from '../../../../shared/models/eav';
+import { I18nKeys } from './translate-menu-dialog.constants';
+import { TranslateMenuDialogTemplateLanguage } from './translate-menu-dialog.models';
 
 export function getTemplateLanguages(
   config: { fieldName: string }, // FieldConfigSet,
   language: FormLanguage,
   languages: Language[],
   attributes: EavEntityAttributes,
-  linkType: TranslationLink,
+  linkType: Of<typeof TranslationLinks>,
 ): TranslateMenuDialogTemplateLanguage[] {
   const templateLanguages = languages
     .filter(lang => lang.NameId !== language.current)
@@ -31,7 +32,7 @@ export function getTemplateLanguagesWithContent(
   language: FormLanguage,
   languages: Language[],
   attributes: EavEntityAttributes,
-  linkType: TranslationLink,
+  linkType: Of<typeof TranslationLinks>,
   translatableFields?: string[],
 ): TranslateMenuDialogTemplateLanguage[] {
   const templateLanguages = languages
@@ -60,7 +61,7 @@ export function getTemplateLanguagesWithContent(
   return templateLanguages;
 }
 
-export function findI18nKey(translationLink: TranslationLink): I18nKey {
+export function findI18nKey(translationLink: Of<typeof TranslationLinks>): Of<typeof I18nKeys> {
   switch (translationLink) {
     case TranslationLinks.Translate:
       return I18nKeys.FromPrimary;

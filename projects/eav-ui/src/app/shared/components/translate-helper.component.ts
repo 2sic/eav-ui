@@ -1,13 +1,13 @@
-import { Component, computed, inject, Inject, Signal, signal } from '@angular/core';
-import { TranslationLink, TranslationLinks } from '../../edit/localization/translation-link.constants';
-import { I18nKeys } from '../../edit/fields/wrappers/localization/translate-menu-dialog/translate-menu-dialog.constants';
-import { FormConfigService } from '../../edit/form/form-config.service';
-import { TranslateMenuDialogData } from '../../edit/fields/wrappers/localization/translate-menu-dialog/translate-menu-dialog.models';
+import { Component, inject, Inject, signal } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { SignalEquals } from '../signals/signal-equals';
+import { Of } from '../../../../../core';
+import { I18nKeys } from '../../edit/fields/wrappers/localization/translate-menu-dialog/translate-menu-dialog.constants';
 import { findI18nKey } from '../../edit/fields/wrappers/localization/translate-menu-dialog/translate-menu-dialog.helpers';
-import { TranslationStateCore } from '../../edit/localization/translate-state.model';
+import { TranslateMenuDialogData } from '../../edit/fields/wrappers/localization/translate-menu-dialog/translate-menu-dialog.models';
+import { FormConfigService } from '../../edit/form/form-config.service';
 import { LanguageService } from '../../edit/localization/language.service';
+import { TranslationStateCore } from '../../edit/localization/translate-state.model';
+import { TranslationLinks } from '../../edit/localization/translation-link.constants';
 import { ItemService } from '../../edit/state/item.service';
 import { computedObj } from '../signals/signal.utilities';
 
@@ -30,7 +30,7 @@ export abstract class TranslateHelperComponent {
   TranslationLinks = TranslationLinks;
   I18nKeys = I18nKeys;
 
-  public noLanguageRequired: TranslationLink[];
+  public noLanguageRequired: Of<typeof TranslationLinks>[];
 
   protected language = this.formConfig.language;
   public translationStateSignal = signal<TranslationStateCore>(this.dialogData.translationState);

@@ -1,17 +1,17 @@
+import { AsyncPipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { map, Observable } from 'rxjs';
+import { transient } from '../../../../../core';
 import { GoToDevRest } from '../../dev-rest';
+import { JsonHelpers } from '../../shared/helpers/json.helpers';
+import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { Context } from '../../shared/services/context';
 import { PipelineModel } from '../models';
 import { VisualQueryStateService } from '../services/visual-query.service';
 import { calculateWarnings } from './run-explorer.helpers';
-import { AsyncPipe } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { JsonHelpers } from '../../shared/helpers/json.helpers';
-import { transient } from '../../core';
-import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 
 @Component({
   selector: 'app-run-explorer',

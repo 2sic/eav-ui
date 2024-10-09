@@ -76,7 +76,7 @@
       @for (snippet of v1DataSnippets(); track snippet.code)
       {
         <div class="snippet" [title]="snippet.code"
-          (click)="copyToClipboard(snippet.code)">
+          (click)="clipboard.copyToClipboard(snippet.code)">
           {{ snippet.label | snippetLabelSize }}
         </div>
       }
@@ -87,7 +87,7 @@
       @for (snippet of v1ContextSnippets(); track snippet.code)
       {
         <div class="snippet" [title]="snippet.code"
-          (click)="copyToClipboard(snippet.code)">
+          (click)="clipboard.copyToClipboard(snippet.code)">
           {{ snippet.label | snippetLabelSize }}
         </div>
       }

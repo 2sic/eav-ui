@@ -1,4 +1,5 @@
-import { InputTypeStrict } from './input-type-catalog';
+import { Of } from '../../../../../core';
+import { InputTypeCatalog } from './input-type-catalog';
 
 export interface InputTypeMetadata {
   AngularAssets?: string;
@@ -10,6 +11,6 @@ export interface InputTypeMetadata {
   IsRecommended?: boolean;
   Label: string;
   ObsoleteMessage?: string;
-  Type: InputTypeStrict;
+  Type: Of<typeof InputTypeCatalog>;
   UseAdam: boolean;
 }

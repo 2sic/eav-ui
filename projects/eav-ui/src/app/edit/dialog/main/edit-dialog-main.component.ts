@@ -2,7 +2,6 @@ import { CdkScrollable } from '@angular/cdk/scrolling';
 import { AsyncPipe, NgClass } from '@angular/common';
 import { AfterViewInit, Component, computed, effect, inject, OnDestroy, OnInit, QueryList, signal, ViewChildren } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { ExtendedModule } from '@angular/flex-layout/extended';
 import { MatRippleModule } from '@angular/material/core';
 import { MatDialogActions, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -10,14 +9,14 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import 'reflect-metadata';
 import { delay, fromEvent, of, startWith } from 'rxjs';
-import { transient } from '../../../core';
+import { transient } from '../../../../../../core';
 import { BaseComponent } from '../../../shared/components/base.component';
 import { ToggleDebugDirective } from '../../../shared/directives/toggle-debug.directive';
 import { classLog } from '../../../shared/logging';
 import { ExtendedFabSpeedDialImports } from '../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
 import { GlobalConfigService } from '../../../shared/services/global-config.service';
 import { computedWithPrev } from '../../../shared/signals/signal.utilities';
-import { UserSettings } from '../../../shared/user/user-settings.service';
+import { UserPreferences } from '../../../shared/user/user-preferences.service';
 import { LoadIconsService } from '../../assets/icons/load-icons.service';
 import { EntityFormBuilderComponent } from '../../entity-form/entity-form-builder/form-builder.component';
 import { PickerTreeDataHelper } from '../../fields/picker/picker-tree/picker-tree-data-helper';
@@ -41,6 +40,7 @@ import { MetadataDecorators } from '../../state/metadata-decorators.constants';
 import { SaveResult } from '../../state/save-result.model';
 import { EditEntryComponent } from '../entry/edit-entry.component';
 import { EditDialogFooterComponent } from '../footer/edit-dialog-footer.component';
+import { footerPreferences } from '../footer/footer-preferences';
 import { EditDialogHeaderComponent } from '../header/edit-dialog-header.component';
 import { SaveEavFormData } from './edit-dialog-main.models';
 import { FormSlideDirective } from './form-slide.directive';
@@ -50,6 +50,17 @@ import { FieldErrorMessage, SaveErrorsSnackBarData } from './snack-bar-save-erro
 import { SnackBarUnsavedChangesComponent } from './snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
 import { UnsavedChangesSnackBarData } from './snack-bar-unsaved-changes/snack-bar-unsaved-changes.models';
 
+const logSpecs = {
+  all: false,
+  constructor: true,
+}
+
+/**
+ * The edit-main component is the complete edit component containing:
+ * - Header (which also contains the languages and publish state)
+ * - Each entity form
+ * - Footer
+ */
 @Component({
   selector: 'app-edit-dialog-main',
   templateUrl: './edit-dialog-main.component.html',
@@ -58,7 +69,6 @@ import { UnsavedChangesSnackBarData } from './snack-bar-unsaved-changes/snack-ba
   imports: [
     MatDialogActions,
     NgClass,
-    ExtendedModule,
     EditDialogHeaderComponent,
     CdkScrollable,
     FormSlideDirective,
@@ -83,12 +93,16 @@ import { UnsavedChangesSnackBarData } from './snack-bar-unsaved-changes/snack-ba
 })
 export class EditDialogMainComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  log = classLog({EditDialogMainComponent});
+  log = classLog({EditDialogMainComponent}, logSpecs);
 
   @ViewChildren(EntityFormBuilderComponent) formBuilderRefs: QueryList<EntityFormBuilderComponent>;
 
   #globalConfigService = inject(GlobalConfigService);
   #formConfig = inject(FormConfigService);
+
+  /** Signal to tell the UI if the footer should show and/or the footer needs more space (changes CSS) */
+  #prefManager = inject(UserPreferences).part(footerPreferences)
+  footerSize = computed(() => this.#prefManager.data().size);
 
   #loadIconsService = transient(LoadIconsService);
   #formDataService = transient(FormDataService);
@@ -96,7 +110,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
   protected viewInitiated = signal(false);
 
   constructor(
-    private dialogRef: MatDialogRef<EditEntryComponent>,
+    private dialog: MatDialogRef<EditEntryComponent>,
     private contentTypeItemService: ContentTypeItemService,
     private contentTypeService: ContentTypeService,
     private inputTypeService: InputTypeService,
@@ -113,7 +127,13 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
     private formulaDesignerService: FormulaDesignerService,
   ) {
     super();
-    this.dialogRef.disableClose = true;
+    const l = this.log.fnIf('constructor');
+    this.dialog.disableClose = true;
+
+    // Initialize default user preferences for footer show/hide
+    const pref = this.#prefManager;
+    if (pref.data().pinned == null)
+      pref.set('pinned', this.#formConfig.config.dialogContext.User?.IsSystemAdmin ?? false);
 
     // Watch to save based on messages from sub-dialogs.
     effect(() => {
@@ -135,14 +155,14 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
 
   /** Signal to determine if we should show the footer. Will affect style.display of the footer tag */
   protected footerShow = computed(() => {
-    // if debug is true, then it was set once using the magic shortcut
+    // if debug is true, then it was set once using the keyboard shortcut
     if (this.#globalConfigService.isDebug()) {
       this.#debugWasModified = true;
       return true;
     }
 
     // If debug is false, and was never modified, show based on system admin status
-    return !this.#debugWasModified && this.#formConfig.config.dialogContext.User?.IsSystemAdmin;
+    return !this.#debugWasModified && this.#prefManager.data().pinned;
   });
 
   /** Show footer once or more - basically stays true if it was ever shown */
@@ -151,9 +171,6 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
   /** Special variable to check if debug was ever triggered, to allow super-users to re-hide the footer */
   #debugWasModified = false;
 
-  /** Signal to tell the UI that the footer needs more space (changes CSS) */
-  #footerUserSettings = inject(UserSettings).part(EditDialogFooterComponent.userSettings)
-  footerSize = computed(() => this.#footerUserSettings.data().size);
 
   //#endregion
 
@@ -198,14 +215,14 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
     super.ngOnDestroy();
   }
 
-  closeDialog(forceClose?: boolean) {
-    if (forceClose) {
-      this.dialogRef.close(this.#formConfig.config.createMode ? this.#saveResult : undefined);
-    } else if (!this.formsStateService.readOnly().isReadOnly && this.formsStateService.formsAreDirty()) {
-      this.#snackBarYouHaveUnsavedChanges();
-    } else {
-      this.dialogRef.close(this.#formConfig.config.createMode ? this.#saveResult : undefined);
-    }
+  closeDialog(forceClose?: boolean): void {
+    if (forceClose)
+      return this.dialog.close(this.#formConfig.config.createMode ? this.#saveResult : undefined);
+    
+    if (!this.formsStateService.readOnly().isReadOnly && this.formsStateService.formsAreDirty())
+      return this.#snackBarYouHaveUnsavedChanges();
+
+    this.dialog.close(this.#formConfig.config.createMode ? this.#saveResult : undefined);
   }
 
   /** Save all forms */
@@ -291,7 +308,8 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
   #startSubscriptions() {
     this.subscriptions.add(
       fromEvent<BeforeUnloadEvent>(window, 'beforeunload').subscribe(event => {
-        if (this.formsStateService.readOnly().isReadOnly || !this.formsStateService.formsAreDirty()) return;
+        if (this.formsStateService.readOnly().isReadOnly || !this.formsStateService.formsAreDirty())
+          return;
         event.preventDefault();
         event.returnValue = ''; // fix for Chrome
         this.#snackBarYouHaveUnsavedChanges();
@@ -299,41 +317,36 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
     );
 
     this.subscriptions.add(
-      this.dialogRef.backdropClick().subscribe(_ => this.closeDialog())
+      this.dialog.backdropClick().subscribe(_ => this.closeDialog())
     );
   }
 
-  #watchKeyboardShortcuts() {
-    this.dialogRef.keydownEvents().subscribe(event => {
-      if (isEscape(event)) {
-        this.closeDialog();
-        return;
-      }
+  #watchKeyboardShortcuts(): void {
+    this.dialog.keydownEvents().subscribe(event => {
+      if (isEscape(event))
+        return this.closeDialog();
 
       if (isCtrlS(event)) {
         event.preventDefault();
         if (!this.formsStateService.readOnly().isReadOnly)
-          this.saveAll(false);
-        return;
+          this.saveAll(event.altKey);
       }
     });
   }
 
-  #snackBarYouHaveUnsavedChanges() {
-    const snackBarData: UnsavedChangesSnackBarData = {
-      save: false,
-    };
+  #snackBarYouHaveUnsavedChanges(): void {
     const snackBarRef = this.snackBar.openFromComponent(SnackBarUnsavedChangesComponent, {
-      data: snackBarData,
+      data: {
+        save: false,
+      } satisfies UnsavedChangesSnackBarData,
       duration: 5000,
     });
 
     snackBarRef.onAction().subscribe(() => {
-      if ((snackBarRef.containerInstance.snackBarConfig.data as UnsavedChangesSnackBarData).save) {
-        this.saveAll(true);
-      } else {
-        this.closeDialog(true);
-      }
+      if ((snackBarRef.containerInstance.snackBarConfig.data as UnsavedChangesSnackBarData).save)
+        return this.saveAll(true);
+
+      this.closeDialog(true);
     });
   }
 }

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { AdamItem } from '../../../../../../edit-types';
+import { AdamItem } from '../../../../../../edit-types/src/AdamItem';
+import { classLog } from '../../../shared/logging';
 import { PrefetchAdams } from '../../dialog/main/edit-dialog-main.models';
 import { SignalStoreBase } from '../store/signal-store-base';
-import { classLog } from '../../../shared/logging';
 
 @Injectable({ providedIn: 'root' })
 export class AdamCacheService extends SignalStoreBase<string, AdamSnapshot> {

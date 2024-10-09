@@ -1,21 +1,21 @@
+import { DatePipe } from '@angular/common';
 import { Component, computed, HostBinding, OnInit, signal } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatOptionModule } from '@angular/material/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { PageEvent, MatPaginatorModule } from '@angular/material/paginator';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
+import { transient } from '../../../../core';
 import { getHistoryItems } from './item-history.helpers';
 import { CompareWith } from './models/compare-with.model';
 import { ItemHistoryResult } from './models/item-history-result.model';
 import { Version } from './models/version.model';
 import { VersionsService } from './services/versions.service';
-import { DatePipe } from '@angular/common';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatOptionModule } from '@angular/material/core';
-import { MatSelectModule } from '@angular/material/select';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { transient } from '../core';
 
 @Component({
   selector: 'app-item-history',
@@ -51,19 +51,17 @@ export class ItemHistoryComponent implements OnInit {
   private versionsService = transient(VersionsService);
 
   constructor(
-    private dialogRef: MatDialogRef<ItemHistoryComponent>,
+    private dialog: MatDialogRef<ItemHistoryComponent>,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
   ) { }
 
   ngOnInit() {
-    this.versionsService.fetchVersions(this.#itemId).subscribe(versions => {
-      this.version.set(versions);
-    });
+    this.versionsService.fetchVersions(this.#itemId).subscribe(versions => this.version.set(versions));
   }
 
   closeDialog() {
-    this.dialogRef.close();
+    this.dialog.close();
   }
 
   compareChange(newCompareWith: CompareWith) {
@@ -98,7 +96,7 @@ export class ItemHistoryComponent implements OnInit {
       const result: ItemHistoryResult = {
         refreshEdit: true,
       };
-      this.dialogRef.close(result);
+      this.dialog.close(result);
     });
   }
 }

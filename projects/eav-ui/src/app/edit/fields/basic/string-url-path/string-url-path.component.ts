@@ -1,22 +1,21 @@
-import { SignalEquals } from '../../../../../app/shared/signals/signal-equals';
 import { Component, computed, effect, inject, signal } from '@angular/core';
-import { StringUrlPathLogic } from './string-url-path-logic';
-import { MatInputModule } from '@angular/material/input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { transient } from '../../../../../../../core/transient';
+import { SignalEquals } from '../../../../../app/shared/signals/signal-equals';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
-import { FieldState } from '../../field-state';
+import { classLog } from '../../../../shared/logging';
 import { FieldMask, UrlHelpers } from '../../../shared/helpers';
 import { FieldMetadata } from '../../field-metadata.decorator';
+import { FieldState } from '../../field-state';
+import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
 import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
-import { transient } from '../../../../core/transient';
-import { classLog } from '../../../../shared/logging';
+import { StringUrlPathLogic } from './string-url-path-logic';
 
 @Component({
   selector: InputTypeCatalog.StringUrlPath,
   templateUrl: './string-url-path.component.html',
-  styleUrls: ['./string-url-path.component.scss'],
   standalone: true,
   imports: [
     MatFormFieldModule,

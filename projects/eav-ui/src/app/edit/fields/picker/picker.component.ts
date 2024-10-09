@@ -1,17 +1,18 @@
-import { Component, OnDestroy, OnInit, ViewChild, inject, Injector } from '@angular/core';
-import { PickerSearchComponent } from './picker-search/picker-search.component';
-import { PickerImports } from './picker-providers.constant';
-import { FieldState } from '../../fields/field-state';
+import { Component, inject, Injector, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
+import { FieldSettingsWithPickerSource } from '../../../../../../edit-types/src/PickerSources';
 import { BaseComponent } from '../../../shared/components/base.component';
-import { EditRoutingService } from '../../routing/edit-routing.service';
-import { computedObj } from '../../../shared/signals/signal.utilities';
-import { PickerDataSetup } from './picker-data-setup';
 import { classLog, ClassLogger } from '../../../shared/logging';
+import { computedObj } from '../../../shared/signals/signal.utilities';
+import { FieldState } from '../../fields/field-state';
+import { EditRoutingService } from '../../routing/edit-routing.service';
+import { PickerDataSetup } from './picker-data-setup';
+import { PickerImports } from './picker-providers.constant';
+import { PickerSearchComponent } from './picker-search/picker-search.component';
 
 @Component({
   // selector: none since it's a base class
   templateUrl: './picker.component.html',
-  styleUrls: ['./picker.component.scss'],
   standalone: true,
   imports: PickerImports,
 })
@@ -19,8 +20,8 @@ export abstract class PickerComponent extends BaseComponent implements OnInit, O
 
   /** Typed Log Specs for inheriting classes to reuse */
   static logSpecs = {
-    all: true,
-    focusOnSearchComponent: false,
+    all: false,
+    focusOnSearchComponent: true,
     refreshOnChildClosed: false,
     childFormResult: true,
   };
@@ -41,7 +42,7 @@ export abstract class PickerComponent extends BaseComponent implements OnInit, O
   /** The injector is used by most children to get transient one-time objects */
   #injector = inject(Injector);
   #editRoutingService = inject(EditRoutingService);
-  #fieldState = inject(FieldState);
+  #fieldState = inject(FieldState) as FieldState<FieldValue, FieldSettingsWithPickerSource>;
 
   #pickerData = this.#fieldState.pickerData;
 
@@ -50,23 +51,15 @@ export abstract class PickerComponent extends BaseComponent implements OnInit, O
    * since this control is used both for preview and dialog.
    */
   showPreview = computedObj('showPreview', () => {
-    const s = this.#fieldState.settings();
-    return !s.AllowMultiValue || (s.AllowMultiValue && !s.isDialog);
+    const s = this.#pickerData.features();
+    return !s.multiValue || (s.multiValue && !this.#fieldState.isOpen());
   });
 
   ngOnInit(): void {
     if (this.#pickerData.closeWatcherAttachedWIP)
       return;
     this.#refreshOnChildClosed();
-    this.#pickerData.state.attachCallback(this.focusOnSearchComponent);
     this.#pickerData.closeWatcherAttachedWIP = true;
-  }
-
-  focusOnSearchComponent(): void {
-    const l = this.log.fnIf('focusOnSearchComponent');
-    // TODO: I don't think this actually works, since I can't see where it would be set
-    this.entitySearchComponent?.autocomplete()?.nativeElement.focus();
-    l.end();
   }
 
   #refreshOnChildClosed(): void {

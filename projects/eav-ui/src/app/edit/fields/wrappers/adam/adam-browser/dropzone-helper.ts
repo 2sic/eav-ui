@@ -1,7 +1,7 @@
-import { DropzoneConfigExt } from '../../../../../../../../edit-types';
+import { DropzoneConfigExt } from '../../../../../../../../edit-types/src/DropzoneConfigExt';
 import { UrlHelpers } from '../../../../shared/helpers';
-import { AdamConfigInstance } from './adam-browser.models';
 import { FieldConfigSet } from '../../../field-config-set.model';
+import { AdamConfigInstance } from './adam-browser.models';
 
 export function fixDropzone(newConfig: AdamConfigInstance, fieldConfig: FieldConfigSet) {
   const oldDzConfig = fieldConfig.dropzone.getConfig();
@@ -27,7 +27,7 @@ export function fixDropzone(newConfig: AdamConfigInstance, fieldConfig: FieldCon
   const fixDisabled = oldDzConfig.disabled !== uploadDisabled;
   if (fixDisabled)
     newDzConfig.disabled = uploadDisabled;
-  
+
   if (Object.keys(newDzConfig).length > 0)
-    this.config.dropzone.setConfig(newDzConfig);
+    fieldConfig.dropzone.setConfig(newDzConfig);
 }

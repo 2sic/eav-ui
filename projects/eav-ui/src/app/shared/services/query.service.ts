@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Context } from './context';
-import { QueryStreams } from '../models/query-stream.model';
 import { classLog } from '../logging';
+import { QueryStreams } from '../models/query-stream.model';
+import { Context } from './context';
 
 const logSpecs = {
   all: false,
@@ -18,7 +18,7 @@ export class QueryService {
 
   constructor(private http: HttpClient, private context: Context) { }
 
-  getAvailableEntities(queryUrl: string, params: string, fields: string, entitiesFilter?: string[]): Observable<QueryStreams> {
+  getFromQuery(queryUrl: string, params: string, fields: string, entitiesFilter?: string[]): Observable<QueryStreams> {
     this.log.fnIf('getAvailableEntities', { queryUrl, params, fields, entitiesFilter });
     // Check if any params we should auto-add are already set (like in a query which has these params set in the configuration)
     const hasParams = !!params;

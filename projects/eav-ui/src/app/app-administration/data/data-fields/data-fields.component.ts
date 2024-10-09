@@ -1,17 +1,16 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatRippleModule } from '@angular/material/core';
+import { MatIconModule } from '@angular/material/icon';
+import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { ContentType } from '../../models/content-type.model';
 import { DataFieldsParams } from './data-fields.models';
-import { MatBadgeModule } from '@angular/material/badge';
-import { MatIconModule } from '@angular/material/icon';
-import { MatRippleModule } from '@angular/material/core';
-import { TippyDirective } from '../../../shared/directives/tippy.directive';
 
 @Component({
   selector: 'app-data-fields',
   templateUrl: './data-fields.component.html',
-  styleUrls: ['./data-fields.component.scss'],
   standalone: true,
   imports: [
     MatRippleModule,

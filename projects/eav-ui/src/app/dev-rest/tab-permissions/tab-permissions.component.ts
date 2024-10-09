@@ -1,16 +1,16 @@
 import { GridOptions } from '@ag-grid-community/core';
 import { Component, Input } from '@angular/core';
-import { DevRestBaseViewModel } from '..';
-import { GoToPermissions } from '../../permissions/go-to-permissions';
-import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { MatBadgeModule } from '@angular/material/badge';
-import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { TippyDirective } from '../../shared/directives/tippy.directive';
+import { MatIconModule } from '@angular/material/icon';
+import { DevRestBaseViewModel } from '..';
+import { transient } from '../../../../../core';
+import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
+import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
+import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
-import { transient } from '../../core';
 
 @Component({
   selector: 'app-dev-rest-tab-permissions',

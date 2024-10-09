@@ -1,16 +1,17 @@
+import { Of } from '../../../../../core';
 import { ContentType } from '../../app-administration/models';
-import { MetadataKeyType, ScopeOption } from '../../shared/constants/eav.constants';
+import { MetadataKeyTypes, ScopeOption } from '../../shared/constants/eav.constants';
 import { ContentItem } from '../models/content-item.model';
 
 export interface MetadataInfo {
   key: string;
-  keyType: MetadataKeyType;
+  keyType: Of<typeof MetadataKeyTypes>;
   target?: string;
   targetType: number;
 }
 
 export interface TargetTypeOption {
-  keyType: MetadataKeyType;
+  keyType: Of<typeof MetadataKeyTypes>;
   label: string;
   targetType: number;
   target: string;
@@ -19,7 +20,7 @@ export interface TargetTypeOption {
 
 export interface MetadataFormValues {
   targetType: number;
-  keyType: MetadataKeyType;
+  keyType: Of<typeof MetadataKeyTypes>;
   contentTypeForContentItems: string;
   scopeForContentTypes: string;
   key: string | number;

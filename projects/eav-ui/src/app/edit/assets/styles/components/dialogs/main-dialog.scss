@@ -37,8 +37,8 @@ app-collapsible-wrapper {
 
 .c-multi-item-dialog {
   extended-fab-speed-dial {
-    position: relative;
-    bottom: 14px;
+    position: absolute; // Align it to the parent's bottom
+    bottom: 34px;
     right: 24px;
     z-index: 1;
 
@@ -52,8 +52,6 @@ app-collapsible-wrapper {
       z-index: 10;
 
       &.adam {
-        bottom: 34px;
-
         @media (max-width: 600px) {
           bottom: 24px;
         }

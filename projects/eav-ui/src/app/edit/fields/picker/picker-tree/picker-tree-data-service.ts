@@ -1,9 +1,11 @@
 import { Injectable, Injector, Signal, effect, runInInjectionContext } from '@angular/core';
+import { FieldSettingsPicker } from 'projects/edit-types/src/FieldSettings-Pickers';
+import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
+import { RelationshipParentChild } from '../../../../../../../edit-types/src/PickerModeTree';
+import { classLog } from '../../../../shared/logging';
+import { PickerItem } from '../models/picker-item.model';
 import { PickerTreeItem } from '../models/picker-tree.models';
 import { PickerTreeDataHelper } from './picker-tree-data-helper';
-import { FieldSettings, RelationshipParentChild } from '../../../../../../../edit-types/src/FieldSettings';
-import { PickerItem } from '../models/picker-item.model';
-import { classLog } from '../../../../shared/logging';
 
 @Injectable()
 export class PickerTreeDataService {
@@ -15,7 +17,7 @@ export class PickerTreeDataService {
   public init(fieldSettings: Signal<FieldSettings>, allItems: Signal<PickerItem[]>) {
     this.log.a('init');
 
-    const settings = fieldSettings();
+    const settings = fieldSettings() as FieldSettings & FieldSettingsPicker;
     const isTree = settings.PickerDisplayMode === 'tree';
 
     // if not tree, quit early, nothing has to work then

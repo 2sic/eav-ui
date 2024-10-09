@@ -1,15 +1,13 @@
-import { Component } from '@angular/core';
-import { FlexModule } from '@angular/flex-layout/flex';
-import { MatRippleModule } from '@angular/material/core';
 import { NgClass } from '@angular/common';
+import { Component } from '@angular/core';
+import { MatRippleModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { PickerIconHelpComponent } from '../picker-icon-help/picker-icon-help.component';
-import { PickerIconInfoComponent } from '../picker-icon-info/picker-icon-info.component';
-import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
-import { PickerInlineBaseComponent } from '../picker-checkboxes/picker-inline-base.component';
-import { TippyDirective } from '../../../../shared/directives/tippy.directive';
+import { MatRadioButton } from '@angular/material/radio';
 import { FeatureNames } from '../../../../features/feature-names';
-import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
+import { TippyDirective } from '../../../../shared/directives/tippy.directive';
+import { PickerInlineBaseComponent } from '../picker-inline/picker-inline-base.component';
+import { PickerInlineHeaderComponent } from '../picker-inline/picker-inline-header.component';
+import { PickerPreviewLabelComponent } from '../picker-item-label/picker-item-label.component';
 
 @Component({
   selector: 'app-picker-radio',
@@ -19,13 +17,11 @@ import { FieldHelperTextComponent } from '../../help-text/field-help-text.compon
   imports: [
     MatFormFieldModule,
     MatRippleModule,
-    FlexModule,
     MatRadioButton,
     NgClass,
     TippyDirective,
-    FieldHelperTextComponent,
-    PickerIconHelpComponent,
-    PickerIconInfoComponent,
+    PickerInlineHeaderComponent,
+    PickerPreviewLabelComponent,
   ],
 })
 export class PickerRadioComponent extends PickerInlineBaseComponent {
@@ -35,6 +31,7 @@ export class PickerRadioComponent extends PickerInlineBaseComponent {
     this.fieldState.requireFeature(FeatureNames.PickerUiRadio);
   }
 
+  /** Name is used to group the radio buttons together in the form */
   name = this.fieldState.name;
 
 }

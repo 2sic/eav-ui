@@ -1,24 +1,24 @@
+import { MediaMatcher } from '@angular/cdk/layout';
+import { AsyncPipe } from '@angular/common';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialogRef } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { NavigationEnd, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, combineLatest, filter, map, startWith } from 'rxjs';
-import { UpdateEnvVarsFromDialogSettings } from '../../shared/helpers/update-env-vars-from-dialog-settings.helper';
-import { AppScopes } from '../../shared/models/dialog-context.models';
-import { DialogSettings } from '../../shared/models/dialog-settings.model';
-import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
-import { MediaMatcher } from '@angular/cdk/layout';
-import { AppAdminMenu } from './app-admin-menu';
-import { AsyncPipe } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
 import { BreadcrumbModule } from 'xng-breadcrumb';
-import { MatIconModule } from '@angular/material/icon';
-import { MatToolbarModule } from '@angular/material/toolbar';
+import { transient } from '../../../../../core';
 import { NavItemListComponent } from '../../shared/components/nav-item-list/nav-item-list.component';
 import { ToggleDebugDirective } from '../../shared/directives/toggle-debug.directive';
-import { DialogConfigAppService } from '../services/dialog-config-app.service';
-import { transient } from '../../core';
-import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
+import { UpdateEnvVarsFromDialogSettings } from '../../shared/helpers/update-env-vars-from-dialog-settings.helper';
 import { classLog } from '../../shared/logging';
+import { AppScopes } from '../../shared/models/dialog-context.models';
+import { DialogSettings } from '../../shared/models/dialog-settings.model';
+import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
+import { DialogConfigAppService } from '../services/dialog-config-app.service';
+import { AppAdminMenu } from './app-admin-menu';
 
 @Component({
   selector: 'app-app-admin-main',
@@ -45,7 +45,7 @@ export class AppAdminMainComponent implements OnInit, OnDestroy {
   #dialogRouter = transient(DialogRoutingService);
 
   constructor(
-    private dialogRef: MatDialogRef<AppAdminMainComponent>,
+    private dialog: MatDialogRef<AppAdminMainComponent>,
     private media: MediaMatcher
   ) {
     this.log.a('constructor');
@@ -109,7 +109,7 @@ export class AppAdminMainComponent implements OnInit, OnDestroy {
 
 
   closeDialog() {
-    this.dialogRef.close();
+    this.dialog.close();
   }
 
   private fetchDialogSettings() {

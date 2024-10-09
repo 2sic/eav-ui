@@ -1,6 +1,9 @@
 import { inject, Injectable, Signal } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
+import { FieldSettingsPickerMasks, FieldSettingsPickerMerged } from '../../../../../../../edit-types/src/FieldSettings-Pickers';
+import { FieldValue } from '../../../../../../../edit-types/src/FieldValue';
+import { FieldSettingsWithPickerSource } from '../../../../../../../edit-types/src/PickerSources';
 import { FeaturesScopedService } from '../../../../features/features-scoped.service';
 import { classLog, ClassLogger } from '../../../../shared/logging';
 import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
@@ -22,6 +25,8 @@ export const logSpecsDataSourceBase = {
   triggerGetAll: false,
   addToRefresh: false,
   fields: [...DebugFields],
+  newIconOptions: false,
+  fileLoadSettings: false,
 }
 
 @Injectable()
@@ -30,7 +35,7 @@ export abstract class DataSourceBase extends ServiceBase {
   abstract log: ClassLogger<typeof logSpecsDataSourceBase>;
 
   /** Field State with settings etc. */
-  protected fieldState = inject(FieldState);
+  protected fieldState = inject(FieldState) as FieldState<FieldValue, FieldSettingsWithPickerSource & FieldSettingsPickerMerged>;
 
   /** For feature checks in the info/tooltip etc. of picker data */
   protected features = inject(FeaturesScopedService);
@@ -98,11 +103,11 @@ export abstract class DataSourceBase extends ServiceBase {
     l.end();
   }
 
-  protected createMaskHelper(enableLog?: boolean): DataSourceMasksHelper {
-    return new DataSourceMasksHelper(this.fieldName, this.settings(), this.features, this.formConfig, this.log, enableLog);
+  protected createMaskHelper(moreSettings?: Partial<FieldSettings & FieldSettingsPickerMasks>, enableLog?: boolean): DataSourceMasksHelper {
+    return new DataSourceMasksHelper(this.fieldName, {...this.settings(), ...moreSettings }, this.features, this.formConfig, this.log, enableLog);
   }
 
-  protected fieldsToRetrieve(settings: FieldSettings): string {
+  protected fieldsToRetrieve(settings: FieldSettingsWithPickerSource): string {
     return this.fieldsHelper.fieldListToRetrieveFromServer(settings);
   }
 

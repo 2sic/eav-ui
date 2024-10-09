@@ -1,15 +1,19 @@
+import { Injectable, Injector, Signal, computed, effect, inject, signal } from '@angular/core';
+import { IFieldMask } from '../../../../../../edit-types/src/IFieldMask';
+import { classLog } from '../../../shared/logging';
 import { ServiceBase } from '../../../shared/services/service-base';
-import { Injectable, inject, signal, Injector, effect, computed, Signal } from '@angular/core';
 import { FieldState } from '../../fields/field-state';
 import { FormConfigService } from '../../form/form-config.service';
-import { classLog } from '../../../shared/logging';
 
 const logSpecs = {
   all: false,
   initSignal: false,
+  watchAllFields: true,
 }
 
-const FieldsFind = /\[.*?\]/ig;
+const dataPrefix = 'data';
+const FieldsFindNoPrefix = /\[.*?\]/ig;
+const FieldsFindPrefix = /\[[a-zA-Z]+\:.*?\]/ig;
 const FieldUnwrap = /[\[\]]/ig;
 
 /**
@@ -22,8 +26,9 @@ const FieldUnwrap = /[\[\]]/ig;
  * @param model usually FormGroup controls, passed into here
  * @param overloadPreCleanValues a function which will "scrub" the found field-values
  */
+
 @Injectable()
-export class FieldMask extends ServiceBase /* for field-change subscription */ {
+export class FieldMask extends ServiceBase implements IFieldMask /* for field-change subscription */ {
   
   log = classLog({FieldMask}, logSpecs);
 
@@ -42,6 +47,7 @@ export class FieldMask extends ServiceBase /* for field-change subscription */ {
 
   #controls = this.#fieldState.group.controls;
   #fieldConfig = this.#fieldState.config;
+  #requirePrefix = false;
 
   /**
    * The mask as a signal.
@@ -79,7 +85,7 @@ export class FieldMask extends ServiceBase /* for field-change subscription */ {
     return this;
   }
 
-  public init(name: string, mask: string): this {
+  public init(name: string, mask: string, requirePrefix: boolean = false): this {
     return this.initSignal(name, signal(mask));
   }
 
@@ -122,38 +128,48 @@ export class FieldMask extends ServiceBase /* for field-change subscription */ {
 
     let value = lowercaseInsideSquareBrackets(this.#mask());
 
+    // If we have form info (which we usually do), replace the placeholders
     if (this.#formConfig != null)
       value = value
         .replace('[app:appid]', this.#formConfig.config.appId.toString())
         .replace('[app:zoneid]', this.#formConfig.config.zoneId.toString());
 
+    // If we have field info (which we usually do), replace the placeholders
     if (this.#fieldConfig != null)
       value = value
         .replace('[guid]', this.#fieldConfig.entityGuid)
-        .replace('[id]', this.#fieldConfig.entityId.toString());
+        .replace('[data:guid]', this.#fieldConfig.entityGuid)
+        .replace('[id]', this.#fieldConfig.entityId.toString())
+        .replace('[data:id]', this.#fieldConfig.entityId.toString());
 
-    this.#fieldsUsedInMask().forEach((e, i) => {
+    const dataPlaceholders = this.#fieldsUsedInMask().data;
+    if (!dataPlaceholders)
+      return value;
+
+    dataPlaceholders.forEach((e, i) => {
       const replaceValue = this.#controls?.[e]?.value ?? '';
       const cleaned = this.preClean(e, replaceValue);
+      // New with prefix 'data:'
+      value = value.replace('[data:' + e.toLowerCase() + ']', cleaned);
+      // Old without prefix - only if allowed (for compatibility)
       value = value.replace('[' + e.toLowerCase() + ']', cleaned);
     });
     return value;
   }
 
   /** Retrieves a list of all fields used in the mask */
-  #extractFieldNames(mask: string): string[] {
+  #extractFieldNames(mask: string): Record<string, string[]> {
     // exit early if mask very simple or not a mask
     if (!mask || !hasPlaceholders(mask))
-      return [];
+      return {};
 
-    const matches = mask.match(FieldsFind);
+    const matches = mask.match(FieldsFindNoPrefix);
     
-    // TODO: ask is this good
     if (!matches)
-      return [mask];
+      return {};
     
     const fields: string[] = matches.map(token => token.replace(FieldUnwrap, ''));
-    return fields;
+    return { data: fields };
   }
 
   /**
@@ -173,13 +189,21 @@ export class FieldMask extends ServiceBase /* for field-change subscription */ {
    * Uses observables, since that's what angular provides on valueChanges.
    */
   #watchAllFields() {
+    const l = this.log.fnIf('watchAllFields');
+    const dataPlaceholders = this.#fieldsUsedInMask().data;
+    if (!dataPlaceholders)
+      return l.end('no data placeholders');
+
     // add a watch for each field in the field-mask
-    this.#fieldsUsedInMask().forEach(field => {
-      const control = this.#controls[field];
-      if (!control) return;
-      const valueSub = control.valueChanges.subscribe(_ => this.#onChange());
-      this.subscriptions.add(valueSub);
-    });
+    const controls = dataPlaceholders
+      .map(f => this.#controls[f])
+      .filter(f => f != null);
+
+    if (controls.length == 0)
+      return l.end('no fields to watch');
+
+    controls.forEach(c => this.subscriptions.add(c.valueChanges.subscribe(_ => this.#onChange())));
+    l.end();
   }
 }
 

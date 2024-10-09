@@ -1,18 +1,19 @@
-import { Component, computed, inject } from '@angular/core';
-import type * as Monaco from 'monaco-editor';
-import { CustomJsonEditorLogic, StringJsonLogic } from './custom-json-editor-logic';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, NgStyle } from '@angular/common';
-import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
+import { Component, computed, inject } from '@angular/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import type * as Monaco from 'monaco-editor';
+import { CustomJsonEditor } from 'projects/edit-types/src/FieldSettings-CustomJsonEditor';
+import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { MonacoEditorComponent } from '../../../../monaco-editor/monaco-editor.component';
-import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
-import { FieldState } from '../../field-state';
-import { FieldMetadata } from '../../field-metadata.decorator';
-import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
-import { SignalEquals } from '../../../../shared/signals/signal-equals';
 import { JsonSchema } from '../../../../monaco-editor/monaco-editor.models';
+import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
+import { SignalEquals } from '../../../../shared/signals/signal-equals';
 import { FormConfigService } from '../../../form/form-config.service';
+import { FieldMetadata } from '../../field-metadata.decorator';
+import { FieldState } from '../../field-state';
+import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
+import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
+import { CustomJsonEditorLogic, StringJsonLogic } from './custom-json-editor-logic';
 
 @Component({
   selector: InputTypeCatalog.CustomJsonEditor,
@@ -21,7 +22,6 @@ import { FormConfigService } from '../../../form/form-config.service';
   standalone: true,
   imports: [
     NgClass,
-    ExtendedModule,
     MatFormFieldModule,
     MonacoEditorComponent,
     NgStyle,
@@ -30,7 +30,7 @@ import { FormConfigService } from '../../../form/form-config.service';
 })
 @FieldMetadata({ ...WrappersLocalizationOnly })
 export class CustomJsonEditorComponent {
-  #fieldState = inject(FieldState) as FieldState<string>;
+  #fieldState = inject(FieldState) as FieldState<string, FieldSettings & CustomJsonEditor>;
   #config = this.#fieldState.config;
 
   protected ui = this.#fieldState.ui;

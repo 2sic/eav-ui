@@ -1,4 +1,4 @@
-import { AdamConfig } from '../../../../../../../../edit-types';
+import { AdamConfig } from '../../../../../../../../edit-types/src/AdamConfig';
 import { FieldConfigSet } from '../../../field-config-set.model';
 
 export class AdamConfigInstance implements AdamConfig {

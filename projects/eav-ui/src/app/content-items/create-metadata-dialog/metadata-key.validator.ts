@@ -1,12 +1,13 @@
 import { AbstractControl, UntypedFormGroup, ValidationErrors, ValidatorFn } from '@angular/forms';
-import { eavConstants, MetadataKeyType } from '../../shared/constants/eav.constants';
+import { Of } from '../../../../../core';
+import { eavConstants, MetadataKeyTypes } from '../../shared/constants/eav.constants';
 import { guidRegex } from '../../shared/constants/guid.constants';
 
 export function metadataKeyValidator(form: UntypedFormGroup): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
     if (!control.value) { return null; }
 
-    const keyType: MetadataKeyType = form.controls['keyType'].value;
+    const keyType: Of<typeof MetadataKeyTypes> = form.controls['keyType'].value;
     const testValue = (control.value as string | number).toString();
 
     switch (keyType) {

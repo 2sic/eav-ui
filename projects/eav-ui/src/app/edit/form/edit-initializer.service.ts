@@ -1,35 +1,35 @@
-import { ContentTypeItemService } from '../shared/content-types/content-type-item.service';
 import { Injectable, signal } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
+import { transient } from '../../../../../core';
+import { FeaturesScopedService } from '../../features/features-scoped.service';
+import { InputTypeHelpers } from '../../shared/fields/input-type-helpers';
 import { UpdateEnvVarsFromDialogSettings } from '../../shared/helpers/update-env-vars-from-dialog-settings.helper';
 import { convertUrlToForm } from '../../shared/helpers/url-prep.helper';
-import { FeaturesScopedService } from '../../features/features-scoped.service';
+import { classLog } from '../../shared/logging';
+import { ItemAddIdentifier } from '../../shared/models/edit-form.model';
 import { calculateIsParentDialog, sortLanguages } from '../dialog/main/edit-dialog-main.helpers';
 import { EavEditLoadDto } from '../dialog/main/edit-dialog-main.models';
-import { EditUrlParams } from '../routing/edit-url-params.model';
-import { EntityReader } from '../shared/helpers';
-import { EavEntity } from '../shared/models/eav/eav-entity';
-import { ItemAddIdentifier } from '../../shared/models/edit-form.model';
 import { FieldLogicManager } from '../fields/logic/field-logic-manager';
-import { EavContentType } from '../shared/models/eav/eav-content-type';
-import { FormDataService } from './form-data.service';
-import { InputTypeHelpers } from '../../shared/fields/input-type-helpers';
 import { FieldReader } from '../localization/field-reader';
-import { FormConfigService } from './form-config.service';
-import { ItemValuesOfLanguage } from '../state/item-values-of-language.model';
-import { transient } from '../../core';
-import { AdamCacheService } from '../shared/adam/adam-cache.service';
-import { ContentTypeService } from '../shared/content-types/content-type.service';
-import { ItemService } from '../state/item.service';
-import { InputTypeService } from '../shared/input-types/input-type.service';
-import { FormPublishingService } from './form-publishing.service';
 import { LanguageService } from '../localization/language.service';
-import { FormLanguageService } from './form-language.service';
+import { EditUrlParams } from '../routing/edit-url-params.model';
+import { AdamCacheService } from '../shared/adam/adam-cache.service';
 import { LinkCacheService } from '../shared/adam/link-cache.service';
+import { ContentTypeItemService } from '../shared/content-types/content-type-item.service';
+import { ContentTypeService } from '../shared/content-types/content-type.service';
+import { EntityReader } from '../shared/helpers';
+import { InputTypeService } from '../shared/input-types/input-type.service';
+import { EavContentType } from '../shared/models/eav/eav-content-type';
+import { EavEntity } from '../shared/models/eav/eav-entity';
 import { FieldsSettingsHelpers } from '../state/field-settings.helper';
-import { classLog } from '../../shared/logging';
+import { ItemValuesOfLanguage } from '../state/item-values-of-language.model';
+import { ItemService } from '../state/item.service';
+import { FormConfigService } from './form-config.service';
+import { FormDataService } from './form-data.service';
+import { FormLanguageService } from './form-language.service';
+import { FormPublishingService } from './form-publishing.service';
 
 const logSpecs = {
   all: false,
@@ -115,11 +115,11 @@ export class EditInitializerService {
 
 
       // SDV: document what's happening here
-      this.featuresService.load(formData.Context);
+      this.featuresService.load(formData.Context, formData);
       UpdateEnvVarsFromDialogSettings(formData.Context.App);
       this.#importLoadedData(formData);
       this.#keepInitialValues();
-      this.initMissingValues();
+      this.#initMissingValues();
 
       this.loaded.set(true);
     });
@@ -183,20 +183,20 @@ export class EditInitializerService {
     for (const item of items)
       for (const currentLang of allLangs) {
         const formValues = new EntityReader(currentLang, language.primary).currentValues(item.Entity.Attributes);
-        this.initialFormValues[this.initialValuesCacheKey(item.Entity.Guid, currentLang)] = formValues;
+        this.initialFormValues[this.#initialValuesCacheKey(item.Entity.Guid, currentLang)] = formValues;
       }
   }
 
-  private initialValuesCacheKey(entityGuid: string, language: string): string {
+  #initialValuesCacheKey(entityGuid: string, language: string): string {
     return `entityGuid:${entityGuid}:language:${language}`;
   }
 
   getInitialValues(entityGuid: string, language: string): ItemValuesOfLanguage {
-    return this.initialFormValues[this.initialValuesCacheKey(entityGuid, language)];
+    return this.initialFormValues[this.#initialValuesCacheKey(entityGuid, language)];
   }
   //#endregion
 
-  private initMissingValues(): void {
+  #initMissingValues(): void {
     const l = this.log.fnIf('initMissingValues');
 
     const updater = this.itemService.updater;
@@ -228,12 +228,11 @@ export class EditInitializerService {
 
         const attributeValues = item.Entity.Attributes[ctAttribute.Name];
         const fieldSettings = fss.getDefaultSettings(
-          new EntityReader(language.primary, language.primary).flattenAll(ctAttribute.Metadata)
+          new EntityReader(language.primary, language.primary).flatten(ctAttribute.Metadata)
         );
 
         if (languages.length === 0) {
           l.a(`${currentName} languages none, simple init`);
-          // const firstValue = LocalizationHelpers.getBestValue(attributeValues, '*', /* '*',*/ BestValueModes.Default);
           const firstValue = new FieldReader(attributeValues, '*').currentOrDefaultOrAny?.Value;
           if (logic.isValueEmpty(firstValue, isCreateMode))
             updater.setDefaultValue(item, ctAttribute, inputType, fieldSettings, languages, language.primary);
@@ -242,7 +241,6 @@ export class EditInitializerService {
 
           // check if there is a value for the generic / all language
           const disableI18n = inputType?.DisableI18n;
-          // const noLanguageValue = LocalizationHelpers.getBestValue(attributeValues, '*', /* '*', */ BestValueModes.Strict);
           const noLanguageValue = new FieldReader(attributeValues, '*').currentOrDefault?.Value;
           l.a(currentName, { disableI18n, noLanguageValue });
           if (!disableI18n && noLanguageValue !== undefined) {
@@ -262,12 +260,6 @@ export class EditInitializerService {
             continue;
           }
 
-          // const defaultLanguageValue = LocalizationHelpers.getBestValue(
-          //   attributeValues,
-          //   language.primary,
-          //   // language.primary,
-          //   BestValueModes.Strict,
-          // );
           const defaultLanguageValue = new FieldReader(attributeValues, language.primary).currentOrDefault?.Value;
 
           const valueIsEmpty = logic.isValueEmpty(defaultLanguageValue, isCreateMode);

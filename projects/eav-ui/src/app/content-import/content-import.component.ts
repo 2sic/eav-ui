@@ -1,19 +1,18 @@
-import { Component, HostBinding, Inject, OnDestroy, OnInit, signal } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialogActions } from '@angular/material/dialog';
+import { Component, HostBinding, Inject, OnInit, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MAT_DIALOG_DATA, MatDialogActions, MatDialogRef } from '@angular/material/dialog';
+import { MatRadioModule } from '@angular/material/radio';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, combineLatest, forkJoin, map } from 'rxjs';
+import { forkJoin } from 'rxjs';
+import { transient } from '../../../../core';
 import { ContentType } from '../app-administration/models/content-type.model';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
+import { DialogConfigAppService } from '../app-administration/services/dialog-config-app.service';
+import { DragAndDropDirective } from '../shared/directives/drag-and-drop.directive';
 import { ContentImportDialogData } from './content-import-dialog.config';
 import { ContentImport, EvaluateContentResult, ImportContentResult } from './models/content-import.model';
 import { ContentImportService } from './services/content-import.service';
-import { AsyncPipe } from '@angular/common';
-import { MatRadioModule } from '@angular/material/radio';
-import { MatButtonModule } from '@angular/material/button';
-import { FormsModule } from '@angular/forms';
-import { DragAndDropDirective } from '../shared/directives/drag-and-drop.directive';
-import { transient } from '../core';
-import { DialogConfigAppService } from '../app-administration/services/dialog-config-app.service';
 
 @Component({
   selector: 'app-content-import',
@@ -65,7 +64,7 @@ export class ContentImportComponent implements OnInit {
 
   constructor(
     @Inject(MAT_DIALOG_DATA) private dialogData: ContentImportDialogData,
-    private dialogRef: MatDialogRef<ContentImportComponent>,
+    private dialog: MatDialogRef<ContentImportComponent>,
     private route: ActivatedRoute,
   ) { }
 
@@ -85,7 +84,7 @@ export class ContentImportComponent implements OnInit {
   }
 
   closeDialog() {
-    this.dialogRef.close();
+    this.dialog.close();
   }
 
   evaluateContent() {

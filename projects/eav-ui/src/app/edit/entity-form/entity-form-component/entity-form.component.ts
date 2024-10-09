@@ -1,37 +1,36 @@
-import { AfterViewChecked, Component, ElementRef, inject, OnDestroy, OnInit, TemplateRef, ViewChild, ViewContainerRef, input } from '@angular/core';
-import { MatDialog, MatDialogRef, MatDialogState } from '@angular/material/dialog';
-import { TranslateService, TranslateModule } from '@ngx-translate/core';
-import { eavConstants } from '../../../shared/constants/eav.constants';
-import { EditForm, EditPrep, ItemIdentifierHeader } from '../../../shared/models/edit-form.model';
-import { EavEntity, EavItem } from '../../shared/models/eav';
-import { buildContentTypeFeatures, getItemForTooltip, getNoteProps } from '../entity-form.helpers';
-import { ChangeAnchorTargetDirective } from '../../fields/directives/change-anchor-target.directive';
-import { EntityTranslateMenuComponent } from '../entity-translate-menu/entity-translate-menu.component';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
+import { AfterViewChecked, Component, ElementRef, inject, input, Input, OnDestroy, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { FlexModule } from '@angular/flex-layout/flex';
 import { MatCardModule } from '@angular/material/card';
-import { FormDataService } from '../../form/form-data.service';
-import { EditControlsBuilderDirective } from '../../fields/builder/fields-builder.directive';
+import { MatDialog, MatDialogRef, MatDialogState } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { transient } from '../../../../../../core';
 import { FeatureNames } from '../../../features/feature-names';
+import { FeaturesScopedService } from '../../../features/features-scoped.service';
+import { eavConstants } from '../../../shared/constants/eav.constants';
 import { MousedownStopPropagationDirective } from '../../../shared/directives/mousedown-stop-propagation.directive';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
-import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';
-import { FeaturesScopedService } from '../../../features/features-scoped.service';
-import { FieldsSettingsService } from '../../state/fields-settings.service';
-import { FormConfigService } from '../../form/form-config.service';
-import { FormsStateService } from '../../form/forms-state.service';
-import { EditRoutingService } from '../../routing/edit-routing.service';
-import { EntityService } from '../../../shared/services/entity.service';
-import { transient } from '../../../core';
-import { ItemService } from '../../state/item.service';
-import { DialogRoutingService } from '../../../shared/routing/dialog-routing.service';
-import { EditForceReloadService } from '../../routing/edit-force-reload.service';
-import { computedObj, signalObj } from '../../../shared/signals/signal.utilities';
-import { EntityReader } from '../../shared/helpers/entity-reader';
 import { classLog } from '../../../shared/logging';
+import { EditForm, EditPrep, ItemIdentifierHeader } from '../../../shared/models/edit-form.model';
+import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';
+import { DialogRoutingService } from '../../../shared/routing/dialog-routing.service';
+import { EntityService } from '../../../shared/services/entity.service';
+import { computedObj, signalObj } from '../../../shared/signals/signal.utilities';
+import { EditControlsBuilderDirective } from '../../fields/builder/fields-builder.directive';
+import { ChangeAnchorTargetDirective } from '../../fields/directives/change-anchor-target.directive';
+import { FormConfigService } from '../../form/form-config.service';
+import { FormDataService } from '../../form/form-data.service';
+import { FormsStateService } from '../../form/forms-state.service';
+import { EditForceReloadService } from '../../routing/edit-force-reload.service';
+import { EditRoutingService } from '../../routing/edit-routing.service';
+import { EntityReader } from '../../shared/helpers/entity-reader';
+import { EavEntity, EavItem } from '../../shared/models/eav';
+import { FieldsSettingsService } from '../../state/fields-settings.service';
+import { ItemService } from '../../state/item.service';
+import { buildContentTypeFeatures, getItemForTooltip, getNoteProps } from '../entity-form.helpers';
+import { EntityTranslateMenuComponent } from '../entity-translate-menu/entity-translate-menu.component';
 
 const logSpecs = {
   all: false,
@@ -49,7 +48,6 @@ const logSpecs = {
   standalone: true,
   imports: [
     MatCardModule,
-    FlexModule,
     MatIconModule,
     MatButtonModule,
     CdkDrag,
@@ -72,6 +70,7 @@ export class EntityFormComponent implements OnInit, AfterViewChecked, OnDestroy 
   @ViewChild('noteTemplate') private noteTemplateRef?: TemplateRef<undefined>;
 
   entityGuid = input<string>();
+  @Input() index: number;
 
   protected formConfig = inject(FormConfigService);
   #fieldsSettingsSvc = inject(FieldsSettingsService);
@@ -133,7 +132,7 @@ export class EntityFormComponent implements OnInit, AfterViewChecked, OnDestroy 
   constructor(
     private itemSvc: ItemService,
     private editRoutingSvc: EditRoutingService,
-    private dialog: MatDialog,
+    private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
   ) {
   }
@@ -191,7 +190,7 @@ export class EntityFormComponent implements OnInit, AfterViewChecked, OnDestroy 
 
   openNote() {
     const triggerPosition = this.noteTriggerRef.nativeElement.getBoundingClientRect();
-    this.noteRef = this.dialog.open(this.noteTemplateRef, {
+    this.noteRef = this.matDialog.open(this.noteTemplateRef, {
       autoFocus: false,
       hasBackdrop: false,
       disableClose: true,
@@ -199,7 +198,7 @@ export class EntityFormComponent implements OnInit, AfterViewChecked, OnDestroy 
       closeOnNavigation: false,
       position: {
         top: `${triggerPosition.bottom}px`,
-        left: `${triggerPosition.left}px`,
+        left: `${triggerPosition.left - 200}px`,
       },
       viewContainerRef: this.viewContainerRef,
       panelClass: 'note-dialog',

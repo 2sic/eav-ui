@@ -3,13 +3,15 @@ import { EavContentTypeDto } from '../json-format-v1';
 
 export class EavContentType {
   Attributes: EavContentTypeAttribute[];
-  Description: string;
-    /** The NameId / Guid of this Content-Type */
+  /** The NameId / Guid of this Content-Type */
   Id: string;
   Metadata: EavEntity[];
   Name: string;
   Scope: string;
   Settings: EavEntityAttributes;
+
+  /** WIP v18.02 */
+  Title: string;
 
   static convertOne(contentTypeDto: EavContentTypeDto): EavContentType {
     const attributes = EavContentTypeAttribute.convertMany(contentTypeDto.Attributes);
@@ -18,12 +20,12 @@ export class EavContentType {
 
     const contentType: EavContentType = {
       Attributes: attributes,
-      Description: contentTypeDto.Description,
       Id: contentTypeDto.Id,
       Metadata: metadata,
       Name: contentTypeDto.Name,
       Scope: contentTypeDto.Scope,
       Settings: settings,
+      Title: contentTypeDto.Title,
     };
     return contentType;
   }

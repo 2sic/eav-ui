@@ -1,0 +1,20 @@
+<div class="my-title-bar">
+  <div>
+    <mat-label class="c-ew__preview-label" [ngClass]="{
+      'mat-caption' : itemCount(),
+      'mat-empty' : !itemCount(),
+      'mat-error' : ui().touchedAndInvalid && !config.initialDisabled,
+      'color__primary' : !ui().touchedAndInvalid && !config.initialDisabled,
+      'my-label-disabled' : config.initialDisabled
+      }"
+    >
+      {{ basics().labelWithRequired }}
+    </mat-label>
+    <app-field-helper-text [flatIfEmpty]="true" [smallGap]="true"></app-field-helper-text>
+  </div>
+  <div>
+    <ng-content select="[addNew]"></ng-content>
+    <ng-content select="[freeTextButtons]"></ng-content>
+  </div>
+
+</div>

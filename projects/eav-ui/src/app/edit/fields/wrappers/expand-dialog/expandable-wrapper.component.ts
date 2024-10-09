@@ -1,28 +1,25 @@
-import { ChangeDetectorRef, Component, computed, ElementRef, inject, NgZone, signal, ViewChild, ViewContainerRef } from '@angular/core';
-import { TranslateModule } from '@ngx-translate/core';
-import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { vh } from '../../../../shared/helpers/viewport.helpers';
-import { ContentExpandAnimation } from './content-expand.animation';
-import { PreviewHeight } from './expandable-wrapper.models';
-import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatRippleModule } from '@angular/material/core';
-import { MatIconModule } from '@angular/material/icon';
+import { CommonModule, JsonPipe, NgClass, NgStyle } from '@angular/common';
+import { AfterViewInit, ChangeDetectorRef, Component, computed, ElementRef, inject, NgZone, OnDestroy, signal, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { FlexModule } from '@angular/flex-layout/flex';
-import { ExtendedModule } from '@angular/flex-layout/extended';
-import { NgClass, NgStyle, JsonPipe } from '@angular/common';
-import { FieldState } from '../../field-state';
-import { ExtendedFabSpeedDialImports } from '../../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
-import { TippyDirective } from '../../../../shared/directives/tippy.directive';
-import { transient } from '../../../../core/transient';
-import { ConnectorHelper } from '../../connector/connector.helper';
-import { DropzoneDraggingHelper } from '../dropzone-dragging.helper';
-import { FormsStateService } from '../../../form/forms-state.service';
-import { EditRoutingService } from '../../../routing/edit-routing.service';
-import { WrappersCatalog } from '../wrappers.constants';
+import { MatRippleModule } from '@angular/material/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { TranslateModule } from '@ngx-translate/core';
+import { transient } from '../../../../../../../core/transient';
+import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
+import { vh } from '../../../../shared/helpers/viewport.helpers';
 import { classLog } from '../../../../shared/logging';
+import { ExtendedFabSpeedDialImports } from '../../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
+import { FormsStateService } from '../../../form/forms-state.service';
+import { ConnectorHelper } from '../../connector/connector.helper';
+import { FieldState } from '../../field-state';
+import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
+import { DialogPopupComponent } from '../dialog-popup/dialog-popup.component';
+import { DropzoneDraggingHelper } from '../dropzone-dragging.helper';
+import { WrappersCatalog } from '../wrappers.constants';
+import { ContentExpandAnimation } from './content-expand.animation';
+import { PreviewHeight } from './expandable-wrapper.models';
 
 @Component({
   selector: WrappersCatalog.ExpandableWrapper,
@@ -30,10 +27,10 @@ import { classLog } from '../../../../shared/logging';
   styleUrls: ['./expandable-wrapper.component.scss'],
   animations: [ContentExpandAnimation],
   standalone: true,
+  // TODO: @2pp - this still has imports which are not used anymore, since the dialog-popup is now a standalone component
+  // Pls review and clean up.
   imports: [
     NgClass,
-    ExtendedModule,
-    FlexModule,
     MatCardModule,
     MatButtonModule,
     MatIconModule,
@@ -43,11 +40,12 @@ import { classLog } from '../../../../shared/logging';
     FieldHelperTextComponent,
     TranslateModule,
     JsonPipe,
-    TippyDirective,
     ...ExtendedFabSpeedDialImports,
+    DialogPopupComponent,
+    CommonModule,
   ],
 })
-export class ExpandableWrapperComponent {
+export class ExpandableWrapperComponent implements AfterViewInit, OnDestroy {
   
   log = classLog({ExpandableWrapperComponent});
 
@@ -55,18 +53,15 @@ export class ExpandableWrapperComponent {
 
   /** Child tag which will contain the inner html */
   @ViewChild('previewContainer') private previewContainerRef: ElementRef;
-  @ViewChild('backdrop') private backdropRef: ElementRef;
-  @ViewChild('dialog') private dialogRef: ElementRef;
 
-  protected fieldState = inject(FieldState) as FieldState<string>;
-  private config = this.fieldState.config;
-
+  protected fieldState = inject(FieldState);
+  public config = this.fieldState.config;
   protected basics = this.fieldState.basics;
+
   protected settings = this.fieldState.settings;
   protected ui = this.fieldState.ui;
   protected uiValue = this.fieldState.uiValue;
 
-  open = this.editRoutingService.isExpandedSignal(this.config.index, this.config.entityGuid);
   focused = signal(false);
 
   adamDisabled = this.config.adam.isDisabled;
@@ -101,7 +96,6 @@ export class ExpandableWrapperComponent {
   private dropzoneDraggingHelper: DropzoneDraggingHelper;
 
   constructor(
-    private editRoutingService: EditRoutingService,
     private changeDetectorRef: ChangeDetectorRef,
     private viewContainerRef: ViewContainerRef,
     private zone: NgZone,
@@ -125,24 +119,10 @@ export class ExpandableWrapperComponent {
     );
 
     this.dropzoneDraggingHelper = new DropzoneDraggingHelper(this.zone);
-    this.dropzoneDraggingHelper.attach(this.backdropRef.nativeElement);
-    this.dropzoneDraggingHelper.attach(this.dialogRef.nativeElement);
   }
 
   ngOnDestroy() {
     this.log.fn('ngOnDestroy', null, 'destroying ExpandableWrapper');
     this.dropzoneDraggingHelper.detach();
-  }
-
-  closeDialog() {
-    this.editRoutingService.expand(false, this.config.index, this.config.entityGuid);
-  }
-
-  saveAll(close: boolean) {
-    this.formsStateService.triggerSave(close);
-  }
-
-  calculateBottomPixels() {
-    return window.innerWidth > 600 ? '100px' : '50px';
   }
 }

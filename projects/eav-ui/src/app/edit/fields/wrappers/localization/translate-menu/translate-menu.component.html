@@ -2,13 +2,13 @@
 
 @if (language().current !== language().primary)
 {
-  <div fxLayoutAlign="end center">
-    <div fxLayoutAlign="end center" class="eav-shared-languages-container" [ngClass]="translationStateClass()">
+  <div class="my-flex-main">
+    <div class="my-flex-inside eav-shared-languages-container" [ngClass]="translationStateClass()">
       <div class="eav-shared-languages mat-caption" [ngClass]="{ 'eav-shared-languages--disabled': disabled() }">
         {{translationState().infoLabel ? (translationState().infoLabel | translate:{ languages:
         translationState().infoMessage }): '' }}
       </div>
-      <div [tippy]="'LangMenu.NotTranslatable' | translate" [tippyDisabled]="!disableTranslateButtonSignal()" [tippyPlacement]="'top'">
+      <div tippyTranslate="LangMenu.NotTranslatable" [tippyDisabled]="!disableTranslateButtonSignal()" tippyPlacement="top">
         <button mat-icon-button class="eav-translate-icon-button" [matMenuTriggerFor]="menu"
           [disabled]="disableTranslateButtonSignal()" [ngClass]="{ 'hidden': hideTranslateButton }">
           <mat-icon class="eav-translate-icon">translate</mat-icon>

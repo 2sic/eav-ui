@@ -1,13 +1,22 @@
+import { EmptyDefault } from 'projects/edit-types/src/FieldSettings-EmptyDefault';
+import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
 import { InputTypeHelpers } from '../../shared/fields/input-type-helpers';
+import { classLog } from '../../shared/logging';
+import { DebugFields } from '../edit-debug';
 import { FieldLogicManager } from '../fields/logic/field-logic-manager';
 import { TranslateMenuHelpers } from '../fields/wrappers/localization/translate-menu/translate-menu.helpers';
 import { FormLanguage } from '../form/form-languages.model';
 import { FieldReader } from '../localization/field-reader';
 import { TranslationState, TranslationStateCore } from '../localization/translate-state.model';
 import { TranslationLinks } from '../localization/translation-link.constants';
-import { EavField, EavContentType, EavContentTypeAttribute } from '../shared/models/eav';
-import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
-import { classLog } from '../../shared/logging';
+import { EavContentType, EavContentTypeAttribute, EavField } from '../shared/models/eav';
+
+const logSpecs = {
+  all: false,
+  mergeGenericSettings: true,
+  getDefaultSettings: false,
+  fields: [...DebugFields, 'GroupPreview'],
+};
 
 /**
  * Helper to figure out / initialize field settings.
@@ -17,13 +26,33 @@ import { classLog } from '../../shared/logging';
 export class FieldsSettingsHelpers {
 
   // TODO: conditionally create logger based on source name
-  log = classLog({FieldsSettingsHelpers});
+  log = classLog({FieldsSettingsHelpers}, logSpecs, true);
 
-  constructor(source: string) {
+  constructor(source: string) { }
+
+  /**
+   * Special feature in 18.02
+   * Generic settings are metadata which contain a JSON to basically set anything for which there is no Content-Type metadata.
+   * @param settings 
+   * @param genericSettings 
+   */
+  mergeGenericSettings(fieldName: string, settings: FieldSettings): FieldSettings {
+    const l = this.log.fnIfInList('mergeGenericSettings', 'fields', fieldName, { fieldName, settings });
+    const asWithGenericSettings = settings as unknown as { SettingsGeneric: string };
+    if (asWithGenericSettings.SettingsGeneric == null)
+      return l.r(settings, 'No generic settings');
+
+    try {
+      const genericSettings = JSON.parse(asWithGenericSettings.SettingsGeneric);
+      return l.r({ ...settings, ...genericSettings }, 'Merged generic settings');
+    } catch (error) {
+      console.error('mergeGenericSettings', error);
+      return l.r(settings, 'Error parsing generic settings');
+    }
   }
 
   getDefaultSettings(settings: FieldSettings): FieldSettings {
-    const defSettings = AllDeprecated.moveDeprecatedSettings({ ...settings });
+    const defSettings = AllDeprecated.moveDeprecatedSettings({ ...settings }) as FieldSettings & EmptyDefault;
     // update @All settings
     defSettings.Name ??= '';
     defSettings.Placeholder ??= '';

@@ -1,10 +1,11 @@
-import { InputTypeStrict } from '../../../shared/fields/input-type-catalog';
+import { Of } from '../../../../../../core';
+import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
 import { InputTypeMetadata } from '../../../shared/fields/input-type-metadata.model';
 
 /** Information about the InputType */
 export interface InputTypeSpecs {
   /** The strongly typed string name - which must be in the catalog of strict names */
-  inputType: InputTypeStrict;
+  inputType: Of<typeof InputTypeCatalog>;
 
   /** info if it's an external web-component like the WYSIWYG */
   isExternal: boolean;

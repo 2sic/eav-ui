@@ -1,27 +1,28 @@
-import { Component, Injector, OnDestroy, ViewContainerRef, effect, inject, signal } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { templateTypes } from './string-template-picker.constants';
-import { TranslateModule } from '@ngx-translate/core';
-import { AsyncPipe } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
+import { Component, Injector, ViewContainerRef, effect, inject, signal } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
-import { MatSelectModule } from '@angular/material/select';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
-import { FieldState } from '../../field-state';
-import { FieldMask } from '../../../shared/helpers';
-import { FieldMetadata } from '../../field-metadata.decorator';
-import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
-import { TippyDirective } from '../../../../shared/directives/tippy.directive';
-import { transient } from '../../../../core/transient';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
+import { TranslateModule } from '@ngx-translate/core';
+import { StringTemplatePicker } from 'projects/edit-types/src/FieldSettings-String';
+import { take } from 'rxjs';
+import { transient } from '../../../../../../../core/transient';
+import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { SourceService } from '../../../../code-editor/services/source.service';
 import { CreateFileDialogComponent } from '../../../../create-file-dialog/create-file-dialog.component';
 import { CreateFileDialogData, CreateFileDialogResult } from '../../../../create-file-dialog/create-file-dialog.models';
-import { take } from 'rxjs';
+import { TippyDirective } from '../../../../shared/directives/tippy.directive';
+import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { classLog } from '../../../../shared/logging';
+import { FieldMask } from '../../../shared/helpers';
+import { FieldMetadata } from '../../field-metadata.decorator';
+import { FieldState } from '../../field-state';
+import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
+import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
+import { templateTypes } from './string-template-picker.constants';
 
 @Component({
   selector: InputTypeCatalog.StringTemplatePicker,
@@ -37,44 +38,45 @@ import { classLog } from '../../../../shared/logging';
     MatButtonModule,
     MatIconModule,
     FieldHelperTextComponent,
-    AsyncPipe,
     TranslateModule,
     TippyDirective,
   ],
 })
 @FieldMetadata({ ...WrappersLocalizationOnly })
-export class StringTemplatePickerComponent implements OnDestroy {
+export class StringTemplatePickerComponent {
   
   log = classLog({StringTemplatePickerComponent});
 
-  #fieldState = inject(FieldState) as FieldState<string>;
-  protected group = this.#fieldState.group;
-  protected config = this.#fieldState.config;
-
-  protected basics = this.#fieldState.basics;
-  protected ui = this.#fieldState.ui;
-
-  templateOptions = signal([]);
+  #fieldState = inject(FieldState) as FieldState<string, FieldSettings & StringTemplatePicker>;
 
   // needed to create more FieldMasks as needed
   #injector = inject(Injector);
 
   // If we have a configured type, use that, otherwise use the field mask
   // We'll still use the field-mask (even though it wouldn't be needed) to keep the logic simple
-  #typeMask = transient(FieldMask).init('String-TypeMask', this.#fieldState.settings().FileType ?? '[Type]');
+  #typeMask = transient(FieldMask).init('typeMask', this.#fieldState.settings().FileType ?? '[Type]');
 
   #locationMask = transient(FieldMask).init('String-LocationMask', '[Location]');
+
+  #sourceService = transient(SourceService);
+
+  protected group = this.#fieldState.group;
+  protected config = this.#fieldState.config;
+
+  protected basics = this.#fieldState.basics;
+  protected ui = this.#fieldState.ui;
+
+  protected files = signal<string[]>([]);
 
   #activeSpec = templateTypes.Token;
   #templates: string[] = [];
   #global = false;
+
   /** Reset only after templates have been fetched once */
   #resetIfNotFound = false;
 
-  #sourceService = transient(SourceService);
-
   constructor(
-    private dialog: MatDialog,
+    private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
   ) {
     // Watch for location changes to update the files in the dropdown
@@ -82,11 +84,6 @@ export class StringTemplatePickerComponent implements OnDestroy {
 
     // Watch for changes to the Type mask
     effect(() => this.#setFileConfig(this.#typeMask.result()), { allowSignalWrites: true });
-  }
-
-  ngOnDestroy() {
-    this.#typeMask.destroy();
-    this.#locationMask.destroy();
   }
 
   #setFileConfig(type: string) {
@@ -119,7 +116,7 @@ export class StringTemplatePickerComponent implements OnDestroy {
       // new feature in v11 - '.code.xxx' files shouldn't be shown, they are code-behind
       .filter(template => !/\.code\.[a-zA-Z0-9]+$/.test(template))
       .filter(template => template.endsWith(ext));
-    this.templateOptions.set(filtered);
+    this.files.set(filtered);
 
     const resetValue = this.#resetIfNotFound && !filtered.some(template => template === this.#fieldState.uiValue());
     if (resetValue)
@@ -135,7 +132,7 @@ export class StringTemplatePickerComponent implements OnDestroy {
       name: nameMask.result(),
     };
     nameMask.destroy();
-    const dialogRef = this.dialog.open(CreateFileDialogComponent, {
+    const dialogRef = this.matDialog.open(CreateFileDialogComponent, {
       autoFocus: false,
       data,
       viewContainerRef: this.viewContainerRef,

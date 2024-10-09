@@ -1,13 +1,12 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { transient } from '../../../../core';
 import { FileUploadDialogComponent, FileUploadDialogData, UploadTypes } from '../shared/components/file-upload-dialog';
 import { ImportAppService } from './services/import-app.service';
-import { transient } from '../core';
 
 @Component({
   selector: 'app-import-app',
   templateUrl: './import-app.component.html',
-  styleUrls: ['./import-app.component.scss'],
   standalone: true,
   imports: [
     FileUploadDialogComponent,

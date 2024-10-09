@@ -1,37 +1,36 @@
 import { Context as DnnContext } from '@2sic.com/sxc-angular';
+import { AsyncPipe } from '@angular/common';
 import { Component, HostBinding, OnDestroy } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, combineLatest, map, share } from 'rxjs';
 import { GoToDevRest } from '..';
+import { transient } from '../../../../../core';
 import { PipelinesService } from '../../app-administration/services';
 import { PermissionsService } from '../../permissions';
 import { eavConstants } from '../../shared/constants/eav.constants';
+import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { Context } from '../../shared/services/context';
 import { DevRestBase } from '../dev-rest-base.component';
+import { DevRestUrlsAndCodeComponent } from '../dev-rest-urls-and-code/dev-rest-urls-and-code.component';
+import { SelectorWithHelpComponent } from '../selector-with-help/selector-with-help.component';
+import { DevRestTabExamplesComponent } from '../tab-examples/tab-examples.component';
+import { DevRestHttpHeadersComponent } from '../tab-headers/tab-headers.component';
+import { DevRestTabIntroductionComponent } from '../tab-introduction/tab-introduction.component';
+import { DevRestTabPermissionsComponent } from '../tab-permissions/tab-permissions.component';
+import { DevRestQueryIntroductionComponent } from './introduction/introduction.component';
 import { generateQueryCalls } from './query-samples';
 import { DevRestQueryViewModel } from './query-template-vars';
-import { AsyncPipe } from '@angular/common';
-import { DevRestHttpHeadersComponent } from '../tab-headers/tab-headers.component';
-import { DevRestTabPermissionsComponent } from '../tab-permissions/tab-permissions.component';
-import { DevRestUrlsAndCodeComponent } from '../dev-rest-urls-and-code/dev-rest-urls-and-code.component';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { DevRestTabExamplesComponent } from '../tab-examples/tab-examples.component';
-import { DevRestTabIntroductionComponent } from '../tab-introduction/tab-introduction.component';
-import { DevRestQueryIntroductionComponent } from './introduction/introduction.component';
-import { MatTabsModule } from '@angular/material/tabs';
-import { SelectorWithHelpComponent } from '../selector-with-help/selector-with-help.component';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { TippyDirective } from '../../shared/directives/tippy.directive';
-import { transient } from '../../core';
 
 const pathToQuery = 'app/{appname}/query/{queryname}';
 @Component({
   selector: 'app-dev-rest-query',
   templateUrl: './query.component.html',
-  styleUrls: ['../dev-rest-all.scss'],
   standalone: true,
   imports: [
     MatButtonModule,
@@ -68,14 +67,14 @@ export class DevRestQueryComponent extends DevRestBase<DevRestQueryViewModel> im
   constructor(
     /** Context for this dialog. Used for appId, zoneId, tabId, etc. */
     context: Context,
-    dialogRef: MatDialogRef<DevRestQueryComponent>,
+    dialog: MatDialogRef<DevRestQueryComponent>,
     router: Router,
     route: ActivatedRoute,
     dnnContext: DnnContext,
   ) {
     const permissionsService = transient(PermissionsService);
 
-    super(context, dialogRef, dnnContext, router, route, permissionsService);
+    super(context, dialog, dnnContext, router, route, permissionsService);
 
     this.isSideNavContent = this.router.url.includes(GoToDevRest.routeQuery);
 

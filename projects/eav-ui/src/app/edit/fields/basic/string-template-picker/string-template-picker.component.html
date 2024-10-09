@@ -2,7 +2,7 @@
     <mat-form-field [formGroup]="group" color="accent" class="eav-mat-form-field">
       <mat-select [formControlName]="config.fieldName" [required]="basics().required" class="eav-translate-on-dblclick">
         <mat-option value="">{{ 'Fields.TemplatePicker.NotSelected' | translate }}</mat-option>
-        @for (file of templateOptions(); track file) {
+        @for (file of files(); track file) {
           <mat-option [value]="file">
             {{ file }}
           </mat-option>
@@ -10,8 +10,7 @@
       </mat-select>
       <mat-label>{{ basics().label }}</mat-label>
     </mat-form-field>
-    <button mat-icon-button [tippy]="'Fields.TemplatePicker.NewTemplate' | translate"
-      [disabled]="ui().disabled" (click)="createTemplate()">
+    <button mat-icon-button tippyTranslate="Fields.TemplatePicker.NewTemplate" [disabled]="ui().disabled" (click)="createTemplate()">
       <mat-icon>add</mat-icon>
     </button>
   </div>

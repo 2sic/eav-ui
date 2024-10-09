@@ -1,30 +1,32 @@
-import { FieldValue } from './../../../../../../edit-types/src/FieldValue';
-import { toFieldConfig } from './../../../../../../edit-types/src/FieldConfig';
-import { ExperimentalProps } from './../../../../../../edit-types/src/ExperimentalProps';
 import { ChangeDetectorRef, ElementRef, Injectable, Injector, NgZone, OnDestroy, ViewContainerRef, computed, effect, inject } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
+import isEqual from 'lodash-es/isEqual';
 import { distinctUntilChanged, startWith } from 'rxjs';
-import { ConnectorHost, ConnectorInstance } from './connector-instance.model';
+import { transient } from '../../../../../../core';
 import { EavCustomInputField } from '../../../../../../edit-types/src/EavCustomInputField';
-import { FieldMask } from '../../shared/helpers';
-import { FieldState } from '../field-state';
-import { PagePicker } from '../page-picker/page-picker.helper';
-import { transient } from '../../../core';
+import { FieldConfig } from '../../../../../../edit-types/src/FieldConfig';
+import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
 import { FeatureNames } from '../../../features/feature-names';
-import { openFeatureDialog } from '../../../features/shared/base-feature.component';
 import { FeaturesScopedService } from '../../../features/features-scoped.service';
+import { openFeatureDialog } from '../../../features/shared/base-feature.component';
+import { classLog } from '../../../shared/logging';
 import { ServiceBase } from '../../../shared/services/service-base';
 import { FormConfigService } from '../../form/form-config.service';
 import { EditRoutingService } from '../../routing/edit-routing.service';
 import { AdamService } from '../../shared/adam/adam.service';
 import { ContentTypeService } from '../../shared/content-types/content-type.service';
-import { InputTypeService } from '../../shared/input-types/input-type.service';
-import isEqual from 'lodash-es/isEqual';
-import { classLog } from '../../../shared/logging';
 import { UiControl } from '../../shared/controls/ui-control';
+import { FieldMask } from '../../shared/helpers';
+import { InputTypeService } from '../../shared/input-types/input-type.service';
+import { FieldConfigSet } from '../field-config-set.model';
+import { FieldState } from '../field-state';
+import { PagePicker } from '../page-picker/page-picker.helper';
+import { ExperimentalProps } from './../../../../../../edit-types/src/ExperimentalProps';
+import { FieldValue } from './../../../../../../edit-types/src/FieldValue';
+import { ConnectorHost, ConnectorInstance } from './connector-instance.model';
 
 const logSpecs = {
   all: false,
@@ -101,7 +103,7 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
 
     effect(() => {
       const s = this.#fieldState.settings();
-      const field = connector.field;
+      const field = connector.field as FieldConfig;
       field.settings = s;
       field.label = s.Name;
       field.placeholder = s.Placeholder;
@@ -140,7 +142,7 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
         lEx.fn('updateField', { name, value });
         this.#zone.run(() => { this.#updateControl(value, this.#group.controls[name]); });
       },
-      isFeatureEnabled$: (nameId) => this.#featuresService.isEnabled$(nameId),
+      isFeatureEnabled: this.#featuresService.isEnabled,
       setFocused: (focused) => {
         lEx.fn('setFocused', { focused });
         this.#zone.run(() => { this.#config.focused$.next(focused); });
@@ -199,4 +201,25 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
         .subscribe(() => openFeatureDialog(this.#dialog, FeatureNames.PasteImageFromClipboard, this.#viewContainerRef, this.#changeDetectorRef));
     }
   }
+}
+
+/**
+ * This function must stay here and not be in the edit-types folder,
+ * otherwise too many dependencies are added because the FieldConfigSet is used.
+ * @param config 
+ * @param settings 
+ * @returns 
+ */
+function toFieldConfig(config: FieldConfigSet, settings: FieldSettings): FieldConfig {
+  return {
+    name: config.fieldName,
+    index: config.index,
+    label: settings.Name,
+    placeholder: settings.Placeholder,
+    inputType: config.inputTypeSpecs.inputType,
+    type: config.type,
+    required: settings.valueRequired,
+    disabled: config.initialDisabled,
+    settings,
+  } satisfies FieldConfig;
 }

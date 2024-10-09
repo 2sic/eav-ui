@@ -4,13 +4,13 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, map, Observable, share, startWith, switchMap } from 'rxjs';
 import { AllScenarios, DevRestBaseViewModel, Scenario } from '.';
+import { transient } from '../../../../core';
 import { DialogSettings } from '../app-administration/models';
+import { DialogConfigAppService } from '../app-administration/services/dialog-config-app.service';
 import { Permission, PermissionsService } from '../permissions';
 import { eavConstants } from '../shared/constants/eav.constants';
-import { Context } from '../shared/services/context';
-import { transient } from '../core';
-import { DialogConfigAppService } from '../app-administration/services/dialog-config-app.service';
 import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
+import { Context } from '../shared/services/context';
 
 @Component({
   selector: 'app-dev-rest-base',
@@ -38,7 +38,7 @@ export class DevRestBase<ViewModelType> implements OnDestroy {
   constructor(
     /** Context for this dialog. Used for appId, zoneId, tabId, etc. */
     private context: Context,
-    private dialogRef: MatDialogRef<any>,
+    private dialog: MatDialogRef<any>,
     /** sxc-angular context. Used to resolve urls */
     private dnnContext: DnnContext,
     protected router: Router,
@@ -103,7 +103,7 @@ export class DevRestBase<ViewModelType> implements OnDestroy {
   }
 
   closeDialog() {
-    this.dialogRef.close();
+    this.dialog.close();
   }
 
 }

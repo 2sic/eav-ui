@@ -1,23 +1,28 @@
-import { FieldSettings, FieldValue } from '../../../../../../edit-types';
-import { classLog } from '../../../shared/logging';
-import { ClassLogger } from '../../../shared/logging';
+import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
+import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
+import { classLog, ClassLogger } from '../../../shared/logging';
+import { DebugFields } from '../../edit-debug';
 import { FieldLogicManager } from './field-logic-manager';
 import { FieldLogicTools } from './field-logic-tools';
 
-type LogicConstructor = new (...args: any[]) => FieldLogicBase;
+const logSpecs = {
+  all: false,
+  constructor: true,
+  update: true,
+  fields: [...DebugFields, 'Icon'],
+}
 
 export abstract class FieldLogicBase {
 
-  get log() { return this.#log ??= classLog({FieldLogicBase}).extendName(`[${this.name}]`) };
-  #log: ClassLogger;
+  /** Logger - lazy created on first access if not yet created */
+  get log() { return this.#log ??= classLog({FieldLogicBase}, logSpecs).extendName(`[${this.name}]`) };
+  
+  #log: ClassLogger<typeof logSpecs>;
 
   constructor(inheritingClass: Record<string, unknown> | string, logThis?: boolean) {
-    if(!this.name)
-      return
-    
-    this.#log = classLog(inheritingClass ?? {FieldLogicBase}, null, logThis);
+    this.#log = classLog(inheritingClass ?? {FieldLogicBase}, logSpecs, logThis);
     this.name ??= this.#log.name;
-    this.log.a(`constructor for ${inheritingClass}`);
+    this.log.fnIf('constructor');
   }
 
   /** Input type name */
@@ -71,6 +76,9 @@ export abstract class FieldLogicBase {
 }
 
 export interface FieldLogicUpdate<T = FieldValue> {
+  /** The field name, to better debug */
+  fieldName: string;
+
   /** Settings before logic update */
   settings: FieldSettings;
 
@@ -80,3 +88,5 @@ export interface FieldLogicUpdate<T = FieldValue> {
   /** The field value which the settings-update sometimes needs to know, eg. to indicated selected option in a dropdown */
   value?: T;
 }
+
+type LogicConstructor = new (...args: any[]) => FieldLogicBase;

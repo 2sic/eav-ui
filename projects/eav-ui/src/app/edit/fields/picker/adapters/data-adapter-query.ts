@@ -1,32 +1,30 @@
-import { DataSourceQuery } from "../data-sources/data-source-query";
-import { DataAdapterEntityBase } from "./data-adapter-entity-base";
-import { Injectable, untracked } from '@angular/core';
-import { PickerItemFactory } from '../models/picker-item.model';
+import { Injectable } from '@angular/core';
+import { transient } from '../../../../../../../core/transient';
+import { classLog } from '../../../../shared/logging';
 import { FieldMask } from '../../../shared/helpers/field-mask.helper';
-import { transient } from '../../../../core/transient';
-import { computedObj } from '../../../../shared/signals/signal.utilities';
+import { DataSourceQuery } from "../data-sources/data-source-query";
+import { PickerItemFactory } from '../models/picker-item.model';
 import { DataAdapterBase } from './data-adapter-base';
-import { classLog } from '../../../../shared/logging/logging';
+import { DataAdapterEntityBase } from "./data-adapter-entity-base";
 
 @Injectable()
 export class DataAdapterQuery extends DataAdapterEntityBase {
+
   log = classLog({DataAdapterQuery}, DataAdapterBase.logSpecs);
 
   protected dataSourceRaw = transient(DataSourceQuery);
 
-  /** Url Parameters - often mask - from settings */
-  #maskTemplate = computedObj('urlParametersSettings', () => this.fieldState.settings().UrlParameters);
+  constructor() { super(); }
 
-  /** This is a text or mask containing all query parameters. Since it's a mask, it can also contain values from the current item */
-  #paramsMaskLazy = computedObj('paramsMaskLazy', () => {
-    const urlParameters = this.#maskTemplate();
-    // Note: untracked so that the creation of the mask (which has signals) doesn't trigger additional computations
-    const fieldMask = untracked(() => transient(FieldMask, this.injector).init(this.log.name, urlParameters));
-    return fieldMask;
-  });
+  /**
+   * Url Parameters - often mask - from settings
+   * This is a text or mask containing all query parameters.
+   * Since it's a mask, it can also contain values from the current item
+   */
+  #paramsMaskLazy = transient(FieldMask).initSignal(this.log.name, this.fieldState.settingExt('UrlParameters'));
 
   override syncParams(): void {
-    this.dataSourceRaw.setParams(this.#paramsMaskLazy()?.result());
+    this.dataSourceRaw.setParams(this.#paramsMaskLazy?.result());
   }
 
   fetchItems(): void {

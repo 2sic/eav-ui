@@ -1,10 +1,12 @@
-import { FieldSettings, FieldValue, PickerItem } from '../../../../../edit-types';
+import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
+import { FieldValue } from '../../../../../edit-types/src/FieldValue';
 import { InputTypeMetadata } from '../../shared/fields/input-type-metadata.model';
 import { FieldLogicBase } from '../fields/logic/field-logic-base';
-import { TranslationState } from '../localization/translate-state.model';
-import { FormulaFieldValidation } from '../formulas/targets/formula-targets';
-import { InputTypeSpecs } from '../shared/input-types/input-type-specs.model';
+import { PickerItem } from '../fields/picker/models/picker-item.model';
 import { PickerData } from '../fields/picker/picker-data';
+import { FormulaFieldValidation } from '../formulas/targets/formula-targets';
+import { TranslationState } from '../localization/translate-state.model';
+import { InputTypeSpecs } from '../shared/input-types/input-type-specs.model';
 
 /**
  * Field properties of a picker.

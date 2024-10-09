@@ -1,18 +1,16 @@
-import { CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag } from '@angular/cdk/drag-drop';
-import { Component } from '@angular/core';
-import { ReorderIndexes } from './reorder-index.models';
-import { TranslateModule } from '@ngx-translate/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { ExtendedModule } from '@angular/flex-layout/extended';
+import { CdkDrag, CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
 import { NgClass } from '@angular/common';
+import { Component } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { PickerPartBaseComponent } from '../picker-part-base.component';
-import { TippyDirective } from '../../../../shared/directives/tippy.directive';
+import { MatIconModule } from '@angular/material/icon';
 import { MousedownStopPropagationDirective } from '../../../../shared/directives/mousedown-stop-propagation.directive';
-import { PickerItem } from '../models/picker-item.model';
-import { computedObj } from '../../../../shared/signals/signal.utilities';
+import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { classLog } from '../../../../shared/logging';
+import { PickerItem } from '../models/picker-item.model';
+import { PickerItemButtonsComponent } from '../picker-item-buttons/picker-item-buttons.component';
+import { PickerPartBaseComponent } from '../picker-part-base.component';
+import { ReorderIndexes } from './reorder-index.models';
 
 @Component({
   selector: 'app-picker-list',
@@ -21,13 +19,12 @@ import { classLog } from '../../../../shared/logging';
   standalone: true,
   imports: [
     MatFormFieldModule,
-    NgClass,
-    ExtendedModule,
-    CdkDropList,
-    CdkDrag,
     MatIconModule,
     MatButtonModule,
-    TranslateModule,
+    NgClass,
+    CdkDropList,
+    CdkDrag,
+    PickerItemButtonsComponent,
     TippyDirective,
     MousedownStopPropagationDirective,
   ],
@@ -38,24 +35,11 @@ export class PickerListComponent extends PickerPartBaseComponent {
 
   constructor() { super(); }
 
-  mySettings = computedObj('mySettings', () => {
-    const settings = this.fieldState.settings();
-    return {
-      allowMultiValue: settings.AllowMultiValue,
-      enableEdit: settings.EnableEdit,
-      enableDelete: settings.EnableDelete,
-      enableRemove: settings.EnableRemove,
-    };
-  });
-
   drop(event: CdkDragDrop<PickerItem[]>): void {
-    const selectedEntities = this.pickerData.selectedAll();
-    moveItemInArray(selectedEntities, event.previousIndex, event.currentIndex);
-    const reorderIndexes: ReorderIndexes = {
+    this.pickerData.state.reorder({
       previousIndex: event.previousIndex,
       currentIndex: event.currentIndex,
-    };
-    this.pickerData.state.reorder(reorderIndexes);
+    } satisfies ReorderIndexes);
   }
 
 }

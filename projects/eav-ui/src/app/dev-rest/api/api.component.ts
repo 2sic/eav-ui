@@ -1,34 +1,34 @@
 import { Context as DnnContext } from '@2sic.com/sxc-angular';
+import { AsyncPipe } from '@angular/common';
 import { Component, HostBinding, OnDestroy } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatOptionModule } from '@angular/material/core';
 import { MatDialogRef } from '@angular/material/dialog';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, combineLatest, filter, map, share, shareReplay, switchMap } from 'rxjs';
 import { DevRestBase } from '..';
+import { transient } from '../../../../../core';
 import { SourceService } from '../../code-editor/services/source.service';
+import { TippyDirective } from '../../shared/directives/tippy.directive';
+import { classLog } from '../../shared/logging';
 import { Context } from '../../shared/services/context';
+import { DevRestUrlsAndCodeComponent } from '../dev-rest-urls-and-code/dev-rest-urls-and-code.component';
 import { GoToDevRest } from '../go-to-dev-rest';
+import { SelectorWithHelpComponent } from '../selector-with-help/selector-with-help.component';
+import { DevRestTabExamplesComponent } from '../tab-examples/tab-examples.component';
+import { DevRestHttpHeadersComponent } from '../tab-headers/tab-headers.component';
+import { DevRestTabIntroductionComponent } from '../tab-introduction/tab-introduction.component';
+import { DevRestApiActionParamsComponent } from './action-params/action-params.component';
 import { generateWebApiCalls } from './api-samples';
 import { DevRestApiViewModel } from './api-template-vars';
-import { AsyncPipe } from '@angular/common';
-import { DevRestHttpHeadersComponent } from '../tab-headers/tab-headers.component';
-import { DevRestApiPermissionsComponent } from './permissions/permissions.component';
-import { DevRestUrlsAndCodeComponent } from '../dev-rest-urls-and-code/dev-rest-urls-and-code.component';
-import { MatInputModule } from '@angular/material/input';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { DevRestApiActionParamsComponent } from './action-params/action-params.component';
-import { DevRestTabExamplesComponent } from '../tab-examples/tab-examples.component';
-import { DevRestTabIntroductionComponent } from '../tab-introduction/tab-introduction.component';
 import { DevRestApiIntroductionComponent } from './introduction/introduction.component';
-import { MatTabsModule } from '@angular/material/tabs';
-import { MatOptionModule } from '@angular/material/core';
-import { MatSelectModule } from '@angular/material/select';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { SelectorWithHelpComponent } from '../selector-with-help/selector-with-help.component';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { TippyDirective } from '../../shared/directives/tippy.directive';
-import { transient } from '../../core';
-import { classLog } from '../../shared/logging';
+import { DevRestApiPermissionsComponent } from './permissions/permissions.component';
 
 const pathToApi = 'app/{appname}/{endpointPath}/{action}';
 
@@ -78,11 +78,11 @@ export class DevRestApiComponent extends DevRestBase<DevRestApiViewModel> implem
     /** Context for this dialog. Used for appId, zoneId, tabId, etc. */
     context: Context,
     dnnContext: DnnContext,
-    dialogRef: MatDialogRef<DevRestApiComponent>,
+    dialog: MatDialogRef<DevRestApiComponent>,
     router: Router,
     route: ActivatedRoute,
   ) {
-    super(context, dialogRef, dnnContext, router, route, null);
+    super(context, dialog, dnnContext, router, route, null);
 
     const logWebApi = this.log.rxTap('webApi$', { enabled: true });
     const webApi$ = combineLatest([

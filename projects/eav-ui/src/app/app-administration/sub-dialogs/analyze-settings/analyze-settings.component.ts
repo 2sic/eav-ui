@@ -1,8 +1,18 @@
 import { GridOptions } from '@ag-grid-community/core';
 import { Component, OnInit, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatOptionModule } from '@angular/material/core';
 import { MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
 import { RouterOutlet } from '@angular/router';
+import { Of, transient } from '../../../../../../core';
+import { ColumnDefinitions } from '../../../shared/ag-grid/column-definitions';
 import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';
+import { SxcGridModule } from '../../../shared/modules/sxc-grid-module/sxc-grid.module';
+import { DialogRoutingService } from '../../../shared/routing/dialog-routing.service';
 import { View } from '../../models';
 import { ViewsService } from '../../services';
 import { AnalyzeSettingsService } from '../../services/analyze-settings.service';
@@ -10,17 +20,7 @@ import { AnalyzeSettingsKeyComponent } from './analyze-settings-key/analyze-sett
 import { AnalyzeSettingsTotalResultsComponent } from './analyze-settings-total-results/analyze-settings-total-results.component';
 import { AnalyzeSettingsTotalResultsParams } from './analyze-settings-total-results/analyze-settings-total-results.models';
 import { AnalyzeSettingsValueComponent } from './analyze-settings-value/analyze-settings-value.component';
-import { AnalyzePart, SettingsStackItem } from './analyze-settings.models';
-import { MatOptionModule } from '@angular/material/core';
-import { FormsModule } from '@angular/forms';
-import { MatSelectModule } from '@angular/material/select';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { SxcGridModule } from '../../../shared/modules/sxc-grid-module/sxc-grid.module';
-import { ColumnDefinitions } from '../../../shared/ag-grid/column-definitions';
-import { transient } from '../../../core';
-import { DialogRoutingService } from '../../../shared/routing/dialog-routing.service';
+import { AnalyzeParts, SettingsStackItem } from './analyze-settings.models';
 
 @Component({
   selector: 'app-analyze-settings',
@@ -39,7 +39,7 @@ import { DialogRoutingService } from '../../../shared/routing/dialog-routing.ser
   ],
 })
 export class AnalyzeSettingsComponent implements OnInit {
-  part: AnalyzePart;
+  part: Of<typeof AnalyzeParts>;
   gridOptions = this.buildGridOptions();
 
   #viewsSvc = transient(ViewsService);
@@ -51,9 +51,9 @@ export class AnalyzeSettingsComponent implements OnInit {
   stack = signal<SettingsStackItem[]>([]);
 
   constructor(
-    private dialogRef: MatDialogRef<AnalyzeSettingsComponent>,
+    private dialog: MatDialogRef<AnalyzeSettingsComponent>,
   ) {
-    this.part = this.#dialogRouter.getParam('part') as AnalyzePart;
+    this.part = this.#dialogRouter.getParam('part') as Of<typeof AnalyzeParts>;
   }
 
   ngOnInit(): void {
@@ -62,7 +62,7 @@ export class AnalyzeSettingsComponent implements OnInit {
   }
 
   closeDialog(): void {
-    this.dialogRef.close();
+    this.dialog.close();
   }
 
   changeView(viewGuid: string): void {

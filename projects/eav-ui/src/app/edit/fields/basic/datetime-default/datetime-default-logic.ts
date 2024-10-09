@@ -1,8 +1,5 @@
-import { FieldSettings } from './../../../../../../../edit-types/src/FieldSettings';
-import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
-
-const logThis = false;
+import { FieldSettings } from './../../../../../../../edit-types/src/FieldSettings';
 
 export class DateTimeDefaultLogic extends FieldLogicBase {
 

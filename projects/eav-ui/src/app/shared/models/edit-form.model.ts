@@ -1,6 +1,7 @@
+import { Of } from '../../../../../core';
 import { MetadataInfo } from '../../content-items/create-metadata-dialog/create-metadata-dialog.models';
 import { EavFor } from '../../edit/shared/models/eav';
-import { eavConstants, MetadataKeyDefinition, MetadataKeyType } from '../constants/eav.constants';
+import { eavConstants, MetadataKeyDefinition, MetadataKeyTypes } from '../constants/eav.constants';
 import { EditInfo } from './edit-info';
 
 // 2dm - new helper to reduce code when creating item identifiers
@@ -54,7 +55,7 @@ export class EditPrep {
     } satisfies EavFor;
   }
 
-  static constructMetadataInfo(targetType: number, keyType: MetadataKeyType, key: string): MetadataInfo {
+  static constructMetadataInfo(targetType: number, keyType: Of<typeof MetadataKeyTypes>, key: string): MetadataInfo {
     const specs = Object.values(eavConstants.metadata).find(m => m.targetType === targetType);
     return {
       target: specs?.target ?? targetType.toString(),

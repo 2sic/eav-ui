@@ -1,62 +1,70 @@
 @import "../../assets/styles/variables.scss";
 @import "../../assets/styles/theme/material-colors.scss";
 
-.c-fht {
-  &__container {
-    padding: $helper-text-padding;
+// helper text
+// Note: 2024-09-24 2dm
+// The values seem very strange, especially with the extreme precision
+$helper-text-padding: 0.5em 0 13px 0;
+$helper-text-padding--last: 0.5em 0 5px 0;
 
-    &--no-hint {
-      padding: $helper-text-padding--no-hint;
-    }
+.my-main {
+  padding: $helper-text-padding;
+  font-size: 12px;
 
-    &--last {
-      padding: $helper-text-padding--last;
+  // Use a very small gap - ATM for radio/checkboxes where the label comes before the values
+  &.small-gap {
+    padding-bottom: 0px;
+  }
+  // Note: 2024-09-24 2dm
+  // this should apparently do something in the hyperlink-dialog, but I can't ever see it...
+  &.my-hyperlink-wrapper-fix {
+    min-height: 22px;
+  }
+  &.my-last-field {
+    padding: $helper-text-padding--last;
+  }
 
-      &--no-hint {
-        padding: $helper-text-padding--last--no-hint;
-      }
-    }
-
-    &--hyperlink-default-wrapper-fix {
-      min-height: 22px;
-    }
-
-    &-hint {
-      color: rgba($editUI-foreground-color, 0.44);
-
-      &--ellipsis {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-height: 16px;
-        // in global scss
-        // p {
-        //     margin-block-start: 0;
-        // }
-      }
-
-      &--disabled {
-        color: rgba($editUI-foreground-color, 0.24);
-      }
-    }
-
-    &--input-invalid {
-      padding: 6px 12px 11px 12px;
-      border: 2px;
-      border-bottom-style: solid;
-      border-color: map_get($mat-eav-item-dialog-error, 500);
-    }
-
-    .c-ew__color--accent {
-      color: map_get($mat-eav-item-dialog-secondary, 500);
-    }
-
-    .c-ew__color--primary {
-      color: rgba($editUI-foreground-color, 0.44);
-    }
+  // Note: 2024-09-24 2dm
+  // This should probably put a border around the field, but I can't see it
+  // there is nothing in the code ATM which would make this visible
+  &.input-invalid {
+    padding: 6px 12px 11px 12px;
+    border: 2px;
+    border-bottom-style: solid;
+    border-color: map_get($mat-eav-item-dialog-error, 500);
   }
 }
 
 .mat-mdc-form-field-error.warning {
   color: #ffc107;
+}
+
+
+.my-notes {
+  color: rgba($editUI-foreground-color, 0.50);
+  // not sure why this is necessary, but as we removed the flex-helper
+  // the space above became too large
+  display: flex;
+
+  &.disabled .expandable p {
+    color: rgba($editUI-foreground-color, 0.25);
+  }
+
+  p:first-child {
+    margin: 0px;
+  }
+
+  .expandable {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-height: 16px;
+
+    p {
+      width: 100%;
+      display: block;
+      margin: 0px;
+      padding: 0px;
+    }
+  }
 }

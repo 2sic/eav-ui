@@ -1,37 +1,37 @@
+import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef, inject } from '@angular/core';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
+import { Observable, Subject, map } from 'rxjs';
+import { Of, transient } from '../../../../../core';
 import { ContentItemsService } from '../../content-items/services/content-items.service';
+import { FeatureNames } from '../../features/feature-names';
+import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
+import { FeaturesScopedService } from '../../features/features-scoped.service';
+import { openFeatureDialog } from '../../features/shared/base-feature.component';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
-import { eavConstants, SystemSettingsScope, SystemSettingsScopes } from '../../shared/constants/eav.constants';
+import { SystemSettingsScopes, eavConstants } from '../../shared/constants/eav.constants';
+import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { AppScopes } from '../../shared/models/dialog-context.models';
 import { DialogSettings } from '../../shared/models/dialog-settings.model';
 import { EditForm, EditPrep } from '../../shared/models/edit-form.model';
+import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { Context } from '../../shared/services/context';
 import { DialogService } from '../../shared/services/dialog.service';
-import { FeaturesScopedService } from '../../features/features-scoped.service';
 import { AppAdminHelpers } from '../app-admin-helpers';
 import { ContentTypeEdit } from '../models';
+import { AppInternals } from '../models/app-internals.model';
 import { ContentTypesService } from '../services';
 import { AppInternalsService } from '../services/app-internals.service';
-import { AnalyzePart, AnalyzeParts } from '../sub-dialogs/analyze-settings/analyze-settings.models';
-import { Subject, Observable, map } from 'rxjs';
-import { AppInternals } from '../models/app-internals.model';
-import { FeatureNames } from '../../features/feature-names';
-import { openFeatureDialog } from '../../features/shared/base-feature.component';
-import { MatDialog } from '@angular/material/dialog';
-import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
-import { AppConfigurationCardComponent } from './app-configuration-card/app-configuration-card.component';
-import { NgTemplateOutlet, AsyncPipe } from '@angular/common';
-import { MatBadgeModule } from '@angular/material/badge';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatCardModule } from '@angular/material/card';
-import { TippyDirective } from '../../shared/directives/tippy.directive';
-import { transient } from '../../core';
 import { DialogConfigAppService } from '../services/dialog-config-app.service';
-import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
+import { AnalyzeParts } from '../sub-dialogs/analyze-settings/analyze-settings.models';
+import { AppConfigurationCardComponent } from './app-configuration-card/app-configuration-card.component';
 
 @Component({
   selector: 'app-app-configuration',
@@ -84,10 +84,38 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
   #dialogConfigSvc = transient(DialogConfigAppService);
   #dialogRouter = transient(DialogRoutingService);
 
+  // TODO:: WIP
+  // loadData = signal(0);
+
+  // viewModelSig = computed(() => {
+  //   const load = this.loadData(); // Signal aufrufen
+  //   const s = this.#appInternalsService.getAppInternalsSig(); // Signal aufrufen
+  //   console.log('2dg computed', s.FieldAll.AppSettings?.length, load);
+
+  //   const props = s.EntityLists;
+  //   const lsTypeName = eavConstants.appMetadata.LightSpeed.ContentTypeName;
+
+  //   const result: AppConfigurationViewModel = {
+  //     appLightSpeedCount: s.MetadataList.Items.filter(i => i._Type.Name === lsTypeName).length,
+  //     systemSettingsCount: this.isPrimary
+  //       ? props.SettingsSystem.filter(i => i.SettingsEntityScope === SystemSettingsScopes.Site).length
+  //       : props.SettingsSystem.filter(i => !i.SettingsEntityScope).length,
+  //     customSettingsCount: props.AppSettings?.length,
+  //     customSettingsFieldsCount: s.FieldAll.AppSettings?.length,
+  //     systemResourcesCount: this.isPrimary
+  //       ? props.ResourcesSystem.filter(i => i.SettingsEntityScope === SystemSettingsScopes.Site).length
+  //       : props.ResourcesSystem.filter(i => !i.SettingsEntityScope).length,
+  //     customResourcesCount: props.AppResources?.length,
+  //     customResourcesFieldsCount: s.FieldAll.AppResources?.length,
+  //   };
+
+  //   return result;
+  // });
+
   constructor(
     private context: Context,
     private snackBar: MatSnackBar,
-    private dialog: MatDialog,
+    private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
   ) {
@@ -131,7 +159,7 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     this.snackBar.dismiss();
   }
 
-  edit(staticName: string, systemSettingsScope?: SystemSettingsScope) {
+  edit(staticName: string, systemSettingsScope?: Of<typeof SystemSettingsScopes>) {
     this.#contentItemsService.getAll(staticName).subscribe(contentItems => {
       let form: EditForm;
 
@@ -149,8 +177,8 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
             items: [
               systemSettingsEntity == null
                 ? EditPrep.newFromType(staticName, {
-                    ...(systemSettingsScope === SystemSettingsScopes.Site && { SettingsEntityScope: SystemSettingsScopes.Site }),
-                  })
+                  ...(systemSettingsScope === SystemSettingsScopes.Site && { SettingsEntityScope: SystemSettingsScopes.Site }),
+                })
                 : EditPrep.editId(systemSettingsEntity.Id)
             ],
           };
@@ -210,14 +238,18 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     if (enabled)
       this.#dialogRouter.navParentFirstChild(['language-permissions']);
     else
-      openFeatureDialog(this.dialog, FeatureNames.PermissionsByLanguage, this.viewContainerRef, this.changeDetectorRef);
+      openFeatureDialog(this.matDialog, FeatureNames.PermissionsByLanguage, this.viewContainerRef, this.changeDetectorRef);
   }
 
-  analyze(part: AnalyzePart) {
+  analyze(part: Of<typeof AnalyzeParts>) {
     this.#dialogRouter.navParentFirstChild([`analyze/${part}`]);
   }
 
   private fetchSettings() {
+    // TODO:: WIP
+    // const x = this.loadData();
+    // this.loadData.set(x +1);
+
     const getObservable = this.#appInternalsService.getAppInternals();
     getObservable.subscribe(x => {
       // 2dm - New mode for Reactive UI

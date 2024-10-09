@@ -1,16 +1,16 @@
-import { Component, ViewChild, ViewContainerRef, computed, inject } from '@angular/core';
-import { EmptyDefaultLogic } from './collapsible-wrapper-logic';
-import { ChangeAnchorTargetDirective } from '../../directives/change-anchor-target.directive';
-import { MatIconModule } from '@angular/material/icon';
-import { FlexModule } from '@angular/flex-layout/flex';
-import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass } from '@angular/common';
+import { Component, ViewChild, ViewContainerRef, computed, inject } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
-import { FieldState } from '../../field-state';
+import { MatIconModule } from '@angular/material/icon';
+import { EmptyDefault } from 'projects/edit-types/src/FieldSettings-EmptyDefault';
+import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
+import { classLog } from '../../../../shared/logging';
 import { SafeHtmlPipe } from '../../../../shared/pipes/safe-html.pipe';
 import { FieldsSettingsService } from '../../../state/fields-settings.service';
+import { ChangeAnchorTargetDirective } from '../../directives/change-anchor-target.directive';
+import { FieldState } from '../../field-state';
 import { WrappersCatalog } from '../wrappers.constants';
-import { classLog } from '../../../../shared/logging';
+import { EmptyDefaultLogic } from './collapsible-wrapper-logic';
 
 
 @Component({
@@ -21,8 +21,6 @@ import { classLog } from '../../../../shared/logging';
   imports: [
     MatCardModule,
     NgClass,
-    ExtendedModule,
-    FlexModule,
     MatIconModule,
     ChangeAnchorTargetDirective,
     SafeHtmlPipe,
@@ -51,6 +49,6 @@ export class CollapsibleWrapperComponent {
   toggleCollapse(): void {
     const before = this.collapsed();
     this.log.a('toggleCollapse', { before })
-    this.#fieldsSettingsSvc.updateSetting(this.#fieldState.name, { Collapsed: !before }, "CollapsibleWrapperComponent");
+    this.#fieldsSettingsSvc.updateSetting<FieldSettings & EmptyDefault>(this.#fieldState.name, { Collapsed: !before }, "CollapsibleWrapperComponent");
   }
 }

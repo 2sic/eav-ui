@@ -1,18 +1,17 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, Type, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
+import { NavigateFormResult } from '../../../edit/routing/edit-routing.service';
+import { classLog } from '../../logging';
 import { DialogConfig } from '../../models/dialog-config.model';
 import { EavWindow } from '../../models/eav-window.model';
 import { Context } from '../../services/context';
-import { classLog } from '../../logging';
-import { NavigateFormResult } from '../../../edit/routing/edit-routing.service';
 
 declare const window: EavWindow;
 
 @Component({
   selector: 'app-dialog-entry',
   templateUrl: './dialog-entry.component.html',
-  styleUrls: ['./dialog-entry.component.scss'],
   standalone: true,
   imports: [],
   providers: [
@@ -24,10 +23,10 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
   log = classLog({DialogEntryComponent});
   
   #dialogData: Record<string, any>;
-  #dialogRef: MatDialogRef<any>;
+  #dialog: MatDialogRef<any>;
 
   constructor(
-    private dialog: MatDialog,
+    private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private router: Router,
     private route: ActivatedRoute,
@@ -49,7 +48,7 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
     dialogConfig.getComponent().then(component => {
       // spm Workaround for "feature" where you can't open new dialog while last one is still opening
       // https://github.com/angular/components/commit/728cf1c8ebd49e089f4bae945511bb0918972c26
-      const dialog = (this.dialog as any);
+      const dialog = (this.matDialog as any);
       if (dialog._dialogAnimatingOpen && dialog._lastDialogRef)
         (dialog._lastDialogRef as MatDialogRef<any>).afterOpened()
           .subscribe(() => this.openDialogComponent(dialogConfig, component));
@@ -59,7 +58,7 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.#dialogRef.close();
+    this.#dialog.close();
   }
 
   private openDialogComponent(dialogConfig: DialogConfig, component: Type<any>) {
@@ -67,7 +66,7 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
     if (dialogConfig.initContext)
       this.context.init(this.route);
 
-    this.#dialogRef = this.dialog.open(component, {
+    this.#dialog = this.matDialog.open(component, {
       autoFocus: false,
       backdropClass: 'dialog-backdrop',
       closeOnNavigation: false,
@@ -84,7 +83,7 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
       viewContainerRef: this.viewContainerRef,
     });
 
-    this.#dialogRef.afterClosed().subscribe((data: any) => {
+    this.#dialog.afterClosed().subscribe((data: any) => {
       this.log.a('Dialog was closed - name:' + dialogConfig.name, { data });
 
       const navRes = data as NavigateFormResult;

@@ -1,17 +1,17 @@
 import { AfterViewInit, Component, ElementRef, Input, NgZone, OnDestroy, ViewChild, computed } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { TranslateService } from '@ngx-translate/core';
+import { TippyDirective } from '../../../../shared/directives/tippy.directive';
+import { classLog } from '../../../../shared/logging';
+import { FormConfigService } from '../../../form/form-config.service';
+import { FormLanguageService } from '../../../form/form-language.service';
+import { Language } from '../../../form/form-languages.model';
+import { LanguageService } from '../../../localization/language.service';
 import { CenterSelectedHelper } from './center-selected.helper';
 import { getLanguageButtons } from './language-switcher.helpers';
 import { MouseScrollHelper } from './mouse-scroll.helper';
 import { ShowShadowsHelper } from './show-shadows.helper';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { MatButtonModule } from '@angular/material/button';
-import { TippyDirective } from '../../../../shared/directives/tippy.directive';
-import { FormConfigService } from '../../../form/form-config.service';
-import { Language } from '../../../form/form-languages.model';
-import { FormLanguageService } from '../../../form/form-language.service';
-import { LanguageService } from '../../../localization/language.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { classLog } from '../../../../shared/logging';
 
 @Component({
   selector: 'app-language-switcher',
@@ -20,7 +20,6 @@ import { classLog } from '../../../../shared/logging';
   standalone: true,
   imports: [
     MatButtonModule,
-    TranslateModule,
     TippyDirective,
   ],
 })

@@ -1,4 +1,3 @@
-@if (show$ | async) {
-  <mat-icon class="feature-icon" [tippy]="'Features.NotActivated' | translate"
-  (click)="openDialog()">diamond</mat-icon>
+@if (show()) {
+  <mat-icon class="feature-icon" tippyTranslate="Features.NotActivated"(click)="openDialog()">diamond</mat-icon>
 }

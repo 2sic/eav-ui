@@ -1,29 +1,54 @@
 @if (preview(); as preV) {
-  @if (open()) {
+  @if (this.fieldState.isOpen()) {
     <div class="fabs-box">
       @if (buttonAdam()) {
-        <button mat-mini-fab color="accent" [tippy]="'Fields.Hyperlink.Default.AdamTip' | translate"
-          [disabled]="ui().disabled" (click)="toggleAdam(false, false)">
+        <button
+          mat-mini-fab
+          color="accent"
+          tippyTranslate="Fields.Hyperlink.Default.AdamTip"
+          [disabled]="ui().disabled"
+          (click)="toggleAdam(false, false)"
+        >
           <mat-icon svgIcon="apple-outlined"></mat-icon>
         </button>
       }
-      <button mat-mini-fab color="primary" [disabled]="!adamItem()?._imageConfigurationContentType"
+      <button
+        mat-mini-fab
+        color="primary"
+        [disabled]="!adamItem()?._imageConfigurationContentType"
         [ngClass]="{ 'metadata-exists': adamItem()?._imageConfigurationId > 0 }"
-        [tippy]="'Fields.Hyperlink.AdamFileManager.ImageSettings' | translate"
-        (click)="openImageConfiguration(adamItem())">
+        tippyTranslate="Fields.Hyperlink.AdamFileManager.ImageSettings"
+        (click)="openImageConfiguration(adamItem())"
+      >
         <mat-icon
-          [tippy]="(enableImageConfiguration() ? 'Fields.Hyperlink.AdamFileManager.ImageSettingsUnavailable' : 'Fields.Hyperlink.AdamFileManager.ImageSettingsDisabled') | translate"
-          [tippyDisabled]="adamItem()?._imageConfigurationContentType">filter_center_focus</mat-icon>
+          [tippyTranslate]="
+            enableImageConfiguration()
+              ? 'Fields.Hyperlink.AdamFileManager.ImageSettingsUnavailable'
+              : 'Fields.Hyperlink.AdamFileManager.ImageSettingsDisabled'
+          "
+          [tippyDisabled]="adamItem()?._imageConfigurationContentType"
+          >filter_center_focus</mat-icon
+        >
       </button>
       @if (buttonPage()) {
-        <button mat-mini-fab color="primary" [tippy]="'Fields.Hyperlink.Default.PageTip' | translate"
-          [disabled]="ui().disabled" (click)="openPagePicker()">
+        <button
+          mat-mini-fab
+          color="primary"
+          tippyTranslate="Fields.Hyperlink.Default.PageTip"
+          [disabled]="ui().disabled"
+          (click)="openPagePicker()"
+        >
           <mat-icon svgIcon="sitemap"></mat-icon>
         </button>
       }
       @if (buttonMore()) {
-        <button mat-mini-fab color="primary" [tippy]="'Fields.Hyperlink.Default.MoreOptions' | translate"
-          [disabled]="ui().disabled" [matMenuTriggerFor]="menu">
+        <button
+          mat-mini-fab
+          color="primary"
+          tippyTranslate="Fields.Hyperlink.Default.MoreOptions"
+          [disabled]="ui().disabled"
+          [matMenuTriggerFor]="menu"
+        >
           <mat-icon>more_vert</mat-icon>
         </button>
       }
@@ -33,25 +58,25 @@
         @if (showAdam()) {
           <button mat-menu-item (click)="toggleAdam(false, false)">
             <mat-icon svgIcon="apple-outlined"></mat-icon>
-            <span>{{ 'Fields.Hyperlink.Default.MenuAdam' | translate }}</span>
+            <span>{{ "Fields.Hyperlink.Default.MenuAdam" | translate }}</span>
           </button>
         }
         @if (showPagePicker()) {
           <button mat-menu-item (click)="openPagePicker()">
             <mat-icon svgIcon="sitemap"></mat-icon>
-            <span>{{ 'Fields.Hyperlink.Default.MenuPage' | translate }}</span>
+            <span>{{ "Fields.Hyperlink.Default.MenuPage" | translate }}</span>
           </button>
         }
         @if (showImageManager()) {
           <button mat-menu-item (click)="toggleAdam(true, true)">
             <mat-icon svgIcon="file-image"></mat-icon>
-            <span>{{ 'Fields.Hyperlink.Default.MenuImage' | translate }}</span>
+            <span>{{ "Fields.Hyperlink.Default.MenuImage" | translate }}</span>
           </button>
         }
         @if (showFileManager()) {
           <button mat-menu-item (click)="toggleAdam(true, false)">
             <mat-icon svgIcon="file"></mat-icon>
-            <span>{{ 'Fields.Hyperlink.Default.MenuDocs' | translate }}</span>
+            <span>{{ "Fields.Hyperlink.Default.MenuDocs" | translate }}</span>
           </button>
         }
       </ng-template>
@@ -63,9 +88,17 @@
           <div class="hyperlink-input-link-wrapper">
             <!-- input -->
             <mat-form-field [formGroup]="group" color="accent" class="eav-mat-form-field">
-              <input matInput [formControlName]="config.fieldName" [tippy]="'Fields.Hyperlink.Default.Tooltip' | translate"
-                tippyPlacement="top" [placeholder]="basics().placeholder" [required]="basics().required" appPasteClipboardImage
-                [config]="config" [elementType]="'input'">
+              <input
+                matInput
+                [formControlName]="config.fieldName"
+                tippyTranslate="Fields.Hyperlink.Default.Tooltip"
+                tippyPlacement="top"
+                [placeholder]="basics().placeholder"
+                [required]="basics().required"
+                appPasteClipboardImage
+                [config]="config"
+                [elementType]="'input'"
+              />
               <mat-label>{{ basics().label }}</mat-label>
             </mat-form-field>
             <!-- link absolutely positioned above input -->
@@ -89,8 +122,7 @@
                     <img [src]="preV.previewUrl" class="preview-image" />
                   </div>
                 </a>
-              }
-              @else {
+              } @else {
                 <!-- icon -->
                 <a [href]="preV.url" target="_blank" [tippy]="preV.url" tippyPlacement="right">
                   <div class="preview-icon-box">

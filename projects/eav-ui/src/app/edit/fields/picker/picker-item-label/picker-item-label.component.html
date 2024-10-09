@@ -1,0 +1,15 @@
+<div class="picker-option-contents">
+  <!-- Preview Type -->
+  <div class="picker-option">
+    <!-- Show Icon or Image -->
+    <app-picker-item-preview [item]="item()" [settings]="settings()"></app-picker-item-preview>
+    <span class="picker-option-label"> {{ item().label || item().value }}</span>
+  </div>
+
+  <div class="picker-option-info">
+    <app-picker-help [helpLink]="item().link"></app-picker-help>
+    <app-picker-icon-info [infoBox]="item().info"></app-picker-icon-info>
+    <!-- Action items such as edit, remove, delete -->
+    <app-picker-item-buttons class="my-item-actions" [show]="show()" [item]="item()" [index]="index()" [uiFeatures]="uiFeatures()"></app-picker-item-buttons>
+  </div>
+</div>

@@ -1,4 +1,4 @@
-import { DropzoneConfigExt } from '../../../../../../../edit-types';
+import { DropzoneConfigExt } from '../../../../../../../edit-types/src/DropzoneConfigExt';
 
 export type DropzoneType = any;
 

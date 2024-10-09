@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { map, tap } from 'rxjs';
+import { classLog } from '../../shared/logging';
+import { GlobalConfigService } from '../../shared/services/global-config.service';
+import { HttpServiceBase } from '../../shared/services/http-service-base';
 import { EavEditLoadDto, SaveEavFormData } from '../dialog/main/edit-dialog-main.models';
 import { SaveResult } from '../state/save-result.model';
-import { GlobalConfigService } from '../../shared/services/global-config.service';
-import { classLog } from '../../shared/logging';
-import { HttpServiceBase } from '../../shared/services/http-service-base';
 
 
 const logSpecs = {
@@ -13,7 +13,8 @@ const logSpecs = {
   saveFormData: false,
 };
 
-export const webApiEditRoot = 'cms/edit/';
+const webApiLoad = 'cms/edit/load';
+const webApiSave = 'cms/edit/save';
 
 @Injectable()
 export class FormDataService extends HttpServiceBase {
@@ -28,7 +29,7 @@ export class FormDataService extends HttpServiceBase {
 
   fetchFormData(items: string) {
     this.log.fnIf('fetchFormData', { items, context: this.context });
-    return this.http.post<EavEditLoadDto>(this.apiUrl(webApiEditRoot + 'load'), items, {
+    return this.http.post<EavEditLoadDto>(this.apiUrl(webApiLoad), items, {
       params: { appId: this.appId }
     }).pipe(
       map(formData => {
@@ -43,7 +44,7 @@ export class FormDataService extends HttpServiceBase {
 
   saveFormData(result: SaveEavFormData, partOfPage: string) {
     this.log.fnIf('saveFormData', { result, partOfPage });
-    return this.http.post<SaveResult>(this.apiUrl(webApiEditRoot + 'save'), result, {
+    return this.http.post<SaveResult>(this.apiUrl(webApiSave), result, {
       params: { appId: this.appId, partOfPage }
     });
   }

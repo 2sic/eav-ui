@@ -1,12 +1,12 @@
+import { NgClass } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, RouterOutlet } from '@angular/router';
 import { Context } from '../shared/services/context';
-import { PlumbEditorComponent } from './plumb-editor/plumb-editor.component';
-import { VisualQueryStateService } from './services/visual-query.service';
 import { AddExplorerComponent } from './add-explorer/add-explorer.component';
+import { PlumbEditorComponent } from './plumb-editor/plumb-editor.component';
 import { RunExplorerComponent } from './run-explorer/run-explorer.component';
-import { MatIconModule } from '@angular/material/icon';
-import { NgClass } from '@angular/common';
+import { VisualQueryStateService } from './services/visual-query.service';
 
 @Component({
   selector: 'app-visual-query',

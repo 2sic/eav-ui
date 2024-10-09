@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
-import { TargetOption } from '../../dialog/footer/formula-designer/formula-designer.models';
-import { FormulaIdentifier } from '../results/formula-results.models';
-import { FormulaDefaultTargets, FormulaNewPickerTargets, FormulaOptionalTargets, FormulaTarget } from './formula-targets';
-import { FormulaCacheItem } from '../cache/formula-cache.model';
+import { Of } from '../../../../../../core';
 import { InputTypeHelpers } from '../../../shared/fields/input-type-helpers';
-import { ItemService } from '../../state/item.service';
+import { TargetOption } from '../../dialog/footer/formula-designer/formula-designer.models';
 import { ContentTypeService } from '../../shared/content-types/content-type.service';
+import { ItemService } from '../../state/item.service';
+import { FormulaCacheItem } from '../cache/formula-cache.model';
+import { FormulaIdentifier } from '../results/formula-results.models';
+import { FormulaDefaultTargets, FormulaNewPickerTargets, FormulaOptionalTargets, FormulaTargets } from './formula-targets';
 
 /**
  * Small helper service to get the target options for the formula designer.
@@ -49,7 +49,7 @@ export class FormulaTargetsService {
         const targetOption: TargetOption = {
           hasFormula: fieldFormulas.some(f => f.target === target),
           label: target.substring(target.lastIndexOf('.') + 1),
-          target: target as FormulaTarget,
+          target: target as Of<typeof FormulaTargets>,
         };
         targetOptions.push(targetOption);
       }
@@ -59,7 +59,7 @@ export class FormulaTargetsService {
         const targetOption: TargetOption = {
           hasFormula: fieldFormulas.some(f => f.target === target),
           label: target.substring(target.lastIndexOf('.') + 1),
-          target: target as FormulaTarget,
+          target: target as Of<typeof FormulaTargets>,
         };
         targetOptions.push(targetOption);
       }
@@ -71,7 +71,7 @@ export class FormulaTargetsService {
         const targetOption: TargetOption = {
           hasFormula: fieldFormulas.some(f => f.target === target),
           label: "Picker " + target.substring(target.lastIndexOf('.') + 1),
-          target: target as FormulaTarget,
+          target: target as Of<typeof FormulaTargets>,
         };
         targetOptions.push(targetOption);
       }

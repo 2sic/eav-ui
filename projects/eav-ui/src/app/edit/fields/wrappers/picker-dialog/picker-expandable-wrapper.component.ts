@@ -1,22 +1,21 @@
-import { Component, inject, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
-import { ContentExpandAnimation } from '../expand-dialog/content-expand.animation';
-import { TranslateModule } from '@ngx-translate/core';
-import { MatRippleModule } from '@angular/material/core';
 import { CdkScrollable } from '@angular/cdk/scrolling';
-import { MatIconModule } from '@angular/material/icon';
+import { CommonModule, NgClass } from '@angular/common';
+import { Component, inject, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { FlexModule } from '@angular/flex-layout/flex';
-import { ExtendedModule } from '@angular/flex-layout/extended';
-import { NgClass } from '@angular/common';
-import { ExtendedFabSpeedDialImports } from '../../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
-import { FieldState } from '../../field-state';
+import { MatRippleModule } from '@angular/material/core';
+import { MatIconModule } from '@angular/material/icon';
+import { TranslateModule } from '@ngx-translate/core';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
-import { FieldsSettingsService } from '../../../state/fields-settings.service';
+import { classLog } from '../../../../shared/logging';
+import { ExtendedFabSpeedDialImports } from '../../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
 import { FormsStateService } from '../../../form/forms-state.service';
 import { EditRoutingService } from '../../../routing/edit-routing.service';
+import { FieldsSettingsService } from '../../../state/fields-settings.service';
+import { FieldState } from '../../field-state';
+import { DialogPopupComponent } from '../dialog-popup/dialog-popup.component';
+import { ContentExpandAnimation } from '../expand-dialog/content-expand.animation';
 import { WrappersCatalog } from '../wrappers.constants';
-import { classLog } from '../../../../shared/logging';
 
 @Component({
   selector: WrappersCatalog.PickerExpandableWrapper,
@@ -24,10 +23,10 @@ import { classLog } from '../../../../shared/logging';
   styleUrls: ['./picker-expandable-wrapper.component.scss'],
   animations: [ContentExpandAnimation],
   standalone: true,
+  // TODO: @2pp - this still has imports which are not used anymore, since the dialog-popup is now a standalone component
+  // Pls review and clean up.
   imports: [
     NgClass,
-    ExtendedModule,
-    FlexModule,
     MatCardModule,
     MatButtonModule,
     MatIconModule,
@@ -36,44 +35,24 @@ import { classLog } from '../../../../shared/logging';
     MatRippleModule,
     TranslateModule,
     TippyDirective,
+    DialogPopupComponent,
+    CommonModule,
   ],
 })
-export class PickerExpandableWrapperComponent implements OnInit {
+export class PickerExpandableWrapperComponent {
 
   log = classLog({PickerExpandableWrapperComponent});
 
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild('previewComponent', { static: true, read: ViewContainerRef }) previewComponent: ViewContainerRef;
 
-  dialogIsOpen = signal(false);
-
-  private fieldState = inject(FieldState);
+  protected fieldState = inject(FieldState);
+  public config = this.fieldState.config;
   protected basics = this.fieldState.basics;
-  private config = this.fieldState.config;
   
   constructor(
     private editRoutingService: EditRoutingService,
     public formsStateService: FormsStateService,
     private fieldsSettingsService: FieldsSettingsService,
   ) { }
-
-  ngOnInit() {
-    this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid)
-      .subscribe(isOpen => {
-        this.dialogIsOpen.set(isOpen);
-        this.fieldsSettingsService.updateSetting(this.config.fieldName, { isDialog: isOpen }, "PickerExpandableWrapper");
-      });
-  }
-
-  calculateBottomPixels() {
-    return window.innerWidth > 600 ? '100px' : '50px';
-  }
-
-  closeDialog() {
-    this.editRoutingService.expand(false, this.config.index, this.config.entityGuid);
-  }
-
-  saveAll(close: boolean) {
-    this.formsStateService.triggerSave(close);
-  }
 }

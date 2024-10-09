@@ -1,5 +1,5 @@
-import { FieldConfigSet } from '../../eav-ui/src/app/edit/fields/field-config-set.model';
-import { InputTypeStrict } from '../../eav-ui/src/app/shared/fields/input-type-catalog';
+import { Of } from '../../core';
+import { InputTypeCatalog } from '../../eav-ui/src/app/shared/fields/input-type-catalog';
 import { FieldSettings } from './FieldSettings';
 
 export interface FieldConfig {
@@ -22,7 +22,7 @@ export interface FieldConfig {
   /**
    * Input type of the field. e.g. string-default, string-dropdown, etc.
    */
-  inputType: InputTypeStrict;
+  inputType: Of<typeof InputTypeCatalog>;
   /**
    * Data type of the field. e.g. String, Hyperlink, Entity, etc.
    */
@@ -41,18 +41,4 @@ export interface FieldConfig {
    * Note that most keys are PascalCase, not camelCase.
    */
   settings: FieldSettings;
-}
-
-export function toFieldConfig(config: FieldConfigSet, settings: FieldSettings): FieldConfig {
-  return {
-    name: config.fieldName,
-    index: config.index,
-    label: settings.Name,
-    placeholder: settings.Placeholder,
-    inputType: config.inputTypeSpecs.inputType,
-    type: config.type,
-    required: settings.valueRequired,
-    disabled: config.initialDisabled,
-    settings,
-  } satisfies FieldConfig;
 }

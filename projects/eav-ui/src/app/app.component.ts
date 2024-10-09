@@ -3,15 +3,14 @@ import { ChangeDetectionStrategy, Component, ElementRef, OnDestroy, OnInit } fro
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, NavigationEnd, Router, RouterModule } from '@angular/router';
 import { filter, map, Subscription } from 'rxjs';
-import { AppIconsService } from './shared/icons/app-icons.service';
+import { transient } from '../../../core';
 import { keyContentBlockId, keyModuleId } from './shared/constants/session.constants';
+import { AppIconsService } from './shared/icons/app-icons.service';
 import { Context } from './shared/services/context';
-import { transient } from './core';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
