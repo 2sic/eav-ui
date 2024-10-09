@@ -33,6 +33,7 @@ export function findAllIconsInCss(cssSelector: string, showPrefix?: boolean): En
       const selector = rule.selectorText;
 
       // Reset the regex, otherwise it will only work every second time
+      // https://medium.com/codesnips/js-careful-when-reusing-regex-636b92c6bf07
       regEx.lastIndex = 0;
       const groups = regEx.exec(selector)?.groups;
 
