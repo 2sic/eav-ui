@@ -34,6 +34,8 @@ import { TippyDirective } from './../../../../shared/directives/tippy.directive'
   styleUrls: ['./hyperlink-default-expandable-wrapper.component.scss'],
   animations: [ContentExpandAnimation],
   standalone: true,
+  // TODO: @2pp - this still has imports which are not used anymore, since the dialog-popup is now a standalone component
+  // Pls review and clean up.
   imports: [
     NgClass,
     MatCardModule,

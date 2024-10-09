@@ -43,11 +43,11 @@ export class DialogPopupComponent {
 
   public config = this.fieldState.config;
   public basics = this.fieldState.basics;
-  public editRoutingService = inject(EditRoutingService);
+  #editRoutingService = inject(EditRoutingService);
 
   @Input() applyEmptyClass: Boolean;
 
-  private dropzoneDraggingHelper: DropzoneDraggingHelper;
+  #dropzoneDraggingHelper: DropzoneDraggingHelper;
 
   constructor(
     public formsStateService: FormsStateService,
@@ -58,13 +58,13 @@ export class DialogPopupComponent {
   open = this.fieldState.isOpen
 
   ngAfterViewInit() {
-    this.dropzoneDraggingHelper = new DropzoneDraggingHelper(this.zone);
-    this.dropzoneDraggingHelper.attach(this.backdropRef.nativeElement);
-    this.dropzoneDraggingHelper.attach(this.dialogRef.nativeElement);
+    this.#dropzoneDraggingHelper = new DropzoneDraggingHelper(this.zone);
+    this.#dropzoneDraggingHelper.attach(this.backdropRef.nativeElement);
+    this.#dropzoneDraggingHelper.attach(this.dialogRef.nativeElement);
   }
 
   ngOnDestroy() {
-    this.dropzoneDraggingHelper.detach();
+    this.#dropzoneDraggingHelper.detach();
   }
 
   #hideAdamSponsor = this.featuresService.isEnabled[FeatureNames.NoSponsoredByToSic];
@@ -78,7 +78,7 @@ export class DialogPopupComponent {
   }
 
   closeDialog() {
-    this.editRoutingService.expand(false, this.config.index, this.config.entityGuid);
+    this.#editRoutingService.expand(false, this.config.index, this.config.entityGuid);
   }
 
   saveAll(close: boolean) {
