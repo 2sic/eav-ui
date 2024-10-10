@@ -1,3 +1,4 @@
+// logs-config.component.html
 <div class="log-content fancy-scrollbar-light">
   <div class="menu">
     <button mat-button tippy="Toggles All Logs" (click)="checkAll()">
@@ -39,9 +40,11 @@
         (change)="toggleConfig(log.key)"
       />
       {{ log.key }}
-      <button *ngIf="hasLogSpecs(log.key)" (click)="openLogSpecs(log.key)" tippy="Edit Log Specs">
-        <mat-icon class="specs-icon">data_object</mat-icon>
-      </button>
+      @if (hasLogSpecs(log.key)) {
+        <button (click)="openLogSpecs(log.key)" tippy="Edit Log Specs">
+          <mat-icon class="specs-icon">data_object</mat-icon>
+        </button>
+      }
     </label>
   </div>
 </div>
