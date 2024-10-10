@@ -39,19 +39,19 @@ export class HttpServiceBase {
   protected get zoneId() { return this.context.zoneId.toString(); }
 
   // TODO: @2dg
-  protected get<ResultType>(endpoint: string, options: Parameters<typeof this.http.get>[1]) {
+  protected getHttp<ResultType>(endpoint: string, options: Parameters<typeof this.http.get>[1]) {
     return this.http.get<ResultType>(endpoint, options);
   }
 
   // TODO: @2dg
   protected getAndWrite<ResultType>(endpoint: string, options: Parameters<typeof this.http.get>[1], target: WritableSignal<ResultType>): void {
-    this.get<ResultType>(endpoint, options).subscribe(d => target.set(d));
+    this.getHttp<ResultType>(endpoint, options).subscribe(d => target.set(d));
   }
 
   // TODO: @2dg
   protected getSignal<ResultType>(endpoint: string, options: Parameters<typeof this.http.get>[1], initial: ResultType): Signal<ResultType> {
     const target = signal<ResultType>(initial);
-    this.get<ResultType>(endpoint, options).subscribe(d => target.set(d));
+    this.getHttp<ResultType>(endpoint, options).subscribe(d => target.set(d));
     return target;
   }
 
