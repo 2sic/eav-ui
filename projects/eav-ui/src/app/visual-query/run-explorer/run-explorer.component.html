@@ -1,4 +1,4 @@
-@if ((pipelineModel$ | async); as pipelineModel) {
+@if (vsSvc.pipelineModelSig()) {
   <div class="editor-active-explorer fancy-scrollbar-dark">
     <div class="wrapper">
       <div class="actions">
@@ -24,9 +24,9 @@
             </button>
           </div>
         </div>
-        @if (pipelineModel.Pipeline.Params?.length) {
+        @if (vsSvc.pipelineModelSig().Pipeline.Params?.length) {
           <ul class="values">
-            @for (param of pipelineModel.Pipeline.Params?.split('\n'); track param) {
+            @for (param of vsSvc.pipelineModelSig().Pipeline.Params?.split('\n'); track param) {
               <li>
                 {{ param }}
               </li>
@@ -36,9 +36,9 @@
       </div>
       <div class="parameters">
         <div class="title">Test Parameters</div>
-        @if (pipelineModel.Pipeline.TestParameters?.length) {
+        @if (vsSvc.pipelineModelSig().Pipeline.TestParameters?.length) {
           <ul class="values">
-            @for (param of pipelineModel.Pipeline.TestParameters?.split('\n'); track param) {
+            @for (param of vsSvc.pipelineModelSig().Pipeline.TestParameters?.split('\n'); track param) {
               <li>
                 {{ param }}
               </li>
@@ -46,22 +46,22 @@
           </ul>
         }
       </div>
-      @if (visualDesignerData$ | async; as visualDesignerData) {
+      @if (visualDesignerDataSig()) {
         <div class="parameters">
           <span class="eav-slide-toggle-label">Show DataSource Params</span>
-          <mat-slide-toggle color="primary" [checked]="visualDesignerData.ShowDataSourceDetails"
+          <mat-slide-toggle color="primary" [checked]="visualDesignerDataSig().ShowDataSourceDetails"
             (change)="showDataSourceDetails($event)"/>
           </div>
         }
-      @if ((warnings$ | async); as warnings) {
-        @if (warnings.length) {
+      @if (warningSig()) {
+        @if (warningSig().length) {
           <div class="warnings">
             <div class="title">
               <span>Warnings</span>
               <mat-icon style="color: red">warning</mat-icon>
             </div>
             <ol class="values">
-              @for (warning of warnings; track warning) {
+              @for (warning of warningSig(); track warning) {
                 <li [innerHTML]="warning">
                 </li>
               }
@@ -69,10 +69,10 @@
           </div>
         }
       }
-      @if (pipelineModel.Pipeline.Description) {
+      @if (vsSvc.pipelineModelSig().Pipeline.Description) {
         <div class="description">
           <div class="title">Query Description</div>
-          <div>{{ pipelineModel.Pipeline.Description }}</div>
+          <div>{{ vsSvc.pipelineModelSig().Pipeline.Description }}</div>
         </div>
       }
       <div class="footer-actions">

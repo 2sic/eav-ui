@@ -1,10 +1,10 @@
-@if (viewModel$ | async; as vm) {
+@if (sorted()) {
   <div class="editor-active-explorer fancy-scrollbar-dark">
     <div class="eav-show-advanced">
       <span class="eav-slide-toggle-label">Show Advanced</span>
       <mat-slide-toggle color="primary" (change)="toggleDifficulty($event)" />
     </div>
-    @for (group of vm.sorted | keyvalue; track trackGroups($index, group)) {
+    @for (group of sorted() | keyvalue; track trackGroups($index, group)) {
       <div class="collapsible" [tippy]="guiTypes[group.key].UiHint || group.key" tippyShowDelay="750"
         (click)="toggleItem(group.key)">
         <mat-icon>{{ guiTypes[group.key].Icon || guiTypes.Unknown.Icon }}</mat-icon>

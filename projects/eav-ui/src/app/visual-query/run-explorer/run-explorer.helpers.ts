@@ -6,6 +6,7 @@ import { PipelineModel } from '../models';
  * Typically when the test ModuleId is different from the one we're currently working on
  */
 export function calculateWarnings(pipelineModel: PipelineModel, context: Context) {
+  if(!pipelineModel) return [];
   const warnings: string[] = [];
 
   try {
