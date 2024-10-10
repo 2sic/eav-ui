@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectorRef, Injectable, NgZone, OnDestroy, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Injectable, NgZone, OnDestroy, signal, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
@@ -42,9 +42,13 @@ export class VisualQueryStateService extends ServiceBase implements OnDestroy {
   // - basically it's only used as a value, or as a value which ends up in a viewModel$
   // - this should be fairly easy, pls discuss w/2dm if you don't understand
   dataSources$ = new BehaviorSubject<DataSource[]>(null);
+  dataSourcesSig = signal<DataSource[]>(null);
+
   putEntityCountOnConnections$ = new Subject<PipelineResult>();
   // TODO: @2pp - make a signal for this, same situation, basically just used in HTML on viewModel$
   dataSourceConfigs$ = new BehaviorSubject<DataSourceConfigs>({});
+  dataSourceConfigsSig = signal<DataSourceConfigs>({});
+
   queryResult?: PipelineResult;
 
   #pipelineId = parseInt(this.#dialogRoute.getParam('pipelineId'), 10);
@@ -187,6 +191,7 @@ export class VisualQueryStateService extends ServiceBase implements OnDestroy {
       });
     });
     this.dataSourceConfigs$.next(dataSourceConfigs);
+    this.dataSourceConfigsSig.set(dataSourceConfigs);
   }
 
   editDataSource(pipelineDataSource: PipelineDataSource) {
@@ -348,6 +353,7 @@ export class VisualQueryStateService extends ServiceBase implements OnDestroy {
   #fetchDataSources(callback?: () => void) {
     this.#queryDefSvc.fetchDataSources().subscribe(dataSources => {
       this.dataSources$.next(dataSources);
+      this.dataSourcesSig.set(dataSources);
       callback();
     });
   }

@@ -40,8 +40,8 @@ const jsPlumbUrl = 'https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.14.5/js/jsp
   ],
 })
 export class PlumbEditorComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
-  
-  log = classLog({PlumbEditorComponent}, logSpecs);
+
+  log = classLog({ PlumbEditorComponent }, logSpecs);
 
   @ViewChild('domRoot') private domRootRef: ElementRef<HTMLDivElement>;
   @ViewChildren('domDataSource') private domDataSourcesRef: QueryList<ElementRef<HTMLDivElement>>;
@@ -53,15 +53,15 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
   #scriptLoaded$ = new BehaviorSubject(false);
 
   viewModel$: Observable<PlumbEditorViewModel>;
-  
+
   #queryDefinitionSvc = transient(QueryDefinitionService);
 
   constructor(
-    private visualQueryService: VisualQueryStateService,
+    public visualQueryService: VisualQueryStateService,
     private changeDetectorRef: ChangeDetectorRef,
     private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
-  ) { super();}
+  ) { super(); }
 
   ngOnInit() {
     loadScripts([{ test: 'jsPlumb', src: jsPlumbUrl }], () => {
