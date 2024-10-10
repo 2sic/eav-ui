@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { webApiAppRoot } from '../../import-app/services/import-app.service';
-import { AppInfo } from '../models/app-info.model';
 import { HttpServiceBase } from '../../shared/services/http-service-base';
+import { AppInfo } from '../models/app-info.model';
 
 @Injectable()
 export class ExportAppService extends HttpServiceBase {
@@ -19,6 +19,7 @@ export class ExportAppService extends HttpServiceBase {
 
   exportForVersionControl({ includeContentGroups, resetAppGuid, withFiles }:
     { includeContentGroups: boolean; resetAppGuid: boolean; withFiles: boolean; }) {
+    // return this.get<boolean>(webApiAppRoot + 'SaveData', {
     return this.http.get<boolean>(this.apiUrl(webApiAppRoot + 'SaveData'), {
       params: {
         appid: this.appId,
