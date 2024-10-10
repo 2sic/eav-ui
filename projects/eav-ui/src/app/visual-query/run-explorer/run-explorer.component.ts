@@ -26,11 +26,11 @@ import { calculateWarnings } from './run-explorer.helpers';
 export class RunExplorerComponent {
 
   warningSig = signal<string[]>(
-    calculateWarnings(this.vsSvc?.pipelineModelSig() ?? null, this.context)
+    calculateWarnings(this.vsSvc?.pipelineModel() ?? null, this.context)
   );
 
   visualDesignerDataSig = signal<Record<string, any>>(
-    JsonHelpers.tryParse(this.vsSvc?.pipelineModelSig()?.Pipeline.VisualDesignerData) ?? {}
+    JsonHelpers.tryParse(this.vsSvc?.pipelineModel()?.Pipeline.VisualDesignerData) ?? {}
   );
 
   #dialogRouter = transient(DialogRoutingService);
@@ -57,7 +57,7 @@ export class RunExplorerComponent {
   }
 
   openRestApi() {
-    const queryGuid = this.vsSvc.pipelineModelSig().Pipeline.EntityGuid;
+    const queryGuid = this.vsSvc.pipelineModel().Pipeline.EntityGuid;
     this.#dialogRouter.navRelative([GoToDevRest.getUrlQueryDialog(queryGuid)]);
   }
 }

@@ -31,7 +31,7 @@ export class AddExplorerComponent {
 
   #difficulty = signal(this.#difficulties.default);
 
-  sorted = computed(() => filterAndSortDataSources(this.visualQueryService.dataSourcesSig(), this.#difficulty()));
+  sorted = computed(() => filterAndSortDataSources(this.visualQueryService.dataSources(), this.#difficulty()));
 
   constructor(private visualQueryService: VisualQueryStateService) { }
 

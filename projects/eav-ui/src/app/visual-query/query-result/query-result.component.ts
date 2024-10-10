@@ -39,7 +39,7 @@ export class QueryResultComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    const pipeline = this.visualQueryService.pipelineModelSig().Pipeline;
+    const pipeline = this.visualQueryService.pipelineModel().Pipeline;
     const params = (pipeline.Params?.split('\n') ?? []).filter(el => !!el);
     const testParams = (pipeline.TestParameters?.split('\n') ?? []).filter(el => !!el);
     this.parameters = [].concat(params, testParams);

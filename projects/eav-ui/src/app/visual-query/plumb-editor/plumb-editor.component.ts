@@ -56,12 +56,12 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
   #queryDefinitionSvc = transient(QueryDefinitionService);
 
   showDataSourceDetails = computed(() => {
-    const result = JsonHelpers.tryParse(this.vsSvc.pipelineModelSig()?.Pipeline.VisualDesignerData) ?? {};
+    const result = JsonHelpers.tryParse(this.vsSvc.pipelineModel()?.Pipeline.VisualDesignerData) ?? {};
     return result.ShowDataSourceDetails ?? false;
   });
 
   typeInfos = computed(() =>
-      calculateTypeInfos(this.vsSvc.pipelineModelSig()?.DataSources ?? [], this.vsSvc.dataSourcesSig()
+    calculateTypeInfos(this.vsSvc.pipelineModel()?.DataSources ?? [], this.vsSvc.dataSources()
     ));
 
   constructor(
@@ -82,23 +82,24 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
       })
     );
 
-    this.viewModel$ = combineLatest([
-      this.vsSvc.pipelineModel$,
-    ]).pipe(
-      map(([pipelineModel]) => {
-        if (pipelineModel == null) return;
+    // this.viewModel$ = combineLatest([
+    //   this.vsSvc.pipelineModel$,
+    // ]).pipe(
+    //   map(([pipelineModel]) => {
+    //     if (pipelineModel == null) return;
 
-        // workaround for jsPlumb not working with dom elements which it initialized on previously.
-        // This wipes dom entirely and gives us new elements
-        this.hardReset = true;
-        this.changeDetectorRef.detectChanges();
-        this.hardReset = false;
-        const viewModel: PlumbEditorViewModel = {
-          removed: "removeLater",
-        };
-        return viewModel;
-      }),
-    );
+    //     // workaround for jsPlumb not working with dom elements which it initialized on previously.
+    //     // This wipes dom entirely and gives us new elements
+    // TODO: @2dm Check with Daniel
+    //     this.hardReset = true;
+    //     this.changeDetectorRef.detectChanges();
+    //     this.hardReset = false;
+    //     const viewModel: PlumbEditorViewModel = {
+    //       removed: "removeLater",
+    //     };
+    //     return viewModel;
+    //   }),
+    // );
   }
 
   ngAfterViewInit() {
@@ -116,8 +117,8 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
         this.#plumber?.destroy();
         this.#plumber = new Plumber(
           this.domRootRef.nativeElement,
-          this.vsSvc.pipelineModelSig(),
-          this.vsSvc.dataSourcesSig(),
+          this.vsSvc.pipelineModel(),
+          this.vsSvc.dataSources(),
           this.onConnectionsChanged.bind(this),
           this.onDragend.bind(this),
           this.onDebugStream.bind(this),
@@ -159,7 +160,7 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
   }
 
   getTypeName(partAssemblyAndType: string) {
-    const dataSource = this.vsSvc.dataSourcesSig().find(ds => ds.PartAssemblyAndType === partAssemblyAndType);
+    const dataSource = this.vsSvc.dataSources().find(ds => ds.PartAssemblyAndType === partAssemblyAndType);
     return this.#queryDefinitionSvc.typeNameFilter(dataSource?.TypeNameForUi || partAssemblyAndType, 'className');
   }
 

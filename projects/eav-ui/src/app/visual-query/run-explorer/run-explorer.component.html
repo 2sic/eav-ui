@@ -1,16 +1,10 @@
-@if (vsSvc.pipelineModelSig()) {
+@if (vsSvc.pipelineModel()) {
   <div class="editor-active-explorer fancy-scrollbar-dark">
     <div class="wrapper">
       <div class="actions">
-        <button mat-raised-button class="action" color="accent" (click)="saveAndRunQuery(true, true)">
-          Save and run
-        </button>
-        <button mat-raised-button class="action" (click)="saveAndRunQuery(false, true)">
-          Run
-        </button>
-        <button mat-raised-button class="action" (click)="saveAndRunQuery(true, false)">
-          Save
-        </button>
+        <button mat-raised-button class="action" color="accent" (click)="saveAndRunQuery(true, true)">Save and run</button>
+        <button mat-raised-button class="action" (click)="saveAndRunQuery(false, true)">Run</button>
+        <button mat-raised-button class="action" (click)="saveAndRunQuery(true, false)">Save</button>
       </div>
       <div class="parameters">
         <div class="title">
@@ -24,9 +18,9 @@
             </button>
           </div>
         </div>
-        @if (vsSvc.pipelineModelSig().Pipeline.Params?.length) {
+        @if (vsSvc.pipelineModel().Pipeline.Params?.length) {
           <ul class="values">
-            @for (param of vsSvc.pipelineModelSig().Pipeline.Params?.split('\n'); track param) {
+            @for (param of vsSvc.pipelineModel().Pipeline.Params?.split('\n'); track param) {
               <li>
                 {{ param }}
               </li>
@@ -36,9 +30,9 @@
       </div>
       <div class="parameters">
         <div class="title">Test Parameters</div>
-        @if (vsSvc.pipelineModelSig().Pipeline.TestParameters?.length) {
+        @if (vsSvc.pipelineModel().Pipeline.TestParameters?.length) {
           <ul class="values">
-            @for (param of vsSvc.pipelineModelSig().Pipeline.TestParameters?.split('\n'); track param) {
+            @for (param of vsSvc.pipelineModel().Pipeline.TestParameters?.split('\n'); track param) {
               <li>
                 {{ param }}
               </li>
@@ -49,10 +43,13 @@
       @if (visualDesignerDataSig()) {
         <div class="parameters">
           <span class="eav-slide-toggle-label">Show DataSource Params</span>
-          <mat-slide-toggle color="primary" [checked]="visualDesignerDataSig().ShowDataSourceDetails"
-            (change)="showDataSourceDetails($event)"/>
-          </div>
-        }
+          <mat-slide-toggle
+            color="primary"
+            [checked]="visualDesignerDataSig().ShowDataSourceDetails"
+            (change)="showDataSourceDetails($event)"
+          />
+        </div>
+      }
       @if (warningSig()) {
         @if (warningSig().length) {
           <div class="warnings">
@@ -62,17 +59,16 @@
             </div>
             <ol class="values">
               @for (warning of warningSig(); track warning) {
-                <li [innerHTML]="warning">
-                </li>
+                <li [innerHTML]="warning"></li>
               }
             </ol>
           </div>
         }
       }
-      @if (vsSvc.pipelineModelSig().Pipeline.Description) {
+      @if (vsSvc.pipelineModel().Pipeline.Description) {
         <div class="description">
           <div class="title">Query Description</div>
-          <div>{{ vsSvc.pipelineModelSig().Pipeline.Description }}</div>
+          <div>{{ vsSvc.pipelineModel().Pipeline.Description }}</div>
         </div>
       }
       <div class="footer-actions">
