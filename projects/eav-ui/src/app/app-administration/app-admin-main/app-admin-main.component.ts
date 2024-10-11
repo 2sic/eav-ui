@@ -1,13 +1,12 @@
 import { MediaMatcher } from '@angular/cdk/layout';
 import { AsyncPipe } from '@angular/common';
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, signal, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { NavigationEnd, RouterOutlet } from '@angular/router';
-import { BehaviorSubject, combineLatest, filter, map, startWith } from 'rxjs';
+import { RouterOutlet } from '@angular/router';
 import { BreadcrumbModule } from 'xng-breadcrumb';
 import { transient } from '../../../../../core';
 import { NavItemListComponent } from '../../shared/components/nav-item-list/nav-item-list.component';
@@ -37,9 +36,9 @@ import { AppAdminMenu } from './app-admin-menu';
     ToggleDebugDirective,
   ],
 })
-export class AppAdminMainComponent implements OnInit, OnDestroy {
+export class AppAdminMainComponent implements OnInit {
 
-  log = classLog({AppAdminMainComponent});
+  log = classLog({ AppAdminMainComponent });
 
   #dialogConfigSvc = transient(DialogConfigAppService);
   #dialogRouter = transient(DialogRoutingService);
@@ -53,31 +52,7 @@ export class AppAdminMainComponent implements OnInit, OnDestroy {
 
   AppScopes = AppScopes;
 
-  private dialogSettings$ = new BehaviorSubject<DialogSettings>(undefined);
-  private pathsArray$ = new BehaviorSubject<string[]>(undefined);
-  private currentPath$ = combineLatest([
-    this.pathsArray$,
-    this.#dialogRouter.router.events.pipe(
-      filter((event) => event instanceof NavigationEnd),
-      map(() => this.#dialogRouter.snapshot.firstChild.url[0].path),
-      startWith(this.#dialogRouter.snapshot.firstChild.url[0].path)
-    ),
-  ]).pipe(
-    map(([paths, currentPath]) => {
-      if (paths == null) return;
-      return currentPath;
-    })
-  );
-
-  // Generate View Model
-  viewModel$ = combineLatest([this.dialogSettings$, this.currentPath$]).pipe(
-    map(([dialogSettings, currentPath]) => {
-      return {
-        dialogSettings,
-        currentPath,
-      };
-    })
-  );
+  dialogSettings = signal<DialogSettings>(undefined);
 
   smallScreen: MediaQueryList = this.media.matchMedia('(max-width: 1000px)');
   @ViewChild('sidenav') sidenav!: MatSidenav;
@@ -85,7 +60,6 @@ export class AppAdminMainComponent implements OnInit, OnDestroy {
 
   /** Navigation menu buttons - prefilled; may be modified after settings are loaded */
   navItems = AppAdminMenu;
-
   matcher!: MediaQueryList;
 
 
@@ -102,11 +76,6 @@ export class AppAdminMainComponent implements OnInit, OnDestroy {
     );
   }
 
-  ngOnDestroy() {
-    this.dialogSettings$.complete();
-    this.pathsArray$.complete();
-  }
-
 
   closeDialog() {
     this.dialog.close();
@@ -115,14 +84,12 @@ export class AppAdminMainComponent implements OnInit, OnDestroy {
   private fetchDialogSettings() {
     this.#dialogConfigSvc.getCurrent$().subscribe(dialogSettings => {
       UpdateEnvVarsFromDialogSettings(dialogSettings.Context.App);
-      this.dialogSettings$.next(dialogSettings);
+      this.dialogSettings.set(dialogSettings);
 
       if (!dialogSettings.Context.Enable.Query)
         this.navItems = this.navItems.filter(
           (item) => item.name !== 'Queries' && item.name !== 'Web API'
         );
-
-      this.pathsArray$.next(this.navItems.map((item) => item.path));
     });
   }
 }
