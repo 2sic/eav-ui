@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { ChangeDetectorRef, Component, effect, ElementRef, HostBinding, Inject, Input, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, HostBinding, Inject, Input, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -65,8 +65,8 @@ export class FileUploadDialogComponent extends BaseComponent implements OnInit, 
   ) {
     super();
 
-    // TODO:: @2dg Check with Daniel
-     // TODO:: Old Code
+    // TODO: @2dg Check with Daniel subscriptions
+     // TODO: Old Code
     //  this.subscriptions.add(
     //   this.files$.subscribe(() => {
     //     console.log('files changed');
@@ -74,13 +74,6 @@ export class FileUploadDialogComponent extends BaseComponent implements OnInit, 
     //       this.result.set(undefined);
     //   }),
     // );
-    effect(() => {
-      this.files();
-      if (this.result() != undefined) {
-        console.log('result changed');
-        this.result.set(undefined);
-      }
-    });
 
     // copied from 2sxc-ui app/installer
     this.subscriptions.add(

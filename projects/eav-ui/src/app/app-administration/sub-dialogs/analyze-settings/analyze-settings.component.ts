@@ -1,5 +1,5 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, computed, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
@@ -20,7 +20,7 @@ import { AnalyzeSettingsKeyComponent } from './analyze-settings-key/analyze-sett
 import { AnalyzeSettingsTotalResultsComponent } from './analyze-settings-total-results/analyze-settings-total-results.component';
 import { AnalyzeSettingsTotalResultsParams } from './analyze-settings-total-results/analyze-settings-total-results.models';
 import { AnalyzeSettingsValueComponent } from './analyze-settings-value/analyze-settings-value.component';
-import { AnalyzeParts, SettingsStackItem } from './analyze-settings.models';
+import { AnalyzeParts } from './analyze-settings.models';
 
 @Component({
   selector: 'app-analyze-settings',
@@ -48,7 +48,12 @@ export class AnalyzeSettingsComponent implements OnInit {
 
   views = signal<View[]>([]);
   selectedView = signal<string>(undefined);
-  stack = signal<SettingsStackItem[]>([]);
+  // TODO: @2dg old Code, ask Daniel
+  // stack = signal<SettingsStackItem[]>([]);
+
+  stack = computed(() =>
+    this.#analyzeSettingsSvc.getStackSig(this.part, undefined, this.selectedView(), true)
+  );
 
   constructor(
     private dialog: MatDialogRef<AnalyzeSettingsComponent>,
@@ -77,9 +82,11 @@ export class AnalyzeSettingsComponent implements OnInit {
   }
 
   private getStack(): void {
-    this.#analyzeSettingsSvc.getStack(this.part, undefined, this.selectedView(), true).subscribe(stack => {
-      this.stack.set(stack);
-    });
+    this.stack();
+
+    // this.#analyzeSettingsSvc.getStack(this.part, undefined, this.selectedView(), true).subscribe(stack => {
+    //   this.stack.set(stack);
+    // });
   }
 
   private buildGridOptions(): GridOptions {

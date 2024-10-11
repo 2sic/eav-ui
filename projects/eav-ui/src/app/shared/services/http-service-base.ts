@@ -45,7 +45,9 @@ export class HttpServiceBase {
 
   // TODO: @2dg
   protected getAndWrite<ResultType>(endpoint: string, options: Parameters<typeof this.http.get>[1], target: WritableSignal<ResultType>): void {
-    this.getHttp<ResultType>(endpoint, options).subscribe(d => target.set(d));
+    this.getHttp<ResultType>(endpoint, options).subscribe( d => {
+      target.set(d);
+    });
   }
 
   // TODO: @2dg
