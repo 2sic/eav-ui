@@ -4,7 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { DevRestBaseViewModel } from '..';
+import { DevRestBaseModel } from '..';
 import { transient } from '../../../../../core/transient';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { ClipboardService } from '../../shared/services/clipboard.service';
@@ -24,7 +24,7 @@ import { InfoBoxComponent } from '../info-box/info-box.component';
   ]
 })
 export class DevRestUrlsAndCodeComponent {
-  @Input() data: DevRestBaseViewModel;
+  @Input() data: DevRestBaseModel;
   constructor(
     private snackBar: MatSnackBar,
     private http: HttpClient,

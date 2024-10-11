@@ -26,7 +26,7 @@ import { DevRestHttpHeadersComponent } from '../tab-headers/tab-headers.componen
 import { DevRestTabIntroductionComponent } from '../tab-introduction/tab-introduction.component';
 import { DevRestApiActionParamsComponent } from './action-params/action-params.component';
 import { generateWebApiCalls } from './api-samples';
-import { DevRestApiViewModel } from './api-template-vars';
+import { DevRestApiModel } from './api-template-vars';
 import { DevRestApiIntroductionComponent } from './introduction/introduction.component';
 import { DevRestApiPermissionsComponent } from './permissions/permissions.component';
 
@@ -60,7 +60,7 @@ const pathToApi = 'app/{appname}/{endpointPath}/{action}';
     AsyncPipe,
   ],
 })
-export class DevRestApiComponent extends DevRestBase<DevRestApiViewModel> implements OnDestroy {
+export class DevRestApiComponent extends DevRestBase<DevRestApiModel> implements OnDestroy {
 
   log = classLog({DevRestApiComponent});
 
@@ -73,7 +73,7 @@ export class DevRestApiComponent extends DevRestBase<DevRestApiViewModel> implem
   urlParams$ = new BehaviorSubject<string>('');
 
   private sourceService = transient(SourceService);
-  
+
   constructor(
     /** Context for this dialog. Used for appId, zoneId, tabId, etc. */
     context: Context,

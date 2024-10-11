@@ -1,6 +1,6 @@
 import { Query } from '../../app-administration/models/query.model';
-import { DevRestBaseViewModel } from '../base-template-vars';
+import { DevRestBaseModel } from '../base-template-vars';
 
-export interface DevRestQueryViewModel extends DevRestBaseViewModel {
+export interface DevRestQueryModel extends DevRestBaseModel {
   query: Query;
 }

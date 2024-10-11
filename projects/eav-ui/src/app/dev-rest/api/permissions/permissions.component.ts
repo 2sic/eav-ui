@@ -1,9 +1,9 @@
 import { GridOptions } from '@ag-grid-community/core';
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';
-import { DevRestApiViewModel } from '../api-template-vars';
 import { ColumnDefinitions } from '../../../shared/ag-grid/column-definitions';
+import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';
 import { SxcGridModule } from '../../../shared/modules/sxc-grid-module/sxc-grid.module';
+import { DevRestApiModel } from '../api-template-vars';
 
 @Component({
   selector: 'app-dev-api-permissions',
@@ -12,7 +12,7 @@ import { SxcGridModule } from '../../../shared/modules/sxc-grid-module/sxc-grid.
   imports: [SxcGridModule,],
 })
 export class DevRestApiPermissionsComponent implements OnInit, OnChanges {
-  @Input() data: DevRestApiViewModel;
+  @Input() data: DevRestApiModel;
 
   gridOptions: GridOptions;
   gridItems: ApiPermissionsGridItem[];

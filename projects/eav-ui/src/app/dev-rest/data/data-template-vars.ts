@@ -1,7 +1,7 @@
 import { ContentType } from '../../app-administration/models/content-type.model';
-import { DevRestBaseViewModel } from '../base-template-vars';
+import { DevRestBaseModel } from '../base-template-vars';
 
-export interface DevRestDataViewModel extends DevRestBaseViewModel {
+export interface DevRestDataModel extends DevRestBaseModel {
   contentType: ContentType;
   itemId: number;
 }

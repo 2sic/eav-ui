@@ -25,7 +25,7 @@ import { DevRestTabIntroductionComponent } from '../tab-introduction/tab-introdu
 import { DevRestTabPermissionsComponent } from '../tab-permissions/tab-permissions.component';
 import { DevRestQueryIntroductionComponent } from './introduction/introduction.component';
 import { generateQueryCalls } from './query-samples';
-import { DevRestQueryViewModel } from './query-template-vars';
+import { DevRestQueryModel } from './query-template-vars';
 
 const pathToQuery = 'app/{appname}/query/{queryname}';
 @Component({
@@ -50,7 +50,7 @@ const pathToQuery = 'app/{appname}/query/{queryname}';
     AsyncPipe,
   ],
 })
-export class DevRestQueryComponent extends DevRestBase<DevRestQueryViewModel> implements OnDestroy {
+export class DevRestQueryComponent extends DevRestBase<DevRestQueryModel> implements OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
   /** Test values for url params */

@@ -61,6 +61,7 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
 
   #refreshLicenses$ = new Subject<void>();
 
+  // TODO: @2dg, ask 2dm refresh Signal
   viewModel$: Observable<LicenseInfoViewModel>;
 
   #featuresConfigSvc = transient(FeaturesConfigService);

@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AllScenarios } from '../..';
-import { DevRestApiViewModel } from '../api-template-vars';
+import { DevRestApiModel } from '../api-template-vars';
 
 @Component({
   selector: 'app-dev-api-introduction',
@@ -9,7 +9,7 @@ import { DevRestApiViewModel } from '../api-template-vars';
 })
 export class DevRestApiIntroductionComponent implements OnInit {
 
-  @Input() data: DevRestApiViewModel;
+  @Input() data: DevRestApiModel;
 
   /** List of scenarios */
   scenarios = AllScenarios;
