@@ -80,7 +80,7 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
     this.viewModel$ =
       this.#refreshLicenses$.pipe(
         startWith(undefined),
-        switchMap(() => this.#featuresConfigSvc.getLicenses().pipe(catchError(() => of(undefined)))),
+        switchMap(() => this.#featuresConfigSvc.getLicenses().pipe(catchError(() => of(undefined)))), // Use new http Signals
         tap(() => this.disabled$.next(false)),
 
         // Fiddle with the data for development tests

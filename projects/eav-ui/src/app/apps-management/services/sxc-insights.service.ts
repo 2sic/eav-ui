@@ -7,8 +7,11 @@ const webApiLogRoot = 'sys/log/';
 export class SxcInsightsService extends HttpServiceBase {
 
   activatePageLog(duration: number) {
-    return this.http.get<string>(this.apiUrl(webApiLogRoot + 'EnableDebug'), {
+    return this.getHttp<string>(webApiLogRoot + 'EnableDebug', {
       params: { duration: duration.toString() }
     });
+    // return this.http.get<string>(this.apiUrl(webApiLogRoot + 'EnableDebug'), {
+    //   params: { duration: duration.toString() }
+    // });
   }
 }

@@ -2,13 +2,15 @@ import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
 import { webApiQueryDataSources, webApiQueryDebugStream, webApiQueryGet, webApiQueryRun, webApiQuerySave } from '../../app-administration/services';
 import { eavConstants } from '../../shared/constants/eav.constants';
-import { DataSource, PipelineDataSource, PipelineModel, PipelineResult } from '../models';
 import { HttpServiceBase } from '../../shared/services/http-service-base';
+import { DataSource, PipelineDataSource, PipelineModel, PipelineResult } from '../models';
 
 @Injectable()
 export class QueryDefinitionService extends HttpServiceBase {
 
   fetchPipeline(pipelineEntityId: number, dataSources: DataSource[]) {
+    // TODO: @2dg Type
+    // this.getHttp<PipelineModel>(webApiQueryGet, {
     return this.http.get<PipelineModel>(webApiQueryGet, {
       params: { appId: this.appId, id: pipelineEntityId.toString() }
     }).pipe(

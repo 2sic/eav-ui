@@ -39,7 +39,7 @@ export class HttpServiceBase {
   protected get zoneId() { return this.context.zoneId.toString(); }
 
   // TODO: @2dg
-  protected getHttp<ResultType>(endpoint: string, options: Parameters<typeof this.http.get>[1]) {
+  protected getHttp<ResultType>(endpoint: string, options?: Parameters<typeof this.http.get>[1]) {
     return this.http.get<ResultType>(endpoint, options);
   }
 
