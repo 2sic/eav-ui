@@ -3,7 +3,7 @@ import { AsyncPipe, NgClass, NgStyle } from '@angular/common';
 import { AfterViewInit, ChangeDetectorRef, Component, computed, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, map } from 'rxjs';
 import { transient } from '../../../../../core';
 import { BaseComponent } from '../../shared/components/base.component';
 import { eavConstants } from '../../shared/constants/eav.constants';
@@ -15,7 +15,6 @@ import { PipelineDataSource, PipelineResultStream, VisualDesignerData } from '..
 import { QueryDefinitionService } from '../services/query-definition.service';
 import { VisualQueryStateService } from '../services/visual-query.service';
 import { calculateTypeInfos } from './plumb-editor.helpers';
-import { PlumbEditorViewModel } from './plumb-editor.models';
 import { dataSrcIdPrefix, Plumber } from './plumber.helper';
 
 const logSpecs = {
@@ -51,7 +50,6 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
   #plumber: Plumber;
   #scriptLoaded$ = new BehaviorSubject(false);
 
-  viewModel$: Observable<PlumbEditorViewModel>;
 
   #queryDefinitionSvc = transient(QueryDefinitionService);
 

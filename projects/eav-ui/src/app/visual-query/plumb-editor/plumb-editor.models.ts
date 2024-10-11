@@ -1,9 +1,6 @@
 
 export type PlumbType = any;
 
-export interface PlumbEditorViewModel {
-  removed: string;
-}
 
 export interface TypeInfos {
   [guid: string]: TypeInfo;

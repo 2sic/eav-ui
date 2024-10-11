@@ -60,7 +60,7 @@ export class DevRestDataComponent extends DevRestBase<DevRestDataModel> implemen
   private entityService = transient(EntityService);
   private contentTypesService = transient(ContentTypesService);
 
-
+  // TODO: @2dg Offen ViewModel
   constructor(
     dialog: MatDialogRef<DevRestDataComponent>,
     router: Router,

@@ -64,6 +64,8 @@ export class DevRestQueryComponent extends DevRestBase<DevRestQueryModel> implem
 
   private pipelinesService = transient(PipelinesService);
 
+  // TODO: @2dg Offen ViewModel
+
   constructor(
     /** Context for this dialog. Used for appId, zoneId, tabId, etc. */
     context: Context,

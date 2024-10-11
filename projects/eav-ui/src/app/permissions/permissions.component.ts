@@ -145,7 +145,3 @@ export class PermissionsComponent implements OnInit {
     return gridOptions;
   }
 }
-
-interface PermissionsViewModel {
-  permissions: Permission[];
-}
