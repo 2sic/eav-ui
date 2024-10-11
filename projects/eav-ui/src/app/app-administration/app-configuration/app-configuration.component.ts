@@ -84,7 +84,7 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
   #dialogConfigSvc = transient(DialogConfigAppService);
   #dialogRouter = transient(DialogRoutingService);
 
-  // TODO:: WIP
+  // TODO: @2dg, ask 2dm refresh Signal
   // loadData = signal(0);
 
   // viewModelSig = computed(() => {
