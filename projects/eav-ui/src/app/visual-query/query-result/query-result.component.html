@@ -10,53 +10,54 @@
       <mat-icon>close</mat-icon>
     </button>
   </div>
-  
+
   <div class="eav-dialog-content">
     <p>
-      The Full result was logged to the Browser Console. Further down you'll find more debug-infos.
-      Executed in {{ timeUsed }}ms ({{ ticksUsed }} ticks)
+      The Full result was logged to the Browser Console. Further down you'll find more debug-infos. Executed in {{ timeUsed }}ms ({{
+        ticksUsed
+      }}
+      ticks)
     </p>
-    
+
     <mat-tab-group dynamicHeight color="accent" class="eav-tab-group">
+      <!-- Results -->
       <mat-tab>
         <div *matTabLabel class="mat-tab-label-box" tippy="Results">
           <span>Results</span>
         </div>
-
-        <div class="eav-tab-content">
-          <div class="eav-tab-description">
-            <div>
-              @if (top === 0) {
-                Showing All results
-              }
-              @if (top !== 0) {
-                Showing top {{ top }} results
-              }
-            </div>
-            <div>
-              @for (option of optionsForTop; track option) {
-                <button mat-button (click)="show(option)">
-                  Show
-                  @if (option === 0) {
-                    All
-                  }
-                  @if (option !== 0) {
-                    {{ option }}
-                  }
-                </button>
-              }
-            </div>
+        <div class="eav-tab-description">
+          <div>
+            @if (top === 0) {
+              Showing All results
+            }
+            @if (top !== 0) {
+              Showing top {{ top }} results
+            }
           </div>
-          <pre>{{ result | json }}</pre>
+          <div>
+            @for (option of optionsForTop; track option) {
+              <button mat-button (click)="show(option)">
+                Show
+                @if (option === 0) {
+                  All
+                }
+                @if (option !== 0) {
+                  {{ option }}
+                }
+              </button>
+            }
+          </div>
         </div>
+        <pre class="eav-pre-scroll">{{ result | json }}</pre>
       </mat-tab>
 
       @if (parameters?.length) {
+        <!-- Parameters -->
         <mat-tab>
           <div *matTabLabel class="mat-tab-label-box" tippy="Parameters">
             <span>Parameters</span>
           </div>
-          
+
           <div class="eav-tab-content">
             <ul>
               @for (param of parameters; track param) {
@@ -67,6 +68,7 @@
         </mat-tab>
       }
 
+      <!-- Sources -->
       <mat-tab>
         <div *matTabLabel class="mat-tab-label-box" tippy="Sources">
           <span>Sources</span>
@@ -93,7 +95,8 @@
                   <ol>
                     @for (config of source.value.Configuration | keyvalue; track config) {
                       <li>
-                        <b>{{ config.key }}</b>=<em>{{ config.value }}</em>
+                        <b>{{ config.key }}</b
+                        >=<em>{{ config.value }}</em>
                       </li>
                     }
                   </ol>
@@ -105,6 +108,7 @@
         </div>
       </mat-tab>
 
+      <!-- Streams -->
       <mat-tab>
         <div *matTabLabel class="mat-tab-label-box" tippy="Streams">
           <span>Streams</span>
@@ -121,10 +125,10 @@
             @for (stream of streams; track stream) {
               <tr>
                 <td>
-                  <pre>{{ stream.Source + ":" + stream.SourceOut }}</pre>
+                  <pre>{{ stream.Source + ':' + stream.SourceOut }}</pre>
                 </td>
                 <td>
-                  <pre>{{ stream.Target + ":" + stream.TargetIn }}</pre>
+                  <pre>{{ stream.Target + ':' + stream.TargetIn }}</pre>
                 </td>
                 <td>{{ stream.Count }}</td>
                 <td>{{ stream.Error }}</td>

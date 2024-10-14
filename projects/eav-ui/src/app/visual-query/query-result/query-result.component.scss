@@ -21,6 +21,12 @@
   line-height: 1.5;
 }
 
+.eav-pre-scroll {
+  height: calc(100vh - 268px - 80px);
+  overflow-y: auto;
+
+}
+
 pre {
   display: block;
   padding: 9.5px;
