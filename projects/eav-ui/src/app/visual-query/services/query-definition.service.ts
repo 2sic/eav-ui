@@ -9,9 +9,7 @@ import { DataSource, PipelineDataSource, PipelineModel, PipelineResult } from '.
 export class QueryDefinitionService extends HttpServiceBase {
 
   fetchPipeline(pipelineEntityId: number, dataSources: DataSource[]) {
-    // TODO: @2dg Type
-    // this.getHttp<PipelineModel>(webApiQueryGet, {
-    return this.http.get<PipelineModel>(webApiQueryGet, {
+    return this.getHttp<PipelineModel>(webApiQueryGet, {
       params: { appId: this.appId, id: pipelineEntityId.toString() }
     }).pipe(
       map(pipelineModel => {
@@ -66,7 +64,7 @@ export class QueryDefinitionService extends HttpServiceBase {
   }
 
   fetchDataSources() {
-    return this.http.get<DataSource[]>(webApiQueryDataSources, {
+    return this.getHttp<DataSource[]>(webApiQueryDataSources, {
       params: {
         appid: this.appId,
         zoneId: this.zoneId,
@@ -131,14 +129,14 @@ export class QueryDefinitionService extends HttpServiceBase {
 
   /** `top` - fetch first X items */
   runPipeline(id: number, top: number) {
-    return this.http.get<PipelineResult>(webApiQueryRun, {
+    return this.getHttp<PipelineResult>(webApiQueryRun, {
       params: { appId: this.appId, id: id.toString(), top: top.toString() }
     });
   }
 
   /** `top` - fetch first X items */
   debugStream(id: number, source: string, sourceOut: string, top: number) {
-    return this.http.get<PipelineResult>(webApiQueryDebugStream, {
+    return this.getHttp<PipelineResult>(webApiQueryDebugStream, {
       params: { appId: this.appId, id: id.toString(), from: source, out: sourceOut, top: top.toString() }
     });
   }

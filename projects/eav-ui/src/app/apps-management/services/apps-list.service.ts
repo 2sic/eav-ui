@@ -1,25 +1,25 @@
 import { Injectable } from '@angular/core';
 import { webApiAppRoot } from '../../import-app/services/import-app.service';
-import { App, PendingApp } from '../models/app.model';
 import { HttpServiceBase } from '../../shared/services/http-service-base';
+import { App, PendingApp } from '../models/app.model';
 
 @Injectable()
 export class AppsListService extends HttpServiceBase {
 
   getAll() {
-    return this.http.get<App[]>(this.apiUrl(webApiAppRoot + 'list'), {
+    return this.getHttp<App[]>(this.apiUrl(webApiAppRoot + 'list'), {
       params: { zoneId: this.zoneId }
     });
   }
 
   getInheritable() {
-    return this.http.get<App[]>(this.apiUrl(webApiAppRoot + 'InheritableApps'), {
+    return this.getHttp<App[]>(this.apiUrl(webApiAppRoot + 'InheritableApps'), {
       params: { zoneId: this.zoneId }
     });
   }
 
   getPendingApps() {
-    return this.http.get<PendingApp[]>(this.apiUrl(webApiAppRoot + 'GetPendingApps'), {
+    return this.getHttp<PendingApp[]>(this.apiUrl(webApiAppRoot + 'GetPendingApps'), {
       params: { zoneId: this.zoneId },
     });
   }
@@ -50,7 +50,7 @@ export class AppsListService extends HttpServiceBase {
   }
 
   flushCache(appId: number) {
-    return this.http.get<null>(this.apiUrl(webApiAppRoot + 'flushcache'), {
+    return this.getHttp<null>(this.apiUrl(webApiAppRoot + 'flushcache'), {
       params: { zoneId: this.zoneId, appId: appId.toString() },
     });
   }

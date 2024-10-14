@@ -53,7 +53,9 @@ export class HttpServiceBase {
   // TODO: @2dg
   protected getSignal<ResultType>(endpoint: string, options: Parameters<typeof this.http.get>[1], initial: ResultType): Signal<ResultType> {
     const target = signal<ResultType>(initial);
-    this.getHttp<ResultType>(endpoint, options).subscribe(d => target.set(d));
+    this.getHttp<ResultType>(endpoint, options).subscribe(d =>{
+      target.set(d)
+    });
     return target;
   }
 

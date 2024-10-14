@@ -84,7 +84,7 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
   #dialogConfigSvc = transient(DialogConfigAppService);
   #dialogRouter = transient(DialogRoutingService);
 
-  // TODO: @2dg, ask 2dm refresh Signal
+  // TODO: @2dg, ask 2dm refresh Signal and getAppInternalsSig()
   // loadData = signal(0);
 
   // viewModelSig = computed(() => {
@@ -246,10 +246,6 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
   }
 
   private fetchSettings() {
-    // TODO:: WIP
-    // const x = this.loadData();
-    // this.loadData.set(x +1);
-
     const getObservable = this.#appInternalsService.getAppInternals();
     getObservable.subscribe(x => {
       // 2dm - New mode for Reactive UI

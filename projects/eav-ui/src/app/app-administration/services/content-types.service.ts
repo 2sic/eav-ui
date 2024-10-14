@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
 import { FileUploadResult } from '../../shared/components/file-upload-dialog';
 import { ScopeOption } from '../../shared/constants/eav.constants';
+import { HttpServiceBase } from '../../shared/services/http-service-base';
 import { ContentType, ContentTypeEdit } from '../models/content-type.model';
 import { ScopeDetailsDto } from '../models/scopedetails.dto';
-import { HttpServiceBase } from '../../shared/services/http-service-base';
 
 // We should list all the "full" paths here, so it's easier to find when searching for API calls
 export const webApiTypeRoot = 'admin/type/';
@@ -20,20 +20,20 @@ const webApiTypeAddGhost = 'admin/type/addghost';
 export class ContentTypesService extends HttpServiceBase {
 
   retrieveContentType(staticName: string) {
-    return this.http.get<ContentType>(this.apiUrl(webApiTypeGet), {
+    return this.getHttp<ContentType>(this.apiUrl(webApiTypeGet), {
       params: { appId: this.appId, contentTypeId: staticName }
     });
   }
 
   retrieveContentTypes(scope: string) {
-    return this.http.get<ContentType[]>(this.apiUrl(webApiTypes), {
+    return this.getHttp<ContentType[]>(this.apiUrl(webApiTypes), {
       params: { appId: this.appId, scope }
     });
   }
 
   // TODO: remove this method after upgrade to V2
   getScopes() {
-    return this.http.get<{ old: Record<string, string>, scopes: ScopeDetailsDto[] }>(this.apiUrl(webApiTypeScopes), {
+    return this.getHttp<{ old: Record<string, string>, scopes: ScopeDetailsDto[] }>(this.apiUrl(webApiTypeScopes), {
       params: { appId: this.appId }
     }).pipe(
       map(scopesData => {
@@ -46,7 +46,7 @@ export class ContentTypesService extends HttpServiceBase {
   }
 
   getScopesV2() {
-    return this.http.get<{ old: Record<string, string>, scopes: ScopeDetailsDto[] }>(this.apiUrl(webApiTypeScopes), {
+    return this.getHttp<{ old: Record<string, string>, scopes: ScopeDetailsDto[] }>(this.apiUrl(webApiTypeScopes), {
       params: { appId: this.appId }
     }).pipe(
       map(scopesData => scopesData.scopes),

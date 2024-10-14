@@ -17,7 +17,7 @@ export class MetadataService extends HttpServiceBase  {
    * @param contentTypeName name of content type where permissions are stored. If blank, backend returns all metadata except permissions
    */
   getMetadata(targetType: number, keyType: Of<typeof MetadataKeyTypes>, key: string | number, contentTypeName?: string): Observable<MetadataDto> {
-    return this.http.get<MetadataDto>(this.apiUrl(webApiRoot), {
+    return this.getHttp<MetadataDto>(this.apiUrl(webApiRoot), {
       params: {
         appId: this.appId,
         targetType: targetType.toString(),

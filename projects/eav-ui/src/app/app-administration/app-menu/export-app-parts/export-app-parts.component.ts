@@ -37,7 +37,7 @@ import { ExportAppPartsService } from '../../services/export-app-parts.service';
     MatDialogModule,
   ],
 })
-export class ExportAppPartsComponent implements OnInit{
+export class ExportAppPartsComponent implements OnInit {
   @HostBinding('className') hostClass = 'dialog-component';
 
   #exportAppPartsSvc = transient(ExportAppPartsService);
@@ -51,6 +51,11 @@ export class ExportAppPartsComponent implements OnInit{
   isExporting = signal(false);
   scopeOptions = signal<ScopeOption[]>([]);
   contentInfo = signal<ContentInfo>(undefined);
+
+  // TODO: @2dg new getContentInfoSig
+  // contentInfoNew = computed(() => {
+  //   this.#exportAppPartsSvc.getContentInfoSig(this.exportScope)
+  // });
 
   constructor() { }
 
@@ -108,6 +113,11 @@ export class ExportAppPartsComponent implements OnInit{
   }
 
   #fetchContentInfo() {
+    // const contentInfo = this.#exportAppPartsSvc.getContentInfoSig(this.exportScope);
+    // setTimeout(() => {
+    //   console.log("2dg", contentInfo());
+    // }, 2000);
+
     this.loading.set(true);
     this.#exportAppPartsSvc.getContentInfo(this.exportScope).subscribe(contentInfo => {
       this.contentInfo.set(contentInfo);

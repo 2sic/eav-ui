@@ -10,8 +10,5 @@ export class SxcInsightsService extends HttpServiceBase {
     return this.getHttp<string>(webApiLogRoot + 'EnableDebug', {
       params: { duration: duration.toString() }
     });
-    // return this.http.get<string>(this.apiUrl(webApiLogRoot + 'EnableDebug'), {
-    //   params: { duration: duration.toString() }
-    // });
   }
 }

@@ -2,11 +2,11 @@ import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { WebApi, WebApiDetails } from '../../app-administration/models';
 import { ViewOrFileIdentifier } from '../../shared/models/edit-form.model';
+import { HttpServiceBase } from '../../shared/services/http-service-base';
 import { FileAsset } from '../models/file-asset.model';
 import { PredefinedTemplatesResponse } from '../models/predefined-template.model';
 import { Preview } from '../models/preview.models';
 import { SourceView } from '../models/source-view.model';
-import { HttpServiceBase } from '../../shared/services/http-service-base';
 
 const appFilesAll = 'admin/AppFiles/AppFiles';
 const appFilesAsset = 'admin/AppFiles/asset';
@@ -21,7 +21,7 @@ export class SourceService extends HttpServiceBase {
 
   /** ViewKey is templateId or path */
   get(viewKey: string, global: boolean, urlItems: ViewOrFileIdentifier[]): Observable<SourceView> {
-    return this.http.get<SourceView>(this.apiUrl(appFilesAsset), {
+    return this.getHttp<SourceView>(this.apiUrl(appFilesAsset), {
       params: {
         appId: this.appId,
         global,
@@ -59,7 +59,7 @@ export class SourceService extends HttpServiceBase {
   }
 
   getAll(mask?: string): Observable<FileAsset[]> {
-    return this.http.get<{ Files: FileAsset[] }>(this.apiUrl(appFilesAll), {
+    return this.getHttp<{ Files: FileAsset[] }>(this.apiUrl(appFilesAll), {
       params: {
         appId: this.appId,
         ...(mask && { mask }),
@@ -75,7 +75,7 @@ export class SourceService extends HttpServiceBase {
   }
 
   getWebApis(): Observable<WebApi[]> {
-    return this.http.get<{ files: WebApi[] }>(this.apiUrl(apiExplorerAppApiFiles), {
+    return this.getHttp<{ files: WebApi[] }>(this.apiUrl(apiExplorerAppApiFiles), {
       params: {
         appId: this.appId,
       },
@@ -103,13 +103,13 @@ export class SourceService extends HttpServiceBase {
   }
 
   getWebApiDetails(apiPath: string): Observable<WebApiDetails> {
-    return this.http.get<WebApiDetails>(this.apiUrl(apiExplorerInspect), {
+    return this.getHttp<WebApiDetails>(this.apiUrl(apiExplorerInspect), {
       params: { appId: this.appId, zoneId: this.zoneId, path: apiPath },
     });
   }
 
   getPredefinedTemplates(purpose?: 'Template' | 'Search' | 'Api', type?: 'Token' | 'Razor'): Observable<PredefinedTemplatesResponse> {
-    return this.http.get<PredefinedTemplatesResponse>(this.apiUrl(appFilesPredefinedTemplates), {
+    return this.getHttp<PredefinedTemplatesResponse>(this.apiUrl(appFilesPredefinedTemplates), {
       params: {
         ...(purpose && { purpose }),
         ...(type && { type }),
@@ -118,7 +118,7 @@ export class SourceService extends HttpServiceBase {
   }
 
   getPreview(path: string, global: boolean, templateKey: string): Observable<Preview> {
-    return this.http.get<Preview>(this.apiUrl(appFilesPreview), {
+    return this.getHttp<Preview>(this.apiUrl(appFilesPreview), {
       params: {
         appId: this.appId,
         path,
