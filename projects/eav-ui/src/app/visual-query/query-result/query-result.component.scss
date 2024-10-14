@@ -1,16 +1,30 @@
+.eav-dialog {
+  overflow: hidden;
+}
+
 .eav-tab-group {
   padding: 0px;
 }
 
+.eav-tab-content {
+  height: calc(100vh - 268px);
+  overflow-y: auto;
+}
+
 .eav-tab-description {
   display: flex;
+  justify-content: space-between;
   align-items: baseline;
+  margin-right: 1rem;
+  padding: 1rem;
+  font-size: 16px;
+  line-height: 1.5;
 }
 
 pre {
   display: block;
   padding: 9.5px;
-  margin: 0 0 10px;
+  margin: 0 10px 0 0;
   font-size: 13px;
   line-height: 1.42857143;
   color: #333;
@@ -29,5 +43,3 @@ th {
 td {
   vertical-align: baseline;
 }
-
-
