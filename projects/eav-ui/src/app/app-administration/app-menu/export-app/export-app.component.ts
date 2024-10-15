@@ -1,3 +1,4 @@
+import { NgTemplateOutlet } from '@angular/common';
 import { Component, computed, inject, model, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -26,6 +27,9 @@ import { ExportAppService } from '../../services/export-app.service';
 
     FeatureIconIndicatorComponent,
     FeatureIconComponent,
+
+    // TODO: @2dg - just added to make the ngTemplate work, should remove again once not needed
+    NgTemplateOutlet,
   ],
 })
 export class ExportAppComponent implements OnInit {

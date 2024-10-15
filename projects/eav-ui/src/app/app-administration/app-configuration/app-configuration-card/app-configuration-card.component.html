@@ -62,8 +62,9 @@
   </mat-card-actions>
 </mat-card>
 
+<!-- TODO: @2dg - this is repeated in a few controls. Please deduplicate: create an own control and use it everywhere; then remove unnecessary imports  -->
 <ng-template #docsLink let-icon let-label let-link="link">
-  <a mat-button class="eav-button__with-icon" href="{{link}}" target="_blank" [tippy]="'online documentation'">
+  <a mat-button class="eav-button__with-icon" href="{{link}}" target="_blank" tippy="online documentation">
     <mat-icon class="eav-icon">{{ icon ?? "menu_book" }}</mat-icon>
     <span>{{ label }}</span>
   </a>
