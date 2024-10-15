@@ -46,6 +46,7 @@ export class CreateFileDialogComponent extends BaseComponent implements OnInit, 
   form: UntypedFormGroup;
   controls: CreateFileFormControls;
   viewModel$: Observable<CreateFileViewModel>;
+  // TODO: 2dg ViewModel Offen > Views, Create Template
 
   private all = 'All' as const;
   private templates$: BehaviorSubject<PredefinedTemplate[]>;

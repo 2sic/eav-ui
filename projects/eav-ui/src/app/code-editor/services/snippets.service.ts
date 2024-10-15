@@ -22,7 +22,7 @@ export class SnippetsService extends HttpServiceBase {
   }
 
   getTooltips(language: string): Observable<Tooltip[]> {
-    return this.http.get<Tooltip[]>(this.apiUrl(inlineHelp), {
+    return this.getHttp<Tooltip[]>(this.apiUrl(inlineHelp), {
       params: {
         language,
       },
@@ -30,7 +30,7 @@ export class SnippetsService extends HttpServiceBase {
   }
 
   getSnippets(view: SourceView): Observable<{ list: Snippet[]; sets: SnippetsSets; }> {
-    return this.http.get<{ snippets: Snippet[] }>('../ng-assets/snippets.json.js').pipe(
+    return this.getHttp<{ snippets: Snippet[] }>('../ng-assets/snippets.json.js').pipe(
       map(res => {
         const relevant = this.filterAwayNotNeededSnippetsList(res.snippets, view);
         const standardAndInputSnips = this.extractInputTypeSnippets(relevant);
@@ -269,7 +269,7 @@ export class SnippetsService extends HttpServiceBase {
   }
 
   private getFields(appId: number, staticName: string): Observable<Field[]> {
-    return this.http.get<Field[]>(this.apiUrl(webApiFieldsAll), {
+    return this.getHttp<Field[]>(this.apiUrl(webApiFieldsAll), {
       params: { appid: appId.toString(), staticName },
     }).pipe(
       map(fields => {

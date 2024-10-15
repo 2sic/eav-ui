@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { DevRestBaseViewModel } from '..';
+import { DevRestBaseModel } from '..';
 import { InfoBoxComponent } from '../info-box/info-box.component';
 
 @Component({
@@ -10,7 +10,7 @@ import { InfoBoxComponent } from '../info-box/info-box.component';
 })
 export class DevRestHttpHeadersComponent implements OnInit {
 
-  @Input() data: DevRestBaseViewModel;
+  @Input() data: DevRestBaseModel;
 
   constructor() { }
 

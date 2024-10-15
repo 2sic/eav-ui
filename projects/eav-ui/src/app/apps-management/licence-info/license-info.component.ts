@@ -61,6 +61,7 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
 
   #refreshLicenses$ = new Subject<void>();
 
+  // TODO: @2dg, ask 2dm refresh Signal
   viewModel$: Observable<LicenseInfoViewModel>;
 
   #featuresConfigSvc = transient(FeaturesConfigService);
@@ -79,7 +80,7 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
     this.viewModel$ =
       this.#refreshLicenses$.pipe(
         startWith(undefined),
-        switchMap(() => this.#featuresConfigSvc.getLicenses().pipe(catchError(() => of(undefined)))),
+        switchMap(() => this.#featuresConfigSvc.getLicenses().pipe(catchError(() => of(undefined)))), // Use new http Signals
         tap(() => this.disabled$.next(false)),
 
         // Fiddle with the data for development tests

@@ -1,4 +1,4 @@
-export interface ExpandableWrapperViewModel {
+export interface ExpandableWrapperModel {
   focused: boolean;
   previewHeight: PreviewHeight;
 }

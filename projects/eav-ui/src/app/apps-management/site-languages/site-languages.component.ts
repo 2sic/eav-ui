@@ -30,6 +30,7 @@ export class SiteLanguagesComponent implements OnInit, OnDestroy {
 
   #refreshLanguages$ = new Subject<void>();
 
+  // TODO: @2dg, ask 2dm refresh Signal
   viewModel$: Observable<SiteLanguagesViewModel>;
 
   #zoneSvc = transient(ZoneService);

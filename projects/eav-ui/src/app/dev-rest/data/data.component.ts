@@ -24,7 +24,7 @@ import { DevRestTabExamplesComponent } from '../tab-examples/tab-examples.compon
 import { DevRestHttpHeadersComponent } from '../tab-headers/tab-headers.component';
 import { DevRestTabIntroductionComponent } from '../tab-introduction/tab-introduction.component';
 import { DevRestTabPermissionsComponent } from '../tab-permissions/tab-permissions.component';
-import { DevRestDataViewModel } from './data-template-vars';
+import { DevRestDataModel } from './data-template-vars';
 import { DevRestDataIntroductionComponent } from './introduction/introduction.component';
 
 
@@ -53,14 +53,14 @@ const pathToContent = 'app/{appname}/data/{typename}';
     AsyncPipe,
   ],
 })
-export class DevRestDataComponent extends DevRestBase<DevRestDataViewModel> implements OnDestroy {
+export class DevRestDataComponent extends DevRestBase<DevRestDataModel> implements OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
   @Input() contentTypeInput$: BehaviorSubject<ContentType>;
 
   private entityService = transient(EntityService);
   private contentTypesService = transient(ContentTypesService);
 
-
+  // TODO: @2dg Offen ViewModel
   constructor(
     dialog: MatDialogRef<DevRestDataComponent>,
     router: Router,
@@ -116,7 +116,7 @@ export class DevRestDataComponent extends DevRestBase<DevRestDataViewModel> impl
         this.dialogSettings$
     ]).pipe(
       map(([contentType, scenario, permissions, root, item, diag]) => {
-        var result: DevRestDataViewModel = {
+        var result: DevRestDataModel = {
           ...this.buildBaseViewModel(contentType.Name, contentType.StaticName, diag, permissions, root, scenario),
           contentType,
           itemId: item.Id,

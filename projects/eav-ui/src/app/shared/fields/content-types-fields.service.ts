@@ -41,7 +41,7 @@ export class ContentTypesFieldsService extends HttpServiceBase {
   }
 
   typeListRetrieve() {
-    return this.http.get<string[]>(this.apiUrl(webApiDataTypes), this.paramsAppId());
+    return this.getHttp<string[]>(this.apiUrl(webApiDataTypes), this.paramsAppId());
   }
 
   getInputTypesList() {
@@ -66,7 +66,7 @@ export class ContentTypesFieldsService extends HttpServiceBase {
   }
 
   getReservedNames() {
-    return this.http.get<Record<string, string>>(this.apiUrl(webApiReservedNames));
+    return this.getHttp<Record<string, string>>(this.apiUrl(webApiReservedNames));
   }
 
   /** Get all fields for some content type */
@@ -92,7 +92,7 @@ export class ContentTypesFieldsService extends HttpServiceBase {
 
   /** Get all possible sharable fields for a new sharing */
   getShareableFields() {
-    return this.http.get<Field[]>(this.apiUrl(webApiFieldsGetShared), this.paramsAppId());
+    return this.getHttp<Field[]>(this.apiUrl(webApiFieldsGetShared), this.paramsAppId());
   }
 
   /**
@@ -102,7 +102,7 @@ export class ContentTypesFieldsService extends HttpServiceBase {
    */
   getShareableFieldsFor(attributeId: number) {
     return this.#getShareinfo(webApiFieldsGetShared, attributeId);
-    // return this.http.get<Field[]>(this.apiUrl(webApiFieldsGetShared), this.paramsAppId({ attributeId }));
+    // return this.getHttp<Field[]>(this.apiUrl(webApiFieldsGetShared), this.paramsAppId({ attributeId }));
   }
 
   getAncestors(attributeId: number) {
@@ -114,7 +114,7 @@ export class ContentTypesFieldsService extends HttpServiceBase {
   }
 
   #getShareinfo(endpoint: string, attributeId: number) {
-    return this.http.get<Field[]>(this.apiUrl(endpoint), this.paramsAppId({ attributeId }));
+    return this.getHttp<Field[]>(this.apiUrl(endpoint), this.paramsAppId({ attributeId }));
   }
 
   addInheritedField(targetContentTypeId: number, sourceType: string, sourceFieldGuid: string /* guid */, name: string) {

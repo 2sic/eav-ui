@@ -22,7 +22,7 @@ const endPointsWhereWeRotate = 3;
 
 export class Plumber {
 
-  log = classLog({Plumber}, logSpecs, true);
+  log = classLog({Plumber}, logSpecs);
 
   #instance: PlumbType;
   #lineCount = 0;
@@ -244,7 +244,7 @@ export class Plumber {
 
         const guid: string = domDataSource.id.replace(dataSrcIdPrefix, '');
         const dataSource = this.pipelineModel.DataSources.find(pipeDataSource => pipeDataSource.EntityGuid === guid);
-        
+
         // if (wire.In === "DEBUG") debugger;
 
         this.#addEndpoint(domDataSource, wire.In, true, dataSource, inGroups[wire.To].length);
@@ -269,7 +269,7 @@ export class Plumber {
     const hasDynamic = connectionList?.some(name => this.#endpoints.getEndpointInfo(name, false));
     // const count = connectionList?.length ?? -1;
     const endpointInfo = this.#endpoints.getEndpointInfo(endpointName, hasDynamic);
-    
+
     l.a(`endpointInfo ${count}`, { dataSource, connectionList, isDynamic: hasDynamic, count, endpointInfo });
 
     // if (endpointName === "DEBUG") debugger;

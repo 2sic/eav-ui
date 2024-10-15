@@ -40,7 +40,7 @@ export class PickerDataSetup {
   // ... and also importMe on the logic
   // 2. PickerComponent.ngOnInit() will
   // ...
-  // 3. The control will override initAdaptersAndViewModel()
+  // 3. The control will override initAdaptersAndModel()
   // 3.1 init state with
   // ... it will also attach a CALLBACK! for focused?
 

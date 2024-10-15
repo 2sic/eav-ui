@@ -19,7 +19,7 @@ export class AdamService extends HttpServiceBase {
   }
 
   getAll(url: string, config: AdamConfig) {
-    return this.http.get<AdamItem[]>(
+    return this.getHttp<AdamItem[]>(
       url + '/items',
       {
         params: {
@@ -47,7 +47,7 @@ export class AdamService extends HttpServiceBase {
   }
 
   rename(item: AdamItem, newName: string, url: string, config: AdamConfig) {
-    return this.http.get<boolean>(
+    return this.getHttp<boolean>(
       url + '/rename',
       {
         params: {
@@ -63,7 +63,7 @@ export class AdamService extends HttpServiceBase {
   }
 
   deleteItem(item: AdamItem, url: string, config: AdamConfig) {
-    return this.http.get<boolean>(
+    return this.getHttp<boolean>(
       url + '/delete',
       {
         params: {
@@ -83,7 +83,7 @@ export class AdamService extends HttpServiceBase {
     guid: string,
     field: string
   ): Observable<LinkInfo> {
-    return this.http.get<LinkInfo>(
+    return this.getHttp<LinkInfo>(
       this.apiUrl('cms/edit/linkInfo'),
       {
         params: {

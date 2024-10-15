@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostBinding, signal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
@@ -9,7 +9,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
-import { BehaviorSubject, Observable, map } from 'rxjs';
 import { transient } from '../../../../../core';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
 import { appNameError, appNamePattern } from '../constants/app.patterns';
@@ -33,15 +32,14 @@ import { AppsListService } from '../services/apps-list.service';
     FieldHintComponent,
   ],
 })
-export class CreateAppComponent implements OnInit, OnDestroy {
+export class CreateAppComponent {
   @HostBinding('className') hostClass = 'dialog-component';
 
   form: UntypedFormGroup;
-  loading$: BehaviorSubject<boolean>;
+  loading = signal<boolean>(false);
   appNameError = appNameError;
   appTemplateId = '1';
 
-  viewModel$: Observable<CreateAppViewModel>;
 
   private appsListService = transient(AppsListService);
 
@@ -50,18 +48,8 @@ export class CreateAppComponent implements OnInit, OnDestroy {
     private snackBar: MatSnackBar,
   ) {
     this.form = this.buildForm();
-    this.loading$ = new BehaviorSubject(false);
   }
 
-  ngOnInit(): void {
-    this.viewModel$ = this.loading$.pipe(
-      map((loading) => ({ loading })),
-    );
-  }
-
-  ngOnDestroy(): void {
-    this.loading$.complete();
-  }
 
   closeDialog(): void {
     this.dialog.close();
@@ -69,7 +57,7 @@ export class CreateAppComponent implements OnInit, OnDestroy {
 
   create(): void {
     this.form.disable();
-    this.loading$.next(true);
+    this.loading.set(true);
     const name = this.form.controls.name.value?.trim().replace(/\s\s+/g, ' '); // remove multiple white spaces and tabs;
     const appTemplateId = Number(this.appTemplateId);
     // console.warn('2dm: name', name, this.appTemplateId);
@@ -79,7 +67,8 @@ export class CreateAppComponent implements OnInit, OnDestroy {
     this.appsListService.create(name, null, appTemplateId).subscribe({
       error: () => {
         this.form.enable();
-        this.loading$.next(false);
+        this.loading.set(false);
+
         this.snackBar.open('Failed to create app. Please check console for more information', undefined, { duration: 3000 });
       },
       next: () => {
@@ -96,8 +85,4 @@ export class CreateAppComponent implements OnInit, OnDestroy {
     });
     return form;
   }
-}
-
-interface CreateAppViewModel {
-  loading: boolean;
 }

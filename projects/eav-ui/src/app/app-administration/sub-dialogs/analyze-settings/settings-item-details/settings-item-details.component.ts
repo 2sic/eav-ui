@@ -4,7 +4,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs';
 import { Of, transient } from '../../../../../../../core';
 import { ColumnDefinitions } from '../../../../shared/ag-grid/column-definitions';
 import { defaultGridOptions } from '../../../../shared/constants/default-grid-options.constants';
@@ -32,8 +31,6 @@ export class SettingsItemDetailsComponent implements OnInit {
   stack = signal<SettingsStackItem[]>(undefined);
 
   gridOptions = this.buildGridOptions();
-
-  viewModel$: Observable<SettingsItemDetailsViewModel>;
 
   private analyzeSettingsService = transient(AnalyzeSettingsService);
 
@@ -75,8 +72,4 @@ export class SettingsItemDetailsComponent implements OnInit {
     };
     return gridOptions;
   }
-}
-
-interface SettingsItemDetailsViewModel {
-  stack: SettingsStackItem[];
 }

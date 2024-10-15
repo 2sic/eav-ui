@@ -1,9 +1,9 @@
 // tslint:disable-next-line:max-line-length
 import { AsyncPipe, NgClass, NgStyle } from '@angular/common';
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, computed, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, map } from 'rxjs';
 import { transient } from '../../../../../core';
 import { BaseComponent } from '../../shared/components/base.component';
 import { eavConstants } from '../../shared/constants/eav.constants';
@@ -11,12 +11,10 @@ import { MousedownStopPropagationDirective } from '../../shared/directives/mouse
 import { JsonHelpers } from '../../shared/helpers/json.helpers';
 import { loadScripts } from '../../shared/helpers/load-scripts.helper';
 import { classLog } from '../../shared/logging';
-import { mapUntilObjChanged } from '../../shared/rxJs/mapUntilChanged';
 import { PipelineDataSource, PipelineResultStream, VisualDesignerData } from '../models';
 import { QueryDefinitionService } from '../services/query-definition.service';
 import { VisualQueryStateService } from '../services/visual-query.service';
 import { calculateTypeInfos } from './plumb-editor.helpers';
-import { PlumbEditorViewModel } from './plumb-editor.models';
 import { dataSrcIdPrefix, Plumber } from './plumber.helper';
 
 const logSpecs = {
@@ -40,8 +38,8 @@ const jsPlumbUrl = 'https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.14.5/js/jsp
   ],
 })
 export class PlumbEditorComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
-  
-  log = classLog({PlumbEditorComponent}, logSpecs);
+
+  log = classLog({ PlumbEditorComponent }, logSpecs);
 
   @ViewChild('domRoot') private domRootRef: ElementRef<HTMLDivElement>;
   @ViewChildren('domDataSource') private domDataSourcesRef: QueryList<ElementRef<HTMLDivElement>>;
@@ -52,16 +50,24 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
   #plumber: Plumber;
   #scriptLoaded$ = new BehaviorSubject(false);
 
-  viewModel$: Observable<PlumbEditorViewModel>;
-  
+
   #queryDefinitionSvc = transient(QueryDefinitionService);
 
+  showDataSourceDetails = computed(() => {
+    const result = JsonHelpers.tryParse(this.vsSvc.pipelineModel()?.Pipeline.VisualDesignerData) ?? {};
+    return result.ShowDataSourceDetails ?? false;
+  });
+
+  typeInfos = computed(() =>
+    calculateTypeInfos(this.vsSvc.pipelineModel()?.DataSources ?? [], this.vsSvc.dataSources()
+    ));
+
   constructor(
-    private visualQueryService: VisualQueryStateService,
+    public vsSvc: VisualQueryStateService, // Check if this not with transient better
     private changeDetectorRef: ChangeDetectorRef,
     private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
-  ) { super();}
+  ) { super(); }
 
   ngOnInit() {
     loadScripts([{ test: 'jsPlumb', src: jsPlumbUrl }], () => {
@@ -69,39 +75,29 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
     });
 
     this.subscriptions.add(
-      this.visualQueryService.putEntityCountOnConnections$.subscribe(result => {
+      this.vsSvc.putEntityCountOnConnections$.subscribe(result => {
         this.#plumber.putEntityCountOnConnections(result);
       })
     );
 
-    const pipelineDesignerData$ = this.visualQueryService.pipelineModel$.pipe(
-      mapUntilObjChanged(pipelineModel => JsonHelpers.tryParse(pipelineModel?.Pipeline.VisualDesignerData) ?? {}),
-    );
+    // this.viewModel$ = combineLatest([
+    //   this.vsSvc.pipelineModel$,
+    // ]).pipe(
+    //   map(([pipelineModel]) => {
+    //     if (pipelineModel == null) return;
 
-    this.viewModel$ = combineLatest([
-      this.visualQueryService.pipelineModel$,
-      this.visualQueryService.dataSources$,
-      pipelineDesignerData$,
-      this.visualQueryService.dataSourceConfigs$,
-    ]).pipe(
-      map(([pipelineModel, dataSources, pipelineDesignerData, dataSourceConfigs]) => {
-        if (pipelineModel == null || dataSources == null) return;
-
-        // workaround for jsPlumb not working with dom elements which it initialized on previously.
-        // This wipes dom entirely and gives us new elements
-        this.hardReset = true;
-        this.changeDetectorRef.detectChanges();
-        this.hardReset = false;
-        const viewModel: PlumbEditorViewModel = {
-          pipelineDataSources: pipelineModel.DataSources,
-          typeInfos: calculateTypeInfos(pipelineModel.DataSources, dataSources),
-          allowEdit: pipelineModel.Pipeline.AllowEdit,
-          showDataSourceDetails: pipelineDesignerData.ShowDataSourceDetails ?? false,
-          dataSourceConfigs,
-        };
-        return viewModel;
-      }),
-    );
+    //     // workaround for jsPlumb not working with dom elements which it initialized on previously.
+    //     // This wipes dom entirely and gives us new elements
+    // TODO: @2dm Check with Daniel
+    //     this.hardReset = true;
+    //     this.changeDetectorRef.detectChanges();
+    //     this.hardReset = false;
+    //     const viewModel: PlumbEditorViewModel = {
+    //       removed: "removeLater",
+    //     };
+    //     return viewModel;
+    //   }),
+    // );
   }
 
   ngAfterViewInit() {
@@ -119,8 +115,8 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
         this.#plumber?.destroy();
         this.#plumber = new Plumber(
           this.domRootRef.nativeElement,
-          this.visualQueryService.pipelineModel$.value,
-          this.visualQueryService.dataSources$.value,
+          this.vsSvc.pipelineModel(),
+          this.vsSvc.dataSources(),
           this.onConnectionsChanged.bind(this),
           this.onDragend.bind(this),
           this.onDebugStream.bind(this),
@@ -142,27 +138,27 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
   onConnectionsChanged() {
     const connections = this.#plumber.getAllConnections();
     const streamsOut = this.#plumber.getStreamsOut();
-    this.visualQueryService.changeConnections(connections, streamsOut);
+    this.vsSvc.changeConnections(connections, streamsOut);
   }
 
   onDragend(pipelineDataSourceGuid: string, position: VisualDesignerData) {
-    this.visualQueryService.changeDataSourcePosition(pipelineDataSourceGuid, position);
+    this.vsSvc.changeDataSourcePosition(pipelineDataSourceGuid, position);
   }
 
   onDebugStream(stream: PipelineResultStream) {
-    this.visualQueryService.debugStream(stream);
+    this.vsSvc.debugStream(stream);
   }
 
   configureDataSource(dataSource: PipelineDataSource): void {
     // ensure dataSource entity is saved
     if (dataSource.EntityGuid.includes('unsaved'))
-      return this.visualQueryService.saveAndRun(true, false);
+      return this.vsSvc.saveAndRun(true, false);
 
-    this.visualQueryService.editDataSource(dataSource);
+    this.vsSvc.editDataSource(dataSource);
   }
 
   getTypeName(partAssemblyAndType: string) {
-    const dataSource = this.visualQueryService.dataSources$.value.find(ds => ds.PartAssemblyAndType === partAssemblyAndType);
+    const dataSource = this.vsSvc.dataSources().find(ds => ds.PartAssemblyAndType === partAssemblyAndType);
     return this.#queryDefinitionSvc.typeNameFilter(dataSource?.TypeNameForUi || partAssemblyAndType, 'className');
   }
 
@@ -176,7 +172,7 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
     this.#plumber.removeEndpointsOnDataSource(pipelineDataSource.EntityGuid);
     const connections = this.#plumber.getAllConnections();
     const streamsOut = this.#plumber.getStreamsOut();
-    this.visualQueryService.removeDataSource(pipelineDataSource.EntityGuid, connections, streamsOut);
+    this.vsSvc.removeDataSource(pipelineDataSource.EntityGuid, connections, streamsOut);
   }
 
   openHelp(url: string) {
@@ -187,14 +183,14 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
     const newName = prompt('Rename data source', dataSource.Name)?.trim();
     if (newName == null || newName === '') return;
 
-    this.visualQueryService.renameDataSource(dataSource.EntityGuid, newName);
+    this.vsSvc.renameDataSource(dataSource.EntityGuid, newName);
   }
 
   editDescription(dataSource: PipelineDataSource) {
     const newDescription = prompt('Edit description', dataSource.Description)?.trim();
     if (newDescription == null) return;
 
-    this.visualQueryService.changeDataSourceDescription(dataSource.EntityGuid, newDescription);
+    this.vsSvc.changeDataSourceDescription(dataSource.EntityGuid, newDescription);
   }
 
 }

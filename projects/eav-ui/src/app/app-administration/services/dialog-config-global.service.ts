@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { map, Observable, shareReplay, tap } from 'rxjs';
+import { classLog } from '../../shared/logging';
 import { DialogSettings } from '../../shared/models/dialog-settings.model';
 import { GlobalConfigService } from '../../shared/services/global-config.service';
-import { classLog } from '../../shared/logging';
 import { HttpServiceBase } from '../../shared/services/http-service-base';
 
 const webApiSettings = 'admin/dialog/settings';
@@ -35,7 +35,7 @@ export class DialogConfigGlobalService extends HttpServiceBase {
 
   private getDialogSettings(appId?: number, reqBy?: string): Observable<DialogSettings> {
     this.log.a('getDialogSettings', {appId, reqBy});
-    return this.http.get<DialogSettings>(webApiSettings, {
+    return this.getHttp<DialogSettings>(webApiSettings, {
       params: { appId: appId ?? this.appId },
     }).pipe(
       map(dlgSettings => {

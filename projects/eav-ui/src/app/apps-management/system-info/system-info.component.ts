@@ -174,7 +174,7 @@ export class SystemInfoComponent implements OnInit {
   constructor(
     private snackBar: MatSnackBar,
   ) { }
-  
+
   protected clipboard = transient(ClipboardService);
 
   ngOnInit(): void {

@@ -1,15 +1,14 @@
-import { KeyValue, AsyncPipe, KeyValuePipe } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AsyncPipe, KeyValue, KeyValuePipe } from '@angular/common';
+import { Component, computed, signal } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { eavConstants } from '../../shared/constants/eav.constants';
-import { DataSource, SortedDataSources } from '../models';
+import { TippyDirective } from '../../shared/directives/tippy.directive';
+import { ArrayHelpers } from '../../shared/helpers/array.helpers';
+import { DataSource } from '../models';
 import { guiTypes } from '../plumb-editor/plumb-editor.helpers';
 import { VisualQueryStateService } from '../services/visual-query.service';
 import { filterAndSortDataSources } from './add-explorer.helpers';
-import { MatIconModule } from '@angular/material/icon';
-import { ArrayHelpers } from '../../shared/helpers/array.helpers';
-import { TippyDirective } from '../../shared/directives/tippy.directive';
 
 @Component({
   selector: 'app-add-explorer',
@@ -24,32 +23,21 @@ import { TippyDirective } from '../../shared/directives/tippy.directive';
     TippyDirective,
   ],
 })
-export class AddExplorerComponent implements OnInit, OnDestroy {
+export class AddExplorerComponent {
   toggledItems: string[] = [];
   guiTypes = guiTypes;
 
-  private difficulties = eavConstants.pipelineDesigner.dataSourceDifficulties;
-  private difficulty$ = new BehaviorSubject(this.difficulties.default);
+  #difficulties = eavConstants.pipelineDesigner.dataSourceDifficulties;
 
-  viewModel$: Observable<AddExplorerViewModel>;
+  #difficulty = signal(this.#difficulties.default);
+
+  sorted = computed(() => filterAndSortDataSources(this.visualQueryService.dataSources(), this.#difficulty()));
 
   constructor(private visualQueryService: VisualQueryStateService) { }
 
-  ngOnInit() {
-    this.viewModel$ = combineLatest([
-      combineLatest([this.visualQueryService.dataSources$, this.difficulty$]).pipe(
-        map(([dataSources, difficulty]) => filterAndSortDataSources(dataSources, difficulty)),
-      )
-    ]).pipe(map(([sorted]) => ({ sorted })));
-  }
-
-  ngOnDestroy() {
-    this.difficulty$.complete();
-  }
-
   toggleDifficulty(event: MatSlideToggleChange) {
-    const difficulty = event.checked ? this.difficulties.advanced : this.difficulties.default;
-    this.difficulty$.next(difficulty);
+    const difficulty = event.checked ? this.#difficulties.advanced : this.#difficulties.default;
+    this.#difficulty.set(difficulty);
   }
 
   addDataSource(dataSource: DataSource) {
@@ -67,8 +55,4 @@ export class AddExplorerComponent implements OnInit, OnDestroy {
   trackDataSources(index: number, dataSource: DataSource) {
     return dataSource.PartAssemblyAndType;
   }
-}
-
-interface AddExplorerViewModel {
-  sorted: SortedDataSources;
 }

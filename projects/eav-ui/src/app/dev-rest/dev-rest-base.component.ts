@@ -3,7 +3,7 @@ import { Component, OnDestroy } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, map, Observable, share, startWith, switchMap } from 'rxjs';
-import { AllScenarios, DevRestBaseViewModel, Scenario } from '.';
+import { AllScenarios, DevRestBaseModel, Scenario } from '.';
 import { transient } from '../../../../core';
 import { DialogSettings } from '../app-administration/models';
 import { DialogConfigAppService } from '../app-administration/services/dialog-config-app.service';
@@ -79,7 +79,7 @@ export class DevRestBase<ViewModelType> implements OnDestroy {
   }
 
   buildBaseViewModel(name: string, identity: string, diag: DialogSettings, permissions: Permission[], root: string,
-    scenario: Scenario): DevRestBaseViewModel {
+    scenario: Scenario): DevRestBaseModel {
     return {
       apiCalls: null,
       name,

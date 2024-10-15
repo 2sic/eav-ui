@@ -1,4 +1,7 @@
 @if (viewModel$ | async; as vm) {
+  <pre>
+    {{vm.licenses[0].Name}}
+  </pre>
 <mat-accordion multi>
   @for (license of vm.licenses | licensesOrder; track trackLicenses($index, license)) {
   <mat-expansion-panel #panel>

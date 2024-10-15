@@ -339,5 +339,3 @@ function getExtensionsFilter(fileFilter: string) {
   return extensions;
 }
 
-export interface AdamBrowserViewModel {
-}

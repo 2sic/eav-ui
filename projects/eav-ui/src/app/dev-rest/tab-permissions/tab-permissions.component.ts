@@ -3,7 +3,7 @@ import { Component, Input } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { DevRestBaseViewModel } from '..';
+import { DevRestBaseModel } from '..';
 import { transient } from '../../../../../core';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
@@ -25,7 +25,7 @@ import { DialogRoutingService } from '../../shared/routing/dialog-routing.servic
   ],
 })
 export class DevRestTabPermissionsComponent {
-  @Input() data: DevRestBaseViewModel;
+  @Input() data: DevRestBaseModel;
 
   #dialogRouter = transient(DialogRoutingService);
 

@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { FileUploadResult } from '../../shared/components/file-upload-dialog';
+import { HttpServiceBase } from '../../shared/services/http-service-base';
 import { Polymorphism } from '../models/polymorphism.model';
 import { ViewUsage } from '../models/view-usage.model';
 import { View } from '../models/view.model';
-import { HttpServiceBase } from '../../shared/services/http-service-base';
 
 const webApiViewRoot = 'admin/view/';
 const webApiViews = webApiViewRoot + 'all';
@@ -16,13 +16,13 @@ const webApiViewUsage = webApiViewRoot + 'usage';
 export class ViewsService extends HttpServiceBase {
 
   getAll() {
-    return this.http.get<View[]>(this.apiUrl(webApiViews), {
+    return this.getHttp<View[]>(this.apiUrl(webApiViews), {
       params: { appId: this.appId }
     });
   }
 
   delete(id: number) {
-    return this.http.get<boolean>(this.apiUrl(webApiViewDelete), {
+    return this.getHttp<boolean>(this.apiUrl(webApiViewDelete), {
       params: { appId: this.appId, Id: id.toString() },
     });
   }
@@ -44,13 +44,13 @@ export class ViewsService extends HttpServiceBase {
   }
 
   getPolymorphism() {
-    return this.http.get<Polymorphism>(this.apiUrl(webApiViewPolymorph), {
+    return this.getHttp<Polymorphism>(this.apiUrl(webApiViewPolymorph), {
       params: { appId: this.appId }
     });
   }
 
   getUsage(guid: string) {
-    return this.http.get<ViewUsage[]>(this.apiUrl(webApiViewUsage), {
+    return this.getHttp<ViewUsage[]>(this.apiUrl(webApiViewUsage), {
       params: { appId: this.appId, guid }
     });
   }

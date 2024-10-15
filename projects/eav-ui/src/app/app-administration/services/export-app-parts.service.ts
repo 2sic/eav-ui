@@ -1,13 +1,29 @@
 import { Injectable } from '@angular/core';
+import { HttpServiceBase } from '../../shared/services/http-service-base';
 import { ContentInfo } from '../models/content-info.model';
 import { webApiAppPartsRoot } from './import-app-parts.service';
-import { HttpServiceBase } from '../../shared/services/http-service-base';
 
 @Injectable()
 export class ExportAppPartsService extends HttpServiceBase {
 
+  // this.getAndWrite<SettingsStackItem[]>(webApiAppRoot + 'GetStack', {
+  //   params: {
+  //     appId: this.appId,
+  //     part,
+  //     ...(key && { key }),
+  //     ...(view && { view }),
+  //   },
+  // }, stackSignal);
+
+  getContentInfoSig(scope: string) {
+    return this.getSignal<ContentInfo>(this.apiUrl(webApiAppPartsRoot + 'Get'), {
+      params: { appid: this.appId, zoneId: this.zoneId, scope }
+    }, undefined);
+  }
+
+
   getContentInfo(scope: string) {
-    return this.http.get<ContentInfo>(this.apiUrl(webApiAppPartsRoot + 'Get'), {
+    return this.getHttp<ContentInfo>(this.apiUrl(webApiAppPartsRoot + 'Get'), {
       params: { appid: this.appId, zoneId: this.zoneId, scope },
     });
   }
