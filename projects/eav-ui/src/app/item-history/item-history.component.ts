@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, computed, HostBinding, OnInit, signal } from '@angular/core';
+import { Component, HostBinding, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import { MatDialogRef } from '@angular/material/dialog';
@@ -11,10 +11,10 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { transient } from '../../../../core';
+import { computedObj, signalObj } from '../shared/signals/signal.utilities';
 import { getHistoryItems } from './item-history.helpers';
 import { CompareWith } from './models/compare-with.model';
 import { ItemHistoryResult } from './models/item-history-result.model';
-import { Version } from './models/version.model';
 import { VersionsService } from './services/versions.service';
 
 @Component({
@@ -33,36 +33,30 @@ import { VersionsService } from './services/versions.service';
     DatePipe,
   ],
 })
-export class ItemHistoryComponent implements OnInit {
+export class ItemHistoryComponent {
   @HostBinding('className') hostClass = 'dialog-component';
+
+  #versionsService = transient(VersionsService);
+
+  constructor(
+    protected dialog: MatDialogRef<ItemHistoryComponent>,
+    private route: ActivatedRoute,
+    private snackBar: MatSnackBar,
+  ) {
+  }
+  
+  #itemId = parseInt(this.route.snapshot.paramMap.get('itemId'), 10);
+  version = this.#versionsService.fetchVersions(this.#itemId);
 
   pageSizeOptions = [10, 20, 50];
   expandedPanels: Record<string, boolean> = {};
   expandedAttributes: Record<string, boolean> = {};
 
-  #itemId = parseInt(this.route.snapshot.paramMap.get('itemId'), 10);
 
-  version = signal<Version[]>(undefined);
-  page = signal<number>(1);
-  pageSize = signal<number>(this.pageSizeOptions[0]);
+  #page = signal<number>(1);
+  pageSize = signalObj<number>('pageSize', this.pageSizeOptions[0]);
   compareWith = signal<CompareWith>('live');
-  historyItems = computed(() => getHistoryItems(this.version(), this.page(), this.pageSize(), this.compareWith()));
-
-  private versionsService = transient(VersionsService);
-
-  constructor(
-    private dialog: MatDialogRef<ItemHistoryComponent>,
-    private route: ActivatedRoute,
-    private snackBar: MatSnackBar,
-  ) { }
-
-  ngOnInit() {
-    this.versionsService.fetchVersions(this.#itemId).subscribe(versions => this.version.set(versions));
-  }
-
-  closeDialog() {
-    this.dialog.close();
-  }
+  historyItems = computedObj('historyItems', () => getHistoryItems(this.version(), this.#page(), this.pageSize(), this.compareWith()));
 
   compareChange(newCompareWith: CompareWith) {
     this.compareWith.set(newCompareWith);
@@ -78,25 +72,21 @@ export class ItemHistoryComponent implements OnInit {
 
   pageChange(event: PageEvent) {
     const newPage = event.pageIndex + 1;
-    if (newPage !== this.page()) {
+    if (newPage !== this.#page()) {
       this.expandedPanels = {};
       this.expandedAttributes = {};
-      this.page.set(newPage);
+      this.#page.set(newPage);
     }
-    const newPageSize = event.pageSize;
-    if (newPageSize !== this.pageSize()) {
-      this.pageSize.set(newPageSize);
-    }
+    this.pageSize.set(event.pageSize);
   }
 
   restore(changeId: number) {
     this.snackBar.open('Restoring previous version...');
-    this.versionsService.restore(this.#itemId, changeId).subscribe(res => {
+    this.#versionsService.restore(this.#itemId, changeId).subscribe(_ => {
       this.snackBar.open('Previous version restored. Will reload edit dialog', null, { duration: 3000 });
-      const result: ItemHistoryResult = {
+      this.dialog.close({
         refreshEdit: true,
-      };
-      this.dialog.close(result);
+      } satisfies ItemHistoryResult);
     });
   }
 }

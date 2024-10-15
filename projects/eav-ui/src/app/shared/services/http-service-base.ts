@@ -59,6 +59,15 @@ export class HttpServiceBase {
     return target;
   }
 
+  protected postSignal<ResultType>(endpoint: string, body: Parameters<typeof this.http.post>[1], options: Parameters<typeof this.http.post>[2], initial: ResultType): Signal<ResultType> {
+    const target = signal<ResultType>(initial);
+    this.http.post<ResultType>(this.apiUrl(endpoint), body, options).subscribe(d =>{
+      target.set(d)
+    });
+    return target;
+  }
+
+
   // TODO: @2dg
   // protected getSignal2<ResultType>(endpoint: string, options: Parameters<typeof this.http.get>[1], initial: ResultType | Signal<ResultType>): Signal<ResultType> {
   //   const target = initial instanceof Signal ? initial : signal<ResultType>(initial);
