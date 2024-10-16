@@ -1,7 +1,7 @@
 import { Context as DnnContext } from '@2sic.com/sxc-angular';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { AsyncPipe, NgClass } from '@angular/common';
-import { ChangeDetectorRef, Component, computed, effect, EventEmitter, inject, OnInit, Output, signal, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, effect, EventEmitter, inject, OnInit, Output, ViewContainerRef } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -19,7 +19,7 @@ import { TippyDirective } from '../../../../../shared/directives/tippy.directive
 import { classLog } from '../../../../../shared/logging';
 import { EditForm, EditPrep } from '../../../../../shared/models/edit-form.model';
 import { DialogRoutingService } from '../../../../../shared/routing/dialog-routing.service';
-import { signalObj } from '../../../../../shared/signals/signal.utilities';
+import { computedObj, signalObj } from '../../../../../shared/signals/signal.utilities';
 import { FormsStateService } from '../../../../form/forms-state.service';
 import { EditRoutingService } from '../../../../routing/edit-routing.service';
 import { AdamCacheService } from '../../../../shared/adam/adam-cache.service';
@@ -33,8 +33,12 @@ import { AdamConnector } from './adam-connector';
 import { fixDropzone } from './dropzone-helper';
 
 const logSpecs = {
-  all: true,
-  editItemMetadata: true,
+  all: false,
+  constructor: false,
+  editItemMetadata: false,
+  setConfig: false,
+  fetchItems: true,
+  processFetchedItems: true,
 }
 
 @Component({
@@ -71,35 +75,13 @@ const logSpecs = {
 })
 export class AdamBrowserComponent implements OnInit {
 
-  log = classLog({ AdamBrowserComponent }, logSpecs);
-
   @Output() openUpload = new EventEmitter<null>();
 
+  log = classLog({ AdamBrowserComponent }, logSpecs);
+
   protected fieldState = inject(FieldState);
-
-  protected config = this.fieldState.config;
-  protected group = this.fieldState.group;
-  #ui = this.fieldState.ui;
-
-  disabled = computed(() => this.#ui().disabled);
-
-  value = computed(() => this.fieldState.uiValue());
-
-  public adamConfig = signalObj<AdamConfig>('adamConfig', null); // here the change detection is critical
-  items = signal<AdamItem[]>([]);
-
-  #url: string;
-  private firstFetch = true;
-
-  allowAddButtons = computed(() => {
-    const cnf = this.adamConfig();
-    return cnf.allowEdit && !((cnf.subfolder === '' || cnf.usePortalRoot && cnf.subfolder === cnf.rootSubfolder) && !cnf.allowAssetsInRoot)
-  });
-
   #editRoutingService = inject(EditRoutingService);
-
   #features = inject(FeaturesScopedService);
-  protected isPasteImageFromClipboardEnabled = this.#features.isEnabled[FeatureNames.PasteImageFromClipboard];
 
   #adamService = transient(AdamService);
   #dialogRouter = transient(DialogRoutingService);
@@ -113,6 +95,7 @@ export class AdamBrowserComponent implements OnInit {
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
   ) {
+    const l = this.log.fnIf('constructor');
     // Ensure that we fetch items when we have the configuration
     effect(() => {
       const adamConfig = this.adamConfig();
@@ -123,6 +106,27 @@ export class AdamBrowserComponent implements OnInit {
     const cnf = this.config;
     this.#url = this.dnnContext.$2sxc.http.apiUrl(`app/auto/data/${cnf.contentTypeNameId}/${cnf.entityGuid}/${cnf.fieldName}`);
   }
+
+  protected config = this.fieldState.config;
+  protected group = this.fieldState.group;
+  #ui = this.fieldState.ui;
+
+  protected disabled = computedObj('disabled', () => this.#ui().disabled);
+
+  protected value = computedObj('value', () => this.fieldState.uiValue());
+
+  public adamConfig = signalObj<AdamConfig>('adamConfig', null); // here the change detection is critical
+  public items = signalObj<AdamItem[]>('items', []);
+
+  #url: string;
+  #firstFetch = true;
+
+  allowAddButtons = computedObj('allowAddButtons', () => {
+    const cnf = this.adamConfig();
+    return cnf.allowEdit && !((cnf.subfolder === '' || cnf.usePortalRoot && cnf.subfolder === cnf.rootSubfolder) && !cnf.allowAssetsInRoot)
+  });
+
+  protected isPasteImageFromClipboardEnabled = this.#features.isEnabled[FeatureNames.PasteImageFromClipboard];
 
   ngOnInit() {
     // Update data if a child-form closes
@@ -173,7 +177,7 @@ export class AdamBrowserComponent implements OnInit {
     this.setConfig({ subfolder });
   }
 
-  private getImageConfigurationContentType(item: AdamItem) {
+  #getImageConfigurationContentType(item: AdamItem) {
     // allow image configuration if file is type image and if image configuration is enabled in settings
     const settings = this.fieldState.settings();
     return settings.EnableImageConfiguration && item.Type === 'image'
@@ -181,7 +185,7 @@ export class AdamBrowserComponent implements OnInit {
       : null;
   }
 
-  private getMetadataContentType(item: AdamItem) {
+  #getMetadataContentType(item: AdamItem) {
     let found: string[];
 
     // check if it's a folder and if this has a special registration
@@ -237,23 +241,24 @@ export class AdamBrowserComponent implements OnInit {
    * Note: since all fetch-items happen in a timeout or subscribe, it doesn't need to be in the NgZone
    * @returns
    */
-  fetchItems() {
+  public fetchItems() {
     const adamConfig = this.adamConfig();
+    const l = this.log.fnIf('fetchItems', { adamConfig, firstFetch: this.#firstFetch, usePortalRoot: adamConfig?.usePortalRoot });
     if (adamConfig == null) return;
     if (!adamConfig.autoLoad) return;
 
-    if (this.firstFetch) {
-      this.firstFetch = false;
+    if (this.#firstFetch) {
+      this.#firstFetch = false;
       const adamItems = this.adamCacheService.getAdamSnapshot(this.config.entityGuid, this.config.fieldName);
       if (adamItems) {
         const clonedItems = adamItems.map(adamItem => ({ ...adamItem } satisfies AdamItem));
-        setTimeout(() => this.processFetchedItems(clonedItems, adamConfig));
+        setTimeout(() => this.#processFetchedItems(clonedItems, adamConfig));
         return;
       }
     }
 
     this.#adamService.getAll(this.#url, adamConfig)
-      .subscribe(items => this.processFetchedItems(items, adamConfig));
+      .subscribe(items => this.#processFetchedItems(items, adamConfig));
   }
 
   openFeatureInfoDialog() {
@@ -261,7 +266,8 @@ export class AdamBrowserComponent implements OnInit {
       openFeatureDialog(this.matDialog, FeatureNames.PasteImageFromClipboard, this.viewContainerRef, this.changeDetectorRef);
   }
 
-  private processFetchedItems(items: AdamItem[], adamConfig: AdamConfig): void {
+  #processFetchedItems(items: AdamItem[], adamConfig: AdamConfig): void {
+    const l = this.log.fnIf('processFetchedItems', { items, adamConfig, usePortalRoot: adamConfig.usePortalRoot });
     this.linkCacheService.addAdam(items);
 
     const filteredItems: AdamItem[] = [];
@@ -285,9 +291,9 @@ export class AdamBrowserComponent implements OnInit {
         if (!extensionsFilter.includes(extension)) continue;
       }
 
-      item._imageConfigurationContentType = this.getImageConfigurationContentType(item);
+      item._imageConfigurationContentType = this.#getImageConfigurationContentType(item);
       item._imageConfigurationId = item.Metadata?.find(m => m.Type.Name === item._imageConfigurationContentType)?.Id ?? 0;
-      item._metadataContentType = this.getMetadataContentType(item);
+      item._metadataContentType = this.#getMetadataContentType(item);
       item._metadataId = item.Metadata?.find(m => m.Type.Name === item._metadataContentType)?.Id ?? 0;
       item._icon = FileTypeHelpers.getIconClass(item.Name);
       item._isMaterialIcon = FileTypeHelpers.isKnownType(item.Name);
@@ -300,20 +306,27 @@ export class AdamBrowserComponent implements OnInit {
     this.items.set(filteredItems);
   }
 
-  setConfig(config: Partial<AdamConfig>) {
-    this.log.a('setConfig', config);
+  public setConfig(config: Partial<AdamConfig>) {
+    const l = this.log.fnIf('setConfig', config);
     const newConfig = AdamConfigInstance.completeConfig(config, this.config, this.adamConfig());
+
+    // There is a high risk of infinite loops here, so we need to ensure that we don't do this too often
+    if (isEqual(newConfig, this.adamConfig())) {
+      l.end('no change');
+      return;
+    }
+
     this.adamConfig.set(newConfig);
     fixDropzone(newConfig, this.config);
+    l.end();
   }
 
 
-  toggle(usePortalRoot: boolean, showImagesOnly: boolean) {
+  public toggle(usePortalRoot: boolean, showImagesOnly: boolean) {
     const newConfig: AdamConfig = { ...this.adamConfig(), ...{ usePortalRoot, showImagesOnly } };
 
     if (isEqual(newConfig, this.adamConfig()))
       newConfig.autoLoad = !newConfig.autoLoad;
-
     else if (!newConfig.autoLoad)
       newConfig.autoLoad = true;
 
@@ -327,11 +340,10 @@ function getExtensionsFilter(fileFilter: string) {
   const extensions = fileFilter.split(',').map(extension => {
     extension = extension.trim();
 
-    if (extension.startsWith('*.')) {
+    if (extension.startsWith('*.'))
       extension = extension.replace('*.', '');
-    } else if (extension.startsWith('*')) {
+    else if (extension.startsWith('*'))
       extension = extension.replace('*', '');
-    }
 
     return extension.toLocaleLowerCase();
   });

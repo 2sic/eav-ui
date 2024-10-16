@@ -1,9 +1,16 @@
 import { computed, signal } from '@angular/core';
+import { computedObj } from 'projects/eav-ui/src/app/shared/signals/signal.utilities';
 import { Adam } from '../../../../../../../../edit-types/src/Adam';
 import { AdamConfig } from '../../../../../../../../edit-types/src/AdamConfig';
 import { AdamItem } from '../../../../../../../../edit-types/src/AdamItem';
 import { classLog } from '../../../../../shared/logging';
 import { AdamBrowserComponent } from './adam-browser.component';
+
+const logSpecs = {
+  all: false,
+  setConfig: true,
+  refresh: true,
+}
 
 /**
  * Helper to connect ADAM.
@@ -11,7 +18,7 @@ import { AdamBrowserComponent } from './adam-browser.component';
  */
 export class AdamConnector implements Adam {
   
-  log = classLog({AdamConnector});
+  log = classLog({AdamConnector}, logSpecs);
 
   get browser() {
     const b = this.#browser();
@@ -24,33 +31,36 @@ export class AdamConnector implements Adam {
   }
   #browser = signal<AdamBrowserComponent>(null);
 
-  get items() { return computed(() => this.#browser()?.items() ?? [] satisfies AdamItem[]) };
+  #items = computedObj('items', () => this.#browser()?.items() ?? [] satisfies AdamItem[]);
+  get items() { return this.#items };
 
-  toggle(usePortalRoot: boolean, showImagesOnly: boolean) {
+  public toggle(usePortalRoot: boolean, showImagesOnly: boolean) {
     this.log.fn('toggle', { usePortalRoot, showImagesOnly });
     this.browser.toggle(usePortalRoot, showImagesOnly)
   };
 
-  setConfig(config: Partial<AdamConfig>) {
-    this.count++;
+  #count = 0;
 
-    if (this.count > 10)
+  public setConfig(config: Partial<AdamConfig>) {
+    const l = this.log.fnIf('setConfig', { config, count: this.#count });
+    this.#count++;
+
+    if (this.#count > 10)
       throw new Error('Infinite loop');
-    this.log.fn('setConfig', { config });
-    this.browser.setConfig(config)
+
+    this.browser.setConfig(config);
+    l.end();
   };
-  count = 0;
+  public getConfig() { return this.browser.adamConfig() };
 
-  getConfig() { return this.browser.adamConfig() };
-
-  isDisabled = computed(() => this.#browser()?.adamConfig()?.disabled ?? true);
+  public isDisabled = computed(() => this.#browser()?.adamConfig()?.disabled ?? true);
 
   onItemClick() { return; }
 
   onItemUpload() { return; }
 
   refresh() {
-    this.log.fn('refresh');
+    this.log.fnIf('refresh');
     this.browser.fetchItems()
   }
 
