@@ -15,8 +15,6 @@
       <app-picker-item-preview [item]="getSelectedItem(selectedItem()?.value)" [settings]="fieldState.settings()"></app-picker-item-preview>
 
       <!-- The initial input showing the selected value - one only. As soon as there are more, this control won't show any more -->
-
-      <!-- TODO: @2dg:  [disabled]="ui().disabled || !settings().enableAddExisting" -->
       <input
         matInput
         class="eav-translate-on-dblclick"

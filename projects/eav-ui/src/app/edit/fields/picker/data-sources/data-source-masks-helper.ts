@@ -129,7 +129,6 @@ export class DataSourceMasksHelper {
     let info = useInfos ? masks.info : '';
     let link = useInfos ? masks.link : '';
     let previewValue = masks.previewValue;
-    // let value = masks.value; // @2dg remove
 
     Object.keys(data).forEach(key => {
       // must check for null and use '' instead
@@ -138,7 +137,6 @@ export class DataSourceMasksHelper {
       // replace all occurrences of [Item:Key] with value - should be case insensitive
       const search = new RegExp(`\\[Item:${key}\\]`, 'gi');
 
-      // TODO:: @2dm, check if this are the correct or use
       if (previewValue.includes("App:Path")) {
         // var x = ScriptsLoaderService.resolveUrlTokens(previewValue, this.formConfig.config)
         const portalRoot = (this.formConfig.config.portalRoot).replace(/\/$/, '');
@@ -151,7 +149,6 @@ export class DataSourceMasksHelper {
       link = link.replace(search, valueItem);
       label = label.replace(search, valueItem);
       previewValue = previewValue.replace(search, valueItem);
-      // value = valueItem.replace(search, valueItem); // @2dg remove
     });
 
     return l.r({ label, tooltip, info, link, previewValue } satisfies Partial<PickerItem>, 'result');

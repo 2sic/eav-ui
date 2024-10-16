@@ -48,8 +48,6 @@ export class AnalyzeSettingsComponent implements OnInit {
 
   views = signal<View[]>([]);
   selectedView = signal<string>(undefined);
-  // TODO: @2dg old Code, ask Daniel
-  // stack = signal<SettingsStackItem[]>([]);
 
   stack = computed(() =>
     this.#analyzeSettingsSvc.getStackSig(this.part, undefined, this.selectedView(), true)

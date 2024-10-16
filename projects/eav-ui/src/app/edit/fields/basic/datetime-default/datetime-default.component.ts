@@ -75,8 +75,6 @@ export class DatetimeDefaultComponent {
   }
 
   updateValue(event: MatDatepickerInputEvent<Dayjs>) {
-    // @2dg old code, remove after test and verify from 2dm
-    // utc(keepLocalTime: true) to preserve 'neutral' time from OwlDateTime picker
     const newValue = event.value != null ? event.value.utc(true).toJSON() : null;
     this.ui().setIfChanged(newValue);
   }
