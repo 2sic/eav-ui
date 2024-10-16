@@ -9,6 +9,7 @@ import { AdamBrowserComponent } from './adam-browser.component';
 const logSpecs = {
   all: false,
   setConfig: true,
+  refresh: true,
 }
 
 /**
@@ -33,14 +34,14 @@ export class AdamConnector implements Adam {
   #items = computedObj('items', () => this.#browser()?.items() ?? [] satisfies AdamItem[]);
   get items() { return this.#items };
 
-  toggle(usePortalRoot: boolean, showImagesOnly: boolean) {
+  public toggle(usePortalRoot: boolean, showImagesOnly: boolean) {
     this.log.fn('toggle', { usePortalRoot, showImagesOnly });
     this.browser.toggle(usePortalRoot, showImagesOnly)
   };
 
   #count = 0;
 
-  setConfig(config: Partial<AdamConfig>) {
+  public setConfig(config: Partial<AdamConfig>) {
     const l = this.log.fnIf('setConfig', { config, count: this.#count });
     this.#count++;
 
@@ -50,16 +51,16 @@ export class AdamConnector implements Adam {
     this.browser.setConfig(config);
     l.end();
   };
-  getConfig() { return this.browser.adamConfig() };
+  public getConfig() { return this.browser.adamConfig() };
 
-  isDisabled = computed(() => this.#browser()?.adamConfig()?.disabled ?? true);
+  public isDisabled = computed(() => this.#browser()?.adamConfig()?.disabled ?? true);
 
   onItemClick() { return; }
 
   onItemUpload() { return; }
 
   refresh() {
-    this.log.fn('refresh');
+    this.log.fnIf('refresh');
     this.browser.fetchItems()
   }
 

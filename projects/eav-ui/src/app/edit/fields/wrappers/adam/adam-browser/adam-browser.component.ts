@@ -33,9 +33,12 @@ import { AdamConnector } from './adam-connector';
 import { fixDropzone } from './dropzone-helper';
 
 const logSpecs = {
-  all: true,
-  editItemMetadata: true,
-  setConfig: true,
+  all: false,
+  constructor: false,
+  editItemMetadata: false,
+  setConfig: false,
+  fetchItems: true,
+  processFetchedItems: true,
 }
 
 @Component({
@@ -92,6 +95,7 @@ export class AdamBrowserComponent implements OnInit {
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
   ) {
+    const l = this.log.fnIf('constructor');
     // Ensure that we fetch items when we have the configuration
     effect(() => {
       const adamConfig = this.adamConfig();
@@ -237,8 +241,9 @@ export class AdamBrowserComponent implements OnInit {
    * Note: since all fetch-items happen in a timeout or subscribe, it doesn't need to be in the NgZone
    * @returns
    */
-  fetchItems() {
+  public fetchItems() {
     const adamConfig = this.adamConfig();
+    const l = this.log.fnIf('fetchItems', { adamConfig, firstFetch: this.#firstFetch, usePortalRoot: adamConfig?.usePortalRoot });
     if (adamConfig == null) return;
     if (!adamConfig.autoLoad) return;
 
@@ -262,6 +267,7 @@ export class AdamBrowserComponent implements OnInit {
   }
 
   #processFetchedItems(items: AdamItem[], adamConfig: AdamConfig): void {
+    const l = this.log.fnIf('processFetchedItems', { items, adamConfig, usePortalRoot: adamConfig.usePortalRoot });
     this.linkCacheService.addAdam(items);
 
     const filteredItems: AdamItem[] = [];
