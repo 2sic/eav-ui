@@ -9,6 +9,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
 import { Observable, Subject, map } from 'rxjs';
 import { Of, transient } from '../../../../../core';
+import { DocsLinkHelperComponent } from '../../admin-shared/docs-link-helper/docs-link-helper.component';
 import { ContentItemsService } from '../../content-items/services/content-items.service';
 import { FeatureNames } from '../../features/feature-names';
 import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
@@ -49,6 +50,7 @@ import { AppConfigurationCardComponent } from './app-configuration-card/app-conf
     RouterOutlet,
     AsyncPipe,
     TippyDirective,
+    DocsLinkHelperComponent,
   ],
 })
 export class AppConfigurationComponent implements OnInit, OnDestroy {

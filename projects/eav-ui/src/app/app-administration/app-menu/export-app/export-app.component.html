@@ -5,97 +5,81 @@
   </h3>
   <div class="form-height">
     <p>
-      Pack the entire app to a <em>zip</em> folder which can be imported again to another site.
-      For further help visit <a href="https://2sxc.org/en/help?tag=export-app" target="_blank">2sxc Help</a>.
+      Pack the entire app to a <em>zip</em> folder which can be imported again to another site. For further help visit
+      <a href="https://2sxc.org/en/help?tag=export-app" target="_blank">2sxc Help</a>.
     </p>
 
-    <p class="eav-app-info__title">
-      Specs
-    </p>
+    <p class="eav-app-info__title">Specs</p>
     <ul class="eav-app-info__content">
       <li>Name: {{ appInfo()?.Name }}</li>
       <li>Guid: {{ appInfo()?.Guid }}</li>
       <li>Version: {{ appInfo()?.Version }}</li>
     </ul>
 
-    <p class="eav-app-info__title">
-      Contains
-    </p>
+    <p class="eav-app-info__title">Contains</p>
     <ul class="eav-app-info__content">
       <li>{{ appInfo()?.EntitiesCount }} entities</li>
       <li>{{ appInfo()?.LanguagesCount }} languages</li>
       <li>
-        {{ appInfo()?.TemplatesCount }} templates (Token: {{ appInfo()?.HasTokenTemplates }}, Razor:
-        {{ appInfo()?.HasRazorTemplates }})
+        {{ appInfo()?.TemplatesCount }} templates (Token: {{ appInfo()?.HasTokenTemplates }}, Razor: {{ appInfo()?.HasRazorTemplates }})
       </li>
       <li>{{ appInfo()?.TransferableFilesCount }} files to export</li>
       <li>{{ appInfo()?.FilesCount }} files in the app folder totally</li>
     </ul>
 
-    <p class="eav-app-info__title">
-      Advanced
-    </p>
+    <p class="eav-app-info__title">Advanced</p>
     <ul class="checkboxes">
       <li>
         <mat-checkbox [(ngModel)]="includeContentGroups" [disabled]="resetAppGuid()">
-          <br>
+          <br />
           Include all content-groups to re-import the app in an exact copy of this site.
-          <br>
+          <br />
           Only select this option when you copy an entire DNN site.
         </mat-checkbox>
       </li>
       <li>
         <mat-checkbox [(ngModel)]="resetAppGuid" [disabled]="includeContentGroups()">
-          <br>
+          <br />
           Reset the app GUID to zero.
-          <br>
+          <br />
           You only need this option for special tutorial apps, and usually must not select it.
         </mat-checkbox>
       </li>
       <li>
         <app-feature-icon [featureNameId]="'AppExportAssetsAdvanced'"></app-feature-icon>
         <mat-checkbox [(ngModel)]="assetsAdam" [disabled]="!expAssetsAdvEnabled()">
-          <br>
+          <br />
           Include all ADAM assets.
-          <br>
+          <br />
           This will include all App files in the <code>/adam</code> folder in your portal.
         </mat-checkbox>
       </li>
       <li>
         <app-feature-icon [featureNameId]="'AppExportAssetsAdvanced'"></app-feature-icon>
         <mat-checkbox [(ngModel)]="assetsAdamDeleted" [disabled]="!expAssetsAdvEnabled()">
-          <br>
+          <br />
           Skip ADAM assets of deleted entities.
-          <br>
+          <br />
           This will skip all ADAM files which are probably not in use any more, since the owning entities were deleted.
         </mat-checkbox>
       </li>
       <li>
-        <app-feature-icon [featureNameId]="'AppExportAssetsAdvanced'" ></app-feature-icon>
+        <app-feature-icon [featureNameId]="'AppExportAssetsAdvanced'"></app-feature-icon>
         <mat-checkbox [(ngModel)]="assetsSite" [disabled]="!expAssetsAdvEnabled()">
-          <br>
+          <br />
           Include all Site assets like images which are not in ADAM.
-          <br>
+          <br />
           This will include all files used by your entities (eg. in link fields) which are not in you App-ADAM folder.
         </mat-checkbox>
       </li>
     </ul>
   </div>
 
-  <mat-dialog-actions class="eav-dialog-actions" style="height: 73px;">
-    <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://go.2sxc.org/app-export' }"></ng-container>
+  <mat-dialog-actions class="eav-dialog-actions" style="height: 73px">
+    <app-docs-link-helper [link]="'https://go.2sxc.org/app-export'" [label]="'Export App Info'" [icon]=""></app-docs-link-helper>
     <a mat-button class="eav-button__with-icon" [href]="downloadUrl()" download>
       <mat-icon class="eav-icon">deployed_code_update</mat-icon>
       <span>Download</span>
     </a>
   </mat-dialog-actions>
-
 </div>
-
-<!-- TODO: @2dg - this is repeated in a few controls. Please deduplicate: create an own control and use it everywhere; then remove unnecessary imports  -->
-<ng-template #docsLink let-icon let-label let-link="link">
-  <a mat-button class="eav-button__with-icon" href="{{link}}" target="_blank" tippy="online documentation">
-    <mat-icon class="eav-icon">{{ icon ?? "menu_book" }}</mat-icon>
-    <span>{{ label }}</span>
-  </a>
-</ng-template>

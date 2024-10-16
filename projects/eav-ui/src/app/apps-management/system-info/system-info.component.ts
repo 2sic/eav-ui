@@ -10,6 +10,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { map, take } from 'rxjs';
 import { transient } from '../../../../../core';
+import { DocsLinkHelperComponent } from '../../admin-shared/docs-link-helper/docs-link-helper.component';
 import { DialogConfigAppService } from '../../app-administration/services/dialog-config-app.service';
 import { FeatureNames } from '../../features/feature-names';
 import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
@@ -45,6 +46,7 @@ declare const window: EavWindow;
     FeatureTextInfoComponent,
     FieldHintComponent,
     TippyDirective,
+    DocsLinkHelperComponent,
   ],
 })
 export class SystemInfoComponent implements OnInit {

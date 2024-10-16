@@ -31,7 +31,7 @@
     </mat-card-content>
     <div class="eav-card-space-div"></div>
     <mat-card-actions align="start">
-      <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://go.2sxc.org/settings' }"></ng-container>
+      <app-docs-link-helper [link]="'https://go.2sxc.org/settings'" [label]="" [icon]=""></app-docs-link-helper>
       <button mat-button class="eav-button__with-icon" (click)="openGlobalSettings()">
         <mat-icon class="eav-icon">open_in_new</mat-icon>
         <span>Open Global Settings</span>
@@ -75,7 +75,7 @@
     </mat-card-content>
     <div class="eav-card-space-div"></div>
     <mat-card-actions align="start">
-      <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://go.2sxc.org/settings' }"></ng-container>
+      <app-docs-link-helper [link]="'https://go.2sxc.org/settings'" [label]="" [icon]=""></app-docs-link-helper>
       <button mat-button class="eav-button__with-icon" (click)="openSiteSettings()">
         <mat-icon class="eav-icon">open_in_new</mat-icon>
         <span>Open Site Settings</span>
@@ -102,7 +102,7 @@
     </mat-card-content>
     <div class="eav-card-space-div"></div>
     <mat-card-actions align="start">
-      <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://go.2sxc.org/lightspeed' }"></ng-container>
+      <app-docs-link-helper [link]="'https://go.2sxc.org/lightspeed'" [label]="" [icon]=""></app-docs-link-helper>
     </mat-card-actions>
   </mat-card>
   <!-- Security -->
@@ -125,7 +125,7 @@
     </mat-card-content>
     <div class="eav-card-space-div"></div>
     <mat-card-actions align="start">
-      <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://go.2sxc.org/csp' }"></ng-container>
+      <app-docs-link-helper [link]="'https://go.2sxc.org/csp'" [label]="" [icon]=""></app-docs-link-helper>
     </mat-card-actions>
   </mat-card>
   <!-- Insights -->
@@ -145,7 +145,7 @@
         <a href="https://2sxc.org/en/blog/post/using-2sxc-insights" target="_blank">this blog post</a>.
       </p>
       <div align="start">
-        <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://go.2sxc.org/insights' }"></ng-container>
+        <app-docs-link-helper [link]="'https://go.2sxc.org/insights'" [label]="" [icon]=""></app-docs-link-helper>
         <button mat-button class="eav-button__with-icon" (click)="openInsights()">
           <mat-icon class="eav-icon">open_in_new</mat-icon>
           <span>Open 2sxc Insights</span>
@@ -211,13 +211,5 @@
     <div class="eav-card-space-div"></div>
   </mat-card>
 </div>
-
-<!-- TODO: @2dg - this is repeated in a few controls. Please deduplicate: create an own control and use it everywhere; then remove unnecessary imports  -->
-<ng-template #docsLink let-icon let-label let-link="link">
-  <a mat-button class="eav-button__with-icon" href="{{link}}" target="_blank" tippy="online documentation">
-    <mat-icon class="eav-icon">{{ icon ?? "menu_book" }}</mat-icon>
-    <span>{{ label }}</span>
-  </a>
-</ng-template>
 
 <router-outlet></router-outlet>

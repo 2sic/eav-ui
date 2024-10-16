@@ -1,4 +1,3 @@
-import { NgTemplateOutlet } from '@angular/common';
 import { Component, Input, OnDestroy, OnInit, signal } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
@@ -6,6 +5,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { transient } from '../../../../../../core';
+import { DocsLinkHelperComponent } from '../../../admin-shared/docs-link-helper/docs-link-helper.component';
 import { ContentItem } from '../../../content-items/models/content-item.model';
 import { ContentItemsService } from '../../../content-items/services/content-items.service';
 import { GoToMetadata } from '../../../metadata';
@@ -28,10 +28,10 @@ import { AppInternalsService } from '../../services/app-internals.service';
   imports: [
     MatCardModule,
     MatIconModule,
-    NgTemplateOutlet,
     MatButtonModule,
     MatBadgeModule,
     TippyDirective,
+    DocsLinkHelperComponent,
   ],
 })
 export class AppConfigurationCardComponent implements OnInit, OnDestroy {

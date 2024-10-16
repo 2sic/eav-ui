@@ -5,67 +5,78 @@
     <mat-icon>redeem</mat-icon>
   </mat-card-header>
   <mat-card-content>
-    <p>
+    <p></p>
     <div class="eav-info-row">
       <div class="eav-info-row__label">Name:</div>
       <div class="eav-info-row__value">
-        <span [tippy]="'Click to copy to clipboard'"
-          (click)="clipboard.copyToClipboard(contentItem().DisplayName)">{{formatValue(contentItem()?.DisplayName)}}</span>
+        <span [tippy]="'Click to copy to clipboard'" (click)="clipboard.copyToClipboard(contentItem().DisplayName)">{{
+          formatValue(contentItem()?.DisplayName)
+        }}</span>
       </div>
     </div>
     <div class="eav-info-row">
       <div class="eav-info-row__label">Folder:</div>
       <div class="eav-info-row__value">
-        <span [tippy]="'Click to copy to clipboard'"
-          (click)="clipboard.copyToClipboard(contentItem().Folder)">{{formatValue(contentItem()?.Folder)}}</span>
+        <span [tippy]="'Click to copy to clipboard'" (click)="clipboard.copyToClipboard(contentItem().Folder)">{{
+          formatValue(contentItem()?.Folder)
+        }}</span>
       </div>
     </div>
     <div class="eav-info-row">
       <div class="eav-info-row__label">Version:</div>
       <div class="eav-info-row__value">
-        <span [tippy]="'Click to copy to clipboard'"
-          (click)="clipboard.copyToClipboard(contentItem().Version)">{{formatValue(contentItem()?.Version)}}</span>
+        <span [tippy]="'Click to copy to clipboard'" (click)="clipboard.copyToClipboard(contentItem().Version)">{{
+          formatValue(contentItem()?.Version)
+        }}</span>
       </div>
     </div>
     <div class="eav-info-row">
       <div class="eav-info-row__label">For</div>
       <div class="eav-info-row__value">
-        <b>2sxc: </b><span [tippy]="'Click to copy to clipboard'"
-          (click)="clipboard.copyToClipboard(contentItem().RequiredVersion)"> {{formatValue(contentItem()?.RequiredVersion)}}
+        <b>2sxc: </b
+        ><span [tippy]="'Click to copy to clipboard'" (click)="clipboard.copyToClipboard(contentItem().RequiredVersion)">
+          {{ formatValue(contentItem()?.RequiredVersion) }}
         </span>
-        <b> DNN: </b><span [tippy]="'Click to copy to clipboard'"
-          (click)="clipboard.copyToClipboard(contentItem().RequiredDnnVersion)">
-          {{formatValue(contentItem()?.RequiredDnnVersion)}} </span>
-        <b> Oqt: </b><span [tippy]="'Click to copy to clipboard'"
-          (click)="clipboard.copyToClipboard(contentItem().RequiredOqtaneVersion)">
-          {{formatValue(contentItem()?.RequiredOqtaneVersion)}} </span>
+        <b> DNN: </b
+        ><span [tippy]="'Click to copy to clipboard'" (click)="clipboard.copyToClipboard(contentItem().RequiredDnnVersion)">
+          {{ formatValue(contentItem()?.RequiredDnnVersion) }}
+        </span>
+        <b> Oqt: </b
+        ><span [tippy]="'Click to copy to clipboard'" (click)="clipboard.copyToClipboard(contentItem().RequiredOqtaneVersion)">
+          {{ formatValue(contentItem()?.RequiredOqtaneVersion) }}
+        </span>
       </div>
     </div>
     <!-- </p> -->
   </mat-card-content>
   <div class="eav-card-space-div"></div>
   <mat-card-actions align="start">
-    <ng-container
-      *ngTemplateOutlet="docsLink; context: { link: 'https://docs.2sxc.org/basics/app/configuration.html' }"></ng-container>
+    <app-docs-link-helper [link]="'https://docs.2sxc.org/basics/app/configuration.html'" [label]="" [icon]=""></app-docs-link-helper>
+
     <button mat-button class="eav-button__with-icon" (click)="edit()">
-      <mat-icon matBadgeColor="accent" matBadgeSize="small"
-        [matBadge]="appSettingsInternal()?.EntityLists?.ToSxcContentApp.length || null" matBadgePosition="below after"
-        aria-hidden="false" class="eav-icon">edit</mat-icon>
+      <mat-icon
+        matBadgeColor="accent"
+        matBadgeSize="small"
+        [matBadge]="appSettingsInternal()?.EntityLists?.ToSxcContentApp.length || null"
+        matBadgePosition="below after"
+        aria-hidden="false"
+        class="eav-icon"
+        >edit</mat-icon
+      >
       <span>Edit</span>
     </button>
     <button mat-button class="eav-button__with-icon" (click)="openMetadata()">
-      <mat-icon matBadgeColor="accent" matBadgeSize="small"
-        [matBadge]="appSettingsInternal()?.MetadataList.Items.length || null" matBadgePosition="below after"
-        aria-hidden="false" class="eav-icon">local_offer</mat-icon>
+      <mat-icon
+        matBadgeColor="accent"
+        matBadgeSize="small"
+        [matBadge]="appSettingsInternal()?.MetadataList.Items.length || null"
+        matBadgePosition="below after"
+        aria-hidden="false"
+        class="eav-icon"
+        >local_offer</mat-icon
+      >
       <span>Metadata</span>
     </button>
   </mat-card-actions>
 </mat-card>
 
-<!-- TODO: @2dg - this is repeated in a few controls. Please deduplicate: create an own control and use it everywhere; then remove unnecessary imports  -->
-<ng-template #docsLink let-icon let-label let-link="link">
-  <a mat-button class="eav-button__with-icon" href="{{link}}" target="_blank" tippy="online documentation">
-    <mat-icon class="eav-icon">{{ icon ?? "menu_book" }}</mat-icon>
-    <span>{{ label }}</span>
-  </a>
-</ng-template>

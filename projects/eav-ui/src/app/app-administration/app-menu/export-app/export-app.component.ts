@@ -1,4 +1,3 @@
-import { NgTemplateOutlet } from '@angular/common';
 import { Component, computed, inject, model, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -6,6 +5,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogActions } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { transient } from '../../../../../../core';
+import { DocsLinkHelperComponent } from '../../../admin-shared/docs-link-helper/docs-link-helper.component';
 import { FeatureIconIndicatorComponent } from '../../../features/feature-icon-indicator/feature-icon-indicator.component';
 import { FeatureIconComponent } from '../../../features/feature-icon/feature-icon.component';
 import { FeatureNames } from '../../../features/feature-names';
@@ -24,12 +24,9 @@ import { ExportAppService } from '../../services/export-app.service';
     MatDialogActions,
     MatButtonModule,
     MatIconModule,
-
     FeatureIconIndicatorComponent,
     FeatureIconComponent,
-
-    // TODO: @2dg - just added to make the ngTemplate work, should remove again once not needed
-    NgTemplateOutlet,
+    DocsLinkHelperComponent,
   ],
 })
 export class ExportAppComponent implements OnInit {
