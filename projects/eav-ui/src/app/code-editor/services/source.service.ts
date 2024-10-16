@@ -21,7 +21,7 @@ export class SourceService extends HttpServiceBase {
 
   /** ViewKey is templateId or path */
   get(viewKey: string, global: boolean, urlItems: ViewOrFileIdentifier[]): Observable<SourceView> {
-    return this.getHttp<SourceView>(this.apiUrl(appFilesAsset), {
+    return this.getHttpApiUrl<SourceView>(appFilesAsset, {
       params: {
         appId: this.appId,
         global,
@@ -59,7 +59,7 @@ export class SourceService extends HttpServiceBase {
   }
 
   getAll(mask?: string): Observable<FileAsset[]> {
-    return this.getHttp<{ Files: FileAsset[] }>(this.apiUrl(appFilesAll), {
+    return this.getHttpApiUrl<{ Files: FileAsset[] }>(appFilesAll, {
       params: {
         appId: this.appId,
         ...(mask && { mask }),
@@ -75,7 +75,7 @@ export class SourceService extends HttpServiceBase {
   }
 
   getWebApis(): Observable<WebApi[]> {
-    return this.getHttp<{ files: WebApi[] }>(this.apiUrl(apiExplorerAppApiFiles), {
+    return this.getHttpApiUrl<{ files: WebApi[] }>(apiExplorerAppApiFiles, {
       params: {
         appId: this.appId,
       },
@@ -103,13 +103,13 @@ export class SourceService extends HttpServiceBase {
   }
 
   getWebApiDetails(apiPath: string): Observable<WebApiDetails> {
-    return this.getHttp<WebApiDetails>(this.apiUrl(apiExplorerInspect), {
+    return this.getHttpApiUrl<WebApiDetails>(apiExplorerInspect, {
       params: { appId: this.appId, zoneId: this.zoneId, path: apiPath },
     });
   }
 
   getPredefinedTemplates(purpose?: 'Template' | 'Search' | 'Api', type?: 'Token' | 'Razor'): Observable<PredefinedTemplatesResponse> {
-    return this.getHttp<PredefinedTemplatesResponse>(this.apiUrl(appFilesPredefinedTemplates), {
+    return this.getHttpApiUrl<PredefinedTemplatesResponse>(appFilesPredefinedTemplates, {
       params: {
         ...(purpose && { purpose }),
         ...(type && { type }),
@@ -118,7 +118,7 @@ export class SourceService extends HttpServiceBase {
   }
 
   getPreview(path: string, global: boolean, templateKey: string): Observable<Preview> {
-    return this.getHttp<Preview>(this.apiUrl(appFilesPreview), {
+    return this.getHttpApiUrl<Preview>(appFilesPreview, {
       params: {
         appId: this.appId,
         path,

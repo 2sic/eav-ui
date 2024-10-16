@@ -7,19 +7,19 @@ import { App, PendingApp } from '../models/app.model';
 export class AppsListService extends HttpServiceBase {
 
   getAll() {
-    return this.getHttp<App[]>(this.apiUrl(webApiAppRoot + 'list'), {
+    return this.getHttpApiUrl<App[]>(webApiAppRoot + 'list', {
       params: { zoneId: this.zoneId }
     });
   }
 
   getInheritable() {
-    return this.getHttp<App[]>(this.apiUrl(webApiAppRoot + 'InheritableApps'), {
+    return this.getHttpApiUrl<App[]>(webApiAppRoot + 'InheritableApps', {
       params: { zoneId: this.zoneId }
     });
   }
 
   getPendingApps() {
-    return this.getHttp<PendingApp[]>(this.apiUrl(webApiAppRoot + 'GetPendingApps'), {
+    return this.getHttpApiUrl<PendingApp[]>(webApiAppRoot + 'GetPendingApps', {
       params: { zoneId: this.zoneId },
     });
   }
@@ -50,7 +50,7 @@ export class AppsListService extends HttpServiceBase {
   }
 
   flushCache(appId: number) {
-    return this.getHttp<null>(this.apiUrl(webApiAppRoot + 'flushcache'), {
+    return this.getHttpApiUrl<null>(webApiAppRoot + 'flushcache', {
       params: { zoneId: this.zoneId, appId: appId.toString() },
     });
   }

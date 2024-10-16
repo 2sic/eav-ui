@@ -41,12 +41,11 @@ export class ContentTypesFieldsService extends HttpServiceBase {
   }
 
   typeListRetrieve() {
-    return this.getHttp<string[]>(this.apiUrl(webApiDataTypes), this.paramsAppId());
+    return this.getHttpApiUrl<string[]>(webApiDataTypes, this.paramsAppId());
   }
 
   getInputTypesList() {
-    return this.http
-      .get<InputTypeMetadata[]>(this.apiUrl(webApiInputTypes), this.paramsAppId())
+    return this.getHttpApiUrl<InputTypeMetadata[]>(webApiInputTypes, this.paramsAppId())
       .pipe(
         map(inputConfigs => {
           const inputTypeOptions = inputConfigs.map(config => ({
@@ -66,13 +65,12 @@ export class ContentTypesFieldsService extends HttpServiceBase {
   }
 
   getReservedNames() {
-    return this.getHttp<Record<string, string>>(this.apiUrl(webApiReservedNames));
+    return this.getHttpApiUrl<Record<string, string>>(webApiReservedNames);
   }
 
   /** Get all fields for some content type */
   getFields(contentTypeStaticName: string) {
-    return this.http
-      .get<Field[]>(this.apiUrl(webApiFieldsAll), this.paramsAppId({ staticName: contentTypeStaticName }))
+    return this.getHttpApiUrl<Field[]>(webApiFieldsAll, this.paramsAppId({ staticName: contentTypeStaticName }))
       .pipe(
         map(fields => {
           if (fields) {
@@ -92,7 +90,7 @@ export class ContentTypesFieldsService extends HttpServiceBase {
 
   /** Get all possible sharable fields for a new sharing */
   getShareableFields() {
-    return this.getHttp<Field[]>(this.apiUrl(webApiFieldsGetShared), this.paramsAppId());
+    return this.getHttpApiUrl<Field[]>(webApiFieldsGetShared, this.paramsAppId());
   }
 
   /**
@@ -114,7 +112,7 @@ export class ContentTypesFieldsService extends HttpServiceBase {
   }
 
   #getShareinfo(endpoint: string, attributeId: number) {
-    return this.getHttp<Field[]>(this.apiUrl(endpoint), this.paramsAppId({ attributeId }));
+    return this.getHttpApiUrl<Field[]>(endpoint, this.paramsAppId({ attributeId }));
   }
 
   addInheritedField(targetContentTypeId: number, sourceType: string, sourceFieldGuid: string /* guid */, name: string) {

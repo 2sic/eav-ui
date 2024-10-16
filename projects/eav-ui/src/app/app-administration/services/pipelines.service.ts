@@ -19,7 +19,7 @@ export const webApiQueryDataSources = 'admin/query/DataSources';
 export class PipelinesService extends HttpServiceBase {
 
   getAll(contentType: string) {
-    return this.getHttp<Query[]>(this.apiUrl(webApiEntityList), {
+    return this.getHttpApiUrl<Query[]>(webApiEntityList, {
       params: { appId: this.appId, contentType }
     });
   }
@@ -43,7 +43,7 @@ export class PipelinesService extends HttpServiceBase {
   }
 
   clonePipeline(id: number) {
-    return this.getHttp<null>(this.apiUrl(webApiQueryClone), {
+    return this.getHttpApiUrl<null>(webApiQueryClone, {
       params: { Id: id.toString(), appId: this.appId }
     });
   }

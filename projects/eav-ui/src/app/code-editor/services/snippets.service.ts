@@ -22,7 +22,7 @@ export class SnippetsService extends HttpServiceBase {
   }
 
   getTooltips(language: string): Observable<Tooltip[]> {
-    return this.getHttp<Tooltip[]>(this.apiUrl(inlineHelp), {
+    return this.getHttpApiUrl<Tooltip[]>(inlineHelp, {
       params: {
         language,
       },
@@ -269,7 +269,7 @@ export class SnippetsService extends HttpServiceBase {
   }
 
   private getFields(appId: number, staticName: string): Observable<Field[]> {
-    return this.getHttp<Field[]>(this.apiUrl(webApiFieldsAll), {
+    return this.getHttpApiUrl<Field[]>(webApiFieldsAll, {
       params: { appid: appId.toString(), staticName },
     }).pipe(
       map(fields => {

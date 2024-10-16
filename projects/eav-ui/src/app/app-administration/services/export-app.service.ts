@@ -7,7 +7,7 @@ import { AppInfo } from '../models/app-info.model';
 export class ExportAppService extends HttpServiceBase {
 
   getAppInfo() {
-    return this.getHttp<AppInfo>(this.apiUrl(webApiAppRoot + 'Statistics'), {
+    return this.getHttpApiUrl<AppInfo>(webApiAppRoot + 'Statistics', {
       params: { appid: this.appId, zoneId: this.zoneId },
     });
   }
@@ -20,7 +20,7 @@ export class ExportAppService extends HttpServiceBase {
   exportForVersionControl({ includeContentGroups, resetAppGuid, withFiles }:
     { includeContentGroups: boolean; resetAppGuid: boolean; withFiles: boolean; }) {
     // return this.get<boolean>(webApiAppRoot + 'SaveData', {
-    return this.getHttp<boolean>(this.apiUrl(webApiAppRoot + 'SaveData'), {
+    return this.getHttpApiUrl<boolean>(webApiAppRoot + 'SaveData', {
       params: {
         appid: this.appId,
         zoneId: this.zoneId,

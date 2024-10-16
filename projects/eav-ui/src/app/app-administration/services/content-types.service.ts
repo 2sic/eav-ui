@@ -20,20 +20,20 @@ const webApiTypeAddGhost = 'admin/type/addghost';
 export class ContentTypesService extends HttpServiceBase {
 
   retrieveContentType(staticName: string) {
-    return this.getHttp<ContentType>(this.apiUrl(webApiTypeGet), {
+    return this.getHttpApiUrl<ContentType>(webApiTypeGet, {
       params: { appId: this.appId, contentTypeId: staticName }
     });
   }
 
   retrieveContentTypes(scope: string) {
-    return this.getHttp<ContentType[]>(this.apiUrl(webApiTypes), {
+    return this.getHttpApiUrl<ContentType[]>(webApiTypes, {
       params: { appId: this.appId, scope }
     });
   }
 
   // TODO: remove this method after upgrade to V2
   getScopes() {
-    return this.getHttp<{ old: Record<string, string>, scopes: ScopeDetailsDto[] }>(this.apiUrl(webApiTypeScopes), {
+    return this.getHttpApiUrl<{ old: Record<string, string>, scopes: ScopeDetailsDto[] }>(webApiTypeScopes, {
       params: { appId: this.appId }
     }).pipe(
       map(scopesData => {
@@ -46,7 +46,7 @@ export class ContentTypesService extends HttpServiceBase {
   }
 
   getScopesV2() {
-    return this.getHttp<{ old: Record<string, string>, scopes: ScopeDetailsDto[] }>(this.apiUrl(webApiTypeScopes), {
+    return this.getHttpApiUrl<{ old: Record<string, string>, scopes: ScopeDetailsDto[] }>(webApiTypeScopes, {
       params: { appId: this.appId }
     }).pipe(
       map(scopesData => scopesData.scopes),

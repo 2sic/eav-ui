@@ -38,6 +38,11 @@ export class HttpServiceBase {
    */
   protected get zoneId() { return this.context.zoneId.toString(); }
 
+  protected getHttpApiUrl<ResultType>(endpoint: string, options?: Parameters<typeof this.http.get>[1]) {
+    const url = this.apiUrl(endpoint);
+    return this.http.get<ResultType>(url, options);
+  }
+
   // TODO: @2dg
   protected getHttp<ResultType>(endpoint: string, options?: Parameters<typeof this.http.get>[1]) {
     return this.http.get<ResultType>(endpoint, options);

@@ -23,7 +23,7 @@ export class ExportAppPartsService extends HttpServiceBase {
 
 
   getContentInfo(scope: string) {
-    return this.getHttp<ContentInfo>(this.apiUrl(webApiAppPartsRoot + 'Get'), {
+    return this.getHttpApiUrl<ContentInfo>(webApiAppPartsRoot + 'Get', {
       params: { appid: this.appId, zoneId: this.zoneId, scope },
     });
   }

@@ -10,21 +10,21 @@ const webApiZoneRoot = 'admin/zone/';
 export class ZoneService extends HttpServiceBase {
 
   getLanguages() {
-    return this.getHttp<SiteLanguage[]>(this.apiUrl(webApiZoneRoot + 'GetLanguages'));
+    return this.getHttpApiUrl<SiteLanguage[]>(webApiZoneRoot + 'GetLanguages');
   }
 
   toggleLanguage(code: string, enable: boolean) {
-    return this.getHttp<null>(this.apiUrl(webApiZoneRoot + 'SwitchLanguage'), {
+    return this.getHttpApiUrl<null>(webApiZoneRoot + 'SwitchLanguage', {
       params: { cultureCode: code, enable: enable.toString() },
     });
   }
 
   getSystemInfo() {
-    return this.getHttp<SystemInfoSet>(this.apiUrl(webApiZoneRoot + 'GetSystemInfo'));
+    return this.getHttpApiUrl<SystemInfoSet>(webApiZoneRoot + 'GetSystemInfo');
   }
 
   getLanguagesPermissions() {
-    return this.getHttp<SiteLanguagePermissions[]>(this.apiUrl(webApiAppRoot + 'languages'), {
+    return this.getHttpApiUrl<SiteLanguagePermissions[]>(webApiAppRoot + 'languages', {
       params: { appId: this.appId },
     });
   }

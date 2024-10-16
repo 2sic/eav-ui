@@ -16,7 +16,7 @@ export class AppInternalsService extends HttpServiceBase {
    * @param contentTypeName name of content type where permissions are stored. If blank, backend returns all metadata except permissions
    */
   getAppInternals(): Observable<AppInternals> {
-    return this.getHttp<AppInternals>(this.apiUrl(webApiRoot), {
+    return this.getHttpApiUrl<AppInternals>(webApiRoot, {
       params: {
         appId: this.appId,
       },

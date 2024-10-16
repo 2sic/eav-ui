@@ -12,13 +12,13 @@ import { ContentItem } from '../models/content-item.model';
 export class ContentItemsService extends HttpServiceBase {
 
   getAll(contentTypeStaticName: string) {
-    return this.getHttp<ContentItem[]>(this.apiUrl(webApiEntityList), {
+    return this.getHttpApiUrl<ContentItem[]>(webApiEntityList, {
       params: { appId: this.appId, contentType: contentTypeStaticName }
     });
   }
 
   getColumns(contentTypeStaticName: string) {
-    return this.getHttp<Field[]>(this.apiUrl(webApiFieldsAll), {
+    return this.getHttpApiUrl<Field[]>(webApiFieldsAll, {
       params: { appId: this.appId, staticName: contentTypeStaticName }
     });
   }

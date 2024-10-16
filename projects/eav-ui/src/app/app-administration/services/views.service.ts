@@ -16,13 +16,13 @@ const webApiViewUsage = webApiViewRoot + 'usage';
 export class ViewsService extends HttpServiceBase {
 
   getAll() {
-    return this.getHttp<View[]>(this.apiUrl(webApiViews), {
+    return this.getHttpApiUrl<View[]>(webApiViews, {
       params: { appId: this.appId }
     });
   }
 
   delete(id: number) {
-    return this.getHttp<boolean>(this.apiUrl(webApiViewDelete), {
+    return this.getHttpApiUrl<boolean>(webApiViewDelete, {
       params: { appId: this.appId, Id: id.toString() },
     });
   }
@@ -44,13 +44,13 @@ export class ViewsService extends HttpServiceBase {
   }
 
   getPolymorphism() {
-    return this.getHttp<Polymorphism>(this.apiUrl(webApiViewPolymorph), {
+    return this.getHttpApiUrl<Polymorphism>(webApiViewPolymorph, {
       params: { appId: this.appId }
     });
   }
 
   getUsage(guid: string) {
-    return this.getHttp<ViewUsage[]>(this.apiUrl(webApiViewUsage), {
+    return this.getHttpApiUrl<ViewUsage[]>(webApiViewUsage, {
       params: { appId: this.appId, guid }
     });
   }

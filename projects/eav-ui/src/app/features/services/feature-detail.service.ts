@@ -9,7 +9,7 @@ const webApiFeatureDetails = "admin/feature/details";
 export class FeatureDetailService extends HttpServiceBase {
 
   getFeatureDetails(nameId: string): Observable<Feature> {
-    return this.getHttp<Feature>(this.apiUrl(webApiFeatureDetails), {
+    return this.getHttpApiUrl<Feature>(webApiFeatureDetails, {
       params: { nameId }
     });
   }

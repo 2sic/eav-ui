@@ -10,7 +10,7 @@ const webApiContentGroup = 'cms/contentgroup/';
 export class ContentGroupService extends HttpServiceBase {
 
   getItems(item: ContentGroup) {
-    return this.getHttp<ReplaceConfig>(this.apiUrl(webApiContentGroup + 'replace'), {
+    return this.getHttpApiUrl<ReplaceConfig>(webApiContentGroup + 'replace', {
       params: { appId: this.appId, guid: item.guid, part: item.part, index: item.index.toString() }
     });
   }
@@ -29,7 +29,7 @@ export class ContentGroupService extends HttpServiceBase {
   }
 
   getList(contentGroup: ContentGroup) {
-    return this.getHttp<GroupHeader[]>(this.apiUrl(webApiContentGroup + 'itemlist'), {
+    return this.getHttpApiUrl<GroupHeader[]>(webApiContentGroup + 'itemlist', {
       params: { appId: this.appId, guid: contentGroup.guid, part: contentGroup.part }
     });
   }
@@ -41,7 +41,7 @@ export class ContentGroupService extends HttpServiceBase {
   }
 
   getHeader(contentGroup: ContentGroup) {
-    return this.getHttp<GroupHeader>(this.apiUrl(webApiContentGroup + 'header'), {
+    return this.getHttpApiUrl<GroupHeader>(webApiContentGroup + 'header', {
       params: { appId: this.appId, guid: contentGroup.guid }
     });
   }
