@@ -5,13 +5,18 @@ import { AdamItem } from '../../../../../../../../edit-types/src/AdamItem';
 import { classLog } from '../../../../../shared/logging';
 import { AdamBrowserComponent } from './adam-browser.component';
 
+const logSpecs = {
+  all: false,
+  setConfig: true,
+}
+
 /**
  * Helper to connect ADAM.
  * It will be added to the field state early on, but won't work until the browser is initialized.
  */
 export class AdamConnector implements Adam {
   
-  log = classLog({AdamConnector});
+  log = classLog({AdamConnector}, logSpecs, true);
 
   get browser() {
     const b = this.#browser();
@@ -31,16 +36,18 @@ export class AdamConnector implements Adam {
     this.browser.toggle(usePortalRoot, showImagesOnly)
   };
 
+  #count = 0;
+
   setConfig(config: Partial<AdamConfig>) {
-    this.count++;
+    const l = this.log.fnIf('setConfig', { config, count: this.#count });
+    this.#count++;
 
-    if (this.count > 10)
+    if (this.#count > 10)
       throw new Error('Infinite loop');
-    this.log.fn('setConfig', { config });
-    this.browser.setConfig(config)
-  };
-  count = 0;
 
+    this.browser.setConfig(config);
+    l.end();
+  };
   getConfig() { return this.browser.adamConfig() };
 
   isDisabled = computed(() => this.#browser()?.adamConfig()?.disabled ?? true);

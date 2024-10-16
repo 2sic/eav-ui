@@ -35,6 +35,7 @@ import { fixDropzone } from './dropzone-helper';
 const logSpecs = {
   all: true,
   editItemMetadata: true,
+  setConfig: true,
 }
 
 @Component({
@@ -71,7 +72,7 @@ const logSpecs = {
 })
 export class AdamBrowserComponent implements OnInit {
 
-  log = classLog({ AdamBrowserComponent }, logSpecs);
+  log = classLog({ AdamBrowserComponent }, logSpecs, true);
 
   @Output() openUpload = new EventEmitter<null>();
 
@@ -173,7 +174,7 @@ export class AdamBrowserComponent implements OnInit {
     this.setConfig({ subfolder });
   }
 
-  private getImageConfigurationContentType(item: AdamItem) {
+  #getImageConfigurationContentType(item: AdamItem) {
     // allow image configuration if file is type image and if image configuration is enabled in settings
     const settings = this.fieldState.settings();
     return settings.EnableImageConfiguration && item.Type === 'image'
@@ -181,7 +182,7 @@ export class AdamBrowserComponent implements OnInit {
       : null;
   }
 
-  private getMetadataContentType(item: AdamItem) {
+  #getMetadataContentType(item: AdamItem) {
     let found: string[];
 
     // check if it's a folder and if this has a special registration
@@ -247,13 +248,13 @@ export class AdamBrowserComponent implements OnInit {
       const adamItems = this.adamCacheService.getAdamSnapshot(this.config.entityGuid, this.config.fieldName);
       if (adamItems) {
         const clonedItems = adamItems.map(adamItem => ({ ...adamItem } satisfies AdamItem));
-        setTimeout(() => this.processFetchedItems(clonedItems, adamConfig));
+        setTimeout(() => this.#processFetchedItems(clonedItems, adamConfig));
         return;
       }
     }
 
     this.#adamService.getAll(this.#url, adamConfig)
-      .subscribe(items => this.processFetchedItems(items, adamConfig));
+      .subscribe(items => this.#processFetchedItems(items, adamConfig));
   }
 
   openFeatureInfoDialog() {
@@ -261,7 +262,7 @@ export class AdamBrowserComponent implements OnInit {
       openFeatureDialog(this.matDialog, FeatureNames.PasteImageFromClipboard, this.viewContainerRef, this.changeDetectorRef);
   }
 
-  private processFetchedItems(items: AdamItem[], adamConfig: AdamConfig): void {
+  #processFetchedItems(items: AdamItem[], adamConfig: AdamConfig): void {
     this.linkCacheService.addAdam(items);
 
     const filteredItems: AdamItem[] = [];
@@ -285,9 +286,9 @@ export class AdamBrowserComponent implements OnInit {
         if (!extensionsFilter.includes(extension)) continue;
       }
 
-      item._imageConfigurationContentType = this.getImageConfigurationContentType(item);
+      item._imageConfigurationContentType = this.#getImageConfigurationContentType(item);
       item._imageConfigurationId = item.Metadata?.find(m => m.Type.Name === item._imageConfigurationContentType)?.Id ?? 0;
-      item._metadataContentType = this.getMetadataContentType(item);
+      item._metadataContentType = this.#getMetadataContentType(item);
       item._metadataId = item.Metadata?.find(m => m.Type.Name === item._metadataContentType)?.Id ?? 0;
       item._icon = FileTypeHelpers.getIconClass(item.Name);
       item._isMaterialIcon = FileTypeHelpers.isKnownType(item.Name);
@@ -301,10 +302,18 @@ export class AdamBrowserComponent implements OnInit {
   }
 
   setConfig(config: Partial<AdamConfig>) {
-    this.log.a('setConfig', config);
+    const l = this.log.fnIf('setConfig', config);
     const newConfig = AdamConfigInstance.completeConfig(config, this.config, this.adamConfig());
+
+    // There is a high risk of infinite loops here, so we need to ensure that we don't do this too often
+    if (isEqual(newConfig, this.adamConfig())) {
+      l.end('no change');
+      return;
+    }
+    
     this.adamConfig.set(newConfig);
     fixDropzone(newConfig, this.config);
+    l.end();
   }
 
 
@@ -313,7 +322,6 @@ export class AdamBrowserComponent implements OnInit {
 
     if (isEqual(newConfig, this.adamConfig()))
       newConfig.autoLoad = !newConfig.autoLoad;
-
     else if (!newConfig.autoLoad)
       newConfig.autoLoad = true;
 
@@ -327,11 +335,10 @@ function getExtensionsFilter(fileFilter: string) {
   const extensions = fileFilter.split(',').map(extension => {
     extension = extension.trim();
 
-    if (extension.startsWith('*.')) {
+    if (extension.startsWith('*.'))
       extension = extension.replace('*.', '');
-    } else if (extension.startsWith('*')) {
+    else if (extension.startsWith('*'))
       extension = extension.replace('*', '');
-    }
 
     return extension.toLocaleLowerCase();
   });
