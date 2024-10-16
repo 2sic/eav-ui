@@ -17,7 +17,7 @@ const logSpecs = {
  */
 export class AdamConnector implements Adam {
   
-  log = classLog({AdamConnector}, logSpecs, true);
+  log = classLog({AdamConnector}, logSpecs);
 
   get browser() {
     const b = this.#browser();

@@ -1,7 +1,7 @@
 import { Context as DnnContext } from '@2sic.com/sxc-angular';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { AsyncPipe, NgClass } from '@angular/common';
-import { ChangeDetectorRef, Component, computed, effect, EventEmitter, inject, OnInit, Output, signal, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, effect, EventEmitter, inject, OnInit, Output, ViewContainerRef } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -19,7 +19,7 @@ import { TippyDirective } from '../../../../../shared/directives/tippy.directive
 import { classLog } from '../../../../../shared/logging';
 import { EditForm, EditPrep } from '../../../../../shared/models/edit-form.model';
 import { DialogRoutingService } from '../../../../../shared/routing/dialog-routing.service';
-import { signalObj } from '../../../../../shared/signals/signal.utilities';
+import { computedObj, signalObj } from '../../../../../shared/signals/signal.utilities';
 import { FormsStateService } from '../../../../form/forms-state.service';
 import { EditRoutingService } from '../../../../routing/edit-routing.service';
 import { AdamCacheService } from '../../../../shared/adam/adam-cache.service';
@@ -72,35 +72,13 @@ const logSpecs = {
 })
 export class AdamBrowserComponent implements OnInit {
 
-  log = classLog({ AdamBrowserComponent }, logSpecs, true);
-
   @Output() openUpload = new EventEmitter<null>();
 
+  log = classLog({ AdamBrowserComponent }, logSpecs);
+
   protected fieldState = inject(FieldState);
-
-  protected config = this.fieldState.config;
-  protected group = this.fieldState.group;
-  #ui = this.fieldState.ui;
-
-  disabled = computed(() => this.#ui().disabled);
-
-  value = computed(() => this.fieldState.uiValue());
-
-  public adamConfig = signalObj<AdamConfig>('adamConfig', null); // here the change detection is critical
-  items = signal<AdamItem[]>([]);
-
-  #url: string;
-  private firstFetch = true;
-
-  allowAddButtons = computed(() => {
-    const cnf = this.adamConfig();
-    return cnf.allowEdit && !((cnf.subfolder === '' || cnf.usePortalRoot && cnf.subfolder === cnf.rootSubfolder) && !cnf.allowAssetsInRoot)
-  });
-
   #editRoutingService = inject(EditRoutingService);
-
   #features = inject(FeaturesScopedService);
-  protected isPasteImageFromClipboardEnabled = this.#features.isEnabled[FeatureNames.PasteImageFromClipboard];
 
   #adamService = transient(AdamService);
   #dialogRouter = transient(DialogRoutingService);
@@ -124,6 +102,27 @@ export class AdamBrowserComponent implements OnInit {
     const cnf = this.config;
     this.#url = this.dnnContext.$2sxc.http.apiUrl(`app/auto/data/${cnf.contentTypeNameId}/${cnf.entityGuid}/${cnf.fieldName}`);
   }
+
+  protected config = this.fieldState.config;
+  protected group = this.fieldState.group;
+  #ui = this.fieldState.ui;
+
+  protected disabled = computedObj('disabled', () => this.#ui().disabled);
+
+  protected value = computedObj('value', () => this.fieldState.uiValue());
+
+  public adamConfig = signalObj<AdamConfig>('adamConfig', null); // here the change detection is critical
+  public items = signalObj<AdamItem[]>('items', []);
+
+  #url: string;
+  #firstFetch = true;
+
+  allowAddButtons = computedObj('allowAddButtons', () => {
+    const cnf = this.adamConfig();
+    return cnf.allowEdit && !((cnf.subfolder === '' || cnf.usePortalRoot && cnf.subfolder === cnf.rootSubfolder) && !cnf.allowAssetsInRoot)
+  });
+
+  protected isPasteImageFromClipboardEnabled = this.#features.isEnabled[FeatureNames.PasteImageFromClipboard];
 
   ngOnInit() {
     // Update data if a child-form closes
@@ -243,8 +242,8 @@ export class AdamBrowserComponent implements OnInit {
     if (adamConfig == null) return;
     if (!adamConfig.autoLoad) return;
 
-    if (this.firstFetch) {
-      this.firstFetch = false;
+    if (this.#firstFetch) {
+      this.#firstFetch = false;
       const adamItems = this.adamCacheService.getAdamSnapshot(this.config.entityGuid, this.config.fieldName);
       if (adamItems) {
         const clonedItems = adamItems.map(adamItem => ({ ...adamItem } satisfies AdamItem));
@@ -301,7 +300,7 @@ export class AdamBrowserComponent implements OnInit {
     this.items.set(filteredItems);
   }
 
-  setConfig(config: Partial<AdamConfig>) {
+  public setConfig(config: Partial<AdamConfig>) {
     const l = this.log.fnIf('setConfig', config);
     const newConfig = AdamConfigInstance.completeConfig(config, this.config, this.adamConfig());
 
@@ -310,14 +309,14 @@ export class AdamBrowserComponent implements OnInit {
       l.end('no change');
       return;
     }
-    
+
     this.adamConfig.set(newConfig);
     fixDropzone(newConfig, this.config);
     l.end();
   }
 
 
-  toggle(usePortalRoot: boolean, showImagesOnly: boolean) {
+  public toggle(usePortalRoot: boolean, showImagesOnly: boolean) {
     const newConfig: AdamConfig = { ...this.adamConfig(), ...{ usePortalRoot, showImagesOnly } };
 
     if (isEqual(newConfig, this.adamConfig()))
