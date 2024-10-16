@@ -1,4 +1,5 @@
 import { computed, signal } from '@angular/core';
+import { computedObj } from 'projects/eav-ui/src/app/shared/signals/signal.utilities';
 import { Adam } from '../../../../../../../../edit-types/src/Adam';
 import { AdamConfig } from '../../../../../../../../edit-types/src/AdamConfig';
 import { AdamItem } from '../../../../../../../../edit-types/src/AdamItem';
@@ -29,7 +30,8 @@ export class AdamConnector implements Adam {
   }
   #browser = signal<AdamBrowserComponent>(null);
 
-  get items() { return computed(() => this.#browser()?.items() ?? [] satisfies AdamItem[]) };
+  #items = computedObj('items', () => this.#browser()?.items() ?? [] satisfies AdamItem[]);
+  get items() { return this.#items };
 
   toggle(usePortalRoot: boolean, showImagesOnly: boolean) {
     this.log.fn('toggle', { usePortalRoot, showImagesOnly });
