@@ -12,7 +12,7 @@ import { FormConfigService } from './form-config.service';
  */
 @Injectable()
 export class FormsStateService {
-  
+
   log = classLog({FormsStateService});
 
   /** Signal which is filled by sub-dialogs to trigger save (other saves like ctrl+s don't go through this) */
@@ -108,6 +108,7 @@ export class FormsStateService {
   triggerSave(close: boolean) {
     this.triggerTrySaveAndMaybeClose.set({ tryToSave: true, close });
   }
+
 }
 
 
