@@ -2,7 +2,7 @@ import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { Injectable, Signal, inject } from '@angular/core';
 import { getWith } from '../../../../../../../core';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
-import { FieldSettingsPickerMerged } from '../../../../../../../edit-types/src/FieldSettings-Pickers';
+import { FieldSettingsOptionsWip, FieldSettingsPickerMerged } from '../../../../../../../edit-types/src/FieldSettings-Pickers';
 import { classLog } from '../../../../shared/logging';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
 import { FormConfigService } from '../../../form/form-config.service';
@@ -10,7 +10,7 @@ import { FieldState } from '../../field-state';
 import { DeleteEntityProps } from '../models/picker.models';
 import { PickerFeatures } from '../picker-features.model';
 import { ReorderIndexes } from '../picker-list/reorder-index.models';
-import { correctStringEmptyValue } from '../picker.helpers';
+import { correctStringEmptyValue, optionsAllowsEmpty } from '../picker.helpers';
 import { StateUiMapperBase } from './state-ui-mapper-base';
 
 export const logSpecsStateAdapter = {
@@ -36,7 +36,7 @@ export abstract class StateAdapter {
   log = classLog({StateAdapter}, logSpecsStateAdapter);
 
   #formConfigSvc = inject(FormConfigService);
-  #fieldState = inject(FieldState) as FieldState<number | string | string[], FieldSettings & FieldSettingsPickerMerged>;
+  #fieldState = inject(FieldState) as FieldState<number | string | string[], FieldSettings & FieldSettingsOptionsWip & FieldSettingsPickerMerged>;
 
   constructor() { }
 
@@ -44,6 +44,7 @@ export abstract class StateAdapter {
 
   protected readonly settings = this.#fieldState.settings;
 
+  // TODO: @2dm - probably move to PickerData
   public isInFreeTextMode = signalObj('isInFreeTextMode', false);
 
   /** The features this source will broadcast, to be merged with other features */
@@ -82,19 +83,19 @@ export abstract class StateAdapter {
   /** Signal with all the currently selected items */
   public selectedItems = (() => {
     // Computed just to debounce changes on separator and options from field-settings (old picker)
-    const sepAndOpts = computedObj('sepAndOpts', () => {
-      const { Separator, _options } = this.settings();
-      return { separator: Separator, options: _options };
-    });
+    const options = this.#fieldState.settingExt('_options');
 
     // Find selected items and correct empty value (if there is an empty-string options)
     const l = this.log.fnIf('selectedItems');
     return computedObj('selectedItems', () => {
-      const sAndO = sepAndOpts();
+      const sAndO = options();
       const uiValue = this.#fieldState.uiValue();
       l.a('selectedItems', { uiValue, sAndO });
-
-      return correctStringEmptyValue(this.mapper.toUi(uiValue), sAndO.options);
+      const asUi = this.mapper.toUi(uiValue);
+      const uiFixed = asUi.length == 0 && optionsAllowsEmpty(sAndO)
+        ? ['']
+        : asUi;
+      return correctStringEmptyValue(uiFixed, sAndO);
     });
   })();
 
@@ -103,9 +104,9 @@ export abstract class StateAdapter {
   #focusOnSearchComponent: () => void;
 
   public attachCallback(focusCallback: () => void): this {
-    this.log.a('attachCallback');
+    const l = this.log.fnIf('attachCallback');
     this.#focusOnSearchComponent = focusCallback;
-    return this;
+    return l.rSilent(this);
   }
 
   //#endregion
@@ -119,7 +120,7 @@ export abstract class StateAdapter {
   public abstract mapper: StateUiMapperBase<number | string | string[], string[]>;
 
   /** Signal with the current values in the picker, as an array */
-  public values = computedObj('ids', () => this.mapper.toUi(this.#fieldState.uiValue()));
+  public values = computedObj('values', () => this.mapper.toUi(this.#fieldState.uiValue()));
 
   //#endregion
 

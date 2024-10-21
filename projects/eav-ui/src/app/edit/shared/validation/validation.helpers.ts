@@ -10,7 +10,7 @@ import { FieldSettingsOptionsWip, FieldSettingsSharedSeparator } from '../../../
 import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
 import { AdamControl } from '../../fields/basic/hyperlink-library/hyperlink-library.models';
 import { PickerData } from '../../fields/picker/picker-data';
-import { convertValueToArray } from '../../fields/picker/picker.helpers';
+import { convertValueToArray, pickerItemsAllowsEmpty } from '../../fields/picker/picker.helpers';
 import { FieldProps } from '../../state/fields-configs.model';
 import { ItemFieldVisibility } from '../../state/item-field-visibility';
 
@@ -52,8 +52,7 @@ export class ValidationHelpers {
    * and it can be too late to attach warning after field creation
    */
   public static ensureWarning(control: AbstractControlPro): void {
-    if (control._warning$ == null)
-      control._warning$ = new BehaviorSubject<ValidationErrors>(null);
+    control._warning$ ??= new BehaviorSubject<ValidationErrors>(null);
   }
 
   static #ensureWarningsAndGetSettingsIfNoIgnore(control: AbstractControl, specs: ValidationHelperSpecs) {
@@ -123,7 +122,7 @@ export class ValidationHelpers {
     return (control: AbstractControl): ValidationErrors | null => {
       const s = this.#ensureWarningsAndGetSettingsIfNoIgnore(control, specs);
       if (s == null || s.AllowMultiMin == 0 || s.AllowMultiMin == undefined) return null;
-      return countValues(control, s) < s.AllowMultiMin ? { minNoItems: s.AllowMultiMin } : null;
+      return countValues(control, specs, s) < s.AllowMultiMin ? { minNoItems: s.AllowMultiMin } : null;
     };
   }
 
@@ -131,7 +130,7 @@ export class ValidationHelpers {
     return (control: AbstractControl): ValidationErrors | null => {
       const s = this.#ensureWarningsAndGetSettingsIfNoIgnore(control, specs);
       if (s == null || s.AllowMultiMax == 0 || s.AllowMultiMax == undefined) return null;
-      return countValues(control, s) > s.AllowMultiMax ? { maxNoItems: s.AllowMultiMax } : null;
+      return countValues(control, specs, s) > s.AllowMultiMax ? { maxNoItems: s.AllowMultiMax } : null;
     };
   }
 
@@ -193,11 +192,23 @@ export class ValidationHelpers {
   }
 }
 
-function countValues(control: AbstractControl, s: FieldSettings & FieldSettingsOptionsWip & FieldSettingsSharedSeparator): number {
-  // console.log('2dm countValues', { value: control.value, allowsEmpty: s._allowSelectingEmpty });
-  return Array.isArray(control.value)
-    ? control.value.length
-    : convertValueToArray(control.value, s.Separator, s._allowSelectingEmpty).length;
+function countValues(control: AbstractControl, specs: ValidationHelperSpecs, s: FieldSettings & FieldSettingsOptionsWip & FieldSettingsSharedSeparator): number {
+  // If it is an array, return the length right away, since we don't need additional processing
+  if (Array.isArray(control.value))
+    return control.value.length;
+
+  // Picker Data - can be null in the first few cycles since it may not yet be initialized
+  const pd = specs.pickerData;
+  if (pd == null)
+    return convertValueToArray(control.value, s.Separator, false).length;
+
+  // TODO: probably replace with just the pd.Selected...() to get the count
+  const options = pd.optionsAll() ?? [];
+  const allowEmptyNew = pickerItemsAllowsEmpty(options);
+  const allowEmpty = s._allowSelectingEmpty;
+  console.log('2dm countValues', { value: control.value, allowEmpty, allowEmptyNew, options });
+  const length = convertValueToArray(control.value, s.Separator, allowEmpty).length;
+  return length;
 }
 
 
