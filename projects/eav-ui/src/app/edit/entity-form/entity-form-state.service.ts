@@ -4,7 +4,7 @@ import { classLog } from '../../shared/logging';
 
 /**
  * A Service to hold the form group and anything specific to a form.
- * 
+ *
  * Important: This is specific to a single entity.
  */
 @Injectable()
@@ -17,6 +17,8 @@ export class EntityFormStateService {
 
   /** Signal to determine that the form group has been initialized */
   controlsCreated = signal(false);
+
+  isSaving = signal(false);
 
   /** The Form Group */
   public readonly formGroup = new UntypedFormGroup({});

@@ -1,14 +1,16 @@
-import { CommonModule, NgClass } from '@angular/common';
-import { Component, computed, ElementRef, inject, Input, NgZone, ViewChild } from '@angular/core';
+import { AsyncPipe, CommonModule, NgClass } from '@angular/common';
+import { Component, computed, effect, ElementRef, inject, Input, NgZone, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
+import { transient } from 'projects/core';
 import { FeatureNames } from '../../../../features/feature-names';
 import { FeaturesScopedService } from '../../../../features/features-scoped.service';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { ExtendedFabSpeedDialImports } from '../../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
+import { EntityFormStateService } from '../../../entity-form/entity-form-state.service';
 import { FormsStateService } from '../../../form/forms-state.service';
 import { EditRoutingService } from '../../../routing/edit-routing.service';
 import { FieldState } from '../../field-state';
@@ -32,6 +34,7 @@ import { WrappersCatalog } from '../wrappers.constants';
     ...ExtendedFabSpeedDialImports,
     TippyDirective,
     CommonModule,
+    AsyncPipe,
   ],
 })
 // tslint:disable-next-line:max-line-length
@@ -49,12 +52,27 @@ export class DialogPopupComponent {
 
   #dropzoneDraggingHelper: DropzoneDraggingHelper;
 
+  #entityFormStateService = transient(EntityFormStateService);
+  isSaving = this.#entityFormStateService.isSaving;
+  te = this.#entityFormStateService.isSaving();
+
+  isSavingStatus: boolean;
+
+
+
   constructor(
     public formsStateService: FormsStateService,
     private featuresService: FeaturesScopedService,
     private zone: NgZone,
-  ) { }
+  ) {
 
+    effect(() => {
+      this.isSavingStatus = this.#entityFormStateService.isSaving();
+    }, { allowSignalWrites: true });
+
+
+
+  }
   open = this.fieldState.isOpen
 
   ngAfterViewInit() {
