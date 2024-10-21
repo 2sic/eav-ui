@@ -61,11 +61,11 @@ export class UiControl {
     const before = this.control.value;
     this.log.aIfInList('fields', this.name, { before, newValue }, 'setIfChanged');
     if (isEqual(newValue, this.control.value)) return;
-    this.set(newValue);
+    this.#set(newValue);
   }
 
   /** Use to update form controls value */
-  set(newValue: FieldValue): void {
+  #set(newValue: FieldValue): void {
     const control = this.control;
     const before = control.value;
     this.log.aIfInList('fields', this.name, { before, newValue }, 'set');
@@ -76,6 +76,7 @@ export class UiControl {
     if (!control.dirty && !FieldValueHelpers.fieldValuesAreEqual(before, newValue))
       control.markAsDirty();
 
+    // Note: 2024-10-21 ca. 18.02 we have some timing issues, error always seems to show previous error; maybe fixed now, otherwise revisit
     // Set value must happen at the end, otherwise errors will be late by one cycle
     // for example, they could show "required" after the value was
     control.patchValue(newValue);
@@ -114,13 +115,14 @@ export class UiControl {
   /** Calculates error message */
   getErrors(): string {
     const control = this.control;
+    const errors = control.errors;
     const l = this.log.fnIfInList('getErrors', 'fields', this.name, { control, name: this.name });
     if (!control.invalid)
       return l.r('', 'valid');
     if (!control.dirty && !control.touched)
       return l.r('', 'not dirty or touched');
 
-    for (const errorKey of Object.keys(control.errors)) {
+    for (const errorKey of Object.keys(errors)) {
       const error = (errorKey === 'formulaError')
         ? control.errors['formulaMessage'] ?? ValidationMsgHelper.messages[errorKey]?.(true)
         : ValidationMsgHelper.messages[errorKey]?.(true);
