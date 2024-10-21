@@ -9,6 +9,7 @@ export interface PickerItem {
   value: string;
 
   /** TODO: @2dg later should be required */
+  /** The previewValue to Show (Icon, etc.) */
   previewValue?: string;
 
   /** Maybe the setting for the visualizer - eg. "none", "text", "icon-font", "icon-svg", "image" */

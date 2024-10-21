@@ -22,7 +22,7 @@ const logSpecs = {
  */
 export class DataSourceMasksHelper {
 
-  log = classLog({DataSourceMasksHelper}, logSpecs);
+  log = classLog({ DataSourceMasksHelper }, logSpecs);
 
   constructor(
     private name: string,
@@ -58,7 +58,6 @@ export class DataSourceMasksHelper {
     const value = (() => {
       if (valueMustUseGuid) return entity.Guid;
 
-      // @2dg, not tested in all use case
       if (entity[masks.value] === undefined) return entity.Value;
 
       const maybe = entity[masks.value];
