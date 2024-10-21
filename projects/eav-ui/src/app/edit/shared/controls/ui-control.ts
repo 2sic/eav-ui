@@ -138,13 +138,13 @@ export class UiControl {
 
   getWarnings(): string {
     const control = this.control as AbstractControlPro;
-    if (control._warning$.value == null) { return ''; }
+    if (control._warning == null) { return ''; }
     if (!control.dirty && !control.touched) { return ''; }
 
     let warning = '';
-    for (const warningKey of Object.keys(control._warning$.value)) {
+    for (const warningKey of Object.keys(control._warning)) {
       warning = (warningKey === 'formulaWarning')
-        ? control._warning$.value['formulaMessage'] ?? this.#warningMessages[warningKey]
+        ? control._warning['formulaMessage'] ?? this.#warningMessages[warningKey]
         : this.#warningMessages[warningKey];
       if (warning) break;
     }

@@ -3,7 +3,6 @@ import { AbstractControl, ValidationErrors, ValidatorFn, Validators } from '@ang
 import { CustomJsonEditor } from 'projects/edit-types/src/FieldSettings-CustomJsonEditor';
 import { FieldSettingsNumber } from 'projects/edit-types/src/FieldSettings-Number';
 import { FieldSettingsPicker } from 'projects/edit-types/src/FieldSettings-Pickers';
-import { BehaviorSubject } from 'rxjs';
 import { Of } from '../../../../../../core';
 import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
 import { FieldSettingsOptionsWip, FieldSettingsSharedSeparator } from '../../../../../../edit-types/src/FieldSettings-Pickers';
@@ -18,7 +17,7 @@ import { ItemFieldVisibility } from '../../state/item-field-visibility';
 /** Slightly enhanced standard Abstract Control with additional warnings */
 export interface AbstractControlPro extends AbstractControl {
   // TODO: NO SUBJECT necessary, just make a simple property
-  _warning$?: BehaviorSubject<ValidationErrors>;
+  _warning?: ValidationErrors;
 }
 
 /** Validators here are copied from https://github.com/angular/angular/blob/master/packages/forms/src/validators.ts */
@@ -48,16 +47,7 @@ export class ValidationHelpers {
     return validators;
   }
 
-  /**
-   * Validations run when controls are created, but only for fields which are not disabled,
-   * and it can be too late to attach warning after field creation
-   */
-  public static ensureWarning(control: AbstractControlPro): void {
-    control._warning$ ??= new BehaviorSubject<ValidationErrors>(null);
-  }
-
   static #ensureWarningsAndGetSettingsIfNoIgnore(control: AbstractControl, specs: ValidationHelperSpecs) {
-    this.ensureWarning(control);
     const settings = specs.settings();
     if (this.#shouldIgnoreValidators(settings)) return null;
     return settings;
@@ -137,7 +127,6 @@ export class ValidationHelpers {
 
   static #jsonValidator(specs: ValidationHelperSpecs): ValidatorFn {
     return (control: AbstractControlPro): ValidationErrors | null => {
-      this.ensureWarning(control);
       const settings = specs.settings();
       let error: boolean;
       let warning: boolean;
@@ -162,14 +151,13 @@ export class ValidationHelpers {
         }
       }
 
-      control._warning$.next(warning ? { jsonWarning: true } : null);
+      control._warning = warning ? { jsonWarning: true } : null;
       return error ? { jsonError: true } : null;
     };
   }
 
   static #formulaValidate(specs: ValidationHelperSpecs): ValidatorFn {
     return (control: AbstractControlPro): ValidationErrors | null => {
-      this.ensureWarning(control);
       const formulaValidation = specs.props().formulaValidation;
 
       const { error, warning } = (() => {
@@ -182,7 +170,7 @@ export class ValidationHelpers {
         return { error: false, warning: false };
       })();
 
-      control._warning$.next(warning ? { formulaWarning: true, formulaMessage: formulaValidation.message } : null);
+      control._warning = warning ? { formulaWarning: true, formulaMessage: formulaValidation.message } : null;
       return error ? { formulaError: true, formulaMessage: formulaValidation.message } : null;
     };
   }
