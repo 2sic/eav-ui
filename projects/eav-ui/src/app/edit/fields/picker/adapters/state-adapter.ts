@@ -1,7 +1,6 @@
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { Injectable, Signal, inject } from '@angular/core';
 import { getWith } from '../../../../../../../core';
-import { PickerOptionCustom } from '../../../../../../../edit-types/src/DropdownOption';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { FieldSettingsOptionsWip, FieldSettingsPickerMerged } from '../../../../../../../edit-types/src/FieldSettings-Pickers';
 import { classLog } from '../../../../shared/logging';
@@ -78,7 +77,11 @@ export abstract class StateAdapter {
     return l.r(updated);
   });
 
-  /** Lazy Signal telling us if empty values are allowed */
+  /**
+   * Lazy Signal telling us if empty values are allowed
+   * Should ONLY be used in 'selectedItems' - and never in Values, as we would create a loop
+   * since the this will also access the possible options, which in turn is initialized using the selectedItems
+   */
   public allowsEmptyLazy = signalObj<Signal<boolean>>('allowsEmptyLazy', signalObj('initial', false));
 
   /**
@@ -87,19 +90,22 @@ export abstract class StateAdapter {
    */
   public selectedItems: Signal<PickerItem[]> = (() => {
     // Computed just to debounce changes on separator and options from field-settings (old picker)
-    const options = this.#fieldState.settingExt('_options');
+    // const options = this.#fieldState.settingExt('_options');
 
     // Find selected items and correct empty value (if there is an empty-string options)
     const l = this.log.fnIf('selectedItems');
     return computedObj('selectedItems', () => {
-      const sAndO = options();
+      // const sAndO = options();
       const uiValue = this.#fieldState.uiValue();
-      l.a('selectedItems', { uiValue, sAndO });
+      l.a('selectedItems', { uiValue /* , sAndO */ });
       const asUi = this.mapper.toUi(uiValue);
-      const uiFixed = asUi.length == 0 && this.allowsEmptyLazy()()
+      // const allowsEmpty = optionsAllowsEmpty(sAndO);
+      const pickerAllowsEmpty = this.allowsEmptyLazy()();
+      // console.log('2dm', { allowsEmpty, pickerAllowsEmpty });
+      const uiFixed = asUi.length == 0 && pickerAllowsEmpty
         ? ['']
         : asUi;
-      return this.correctStringEmptyValue(uiFixed, sAndO);
+      return this.correctStringEmptyValue(uiFixed /*, sAndO */);
     });
   })();
 
@@ -124,7 +130,10 @@ export abstract class StateAdapter {
   public abstract mapper: StateUiMapperBase<number | string | string[], string[]>;
 
   /** Signal with the current values in the picker, as an array */
-  public values = computedObj('values', () => this.mapper.toUi(this.#fieldState.uiValue()));
+  public values = computedObj('values', () => {
+    const asUi = this.mapper.toUi(this.#fieldState.uiValue());
+    return asUi;
+  });
 
   //#endregion
 
@@ -185,13 +194,16 @@ export abstract class StateAdapter {
   //#region String Empty Values
   correctStringEmptyValue(
     values: string[], // The value as an array of strings from state-adapter mapper
-    dropdownOptions: PickerOptionCustom[] // Options are used only for legacy use case is where the value is an empty string
+    // dropdownOptions: PickerOptionCustom[] // Options are used only for legacy use case is where the value is an empty string
   ): PickerItem[] {
 
-    const l = this.log.fn('correctStringEmptyValue', { valueAsArray: values, dropdownOptions });
+    const l = this.log.fn('correctStringEmptyValue', {
+      values,
+      // dropdownOptions,
+    });
 
     const result = values.map(value => {
-      const option = dropdownOptions?.find(o => o.Value == value);
+      // const option = dropdownOptions?.find(o => o.Value == value);
       return ({
         // 2024-10-21 2dm disabling this, don't think it has any effect
         // if it's a free text value or not found, disable edit and delete
@@ -201,12 +213,11 @@ export abstract class StateAdapter {
         id: null,
         label: null,
         // label: option?.Title ?? value,
-        // tooltip: `${value}`,
+        tooltip: `${value}`,
         value: value?.toString() ?? '', // safe to-string
       } satisfies PickerItem);
     });
     l.a('correctStringEmptyValue', {
-      dropdownOptions,
       values,
       result,
     });

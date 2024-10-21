@@ -71,9 +71,9 @@ export class PickerData {
     // 1. Init Prefetch - for Entity Picker
     // This will place the prefetch items into the available-items list
     // Otherwise related entities would only show as GUIDs.
-    const initiallySelected = state.selectedItems();
+    const initiallySelected = state.values(); //.selectedItems();
     l.a('setup', { initiallySelected })
-    source.initPrefetch(initiallySelected.map(item => item.value));
+    source.initPrefetch(initiallySelected); //.map(item => item.value));
     return l.rSilent(this);
   }
 
