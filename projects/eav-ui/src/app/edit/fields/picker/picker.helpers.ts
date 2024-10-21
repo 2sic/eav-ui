@@ -9,7 +9,8 @@ export function correctStringEmptyValue(
   dropdownOptions: PickerOptionCustom[] // Options are used only for legacy use case is where the value is an empty string
 ): PickerItem[] {
 
-  const log = classLog({correctStringEmptyValue}, null);
+  const log = classLog({correctStringEmptyValue}, null, true);
+  const l = log.fn('correctStringEmptyValue', { valueAsArray, dropdownOptions });
 
   const result = valueAsArray.map(value => {
     const option = dropdownOptions?.find(o => o.Value == value);
@@ -25,16 +26,19 @@ export function correctStringEmptyValue(
     } satisfies PickerItem);
   });
 
-  log.a('correctStringEmptyValue', {
+  l.a('correctStringEmptyValue', {
     dropdownOptions,
     valueAsArray,
     result,
   });
-  return result;
+  return l.r(result);
 }
 
 export function optionsAllowsEmpty(dropdownOptions?: PickerOptionCustom[]): boolean {
   return dropdownOptions?.some(o => o.Value == '');
+}
+export function pickerItemsAllowsEmpty(dropdownOptions?: PickerItem[]): boolean {
+  return dropdownOptions?.some(o => o.value == '');
 }
 
 /** Convert string value in string array if a value is type string */

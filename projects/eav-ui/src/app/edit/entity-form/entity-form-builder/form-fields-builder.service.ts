@@ -58,6 +58,7 @@ export class FormFieldsBuilderService {
       const newControl = this.formBuilder.control({ disabled, value: initialValue }, validators);
       // TODO: build all fields at once. That should be faster
       form.addControl(fieldName, newControl);
+      // Must ensure warnings are added because the UI may access them before validators try to do this.
       ValidationHelpers.ensureWarning(form.controls[fieldName]);
     }
 
