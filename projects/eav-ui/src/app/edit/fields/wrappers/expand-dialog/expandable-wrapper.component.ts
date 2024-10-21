@@ -1,25 +1,18 @@
-import { CommonModule, JsonPipe, NgClass, NgStyle } from '@angular/common';
-import { AfterViewInit, ChangeDetectorRef, Component, computed, ElementRef, inject, NgZone, OnDestroy, signal, ViewChild, ViewContainerRef } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatRippleModule } from '@angular/material/core';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { TranslateModule } from '@ngx-translate/core';
+import { CommonModule } from "@angular/common";
+import { AfterViewInit, ChangeDetectorRef, Component, computed, ElementRef, inject, NgZone, OnDestroy, signal, ViewChild, ViewContainerRef } from "@angular/core";
 import { transient } from '../../../../../../../core/transient';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { vh } from '../../../../shared/helpers/viewport.helpers';
 import { classLog } from '../../../../shared/logging';
-import { ExtendedFabSpeedDialImports } from '../../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
-import { FormsStateService } from '../../../form/forms-state.service';
-import { ConnectorHelper } from '../../connector/connector.helper';
-import { FieldState } from '../../field-state';
-import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
-import { DialogPopupComponent } from '../dialog-popup/dialog-popup.component';
-import { DropzoneDraggingHelper } from '../dropzone-dragging.helper';
-import { WrappersCatalog } from '../wrappers.constants';
-import { ContentExpandAnimation } from './content-expand.animation';
-import { PreviewHeight } from './expandable-wrapper.models';
+import { FormsStateService } from "../../../form/forms-state.service";
+import { ConnectorHelper } from "../../connector/connector.helper";
+import { FieldState } from "../../field-state";
+import { FieldHelperTextComponent } from "../../help-text/field-help-text.component";
+import { DialogPopupComponent } from "../dialog-popup/dialog-popup.component";
+import { DropzoneDraggingHelper } from "../dropzone-dragging.helper";
+import { WrappersCatalog } from "../wrappers.constants";
+import { ContentExpandAnimation } from "./content-expand.animation";
+import { PreviewHeight } from "./expandable-wrapper.models";
 
 @Component({
   selector: WrappersCatalog.ExpandableWrapper,
@@ -27,23 +20,13 @@ import { PreviewHeight } from './expandable-wrapper.models';
   styleUrls: ['./expandable-wrapper.component.scss'],
   animations: [ContentExpandAnimation],
   standalone: true,
-  // TODO: @2pp - this still has imports which are not used anymore, since the dialog-popup is now a standalone component
-  // Pls review and clean up.
   imports: [
-    NgClass,
-    MatCardModule,
-    MatButtonModule,
-    MatIconModule,
-    MatRippleModule,
-    MatFormFieldModule,
-    NgStyle,
     FieldHelperTextComponent,
-    TranslateModule,
-    JsonPipe,
-    ...ExtendedFabSpeedDialImports,
     DialogPopupComponent,
     CommonModule,
-  ],
+    DialogPopupComponent,
+    FieldHelperTextComponent
+],
 })
 export class ExpandableWrapperComponent implements AfterViewInit, OnDestroy {
   
