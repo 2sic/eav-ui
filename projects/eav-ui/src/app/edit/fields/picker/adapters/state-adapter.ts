@@ -44,9 +44,6 @@ export abstract class StateAdapter {
 
   protected readonly settings = this.#fieldState.settings;
 
-  // TODO: @2dm - probably move to PickerData
-  public isInFreeTextMode = signalObj('isInFreeTextMode', false);
-
   /** The features this source will broadcast, to be merged with other features */
   public myFeatures = signalObj('features', {} as Partial<PickerFeatures>);
 
@@ -178,7 +175,4 @@ export abstract class StateAdapter {
 
   //#endregion
 
-  toggleFreeTextMode(): void {
-    this.isInFreeTextMode.update(p => !p);
-  }
 }

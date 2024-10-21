@@ -203,4 +203,14 @@ export class PickerData {
     });
     return l.r(result);
   }
+
+  //#region Text Mode
+
+  public isInFreeTextMode = signalObj('isInFreeTextMode', false);
+
+  toggleFreeTextMode(): void {
+    this.isInFreeTextMode.update(p => !p);
+  }
+  
+  //#endregion
 }
