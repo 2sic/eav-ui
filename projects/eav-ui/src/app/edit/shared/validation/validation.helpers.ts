@@ -10,7 +10,7 @@ import { FieldSettingsOptionsWip, FieldSettingsSharedSeparator } from '../../../
 import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
 import { AdamControl } from '../../fields/basic/hyperlink-library/hyperlink-library.models';
 import { PickerData } from '../../fields/picker/picker-data';
-import { convertValueToArray, pickerItemsAllowsEmpty } from '../../fields/picker/picker.helpers';
+import { convertValueToArray } from '../../fields/picker/picker.helpers';
 import { FieldProps } from '../../state/fields-configs.model';
 import { ItemFieldVisibility } from '../../state/item-field-visibility';
 
@@ -203,10 +203,11 @@ function countValues(control: AbstractControl, specs: ValidationHelperSpecs, s: 
     return convertValueToArray(control.value, s.Separator, false).length;
 
   // TODO: probably replace with just the pd.Selected...() to get the count
-  const options = pd.optionsAll() ?? [];
-  const allowEmptyNew = pickerItemsAllowsEmpty(options);
+  // const options = pd.optionsAll() ?? [];
+  // const allowEmptyNew = pickerItemsAllowsEmpty(options);
   const allowEmpty = s._allowSelectingEmpty;
-  console.log('2dm countValues', { value: control.value, allowEmpty, allowEmptyNew, options });
+  const allowEmptyFromPd = pd.optionsAllowsEmpty();
+  console.log('2dm countValues', { value: control.value, allowEmpty, allowEmptyFromPd });
   const length = convertValueToArray(control.value, s.Separator, allowEmpty).length;
   return length;
 }
