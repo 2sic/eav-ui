@@ -193,14 +193,8 @@ function countValues(control: AbstractControl, specs: ValidationHelperSpecs, s: 
   if (pd == null)
     return convertValueToArray(control.value, s.Separator, false).length;
 
-  // TODO: probably replace with just the pd.Selected...() to get the count
-  // const options = pd.optionsAll() ?? [];
-  // const allowEmptyNew = pickerItemsAllowsEmpty(options);
-  const allowEmpty = s._allowSelectingEmpty;
-  const allowEmptyFromPd = pd.optionsAllowsEmpty();
-  console.log('2dm countValues', { value: control.value, allowEmpty, allowEmptyFromPd });
-  const length = convertValueToArray(control.value, s.Separator, allowEmpty).length;
-  return length;
+  // PickerData SelectedAll will also contain an empty selected item if the field allows empty values
+  return pd.selectedAll().length;
 }
 
 
