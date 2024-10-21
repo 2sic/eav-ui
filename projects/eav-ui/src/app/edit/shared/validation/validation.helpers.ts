@@ -9,7 +9,6 @@ import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
 import { FieldSettingsOptionsWip, FieldSettingsSharedSeparator } from '../../../../../../edit-types/src/FieldSettings-Pickers';
 import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
 import { AdamControl } from '../../fields/basic/hyperlink-library/hyperlink-library.models';
-import { PickerData } from '../../fields/picker/picker-data';
 import { convertValueToArray } from '../../fields/picker/picker.helpers';
 import { FieldProps } from '../../state/fields-configs.model';
 import { ItemFieldVisibility } from '../../state/item-field-visibility';
@@ -211,17 +210,10 @@ export class ValidationHelperSpecs {
     settings: Signal<FieldSettings>,
     /** The field properties an updated on every formula cycle */
     public props: Signal<FieldProps>,
-    /** Delayed get pickers data */
-    private pickersGet: () => Record<string, PickerData>,
   ) {
     this.settings = settings as Signal<FieldSettings & FieldSettingsSharedSeparator & CustomJsonEditor & FieldSettingsNumber & FieldSettingsPicker & FieldSettingsOptionsWip>;
   }
 
   /** The settings cast in a way that it should have all relevant properties */
   settings: Signal<FieldSettings & FieldSettingsSharedSeparator & CustomJsonEditor & FieldSettingsNumber & FieldSettingsPicker & FieldSettingsOptionsWip>;
-
-  /** Get the pickers for this field */
-  get pickerData(): PickerData {
-    return this.pickersGet()?.[this.fieldName] ?? null;
-  }
 }
