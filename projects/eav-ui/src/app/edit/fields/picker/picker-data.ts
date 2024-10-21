@@ -1,4 +1,4 @@
-import { inject, Injectable, Signal } from '@angular/core';
+import { effect, inject, Injectable, Signal } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { getWith } from '../../../../../../core';
 import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
@@ -10,16 +10,18 @@ import { DataAdapterBase } from './adapters/data-adapter-base';
 import { StateAdapter } from "./adapters/state-adapter";
 import { PickerItem } from './models/picker-item.model';
 import { mergePickerFeatures, PickerFeatures, PickerFeaturesForControl } from './picker-features.model';
+import { pickerItemsAllowsEmpty } from './picker.helpers';
 
 const logSpecs = {
-  all: false,
+  all: true,
   setup: false,
   addInfosFromSourceForUi: false,
   optionsWithMissing: false,
   selectedRaw: false,
   selectedOverride: false,
   selectedState: false,
-  features: true,
+  features: false,
+  allOptions: true,
   fields: [...DebugFields, '*'],
 }
 
@@ -39,7 +41,17 @@ export class PickerData {
 
   name: string;
 
-  constructor() { }
+  constructor() {
+    if (this.log.enabled && this.log.specs.allOptions) {
+      effect(() => {
+        const ready = this.ready();
+        const raw = this.optionsRaw();
+        const override = this.optionsOverride();
+        const final = this.optionsAll();
+        this.log.a('options', { ready, raw, override, final });
+      });
+    }
+  }
 
   /** Setup to load initial values and initialize the state */
   public setup(name: string, settings: Signal<FieldSettings>, state: StateAdapter, source: DataAdapterBase): this {
@@ -52,7 +64,8 @@ export class PickerData {
     this.source = source;
 
     // Setup the State so it is able to do it's work based on data it wouldn't have otherwise
-    this.state.features = this.features;
+    state.features = this.features;
+    state.allowsEmptyLazy.set(this.#optionsAllowsEmpty);
 
     this.ready.set(true);
     // 1. Init Prefetch - for Entity Picker
@@ -90,7 +103,7 @@ export class PickerData {
    * Inform the system that the sources are ready.
    * WIP experimenting with making it public, so that formulas can delay running dependant function.
    */
-  ready = signalObj('sourceIsReady', false);
+  public ready = signalObj('sourceIsReady', false);
 
   /** Options to show in the picker. Can also show hints if something is wrong. Must be initialized at setup */
   public optionsRaw = computedObj('optionsSource', () => (this.ready() ? this.source.optionsOrHints() : null) ?? []);
@@ -100,6 +113,9 @@ export class PickerData {
 
   /** Final Options to show in the picker and to use to calculate labels of selected etc. */
   public optionsAll = computedObj('optionsFinal', () => getWith(this.optionsOverride(), o => o ? o : this.optionsRaw()));
+
+  /** Special information for string pickers which allow empty to be valid selection */
+  #optionsAllowsEmpty = computedObj('optionsAllowsEmpty', () => pickerItemsAllowsEmpty(this.optionsAll()));
 
   //#endregion
 
@@ -211,6 +227,6 @@ export class PickerData {
   toggleFreeTextMode(): void {
     this.isInFreeTextMode.update(p => !p);
   }
-  
+
   //#endregion
 }
