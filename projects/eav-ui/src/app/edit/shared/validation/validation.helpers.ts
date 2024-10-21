@@ -17,6 +17,7 @@ import { ItemFieldVisibility } from '../../state/item-field-visibility';
 
 /** Slightly enhanced standard Abstract Control with additional warnings */
 export interface AbstractControlPro extends AbstractControl {
+  // TODO: NO SUBJECT necessary, just make a simple property
   _warning$?: BehaviorSubject<ValidationErrors>;
 }
 

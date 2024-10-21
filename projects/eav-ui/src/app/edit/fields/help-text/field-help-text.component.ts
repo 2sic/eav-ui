@@ -57,7 +57,7 @@ export class FieldHelperTextComponent {
 
   isEmpty = computedObj('isEmpty', () => !this.notes() && !this.showErrors());
 
-  errorMessage = computedObj('errorMessage', () => this.fieldState.ui().getErrors(this.fieldState.config));
+  errorMessage = computedObj('errorMessage', () => this.fieldState.ui().getErrors());
 
   warningMessage = computedObj('warningMessage', () => this.fieldState.ui().getWarnings());
 

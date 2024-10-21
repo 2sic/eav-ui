@@ -3,7 +3,6 @@ import isEqual from 'lodash-es/isEqual';
 import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
 import { classLog } from '../../../shared/logging';
 import { DebugFields } from '../../edit-debug';
-import { FieldConfigSet } from '../../fields/field-config-set.model';
 import { FieldValueHelpers } from '../helpers/field-value.helpers';
 import { ValidationMsgHelper } from '../validation/validation-messages.helpers';
 import { AbstractControlPro } from '../validation/validation.helpers';
@@ -15,7 +14,7 @@ const logSpecs = {
   set: false,
   disable: false,
   getErrors: true,
-  fields: [...DebugFields, 'minValue'],
+  fields: [...DebugFields, '*'],
 };
 
 const pfx = 'ValidationMessage.';
@@ -43,13 +42,10 @@ export class UiControl {
     return new UiControl({ dirty: false, invalid: false, touched: false, value: null, disabled: false } as AbstractControl);
   }
 
-  //#region simple direct properties
+  //#region simple direct properties & complex properties
   get dirty() { return this.control.dirty; }
   get invalid() { return this.control.invalid; }
   get touched() { return this.control.touched; }
-  //#endregion
-
-  //#region complex properties
   get disabled() { return this.control.disabled || this.moreDisabled; }
   get touchedAndInvalid() { return this.control.touched && this.control.invalid; }
   //#endregion
@@ -116,17 +112,20 @@ export class UiControl {
   //#endregion
 
   /** Calculates error message */
-  getErrors(config: FieldConfigSet): string {
+  getErrors(): string {
     const control = this.control;
-    const l = this.log.fnIfInList('getErrors', 'fields', config.fieldName, { control, config });
-    if (!control.invalid) return l.r('', 'valid');
-    if (!control.dirty && !control.touched) return l.r('', 'not dirty or touched');
+    const l = this.log.fnIfInList('getErrors', 'fields', this.name, { control, name: this.name });
+    if (!control.invalid)
+      return l.r('', 'valid');
+    if (!control.dirty && !control.touched)
+      return l.r('', 'not dirty or touched');
 
     for (const errorKey of Object.keys(control.errors)) {
       const error = (errorKey === 'formulaError')
-        ? control.errors['formulaMessage'] ?? ValidationMsgHelper.validationMessages[errorKey]?.(config)
-        : ValidationMsgHelper.validationMessages[errorKey]?.(config);
-      if (error) return l.r(error, 'error found');
+        ? control.errors['formulaMessage'] ?? ValidationMsgHelper.messages[errorKey]?.(true)
+        : ValidationMsgHelper.messages[errorKey]?.(true);
+      if (error)
+        return l.r(error, 'error found');
     }
 
     return l.r('', 'no error');
