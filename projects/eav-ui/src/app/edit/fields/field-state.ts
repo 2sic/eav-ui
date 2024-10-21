@@ -27,6 +27,7 @@ export class FieldState<TValue extends FieldValue = FieldValue, TSettings extend
     /** The form group containing the field - rarely relevant, as you should use the control in most cases */
     public group: UntypedFormGroup,
 
+    // TODO: @2pp try to find out where this is used just to create a signal for a property
     /** The settings as a signal - use this for most cases */
     public settings: Signal<TSettings>,
 
