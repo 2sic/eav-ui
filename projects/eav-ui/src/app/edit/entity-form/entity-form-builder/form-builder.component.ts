@@ -43,10 +43,9 @@ export class EntityFormBuilderComponent implements OnInit, OnDestroy {
   @Input() entityGuid: string;
   @Input() index: number;
 
-
   log = classLog({EntityFormBuilderComponent}, logSpecs);
 
-  /** Inject and start the form state service */
+  /** Inject the form state service to start it here */
   #formStateSvc = inject(EntityFormStateService);
 
   #formulaDesignerService = inject(FormulaDesignerService);
@@ -59,7 +58,7 @@ export class EntityFormBuilderComponent implements OnInit, OnDestroy {
   #fieldsSyncSvc = transient(FormFieldsSyncService);
   #formSyncSvc = transient(EntityFormSyncService);
 
-  constructor( ) { }
+  constructor() { }
 
   public form = this.#formStateSvc.formGroup;
 
@@ -70,12 +69,12 @@ export class EntityFormBuilderComponent implements OnInit, OnDestroy {
     this.#formulaDesignerService.itemSettingsServices[entityGuid] = this.#fieldsSettingsSvc;
     this.#fieldsTranslateSvc.init(entityGuid);
 
-    const ftp$ = this.getFieldsToProcess$(entityGuid);
+    const fields$ = this.#getFieldsToProcess$(entityGuid);
 
     // Create all the controls in the form right at the beginning
-    ftp$.pipe(take(1)).subscribe(allFields => this.#formFieldsBuilderService.createFields(entityGuid, this.form, allFields));
+    fields$.pipe(take(1)).subscribe(allFields => this.#formFieldsBuilderService.createFields(entityGuid, this.form, allFields));
 
-    this.#fieldsSyncSvc.keepFieldsAndStateInSync(this.form, ftp$);
+    this.#fieldsSyncSvc.keepFieldsAndStateInSync(this.form, fields$);
 
     // Sync state to parent: dirty, isValid, value changes
     this.#formSyncSvc.setupSync(entityGuid);
@@ -85,12 +84,10 @@ export class EntityFormBuilderComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.#fieldsSettingsSvc.disableForCleanUp();
-    Object.values(this.form.controls).forEach((control: AbstractControlPro) => {
-      control._warning$.complete();
-    });
+    Object.values(this.form.controls).forEach((control: AbstractControlPro) => control._warning$.complete());
   }
 
-  getFieldsToProcess$(entityGuid: string): Observable<FieldInitSpecs[]> {
+  #getFieldsToProcess$(entityGuid: string): Observable<FieldInitSpecs[]> {
     const l = this.log.fnIf('getFieldsToProcess', null, entityGuid);
     const form = this.form;
 
@@ -103,14 +100,14 @@ export class EntityFormBuilderComponent implements OnInit, OnDestroy {
         filter(fields => fields != null && Object.keys(fields).length > 0),
         map(allFields => {
           const fields: FieldInitSpecs[] = Object.entries(allFields)
-            .map(([fieldName, fieldProps]) => {
-              const hasControl = form.controls.hasOwnProperty(fieldName);
-              const control = hasControl ? form.controls[fieldName] : null;
+            .map(([name, props]) => {
+              const hasControl = form.controls.hasOwnProperty(name);
+              const control = hasControl ? form.controls[name] : null;
               return {
-                name: fieldName,
-                props: fieldProps,
-                inputType: fieldProps.constants.inputTypeSpecs.inputType,
-                value: fieldProps.value,
+                name,
+                props,
+                inputType: props.constants.inputTypeSpecs.inputType,
+                value: props.value,
                 hasControl,
                 control,
               } satisfies FieldInitSpecs;

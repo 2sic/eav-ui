@@ -39,7 +39,7 @@ export class FieldStateInjectorFactory {
   #injector = inject(Injector);
   #envInjector = inject(EnvironmentInjector);
   #fieldsSettingsSvc = inject(FieldsSettingsService);
-  #entityForm = inject(EntityFormStateService);
+  #entityFormStateSvc = inject(EntityFormStateService);
   #featuresSvc = inject(FeaturesScopedService);
 
   #editRoutingService = inject(EditRoutingService);
@@ -66,7 +66,7 @@ export class FieldStateInjectorFactory {
     const basics = computedObj('basics', () => BasicControlSettings.fromSettings(settings()));
 
     // Control and Control Status
-    const formGroup = this.#entityForm.formGroup;
+    const formGroup = this.#entityFormStateSvc.formGroup;
     const control = formGroup.controls[name];    
     const controlStatusChangeSignal = this.#buildUiSignal(name, control, inputType, settings);
 
@@ -101,7 +101,8 @@ export class FieldStateInjectorFactory {
       this.#injector,
     );
 
-    return l.r(this.#createInjectors(fieldState));
+    const injectors = this.#createInjectors(fieldState);
+    return l.r(injectors);
   }
 
   /**

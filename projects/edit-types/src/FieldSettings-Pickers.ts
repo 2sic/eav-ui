@@ -3,9 +3,6 @@ import { PickerConfigs } from '../../eav-ui/src/app/edit/fields/picker/constants
 import { PickerOptionCustom } from './DropdownOption';
 import { UiPickerModeTree } from './PickerModeTree';
 
-
-
-
 //#region Picker Shared Field Sets
 
 /**
@@ -16,6 +13,8 @@ import { UiPickerModeTree } from './PickerModeTree';
  */
 export interface FieldSettingsOptionsWip {
   _options: PickerOptionCustom[];
+  /** If the options contains an empty value, then it is a valid selection */
+  _allowSelectingEmpty: boolean;
 }
 
 export interface FieldSettingsPickerMasks {

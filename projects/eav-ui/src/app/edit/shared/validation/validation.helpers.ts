@@ -9,8 +9,9 @@ import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
 import { FieldSettingsOptionsWip, FieldSettingsSharedSeparator } from '../../../../../../edit-types/src/FieldSettings-Pickers';
 import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
 import { AdamControl } from '../../fields/basic/hyperlink-library/hyperlink-library.models';
+import { PickerData } from '../../fields/picker/picker-data';
 import { convertValueToArray } from '../../fields/picker/picker.helpers';
-import { FieldsSettingsService } from '../../state/fields-settings.service';
+import { FieldProps } from '../../state/fields-configs.model';
 import { ItemFieldVisibility } from '../../state/item-field-visibility';
 
 
@@ -169,8 +170,7 @@ export class ValidationHelpers {
   static #formulaValidate(specs: ValidationHelperSpecs): ValidatorFn {
     return (control: AbstractControlPro): ValidationErrors | null => {
       this.ensureWarning(control);
-      const fieldProps = specs.fieldsSettingsService.fieldProps[specs.fieldName]();
-      const formulaValidation = fieldProps.formulaValidation;
+      const formulaValidation = specs.props().formulaValidation;
 
       const { error, warning } = (() => {
         if (this.#shouldIgnoreValidators(specs.settings()) || formulaValidation == null)
@@ -194,22 +194,34 @@ export class ValidationHelpers {
 }
 
 function countValues(control: AbstractControl, s: FieldSettings & FieldSettingsOptionsWip & FieldSettingsSharedSeparator): number {
+  // console.log('2dm countValues', { value: control.value, allowsEmpty: s._allowSelectingEmpty });
   return Array.isArray(control.value)
     ? control.value.length
-    : convertValueToArray(control.value, s.Separator, s._options).length;
+    : convertValueToArray(control.value, s.Separator, s._allowSelectingEmpty).length;
 }
 
 
 export class ValidationHelperSpecs {
   constructor(
+    /** The Field Name */
     public fieldName: string,
+    /** The Input Type */
     public inputType: Of<typeof InputTypeCatalog>,
+    /** The settings, but must be re-cast so the system knows it has more properties */
     settings: Signal<FieldSettings>,
-    // public properties: Signal<FieldProps>,
-    // TODO: GET RID OF THIS as soon as we have a signal for the fieldProps
-    public fieldsSettingsService: FieldsSettingsService
+    /** The field properties an updated on every formula cycle */
+    public props: Signal<FieldProps>,
+    /** Delayed get pickers data */
+    private pickersGet: () => Record<string, PickerData>,
   ) {
     this.settings = settings as Signal<FieldSettings & FieldSettingsSharedSeparator & CustomJsonEditor & FieldSettingsNumber & FieldSettingsPicker & FieldSettingsOptionsWip>;
   }
+
+  /** The settings cast in a way that it should have all relevant properties */
   settings: Signal<FieldSettings & FieldSettingsSharedSeparator & CustomJsonEditor & FieldSettingsNumber & FieldSettingsPicker & FieldSettingsOptionsWip>;
+
+  /** Get the pickers for this field */
+  get pickerData(): PickerData {
+    return this.pickersGet()?.[this.fieldName] ?? null;
+  }
 }

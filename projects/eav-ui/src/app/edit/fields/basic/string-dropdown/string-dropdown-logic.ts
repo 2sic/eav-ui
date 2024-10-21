@@ -4,6 +4,7 @@ import { FieldSettingsPickerMerged, StringDropdown } from '../../../../../../../
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
 import { PickerLogicShared } from '../../picker/picker-logic-shared';
+import { optionsAllowsEmpty } from '../../picker/picker.helpers';
 import { calculateDropdownOptions } from '../string-picker/string-picker.helpers';
 
 export class StringDropdownLogic extends FieldLogicBase {
@@ -13,25 +14,26 @@ export class StringDropdownLogic extends FieldLogicBase {
   constructor() { super({ StringDropdownLogic }); }
 
   update({ settings, value }: FieldLogicUpdate<string>): FieldSettings {
-    const fixedSettings = PickerLogicShared.setDefaultSettings({ ...settings }) as FieldSettings & StringDropdown & FieldSettingsPickerMerged;
+    const fs = PickerLogicShared.setDefaultSettings({ ...settings }) as FieldSettings & StringDropdown & FieldSettingsPickerMerged;
     // fixedSettings.EnableTextEntry ??= false;
     // fixedSettings.DropdownValues ??= '';
     // fixedSettings.DropdownValuesFormat ??= '';// maybe we should change this to 'value-label' in the future
-    fixedSettings._options = calculateDropdownOptions(value, this.type, fixedSettings.DropdownValuesFormat || '', fixedSettings.DropdownValues || '');
+    fs._options = calculateDropdownOptions(value, this.type, fs.DropdownValuesFormat || '', fs.DropdownValues || '');
+    fs._allowSelectingEmpty = optionsAllowsEmpty(fs._options);
     
     // Both the query type and create-type are the same
-    fixedSettings.EntityType ??= '';
-    fixedSettings.CreateTypes = fixedSettings.EntityType;
+    fs.EntityType ??= '';
+    fs.CreateTypes = fs.EntityType;
 
-    fixedSettings.EnableEdit ??= false;
-    fixedSettings.EnableCreate ??= false;
+    fs.EnableEdit ??= false;
+    fs.EnableCreate ??= false;
     // fixedSettings.EnableAddExisting ??= true;
     // fixedSettings.EnableDelete ??= false;
     // if multi-value is ever allowed, then we must also enable remove
     // since we're migrating to pickers, we don't plan to implement multi-value dropdowns here
     // fixedSettings.AllowMultiValue ??= false;
-    fixedSettings.EnableRemove ??= fixedSettings.AllowMultiValue;
-    return fixedSettings;
+    fs.EnableRemove ??= fs.AllowMultiValue;
+    return fs;
   }
 }
 

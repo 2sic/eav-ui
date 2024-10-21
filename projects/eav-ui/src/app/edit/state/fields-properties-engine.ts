@@ -56,8 +56,7 @@ export class FieldsPropsEngine {
   public modifiedChecker: FieldsValuesModifiedHelper;
   #fieldsValues: FieldsSignalsHelper;
 
-  constructor() {
-  }
+  constructor() { }
 
   /** Setup everything which won't change throughout cycles */
   init(

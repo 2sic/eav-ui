@@ -33,13 +33,17 @@ export function correctStringEmptyValue(
   return result;
 }
 
+export function optionsAllowsEmpty(dropdownOptions?: PickerOptionCustom[]): boolean {
+  return dropdownOptions?.some(o => o.Value == '');
+}
+
 /** Convert string value in string array if a value is type string */
-export function convertValueToArray(value: string | string[], separator: string, dropdownOptions?: PickerOptionCustom[]): string[] {
+export function convertValueToArray(value: string | string[], separator: string, emptyIsValid: boolean): string[] {
   // Special case: String-picker old with "empty" being selected
   // In most dropdowns, empty would mean not-selected, but in string-dropdowns, it _can_ be a valid value
   // So we must check if there is an empty value in the dropdown options
   // And if this is true, return an array with an empty string being "selected"
-  if (value == '' && dropdownOptions?.some(o => o.Value == ''))
+  if (value == '' && emptyIsValid)
     return [''];
 
   if (value == '' || !value) return [];
