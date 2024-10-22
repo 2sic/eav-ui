@@ -3,7 +3,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { transient } from '../../../../../../../core/transient';
-import { SignalEquals } from '../../../../../app/shared/signals/signal-equals';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { classLog } from '../../../../shared/logging';
 import { FieldMask, UrlHelpers } from '../../../shared/helpers';
@@ -38,7 +37,7 @@ export class StringUrlPathComponent {
   protected basics = this.fieldState.basics;
 
   /** The mask to use comes from the field settings */
-  #maskFromSettings = computed(() => this.fieldState.settings().AutoGenerateMask, SignalEquals.string);
+  #maskFromSettings = this.fieldState.settingExt('AutoGenerateMask');
 
   /**
    * Blocks external update if field was changed manually and doesn't match external updates.

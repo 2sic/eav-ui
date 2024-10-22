@@ -55,7 +55,7 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
   protected buttonAdam = computed(() => this.settings().Buttons.includes('adam'), SignalEquals.bool);
   protected buttonPage = computed(() => this.settings().Buttons.includes('page'), SignalEquals.bool);
   protected buttonMore = computed(() => this.settings().Buttons.includes('more'), SignalEquals.bool);
-  protected showAdam = computed(() => this.settings().ShowAdam, SignalEquals.bool);
+  protected showAdam = this.fieldState.settingExt('ShowAdam');
   protected showPagePicker = this.fieldState.settingExt('ShowPagePicker');
   protected showImageManager = this.fieldState.settingExt('ShowImageManager');
   protected showFileManager = this.fieldState.settingExt('ShowFileManager');

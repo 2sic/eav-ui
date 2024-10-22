@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { Component, ViewChild, ViewContainerRef, computed, inject } from '@angular/core';
+import { Component, ViewChild, ViewContainerRef, inject } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { EmptyDefault } from 'projects/edit-types/src/FieldSettings-EmptyDefault';
@@ -38,7 +38,7 @@ export class CollapsibleWrapperComponent {
   protected basics = this.#fieldState.basics;
 
   /** Collapsed state - will be updated in various scenarios */
-  collapsed = computed(() => this.#fieldState.settings().Collapsed);
+  collapsed= this.#fieldState.settingExt('Collapsed');
 
   #fieldsSettingsSvc = inject(FieldsSettingsService);
 
