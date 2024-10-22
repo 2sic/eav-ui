@@ -1,15 +1,14 @@
-import { Component, computed, inject } from '@angular/core';
-import { NumberDefaultLogic } from './number-default-logic';
 import { AsyncPipe } from '@angular/common';
-import { MatInputModule } from '@angular/material/input';
+import { Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
-import { FieldState } from '../../field-state';
-import { FieldMetadata } from '../../field-metadata.decorator';
-import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
+import { MatInputModule } from '@angular/material/input';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { SignalEquals } from '../../../../shared/signals/signal-equals';
+import { FieldMetadata } from '../../field-metadata.decorator';
+import { FieldState } from '../../field-state';
+import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
+import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
+import { NumberDefaultLogic } from './number-default-logic';
 
 @Component({
   selector: InputTypeCatalog.NumberDefault,
@@ -32,11 +31,10 @@ export class NumberDefaultComponent {
   protected group = this.fieldState.group;
   protected config = this.fieldState.config;
 
-  protected settings = this.fieldState.settings;
   protected basics = this.fieldState.basics;
 
-  protected min = computed(() => this.settings().Min, SignalEquals.number);
-  protected max = computed(() => this.settings().Max, SignalEquals.number);
+  protected min = this.fieldState.settingExt('Min');
+  protected max = this.fieldState.settingExt('Max');
 
   constructor() {
     NumberDefaultLogic.importMe();
