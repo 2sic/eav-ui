@@ -1,4 +1,4 @@
-import { Component, HostBinding, OnInit, signal } from '@angular/core';
+import { Component, computed, HostBinding, signal, WritableSignal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -13,7 +13,7 @@ import { dropdownInsertValue } from '../../../shared/constants/dropdown-insert-v
 import { eavConstants, ScopeOption } from '../../../shared/constants/eav.constants';
 import { ClickStopPropagationDirective } from '../../../shared/directives/click-stop-propagation.directive';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
-import { ContentInfo, ContentInfoEntity, ContentInfoTemplate } from '../../models/content-info.model';
+import { ContentInfoEntity, ContentInfoTemplate } from '../../models/content-info.model';
 import { ContentTypesService } from '../../services/content-types.service';
 import { ExportAppPartsService } from '../../services/export-app-parts.service';
 
@@ -37,32 +37,31 @@ import { ExportAppPartsService } from '../../services/export-app-parts.service';
     MatDialogModule,
   ],
 })
-export class ExportAppPartsComponent implements OnInit {
+export class ExportAppPartsComponent {
   @HostBinding('className') hostClass = 'dialog-component';
 
   #exportAppPartsSvc = transient(ExportAppPartsService);
   #contentTypesSvc = transient(ContentTypesService);
 
-  exportScope = eavConstants.scopes.default.value;
-  lockScope = true;
-  dropdownInsertValue = dropdownInsertValue;
-
-  loading = signal(false);
-  isExporting = signal(false);
-  scopeOptions = signal<ScopeOption[]>([]);
-  contentInfo = signal<ContentInfo>(undefined);
-
-  // TODO: @2dg new getContentInfoSig
-  // contentInfoNew = computed(() => {
-  //   this.#exportAppPartsSvc.getContentInfoSig(this.exportScope)
-  // });
-
   constructor() { }
 
-  ngOnInit() {
-    this.#fetchScopes();
-    this.#fetchContentInfo();
-  }
+  lockScope = true;
+  dropdownInsertValue = dropdownInsertValue;
+  isExporting = signal(false);
+  exportScope = signal(eavConstants.scopes.default.value);
+
+  contentInfo = computed(() => {
+    const exportScope = this.exportScope();
+    return this.#exportAppPartsSvc.getContentInfo(exportScope, null)
+  });
+
+  scopeOptions = this.#contentTypesSvc.getScopesSig(null) as WritableSignal<ScopeOption[]>;
+
+  loading = computed(() => {
+    const contentInfo = this.contentInfo();
+    const scopeOptions = this.scopeOptions();
+    return !contentInfo || !scopeOptions;
+  });
 
   exportAppParts() {
     this.isExporting.set(true);
@@ -91,47 +90,24 @@ export class ExportAppPartsComponent implements OnInit {
         this.scopeOptions.set(scopeOptionsTemp);
       }
     }
-    this.exportScope = newScope;
-    this.#fetchContentInfo();
+    this.exportScope.set(newScope);
   }
 
   unlockScope() {
     this.lockScope = !this.lockScope;
     if (this.lockScope) {
-      this.exportScope = eavConstants.scopes.default.value;
-      this.#fetchContentInfo();
+      this.exportScope.set(eavConstants.scopes.default.value);
+
     }
   }
 
-  #fetchScopes() {
-    this.loading.set(true);
-    this.#contentTypesSvc.getScopes().subscribe(scopes => {
-      this.scopeOptions.set(scopes);
-      this.loading.set(false);
-
-    });
-  }
-
-  #fetchContentInfo() {
-    // const contentInfo = this.#exportAppPartsSvc.getContentInfoSig(this.exportScope);
-    // setTimeout(() => {
-    //   console.log("2dg", contentInfo());
-    // }, 2000);
-
-    this.loading.set(true);
-    this.#exportAppPartsSvc.getContentInfo(this.exportScope).subscribe(contentInfo => {
-      this.contentInfo.set(contentInfo);
-      this.loading.set(false);
-    });
-  }
-
   #selectedContentTypes() {
-    return this.contentInfo().ContentTypes.filter(contentType => contentType._export);
+    return this.contentInfo()().ContentTypes.filter(contentType => contentType._export);
   }
 
   #selectedEntities() {
     let entities: ContentInfoEntity[] = [];
-    for (const contentType of this.contentInfo().ContentTypes) {
+    for (const contentType of this.contentInfo()().ContentTypes) {
       entities = entities.concat(contentType.Entities.filter(entity => entity._export));
     }
     return entities;
@@ -140,10 +116,10 @@ export class ExportAppPartsComponent implements OnInit {
   #selectedTemplates() {
     let templates: ContentInfoTemplate[] = [];
     // The ones with...
-    for (const contentType of this.contentInfo().ContentTypes)
+    for (const contentType of this.contentInfo()().ContentTypes)
       templates = templates.concat(contentType.Templates.filter(template => template._export));
     // ...and without content types
-    templates = templates.concat(this.contentInfo().TemplatesWithoutContentTypes.filter(template => template._export));
+    templates = templates.concat(this.contentInfo()().TemplatesWithoutContentTypes.filter(template => template._export));
     return templates;
   }
 }

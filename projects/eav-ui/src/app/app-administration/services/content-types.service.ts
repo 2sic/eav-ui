@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { computed, Injectable, Signal } from '@angular/core';
 import { map } from 'rxjs';
 import { FileUploadResult } from '../../shared/components/file-upload-dialog';
 import { ScopeOption } from '../../shared/constants/eav.constants';
@@ -44,6 +44,28 @@ export class ContentTypesService extends HttpServiceBase {
       }),
     );
   }
+
+  getScopesSig(initial: undefined): Signal<ScopeOption[]> {
+    const scopesSignal = this.getSignal<{ old: Record<string, string>, scopes: ScopeDetailsDto[] }>(
+      webApiTypeScopes,
+      { params: { appId: this.appId } }, initial,
+    );
+
+    const scopeOptionsSignal = computed(() => {
+      const scopesData = scopesSignal();
+
+      // Add null/undefined check here
+      if (!scopesData || !scopesData.old) {
+        return []; // Return an empty array or handle this case as appropriate
+      }
+
+      const scopes = scopesData.old;
+      return Object.keys(scopes).map(key => ({ name: scopes[key], value: key }));
+    });
+
+    return scopeOptionsSignal;
+  }
+
 
   getScopesV2() {
     return this.getHttpApiUrl<{ old: Record<string, string>, scopes: ScopeDetailsDto[] }>(webApiTypeScopes, {

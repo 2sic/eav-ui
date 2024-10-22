@@ -3,29 +3,14 @@ import { HttpServiceBase } from '../../shared/services/http-service-base';
 import { ContentInfo } from '../models/content-info.model';
 import { webApiAppPartsRoot } from './import-app-parts.service';
 
+const webApiAppPartsGet = 'admin/appParts/get';
 @Injectable()
 export class ExportAppPartsService extends HttpServiceBase {
 
-  // this.getAndWrite<SettingsStackItem[]>(webApiAppRoot + 'GetStack', {
-  //   params: {
-  //     appId: this.appId,
-  //     part,
-  //     ...(key && { key }),
-  //     ...(view && { view }),
-  //   },
-  // }, stackSignal);
-
-  getContentInfoSig(scope: string) {
-    return this.getSignal<ContentInfo>(this.apiUrl(webApiAppPartsRoot + 'Get'), {
+  getContentInfo(scope: string, initial: ContentInfo) {
+    return this.getSignal<ContentInfo>(webApiAppPartsGet, {
       params: { appid: this.appId, zoneId: this.zoneId, scope }
-    }, undefined);
-  }
-
-
-  getContentInfo(scope: string) {
-    return this.getHttpApiUrl<ContentInfo>(webApiAppPartsRoot + 'Get', {
-      params: { appid: this.appId, zoneId: this.zoneId, scope },
-    });
+    }, initial);
   }
 
   exportParts(contentTypeIds: number[], entityIds: number[], templateIds: number[]) {
