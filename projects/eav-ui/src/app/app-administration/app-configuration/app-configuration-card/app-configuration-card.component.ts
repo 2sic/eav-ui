@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, computed, Input, OnDestroy, OnInit, signal } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -17,7 +17,6 @@ import { EditForm, EditPrep } from '../../../shared/models/edit-form.model';
 import { DialogRoutingService } from '../../../shared/routing/dialog-routing.service';
 import { ClipboardService } from '../../../shared/services/clipboard.service';
 import { Context } from '../../../shared/services/context';
-import { AppInternals } from '../../models/app-internals.model';
 import { AppInternalsService } from '../../services/app-internals.service';
 
 @Component({
@@ -37,21 +36,30 @@ import { AppInternalsService } from '../../services/app-internals.service';
 export class AppConfigurationCardComponent implements OnInit, OnDestroy {
   @Input() dialogSettings: DialogSettings;
 
-  contentItem = signal<ContentItem>(undefined);
-  appSettingsInternal = signal<AppInternals>(undefined);
-
   #appInternalsSvc = transient(AppInternalsService);
   #contentItemsSvc = transient(ContentItemsService);
   #dialogRouter = transient(DialogRoutingService);
 
+
   constructor(
     private context: Context,
     private snackBar: MatSnackBar,
-  ) {}
+  ) { }
+
+  contentItem = signal<ContentItem>(undefined);
+
+  refresh = signal(0);
+
+  appSettingsInternal = computed(() => {
+    const refresh = this.refresh();
+    return this.#appInternalsSvc.getAppInternals(undefined);
+  });
+
 
   ngOnInit() {
-    this.fetchSettings();
-    this.#dialogRouter.doOnDialogClosed(() => { this.fetchSettings(); });
+    this.#dialogRouter.doOnDialogClosed(() => {
+      this.refresh.update(value => value + 1);
+    });
 
     this.#contentItemsSvc.getAll(eavConstants.contentTypes.appConfiguration).subscribe(contentItems => {
       this.contentItem.set(contentItems[0]);
@@ -86,14 +94,6 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
       `Metadata for App: ${this.dialogSettings.Context.App.Name} (${this.context.appId})`,
     );
     this.#dialogRouter.navParentFirstChild([url]);
-  }
-
-  private fetchSettings() {
-    const getObservable = this.#appInternalsSvc.getAppInternals();
-    getObservable.subscribe(x => {
-      // 2dm - New mode for Reactive UI
-      this.appSettingsInternal.set(x);
-    });
   }
 
   formatValue(value?: string): string {
