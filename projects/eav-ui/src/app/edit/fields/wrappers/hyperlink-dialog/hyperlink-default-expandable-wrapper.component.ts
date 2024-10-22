@@ -57,7 +57,7 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
 
   protected buttonAdam = computed(() => this.fieldState.settings().Buttons.includes('adam'), SignalEquals.bool);
   protected buttonPage = computed(() => this.fieldState.settings().Buttons.includes('page'), SignalEquals.bool);
-  protected enableImageConfiguration = computed(() => this.fieldState.settings().EnableImageConfiguration, SignalEquals.bool);
+  protected enableImageConfiguration= this.fieldState.settingExt('EnableImageConfiguration');
 
   private dropzoneDraggingHelper: DropzoneDraggingHelper;
   private editRoutingService: EditRoutingService;

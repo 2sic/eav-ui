@@ -55,12 +55,11 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
   protected buttonAdam = computed(() => this.settings().Buttons.includes('adam'), SignalEquals.bool);
   protected buttonPage = computed(() => this.settings().Buttons.includes('page'), SignalEquals.bool);
   protected buttonMore = computed(() => this.settings().Buttons.includes('more'), SignalEquals.bool);
-  protected showAdam = computed(() => this.settings().ShowAdam, SignalEquals.bool);
+  protected showAdam = this.fieldState.settingExt('ShowAdam');
   protected showPagePicker = this.fieldState.settingExt('ShowPagePicker');
-  // protected showPagePicker = computed(() => this.settings().ShowPagePicker, SignalEquals.bool);
-  protected showImageManager = computed(() => this.settings().ShowImageManager, SignalEquals.bool);
-  protected showFileManager = computed(() => this.settings().ShowFileManager, SignalEquals.bool);
-  protected enableImageConfiguration = computed(() => this.settings().EnableImageConfiguration, SignalEquals.bool);
+  protected showImageManager = this.fieldState.settingExt('ShowImageManager');
+  protected showFileManager = this.fieldState.settingExt('ShowFileManager');
+  protected enableImageConfiguration = this.fieldState.settingExt('EnableImageConfiguration');
 
   constructor(
     eavService: FormConfigService,
