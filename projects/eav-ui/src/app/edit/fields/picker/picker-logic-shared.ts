@@ -12,7 +12,6 @@ import { FieldLogicUpdate } from '../logic/field-logic-base';
 import { FieldLogicTools } from '../logic/field-logic-tools';
 import { PickerConfigs, PickerSourcesCustom, UiPickerModeIsTree } from './constants/picker-config-model.constants';
 import { DataSourceParserCsv } from './data-sources/data-source-parser-csv';
-import { optionsAllowsEmpty } from './picker.helpers';
 
 const logSpecs = {
   all: true,
@@ -154,11 +153,9 @@ export class PickerLogicShared {
         const valuesRaw = (typeConfig as unknown as PickerSourceCustomList).Values ?? '';
         // note that 'value-label' is the only format supported by the new picker config
         fs._options ??= calculateDropdownOptions(value as string, 'string', 'value-label', valuesRaw) ?? [];
-        fs._allowSelectingEmpty = optionsAllowsEmpty(fs._options);
       } else if (typeName === PickerConfigs.UiPickerSourceCustomCsv) {
         const csv = (typeConfig as unknown as PickerSourceCustomCsv).Csv;
         fs._options ??= new DataSourceParserCsv().parse(csv);
-        fs._allowSelectingEmpty = optionsAllowsEmpty(fs._options);
         fs.requiredFeatures = [FeatureNames.PickerSourceCsv];
         fs.PreviewValue = typeConfig.PreviewValue ?? '';
       }

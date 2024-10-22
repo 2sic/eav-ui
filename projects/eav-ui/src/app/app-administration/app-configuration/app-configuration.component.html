@@ -1,10 +1,4 @@
-@if (viewModel$ | async; as vm) {
-  <!-- TODO:: @2dg WIP Sig -->
-  <!-- <pre>
-    <span>Test1:{{vm.customSettingsFieldsCount}}</span>
-    <span>Test2:{{viewModelSig().customSettingsFieldsCount}}</span>
-  </pre> -->
-
+@if (viewModelSig()) {
   @if (isGlobal || isPrimary) {
     <div class="alert alert-info scope-info">
       @if (isGlobal) {
@@ -51,7 +45,7 @@
                     <mat-icon
                       matBadgeColor="accent"
                       matBadgeSize="small"
-                      [matBadge]="vm.systemSettingsCount || null"
+                      [matBadge]="viewModelSig()?.systemSettingsCount || null"
                       matBadgePosition="below after"
                       aria-hidden="false"
                       >edit</mat-icon
@@ -67,7 +61,7 @@
                     <mat-icon
                       matBadgeColor="accent"
                       matBadgeSize="small"
-                      [matBadge]="vm.customSettingsCount || null"
+                      [matBadge]="viewModelSig()?.customSettingsCount || null"
                       matBadgePosition="below after"
                       aria-hidden="false"
                       >edit</mat-icon
@@ -81,7 +75,7 @@
                     <mat-icon
                       matBadgeColor="accent"
                       matBadgeSize="small"
-                      [matBadge]="vm.customSettingsFieldsCount || null"
+                      [matBadge]="viewModelSig()?.customSettingsFieldsCount || null"
                       matBadgePosition="below after"
                       aria-hidden="false"
                       >dns</mat-icon
@@ -103,7 +97,7 @@
                     <mat-icon
                       matBadgeColor="accent"
                       matBadgeSize="small"
-                      [matBadge]="vm.systemSettingsCount || null"
+                      [matBadge]="viewModelSig()?.systemSettingsCount || null"
                       matBadgePosition="below after"
                       aria-hidden="false"
                       >edit</mat-icon
@@ -119,7 +113,7 @@
                     <mat-icon
                       matBadgeColor="accent"
                       matBadgeSize="small"
-                      [matBadge]="vm.customSettingsCount || null"
+                      [matBadge]="viewModelSig()?.customSettingsCount || null"
                       matBadgePosition="below after"
                       aria-hidden="false"
                       >edit</mat-icon
@@ -133,7 +127,7 @@
                     <mat-icon
                       matBadgeColor="accent"
                       matBadgeSize="small"
-                      [matBadge]="vm.customSettingsFieldsCount || null"
+                      [matBadge]="viewModelSig()?.customSettingsFieldsCount || null"
                       matBadgePosition="below after"
                       aria-hidden="false"
                       >dns</mat-icon
@@ -156,7 +150,7 @@
                     <mat-icon
                       matBadgeColor="accent"
                       matBadgeSize="small"
-                      [matBadge]="vm.systemSettingsCount || null"
+                      [matBadge]="viewModelSig()?.systemSettingsCount || null"
                       matBadgePosition="below after"
                       aria-hidden="false"
                       >edit</mat-icon
@@ -168,7 +162,7 @@
                     <mat-icon
                       matBadgeColor="accent"
                       matBadgeSize="small"
-                      [matBadge]="vm.customSettingsCount || null"
+                      [matBadge]="viewModelSig()?.customSettingsCount || null"
                       matBadgePosition="below after"
                       aria-hidden="false"
                       >edit</mat-icon
@@ -182,7 +176,7 @@
                     <mat-icon
                       matBadgeColor="accent"
                       matBadgeSize="small"
-                      [matBadge]="vm.customSettingsFieldsCount || null"
+                      [matBadge]="viewModelSig()?.customSettingsFieldsCount || null"
                       matBadgePosition="below after"
                       aria-hidden="false"
                       >dns</mat-icon
@@ -244,7 +238,7 @@
                     <mat-icon
                       matBadgeColor="accent"
                       matBadgeSize="small"
-                      [matBadge]="vm.systemResourcesCount || null"
+                      [matBadge]="viewModelSig()?.systemResourcesCount || null"
                       matBadgePosition="below after"
                       aria-hidden="false"
                       >edit</mat-icon
@@ -260,7 +254,7 @@
                     <mat-icon
                       matBadgeColor="accent"
                       matBadgeSize="small"
-                      [matBadge]="vm.customResourcesCount || null"
+                      [matBadge]="viewModelSig()?.customResourcesCount || null"
                       matBadgePosition="below after"
                       aria-hidden="false"
                       >edit</mat-icon
@@ -274,7 +268,7 @@
                     <mat-icon
                       matBadgeColor="accent"
                       matBadgeSize="small"
-                      [matBadge]="vm.customResourcesFieldsCount || null"
+                      [matBadge]="viewModelSig()?.customResourcesFieldsCount || null"
                       matBadgePosition="below after"
                       aria-hidden="false"
                       >dns</mat-icon
@@ -296,7 +290,7 @@
                     <mat-icon
                       matBadgeColor="accent"
                       matBadgeSize="small"
-                      [matBadge]="vm.systemResourcesCount || null"
+                      [matBadge]="viewModelSig()?.systemResourcesCount || null"
                       matBadgePosition="below after"
                       aria-hidden="false"
                       >edit</mat-icon
@@ -312,7 +306,7 @@
                     <mat-icon
                       matBadgeColor="accent"
                       matBadgeSize="small"
-                      [matBadge]="vm.customResourcesCount || null"
+                      [matBadge]="viewModelSig()?.customResourcesCount || null"
                       matBadgePosition="below after"
                       aria-hidden="false"
                       >edit</mat-icon
@@ -326,7 +320,7 @@
                     <mat-icon
                       matBadgeColor="accent"
                       matBadgeSize="small"
-                      [matBadge]="vm.customResourcesFieldsCount || null"
+                      [matBadge]="viewModelSig()?.customResourcesFieldsCount || null"
                       matBadgePosition="below after"
                       aria-hidden="false"
                       >dns</mat-icon
@@ -349,7 +343,7 @@
                     <mat-icon
                       matBadgeColor="accent"
                       matBadgeSize="small"
-                      [matBadge]="vm.systemResourcesCount || null"
+                      [matBadge]="viewModelSig()?.systemResourcesCount || null"
                       matBadgePosition="below after"
                       aria-hidden="false"
                       >edit</mat-icon
@@ -361,7 +355,7 @@
                     <mat-icon
                       matBadgeColor="accent"
                       matBadgeSize="small"
-                      [matBadge]="vm.customResourcesCount || null"
+                      [matBadge]="viewModelSig()?.customResourcesCount || null"
                       matBadgePosition="below after"
                       aria-hidden="false"
                       >edit</mat-icon
@@ -375,7 +369,7 @@
                     <mat-icon
                       matBadgeColor="accent"
                       matBadgeSize="small"
-                      [matBadge]="vm.customResourcesFieldsCount || null"
+                      [matBadge]="viewModelSig()?.customResourcesFieldsCount || null"
                       matBadgePosition="below after"
                       aria-hidden="false"
                       >dns</mat-icon
@@ -444,7 +438,7 @@
           <mat-icon
             matBadgeColor="accent"
             matBadgeSize="small"
-            [matBadge]="vm.appLightSpeedCount || null"
+            [matBadge]="viewModelSig()?.appLightSpeedCount || null"
             matBadgePosition="below after"
             aria-hidden="false"
             class="eav-icon"
@@ -530,5 +524,4 @@
     </mat-card>
   </div>
 }
-
 <router-outlet></router-outlet>

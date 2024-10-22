@@ -4,7 +4,6 @@ import { FieldSettingsPickerMerged, StringDropdown } from '../../../../../../../
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
 import { PickerLogicShared } from '../../picker/picker-logic-shared';
-import { optionsAllowsEmpty } from '../../picker/picker.helpers';
 import { calculateDropdownOptions } from '../string-picker/string-picker.helpers';
 
 export class StringDropdownLogic extends FieldLogicBase {
@@ -19,7 +18,6 @@ export class StringDropdownLogic extends FieldLogicBase {
     // fixedSettings.DropdownValues ??= '';
     // fixedSettings.DropdownValuesFormat ??= '';// maybe we should change this to 'value-label' in the future
     fs._options = calculateDropdownOptions(value, this.type, fs.DropdownValuesFormat || '', fs.DropdownValues || '');
-    fs._allowSelectingEmpty = optionsAllowsEmpty(fs._options);
     
     // Both the query type and create-type are the same
     fs.EntityType ??= '';

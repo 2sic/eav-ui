@@ -1,22 +1,22 @@
 import { UntypedFormGroup } from '@angular/forms';
-import { FieldConfigSet } from '../../fields/field-config-set.model';
 import { UiControl } from '../controls/ui-control';
 
 // prefix for translation keys
-const pfx = 'ValidationMessage.';
+const prefix = 'ValidationMessage.';
+const notValid = 'ValidationMessage.NotValid';
 
 export class ValidationMsgHelper {
 
-  static validationMessages: Record<string, (config: FieldConfigSet) => string> = {
-    required: (config: FieldConfigSet) => config ? `${pfx}Required` : `${pfx}RequiredShort` /* short version in snackbar*/,
-    min: (config: FieldConfigSet) => config ? `${pfx}Min` : `${pfx}NotValid`,
-    max: (config: FieldConfigSet) => config ? `${pfx}Max` : `${pfx}NotValid`,
-    minNoItems: (config: FieldConfigSet) => config ? `${pfx}MinNoItems` : `${pfx}NotValid`,
-    maxNoItems: (config: FieldConfigSet) => config ? `${pfx}MaxNoItems` : `${pfx}NotValid`,
-    pattern: (config: FieldConfigSet) => config ? `${pfx}Pattern` : `${pfx}NotValid`,
-    decimals: (config: FieldConfigSet) => config ? `${pfx}Decimals` : `${pfx}NotValid`,
-    jsonError: (config: FieldConfigSet) => config ? `${pfx}JsonError` : `${pfx}NotValid`,
-    formulaError: (config: FieldConfigSet) => config ? `${pfx}NotValid` : `${pfx}NotValid`,
+  public static messages: Record<string, (long: boolean) => string> = {
+    required: (long: boolean) => long ? `${prefix}Required` : `${prefix}RequiredShort` /* short version in snackbar*/,
+    min: (long: boolean) => long ? `${prefix}Min` : notValid,
+    max: (long: boolean) => long ? `${prefix}Max` : notValid,
+    minNoItems: (long: boolean) => long ? `${prefix}MinNoItems` : notValid,
+    maxNoItems: (long: boolean) => long ? `${prefix}MaxNoItems` : notValid,
+    pattern: (long: boolean) => long ? `${prefix}Pattern` : notValid,
+    decimals: (long: boolean) => long ? `${prefix}Decimals` : notValid,
+    jsonError: (long: boolean) => long ? `${prefix}JsonError` : notValid,
+    formulaError: (long: boolean) => notValid,
   };
 
   /** Marks controls as touched to show errors beneath controls and collects error messages */
@@ -28,7 +28,7 @@ export class ValidationMsgHelper {
       if (!control.invalid) continue;
 
       for (const errorKey of Object.keys(control.errors)) {
-        errors[controlKey] = this.validationMessages[errorKey]?.(undefined);
+        errors[controlKey] = this.messages[errorKey]?.(false);
         if (errors[controlKey]) break;
       }
     }

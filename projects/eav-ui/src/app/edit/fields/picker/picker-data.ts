@@ -35,7 +35,7 @@ export class PickerData {
 
   //#region Constructor, Log, Services, Setup
   
-  log = classLog({PickerData}, logSpecs, true);
+  log = classLog({PickerData}, logSpecs);
 
   #translate = inject(TranslateService);
 
@@ -54,7 +54,7 @@ export class PickerData {
   }
 
   /** Setup to load initial values and initialize the state */
-  public setup(name: string, settings: Signal<FieldSettings>, state: StateAdapter, source: DataAdapterBase): this {
+  public setup(name: string, settings: Signal<FieldSettings>, state: StateAdapter, source: DataAdapterBase) {
     const l = this.log.fnIfInList('setup', 'fields', name, { name, state, source });
 
     // Setup this object
@@ -65,16 +65,19 @@ export class PickerData {
 
     // Setup the State so it is able to do it's work based on data it wouldn't have otherwise
     state.features = this.features;
-    state.allowsEmptyLazy.set(this.#optionsAllowsEmpty);
+    state.allowsEmptyLazy.set(this.optionsAllowsEmpty);
 
-    this.ready.set(true);
     // 1. Init Prefetch - for Entity Picker
     // This will place the prefetch items into the available-items list
     // Otherwise related entities would only show as GUIDs.
-    const initiallySelected = state.values(); //.selectedItems();
-    l.a('setup', { initiallySelected })
-    source.initPrefetch(initiallySelected); //.map(item => item.value));
-    return l.rSilent(this);
+    const values = state.values();
+    l.a('setup', { initiallySelected: values })
+    source.initPrefetch(values);
+
+    // When everything is done, mark as ready
+    this.ready.set(true);
+
+    l.end('done');
   }
 
   //#endregion
@@ -114,8 +117,8 @@ export class PickerData {
   /** Final Options to show in the picker and to use to calculate labels of selected etc. */
   public optionsAll = computedObj('optionsFinal', () => getWith(this.optionsOverride(), o => o ? o : this.optionsRaw()));
 
-  /** Special information for string pickers which allow empty to be valid selection */
-  #optionsAllowsEmpty = computedObj('optionsAllowsEmpty', () => pickerItemsAllowsEmpty(this.optionsAll()));
+  /** Special information for string pickers which allow empty to be valid selection - also used in validator */
+  public optionsAllowsEmpty = computedObj('optionsAllowsEmpty', () => pickerItemsAllowsEmpty(this.optionsAll()));
 
   //#endregion
 

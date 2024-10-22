@@ -43,22 +43,19 @@ export class HttpServiceBase {
     return this.http.get<ResultType>(url, options);
   }
 
-  // TODO: @2dg
   protected getHttp<ResultType>(endpoint: string, options?: Parameters<typeof this.http.get>[1]) {
     return this.http.get<ResultType>(endpoint, options);
   }
 
-  // TODO: @2dg
   protected getAndWrite<ResultType>(endpoint: string, options: Parameters<typeof this.http.get>[1], target: WritableSignal<ResultType>): void {
-    this.getHttp<ResultType>(endpoint, options).subscribe( d => {
+    this.getHttp<ResultType>(endpoint, options).subscribe(d => {
       target.set(d);
     });
   }
 
-  // TODO: @2dg
-  protected getSignal<ResultType>(endpoint: string, options: Parameters<typeof this.http.get>[1], initial: ResultType): Signal<ResultType> {
+  protected getSignal<ResultType>(endpoint: string, options: Parameters<typeof this.http.get>[1], initial?: ResultType): Signal<ResultType> {
     const target = signal<ResultType>(initial);
-    this.getHttp<ResultType>(endpoint, options).subscribe(d =>{
+    this.getHttpApiUrl<ResultType>(endpoint, options).subscribe(d => {
       target.set(d)
     });
     return target;
@@ -66,17 +63,10 @@ export class HttpServiceBase {
 
   protected postSignal<ResultType>(endpoint: string, body: Parameters<typeof this.http.post>[1], options: Parameters<typeof this.http.post>[2], initial: ResultType): Signal<ResultType> {
     const target = signal<ResultType>(initial);
-    this.http.post<ResultType>(this.apiUrl(endpoint), body, options).subscribe(d =>{
+    this.http.post<ResultType>(this.apiUrl(endpoint), body, options).subscribe(d => {
       target.set(d)
     });
     return target;
   }
 
-
-  // TODO: @2dg
-  // protected getSignal2<ResultType>(endpoint: string, options: Parameters<typeof this.http.get>[1], initial: ResultType | Signal<ResultType>): Signal<ResultType> {
-  //   const target = initial instanceof Signal ? initial : signal<ResultType>(initial);
-  //   this.get<ResultType>(endpoint, options).subscribe(d => target.set(d));
-  //   return target;
-  // }
 }

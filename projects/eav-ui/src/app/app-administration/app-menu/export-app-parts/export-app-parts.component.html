@@ -1,56 +1,81 @@
-<!-- <pre>
-  TT {{contentInfoNew()}}
-</pre> -->
-
 <div class="outer-container-app">
   <h3>Export Content and Templates from this App</h3>
   <div class="form-height">
+    <p>To export Content-Types, Queries, Views or Data, use the respective tabs.</p>
     <p>
-      To export Content-Types, Queries, Views or Data, use the respective tabs.
-    </p>
-    <p>
-      This is an advanced feature to export parts of the app.
-      The export will create an xml file which can be imported into another site or app.
-      To export the entire content of the app (for example when duplicating the entire site), go to the app export.
-      For further help visit <a href="https://2sxc.org/en/help?tag=export" target="_blank">2sxc Help</a>.
+      This is an advanced feature to export parts of the app. The export will create an xml file which can be imported into another site or
+      app. To export the entire content of the app (for example when duplicating the entire site), go to the app export. For further help
+      visit <a href="https://2sxc.org/en/help?tag=export" target="_blank">2sxc Help</a>.
     </p>
     <div class="eav-edit-input">
+
       <mat-form-field color="accent" class="eav-mat-form-field">
         <mat-label>Scope</mat-label>
-        <mat-select [ngModel]="exportScope" name="Scope" [disabled]="lockScope" (ngModelChange)="changeScope($event)">
+        <mat-select [ngModel]="exportScope()" name="Scope" [disabled]="lockScope" (ngModelChange)="changeScope($event)">
           @for (scopeOption of scopeOptions(); track scopeOption) {
-          <mat-option [value]="scopeOption.value">
-            {{ scopeOption.name }}
-          </mat-option>
+            <mat-option [value]="scopeOption.value">
+              {{ scopeOption.name }}
+            </mat-option>
           }
           <mat-option [value]="dropdownInsertValue">Other...</mat-option>
         </mat-select>
-        <button mat-icon-button matTextSuffix [tippy]="lockScope ? 'Unlock' : 'Lock'">
+        <button class="enable" mat-icon-button matTextSuffix [tippy]="lockScope ? 'Unlock' : 'Lock'">
           <mat-icon appClickStopPropagation (click)="unlockScope()">
             {{ lockScope ? 'lock' : 'lock_open' }}
           </mat-icon>
         </button>
       </mat-form-field>
+
       <app-field-hint>
         The scope should almost never be changed -
         <a appClickStopPropagation href="https://2sxc.org/help?tag=scope" target="_blank">see help</a>
       </app-field-hint>
     </div>
-    @if (contentInfo()) {
-    <div>
-      <ul class="eav-content-info__list eav-content-info__base">
-        <p class="eav-content-info__title">Content Types</p>
-        @for (contentType of contentInfo().ContentTypes; track contentType) {
-        <li class="eav-content-info__item">
-          <div class="eav-option-box">
-            <mat-checkbox [(ngModel)]="contentType._export">
-              <span class="eav-option-box__text">{{ contentType.Name }} ({{ contentType.Id }})</span>
-            </mat-checkbox>
-          </div>
-          @if (contentType.Templates.length > 0) {
-          <ul class="eav-content-info__list">
-            <p class="eav-content-info__subtitle">Templates</p>
-            @for (template of contentType.Templates; track template) {
+    @if (contentInfo()()) {
+      <div>
+        <ul class="eav-content-info__list eav-content-info__base">
+          <p class="eav-content-info__title">Content Types</p>
+          @for (contentType of contentInfo()().ContentTypes; track contentType) {
+            <li class="eav-content-info__item">
+              <div class="eav-option-box">
+                <mat-checkbox [(ngModel)]="contentType._export">
+                  <span class="eav-option-box__text">{{ contentType.Name }} ({{ contentType.Id }})</span>
+                </mat-checkbox>
+              </div>
+              @if (contentType.Templates.length > 0) {
+                <ul class="eav-content-info__list">
+                  <p class="eav-content-info__subtitle">Templates</p>
+                  @for (template of contentType.Templates; track template) {
+                    <li class="eav-content-info__item">
+                      <div class="eav-option-box">
+                        <mat-checkbox [(ngModel)]="template._export">
+                          <span class="eav-option-box__text">{{ template.Name }} ({{ template.Id }})</span>
+                        </mat-checkbox>
+                      </div>
+                    </li>
+                  }
+                </ul>
+              }
+              @if (contentType.Entities.length > 0) {
+                <ul class="eav-content-info__list">
+                  <p class="eav-content-info__subtitle">Entities</p>
+                  @for (entity of contentType.Entities; track entity) {
+                    <li class="eav-content-info__item">
+                      <div class="eav-option-box">
+                        <mat-checkbox [(ngModel)]="entity._export">
+                          <span class="eav-option-box__text">{{ entity.Title }} ({{ entity.Id }})</span>
+                        </mat-checkbox>
+                      </div>
+                    </li>
+                  }
+                </ul>
+              }
+            </li>
+          }
+        </ul>
+        <ul class="eav-content-info__list eav-content-info__base">
+          <p class="eav-content-info__title">Templates Without Content Types</p>
+          @for (template of contentInfo()().TemplatesWithoutContentTypes; track template) {
             <li class="eav-content-info__item">
               <div class="eav-option-box">
                 <mat-checkbox [(ngModel)]="template._export">
@@ -58,45 +83,20 @@
                 </mat-checkbox>
               </div>
             </li>
-            }
-          </ul>
           }
-          @if (contentType.Entities.length > 0) {
-          <ul class="eav-content-info__list">
-            <p class="eav-content-info__subtitle">Entities</p>
-            @for (entity of contentType.Entities; track entity) {
-            <li class="eav-content-info__item">
-              <div class="eav-option-box">
-                <mat-checkbox [(ngModel)]="entity._export">
-                  <span class="eav-option-box__text">{{ entity.Title }} ({{ entity.Id }})</span>
-                </mat-checkbox>
-              </div>
-            </li>
-            }
-          </ul>
-          }
-        </li>
-        }
-      </ul>
-      <ul class="eav-content-info__list eav-content-info__base">
-        <p class="eav-content-info__title">Templates Without Content Types</p>
-        @for (template of contentInfo().TemplatesWithoutContentTypes; track template) {
-        <li class="eav-content-info__item">
-          <div class="eav-option-box">
-            <mat-checkbox [(ngModel)]="template._export">
-              <span class="eav-option-box__text">{{ template.Name }} ({{ template.Id }})</span>
-            </mat-checkbox>
-          </div>
-        </li>
-        }
-      </ul>
-    </div>
+        </ul>
+      </div>
     }
   </div>
 
-  <mat-dialog-actions class="eav-dialog-actions" style="height: 73px;">
-    <button mat-button class="eav-button__with-icon" tippy="Export selected Parts"
-      [disabled]="loading() || isExporting()" (click)="exportAppParts()">
+  <mat-dialog-actions class="eav-dialog-actions" style="height: 73px">
+    <button
+      mat-button
+      class="eav-button__with-icon"
+      tippy="Export selected Parts"
+      [disabled]="loading() || isExporting()"
+      (click)="exportAppParts()"
+    >
       <mat-icon class="eav-icon">cloud_download</mat-icon>
       <span>Export Parts</span>
     </button>

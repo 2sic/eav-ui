@@ -29,11 +29,7 @@ export class PickerDataSetup {
 
   log = classLog({ PickerDataSetup }, null);
 
-  constructor(injector: Injector) {
-    this.#injector = injector;
-  }
-
-  #injector: Injector;
+  constructor(private injector: Injector) { }
 
   // Notes: previous flow of initialization
   // 1. Final control (eg. StringPickerComponent) gets services which it will use using transient(...)
@@ -50,8 +46,14 @@ export class PickerDataSetup {
    * Reason is that objects created later on through DI will need the FieldState and other context objects to be injected.
    */
   setupPickerData(pickerData: PickerData, fieldState: FieldState<FieldValue>): PickerData {
+    const pdWithSetupState = pickerData as PickerData & { setupAlreadyStarted: boolean };
+    const alreadyStarted = pdWithSetupState.setupAlreadyStarted;
     const inputType = fieldState.config.inputTypeSpecs.inputType;
-    const l = this.log.fn('createPickerAdapters', { pickerData, fieldState, inputType });
+    const l = this.log.fn('createPickerAdapters', { pickerData, fieldState, inputType, alreadyStarted });
+    if (alreadyStarted)
+      return l.rSilent(pickerData, 'exist, already started');
+    
+    pdWithSetupState.setupAlreadyStarted = true;
 
     // First get the state, since the sources will depend on it.
     const state = this.#getStateAdapter(inputType);
@@ -72,7 +74,7 @@ export class PickerDataSetup {
     if (!type)
       throw new Error(`No State Adapter found for inputTypeSpecs: ${inputType}`);
 
-    return transient(type, this.#injector) as StateAdapterString;
+    return transient(type, this.injector) as StateAdapterString;
   }
 
   #getSourceAdapter(inputType: Of<typeof InputTypeCatalog>, dataSourceType: string, state: StateAdapter): DataAdapterBase {
@@ -86,7 +88,7 @@ export class PickerDataSetup {
 
     const dataAdapterType = mapNameToDataAdapter[dsType] ?? DataAdapterEmpty;
     this.#throwIfSourceAdapterNotAllowed(inputType, dataAdapterType);
-    const result = transient(dataAdapterType, this.#injector).connectState(state);
+    const result = transient(dataAdapterType, this.injector).connectState(state);
     return l.r(result);
   }
 

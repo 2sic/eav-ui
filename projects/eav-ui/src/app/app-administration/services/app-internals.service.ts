@@ -1,5 +1,4 @@
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Injectable, Signal } from '@angular/core';
 import { AppInternals } from '../../app-administration/models/app-internals.model';
 import { HttpServiceBase } from '../../shared/services/http-service-base';
 
@@ -15,18 +14,11 @@ export class AppInternalsService extends HttpServiceBase {
    * @param key key of target metadata item is for
    * @param contentTypeName name of content type where permissions are stored. If blank, backend returns all metadata except permissions
    */
-  getAppInternals(): Observable<AppInternals> {
-    return this.getHttpApiUrl<AppInternals>(webApiRoot, {
-      params: {
-        appId: this.appId,
-      },
-    });
-  }
 
-  getAppInternalsSig() {
-    return this.getSignal<AppInternals>(this.apiUrl(webApiRoot), {
+  getAppInternals(internals: AppInternals): Signal<AppInternals> {
+    return this.getSignal<AppInternals>(webApiRoot, {
       params: { appid: this.appId }
-    }, undefined);
+    }, internals);
   }
 
 }
