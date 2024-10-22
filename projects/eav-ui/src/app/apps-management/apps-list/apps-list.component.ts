@@ -1,7 +1,7 @@
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
 import { GridOptions, ICellRendererParams, ModuleRegistry } from '@ag-grid-community/core';
 import { NgClass } from '@angular/common';
-import { ChangeDetectorRef, Component, inject, OnInit, signal, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, computed, inject, OnInit, signal, ViewContainerRef } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogActions } from '@angular/material/dialog';
@@ -53,9 +53,7 @@ import { AppsListActionsParams } from './apps-list-actions/apps-list-actions.mod
 })
 export class AppsListComponent implements OnInit {
 
-  log = classLog({AppsListComponent});
-  fabOpen = signal(false);
-  apps = signal<App[]>([]);
+  log = classLog({ AppsListComponent });
 
   gridOptions = this.buildGridOptions();
 
@@ -76,9 +74,18 @@ export class AppsListComponent implements OnInit {
     ModuleRegistry.registerModules([ClientSideRowModelModule]);
   }
 
+  fabOpen = signal(false);
+
+  #refresh = signal(0);
+
+  apps = computed(() => {
+    const refresh = this.#refresh();
+    return this.#appsListSvc.getAll();
+  });
+
+
   ngOnInit(): void {
-    this.#loadApps();
-    this.#dialogRouter.doOnDialogClosed(() =>this.#loadApps());
+    this.#dialogRouter.doOnDialogClosed(() => this.#loadApps());
   }
 
   openChange(open: boolean): void {
@@ -228,9 +235,10 @@ export class AppsListComponent implements OnInit {
   }
 
   #loadApps(): void {
-    this.#appsListSvc.getAll().subscribe(apps => {
-      this.apps.set(apps);
-    })
+    this.#refresh.update(value => value + 1); // Increment the current value by 1
+    // this.#appsListSvc.getAll().subscribe(apps => {
+    //   this.apps.set(apps);
+    // })
   }
 
 }

@@ -1,4 +1,4 @@
-import { Component, HostBinding, OnInit, signal } from '@angular/core';
+import { Component, HostBinding, signal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
@@ -9,7 +9,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
 import { transient } from '../../../../../core';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
-import { App } from '../models/app.model';
 import { AppsListService } from '../services/apps-list.service';
 
 @Component({
@@ -28,13 +27,12 @@ import { AppsListService } from '../services/apps-list.service';
     FieldHintComponent
   ],
 })
-export class CreateInheritedAppComponent implements OnInit{
+export class CreateInheritedAppComponent{
   @HostBinding('className') hostClass = 'dialog-component';
 
   form: UntypedFormGroup;
 
-  loading = signal<boolean>(false);
-  inheritableApps = signal<App[] | undefined>(undefined);
+
 
   private appsListService = transient(AppsListService);
 
@@ -45,10 +43,9 @@ export class CreateInheritedAppComponent implements OnInit{
     this.form = this.buildForm();
   }
 
-  ngOnInit(): void {
-    this.fetchInheritedApps();
+  loading = signal<boolean>(false);
+  inheritableApps = this.appsListService.getInheritable();
 
-  }
 
   closeDialog(): void {
     this.dialog.close();
@@ -73,17 +70,6 @@ export class CreateInheritedAppComponent implements OnInit{
         this.form.enable();
         this.snackBar.open('Created inherited app', undefined, { duration: 2000 });
         this.closeDialog();
-      },
-    });
-  }
-
-  private fetchInheritedApps(): void {
-    this.appsListService.getInheritable().subscribe({
-      error: () => {
-        this.inheritableApps.set(null);
-      },
-      next: (inheritableApps) => {
-        this.inheritableApps.set(inheritableApps);
       },
     });
   }
