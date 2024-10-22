@@ -13,12 +13,11 @@ export abstract class DataAdapterBase {
   /** Log Specs to be used as a basis for all inheriting classes */
   static logSpecs = {
     all: false,
-    setupEmpty: true,
+    setupEmpty: false,
     connectState: false,
-    initPrefetch: true,
+    initPrefetch: false,
     fetchItems: false,
-    constructor: true,
-    getPrefill: true, // for create Entity & query
+    constructor: false,
     fields: [...DebugFields],
   };
 
