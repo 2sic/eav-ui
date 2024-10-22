@@ -34,6 +34,6 @@ export class PickerTextToggleComponent {
 
   toggleFreeText(disabled: boolean): void {
     if (disabled) return;
-    this.pickerData.state.toggleFreeTextMode();
+    this.pickerData.toggleFreeTextMode();
   }
 }

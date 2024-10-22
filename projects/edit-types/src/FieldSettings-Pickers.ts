@@ -13,8 +13,6 @@ import { UiPickerModeTree } from './PickerModeTree';
  */
 export interface FieldSettingsOptionsWip {
   _options: PickerOptionCustom[];
-  /** If the options contains an empty value, then it is a valid selection */
-  _allowSelectingEmpty: boolean;
 }
 
 export interface FieldSettingsPickerMasks {

@@ -2,15 +2,15 @@ import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { Injectable, Signal, inject } from '@angular/core';
 import { getWith } from '../../../../../../../core';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
-import { FieldSettingsPickerMerged } from '../../../../../../../edit-types/src/FieldSettings-Pickers';
+import { FieldSettingsOptionsWip, FieldSettingsPickerMerged } from '../../../../../../../edit-types/src/FieldSettings-Pickers';
 import { classLog } from '../../../../shared/logging';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
 import { FormConfigService } from '../../../form/form-config.service';
 import { FieldState } from '../../field-state';
+import { PickerItem } from '../models/picker-item.model';
 import { DeleteEntityProps } from '../models/picker.models';
 import { PickerFeatures } from '../picker-features.model';
 import { ReorderIndexes } from '../picker-list/reorder-index.models';
-import { correctStringEmptyValue } from '../picker.helpers';
 import { StateUiMapperBase } from './state-ui-mapper-base';
 
 export const logSpecsStateAdapter = {
@@ -36,15 +36,13 @@ export abstract class StateAdapter {
   log = classLog({StateAdapter}, logSpecsStateAdapter);
 
   #formConfigSvc = inject(FormConfigService);
-  #fieldState = inject(FieldState) as FieldState<number | string | string[], FieldSettings & FieldSettingsPickerMerged>;
+  #fieldState = inject(FieldState) as FieldState<number | string | string[], FieldSettings & FieldSettingsOptionsWip & FieldSettingsPickerMerged>;
 
   constructor() { }
 
   //#endregion
 
   protected readonly settings = this.#fieldState.settings;
-
-  public isInFreeTextMode = signalObj('isInFreeTextMode', false);
 
   /** The features this source will broadcast, to be merged with other features */
   public myFeatures = signalObj('features', {} as Partial<PickerFeatures>);
@@ -79,22 +77,35 @@ export abstract class StateAdapter {
     return l.r(updated);
   });
 
-  /** Signal with all the currently selected items */
-  public selectedItems = (() => {
+  /**
+   * Lazy Signal telling us if empty values are allowed
+   * Should ONLY be used in 'selectedItems' - and never in Values, as we would create a loop
+   * since the this will also access the possible options, which in turn is initialized using the selectedItems
+   */
+  public allowsEmptyLazy = signalObj<Signal<boolean>>('allowsEmptyLazy', signalObj('initial', false));
+
+  /**
+   * Signal with all the currently selected items.
+   * The PickerItems are fairly basic, as any additional data is added later on.
+   */
+  public selectedItems: Signal<PickerItem[]> = (() => {
     // Computed just to debounce changes on separator and options from field-settings (old picker)
-    const sepAndOpts = computedObj('sepAndOpts', () => {
-      const { Separator, _options } = this.settings();
-      return { separator: Separator, options: _options };
-    });
+    // const options = this.#fieldState.settingExt('_options');
 
     // Find selected items and correct empty value (if there is an empty-string options)
     const l = this.log.fnIf('selectedItems');
     return computedObj('selectedItems', () => {
-      const sAndO = sepAndOpts();
+      // const sAndO = options();
       const uiValue = this.#fieldState.uiValue();
-      l.a('selectedItems', { uiValue, sAndO });
-
-      return correctStringEmptyValue(this.mapper.toUi(uiValue), sAndO.options);
+      l.a('selectedItems', { uiValue /* , sAndO */ });
+      const asUi = this.mapper.toUi(uiValue);
+      // const allowsEmpty = optionsAllowsEmpty(sAndO);
+      const pickerAllowsEmpty = this.allowsEmptyLazy()();
+      // console.log('2dm', { allowsEmpty, pickerAllowsEmpty });
+      const uiFixed = asUi.length == 0 && pickerAllowsEmpty
+        ? ['']
+        : asUi;
+      return this.correctStringEmptyValue(uiFixed /*, sAndO */);
     });
   })();
 
@@ -103,9 +114,9 @@ export abstract class StateAdapter {
   #focusOnSearchComponent: () => void;
 
   public attachCallback(focusCallback: () => void): this {
-    this.log.a('attachCallback');
+    const l = this.log.fnIf('attachCallback');
     this.#focusOnSearchComponent = focusCallback;
-    return this;
+    return l.rSilent(this);
   }
 
   //#endregion
@@ -119,7 +130,10 @@ export abstract class StateAdapter {
   public abstract mapper: StateUiMapperBase<number | string | string[], string[]>;
 
   /** Signal with the current values in the picker, as an array */
-  public values = computedObj('ids', () => this.mapper.toUi(this.#fieldState.uiValue()));
+  public values = computedObj('values', () => {
+    const asUi = this.mapper.toUi(this.#fieldState.uiValue());
+    return asUi;
+  });
 
   //#endregion
 
@@ -177,7 +191,37 @@ export abstract class StateAdapter {
 
   //#endregion
 
-  toggleFreeTextMode(): void {
-    this.isInFreeTextMode.update(p => !p);
+  //#region String Empty Values
+  correctStringEmptyValue(
+    values: string[], // The value as an array of strings from state-adapter mapper
+    // dropdownOptions: PickerOptionCustom[] // Options are used only for legacy use case is where the value is an empty string
+  ): PickerItem[] {
+
+    const l = this.log.fn('correctStringEmptyValue', {
+      values,
+      // dropdownOptions,
+    });
+
+    const result = values.map(value => {
+      // const option = dropdownOptions?.find(o => o.Value == value);
+      return ({
+        // 2024-10-21 2dm disabling this, don't think it has any effect
+        // if it's a free text value or not found, disable edit and delete
+        // noEdit: true,
+        // noDelete: true,
+        // either the real value or null if text-field or not found
+        id: null,
+        label: null,
+        // label: option?.Title ?? value,
+        tooltip: `${value}`,
+        value: value?.toString() ?? '', // safe to-string
+      } satisfies PickerItem);
+    });
+    l.a('correctStringEmptyValue', {
+      values,
+      result,
+    });
+    return l.r(result);
   }
+  //#endregion
 }

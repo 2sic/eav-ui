@@ -53,12 +53,11 @@ export class FormFieldsBuilderService {
       // Build control in the Angular form with validators
       const disabled = fieldProps.settings.uiDisabled;
       const fss = this.fieldsSettingsSvc;
-      const valSpecs = new ValidationHelperSpecs(fieldName, inputType, fss.settings[fieldName], fss.fieldProps[fieldName]);
+      const valSpecs = new ValidationHelperSpecs(fieldName, inputType, fss.settings[fieldName], fss.fieldProps[fieldName], () => fss.pickerData);
       const validators = ValidationHelpers.getValidators(valSpecs, inputType);
       const newControl = this.formBuilder.control({ disabled, value: initialValue }, validators);
       // TODO: build all fields at once. That should be faster
       form.addControl(fieldName, newControl);
-      ValidationHelpers.ensureWarning(form.controls[fieldName]);
     }
 
     this.entityFormConfigSvc.controlsCreated.set(true);

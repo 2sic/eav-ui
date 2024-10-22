@@ -10,7 +10,6 @@ import { FieldsTranslateService } from '../../state/fields-translate.service';
 import { EntityFormComponent } from '../entity-form-component/entity-form.component';
 import { EntityFormStateService } from '../entity-form-state.service';
 import { EntityFormSyncService } from '../entity-form-sync.service';
-import { AbstractControlPro } from './../../shared/validation/validation.helpers';
 import { FieldInitSpecs } from './field-init-specs.model';
 import { FormFieldsBuilderService } from './form-fields-builder.service';
 import { FormFieldsSyncService } from './form-fields-sync.service';
@@ -84,7 +83,6 @@ export class EntityFormBuilderComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.#fieldsSettingsSvc.disableForCleanUp();
-    Object.values(this.form.controls).forEach((control: AbstractControlPro) => control._warning$.complete());
   }
 
   #getFieldsToProcess$(entityGuid: string): Observable<FieldInitSpecs[]> {

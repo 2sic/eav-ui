@@ -1,4 +1,4 @@
-import { inject, Injectable, Signal } from '@angular/core';
+import { effect, inject, Injectable, Signal } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { getWith } from '../../../../../../core';
 import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
@@ -10,16 +10,18 @@ import { DataAdapterBase } from './adapters/data-adapter-base';
 import { StateAdapter } from "./adapters/state-adapter";
 import { PickerItem } from './models/picker-item.model';
 import { mergePickerFeatures, PickerFeatures, PickerFeaturesForControl } from './picker-features.model';
+import { pickerItemsAllowsEmpty } from './picker.helpers';
 
 const logSpecs = {
-  all: false,
+  all: true,
   setup: false,
   addInfosFromSourceForUi: false,
   optionsWithMissing: false,
   selectedRaw: false,
   selectedOverride: false,
   selectedState: false,
-  features: true,
+  features: false,
+  allOptions: true,
   fields: [...DebugFields, '*'],
 }
 
@@ -33,16 +35,26 @@ export class PickerData {
 
   //#region Constructor, Log, Services, Setup
   
-  log = classLog({PickerData}, logSpecs, true);
+  log = classLog({PickerData}, logSpecs);
 
   #translate = inject(TranslateService);
 
   name: string;
 
-  constructor() { }
+  constructor() {
+    if (this.log.enabled && this.log.specs.allOptions) {
+      effect(() => {
+        const ready = this.ready();
+        const raw = this.optionsRaw();
+        const override = this.optionsOverride();
+        const final = this.optionsAll();
+        this.log.a('options', { ready, raw, override, final });
+      });
+    }
+  }
 
   /** Setup to load initial values and initialize the state */
-  public setup(name: string, settings: Signal<FieldSettings>, state: StateAdapter, source: DataAdapterBase): this {
+  public setup(name: string, settings: Signal<FieldSettings>, state: StateAdapter, source: DataAdapterBase) {
     const l = this.log.fnIfInList('setup', 'fields', name, { name, state, source });
 
     // Setup this object
@@ -52,16 +64,20 @@ export class PickerData {
     this.source = source;
 
     // Setup the State so it is able to do it's work based on data it wouldn't have otherwise
-    this.state.features = this.features;
+    state.features = this.features;
+    state.allowsEmptyLazy.set(this.optionsAllowsEmpty);
 
-    this.ready.set(true);
     // 1. Init Prefetch - for Entity Picker
     // This will place the prefetch items into the available-items list
     // Otherwise related entities would only show as GUIDs.
-    const initiallySelected = state.selectedItems();
-    l.a('setup', { initiallySelected })
-    source.initPrefetch(initiallySelected.map(item => item.value));
-    return l.rSilent(this);
+    const values = state.values();
+    l.a('setup', { initiallySelected: values })
+    source.initPrefetch(values);
+
+    // When everything is done, mark as ready
+    this.ready.set(true);
+
+    l.end('done');
   }
 
   //#endregion
@@ -90,7 +106,7 @@ export class PickerData {
    * Inform the system that the sources are ready.
    * WIP experimenting with making it public, so that formulas can delay running dependant function.
    */
-  ready = signalObj('sourceIsReady', false);
+  public ready = signalObj('sourceIsReady', false);
 
   /** Options to show in the picker. Can also show hints if something is wrong. Must be initialized at setup */
   public optionsRaw = computedObj('optionsSource', () => (this.ready() ? this.source.optionsOrHints() : null) ?? []);
@@ -100,6 +116,9 @@ export class PickerData {
 
   /** Final Options to show in the picker and to use to calculate labels of selected etc. */
   public optionsAll = computedObj('optionsFinal', () => getWith(this.optionsOverride(), o => o ? o : this.optionsRaw()));
+
+  /** Special information for string pickers which allow empty to be valid selection - also used in validator */
+  public optionsAllowsEmpty = computedObj('optionsAllowsEmpty', () => pickerItemsAllowsEmpty(this.optionsAll()));
 
   //#endregion
 
@@ -203,4 +222,14 @@ export class PickerData {
     });
     return l.r(result);
   }
+
+  //#region Text Mode
+
+  public isInFreeTextMode = signalObj('isInFreeTextMode', false);
+
+  toggleFreeTextMode(): void {
+    this.isInFreeTextMode.update(p => !p);
+  }
+
+  //#endregion
 }

@@ -1,32 +1,29 @@
-import { CommonModule, NgClass, NgStyle } from '@angular/common';
-import { AfterViewInit, ChangeDetectorRef, Component, computed, inject, NgZone, OnDestroy, ViewChild, ViewContainerRef } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatRippleModule } from '@angular/material/core';
-import { MatDialog } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { TranslateModule } from '@ngx-translate/core';
+import { CommonModule, NgClass, NgStyle } from "@angular/common";
+import { AfterViewInit, ChangeDetectorRef, Component, computed, inject, NgZone, OnDestroy, ViewChild, ViewContainerRef } from "@angular/core";
+import { MatButtonModule } from "@angular/material/button";
+import { MatDialog } from "@angular/material/dialog";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
+import { TranslateModule } from "@ngx-translate/core";
 import { FeatureIconTextComponent } from '../../../../features/feature-icon-text/feature-icon-text.component';
 import { FeatureNames } from '../../../../features/feature-names';
 import { FeaturesScopedService } from '../../../../features/features-scoped.service';
-import { ClickStopPropagationDirective } from '../../../../shared/directives/click-stop-propagation.directive';
-import { ExtendedFabSpeedDialImports } from '../../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
 import { SignalEquals } from '../../../../shared/signals/signal-equals';
-import { FormConfigService } from '../../../form/form-config.service';
-import { FormsStateService } from '../../../form/forms-state.service';
-import { EditRoutingService } from '../../../routing/edit-routing.service';
-import { LinkCacheService } from '../../../shared/adam/link-cache.service';
-import { HyperlinkDefaultBaseComponent } from '../../basic/hyperlink-default/hyperlink-default-base.component';
-import { PasteClipboardImageDirective } from '../../directives/paste-clipboard-image.directive';
-import { FieldState } from '../../field-state';
-import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
-import { DialogPopupComponent } from '../dialog-popup/dialog-popup.component';
-import { DropzoneDraggingHelper } from '../dropzone-dragging.helper';
-import { ContentExpandAnimation } from '../expand-dialog/content-expand.animation';
-import { WrappersCatalog } from '../wrappers.constants';
+import { FormConfigService } from "../../../form/form-config.service";
+import { FormsStateService } from "../../../form/forms-state.service";
+import { EditRoutingService } from "../../../routing/edit-routing.service";
+import { LinkCacheService } from "../../../shared/adam/link-cache.service";
+import { HyperlinkDefaultBaseComponent } from "../../basic/hyperlink-default/hyperlink-default-base.component";
+import { PasteClipboardImageDirective } from "../../directives/paste-clipboard-image.directive";
+import { FieldState } from "../../field-state";
+import { FieldHelperTextComponent } from "../../help-text/field-help-text.component";
+import { DialogPopupComponent } from "../dialog-popup/dialog-popup.component";
+import { DropzoneDraggingHelper } from "../dropzone-dragging.helper";
+import { ContentExpandAnimation } from "../expand-dialog/content-expand.animation";
+import { WrappersCatalog } from "../wrappers.constants";
 import { TippyDirective } from './../../../../shared/directives/tippy.directive';
+
 
 @Component({
   selector: WrappersCatalog.HyperlinkDefaultExpandableWrapper,
@@ -34,27 +31,21 @@ import { TippyDirective } from './../../../../shared/directives/tippy.directive'
   styleUrls: ['./hyperlink-default-expandable-wrapper.component.scss'],
   animations: [ContentExpandAnimation],
   standalone: true,
-  // TODO: @2pp - this still has imports which are not used anymore, since the dialog-popup is now a standalone component
-  // Pls review and clean up.
   imports: [
     NgClass,
-    MatCardModule,
-    MatButtonModule,
     MatIconModule,
-    MatRippleModule,
     NgStyle,
-    MatFormFieldModule,
-    MatInputModule,
-    PasteClipboardImageDirective,
-    FieldHelperTextComponent,
-    FeatureIconTextComponent,
     TranslateModule,
-    ClickStopPropagationDirective,
-    ...ExtendedFabSpeedDialImports,
     TippyDirective,
     DialogPopupComponent,
+    FieldHelperTextComponent,
+    FeatureIconTextComponent,
+    PasteClipboardImageDirective,
     CommonModule,
-],
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+  ],
 })
 // tslint:disable-next-line:max-line-length
 export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefaultBaseComponent implements AfterViewInit, OnDestroy {
@@ -67,7 +58,7 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
   protected buttonAdam = computed(() => this.fieldState.settings().Buttons.includes('adam'), SignalEquals.bool);
   protected buttonPage = computed(() => this.fieldState.settings().Buttons.includes('page'), SignalEquals.bool);
   protected enableImageConfiguration = computed(() => this.fieldState.settings().EnableImageConfiguration, SignalEquals.bool);
-  
+
   private dropzoneDraggingHelper: DropzoneDraggingHelper;
   private editRoutingService: EditRoutingService;
 
