@@ -2,11 +2,38 @@
   <div class="eav-dialog-header">
     <div class="eav-dialog-header__title">Language Separation Settings</div>
   </div>
+
   <div class="eav-dialog-content">
-    <p>Initial Language: {{ initialLang }}</p>
     <p>Current Language: {{ currentLang }}</p>
+    <p>Initial Language: {{ initialLang }}</p>
     <p>Primary Language: {{ primaryLang }}</p>
+    
+    <hr />
+
+    <strong>Choose language for</strong>
+    
+    <!-- Dropdown for Labels and Help Texts -->
+    <mat-form-field appearance="fill">
+      <mat-label>Labels and Help Texts</mat-label>
+      <mat-select (selectionChange)="setLabelLanguage($event.value, 'labels')">
+        <mat-option value="{{ currentLang }}">Current ({{ currentLang }})</mat-option>
+        <mat-option value="{{ initialLang }}">Initial ({{ initialLang }})</mat-option>
+        <mat-option value="{{ primaryLang }}">Primary ({{ primaryLang }})</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Dropdown for UI Elements -->
+    <mat-form-field appearance="fill">
+      <mat-label>UI Elements</mat-label>
+      <mat-select (selectionChange)="setUiLanguage($event.value, 'ui')">
+        <mat-option value="{{ currentLang }}">Current ({{ currentLang }})</mat-option>
+        <mat-option value="{{ initialLang }}">Initial ({{ initialLang }})</mat-option>
+        <mat-option value="{{ primaryLang }}">Primary ({{ primaryLang }})</mat-option>
+      </mat-select>
+    </mat-form-field>
+
   </div>
+
   <mat-dialog-actions align="end">
     <button mat-button mat-dialog-close>Close</button>
   </mat-dialog-actions>

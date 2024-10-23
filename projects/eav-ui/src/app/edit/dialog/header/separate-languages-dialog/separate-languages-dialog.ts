@@ -7,12 +7,12 @@ import {
   MatDialogModule,
   MatDialogTitle
 } from '@angular/material/dialog';
+import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from '@angular/material/icon';
-import { UserLanguageService } from "projects/eav-ui/src/app/shared/services/user-language.service";
+import { MatSelectModule } from "@angular/material/select";
 import { TippyDirective } from "../../../../shared/directives/tippy.directive";
 import { FormConfigService } from "../../../form/form-config.service";
 import { FormLanguageService } from "../../../form/form-language.service";
-import { LanguageService } from "../../../localization/language.service";
 
 @Component({
   selector: 'app-separate-languages-header',
@@ -28,6 +28,8 @@ import { LanguageService } from "../../../localization/language.service";
     MatIconModule,
     MatButtonModule,
     TippyDirective,
+    MatFormFieldModule,
+    MatSelectModule,
   ],
 })
 export class SeparateLanguagesDialogComponent implements OnInit {
@@ -37,16 +39,23 @@ export class SeparateLanguagesDialogComponent implements OnInit {
   initialLang: string;
 
   constructor(
-    private userLanguageService: UserLanguageService,
-    private languageService: LanguageService,
     private formConfigService: FormConfigService,
     private formLanguageService: FormLanguageService,
   ) { }
 
   ngOnInit(): void {
-    const formLanguage = this.formLanguageService.getLanguage(this.formConfigService.config.formId)();
+    const formLanguage = this.formLanguageService.getSignal(this.formConfigService.config.formId)();
+    
     this.primaryLang = formLanguage.primary;
     this.currentLang = formLanguage.current;
     this.initialLang = formLanguage.initial;
+  }
+
+  setUiLanguage(selectedLang: string, type: string): void {
+    localStorage.setItem('selectedUiLang', selectedLang);
+  }
+
+  setLabelLanguage(selectedLang: string, type: string): void {
+    localStorage.setItem('selectedLabelLang', selectedLang);
   }
 }

@@ -70,12 +70,6 @@ export class FormLanguageService extends SignalStoreObservableBase<number, FormL
     );
   }
 
-  // TODO: @2pp try this, or better just use getSignal from outside
-  getLanguage(formId: number): Signal<FormLanguageComplete> {
-    const l = this.log.fnIf('getLanguage', { formId });
-    return this.getSignal(formId);
-  }
-
   /** Get hideHeader for the form. Fix for safari and mobile browsers */
   getHideHeaderSignal(formId: number): Signal<boolean> {
     return this.#signalsHideHeaderCache.getOrCreate(formId, () => this.cache()[formId]?.hideHeader ?? false);

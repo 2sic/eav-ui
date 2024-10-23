@@ -14,20 +14,11 @@
       }
     }
   </div>
-
-  <!-- @2pp | UI Language Seperation -->
-
   @if (hasLanguages) {
-    <button
-     mat-icon-button
-     tippy="Open Language Seperation Settings"
-     (click)="openSeparateLanguagesDialog()">
+    <button mat-icon-button tippy="Open Language Seperation Settings" (click)="openSeparateLanguagesDialog()">
       <mat-icon class="eav-icon">translate</mat-icon>
     </button>
   }
-
-  <!-- END -->
-
   @if (readOnly().isReadOnly) {
     <mat-icon class="eav-hint-icon" [tippyTranslate]="'General.ReadOnlyHint.' + readOnly().reason"> lock </mat-icon>
   }
