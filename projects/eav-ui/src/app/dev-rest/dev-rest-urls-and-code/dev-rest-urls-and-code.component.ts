@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
@@ -24,7 +24,8 @@ import { InfoBoxComponent } from '../info-box/info-box.component';
   ]
 })
 export class DevRestUrlsAndCodeComponent {
-  @Input() data: DevRestBaseModel;
+  data = input<DevRestBaseModel>();
+
   constructor(
     private snackBar: MatSnackBar,
     private http: HttpClient,

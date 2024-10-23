@@ -1,20 +1,20 @@
-<h3>Permissions ({{ data.permissions.length }})</h3>
+<h3>Permissions ({{ data().permissions.length }})</h3>
 <p>
-  This target <code>{{ data.name }}</code> has {{ data.permissions.length }} permissions
+  This target <code>{{ data().name }}</code> has {{ data().permissions.length }} permissions
   configured.
   <button mat-icon-button tippy="Open permissions" (click)="openPermissions()">
-    @if (data.permissions.length) {
-      <mat-icon [matBadge]="data.permissions.length" matBadgeColor="accent" matBadgeSize="small"
+    @if (data().permissions.length) {
+      <mat-icon [matBadge]="data().permissions.length" matBadgeColor="accent" matBadgeSize="small"
         matBadgePosition="below after" aria-hidden="false">
         person
       </mat-icon>
     }
-    @if (!data.permissions.length) {
+    @if (!data().permissions.length) {
       <mat-icon>person</mat-icon>
     }
   </button>
 </p>
-@if (!data.permissions.length) {
+@if (!data().permissions.length) {
   <p class="warning info-box">
     <mat-icon>warning</mat-icon>
     Warning: you don't have any permissions configured. So only Super-Users (Host) will be able to use the API
@@ -22,8 +22,8 @@
   </p>
 }
 
-<ag-grid-angular class="ag-theme-material" [rowData]="data.permissions" [gridOptions]="gridOptions"
-  [style.height]="(33 + data.permissions.length * 48) + 'px'">
+<ag-grid-angular class="ag-theme-material" [rowData]="data().permissions" [gridOptions]="gridOptions"
+  [style.height]="(33 + data().permissions.length * 48) + 'px'">
 </ag-grid-angular>
 
 <h4>Super-Users (Host) can use all Endpoints</h4>

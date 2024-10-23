@@ -1,7 +1,7 @@
-<p class="icon-box {{ type }}">
+<p class="icon-box {{ type() }}">
   <mat-icon>{{ getIcon() }}</mat-icon>
   @if (title) {
-    <strong [innerHTML]="title"></strong>
+    <strong [innerHTML]="title()"></strong>
     <br>
   }
   <ng-content></ng-content>

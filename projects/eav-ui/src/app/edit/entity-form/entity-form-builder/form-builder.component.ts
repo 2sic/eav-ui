@@ -1,4 +1,4 @@
-import { Component, inject, Injector, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, Injector, input, OnDestroy, OnInit } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { filter, map, Observable, take } from 'rxjs';
@@ -38,9 +38,8 @@ const logSpecs = {
   ],
 })
 export class EntityFormBuilderComponent implements OnInit, OnDestroy {
-
-  @Input() entityGuid: string;
-  @Input() index: number;
+  entityGuid = input<string>();
+  index = input<number>();
 
   log = classLog({EntityFormBuilderComponent}, logSpecs);
 
@@ -64,19 +63,19 @@ export class EntityFormBuilderComponent implements OnInit, OnDestroy {
   ngOnInit() {
     const entityGuid = this.entityGuid;
     const l = this.log.fnIf('ngOnInit', { entityGuid });
-    this.#fieldsSettingsSvc.init(entityGuid);
-    this.#formulaDesignerService.itemSettingsServices[entityGuid] = this.#fieldsSettingsSvc;
-    this.#fieldsTranslateSvc.init(entityGuid);
+    this.#fieldsSettingsSvc.init(entityGuid());
+    this.#formulaDesignerService.itemSettingsServices[entityGuid()] = this.#fieldsSettingsSvc;
+    this.#fieldsTranslateSvc.init(entityGuid());
 
-    const fields$ = this.#getFieldsToProcess$(entityGuid);
+    const fields$ = this.#getFieldsToProcess$(entityGuid());
 
     // Create all the controls in the form right at the beginning
-    fields$.pipe(take(1)).subscribe(allFields => this.#formFieldsBuilderService.createFields(entityGuid, this.form, allFields));
+    fields$.pipe(take(1)).subscribe(allFields => this.#formFieldsBuilderService.createFields(entityGuid(), this.form, allFields));
 
     this.#fieldsSyncSvc.keepFieldsAndStateInSync(this.form, fields$);
 
     // Sync state to parent: dirty, isValid, value changes
-    this.#formSyncSvc.setupSync(entityGuid);
+    this.#formSyncSvc.setupSync(entityGuid());
 
     l.end();
   }
