@@ -38,7 +38,6 @@ export class UserPreferences {
     return created as unknown as UserPreferencesPart<T>;
   }
   #partCache: Record<string, UserPreferencesPart<Record<string, unknown>>> = {};
-
 }
 
 class UserPreferencesPart<T extends Record<string, unknown>> {

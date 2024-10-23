@@ -1,14 +1,15 @@
 import { Injectable, Signal } from '@angular/core';
 import { map, Observable, shareReplay } from 'rxjs';
-import { EntityReader } from '../shared/helpers';
-import { mapUntilChanged } from '../../shared/rxJs/mapUntilChanged';
-import { FormLanguage, FormLanguageComplete } from './form-languages.model';
-import { SignalStoreObservableBase } from '../shared/store/signal-store-observable-base';
-import { ComputedCacheHelper } from '../../shared/signals/computed-cache';
 import { classLog } from '../../shared/logging';
+import { mapUntilChanged } from '../../shared/rxJs/mapUntilChanged';
+import { ComputedCacheHelper } from '../../shared/signals/computed-cache';
+import { EntityReader } from '../shared/helpers';
+import { SignalStoreObservableBase } from '../shared/store/signal-store-observable-base';
+import { FormLanguage, FormLanguageComplete } from './form-languages.model';
 
 const logSpecs = {
   getReader: false,
+  getLanguage: false,
   getReaderSignal: false,
 };
 
@@ -67,6 +68,12 @@ export class FormLanguageService extends SignalStoreObservableBase<number, FormL
       mapUntilChanged(m => m),
       shareReplay(1)
     );
+  }
+
+  // TODO: @2pp try this, or better just use getSignal from outside
+  getLanguage(formId: number): Signal<FormLanguageComplete> {
+    const l = this.log.fnIf('getLanguage', { formId });
+    return this.getSignal(formId);
   }
 
   /** Get hideHeader for the form. Fix for safari and mobile browsers */
