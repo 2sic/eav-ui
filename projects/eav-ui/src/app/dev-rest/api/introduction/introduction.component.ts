@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, input, OnInit } from '@angular/core';
 import { AllScenarios } from '../..';
 import { DevRestApiModel } from '../api-template-vars';
 
@@ -9,14 +9,12 @@ import { DevRestApiModel } from '../api-template-vars';
 })
 export class DevRestApiIntroductionComponent implements OnInit {
 
-  @Input() data: DevRestApiModel;
+  data = input<DevRestApiModel>();
 
   /** List of scenarios */
   scenarios = AllScenarios;
 
   constructor() { }
 
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void { }
 }

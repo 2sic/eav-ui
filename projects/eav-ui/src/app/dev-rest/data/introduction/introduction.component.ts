@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, input, OnInit } from '@angular/core';
 import { AllScenarios } from '../..';
 import { DevRestDataModel } from '../data-template-vars';
 
@@ -8,15 +8,12 @@ import { DevRestDataModel } from '../data-template-vars';
   standalone: true,
 })
 export class DevRestDataIntroductionComponent implements OnInit {
-
-  @Input() data: DevRestDataModel;
+  data = input<DevRestDataModel>();
 
   /** List of scenarios */
   scenarios = AllScenarios;
 
   constructor() { }
 
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void { }
 }

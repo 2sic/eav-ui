@@ -134,7 +134,7 @@ export class ImportAppPartsComponent extends BaseComponent implements OnInit, On
       this.filesDropped(this.importData.files);
     }
     // copied from 2sxc-ui
-    this.installSettingsService.loadGettingStarted(false);//this.isContentApp -> from @Input on 2sxc-ui
+    this.installSettingsService.loadGettingStarted(false); //TODO? this.isContentApp -> from @Input on 2sxc-ui
 
     // copied from 2sxc-ui app/installer
     this.subscriptions.add(this.messages$.pipe(

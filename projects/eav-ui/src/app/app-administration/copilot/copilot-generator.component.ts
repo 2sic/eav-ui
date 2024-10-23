@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, Input } from '@angular/core';
+import { Component, input, Input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -27,7 +27,7 @@ import { CopilotService } from './copilot-service';
 })
 export class CopilotGeneratorComponent {
 
-  @Input() outputType: string;
+  outputType = input<string>();
   @Input() title?: string = 'Copilot Generator';
 
   private copilotSvc = transient(CopilotService);
@@ -37,7 +37,7 @@ export class CopilotGeneratorComponent {
 
   generators$ = this.copilotSvc.getGenerators()
     .pipe(
-      map((gens) => gens.filter(g => g.outputType === this.outputType))
+      map((gens) => gens.filter(g => g.outputType === this.outputType()))
     );
 
   selectedGenerator$ = this.generators$.pipe(map(gens => gens.find(g => g.name === this.selectedGenerator)));
