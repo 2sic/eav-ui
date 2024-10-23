@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Signal } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpServiceBase } from '../../shared/services/http-service-base';
 import { Feature } from '../models';
@@ -10,6 +10,12 @@ export class FeatureDetailService extends HttpServiceBase {
 
   getFeatureDetails(nameId: string): Observable<Feature> {
     return this.getHttpApiUrl<Feature>(webApiFeatureDetails, {
+      params: { nameId }
+    });
+  }
+
+  getFeatureDetailsSig(nameId: string): Signal<Feature> {
+    return this.getSignal<Feature>(webApiFeatureDetails, {
       params: { nameId }
     });
   }

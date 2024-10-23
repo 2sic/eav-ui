@@ -1,33 +1,3 @@
-@if (featureDetails(); as feat) {
-  <mat-card>
-    <mat-card-header>
-      <mat-card-title>{{ feat.name }}</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <p [innerHtml]="feat.description | safeHtml"></p>
-      <div class="eav-info-row">
-        <div class="eav-info-row__label">{{ "Features.Status" | translate }}:</div>
-        <div class="eav-info-row__value">
-          <span>{{ (feat.isEnabled ? "Features.Active" : "Features.NotActive") | translate }}</span>
-        </div>
-      </div>
-      @if (feat.nameId; as id) {
-        <div class="eav-info-row">
-          <div class="eav-info-row__label">ID:</div>
-          <div class="eav-info-row__value eav_click">
-            <span [tippy]="id" (click)="clipboard.copyToClipboard(id)">{{ id }}</span>
-          </div>
-        </div>
-      }
-    </mat-card-content>
-    <mat-card-actions align="end">
-      <a [href]="feat.link" target="_blank" mat-raised-button color="accent" class="eav-card-action-button">
-        <mat-icon>open_in_new</mat-icon>
-        {{ "Features.FindOutMore" | translate }}
-      </a>
-      <button mat-raised-button class="eav-card-action-button" (click)="dialog.close()">
-        {{ "Features.Close" | translate }}
-      </button>
-    </mat-card-actions>
-  </mat-card>
+@if (featureDetails(); as feature) {
+  <app-feature-details-dialog [specs]="{ feature: feature, showGuid: false, showStatus: true, showClose: true }"></app-feature-details-dialog>
 }

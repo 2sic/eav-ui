@@ -45,8 +45,8 @@ export class FeaturesUsedButUnlicensedComponent {
     const l = this.log.fnIf('constructor');
     const unlicensed = this.#features.unlicensedFeatures();
     for (const nameId of unlicensed) {
-      this.#featureDetails.getFeatureDetails(nameId).subscribe(f => {
-        this.features.update(prev => [...prev, f]);
+      this.#featureDetails.getFeatureDetails(nameId).subscribe(feature => {
+        this.features.update(prev => [...prev, feature]);
       });
     }
   }
