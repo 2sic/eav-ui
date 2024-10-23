@@ -235,10 +235,7 @@ export class AppsListComponent implements OnInit {
   }
 
   #loadApps(): void {
-    this.#refresh.update(value => value + 1); // Increment the current value by 1
-    // this.#appsListSvc.getAll().subscribe(apps => {
-    //   this.apps.set(apps);
-    // })
+    this.#refresh.update(value => value + 1);
   }
 
 }

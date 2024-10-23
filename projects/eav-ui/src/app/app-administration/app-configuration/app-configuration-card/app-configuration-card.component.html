@@ -9,24 +9,24 @@
     <div class="eav-info-row">
       <div class="eav-info-row__label">Name:</div>
       <div class="eav-info-row__value">
-        <span [tippy]="'Click to copy to clipboard'" (click)="clipboard.copyToClipboard(contentItem().DisplayName)">{{
-          formatValue(contentItem()?.DisplayName)
+        <span [tippy]="'Click to copy to clipboard'" (click)="clipboard.copyToClipboard(contentItem()[0].DisplayName)">{{
+          formatValue(contentItem()[0]?.DisplayName)
         }}</span>
       </div>
     </div>
     <div class="eav-info-row">
       <div class="eav-info-row__label">Folder:</div>
       <div class="eav-info-row__value">
-        <span [tippy]="'Click to copy to clipboard'" (click)="clipboard.copyToClipboard(contentItem().Folder)">{{
-          formatValue(contentItem()?.Folder)
+        <span [tippy]="'Click to copy to clipboard'" (click)="clipboard.copyToClipboard(contentItem()[0].Folder)">{{
+          formatValue(contentItem()[0]?.Folder)
         }}</span>
       </div>
     </div>
     <div class="eav-info-row">
       <div class="eav-info-row__label">Version:</div>
       <div class="eav-info-row__value">
-        <span [tippy]="'Click to copy to clipboard'" (click)="clipboard.copyToClipboard(contentItem().Version)">{{
-          formatValue(contentItem()?.Version)
+        <span [tippy]="'Click to copy to clipboard'" (click)="clipboard.copyToClipboard(contentItem()[0].Version)">{{
+          formatValue(contentItem()[0]?.Version)
         }}</span>
       </div>
     </div>
@@ -34,16 +34,16 @@
       <div class="eav-info-row__label">For</div>
       <div class="eav-info-row__value">
         <b>2sxc: </b
-        ><span [tippy]="'Click to copy to clipboard'" (click)="clipboard.copyToClipboard(contentItem().RequiredVersion)">
-          {{ formatValue(contentItem()?.RequiredVersion) }}
+        ><span [tippy]="'Click to copy to clipboard'" (click)="clipboard.copyToClipboard(contentItem()[0].RequiredVersion)">
+          {{ formatValue(contentItem()[0]?.RequiredVersion) }}
         </span>
         <b> DNN: </b
-        ><span [tippy]="'Click to copy to clipboard'" (click)="clipboard.copyToClipboard(contentItem().RequiredDnnVersion)">
-          {{ formatValue(contentItem()?.RequiredDnnVersion) }}
+        ><span [tippy]="'Click to copy to clipboard'" (click)="clipboard.copyToClipboard(contentItem()[0].RequiredDnnVersion)">
+          {{ formatValue(contentItem()[0]?.RequiredDnnVersion) }}
         </span>
         <b> Oqt: </b
-        ><span [tippy]="'Click to copy to clipboard'" (click)="clipboard.copyToClipboard(contentItem().RequiredOqtaneVersion)">
-          {{ formatValue(contentItem()?.RequiredOqtaneVersion) }}
+        ><span [tippy]="'Click to copy to clipboard'" (click)="clipboard.copyToClipboard(contentItem()[0].RequiredOqtaneVersion)">
+          {{ formatValue(contentItem()[0]?.RequiredOqtaneVersion) }}
         </span>
       </div>
     </div>

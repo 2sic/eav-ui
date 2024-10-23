@@ -6,7 +6,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { transient } from '../../../../../../core';
 import { DocsLinkHelperComponent } from '../../../admin-shared/docs-link-helper/docs-link-helper.component';
-import { ContentItem } from '../../../content-items/models/content-item.model';
 import { ContentItemsService } from '../../../content-items/services/content-items.service';
 import { GoToMetadata } from '../../../metadata';
 import { eavConstants } from '../../../shared/constants/eav.constants';
@@ -46,7 +45,7 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
     private snackBar: MatSnackBar,
   ) { }
 
-  contentItem = signal<ContentItem>(undefined);
+  contentItem = this.#contentItemsSvc.getAllSig(eavConstants.contentTypes.appConfiguration, undefined);
 
   #refresh = signal(0);
 
@@ -61,9 +60,6 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
       this.#refresh.update(value => value + 1);
     });
 
-    this.#contentItemsSvc.getAll(eavConstants.contentTypes.appConfiguration).subscribe(contentItems => {
-      this.contentItem.set(contentItems[0]);
-    });
   }
 
   ngOnDestroy() {

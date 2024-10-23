@@ -1,6 +1,6 @@
 import { ColDef, GridApi, GridOptions, GridReadyEvent, ValueGetterParams } from '@ag-grid-community/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectorRef, Component, inject, OnDestroy, OnInit, signal, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, computed, inject, OnDestroy, OnInit, signal, ViewContainerRef } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogActions, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -8,7 +8,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
 import { BehaviorSubject, filter, take } from 'rxjs';
 import { transient } from '../../../../core';
-import { ContentType } from '../app-administration/models/content-type.model';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { ContentExportService } from '../content-export/services/content-export.service';
 import { ContentImportDialogData } from '../content-import/content-import-dialog.config';
@@ -63,7 +62,7 @@ import { ContentItemsService } from './services/content-items.service';
 })
 export class ContentItemsComponent implements OnInit, OnDestroy {
 
-  log = classLog({ContentItemsComponent});
+  log = classLog({ ContentItemsComponent });
 
   isDebug = inject(GlobalConfigService).isDebug;
 
@@ -81,8 +80,6 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     private changeDetectorRef: ChangeDetectorRef,
   ) { }
 
-  contentType = signal<ContentType>(undefined);
-  items = signal<ContentItem[]>(undefined);
 
   gridOptions: GridOptions = {
     ...defaultGridOptions,
@@ -90,10 +87,16 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
 
   #gridApi$ = new BehaviorSubject<GridApi>(null);
   #contentTypeStaticName = this.#dialogRouter.getParam('contentTypeStaticName');
+  contentType = this.#contentTypesSvc.retrieveContentTypeSig(this.#contentTypeStaticName, undefined);
+
+  #refresh = signal(0);
+
+  items = computed(() => {
+    const refresh = this.#refresh();
+    return this.#contentItemsSvc.getAllSig(this.#contentTypeStaticName, undefined);
+  });
 
   ngOnInit() {
-    this.fetchContentType();
-    this.fetchItems();
     this.fetchColumns();
     this.#dialogRouter.doOnDialogClosed(() => this.fetchItems());
   }
@@ -110,16 +113,9 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     this.#gridApi$.next(params.api);
   }
 
-  private fetchContentType() {
-    this.#contentTypesSvc.retrieveContentType(this.#contentTypeStaticName).subscribe(contentType => {
-      this.contentType.set(contentType);
-    });
-  }
 
   private fetchItems() {
-    this.#contentItemsSvc.getAll(this.#contentTypeStaticName).subscribe(items => {
-      this.items.set(items);
-    });
+    this.#refresh.update(value => value + 1)
   }
 
   private fetchColumns() {
@@ -216,7 +212,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
       if (itemFor == null) return;
 
       const form: EditForm = {
-        items: [ EditPrep.newMetadataFromInfo(this.#contentTypeStaticName, itemFor) ],
+        items: [EditPrep.newMetadataFromInfo(this.#contentTypeStaticName, itemFor)],
       };
       const formUrl = convertFormToUrl(form);
       this.#dialogRouter.navRelative([`edit/${formUrl}`]);

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Signal } from '@angular/core';
 import { from, map, switchMap } from 'rxjs';
 import { FileUploadResult } from '../../shared/components/file-upload-dialog';
 import { webApiFieldsAll } from '../../shared/fields/content-types-fields.service';
@@ -15,6 +15,12 @@ export class ContentItemsService extends HttpServiceBase {
     return this.getHttpApiUrl<ContentItem[]>(webApiEntityList, {
       params: { appId: this.appId, contentType: contentTypeStaticName }
     });
+  }
+
+  getAllSig(contentTypeStaticName: string, initial: undefined): Signal<ContentItem[]> {
+    return this.getSignal<ContentItem[]>(webApiEntityList, {
+      params: { appId: this.appId, contentType: contentTypeStaticName }
+    }, initial);
   }
 
   getColumns(contentTypeStaticName: string) {

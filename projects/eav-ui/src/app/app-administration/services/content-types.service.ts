@@ -25,10 +25,22 @@ export class ContentTypesService extends HttpServiceBase {
     });
   }
 
+  retrieveContentTypeSig(staticName: string, initial: undefined): Signal<ContentType> {
+    return this.getSignal<ContentType>(webApiTypeGet, {
+      params: { appId: this.appId, contentTypeId: staticName }
+    }, initial);
+  }
+
   retrieveContentTypes(scope: string) {
     return this.getHttpApiUrl<ContentType[]>(webApiTypes, {
       params: { appId: this.appId, scope }
     });
+  }
+
+  retrieveContentTypesSig(scope: string, initial: undefined): Signal<ContentType[]> {
+    return this.getSignal<ContentType[]>(webApiTypes, {
+      params: { appId: this.appId, scope }
+    }, initial);
   }
 
   // TODO: remove this method after upgrade to V2

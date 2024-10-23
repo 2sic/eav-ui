@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { Component, HostBinding, OnInit, signal } from '@angular/core';
+import { Component, computed, HostBinding, OnInit, signal, WritableSignal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -12,7 +12,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { distinctUntilChanged, startWith } from 'rxjs';
 import { transient } from '../../../../../core';
-import { ContentType } from '../../app-administration/models';
 import { ContentTypesService } from '../../app-administration/services';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
 import { dropdownInsertValue } from '../../shared/constants/dropdown-insert-value.constant';
@@ -49,18 +48,23 @@ export class MetadataSaveDialogComponent implements OnInit {
   guidedContentType = true;
   advancedMode = false;
 
-  contentTypes = signal<ContentType[]>([]);
-  scopeOptions = signal<ScopeOption[]>([]);
-
-  private contentTypesService = transient(ContentTypesService);
+  #contentTypesService = transient(ContentTypesService);
 
   constructor(
     private dialog: MatDialogRef<MetadataSaveDialogComponent>,
   ) { }
 
+  scope = signal(eavConstants.scopes.default.value);
+  scopeOptions = this.#contentTypesService.getScopesSig(undefined) as WritableSignal<ScopeOption[]>;
+
+  contentTypes = computed(() => {
+    const scope = this.scope();
+    return this.#contentTypesService.retrieveContentTypesSig(scope, undefined);
+  });
+
+
   ngOnInit(): void {
     this.buildForm();
-    this.fetchScopes();
   }
 
   closeDialog(contentType?: string): void {
@@ -106,20 +110,8 @@ export class MetadataSaveDialogComponent implements OnInit {
         }
         this.form.controls.scope.patchValue(newScope);
       } else {
-        this.fetchContentTypes(newScope);
+        this.scope.set(newScope);
       }
-    });
-  }
-
-  private fetchContentTypes(scope: string): void {
-    this.contentTypesService.retrieveContentTypes(scope).subscribe(contentTypes => {
-      this.contentTypes.set(contentTypes);
-    });
-  }
-
-  private fetchScopes(): void {
-    this.contentTypesService.getScopes().subscribe(scopes => {
-      this.scopeOptions.set(scopes);
     });
   }
 }
