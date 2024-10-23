@@ -4,6 +4,10 @@ import { computedObj } from '../../shared/signals/signal.utilities';
 import { FeatureInfoDialogComponent } from '../feature-info-dialog/feature-info-dialog.component';
 import { FeaturesScopedService } from '../features-scoped.service';
 
+/**
+ * Base component for various UI components which inform that a feature is not enabled.
+ * It's meant to show the indicator/warning, and open a dialog with more information about the feature.
+ */
 @Directive()
 export class FeatureComponentBase {
 
