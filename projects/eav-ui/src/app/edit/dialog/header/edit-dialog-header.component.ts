@@ -14,6 +14,7 @@ import { FormsStateService } from '../../form/forms-state.service';
 import { LanguageService } from '../../localization/language.service';
 import { LanguageSwitcherComponent } from './language-switcher/language-switcher.component';
 import { PublishStatusDialogComponent } from './publish-status-dialog/publish-status-dialog.component';
+import { SeperateLanguagesDialogComponent } from './seperate-languages-dialog/seperate-languages-dialog';
 
 @Component({
   selector: 'app-edit-dialog-header',
@@ -72,9 +73,11 @@ export class EditDialogHeaderComponent {
     openFeaturesUsedButUnlicensedDialog(this.matDialog, this.viewContainerRef);
   }
 
-  seperateLanguages() {
-    // TODO: 2pp - should open a dialog with settings
-
-    
+  openSeperateLanguagesDialog() {
+    this.matDialog.open(SeperateLanguagesDialogComponent, {
+      autoFocus: false,
+      viewContainerRef: this.viewContainerRef,
+      width: '500px',
+    });
   }
 }
