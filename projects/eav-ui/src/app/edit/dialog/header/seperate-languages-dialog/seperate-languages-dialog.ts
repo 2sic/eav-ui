@@ -8,7 +8,7 @@ import {
   MatDialogTitle
 } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { TippyDirective } from "projects/eav-ui/src/app/shared/directives/tippy.directive";
+import { TippyDirective } from "../../../../shared/directives/tippy.directive";
 
 @Component({
   selector: 'app-seperate-languages-header',
