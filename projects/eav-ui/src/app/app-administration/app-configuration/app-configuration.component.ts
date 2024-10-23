@@ -86,10 +86,10 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
   #dialogRouter = transient(DialogRoutingService);
 
 
-  refresh = signal(0);
+  #refresh = signal(0);
 
   appIn = computed(() => {
-    const refresh = this.refresh();
+    const refresh = this.#refresh();
     return this.#appInternalsService.getAppInternals(undefined)
   }
   );
@@ -130,7 +130,7 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.#dialogRouter.doOnDialogClosed(() => {
-      this.refresh.update(value => value + 1);
+      this.#refresh.update(value => value + 1);
     });
 
     this.#dialogConfigSvc.getCurrent$().subscribe((dialogSettings) => {

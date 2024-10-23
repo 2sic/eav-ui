@@ -48,17 +48,17 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
 
   contentItem = signal<ContentItem>(undefined);
 
-  refresh = signal(0);
+  #refresh = signal(0);
 
   appSettingsInternal = computed(() => {
-    const refresh = this.refresh();
+    const refresh = this.#refresh();
     return this.#appInternalsSvc.getAppInternals(undefined);
   });
 
 
   ngOnInit() {
     this.#dialogRouter.doOnDialogClosed(() => {
-      this.refresh.update(value => value + 1);
+      this.#refresh.update(value => value + 1);
     });
 
     this.#contentItemsSvc.getAll(eavConstants.contentTypes.appConfiguration).subscribe(contentItems => {

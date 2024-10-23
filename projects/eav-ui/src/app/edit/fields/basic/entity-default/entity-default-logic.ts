@@ -1,3 +1,4 @@
+import { PickerSourceEntity } from 'projects/edit-types/src/PickerSources';
 import { FieldSettingsEntity, FieldSettingsSharedCreate } from '../../../../../../../edit-types/src/FieldSettings-Pickers';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
@@ -16,6 +17,10 @@ export class EntityDefaultLogic extends FieldLogicBase {
     // Both the query type and create-type are the same
     fsRaw.EntityType ??= '';
     fsRaw.CreateTypes = fsRaw.EntityType ?? '';
+
+    // The old entity-type has a prefill, which is now the create-prefill
+    (fsRaw as unknown as PickerSourceEntity).CreatePrefill ??= fsRaw.Prefill;
+    delete fsRaw.Prefill;
 
     const fs = PickerLogicShared.maybeOverrideEditRestrictions(fsRaw, tools).fs;
     

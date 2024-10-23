@@ -1,4 +1,4 @@
-import { Component, computed, inject, model, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, model } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -10,7 +10,6 @@ import { FeatureIconIndicatorComponent } from '../../../features/feature-icon-in
 import { FeatureIconComponent } from '../../../features/feature-icon/feature-icon.component';
 import { FeatureNames } from '../../../features/feature-names';
 import { FeaturesScopedService } from '../../../features/features-scoped.service';
-import { AppInfo } from '../../models/app-info.model';
 import { ExportAppService } from '../../services/export-app.service';
 
 @Component({
@@ -29,18 +28,15 @@ import { ExportAppService } from '../../services/export-app.service';
     DocsLinkHelperComponent,
   ],
 })
-export class ExportAppComponent implements OnInit {
+export class ExportAppComponent {
 
-  private exportAppService = transient(ExportAppService);
+  #exportAppService = transient(ExportAppService);
 
-  appInfo = signal<AppInfo>(null);
+  appInfo = this.#exportAppService.getAppInfo(undefined);
+
 
   protected features = inject(FeaturesScopedService);
   protected expAssetsAdvEnabled = this.features.isEnabled[FeatureNames.AppExportAssetsAdvanced];
-
-  ngOnInit() {
-    this.exportAppService.getAppInfo().subscribe(appInfo => this.appInfo.set(appInfo));
-  }
 
   // Use Signals
   includeContentGroups = model(false);
@@ -49,7 +45,7 @@ export class ExportAppComponent implements OnInit {
   assetsAdamDeleted = model(false);
   assetsSite = model(true);
 
-  downloadUrl = computed(() => this.exportAppService.exportAppUrl()
+  downloadUrl = computed(() => this.#exportAppService.exportAppUrl()
     + `&includeContentGroups=${this.includeContentGroups()}&resetAppGuid=${this.resetAppGuid()}`
     + `&assetsAdam=${this.assetsAdam()}&assetsSite=${this.assetsSite()}`
   );
