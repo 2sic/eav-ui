@@ -7,31 +7,37 @@
     <p>Current Language: {{ currentLang }}</p>
     <p>Initial Language: {{ initialLang }}</p>
     <p>Primary Language: {{ primaryLang }}</p>
-    
+
     <hr />
 
+    <br />
+
     <strong>Choose language for</strong>
-    
-    <!-- Dropdown for Labels and Help Texts -->
-    <mat-form-field appearance="fill">
-      <mat-label>Labels and Help Texts</mat-label>
-      <mat-select (selectionChange)="setLabelLanguage($event.value, 'labels')">
-        <mat-option value="{{ currentLang }}">Current ({{ currentLang }})</mat-option>
-        <mat-option value="{{ initialLang }}">Initial ({{ initialLang }})</mat-option>
-        <mat-option value="{{ primaryLang }}">Primary ({{ primaryLang }})</mat-option>
-      </mat-select>
-    </mat-form-field>
 
-    <!-- Dropdown for UI Elements -->
-    <mat-form-field appearance="fill">
-      <mat-label>UI Elements</mat-label>
-      <mat-select (selectionChange)="setUiLanguage($event.value, 'ui')">
-        <mat-option value="{{ currentLang }}">Current ({{ currentLang }})</mat-option>
-        <mat-option value="{{ initialLang }}">Initial ({{ initialLang }})</mat-option>
-        <mat-option value="{{ primaryLang }}">Primary ({{ primaryLang }})</mat-option>
-      </mat-select>
-    </mat-form-field>
+    <br />
+    <br />
 
+    <div class="selection-menu">
+      <!-- Dropdown for Labels and Help Texts -->
+      <mat-form-field tippy="test" appearance="fill">
+        <mat-label>Labels and Help Texts</mat-label>
+        <mat-select (selectionChange)="setLabelLanguage($event.value, 'labels')">
+          <mat-option value="{{ currentLang }}">Current ({{ currentLang }})</mat-option>
+          <mat-option value="{{ initialLang }}">Initial ({{ initialLang }})</mat-option>
+          <mat-option value="{{ primaryLang }}">Primary ({{ primaryLang }})</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Dropdown for UI Elements -->
+      <mat-form-field appearance="fill">
+        <mat-label>UI Elements</mat-label>
+        <mat-select (selectionChange)="setUiLanguage($event.value, 'ui')">
+          <mat-option value="{{ currentLang }}">Current ({{ currentLang }})</mat-option>
+          <mat-option value="{{ initialLang }}">Initial ({{ initialLang }})</mat-option>
+          <mat-option value="{{ primaryLang }}">Primary ({{ primaryLang }})</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
   </div>
 
   <mat-dialog-actions align="end">

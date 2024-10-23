@@ -77,7 +77,7 @@ export class EditDialogHeaderComponent {
     this.matDialog.open(SeparateLanguagesDialogComponent, {
       autoFocus: false,
       viewContainerRef: this.viewContainerRef,
-      width: '500px',
+      width: '750px',
     });
   }
 }
