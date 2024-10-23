@@ -72,4 +72,9 @@ export class EditDialogHeaderComponent {
     openFeaturesUsedButUnlicensedDialog(this.matDialog, this.viewContainerRef);
   }
 
+  seperateLanguages() {
+    // TODO: 2pp - should open a dialog with settings
+
+    
+  }
 }
