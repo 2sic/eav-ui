@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Input, NgZone, OnDestroy, ViewChild, computed } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, NgZone, OnDestroy, ViewChild, computed, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
@@ -30,7 +30,7 @@ export class LanguageSwitcherComponent implements AfterViewInit, OnDestroy {
   @ViewChild('scrollable') private headerRef: ElementRef;
   @ViewChild('leftShadow') private leftShadowRef: ElementRef;
   @ViewChild('rightShadow') private rightShadowRef: ElementRef;
-  @Input() disabled: boolean;
+  disabled = input<boolean>();
 
   private centerSelectedHelper: CenterSelectedHelper;
   private mouseScrollHelper: MouseScrollHelper;

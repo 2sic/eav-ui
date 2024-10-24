@@ -1,9 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { Router, RouterLink, RouterLinkActive } from '@angular/router';
-import { NavItem } from '../../models/nav-item.model';
-import { MatIconModule } from '@angular/material/icon';
 import { NgClass, NgIf } from '@angular/common';
+import { Component, Input, OnInit } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { TippyDirective } from '../../directives/tippy.directive';
+import { NavItem } from '../../models/nav-item.model';
 
 @Component({
   selector: 'app-nav-item-list',

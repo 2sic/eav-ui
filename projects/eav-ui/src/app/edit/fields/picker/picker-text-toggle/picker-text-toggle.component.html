@@ -6,9 +6,9 @@
         class="eav-suffix-button"
         [ngClass]="isTextMode() ? '' : 'active'"
         tippyTranslate="Fields.String.Dropdown"
-        [disabled]="csDisabled"
+        [disabled]="csDisabled()"
         appClickStopPropagation
-        (click)="isTextMode() ? toggleFreeText(csDisabled) : null"
+        (click)="isTextMode() ? toggleFreeText(csDisabled()) : null"
       >
         <mat-icon>search</mat-icon>
       </button>
@@ -19,9 +19,9 @@
         class="eav-suffix-button"
         [ngClass]="isTextMode() ? 'active' : ''"
         tippyTranslate="Fields.String.Freetext"
-        [disabled]="csDisabled"
+        [disabled]="csDisabled()"
         appClickStopPropagation
-        (click)="isTextMode() ? null : toggleFreeText(csDisabled)"
+        (click)="isTextMode() ? null : toggleFreeText(csDisabled())"
       >
         <mat-icon>text_fields</mat-icon>
       </button>

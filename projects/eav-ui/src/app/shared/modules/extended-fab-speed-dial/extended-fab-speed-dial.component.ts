@@ -1,12 +1,12 @@
 // tslint:disable-next-line:max-line-length
+import { NgTemplateOutlet } from '@angular/common';
 import { AfterContentInit, Component, ContentChild, ContentChildren, ElementRef, Input, OnDestroy, QueryList, ViewEncapsulation } from '@angular/core';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, startWith, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, distinctUntilChanged, startWith } from 'rxjs';
 import { BaseComponent } from '../../components/base.component';
 import { ExtendedFabSpeedDialActionDirective } from './extended-fab-speed-dial-action.directive';
 import { ExtendedFabSpeedDialActionsContentDirective } from './extended-fab-speed-dial-actions-content.directive';
 import { ExtendedFabSpeedDialTriggerContentDirective } from './extended-fab-speed-dial-trigger-content.directive';
 import { ExtendedFabSpeedDialTriggerDirective } from './extended-fab-speed-dial-trigger.directive';
-import { NgTemplateOutlet } from '@angular/common';
 
 /**
  * Special Speed-Dial kind of FAB which opens more menu items on hover.

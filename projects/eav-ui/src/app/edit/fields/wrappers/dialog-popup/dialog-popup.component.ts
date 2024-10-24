@@ -1,5 +1,5 @@
 import { AsyncPipe, CommonModule, NgClass } from '@angular/common';
-import { Component, computed, effect, ElementRef, inject, Input, NgZone, ViewChild } from '@angular/core';
+import { Component, computed, effect, ElementRef, inject, input, NgZone, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatRippleModule } from '@angular/material/core';
@@ -48,7 +48,7 @@ export class DialogPopupComponent {
   public basics = this.fieldState.basics;
   #editRoutingService = inject(EditRoutingService);
 
-  @Input() applyEmptyClass: Boolean;
+  applyEmptyClass = input<boolean>();
 
   #dropzoneDraggingHelper: DropzoneDraggingHelper;
 
