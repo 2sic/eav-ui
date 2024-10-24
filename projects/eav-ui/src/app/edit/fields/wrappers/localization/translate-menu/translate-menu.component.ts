@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { Component, inject, Input, ViewContainerRef } from '@angular/core';
+import { Component, inject, input, ViewContainerRef } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -36,7 +36,7 @@ import { TranslateMenuHelpers } from './translate-menu.helpers';
   ],
 })
 export class TranslateMenuComponent {
-  @Input() hideTranslateButton: boolean;
+  hideTranslateButton = input<boolean>();
 
   #fieldState = inject(FieldState);
   #formsStateService = inject(FormsStateService);

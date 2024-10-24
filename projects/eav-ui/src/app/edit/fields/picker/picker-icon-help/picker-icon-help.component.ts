@@ -1,7 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { ClickStopPropagationDirective } from '../../../../shared/directives/click-stop-propagation.directive';
+import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 
 @Component({
   selector: 'app-picker-help',
@@ -14,9 +14,9 @@ import { ClickStopPropagationDirective } from '../../../../shared/directives/cli
   templateUrl: './picker-icon-help.component.html',
 })
 export class PickerIconHelpComponent {
-  @Input() helpLink: string;
+  helpLink = input<string>();
 
   goToLink(): void {
-    window.open(this.helpLink, '_blank');
+    window.open(this.helpLink(), '_blank');
   }
 }

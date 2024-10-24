@@ -25,6 +25,7 @@ export class TippyDirective implements OnChanges, OnDestroy {
    * 'left' | 'left-start' | 'left-end' |
    * 'auto' | 'auto-start' | 'auto-end'
    */
+
   @Input() tippyPlacement: string | null | undefined;
 
   /** delay showing Tippy in ms */

@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { Component, inject, input, Input } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -22,8 +22,8 @@ import { FieldState } from '../../field-state';
   ],
 })
 export class PickerTextToggleComponent {
-  @Input() csDisabled: boolean;
-  @Input() allowText: boolean;
+  csDisabled = input<boolean>();
+  allowText = input<boolean>();
   isTextMode = input(false);
 
   showBoth = input(true);
