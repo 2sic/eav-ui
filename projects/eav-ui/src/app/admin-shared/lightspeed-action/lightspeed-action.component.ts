@@ -1,12 +1,12 @@
-import { Component, Input, inject } from '@angular/core';
-import { LightSpeedInfo } from '../../apps-management/models/LightSpeedInfo';
-import { LightSpeedActionsParams } from './lightspeed-actions.models';
-import { MatRippleModule } from '@angular/material/core';
+import { Component, inject, input } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
+import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
-import { FeaturesScopedService } from '../../features/features-scoped.service';
+import { LightSpeedInfo } from '../../apps-management/models/LightSpeedInfo';
 import { FeatureNames } from '../../features/feature-names';
+import { FeaturesScopedService } from '../../features/features-scoped.service';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
+import { LightSpeedActionsParams } from './lightspeed-actions.models';
 
 /**
  * LightSpeedActionsComponent
@@ -27,11 +27,11 @@ import { TippyDirective } from '../../shared/directives/tippy.directive';
 })
 export class LightSpeedActionsComponent {
   /** App needed for lightspeed checks */
-  @Input({ required: true }) lightSpeedOwner: unknown;
+  lightSpeedOwner = input.required<unknown>();   
 
-  @Input({ required: true }) params: LightSpeedActionsParams;
+  params = input.required<LightSpeedActionsParams>();
 
-  @Input({ required: true }) lightSpeed: LightSpeedInfo | null;
+  lightSpeed = input.required<LightSpeedInfo | null>();
 
   public features = inject(FeaturesScopedService);
 
@@ -40,18 +40,18 @@ export class LightSpeedActionsComponent {
   protected lightSpeedEnabled = this.features.isEnabled[FeatureNames.LightSpeed]
 
   public get appHasLightSpeed(): boolean {
-    return this.lightSpeed?.Id != null;
+    return this.lightSpeed()?.Id != null;
   }
 
   public get appLightSpeedEnabled(): boolean {
-    return this.lightSpeed?.IsEnabled == true;
+    return this.lightSpeed()?.IsEnabled == true;
   }
 
   openLightspeed(): void {
-    this.params.onOpenLightspeed(this.lightSpeedOwner);
+    this.params().onOpenLightspeed(this.lightSpeedOwner());
   }
 
   openLightspeedFeatureInfo(): void {
-    this.params.openLightspeedFeatureInfo();
+    this.params().openLightspeedFeatureInfo();
   }
 }
