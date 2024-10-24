@@ -72,7 +72,7 @@ export class LanguageSwitcherComponent implements AfterViewInit, OnDestroy {
 
   lngButtonClick(event: MouseEvent, language: Language) {
     const l = this.log.fn('lngButtonClick');
-    if (this.disabled) {
+    if (this.disabled()) {
       this.snackBar.open(this.translate.instant('Message.CantSwitchLanguage'), null, { duration: 3000, verticalPosition: 'top' });
       return l.end('disabled');
     }
@@ -84,6 +84,6 @@ export class LanguageSwitcherComponent implements AfterViewInit, OnDestroy {
   }
 
   private areButtonsDisabled() {
-    return this.disabled;
+    return this.disabled();
   }
 }
