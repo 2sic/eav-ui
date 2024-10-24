@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, input, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -28,8 +28,7 @@ import { CopilotService } from './copilot-service';
 export class CopilotGeneratorComponent {
 
   outputType = input<string>();
-  @Input() title?: string = 'Copilot Generator';
-
+  title? = input<string>('Copilot Generator');
   private copilotSvc = transient(CopilotService);
 
   webApiGeneratedCode: string = 'admin/code/generateDataModels';

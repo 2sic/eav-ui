@@ -1,4 +1,4 @@
-import { Directive, ElementRef, EventEmitter, HostListener, Input, NgZone, OnDestroy, OnInit, Output } from '@angular/core';
+import { Directive, ElementRef, EventEmitter, HostListener, input, Input, NgZone, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { fromEvent } from 'rxjs';
 import { BaseDirective } from './base.directive';
@@ -7,7 +7,7 @@ import { BaseDirective } from './base.directive';
 export class DragAndDropDirective extends BaseDirective implements OnInit, OnDestroy {
   @Input() markStyle: 'outline' | 'fill' | 'shadow' = 'outline';
   /** Comma separated file types, e.g. 'txt,doc,docx' */
-  @Input() allowedFileTypes = '';
+  allowedFileTypes = input<string>('');
   @Output() private filesDropped = new EventEmitter<File[]>();
 
   private element: HTMLElement;
@@ -59,7 +59,7 @@ export class DragAndDropDirective extends BaseDirective implements OnInit, OnDes
     this.element.classList.remove(this.dragClass);
     const fileList = event.dataTransfer.files;
     let files = Array.from(fileList);
-    files = this.filterTypes(files, this.allowedFileTypes);
+    files = this.filterTypes(files, this.allowedFileTypes());
     if (files.length > 0) {
       this.filesDropped.emit(files);
     }
@@ -85,7 +85,7 @@ export class DragAndDropDirective extends BaseDirective implements OnInit, OnDes
     });
 
     if (files.length !== filtered.length) {
-      const allowedTypesString = this.allowedFileTypes.replace(/\,/g, ', ');
+      const allowedTypesString = this.allowedFileTypes().replace(/\,/g, ', ');
       const message = filtered.length
         ? 'Some files were filtered out. This drop location only accepts file types: ' + allowedTypesString
         : 'This drop location only accepts file types: ' + allowedTypesString;
