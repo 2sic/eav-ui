@@ -47,6 +47,38 @@ export class SourceService extends HttpServiceBase {
     );
   }
 
+  // TODO: For Code Editor,
+  // getSig(viewKey: string, global: boolean, urlItems: ViewOrFileIdentifier[], initial: undefined): Signal<SourceView> {
+  //   // Signal für die SourceView erstellen
+  //   const temp = this.getSignal<SourceView>(appFilesAsset, {
+  //     params: {
+  //       appId: this.appId,
+  //       global,
+  //       ...this.templateIdOrPath(viewKey, global, urlItems),
+  //     },
+  //   }, initial);
+  //   return computed(() => {
+  //     const result = temp();
+
+  //     if (result && result.Type.toLocaleLowerCase() === 'auto') {
+  //       switch (result.Extension.toLocaleLowerCase()) {
+  //         case '.cs':
+  //         case '.cshtml':
+  //           result.Type = 'Razor';
+  //           break;
+  //         case '.html':
+  //         case '.css':
+  //         case '.js':
+  //           result.Type = 'Token';
+  //           break;
+  //       }
+  //     }
+
+  //     return result;
+  //   });
+  // }
+
+
   /** ViewKey is templateId or path */
   save(viewKey: string, global: boolean, view: SourceView, urlItems: ViewOrFileIdentifier[]): Observable<boolean> {
     return this.http.post<boolean>(this.apiUrl(appFilesAsset), view, {

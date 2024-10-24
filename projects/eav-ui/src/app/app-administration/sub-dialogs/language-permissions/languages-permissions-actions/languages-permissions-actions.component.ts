@@ -1,5 +1,6 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { ICellRendererParams } from '@ag-grid-community/core';
+import { JsonPipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatRippleModule } from '@angular/material/core';
@@ -15,6 +16,7 @@ import { LanguagesPermissionsActionsParams } from './languages-permissions-actio
     MatRippleModule,
     MatIconModule,
     MatBadgeModule,
+    JsonPipe
   ],
 })
 export class LanguagesPermissionsActionsComponent implements ICellRendererAngularComp {

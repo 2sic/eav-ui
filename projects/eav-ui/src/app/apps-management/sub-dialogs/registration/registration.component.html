@@ -22,11 +22,11 @@
     <h2>System Specs</h2>
     @if (systemInfoSet()) {
     <p>
-      <b>Status:</b> {{ systemInfoSet().License.Owner ? "this system is registered to " +
-      systemInfoSet().License.Owner : "this system is not yet registered" }}
+      <b>Status:</b> {{ systemInfoSet()()?.License.Owner ? "this system is registered to " +
+      systemInfoSet()()?.License.Owner : "this system is not yet registered" }}
       <br>
       <b>Fingerprint:</b> <span [tippy]="'Click to copy to clipboard'"
-        (click)="clipboard.copyToClipboard(systemInfoSet().System.Fingerprint)"> {{ systemInfoSet().System.Fingerprint
+        (click)="clipboard.copyToClipboard(systemInfoSet()()?.System.Fingerprint)"> {{ systemInfoSet()()?.System.Fingerprint
         }}</span>
       <br>
       <br>
@@ -50,7 +50,7 @@
         <mat-card-actions align="start">
           @if (systemInfoSet()) {
           <button mat-button class="eav-button__with-icon" tippy="Register"
-            (click)="openLicenseRegistration(systemInfoSet())">
+            (click)="openLicenseRegistration(systemInfoSet()())">
             <mat-icon class="eav-icon">app_registration</mat-icon>
             <span>Register</span>
           </button>
