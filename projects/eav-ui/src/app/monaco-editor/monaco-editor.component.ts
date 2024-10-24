@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, input, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild } from '@angular/core';
 import type * as Monaco from 'monaco-editor';
 import { JsonSchema } from '.';
 import { Snippet } from '../code-editor/models/snippet.model';
@@ -27,7 +27,7 @@ export class MonacoEditorComponent implements AfterViewInit, OnChanges, OnDestro
   jsTypings? = input<string>();
   jsDiagnostics? = input<Monaco.languages.typescript.DiagnosticsOptions>();
 
-  @Input() autoFocus = false;
+  autoFocus = input<boolean>(false);
   
   @Output() private valueChanged = new EventEmitter<string>();
   @Output() private focused = new EventEmitter<undefined>();
@@ -47,7 +47,7 @@ export class MonacoEditorComponent implements AfterViewInit, OnChanges, OnDestro
 
     window.require(['vs/editor/editor.main'], (monaco: typeof Monaco) => {
       this.monaco = monaco;
-      this.createEditor(this.autoFocus);
+      this.createEditor(this.autoFocus());
     });
   }
 

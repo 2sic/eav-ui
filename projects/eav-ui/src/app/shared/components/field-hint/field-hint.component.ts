@@ -1,5 +1,5 @@
 import { NgClass, NgTemplateOutlet } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
@@ -14,7 +14,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
   ]
 })
 export class FieldHintComponent {
-  @Input() isError = false;
+  isError = input<boolean>(false);
   isShort = true;
 
   constructor() { }

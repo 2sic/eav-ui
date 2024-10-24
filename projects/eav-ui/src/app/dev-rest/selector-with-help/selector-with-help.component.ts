@@ -27,7 +27,9 @@ import { Scenario } from '../scenarios';
 export class SelectorWithHelpComponent implements OnInit {
   label = input<string>();
   items = input<Scenario[]>();
-  @Input() value: string; // TODO: @2pp - input signals are read only, so find solution
+  // TODO: @2pp - input signals are read only, so find another solution
+  // value = input<string>();
+  @Input() value: string;
   @Output() private valueChange = new EventEmitter<Scenario>();
 
   constructor(private dialog: MatDialog) { }
