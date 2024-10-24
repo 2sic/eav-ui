@@ -1,5 +1,5 @@
 import { UpperCasePipe } from '@angular/common';
-import { Component, computed, EventEmitter, inject, Input, Output, ViewContainerRef } from '@angular/core';
+import { Component, computed, EventEmitter, inject, input, Output, ViewContainerRef } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
@@ -31,7 +31,7 @@ import { PublishStatusDialogComponent } from './publish-status-dialog/publish-st
   ],
 })
 export class EditDialogHeaderComponent {
-  @Input() disabled: boolean;
+  disabled = input<boolean>();
   @Output() private closeDialog = new EventEmitter<null>();
 
   #formsStateSvc = inject(FormsStateService);
