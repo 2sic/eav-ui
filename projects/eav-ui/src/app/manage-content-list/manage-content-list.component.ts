@@ -1,6 +1,7 @@
 import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 import { CdkScrollable } from '@angular/cdk/scrolling';
-import { Component, HostBinding, OnInit } from '@angular/core';
+import { JsonPipe } from '@angular/common';
+import { Component, computed, HostBinding, OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogActions, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -35,6 +36,7 @@ import { ContentGroupService } from './services/content-group.service';
     MatDialogModule,
     TippyDirective,
     MousedownStopPropagationDirective,
+    JsonPipe,
   ],
 })
 export class ManageContentListComponent implements OnInit {
@@ -51,7 +53,6 @@ export class ManageContentListComponent implements OnInit {
   ) { }
 
   protected items = signalObj<GroupHeader[]>('items', null);
-  protected header = signalObj<GroupHeader>('header', null);
 
   #contentGroup = convert(this.#dialogRoutes.getParams(['guid', 'part', 'index']), p => ({
     id: null,
@@ -59,11 +60,19 @@ export class ManageContentListComponent implements OnInit {
     part: p.part,
     index: parseInt(p.index, 10),
   }));
+
+  refresh = signal(0);
+
+  header = computed(() => {
+    const r = this.refresh();
+    return this.#contentGroupSvc.getHeader(this.#contentGroup, undefined);
+  });
+
+
   protected reordered = signalObj('reordered', false);
 
   ngOnInit() {
     this.#fetchList();
-    this.#fetchHeader();
     this.#fetchDialogSettings();
     this.#dialogRoutes.doOnDialogClosed(() => {
       this.#fetchList(true);
@@ -102,8 +111,8 @@ export class ManageContentListComponent implements OnInit {
   protected editHeader() {
     const form: EditForm = {
       items: [
-        EditPrep.relationship(this.#contentGroup.guid, 'listcontent', 0, this.header().Id === 0),
-        EditPrep.relationship(this.#contentGroup.guid, 'listpresentation', 0, this.header().Id === 0),
+        EditPrep.relationship(this.#contentGroup.guid, 'listcontent', 0, this.header()().Id === 0),
+        EditPrep.relationship(this.#contentGroup.guid, 'listpresentation', 0, this.header()().Id === 0),
       ],
     };
     const formUrl = convertFormToUrl(form);
@@ -125,7 +134,7 @@ export class ManageContentListComponent implements OnInit {
 
   addBelow(index: number) {
     const form: EditForm = {
-      items: [ EditPrep.relationship(this.#contentGroup.guid, this.#contentGroup.part, index + 1, true) ],
+      items: [EditPrep.relationship(this.#contentGroup.guid, this.#contentGroup.part, index + 1, true)],
     };
     const formUrl = convertFormToUrl(form);
     this.#dialogRoutes.navRelative([`edit/${formUrl}`]);
@@ -170,7 +179,6 @@ export class ManageContentListComponent implements OnInit {
   }
 
   #fetchHeader() {
-    this.#contentGroupSvc.getHeader(this.#contentGroup)
-      .subscribe(header => this.header.set(header));
+    this.refresh.set(this.refresh() + 1);
   }
 }

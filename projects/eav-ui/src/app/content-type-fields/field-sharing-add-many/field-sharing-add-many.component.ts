@@ -90,6 +90,7 @@ export class FieldSharingAddMany extends BaseComponent implements OnInit {
     // TODO: @SDV Try to find a better way to do this
     this.#contentTypesFieldsSvc.getShareableFields()
       .subscribe(shareableFields => this.shareableFields.data = shareableFields);
+
     this.#contentTypesFieldsSvc.getReservedNames()
       .subscribe(names => {
         this.reservedNames = ReservedNamesValidatorDirective.mergeReserved(names, this.dialogData.existingFields);
