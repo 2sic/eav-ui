@@ -13,7 +13,6 @@ import { ColumnDefinitions } from '../../../shared/ag-grid/column-definitions';
 import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';
 import { SxcGridModule } from '../../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../../../shared/routing/dialog-routing.service';
-import { View } from '../../models';
 import { ViewsService } from '../../services';
 import { AnalyzeSettingsService } from '../../services/analyze-settings.service';
 import { AnalyzeSettingsKeyComponent } from './analyze-settings-key/analyze-settings-key.component';
@@ -46,22 +45,21 @@ export class AnalyzeSettingsComponent implements OnInit {
   #analyzeSettingsSvc = transient(AnalyzeSettingsService);
   #dialogRouter = transient(DialogRoutingService);
 
-  views = signal<View[]>([]);
-  selectedView = signal<string>(undefined);
-
-  stack = computed(() =>
-    this.#analyzeSettingsSvc.getStackSig(this.part, undefined, this.selectedView(), true)
-  );
-
   constructor(
     private dialog: MatDialogRef<AnalyzeSettingsComponent>,
   ) {
     this.part = this.#dialogRouter.getParam('part') as Of<typeof AnalyzeParts>;
   }
 
+  selectedView = signal<string>(undefined);
+  views = this.#viewsSvc.getAll();
+
+  stack = computed(() =>
+    this.#analyzeSettingsSvc.getStackSig(this.part, undefined, this.selectedView(), true)
+  );
+
   ngOnInit(): void {
-    this.getViews();
-    this.getStack();
+    this.#getStack();
   }
 
   closeDialog(): void {
@@ -70,21 +68,12 @@ export class AnalyzeSettingsComponent implements OnInit {
 
   changeView(viewGuid: string): void {
     this.selectedView.set(viewGuid);
-    this.getStack();
+    this.#getStack();
   }
 
-  private getViews(): void {
-    this.#viewsSvc.getAll().subscribe(views => {
-      this.views.set(views);
-    });
-  }
 
-  private getStack(): void {
+  #getStack(): void {
     this.stack();
-
-    // this.#analyzeSettingsSvc.getStack(this.part, undefined, this.selectedView(), true).subscribe(stack => {
-    //   this.stack.set(stack);
-    // });
   }
 
   private buildGridOptions(): GridOptions {

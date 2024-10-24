@@ -1,6 +1,6 @@
 import polymorphLogo from '!url-loader!./polymorph-logo.png';
 import { GridOptions } from '@ag-grid-community/core';
-import { ChangeDetectorRef, Component, OnInit, signal, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, computed, OnInit, signal, ViewContainerRef, WritableSignal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogActions } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -52,16 +52,10 @@ export class ViewsComponent implements OnInit {
   appIsGlobal: boolean;
   appIsInherited: boolean;
 
-  views = signal<View[]>(undefined);
-  polymorphStatus = signal(undefined);
-
   polymorphLogo = polymorphLogo;
   gridOptions = this.buildGridOptions();
 
-  #polymorphism: Polymorphism;
-
   #viewsSvc = transient(ViewsService);
-
   #dialogConfigSvc = transient(DialogConfigAppService);
   #dialogRouter = transient(DialogRoutingService);
 
@@ -71,15 +65,36 @@ export class ViewsComponent implements OnInit {
     private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
-  ) {
+  ) { }
+
+  #refresh = signal(0);
+
+  views = computed(() => {
+    const refresh = this.#refresh();
+    return this.#viewsSvc.getAll();
   }
+  );
+
+
+  #polymorphism = computed(() => {
+    const refresh = this.#refresh();
+    return this.#viewsSvc.getPolymorphism();
+  })
+
+  polymorphStatus = computed(() => {
+    const internalSignal = this.#polymorphism() as WritableSignal<Polymorphism>;
+    if (internalSignal() === undefined) return 'not configured';
+    // this.#polymorphism = internalSignal();
+    return (internalSignal()?.Id === null)
+      ? 'not configured'
+      : (internalSignal().Resolver === null ? 'disabled' : 'using ' + internalSignal().Resolver);
+  });
+
 
   ngOnInit() {
-    this.fetchTemplates();
-    this.fetchPolymorphism();
+
     this.#dialogRouter.doOnDialogClosed(() => {
-      this.fetchTemplates();
-      this.fetchPolymorphism();
+      this.#fetchTemplates();
     });
 
     this.#dialogConfigSvc.getCurrent$().subscribe(data => {
@@ -96,21 +111,10 @@ export class ViewsComponent implements OnInit {
     this.#dialogRouter.navParentFirstChild(['import'], { state: dialogData });
   }
 
-  private fetchTemplates() {
-    this.#viewsSvc.getAll().subscribe(views => {
-      this.views.set(views);
-    });
+  #fetchTemplates() {
+    this.#refresh.update(value => value + 1);
   }
 
-  private fetchPolymorphism() {
-    this.#viewsSvc.getPolymorphism().subscribe(polymorphism => {
-      this.#polymorphism = polymorphism;
-      const polymorphStatus = (polymorphism.Id === null)
-        ? 'not configured'
-        : (polymorphism.Resolver === null ? 'disabled' : 'using ' + polymorphism.Resolver);
-      this.polymorphStatus.set(polymorphStatus);
-    });
-  }
 
   editView(view?: View) {
     const form: EditForm = {
@@ -136,9 +140,9 @@ export class ViewsComponent implements OnInit {
 
     const form: EditForm = {
       items: [
-        !this.#polymorphism.Id
-          ? EditPrep.newFromType(this.#polymorphism.TypeName)
-          : EditPrep.editId(this.#polymorphism.Id),
+        !this.#polymorphism()().Id
+          ? EditPrep.newFromType(this.#polymorphism()().TypeName)
+          : EditPrep.editId(this.#polymorphism()().Id),
       ],
     };
     this.openEdit(form);
@@ -174,7 +178,7 @@ export class ViewsComponent implements OnInit {
 
   private cloneView(view: View) {
     const form: EditForm = {
-      items: [EditPrep.copy(eavConstants.contentTypes.template,view.Id)],
+      items: [EditPrep.copy(eavConstants.contentTypes.template, view.Id)],
     };
     this.openEdit(form);
   }
@@ -188,7 +192,7 @@ export class ViewsComponent implements OnInit {
     this.snackBar.open('Deleting...');
     this.#viewsSvc.delete(view.Id).subscribe(res => {
       this.snackBar.open('Deleted', null, { duration: 2000 });
-      this.fetchTemplates();
+      this.#fetchTemplates();
     });
   }
 

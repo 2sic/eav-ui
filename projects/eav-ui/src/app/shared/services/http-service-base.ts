@@ -53,7 +53,7 @@ export class HttpServiceBase {
     });
   }
 
-  protected getSignal<ResultType>(endpoint: string, options: Parameters<typeof this.http.get>[1], initial?: ResultType): Signal<ResultType> {
+  protected getSignal<ResultType>(endpoint: string, options?: Parameters<typeof this.http.get>[1], initial?: ResultType): Signal<ResultType> {
     const target = signal<ResultType>(initial);
     this.getHttpApiUrl<ResultType>(endpoint, options).subscribe(d => {
       target.set(d)
