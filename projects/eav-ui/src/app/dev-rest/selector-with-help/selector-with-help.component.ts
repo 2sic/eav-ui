@@ -1,14 +1,14 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { HelpPopupComponent } from '..';
-import { HelpPopupData } from '../help-popup/help-popup.models';
-import { Scenario } from '../scenarios';
-import { MatIconModule } from '@angular/material/icon';
+import { Component, EventEmitter, input, Input, OnInit, Output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
-import { MatSelectModule } from '@angular/material/select';
+import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
+import { HelpPopupComponent } from '..';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
+import { HelpPopupData } from '../help-popup/help-popup.models';
+import { Scenario } from '../scenarios';
 
 @Component({
   selector: 'app-selector-with-help',
@@ -25,9 +25,9 @@ import { TippyDirective } from '../../shared/directives/tippy.directive';
   ],
 })
 export class SelectorWithHelpComponent implements OnInit {
-  @Input() label: string;
-  @Input() items: Scenario[];
-  @Input() value: string;
+  label = input<string>();
+  items = input<Scenario[]>();
+  @Input() value: string; // TODO: @2pp - input signals are read only, so find solution
   @Output() private valueChange = new EventEmitter<Scenario>();
 
   constructor(private dialog: MatDialog) { }
@@ -37,12 +37,12 @@ export class SelectorWithHelpComponent implements OnInit {
 
   selectionChange(key: string) {
     this.value = key;
-    const scenario = this.items.find(item => item.key === this.value);
+    const scenario = this.items().find(item => item.key === this.value);
     this.valueChange.emit(scenario);
   }
 
   showHelp() {
-    const scenario = this.items.find(item => item.key === this.value);
+    const scenario = this.items().find(item => item.key === this.value);
     const dialogData: HelpPopupData = {
       name: scenario.name,
       body: scenario.description,
