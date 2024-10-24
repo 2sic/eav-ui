@@ -57,38 +57,8 @@ import { LicensesOrderPipe } from './licenses-order.pipe';
 export class LicenseInfoComponent implements OnInit {
   @ViewChild(AgGridAngular) private gridRef?: AgGridAngular;
 
-  disabled = signal(false);
-
   gridOptions = this.#buildGridOptions();
-
   #refreshLicenses$ = new Subject<void>();
-  #refreshLicensesSig = signal(0);
-
-
-  licensesSig = computed(() => {
-    const refreshState = this.#refreshLicensesSig();
-    return this.#featuresConfigSvc.getLicensesSig();
-
-  });
-  // TODO: @2dg, ask 2dm licensesSig refresh is false
-  // licensesSig = computed(() => {
-  //   const refreshState = this.#refreshLicensesSig();
-  //   const licensesSignal = this.#featuresConfigSvc.getLicensesSig();
-
-  //   this.disabled.set(false);
-
-  //   // const licenses = licensesSignal(); // Den aktuellen Wert des Signals abrufen
-
-  //   // if (licenses) {
-  //   //   return licenses.map(l => ({
-  //   //     ...ExpirationExtension.expandLicense(l),
-  //   //     Features: l.Features.map((f: Feature) => ExpirationExtension.expandFeature(f)),
-  //   //   }));
-  //   // }
-
-  //   return licensesSignal;
-  // });
-
   viewModel$: Observable<LicenseInfoViewModel>;
 
   #featuresConfigSvc = transient(FeaturesConfigService);
@@ -101,6 +71,37 @@ export class LicenseInfoComponent implements OnInit {
   ) {
     ModuleRegistry.registerModules([ClientSideRowModelModule]);
   }
+
+  disabled = signal(false);
+  #refreshLicensesSig = signal(0);
+
+  licensesSig = computed(() => {
+    const refreshState = this.#refreshLicensesSig();
+    this.disabled.set(false);
+    return this.#featuresConfigSvc.getLicensesSig();
+
+  });
+  // TODO: @2dg, ask 2dm licensesSig refresh is false
+  // licensesSignal = this.#featuresConfigSvc.getLicensesSig(); // Holt das Signal, nicht den Wert
+
+  // licensesSig2 = computed(() => {
+  //   const refreshState = this.#refreshLicensesSig(); // Ein Refresh-Mechanismus
+  //   const licenses = this.licensesSignal(); // Holt die Liste der Lizenzen (License[]), nicht das Signal selbst
+
+  //   this.disabled.set(false);
+
+  //   // Überprüfen, ob Lizenzen vorhanden sind, bevor sie erweitert werden
+  //   if (licenses) {
+  //     return licenses.map(l => ({
+  //       ...ExpirationExtension.expandLicense(l), // Lizenz erweitern
+  //       Features: l.Features.map((f: Feature) => ExpirationExtension.expandFeature(f)), // Features erweitern
+  //     }));
+  //   }
+
+  //   // Fallback, falls keine Lizenzen vorhanden sind
+  //   return [];
+  // });
+
 
   ngOnInit(): void {
     this.#dialogRouter.doOnDialogClosed(() => {
