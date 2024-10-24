@@ -1,5 +1,6 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { Component, OnInit, signal } from '@angular/core';
+import { JsonPipe } from '@angular/common';
+import { Component, computed, OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogActions, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -26,23 +27,32 @@ import { LanguagesPermissionsActionsParams } from './languages-permissions-actio
     RouterOutlet,
     MatDialogActions,
     SxcGridModule,
+    JsonPipe,
   ],
 })
 export class LanguagePermissionsComponent implements OnInit {
   gridOptions: GridOptions = this.#buildGridOptions();
 
-  languages = signal<SiteLanguagePermissions[]>([]);
 
-  #zoneService = transient(ZoneService);
+  #zoneSvc = transient(ZoneService);
   #dialogRouting = transient(DialogRoutingService);
 
   constructor(
     private dialog: MatDialogRef<LanguagePermissionsComponent>,
   ) { }
 
+  #refresh = signal(0);
+
+  languages = computed(() => {
+    const r = this.#refresh();
+    return this.#zoneSvc.getLanguagesPermissions(undefined);
+  })
+
   ngOnInit(): void {
-    this.getLanguages();
-    this.#dialogRouting.doOnDialogClosed(() => { this.getLanguages(); });
+    this.#dialogRouting.doOnDialogClosed(() => {
+      this.#refresh.set(this.#refresh() + 1);
+    });
+
   }
 
   closeDialog(): void {
@@ -53,16 +63,6 @@ export class LanguagePermissionsComponent implements OnInit {
     this.#dialogRouting.navRelative([GoToPermissions.getUrlLanguage(language.NameId)]);
   }
 
-  private getLanguages(): void {
-    this.#zoneService.getLanguagesPermissions().subscribe({
-      error: () => {
-        this.languages.set(undefined);
-      },
-      next: (languages) => {
-        this.languages.set(languages);
-      },
-    });
-  }
 
   #buildGridOptions(): GridOptions {
     const gridOptions: GridOptions = {
