@@ -15,7 +15,7 @@
     @if (showErrors() && errorMessage(); as error) {
       <mat-error class="">{{ error | translate: settings() }}</mat-error>
     }
-    @if (!disableError && warningMessage(); as warning) {
+    @if (!disableError() && warningMessage(); as warning) {
       <mat-error class="warning">{{ warning | translate }}</mat-error>
     }
   </div>

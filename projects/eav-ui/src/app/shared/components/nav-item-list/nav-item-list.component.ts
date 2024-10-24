@@ -1,9 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { Router, RouterLink, RouterLinkActive } from '@angular/router';
-import { NavItem } from '../../models/nav-item.model';
-import { MatIconModule } from '@angular/material/icon';
 import { NgClass, NgIf } from '@angular/common';
+import { Component, input, OnInit } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { TippyDirective } from '../../directives/tippy.directive';
+import { NavItem } from '../../models/nav-item.model';
 
 @Component({
   selector: 'app-nav-item-list',
@@ -20,7 +20,7 @@ import { TippyDirective } from '../../directives/tippy.directive';
   ],
 })
 export class NavItemListComponent implements OnInit {
-  @Input() navItem!: NavItem;
+  navItem = input<NavItem>();
   isOpenMenu = false;
   constructor(private router: Router) { }
 
@@ -29,10 +29,10 @@ export class NavItemListComponent implements OnInit {
   }
 
   openChildMenu() {
-    if (this.navItem.child?.length) {
+    if (this.navItem().child?.length) {
 
       const urlSegments = this.router.url.split('/');
-      const matchingChild = this.navItem.child.find(child => urlSegments.includes(child.path));
+      const matchingChild = this.navItem().child.find(child => urlSegments.includes(child.path));
 
       if (matchingChild)
         this.isOpenMenu = true;

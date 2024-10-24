@@ -1,4 +1,4 @@
-import { Component, inject, Injector, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, Injector, input, OnDestroy, OnInit } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { filter, map, Observable, take } from 'rxjs';
@@ -38,9 +38,8 @@ const logSpecs = {
   ],
 })
 export class EntityFormBuilderComponent implements OnInit, OnDestroy {
-
-  @Input() entityGuid: string;
-  @Input() index: number;
+  entityGuid = input<string>();
+  index = input<number>();
 
   log = classLog({EntityFormBuilderComponent}, logSpecs);
 
@@ -62,7 +61,7 @@ export class EntityFormBuilderComponent implements OnInit, OnDestroy {
   public form = this.#formStateSvc.formGroup;
 
   ngOnInit() {
-    const entityGuid = this.entityGuid;
+    const entityGuid = this.entityGuid();
     const l = this.log.fnIf('ngOnInit', { entityGuid });
     this.#fieldsSettingsSvc.init(entityGuid);
     this.#formulaDesignerService.itemSettingsServices[entityGuid] = this.#fieldsSettingsSvc;

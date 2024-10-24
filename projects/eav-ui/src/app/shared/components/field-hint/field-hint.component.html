@@ -1,5 +1,5 @@
 <div class="hint-box" (click)="toggleIsShort()" [ngClass]="{ 'hint-box__short': isShort }">
-  @switch (isError) {
+  @switch (isError()) {
     @case (false) {
       <mat-hint>
         <ng-container *ngTemplateOutlet="content"></ng-container>

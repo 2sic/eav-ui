@@ -1,5 +1,5 @@
 <mat-accordion multi class="rest-urls-accordion">
-  @for (apiCall of data.apiCalls; track apiCall) {
+  @for (apiCall of data().apiCalls; track apiCall) {
     <mat-expansion-panel>
       <mat-expansion-panel-header>
         <mat-panel-title>
@@ -13,7 +13,7 @@
         <h4>{{ apiCall.instructions }}</h4>
         <p>
           HTTP Verb: <code>{{ apiCall.verb }}</code> <br>
-          {{ data.scenario.useVirtual ? 'Virtual' : 'Absolute' }} Url: <code>{{ apiCall.url }}</code>
+          {{ data().scenario.useVirtual ? 'Virtual' : 'Absolute' }} Url: <code>{{ apiCall.url }}</code>
         </p>
         @if (apiCall.enableButton) {
           <p>
@@ -21,7 +21,7 @@
             @if (apiCall.browseUrl) {
               &nbsp;
               <a [href]="apiCall.browseUrl" target="_blank">Open in Browser</a>
-              @if (data.scenario.useVirtual) {
+              @if (data().scenario.useVirtual) {
                 <span>
                   (for the demo to work it will add context parameters)
                 </span>

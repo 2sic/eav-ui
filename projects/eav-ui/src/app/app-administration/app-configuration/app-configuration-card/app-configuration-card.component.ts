@@ -1,4 +1,4 @@
-import { Component, computed, Input, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, computed, input, OnDestroy, OnInit, signal } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -33,7 +33,7 @@ import { AppInternalsService } from '../../services/app-internals.service';
   ],
 })
 export class AppConfigurationCardComponent implements OnInit, OnDestroy {
-  @Input() dialogSettings: DialogSettings;
+  dialogSettings = input.required<DialogSettings>();
 
   #appInternalsSvc = transient(AppInternalsService);
   #contentItemsSvc = transient(ContentItemsService);
@@ -87,7 +87,7 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
   openMetadata() {
     const url = GoToMetadata.getUrlApp(
       this.context.appId,
-      `Metadata for App: ${this.dialogSettings.Context.App.Name} (${this.context.appId})`,
+      `Metadata for App: ${this.dialogSettings().Context.App.Name} (${this.context.appId})`,
     );
     this.#dialogRouter.navParentFirstChild([url]);
   }

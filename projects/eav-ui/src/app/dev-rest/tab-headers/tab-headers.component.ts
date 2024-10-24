@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, input, OnInit } from '@angular/core';
 import { DevRestBaseModel } from '..';
 import { InfoBoxComponent } from '../info-box/info-box.component';
 
@@ -9,12 +9,9 @@ import { InfoBoxComponent } from '../info-box/info-box.component';
   imports: [InfoBoxComponent],
 })
 export class DevRestHttpHeadersComponent implements OnInit {
-
-  @Input() data: DevRestBaseModel;
+  data = input<DevRestBaseModel>();
 
   constructor() { }
 
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void { }
 }
