@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Input, NgZone, OnDestroy, ViewChild, computed } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, NgZone, OnDestroy, ViewChild, computed, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
@@ -30,7 +30,7 @@ export class LanguageSwitcherComponent implements AfterViewInit, OnDestroy {
   @ViewChild('scrollable') private headerRef: ElementRef;
   @ViewChild('leftShadow') private leftShadowRef: ElementRef;
   @ViewChild('rightShadow') private rightShadowRef: ElementRef;
-  @Input() disabled: boolean;
+  disabled = input<boolean>();
 
   private centerSelectedHelper: CenterSelectedHelper;
   private mouseScrollHelper: MouseScrollHelper;
@@ -72,7 +72,7 @@ export class LanguageSwitcherComponent implements AfterViewInit, OnDestroy {
 
   lngButtonClick(event: MouseEvent, language: Language) {
     const l = this.log.fn('lngButtonClick');
-    if (this.disabled) {
+    if (this.disabled()) {
       this.snackBar.open(this.translate.instant('Message.CantSwitchLanguage'), null, { duration: 3000, verticalPosition: 'top' });
       return l.end('disabled');
     }
@@ -84,6 +84,6 @@ export class LanguageSwitcherComponent implements AfterViewInit, OnDestroy {
   }
 
   private areButtonsDisabled() {
-    return this.disabled;
+    return this.disabled();
   }
 }

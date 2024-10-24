@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
@@ -12,14 +12,14 @@ import { TippyDirective } from '../../shared/directives/tippy.directive';
     TippyDirective,
   ],
   template: `
-  <a mat-button class="eav-button__with-icon" href="{{ link }}" target="_blank" tippy="online documentation">
-    <mat-icon mat-icon class="eav-icon">{{ icon ?? 'menu_book' }}</mat-icon>
-    <span>{{ label }}</span>
+  <a mat-button class="eav-button__with-icon" href="{{ link() }}" target="_blank" tippy="online documentation">
+    <mat-icon mat-icon class="eav-icon">{{ icon() ?? 'menu_book' }}</mat-icon>
+    <span>{{ label() }}</span>
   </a>
 `,
 })
 export class DocsLinkHelperComponent {
-  @Input() link: string;
-  @Input() label: string;
-  @Input() icon: string;
+  link = input<string>();   
+  label = input<string>();
+  icon = input<string>();
 }

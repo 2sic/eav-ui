@@ -1,4 +1,4 @@
-import { Directive, Input } from '@angular/core';
+import { Directive, input } from '@angular/core';
 import { AbstractControl, NG_VALIDATORS, ValidationErrors, Validator } from '@angular/forms';
 import { Field } from '../../shared/fields/field.model';
 
@@ -10,14 +10,15 @@ import { Field } from '../../shared/fields/field.model';
     standalone: true,
 })
 export class ReservedNamesValidatorDirective implements Validator {
-  @Input('appReservedNames') reservedNames: Record<string, string> = {};
+  appReservedNames = input<Record<string, string>>({});
+
 
   validate(control: AbstractControl): ValidationErrors | null {
     if (!control.value) { return null; }
 
     const controlValue = (control.value as string).toLocaleLowerCase();
-    const reservedName = Object.keys(this.reservedNames).find(name => name.toLocaleLowerCase() === controlValue);
-    return reservedName ? { reservedNames: this.reservedNames[reservedName] } : null;
+    const reservedName = Object.keys(this.appReservedNames()).find(name => name.toLocaleLowerCase() === controlValue);
+    return reservedName ? { reservedNames: this.appReservedNames()[reservedName] } : null;
   }
 
   static mergeReserved(reservedNames: Record<string, string>, fields: Field[]) {

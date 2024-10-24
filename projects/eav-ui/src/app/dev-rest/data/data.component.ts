@@ -1,16 +1,15 @@
 import { Context as DnnContext } from '@2sic.com/sxc-angular';
 import { AsyncPipe } from '@angular/common';
-import { Component, HostBinding, Input, OnDestroy } from '@angular/core';
+import { Component, HostBinding, OnDestroy } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
-import { BehaviorSubject, combineLatest, filter, map, share, switchMap } from 'rxjs';
+import { combineLatest, filter, map, share, switchMap } from 'rxjs';
 import { generateApiCalls } from '..';
 import { transient } from '../../../../../core';
 import { EntityLightIdentifier } from '../../../../../edit-types/src/EntityLight';
-import { ContentType } from '../../app-administration/models';
 import { ContentTypesService } from '../../app-administration/services';
 import { PermissionsService } from '../../permissions';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
@@ -55,7 +54,6 @@ const pathToContent = 'app/{appname}/data/{typename}';
 })
 export class DevRestDataComponent extends DevRestBase<DevRestDataModel> implements OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
-  @Input() contentTypeInput$: BehaviorSubject<ContentType>;
 
   private entityService = transient(EntityService);
   private contentTypesService = transient(ContentTypesService);

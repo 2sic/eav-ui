@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild } from '@angular/core';
 import type * as Monaco from 'monaco-editor';
 import { JsonSchema } from '.';
 import { Snippet } from '../code-editor/models/snippet.model';
@@ -17,16 +17,18 @@ declare const window: EavWindow;
 })
 export class MonacoEditorComponent implements AfterViewInit, OnChanges, OnDestroy {
   @ViewChild('editor') private editorRef: ElementRef<HTMLElement>;
-  @Input() filename: string;
-  @Input() value: string;
-  @Input() snippets?: Snippet[];
-  @Input() tooltips?: Tooltip[];
-  @Input() options?: Monaco.editor.IStandaloneEditorConstructionOptions;
-  @Input() jsonSchema?: JsonSchema;
-  @Input() jsonComments?: Monaco.languages.json.SeverityLevel;
-  @Input() jsTypings?: string;
-  @Input() jsDiagnostics?: Monaco.languages.typescript.DiagnosticsOptions;
-  @Input() autoFocus = false;
+  filename = input<string>();
+  value = input<string>();
+  tooltips? = input<Tooltip[]>();
+  snippets? = input<Snippet[]>();
+  options? = input<Monaco.editor.IStandaloneEditorConstructionOptions>();
+  jsonSchema? = input<JsonSchema>();
+  jsonComments? = input<Monaco.languages.json.SeverityLevel>();
+  jsTypings? = input<string>();
+  jsDiagnostics? = input<Monaco.languages.typescript.DiagnosticsOptions>();
+
+  autoFocus = input<boolean>(false);
+  
   @Output() private valueChanged = new EventEmitter<string>();
   @Output() private focused = new EventEmitter<undefined>();
   @Output() private blurred = new EventEmitter<undefined>();
@@ -45,7 +47,7 @@ export class MonacoEditorComponent implements AfterViewInit, OnChanges, OnDestro
 
     window.require(['vs/editor/editor.main'], (monaco: typeof Monaco) => {
       this.monaco = monaco;
-      this.createEditor(this.autoFocus);
+      this.createEditor(this.autoFocus());
     });
   }
 
@@ -55,25 +57,25 @@ export class MonacoEditorComponent implements AfterViewInit, OnChanges, OnDestro
       this.createEditor(true);
     }
     if (changes[nameof<MonacoEditorComponent>('value')] != null) {
-      this.monacoInstance?.updateValue(this.value);
+      this.monacoInstance?.updateValue(this.value());
     }
     if (changes[nameof<MonacoEditorComponent>('jsonSchema')] != null) {
-      this.monacoInstance?.setJsonSchema(this.jsonSchema);
+      this.monacoInstance?.setJsonSchema(this.jsonSchema());
     }
     if (changes[nameof<MonacoEditorComponent>('jsonComments')] != null) {
-      this.monacoInstance?.setJsonComments(this.jsonComments);
+      this.monacoInstance?.setJsonComments(this.jsonComments());
     }
     if (changes[nameof<MonacoEditorComponent>('snippets')] != null) {
-      this.monacoInstance?.setSnippets(this.snippets);
+      this.monacoInstance?.setSnippets(this.snippets());
     }
     if (changes[nameof<MonacoEditorComponent>('tooltips')] != null) {
-      this.monacoInstance?.setTooltips(this.tooltips);
+      this.monacoInstance?.setTooltips(this.tooltips());
     }
     if (changes[nameof<MonacoEditorComponent>('jsTypings')] != null) {
-      this.monacoInstance?.setJsTypings(this.jsTypings);
+      this.monacoInstance?.setJsTypings(this.jsTypings());
     }
     if (changes[nameof<MonacoEditorComponent>('jsDiagnostics')] != null) {
-      this.monacoInstance?.setJsDiagnostics(this.jsDiagnostics);
+      this.monacoInstance?.setJsDiagnostics(this.jsDiagnostics());
     }
   }
 
@@ -88,13 +90,13 @@ export class MonacoEditorComponent implements AfterViewInit, OnChanges, OnDestro
 
   private createEditor(autoFocus: boolean): void {
     this.monacoInstance = new MonacoInstance(
-      this.monaco, this.filename, this.value, this.editorRef.nativeElement, this.options, this.snippets, this.tooltips,
+      this.monaco, this.filename(), this.value(), this.editorRef.nativeElement, this.options(), this.snippets(), this.tooltips(),
     );
 
-    this.monacoInstance.setJsonSchema(this.jsonSchema);
-    this.monacoInstance.setJsonComments(this.jsonComments);
-    this.monacoInstance.setJsTypings(this.jsTypings);
-    this.monacoInstance.setJsDiagnostics(this.jsDiagnostics);
+    this.monacoInstance.setJsonSchema(this.jsonSchema());
+    this.monacoInstance.setJsonComments(this.jsonComments());
+    this.monacoInstance.setJsTypings(this.jsTypings());
+    this.monacoInstance.setJsDiagnostics(this.jsDiagnostics());
 
     this.monacoInstance.onValueChange(value => {
       this.valueChanged.emit(value);

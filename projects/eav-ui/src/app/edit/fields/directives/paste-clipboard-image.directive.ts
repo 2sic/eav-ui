@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Directive, ElementRef, Input, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Directive, ElementRef, input, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
@@ -24,8 +24,8 @@ export class PasteClipboardImageDirective implements OnInit, OnDestroy {
 
   log = classLog({PasteClipboardImageDirective}, logSpecs, false);
 
-  @Input() config: FieldConfigSet;
-  @Input() elementType: string;
+  config = input<FieldConfigSet>();
+  elementType = input<string>();
   #eventListeners: ElementEventListener[] = [];
 
   #pasteImageEnabled = this.features.isEnabled[FeatureNames.PasteImageFromClipboard]();
@@ -39,11 +39,11 @@ export class PasteClipboardImageDirective implements OnInit, OnDestroy {
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
   ) {
-    this.log.fn('constructor', { elementType: this.elementType, pasteImageEnabled: this.#pasteImageEnabled });
+    this.log.fn('constructor', { elementType: this.elementType(), pasteImageEnabled: this.#pasteImageEnabled });
   }
 
   ngOnInit() {
-    switch (this.elementType) {
+    switch (this.elementType()) {
       case 'input':
         this.elementRef.nativeElement.pastableTextarea();
         break;
@@ -73,7 +73,7 @@ export class PasteClipboardImageDirective implements OnInit, OnDestroy {
     const l = this.log.fnIf('handleImage', { event }, 'handling paste image - ' + (enabled ? 'enabled' : 'disabled') );
     if (enabled) {
       const image = this.#getFile(event.detail as PasteClipboardImageEventDetail);
-      this.config.dropzone.uploadFile(image);
+      this.config().dropzone.uploadFile(image);
       l.end('started upload');
     } else {
       this.snackBar.open(this.translate.instant('Message.PastingFilesIsNotEnabled'), this.translate.instant('Message.FindOutMore'), { duration: 3000 }).onAction().subscribe(() => {

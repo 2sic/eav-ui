@@ -5,7 +5,7 @@
     <div class="eav-languages">
       @if (hasLanguages) {
         @defer {
-          <app-language-switcher [disabled]="disabled"></app-language-switcher>
+          <app-language-switcher [disabled]="disabled()"></app-language-switcher>
         }
       }
     </div>
