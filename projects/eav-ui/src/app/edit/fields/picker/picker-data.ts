@@ -198,27 +198,16 @@ export class PickerData {
     l.end();
   }
 
-  #toSelectedWithUiInfo(selected: PickerItem[], opts: PickerItem[]): PickerItem[] {
+  #toSelectedWithUiInfo(selected: string[], opts: PickerItem[]): PickerItem[] {
     const l = this.log.fnIfInList('addInfosFromSourceForUi', 'fields', this.name, { selected, opts });
     const result = selected.map(item => {
       // If the selected item is not in the data, show the raw / original item
-      const original = opts.find(e => e.value === item.value);
-      if (!original)
-        return item;
-      
-      // Since we seem to have more information from the source, use that
-      const label = original.label ?? this.#translate.instant('Fields.Picker.EntityNotFound');
-      return {
-        id: original.id,
-        value: original.value,
-        label,
-        tooltip: original.tooltip || `${label} (${original.value})`,
-        info: original.info || null,
-        link: original.link || null,
-        noEdit: original.noEdit === true,
-        noDelete: original.noDelete === true,
-        noSelect: false,
-      } satisfies PickerItem;
+      const original = opts.find(e => e.value === item);
+      return original
+        // Since we seem to have more information from the source, use that
+        ? createPickerItemFromItem(original, original.label ?? this.#translate.instant('Fields.Picker.EntityNotFound'))
+        // If it's not in the data, just show the value
+        : createPickerItemFromValue(item);
     });
     return l.r(result);
   }
@@ -233,3 +222,36 @@ export class PickerData {
 
   //#endregion
 }
+
+//#region Helper Functions for PickerItem
+
+function createPickerItemFromValue(value: string): PickerItem {
+  value = value?.toString() ?? '';  // safe to-string, so it's never 'undefined'
+  return {
+    // Special: if e.g. string with free text value which is not found, disable edit and delete.
+    // Otherwise we may see an edit-pencil for a value that is not in the dropdown (eg. a system query)
+    noEdit: true,
+    noDelete: true,
+    // either the real value or null if text-field or not found
+    id: null,
+    label: value,
+    tooltip: `${value} (manual entry)`,
+    value,
+  } satisfies PickerItem;
+}
+
+function createPickerItemFromItem(original: PickerItem, label: string) {
+  return {
+    id: original.id,
+    value: original.value,
+    label,
+    tooltip: original.tooltip || `${label} (${original.value})`,
+    info: original.info || null,
+    link: original.link || null,
+    noEdit: original.noEdit === true,
+    noDelete: original.noDelete === true,
+    noSelect: false,
+  } satisfies PickerItem;
+}
+
+//#endregion

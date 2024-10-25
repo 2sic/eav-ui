@@ -1,11 +1,7 @@
 import groupBy from 'lodash-es/groupBy';
-import { PickerOptionCustom } from '../../../../../../edit-types/src/DropdownOption';
 import { guidRegex } from '../../../shared/constants/guid.constants';
 import { PickerItem } from './models/picker-item.model';
 
-export function optionsAllowsEmpty(dropdownOptions?: PickerOptionCustom[]): boolean {
-  return dropdownOptions?.some(o => o.Value == '');
-}
 export function pickerItemsAllowsEmpty(dropdownOptions?: PickerItem[]): boolean {
   return dropdownOptions?.some(o => o.value == '');
 }

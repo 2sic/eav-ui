@@ -8,7 +8,6 @@ import { computedObj, signalObj } from '../../../../shared/signals/signal.utilit
 import { DebugFields } from '../../../edit-debug';
 import { FormConfigService } from '../../../form/form-config.service';
 import { FieldState } from '../../field-state';
-import { PickerItem } from '../models/picker-item.model';
 import { DeleteEntityProps } from '../models/picker.models';
 import { PickerFeatures } from '../picker-features.model';
 import { ReorderIndexes } from '../picker-list/reorder-index.models';
@@ -50,11 +49,12 @@ export class StateAdapter {
   }
 
   /**
-   * Mapper to convert between the state and the UI - must be added by inheriting class.
+   * Mapper to convert between the state and the UI - must be configured in setup.
    * On the UI side, must always be an array of strings.
    */
   public mapper: StateUiMapperBase<number | string | string[], string[]>;
 
+  /** Field Name - just for selective debugging */
   #fieldName: string;
 
   //#endregion
@@ -104,29 +104,22 @@ export class StateAdapter {
   /**
    * Signal with all the currently selected items.
    * The PickerItems are fairly basic, as any additional data is added later on.
+   * The only case the additional data matters,
+   * is when we have a string-picker with a free-text value that is not in the dropdown.
+   * In that case, additional data from here is used to disable edit and delete.
    */
-  public selectedItems: Signal<PickerItem[]> = (() => {
-    // Computed just to debounce changes on separator and options from field-settings (old picker)
-    // const options = this.#fieldState.settingExt('_options');
+  public selectedItems: Signal<string[]> = computedObj('selectedItems', () => {
+    const uiValue = this.#fieldState.uiValue();
+    this.log.fnIf('selectedItems', { uiValue });
+    const asUi = this.mapper.toUi(uiValue);
+    const pickerAllowsEmpty = this.allowsEmptyLazy()();
+    const uiFixed = asUi.length == 0 && pickerAllowsEmpty
+      ? ['']
+      : asUi;
+    return uiFixed;
+  });
 
-    // Find selected items and correct empty value (if there is an empty-string options)
-    const l = this.log.fnIf('selectedItems');
-    return computedObj('selectedItems', () => {
-      // const sAndO = options();
-      const uiValue = this.#fieldState.uiValue();
-      l.a('selectedItems', { uiValue /* , sAndO */ });
-      const asUi = this.mapper.toUi(uiValue);
-      // const allowsEmpty = optionsAllowsEmpty(sAndO);
-      const pickerAllowsEmpty = this.allowsEmptyLazy()();
-      // console.log('2dm', { allowsEmpty, pickerAllowsEmpty });
-      const uiFixed = asUi.length == 0 && pickerAllowsEmpty
-        ? ['']
-        : asUi;
-      return this.correctStringEmptyValue(uiFixed /*, sAndO */);
-    });
-  })();
-
-  //#region Callbacks for setting the focus - TODO: not sure if it works ATM
+  //#region Callbacks for setting the focus, like after removing the last selection
 
   #focusOnSearchComponent: () => void;
 
@@ -202,36 +195,4 @@ export class StateAdapter {
 
   //#endregion
 
-  //#region String Empty Values
-  correctStringEmptyValue(
-    values: string[], // The value as an array of strings from state-adapter mapper
-    // dropdownOptions: PickerOptionCustom[] // Options are used only for legacy use case is where the value is an empty string
-  ): PickerItem[] {
-
-    const l = this.log.fnIfInList('correctStringEmptyValue', 'fields', this.#fieldName, {
-      values,
-      // dropdownOptions,
-    });
-
-    const result = values.map(value => {
-      // const option = dropdownOptions?.find(o => o.Value == value);
-      return ({
-        // Special: if e.g. string with free text value which is not found, disable edit and delete.
-        // Otherwise we may see an edit-pencil for a value that is not in the dropdown (eg. a system query)
-        noEdit: true,
-        noDelete: true,
-        // either the real value or null if text-field or not found
-        id: null,
-        label: value,
-        tooltip: `${value} (manual entry)`,
-        value: value?.toString() ?? '', // safe to-string
-      } satisfies PickerItem);
-    });
-    l.a('correctStringEmptyValue', {
-      values,
-      result,
-    });
-    return l.r(result);
-  }
-  //#endregion
 }
