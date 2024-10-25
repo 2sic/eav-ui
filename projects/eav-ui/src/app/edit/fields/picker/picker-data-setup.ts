@@ -56,7 +56,7 @@ export class PickerDataSetup {
     pdWithSetupState.setupAlreadyStarted = true;
 
     // First get the state, since the sources will depend on it.
-    const state = this.#getStateAdapter(inputType);
+    const state = this.#getStateAdapter(fieldState.name, inputType);
 
     const dataSourceType = (fieldState.settings() as FieldSettings & FieldSettingsPicker).dataSourceType;
     const source = this.#getSourceAdapter(inputType, dataSourceType, state);
@@ -69,12 +69,14 @@ export class PickerDataSetup {
     return l.rSilent(pickerData);
   }
 
-  #getStateAdapter(inputType: Of<typeof InputTypeCatalog>): StateAdapterString {
+  #getStateAdapter(fieldName: string, inputType: Of<typeof InputTypeCatalog>): StateAdapter {
     const type = partsMap[inputType]?.states?.[0];
     if (!type)
       throw new Error(`No State Adapter found for inputTypeSpecs: ${inputType}`);
 
-    return transient(type, this.injector) as StateAdapterString;
+    const stateAdapter = transient(type, this.injector) as StateAdapter;
+    stateAdapter.setup(fieldName);
+    return stateAdapter;
   }
 
   #getSourceAdapter(inputType: Of<typeof InputTypeCatalog>, dataSourceType: string, state: StateAdapter): DataAdapterBase {

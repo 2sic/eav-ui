@@ -5,6 +5,7 @@ import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings
 import { FieldSettingsOptionsWip, FieldSettingsPickerMerged } from '../../../../../../../edit-types/src/FieldSettings-Pickers';
 import { classLog } from '../../../../shared/logging';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
+import { DebugFields } from '../../../edit-debug';
 import { FormConfigService } from '../../../form/form-config.service';
 import { FieldState } from '../../field-state';
 import { PickerItem } from '../models/picker-item.model';
@@ -25,7 +26,9 @@ export const logSpecsStateAdapter = {
   sepAndOpts: false,
   createEntityTypes: false,
   attachCallback: false,
-  typesForNew: true,
+  typesForNew: false,
+  correctStringEmptyValue: true,
+  fields: [...DebugFields, 'Query'],
 };
 
 @Injectable()
@@ -39,6 +42,13 @@ export abstract class StateAdapter {
   #fieldState = inject(FieldState) as FieldState<number | string | string[], FieldSettings & FieldSettingsOptionsWip & FieldSettingsPickerMerged>;
 
   constructor() { }
+
+  #fieldName: string;
+
+  public setup(fieldName: string): this {
+    this.#fieldName = fieldName;
+    return this;
+  }
 
   //#endregion
 
@@ -59,7 +69,7 @@ export abstract class StateAdapter {
   public typesForNew = computedObj('typesForNew', () => {
     const raw = this.#createTypesRaw().map((guid: string) => ({ label: null, guid }));
     
-    const l = this.log.fnIf('typesForNew', { raw });
+    const l = this.log.fnIfInList('typesForNew', 'fields', this.#fieldName, { raw });
 
     // return [];
     // Augment with additional label and guid if we have this
@@ -70,7 +80,7 @@ export abstract class StateAdapter {
       return {
         ...orig,
         // replace is a bit temporary, as the names are a bit long...
-        label: (ct?.Title ?? ct?.Name ?? guid + " (not found)").replace('UI Picker Source - ', ''),
+        label: (ct?.Title ?? ct?.Name ?? `${guid} (not found)`).replace('UI Picker Source - ', ''),
         guid: ct?.Id ?? guid,
       }
     });
@@ -140,7 +150,7 @@ export abstract class StateAdapter {
   //#region CRUD operations
 
   #updateValue(operation: (original: string[]) => string[]): void {
-    const l = this.log.fnIf('updateValue');
+    const l = this.log.fnIfInList('updateValue', 'fields', this.#fieldName);
     // Get original data, and make sure we have a copy, so that ongoing changes won't affect the original
     // If we don't do this, then later change detection can fail!
     const valueArray = [...this.values()];
@@ -151,7 +161,7 @@ export abstract class StateAdapter {
   }
 
   public add(value: string): void {
-    this.log.fnIf('add', { value });
+    this.log.fnIfInList('add', 'fields', this.#fieldName, { value });
     this.#updateValue(list => (this.features().multiValue) ? [...list, value] : [value]);
   }
 
@@ -197,7 +207,7 @@ export abstract class StateAdapter {
     // dropdownOptions: PickerOptionCustom[] // Options are used only for legacy use case is where the value is an empty string
   ): PickerItem[] {
 
-    const l = this.log.fn('correctStringEmptyValue', {
+    const l = this.log.fnIfInList('correctStringEmptyValue', 'fields', this.#fieldName, {
       values,
       // dropdownOptions,
     });
@@ -211,8 +221,7 @@ export abstract class StateAdapter {
         // noDelete: true,
         // either the real value or null if text-field or not found
         id: null,
-        label: null,
-        // label: option?.Title ?? value,
+        label: value,
         tooltip: `${value}`,
         value: value?.toString() ?? '', // safe to-string
       } satisfies PickerItem);
