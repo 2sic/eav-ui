@@ -138,7 +138,7 @@ export class PickerData {
   /** Currently selected items from override or raw */
   public selectedAll = computedObj('selectedAll', () => getWith(this.selectedOverride(), o => o ? o : this.selectedRaw()));
 
-  /** First selected item */
+  /** First selected item or null */
   public selectedOne = computedObj('selectedOne', () => this.selectedAll()[0] ?? null);
 
   /** Create a copy of the selected items, so that any changes (in formulas) won't affect the real selected data */
