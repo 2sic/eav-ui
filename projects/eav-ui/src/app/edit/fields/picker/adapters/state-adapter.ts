@@ -32,7 +32,7 @@ export const logSpecsStateAdapter = {
 };
 
 @Injectable()
-export abstract class StateAdapter {
+export class StateAdapter {
 
   //#region Setup / Inject / Logs
 
@@ -43,12 +43,19 @@ export abstract class StateAdapter {
 
   constructor() { }
 
-  #fieldName: string;
-
-  public setup(fieldName: string): this {
+  public setup(fieldName: string, uiMapper: StateUiMapperBase): this {
     this.#fieldName = fieldName;
+    this.mapper = uiMapper as StateUiMapperBase<number | string | string[], string[]>;
     return this;
   }
+
+  /**
+   * Mapper to convert between the state and the UI - must be added by inheriting class.
+   * On the UI side, must always be an array of strings.
+   */
+  public mapper: StateUiMapperBase<number | string | string[], string[]>;
+
+  #fieldName: string;
 
   //#endregion
 
@@ -132,12 +139,6 @@ export abstract class StateAdapter {
   //#endregion
 
   //#region Conversion back and forth between formats
-
-  /**
-   * Mapper to convert between the state and the UI - must be added by inheriting class.
-   * On the UI side, must always be an array of strings.
-   */
-  public abstract mapper: StateUiMapperBase<number | string | string[], string[]>;
 
   /** Signal with the current values in the picker, as an array */
   public values = computedObj('values', () => {

@@ -12,7 +12,7 @@ import { FieldValue } from '../../../../../../../edit-types/src/FieldValue';
  */
 export abstract class StateUiMapperBase<TState extends FieldValue = FieldValue, TUi extends FieldValue = FieldValue> {
 
-  constructor(protected fieldName?: string) { }
+  constructor(protected fieldName: string, protected settings: Signal<FieldSettings & FieldSettingsSharedSeparator>) { }
 
   abstract toUi(state: TState): TUi;
 
@@ -20,14 +20,9 @@ export abstract class StateUiMapperBase<TState extends FieldValue = FieldValue, 
 }
 
 
-export abstract class StateUiMapperWithSettingsBase<TState extends FieldValue = FieldValue, TUi extends FieldValue = FieldValue>
-  extends StateUiMapperBase<TState, TUi> {
-  constructor(fieldName: string, protected settings: Signal<FieldSettings & FieldSettingsSharedSeparator>) {
-    super(fieldName);
-  }
-
-  abstract toUi(state: TState): TUi;
-
-  abstract toState(uiValue: TUi): TState;
-
-}
+// export abstract class StateUiMapperWithSettingsBase<TState extends FieldValue = FieldValue, TUi extends FieldValue = FieldValue>
+//   extends StateUiMapperBase<TState, TUi> {
+//   constructor(fieldName: string, settings: Signal<FieldSettings & FieldSettingsSharedSeparator>) {
+//     super(fieldName, settings);
+//   }
+// }
