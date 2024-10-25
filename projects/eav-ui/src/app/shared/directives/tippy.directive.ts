@@ -25,7 +25,6 @@ export class TippyDirective implements OnChanges, OnDestroy {
    * 'left' | 'left-start' | 'left-end' |
    * 'auto' | 'auto-start' | 'auto-end'
    */
-
   tippyPlacement = input<string | null | undefined>();
 
   /** delay showing Tippy in ms */
@@ -65,12 +64,13 @@ export class TippyDirective implements OnChanges, OnDestroy {
       });
 
     if (changes['tippy'] != null || changes['tippyTranslate'] != null || changes['tippyFontSize'] != null) {
-      const contents = this.tippyTranslate()
-        ? this.translate?.instant(this.tippyTranslate()) ?? this.tippyTranslate() // temp with null-check in case the service is missing ATM
-        : this.tippy() ?? '';
+      const val = this.tippyTranslate()?.toString() ?? '';
+      const contents = val
+        ? this.translate?.instant(val) ?? val // temp with null-check in case the service is missing ATM
+        : this.tippy()?.toString() ?? '';
 
-      if (!contents)
-        this.#tooltip.disable();
+      // Disable Tippy if no content, but re-enable if content is added later
+      contents ? this.#tooltip.enable() : this.#tooltip.disable();
 
       const body = !this.tippyAllowHtml()
         ? contents
