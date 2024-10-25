@@ -216,14 +216,14 @@ export class StateAdapter {
     const result = values.map(value => {
       // const option = dropdownOptions?.find(o => o.Value == value);
       return ({
-        // 2024-10-21 2dm disabling this, don't think it has any effect
-        // if it's a free text value or not found, disable edit and delete
-        // noEdit: true,
-        // noDelete: true,
+        // Special: if e.g. string with free text value which is not found, disable edit and delete.
+        // Otherwise we may see an edit-pencil for a value that is not in the dropdown (eg. a system query)
+        noEdit: true,
+        noDelete: true,
         // either the real value or null if text-field or not found
         id: null,
         label: value,
-        tooltip: `${value}`,
+        tooltip: `${value} (manual entry)`,
         value: value?.toString() ?? '', // safe to-string
       } satisfies PickerItem);
     });
