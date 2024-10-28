@@ -38,7 +38,7 @@ export class DataRestApiComponent {
     const urlSegments = this.#dialogRouter.url.split('/');
     const urlStaticName = urlSegments[urlSegments.length - 1]
 
-    const selectedContentType = contentTypes.find(contentType => contentType.StaticName === urlStaticName);
+    const selectedContentType = contentTypes?.find(contentType => contentType.StaticName === urlStaticName);
     if (selectedContentType)
       this.contentTypeForm.get('contentType').setValue(selectedContentType.StaticName);
 

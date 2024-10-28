@@ -39,7 +39,7 @@ export class QueriesRestApiComponent {
     const urlSegments = this.#dialogRouter.url.split('/');
     const urlGuidName = urlSegments[urlSegments.length - 1]
 
-    const selectedContentType = queries.find(query => query.Guid === urlGuidName);
+    const selectedContentType = queries?.find(query => query.Guid === urlGuidName);
     if (selectedContentType)
       this.queryTypeForm.get('queryType').setValue(selectedContentType.Guid);
 

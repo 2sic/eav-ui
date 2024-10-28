@@ -78,8 +78,6 @@ export const AppAdminMenu: NavItem[] = [
         // TODO: 2dg Create new site
         name: 'Data Bundles (beta)',
         path: 'data-bundles',
-        // icon: 'browser_updated',
-        // 2dm: note that I would prefer this icon, but we would first have to switch to Material Symbols
         icon: 'dataset',
         svgIcon: false,
         tippy: 'Data Bundles'
