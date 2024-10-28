@@ -275,7 +275,11 @@
     "RichImages.Ratio100.Label": "Width 100%",
     "RichImages.Ratio100.Tooltip": "Make width cover entire area of screen (desktop and mobile)",
     "RichImages.RatioXofY.Label": "Width {0}/{1}",
-    "RichImages.RatioXofY.Tooltip": "Make width {0}/{1} of the desktop width; mobile will auto-adjust"
+    "RichImages.RatioXofY.Tooltip": "Make width {0}/{1} of the desktop width; mobile will auto-adjust",
+    "Splitter.0": "Gap with no height, just ensure the next content starts on a new line",
+    "Splitter.s": "Gap with a small height",
+    "Splitter.m": "Gap with a medium height",
+    "Splitter.l": "Gap with a large height"
   },
   "Features": {
     "NotActivated": "This feature is not activated - find out more",

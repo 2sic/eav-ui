@@ -20,7 +20,7 @@ export class AddToRegistryWysiwygSections extends AddToRegistryBase {
     RichSpecs.ContentSplitters.forEach((cs) => {
       editor.ui.registry.addToggleButton(cs.name, {
         icon: cs.icon,
-        tooltip: 'TODO:', // editor.translate([ai.tooltip ?? btns[ai.inherit]?.tooltip]),
+        tooltip: editor.translate(cs.tooltip),
         onAction: () => { this.editor.insertContent(`<hr class="${RichSpecs.ContentSplitterClass} ${cs.class}"/>`); },
         onSetup: (api) => {
           // console.log('2dm, api', api);
@@ -38,7 +38,7 @@ export class AddToRegistryWysiwygSections extends AddToRegistryBase {
     RichSpecs.ContentSplitters.forEach((cs) => {
       editor.ui.registry.addToggleButton(cs.name + Buttons.toggleSuffix, {
         icon: cs.icon,
-        tooltip: 'TODO:', // editor.translate([ai.tooltip ?? btns[ai.inherit]?.tooltip]),
+        tooltip: editor.translate(cs.tooltip),
         onAction: () => { this.toggleOneClassFromList(cs.class, RichSpecs.ContentSplitters.map(x => x.class)); },
         onSetup: (api) => {
           api.setActive(editor.formatter.match(cs.class));
