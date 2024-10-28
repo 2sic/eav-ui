@@ -1,18 +1,22 @@
 <div class="outer-container-app">
   <!-- Intro -->
-  <h1>Data Bundles</h1>
+  <h2>Data Bundles</h2>
   <p>
-    Data Bundles are a new feature which allow you to mark parts of your app as a bundle, and then export/import them.
-    This allows you to do a partial sync of data and schema between environments.
+    Data Bundles are a new feature which allow you to mark parts of your app as a bundle, and then export/import them. This allows you to do
+    a partial sync of data and schema between environments.
   </p>
 
-  <!-- TODO: @2dm - add warning if feature not enabled -->
+  <app-feature-text-info [featureNameId]="'DataExportImportBundles'"></app-feature-text-info>
 
   <!-- Explanation about other places to export/import -->
-  <h2>Bundle Export Configurations</h2>
+  <h3>Bundle Export Configurations</h3>
   <p>
-    Bundles must be defined by creating a <strong>Bundle Configuration</strong>, and then assigning Content-Types and Data to that configuration.
+    Bundles must be defined by creating a <strong>Bundle Configuration</strong>, and then assigning Content-Types and Data to that
+    configuration.
   </p>
+
+  <ag-grid-angular class="ag-theme-material" [rowData]="dataBundles()" [gridOptions]="gridOptions"> </ag-grid-angular>
+
   <!-- TODO: @2dg
     - get all bundle configurations using existing services and show them here as a table, Content Type is "d7f2e4fa-5306-41bb-a3cd-d9529c838879"
     - Columns
@@ -27,9 +31,6 @@
   -->
 
   <!-- Import Bundles -->
-  <h2>Import Bundles</h2>
-  <p>
-    To import a bundle, TODO...
-    Note that all data and schema will be overwritten by the imported data in the bundle.
-  </p>  
+  <h3>Import Bundles</h3>
+  <p>To import a bundle, TODO... Note that all data and schema will be overwritten by the imported data in the bundle.</p>
 </div>
