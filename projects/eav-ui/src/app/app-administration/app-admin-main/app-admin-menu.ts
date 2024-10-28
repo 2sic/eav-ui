@@ -1,8 +1,8 @@
-import { NavItem } from "../../shared/models/nav-item.model";
-import { eavConstants } from '../../shared/constants/eav.constants';
-import { GoToCopilot } from '../copilot/go-to-copilot';
 import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
+import { eavConstants } from '../../shared/constants/eav.constants';
+import { NavItem } from "../../shared/models/nav-item.model";
 import { CopilotSpecs } from '../copilot/copilot-specs';
+import { GoToCopilot } from '../copilot/go-to-copilot';
 
 export const AppAdminMenu: NavItem[] = [
 
@@ -56,6 +56,14 @@ export const AppAdminMenu: NavItem[] = [
     icon: 'settings_applications',
     svgIcon: false,
     tippy: 'App Settings',
+  },
+  {
+    // TODO: 2dg Create new site
+    name: 'Import/Export',
+    path: 'import-export',
+    icon: 'cloud_sync',
+    svgIcon: false,
+    tippy: 'Import Export',
     child: [
       {
         name: 'Export App',
@@ -65,6 +73,16 @@ export const AppAdminMenu: NavItem[] = [
         icon: 'deployed_code_update',
         svgIcon: false,
         tippy: 'Export this entire App'
+      },
+      {
+        // TODO: 2dg Create new site
+        name: 'Data Bundles (beta)',
+        path: 'data-bundles',
+        // icon: 'browser_updated',
+        // 2dm: note that I would prefer this icon, but we would first have to switch to Material Symbols
+        icon: 'dataset',
+        svgIcon: false,
+        tippy: 'Data Bundles'
       },
       {
         name: 'Export Parts',
