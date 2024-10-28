@@ -1,5 +1,5 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { Component, OnInit, signal, ViewContainerRef } from '@angular/core';
+import { Component, computed, OnInit, signal, ViewContainerRef } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogActions } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -34,11 +34,16 @@ import { WebApiActionsParams } from './web-api-actions/web-api-actions.models';
 })
 export class WebApiComponent implements OnInit {
 
-  private dialogService = transient(DialogService);
-  private sourceService = transient(SourceService);
+  #dialogService = transient(DialogService);
+  #sourceService = transient(SourceService);
 
   enableCode!: boolean;
-  webApis = signal<WebApi[]>(undefined);
+  #refresh = signal(0);
+
+  webApis = computed(() => {
+    const r = this.#refresh();
+    return this.#sourceService.getWebApisSig();
+  })
 
   gridOptions = this.buildGridOptions();
 
@@ -103,7 +108,7 @@ export class WebApiComponent implements OnInit {
       }
 
       this.snackBar.open('Saving...');
-      this.sourceService.create(result.name, global, result.templateKey).subscribe(() => {
+      this.#sourceService.create(result.name, global, result.templateKey).subscribe(() => {
         this.snackBar.open('Saved', null, { duration: 2000 });
         this.fetchWebApis();
       });
@@ -111,9 +116,7 @@ export class WebApiComponent implements OnInit {
   }
 
   private fetchWebApis() {
-    this.sourceService.getWebApis().subscribe(webApis => {
-      this.webApis.set(webApis);
-    });
+    this.#refresh.update(value => value + 1);
   }
 
   private enableCodeGetter() {
@@ -121,7 +124,7 @@ export class WebApiComponent implements OnInit {
   }
 
   private openCode(api: WebApi) {
-    this.dialogService.openCodeFile(api.path, api.isShared);
+    this.#dialogService.openCodeFile(api.path, api.isShared);
   }
 
   private buildGridOptions(): GridOptions {
