@@ -26,6 +26,10 @@ export class NavItemListComponent implements OnInit {
 
   ngOnInit(): void {
     this.openChildMenu();
+
+    this.router.events.subscribe(() => {
+      this.openChildMenu();
+    });
   }
 
   openChildMenu() {

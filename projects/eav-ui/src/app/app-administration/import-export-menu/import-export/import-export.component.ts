@@ -21,10 +21,8 @@ export class ImportExportComponent {
   constructor(private router: Router) { }
 
   linkToPage(link: string): string {
-    // Entfernt "import-export" aus dem Link, falls es im aktuellen Pfad vorhanden ist.
     const currentPath = this.router.url.replace('/import-export', '');
     return `${currentPath}/${link}`;
   }
-
 
 }
