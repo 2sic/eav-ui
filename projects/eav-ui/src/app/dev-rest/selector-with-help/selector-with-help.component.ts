@@ -34,8 +34,7 @@ export class SelectorWithHelpComponent implements OnInit {
 
   constructor(private dialog: MatDialog) { }
 
-  ngOnInit() {
-  }
+  ngOnInit() { }
 
   selectionChange(key: string) {
     this.value = key;

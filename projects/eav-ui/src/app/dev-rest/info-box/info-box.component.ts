@@ -11,7 +11,7 @@ import { infoBoxIconMap, InfoBoxType } from './hint';
 })
 export class InfoBoxComponent {
   type = input<InfoBoxType>();
-  title = input<string>();
+  // 2pp - not in use: title = input<string>();
 
   constructor() { }
 
