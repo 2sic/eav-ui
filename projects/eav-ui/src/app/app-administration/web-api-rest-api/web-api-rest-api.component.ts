@@ -1,18 +1,15 @@
-import { AsyncPipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, computed } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { RouterOutlet } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
 import { transient } from '../../../../../core';
 import { SourceService } from '../../code-editor/services/source.service';
 import { DevRestQueryComponent } from '../../dev-rest/query/query.component';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
-import { WebApi } from '../models';
 
 @Component({
   selector: 'app-web-api-rest-api',
@@ -23,7 +20,6 @@ import { WebApi } from '../models';
     MatCardModule,
     MatIconModule,
     ReactiveFormsModule,
-    AsyncPipe,
     DevRestQueryComponent,
     RouterOutlet,
     SxcGridModule,
@@ -33,34 +29,28 @@ import { WebApi } from '../models';
 export class WebApiRestApiComponent {
   #sourceSvc = transient(SourceService);
   #dialogRouter = transient(DialogRoutingService);
-  webApis$ = new BehaviorSubject<WebApi[]>(undefined);
-  webApiTypeForm: FormGroup;
 
-  constructor(
-    private fb: FormBuilder,
-  ) { }
+  #getAllWebApis = this.#sourceSvc.getWebApisSig();
 
-  ngOnInit() {
-    this.fetchWebApis();
-    this.webApiTypeForm = this.fb.group({
-      webApiType: ['']
-    });
-  }
+  webApisTypes = computed(() => {
+    const webApis = this.#getAllWebApis();
+    const urlSegments = this.#dialogRouter.url.split('/');
+    const urlPath = urlSegments[urlSegments.length - 1]
+    var encodedUrlPath = urlPath.replace("%252F", "/");
 
-  fetchWebApis() {
-    this.#sourceSvc.getWebApis().subscribe((webApis: WebApi[]) => {
-      this.webApis$.next(webApis);
-      // When Route are reload and have some Guid in the Route
-      const urlSegments = this.#dialogRouter.url.split('/');
-      const urlPath = urlSegments[urlSegments.length - 1]
-      var encodedUrlPath = urlPath.replace("%252F", "/");
+    const selectedContentType = webApis.find(webApi => webApi.path === encodedUrlPath);
 
-      const selectedContentType = webApis.find(webApi => webApi.path === encodedUrlPath);
+    if (selectedContentType)
+      this.webApiTypeForm.get('webApiType').setValue(selectedContentType.path);
 
-      if (selectedContentType)
-        this.webApiTypeForm.get('webApiType').setValue(selectedContentType.path);
-    });
-  }
+    return webApis;
+  });
+
+  webApiTypeForm: FormGroup = this.fb.group({
+    webApiType: ['']
+  });
+
+  constructor(private fb: FormBuilder,) { }
 
   openRestApi(apiRoute: string): void {
     if (!apiRoute) return;

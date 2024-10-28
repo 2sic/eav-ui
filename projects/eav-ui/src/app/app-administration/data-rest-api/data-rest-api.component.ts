@@ -1,17 +1,14 @@
-import { AsyncPipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, computed } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { RouterOutlet } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
 import { transient } from '../../../../../core';
 import { DevRestDataComponent } from '../../dev-rest/data/data.component';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
-import { ContentType } from '../models';
 import { ContentTypesService } from '../services';
 
 @Component({
@@ -23,7 +20,6 @@ import { ContentTypesService } from '../services';
     MatCardModule,
     MatIconModule,
     ReactiveFormsModule,
-    AsyncPipe,
     DevRestDataComponent,
     RouterOutlet,
     SxcGridModule,
@@ -34,36 +30,26 @@ export class DataRestApiComponent {
   #contentTypesSvc = transient(ContentTypesService);
   #dialogRouter = transient(DialogRoutingService);
 
-  contentTypes$ = new BehaviorSubject<ContentType[]>(undefined);
-  contentTypes: ContentType[] = [];
+  #getAllContentTypes = this.#contentTypesSvc.retrieveContentTypesSig("Default", undefined);
 
-  contentTypeForm: FormGroup;
+  contentTypes = computed(() => {
+    const contentTypes = this.#getAllContentTypes();
 
-  constructor(
-    private fb: FormBuilder,
-  ) { }
+    const urlSegments = this.#dialogRouter.url.split('/');
+    const urlStaticName = urlSegments[urlSegments.length - 1]
 
-  ngOnInit() {
-    this.fetchData();
-    this.contentTypeForm = this.fb.group({
-      contentType: ['']
-    });
-  }
+    const selectedContentType = contentTypes.find(contentType => contentType.StaticName === urlStaticName);
+    if (selectedContentType)
+      this.contentTypeForm.get('contentType').setValue(selectedContentType.StaticName);
 
-  fetchData() {
-    this.#contentTypesSvc.retrieveContentTypes("Default").subscribe(
-      (contentTypes: ContentType[]) => {
-        this.contentTypes$.next(contentTypes);
-        // When Route are reload and have some StaticName in the Route
-        const urlSegments = this.#dialogRouter.url.split('/');
-        const urlStaticName = urlSegments[urlSegments.length - 1]
+    return contentTypes;
+  });
 
-        const selectedContentType = contentTypes.find(contentType => contentType.StaticName === urlStaticName);
-        if (selectedContentType)
-          this.contentTypeForm.get('contentType').setValue(selectedContentType.StaticName);
-      }
-    );
-  }
+  contentTypeForm: FormGroup = this.fb.group({
+    contentType: ['']
+  });
+
+  constructor(private fb: FormBuilder,) { }
 
   openRestApi(event: string): void {
     if (!event) return;

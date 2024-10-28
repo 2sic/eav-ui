@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { computed, Injectable, Signal } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { WebApi, WebApiDetails } from '../../app-administration/models';
 import { ViewOrFileIdentifier } from '../../shared/models/edit-form.model';
@@ -133,6 +133,51 @@ export class SourceService extends HttpServiceBase {
       }),
     );
   }
+
+  getWebApisSig(): Signal<WebApi[]> {
+    // Get the signal that retrieves the API files
+    const apiFilesSignal = this.getSignal<{ files: WebApi[] }>(apiExplorerAppApiFiles, {
+      params: {
+        appId: this.appId,
+      },
+    });
+
+    // Use a computed signal to transform the data
+    const webApisSignal = computed(() => {
+      const files = apiFilesSignal()?.files;
+
+      if(!files) {
+        return [];
+      }
+
+      // Ensure the default values for `isShared` and `isCompiled`
+      files.forEach(file => {
+        file.isShared ??= false;
+        file.isCompiled ??= false;
+      });
+
+      // Map the files to the desired WebApi format
+      return files.map(file => {
+        const splitIndex = file.path.lastIndexOf('/');
+        const fileExtIndex = file.path.lastIndexOf('.');
+        const folder = file.path.substring(0, splitIndex);
+        const name = file.path.substring(splitIndex + 1, fileExtIndex);
+
+        return {
+          path: file.path,
+          folder,
+          name,
+          isShared: file.isShared,
+          endpointPath: file.endpointPath,
+          isCompiled: file.isCompiled,
+          edition: file.edition,
+        } as WebApi;
+      });
+    });
+
+    return webApisSignal;
+  }
+
 
   getWebApiDetails(apiPath: string): Observable<WebApiDetails> {
     return this.getHttpApiUrl<WebApiDetails>(apiExplorerInspect, {
