@@ -1,4 +1,68 @@
 <div class="outer-container-app">
-  <h1>Import Export Component</h1>
-  TODO: Later
+  <!-- Intro -->
+  <h1>Import Export</h1>
+  <p>
+    2sxc provides you with many import-export features for all kinds of scenarios.
+  </p>
+
+  <!-- Explanation about other places to export/import -->
+  <h2>Export/Import of Data Lists, Schemas, Views and Queries</h2>
+  <p>
+    Before you continue here, you should know that some import/export features are directly available in other parts of the admin UI.
+  </p>
+  <ol>
+    <li>
+      <strong>Lists of Data</strong> can be exported / imported as XML (for editing in Excel) in the [data] section.
+    </li>
+    <li>
+      <strong>Content-Types</strong> can be exported and imported as JSON in the [data] section.
+    </li>
+    <li>
+      <strong>Views</strong> can be exported and imported as JSON (with the template files) in the views section.
+    </li>
+    <li>
+      <strong>Queries</strong> can be exported and imported as JSON in the queries section.
+    </li>
+  </ol>
+  TODO: 2dg - create link on the data, views etc.
+
+  <!-- App Export / Import -->
+  <h2>App Export / Import</h2>
+  <p>
+    Apps are exported as a ZIP file which can be imported into another site as needed.
+    Export happens here, import is done in the <em>Manage Apps</em> section.
+  </p>
+  TODO: 2dg - create button to go to App export
+
+  <!-- Bundles -->
+  <h2>Data Bundles (beta)</h2>
+  <p>
+    Data Bundles are a new feature which allows you to export and import data from one app to another.
+    This is very useful when you want to sync <strong>only parts of the data/schema</strong> from one environment to another.
+    Bundles allow you to define what is in the bundle, and repeat the sync many times as the system changes.
+  </p>
+  TODO: 2dg - create button to go to Data Bundles
+
+  <!-- Export / Import Parts -->
+  <h2>Export / Import Parts (old)</h2>
+  <p>
+    This feature is the old way of exporting and importing parts of an app.
+    It's still available, but we recommend using the new Data Bundles feature instead.
+    The parts allow you to select some data and export it as XML, then re-import it elsewhere.
+  </p>
+  TODO: 2dg - create buttons to go to Export Parts and another button for Import parts
+
+  <!-- App State Git Sync -->
+  <h2>App State Backup and Git Sync</h2>
+  <p>
+    This feature is for advanced users who want to backup the entire App State.
+    The App State contains all the data, schema, views, queries and more.
+    This allows you to:
+  </p>
+  <ol>
+    <li>Do backups, and reset your App to what was in that backup.</li>
+    <li>When combined with Git, you can also reset the App to previous states.</li>
+    <li>When combined with Git, you can also use it to transfer the <strong>complete App State</strong> from one site to another.</li>
+  </ol>
+  TODO: 2dg - create button to go to App State Git Sync
 </div>
