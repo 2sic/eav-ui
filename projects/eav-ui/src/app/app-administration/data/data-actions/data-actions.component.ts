@@ -6,6 +6,7 @@ import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { guidRegex } from '../../../shared/constants/guid.constants';
+import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { ContentType } from '../../models/content-type.model';
 import { DataActionsParams, DataActionType } from './data-actions.models';
 
@@ -18,6 +19,7 @@ import { DataActionsParams, DataActionType } from './data-actions.models';
     MatIconModule,
     MatBadgeModule,
     MatMenuModule,
+    TippyDirective,
   ],
 })
 export class DataActionsComponent implements ICellRendererAngularComp {

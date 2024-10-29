@@ -1,15 +1,19 @@
 import { Injectable } from '@angular/core';
-import { webApiTypeRoot } from '../../app-administration/services/content-types.service';
-import { ContentExport } from '../models/content-export.model';
-import { webApiEntityRoot } from '../../shared/services/entity.service';
 import { HttpServiceBase } from '../../shared/services/http-service-base';
+import { ContentExport } from '../models/content-export.model';
+
+const webApiEntityRootDownload = 'admin/entity/Download';
+const webApiEntityRootJson = 'admin/entity/Json';
+const webApiTypeRootJson = 'admin/type/Json';
+const webApiTypeRootJsonBundleExport = 'admin/type/JsonBundleExport';
+
 
 @Injectable()
 export class ContentExportService extends HttpServiceBase {
 
   exportContent(values: ContentExport, selectedIds: number[]) {
     const selectedIdsString = selectedIds ? '&selectedids=' + selectedIds.join() : '';
-    const url = this.apiUrl(webApiEntityRoot + 'Download')
+    const url = this.apiUrl(webApiEntityRootDownload)
       + '?appId=' + this.appId
       + '&language=' + values.language
       + '&defaultLanguage=' + values.defaultLanguage
@@ -23,7 +27,7 @@ export class ContentExportService extends HttpServiceBase {
   }
 
   exportJson(typeName: string) {
-    const url = this.apiUrl(webApiTypeRoot + 'Json')
+    const url = this.apiUrl(webApiTypeRootJson)
       + '?appId=' + this.appId
       + '&name=' + typeName;
 
@@ -31,7 +35,7 @@ export class ContentExportService extends HttpServiceBase {
   }
 
   exportEntity(id: number, prefix: string, metadata: boolean) {
-    const url = this.apiUrl(webApiEntityRoot + 'Json')
+    const url = this.apiUrl(webApiEntityRootJson)
       + '?appId=' + this.appId
       + '&id=' + id
       + '&prefix=' + prefix
@@ -39,4 +43,13 @@ export class ContentExportService extends HttpServiceBase {
 
     window.open(url, '_blank', '');
   }
+
+  exportDataBundle(Guid: string) {
+    const url = this.apiUrl(webApiTypeRootJsonBundleExport)
+      + '?appId=' + this.appId
+      + '&exportConfiguration=' + Guid
+      + '&indentation=' + 1;
+    window.open(url, '_blank', '');
+  }
+
 }

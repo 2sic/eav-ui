@@ -3,6 +3,7 @@ import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
+import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { MetadataItem } from '../models/metadata.model';
 import { MetadataActionsParams } from './metadata-actions.models';
 
@@ -13,6 +14,7 @@ import { MetadataActionsParams } from './metadata-actions.models';
   imports: [
     MatRippleModule,
     MatIconModule,
+    TippyDirective,
   ],
 })
 export class MetadataActionsComponent implements ICellRendererAngularComp {

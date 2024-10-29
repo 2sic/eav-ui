@@ -14,8 +14,17 @@
     Bundles must be defined by creating a <strong>Bundle Configuration</strong>, and then assigning Content-Types and Data to that
     configuration.
   </p>
+  <div class="grid-height">
+    <div class="grid-wrapper mat-tab-grid-wrapper">
+      <ag-grid-angular class="ag-theme-material" [rowData]="items()()" [gridOptions]="gridOptions"> </ag-grid-angular>
+    </div>
+  </div>
 
-  <ag-grid-angular class="ag-theme-material" [rowData]="dataBundles()" [gridOptions]="gridOptions"> </ag-grid-angular>
+  <div class="fab-button-pos">
+    <button mat-fab mat-elevation-z24 class="grid-fab" tippy="Add item" (click)="editItem(null)">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
 
   <!-- TODO: @2dg
     - get all bundle configurations using existing services and show them here as a table, Content Type is "d7f2e4fa-5306-41bb-a3cd-d9529c838879"
@@ -34,3 +43,4 @@
   <h3>Import Bundles</h3>
   <p>To import a bundle, TODO... Note that all data and schema will be overwritten by the imported data in the bundle.</p>
 </div>
+<router-outlet></router-outlet>

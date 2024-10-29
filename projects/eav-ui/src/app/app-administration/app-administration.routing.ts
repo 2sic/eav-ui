@@ -253,6 +253,9 @@ export const appAdministrationRoutes: Routes = [
         path: 'data-bundles',
         component: DataBundlesComponent,
         data: { breadcrumb: 'Data Bundles' },
+        children: [
+          ...EditRoutes,
+        ]
       },
       {
         path: 'export-parts',
@@ -269,6 +272,7 @@ export const appAdministrationRoutes: Routes = [
         component: AppStateComponent,
         data: { breadcrumb: 'App-State Versioning' },
       },
+
     ]
   },
 ];

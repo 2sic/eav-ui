@@ -4,13 +4,13 @@ import { Component } from '@angular/core';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { TippyDirective } from '../../shared/directives/tippy.directive';
-import { ContentItem } from '../models/content-item.model';
-import { ContentItemsActionsParams, ContentItemType } from './content-items-actions.models';
+import { ContentItem } from 'projects/eav-ui/src/app/content-items/models/content-item.model';
+import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
+import { DataBundlesActionsParams, DataBundlesType } from './data-bundles-actions.models';
 
 @Component({
   selector: 'app-data-bundle-actions',
-  templateUrl: './content-items-actions.component.html',
+  templateUrl: './data-bundles-actions.component.html',
   standalone: true,
   imports: [
     MatRippleModule,
@@ -19,12 +19,12 @@ import { ContentItemsActionsParams, ContentItemType } from './content-items-acti
     TippyDirective,
   ],
 })
-export class ContentItemsActionsComponent implements ICellRendererAngularComp {
+export class DataBundleActionsComponent implements ICellRendererAngularComp {
   item: ContentItem;
 
-  private params: ICellRendererParams & ContentItemsActionsParams;
+  private params: ICellRendererParams & DataBundlesActionsParams;
 
-  agInit(params: ICellRendererParams & ContentItemsActionsParams): void {
+  agInit(params: ICellRendererParams & DataBundlesActionsParams): void {
     this.params = params;
     this.item = params.data;
   }
@@ -34,7 +34,7 @@ export class ContentItemsActionsComponent implements ICellRendererAngularComp {
   }
 
 
-  do(verb: ContentItemType): void {
+  do(verb: DataBundlesType) {
     this.params.do(verb, this.item);
   }
 }
