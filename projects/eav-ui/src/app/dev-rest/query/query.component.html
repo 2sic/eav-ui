@@ -11,7 +11,7 @@
   <div class="eav-dialog-content">
     <router-outlet></router-outlet>
     <!-- Template below this line -->
-    <app-selector-with-help label="Choose Scenario" [items]="scenarios" [value]="vm.scenario.key"
+    <app-selector-with-help label="Choose Scenario" [items]="scenarios" [valueInput]="vm.scenario.key"
       (valueChange)="changeScenario($event)">
     </app-selector-with-help>
     <mat-tab-group dynamicHeight color="accent"

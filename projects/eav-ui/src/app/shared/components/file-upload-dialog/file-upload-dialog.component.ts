@@ -111,7 +111,7 @@ export class FileUploadDialogComponent extends BaseComponent implements OnInit, 
       this.filesDropped(this.dialogData.files);
 
     // copied from 2sxc-ui
-    this.installSettingsService.loadGettingStarted(false); // TODO:? this.isContentApp -> from @Input on 2sxc-ui
+    this.installSettingsService.loadGettingStarted(false); // Passed as input from 2sxc-ui
 
     // copied from 2sxc-ui app/installer
     this.subscriptions.add(this.messages$.pipe(
