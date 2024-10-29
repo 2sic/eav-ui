@@ -1,4 +1,4 @@
-import { Component, EventEmitter, input, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, input, OnInit, Output, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import { MatDialog } from '@angular/material/dialog';
@@ -27,23 +27,24 @@ import { Scenario } from '../scenarios';
 export class SelectorWithHelpComponent implements OnInit {
   label = input<string>();
   items = input<Scenario[]>();
-  // TODO: @2pp - input signals are read only, so find another solution
-  // value = input<string>();
-  @Input() value: string;
+  valueInput = input<string>();
+  value = signal<string>('');
   @Output() private valueChange = new EventEmitter<Scenario>();
 
   constructor(private dialog: MatDialog) { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.value.set(this.valueInput());
+  }
 
   selectionChange(key: string) {
-    this.value = key;
-    const scenario = this.items().find(item => item.key === this.value);
+    this.value.set(key);
+    const scenario = this.items().find(item => item.key === this.value());
     this.valueChange.emit(scenario);
   }
 
   showHelp() {
-    const scenario = this.items().find(item => item.key === this.value);
+    const scenario = this.items().find(item => item.key === this.value());
     const dialogData: HelpPopupData = {
       name: scenario.name,
       body: scenario.description,

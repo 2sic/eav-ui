@@ -1,18 +1,18 @@
-import { Directive, ElementRef, EventEmitter, HostListener, input, Input, NgZone, OnDestroy, OnInit, Output } from '@angular/core';
+import { Directive, ElementRef, EventEmitter, HostListener, input, NgZone, OnDestroy, OnInit, Output, signal } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { fromEvent } from 'rxjs';
 import { BaseDirective } from './base.directive';
 
 @Directive({ selector: '[appDragAndDrop]', standalone: true })
 export class DragAndDropDirective extends BaseDirective implements OnInit, OnDestroy {
-  @Input() markStyle: 'outline' | 'fill' | 'shadow' = 'outline';
+  markStyle = input<'outline' | 'fill' | 'shadow'>('outline');
   /** Comma separated file types, e.g. 'txt,doc,docx' */
   allowedFileTypes = input<string>('');
   @Output() private filesDropped = new EventEmitter<File[]>();
 
   private element: HTMLElement;
   private dropAreaClass = 'eav-droparea';
-  private markStyleClass: string;
+  private markStyleClass = signal<string>('');
   private dragClass = 'eav-dragover';
   private timeouts: number[] = [];
 
@@ -22,8 +22,8 @@ export class DragAndDropDirective extends BaseDirective implements OnInit, OnDes
   }
 
   ngOnInit() {
-    this.markStyleClass = `eav-droparea-${this.markStyle}`;
-    this.element.classList.add(this.dropAreaClass, this.markStyleClass);
+    this.markStyleClass.set(`eav-droparea-${this.markStyle()}`);
+    this.element.classList.add(this.dropAreaClass, this.markStyleClass());
     this.zone.runOutsideAngular(() => {
       this.subscriptions.add(
         fromEvent<DragEvent>(this.element, 'dragover').subscribe(event => {
@@ -47,7 +47,7 @@ export class DragAndDropDirective extends BaseDirective implements OnInit, OnDes
 
   ngOnDestroy() {
     this.clearTimeouts();
-    this.element.classList.remove(this.dropAreaClass, this.markStyleClass, this.dragClass);
+    this.element.classList.remove(this.dropAreaClass, this.markStyleClass(), this.dragClass);
     super.ngOnDestroy();
   }
 
