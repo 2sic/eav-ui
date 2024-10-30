@@ -1,4 +1,4 @@
-import { Component, EventEmitter, input, OnInit, Output, signal } from '@angular/core';
+import { Component, input, OnInit, output, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import { MatDialog } from '@angular/material/dialog';
@@ -29,7 +29,7 @@ export class SelectorWithHelpComponent implements OnInit {
   items = input<Scenario[]>();
   valueInput = input<string>();
   value = signal<string>('');
-  @Output() private valueChange = new EventEmitter<Scenario>();
+  protected valueChange = output<Scenario>();
 
   constructor(private dialog: MatDialog) { }
 

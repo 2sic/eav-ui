@@ -1,5 +1,5 @@
 import { KeyValuePipe } from '@angular/common';
-import { Component, EventEmitter, input, Output } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
@@ -28,7 +28,7 @@ import { ObjectToArrayPipe } from './object-to-array.pipe';
 })
 export class CodeSnippetsComponent {
   snippets = input<SnippetsSets>();
-  @Output() insertSnippet: EventEmitter<string> = new EventEmitter();
+  insertSnippet = output<string>();
   toggledSections: string[] = [];
   toggledFolders: string[] = [];
   toggledInfos: string[] = [];
