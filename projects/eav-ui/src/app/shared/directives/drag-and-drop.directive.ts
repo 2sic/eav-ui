@@ -1,4 +1,4 @@
-import { Directive, ElementRef, EventEmitter, HostListener, input, NgZone, OnDestroy, OnInit, Output, signal } from '@angular/core';
+import { Directive, ElementRef, HostListener, input, NgZone, OnDestroy, OnInit, output, signal } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { fromEvent } from 'rxjs';
 import { BaseDirective } from './base.directive';
@@ -8,7 +8,7 @@ export class DragAndDropDirective extends BaseDirective implements OnInit, OnDes
   markStyle = input<'outline' | 'fill' | 'shadow'>('outline');
   /** Comma separated file types, e.g. 'txt,doc,docx' */
   allowedFileTypes = input<string>('');
-  @Output() private filesDropped = new EventEmitter<File[]>();
+  protected filesDropped = output<File[]>();
 
   private element: HTMLElement;
   private dropAreaClass = 'eav-droparea';

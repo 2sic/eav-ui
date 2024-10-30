@@ -1,7 +1,7 @@
 import { Context as DnnContext } from '@2sic.com/sxc-angular';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { AsyncPipe, NgClass } from '@angular/common';
-import { ChangeDetectorRef, Component, effect, EventEmitter, inject, OnInit, Output, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, effect, inject, OnInit, output, ViewContainerRef } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -74,8 +74,8 @@ const logSpecs = {
   ],
 })
 export class AdamBrowserComponent implements OnInit {
-
-  @Output() openUpload = new EventEmitter<null>();
+  
+  openUpload = output<void>();
 
   log = classLog({ AdamBrowserComponent }, logSpecs);
 

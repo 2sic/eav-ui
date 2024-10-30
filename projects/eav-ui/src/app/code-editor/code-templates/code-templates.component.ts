@@ -1,5 +1,5 @@
 import { NgClass, NgTemplateOutlet } from '@angular/common';
-import { Component, EventEmitter, input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { Component, input, OnChanges, output, SimpleChanges } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -35,8 +35,8 @@ import { SortItemsPipe } from './order-items.pipe';
 export class CodeTemplatesComponent implements OnChanges {
   view? = input<SourceView>();
   templates = input<FileAsset[]>();
-  @Output() openView: EventEmitter<ViewKey> = new EventEmitter();
-  @Output() createTemplate: EventEmitter<CreateTemplateParams> = new EventEmitter();
+  openView = output<ViewKey>();
+  createTemplate = output<CreateTemplateParams>();
   tree: TreeItem[];
   toggledItemsApp: string[] = [];
   toggledItemsShared: string[] = [];
