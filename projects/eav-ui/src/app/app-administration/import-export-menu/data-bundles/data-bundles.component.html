@@ -14,9 +14,9 @@
     Bundles must be defined by creating a <strong>Bundle Configuration</strong>, and then assigning Content-Types and Data to that
     configuration.
   </p>
-  <div class="grid-height">
+  <div class="grid-height" [style]="height">
     <div class="grid-wrapper mat-tab-grid-wrapper">
-      <ag-grid-angular class="ag-theme-material" [rowData]="items()()" [gridOptions]="gridOptions"> </ag-grid-angular>
+      <ag-grid-angular class="ag-theme-material" [rowData]="dataSourceData()" [gridOptions]="gridOptions"> </ag-grid-angular>
     </div>
   </div>
 

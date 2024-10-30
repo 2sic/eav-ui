@@ -1,10 +1,12 @@
 import { GridOptions } from '@ag-grid-community/core';
+import { JsonPipe } from '@angular/common';
 import { Component, computed, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterModule } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { transient } from 'projects/core';
+import { Observable } from 'rxjs';
 import { ContentExportService } from '../../../content-export/services/content-export.service';
 import { ContentItem } from '../../../content-items/models/content-item.model';
 import { ContentItemsService } from '../../../content-items/services/content-items.service';
@@ -15,6 +17,7 @@ import { convertFormToUrl } from '../../../shared/helpers/url-prep.helper';
 import { EditForm, EditPrep } from '../../../shared/models/edit-form.model';
 import { SxcGridModule } from '../../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../../../shared/routing/dialog-routing.service';
+import { QueryService } from '../../../shared/services/query.service';
 import { DataBundleActionsComponent } from './data-bundles-actions/data-bundles-actions.component';
 import { DataBundlesActionsParams } from './data-bundles-actions/data-bundles-actions.models';
 
@@ -27,6 +30,7 @@ import { DataBundlesActionsParams } from './data-bundles-actions/data-bundles-ac
     MatButtonModule,
     MatIconModule,
     RouterModule,
+    JsonPipe,
   ],
   templateUrl: './data-bundles.component.html',
   styleUrl: './data-bundles.component.scss'
@@ -35,24 +39,107 @@ export class DataBundlesComponent {
 
   #contentItemsSvc = transient(ContentItemsService);
   #contentExportSvc = transient(ContentExportService);
-  // #exportAppSvc = transient(ExportAppService);
-  // #importAppPartsSvc = transient(ImportAppPartsService);
   #dialogRouter = transient(DialogRoutingService);
-  #contentTypeStaticName = "d7f2e4fa-5306-41bb-a3cd-d9529c838879";
+  #contentTypeGuid = "d7f2e4fa-5306-41bb-a3cd-d9529c838879";
 
-  constructor(private snackBar: MatSnackBar) { }
+  private queryService = transient(QueryService);
+
+  constructor(private translate: TranslateService,) { }
+
+  height = 'height: 135px';
 
   #refresh = signal(0);
-  items = computed(() => {
-    const refresh = this.#refresh();
-    return this.#contentItemsSvc.getAllSig(this.#contentTypeStaticName, undefined);
+
+  dataBundles = computed(() => {
+    this.#refresh(); // Nur aufrufen, keine Zuweisung nötig
+    return this.#contentItemsSvc.getAllSig(this.#contentTypeGuid, undefined);
   });
+
+  #queryResults = signal<any[]>([]);
+
+  #queryData = computed(() => {
+    const dataBundles = this.dataBundles()();
+    dataBundles?.forEach(dataBundle => {
+      if (dataBundle?.Guid) {
+        this.#fetchQuery(dataBundle.Guid).subscribe({
+          next: (data) => {
+            const bundleQuery = {
+              Guid: dataBundle.Guid,
+              Result: data
+            };
+            this.#queryResults.set([...this.#queryResults(), bundleQuery]);
+          },
+          error: (err) => console.error("Query error: ", err)
+        });
+      }
+    });
+  });
+
+  dataSourceData = computed(() => {
+    const dataBundles = this.dataBundles()() || [];
+    this.#queryData(); // Hier wird die Query abgerufen
+    const queryResults = this.#queryResults();
+
+    const countEntitiesAndContentTypes = (guid: string) => {
+      const result = queryResults.find(result => result.Guid === guid)?.Result || [];
+      const entityCount = result.filter((item: any) => 'StaticName' in item).length;
+      const contentTypeCount = result.filter((item: any) => !('StaticName' in item)).length;
+      return { entityCount, contentTypeCount };
+    };
+
+    const result = dataBundles.map(bundle => {
+      const { entityCount, contentTypeCount } = countEntitiesAndContentTypes(bundle.Guid);
+      return {
+        FileName: bundle.FileName,
+        Name: bundle.Name,
+        Guid: bundle.Guid,
+        Id: bundle.Id,
+        Entities: entityCount,
+        ContentType: contentTypeCount
+      };
+    });
+
+    this.height = `height: ${result.length * 45 + 90}px`;
+
+    return result;
+  });
+
 
   gridOptions = this.#buildGridOptions();
 
   ngOnInit() {
     this.#dialogRouter.doOnDialogClosed(() => this.#fetchItems());
   }
+
+  #fetchQuery(guid?: string): Observable<any> {
+    const stream = 'Default';
+    const params = `configurationguid=${guid}`;
+
+    return new Observable(observer => {
+      this.queryService.getFromQuery(`System.BundleDetails/${stream}`, params, null).subscribe({
+        next: (data) => {
+          if (!data) {
+            console.error(this.translate.instant('Fields.Picker.QueryErrorNoData'));
+            observer.error('No data found');
+            return;
+          }
+          if (!data[stream]) {
+            console.error(this.translate.instant('Fields.Picker.QueryStreamNotFound') + ' ' + stream);
+            observer.error('Stream not found');
+            return;
+          }
+          observer.next(data[stream]);
+          observer.complete();
+        },
+        error: (error) => {
+          console.error(error);
+          console.error(`${this.translate.instant('Fields.Picker.QueryError')} - ${error.data}`);
+          observer.error(error);
+        }
+      });
+    });
+  }
+
 
   #fetchItems() {
     this.#refresh.update(value => value + 1)
@@ -62,7 +149,7 @@ export class DataBundlesComponent {
     const form: EditForm = {
       items: [
         item == null
-          ? EditPrep.newFromType(this.#contentTypeStaticName)
+          ? EditPrep.newFromType(this.#contentTypeGuid)
           : EditPrep.editId(item.Id)
       ],
     };
@@ -116,18 +203,12 @@ export class DataBundlesComponent {
           headerName: 'Entities',
           field: 'Entities',
           onCellClicked: (p: { data: ContentItem }) => this.editItem(p.data), // Later: Dialog Entities
-          valueFormatter: (params) => {
-            return params.value !== undefined && params.value !== null ? params.value : 0;
-          },
         },
         {
           ...ColumnDefinitions.TextWideActionClass,
           headerName: 'Content-Type',
           field: 'ContentType',
           onCellClicked: (p: { data: ContentItem }) => this.editItem(p.data), // Later: Dialog Content-Type
-          valueFormatter: (params) => {
-            return params.value !== undefined && params.value !== null ? params.value : 0;
-          },
         },
         {
           ...ColumnDefinitions.ActionsPinnedRight3,
