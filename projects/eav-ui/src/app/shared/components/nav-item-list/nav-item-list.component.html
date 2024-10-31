@@ -6,11 +6,7 @@
   class="app-menu-container"
   [tippy]="navItem().tippy"
 >
-  @if (navItem().svgIcon) {
-    <mat-icon [svgIcon]="navItem().icon"></mat-icon>
-  } @else {
-    <mat-icon>{{ navItem().icon }}</mat-icon>
-  }
+  <mat-icon>{{ navItem().icon }}</mat-icon>
   <div class="link-text">{{ navItem().name }}</div>
   @if (navItem().child) {
     <mat-icon [ngClass]="{ closed: !isOpenMenu, open: isOpenMenu, 'ml-auto': true }"> expand_more</mat-icon>

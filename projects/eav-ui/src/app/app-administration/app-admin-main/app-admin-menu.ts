@@ -6,9 +6,9 @@ import { GoToCopilot } from '../copilot/go-to-copilot';
 
 export const AppAdminMenu: NavItem[] = [
 
-  { name: 'App Info', path: 'home', icon: 'info', svgIcon: false, tippy: 'App Info' },
+  { name: 'App Info', path: 'home', icon: 'info', tippy: 'App Info' },
   {
-    name: 'Data', path: `data/${eavConstants.scopes.default.value}`, icon: 'menu', svgIcon: false, tippy: 'Data / Content',
+    name: 'Data', path: `data/${eavConstants.scopes.default.value}`, icon: 'menu', tippy: 'Data / Content',
     child: [
       { ...GoToCopilot.routeDefinition('data'), tippy: 'Autogenerate content types ' },
       { ...GoToDevRest.routeDataDefinition, tippy: 'Rest-Api Data ' },
@@ -18,7 +18,6 @@ export const AppAdminMenu: NavItem[] = [
     name: 'Queries',
     path: 'queries',
     icon: 'filter_list',
-    svgIcon: false,
     tippy: 'Queries / Visual Query Designer',
     child: [
       { ...GoToDevRest.routeQueryDefinition, tippy: 'Rest-Api Queries' },
@@ -28,7 +27,6 @@ export const AppAdminMenu: NavItem[] = [
     name: 'Views',
     path: 'views',
     icon: 'layers',
-    svgIcon: false,
     tippy: 'Views / Templates',
     child: [
       {
@@ -38,7 +36,7 @@ export const AppAdminMenu: NavItem[] = [
     ]
   },
   {
-    name: 'Web API', path: 'web-api', icon: 'offline_bolt', svgIcon: false, tippy: 'WebApi',
+    name: 'Web API', path: 'web-api', icon: 'offline_bolt', tippy: 'WebApi',
     child: [
       {
         ...GoToCopilot.routeDefinition('web-api'),
@@ -54,7 +52,6 @@ export const AppAdminMenu: NavItem[] = [
     name: 'App',
     path: 'app',
     icon: 'settings_applications',
-    svgIcon: false,
     tippy: 'App Settings',
   },
   {
@@ -62,16 +59,12 @@ export const AppAdminMenu: NavItem[] = [
     name: 'Import/Export',
     path: 'import-export',
     icon: 'cloud_sync',
-    svgIcon: false,
     tippy: 'Import Export',
     child: [
       {
         name: 'Export App',
         path: 'export-app',
-        // icon: 'browser_updated',
-        // 2dm: note that I would prefer this icon, but we would first have to switch to Material Symbols
         icon: 'deployed_code_update',
-        svgIcon: false,
         tippy: 'Export this entire App'
       },
       {
@@ -79,28 +72,24 @@ export const AppAdminMenu: NavItem[] = [
         name: 'Data Bundles (beta)',
         path: 'data-bundles',
         icon: 'dataset',
-        svgIcon: false,
         tippy: 'Data Bundles'
       },
       {
         name: 'Export Parts',
         path: 'export-parts',
         icon: 'cloud_download',
-        svgIcon: false,
         tippy: 'Export parts of this App'
       },
       {
         name: 'Imports Parts',
         path: 'import-parts',
         icon: 'cloud_upload',
-        svgIcon: false,
         tippy: 'Import parts of this App'
       },
       {
         name: 'App-State Git Sync',
         path: 'app-state',
         icon: 'sync',
-        svgIcon: false,
         tippy: 'App-State Versioning'
       },
     ]
