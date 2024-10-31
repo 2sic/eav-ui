@@ -44,6 +44,9 @@ export class ContentExportService extends HttpServiceBase {
     window.open(url, '_blank', '');
   }
 
+  // TODO: @2dg
+  // - one one hand, this should be in a separate service BundleService
+  // - ...but: it would be better to make the service just generate the URL, and then use a link in the template directly (in a _blank window)
   exportDataBundle(Guid: string) {
     const url = this.apiUrl(webApiTypeRootJsonBundleExport)
       + '?appId=' + this.appId

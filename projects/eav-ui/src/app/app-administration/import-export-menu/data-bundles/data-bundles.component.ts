@@ -40,17 +40,21 @@ export class DataBundlesComponent {
   #contentItemsSvc = transient(ContentItemsService);
   #contentExportSvc = transient(ContentExportService);
   #dialogRouter = transient(DialogRoutingService);
+  // TODO: @2dg should have a better name, this is like calling a string a string. What is it for?
   #contentTypeGuid = "d7f2e4fa-5306-41bb-a3cd-d9529c838879";
 
+  // TODO: if private, should probably be #queryService
   private queryService = transient(QueryService);
 
   constructor(private translate: TranslateService,) { }
 
+  // TODO: @2dg - odd place to put CSS, should be in the template or in the scss
   height = 'height: 135px';
 
   #refresh = signal(0);
 
   dataBundles = computed(() => {
+    // TODO: @2dg - a) no german comments and b) explain why this is necessary
     this.#refresh(); // Nur aufrufen, keine Zuweisung nötig
     return this.#contentItemsSvc.getAllSig(this.#contentTypeGuid, undefined);
   });
@@ -77,11 +81,14 @@ export class DataBundlesComponent {
 
   dataSourceData = computed(() => {
     const dataBundles = this.dataBundles()() || [];
+    // TODO: @2dg no German comments
     this.#queryData(); // Hier wird die Query abgerufen
     const queryResults = this.#queryResults();
 
     const countEntitiesAndContentTypes = (guid: string) => {
       const result = queryResults.find(result => result.Guid === guid)?.Result || [];
+      // TODO: @2dg - with the updated query, you should be able to check if "TypeName=ContentType" to find content-types.
+      // all other type names are some entities
       const entityCount = result.filter((item: any) => 'StaticName' in item).length;
       const contentTypeCount = result.filter((item: any) => !('StaticName' in item)).length;
       return { entityCount, contentTypeCount };
