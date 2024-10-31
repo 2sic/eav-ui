@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Of } from '../../../core';
 import { UrlHelpers } from './edit/shared/helpers/url.helpers';
 import { DialogTypeConstants } from './shared/constants/dialog-type.constants';
-import { keyAppId, keyContentType, keyDialog, keyExtras, keyItems, keyPipelineId, keyUrl, keyZoneId, prefix } from './shared/constants/session.constants';
+import { keyAppId, keyContentBlockId, keyContentType, keyDialog, keyExtras, keyItems, keyModuleId, keyPipelineId, keyUrl, keyZoneId, prefix } from './shared/constants/session.constants';
 import { convertFormToUrl } from './shared/helpers/url-prep.helper';
 import { classLog } from './shared/logging';
 import { ExtrasParam } from './shared/models/dialog-url-params.model';
@@ -37,76 +37,74 @@ export function paramsInitFactory(injector: Injector): () => void {
   return () => {
     const l = log.fn('paramsInitFactory');
     // console.log('Setting parameters config and clearing route');
-    const eavKeys = Object.keys(sessionStorage).filter(key => key.startsWith(prefix));
+    const s = sessionStorage;
+    const eavKeys = Object.keys(s).filter(key => key.startsWith(prefix));
     const urlHash = window.location.hash;
     const isParamsRoute = !urlHash.startsWith('#/');
     if (isParamsRoute) {
       l.a('is Params Route - will process', { urlHash, eavKeys });
       logInitialRoute();
-      // // Log initial route so a developer can re-open the dialog with the link in the console
-      // console.log('Initial route:', window.location.href);
 
       // Flush our part of the session, just to be sure it's a clean slate
       for (const key of eavKeys)
-        sessionStorage.removeItem(key);
+        s.removeItem(key);
 
       // save url which opened the dialog and set edit dialog as the default
-      sessionStorage.setItem(keyUrl, window.location.href);
-      sessionStorage.setItem(keyDialog, DialogTypeConstants.Edit);
+      s.setItem(keyUrl, window.location.href);
+      s.setItem(keyDialog, DialogTypeConstants.Edit);
 
       // Transfer URL params to session storage, without the leading '#' char
       const paramsDic = UrlHelpers.urlParamsToDic(urlHash.substring(1));
       transferParamsToSessionStorage(paramsDic);
-      // for (const [paramKey, paramValue] of Object.entries(queryParametersFromUrl)) {
-      //   if (paramValue == null) continue;
-      //   sessionStorage.setItem(prefix + paramKey, paramValue);
-      // }
 
       // Redirect to the expected dialog
       const router = injector.get(Router);
-      const zoneId = sessionStorage.getItem(keyZoneId);
-      const appId = sessionStorage.getItem(keyAppId);
-      const dialog = sessionStorage.getItem(keyDialog) as Of<typeof DialogTypeConstants>;
-      const contentType = sessionStorage.getItem(keyContentType);
-      const items = sessionStorage.getItem(keyItems);
+      const zoneId = s.getItem(keyZoneId);
+      const appId = s.getItem(keyAppId);
+      const dialog = s.getItem(keyDialog) as Of<typeof DialogTypeConstants>;
+      const contentType = s.getItem(keyContentType);
+      const items = s.getItem(keyItems);
+      const getZoneFull = () => `${zoneId}/v2/${s.getItem(keyModuleId)}/${s.getItem(keyContentBlockId)}`;
+      const getZoneApp = () => `${zoneId}/${appId}`;
+      const getZoneAppFull = () => `${zoneId}/v2/${s.getItem(keyModuleId)}/${s.getItem(keyContentBlockId)}/${appId}`;
       l.a('dialog: ' + dialog);
       switch (dialog) {
         case DialogTypeConstants.Zone:
-          const extrasZone: ExtrasParam = JSON.parse(sessionStorage.getItem(keyExtras));
-          router.navigate([`${zoneId}/apps${extrasZone?.tab ? `/${extrasZone.tab}` : ''}`]);
+          const extrasZone: ExtrasParam = JSON.parse(s.getItem(keyExtras));
+          router.navigate([`${getZoneFull()}/apps${extrasZone?.tab ? `/${extrasZone.tab}` : ''}`]);
           break;
         case DialogTypeConstants.Apps:
-          router.navigate([`${zoneId}/apps/list`]);
+          router.navigate([`${getZoneFull()}/apps/list`]);
           break;
         case DialogTypeConstants.AppImport:
-          router.navigate([`${zoneId}/import`]);
+          router.navigate([`${getZoneFull()}/import`]);
           break;
         case DialogTypeConstants.App:
-          const extrasApp: ExtrasParam = JSON.parse(sessionStorage.getItem(keyExtras));
-          router.navigate([`${zoneId}/${appId}/app${extrasApp?.tab ? `/${extrasApp.tab}` : ''}${extrasApp?.scope ? `/${extrasApp.scope}` : ''}`]);
+          const extrasApp: ExtrasParam = JSON.parse(s.getItem(keyExtras));
+          router.navigate([`${getZoneAppFull()}/app${extrasApp?.tab ? `/${extrasApp.tab}` : ''}${extrasApp?.scope ? `/${extrasApp.scope}` : ''}`]);
           break;
         case DialogTypeConstants.ContentType:
-          router.navigate([`${zoneId}/${appId}/fields/${contentType}`]);
+          router.navigate([`${getZoneApp()}/fields/${contentType}`]);
           break;
         case DialogTypeConstants.ContentItems:
-          router.navigate([`${zoneId}/${appId}/items/${contentType}`]);
+          router.navigate([`${getZoneApp()}/items/${contentType}`]);
           break;
         case DialogTypeConstants.Edit:
           const editItems: ItemEditIdentifier[] = JSON.parse(items);
           const form: EditForm = { items: editItems };
           const formUrl = convertFormToUrl(form);
-          router.navigate([`${zoneId}/${appId}/edit/${formUrl}`]);
+          router.navigate([`${getZoneApp()}/edit/${formUrl}`]);
           break;
         case DialogTypeConstants.ItemHistory:
           const historyItems: ItemEditIdentifier[] = JSON.parse(items);
-          router.navigate([`${zoneId}/${appId}/versions/${historyItems[0].EntityId}`]);
+          router.navigate([`${getZoneApp()}/versions/${historyItems[0].EntityId}`]);
           break;
         case DialogTypeConstants.Develop:
-          router.navigate([`${zoneId}/${appId}/code`]);
+          router.navigate([`${getZoneApp()}/code`]);
           break;
         case DialogTypeConstants.PipelineDesigner:
-          const pipelineId = sessionStorage.getItem(keyPipelineId);
-          router.navigate([`${zoneId}/${appId}/query/${pipelineId}`]);
+          const pipelineId = s.getItem(keyPipelineId);
+          router.navigate([`${getZoneApp()}/query/${pipelineId}`]);
           break;
         case DialogTypeConstants.Replace:
           const repItem = (JSON.parse(items) as ItemInListIdentifier[])[0];
@@ -115,14 +113,14 @@ export function paramsInitFactory(injector: Injector): () => void {
           const rIndex = repItem.Index;
           const add = repItem.Add;
           const queryParams = add ? { add: true } : {};
-          router.navigate([`${zoneId}/${appId}/${rGuid}/${rPart}/${rIndex}/replace`], { queryParams });
+          router.navigate([`${getZoneApp()}/${rGuid}/${rPart}/${rIndex}/replace`], { queryParams });
           break;
         case DialogTypeConstants.InstanceList:
           const grpItem = (JSON.parse(items) as ItemInListIdentifier[])[0];
           const gGuid = grpItem.Parent;
           const gPart = grpItem.Field;
           const gIndex = grpItem.Index;
-          router.navigate([`${zoneId}/${appId}/${gGuid}/${gPart}/${gIndex}/reorder`]);
+          router.navigate([`${getZoneApp()}/${gGuid}/${gPart}/${gIndex}/reorder`]);
           break;
         default:
           alert(`Cannot open unknown dialog "${dialog}"`);
@@ -134,14 +132,17 @@ export function paramsInitFactory(injector: Injector): () => void {
       // if not params route and no params are saved, e.g. browser was reopened,
       // check if we have additional context info in the url behind a ##
       const urlWithCtx = urlHash.split('##')
-      const ctxParams = urlWithCtx[1];
-      if (ctxParams) {
-        l.a('No Params Route and no params saved, but found context info in url, will process', { urlHash, ctxParams });
+      const finalRoute = urlWithCtx[0].substring(1);
+      const routeParts = finalRoute.split('/'); // url is like '/73/0/42/-42/770/app/data/...'
+      const zoneId = routeParts[1];
+      const mid = routeParts[3];
+      const cbid = routeParts[4];
+      const appId = routeParts[5];
+      if (!isNaN(+mid) && !isNaN(+cbid) && !isNaN(+appId)) {
+        l.a('No Params Route and no params saved, but found context info in url, will process', { urlHash });
         logInitialRoute();
-        const finalRoute = urlWithCtx[0].substring(1);
-        const routeParts = finalRoute.split('/'); // url is like '/73/770/app/data/...'
-        const ctxAll = `${ctxParams}&zoneId=${routeParts[1]}&appId=${routeParts[2]}`;
-        l.a('found ##', { urlHash, ctxParams, ctxAll, finalRoute });
+        const ctxAll = `zoneId=${zoneId}&appId=${appId}&mid=${mid}&cbid=${cbid}`;
+        l.a('found ##', { urlHash, ctxAll, finalRoute });
         transferParamsToSessionStorage(UrlHelpers.urlParamsToDic(ctxAll));
         const router = injector.get(Router);
         router.navigate([finalRoute]);
@@ -155,7 +156,7 @@ export function paramsInitFactory(injector: Injector): () => void {
     } else {
       l.a('No Params Route, but params saved..., assume refresh of previously working UI');
       // Log initial route so a developer can re-open the dialog with the link in the console
-      logInitialRoute(sessionStorage.getItem(keyUrl));
+      logInitialRoute(s.getItem(keyUrl));
     }
   };
 }
