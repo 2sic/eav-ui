@@ -96,7 +96,7 @@ export class ImportAppPartsComponent extends BaseComponent implements OnInit, On
       if (this.result() != undefined) {
         this.result.set(undefined);
       }
-    });
+    }, { allowSignalWrites: true });
 
     // copied from 2sxc-ui app/installer
     this.subscriptions.add(
@@ -248,5 +248,6 @@ Please try again later or check how to manually install content-templates: https
     this.files.set(files);
   }
 }
+
 
 
