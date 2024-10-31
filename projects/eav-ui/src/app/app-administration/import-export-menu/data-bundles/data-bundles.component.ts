@@ -111,6 +111,7 @@ export class DataBundlesComponent {
     this.#dialogRouter.doOnDialogClosed(() => this.#fetchItems());
   }
 
+  // TODO: @2dg #Code-Smell: This looks like it was copied from somewhere else.
   #fetchQuery(guid?: string): Observable<any> {
     const stream = 'Default';
     const params = `configurationguid=${guid}`;
