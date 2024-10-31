@@ -13,8 +13,10 @@
   }
 </a>
 
-<div class="paddingLink" *ngIf="isOpenMenu">
-  @for (child of navItem().child; track child.path) {
-    <app-nav-item-list [navItem]="child"></app-nav-item-list>
-  }
-</div>
+@if (isOpenMenu) {
+  <div class="paddingLink">
+    @for (child of navItem().child; track child.path) {
+      <app-nav-item-list [navItem]="child"></app-nav-item-list>
+    }
+  </div>
+}

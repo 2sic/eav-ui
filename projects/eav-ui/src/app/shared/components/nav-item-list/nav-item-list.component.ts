@@ -16,7 +16,6 @@ import { NavItem } from '../../models/nav-item.model';
     RouterLink,
     RouterLinkActive,
     TippyDirective,
-    NgIf,
   ],
 })
 export class NavItemListComponent implements OnInit {
