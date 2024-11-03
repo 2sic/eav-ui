@@ -147,11 +147,14 @@ export class FormulaRunField {
       const raw = this.#runFormula(allRunParams);
       l.a(`formula result`, { formula, raw });
 
-      // Promise: Pick up in PromiseHandler if necessary and auto-stop if not explicitly set
-      this.promiseHandler.addFormulaPromise(formula, raw);
-
-      // Picker: Pause depends on explicit result
+      // Picker: First check sleep (before promise) since the promise will also need that
       runParams.pickerHelper.updateFormulaSleep(formula, raw, l);
+
+      // Update Stop-State of formula in cache
+      this.promiseHandler.updateStop(formula, raw);
+
+      // Promise: Pick up in PromiseHandler if necessary and auto-stop if not explicitly set
+      this.promiseHandler.handleStopAndPromise(formula, raw);
 
       // Picker: picker data results - experimental v18
       wip = runParams.pickerHelper.preserveResultsAfterRun(formula, wip, raw, l);
