@@ -7,7 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogActions } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { RouterOutlet } from '@angular/router';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { EcoFabSpeedDialActionsComponent, EcoFabSpeedDialComponent, EcoFabSpeedDialTriggerComponent } from '@ecodev/fab-speed-dial';
 import { transient } from '../../../../../core';
 import { AppAdminHelpers } from '../../app-administration/app-admin-helpers';
@@ -17,7 +17,6 @@ import { openFeatureDialog } from '../../features/shared/base-feature.component'
 import { AgBoolCellIconsParams } from '../../shared/ag-grid/apps-list-show/ag-bool-icon-params';
 import { AgBoolIconRenderer } from '../../shared/ag-grid/apps-list-show/ag-bool-icon-renderer.component';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
-import { RouterLinkRendererComponent } from '../../shared/ag-grid/router-link-rendere.component';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { FileUploadDialogData } from '../../shared/components/file-upload-dialog';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
@@ -71,6 +70,8 @@ export class AppsListComponent implements OnInit {
     private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
+    private router: Router,
+    private route: ActivatedRoute
   ) {
     ModuleRegistry.registerModules([ClientSideRowModelModule]);
   }
@@ -180,27 +181,28 @@ export class AppsListComponent implements OnInit {
           field: 'Name',
           cellClass: 'apps-list-primary-action highlight'.split(' '),
           sort: 'asc',
-          // TODO: @2dg Old, remove later
-          // onCellClicked: (p: { data: App }) => this.#openApp(p.data),
-          // cellRenderer: (p: ICellRendererParams) => {
-          //   const app: App = p.data;
-          //   return `
-          //   <div class="container">
-          //     ${app.Thumbnail
-          //       ? `<img class="image logo" src="${app.Thumbnail}?w=40&h=40&mode=crop"></img>`
-          //       : `<div class="image logo"><span class="material-symbols-outlined">star</span></div>`
-          //     }
-          //     <div class="text">${p.value}</div>
-          //   </div>
-          //   `;
-          // },
-          cellRendererFramework: RouterLinkRendererComponent,
-          cellRendererParams: (x: ICellRendererParams) => ({
-            url: x.data.Id,
-            name: x.value,
-            showThumbnail: true,
-            thumbnail: x.data.Thumbnail,
-          }),
+          cellRenderer: (p: ICellRendererParams) => {
+            const app: App = p.data;
+            const l = window.location;
+            const linkUrl = `${l.origin}${l.pathname}${l.search}${l.hash}/${app.Id}`;
+            return `
+              <div class="container">
+                ${app.Thumbnail
+                ? `<img class="image logo" src="${app.Thumbnail}?w=40&h=40&mode=crop"></img>`
+                : `<div class="image logo"><span class="material-symbols-outlined">star</span></div>`
+              }
+                <a class="default-link" href="${linkUrl}">${p.value}</a>
+              </div>
+            `;
+          },
+          // TODO: @2dg First Try, remove later
+          // cellRendererFramework: RouterLinkRendererComponent,
+          // cellRendererParams: (x: ICellRendererParams) => ({
+          //   url: x.data.Id,
+          //   name: x.value,
+          //   showThumbnail: true,
+          //   thumbnail: x.data.Thumbnail,
+          // }),
         },
         {
           ...ColumnDefinitions.TextWide,
