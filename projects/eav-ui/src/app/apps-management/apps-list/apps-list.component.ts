@@ -97,20 +97,20 @@ export class AppsListComponent implements OnInit {
   }
 
   createApp(): void {
-    this.#dialogRouter.navParentFirstChild(['create']);
+    this.#dialogRouter.navRelative(['create']);
   }
 
   createInheritedApp(): void {
-    this.#dialogRouter.navParentFirstChild(['create-inherited']);
+    this.#dialogRouter.navRelative(['create-inherited']);
   }
 
   addFromFolder(): void {
-    this.#dialogRouter.navParentFirstChild(['add-app-from-folder']);
+    this.#dialogRouter.navRelative(['add-app-from-folder']);
   }
 
   importApp(files?: File[]): void {
     const dialogData: FileUploadDialogData = { files };
-    this.#dialogRouter.navParentFirstChild(['import'], { state: dialogData });
+    this.#dialogRouter.navRelative(['import'], { state: dialogData });
   }
 
   #deleteApp(app: App): void {
@@ -152,7 +152,7 @@ export class AppsListComponent implements OnInit {
 
   #openLightSpeed(app: App): void {
     const formUrl = convertFormToUrl(AppAdminHelpers.getLightSpeedEditParams(app.Id));
-    this.#dialogRouter.navParentFirstChild([`${this.context.zoneId}/${app.Id}/edit/${formUrl}`]);
+    this.#dialogRouter.navRelative([`${this.context.zoneId}/${app.Id}/edit/${formUrl}`]);
   }
 
   // TODO: @2dg - try to change this so the table has a link - resulting in ctrl+click opening the app in a new window...
@@ -215,7 +215,7 @@ export class AppsListComponent implements OnInit {
           headerName: 'Code',
           filter: BooleanFilterComponent,
           cellRenderer: AgBoolIconRenderer,
-          cellRendererParams: (() => ({ settings: (app) => AppListCodeErrorIcons } as AgBoolCellIconsParams<App>))(),
+          cellRendererParams: (() => ({ settings: () => AppListCodeErrorIcons } as AgBoolCellIconsParams<App>))(),
         },
         {
           ...ColumnDefinitions.ActionsPinnedRight3,
@@ -238,7 +238,7 @@ export class AppsListComponent implements OnInit {
   }
 
   #loadApps(): void {
-    this.#refresh.update(value => value + 1);
+    this.#refresh.update(v => v + 1);
   }
 
 }
