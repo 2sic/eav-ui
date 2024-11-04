@@ -19,7 +19,7 @@
 
     <div class="selection-menu">
       <!-- Dropdown for Labels and Help Texts -->
-      <mat-form-field tippy="test" appearance="fill">
+      <mat-form-field tippy="Changes the language for all texts and labels" appearance="fill">
         <mat-label>Labels and Help Texts</mat-label>
         <mat-select (selectionChange)="setLabelLanguage($event.value, 'labels')">
           <mat-option value="{{ currentLang }}">Current ({{ currentLang }})</mat-option>
@@ -29,7 +29,7 @@
       </mat-form-field>
 
       <!-- Dropdown for UI Elements -->
-      <mat-form-field appearance="fill">
+      <mat-form-field tippy="Changes the language for all UI Elements" appearance="fill">
         <mat-label>UI Elements</mat-label>
         <mat-select (selectionChange)="setUiLanguage($event.value, 'ui')">
           <mat-option value="{{ currentLang }}">Current ({{ currentLang }})</mat-option>
