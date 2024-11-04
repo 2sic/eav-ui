@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
-import { editDialog } from './edit-dialog.config';
-import { matchEditRoot, matchEditSub, matchEditSubRefresh, matchEditRootRefresh } from './routing/edit-route-matchers';
 import { classLog } from '../shared/logging';
+import { editDialog } from './edit-dialog.config';
+import { matchEditRoot, matchEditRootRefresh, matchEditRootRefreshV2, matchEditRootV2, matchEditSub, matchEditSubRefresh } from './routing/edit-route-matchers';
 
 const log = classLog('Routes');
 
@@ -84,7 +84,15 @@ export const EditRoutesRoot: Routes = [
     loadChildren: () => editRoutesDialogAndChildren,
   },
   {
+    matcher: matchEditRootV2,
+    loadChildren: () => editRoutesDialogAndChildren,
+  },
+  {
     matcher: matchEditRootRefresh,
+    children: reloadRoutes,
+  },
+  {
+    matcher: matchEditRootRefreshV2,
     children: reloadRoutes,
   },
 ];

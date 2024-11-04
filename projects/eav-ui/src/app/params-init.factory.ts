@@ -59,14 +59,14 @@ export function paramsInitFactory(injector: Injector): () => void {
 
       // Redirect to the expected dialog
       const router = injector.get(Router);
-      const zoneId = s.getItem(keyZoneId);
-      const appId = s.getItem(keyAppId);
+      // const zoneId = s.getItem(keyZoneId);
+      // const appId = s.getItem(keyAppId);
       const dialog = s.getItem(keyDialog) as Of<typeof DialogTypeConstants>;
       const contentType = s.getItem(keyContentType);
       const items = s.getItem(keyItems);
       // const getZoneFull = () => `${zoneId}/v2/${s.getItem(keyModuleId)}/${s.getItem(keyContentBlockId)}`;
-      const getZoneApp = () => `${zoneId}/${appId}`;
-      const getFull = () => `${zoneId}/v2/${s.getItem(keyModuleId)}/${s.getItem(keyContentBlockId)}/${appId}`;
+      // const getZoneApp = () => `${zoneId}/${appId}`;
+      const getFull = () => `${s.getItem(keyZoneId)}/v2/${s.getItem(keyModuleId)}/${s.getItem(keyContentBlockId)}/${s.getItem(keyAppId)}`;
       l.a('dialog: ' + dialog);
       switch (dialog) {
         case DialogTypeConstants.Zone:
@@ -93,7 +93,7 @@ export function paramsInitFactory(injector: Injector): () => void {
           const editItems: ItemEditIdentifier[] = JSON.parse(items);
           const form: EditForm = { items: editItems };
           const formUrl = convertFormToUrl(form);
-          router.navigate([`${getZoneApp()}/edit/${formUrl}`]);
+          router.navigate([`${getFull()}/edit/${formUrl}`]);
           break;
         case DialogTypeConstants.ItemHistory:
           const historyItems: ItemEditIdentifier[] = JSON.parse(items);

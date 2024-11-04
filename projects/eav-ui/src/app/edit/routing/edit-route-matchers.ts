@@ -1,6 +1,6 @@
 import { UrlMatchResult, UrlSegment } from '@angular/router';
-import { EditUrlParams } from './edit-url-params.model';
 import { classLog } from '../../shared/logging';
+import { EditUrlParams } from './edit-url-params.model';
 
 const logSpecs = {
   all: true,
@@ -29,6 +29,29 @@ export function matchEditRoot(url: UrlSegment[]): UrlMatchResult {
       zoneId: url[0],
       appId: url[1],
       items: url[3],
+      ...specs.identities,
+    } satisfies EditUrlParams<UrlSegment>,
+  };
+  return l.r(match, '✅');
+}
+
+/**
+ * Matches:
+ * - ':zoneId/v2/:mid/:cbid/:appId/edit/:items'
+ * - ':zoneId/v2/:mid/:cbid/:appId/edit/:items/details/:detailsEntityGuid/:detailsFieldId'
+ * - ':zoneId/v2/:mid/:cbid/:appId/edit/:items/update/:updateEntityGuid/:updateFieldId'
+ */
+export function matchEditRootV2(url: UrlSegment[]): UrlMatchResult {
+  const l = logger.fnIf('editRouteMatcherRoot', { url });
+  const specs = checkRelevantAndIds(url, 5, 7);
+  if (specs == null) return l.rNull();
+  debugger;
+  const match: UrlMatchResult = {
+    consumed: url.slice(0, specs.hasPurpose ? 10 : 7),
+    posParams: {
+      zoneId: url[0],
+      appId: url[4],
+      items: url[6],
       ...specs.identities,
     } satisfies EditUrlParams<UrlSegment>,
   };
@@ -108,6 +131,24 @@ export function matchEditRootRefresh(url: UrlSegment[]): UrlMatchResult {
       zoneId: url[0],
       appId: url[1],
       items: url[4],
+    } satisfies EditUrlParams<UrlSegment>,
+  };
+  return l.r(match, '✅');
+}
+
+/** 
+ * Matches ':zoneId/v2/:mid/:cbid/:appId/edit/refresh/:items'
+ */
+export function matchEditRootRefreshV2(url: UrlSegment[]): UrlMatchResult {
+  const l = logger.fnIf('editRouteMatcherRootRefresh', { url });
+  if (url.length < 8) return l.rNull();
+  if (url[5].path !== 'edit' || url[6].path !== 'refresh') return l.rNull();
+  const match: UrlMatchResult = {
+    consumed: url.slice(0, 8),
+    posParams: {
+      zoneId: url[0],
+      appId: url[4],
+      items: url[7],
     } satisfies EditUrlParams<UrlSegment>,
   };
   return l.r(match, '✅');
