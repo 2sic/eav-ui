@@ -1,9 +1,11 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { ICellRendererParams } from '@ag-grid-community/core';
+import { JsonPipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
+import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
 import { SiteLanguagePermissions } from '../../../../apps-management/models/site-language.model';
 import { LanguagesPermissionsActionsParams } from './languages-permissions-actions.models';
 
@@ -15,6 +17,8 @@ import { LanguagesPermissionsActionsParams } from './languages-permissions-actio
     MatRippleModule,
     MatIconModule,
     MatBadgeModule,
+    TippyDirective,
+    JsonPipe
   ],
 })
 export class LanguagesPermissionsActionsComponent implements ICellRendererAngularComp {

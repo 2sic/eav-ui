@@ -24,6 +24,7 @@ export const ContentSplitters: ImageFormatDefinition[] = ['0', 's', 'm', 'l' /*,
   name: `${SplitterName}${v}`,
   class: `${WysiwygClassPrefix}-spacer-${v}`,
   icon: `${SplitterName}${v}`,
+  tooltip: `Splitter.${v}`,
 }));
 
 // New wysiwyg alignments

@@ -5,9 +5,9 @@ import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings
 import { FieldSettingsOptionsWip, FieldSettingsPickerMerged } from '../../../../../../../edit-types/src/FieldSettings-Pickers';
 import { classLog } from '../../../../shared/logging';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
+import { DebugFields } from '../../../edit-debug';
 import { FormConfigService } from '../../../form/form-config.service';
 import { FieldState } from '../../field-state';
-import { PickerItem } from '../models/picker-item.model';
 import { DeleteEntityProps } from '../models/picker.models';
 import { PickerFeatures } from '../picker-features.model';
 import { ReorderIndexes } from '../picker-list/reorder-index.models';
@@ -25,11 +25,13 @@ export const logSpecsStateAdapter = {
   sepAndOpts: false,
   createEntityTypes: false,
   attachCallback: false,
-  typesForNew: true,
+  typesForNew: false,
+  correctStringEmptyValue: true,
+  fields: [...DebugFields, 'Query'],
 };
 
 @Injectable()
-export abstract class StateAdapter {
+export class StateAdapter {
 
   //#region Setup / Inject / Logs
 
@@ -39,6 +41,21 @@ export abstract class StateAdapter {
   #fieldState = inject(FieldState) as FieldState<number | string | string[], FieldSettings & FieldSettingsOptionsWip & FieldSettingsPickerMerged>;
 
   constructor() { }
+
+  public setup(fieldName: string, uiMapper: StateUiMapperBase): this {
+    this.#fieldName = fieldName;
+    this.mapper = uiMapper as StateUiMapperBase<number | string | string[], string[]>;
+    return this;
+  }
+
+  /**
+   * Mapper to convert between the state and the UI - must be configured in setup.
+   * On the UI side, must always be an array of strings.
+   */
+  public mapper: StateUiMapperBase<number | string | string[], string[]>;
+
+  /** Field Name - just for selective debugging */
+  #fieldName: string;
 
   //#endregion
 
@@ -59,7 +76,7 @@ export abstract class StateAdapter {
   public typesForNew = computedObj('typesForNew', () => {
     const raw = this.#createTypesRaw().map((guid: string) => ({ label: null, guid }));
     
-    const l = this.log.fnIf('typesForNew', { raw });
+    const l = this.log.fnIfInList('typesForNew', 'fields', this.#fieldName, { raw });
 
     // return [];
     // Augment with additional label and guid if we have this
@@ -70,7 +87,7 @@ export abstract class StateAdapter {
       return {
         ...orig,
         // replace is a bit temporary, as the names are a bit long...
-        label: (ct?.Title ?? ct?.Name ?? guid + " (not found)").replace('UI Picker Source - ', ''),
+        label: (ct?.Title ?? ct?.Name ?? `${guid} (not found)`).replace('UI Picker Source - ', ''),
         guid: ct?.Id ?? guid,
       }
     });
@@ -87,29 +104,22 @@ export abstract class StateAdapter {
   /**
    * Signal with all the currently selected items.
    * The PickerItems are fairly basic, as any additional data is added later on.
+   * The only case the additional data matters,
+   * is when we have a string-picker with a free-text value that is not in the dropdown.
+   * In that case, additional data from here is used to disable edit and delete.
    */
-  public selectedItems: Signal<PickerItem[]> = (() => {
-    // Computed just to debounce changes on separator and options from field-settings (old picker)
-    // const options = this.#fieldState.settingExt('_options');
+  public selectedItems: Signal<string[]> = computedObj('selectedItems', () => {
+    const uiValue = this.#fieldState.uiValue();
+    this.log.fnIf('selectedItems', { uiValue });
+    const asUi = this.mapper.toUi(uiValue);
+    const pickerAllowsEmpty = this.allowsEmptyLazy()();
+    const uiFixed = asUi.length == 0 && pickerAllowsEmpty
+      ? ['']
+      : asUi;
+    return uiFixed;
+  });
 
-    // Find selected items and correct empty value (if there is an empty-string options)
-    const l = this.log.fnIf('selectedItems');
-    return computedObj('selectedItems', () => {
-      // const sAndO = options();
-      const uiValue = this.#fieldState.uiValue();
-      l.a('selectedItems', { uiValue /* , sAndO */ });
-      const asUi = this.mapper.toUi(uiValue);
-      // const allowsEmpty = optionsAllowsEmpty(sAndO);
-      const pickerAllowsEmpty = this.allowsEmptyLazy()();
-      // console.log('2dm', { allowsEmpty, pickerAllowsEmpty });
-      const uiFixed = asUi.length == 0 && pickerAllowsEmpty
-        ? ['']
-        : asUi;
-      return this.correctStringEmptyValue(uiFixed /*, sAndO */);
-    });
-  })();
-
-  //#region Callbacks for setting the focus - TODO: not sure if it works ATM
+  //#region Callbacks for setting the focus, like after removing the last selection
 
   #focusOnSearchComponent: () => void;
 
@@ -123,12 +133,6 @@ export abstract class StateAdapter {
 
   //#region Conversion back and forth between formats
 
-  /**
-   * Mapper to convert between the state and the UI - must be added by inheriting class.
-   * On the UI side, must always be an array of strings.
-   */
-  public abstract mapper: StateUiMapperBase<number | string | string[], string[]>;
-
   /** Signal with the current values in the picker, as an array */
   public values = computedObj('values', () => {
     const asUi = this.mapper.toUi(this.#fieldState.uiValue());
@@ -140,7 +144,7 @@ export abstract class StateAdapter {
   //#region CRUD operations
 
   #updateValue(operation: (original: string[]) => string[]): void {
-    const l = this.log.fnIf('updateValue');
+    const l = this.log.fnIfInList('updateValue', 'fields', this.#fieldName);
     // Get original data, and make sure we have a copy, so that ongoing changes won't affect the original
     // If we don't do this, then later change detection can fail!
     const valueArray = [...this.values()];
@@ -151,7 +155,7 @@ export abstract class StateAdapter {
   }
 
   public add(value: string): void {
-    this.log.fnIf('add', { value });
+    this.log.fnIfInList('add', 'fields', this.#fieldName, { value });
     this.#updateValue(list => (this.features().multiValue) ? [...list, value] : [value]);
   }
 
@@ -191,37 +195,4 @@ export abstract class StateAdapter {
 
   //#endregion
 
-  //#region String Empty Values
-  correctStringEmptyValue(
-    values: string[], // The value as an array of strings from state-adapter mapper
-    // dropdownOptions: PickerOptionCustom[] // Options are used only for legacy use case is where the value is an empty string
-  ): PickerItem[] {
-
-    const l = this.log.fn('correctStringEmptyValue', {
-      values,
-      // dropdownOptions,
-    });
-
-    const result = values.map(value => {
-      // const option = dropdownOptions?.find(o => o.Value == value);
-      return ({
-        // 2024-10-21 2dm disabling this, don't think it has any effect
-        // if it's a free text value or not found, disable edit and delete
-        // noEdit: true,
-        // noDelete: true,
-        // either the real value or null if text-field or not found
-        id: null,
-        label: null,
-        // label: option?.Title ?? value,
-        tooltip: `${value}`,
-        value: value?.toString() ?? '', // safe to-string
-      } satisfies PickerItem);
-    });
-    l.a('correctStringEmptyValue', {
-      values,
-      result,
-    });
-    return l.r(result);
-  }
-  //#endregion
 }

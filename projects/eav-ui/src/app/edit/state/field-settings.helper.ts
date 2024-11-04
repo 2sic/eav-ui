@@ -26,7 +26,7 @@ const logSpecs = {
 export class FieldsSettingsHelpers {
 
   // TODO: conditionally create logger based on source name
-  log = classLog({FieldsSettingsHelpers}, logSpecs, true);
+  log = classLog({FieldsSettingsHelpers}, logSpecs);
 
   constructor(source: string) { }
 

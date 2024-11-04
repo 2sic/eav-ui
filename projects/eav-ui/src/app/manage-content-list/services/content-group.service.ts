@@ -40,9 +40,10 @@ export class ContentGroupService extends HttpServiceBase {
     });
   }
 
-  getHeader(contentGroup: ContentGroup) {
-    return this.getHttpApiUrl<GroupHeader>(webApiContentGroup + 'header', {
+  getHeader(contentGroup: ContentGroup, initial: GroupHeader) {
+    return this.getSignal<GroupHeader>(webApiContentGroup + 'header', {
       params: { appId: this.appId, guid: contentGroup.guid }
-    });
+    }, initial);
   }
+
 }

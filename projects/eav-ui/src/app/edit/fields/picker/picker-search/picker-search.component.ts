@@ -15,6 +15,7 @@ import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { classLog } from '../../../../shared/logging';
 import { GlobalConfigService } from '../../../../shared/services/global-config.service';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
+import { DebugFields } from '../../../edit-debug';
 import { PickerItem, PickerItemFactory } from '../models/picker-item.model';
 import { PickerTreeItem } from '../models/picker-tree.models';
 import { PickerItemButtonsComponent } from '../picker-item-buttons/picker-item-buttons.component';
@@ -25,9 +26,11 @@ import { PickerTreeDataHelper } from '../picker-tree/picker-tree-data-helper';
 import { PickerTreeDataService } from '../picker-tree/picker-tree-data-service';
 
 const logSpecs = {
-  all: true,
-  optionSelected: true,
+  all: false,
+  optionSelected: false,
   focusOnSearchComponent: false,
+  tooltip: true,
+  fields: [...DebugFields, 'Query', 'Value'],
 }
 
 @Component({
@@ -60,7 +63,7 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
   log = classLog({ PickerSearchComponent }, logSpecs);
 
   /** Special log which would fire a lot for each item doing disabled checks etc. */
-  #logItemChecks = classLog(`PickerSearchComponent-ItemChecks`); //.extendName("-ItemChecks");
+  #logItemChecks = classLog(`PickerSearchComponent-ItemChecks`);
 
   //#region Inputs
 
@@ -146,6 +149,15 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
 
   displaySelected(item: PickerItem): string {
     return this.showSelectedItem() ? (item?.label ?? '') : '';
+  }
+
+  tooltip(): string {
+    const l = this.log.fnIfInList('tooltip', 'fields', this.fieldState.name, null, this.fieldState.name);
+    // no tooltip if zero or multiple items selected
+    const count = this.pickerData.selectedAll().length;
+    if (count != 1)
+      return l.r(null, `0 or more than 1 selected: ${count}`);
+    return l.r(this.selectedItem().tooltip, 'ok');
   }
 
   // 2024-04-30 2dm: seems this is always a string, will simplify the code

@@ -1,0 +1,46 @@
+<div class="outer-container-app">
+  <!-- Intro -->
+  <h2>Data Bundles (BETA)</h2>
+  <p>
+    Data Bundles are a new feature which allow you to mark parts of your app as a bundle, and then export/import them. This allows you to do
+    a partial sync of data and schema between environments.
+  </p>
+
+  <app-feature-text-info [featureNameId]="'DataExportImportBundles'"></app-feature-text-info>
+
+  <!-- Explanation about other places to export/import -->
+  <h3>Bundle Export Configurations</h3>
+  <p>
+    Bundles must be defined by creating a <strong>Bundle Configuration</strong>, and then assigning Content-Types and Data to that
+    configuration.
+  </p>
+  <div class="grid-height" [style]="height">
+    <div class="grid-wrapper mat-tab-grid-wrapper">
+      <ag-grid-angular class="ag-theme-material" [rowData]="dataSourceData()" [gridOptions]="gridOptions"> </ag-grid-angular>
+    </div>
+  </div>
+
+  <div class="fab-button-pos">
+    <button mat-fab mat-elevation-z24 class="grid-fab" tippy="Add item" (click)="editItem(null)">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
+
+  <!-- TODO: @2dg
+    - get all bundle configurations using existing services and show them here as a table, Content Type is "d7f2e4fa-5306-41bb-a3cd-d9529c838879"
+    - Columns
+      - Name (with edit on click)
+      - File-Name
+      - Entities (just write "0" for now)
+      - Content-Type (just write "0" for now)
+      - Download (which will open a link to the download endpoint ca. this: .../admin/type/JsonBundleExport?appId=770&exportConfiguration=GUID-GUID-GUID&indentation=1)
+      - Save State (feature not ready, just create the column)
+      - Restore State (feature not ready, just create the column)
+    - also at the end, create a (+) button to create a new configuration
+  -->
+
+  <!-- Import Bundles -->
+  <h3>Import Bundles</h3>
+  <p>To import a bundle, TODO... Note that all data and schema will be overwritten by the imported data in the bundle.</p>
+</div>
+<router-outlet></router-outlet>

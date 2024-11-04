@@ -7,13 +7,13 @@
     <div class="eav-dialog-content">
       <router-outlet></router-outlet>
       <div class="dialog-component-content fancy-scrollbar-light" cdkScrollable>
-        @if (header()) {
+        @if (header()()) {
           <p>
             {{ 'ManageContentList.Description' | translate }}
           </p>
           <p>
-            @if (header().Type) {
-              <span>{{ header().Title }}</span>
+            @if (header()().Type) {
+              <span>{{ header()().Title }}</span>
               <button mat-icon-button tippy="Edit header" (click)="editHeader()">
                 <mat-icon>edit</mat-icon>
               </button>

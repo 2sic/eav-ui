@@ -12,7 +12,7 @@ import { DataAdapterEntityBase, logSpecsDataAdapterEntityBase } from "./data-ada
 @Injectable()
 export class DataAdapterAppAssets extends DataAdapterEntityBase {
 
-  log = classLog({DataAdapterAppAssets}, logSpecsDataAdapterEntityBase, true) as ClassLogger<typeof DataAdapterBase.logSpecs> & ClassLogger<typeof logSpecsDataAdapterEntityBase>;
+  log = classLog({DataAdapterAppAssets}, logSpecsDataAdapterEntityBase) as ClassLogger<typeof DataAdapterBase.logSpecs> & ClassLogger<typeof logSpecsDataAdapterEntityBase>;
 
   protected dataSourceRaw = transient(DataSourceAppAssets);
 

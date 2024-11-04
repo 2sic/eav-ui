@@ -14,7 +14,7 @@
       <div
         [class]="
           'c-ew__dialog-content u-border-radius-bottom u-add-scrollbar u-hide-scrollbar' +
-          (applyEmptyClass ? ' c-ew__dialog-content--empty' : '')
+          (applyEmptyClass() ? ' c-ew__dialog-content--empty' : '')
         "
         [@contentExpandAnimation]="{
           value: open() ? 'expanded' : 'closed',

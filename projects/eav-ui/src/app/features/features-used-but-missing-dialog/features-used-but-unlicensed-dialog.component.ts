@@ -9,9 +9,7 @@ import { FeatureDetailsDialogComponent } from '../../apps-management/licence-inf
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { classLog, commonSpecs } from '../../shared/logging';
 import { SafeHtmlPipe } from '../../shared/pipes/safe-html.pipe';
-import { signalObj } from '../../shared/signals/signal.utilities';
 import { FeaturesScopedService } from '../features-scoped.service';
-import { Feature } from '../models/feature.model';
 import { FeatureDetailService } from '../services/feature-detail.service';
 
 const logSpecs = {
@@ -40,23 +38,19 @@ export class FeaturesUsedButUnlicensedComponent {
   #features = inject(FeaturesScopedService);
 
   #featureDetails = transient(FeatureDetailService);
-  
+
   constructor() {
     const l = this.log.fnIf('constructor');
-    const unlicensed = this.#features.unlicensedFeatures();
-    for (const nameId of unlicensed) {
-      this.#featureDetails.getFeatureDetails(nameId).subscribe(feature => {
-        this.features.update(prev => [...prev, feature]);
-      });
-    }
   }
 
-  protected features = signalObj<Feature[]>('features', []);
+  protected features = this.#featureDetails.getFeatureDetails(this.#features.unlicensedFeatures());
+
 }
 
+
 /**
- * 
- * @param dialog 
+ *
+ * @param dialog
  * @param viewContainerRef the container ref is important to get services (eg. features) from the parent component
  */
 export function openFeaturesUsedButUnlicensedDialog(dialog: MatDialog, viewContainerRef: ViewContainerRef) {

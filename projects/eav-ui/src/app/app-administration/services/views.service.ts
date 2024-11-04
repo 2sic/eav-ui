@@ -5,18 +5,19 @@ import { Polymorphism } from '../models/polymorphism.model';
 import { ViewUsage } from '../models/view-usage.model';
 import { View } from '../models/view.model';
 
-const webApiViewRoot = 'admin/view/';
-const webApiViews = webApiViewRoot + 'all';
-const webApiViewDelete = webApiViewRoot + 'delete';
-const webApiViewImport = webApiViewRoot + 'import';
-const webApiViewPolymorph = webApiViewRoot + 'polymorphism';
-const webApiViewUsage = webApiViewRoot + 'usage';
+const webApiViews = 'admin/view/all';
+const webApiViewDelete = 'admin/view/delete';
+const webApiViewImport = 'admin/view/import';
+const webApiViewPolymorph = 'admin/view/polymorphism';
+const webApiViewUsage = 'admin/view/usage';
+const webApiJson = 'admin/view/json';
+
 
 @Injectable()
 export class ViewsService extends HttpServiceBase {
 
   getAll() {
-    return this.getHttpApiUrl<View[]>(webApiViews, {
+    return this.getSignal<View[]>(webApiViews, {
       params: { appId: this.appId }
     });
   }
@@ -36,22 +37,22 @@ export class ViewsService extends HttpServiceBase {
   }
 
   export(id: number) {
-    const url = this.apiUrl(webApiViewRoot + 'json')
+    const url = this.apiUrl(webApiJson)
       + '?appId=' + this.appId
       + '&viewId=' + id;
-
     window.open(url, '_blank', '');
   }
 
   getPolymorphism() {
-    return this.getHttpApiUrl<Polymorphism>(webApiViewPolymorph, {
+    return this.getSignal<Polymorphism>(webApiViewPolymorph, {
       params: { appId: this.appId }
     });
   }
 
   getUsage(guid: string) {
-    return this.getHttpApiUrl<ViewUsage[]>(webApiViewUsage, {
+    return this.getSignal<ViewUsage[]>(webApiViewUsage, {
       params: { appId: this.appId, guid }
     });
   }
+
 }

@@ -1,5 +1,5 @@
 import patronsLogo from '!raw-loader!./assets/2sxc-patrons.svg';
-import { Component, HostBinding, OnInit, signal, ViewContainerRef } from '@angular/core';
+import { Component, computed, HostBinding, signal, ViewContainerRef } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
@@ -27,16 +27,15 @@ import { ZoneService } from '../../services/zone.service';
     SafeHtmlPipe,
   ],
 })
-export class RegistrationComponent implements OnInit {
+export class RegistrationComponent {
   @HostBinding('className') hostClass = 'dialog-component';
-
-  systemInfoSet = signal<SystemInfoSet>(undefined);
 
   // patrons logo
   logo = patronsLogo;
 
   #zoneSvc = transient(ZoneService);
   #featuresConfigSvc = transient(FeaturesConfigService);
+  protected clipboard = transient(ClipboardService);
 
   constructor(
     private snackBar: MatSnackBar,
@@ -44,11 +43,11 @@ export class RegistrationComponent implements OnInit {
     private viewContainerRef: ViewContainerRef,
   ) { }
 
-  protected clipboard = transient(ClipboardService);
-
-  ngOnInit(): void {
-    this.#loadSystemInfo();
-  }
+  #refresh = signal(0);
+  systemInfoSet = computed(() => {
+    const r = this.#refresh();
+    return this.#zoneSvc.getSystemInfo(undefined);
+  })
 
   openLicenseRegistration(systemInfoSet: SystemInfoSet): void {
     window.open(`https://patrons.2sxc.org/register?fingerprint=${systemInfoSet.System.Fingerprint}`, '_blank');
@@ -64,7 +63,7 @@ export class RegistrationComponent implements OnInit {
         const duration = info.Success ? 3000 : 100000;
         const panelClass = info.Success ? undefined : 'snackbar-error';
         this.snackBar.open(message, undefined, { duration, panelClass });
-        this.#loadSystemInfo();
+        this.#refreshSystemInfo();
       },
     });
   }
@@ -88,16 +87,13 @@ export class RegistrationComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((refresh?: boolean) => {
       if (refresh) {
-        this.#loadSystemInfo();
+        this.#refreshSystemInfo();
       }
     });
   }
 
-  #loadSystemInfo(): void {
-    this.#zoneSvc.getSystemInfo().subscribe(info => {
-      this.systemInfoSet.set(info);
-      console.log(info);
-    });
+  #refreshSystemInfo(): void {
+    this.#refresh.set(this.#refresh() + 1);
   }
 
 }

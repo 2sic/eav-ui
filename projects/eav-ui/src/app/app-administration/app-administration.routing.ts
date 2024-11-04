@@ -1,9 +1,18 @@
 import { Routes } from '@angular/router';
 import { GoToDevRest } from '../dev-rest';
+import { EditRoutes, EditRoutesNoHistory } from '../edit/edit.routing';
 import { GoToMetadata } from '../metadata';
 import { GoToPermissions } from '../permissions/go-to-permissions';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
 import { appAdministrationDialog } from './app-admin-main/app-admin-main.dialog-config';
+import { CopilotSpecs } from './copilot/copilot-specs';
+import { GoToCopilot } from './copilot/go-to-copilot';
+import { AppStateComponent } from './import-export-menu/app-state/app-state.component';
+import { DataBundlesComponent } from './import-export-menu/data-bundles/data-bundles.component';
+import { ExportAppPartsComponent } from './import-export-menu/export-app-parts/export-app-parts.component';
+import { ExportAppComponent } from './import-export-menu/export-app/export-app.component';
+import { ImportAppPartsComponent } from './import-export-menu/import-app-parts/import-app-parts.component';
+import { ImportExportComponent } from './import-export-menu/import-export/import-export.component';
 import { analyzeSettingsDialog } from './sub-dialogs/analyze-settings/analyze-settings-dialog.config';
 import { settingsItemDetailsDialog } from './sub-dialogs/analyze-settings/settings-item-details/settings-item-details.config';
 import { editContentTypeDialog } from './sub-dialogs/edit-content-type/edit-content-type-dialog.config';
@@ -12,13 +21,6 @@ import { importQueryDialog } from './sub-dialogs/import-query/import-query-dialo
 import { importViewDialog } from './sub-dialogs/import-view/import-view-dialog.config';
 import { languagePermissionsDialog } from './sub-dialogs/language-permissions/language-permissions-dialog.config';
 import { viewsUsageDialog } from './sub-dialogs/views-usage/views-usage-dialog.config';
-import { GoToCopilot } from './copilot/go-to-copilot';
-import { CopilotSpecs } from './copilot/copilot-specs';
-import { EditRoutes, EditRoutesNoHistory } from '../edit/edit.routing';
-import { ExportAppComponent } from './app-menu/export-app/export-app.component';
-import { ExportAppPartsComponent } from './app-menu/export-app-parts/export-app-parts.component';
-import { ImportAppPartsComponent } from './app-menu/import-app-parts/import-app-parts.component';
-import { AppStateComponent } from './app-menu/app-state/app-state.component';
 
 export const appAdministrationRoutes: Routes = [
   {
@@ -234,34 +236,26 @@ export const appAdministrationRoutes: Routes = [
               },
             ],
           },
-          // New Export etc.
-          // {
-          //   path: 'export-app',
-          //   component: ExportAppComponent,
-          //   data: { breadcrumb: 'Export this entire App' },
-          // },
-          // {
-          //   path: 'export-parts',
-          //   component: DialogEntryComponent,
-          //   data: { breadcrumb: 'Export parts of this App' },
-          // },
-          // {
-          //   path: 'import-parts',
-          //   component: DialogEntryComponent,
-          //   data: { breadcrumb: 'Import parts of this App' },
-          // },
-          // {
-          //   path: 'app-state',
-          //   component: DialogEntryComponent,
-          //   data: { breadcrumb: 'App-State Versioning' },
-          // },
         ],
       },
-      // New Export etc.
+
+      {
+        path: 'import-export',
+        component: ImportExportComponent,
+        data: { breadcrumb: 'Import Export' },
+      },
       {
         path: 'export-app',
         component: ExportAppComponent,
         data: { breadcrumb: 'Export this entire App' },
+      },
+      {
+        path: 'data-bundles',
+        component: DataBundlesComponent,
+        data: { breadcrumb: 'Data Bundles' },
+        children: [
+          ...EditRoutes,
+        ]
       },
       {
         path: 'export-parts',
@@ -278,6 +272,7 @@ export const appAdministrationRoutes: Routes = [
         component: AppStateComponent,
         data: { breadcrumb: 'App-State Versioning' },
       },
+
     ]
   },
 ];

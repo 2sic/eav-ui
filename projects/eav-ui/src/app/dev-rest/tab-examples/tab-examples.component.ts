@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { DevRestBaseModel } from '..';
 import { InfoBoxComponent } from '../info-box/info-box.component';
 
@@ -10,6 +10,7 @@ import { InfoBoxComponent } from '../info-box/info-box.component';
   imports: [InfoBoxComponent]
 })
 export class DevRestTabExamplesComponent {
-  @Input() data: DevRestBaseModel;
+  data = input<DevRestBaseModel>();
+
   constructor() { }
 }

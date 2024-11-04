@@ -1,4 +1,4 @@
-import { Directive, ElementRef, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Directive, ElementRef, input, OnChanges, SimpleChanges } from '@angular/core';
 
 // tslint:disable-next-line:directive-selector
 @Directive({
@@ -6,13 +6,13 @@ import { Directive, ElementRef, Input, OnChanges, SimpleChanges } from '@angular
   standalone: true
 })
 export class ExtendedFabSpeedDialTriggerDirective implements OnChanges {
-  @Input() disabled = false;
+  disabled = input<boolean>(false);
 
   constructor(private elementRef: ElementRef<HTMLElement>) { }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.disabled != null) {
-      this.elementRef.nativeElement.toggleAttribute('disabled', this.disabled);
+      this.elementRef.nativeElement.toggleAttribute('disabled', this.disabled());
     }
   }
 }

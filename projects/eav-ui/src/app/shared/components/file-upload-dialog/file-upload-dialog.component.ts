@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { ChangeDetectorRef, Component, ElementRef, HostBinding, Inject, Input, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, HostBinding, Inject, input, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -34,7 +34,7 @@ import { FileUploadDialogData, FileUploadMessageTypes, FileUploadResult, UploadT
 export class FileUploadDialogComponent extends BaseComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
-  @Input() uploadType: Of<typeof UploadTypes>;
+  uploadType = input<Of<typeof UploadTypes>>();
 
   @ViewChild('installerWindow') installerWindow: ElementRef;
 
@@ -111,7 +111,7 @@ export class FileUploadDialogComponent extends BaseComponent implements OnInit, 
       this.filesDropped(this.dialogData.files);
 
     // copied from 2sxc-ui
-    this.installSettingsService.loadGettingStarted(false);//this.isContentApp -> from @Input on 2sxc-ui
+    this.installSettingsService.loadGettingStarted(false); // Passed as input from 2sxc-ui
 
     // copied from 2sxc-ui app/installer
     this.subscriptions.add(this.messages$.pipe(

@@ -1,5 +1,5 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -25,14 +25,14 @@ import { DialogRoutingService } from '../../shared/routing/dialog-routing.servic
   ],
 })
 export class DevRestTabPermissionsComponent {
-  @Input() data: DevRestBaseModel;
+  data = input<DevRestBaseModel>();
 
   #dialogRouter = transient(DialogRoutingService);
 
   gridOptions = this.buildGridOptions();
 
   openPermissions() {
-    this.#dialogRouter.navRelative([GoToPermissions.getUrlContentType(this.data.permissionTarget)]);
+    this.#dialogRouter.navRelative([GoToPermissions.getUrlContentType(this.data().permissionTarget)]);
   }
 
   private buildGridOptions(): GridOptions {

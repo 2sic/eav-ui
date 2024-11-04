@@ -1,12 +1,12 @@
 import { convertArrayToString } from '../picker.helpers';
-import { StateUiMapperWithSettingsBase } from './state-ui-mapper-base';
+import { StateUiMapperBase } from './state-ui-mapper-base';
 
 /**
  * A mapper that converts a string to a number .
  *
  * Typically used for string-pickers, where the data is a string but the UI is an array of strings.
  */
-export class StateUiMapperNumberArray extends StateUiMapperWithSettingsBase<number, string[]> {
+export class StateUiMapperNumberArray extends StateUiMapperBase<number, string[]> {
   /**
     * Convert a number to an array of strings for use in the UI.
     */

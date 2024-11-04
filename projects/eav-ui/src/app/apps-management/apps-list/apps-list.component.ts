@@ -55,7 +55,7 @@ export class AppsListComponent implements OnInit {
 
   log = classLog({ AppsListComponent });
 
-  gridOptions = this.buildGridOptions();
+  gridOptions = this.#buildGridOptions();
 
   public features = inject(FeaturesScopedService);
   protected isAddFromFolderEnabled = this.features.isEnabled[FeatureNames.AppSyncWithSiteFiles];
@@ -92,6 +92,7 @@ export class AppsListComponent implements OnInit {
     this.fabOpen.set(open);
   }
 
+  // TODO: @2dg - try to fix this so the link is directly in the HTML without a function call
   browseCatalog(): void {
     window.open('https://2sxc.org/apps', '_blank');
   }
@@ -113,7 +114,7 @@ export class AppsListComponent implements OnInit {
     this.#dialogRouter.navParentFirstChild(['import'], { state: dialogData });
   }
 
-  private deleteApp(app: App): void {
+  #deleteApp(app: App): void {
     const result = prompt(`This cannot be undone. To really delete this app, type 'yes!' or type/paste the app-name here. Are you sure want to delete '${app.Name}' (${app.Id})?`);
     if (result === null) return;
     if (result === app.Name || result === 'yes!') {
@@ -133,7 +134,7 @@ export class AppsListComponent implements OnInit {
     }
   }
 
-  private flushApp(app: App): void {
+  #flushApp(app: App): void {
     if (!confirm(`Flush the App Cache for ${app.Name} (${app.Id})?`)) return;
     this.snackBar.open('Flushing cache...');
     this.#appsListSvc.flushCache(app.Id).subscribe({
@@ -146,12 +147,13 @@ export class AppsListComponent implements OnInit {
     });
   }
 
-  private openLightSpeed(app: App): void {
+  #openLightSpeed(app: App): void {
     const formUrl = convertFormToUrl(AppAdminHelpers.getLightSpeedEditParams(app.Id));
     this.#dialogRouter.navParentFirstChild([`${this.context.zoneId}/${app.Id}/edit/${formUrl}`]);
   }
 
-  private openApp(app: App): void {
+  // TODO: @2dg - try to change this so the table has a link - resulting in ctrl+click opening the app in a new window...
+  #openApp(app: App): void {
     this.#dialogRouter.navParentFirstChild([app.Id.toString()]);
   }
 
@@ -159,7 +161,7 @@ export class AppsListComponent implements OnInit {
     openFeatureDialog(this.matDialog, FeatureNames.LightSpeed, this.viewContainerRef, this.changeDetectorRef);
   }
 
-  private buildGridOptions(): GridOptions {
+  #buildGridOptions(): GridOptions {
     const gridOptions: GridOptions = {
       ...defaultGridOptions,
       columnDefs: [
@@ -170,17 +172,14 @@ export class AppsListComponent implements OnInit {
         {
           ...ColumnDefinitions.IconShow,
           cellRenderer: AgBoolIconRenderer,
-          cellRendererParams: (() => ({ settings: () => AppListShowIcons }))(),
+          cellRendererParams: { settings: () => AppListShowIcons },
         },
         {
           ...ColumnDefinitions.TextWide,
           field: 'Name',
           cellClass: 'apps-list-primary-action highlight'.split(' '),
           sort: 'asc',
-          onCellClicked: (p) => {
-            const app: App = p.data;
-            this.openApp(app);
-          },
+          onCellClicked: (p: { data: App }) => this.#openApp(p.data),
           cellRenderer: (p: ICellRendererParams) => {
             const app: App = p.data;
             return `
@@ -219,12 +218,12 @@ export class AppsListComponent implements OnInit {
           ...ColumnDefinitions.ActionsPinnedRight3,
           cellRenderer: AppsListActionsComponent,
           cellRendererParams: {
-            onOpenLightspeed: (app) => this.openLightSpeed(<App>app),
+            onOpenLightspeed: (app) => this.#openLightSpeed(<App>app),
             openLightspeedFeatureInfo: () => this.openLightSpeedFeatInfo(),
             do: (verb, app) => {
               switch (verb) {
-                case 'deleteApp': this.deleteApp(app); break;
-                case 'flushCache': this.flushApp(app); break;
+                case 'deleteApp': this.#deleteApp(app); break;
+                case 'flushCache': this.#flushApp(app); break;
               }
             }
           } satisfies AppsListActionsParams,

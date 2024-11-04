@@ -18,11 +18,12 @@ import { FormulaPromiseResult } from "./formula-promise-result.model";
 
 const logSpecs = {
   all: false,
-  handleFormulaPromise: true,
+  addFormulaPromise: true,
+  updateStop: false,
   defineCallbackHandlerIfMissing: false,
   changesFromQueue: false,
   promiseComplete: true,
-  filterFormulasIfSleeping: true,
+  filterFormulas: true,
   fields: [...DebugFields], // or '*' for all
 };
 
@@ -56,32 +57,48 @@ export class FormulaPromiseHandler {
   #contentType: Signal<EavContentType>;
   #modifiedChecker: FieldsValuesModifiedHelper;
 
+  public updateStop(formula: FormulaCacheItem, raw: FieldFormulasResultRaw): void {
+    const l = this.log.fnIfInList('updateStop', 'fields', formula.fieldName, { promiseResult: raw, formula }, formula.target);
+
+    const hasPromise = raw.promise instanceof Promise;
+
+    // Stop depends on explicit result and the default is different if it has a promise
+    // TODO: CONTINUE HERE - probably stop being set aggressively even if sleeping...
+    // Sleep state not fully resolved...
+    const newStop = raw.stop ?? (hasPromise ? true : formula.stop); 
+    const msg = `🧪⏹️ formula.stop: ${formula.stop}; raw.stop: ${raw.stop}; hasPromise: ${hasPromise}; newStop: ${newStop}`;
+    formula.stop = newStop;
+    return l.end(msg);
+  }
+
   /**
    * Used for filling queue and triggering next run.
    * @param raw
    * @param formula
    * @param inputTypeName
    */
-  public addFormulaPromise(formula: FormulaCacheItem, raw: FieldFormulasResultRaw): void {
-    const l = this.log.fnIfInList('handleFormulaPromise', 'fields', formula.fieldName, { promiseResult: raw, formula }, formula.target);
+  public handleStopAndPromise(formula: FormulaCacheItem, raw: FieldFormulasResultRaw): void {
+    const l = this.log.fnIfInList('addFormulaPromise', 'fields', formula.fieldName, { promiseResult: raw, formula }, formula.target);
 
-    // If result _contains_ a promise, add it to the queue
-    // but don't stop, as it can still contain settings/values for now
-    const containsPromise = raw.promise instanceof Promise;
-    if (!containsPromise)
-      return;
-
+    // If no promise, exit early
+    if (!(raw.promise instanceof Promise))
+      return l.end('no promise');
+    
+    // If the user is currently editing this formula,
+    // give him additional info about stopping.
     if (raw.openInDesigner && raw.stop === null)
       console.log(`FYI: formula returned a promise. This automatically stops this formula from running again. If you want it to continue running, return stop: false`);
+    
+    // Check sleep state (new feat in v18 for Pickers (state/data))
+    // Unclear if this should be here in the promise handling...
     const sleep = raw.sleep ?? false;
+    
+    // If result _contains_ a promise, add it to the queue
+    // Add promise to the queue / ensure callback handling ???
     formula.promises$.next({ promise: raw.promise, sleep, completed: false });
     this.#defineCallbackHandlerIfMissing(formula);
 
-    // Stop depends on explicit result and the default is different if it has a promise
-    // TODO: CONTINUE HERE - probably stop being set aggressively even if sleeping...
-    const newStop = raw.stop ?? (containsPromise ? true : formula.stop); 
-    l.a(`🧪⏹️ formula.stop: ${formula.stop}; raw.stop: ${raw.stop}; containsPromise: ${containsPromise}; newStop: ${newStop}; sleep: ${sleep}`);
-    formula.stop = newStop;
+    return l.end(`promise added, sleep: ${sleep}`);
   }
 
   /**
@@ -93,7 +110,7 @@ export class FormulaPromiseHandler {
    * @returns 
    */
   public filterFormulas(fieldName: string, before: FormulaCacheItem[]) {
-    const l = this.log.fnIfInList('filterFormulasIfSleeping', 'fields', fieldName, { enabled: before });
+    const l = this.log.fnIfInList('filterFormulas', 'fields', fieldName, { enabled: before });
     const formulas = before.filter(f => {
       const promise = f.promises$.value;
       l.a(`hasPromise: ${!!promise}; completed: ${promise?.completed}; sleep: ${promise?.sleep}`);
@@ -116,9 +133,7 @@ export class FormulaPromiseHandler {
     if (formula.updateCallback$.value)
       return lcb.end('callback already defined');
 
-    formula.updateCallback$.next((result: FieldValueOrResultRaw) => {
-      this.#promiseComplete(formula, result);
-    });
+    formula.updateCallback$.next((result: FieldValueOrResultRaw) => this.#promiseComplete(formula, result));
   }
 
   #promiseComplete(formula: FormulaCacheItem, result: FieldValueOrResultRaw): void {

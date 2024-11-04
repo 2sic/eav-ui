@@ -1,5 +1,5 @@
 import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
-import { AfterViewChecked, Component, ElementRef, inject, input, Input, OnDestroy, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, inject, input, OnDestroy, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogRef, MatDialogState } from '@angular/material/dialog';
@@ -70,7 +70,7 @@ export class EntityFormComponent implements OnInit, AfterViewChecked, OnDestroy 
   @ViewChild('noteTemplate') private noteTemplateRef?: TemplateRef<undefined>;
 
   entityGuid = input<string>();
-  @Input() index: number;
+  index = input<number>();
 
   protected formConfig = inject(FormConfigService);
   #fieldsSettingsSvc = inject(FieldsSettingsService);

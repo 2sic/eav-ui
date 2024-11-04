@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { Component, Input, inject, input } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';
@@ -21,13 +21,13 @@ import { FieldState } from '../field-state';
   ],
 })
 export class FieldHelperTextComponent {
-  @Input() disableError = false;
-  @Input() hyperlinkDefaultWrapperFix = false;
+  disableError = input<boolean>(false);
+  hyperlinkDefaultWrapperFix = input<boolean>(false);
 
   /** Make the control "flat" to not take space if there is nothing to show. */
-  flatIfEmpty = input(false);
+  flatIfEmpty = input<boolean>(false);
 
-  smallGap = input(false);
+  smallGap = input<boolean>(false);
 
   protected fieldState = inject(FieldState);
 
@@ -44,7 +44,7 @@ export class FieldHelperTextComponent {
   #invalid = computedObj('invalid', () => this.fieldState.ui().invalid);
   disabled = computedObj('disabled', () => this.fieldState.ui().disabled);
 
-  showErrors = computedObj('showErrors', () => this.#invalid() && !this.disableError);
+  showErrors = computedObj('showErrors', () => this.#invalid() && !this.disableError());
 
   /**
    * Notes with all p-tags updated to have the current components identifying class.

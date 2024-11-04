@@ -1,0 +1,43 @@
+<div class="outer-container-app">
+  <!-- Title -->
+  <h3>App-State Versioning - Basic</h3>
+  <!-- Content -->
+  <p>
+    You can save / restore the app with data and configuration in <code>.data/app.xml</code>.
+    This file can then also be versioned using git to sync with another installation.
+  </p>
+  <!-- Button -->
+  <mat-dialog-actions class="eav-dialog-actions" style="height: 73px;">
+    <div class="eav-dialog-actions-div">
+      <button mat-button class="eav-button__with-icon" (click)="exportAppXml(false)">
+        <mat-icon class="eav-icon">more_time</mat-icon>
+        <span>Save state</span>
+      </button>
+      <button mat-button class="eav-button__with-icon" (click)="resetApp(false)">
+        <mat-icon class="eav-icon">restore</mat-icon>
+        <span>Restore state</span>
+      </button>
+    </div>
+  </mat-dialog-actions>
+
+  <!-- Advanced, with Assets-->
+  <h3>App-State Versioning - Advanced</h3>
+  <p>
+    In Advanced mode you can also sync all the site files used by this app.
+    They will be placed in a folder inside <code>App_Data</code> and allow sync/restore with git or another server.
+  </p>
+  <app-feature-text-info [featureNameId]="'AppSyncWithSiteFiles'"></app-feature-text-info>
+  <mat-dialog-actions class="eav-dialog-actions" style="height: 73px;">
+    <div class="eav-dialog-actions-div">
+      <button mat-button class="eav-button__with-icon" (click)="exportAppXml(true)">
+        <mat-icon class="eav-icon">more_time</mat-icon>
+        <span>Save with Assets</span>
+      </button>
+      <button mat-button class="eav-button__with-icon" (click)="resetApp(true)">
+        <mat-icon class="eav-icon">restore</mat-icon>
+        <span>Restore with Assets</span>
+      </button>
+    </div>
+  </mat-dialog-actions>
+
+</div>

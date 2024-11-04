@@ -19,7 +19,10 @@ export class FeaturesConfigService extends HttpServiceBase {
 
   getLicenses(): Observable<License[]> { // Use new Signals
     return this.getHttpApiUrl<License[]>(webApiLicSummary);
+  }
 
+  getLicensesSig() { // Use new Signals
+    return this.getSignal<License[]>(webApiLicSummary);
   }
 
   uploadLicense(file: File): Observable<FileUploadResult> {

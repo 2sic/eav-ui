@@ -8,7 +8,7 @@ import { DataAdapterEntityBase, logSpecsDataAdapterEntityBase } from "./data-ada
 @Injectable()
 export class DataAdapterEntity extends DataAdapterEntityBase {
 
-  log = classLog({DataAdapterEntity}, logSpecsDataAdapterEntityBase, true) as ClassLogger<typeof DataAdapterBase.logSpecs> & ClassLogger<typeof logSpecsDataAdapterEntityBase>;
+  log = classLog({DataAdapterEntity}, logSpecsDataAdapterEntityBase) as ClassLogger<typeof DataAdapterBase.logSpecs> & ClassLogger<typeof logSpecsDataAdapterEntityBase>;
 
   protected dataSourceRaw = transient(DataSourceEntity);
 

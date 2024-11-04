@@ -24,6 +24,12 @@ export class PipelinesService extends HttpServiceBase {
     });
   }
 
+  getAllSig(contentType: string, initial?: Query[]) {
+    return this.getSignal<Query[]>(webApiEntityList, {
+      params: { appId: this.appId, contentType }
+    }, initial);
+  }
+
   importQuery(file: File) {
     return from(toBase64(file)).pipe(
       switchMap(fileBase64 => {

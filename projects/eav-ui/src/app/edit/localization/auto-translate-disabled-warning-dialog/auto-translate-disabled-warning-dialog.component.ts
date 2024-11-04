@@ -15,16 +15,12 @@ import { TranslateModule } from '@ngx-translate/core';
     ],
 })
 export class AutoTranslateDisabledWarningDialog implements OnInit {
-  // @Input() public isAutoTranslateAll: boolean;
-
   constructor(
     private dialog: MatDialogRef<AutoTranslateDisabledWarningDialog>,
     @Inject(MAT_DIALOG_DATA) public dialogData: any,
-  ) {
-  }
+  ) { }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void { }
 
   closeDialog() {
     this.dialog.close();

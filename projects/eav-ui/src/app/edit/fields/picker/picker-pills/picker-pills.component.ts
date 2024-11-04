@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { MatRippleModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatListModule } from '@angular/material/list';
+import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
 import { PickerPartBaseComponent } from '../picker-part-base.component';
 
 @Component({
@@ -15,10 +16,7 @@ import { PickerPartBaseComponent } from '../picker-part-base.component';
     NgClass,
     MatRippleModule,
     MatListModule,
+    TippyDirective,
   ],
 })
-export class PickerPillsComponent extends PickerPartBaseComponent {
-
-  constructor() { super(); }
-
-}
+export class PickerPillsComponent extends PickerPartBaseComponent { }

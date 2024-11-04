@@ -21,6 +21,6 @@ export class FeatureInfoDialogComponent {
     protected dialog: MatDialogRef<FeatureInfoDialogComponent>,
   ) { }
 
-  protected featureDetails = this.#featureDetailSvc.getFeatureDetailsSig(this.dialogData);
+  protected featureDetails = this.#featureDetailSvc.getFeatureDetail(this.dialogData);
   protected clipboard = transient(ClipboardService);
 }

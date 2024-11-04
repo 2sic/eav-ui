@@ -110,7 +110,7 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
     super();
     this.context.init(this.route);
     const codeItems: ViewOrFileIdentifier[] = JSON.parse(sessionStorage.getItem(keyItems));
-    const isShared = sessionStorage.getItem(keyIsShared) === 'true' ?? false; // // TODO: ensure correct comparison
+    const isShared = (sessionStorage.getItem(keyIsShared) ?? 'false') === 'true';
     codeItems.forEach(codeItem => {
       // remove leading "/" from path
       if (codeItem.Path.startsWith('/')) {

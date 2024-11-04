@@ -14,9 +14,10 @@ import { DataAdapterEntity } from './adapters/data-adapter-entity';
 import { DataAdapterQuery } from './adapters/data-adapter-query';
 import { DataAdapterString } from './adapters/data-adapter-string';
 import { StateAdapter } from './adapters/state-adapter';
-import { StateAdapterEntity } from './adapters/state-adapter-entity';
-import { StateAdapterNumber } from './adapters/state-adapter-number';
-import { StateAdapterString } from './adapters/state-adapter-string';
+import { StateUiMapperBase } from './adapters/state-ui-mapper-base';
+import { StateUiMapperNoop } from './adapters/state-ui-mapper-noop';
+import { StateUiMapperNumberArray } from './adapters/state-ui-mapper-number-array';
+import { StateUiMapperStringArray } from './adapters/state-ui-mapper-string-array';
 import { PickerConfigs } from './constants/picker-config-model.constants';
 import { PickerData } from './picker-data';
 
@@ -56,7 +57,7 @@ export class PickerDataSetup {
     pdWithSetupState.setupAlreadyStarted = true;
 
     // First get the state, since the sources will depend on it.
-    const state = this.#getStateAdapter(inputType);
+    const state = this.#getStateAdapter(fieldState.name, inputType, fieldState.settings as ConstructorParameters<typeof StateUiMapperBase>[1]);
 
     const dataSourceType = (fieldState.settings() as FieldSettings & FieldSettingsPicker).dataSourceType;
     const source = this.#getSourceAdapter(inputType, dataSourceType, state);
@@ -69,12 +70,15 @@ export class PickerDataSetup {
     return l.rSilent(pickerData);
   }
 
-  #getStateAdapter(inputType: Of<typeof InputTypeCatalog>): StateAdapterString {
-    const type = partsMap[inputType]?.states?.[0];
-    if (!type)
+  #getStateAdapter(fieldName: string, inputType: Of<typeof InputTypeCatalog>, settings: ConstructorParameters<typeof StateUiMapperBase>[1]): StateAdapter {
+    const uiMapperType = partsMap[inputType]?.uiMapper as typeof StateUiMapperNoop;
+    if (!uiMapperType)
       throw new Error(`No State Adapter found for inputTypeSpecs: ${inputType}`);
 
-    return transient(type, this.injector) as StateAdapterString;
+    const stateAdapter = transient(StateAdapter, this.injector);
+    const uiMapper = new uiMapperType(fieldName, settings);
+    stateAdapter.setup(fieldName, uiMapper);
+    return stateAdapter;
   }
 
   #getSourceAdapter(inputType: Of<typeof InputTypeCatalog>, dataSourceType: string, state: StateAdapter): DataAdapterBase {
@@ -118,59 +122,59 @@ const mapNameToDataAdapter: Record<string, ProviderToken<DataAdapterBase>> = {
 const partsMap: Record<string, PartMap> = {
   [InputTypeCatalog.StringPicker]: {
     sources: [DataAdapterString, DataAdapterQuery, DataAdapterEntity, DataAdapterCss, DataAdapterAppAssets],
-    states: [StateAdapterString],
+    uiMapper: StateUiMapperStringArray,
   },
   [InputTypeCatalog.StringDropdown]: {
     sources: [DataAdapterString],
-    states: [StateAdapterString],
+    uiMapper: StateUiMapperStringArray,
     forcePickerConfig: PickerConfigs.UiPickerSourceCustomList,
   },
 
   [InputTypeCatalog.StringFontIconPicker]: {
     sources: [DataAdapterCss],
-    states: [StateAdapterString],
+    uiMapper: StateUiMapperStringArray,
     forcePickerConfig: PickerConfigs.UiPickerSourceCss,
   },
 
   [InputTypeCatalog.NumberDropdown]: {
     sources: [DataAdapterString],
-    states: [StateAdapterNumber],
+    uiMapper: StateUiMapperNumberArray,
     forcePickerConfig: PickerConfigs.UiPickerSourceCustomList,
   },
 
   [InputTypeCatalog.NumberPicker]: {
     sources: [DataAdapterString, DataAdapterQuery, DataAdapterEntity],
-    states: [StateAdapterNumber],
+    uiMapper: StateUiMapperNumberArray,
   },
   [InputTypeCatalog.StringDropdownQuery]: {
     sources: [DataAdapterQuery],
-    states: [StateAdapterString],
+    uiMapper: StateUiMapperStringArray,
     forcePickerConfig: PickerConfigs.UiPickerSourceQuery,
   },
   [InputTypeCatalog.EntityDefault]: {
     sources: [DataAdapterEntity],
-    states: [StateAdapterEntity],
+    uiMapper: StateUiMapperNoop,
     forcePickerConfig: PickerConfigs.UiPickerSourceEntity,
   },
   [InputTypeCatalog.EntityQuery]: {
     sources: [DataAdapterQuery],
-    states: [StateAdapterEntity],
+    uiMapper: StateUiMapperNoop,
     forcePickerConfig: PickerConfigs.UiPickerSourceQuery,
   },
   [InputTypeCatalog.EntityContentBlocks]: {
     sources: [DataAdapterEntity],
-    states: [StateAdapterEntity],
+    uiMapper: StateUiMapperNoop,
     forcePickerConfig: PickerConfigs.UiPickerSourceEntity,
   },
   [InputTypeCatalog.EntityPicker]: {
     sources: [DataAdapterEntity, DataAdapterQuery, DataAdapterString],
-    states: [StateAdapterEntity],
+    uiMapper: StateUiMapperNoop,
   },
 };
 
 interface PartMap {
   sources: ProviderToken<unknown>[],
-  states: ProviderToken<unknown>[],
+  uiMapper: typeof StateUiMapperBase | typeof StateUiMapperStringArray | typeof StateUiMapperNumberArray, // ProviderToken<StateUiMapperBase>,
   /** Force some string-sources to assume no-configuration, since the config is in the classic metadata, not in a DataSource config */
   forcePickerConfig?: Of<typeof PickerConfigs>,
 }

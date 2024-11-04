@@ -53,7 +53,7 @@ import { MetadataDto, MetadataItem, MetadataRecommendation } from './models/meta
 })
 export class MetadataComponent implements OnInit {
 
-  log = classLog({MetadataComponent});
+  log = classLog({ MetadataComponent });
 
   #entitiesSvc = transient(EntityEditService);
   #metadataSvc = transient(MetadataService);
@@ -71,7 +71,15 @@ export class MetadataComponent implements OnInit {
   gridOptions = this.#buildGridOptions();
 
   fabOpen = signal(false);
-  itemFor = signal<EavForInAdminUi | undefined>(undefined);
+  itemFor = computed<EavForInAdminUi | undefined>(() => {
+    const items = this.#contentItemSvc.getAllSig(this.#params.contentTypeStaticName, undefined)
+    const item = items()?.find(i => i.Guid === this.#params.key);
+    if (item?.For)
+      return item.For;
+
+    return undefined;
+  });
+
 
   metadataSet = signal<MetadataDto>({ Items: [], Recommendations: [] } as MetadataDto);
 
@@ -91,7 +99,6 @@ export class MetadataComponent implements OnInit {
   protected title = decodeURIComponent(this.#dialogRoutes.getParam('title') ?? '');
 
   ngOnInit() {
-    this.#fetchFor();
     this.#fetchMetadata();
     this.#dialogRoutes.doOnDialogClosed(() => this.#fetchMetadata());
   }
@@ -155,15 +162,6 @@ export class MetadataComponent implements OnInit {
     return EditPrep.newMetadataFromInfo(contentType, x);
   }
 
-  #fetchFor() {
-    if (!this.#params.contentTypeStaticName) return;
-
-    this.#contentItemSvc.getAll(this.#params.contentTypeStaticName).subscribe(items => {
-      const item = items.find(i => i.Guid === this.#params.key);
-      if (item?.For)
-        this.itemFor.set(item.For);
-    });
-  }
 
   #fetchMetadata() {
     const logGetMetadata = this.log.rxTap('getMetadata');
