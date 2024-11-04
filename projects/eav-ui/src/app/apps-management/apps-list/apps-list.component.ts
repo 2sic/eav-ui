@@ -17,6 +17,7 @@ import { openFeatureDialog } from '../../features/shared/base-feature.component'
 import { AgBoolCellIconsParams } from '../../shared/ag-grid/apps-list-show/ag-bool-icon-params';
 import { AgBoolIconRenderer } from '../../shared/ag-grid/apps-list-show/ag-bool-icon-renderer.component';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
+import { RouterLinkRendererComponent } from '../../shared/ag-grid/router-link-rendere.component';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { FileUploadDialogData } from '../../shared/components/file-upload-dialog';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
@@ -153,9 +154,9 @@ export class AppsListComponent implements OnInit {
   }
 
   // TODO: @2dg - try to change this so the table has a link - resulting in ctrl+click opening the app in a new window...
-  #openApp(app: App): void {
-    this.#dialogRouter.navParentFirstChild([app.Id.toString()]);
-  }
+  // #openApp(app: App): void {
+  //   this.#dialogRouter.navParentFirstChild([app.Id.toString()]);
+  // }
 
   openLightSpeedFeatInfo() {
     openFeatureDialog(this.matDialog, FeatureNames.LightSpeed, this.viewContainerRef, this.changeDetectorRef);
@@ -179,19 +180,27 @@ export class AppsListComponent implements OnInit {
           field: 'Name',
           cellClass: 'apps-list-primary-action highlight'.split(' '),
           sort: 'asc',
-          onCellClicked: (p: { data: App }) => this.#openApp(p.data),
-          cellRenderer: (p: ICellRendererParams) => {
-            const app: App = p.data;
-            return `
-            <div class="container">
-              ${app.Thumbnail
-                ? `<img class="image logo" src="${app.Thumbnail}?w=40&h=40&mode=crop"></img>`
-                : `<div class="image logo"><span class="material-symbols-outlined">star</span></div>`
-              }
-              <div class="text">${p.value}</div>
-            </div>
-            `;
-          },
+          // TODO: @2dg Old, remove later
+          // onCellClicked: (p: { data: App }) => this.#openApp(p.data),
+          // cellRenderer: (p: ICellRendererParams) => {
+          //   const app: App = p.data;
+          //   return `
+          //   <div class="container">
+          //     ${app.Thumbnail
+          //       ? `<img class="image logo" src="${app.Thumbnail}?w=40&h=40&mode=crop"></img>`
+          //       : `<div class="image logo"><span class="material-symbols-outlined">star</span></div>`
+          //     }
+          //     <div class="text">${p.value}</div>
+          //   </div>
+          //   `;
+          // },
+          cellRendererFramework: RouterLinkRendererComponent,
+          cellRendererParams: (x: ICellRendererParams) => ({
+            url: x.data.Id,
+            name: x.value,
+            showThumbnail: true,
+            thumbnail: x.data.Thumbnail,
+          }),
         },
         {
           ...ColumnDefinitions.TextWide,
