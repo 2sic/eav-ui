@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { classLog } from '../shared/logging';
 import { editDialog } from './edit-dialog.config';
-import { matchEditRoot, matchEditRootRefresh, matchEditRootRefreshV2, matchEditRootV2, matchEditSub, matchEditSubRefresh } from './routing/edit-route-matchers';
+import { matchEditRootRefreshV2, matchEditRootV2, matchEditSub, matchEditSubRefresh } from './routing/edit-route-matchers';
 
 const log = classLog('Routes');
 
@@ -79,19 +79,19 @@ export const EditRoutesNoHistory: Routes = [
  * Root routes only meant for the entry points of the application, "App" and "Apps"
  */
 export const EditRoutesRoot: Routes = [
-  {
-    matcher: matchEditRoot,
-    loadChildren: () => editRoutesDialogAndChildren,
-  },
-  {
+  // { // Old
+  //   matcher: matchEditRoot,
+  //   loadChildren: () => editRoutesDialogAndChildren,
+  // },
+  { // New
     matcher: matchEditRootV2,
     loadChildren: () => editRoutesDialogAndChildren,
   },
-  {
-    matcher: matchEditRootRefresh,
-    children: reloadRoutes,
-  },
-  {
+  // { // Old
+  //   matcher: matchEditRootRefresh,
+  //   children: reloadRoutes,
+  // },
+  { // New
     matcher: matchEditRootRefreshV2,
     children: reloadRoutes,
   },
