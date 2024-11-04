@@ -1,11 +1,10 @@
 import { Routes } from '@angular/router';
+import { EditRoutesUnderAppsList } from '../edit/edit.routing';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
 import { addAppFromFolderDialog } from './add-app-from-folder/add-app-from-folder-dialog.config';
 import { appsManagementDialog } from './apps-management-nav/apps-management-dialog.config';
 import { createAppDialog } from './create-app/create-app-dialog.config';
 import { createInheritedAppDialog } from './create-inherited-app/create-inherited-app-dialog.config';
-import { Context } from '../shared/services/context';
-import { EditRoutesRoot } from '../edit/edit.routing';
 
 export const appsManagementRoutes: Routes = [
   {
@@ -52,7 +51,8 @@ export const appsManagementRoutes: Routes = [
             path: ':appId',
             loadChildren: () => import('../app-administration/app-administration.routing').then(m => m.appAdministrationRoutes)
           },
-          ...EditRoutesRoot,
+          //...EditRoutesRoot,
+          ...EditRoutesUnderAppsList,
         ],
         data: { title: 'Apps in this Zone' , breadcrumb: 'Apps' },
       },

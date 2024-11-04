@@ -7,7 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogActions } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
 import { EcoFabSpeedDialActionsComponent, EcoFabSpeedDialComponent, EcoFabSpeedDialTriggerComponent } from '@ecodev/fab-speed-dial';
 import { transient } from '../../../../../core';
 import { AppAdminHelpers } from '../../app-administration/app-admin-helpers';
@@ -48,7 +48,6 @@ import { AppsListActionsParams } from './apps-list-actions/apps-list-actions.mod
     MatBadgeModule,
     RouterOutlet,
     DragAndDropDirective,
-    // WIP 2dm - needed for the lightspeed buttons to work
   ],
 })
 export class AppsListComponent implements OnInit {
@@ -70,9 +69,6 @@ export class AppsListComponent implements OnInit {
     private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
-    // TODO: Remove later
-    private router: Router,
-    private route: ActivatedRoute
   ) {
     ModuleRegistry.registerModules([ClientSideRowModelModule]);
   }
@@ -138,23 +134,20 @@ export class AppsListComponent implements OnInit {
   }
 
   #flushApp(app: App): void {
-    if (!confirm(`Flush the App Cache for ${app.Name} (${app.Id})?`)) return;
+    if (!confirm(`Flush the App Cache for ${app.Name} (${app.Id})?`))
+      return;
     this.snackBar.open('Flushing cache...');
     this.#appsListSvc.flushCache(app.Id).subscribe({
-      error: () => {
-        this.snackBar.open('Cache flush failed. Please check console for more information', undefined, { duration: 3000 });
-      },
-      next: () => {
-        this.snackBar.open('Cache flushed', undefined, { duration: 2000 });
-      },
+      error: () => this.snackBar.open('Cache flush failed. Please check console.', undefined, { duration: 3000 }),
+      next: () => this.snackBar.open('Cache flushed', undefined, { duration: 2000 }),
     });
   }
 
-  #getLightSpeedLink(appUnk?: unknown): string {
+  #getLightSpeedLink(appUnk?: App): string {
     const app = appUnk as App;
     const formUrl = convertFormToUrl(AppAdminHelpers.getLightSpeedEditParams(app.Id));
     const urlString = `${this.context.zoneId}/${app.Id}/edit/${formUrl}`;
-    return this.#dialogRouter.getUrlAgGrid(urlString);
+    return this.#dialogRouter.urlSubRoute(urlString);
   }
 
   #openLightSpeed(app: App): void {
@@ -191,7 +184,7 @@ export class AppsListComponent implements OnInit {
           sort: 'asc',
           cellRenderer: (p: ICellRendererParams) => {
             const app: App = p.data;
-            const url = this.#dialogRouter.getUrlAgGrid(app.Id.toString());
+            const url = this.#dialogRouter.urlSubRoute(app.Id.toString());
             return `
               <div class="container">
                 ${app.Thumbnail
@@ -229,7 +222,7 @@ export class AppsListComponent implements OnInit {
           cellRenderer: AppsListActionsComponent,
           cellRendererParams: {
             lightSpeedLink: (app: App) => this.#getLightSpeedLink(app),
-            onOpenLightspeed: (app) => this.#openLightSpeed(<App>app),
+            onOpenLightspeed: (app: App) => this.#openLightSpeed(app),
             openLightspeedFeatureInfo: () => this.openLightSpeedFeatInfo(),
             do: (verb, app) => {
               switch (verb) {
