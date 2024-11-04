@@ -2,6 +2,7 @@ import { AfterViewInit, Component, ElementRef, NgZone, OnDestroy, ViewChild, com
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
+import { UserLanguageService } from 'projects/eav-ui/src/app/shared/services/user-language.service';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { classLog } from '../../../../shared/logging';
 import { FormConfigService } from '../../../form/form-config.service';
@@ -47,6 +48,7 @@ export class LanguageSwitcherComponent implements AfterViewInit, OnDestroy {
     private formConfig: FormConfigService,
     private snackBar: MatSnackBar,
     private translate: TranslateService,
+    private userLanguageSvc: UserLanguageService,
   ) { }
 
   ngAfterViewInit() {
@@ -80,6 +82,10 @@ export class LanguageSwitcherComponent implements AfterViewInit, OnDestroy {
 
     if (!this.centerSelectedHelper.stopClickIfMouseMoved()) {
       this.languageInstanceService.setCurrent(this.formConfig.config.formId, language.NameId);
+
+      // Also set the UI language
+      const lngCode = this.userLanguageSvc.getUiCode(language.NameId);
+      this.translate.use(lngCode);
     }
   }
 

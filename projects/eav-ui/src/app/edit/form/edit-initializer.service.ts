@@ -9,6 +9,7 @@ import { UpdateEnvVarsFromDialogSettings } from '../../shared/helpers/update-env
 import { convertUrlToForm } from '../../shared/helpers/url-prep.helper';
 import { classLog } from '../../shared/logging';
 import { ItemAddIdentifier } from '../../shared/models/edit-form.model';
+import { UserLanguageService } from '../../shared/services/user-language.service';
 import { calculateIsParentDialog, sortLanguages } from '../dialog/main/edit-dialog-main.helpers';
 import { EavEditLoadDto } from '../dialog/main/edit-dialog-main.models';
 import { FieldLogicManager } from '../fields/logic/field-logic-manager';
@@ -71,6 +72,7 @@ export class EditInitializerService {
     private adamCacheService: AdamCacheService,
     private linkCacheService: LinkCacheService,
     private featuresService: FeaturesScopedService,
+    private userLanguageSvc: UserLanguageService,
   ) { }
 
   fetchFormData(): void {
@@ -152,8 +154,8 @@ export class EditInitializerService {
 
     var langs = loadDto.Context.Language;
     // WARNING! TranslateService is a new instance for every form and language must be set for every one of them
-    const isoLangCode = langs.Current.split('-')[0];
-    this.translate.use(isoLangCode);
+    const userLangCode = this.userLanguageSvc.getUiCode(langs.Current);
+    this.translate.use(userLangCode);
 
     // load language data only for parent dialog to not overwrite languages when opening child dialogs
     if (isParentDialog) {

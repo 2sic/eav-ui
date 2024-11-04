@@ -16,25 +16,42 @@ export class UserLanguageService {
    * @returns The language or null/empty string.
    */
   getLabel(): string {
-    return sessionStorage.getItem(languageLabels) ?? this.getLabelStored();
+    const fromUrl = sessionStorage.getItem(languageLabels);
+    if (fromUrl?.endsWith('!'))
+      return fromUrl.slice(0, -1);
+    return this.getLabelStored() ?? fromUrl;
   }
 
+  /** Get label as stored - for the config UI */
   getLabelStored(): string {
     return this.#stateManager.get('labels');
   }
 
+  /** Set the label in the store */
   setLabel(language: string) {
     this.#stateManager.add('labels', language);
   }
 
-  getUi(): string {
-    return sessionStorage.getItem(languageUi) ?? this.getUiStored();
+  /** Get the UI mixing url, stored etc. */
+  getUi(fallback?: string): string {
+    // Check if URL overrides everything
+    const fromUrl = sessionStorage.getItem(languageUi);
+    if (fromUrl?.endsWith('!'))
+      return fromUrl.slice(0, -1);
+    return this.getUiStored() ?? fromUrl ?? fallback;
   }
 
+  /** Get the code like 'en' or 'de' for setting the language */
+  getUiCode(fallback?: string): string {
+    return this.getUi(fallback)?.toLocaleLowerCase().split('-')[0];
+  }
+
+  /** Get the UI as stored, for the config-UI */
   getUiStored(): string {
     return this.#stateManager.get('ui');
   }
 
+  /** Set the UI language in the store */
   setUi(language: string) {
     this.#stateManager.add('ui', language);
   }
