@@ -43,8 +43,7 @@ export class DataBundlesComponent {
   // TODO: @2dg should have a better name, this is like calling a string a string. What is it for?
   #contentTypeGuid = "d7f2e4fa-5306-41bb-a3cd-d9529c838879";
 
-  // TODO: if private, should probably be #queryService
-  private queryService = transient(QueryService);
+  #queryService = transient(QueryService);
 
   constructor(private translate: TranslateService,) { }
 
@@ -54,8 +53,7 @@ export class DataBundlesComponent {
   #refresh = signal(0);
 
   dataBundles = computed(() => {
-    // TODO: @2dg - a) no german comments and b) explain why this is necessary
-    this.#refresh(); // Nur aufrufen, keine Zuweisung nötig
+    this.#refresh(); // is use to trigger a refresh when new data or data are modified
     return this.#contentItemsSvc.getAllSig(this.#contentTypeGuid, undefined);
   });
 
@@ -82,15 +80,13 @@ export class DataBundlesComponent {
   dataSourceData = computed(() => {
     const dataBundles = this.dataBundles()() || [];
     // TODO: @2dg no German comments
-    this.#queryData(); // Hier wird die Query abgerufen
+    this.#queryData(); // Get query data
     const queryResults = this.#queryResults();
 
     const countEntitiesAndContentTypes = (guid: string) => {
       const result = queryResults.find(result => result.Guid === guid)?.Result || [];
-      // TODO: @2dg - with the updated query, you should be able to check if "TypeName=ContentType" to find content-types.
-      // all other type names are some entities
-      const entityCount = result.filter((item: any) => 'StaticName' in item).length;
-      const contentTypeCount = result.filter((item: any) => !('StaticName' in item)).length;
+      const entityCount = result.filter((item: any) => item.TypeName == "ContentType").length;
+      const contentTypeCount = result.filter((item: any) => item.TypeName != "ContentType").length;
       return { entityCount, contentTypeCount };
     };
 
@@ -105,7 +101,7 @@ export class DataBundlesComponent {
         ContentType: contentTypeCount
       };
     });
-
+    // TODO: @2dg should be done in the template or in the scss
     this.height = `height: ${result.length * 45 + 90}px`;
 
     return result;
@@ -119,12 +115,13 @@ export class DataBundlesComponent {
   }
 
   // TODO: @2dg #Code-Smell: This looks like it was copied from somewhere else.
+  // TODO: @2dm Yes, A part was copied and reused as an observable
   #fetchQuery(guid?: string): Observable<any> {
     const stream = 'Default';
     const params = `configurationguid=${guid}`;
 
     return new Observable(observer => {
-      this.queryService.getFromQuery(`System.BundleDetails/${stream}`, params, null).subscribe({
+      this.#queryService.getFromQuery(`System.BundleDetails/${stream}`, params, null).subscribe({
         next: (data) => {
           if (!data) {
             console.error(this.translate.instant('Fields.Picker.QueryErrorNoData'));
@@ -140,7 +137,6 @@ export class DataBundlesComponent {
           observer.complete();
         },
         error: (error) => {
-          console.error(error);
           console.error(`${this.translate.instant('Fields.Picker.QueryError')} - ${error.data}`);
           observer.error(error);
         }

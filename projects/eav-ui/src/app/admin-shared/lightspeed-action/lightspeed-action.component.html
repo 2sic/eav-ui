@@ -10,9 +10,13 @@
     (click)="openLightspeed()"
   >
     @if (appLightSpeedEnabled) {
-      <mat-icon matBadgeSize="small" matBadge="✅" matBadgePosition="below after" aria-hidden="false"> bolt </mat-icon>
+      <a class="default-link" [href]="'#' + params().lightSpeedLink(lightSpeedOwner())">
+        <mat-icon matBadgeSize="small" matBadge="✅" matBadgePosition="below after" aria-hidden="false"> bolt </mat-icon>
+      </a>
     } @else {
-      <mat-icon matBadgeSize="small" matBadge="⛔" matBadgePosition="below after" aria-hidden="false"> bolt </mat-icon>
+      <a class="default-link" [href]="'#' + params().lightSpeedLink(lightSpeedOwner())">
+        <mat-icon matBadgeSize="small" matBadge="⛔" matBadgePosition="below after" aria-hidden="false"> bolt </mat-icon>
+      </a>
     }
   </div>
 }

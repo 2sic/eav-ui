@@ -1,8 +1,8 @@
+import { Injectable } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, NavigationExtras, Router } from '@angular/router';
 import { filter, map, pairwise, startWith } from 'rxjs';
-import { Injectable } from '@angular/core';
-import { ServiceBase } from '../services/service-base';
 import { classLog } from '../logging';
+import { ServiceBase } from '../services/service-base';
 
 const logSpecs = {
   doOnDialogClosed: true,
@@ -16,7 +16,7 @@ const logSpecs = {
 @Injectable()
 export class DialogRoutingService extends ServiceBase {
 
-  log = classLog({DialogRoutingService}, logSpecs);
+  log = classLog({ DialogRoutingService }, logSpecs);
 
   constructor(
     public router: Router,
@@ -68,6 +68,15 @@ export class DialogRoutingService extends ServiceBase {
   }
 
   /**
+ * Get the URL for an ag-grid route.
+ */
+  getUrlAgGrid(params: string) {
+    const tree = this.router.createUrlTree([params], { relativeTo: this.route });
+    const routeUrl = this.router.serializeUrl(tree);
+    return routeUrl;
+  }
+
+  /**
    * Navigate to a new route.
    * Just looks a bit simpler than the internal array notation.
    */
@@ -85,7 +94,7 @@ export class DialogRoutingService extends ServiceBase {
   public navParentFirstChild(commands: any[], extras?: Omit<NavigationExtras, 'relativeTo'>): Promise<boolean> {
     return this.router.navigate(commands, { ...extras, relativeTo: this.route.parent.firstChild });
   }
-  
+
   childDialogClosed$() {
     return this.router.events.pipe(
       filter(event => event instanceof NavigationEnd),

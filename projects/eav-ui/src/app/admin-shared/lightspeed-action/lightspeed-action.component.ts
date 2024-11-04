@@ -27,7 +27,7 @@ import { LightSpeedActionsParams } from './lightspeed-actions.models';
 })
 export class LightSpeedActionsComponent {
   /** App needed for lightspeed checks */
-  lightSpeedOwner = input.required<unknown>();   
+  lightSpeedOwner = input.required<unknown>();
 
   params = input.required<LightSpeedActionsParams>();
 

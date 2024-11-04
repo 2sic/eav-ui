@@ -70,6 +70,7 @@ export class AppsListComponent implements OnInit {
     private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
+    // TODO: Remove later
     private router: Router,
     private route: ActivatedRoute
   ) {
@@ -149,6 +150,13 @@ export class AppsListComponent implements OnInit {
     });
   }
 
+  #getLightSpeedLink(appUnk?: unknown): string {
+    const app = appUnk as App;
+    const formUrl = convertFormToUrl(AppAdminHelpers.getLightSpeedEditParams(app.Id));
+    const urlString = `${this.context.zoneId}/${app.Id}/edit/${formUrl}`;
+    return this.#dialogRouter.getUrlAgGrid(urlString);
+  }
+
   #openLightSpeed(app: App): void {
     const formUrl = convertFormToUrl(AppAdminHelpers.getLightSpeedEditParams(app.Id));
     this.#dialogRouter.navParentFirstChild([`${this.context.zoneId}/${app.Id}/edit/${formUrl}`]);
@@ -183,26 +191,17 @@ export class AppsListComponent implements OnInit {
           sort: 'asc',
           cellRenderer: (p: ICellRendererParams) => {
             const app: App = p.data;
-            const l = window.location;
-            const linkUrl = `${l.origin}${l.pathname}${l.search}${l.hash}/${app.Id}`;
+            const url = this.#dialogRouter.getUrlAgGrid(app.Id.toString());
             return `
               <div class="container">
                 ${app.Thumbnail
                 ? `<img class="image logo" src="${app.Thumbnail}?w=40&h=40&mode=crop"></img>`
                 : `<div class="image logo"><span class="material-symbols-outlined">star</span></div>`
               }
-                <a class="default-link" href="${linkUrl}">${p.value}</a>
+                <a class="default-link" href="#${url}">${p.value}</a>
               </div>
             `;
           },
-          // TODO: @2dg First Try, remove later
-          // cellRendererFramework: RouterLinkRendererComponent,
-          // cellRendererParams: (x: ICellRendererParams) => ({
-          //   url: x.data.Id,
-          //   name: x.value,
-          //   showThumbnail: true,
-          //   thumbnail: x.data.Thumbnail,
-          // }),
         },
         {
           ...ColumnDefinitions.TextWide,
@@ -229,6 +228,7 @@ export class AppsListComponent implements OnInit {
           ...ColumnDefinitions.ActionsPinnedRight3,
           cellRenderer: AppsListActionsComponent,
           cellRendererParams: {
+            lightSpeedLink: (app: App) => this.#getLightSpeedLink(app),
             onOpenLightspeed: (app) => this.#openLightSpeed(<App>app),
             openLightspeedFeatureInfo: () => this.openLightSpeedFeatInfo(),
             do: (verb, app) => {
