@@ -64,30 +64,30 @@ export function paramsInitFactory(injector: Injector): () => void {
       const dialog = s.getItem(keyDialog) as Of<typeof DialogTypeConstants>;
       const contentType = s.getItem(keyContentType);
       const items = s.getItem(keyItems);
-      const getZoneFull = () => `${zoneId}/v2/${s.getItem(keyModuleId)}/${s.getItem(keyContentBlockId)}`;
+      // const getZoneFull = () => `${zoneId}/v2/${s.getItem(keyModuleId)}/${s.getItem(keyContentBlockId)}`;
       const getZoneApp = () => `${zoneId}/${appId}`;
-      const getZoneAppFull = () => `${zoneId}/v2/${s.getItem(keyModuleId)}/${s.getItem(keyContentBlockId)}/${appId}`;
+      const getFull = () => `${zoneId}/v2/${s.getItem(keyModuleId)}/${s.getItem(keyContentBlockId)}/${appId}`;
       l.a('dialog: ' + dialog);
       switch (dialog) {
         case DialogTypeConstants.Zone:
           const extrasZone: ExtrasParam = JSON.parse(s.getItem(keyExtras));
-          router.navigate([`${getZoneFull()}/apps${extrasZone?.tab ? `/${extrasZone.tab}` : ''}`]);
+          router.navigate([`${getFull()}/apps${extrasZone?.tab ? `/${extrasZone.tab}` : ''}`]);
           break;
         case DialogTypeConstants.Apps:
-          router.navigate([`${getZoneFull()}/apps/list`]);
+          router.navigate([`${getFull()}/apps/list`]);
           break;
         case DialogTypeConstants.AppImport:
-          router.navigate([`${getZoneFull()}/import`]);
+          router.navigate([`${getFull()}/import`]);
           break;
         case DialogTypeConstants.App:
           const extrasApp: ExtrasParam = JSON.parse(s.getItem(keyExtras));
-          router.navigate([`${getZoneAppFull()}/app${extrasApp?.tab ? `/${extrasApp.tab}` : ''}${extrasApp?.scope ? `/${extrasApp.scope}` : ''}`]);
+          router.navigate([`${getFull()}/app${extrasApp?.tab ? `/${extrasApp.tab}` : ''}${extrasApp?.scope ? `/${extrasApp.scope}` : ''}`]);
           break;
         case DialogTypeConstants.ContentType:
-          router.navigate([`${getZoneApp()}/fields/${contentType}`]);
+          router.navigate([`${getFull()}/fields/${contentType}`]);
           break;
         case DialogTypeConstants.ContentItems:
-          router.navigate([`${getZoneApp()}/items/${contentType}`]);
+          router.navigate([`${getFull()}/items/${contentType}`]);
           break;
         case DialogTypeConstants.Edit:
           const editItems: ItemEditIdentifier[] = JSON.parse(items);
@@ -97,14 +97,14 @@ export function paramsInitFactory(injector: Injector): () => void {
           break;
         case DialogTypeConstants.ItemHistory:
           const historyItems: ItemEditIdentifier[] = JSON.parse(items);
-          router.navigate([`${getZoneApp()}/versions/${historyItems[0].EntityId}`]);
+          router.navigate([`${getFull()}/versions/${historyItems[0].EntityId}`]);
           break;
         case DialogTypeConstants.Develop:
-          router.navigate([`${getZoneApp()}/code`]);
+          router.navigate([`${getFull()}/code`]);
           break;
         case DialogTypeConstants.PipelineDesigner:
           const pipelineId = s.getItem(keyPipelineId);
-          router.navigate([`${getZoneApp()}/query/${pipelineId}`]);
+          router.navigate([`${getFull()}/query/${pipelineId}`]);
           break;
         case DialogTypeConstants.Replace:
           const repItem = (JSON.parse(items) as ItemInListIdentifier[])[0];
@@ -113,14 +113,14 @@ export function paramsInitFactory(injector: Injector): () => void {
           const rIndex = repItem.Index;
           const add = repItem.Add;
           const queryParams = add ? { add: true } : {};
-          router.navigate([`${getZoneApp()}/${rGuid}/${rPart}/${rIndex}/replace`], { queryParams });
+          router.navigate([`${getFull()}/${rGuid}/${rPart}/${rIndex}/replace`], { queryParams });
           break;
         case DialogTypeConstants.InstanceList:
           const grpItem = (JSON.parse(items) as ItemInListIdentifier[])[0];
           const gGuid = grpItem.Parent;
           const gPart = grpItem.Field;
           const gIndex = grpItem.Index;
-          router.navigate([`${getZoneApp()}/${gGuid}/${gPart}/${gIndex}/reorder`]);
+          router.navigate([`${getFull()}/${gGuid}/${gPart}/${gIndex}/reorder`]);
           break;
         default:
           alert(`Cannot open unknown dialog "${dialog}"`);
@@ -133,7 +133,9 @@ export function paramsInitFactory(injector: Injector): () => void {
       // check if we have additional context info in the url behind a ##
       const urlWithCtx = urlHash.split('##')
       const finalRoute = urlWithCtx[0].substring(1);
-      const routeParts = finalRoute.split('/'); // url is like '/73/0/42/-42/770/app/data/...'
+      // url is like '/73/v2/42/-42/770/app/data/...'
+      // or is like  '/73/v2/0/42/-42/770/apps/data/...'
+      const routeParts = finalRoute.split('/');
       const zoneId = routeParts[1];
       const mid = routeParts[3];
       const cbid = routeParts[4];
