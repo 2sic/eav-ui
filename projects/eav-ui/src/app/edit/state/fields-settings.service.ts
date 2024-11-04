@@ -104,7 +104,7 @@ export class FieldsSettingsService {
     const reader = this.#reader();
 
     // Now first check if the user has a language set, and if so, use that.
-    const lblLang = this.#usrLangSvc.getLabelLanguage();
+    const lblLang = this.#usrLangSvc.getLabel();
     if (!lblLang)
       return reader;
     

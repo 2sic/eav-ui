@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { languageLabels, languageUi } from '../constants/session.constants';
 import { StateManagerLocal } from '../user/state-manager';
 
 const storeKey = 'user-language';
@@ -10,19 +11,31 @@ export class UserLanguageService {
 
   #stateManager = new StateManagerLocal(storeKey);
 
-  getLabelLanguage(): string {
+  /**
+   * Get the preferred label language - either specified by the opening URL or from the session.
+   * @returns The language or null/empty string.
+   */
+  getLabel(): string {
+    return sessionStorage.getItem(languageLabels) ?? this.getLabelStored();
+  }
+
+  getLabelStored(): string {
     return this.#stateManager.get('labels');
   }
 
-  setLabelLanguage(language: string) {
+  setLabel(language: string) {
     this.#stateManager.add('labels', language);
   }
 
-  getUiLanguage(): string {
+  getUi(): string {
+    return sessionStorage.getItem(languageUi) ?? this.getUiStored();
+  }
+
+  getUiStored(): string {
     return this.#stateManager.get('ui');
   }
 
-  setUiLanguage(language: string) {
+  setUi(language: string) {
     this.#stateManager.add('ui', language);
   }
 }

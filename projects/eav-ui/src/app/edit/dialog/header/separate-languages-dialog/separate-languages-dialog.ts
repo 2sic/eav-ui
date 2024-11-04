@@ -43,18 +43,18 @@ export class SeparateLanguagesDialogComponent {
   protected options = getLanguageOptions(this.#languageSvc.getAll());
 
   setLabelLanguage(selectedLang: string, type: string): void {
-    this.#userLanguageSvc.setLabelLanguage(selectedLang);
+    this.#userLanguageSvc.setLabel(selectedLang);
   }
 
   getLabelLanguage(): String {
-    return this.#userLanguageSvc.getLabelLanguage();
+    return this.#userLanguageSvc.getLabelStored();
   }
 
   setUiLanguage(selectedLang: string, type: string): void {
-    this.#userLanguageSvc.setUiLanguage(selectedLang);
+    this.#userLanguageSvc.setUi(selectedLang);
   }
 
   getUiLanguage(): String {
-    return this.#userLanguageSvc.getUiLanguage();
+    return this.#userLanguageSvc.getUiStored();
   }
 }
