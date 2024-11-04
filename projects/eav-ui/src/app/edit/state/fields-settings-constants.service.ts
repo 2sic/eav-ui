@@ -42,12 +42,14 @@ export class FieldsSettingsConstantsService {
     itemForIds: EavItem,
     contentType: EavContentType,
     entityReaderCurrent: Signal<EntityReader>,
+    labelReaderCurrent: Signal<EntityReader>,
     fieldsSettingsSvc: FieldsSettingsService,
   ): this {
     this.#item = itemForIds;
     this.#contentType = contentType;
     this.#itemFieldVisibility = new ItemFieldVisibility(itemForIds.Header);
     this.#entityReaderCurrent = entityReaderCurrent;
+    this.#labelReaderCurrent = labelReaderCurrent;
     this.#fieldSettingsSvc = fieldsSettingsSvc;
     return this;
   }
@@ -55,6 +57,7 @@ export class FieldsSettingsConstantsService {
   #item: EavItem;
   #itemFieldVisibility: ItemFieldVisibility;
   #entityReaderCurrent: Signal<EntityReader>;
+  #labelReaderCurrent: Signal<EntityReader>;
   #contentType: EavContentType;
   #fieldSettingsSvc: FieldsSettingsService;
 
@@ -65,11 +68,11 @@ export class FieldsSettingsConstantsService {
     const constParts = this.#constantPartsOfField(guid, id, typeNameId);
 
     return computedObj('stableDataOfLanguage',
-      () => this.#stablePartsOfLanguage(this.#entityReaderCurrent(), constParts)
+      () => this.#stablePartsOfLanguage(this.#entityReaderCurrent(), this.#labelReaderCurrent(), constParts)
     );
   }
 
-  #stablePartsOfLanguage(reader: EntityReader, fieldConstants: FieldConstants[]) {
+  #stablePartsOfLanguage(reader: EntityReader, labelReader: EntityReader, fieldConstants: FieldConstants[]) {
     const contentType = this.#contentType;
     const l = this.log.fnIf('stablePartsOfLanguage', { contentType, entityReader: reader });
 
@@ -84,7 +87,15 @@ export class FieldsSettingsConstantsService {
       // using the EntityReader with the current language
       const merged = reader.flatten<FieldSettings>(attr.Metadata);
 
-      // Also integrate the generic settings
+      // If the user specified a preferred language for labels, use that
+      if (labelReader.current !== reader.current) {
+        const labelMerged = labelReader.flatten<FieldSettings>(attr.Metadata);
+        merged.Name = labelMerged.Name ?? merged.Name;
+        merged.Placeholder = labelMerged.Placeholder ?? merged.Placeholder;
+        merged.Notes = labelMerged.Notes ?? merged.Notes;
+      }
+
+      // Also integrate the generic (custom JSON injected field-settings)
       const withGeneric = this.#fieldSettingsHelper.mergeGenericSettings(fieldName, merged);
 
       // Sometimes the metadata doesn't have the input type (empty string), so we'll add the attribute.InputType just in case...

@@ -2,6 +2,7 @@ import { computed, effect, inject, Injectable, signal, Signal, WritableSignal } 
 import { transient } from '../../../../../core';
 import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
 import { classLog } from '../../shared/logging';
+import { UserLanguageService } from '../../shared/services/user-language.service';
 import { ComputedAnalyzer } from '../../shared/signals/computed-analyzer';
 import { ComputedCacheHelper } from '../../shared/signals/computed-cache';
 import { computedObj, signalObj } from '../../shared/signals/signal.utilities';
@@ -10,7 +11,7 @@ import { FormConfigService } from '../form/form-config.service';
 import { FormLanguageService } from '../form/form-language.service';
 import { TranslationState } from '../localization/translate-state.model';
 import { ContentTypeService } from '../shared/content-types/content-type.service';
-import { ContentTypeSettingsHelpers } from '../shared/helpers';
+import { ContentTypeSettingsHelpers, EntityReader } from '../shared/helpers';
 import { EavItem } from '../shared/models/eav';
 import { FieldProps } from './fields-configs.model';
 import { FieldsPropsEngine } from './fields-properties-engine';
@@ -41,6 +42,16 @@ export class FieldsSettingsService {
 
   log = classLog({FieldsSettingsService}, logSpecs);
 
+  // Shared / inherited services
+  #languageSvc = inject(FormLanguageService);
+  #formConfig = inject(FormConfigService);
+  #contentTypeSvc = inject(ContentTypeService);
+  #itemSvc = inject(ItemService);
+  #usrLangSvc = inject(UserLanguageService);
+
+  // Transient services for this instance only
+  #propsEngine = transient(FieldsPropsEngine);
+
   #pickerSync = new FieldSettingsPickerUpdater();
 
   constructor() {
@@ -63,15 +74,6 @@ export class FieldsSettingsService {
   }
 
   //#region injected services, constructor, clean-up
-
-  // Shared / inherited services
-  #languageSvc = inject(FormLanguageService);
-  #formConfig = inject(FormConfigService);
-  #contentTypeSvc = inject(ContentTypeService);
-  #itemSvc = inject(ItemService);
-
-  // Transient services for this instance only
-  #propsEngine = transient(FieldsPropsEngine);
 
   disableForCleanUp(): void {
     this.log.fn('cleanUp');
@@ -97,6 +99,19 @@ export class FieldsSettingsService {
   #fieldsPropsUpdate: FieldsPropertiesUpdates;
 
   #reader = this.#languageSvc.getEntityReader(this.#formConfig.config.formId);
+  #labelReader = computedObj('labelReader', () => {
+    // Watch the reader, so it will update when the reader changes
+    const reader = this.#reader();
+
+    // Now first check if the user has a language set, and if so, use that.
+    const lblLang = this.#usrLangSvc.getLabelLanguage();
+    if (!lblLang)
+      return reader;
+    
+    const customLng = { current: lblLang, primary: reader.primary };
+    const userReader = new EntityReader(customLng);
+    return userReader;
+  });
 
   //#region Item and content-type
 
@@ -108,7 +123,7 @@ export class FieldsSettingsService {
   /** The settings of the content-type of this item */
   public contentTypeSettings = computed(() => !this.#item()
     ? null
-    : ContentTypeSettingsHelpers.getDefaultSettings(this.#reader(), this.#contentType(), this.#item().Header)
+    : ContentTypeSettingsHelpers.getDefaultSettings(this.#labelReader(), this.#contentType(), this.#item().Header)
   );
 
   //#endregion
@@ -134,7 +149,7 @@ export class FieldsSettingsService {
 
     const slotIsEmpty = this.#itemSvc.slotIsEmpty(entityGuid);
     this.#fieldValues.init(entityGuid, this.#reader);
-    this.#propsEngine.init(this, entityGuid, item, this.#contentType, this.#reader, this.#fieldValues, forceDebug);
+    this.#propsEngine.init(this, entityGuid, item, this.#contentType, this.#reader, this.#labelReader, this.#fieldValues, forceDebug);
 
     // properties for the computation - set on an object, so we can do the call in a function
     // and change what we'll do with it.

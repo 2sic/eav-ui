@@ -3,28 +3,26 @@ import { StateManagerLocal } from '../user/state-manager';
 
 const storeKey = 'user-language';
 
-@Injectable({ providedIn: 'root' }) // TODO: don't use root. get with transient
+@Injectable({ providedIn: 'root' }) // TODO: MAYBE don't use root. probably get with transient - 2dm must review this before we finalize
 export class UserLanguageService {
 
-  private localStateManager: StateManagerLocal;
+  constructor() { }
 
-  constructor() {
-    this.localStateManager = new StateManagerLocal(storeKey);
-  }
+  #stateManager = new StateManagerLocal(storeKey);
 
   getLabelLanguage(): string {
-    return this.localStateManager.get('label-lang');
+    return this.#stateManager.get('labels');
   }
 
   setLabelLanguage(language: string) {
-    this.localStateManager.add('label-lang', language);
+    this.#stateManager.add('labels', language);
   }
 
   getUiLanguage(): string {
-    return this.localStateManager.get('ui-lang');
+    return this.#stateManager.get('ui');
   }
 
   setUiLanguage(language: string) {
-    this.localStateManager.add('ui-lang', language);
+    this.#stateManager.add('ui', language);
   }
 }

@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { MatButtonModule } from '@angular/material/button';
 import {
   MatDialogActions,
@@ -35,26 +35,26 @@ import { getLanguageOptions } from '../language-switcher/language-switcher.helpe
 })
 export class SeparateLanguagesDialogComponent {
 
-  constructor(
-    private languageSvc: LanguageService,
-    private userLanguageSvc: UserLanguageService,
-  ) { }
+  #languageSvc = inject(LanguageService);
+  #userLanguageSvc = inject(UserLanguageService);
 
-  protected options = getLanguageOptions(this.languageSvc.getAll());
+  constructor() { }
+
+  protected options = getLanguageOptions(this.#languageSvc.getAll());
 
   setLabelLanguage(selectedLang: string, type: string): void {
-    this.userLanguageSvc.setLabelLanguage(selectedLang);
+    this.#userLanguageSvc.setLabelLanguage(selectedLang);
   }
 
   getLabelLanguage(): String {
-    return this.userLanguageSvc.getLabelLanguage();
+    return this.#userLanguageSvc.getLabelLanguage();
   }
 
   setUiLanguage(selectedLang: string, type: string): void {
-    this.userLanguageSvc.setUiLanguage(selectedLang);
+    this.#userLanguageSvc.setUiLanguage(selectedLang);
   }
 
   getUiLanguage(): String {
-    return this.userLanguageSvc.getUiLanguage();
+    return this.#userLanguageSvc.getUiLanguage();
   }
 }
