@@ -1,43 +1,48 @@
 <div class="eav-dialog">
   <div class="eav-dialog-header">
-    <div class="eav-dialog-header__title">Language Separation Settings</div>
+    <div class="eav-dialog-header__title">Language UI Settings (BETA)</div>
   </div>
 
   <div class="eav-dialog-content">
-    <p>Current Language: {{ currentLang }}</p>
-    <p>Initial Language: {{ initialLang }}</p>
-    <p>Primary Language: {{ primaryLang }}</p>
+    <p>
+      By default, the UI language will match the current language of the content.
+      But sometimes you may prefer to to have a different behavior.
+    </p>
 
-    <hr />
+    <h3>Choose language</h3>
 
-    <br />
+    <!--
+      TODO: @2pp fix things
+      - The currently stored value should be visible (ATM the dropdowns are always empty)
+      - When I re-open the dialog, I expect the previously stored value to be selected - or the top "blank" option
+      - Make sure the input fields are as wide as possible, so the values don't need to wrap
+    -->
 
-    <strong>Choose language for</strong>
-
-    <br />
-    <br />
-
-    <div class="selection-menu">
+    <!-- <div class="selection-menu"> -->
       <!-- Dropdown for Labels and Help Texts -->
       <mat-form-field tippy="Changes the language for all texts and labels" appearance="fill">
         <mat-label>Labels and Help Texts</mat-label>
         <mat-select (selectionChange)="setLabelLanguage($event.value, 'labels')">
-          <mat-option value="{{ currentLang }}">Current ({{ currentLang }})</mat-option>
-          <mat-option value="{{ initialLang }}">Initial ({{ initialLang }})</mat-option>
-          <mat-option value="{{ primaryLang }}">Primary ({{ primaryLang }})</mat-option>
+          <mat-option value="">Always same as content (default)</mat-option>
+          @for (o of options; track o.Code) {
+            <mat-option value="{{ o.Code.toLocaleLowerCase() }}">{{ o.label }}</mat-option>
+          }
         </mat-select>
       </mat-form-field>
+      
+      <br>
 
       <!-- Dropdown for UI Elements -->
       <mat-form-field tippy="Changes the language for all UI Elements" appearance="fill">
         <mat-label>UI Elements</mat-label>
         <mat-select (selectionChange)="setUiLanguage($event.value, 'ui')">
-          <mat-option value="{{ currentLang }}">Current ({{ currentLang }})</mat-option>
-          <mat-option value="{{ initialLang }}">Initial ({{ initialLang }})</mat-option>
-          <mat-option value="{{ primaryLang }}">Primary ({{ primaryLang }})</mat-option>
+          <mat-option value="">Always same as content (default)</mat-option>
+          @for (o of options; track o.Code) {
+            <mat-option value="{{ o.Code.toLocaleLowerCase() }}">{{ o.label }}</mat-option>
+          }
         </mat-select>
       </mat-form-field>
-    </div>
+    <!-- </div> -->
   </div>
 
   <mat-dialog-actions align="end">

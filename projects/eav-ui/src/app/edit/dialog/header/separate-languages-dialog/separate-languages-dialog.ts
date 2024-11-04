@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import { MatButtonModule } from '@angular/material/button';
 import {
   MatDialogActions,
@@ -12,8 +12,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from "@angular/material/select";
 import { UserLanguageService } from "projects/eav-ui/src/app/shared/services/user-language.service";
 import { TippyDirective } from "../../../../shared/directives/tippy.directive";
-import { FormConfigService } from "../../../form/form-config.service";
-import { FormLanguageService } from "../../../form/form-language.service";
+import { LanguageService } from '../../../localization/language.service';
+import { getLanguageOptions } from '../language-switcher/language-switcher.helpers';
 
 @Component({
   selector: 'app-separate-languages-header',
@@ -33,39 +33,28 @@ import { FormLanguageService } from "../../../form/form-language.service";
     MatSelectModule,
   ],
 })
-export class SeparateLanguagesDialogComponent implements OnInit {
-
-  primaryLang: string;
-  currentLang: string;
-  initialLang: string;
+export class SeparateLanguagesDialogComponent {
 
   constructor(
-    private formConfigService: FormConfigService,
-    private formLanguageService: FormLanguageService,
-    private userLanguageService: UserLanguageService,
+    private languageSvc: LanguageService,
+    private userLanguageSvc: UserLanguageService,
   ) { }
 
-  ngOnInit(): void {
-    const formLanguage = this.formLanguageService.getSignal(this.formConfigService.config.formId)();
-
-    this.primaryLang = formLanguage.primary;
-    this.currentLang = formLanguage.current;
-    this.initialLang = formLanguage.initial;
-  }
+  protected options = getLanguageOptions(this.languageSvc.getAll());
 
   setLabelLanguage(selectedLang: string, type: string): void {
-    this.userLanguageService.setLabelLanguage(selectedLang);
+    this.userLanguageSvc.setLabelLanguage(selectedLang);
   }
 
   getLabelLanguage(): String {
-    return this.userLanguageService.getLabelLanguage();
+    return this.userLanguageSvc.getLabelLanguage();
   }
 
   setUiLanguage(selectedLang: string, type: string): void {
-    this.userLanguageService.setUiLanguage(selectedLang);
+    this.userLanguageSvc.setUiLanguage(selectedLang);
   }
 
   getUiLanguage(): String {
-    return this.userLanguageService.getUiLanguage();
+    return this.userLanguageSvc.getUiLanguage();
   }
 }

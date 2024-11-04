@@ -9,7 +9,7 @@ import { FormLanguageService } from '../../../form/form-language.service';
 import { Language } from '../../../form/form-languages.model';
 import { LanguageService } from '../../../localization/language.service';
 import { CenterSelectedHelper } from './center-selected.helper';
-import { getLanguageButtons } from './language-switcher.helpers';
+import { getLanguageOptions } from './language-switcher.helpers';
 import { MouseScrollHelper } from './mouse-scroll.helper';
 import { ShowShadowsHelper } from './show-shadows.helper';
 
@@ -38,7 +38,7 @@ export class LanguageSwitcherComponent implements AfterViewInit, OnDestroy {
 
   current = computed(() => this.formConfig.language().current);
 
-  buttons = getLanguageButtons(this.languageService.getAll());
+  buttons = getLanguageOptions(this.languageService.getAll());
 
   constructor(
     private languageService: LanguageService,
