@@ -112,15 +112,15 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
 
   importType(files?: File[]) {
     const dialogData: FileUploadDialogData = { files };
-    this.#dialogRouter.navParentFirstChild(['import'], { state: dialogData });
+    this.#dialogRouter.navRelative(['import'], { state: dialogData });
   }
 
   editContentType(contentType: ContentType) {
     if (!contentType) {
-      this.#dialogRouter.navParentFirstChild(['add']);
+      this.#dialogRouter.navRelative(['add']);
     } else {
       if (contentType.EditInfo.ReadOnly) return;
-      this.#dialogRouter.navParentFirstChild([`${contentType.NameId}/edit`]);
+      this.#dialogRouter.navRelative([`${contentType.NameId}/edit`]);
     }
   }
 
@@ -264,30 +264,28 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
           cellRenderer: DataActionsComponent,
           cellRendererParams: ({
             enablePermissionsGetter: () => this.enablePermissions,
-            urlTo: (verb, contentType) => {
+            urlTo: (verb, ct) => {
               switch (verb) {
-                case 'createUpdateMetaData': return this.#urlTo(`edit/${this.#routeCreateOrEditMetadata(contentType)}`);
-                case 'openPermissions': this.#openPermissions(contentType); break;
-                case 'editContentType': this.editContentType(contentType); break;
-                case 'openMetadata': return this.#urlTo(this.#routeMetadata(contentType));
-                case 'openRestApi': this.#openRestApi(contentType); break;
-                case 'typeExport': this.#exportType(contentType); break;
-                case 'dataExport': this.#openDataExport(contentType); break;
-                case 'dataImport': this.#openDataImport(contentType); break;
-                case 'deleteContentType': this.#deleteContentType(contentType); break;
+                case 'createUpdateMetaData': return this.#urlTo(`edit/${this.#routeCreateOrEditMetadata(ct)}`);
+                case 'openPermissions': return this.#urlTo(GoToPermissions.getUrlContentType(ct.NameId));
+                case 'editContentType': return this.#urlTo(ct.EditInfo.ReadOnly ? '' : `${ct.NameId}/edit`);
+                case 'openMetadata': return this.#urlTo(GoToMetadata.getUrlContentType(ct.NameId, `Metadata for Content Type: ${ct.Name} (${ct.Id})`));
+                case 'openRestApi': return this.#urlTo(GoToDevRest.getUrlData(ct));
+                case 'dataExport': return this.#urlTo(`export/${ct.NameId}`);
+                case 'dataImport': return this.#urlTo(`${ct.NameId}/import`);
               }
             },
-            do: (verb, contentType) => {
+            do: (verb, ct) => {
               switch (verb) {
-                case 'createUpdateMetaData': this.#createOrEditMetadata(contentType); break;
-                case 'openPermissions': this.#openPermissions(contentType); break;
-                case 'editContentType': this.editContentType(contentType); break;
-                case 'openMetadata': this.#openMetadata(contentType); break;
-                case 'openRestApi': this.#openRestApi(contentType); break;
-                case 'typeExport': this.#exportType(contentType); break;
-                case 'dataExport': this.#openDataExport(contentType); break;
-                case 'dataImport': this.#openDataImport(contentType); break;
-                case 'deleteContentType': this.#deleteContentType(contentType); break;
+                // case 'createUpdateMetaData': this.#createOrEditMetadata(contentType); break;
+                // case 'openPermissions': this.#openPermissions(contentType); break;
+                // case 'editContentType': this.editContentType(contentType); break;
+                // case 'openMetadata': this.#openMetadata(contentType); break;
+                // case 'openRestApi': this.#openRestApi(contentType); break;
+                case 'typeExport': this.#exportType(ct); break;
+                // case 'dataExport': this.#openDataExport(contentType); break;
+                // case 'dataImport': this.#openDataImport(contentType); break;
+                case 'deleteContentType': this.#deleteContentType(ct); break;
               }
             }
           } satisfies DataActionsComponent['params']),
@@ -329,50 +327,42 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
   }
 
 
-  #createOrEditMetadata(contentType: ContentType) {
-    this.#dialogRouter.navParentFirstChild([`edit/${this.#routeCreateOrEditMetadata(contentType)}`]);
+  // #createOrEditMetadata(contentType: ContentType) {
+  //   this.#dialogRouter.navParentFirstChild([`edit/${this.#routeCreateOrEditMetadata(contentType)}`]);
+  // }
+
+  // #openPermissions(contentType: ContentType) {
+  //   this.#dialogRouter.navParentFirstChild([GoToPermissions.getUrlContentType(contentType.NameId)]);
+  // }
+
+  #routeMetadata(ct: ContentType) {
+    return GoToMetadata.getUrlContentType(ct.NameId, `Metadata for Content Type: ${ct.Name} (${ct.Id})`);
   }
 
-  #openPermissions(contentType: ContentType) {
-    this.#dialogRouter.navParentFirstChild([GoToPermissions.getUrlContentType(contentType.NameId)]);
-  }
+  // #openMetadata(contentType: ContentType) {
+  //   this.#dialogRouter.navParentFirstChild([this.#routeMetadata(contentType)]);
+  // }
 
-  #routeMetadata(contentType: ContentType) {
-    return GoToMetadata.getUrlContentType(
-      contentType.NameId,
-      `Metadata for Content Type: ${contentType.Name} (${contentType.Id})`,
-    );
-  }
-
-  #openMetadata(contentType: ContentType) {
-    // const url = GoToMetadata.getUrlContentType(
-    //   contentType.NameId,
-    //   `Metadata for Content Type: ${contentType.Name} (${contentType.Id})`,
-    // );
-    this.#dialogRouter.navParentFirstChild([this.#routeMetadata(contentType)]);
-  }
-
-  #openRestApi(contentType: ContentType) {
-    this.#dialogRouter.navParentFirstChild([GoToDevRest.getUrlData(contentType)]);
-  }
+  // #openRestApi(contentType: ContentType) {
+  //   this.#dialogRouter.navParentFirstChild([GoToDevRest.getUrlData(contentType)]);
+  // }
 
   #exportType(contentType: ContentType) {
     this.#contentExportSvc.exportJson(contentType.NameId);
   }
 
-  #openDataExport(contentType: ContentType) {
-    this.#dialogRouter.navParentFirstChild([`export/${contentType.NameId}`]);
-  }
+  // #openDataExport(contentType: ContentType) {
+  //   this.#dialogRouter.navRelative([`export/${contentType.NameId}`]);
+  // }
 
   #openDataImport(contentType: ContentType, files?: File[]) {
-    const contentImportData: ContentImportDialogData = { files };
-    this.#dialogRouter.navParentFirstChild([`${contentType.NameId}/import`], { state: contentImportData });
+    this.#dialogRouter.navRelative([`${contentType.NameId}/import`], { state: { files } satisfies ContentImportDialogData });
   }
 
   #deleteContentType(contentType: ContentType) {
     if (!confirm(`Are you sure you want to delete '${contentType.Name}' (${contentType.Id})?`)) return;
     this.#snackBar.open('Deleting...');
-    this.#contentTypeSvc.delete(contentType).subscribe(result => {
+    this.#contentTypeSvc.delete(contentType).subscribe(_ => {
       this.#snackBar.open('Deleted', null, { duration: 2000 });
       this.#fetchContentTypes();
     });

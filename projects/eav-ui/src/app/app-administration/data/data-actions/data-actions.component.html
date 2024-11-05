@@ -7,22 +7,21 @@
       <mat-icon>edit</mat-icon>
     </a>
   }
-  @if (contentType.EditInfo.DisableEdit && !contentType.Properties) {
+  @else {
     <div class="eav-grid-action-button disabled">
       <mat-icon>edit</mat-icon>
     </div>
   }
 
   @if (!contentType.EditInfo.DisableMetadata) {
-    <!-- <a class="eav-grid-action-button default-link highlight" matRipple tippy="Metadata" [href]="urlTo('openMetadata')"> -->
-    <a class="eav-grid-action-button default-link highlight" matRipple tippy="Metadata" (click)="do('openMetadata')">
+    <a class="eav-grid-action-button default-link highlight" matRipple tippy="Metadata" [href]="urlTo('openMetadata')">
       <mat-icon [matBadge]="contentType.Metadata.length" matBadgePosition="below after" matBadgeColor="accent"
         matBadgeSize="small" [matBadgeHidden]="!contentType.Metadata.length" aria-hidden="false">
         local_offer
       </mat-icon>
     </a>
   }
-  @if (contentType.EditInfo.DisableMetadata) {
+  @else {
     <div class="eav-grid-action-button disabled">
       <mat-icon [matBadge]="contentType.Metadata.length" matBadgePosition="below after" matBadgeColor="accent"
         matBadgeSize="small" matBadgeDisabled="true" [matBadgeHidden]="!contentType.Metadata.length" aria-hidden="false">
@@ -32,14 +31,13 @@
   }
 
   @if (!contentType.EditInfo.DisableEdit && enablePermissions) {
-    <div class="eav-grid-action-button highlight" matRipple
-      tippy="Permissions" (click)="do('openPermissions')">
+    <a class="eav-grid-action-button default-link highlight" matRipple tippy="Permissions" [href]="urlTo('openPermissions')">
       <mat-icon [matBadge]="contentType.Permissions.Count" matBadgePosition="below after" matBadgeColor="accent"
         matBadgeSize="small" [matBadgeHidden]="!contentType.Permissions.Count" aria-hidden="false">
       person</mat-icon>
-    </div>
+    </a>
   }
-  @if (contentType.EditInfo.DisableEdit || !enablePermissions) {
+  @else {
     <div class="eav-grid-action-button disabled">
       <mat-icon [matBadge]="contentType.Permissions.Count" matBadgePosition="below after" matBadgeColor="accent"
         matBadgeSize="small" matBadgeDisabled="true" [matBadgeHidden]="!contentType.Permissions.Count"
@@ -55,26 +53,26 @@
 
 <mat-menu #menu="matMenu" class="grid-more-menu">
   <ng-template matMenuContent>
-    <button mat-menu-item [disabled]="contentType.EditInfo.DisableRename" (click)="do('editContentType')">
+    <a mat-menu-item [disabled]="contentType.EditInfo.DisableRename" [href]="urlTo('editContentType')">
       <mat-icon>settings</mat-icon>
       <span>Rename</span>
-    </button>
-    <button mat-menu-item (click)="do('openRestApi')">
+    </a>
+    <a mat-menu-item [href]="urlTo('openRestApi')">
       <mat-icon svgIcon="code-curly"></mat-icon>
       <span>REST API</span>
-    </button>
+    </a>
     <button mat-menu-item (click)="do('typeExport')">
       <mat-icon>cloud_download</mat-icon>
       <span>Export content type</span>
     </button>
-    <button mat-menu-item (click)="do('dataExport')">
+    <a mat-menu-item [href]="urlTo('dataExport')">
       <mat-icon>cloud_download</mat-icon>
       <span>Export data</span>
-    </button>
-    <button mat-menu-item (click)="do('dataImport')">
+    </a>
+    <a mat-menu-item [href]="urlTo('dataImport')">
       <mat-icon>cloud_upload</mat-icon>
       <span>Import data</span>
-    </button>
+    </a>
     <button mat-menu-item [disabled]="contentType.EditInfo.DisableDelete" (click)="do('deleteContentType')">
       <mat-icon>delete</mat-icon>
       <span>Delete</span>

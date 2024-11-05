@@ -9,15 +9,15 @@ import { guidRegex } from '../../../shared/constants/guid.constants';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { ContentType } from '../../models/content-type.model';
 
-type DataActionType = 'createUpdateMetaData'
+type GoToUrls = 'createUpdateMetaData'
   | 'openPermissions'
   | 'editContentType'
   | 'openMetadata'
   | 'openRestApi'
-  | 'typeExport'
   | 'dataExport'
-  | 'dataImport'
-  | 'deleteContentType';
+  | 'dataImport';
+
+type DataActions = 'typeExport' | 'deleteContentType';
 
 @Component({
   selector: 'app-data-actions',
@@ -36,8 +36,8 @@ export class DataActionsComponent implements ICellRendererAngularComp {
   enablePermissions: boolean;
   public params: {
     enablePermissionsGetter(): boolean;
-    do(verb: DataActionType, contentType: ContentType): void;
-    urlTo(verb: DataActionType, contentType: ContentType): string;
+    do(verb: DataActions, contentType: ContentType): void;
+    urlTo(verb: GoToUrls, contentType: ContentType): string;
   };
 
   agInit(params: ICellRendererParams & DataActionsComponent['params']): void {
@@ -51,11 +51,11 @@ export class DataActionsComponent implements ICellRendererAngularComp {
     return true;
   }
 
-  do(verb: DataActionType): void {
+  do(verb: DataActions): void {
     this.params.do(verb, this.contentType);
   }
 
-  urlTo(verb: DataActionType): string {
+  urlTo(verb: GoToUrls): string {
     return this.params.urlTo(verb, this.contentType);
   }
 }
