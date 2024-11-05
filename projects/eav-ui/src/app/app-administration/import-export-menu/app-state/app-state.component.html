@@ -3,7 +3,8 @@
   <h3>App-State Versioning - Basic</h3>
   <!-- Content -->
   <p>
-    You can save / restore the app with data and configuration in <code>.data/app.xml</code>.
+    You can save / restore the app with data and configuration in <code>App_Data/app.xml</code>.
+    <br>
     This file can then also be versioned using git to sync with another installation.
   </p>
   <!-- Button -->
@@ -23,7 +24,8 @@
   <!-- Advanced, with Assets-->
   <h3>App-State Versioning - Advanced</h3>
   <p>
-    In Advanced mode you can also sync all the site files used by this app.
+    In Advanced mode you can sync all the site files (e.g. ADAM) used by this app <em>together with the data</em>.
+    <br>
     They will be placed in a folder inside <code>App_Data</code> and allow sync/restore with git or another server.
   </p>
   <app-feature-text-info [featureNameId]="'AppSyncWithSiteFiles'"></app-feature-text-info>
