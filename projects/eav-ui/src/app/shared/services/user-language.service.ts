@@ -33,7 +33,7 @@ export class UserLanguageService {
   }
 
   /** Get the UI mixing url, stored etc. */
-  getUi(fallback?: string): string {
+  #getUi(fallback?: string): string {
     // Check if URL overrides everything
     const fromUrl = sessionStorage.getItem(languageUi);
     if (fromUrl?.endsWith('!'))
@@ -43,7 +43,7 @@ export class UserLanguageService {
 
   /** Get the code like 'en' or 'de' for setting the language */
   getUiCode(fallback?: string): string {
-    return this.getUi(fallback)?.toLocaleLowerCase().split('-')[0];
+    return this.#getUi(fallback)?.toLocaleLowerCase().split('-')[0];
   }
 
   /** Get the UI as stored, for the config-UI */
