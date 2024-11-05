@@ -23,6 +23,11 @@ export class DataFieldsComponent implements ICellRendererAngularComp {
   tooltip: string;
   icon: string;
 
+  // TODO: @2pp - change all cases where Ag-Grid has separate interfaces to use this params mechanism
+  // 2dm will brief you
+  // 1. put type directly on the params (and make public)
+  // 2. make type checks (like in agInit) use this, as well as the type checks in the grid-definitions
+  // 3. where simple, call it directly from the HTML, don't create more methods which just call this again
   public params: {
     fieldsUrl(contentType: ContentType): string;
   };
@@ -41,8 +46,4 @@ export class DataFieldsComponent implements ICellRendererAngularComp {
   refresh(params?: any): boolean {
     return true;
   }
-
-  // editFields(): void {
-  //   this.params.onEditFields(this.contentType);
-  // }
 }
