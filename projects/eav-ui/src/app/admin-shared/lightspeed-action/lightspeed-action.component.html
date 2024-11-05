@@ -7,7 +7,6 @@
     class="eav-grid-action-button {{ appHasLightSpeed ? '' : 'disabled' }}"
     matRipple
     [tippy]="appHasLightSpeed ? lightSpeed().Title : 'Not yet configured for LightSpeed'"
-    (click)="openLightspeed()"
   >
     @if (appLightSpeedEnabled) {
       <a class="default-link" [href]="'#' + params().lightSpeedLink(lightSpeedOwner())">

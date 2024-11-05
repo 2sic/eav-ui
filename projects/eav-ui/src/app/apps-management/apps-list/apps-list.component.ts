@@ -150,16 +150,6 @@ export class AppsListComponent implements OnInit {
     return this.#dialogRouter.urlSubRoute(urlString);
   }
 
-  #openLightSpeed(app: App): void {
-    const formUrl = convertFormToUrl(AppAdminHelpers.getLightSpeedEditParams(app.Id));
-    this.#dialogRouter.navRelative([`${this.context.zoneId}/${app.Id}/edit/${formUrl}`]);
-  }
-
-  // TODO: @2dg - try to change this so the table has a link - resulting in ctrl+click opening the app in a new window...
-  // #openApp(app: App): void {
-  //   this.#dialogRouter.navParentFirstChild([app.Id.toString()]);
-  // }
-
   openLightSpeedFeatInfo() {
     openFeatureDialog(this.matDialog, FeatureNames.LightSpeed, this.viewContainerRef, this.changeDetectorRef);
   }
@@ -222,7 +212,6 @@ export class AppsListComponent implements OnInit {
           cellRenderer: AppsListActionsComponent,
           cellRendererParams: {
             lightSpeedLink: (app: App) => this.#getLightSpeedLink(app),
-            onOpenLightspeed: (app: App) => this.#openLightSpeed(app),
             openLightspeedFeatureInfo: () => this.openLightSpeedFeatInfo(),
             do: (verb, app) => {
               switch (verb) {

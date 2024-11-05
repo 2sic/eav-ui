@@ -5,7 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogActions } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { transient } from '../../../../../core';
 import { FeatureNames } from '../../features/feature-names';
 import { openFeatureDialog } from '../../features/shared/base-feature.component';
@@ -65,6 +65,7 @@ export class ViewsComponent implements OnInit {
     private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
+    private router: Router
   ) { }
 
   #refresh = signal(0);
@@ -196,7 +197,16 @@ export class ViewsComponent implements OnInit {
     });
   }
 
-  private openLightSpeed(view: View): void {
+
+  #getLightSpeedLink(viewUnk?: View): string {
+    const form = this.#openLightSpeed(viewUnk as View);
+    const formUrl = convertFormToUrl(form);
+    const x = this.router.url; // TODO: @2dm, why i use this in the case an the other not in App List ?
+    const urlString = `${x}/edit/${formUrl}`;
+    return this.#dialogRouter.urlSubRoute(urlString);
+  }
+
+   #openLightSpeed(view: View) {
     const shared = {
       ClientData: {
         parameters: {
@@ -219,7 +229,8 @@ export class ViewsComponent implements OnInit {
           },
       ],
     };
-    this.openEdit(form);
+
+    return form;
   }
 
 
@@ -332,8 +343,8 @@ export class ViewsComponent implements OnInit {
           cellRendererParams: {
             enableCodeGetter: () => this.enableCodeGetter(),
             enablePermissionsGetter: () => this.enablePermissionsGetter(),
+            lightSpeedLink: (view: unknown) => this.#getLightSpeedLink(view as View),
             openLightspeedFeatureInfo: () => openLightSpeedFeatInfo(),
-            onOpenLightspeed: (view: unknown) => this.openLightSpeed(view as View),
             do: (verb, view) => {
               switch (verb) {
                 case 'openCode': this.openCode(view); break;
