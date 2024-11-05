@@ -14,33 +14,27 @@
 
     <h3>Choose language</h3>
 
-    <!--
-      TODO: @2pp fix things
-      - The currently stored value should be visible (ATM the dropdowns are always empty)
-      - When I re-open the dialog, I expect the previously stored value to be selected - or the top "blank" option
-    -->
-
     <!-- Dropdown for Labels and Help Texts -->
     <mat-form-field tippy="Changes the language for all texts and labels" appearance="fill" color="accent">
       <mat-label>Labels and Help Texts</mat-label>
-      <mat-select (selectionChange)="setLabelLanguage($event.value, 'labels')">
+      <mat-select [value]="getLabelLanguage()" (selectionChange)="setLabelLanguage($event.value, 'labels')">
         <mat-option value="">Always same as content (default)</mat-option>
         @for (o of options; track o.Code) {
-        <mat-option value="{{ o.Code.toLocaleLowerCase() }}">{{ o.label }}</mat-option>
+          <mat-option value="{{ o.Code.toLocaleLowerCase() }}">{{ o.label }}</mat-option>
         }
       </mat-select>
     </mat-form-field>
-    
+
     <br />
     <br />
 
     <!-- Dropdown for UI Elements -->
     <mat-form-field tippy="Changes the language for all UI Elements" appearance="fill" color="accent">
       <mat-label>UI Elements</mat-label>
-      <mat-select (selectionChange)="setUiLanguage($event.value, 'ui')">
+      <mat-select [value]="getUiLanguage()" (selectionChange)="setUiLanguage($event.value, 'ui')">
         <mat-option value="">Always same as content (default)</mat-option>
         @for (option of options; track option.Code) {
-        <mat-option value="{{ option.Code.toLocaleLowerCase() }}">{{ option.label }}</mat-option>
+          <mat-option value="{{ option.Code.toLocaleLowerCase() }}">{{ option.label }}</mat-option>
         }
       </mat-select>
     </mat-form-field>
