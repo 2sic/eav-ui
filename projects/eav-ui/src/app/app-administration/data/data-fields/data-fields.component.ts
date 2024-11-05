@@ -6,7 +6,6 @@ import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { ContentType } from '../../models/content-type.model';
-import { DataFieldsParams } from './data-fields.models';
 
 @Component({
   selector: 'app-data-fields',
@@ -24,10 +23,12 @@ export class DataFieldsComponent implements ICellRendererAngularComp {
   tooltip: string;
   icon: string;
 
-  private params: ICellRendererParams & DataFieldsParams;
-  private contentType: ContentType;
+  public params: {
+    fieldsUrl(contentType: ContentType): string;
+  };
+  protected contentType: ContentType;
 
-  agInit(params: ICellRendererParams & DataFieldsParams): void {
+  agInit(params: ICellRendererParams & DataFieldsComponent["params"]): void {
     this.params = params;
     this.contentType = params.data;
     this.value = params.value;
@@ -41,7 +42,7 @@ export class DataFieldsComponent implements ICellRendererAngularComp {
     return true;
   }
 
-  editFields(): void {
-    this.params.onEditFields(this.contentType);
-  }
+  // editFields(): void {
+  //   this.params.onEditFields(this.contentType);
+  // }
 }

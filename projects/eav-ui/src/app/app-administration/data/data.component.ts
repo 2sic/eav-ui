@@ -16,6 +16,7 @@ import { ContentImportDialogData } from '../../content-import/content-import-dia
 import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
 import { GoToMetadata } from '../../metadata';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
+import { AgGridHelper } from '../../shared/ag-grid/ag-grid-helper';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { BaseComponent } from '../../shared/components/base.component';
 import { FileUploadDialogData } from '../../shared/components/file-upload-dialog';
@@ -35,11 +36,8 @@ import { ScopeDetailsDto } from '../models/scopedetails.dto';
 import { ContentTypesService } from '../services/content-types.service';
 import { DialogConfigAppService } from '../services/dialog-config-app.service';
 import { DataActionsComponent } from './data-actions/data-actions.component';
-import { DataActionsParams } from './data-actions/data-actions.models';
 import { DataFieldsComponent } from './data-fields/data-fields.component';
-import { DataFieldsParams } from './data-fields/data-fields.models';
 import { DataItemsComponent } from './data-items/data-items.component';
-import { DataItemsParams } from './data-items/data-items.models';
 
 @Component({
   selector: 'app-data',
@@ -117,20 +115,12 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
     this.#dialogRouter.navParentFirstChild(['import'], { state: dialogData });
   }
 
-  #goToContentItems(contentType: ContentType): string {
-    return this.#dialogRouter.urlSubRoute(`items/${contentType.StaticName}`);
-  }
-
-  #showContentItems(contentType: ContentType) {
-    this.#dialogRouter.navParentFirstChild([`items/${contentType.StaticName}`]);
-  }
-
   editContentType(contentType: ContentType) {
     if (!contentType) {
       this.#dialogRouter.navParentFirstChild(['add']);
     } else {
       if (contentType.EditInfo.ReadOnly) return;
-      this.#dialogRouter.navParentFirstChild([`${contentType.StaticName}/edit`]);
+      this.#dialogRouter.navParentFirstChild([`${contentType.NameId}/edit`]);
     }
   }
 
@@ -238,39 +228,31 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
             const contentTypeB: ContentType = nodeB.data;
             return contentTypeA._compareLabel.localeCompare(contentTypeB._compareLabel);
           },
-          cellRenderer: (p: { data: ContentType }) => {
-            const url = this.#dialogRouter.urlSubRoute(`items/${p.data.NameId}`);
-            return `<a class="default-link fill-cell" href="#${url}">${p.data.Label}</a>`;
-          },
+          cellRenderer: (p: { data: ContentType }) => AgGridHelper.cellLink(this.#urlTo(`items/${p.data.NameId}`), p.data.Label),
         },
         {
           ...ColumnDefinitions.Items,
           field: 'Items',
           cellRenderer: DataItemsComponent,
-          cellRendererParams: (() => ({
-            // TODO: @2dm - change to links here...
-            onShowItems: (contentType) => this.#showContentItems(contentType),
-            onAddItem: (contentType) => this.#addItem(contentType),
-          } satisfies DataItemsParams))(),
+          cellRendererParams: ({
+            addItemUrl: (ct) => this.#urlTo(`edit/${this.#routeAddItem(ct)}`),
+            itemsUrl: (ct) => this.#urlTo(`items/${ct.NameId}`),
+          } satisfies DataItemsComponent["params"]),
         },
         {
           ...ColumnDefinitions.Fields,
           field: 'Fields',
           cellRenderer: DataFieldsComponent,
-          cellRendererParams: (() => ({
-            onEditFields: (contentType) => this.#editFields(contentType),
-          } satisfies DataFieldsParams))(),
+          cellRendererParams: ({
+            fieldsUrl: (contentType) => this.#urlTo(`fields/${contentType.NameId}`),
+          } satisfies DataFieldsComponent["params"]),
         },
         {
           ...ColumnDefinitions.TextWideMin100,
           field: 'Name',
-          cellClass: (p) => {
-            return `${p.data.EditInfo.DisableEdit ? 'no-outline' : 'primary-action highlight'}`.split(' ');
-          },
+          cellClass: (p) => `${p.data.EditInfo.DisableEdit ? 'no-outline' : 'primary-action highlight'}`.split(' '),
           valueGetter: (p: { data: ContentType }) => p.data?.Name,
-          onCellClicked: (p) => {
-            this.editContentType(p.data);
-          },
+          onCellClicked: (p) => this.editContentType(p.data),
         },
         {
           ...ColumnDefinitions.TextWideFlex3,
@@ -280,25 +262,35 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
         {
           ...ColumnDefinitions.ActionsPinnedRight4,
           cellRenderer: DataActionsComponent,
-          cellRendererParams: (() => {
-            const params: DataActionsParams = {
-              enablePermissionsGetter: () => this.enablePermissions,
-              do: (verb, contentType) => {
-                switch (verb) {
-                  case 'createUpdateMetaData': this.#createOrEditMetadata(contentType); break;
-                  case 'openPermissions': this.#openPermissions(contentType); break;
-                  case 'editContentType': this.editContentType(contentType); break;
-                  case 'openMetadata': this.#openMetadata(contentType); break;
-                  case 'openRestApi': this.#openRestApi(contentType); break;
-                  case 'typeExport': this.#exportType(contentType); break;
-                  case 'dataExport': this.#openDataExport(contentType); break;
-                  case 'dataImport': this.#openDataImport(contentType); break;
-                  case 'deleteContentType': this.#deleteContentType(contentType); break;
-                }
+          cellRendererParams: ({
+            enablePermissionsGetter: () => this.enablePermissions,
+            urlTo: (verb, contentType) => {
+              switch (verb) {
+                case 'createUpdateMetaData': return this.#urlTo(`edit/${this.#routeCreateOrEditMetadata(contentType)}`);
+                case 'openPermissions': this.#openPermissions(contentType); break;
+                case 'editContentType': this.editContentType(contentType); break;
+                case 'openMetadata': return this.#urlTo(this.#routeMetadata(contentType));
+                case 'openRestApi': this.#openRestApi(contentType); break;
+                case 'typeExport': this.#exportType(contentType); break;
+                case 'dataExport': this.#openDataExport(contentType); break;
+                case 'dataImport': this.#openDataImport(contentType); break;
+                case 'deleteContentType': this.#deleteContentType(contentType); break;
               }
-            } satisfies DataActionsParams;
-            return params;
-          })(),
+            },
+            do: (verb, contentType) => {
+              switch (verb) {
+                case 'createUpdateMetaData': this.#createOrEditMetadata(contentType); break;
+                case 'openPermissions': this.#openPermissions(contentType); break;
+                case 'editContentType': this.editContentType(contentType); break;
+                case 'openMetadata': this.#openMetadata(contentType); break;
+                case 'openRestApi': this.#openRestApi(contentType); break;
+                case 'typeExport': this.#exportType(contentType); break;
+                case 'dataExport': this.#openDataExport(contentType); break;
+                case 'dataImport': this.#openDataImport(contentType); break;
+                case 'deleteContentType': this.#deleteContentType(contentType); break;
+              }
+            }
+          } satisfies DataActionsComponent['params']),
         },
       ],
     };
@@ -309,25 +301,22 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
 
   //#region Actions in the grid
 
-  #addItem(contentType: ContentType) {
-    const form: EditForm = {
-      items: [EditPrep.newFromType(contentType.StaticName)],
-    };
-    const formUrl = convertFormToUrl(form);
-    this.#dialogRouter.navParentFirstChild([`edit/${formUrl}`]);
+  #urlTo(url: string) {
+    return '#' + this.#dialogRouter.urlSubRoute(url);
   }
 
-  #editFields(contentType: ContentType) {
-    this.#dialogRouter.navParentFirstChild([`fields/${contentType.StaticName}`]);
+  #routeAddItem(contentType: ContentType): string {
+    return convertFormToUrl({
+      items: [EditPrep.newFromType(contentType.NameId)],
+    } satisfies EditForm);
   }
 
-
-  #createOrEditMetadata(contentType: ContentType) {
+  #routeCreateOrEditMetadata(contentType: ContentType): string {
     const form: EditForm = {
       items: [
         !contentType.Properties
           ? {
-              ...EditPrep.newMetadata(contentType.StaticName, eavConstants.contentTypes.contentType, eavConstants.metadata.contentType),
+              ...EditPrep.newMetadata(contentType.NameId, eavConstants.contentTypes.contentType, eavConstants.metadata.contentType),
               Prefill: {
                 Label: contentType.Name,
                 Description: contentType.Description
@@ -336,20 +325,31 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
           : EditPrep.editId(contentType.Properties.Id),
       ],
     };
-    const formUrl = convertFormToUrl(form);
-    this.#dialogRouter.navParentFirstChild([`edit/${formUrl}`]);
+    return convertFormToUrl(form);
+  }
+
+
+  #createOrEditMetadata(contentType: ContentType) {
+    this.#dialogRouter.navParentFirstChild([`edit/${this.#routeCreateOrEditMetadata(contentType)}`]);
   }
 
   #openPermissions(contentType: ContentType) {
-    this.#dialogRouter.navParentFirstChild([GoToPermissions.getUrlContentType(contentType.StaticName)]);
+    this.#dialogRouter.navParentFirstChild([GoToPermissions.getUrlContentType(contentType.NameId)]);
+  }
+
+  #routeMetadata(contentType: ContentType) {
+    return GoToMetadata.getUrlContentType(
+      contentType.NameId,
+      `Metadata for Content Type: ${contentType.Name} (${contentType.Id})`,
+    );
   }
 
   #openMetadata(contentType: ContentType) {
-    const url = GoToMetadata.getUrlContentType(
-      contentType.StaticName,
-      `Metadata for Content Type: ${contentType.Name} (${contentType.Id})`,
-    );
-    this.#dialogRouter.navParentFirstChild([url]);
+    // const url = GoToMetadata.getUrlContentType(
+    //   contentType.NameId,
+    //   `Metadata for Content Type: ${contentType.Name} (${contentType.Id})`,
+    // );
+    this.#dialogRouter.navParentFirstChild([this.#routeMetadata(contentType)]);
   }
 
   #openRestApi(contentType: ContentType) {
@@ -357,16 +357,16 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
   }
 
   #exportType(contentType: ContentType) {
-    this.#contentExportSvc.exportJson(contentType.StaticName);
+    this.#contentExportSvc.exportJson(contentType.NameId);
   }
 
   #openDataExport(contentType: ContentType) {
-    this.#dialogRouter.navParentFirstChild([`export/${contentType.StaticName}`]);
+    this.#dialogRouter.navParentFirstChild([`export/${contentType.NameId}`]);
   }
 
   #openDataImport(contentType: ContentType, files?: File[]) {
     const contentImportData: ContentImportDialogData = { files };
-    this.#dialogRouter.navParentFirstChild([`${contentType.StaticName}/import`], { state: contentImportData });
+    this.#dialogRouter.navParentFirstChild([`${contentType.NameId}/import`], { state: contentImportData });
   }
 
   #deleteContentType(contentType: ContentType) {

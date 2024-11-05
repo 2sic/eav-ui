@@ -8,7 +8,16 @@ import { MatMenuModule } from '@angular/material/menu';
 import { guidRegex } from '../../../shared/constants/guid.constants';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { ContentType } from '../../models/content-type.model';
-import { DataActionsParams, DataActionType } from './data-actions.models';
+
+type DataActionType = 'createUpdateMetaData'
+  | 'openPermissions'
+  | 'editContentType'
+  | 'openMetadata'
+  | 'openRestApi'
+  | 'typeExport'
+  | 'dataExport'
+  | 'dataImport'
+  | 'deleteContentType';
 
 @Component({
   selector: 'app-data-actions',
@@ -25,11 +34,15 @@ import { DataActionsParams, DataActionType } from './data-actions.models';
 export class DataActionsComponent implements ICellRendererAngularComp {
   contentType: ContentType;
   enablePermissions: boolean;
-  private params: ICellRendererParams & DataActionsParams;
+  public params: {
+    enablePermissionsGetter(): boolean;
+    do(verb: DataActionType, contentType: ContentType): void;
+    urlTo(verb: DataActionType, contentType: ContentType): string;
+  };
 
-  agInit(params: ICellRendererParams & DataActionsParams): void {
+  agInit(params: ICellRendererParams & DataActionsComponent['params']): void {
     this.params = params;
-    this.contentType = this.params.data;
+    this.contentType = params.data;
     const enablePermissions = this.params.enablePermissionsGetter();
     this.enablePermissions = enablePermissions && guidRegex().test(this.contentType.StaticName);
   }
@@ -42,4 +55,7 @@ export class DataActionsComponent implements ICellRendererAngularComp {
     this.params.do(verb, this.contentType);
   }
 
+  urlTo(verb: DataActionType): string {
+    return this.params.urlTo(verb, this.contentType);
+  }
 }

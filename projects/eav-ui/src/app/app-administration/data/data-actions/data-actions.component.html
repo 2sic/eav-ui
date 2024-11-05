@@ -1,10 +1,11 @@
 <div class="actions-component">
   @if (!contentType.EditInfo.DisableEdit || contentType.Properties) {
-    <div class="eav-grid-action-button highlight" matRipple
+    <a class="eav-grid-action-button default-link highlight" matRipple
       tippy="Description and more"
-      (click)="do('createUpdateMetaData')">
+      [href]="urlTo('createUpdateMetaData')"
+    >
       <mat-icon>edit</mat-icon>
-    </div>
+    </a>
   }
   @if (contentType.EditInfo.DisableEdit && !contentType.Properties) {
     <div class="eav-grid-action-button disabled">
@@ -13,13 +14,13 @@
   }
 
   @if (!contentType.EditInfo.DisableMetadata) {
-    <div class="eav-grid-action-button highlight" matRipple tippy="Metadata"
-      (click)="do('openMetadata')">
+    <!-- <a class="eav-grid-action-button default-link highlight" matRipple tippy="Metadata" [href]="urlTo('openMetadata')"> -->
+    <a class="eav-grid-action-button default-link highlight" matRipple tippy="Metadata" (click)="do('openMetadata')">
       <mat-icon [matBadge]="contentType.Metadata.length" matBadgePosition="below after" matBadgeColor="accent"
         matBadgeSize="small" [matBadgeHidden]="!contentType.Metadata.length" aria-hidden="false">
         local_offer
       </mat-icon>
-    </div>
+    </a>
   }
   @if (contentType.EditInfo.DisableMetadata) {
     <div class="eav-grid-action-button disabled">
