@@ -53,6 +53,13 @@ body {
   text-decoration: none;
 }
 
+/* New v18.03 for links which should fit into the entire AG-Grid cell */
+a.fill-cell {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+}
+
 // Create CSS variables for the dialog max height
 :root {
   --edit-dialog-margin-top: 24px;

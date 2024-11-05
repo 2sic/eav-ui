@@ -117,6 +117,10 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
     this.#dialogRouter.navParentFirstChild(['import'], { state: dialogData });
   }
 
+  #goToContentItems(contentType: ContentType): string {
+    return this.#dialogRouter.urlSubRoute(`items/${contentType.StaticName}`);
+  }
+
   #showContentItems(contentType: ContentType) {
     this.#dialogRouter.navParentFirstChild([`items/${contentType.StaticName}`]);
   }
@@ -229,14 +233,14 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
           headerName: 'ContentType',
           field: 'Label',
           sort: 'asc',
-          onCellClicked: (params) => {
-            const contentType: ContentType = params.data;
-            this.#showContentItems(contentType);
-          },
           comparator: (valueA, valueB, nodeA, nodeB, isInverted) => {
             const contentTypeA: ContentType = nodeA.data;
             const contentTypeB: ContentType = nodeB.data;
             return contentTypeA._compareLabel.localeCompare(contentTypeB._compareLabel);
+          },
+          cellRenderer: (p: { data: ContentType }) => {
+            const url = this.#dialogRouter.urlSubRoute(`items/${p.data.NameId}`);
+            return `<a class="default-link fill-cell" href="#${url}">${p.data.Label}</a>`;
           },
         },
         {
@@ -244,6 +248,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
           field: 'Items',
           cellRenderer: DataItemsComponent,
           cellRendererParams: (() => ({
+            // TODO: @2dm - change to links here...
             onShowItems: (contentType) => this.#showContentItems(contentType),
             onAddItem: (contentType) => this.#addItem(contentType),
           } satisfies DataItemsParams))(),

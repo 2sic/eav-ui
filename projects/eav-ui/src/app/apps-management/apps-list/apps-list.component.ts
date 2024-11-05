@@ -175,13 +175,15 @@ export class AppsListComponent implements OnInit {
             const app: App = p.data;
             const url = this.#dialogRouter.urlSubRoute(app.Id.toString());
             return `
-              <div class="container">
-                ${app.Thumbnail
-                ? `<img class="image logo" src="${app.Thumbnail}?w=40&h=40&mode=crop"></img>`
-                : `<div class="image logo"><span class="material-symbols-outlined">star</span></div>`
-              }
-                <a class="default-link" href="#${url}">${p.value}</a>
-              </div>
+              <a class="default-link fill-cell" href="#${url}">
+                <div class="container">
+                  ${app.Thumbnail
+                    ? `<img class="image logo" src="${app.Thumbnail}?w=40&h=40&mode=crop"></img>`
+                    : `<div class="image logo"><span class="material-symbols-outlined">star</span></div>`
+                  }
+                  ${p.value}
+                </div>
+              </a>
             `;
           },
         },
