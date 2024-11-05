@@ -9,6 +9,7 @@ import { ContentExportService } from '../../../content-export/services/content-e
 import { ContentItem } from '../../../content-items/models/content-item.model';
 import { ContentItemsService } from '../../../content-items/services/content-items.service';
 import { FeatureTextInfoComponent } from '../../../features/feature-text-info/feature-text-info.component';
+import { AgGridHelper } from '../../../shared/ag-grid/ag-grid-helper';
 import { ColumnDefinitions } from '../../../shared/ag-grid/column-definitions';
 import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';
 import { convertFormToUrl } from '../../../shared/helpers/url-prep.helper';
@@ -44,7 +45,6 @@ export class DataBundlesComponent {
 
   constructor() { }
 
-  // TODO: @2dg - odd place to put CSS, should be in the template or in the scss
   height = 'height: 135px';
 
   #refresh = signal(0);
@@ -55,6 +55,7 @@ export class DataBundlesComponent {
   });
 
   // ContentItem
+  // TODO: @2dg - this 'any' is pretty bad, should be a proper type or better still, not used at all
   #queryResults = signal<ContentItem[] | any>([]);
 
   #queryData = computed(() => {
@@ -98,8 +99,9 @@ export class DataBundlesComponent {
         ContentType: contentTypeCount
       };
     });
-    // TODO: @2dg should be done in the template or in the scss
-    this.height = `height: ${result.length * 45 + 90}px`;
+    // TODO: @2dg - this is a side-effect in a computed, which is very bad.
+    // Should be a separate computed
+    this.height = `height: ${result.length * 46 + 90}px`;
 
     return result;
   });
@@ -151,26 +153,16 @@ export class DataBundlesComponent {
     // });
   }
 
-  #openDialog(name: string, guid: string) {
-    // Open dialog via Url and Guide
-    this.#dialogRouter.navRelative([`details/${name}/${guid}`]);
-  }
-
-
   #buildGridOptions(): GridOptions {
     const gridOptions: GridOptions = {
       ...defaultGridOptions,
-      onCellClicked: (event) => {
-        this.#openDialog(event.data.Name, event.data.Guid);
-        // console.log('Cell clicked', event.data.Guid);
-      },
       columnDefs: [
         {
           ...ColumnDefinitions.TextWideMin100,
           headerName: 'Name',
           field: 'Name',
           flex: 2,
-          // onCellClicked: (p: { data: ContentItem }) => this.editItem(p.data),
+          cellRenderer: (p: { data: ContentItem }) => AgGridHelper.cellLink('#' + this.#dialogRouter.urlSubRoute(`details/${p.data.Guid}/${p.data.Name}`), p.data.Name),
         },
         {
           ...ColumnDefinitions.TextWideMin100,

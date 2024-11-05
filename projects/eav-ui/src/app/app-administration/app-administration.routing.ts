@@ -257,7 +257,9 @@ export const appAdministrationRoutes: Routes = [
         children: [
           ...EditRoutes,
           {
-            path: 'details/:name/:guid',
+            // TODO: @2dg - lessons learned: never place a name-string which could contain anything incl. "/" in the middle of the path, better never in any path
+            // path: 'details/:name/:guid',
+            path: 'details/:guid/:name',
             component: DialogEntryComponent,
             data: { dialog: dataBundlesDialog, title: 'Data Bundles Details' },
           },

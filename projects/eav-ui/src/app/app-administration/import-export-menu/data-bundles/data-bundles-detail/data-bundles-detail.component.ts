@@ -57,6 +57,7 @@ export class DataBundlesDetailComponent {
 
   #deleteItem(item: ContentItem) {
     console.log(item);
+    alert('remove not yet implemented');
   }
 
   #buildGridOptions(): GridOptions {
