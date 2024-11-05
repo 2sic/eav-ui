@@ -1,9 +1,10 @@
 <div class="actions-component">
-  <div class="eav-grid-action-button highlight" matRipple tippy="{{ value }} items" (click)="showItems()">
+  <a class="eav-grid-action-button default-link highlight" matRipple tippy="{{ value }} items" [href]="params.itemsUrl(contentType)">
     <div class="text-icon">{{ value }}</div>
-  </div>
+  </a>
 
-  <div class="eav-grid-action-button highlight" matRipple tippy="Add item" (click)="addItem()">
+  <!-- TODO: fix color again -->
+  <a class="eav-grid-action-button default-link highlight" matRipple tippy="Add item" [href]="params.addItemUrl(contentType)">
     <mat-icon>add</mat-icon>
-  </div>
+  </a>
 </div>

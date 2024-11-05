@@ -6,6 +6,7 @@ import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { LightSpeedActionsComponent } from "../../../admin-shared/lightspeed-action/lightspeed-action.component";
+import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { View } from '../../models/view.model';
 import { ViewActionsParams, ViewActionsType } from './views-actions.models';
 
@@ -18,7 +19,8 @@ import { ViewActionsParams, ViewActionsType } from './views-actions.models';
     MatIconModule,
     MatBadgeModule,
     MatMenuModule,
-    LightSpeedActionsComponent
+    TippyDirective,
+    LightSpeedActionsComponent,
   ]
 })
 export class ViewsActionsComponent implements ICellRendererAngularComp {

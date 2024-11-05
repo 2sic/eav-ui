@@ -3,9 +3,6 @@ import { PickerConfigs } from '../../eav-ui/src/app/edit/fields/picker/constants
 import { PickerOptionCustom } from './DropdownOption';
 import { UiPickerModeTree } from './PickerModeTree';
 
-
-
-
 //#region Picker Shared Field Sets
 
 /**
@@ -131,8 +128,12 @@ export interface FieldSettingsEntity extends
    */
   EntityType: string;
 
-  /** Note: this exists as a hidden "beta" field and we'll remove it, but it could be in use in Swiss-School-System; check/fix that before we remove */
-  // Prefill: string;
+  /**
+   * Note: this exists as a hidden "beta" field and we'll remove it
+   * But it's in use in 2reserve and maybe in Swiss-School-System; check/fix that before we remove
+   * @obsolete use CreatePrefill instead
+   */
+  Prefill: string;
 }
 
 

@@ -2,10 +2,9 @@ import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { FeatureState } from '../../features/models';
 import { FileUploadMessageTypes, FileUploadResult } from '../../shared/components/file-upload-dialog';
-import { License, LicenseDownloadInfo, LicenseUploadInfo } from '../models/license.model';
 import { HttpServiceBase } from '../../shared/services/http-service-base';
+import { License, LicenseDownloadInfo, LicenseUploadInfo } from '../models/license.model';
 
-const webApiLicense = 'sys/license/';
 const webAPiLicenseRetrieve = 'sys/license/Retrieve';
 const webApiFeatSaveNew = 'admin/feature/SaveNew';
 const webApiLicSummary = 'sys/license/Summary';
@@ -18,8 +17,12 @@ export class FeaturesConfigService extends HttpServiceBase {
     return this.http.post<null>(this.apiUrl(webApiFeatSaveNew), featuresStates);
   }
 
-  getLicenses(): Observable<License[]> {
-    return this.http.get<License[]>(this.apiUrl(webApiLicSummary));
+  getLicenses(): Observable<License[]> { // Use new Signals
+    return this.getHttpApiUrl<License[]>(webApiLicSummary);
+  }
+
+  getLicensesSig() { // Use new Signals
+    return this.getSignal<License[]>(webApiLicSummary);
   }
 
   uploadLicense(file: File): Observable<FileUploadResult> {
@@ -38,6 +41,6 @@ export class FeaturesConfigService extends HttpServiceBase {
   }
 
   retrieveLicense(): Observable<LicenseDownloadInfo> {
-    return this.http.get<LicenseDownloadInfo>(this.apiUrl(webAPiLicenseRetrieve));
+    return this.getHttpApiUrl<LicenseDownloadInfo>(webAPiLicenseRetrieve);
   }
 }

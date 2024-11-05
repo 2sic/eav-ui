@@ -1,70 +1,83 @@
 <!-- App Config -->
-<mat-card class="eav-card">
-  <mat-card-header class="eav-card-header">
-    <mat-card-title>Configuration</mat-card-title>
-    <mat-icon>redeem</mat-icon>
-  </mat-card-header>
-  <mat-card-content>
-    <p>
-    <div class="eav-info-row">
-      <div class="eav-info-row__label">Name:</div>
-      <div class="eav-info-row__value">
-        <span [tippy]="'Click to copy to clipboard'"
-          (click)="clipboard.copyToClipboard(contentItem().DisplayName)">{{formatValue(contentItem()?.DisplayName)}}</span>
+@if (contentItem()) {
+  <mat-card class="eav-card">
+    <mat-card-header class="eav-card-header">
+      <mat-card-title>Configuration</mat-card-title>
+      <mat-icon>redeem</mat-icon>
+    </mat-card-header>
+    <mat-card-content>
+      <p></p>
+      <div class="eav-info-row">
+        <div class="eav-info-row__label">Name:</div>
+        <div class="eav-info-row__value">
+          <span [tippy]="'Click to copy to clipboard'" (click)="clipboard.copyToClipboard(contentItem()[0].DisplayName)">{{
+            formatValue(contentItem()[0]?.DisplayName)
+          }}</span>
+        </div>
       </div>
-    </div>
-    <div class="eav-info-row">
-      <div class="eav-info-row__label">Folder:</div>
-      <div class="eav-info-row__value">
-        <span [tippy]="'Click to copy to clipboard'"
-          (click)="clipboard.copyToClipboard(contentItem().Folder)">{{formatValue(contentItem()?.Folder)}}</span>
+      <div class="eav-info-row">
+        <div class="eav-info-row__label">Folder:</div>
+        <div class="eav-info-row__value">
+          <span [tippy]="'Click to copy to clipboard'" (click)="clipboard.copyToClipboard(contentItem()[0].Folder)">{{
+            formatValue(contentItem()[0]?.Folder)
+          }}</span>
+        </div>
       </div>
-    </div>
-    <div class="eav-info-row">
-      <div class="eav-info-row__label">Version:</div>
-      <div class="eav-info-row__value">
-        <span [tippy]="'Click to copy to clipboard'"
-          (click)="clipboard.copyToClipboard(contentItem().Version)">{{formatValue(contentItem()?.Version)}}</span>
+      <div class="eav-info-row">
+        <div class="eav-info-row__label">Version:</div>
+        <div class="eav-info-row__value">
+          <span [tippy]="'Click to copy to clipboard'" (click)="clipboard.copyToClipboard(contentItem()[0].Version)">{{
+            formatValue(contentItem()[0]?.Version)
+          }}</span>
+        </div>
       </div>
-    </div>
-    <div class="eav-info-row">
-      <div class="eav-info-row__label">For</div>
-      <div class="eav-info-row__value">
-        <b>2sxc: </b><span [tippy]="'Click to copy to clipboard'"
-          (click)="clipboard.copyToClipboard(contentItem().RequiredVersion)"> {{formatValue(contentItem()?.RequiredVersion)}}
-        </span>
-        <b> DNN: </b><span [tippy]="'Click to copy to clipboard'"
-          (click)="clipboard.copyToClipboard(contentItem().RequiredDnnVersion)">
-          {{formatValue(contentItem()?.RequiredDnnVersion)}} </span>
-        <b> Oqt: </b><span [tippy]="'Click to copy to clipboard'"
-          (click)="clipboard.copyToClipboard(contentItem().RequiredOqtaneVersion)">
-          {{formatValue(contentItem()?.RequiredOqtaneVersion)}} </span>
+      <div class="eav-info-row">
+        <div class="eav-info-row__label">For</div>
+        <div class="eav-info-row__value">
+          <b>2sxc: </b
+          ><span [tippy]="'Click to copy to clipboard'" (click)="clipboard.copyToClipboard(contentItem()[0].RequiredVersion)">
+            {{ formatValue(contentItem()[0]?.RequiredVersion) }}
+          </span>
+          <b> DNN: </b
+          ><span [tippy]="'Click to copy to clipboard'" (click)="clipboard.copyToClipboard(contentItem()[0].RequiredDnnVersion)">
+            {{ formatValue(contentItem()[0]?.RequiredDnnVersion) }}
+          </span>
+          <b> Oqt: </b
+          ><span [tippy]="'Click to copy to clipboard'" (click)="clipboard.copyToClipboard(contentItem()[0].RequiredOqtaneVersion)">
+            {{ formatValue(contentItem()[0]?.RequiredOqtaneVersion) }}
+          </span>
+        </div>
       </div>
-    </div>
-    <!-- </p> -->
-  </mat-card-content>
-  <div class="eav-card-space-div"></div>
-  <mat-card-actions align="start">
-    <ng-container
-      *ngTemplateOutlet="docsLink; context: { link: 'https://docs.2sxc.org/basics/app/configuration.html' }"></ng-container>
-    <button mat-button class="eav-button__with-icon" (click)="edit()">
-      <mat-icon matBadgeColor="accent" matBadgeSize="small"
-        [matBadge]="appSettingsInternal()?.EntityLists?.ToSxcContentApp.length || null" matBadgePosition="below after"
-        aria-hidden="false" class="eav-icon">edit</mat-icon>
-      <span>Edit</span>
-    </button>
-    <button mat-button class="eav-button__with-icon" (click)="openMetadata()">
-      <mat-icon matBadgeColor="accent" matBadgeSize="small"
-        [matBadge]="appSettingsInternal()?.MetadataList.Items.length || null" matBadgePosition="below after"
-        aria-hidden="false" class="eav-icon">local_offer</mat-icon>
-      <span>Metadata</span>
-    </button>
-  </mat-card-actions>
-</mat-card>
+      <!-- </p> -->
+    </mat-card-content>
+    <div class="eav-card-space-div"></div>
+    <mat-card-actions align="start">
+      <app-docs-link-helper [link]="'https://docs.2sxc.org/basics/app/configuration.html'" [label]="" [icon]=""></app-docs-link-helper>
 
-<ng-template #docsLink let-icon let-label let-link="link">
-  <a mat-button class="eav-button__with-icon" href="{{link}}" target="_blank" [tippy]="'online documentation'">
-    <mat-icon class="eav-icon">{{ icon ?? "menu_book" }}</mat-icon>
-    <span>{{ label }}</span>
-  </a>
-</ng-template>
+      <button mat-button class="eav-button__with-icon" (click)="edit()">
+        <mat-icon
+          matBadgeColor="accent"
+          matBadgeSize="small"
+          [matBadge]="appSettingsInternal()()?.EntityLists?.ToSxcContentApp.length || null"
+          matBadgePosition="below after"
+          aria-hidden="false"
+          class="eav-icon"
+          >edit</mat-icon
+        >
+        <span>Edit</span>
+      </button>
+      <button mat-button class="eav-button__with-icon" (click)="openMetadata()">
+        <mat-icon
+          matBadgeColor="accent"
+          matBadgeSize="small"
+          [matBadge]="appSettingsInternal()()?.MetadataList.Items.length || null"
+          matBadgePosition="below after"
+          aria-hidden="false"
+          class="eav-icon"
+          >local_offer</mat-icon
+        >
+        <span>Metadata</span>
+      </button>
+    </mat-card-actions>
+  </mat-card>
+}

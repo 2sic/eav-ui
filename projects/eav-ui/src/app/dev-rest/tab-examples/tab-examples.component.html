@@ -1,9 +1,9 @@
-@if (data.scenario.useVirtual) {
+@if (data().scenario.useVirtual) {
   <app-info-box type="info">
     Virtual REST URLs are short. They will be resolved internally
     to the full length (based on the dnn-version, current portal, etc.)
     thanks to $2sxc JS API. This happens when you use the
-    <a href="https://docs.2sxc.org/specs/js/sxcewebapi.html" target="_blank">
+    <a href="https://docs.2sxc.org/js-code/2sxc-api/basics/how-it-works.html" target="_blank">
       $2sxc(<em>id-or-htmlnode</em>).webApi.get(...)
     </a>
     or if you use
@@ -14,14 +14,14 @@
   </app-info-box>
 }
 
-@if (data.scenario.needsAnonymous && !data.permissionsHasAnonymous) {
+@if (data().scenario.needsAnonymous && !data().permissionsHasAnonymous) {
   <app-info-box type="warning">
     To use the REST API from external, you usually will want to set some permissions for <code>Anonymous</code>.
     As of now, no such permissions are configured.
   </app-info-box>
 }
 
-@if (data.scenario.needsAnonymous && data.permissionsHasAnonymous) {
+@if (data().scenario.needsAnonymous && data().permissionsHasAnonymous) {
   <app-info-box type="alert">
     It seems that you have some permissions configured for <code>Anonymous</code>.
     This is correct if you plan on using the REST endpoints from externally.
@@ -31,11 +31,11 @@
 
 <p>
   The examples below use real values to make it easier to get started.
-  The values used are the current content-type <code>{{ data.name }}</code>,
-  the current Module ID <code>{{ data.moduleId }}</code>
-  and the folder of the current App folder <code>{{ data.folder }}</code> (where needed).
-  @if (data.itemId) {
-    The code also looked up an item of this type and will use it's ID <code>{{ data.itemId }}</code> in the
+  The values used are the current content-type <code>{{ data().name }}</code>,
+  the current Module ID <code>{{ data().moduleId }}</code>
+  and the folder of the current App folder <code>{{ data().folder }}</code> (where needed).
+  @if (data().itemId) {
+    The code also looked up an item of this type and will use it's ID <code>{{ data().itemId }}</code> in the
     examples.
   }
 </p>

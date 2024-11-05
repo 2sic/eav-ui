@@ -10,7 +10,7 @@
       </div>
       <div tippyTranslate="LangMenu.NotTranslatable" [tippyDisabled]="!disableTranslateButtonSignal()" tippyPlacement="top">
         <button mat-icon-button class="eav-translate-icon-button" [matMenuTriggerFor]="menu"
-          [disabled]="disableTranslateButtonSignal()" [ngClass]="{ 'hidden': hideTranslateButton }">
+          [disabled]="disableTranslateButtonSignal()" [ngClass]="{ 'hidden': hideTranslateButton() }">
           <mat-icon class="eav-translate-icon">translate</mat-icon>
         </button>
       </div>

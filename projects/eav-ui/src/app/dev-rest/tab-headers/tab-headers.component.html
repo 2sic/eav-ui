@@ -20,7 +20,7 @@
 <h3>Using WebApi without Context</h3>
 <p>
   If the <strong>Context</strong> is not known, the endpoint cannot <em>auto-detect</em> the the app, so instead of <code>/auto/</code>
-  you must supply the correct app-name in the url, in this case <code>{{ data.folder }}</code>.
+  you must supply the correct app-name in the url, in this case <code>{{ data().folder }}</code>.
   <br>
   You also must specify more specific <strong>Permissions</strong> like <code>Allow READ if user is in group Members</code> or
   <code>Allow READ for all ANONYMOUS users</code>.

@@ -1,0 +1,102 @@
+<div class="outer-container-app">
+  <!-- Intro -->
+  <h2>Import Export</h2>
+  <p>2sxc provides you with many import-export features for all kinds of scenarios.</p>
+
+  <!-- Explanation about other places to export/import -->
+  <h3>Export/Import of Data Lists, Schemas, Views and Queries</h3>
+  <p>Before you continue here, you should know that some import/export features are directly available in other parts of the admin UI.</p>
+  <ol>
+    <li>
+      <strong>
+        <a [routerLink]="linkToPage('data/Default')">Lists of Data</a>
+      </strong>
+      can be exported / imported as XML (for editing in Excel) in the [data] section.
+    </li>
+    <li>
+      <strong>
+        <a [routerLink]="linkToPage('data/Default')">Content-Types</a>
+      </strong>
+      can be exported and imported as JSON in the [data] section.
+    </li>
+    <li>
+      <strong>
+        <a [routerLink]="linkToPage('views')">Views</a>
+      </strong>
+      can be exported and imported as JSON (with the template files) in the views section.
+    </li>
+    <li>
+      <strong>
+        <a [routerLink]="linkToPage('queries')">Queries</a>
+      </strong>
+      can be exported and imported as JSON in the queries section.
+    </li>
+  </ol>
+  <!-- App Export / Import -->
+  <h3>App Export / Import</h3>
+  <p>
+    Apps are exported as a ZIP file which can be imported into another site as needed. Export happens here, import is done in the
+    <em>Manage Apps</em> section.
+  </p>
+
+  <a [routerLink]="linkToPage('export-app')">
+    <button mat-button tippy="Go to Export App">
+      <mat-icon>deployed_code_update</mat-icon>
+      <span>Export App</span>
+    </button>
+  </a>
+
+  <!-- Bundles -->
+  <h3>Data Bundles (beta)</h3>
+  <p>
+    Data Bundles are a new feature which allows you to export and import data from one app to another. This is very useful when you want to
+    sync <strong>only parts of the data/schema</strong> from one environment to another. Bundles allow you to define what is in the bundle,
+    and repeat the sync many times as the system changes.
+  </p>
+  <a [routerLink]="linkToPage('data-bundles')">
+    <button mat-button tippy="Go to Data Bundles">
+      <mat-icon>dataset</mat-icon>
+      <span>Data Bundles</span>
+    </button>
+  </a>
+
+  <!-- Export / Import Parts -->
+  <h3>Export / Import Parts (old)</h3>
+  <p>
+    This feature is the old way of exporting and importing parts of an app. It's still available, but we recommend using the new Data
+    Bundles feature instead. The parts allow you to select some data and export it as XML, then re-import it elsewhere.
+  </p>
+  <div>
+    <a [routerLink]="linkToPage('export-parts')">
+      <button mat-button tippy="Go to Export Parts">
+        <mat-icon>cloud_download</mat-icon>
+        <span>Export Parts</span>
+      </button>
+    </a>
+
+    <a [routerLink]="linkToPage('import-parts')">
+      <button mat-button tippy="Go to Import Parts">
+        <mat-icon>cloud_upload</mat-icon>
+        <span>Import Parts</span>
+      </button>
+    </a>
+  </div>
+
+  <!-- App State Git Sync -->
+  <h3>App State Backup and Git Sync</h3>
+  <p>
+    This feature is for advanced users who want to backup the entire App State. The App State contains all the data, schema, views, queries
+    and more. This allows you to:
+  </p>
+  <ol>
+    <li>Do backups, and reset your App to what was in that backup.</li>
+    <li>When combined with Git, you can also reset the App to previous states.</li>
+    <li>When combined with Git, you can also use it to transfer the <strong>complete App State</strong> from one site to another.</li>
+  </ol>
+  <a [routerLink]="linkToPage('app-state')">
+    <button mat-button tippy="Go to App-State Git Sync">
+      <mat-icon>sync</mat-icon>
+      <span>App State Git Sync</span>
+    </button>
+  </a>
+</div>

@@ -21,12 +21,19 @@ export class DataSourceAppAssets extends DataSourceEntityQueryBase {
   protected override getFromBackend(_typeName: string, _guids: string[], purposeForLog: string): Observable<DataWithLoading<PickerItem[]>> {
     const { AssetsRootFolder: rootFolder, AssetsFileFilter: fileFilter, AssetsType: type } = this.settings();
 
-    var l = this.log.fnIf('getFromBackend', null, purposeForLog);
+    const l = this.log.fnIf('getFromBackend', null, purposeForLog);
 
-    var data = this.querySvc.getFromQuery('System.AppAssets/Default', `rootFolder=${rootFolder}&type=${type}&filter=${fileFilter}`, '').pipe(
+    const typeLower = (type ?? '').toLocaleLowerCase();
+    const stream = typeLower === 'all'
+      ? 'Default'
+        : typeLower === 'folders'
+          ? 'Folders'
+          : 'Files';
+
+    const data = this.querySvc.getFromQuery(`System.AppAssets/${stream}`, `rootFolder=${rootFolder}&filter=${fileFilter}`, '').pipe(
       map(list => {
         const fieldMask = this.createMaskHelper({ Value: 'Name' });
-        const data = list.Default.map(entity => fieldMask.data2PickerItem({ entity, streamName: null, valueMustUseGuid: false }));
+        const data = list[stream].map(entity => fieldMask.data2PickerItem({ entity, streamName: stream, valueMustUseGuid: false }));
         return { data, loading: false } as DataWithLoading<PickerItem[]>;
       })
     );

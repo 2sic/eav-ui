@@ -10,28 +10,26 @@
     </mat-card-header>
     <mat-card-content>
       @for (info of systemInfos(); track info) {
-      <div class="eav-info-row">
-        <div class="eav-info-row__label">{{ info.label }}:</div>
-        <div class="eav-info-row__value">
-          <span class="eav-info-row__value__span eav-click" [tippy]="info.value"
-            (click)="clipboard.copyToClipboard(info.value)">{{ info.value }}</span>
-          @if (info.link) {
-          <a class="eav-info-row__link" [routerLink]="['/']" (click)="openSideNavPath(info.link.url)">
-            {{ info.link.label }}
-          </a>
-          }
+        <div class="eav-info-row">
+          <div class="eav-info-row__label">{{ info.label }}:</div>
+          <div class="eav-info-row__value">
+            <span class="eav-info-row__value__span eav-click" [tippy]="info.value" (click)="clipboard.copyToClipboard(info.value)">{{
+              info.value
+            }}</span>
+            @if (info.link) {
+              <a class="eav-info-row__link" [routerLink]="['/']" (click)="openSideNavPath(info.link.url)">
+                {{ info.link.label }}
+              </a>
+            }
+          </div>
         </div>
-      </div>
       }
       <h4>Global Settings</h4>
-      <p>
-        This includes both pre-defined SystemSettings as well as custom Settings.
-        It will affect the entire Installation.
-      </p>
+      <p>This includes both pre-defined SystemSettings as well as custom Settings. It will affect the entire Installation.</p>
     </mat-card-content>
     <div class="eav-card-space-div"></div>
     <mat-card-actions align="start">
-      <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://go.2sxc.org/settings' }"></ng-container>
+      <app-docs-link-helper [link]="'https://go.2sxc.org/settings'" [label]="" [icon]=""></app-docs-link-helper>
       <button mat-button class="eav-button__with-icon" (click)="openGlobalSettings()">
         <mat-icon class="eav-icon">open_in_new</mat-icon>
         <span>Open Global Settings</span>
@@ -49,33 +47,30 @@
     </mat-card-header>
     <mat-card-content>
       @for (info of siteInfos(); track info) {
-      <div class="eav-info-row">
-        <div class="eav-info-row__label">{{ info.label }}:</div>
-        <div class="eav-info-row__value">
-          <span [tippy]="info.value" (click)="clipboard.copyToClipboard(info.value)">{{ info.value }}</span>
-          @if (info.link) {
-          @if (info.link.target === 'angular') {
-          <a [routerLink]="['/']" class="eav-info-row__link" (click)="openSideNavPath(info.link.url)">
-            {{info.link.label }}
-          </a>
-          }
-          @if (info.link.target !== 'angular') {
-          <a class="eav-info-row__link" [href]="info.link.url" [target]="info.link.target">{{ info.link.label }}</a>
-          }
-          }
+        <div class="eav-info-row">
+          <div class="eav-info-row__label">{{ info.label }}:</div>
+          <div class="eav-info-row__value">
+            <span [tippy]="info.value" (click)="clipboard.copyToClipboard(info.value)">{{ info.value }}</span>
+            @if (info.link) {
+              @if (info.link.target === 'angular') {
+                <a [routerLink]="['/']" class="eav-info-row__link" (click)="openSideNavPath(info.link.url)">
+                  {{ info.link.label }}
+                </a>
+              }
+              @if (info.link.target !== 'angular') {
+                <a class="eav-info-row__link" [href]="info.link.url" [target]="info.link.target">{{ info.link.label }}</a>
+              }
+            }
+          </div>
         </div>
-      </div>
       }
       <div class="card-content-separator"></div>
       <h4>Site Settings</h4>
-      <p>
-        This includes both pre-defined SystemSettings as well as custom Settings.
-        It will affect the entire Site / Portal.
-      </p>
+      <p>This includes both pre-defined SystemSettings as well as custom Settings. It will affect the entire Site / Portal.</p>
     </mat-card-content>
     <div class="eav-card-space-div"></div>
     <mat-card-actions align="start">
-      <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://go.2sxc.org/settings' }"></ng-container>
+      <app-docs-link-helper [link]="'https://go.2sxc.org/settings'" [label]="" [icon]=""></app-docs-link-helper>
       <button mat-button class="eav-button__with-icon" (click)="openSiteSettings()">
         <mat-icon class="eav-icon">open_in_new</mat-icon>
         <span>Open Site Settings</span>
@@ -94,15 +89,12 @@
     <mat-card-content>
       <app-feature-text-info [featureNameId]="'LightSpeedOutputCache'" [asInfo]="true"></app-feature-text-info>
       @if (lsEnabled()) {
-      <div>
-        LightSpeed is enabled.
-        Configure it in each site/app as you need.
-      </div>
+        <div>LightSpeed is enabled. Configure it in each site/app as you need.</div>
       }
     </mat-card-content>
     <div class="eav-card-space-div"></div>
     <mat-card-actions align="start">
-      <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://go.2sxc.org/lightspeed' }"></ng-container>
+      <app-docs-link-helper [link]="'https://go.2sxc.org/lightspeed'" [label]="" [icon]=""></app-docs-link-helper>
     </mat-card-actions>
   </mat-card>
   <!-- Security -->
@@ -117,15 +109,12 @@
     <mat-card-content>
       <app-feature-text-info [featureNameId]="'ContentSecurityPolicy'" [asInfo]="true"></app-feature-text-info>
       @if (cspEnabled()) {
-      <div>
-        ContentSecurityPolicy is enabled.
-        Configure it in each site/app as you need.
-      </div>
+        <div>ContentSecurityPolicy is enabled. Configure it in each site/app as you need.</div>
       }
     </mat-card-content>
     <div class="eav-card-space-div"></div>
     <mat-card-actions align="start">
-      <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://go.2sxc.org/csp' }"></ng-container>
+      <app-docs-link-helper [link]="'https://go.2sxc.org/csp'" [label]="" [icon]=""></app-docs-link-helper>
     </mat-card-actions>
   </mat-card>
   <!-- Insights -->
@@ -140,12 +129,11 @@
     <mat-card-content>
       <h4>2sxc Insights for Super Users</h4>
       <p>
-        This is to access a special section to see what is really in the server memory.
-        It's intended for extensive debugging - see also
+        This is to access a special section to see what is really in the server memory. It's intended for extensive debugging - see also
         <a href="https://2sxc.org/en/blog/post/using-2sxc-insights" target="_blank">this blog post</a>.
       </p>
       <div align="start">
-        <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://go.2sxc.org/insights' }"></ng-container>
+        <app-docs-link-helper [link]="'https://go.2sxc.org/insights'" [label]="" [icon]=""></app-docs-link-helper>
         <button mat-button class="eav-button__with-icon" (click)="openInsights()">
           <mat-icon class="eav-icon">open_in_new</mat-icon>
           <span>Open 2sxc Insights</span>
@@ -155,29 +143,33 @@
       <h4>Activate Page Level Logging</h4>
       <form #activateLogForm="ngForm" class="activate-log-form" (ngSubmit)="activatePageLog(activateLogForm)">
         <div>
-          This will place insights-logs in the HTML of the user output for users with <code>?debug=true</code> in the
-          url.
-          It can only be activated for short periods of time.
+          This will place insights-logs in the HTML of the user output for users with <code>?debug=true</code> in the url. It can only be
+          activated for short periods of time.
         </div>
         <mat-form-field color="accent" class="eav-mat-form-field">
           <mat-label>Duration in Minutes</mat-label>
-          <input matInput type="number" min="0" required [pattern]="positiveWholeNumber" [(ngModel)]="pageLogDuration"
-            name="Duration" #duration="ngModel" [disabled]="loading()">
+          <input
+            matInput
+            type="number"
+            min="0"
+            required
+            [pattern]="positiveWholeNumber"
+            [(ngModel)]="pageLogDuration"
+            name="Duration"
+            #duration="ngModel"
+            [disabled]="loading()"
+          />
         </mat-form-field>
         @if (duration.touched && duration.errors) {
-        @if (duration.errors.pattern) {
-        <app-field-hint [isError]="true">
-          Only positive whole numbers
-        </app-field-hint>
-        }
+          @if (duration.errors.pattern) {
+            <app-field-hint [isError]="true"> Only positive whole numbers </app-field-hint>
+          }
         }
       </form>
     </mat-card-content>
     <div class="eav-card-space-div"></div>
     <mat-card-actions align="end">
-      <button mat-raised-button type="submit" color="accent" [disabled]="!activateLogForm.valid || loading()">
-        Activate
-      </button>
+      <button mat-raised-button type="submit" color="accent" [disabled]="!activateLogForm.valid || loading()">Activate</button>
     </mat-card-actions>
   </mat-card>
   <!-- Warnings -->
@@ -191,33 +183,24 @@
     </mat-card-header>
     <mat-card-content>
       @for (info of warningInfos(); track info) {
-      <div class="eav-info-row">
-        <div class="eav-info-row__label eav-long">{{ info.label }}:</div>
-        <div class="eav-info-row__value">
-          <span [tippy]="info.value" (click)="clipboard.copyToClipboard(info.value)">{{ info.value }}</span>
-          @if (info.link) {
-          @if (info.link.target === 'angular') {
-          <a class="eav-info-row__link" [routerLink]="info.link.url">
-            {{info.link.label}}</a>
-          }
-          @if (info.link.target !== 'angular') {
-          <a class="eav-info-row__link" [href]="info.link.url" [target]="info.link.target">{{ info.link.label }}</a>
-          }
-          }
+        <div class="eav-info-row">
+          <div class="eav-info-row__label eav-long">{{ info.label }}:</div>
+          <div class="eav-info-row__value">
+            <span [tippy]="info.value" (click)="clipboard.copyToClipboard(info.value)">{{ info.value }}</span>
+            @if (info.link) {
+              @if (info.link.target === 'angular') {
+                <a class="eav-info-row__link" [routerLink]="info.link.url"> {{ info.link.label }}</a>
+              }
+              @if (info.link.target !== 'angular') {
+                <a class="eav-info-row__link" [href]="info.link.url" [target]="info.link.target">{{ info.link.label }}</a>
+              }
+            }
+          </div>
         </div>
-      </div>
       }
     </mat-card-content>
     <div class="eav-card-space-div"></div>
   </mat-card>
 </div>
-
-
-<ng-template #docsLink let-icon let-label let-link="link">
-  <a mat-button class="eav-button__with-icon" href="{{link}}" target="_blank" [tippy]="'online documentation'">
-    <mat-icon class="eav-icon">{{ icon ?? "menu_book" }}</mat-icon>
-    <span>{{ label }}</span>
-  </a>
-</ng-template>
 
 <router-outlet></router-outlet>

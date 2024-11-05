@@ -1,12 +1,11 @@
-import { NgTemplateOutlet } from '@angular/common';
-import { Component, Input, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, computed, input, OnDestroy, OnInit, signal } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { transient } from '../../../../../../core';
-import { ContentItem } from '../../../content-items/models/content-item.model';
+import { DocsLinkHelperComponent } from '../../../admin-shared/docs-link-helper/docs-link-helper.component';
 import { ContentItemsService } from '../../../content-items/services/content-items.service';
 import { GoToMetadata } from '../../../metadata';
 import { eavConstants } from '../../../shared/constants/eav.constants';
@@ -17,7 +16,6 @@ import { EditForm, EditPrep } from '../../../shared/models/edit-form.model';
 import { DialogRoutingService } from '../../../shared/routing/dialog-routing.service';
 import { ClipboardService } from '../../../shared/services/clipboard.service';
 import { Context } from '../../../shared/services/context';
-import { AppInternals } from '../../models/app-internals.model';
 import { AppInternalsService } from '../../services/app-internals.service';
 
 @Component({
@@ -28,34 +26,40 @@ import { AppInternalsService } from '../../services/app-internals.service';
   imports: [
     MatCardModule,
     MatIconModule,
-    NgTemplateOutlet,
     MatButtonModule,
     MatBadgeModule,
     TippyDirective,
+    DocsLinkHelperComponent,
   ],
 })
 export class AppConfigurationCardComponent implements OnInit, OnDestroy {
-  @Input() dialogSettings: DialogSettings;
-
-  contentItem = signal<ContentItem>(undefined);
-  appSettingsInternal = signal<AppInternals>(undefined);
+  dialogSettings = input.required<DialogSettings>();
 
   #appInternalsSvc = transient(AppInternalsService);
   #contentItemsSvc = transient(ContentItemsService);
   #dialogRouter = transient(DialogRoutingService);
 
+
   constructor(
     private context: Context,
     private snackBar: MatSnackBar,
-  ) {}
+  ) { }
+
+  contentItem = this.#contentItemsSvc.getAllSig(eavConstants.contentTypes.appConfiguration, undefined);
+
+  #refresh = signal(0);
+
+  appSettingsInternal = computed(() => {
+    const refresh = this.#refresh();
+    return this.#appInternalsSvc.getAppInternals(undefined);
+  });
+
 
   ngOnInit() {
-    this.fetchSettings();
-    this.#dialogRouter.doOnDialogClosed(() => { this.fetchSettings(); });
-
-    this.#contentItemsSvc.getAll(eavConstants.contentTypes.appConfiguration).subscribe(contentItems => {
-      this.contentItem.set(contentItems[0]);
+    this.#dialogRouter.doOnDialogClosed(() => {
+      this.#refresh.update(value => value + 1);
     });
+
   }
 
   ngOnDestroy() {
@@ -83,17 +87,9 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
   openMetadata() {
     const url = GoToMetadata.getUrlApp(
       this.context.appId,
-      `Metadata for App: ${this.dialogSettings.Context.App.Name} (${this.context.appId})`,
+      `Metadata for App: ${this.dialogSettings().Context.App.Name} (${this.context.appId})`,
     );
     this.#dialogRouter.navParentFirstChild([url]);
-  }
-
-  private fetchSettings() {
-    const getObservable = this.#appInternalsSvc.getAppInternals();
-    getObservable.subscribe(x => {
-      // 2dm - New mode for Reactive UI
-      this.appSettingsInternal.set(x);
-    });
   }
 
   formatValue(value?: string): string {

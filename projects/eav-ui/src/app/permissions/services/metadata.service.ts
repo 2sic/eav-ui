@@ -8,7 +8,7 @@ import { HttpServiceBase } from '../../shared/services/http-service-base';
 const webApiRoot = 'admin/metadata/get';
 
 @Injectable()
-export class MetadataService extends HttpServiceBase  {
+export class MetadataService extends HttpServiceBase {
   /**
    * Fetches metadata for given key in metadata content type
    * @param targetType type of target metadata item is for, e.g. for Entity, or ContentType
@@ -17,7 +17,7 @@ export class MetadataService extends HttpServiceBase  {
    * @param contentTypeName name of content type where permissions are stored. If blank, backend returns all metadata except permissions
    */
   getMetadata(targetType: number, keyType: Of<typeof MetadataKeyTypes>, key: string | number, contentTypeName?: string): Observable<MetadataDto> {
-    return this.http.get<MetadataDto>(this.apiUrl(webApiRoot), {
+    return this.getHttp<MetadataDto>(webApiRoot, {
       params: {
         appId: this.appId,
         targetType: targetType.toString(),

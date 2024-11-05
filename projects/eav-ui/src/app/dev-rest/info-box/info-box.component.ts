@@ -1,6 +1,6 @@
-import { Component, Input } from '@angular/core';
-import { infoBoxIconMap, InfoBoxType } from './hint';
+import { Component, input } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
+import { infoBoxIconMap, InfoBoxType } from './hint';
 
 @Component({
   selector: 'app-info-box',
@@ -10,11 +10,12 @@ import { MatIconModule } from '@angular/material/icon';
   imports: [MatIconModule]
 })
 export class InfoBoxComponent {
-  @Input() type: InfoBoxType;
-  @Input() title: string;
+  type = input<InfoBoxType>();
+  // 2pp - not in use: title = input<string>();
+
   constructor() { }
 
   getIcon() {
-    return infoBoxIconMap[this.type];
+    return infoBoxIconMap[this.type()];
   }
 }

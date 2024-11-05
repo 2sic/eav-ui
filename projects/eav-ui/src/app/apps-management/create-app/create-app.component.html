@@ -1,56 +1,39 @@
-@if (viewModel$ | async; as vm) {
-  <div class="eav-dialog">
-    <div class="eav-dialog-header">
-      <div class="eav-dialog-header__title">Create App</div>
-    </div>
-    <div class="eav-dialog-content">
-      <router-outlet></router-outlet>
-      <form [formGroup]="form">
-        <mat-form-field color="accent" class="eav-mat-form-field">
-          <mat-label>Name</mat-label>
-          <input matInput type="text" formControlName="name">
-        </mat-form-field>
-        <app-field-hint>
-          App name will also be used for the folder
-        </app-field-hint>
-        @if (form.controls.name.touched) {
-          @if (form.controls.name.errors?.required) {
-            <app-field-hint [isError]="true">
-              Required
-            </app-field-hint>
-          }
-          @if (form.controls.name.errors?.pattern) {
-            <app-field-hint [isError]="true">
-              {{ appNameError }}
-            </app-field-hint>
-          }
-        }
-        <br>
-
-        <mat-form-field color="accent" class="eav-mat-form-field">
-          <mat-label>Template</mat-label>
-          <mat-select required="true" [(value)]="appTemplateId">
-            <mat-option value="0">
-              Completely Naked / Raw App
-            </mat-option>
-            <mat-option value="1">
-              App Template Empty with some instructions
-            </mat-option>
-            <mat-option value="2">
-              App Template Basic with instructions and some data
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-
-      </form>
-    </div>
-    <mat-dialog-actions align="end">
-      <button type="button" mat-raised-button [disabled]="vm.loading" (click)="closeDialog()">
-        Cancel
-      </button>
-      <button type="button" mat-raised-button color="accent" [disabled]="vm.loading || !form.valid" (click)="create()">
-        Create
-      </button>
-    </mat-dialog-actions>
+<div class="eav-dialog">
+  <div class="eav-dialog-header">
+    <div class="eav-dialog-header__title">Create App</div>
   </div>
-}
+  <div class="eav-dialog-content">
+    <router-outlet></router-outlet>
+    <form [formGroup]="form">
+      <mat-form-field color="accent" class="eav-mat-form-field">
+        <mat-label>Name</mat-label>
+        <input matInput type="text" formControlName="name" />
+      </mat-form-field>
+      <app-field-hint> App name will also be used for the folder </app-field-hint>
+      @if (form.controls.name.touched) {
+        @if (form.controls.name.errors?.required) {
+          <app-field-hint [isError]="true"> Required </app-field-hint>
+        }
+        @if (form.controls.name.errors?.pattern) {
+          <app-field-hint [isError]="true">
+            {{ appNameError }}
+          </app-field-hint>
+        }
+      }
+      <br />
+
+      <mat-form-field color="accent" class="eav-mat-form-field">
+        <mat-label>Template</mat-label>
+        <mat-select required="true" [(value)]="appTemplateId">
+          <mat-option value="0"> Completely Naked / Raw App </mat-option>
+          <mat-option value="1"> App Template Empty with some instructions </mat-option>
+          <mat-option value="2"> App Template Basic with instructions and some data </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </form>
+  </div>
+  <mat-dialog-actions align="end">
+    <button type="button" mat-raised-button [disabled]="loading()" (click)="closeDialog()">Cancel</button>
+    <button type="button" mat-raised-button color="accent" [disabled]="loading() || !form.valid" (click)="create()">Create</button>
+  </mat-dialog-actions>
+</div>

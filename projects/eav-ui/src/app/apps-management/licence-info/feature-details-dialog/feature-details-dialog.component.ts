@@ -3,7 +3,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateModule } from '@ngx-translate/core';
 import { transient } from '../../../../../../core/transient';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
@@ -26,18 +25,14 @@ import { FeatureDetailsDialogData } from './feature-details-dialog.models';
   ]
 })
 export class FeatureDetailsDialogComponent {
-
   specs = input<FeatureDetailsDialogData>();
 
   constructor(
     @Optional() @Inject(MAT_DIALOG_DATA) private dialogSpecs: FeatureDetailsDialogData,
     protected dialog: MatDialogRef<FeatureDetailsDialogComponent>,
-    private snackBar: MatSnackBar,
   ) { }
 
-  protected mySpecs = computedObj('mySpecs', () => this.dialogSpecs ?? this.specs());
-
-  protected feature = computedObj('feature', () => this.mySpecs().feature);
-
+  protected mySpecs = computedObj('mySpecs', () =>  this.specs() ?? this.dialogSpecs );
+  protected feature = computedObj('feature', () => this.mySpecs()?.feature);
   protected clipboard = transient(ClipboardService);
 }

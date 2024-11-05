@@ -6,7 +6,6 @@ import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { ContentType } from '../../models/content-type.model';
-import { DataFieldsParams } from './data-fields.models';
 
 @Component({
   selector: 'app-data-fields',
@@ -24,10 +23,17 @@ export class DataFieldsComponent implements ICellRendererAngularComp {
   tooltip: string;
   icon: string;
 
-  private params: ICellRendererParams & DataFieldsParams;
-  private contentType: ContentType;
+  // TODO: @2pp - change all cases where Ag-Grid has separate interfaces to use this params mechanism
+  // 2dm will brief you
+  // 1. put type directly on the params (and make public)
+  // 2. make type checks (like in agInit) use this, as well as the type checks in the grid-definitions
+  // 3. where simple, call it directly from the HTML, don't create more methods which just call this again
+  public params: {
+    fieldsUrl(contentType: ContentType): string;
+  };
+  protected contentType: ContentType;
 
-  agInit(params: ICellRendererParams & DataFieldsParams): void {
+  agInit(params: ICellRendererParams & DataFieldsComponent["params"]): void {
     this.params = params;
     this.contentType = params.data;
     this.value = params.value;
@@ -39,9 +45,5 @@ export class DataFieldsComponent implements ICellRendererAngularComp {
 
   refresh(params?: any): boolean {
     return true;
-  }
-
-  editFields(): void {
-    this.params.onEditFields(this.contentType);
   }
 }

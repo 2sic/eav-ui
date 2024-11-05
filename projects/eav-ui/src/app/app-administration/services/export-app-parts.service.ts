@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
+import { HttpServiceBase } from '../../shared/services/http-service-base';
 import { ContentInfo } from '../models/content-info.model';
 import { webApiAppPartsRoot } from './import-app-parts.service';
-import { HttpServiceBase } from '../../shared/services/http-service-base';
 
+const webApiAppPartsGet = 'admin/appParts/get';
 @Injectable()
 export class ExportAppPartsService extends HttpServiceBase {
 
-  getContentInfo(scope: string) {
-    return this.http.get<ContentInfo>(this.apiUrl(webApiAppPartsRoot + 'Get'), {
-      params: { appid: this.appId, zoneId: this.zoneId, scope },
-    });
+  getContentInfo(scope: string, initial: ContentInfo) {
+    return this.getSignal<ContentInfo>(webApiAppPartsGet, {
+      params: { appid: this.appId, zoneId: this.zoneId, scope }
+    }, initial);
   }
 
   exportParts(contentTypeIds: number[], entityIds: number[], templateIds: number[]) {

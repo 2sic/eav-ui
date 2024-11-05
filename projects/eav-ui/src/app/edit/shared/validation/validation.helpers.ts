@@ -3,20 +3,23 @@ import { AbstractControl, ValidationErrors, ValidatorFn, Validators } from '@ang
 import { CustomJsonEditor } from 'projects/edit-types/src/FieldSettings-CustomJsonEditor';
 import { FieldSettingsNumber } from 'projects/edit-types/src/FieldSettings-Number';
 import { FieldSettingsPicker } from 'projects/edit-types/src/FieldSettings-Pickers';
-import { BehaviorSubject } from 'rxjs';
 import { Of } from '../../../../../../core';
 import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
 import { FieldSettingsOptionsWip, FieldSettingsSharedSeparator } from '../../../../../../edit-types/src/FieldSettings-Pickers';
 import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
 import { AdamControl } from '../../fields/basic/hyperlink-library/hyperlink-library.models';
+import { PickerData } from '../../fields/picker/picker-data';
 import { convertValueToArray } from '../../fields/picker/picker.helpers';
-import { FieldsSettingsService } from '../../state/fields-settings.service';
+import { FieldProps } from '../../state/fields-configs.model';
 import { ItemFieldVisibility } from '../../state/item-field-visibility';
 
 
 /** Slightly enhanced standard Abstract Control with additional warnings */
 export interface AbstractControlPro extends AbstractControl {
-  _warning$?: BehaviorSubject<ValidationErrors>;
+  /**
+   * Object containing various warnings (or the object can also be null)
+   */
+  _warning?: ValidationErrors;
 }
 
 /** Validators here are copied from https://github.com/angular/angular/blob/master/packages/forms/src/validators.ts */
@@ -46,17 +49,7 @@ export class ValidationHelpers {
     return validators;
   }
 
-  /**
-   * Validations run when controls are created, but only for fields which are not disabled,
-   * and it can be too late to attach warning after field creation
-   */
-  public static ensureWarning(control: AbstractControlPro): void {
-    if (control._warning$ == null)
-      control._warning$ = new BehaviorSubject<ValidationErrors>(null);
-  }
-
   static #ensureWarningsAndGetSettingsIfNoIgnore(control: AbstractControl, specs: ValidationHelperSpecs) {
-    this.ensureWarning(control);
     const settings = specs.settings();
     if (this.#shouldIgnoreValidators(settings)) return null;
     return settings;
@@ -122,7 +115,7 @@ export class ValidationHelpers {
     return (control: AbstractControl): ValidationErrors | null => {
       const s = this.#ensureWarningsAndGetSettingsIfNoIgnore(control, specs);
       if (s == null || s.AllowMultiMin == 0 || s.AllowMultiMin == undefined) return null;
-      return countValues(control, s) < s.AllowMultiMin ? { minNoItems: s.AllowMultiMin } : null;
+      return countValues(control, specs, s) < s.AllowMultiMin ? { minNoItems: s.AllowMultiMin } : null;
     };
   }
 
@@ -130,13 +123,12 @@ export class ValidationHelpers {
     return (control: AbstractControl): ValidationErrors | null => {
       const s = this.#ensureWarningsAndGetSettingsIfNoIgnore(control, specs);
       if (s == null || s.AllowMultiMax == 0 || s.AllowMultiMax == undefined) return null;
-      return countValues(control, s) > s.AllowMultiMax ? { maxNoItems: s.AllowMultiMax } : null;
+      return countValues(control, specs, s) > s.AllowMultiMax ? { maxNoItems: s.AllowMultiMax } : null;
     };
   }
 
   static #jsonValidator(specs: ValidationHelperSpecs): ValidatorFn {
     return (control: AbstractControlPro): ValidationErrors | null => {
-      this.ensureWarning(control);
       const settings = specs.settings();
       let error: boolean;
       let warning: boolean;
@@ -161,16 +153,14 @@ export class ValidationHelpers {
         }
       }
 
-      control._warning$.next(warning ? { jsonWarning: true } : null);
+      control._warning = warning ? { jsonWarning: true } : null;
       return error ? { jsonError: true } : null;
     };
   }
 
   static #formulaValidate(specs: ValidationHelperSpecs): ValidatorFn {
     return (control: AbstractControlPro): ValidationErrors | null => {
-      this.ensureWarning(control);
-      const fieldProps = specs.fieldsSettingsService.fieldProps[specs.fieldName]();
-      const formulaValidation = fieldProps.formulaValidation;
+      const formulaValidation = specs.props().formulaValidation;
 
       const { error, warning } = (() => {
         if (this.#shouldIgnoreValidators(specs.settings()) || formulaValidation == null)
@@ -182,7 +172,7 @@ export class ValidationHelpers {
         return { error: false, warning: false };
       })();
 
-      control._warning$.next(warning ? { formulaWarning: true, formulaMessage: formulaValidation.message } : null);
+      control._warning = warning ? { formulaWarning: true, formulaMessage: formulaValidation.message } : null;
       return error ? { formulaError: true, formulaMessage: formulaValidation.message } : null;
     };
   }
@@ -193,23 +183,42 @@ export class ValidationHelpers {
   }
 }
 
-function countValues(control: AbstractControl, s: FieldSettings & FieldSettingsOptionsWip & FieldSettingsSharedSeparator): number {
-  return Array.isArray(control.value)
-    ? control.value.length
-    : convertValueToArray(control.value, s.Separator, s._options).length;
+function countValues(control: AbstractControl, specs: ValidationHelperSpecs, s: FieldSettings & FieldSettingsOptionsWip & FieldSettingsSharedSeparator): number {
+  // If it is an array, return the length right away, since we don't need additional processing
+  if (Array.isArray(control.value))
+    return control.value.length;
+
+  // Picker Data - can be null in the first few cycles since it may not yet be initialized
+  const pd = specs.pickerData;
+  if (pd == null)
+    return convertValueToArray(control.value, s.Separator, false).length;
+
+  // PickerData SelectedAll will also contain an empty selected item if the field allows empty values
+  return pd.selectedAll().length;
 }
 
 
 export class ValidationHelperSpecs {
   constructor(
+    /** The Field Name */
     public fieldName: string,
+    /** The Input Type */
     public inputType: Of<typeof InputTypeCatalog>,
+    /** The settings, but must be re-cast so the system knows it has more properties */
     settings: Signal<FieldSettings>,
-    // public properties: Signal<FieldProps>,
-    // TODO: GET RID OF THIS as soon as we have a signal for the fieldProps
-    public fieldsSettingsService: FieldsSettingsService
+    /** The field properties an updated on every formula cycle */
+    public props: Signal<FieldProps>,
+    /** Delayed get pickers data */
+    private pickersGet: () => Record<string, PickerData>,
   ) {
     this.settings = settings as Signal<FieldSettings & FieldSettingsSharedSeparator & CustomJsonEditor & FieldSettingsNumber & FieldSettingsPicker & FieldSettingsOptionsWip>;
   }
+
+  /** The settings cast in a way that it should have all relevant properties */
   settings: Signal<FieldSettings & FieldSettingsSharedSeparator & CustomJsonEditor & FieldSettingsNumber & FieldSettingsPicker & FieldSettingsOptionsWip>;
+
+  /** Get the pickers for this field */
+  get pickerData(): PickerData {
+    return this.pickersGet()?.[this.fieldName] ?? null;
+  }
 }

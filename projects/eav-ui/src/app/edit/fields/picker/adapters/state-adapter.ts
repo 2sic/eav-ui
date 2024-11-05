@@ -2,15 +2,15 @@ import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { Injectable, Signal, inject } from '@angular/core';
 import { getWith } from '../../../../../../../core';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
-import { FieldSettingsPickerMerged } from '../../../../../../../edit-types/src/FieldSettings-Pickers';
+import { FieldSettingsOptionsWip, FieldSettingsPickerMerged } from '../../../../../../../edit-types/src/FieldSettings-Pickers';
 import { classLog } from '../../../../shared/logging';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
+import { DebugFields } from '../../../edit-debug';
 import { FormConfigService } from '../../../form/form-config.service';
 import { FieldState } from '../../field-state';
 import { DeleteEntityProps } from '../models/picker.models';
 import { PickerFeatures } from '../picker-features.model';
 import { ReorderIndexes } from '../picker-list/reorder-index.models';
-import { correctStringEmptyValue } from '../picker.helpers';
 import { StateUiMapperBase } from './state-ui-mapper-base';
 
 export const logSpecsStateAdapter = {
@@ -25,26 +25,41 @@ export const logSpecsStateAdapter = {
   sepAndOpts: false,
   createEntityTypes: false,
   attachCallback: false,
-  typesForNew: true,
+  typesForNew: false,
+  correctStringEmptyValue: true,
+  fields: [...DebugFields, 'Query'],
 };
 
 @Injectable()
-export abstract class StateAdapter {
+export class StateAdapter {
 
   //#region Setup / Inject / Logs
 
   log = classLog({StateAdapter}, logSpecsStateAdapter);
 
   #formConfigSvc = inject(FormConfigService);
-  #fieldState = inject(FieldState) as FieldState<number | string | string[], FieldSettings & FieldSettingsPickerMerged>;
+  #fieldState = inject(FieldState) as FieldState<number | string | string[], FieldSettings & FieldSettingsOptionsWip & FieldSettingsPickerMerged>;
 
   constructor() { }
+
+  public setup(fieldName: string, uiMapper: StateUiMapperBase): this {
+    this.#fieldName = fieldName;
+    this.mapper = uiMapper as StateUiMapperBase<number | string | string[], string[]>;
+    return this;
+  }
+
+  /**
+   * Mapper to convert between the state and the UI - must be configured in setup.
+   * On the UI side, must always be an array of strings.
+   */
+  public mapper: StateUiMapperBase<number | string | string[], string[]>;
+
+  /** Field Name - just for selective debugging */
+  #fieldName: string;
 
   //#endregion
 
   protected readonly settings = this.#fieldState.settings;
-
-  public isInFreeTextMode = signalObj('isInFreeTextMode', false);
 
   /** The features this source will broadcast, to be merged with other features */
   public myFeatures = signalObj('features', {} as Partial<PickerFeatures>);
@@ -61,7 +76,7 @@ export abstract class StateAdapter {
   public typesForNew = computedObj('typesForNew', () => {
     const raw = this.#createTypesRaw().map((guid: string) => ({ label: null, guid }));
     
-    const l = this.log.fnIf('typesForNew', { raw });
+    const l = this.log.fnIfInList('typesForNew', 'fields', this.#fieldName, { raw });
 
     // return [];
     // Augment with additional label and guid if we have this
@@ -72,61 +87,64 @@ export abstract class StateAdapter {
       return {
         ...orig,
         // replace is a bit temporary, as the names are a bit long...
-        label: (ct?.Title ?? ct?.Name ?? guid + " (not found)").replace('UI Picker Source - ', ''),
+        label: (ct?.Title ?? ct?.Name ?? `${guid} (not found)`).replace('UI Picker Source - ', ''),
         guid: ct?.Id ?? guid,
       }
     });
     return l.r(updated);
   });
 
-  /** Signal with all the currently selected items */
-  public selectedItems = (() => {
-    // Computed just to debounce changes on separator and options from field-settings (old picker)
-    const sepAndOpts = computedObj('sepAndOpts', () => {
-      const { Separator, _options } = this.settings();
-      return { separator: Separator, options: _options };
-    });
+  /**
+   * Lazy Signal telling us if empty values are allowed
+   * Should ONLY be used in 'selectedItems' - and never in Values, as we would create a loop
+   * since the this will also access the possible options, which in turn is initialized using the selectedItems
+   */
+  public allowsEmptyLazy = signalObj<Signal<boolean>>('allowsEmptyLazy', signalObj('initial', false));
 
-    // Find selected items and correct empty value (if there is an empty-string options)
-    const l = this.log.fnIf('selectedItems');
-    return computedObj('selectedItems', () => {
-      const sAndO = sepAndOpts();
-      const uiValue = this.#fieldState.uiValue();
-      l.a('selectedItems', { uiValue, sAndO });
+  /**
+   * Signal with all the currently selected items.
+   * The PickerItems are fairly basic, as any additional data is added later on.
+   * The only case the additional data matters,
+   * is when we have a string-picker with a free-text value that is not in the dropdown.
+   * In that case, additional data from here is used to disable edit and delete.
+   */
+  public selectedItems: Signal<string[]> = computedObj('selectedItems', () => {
+    const uiValue = this.#fieldState.uiValue();
+    this.log.fnIf('selectedItems', { uiValue });
+    const asUi = this.mapper.toUi(uiValue);
+    const pickerAllowsEmpty = this.allowsEmptyLazy()();
+    const uiFixed = asUi.length == 0 && pickerAllowsEmpty
+      ? ['']
+      : asUi;
+    return uiFixed;
+  });
 
-      return correctStringEmptyValue(this.mapper.toUi(uiValue), sAndO.options);
-    });
-  })();
-
-  //#region Callbacks for setting the focus - TODO: not sure if it works ATM
+  //#region Callbacks for setting the focus, like after removing the last selection
 
   #focusOnSearchComponent: () => void;
 
   public attachCallback(focusCallback: () => void): this {
-    this.log.a('attachCallback');
+    const l = this.log.fnIf('attachCallback');
     this.#focusOnSearchComponent = focusCallback;
-    return this;
+    return l.rSilent(this);
   }
 
   //#endregion
 
   //#region Conversion back and forth between formats
 
-  /**
-   * Mapper to convert between the state and the UI - must be added by inheriting class.
-   * On the UI side, must always be an array of strings.
-   */
-  public abstract mapper: StateUiMapperBase<number | string | string[], string[]>;
-
   /** Signal with the current values in the picker, as an array */
-  public values = computedObj('ids', () => this.mapper.toUi(this.#fieldState.uiValue()));
+  public values = computedObj('values', () => {
+    const asUi = this.mapper.toUi(this.#fieldState.uiValue());
+    return asUi;
+  });
 
   //#endregion
 
   //#region CRUD operations
 
   #updateValue(operation: (original: string[]) => string[]): void {
-    const l = this.log.fnIf('updateValue');
+    const l = this.log.fnIfInList('updateValue', 'fields', this.#fieldName);
     // Get original data, and make sure we have a copy, so that ongoing changes won't affect the original
     // If we don't do this, then later change detection can fail!
     const valueArray = [...this.values()];
@@ -137,7 +155,7 @@ export abstract class StateAdapter {
   }
 
   public add(value: string): void {
-    this.log.fnIf('add', { value });
+    this.log.fnIfInList('add', 'fields', this.#fieldName, { value });
     this.#updateValue(list => (this.features().multiValue) ? [...list, value] : [value]);
   }
 
@@ -177,7 +195,4 @@ export abstract class StateAdapter {
 
   //#endregion
 
-  toggleFreeTextMode(): void {
-    this.isInFreeTextMode.update(p => !p);
-  }
 }

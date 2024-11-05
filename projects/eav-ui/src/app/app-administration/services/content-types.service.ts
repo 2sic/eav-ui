@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
+import { computed, Injectable, Signal } from '@angular/core';
 import { map } from 'rxjs';
 import { FileUploadResult } from '../../shared/components/file-upload-dialog';
 import { ScopeOption } from '../../shared/constants/eav.constants';
+import { HttpServiceBase } from '../../shared/services/http-service-base';
 import { ContentType, ContentTypeEdit } from '../models/content-type.model';
 import { ScopeDetailsDto } from '../models/scopedetails.dto';
-import { HttpServiceBase } from '../../shared/services/http-service-base';
 
 // We should list all the "full" paths here, so it's easier to find when searching for API calls
 export const webApiTypeRoot = 'admin/type/';
@@ -20,20 +20,32 @@ const webApiTypeAddGhost = 'admin/type/addghost';
 export class ContentTypesService extends HttpServiceBase {
 
   retrieveContentType(staticName: string) {
-    return this.http.get<ContentType>(this.apiUrl(webApiTypeGet), {
+    return this.getHttpApiUrl<ContentType>(webApiTypeGet, {
       params: { appId: this.appId, contentTypeId: staticName }
     });
   }
 
+  retrieveContentTypeSig(staticName: string, initial: undefined): Signal<ContentType> {
+    return this.getSignal<ContentType>(webApiTypeGet, {
+      params: { appId: this.appId, contentTypeId: staticName }
+    }, initial);
+  }
+
   retrieveContentTypes(scope: string) {
-    return this.http.get<ContentType[]>(this.apiUrl(webApiTypes), {
+    return this.getHttpApiUrl<ContentType[]>(webApiTypes, {
       params: { appId: this.appId, scope }
     });
   }
 
+  retrieveContentTypesSig(scope: string, initial: undefined): Signal<ContentType[]> {
+    return this.getSignal<ContentType[]>(webApiTypes, {
+      params: { appId: this.appId, scope }
+    }, initial);
+  }
+
   // TODO: remove this method after upgrade to V2
   getScopes() {
-    return this.http.get<{ old: Record<string, string>, scopes: ScopeDetailsDto[] }>(this.apiUrl(webApiTypeScopes), {
+    return this.getHttpApiUrl<{ old: Record<string, string>, scopes: ScopeDetailsDto[] }>(webApiTypeScopes, {
       params: { appId: this.appId }
     }).pipe(
       map(scopesData => {
@@ -45,8 +57,30 @@ export class ContentTypesService extends HttpServiceBase {
     );
   }
 
+  getScopesSig(initial: undefined): Signal<ScopeOption[]> {
+    const scopesSignal = this.getSignal<{ old: Record<string, string>, scopes: ScopeDetailsDto[] }>(
+      webApiTypeScopes,
+      { params: { appId: this.appId } }, initial,
+    );
+
+    const scopeOptionsSignal = computed(() => {
+      const scopesData = scopesSignal();
+
+      // Add null/undefined check here
+      if (!scopesData || !scopesData.old) {
+        return []; // Return an empty array or handle this case as appropriate
+      }
+
+      const scopes = scopesData.old;
+      return Object.keys(scopes).map(key => ({ name: scopes[key], value: key }));
+    });
+
+    return scopeOptionsSignal;
+  }
+
+
   getScopesV2() {
-    return this.http.get<{ old: Record<string, string>, scopes: ScopeDetailsDto[] }>(this.apiUrl(webApiTypeScopes), {
+    return this.getHttpApiUrl<{ old: Record<string, string>, scopes: ScopeDetailsDto[] }>(webApiTypeScopes, {
       params: { appId: this.appId }
     }).pipe(
       map(scopesData => scopesData.scopes),

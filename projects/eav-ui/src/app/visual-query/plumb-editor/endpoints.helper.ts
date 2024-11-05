@@ -11,8 +11,8 @@ const logSpecs = {
 }
 
 export class EndpointsHelper {
-  
-  log = classLog({EndpointsHelper}, logSpecs, true);
+
+  log = classLog({EndpointsHelper}, logSpecs);
 
   constructor(private plumb: Plumber) { }
 
@@ -45,7 +45,7 @@ export class EndpointsHelper {
         name,
         required: false
       } satisfies EndpointInfo, 'isDynamic');
-    
+
     return l.r({ name, required } satisfies EndpointInfo, 'notDynamic');
   }
 

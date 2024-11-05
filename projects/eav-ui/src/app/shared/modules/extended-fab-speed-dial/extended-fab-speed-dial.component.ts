@@ -1,12 +1,12 @@
 // tslint:disable-next-line:max-line-length
-import { AfterContentInit, Component, ContentChild, ContentChildren, ElementRef, Input, OnDestroy, QueryList, ViewEncapsulation } from '@angular/core';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, startWith, Subscription } from 'rxjs';
+import { NgTemplateOutlet } from '@angular/common';
+import { AfterContentInit, Component, ContentChild, ContentChildren, ElementRef, input, OnDestroy, QueryList, ViewEncapsulation } from '@angular/core';
+import { BehaviorSubject, combineLatest, distinctUntilChanged, startWith } from 'rxjs';
 import { BaseComponent } from '../../components/base.component';
 import { ExtendedFabSpeedDialActionDirective } from './extended-fab-speed-dial-action.directive';
 import { ExtendedFabSpeedDialActionsContentDirective } from './extended-fab-speed-dial-actions-content.directive';
 import { ExtendedFabSpeedDialTriggerContentDirective } from './extended-fab-speed-dial-trigger-content.directive';
 import { ExtendedFabSpeedDialTriggerDirective } from './extended-fab-speed-dial-trigger.directive';
-import { NgTemplateOutlet } from '@angular/common';
 
 /**
  * Special Speed-Dial kind of FAB which opens more menu items on hover.
@@ -34,7 +34,7 @@ export class ExtendedFabSpeedDialComponent extends BaseComponent implements Afte
   @ContentChild(ExtendedFabSpeedDialActionsContentDirective) actions: ExtendedFabSpeedDialActionsContentDirective;
   @ContentChildren(ExtendedFabSpeedDialActionDirective, { read: ElementRef }) actionButtons: QueryList<ElementRef<HTMLButtonElement>>;
 
-  @Input() disabled = false;
+  disabled = input<boolean>(false);
 
   open$ = new BehaviorSubject(false);
 

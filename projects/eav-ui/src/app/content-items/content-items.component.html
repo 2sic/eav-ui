@@ -1,8 +1,6 @@
 <div appToggleDebug class="eav-dialog nav-component-wrapper">
   <div class="eav-dialog-header">
-    <div class="eav-dialog-header__title">
-      {{ contentType()?.Label || contentType()?.Name }} Data
-    </div>
+    <div class="eav-dialog-header__title">{{ contentType()?.Label || contentType()?.Name }} Data</div>
     <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
       <mat-icon>close</mat-icon>
     </button>
@@ -10,12 +8,18 @@
   <div class="eav-dialog-content nav-component-wrapper">
     <router-outlet></router-outlet>
     @if (contentType()?.Properties?.ListInstructions; as listInstructions) {
-    <div [innerHTML]="listInstructions | safeHtml"></div>
+      <div [innerHTML]="listInstructions | safeHtml"></div>
     }
     <div class="grid-wrapper">
-      <ag-grid-angular class="ag-theme-material" [rowData]="items()" [gridOptions]="gridOptions"
-        (gridReady)="onGridReady($event)" appDragAndDrop [allowedFileTypes]="'xml,json'"
-        (filesDropped)="filesDropped($event)">
+      <ag-grid-angular
+        class="ag-theme-material"
+        [rowData]="items()()"
+        [gridOptions]="gridOptions"
+        (gridReady)="onGridReady($event)"
+        appDragAndDrop
+        [allowedFileTypes]="'xml,json'"
+        (filesDropped)="filesDropped($event)"
+      >
       </ag-grid-angular>
     </div>
   </div>
@@ -38,11 +42,10 @@
         <span>Create Metadata</span>
       </button>
       @if (isDebug()) {
-      <button mat-button class="eav-button__with-icon" color="accent" tippy="Print filter to console"
-        (click)="debugFilter()">
-        <mat-icon class="eav-icon">filter_list</mat-icon>
-        <span>Filter</span>
-      </button>
+        <button mat-button class="eav-button__with-icon" color="accent" tippy="Print filter to console" (click)="debugFilter()">
+          <mat-icon class="eav-icon">filter_list</mat-icon>
+          <span>Filter</span>
+        </button>
       }
     </div>
     <button mat-fab mat-elevation-z24 class="grid-fab" tippy="Add item" (click)="editItem(null)">

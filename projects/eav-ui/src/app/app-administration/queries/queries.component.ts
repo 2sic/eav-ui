@@ -1,6 +1,6 @@
 import { GridOptions } from '@ag-grid-community/core';
 import { AsyncPipe } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, computed, OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogActions } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -21,7 +21,6 @@ import { EditForm, EditPrep } from '../../shared/models/edit-form.model';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { DialogService } from '../../shared/services/dialog.service';
-import { signalObj } from '../../shared/signals/signal.utilities';
 import { Query } from '../models/query.model';
 import { DialogConfigAppService } from '../services/dialog-config-app.service';
 import { PipelinesService } from '../services/pipelines.service';
@@ -50,18 +49,22 @@ export class QueriesComponent implements OnInit {
   #dialogRouter = transient(DialogRoutingService);
   #dialogConfigSvc = transient(DialogConfigAppService);
 
+  constructor(
+    private snackBar: MatSnackBar,
+  ) { }
+
   enablePermissions!: boolean;
   public gridOptions = this.buildGridOptions();
 
-  public queries = signalObj<Query[]>('queries', []);
+  #refresh = signal(0);
 
-  constructor(
-    private snackBar: MatSnackBar,
-  ) {
+  queries = computed(() => {
+    const refresh = this.#refresh();
+    return this.#pipelineSvc.getAllSig(eavConstants.contentTypes.query, undefined)
   }
+  );
 
   ngOnInit() {
-    this.#fetchQueries();
     this.#dialogRouter.doOnDialogClosed(() => this.#fetchQueries());
     this.#dialogConfigSvc.getCurrent$().subscribe(settings => {
       this.enablePermissions = settings.Context.Enable.AppPermissions;
@@ -69,8 +72,7 @@ export class QueriesComponent implements OnInit {
   }
 
   #fetchQueries() {
-    this.#pipelineSvc.getAll(eavConstants.contentTypes.query)
-      .subscribe((queries: Query[]) => this.queries.set(queries));
+    this.#refresh.update(value => value + 1);
   }
 
   importQuery(files?: File[]) {

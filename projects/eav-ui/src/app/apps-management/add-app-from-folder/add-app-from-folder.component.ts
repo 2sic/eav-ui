@@ -1,5 +1,5 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { Component, HostBinding, OnInit, inject, signal } from "@angular/core";
+import { Component, HostBinding, WritableSignal, inject } from "@angular/core";
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogActions, MatDialogRef } from "@angular/material/dialog";
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -29,29 +29,22 @@ import { CheckboxCellParams } from './checkbox-cell/checkbox-cell.model';
     SxcGridModule,
   ],
 })
-export class AddAppFromFolderComponent implements OnInit {
+export class AddAppFromFolderComponent  {
   @HostBinding('className') hostClass = 'dialog-component';
 
   gridOptions = this.buildGridOptions();
   installing: boolean = false;
 
-  pendingApps = signal<PendingApp[]>([]);
-
   public features = inject(FeaturesScopedService);
   #isAddFromFolderEnabled = this.features.isEnabled[FeatureNames.AppSyncWithSiteFiles];
-  private appsListService = transient(AppsListService);
+  #appsListService = transient(AppsListService);
 
   constructor(
     private dialog: MatDialogRef<AddAppFromFolderComponent>,
     private snackBar: MatSnackBar,
   ) {}
 
-  ngOnInit(): void {
-
-    this.appsListService.getPendingApps().subscribe(apps => {
-      this.pendingApps.set(apps);
-    })
-  }
+  pendingApps = this.#appsListService.getPendingApps() as WritableSignal<PendingApp[]>;
 
   closeDialog(): void {
     this.dialog.close();
@@ -71,7 +64,7 @@ export class AddAppFromFolderComponent implements OnInit {
   install(): void {
     this.installing = true;
     this.snackBar.open('Installing', undefined, { duration: 2000 });
-    this.appsListService.installPendingApps(this.pendingApps()).subscribe({
+    this.#appsListService.installPendingApps(this.pendingApps()).subscribe({
       error: () => {
         this.installing = false;
         this.snackBar.open('Failed to install app. Please check console for more information', undefined, { duration: 3000 });

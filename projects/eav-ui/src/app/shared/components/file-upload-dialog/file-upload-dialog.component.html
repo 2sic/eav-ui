@@ -18,7 +18,7 @@
         }
       </button>
       <input #fileInput type="file" multiple (change)="filesChanged($event)" class="hide" />
-      @if (uploadType == UploadTypes.App) {
+      @if (uploadType() == UploadTypes.App) {
       <button mat-raised-button class="eav-app-catalog-button" [disabled]="uploading()" tippy="Open app catalog"
         (click)="toggleShowAppCatalog()">
         Get recommended Apps from Catalog
@@ -48,7 +48,7 @@
       }
     </div>
     }
-    @if (uploadType == UploadTypes.App && showAppCatalog()) {
+    @if (uploadType() == UploadTypes.App && showAppCatalog()) {
     @if (ready) {
     <iframe #installerWindow class="eav-app-catalog-iframe" [src]="remoteInstallerUrl"></iframe>
     }

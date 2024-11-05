@@ -96,7 +96,7 @@ export class ImportAppPartsComponent extends BaseComponent implements OnInit, On
       if (this.result() != undefined) {
         this.result.set(undefined);
       }
-    });
+    }, { allowSignalWrites: true });
 
     // copied from 2sxc-ui app/installer
     this.subscriptions.add(
@@ -134,7 +134,7 @@ export class ImportAppPartsComponent extends BaseComponent implements OnInit, On
       this.filesDropped(this.importData.files);
     }
     // copied from 2sxc-ui
-    this.installSettingsService.loadGettingStarted(false);//this.isContentApp -> from @Input on 2sxc-ui
+    this.installSettingsService.loadGettingStarted(false); // Passed as input from 2sxc-ui
 
     // copied from 2sxc-ui app/installer
     this.subscriptions.add(this.messages$.pipe(
@@ -248,5 +248,6 @@ Please try again later or check how to manually install content-templates: https
     this.files.set(files);
   }
 }
+
 
 

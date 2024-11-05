@@ -1,4 +1,4 @@
-import { inject, Injectable, Signal } from '@angular/core';
+import { effect, inject, Injectable, Signal } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { getWith } from '../../../../../../core';
 import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
@@ -10,16 +10,18 @@ import { DataAdapterBase } from './adapters/data-adapter-base';
 import { StateAdapter } from "./adapters/state-adapter";
 import { PickerItem } from './models/picker-item.model';
 import { mergePickerFeatures, PickerFeatures, PickerFeaturesForControl } from './picker-features.model';
+import { pickerItemsAllowsEmpty } from './picker.helpers';
 
 const logSpecs = {
-  all: false,
+  all: true,
   setup: false,
   addInfosFromSourceForUi: false,
   optionsWithMissing: false,
   selectedRaw: false,
   selectedOverride: false,
   selectedState: false,
-  features: true,
+  features: false,
+  allOptions: true,
   fields: [...DebugFields, '*'],
 }
 
@@ -33,16 +35,26 @@ export class PickerData {
 
   //#region Constructor, Log, Services, Setup
   
-  log = classLog({PickerData}, logSpecs, true);
+  log = classLog({PickerData}, logSpecs);
 
   #translate = inject(TranslateService);
 
   name: string;
 
-  constructor() { }
+  constructor() {
+    if (this.log.enabled && this.log.specs.allOptions) {
+      effect(() => {
+        const ready = this.ready();
+        const raw = this.optionsRaw();
+        const override = this.optionsOverride();
+        const final = this.optionsAll();
+        this.log.a('options', { ready, raw, override, final });
+      });
+    }
+  }
 
   /** Setup to load initial values and initialize the state */
-  public setup(name: string, settings: Signal<FieldSettings>, state: StateAdapter, source: DataAdapterBase): this {
+  public setup(name: string, settings: Signal<FieldSettings>, state: StateAdapter, source: DataAdapterBase) {
     const l = this.log.fnIfInList('setup', 'fields', name, { name, state, source });
 
     // Setup this object
@@ -52,16 +64,20 @@ export class PickerData {
     this.source = source;
 
     // Setup the State so it is able to do it's work based on data it wouldn't have otherwise
-    this.state.features = this.features;
+    state.features = this.features;
+    state.allowsEmptyLazy.set(this.optionsAllowsEmpty);
 
-    this.ready.set(true);
     // 1. Init Prefetch - for Entity Picker
     // This will place the prefetch items into the available-items list
     // Otherwise related entities would only show as GUIDs.
-    const initiallySelected = state.selectedItems();
-    l.a('setup', { initiallySelected })
-    source.initPrefetch(initiallySelected.map(item => item.value));
-    return l.rSilent(this);
+    const values = state.values();
+    l.a('setup', { initiallySelected: values })
+    source.initPrefetch(values);
+
+    // When everything is done, mark as ready
+    this.ready.set(true);
+
+    l.end('done');
   }
 
   //#endregion
@@ -90,7 +106,7 @@ export class PickerData {
    * Inform the system that the sources are ready.
    * WIP experimenting with making it public, so that formulas can delay running dependant function.
    */
-  ready = signalObj('sourceIsReady', false);
+  public ready = signalObj('sourceIsReady', false);
 
   /** Options to show in the picker. Can also show hints if something is wrong. Must be initialized at setup */
   public optionsRaw = computedObj('optionsSource', () => (this.ready() ? this.source.optionsOrHints() : null) ?? []);
@@ -100,6 +116,9 @@ export class PickerData {
 
   /** Final Options to show in the picker and to use to calculate labels of selected etc. */
   public optionsAll = computedObj('optionsFinal', () => getWith(this.optionsOverride(), o => o ? o : this.optionsRaw()));
+
+  /** Special information for string pickers which allow empty to be valid selection - also used in validator */
+  public optionsAllowsEmpty = computedObj('optionsAllowsEmpty', () => pickerItemsAllowsEmpty(this.optionsAll()));
 
   //#endregion
 
@@ -119,7 +138,7 @@ export class PickerData {
   /** Currently selected items from override or raw */
   public selectedAll = computedObj('selectedAll', () => getWith(this.selectedOverride(), o => o ? o : this.selectedRaw()));
 
-  /** First selected item */
+  /** First selected item or null */
   public selectedOne = computedObj('selectedOne', () => this.selectedAll()[0] ?? null);
 
   /** Create a copy of the selected items, so that any changes (in formulas) won't affect the real selected data */
@@ -179,28 +198,60 @@ export class PickerData {
     l.end();
   }
 
-  #toSelectedWithUiInfo(selected: PickerItem[], opts: PickerItem[]): PickerItem[] {
+  #toSelectedWithUiInfo(selected: string[], opts: PickerItem[]): PickerItem[] {
     const l = this.log.fnIfInList('addInfosFromSourceForUi', 'fields', this.name, { selected, opts });
     const result = selected.map(item => {
       // If the selected item is not in the data, show the raw / original item
-      const original = opts.find(e => e.value === item.value);
-      if (!original)
-        return item;
-      
-      // Since we seem to have more information from the source, use that
-      const label = original.label ?? this.#translate.instant('Fields.Picker.EntityNotFound');
-      return {
-        id: original.id,
-        value: original.value,
-        label,
-        tooltip: original.tooltip || `${label} (${original.value})`,
-        info: original.info || null,
-        link: original.link || null,
-        noEdit: original.noEdit === true,
-        noDelete: original.noDelete === true,
-        noSelect: false,
-      } satisfies PickerItem;
+      const original = opts.find(e => e.value === item);
+      return original
+        // Since we seem to have more information from the source, use that
+        ? createPickerItemFromItem(original, original.label ?? this.#translate.instant('Fields.Picker.EntityNotFound'))
+        // If it's not in the data, just show the value
+        : createPickerItemFromValue(item);
     });
     return l.r(result);
   }
+
+  //#region Text Mode
+
+  public isInFreeTextMode = signalObj('isInFreeTextMode', false);
+
+  toggleFreeTextMode(): void {
+    this.isInFreeTextMode.update(p => !p);
+  }
+
+  //#endregion
 }
+
+//#region Helper Functions for PickerItem
+
+function createPickerItemFromValue(value: string): PickerItem {
+  value = value?.toString() ?? '';  // safe to-string, so it's never 'undefined'
+  return {
+    // Special: if e.g. string with free text value which is not found, disable edit and delete.
+    // Otherwise we may see an edit-pencil for a value that is not in the dropdown (eg. a system query)
+    noEdit: true,
+    noDelete: true,
+    // either the real value or null if text-field or not found
+    id: null,
+    label: value,
+    tooltip: `${value} (manual entry)`,
+    value,
+  } satisfies PickerItem;
+}
+
+function createPickerItemFromItem(original: PickerItem, label: string) {
+  return {
+    id: original.id,
+    value: original.value,
+    label,
+    tooltip: original.tooltip || `${label} (${original.value})`,
+    info: original.info || null,
+    link: original.link || null,
+    noEdit: original.noEdit === true,
+    noDelete: original.noDelete === true,
+    noSelect: false,
+  } satisfies PickerItem;
+}
+
+//#endregion

@@ -1,9 +1,7 @@
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
 import { GridOptions, ModuleRegistry } from '@ag-grid-community/core';
-import { AsyncPipe } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { MatDialogActions } from '@angular/material/dialog';
-import { catchError, map, Observable, of, share, startWith, Subject, switchMap } from 'rxjs';
 import { transient } from '../../../../../core';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
@@ -21,44 +19,30 @@ import { SiteLanguagesStatusParams } from './site-languages-status/site-language
   standalone: true,
   imports: [
     MatDialogActions,
-    AsyncPipe,
     SxcGridModule,
   ],
 })
-export class SiteLanguagesComponent implements OnInit, OnDestroy {
+export class SiteLanguagesComponent {
   gridOptions = this.#buildGridOptions();
 
-  #refreshLanguages$ = new Subject<void>();
-
-  viewModel$: Observable<SiteLanguagesViewModel>;
-
   #zoneSvc = transient(ZoneService);
-
   constructor() {
     ModuleRegistry.registerModules([ClientSideRowModelModule]);
   }
 
-  ngOnInit(): void {
+  #refreshLanguagesSig = signal(0);
 
-    this.viewModel$ = this.#refreshLanguages$.pipe(
-      startWith(undefined),
-      switchMap(() => this.#zoneSvc.getLanguages().pipe(catchError(() => of(undefined)))),
-      share(),
-      map(languages => {
-        return { languages };
-      })
-    );
-  }
+  languages = computed(() => {
+    const r = this.#refreshLanguagesSig();
+    return this.#zoneSvc.getLanguage(undefined);
+  })
 
-  ngOnDestroy(): void {
-    this.#refreshLanguages$.complete();
-  }
 
   #toggleLanguage(language: SiteLanguage, enable: boolean): void {
-    this.#zoneSvc.toggleLanguage(language.Code, enable).subscribe({
-      error: () => this.#refreshLanguages$.next(),
-      next: () => this.#refreshLanguages$.next(),
-    });
+    this.#zoneSvc.toggleLanguage(language.Code, enable).subscribe(d => { // wait until the language change
+      this.#refreshLanguagesSig.set(this.#refreshLanguagesSig() + 1);
+    })
+
   }
 
   #buildGridOptions(): GridOptions {
@@ -106,8 +90,4 @@ export class SiteLanguagesComponent implements OnInit, OnDestroy {
     };
     return gridOptions;
   }
-}
-
-interface SiteLanguagesViewModel {
-  languages: SiteLanguage[];
 }

@@ -26,3 +26,7 @@ export const keyExtras = prefix + 'extras';
 
 /** Fallback value in case it is missing in url */
 export const partOfPageDefault = 'false';
+
+/** Language settings - multiple values (JSON), WIP 18.03 */
+export const languageUi = prefix + 'languageui';
+export const languageLabels = prefix + 'languagelabels';

@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { transient } from '../../../../../../../core/transient';
-import { classLog } from '../../../../shared/logging';
+import { classLog, ClassLogger } from '../../../../shared/logging';
 import { DataSourceEntity } from "../data-sources/data-source-entity";
 import { DataAdapterBase } from './data-adapter-base';
-import { DataAdapterEntityBase } from "./data-adapter-entity-base";
+import { DataAdapterEntityBase, logSpecsDataAdapterEntityBase } from "./data-adapter-entity-base";
 
 @Injectable()
 export class DataAdapterEntity extends DataAdapterEntityBase {
 
-  log = classLog({DataAdapterEntity}, DataAdapterBase.logSpecs, true);
+  log = classLog({DataAdapterEntity}, logSpecsDataAdapterEntityBase) as ClassLogger<typeof DataAdapterBase.logSpecs> & ClassLogger<typeof logSpecsDataAdapterEntityBase>;
 
   protected dataSourceRaw = transient(DataSourceEntity);
 

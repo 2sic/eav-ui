@@ -1,5 +1,5 @@
 import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef, computed, inject, signal } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -7,8 +7,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
-import { Observable, Subject, map } from 'rxjs';
+import { Subject } from 'rxjs';
 import { Of, transient } from '../../../../../core';
+import { DocsLinkHelperComponent } from '../../admin-shared/docs-link-helper/docs-link-helper.component';
 import { ContentItemsService } from '../../content-items/services/content-items.service';
 import { FeatureNames } from '../../features/feature-names';
 import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
@@ -49,6 +50,7 @@ import { AppConfigurationCardComponent } from './app-configuration-card/app-conf
     RouterOutlet,
     AsyncPipe,
     TippyDirective,
+    DocsLinkHelperComponent,
   ],
 })
 export class AppConfigurationComponent implements OnInit, OnDestroy {
@@ -68,7 +70,6 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
 
   // More proper ViewModel
   appSettingsInternal$ = new Subject<AppInternals>();
-  viewModel$: Observable<AppConfigurationViewModel>;
 
   public appStateAdvanced = false;
   public features = inject(FeaturesScopedService);
@@ -84,33 +85,39 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
   #dialogConfigSvc = transient(DialogConfigAppService);
   #dialogRouter = transient(DialogRoutingService);
 
-  // TODO:: WIP
-  // loadData = signal(0);
 
-  // viewModelSig = computed(() => {
-  //   const load = this.loadData(); // Signal aufrufen
-  //   const s = this.#appInternalsService.getAppInternalsSig(); // Signal aufrufen
-  //   console.log('2dg computed', s.FieldAll.AppSettings?.length, load);
+  #refresh = signal(0);
 
-  //   const props = s.EntityLists;
-  //   const lsTypeName = eavConstants.appMetadata.LightSpeed.ContentTypeName;
+  appIn = computed(() => {
+    const refresh = this.#refresh();
+    return this.#appInternalsService.getAppInternals(undefined)
+  }
+  );
 
-  //   const result: AppConfigurationViewModel = {
-  //     appLightSpeedCount: s.MetadataList.Items.filter(i => i._Type.Name === lsTypeName).length,
-  //     systemSettingsCount: this.isPrimary
-  //       ? props.SettingsSystem.filter(i => i.SettingsEntityScope === SystemSettingsScopes.Site).length
-  //       : props.SettingsSystem.filter(i => !i.SettingsEntityScope).length,
-  //     customSettingsCount: props.AppSettings?.length,
-  //     customSettingsFieldsCount: s.FieldAll.AppSettings?.length,
-  //     systemResourcesCount: this.isPrimary
-  //       ? props.ResourcesSystem.filter(i => i.SettingsEntityScope === SystemSettingsScopes.Site).length
-  //       : props.ResourcesSystem.filter(i => !i.SettingsEntityScope).length,
-  //     customResourcesCount: props.AppResources?.length,
-  //     customResourcesFieldsCount: s.FieldAll.AppResources?.length,
-  //   };
+  viewModelSig = computed(() => {
+    const appInternalsSig = this.appIn()();
+    if (!appInternalsSig)
+      return null;
 
-  //   return result;
-  // });
+    const props = appInternalsSig?.EntityLists;
+    const lsTypeName = eavConstants.appMetadata.LightSpeed.ContentTypeName;
+
+    const result: AppConfigurationViewModel = {
+      appLightSpeedCount: appInternalsSig.MetadataList.Items.filter(i => i._Type.Name === lsTypeName).length,
+      systemSettingsCount: this.isPrimary
+        ? props.SettingsSystem.filter(i => i.SettingsEntityScope === SystemSettingsScopes.Site).length
+        : props.SettingsSystem.filter(i => !i.SettingsEntityScope).length,
+      customSettingsCount: props.AppSettings?.length,
+      customSettingsFieldsCount: appInternalsSig.FieldAll.AppSettings?.length,
+      systemResourcesCount: this.isPrimary
+        ? props.ResourcesSystem.filter(i => i.SettingsEntityScope === SystemSettingsScopes.Site).length
+        : props.ResourcesSystem.filter(i => !i.SettingsEntityScope).length,
+      customResourcesCount: props.AppResources?.length,
+      customResourcesFieldsCount: appInternalsSig?.FieldAll.AppResources?.length,
+    };
+
+    return result;
+  });
 
   constructor(
     private context: Context,
@@ -118,33 +125,13 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
-  ) {
-    // New with proper ViewModel
-    this.viewModel$ = this.appSettingsInternal$.pipe(
-      map(s => {
-        const props = s.EntityLists;
-        const lsTypeName = eavConstants.appMetadata.LightSpeed.ContentTypeName;
-        const result: AppConfigurationViewModel = {
-          appLightSpeedCount: s.MetadataList.Items.filter(i => i._Type.Name == lsTypeName).length,
-          systemSettingsCount: this.isPrimary
-            ? props.SettingsSystem.filter(i => i.SettingsEntityScope === SystemSettingsScopes.Site).length
-            : props.SettingsSystem.filter(i => !i.SettingsEntityScope).length,
-          customSettingsCount: props.AppSettings?.length,
-          customSettingsFieldsCount: s.FieldAll.AppSettings?.length,
-          systemResourcesCount: this.isPrimary
-            ? props.ResourcesSystem.filter(i => i.SettingsEntityScope === SystemSettingsScopes.Site).length
-            : props.ResourcesSystem.filter(i => !i.SettingsEntityScope).length,
-          customResourcesCount: props.AppResources?.length,
-          customResourcesFieldsCount: s.FieldAll.AppResources?.length,
-        }
-        return result;
-      }));
-  }
+  ) { }
 
 
   ngOnInit() {
-    this.fetchSettings();
-    this.#dialogRouter.doOnDialogClosed(() => this.fetchSettings());
+    this.#dialogRouter.doOnDialogClosed(() => {
+      this.#refresh.update(value => value + 1);
+    });
 
     this.#dialogConfigSvc.getCurrent$().subscribe((dialogSettings) => {
       this.dialogSettings = dialogSettings;
@@ -210,10 +197,11 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     });
   }
 
-  openLightSpeed() {
+  getLightSpeedLink(): string {
     const form = AppAdminHelpers.getLightSpeedEditParams(this.context.appId);
     const formUrl = convertFormToUrl(form);
-    this.#dialogRouter.navParentFirstChild([`edit/${formUrl}`]);
+    const urlString = `edit/${formUrl}`;
+    return this.#dialogRouter.urlSubRoute(urlString);
   }
 
   openSiteSettings() {
@@ -245,17 +233,6 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     this.#dialogRouter.navParentFirstChild([`analyze/${part}`]);
   }
 
-  private fetchSettings() {
-    // TODO:: WIP
-    // const x = this.loadData();
-    // this.loadData.set(x +1);
-
-    const getObservable = this.#appInternalsService.getAppInternals();
-    getObservable.subscribe(x => {
-      // 2dm - New mode for Reactive UI
-      this.appSettingsInternal$.next(x);
-    });
-  }
 
   fixContentType(staticName: string, action: 'edit' | 'config') {
     this.#contentTypesSvc.retrieveContentTypes(eavConstants.scopes.configuration.value).subscribe(contentTypes => {

@@ -14,7 +14,7 @@
       <div
         [class]="
           'c-ew__dialog-content u-border-radius-bottom u-add-scrollbar u-hide-scrollbar' +
-          (applyEmptyClass ? ' c-ew__dialog-content--empty' : '')
+          (applyEmptyClass() ? ' c-ew__dialog-content--empty' : '')
         "
         [@contentExpandAnimation]="{
           value: open() ? 'expanded' : 'closed',
@@ -23,19 +23,30 @@
       >
         <!-- This is where the content comes from the parent / calling HTML -->
         <ng-content></ng-content>
+
         <extended-fab-speed-dial class="adam">
           <ng-template extendedFabSpeedDialTriggerContent>
-            <button extended-fab-speed-dial-trigger matRipple (click)="closeDialog()">
+            <button extended-fab-speed-dial-trigger matRipple (click)="closeDialog()" [disabled]="isSaving()">
               <mat-icon>done</mat-icon>
               <span>{{ 'Form.Buttons.Return.Tip' | translate }}</span>
             </button>
           </ng-template>
           <ng-template extendedFabSpeedDialActionsContent>
-            <button extended-fab-speed-dial-action matRipple [disabled]="formsStateService.saveButtonDisabled()" (click)="saveAll(false)">
+            <button
+              extended-fab-speed-dial-action
+              matRipple
+              [disabled]="formsStateService.saveButtonDisabled() || isSaving()"
+              (click)="saveAll(false)"
+            >
               <span>{{ 'Form.Buttons.Save' | translate }}</span>
               <mat-icon>save</mat-icon>
             </button>
-            <button extended-fab-speed-dial-action matRipple [disabled]="formsStateService.saveButtonDisabled()" (click)="saveAll(true)">
+            <button
+              extended-fab-speed-dial-action
+              matRipple
+              [disabled]="formsStateService.saveButtonDisabled() || isSaving()"
+              (click)="saveAll(true)"
+            >
               <span>{{ 'Form.Buttons.SaveAndClose' | translate }}</span>
               <mat-icon>done_all</mat-icon>
             </button>

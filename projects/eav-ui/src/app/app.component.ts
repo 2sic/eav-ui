@@ -18,11 +18,10 @@ import { Context } from './shared/services/context';
   ],
 })
 export class AppComponent extends SxcAppComponent implements OnInit, OnDestroy {
-  private subscription = new Subscription();
+  #subscriptions = new Subscription();
 
-  private titleService = transient(Title);
-
-  private appIconsService = transient(AppIconsService);
+  #titleSvc = transient(Title);
+  #appIconsSvc = transient(AppIconsService);
 
   constructor(
     el: ElementRef,
@@ -39,14 +38,14 @@ export class AppComponent extends SxcAppComponent implements OnInit, OnDestroy {
       }),
     );
     this.context.initRoot();
-    this.appIconsService.load();
+    this.#appIconsSvc.load();
   }
 
   ngOnInit() {
     // Mostly copied from https://blog.bitsrc.io/dynamic-page-titles-in-angular-98ce20b5c334
     // Routes need a data: { title: '...' } for this to work
-    const appTitle = this.titleService.getTitle(); // initial title when loading the page
-    this.subscription.add(
+    const appTitle = this.#titleSvc.getTitle(); // initial title when loading the page
+    this.#subscriptions.add(
       this.router.events.pipe(
         filter(event => event instanceof NavigationEnd),
         map(() => {
@@ -55,11 +54,11 @@ export class AppComponent extends SxcAppComponent implements OnInit, OnDestroy {
             child = child.firstChild;
           return child?.snapshot.data['title'] ?? appTitle;
         }),
-      ).subscribe((title: string) => this.titleService.setTitle(title))
+      ).subscribe((title: string) => this.#titleSvc.setTitle(title))
     );
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    this.#subscriptions.unsubscribe();
   }
 }

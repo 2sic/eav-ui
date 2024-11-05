@@ -8,6 +8,6 @@ export interface Preview {
   icon: string;
 }
 
-export interface HyperlinkDefaultViewModel {
+export interface HyperlinkDefaultModel {
   preview: Preview;
 }

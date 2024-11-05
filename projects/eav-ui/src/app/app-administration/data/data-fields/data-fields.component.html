@@ -1,8 +1,8 @@
 <div class="actions-component">
-  <div class="eav-grid-action-button highlight" matRipple [tippy]="tooltip" (click)="editFields()">
+  <a class="eav-grid-action-button default-link highlight" matRipple [tippy]="tooltip" [href]="params.fieldsUrl(contentType)">
     <mat-icon [matBadge]="value" matBadgePosition="below after" matBadgeColor="accent" matBadgeSize="small"
       [matBadgeHidden]="!value" aria-hidden="false">
       {{icon}}
     </mat-icon>
-  </div>
+  </a>
 </div>

@@ -1,19 +1,19 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { NgClass, NgTemplateOutlet } from '@angular/common';
+import { Component, input, OnChanges, output, SimpleChanges } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { ClickStopPropagationDirective } from '../../shared/directives/click-stop-propagation.directive';
+import { TippyDirective } from '../../shared/directives/tippy.directive';
+import { ArrayHelpers } from '../../shared/helpers/array.helpers';
 import { ViewKey } from '../code-editor.models';
 import { FileAsset } from '../models/file-asset.model';
 import { SourceView } from '../models/source-view.model';
 import { TreeItem } from '../models/tree-item.model';
 import { calculateTreeAppShared } from './code-templates.helpers';
 import { appSharedRoot, CreateTemplateParams } from './code-templates.models';
-import { SortItemsPipe } from './order-items.pipe';
 import { DepthPaddingPipe } from './depth-padding.pipe';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { NgTemplateOutlet, NgClass } from '@angular/common';
-import { ClickStopPropagationDirective } from '../../shared/directives/click-stop-propagation.directive';
-import { ArrayHelpers } from '../../shared/helpers/array.helpers';
-import { TippyDirective } from '../../shared/directives/tippy.directive';
+import { SortItemsPipe } from './order-items.pipe';
 
 @Component({
   selector: 'app-code-templates',
@@ -33,10 +33,10 @@ import { TippyDirective } from '../../shared/directives/tippy.directive';
   ],
 })
 export class CodeTemplatesComponent implements OnChanges {
-  @Input() view?: SourceView;
-  @Input() templates: FileAsset[];
-  @Output() openView: EventEmitter<ViewKey> = new EventEmitter();
-  @Output() createTemplate: EventEmitter<CreateTemplateParams> = new EventEmitter();
+  view? = input<SourceView>();
+  templates = input<FileAsset[]>();
+  openView = output<ViewKey>();
+  createTemplate = output<CreateTemplateParams>();
   tree: TreeItem[];
   toggledItemsApp: string[] = [];
   toggledItemsShared: string[] = [];
@@ -45,15 +45,15 @@ export class CodeTemplatesComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.templates != null) {
-      this.tree = calculateTreeAppShared(this.templates);
+      this.tree = calculateTreeAppShared(this.templates());
     }
     if (changes.view != null) {
       const previousView: SourceView = changes.view?.previousValue;
       if (previousView) {
         this.toggleItem(previousView.FileName, previousView.IsShared);
       }
-      if (this.view) {
-        this.showFileInTree(this.view.FileName, this.view.IsShared);
+      if (this.view()) {
+        this.showFileInTree(this.view().FileName, this.view().IsShared);
       }
     }
   }

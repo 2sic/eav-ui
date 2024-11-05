@@ -1,5 +1,5 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, computed, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
@@ -13,14 +13,13 @@ import { ColumnDefinitions } from '../../../shared/ag-grid/column-definitions';
 import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';
 import { SxcGridModule } from '../../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../../../shared/routing/dialog-routing.service';
-import { View } from '../../models';
 import { ViewsService } from '../../services';
 import { AnalyzeSettingsService } from '../../services/analyze-settings.service';
 import { AnalyzeSettingsKeyComponent } from './analyze-settings-key/analyze-settings-key.component';
 import { AnalyzeSettingsTotalResultsComponent } from './analyze-settings-total-results/analyze-settings-total-results.component';
 import { AnalyzeSettingsTotalResultsParams } from './analyze-settings-total-results/analyze-settings-total-results.models';
 import { AnalyzeSettingsValueComponent } from './analyze-settings-value/analyze-settings-value.component';
-import { AnalyzeParts, SettingsStackItem } from './analyze-settings.models';
+import { AnalyzeParts } from './analyze-settings.models';
 
 @Component({
   selector: 'app-analyze-settings',
@@ -46,19 +45,21 @@ export class AnalyzeSettingsComponent implements OnInit {
   #analyzeSettingsSvc = transient(AnalyzeSettingsService);
   #dialogRouter = transient(DialogRoutingService);
 
-  views = signal<View[]>([]);
-  selectedView = signal<string>(undefined);
-  stack = signal<SettingsStackItem[]>([]);
-
   constructor(
     private dialog: MatDialogRef<AnalyzeSettingsComponent>,
   ) {
     this.part = this.#dialogRouter.getParam('part') as Of<typeof AnalyzeParts>;
   }
 
+  selectedView = signal<string>(undefined);
+  views = this.#viewsSvc.getAll();
+
+  stack = computed(() =>
+    this.#analyzeSettingsSvc.getStackSig(this.part, undefined, this.selectedView(), true)
+  );
+
   ngOnInit(): void {
-    this.getViews();
-    this.getStack();
+    this.#getStack();
   }
 
   closeDialog(): void {
@@ -67,19 +68,12 @@ export class AnalyzeSettingsComponent implements OnInit {
 
   changeView(viewGuid: string): void {
     this.selectedView.set(viewGuid);
-    this.getStack();
+    this.#getStack();
   }
 
-  private getViews(): void {
-    this.#viewsSvc.getAll().subscribe(views => {
-      this.views.set(views);
-    });
-  }
 
-  private getStack(): void {
-    this.#analyzeSettingsSvc.getStack(this.part, undefined, this.selectedView(), true).subscribe(stack => {
-      this.stack.set(stack);
-    });
+  #getStack(): void {
+    this.stack();
   }
 
   private buildGridOptions(): GridOptions {

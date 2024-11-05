@@ -53,7 +53,7 @@ import { MetadataDto, MetadataItem, MetadataRecommendation } from './models/meta
 })
 export class MetadataComponent implements OnInit {
 
-  log = classLog({MetadataComponent});
+  log = classLog({ MetadataComponent });
 
   #entitiesSvc = transient(EntityEditService);
   #metadataSvc = transient(MetadataService);
@@ -71,7 +71,33 @@ export class MetadataComponent implements OnInit {
   gridOptions = this.#buildGridOptions();
 
   fabOpen = signal(false);
-  itemFor = signal<EavForInAdminUi | undefined>(undefined);
+
+  #params = convert(this.#dialogRoutes.getParams(['targetType', 'keyType', 'key', 'title', 'contentTypeStaticName']), p => ({
+    targetType: parseInt(p.targetType, 10),
+    keyType: p.keyType as Of<typeof MetadataKeyTypes>,
+    key: p.key,
+    contentTypeStaticName: p.contentTypeStaticName,
+  }));
+
+  // 2024-11-05 2dm: broken, must inform @2dg
+  // itemFor = computed<EavForInAdminUi | undefined>(() => {
+  //   const items = this.#contentItemSvc.getAllSig(this.#params.contentTypeStaticName, undefined)
+  //   const item = items()?.find(i => i.Guid === this.#params.key);
+  //   if (item?.For)
+  //     return item.For;
+  //   return undefined;
+  // });
+
+  // Signal to get itemFor - must be _outside_ the computed property, otherwise it regenerates infinitely
+  #itemsFromHttp = this.#contentItemSvc.getAllSig(this.#params.contentTypeStaticName, undefined);
+
+  itemFor = computed<EavForInAdminUi | undefined>(() => {
+    const item = this.#itemsFromHttp()?.find(i => i.Guid === this.#params.key);
+    return (item?.For)
+      ? item.For
+      : undefined;
+  });
+
 
   metadataSet = signal<MetadataDto>({ Items: [], Recommendations: [] } as MetadataDto);
 
@@ -82,16 +108,9 @@ export class MetadataComponent implements OnInit {
     );
   });
 
-  #params = convert(this.#dialogRoutes.getParams(['targetType', 'keyType', 'key', 'title', 'contentTypeStaticName']), p => ({
-    targetType: parseInt(p.targetType, 10),
-    keyType: p.keyType as Of<typeof MetadataKeyTypes>,
-    key: p.key,
-    contentTypeStaticName: p.contentTypeStaticName,
-  }));
   protected title = decodeURIComponent(this.#dialogRoutes.getParam('title') ?? '');
 
   ngOnInit() {
-    this.#fetchFor();
     this.#fetchMetadata();
     this.#dialogRoutes.doOnDialogClosed(() => this.#fetchMetadata());
   }
@@ -155,15 +174,6 @@ export class MetadataComponent implements OnInit {
     return EditPrep.newMetadataFromInfo(contentType, x);
   }
 
-  #fetchFor() {
-    if (!this.#params.contentTypeStaticName) return;
-
-    this.#contentItemSvc.getAll(this.#params.contentTypeStaticName).subscribe(items => {
-      const item = items.find(i => i.Guid === this.#params.key);
-      if (item?.For)
-        this.itemFor.set(item.For);
-    });
-  }
 
   #fetchMetadata() {
     const logGetMetadata = this.log.rxTap('getMetadata');

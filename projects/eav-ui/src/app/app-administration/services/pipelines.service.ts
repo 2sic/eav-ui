@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { from, map, switchMap } from 'rxjs';
 import { FileUploadResult } from '../../shared/components/file-upload-dialog';
 import { toBase64 } from '../../shared/helpers/file-to-base64.helper';
-import { Query } from '../models/query.model';
 import { webApiEntityList } from '../../shared/services/entity.service';
 import { HttpServiceBase } from '../../shared/services/http-service-base';
+import { Query } from '../models/query.model';
 
 const webApiQueryImport = 'admin/query/import';
 const webApiQueryClone = 'admin/query/Clone';
@@ -19,9 +19,15 @@ export const webApiQueryDataSources = 'admin/query/DataSources';
 export class PipelinesService extends HttpServiceBase {
 
   getAll(contentType: string) {
-    return this.http.get<Query[]>(this.apiUrl(webApiEntityList), {
+    return this.getHttpApiUrl<Query[]>(webApiEntityList, {
       params: { appId: this.appId, contentType }
     });
+  }
+
+  getAllSig(contentType: string, initial?: Query[]) {
+    return this.getSignal<Query[]>(webApiEntityList, {
+      params: { appId: this.appId, contentType }
+    }, initial);
   }
 
   importQuery(file: File) {
@@ -43,7 +49,7 @@ export class PipelinesService extends HttpServiceBase {
   }
 
   clonePipeline(id: number) {
-    return this.http.get<null>(this.apiUrl(webApiQueryClone), {
+    return this.getHttpApiUrl<null>(webApiQueryClone, {
       params: { Id: id.toString(), appId: this.appId }
     });
   }

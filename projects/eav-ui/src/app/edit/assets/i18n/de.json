@@ -237,7 +237,11 @@
     "RichImages.Ratio100.Label": "Bildbreite 100%",
     "RichImages.Ratio100.Tooltip": "Bild auf ganze Breite (desktop/mobile) anpassen",
     "RichImages.RatioXofY.Label": "Bildbreite {0}/{1}",
-    "RichImages.RatioXofY.Tooltip": "Bildbreite {0}/{1} der verfügbaren Fläche auf Desktop; Mobil wird automatisch angepasst"
+    "RichImages.RatioXofY.Tooltip": "Bildbreite {0}/{1} der verfügbaren Fläche auf Desktop; Mobil wird automatisch angepasst",
+    "Splitter.0": "Trennung ohne Lücke, damit der nächste Inhalt auf einer neuen Zeile beginnt",
+    "Splitter.s": "Trennung mit kleiner Lücke",
+    "Splitter.m": "Trennung mit mittelgrosser Lücke",
+    "Splitter.l": "Trennung mit grosser Lücke"
   },
   "Features": {
     "NotActivated": "Diese Funktion ist nicht aktiviert - mehr erfahren"

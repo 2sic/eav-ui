@@ -48,6 +48,18 @@ body {
   overflow: hidden;
 }
 
+/* Class for links in AG-Grids (naming not ideal), ensures it looks like text */
+.default-link {
+  color: black;
+  text-decoration: none;
+}
+
+/* New v18.03 for links which should fit into the entire AG-Grid cell */
+a.fill-cell {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+}
 
 // Create CSS variables for the dialog max height
 :root {
@@ -56,16 +68,15 @@ body {
   --edit-dialog-header-height: 52px;
   --edit-content-max-height-no-margins: calc(100vh - var(--edit-dialog-header-height));
 
-
   // Debug Views on main edit
   --edit-footer-bar-height: 52px;
   --edit-footer-container-height: 300px;
   --edit-footer-container-margin: 16px;
   --edit-footer-container-height-total: calc(var(--edit-footer-container-height) + var(--edit-footer-container-margin));
 
-
   // TODO: this must be deprecated but still used in popup dialog
   --edit-ui-dialog-max-height-mobile: calc(100vh - var(--edit-dialog-header-height));
-  --edit-content-max-height-default: calc(100vh - var(--edit-dialog-header-height) - var(--edit-dialog-margins-vertical));
-
+  --edit-content-max-height-default: calc(
+    100vh - var(--edit-dialog-header-height) - var(--edit-dialog-margins-vertical)
+  );
 }

@@ -18,8 +18,6 @@ const logSpecs = {
   unlicensedFeatures: true,
 };
 
-// TODO: @2dg - try to refactor the observables away so it only provides signals
-
 /**
  * Singleton Service to provide information about enabled/disabled features.
  *

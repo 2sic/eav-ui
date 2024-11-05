@@ -1,7 +1,7 @@
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
 import { GridOptions, ICellRendererParams, ModuleRegistry } from '@ag-grid-community/core';
 import { NgClass } from '@angular/common';
-import { ChangeDetectorRef, Component, inject, OnInit, signal, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, computed, inject, OnInit, signal, ViewContainerRef } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogActions } from '@angular/material/dialog';
@@ -48,16 +48,13 @@ import { AppsListActionsParams } from './apps-list-actions/apps-list-actions.mod
     MatBadgeModule,
     RouterOutlet,
     DragAndDropDirective,
-    // WIP 2dm - needed for the lightspeed buttons to work
   ],
 })
 export class AppsListComponent implements OnInit {
 
-  log = classLog({AppsListComponent});
-  fabOpen = signal(false);
-  apps = signal<App[]>([]);
+  log = classLog({ AppsListComponent });
 
-  gridOptions = this.buildGridOptions();
+  gridOptions = this.#buildGridOptions();
 
   public features = inject(FeaturesScopedService);
   protected isAddFromFolderEnabled = this.features.isEnabled[FeatureNames.AppSyncWithSiteFiles];
@@ -76,37 +73,47 @@ export class AppsListComponent implements OnInit {
     ModuleRegistry.registerModules([ClientSideRowModelModule]);
   }
 
+  fabOpen = signal(false);
+
+  #refresh = signal(0);
+
+  apps = computed(() => {
+    const refresh = this.#refresh();
+    return this.#appsListSvc.getAll();
+  });
+
+
   ngOnInit(): void {
-    this.#loadApps();
-    this.#dialogRouter.doOnDialogClosed(() =>this.#loadApps());
+    this.#dialogRouter.doOnDialogClosed(() => this.#loadApps());
   }
 
   openChange(open: boolean): void {
     this.fabOpen.set(open);
   }
 
+  // TODO: @2dg - try to fix this so the link is directly in the HTML without a function call
   browseCatalog(): void {
     window.open('https://2sxc.org/apps', '_blank');
   }
 
   createApp(): void {
-    this.#dialogRouter.navParentFirstChild(['create']);
+    this.#dialogRouter.navRelative(['create']);
   }
 
   createInheritedApp(): void {
-    this.#dialogRouter.navParentFirstChild(['create-inherited']);
+    this.#dialogRouter.navRelative(['create-inherited']);
   }
 
   addFromFolder(): void {
-    this.#dialogRouter.navParentFirstChild(['add-app-from-folder']);
+    this.#dialogRouter.navRelative(['add-app-from-folder']);
   }
 
   importApp(files?: File[]): void {
     const dialogData: FileUploadDialogData = { files };
-    this.#dialogRouter.navParentFirstChild(['import'], { state: dialogData });
+    this.#dialogRouter.navRelative(['import'], { state: dialogData });
   }
 
-  private deleteApp(app: App): void {
+  #deleteApp(app: App): void {
     const result = prompt(`This cannot be undone. To really delete this app, type 'yes!' or type/paste the app-name here. Are you sure want to delete '${app.Name}' (${app.Id})?`);
     if (result === null) return;
     if (result === app.Name || result === 'yes!') {
@@ -126,33 +133,27 @@ export class AppsListComponent implements OnInit {
     }
   }
 
-  private flushApp(app: App): void {
-    if (!confirm(`Flush the App Cache for ${app.Name} (${app.Id})?`)) return;
+  #flushApp(app: App): void {
+    if (!confirm(`Flush the App Cache for ${app.Name} (${app.Id})?`))
+      return;
     this.snackBar.open('Flushing cache...');
     this.#appsListSvc.flushCache(app.Id).subscribe({
-      error: () => {
-        this.snackBar.open('Cache flush failed. Please check console for more information', undefined, { duration: 3000 });
-      },
-      next: () => {
-        this.snackBar.open('Cache flushed', undefined, { duration: 2000 });
-      },
+      error: () => this.snackBar.open('Cache flush failed. Please check console.', undefined, { duration: 3000 }),
+      next: () => this.snackBar.open('Cache flushed', undefined, { duration: 2000 }),
     });
   }
 
-  private openLightSpeed(app: App): void {
+  #getLightSpeedLink(app?: App): string {
     const formUrl = convertFormToUrl(AppAdminHelpers.getLightSpeedEditParams(app.Id));
-    this.#dialogRouter.navParentFirstChild([`${this.context.zoneId}/${app.Id}/edit/${formUrl}`]);
-  }
-
-  private openApp(app: App): void {
-    this.#dialogRouter.navParentFirstChild([app.Id.toString()]);
+    const urlString = `${this.context.zoneId}/${app.Id}/edit/${formUrl}`;
+    return this.#dialogRouter.urlSubRoute(urlString);
   }
 
   openLightSpeedFeatInfo() {
     openFeatureDialog(this.matDialog, FeatureNames.LightSpeed, this.viewContainerRef, this.changeDetectorRef);
   }
 
-  private buildGridOptions(): GridOptions {
+  #buildGridOptions(): GridOptions {
     const gridOptions: GridOptions = {
       ...defaultGridOptions,
       columnDefs: [
@@ -163,27 +164,26 @@ export class AppsListComponent implements OnInit {
         {
           ...ColumnDefinitions.IconShow,
           cellRenderer: AgBoolIconRenderer,
-          cellRendererParams: (() => ({ settings: () => AppListShowIcons }))(),
+          cellRendererParams: { settings: () => AppListShowIcons },
         },
         {
           ...ColumnDefinitions.TextWide,
           field: 'Name',
           cellClass: 'apps-list-primary-action highlight'.split(' '),
           sort: 'asc',
-          onCellClicked: (p) => {
-            const app: App = p.data;
-            this.openApp(app);
-          },
           cellRenderer: (p: ICellRendererParams) => {
             const app: App = p.data;
+            const url = this.#dialogRouter.urlSubRoute(app.Id.toString());
             return `
-            <div class="container">
-              ${app.Thumbnail
-                ? `<img class="image logo" src="${app.Thumbnail}?w=40&h=40&mode=crop"></img>`
-                : `<div class="image logo"><span class="material-symbols-outlined">star</span></div>`
-              }
-              <div class="text">${p.value}</div>
-            </div>
+              <a class="default-link fill-cell" href="#${url}">
+                <div class="container">
+                  ${app.Thumbnail
+                    ? `<img class="image logo" src="${app.Thumbnail}?w=40&h=40&mode=crop"></img>`
+                    : `<div class="image logo"><span class="material-symbols-outlined">star</span></div>`
+                  }
+                  ${p.value}
+                </div>
+              </a>
             `;
           },
         },
@@ -206,18 +206,18 @@ export class AppsListComponent implements OnInit {
           headerName: 'Code',
           filter: BooleanFilterComponent,
           cellRenderer: AgBoolIconRenderer,
-          cellRendererParams: (() => ({ settings: (app) => AppListCodeErrorIcons } as AgBoolCellIconsParams<App>))(),
+          cellRendererParams: (() => ({ settings: () => AppListCodeErrorIcons } as AgBoolCellIconsParams<App>))(),
         },
         {
           ...ColumnDefinitions.ActionsPinnedRight3,
           cellRenderer: AppsListActionsComponent,
           cellRendererParams: {
-            onOpenLightspeed: (app) => this.openLightSpeed(<App>app),
+            lightSpeedLink: (app: App) => this.#getLightSpeedLink(app),
             openLightspeedFeatureInfo: () => this.openLightSpeedFeatInfo(),
             do: (verb, app) => {
               switch (verb) {
-                case 'deleteApp': this.deleteApp(app); break;
-                case 'flushCache': this.flushApp(app); break;
+                case 'deleteApp': this.#deleteApp(app); break;
+                case 'flushCache': this.#flushApp(app); break;
               }
             }
           } satisfies AppsListActionsParams,
@@ -228,9 +228,7 @@ export class AppsListComponent implements OnInit {
   }
 
   #loadApps(): void {
-    this.#appsListSvc.getAll().subscribe(apps => {
-      this.apps.set(apps);
-    })
+    this.#refresh.update(v => v + 1);
   }
 
 }

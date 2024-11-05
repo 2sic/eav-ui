@@ -1,20 +1,18 @@
-@if (viewModel$ | async; as vm) {
 <mat-toolbar appToggleDebug>
   <div class="toolbar-container">
     <!-- App Logo -->
-    @if (vm.dialogSettings?.Context.App.Icon) {
-    <img (click)="sidenav.opened = !sidenav.opened"
-      [src]="vm.dialogSettings?.Context.App.Icon + '?w=40&h=40&mode=crop'" />
+    @if (dialogSettings()?.Context.App.Icon) {
+      <img (click)="sidenav.opened = !sidenav.opened" [src]="dialogSettings()?.Context.App.Icon + '?w=40&h=40&mode=crop'" />
     } @else {
-    <mat-icon class="menu-container" (click)="sidenav.opened = !sidenav.opened">menu</mat-icon>
+      <mat-icon class="menu-container" (click)="sidenav.opened = !sidenav.opened">menu</mat-icon>
     }
     <!-- App Name -->
     <div class="d-flex">
-      @if (vm.dialogSettings?.Context.App.SettingsScope === AppScopes.Global) {
-      Global
+      @if (dialogSettings()?.Context.App.SettingsScope === AppScopes.Global) {
+        Global
       }
-      @if (vm.dialogSettings?.Context.App.SettingsScope !== AppScopes.Global) {
-      {{ vm.dialogSettings?.Context.App.Name }}
+      @if (dialogSettings()?.Context.App.SettingsScope !== AppScopes.Global) {
+        {{ dialogSettings()?.Context.App.Name }}
       }
       <span>
         <span class="mat-icon-admin">
@@ -27,8 +25,8 @@
     <xng-breadcrumb [separator]="emptyTemplate">
       <ng-container *xngBreadcrumbItem="let breadcrumb; let info = info; let last = last">
         @if (last) {
-        <mat-icon class="breadcrumb-icon">chevron_right</mat-icon>
-        {{ breadcrumb }}
+          <mat-icon class="breadcrumb-icon">chevron_right</mat-icon>
+          {{ breadcrumb }}
         }
       </ng-container>
     </xng-breadcrumb>
@@ -40,10 +38,9 @@
   </button>
 </mat-toolbar>
 <mat-sidenav-container appToggleDebug>
-
   <mat-sidenav #sidenav [mode]="smallScreen.matches ? 'over' : 'side'" [opened]="sideNavOpened">
     @for (navItem of navItems; track navItem.path) {
-    <app-nav-item-list [navItem]="navItem"></app-nav-item-list>
+      <app-nav-item-list [navItem]="navItem"></app-nav-item-list>
     }
     <div class="sideNav-bottom-info">
       <p>use App logo to show/hide menu</p>
@@ -54,4 +51,3 @@
     <router-outlet></router-outlet>
   </mat-sidenav-content>
 </mat-sidenav-container>
-}

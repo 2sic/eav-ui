@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GoToDevRest } from '../../../dev-rest/go-to-dev-rest';
+import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { WebApi } from '../../models/web-api.model';
 import { WebApiActionsParams } from './web-api-actions.models';
 
@@ -17,6 +18,7 @@ import { WebApiActionsParams } from './web-api-actions.models';
     MatRippleModule,
     MatIconModule,
     MatMenuModule,
+    TippyDirective,
   ],
 })
 export class WebApiActionsComponent implements ICellRendererAngularComp {

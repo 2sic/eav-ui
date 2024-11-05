@@ -1,11 +1,11 @@
 import { ColDef } from '@ag-grid-community/core';
-import { BooleanFilterComponent } from '../components/boolean-filter/boolean-filter.component';
 import { App } from '../../apps-management/models/app.model';
-import { AgBoolIconRenderer } from './apps-list-show/ag-bool-icon-renderer.component';
 import { TrueFalseComponent } from '../../dev-rest/api/true-false/true-false.component';
 import { TrueFalseParams } from '../../dev-rest/api/true-false/true-false.models';
+import { BooleanFilterComponent } from '../components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../components/id-field/id-field.component';
 import { IdFieldParams } from '../components/id-field/id-field.models';
+import { AgBoolIconRenderer } from './apps-list-show/ag-bool-icon-renderer.component';
 
 const cellClassSecAction = 'secondary-action no-padding'.split(' ');
 
@@ -148,6 +148,13 @@ export class ColumnDefinitions {
    */
   static Number: ColDef = {
     width: 70,
+    headerClass: 'dense',
+    cellClass: 'number-cell no-outline'.split(' '),
+    ...textSortFilter,
+  };
+
+  static Number2: ColDef = {
+    width: 110,
     headerClass: 'dense',
     cellClass: 'number-cell no-outline'.split(' '),
     ...textSortFilter,

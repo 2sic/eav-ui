@@ -1,6 +1,6 @@
 import { UrlMatchResult, UrlSegment } from '@angular/router';
-import { EditUrlParams } from './edit-url-params.model';
 import { classLog } from '../../shared/logging';
+import { EditUrlParams } from './edit-url-params.model';
 
 const logSpecs = {
   all: true,
@@ -20,15 +20,56 @@ const logger = classLog('EditRouteMatchers', logSpecs);
  * - ':zoneId/:appId/edit/:items/update/:updateEntityGuid/:updateFieldId'
  */
 export function matchEditRoot(url: UrlSegment[]): UrlMatchResult {
+  return editRouteMatcherRoot(url, 2, 4, 1);
+  // const l = logger.fnIf('editRouteMatcherRoot', { url });
+  // const specs = checkRelevantAndIds(url, 2, 4);
+  // if (specs == null) return l.rNull();
+  // const match: UrlMatchResult = {
+  //   consumed: url.slice(0, specs.hasPurpose ? 7 : 4),
+  //   posParams: {
+  //     zoneId: url[0],
+  //     appId: url[1],
+  //     items: url[3],
+  //     ...specs.identities,
+  //   } satisfies EditUrlParams<UrlSegment>,
+  // };
+  // return l.r(match, '✅');
+}
+
+/**
+ * Matches:
+ * - ':zoneId/v2/:mid/:cbid/:appId/edit/:items'
+ * - ':zoneId/v2/:mid/:cbid/:appId/edit/:items/details/:detailsEntityGuid/:detailsFieldId'
+ * - ':zoneId/v2/:mid/:cbid/:appId/edit/:items/update/:updateEntityGuid/:updateFieldId'
+ */
+export function matchEditRootV2(url: UrlSegment[]): UrlMatchResult {
+  return editRouteMatcherRoot(url, 5, 7, 4);
+  // const l = logger.fnIf('editRouteMatcherRoot', { url });
+  // const specs = checkRelevantAndIds(url, 5, 7);
+  // if (specs == null) return l.rNull();
+  // // debugger;
+  // const match: UrlMatchResult = {
+  //   consumed: url.slice(0, specs.hasPurpose ? 10 : 7),
+  //   posParams: {
+  //     zoneId: url[0],
+  //     appId: url[4],
+  //     items: url[6],
+  //     ...specs.identities,
+  //   } satisfies EditUrlParams<UrlSegment>,
+  // };
+  // return l.r(match, '✅');
+}
+
+function editRouteMatcherRoot(url: UrlSegment[], posEdit: number, posPurpose: number, posAppId: number): UrlMatchResult {
   const l = logger.fnIf('editRouteMatcherRoot', { url });
-  const specs = checkRelevantAndIds(url, 2, 4);
+  const specs = checkRelevantAndIds(url, posEdit, posPurpose);
   if (specs == null) return l.rNull();
   const match: UrlMatchResult = {
-    consumed: url.slice(0, specs.hasPurpose ? 7 : 4),
+    consumed: url.slice(0, posPurpose + (specs.hasPurpose ? 3 : 0)),
     posParams: {
       zoneId: url[0],
-      appId: url[1],
-      items: url[3],
+      appId: url[posAppId],
+      items: url[posAppId + 2],
       ...specs.identities,
     } satisfies EditUrlParams<UrlSegment>,
   };
@@ -99,15 +140,50 @@ export function matchEditSubRefresh(url: UrlSegment[]): UrlMatchResult {
  * Matches ':zoneId/:appId/edit/refresh/:items'
  */
 export function matchEditRootRefresh(url: UrlSegment[]): UrlMatchResult {
+  return editRouteMatcherRootRefresh(url, 5, 2, 1);
+  // const l = logger.fnIf('editRouteMatcherRootRefresh', { url });
+  // if (url.length < 5) return l.rNull();
+  // if (url[2].path !== 'edit' || url[3].path !== 'refresh') return l.rNull();
+  // const match: UrlMatchResult = {
+  //   consumed: url.slice(0, 5),
+  //   posParams: {
+  //     zoneId: url[0],
+  //     appId: url[1],
+  //     items: url[4],
+  //   } satisfies EditUrlParams<UrlSegment>,
+  // };
+  // return l.r(match, '✅');
+}
+
+/** 
+ * Matches ':zoneId/v2/:mid/:cbid/:appId/edit/refresh/:items'
+ */
+export function matchEditRootRefreshV2(url: UrlSegment[]): UrlMatchResult {
+  return editRouteMatcherRootRefresh(url, 8, 5, 4);
+  // const l = logger.fnIf('editRouteMatcherRootRefresh', { url });
+  // if (url.length < 8) return l.rNull();
+  // if (url[5].path !== 'edit' || url[6].path !== 'refresh') return l.rNull();
+  // const match: UrlMatchResult = {
+  //   consumed: url.slice(0, 8),
+  //   posParams: {
+  //     zoneId: url[0],
+  //     appId: url[4],
+  //     items: url[7],
+  //   } satisfies EditUrlParams<UrlSegment>,
+  // };
+  // return l.r(match, '✅');
+}
+
+function editRouteMatcherRootRefresh(url: UrlSegment[], segments: number, posEdit: number, posAppId: number): UrlMatchResult {
   const l = logger.fnIf('editRouteMatcherRootRefresh', { url });
-  if (url.length < 5) return l.rNull();
-  if (url[2].path !== 'edit' || url[3].path !== 'refresh') return l.rNull();
+  if (url.length < segments) return l.rNull();
+  if (url[posEdit].path !== 'edit' || url[posEdit + 1].path !== 'refresh') return l.rNull();
   const match: UrlMatchResult = {
-    consumed: url.slice(0, 5),
+    consumed: url.slice(0, segments),
     posParams: {
       zoneId: url[0],
-      appId: url[1],
-      items: url[4],
+      appId: url[posAppId],
+      items: url[posAppId + 3],
     } satisfies EditUrlParams<UrlSegment>,
   };
   return l.r(match, '✅');

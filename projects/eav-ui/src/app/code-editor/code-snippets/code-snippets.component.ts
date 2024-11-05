@@ -1,14 +1,14 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { SnippetsSets } from '../models/snippet.model';
-import { ObjectToArrayPipe } from './object-to-array.pipe';
-import { TranslateModule } from '@ngx-translate/core';
 import { KeyValuePipe } from '@angular/common';
+import { Component, input, output } from '@angular/core';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
+import { TranslateModule } from '@ngx-translate/core';
 import { ClickStopPropagationDirective } from '../../shared/directives/click-stop-propagation.directive';
-import { ArrayHelpers } from '../../shared/helpers/array.helpers';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
+import { ArrayHelpers } from '../../shared/helpers/array.helpers';
 import { SafeHtmlPipe } from '../../shared/pipes/safe-html.pipe';
+import { SnippetsSets } from '../models/snippet.model';
+import { ObjectToArrayPipe } from './object-to-array.pipe';
 
 @Component({
   selector: 'app-code-snippets',
@@ -27,8 +27,8 @@ import { SafeHtmlPipe } from '../../shared/pipes/safe-html.pipe';
   ],
 })
 export class CodeSnippetsComponent {
-  @Input() snippets: SnippetsSets;
-  @Output() insertSnippet: EventEmitter<string> = new EventEmitter();
+  snippets = input<SnippetsSets>();
+  insertSnippet = output<string>();
   toggledSections: string[] = [];
   toggledFolders: string[] = [];
   toggledInfos: string[] = [];

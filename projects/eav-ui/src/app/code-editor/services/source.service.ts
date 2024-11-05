@@ -1,12 +1,12 @@
-import { Injectable } from '@angular/core';
+import { computed, Injectable, Signal } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { WebApi, WebApiDetails } from '../../app-administration/models';
 import { ViewOrFileIdentifier } from '../../shared/models/edit-form.model';
+import { HttpServiceBase } from '../../shared/services/http-service-base';
 import { FileAsset } from '../models/file-asset.model';
 import { PredefinedTemplatesResponse } from '../models/predefined-template.model';
 import { Preview } from '../models/preview.models';
 import { SourceView } from '../models/source-view.model';
-import { HttpServiceBase } from '../../shared/services/http-service-base';
 
 const appFilesAll = 'admin/AppFiles/AppFiles';
 const appFilesAsset = 'admin/AppFiles/asset';
@@ -21,7 +21,7 @@ export class SourceService extends HttpServiceBase {
 
   /** ViewKey is templateId or path */
   get(viewKey: string, global: boolean, urlItems: ViewOrFileIdentifier[]): Observable<SourceView> {
-    return this.http.get<SourceView>(this.apiUrl(appFilesAsset), {
+    return this.getHttpApiUrl<SourceView>(appFilesAsset, {
       params: {
         appId: this.appId,
         global,
@@ -47,6 +47,38 @@ export class SourceService extends HttpServiceBase {
     );
   }
 
+  // TODO: For Code Editor,
+  // getSig(viewKey: string, global: boolean, urlItems: ViewOrFileIdentifier[], initial: undefined): Signal<SourceView> {
+  //   // Signal für die SourceView erstellen
+  //   const temp = this.getSignal<SourceView>(appFilesAsset, {
+  //     params: {
+  //       appId: this.appId,
+  //       global,
+  //       ...this.templateIdOrPath(viewKey, global, urlItems),
+  //     },
+  //   }, initial);
+  //   return computed(() => {
+  //     const result = temp();
+
+  //     if (result && result.Type.toLocaleLowerCase() === 'auto') {
+  //       switch (result.Extension.toLocaleLowerCase()) {
+  //         case '.cs':
+  //         case '.cshtml':
+  //           result.Type = 'Razor';
+  //           break;
+  //         case '.html':
+  //         case '.css':
+  //         case '.js':
+  //           result.Type = 'Token';
+  //           break;
+  //       }
+  //     }
+
+  //     return result;
+  //   });
+  // }
+
+
   /** ViewKey is templateId or path */
   save(viewKey: string, global: boolean, view: SourceView, urlItems: ViewOrFileIdentifier[]): Observable<boolean> {
     return this.http.post<boolean>(this.apiUrl(appFilesAsset), view, {
@@ -59,7 +91,7 @@ export class SourceService extends HttpServiceBase {
   }
 
   getAll(mask?: string): Observable<FileAsset[]> {
-    return this.http.get<{ Files: FileAsset[] }>(this.apiUrl(appFilesAll), {
+    return this.getHttpApiUrl<{ Files: FileAsset[] }>(appFilesAll, {
       params: {
         appId: this.appId,
         ...(mask && { mask }),
@@ -75,7 +107,7 @@ export class SourceService extends HttpServiceBase {
   }
 
   getWebApis(): Observable<WebApi[]> {
-    return this.http.get<{ files: WebApi[] }>(this.apiUrl(apiExplorerAppApiFiles), {
+    return this.getHttpApiUrl<{ files: WebApi[] }>(apiExplorerAppApiFiles, {
       params: {
         appId: this.appId,
       },
@@ -102,14 +134,59 @@ export class SourceService extends HttpServiceBase {
     );
   }
 
+  getWebApisSig(): Signal<WebApi[]> {
+    // Get the signal that retrieves the API files
+    const apiFilesSignal = this.getSignal<{ files: WebApi[] }>(apiExplorerAppApiFiles, {
+      params: {
+        appId: this.appId,
+      },
+    });
+
+    // Use a computed signal to transform the data
+    const webApisSignal = computed(() => {
+      const files = apiFilesSignal()?.files;
+
+      if(!files) {
+        return [];
+      }
+
+      // Ensure the default values for `isShared` and `isCompiled`
+      files.forEach(file => {
+        file.isShared ??= false;
+        file.isCompiled ??= false;
+      });
+
+      // Map the files to the desired WebApi format
+      return files.map(file => {
+        const splitIndex = file.path.lastIndexOf('/');
+        const fileExtIndex = file.path.lastIndexOf('.');
+        const folder = file.path.substring(0, splitIndex);
+        const name = file.path.substring(splitIndex + 1, fileExtIndex);
+
+        return {
+          path: file.path,
+          folder,
+          name,
+          isShared: file.isShared,
+          endpointPath: file.endpointPath,
+          isCompiled: file.isCompiled,
+          edition: file.edition,
+        } as WebApi;
+      });
+    });
+
+    return webApisSignal;
+  }
+
+
   getWebApiDetails(apiPath: string): Observable<WebApiDetails> {
-    return this.http.get<WebApiDetails>(this.apiUrl(apiExplorerInspect), {
+    return this.getHttpApiUrl<WebApiDetails>(apiExplorerInspect, {
       params: { appId: this.appId, zoneId: this.zoneId, path: apiPath },
     });
   }
 
   getPredefinedTemplates(purpose?: 'Template' | 'Search' | 'Api', type?: 'Token' | 'Razor'): Observable<PredefinedTemplatesResponse> {
-    return this.http.get<PredefinedTemplatesResponse>(this.apiUrl(appFilesPredefinedTemplates), {
+    return this.getHttpApiUrl<PredefinedTemplatesResponse>(appFilesPredefinedTemplates, {
       params: {
         ...(purpose && { purpose }),
         ...(type && { type }),
@@ -118,7 +195,7 @@ export class SourceService extends HttpServiceBase {
   }
 
   getPreview(path: string, global: boolean, templateKey: string): Observable<Preview> {
-    return this.http.get<Preview>(this.apiUrl(appFilesPreview), {
+    return this.getHttpApiUrl<Preview>(appFilesPreview, {
       params: {
         appId: this.appId,
         path,

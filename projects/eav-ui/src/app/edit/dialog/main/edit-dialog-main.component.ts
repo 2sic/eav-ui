@@ -19,6 +19,7 @@ import { computedWithPrev } from '../../../shared/signals/signal.utilities';
 import { UserPreferences } from '../../../shared/user/user-preferences.service';
 import { LoadIconsService } from '../../assets/icons/load-icons.service';
 import { EntityFormBuilderComponent } from '../../entity-form/entity-form-builder/form-builder.component';
+import { EntityFormStateService } from '../../entity-form/entity-form-state.service';
 import { PickerTreeDataHelper } from '../../fields/picker/picker-tree/picker-tree-data-helper';
 import { FormConfigService } from '../../form/form-config.service';
 import { FormDataService } from '../../form/form-data.service';
@@ -93,12 +94,13 @@ const logSpecs = {
 })
 export class EditDialogMainComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  log = classLog({EditDialogMainComponent}, logSpecs);
+  log = classLog({ EditDialogMainComponent }, logSpecs);
 
   @ViewChildren(EntityFormBuilderComponent) formBuilderRefs: QueryList<EntityFormBuilderComponent>;
 
   #globalConfigService = inject(GlobalConfigService);
   #formConfig = inject(FormConfigService);
+
 
   /** Signal to tell the UI if the footer should show and/or the footer needs more space (changes CSS) */
   #prefManager = inject(UserPreferences).part(footerPreferences)
@@ -106,6 +108,9 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
 
   #loadIconsService = transient(LoadIconsService);
   #formDataService = transient(FormDataService);
+  #entityFormStateService = transient(EntityFormStateService);
+  isSaving = this.#entityFormStateService.isSaving;
+
 
   protected viewInitiated = signal(false);
 
@@ -130,17 +135,33 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
     const l = this.log.fnIf('constructor');
     this.dialog.disableClose = true;
 
+
     // Initialize default user preferences for footer show/hide
     const pref = this.#prefManager;
     if (pref.data().pinned == null)
       pref.set('pinned', this.#formConfig.config.dialogContext.User?.IsSystemAdmin ?? false);
 
     // Watch to save based on messages from sub-dialogs.
+    // effect(() => {
+    //   console.log(this.formsStateService.triggerTrySaveAndMaybeClose())
+    //   // TODO: Old Code Wird x fach aufgerufen
+    //   const { tryToSave, close } = this.formsStateService.triggerTrySaveAndMaybeClose();
+    //   if (!tryToSave) return;
+    //   this.saveAll(close);
+    // }, { allowSignalWrites: true });
+
+    let previousState = { tryToSave: false, close: false };
+
     effect(() => {
-      const { tryToSave, close } = this.formsStateService.triggerTrySaveAndMaybeClose();
-      if (!tryToSave) return;
-      this.saveAll(close);
-    });
+      const currentState = this.formsStateService.triggerTrySaveAndMaybeClose();
+
+      if (currentState.tryToSave && (currentState.tryToSave !== previousState.tryToSave || currentState.close !== previousState.close)) {
+        this.saveAll(currentState.close);
+      }
+
+      previousState = currentState;  // Zustand aktualisieren
+    }, { allowSignalWrites: true });
+
   }
 
   #saveResult: SaveResult;
@@ -218,7 +239,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
   closeDialog(forceClose?: boolean): void {
     if (forceClose)
       return this.dialog.close(this.#formConfig.config.createMode ? this.#saveResult : undefined);
-    
+
     if (!this.formsStateService.readOnly().isReadOnly && this.formsStateService.formsAreDirty())
       return this.#snackBarYouHaveUnsavedChanges();
 
@@ -227,12 +248,14 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
 
   /** Save all forms */
   saveAll(close: boolean) {
+    this.#entityFormStateService.isSaving.set(true);
+
     const l = this.log.fn('saveAll', { close });
     if (this.formsStateService.formsAreValid()) {
 
       const items = this.formBuilderRefs
         .map(formBuilderRef => {
-          const eavItem = this.itemService.get(formBuilderRef.entityGuid);
+          const eavItem = this.itemService.get(formBuilderRef.entityGuid());
           const isValid = this.formsStateService.getFormValid(eavItem.Entity.Guid);
           if (!isValid)
             return null;
@@ -269,10 +292,17 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
           this.#saveResult = result;
           if (close)
             this.closeDialog();
+
+          setTimeout(() =>
+            this.#entityFormStateService.isSaving.set(false)
+
+            , 500);
+
         },
         error: err => {
           l.a('SAVE FAILED:', err);
           this.snackBar.open('Error', null, { duration: 2000 });
+          this.#entityFormStateService.isSaving.set(false)
         },
       });
     } else {
@@ -328,7 +358,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
 
       if (isCtrlS(event)) {
         event.preventDefault();
-        if (!this.formsStateService.readOnly().isReadOnly)
+        if (!this.formsStateService.readOnly().isReadOnly && !this.#entityFormStateService.isSaving())
           this.saveAll(event.altKey);
       }
     });

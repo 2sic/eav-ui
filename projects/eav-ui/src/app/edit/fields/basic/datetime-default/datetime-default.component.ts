@@ -53,10 +53,9 @@ export class DatetimeDefaultComponent {
 
   protected ui = this.fieldState.ui;
   uiValue = this.fieldState.uiValue;
-  protected settings = this.fieldState.settings;
   protected basics = this.fieldState.basics;
 
-  protected useTimePicker = computed(() => this.settings().UseTimePicker, SignalEquals.bool);
+  protected useTimePicker = this.fieldState.settingExt('UseTimePicker');
 
   /** The date/time picker needs the date-info cleaned up, so it doesn't do time-zone handling */
   valueForTimePicker = computed(() => this.uiValue()?.replace('Z', ''), SignalEquals.string);
@@ -75,8 +74,6 @@ export class DatetimeDefaultComponent {
   }
 
   updateValue(event: MatDatepickerInputEvent<Dayjs>) {
-    // @2dg old code, remove after test and verify from 2dm
-    // utc(keepLocalTime: true) to preserve 'neutral' time from OwlDateTime picker
     const newValue = event.value != null ? event.value.utc(true).toJSON() : null;
     this.ui().setIfChanged(newValue);
   }

@@ -8,6 +8,7 @@ import { FieldSettingsPickerMerged } from '../../../../../../../edit-types/src/F
 import { FieldSettingsWithPickerSource } from '../../../../../../../edit-types/src/PickerSources';
 import { EditForm, EditPrep } from "../../../../../app/shared/models/edit-form.model";
 import { EntityService } from "../../../../../app/shared/services/entity.service";
+import { ClassLogger } from '../../../../shared/logging/class/class-logger';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
 import { EntityFormStateService } from '../../../entity-form/entity-form-state.service';
 import { FormConfigService } from '../../../form/form-config.service';
@@ -20,9 +21,17 @@ import { DeleteEntityProps } from "../models/picker.models";
 import { PickerFeatures } from '../picker-features.model';
 import { DataAdapterBase } from "./data-adapter-base";
 
+export const logSpecsDataAdapterEntityBase = {
+  ...DataAdapterBase.logSpecs,
+  editItem: true,
+  getPrefill: true, // for create Entity & query
+};
+
 export abstract class DataAdapterEntityBase extends DataAdapterBase {
 
   //#region Services, constructor, log
+
+  log: ClassLogger<typeof DataAdapterBase.logSpecs> & ClassLogger<typeof logSpecsDataAdapterEntityBase>;
 
   protected formConfig = inject(FormConfigService);
   #editRoutingService = inject(EditRoutingService);
@@ -32,7 +41,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
   protected group = inject(EntityFormStateService).formGroup;
   #entityService = transient(EntityService);
 
-  constructor() { super();}
+  constructor() { super(); }
 
   protected name = this.fieldState.name;
 
@@ -91,7 +100,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
   // should always be available.
   // Must test all use cases and then probably simplify again.
   editItem(editParams: { entityGuid: string, entityId: number }, entityType: string): void {
-    const l = this.log.fn('editItem', { editParams });
+    const l = this.log.fnIf('editItem', { editParams });
     const editGuid = editParams?.entityGuid;
     const formParams = this.#urlToObject(editGuid == null ? this.#createParams.result() : this.#editParams.result());
     const form: EditForm = {
@@ -104,6 +113,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
         },
       ],
     };
+    l.a('form', { form });
     const config = this.fieldState.config;
 
     // Open the form
@@ -161,11 +171,6 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
     });
   }
 
-  /** Quick helper */
-  #getExtSetting<K extends keyof FieldSettingsWithPickerSource>(name: K) {
-    return this.fieldState.settingExt(name);
-  }
-
   /**
    * Will create a prefill object (if configured) which is based on a field-mask.
    * This allows create-entity to use add prefills.
@@ -174,9 +179,15 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
    * new 11.11.03
    */
   // #prefill = transient(FieldMask).initSignal('Prefill', this.fieldState.settingExt<FieldSettingsWithPickerSource, 'CreatePrefill'>('CreatePrefill'));
-  #prefill = transient(FieldMask).initSignal('Prefill', this.#getExtSetting('CreatePrefill'));
-  #createParams = transient(FieldMask).initSignal('CreateParams', this.#getExtSetting('CreateParameters'));
-  #editParams = transient(FieldMask).initSignal('CreateParams', this.#getExtSetting('EditParameters'));
+  #prefill = transient(FieldMask).initSignal('Prefill', this.fieldState.settingExt('CreatePrefill'));
+  #createParams = transient(FieldMask).initSignal('CreateParams', this.fieldState.settingExt('CreateParameters'));
+  #editParams = transient(FieldMask).initSignal('CreateParams', this.fieldState.settingExt('EditParameters'));
+
+  // #getPrefillSetting() {
+  //   const maybe = this.fieldState.settingExt('CreatePrefill');
+  //   if (maybe()) return maybe;
+  //   return this.fieldState.settingExt('Prefill');
+  // }
 
 
   #urlToObject(prefill: string) {

@@ -1,5 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { AllScenarios, DevRestQueryViewModel } from '../..';
+import { Component, input, OnInit } from '@angular/core';
+import { AllScenarios, DevRestBaseModel } from '../..';
 
 @Component({
   selector: 'app-dev-query-introduction',
@@ -7,15 +7,12 @@ import { AllScenarios, DevRestQueryViewModel } from '../..';
   standalone: true,
 })
 export class DevRestQueryIntroductionComponent implements OnInit {
-
-  @Input() data: DevRestQueryViewModel;
+  data = input<DevRestBaseModel>();
 
   /** List of scenarios */
   scenarios = AllScenarios;
 
   constructor() { }
 
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void { }
 }

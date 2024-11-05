@@ -31,8 +31,8 @@
         <mat-label>Content Type</mat-label>
         @if (guidedContentType) {
         <mat-select formControlName="contentType" required
-          [placeholder]="!contentTypes().length ? 'No items found' : ''">
-          @for (contentType of contentTypes(); track contentType) {
+          [placeholder]="!contentTypes()()?.length ? 'No items found' : ''">
+          @for (contentType of contentTypes()(); track contentType) {
           <mat-option [value]="contentType.StaticName">
             {{ contentType.Label }}
           </mat-option>

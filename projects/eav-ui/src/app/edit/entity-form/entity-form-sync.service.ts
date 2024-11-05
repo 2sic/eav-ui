@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
-import { classLog } from '../../shared/logging';
-import { FormsStateService } from '../form/forms-state.service';
-import { ServiceBase } from '../../shared/services/service-base';
 import { combineLatest, distinctUntilChanged, map, startWith } from 'rxjs';
+import { classLog } from '../../shared/logging';
 import { mapUntilChanged } from '../../shared/rxJs/mapUntilChanged';
-import { EntityFormStateService } from './entity-form-state.service';
-import { ItemService } from '../state/item.service';
-import { ItemValuesOfLanguage } from '../state/item-values-of-language.model';
-import { FieldValueHelpers } from '../shared/helpers/field-value.helpers';
+import { ServiceBase } from '../../shared/services/service-base';
 import { FormConfigService } from '../form/form-config.service';
+import { FormsStateService } from '../form/forms-state.service';
+import { FieldValueHelpers } from '../shared/helpers/field-value.helpers';
+import { ItemValuesOfLanguage } from '../state/item-values-of-language.model';
+import { ItemService } from '../state/item.service';
+import { EntityFormStateService } from './entity-form-state.service';
 
 /**
  * A Service to ....
@@ -37,7 +37,9 @@ export class EntityFormSyncService extends ServiceBase {
       form.valueChanges.pipe(
         map(() => form.dirty),
         startWith(form.dirty),
-        // distinctUntilChanged(), // cant have distinctUntilChanged because dirty state is not reset on form save
+        // We can't have distinctUntilChanged because dirty state is not reset on form save.
+        // leave this comment and the code below for future reference, so people don't add it back.
+        // distinctUntilChanged(),
       ).subscribe(isDirty => {
         this.formsStateSvc.setFormDirty(entityGuid, isDirty);
       })

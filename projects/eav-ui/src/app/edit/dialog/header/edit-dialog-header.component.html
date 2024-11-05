@@ -1,34 +1,45 @@
-  <mat-card class="eav-header">
-    <button mat-icon-button class="eav-exit-button" (click)="close()" [tippyTranslate]="'Form.Buttons.' + (config.isParentDialog ? 'Exit' : 'Return') + '.Tip'">
-      <mat-icon class="eav-icon">{{ config.isParentDialog ? 'clear' : 'arrow_back' }}</mat-icon>
-    </button>
-    <div class="eav-languages">
-      @if (hasLanguages) {
-        @defer {
-          <app-language-switcher [disabled]="disabled"></app-language-switcher>
-        }
+<mat-card class="eav-header">
+  <!-- Close button to the left -->
+  <button
+    mat-icon-button
+    class="eav-exit-button"
+    (click)="close()"
+    [tippyTranslate]="'Form.Buttons.' + (config.isParentDialog ? 'Exit' : 'Return') + '.Tip'"
+  >
+    <mat-icon class="eav-icon">{{ config.isParentDialog ? 'clear' : 'arrow_back' }}</mat-icon>
+  </button>
+
+  <!-- Language Bar (if used). The empty div is always needed because ATM the alignment would otherwise be off (should fix) -->
+  <div class="eav-languages">
+    @if (hasLanguages()) {
+      @defer {
+        <app-language-switcher [disabled]="disabled()"></app-language-switcher>
       }
-    </div>
-    @if (readOnly().isReadOnly) {
-      <mat-icon class="eav-hint-icon" [tippyTranslate]="'General.ReadOnlyHint.' + readOnly().reason">
-        lock
-      </mat-icon>
     }
-    @if (config.isCopy) {
-      <mat-icon class="eav-hint-icon" tippyTranslate="General.CopyHint">
-        file_copy
-      </mat-icon>
-    }
-    <button mat-button class="eav-publish-button" [disabled]="readOnly().isReadOnly" (click)="openPublishStatusDialog()"
-      [tippyTranslate]="'PublishStatus.' + publishMode() + '.Tip'">
-      <span class="eav-publish-mode">
-        {{ 'PublishStatus.Label' | translate }}
-        <b>{{ 'PublishStatus.' + publishMode() | translate | uppercase }}</b>
-      </span>
+  </div>
+
+  <!-- END -->
+  @if (readOnly().isReadOnly) {
+    <mat-icon class="eav-hint-icon" [tippyTranslate]="'General.ReadOnlyHint.' + readOnly().reason"> lock </mat-icon>
+  }
+  @if (config.isCopy) {
+    <mat-icon class="eav-hint-icon" tippyTranslate="General.CopyHint"> file_copy </mat-icon>
+  }
+  <button
+    mat-button
+    class="eav-publish-button"
+    [disabled]="readOnly().isReadOnly"
+    (click)="openPublishStatusDialog()"
+    [tippyTranslate]="'PublishStatus.' + publishMode() + '.Tip'"
+  >
+    <span class="eav-publish-mode">
+      {{ 'PublishStatus.Label' | translate }}
+      <b>{{ 'PublishStatus.' + publishMode() | translate | uppercase }}</b>
+    </span>
+  </button>
+  @if (showLicenseWarning()) {
+    <button mat-button tippyTranslate="License-EditUi-Warning-Tooltip" (click)="openUnlicensedDialog()">
+      {{ 'License-EditUi-Warning-Label' | translate }} 🛡️
     </button>
-    @if (showLicenseWarning()) {
-      <button mat-button tippyTranslate="License-EditUi-Warning-Tooltip" (click)="openUnlicensedDialog()">
-        {{ 'License-EditUi-Warning-Label' | translate }} 🛡️
-      </button>
-    }
-  </mat-card>
+  }
+</mat-card>

@@ -1,24 +1,30 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Signal } from '@angular/core';
 import { from, map, switchMap } from 'rxjs';
-import { Field } from '../../shared/fields/field.model';
-import { webApiFieldsAll } from '../../shared/fields/content-types-fields.service';
 import { FileUploadResult } from '../../shared/components/file-upload-dialog';
+import { webApiFieldsAll } from '../../shared/fields/content-types-fields.service';
+import { Field } from '../../shared/fields/field.model';
 import { toBase64 } from '../../shared/helpers/file-to-base64.helper';
-import { ContentItem } from '../models/content-item.model';
 import { webApiEntityList, webApiEntityRoot } from '../../shared/services/entity.service';
 import { HttpServiceBase } from '../../shared/services/http-service-base';
+import { ContentItem } from '../models/content-item.model';
 
 @Injectable()
 export class ContentItemsService extends HttpServiceBase {
 
   getAll(contentTypeStaticName: string) {
-    return this.http.get<ContentItem[]>(this.apiUrl(webApiEntityList), {
+    return this.getHttpApiUrl<ContentItem[]>(webApiEntityList, {
       params: { appId: this.appId, contentType: contentTypeStaticName }
     });
   }
 
+  getAllSig(contentTypeStaticName: string, initial: undefined): Signal<ContentItem[]> {
+    return this.getSignal<ContentItem[]>(webApiEntityList, {
+      params: { appId: this.appId, contentType: contentTypeStaticName }
+    }, initial);
+  }
+
   getColumns(contentTypeStaticName: string) {
-    return this.http.get<Field[]>(this.apiUrl(webApiFieldsAll), {
+    return this.getHttpApiUrl<Field[]>(webApiFieldsAll, {
       params: { appId: this.appId, staticName: contentTypeStaticName }
     });
   }

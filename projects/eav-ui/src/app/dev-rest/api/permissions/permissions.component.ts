@@ -1,9 +1,9 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';
-import { DevRestApiViewModel } from '../api-template-vars';
+import { Component, input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { ColumnDefinitions } from '../../../shared/ag-grid/column-definitions';
+import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';
 import { SxcGridModule } from '../../../shared/modules/sxc-grid-module/sxc-grid.module';
+import { DevRestApiModel } from '../api-template-vars';
 
 @Component({
   selector: 'app-dev-api-permissions',
@@ -12,7 +12,7 @@ import { SxcGridModule } from '../../../shared/modules/sxc-grid-module/sxc-grid.
   imports: [SxcGridModule,],
 })
 export class DevRestApiPermissionsComponent implements OnInit, OnChanges {
-  @Input() data: DevRestApiViewModel;
+  data = input<DevRestApiModel>();
 
   gridOptions: GridOptions;
   gridItems: ApiPermissionsGridItem[];
@@ -34,58 +34,58 @@ export class DevRestApiPermissionsComponent implements OnInit, OnChanges {
     this.gridItems = [
       {
         requirement: 'Ignore All Security Checks <code>[AllowAnonymous]</code>',
-        class: this.data.details.security.ignoreSecurity,
-        method: this.data.selected.security.ignoreSecurity,
-        effective: this.data.selected.mergedSecurity.ignoreSecurity,
+        class: this.data().details.security.ignoreSecurity,
+        method: this.data().selected.security.ignoreSecurity,
+        effective: this.data().selected.mergedSecurity.ignoreSecurity,
         comments: 'If this is set all other security checks are skipped',
       },
       {
         requirement: 'Allow Anonymous Use',
-        class: this.data.details.security.allowAnonymous,
-        method: this.data.selected.security.allowAnonymous,
-        effective: this.data.selected.mergedSecurity.allowAnonymous,
+        class: this.data().details.security.allowAnonymous,
+        method: this.data().selected.security.allowAnonymous,
+        effective: this.data().selected.mergedSecurity.allowAnonymous,
         comments: '',
       },
       {
         requirement: 'Require Verification Token',
-        class: this.data.details.security.requireVerificationToken,
-        method: this.data.selected.security.requireVerificationToken,
-        effective: this.data.selected.mergedSecurity.requireVerificationToken,
+        class: this.data().details.security.requireVerificationToken,
+        method: this.data().selected.security.requireVerificationToken,
+        effective: this.data().selected.mergedSecurity.requireVerificationToken,
         comments: '',
       },
       {
         requirement: 'Allow users with <strong>view</strong> permissions',
-        class: this.data.details.security.view,
-        method: this.data.selected.security.view,
-        effective: this.data.selected.mergedSecurity.view,
+        class: this.data().details.security.view,
+        method: this.data().selected.security.view,
+        effective: this.data().selected.mergedSecurity.view,
         comments: '',
       },
       {
         requirement: 'Allow users with <strong>edit</strong> permissions',
-        class: this.data.details.security.edit,
-        method: this.data.selected.security.edit,
-        effective: this.data.selected.mergedSecurity.edit,
+        class: this.data().details.security.edit,
+        method: this.data().selected.security.edit,
+        effective: this.data().selected.mergedSecurity.edit,
         comments: '',
       },
       {
         requirement: 'Allow users with <strong>admin</strong> permissions',
-        class: this.data.details.security.admin,
-        method: this.data.selected.security.admin,
-        effective: this.data.selected.mergedSecurity.admin,
+        class: this.data().details.security.admin,
+        method: this.data().selected.security.admin,
+        effective: this.data().selected.mergedSecurity.admin,
         comments: '',
       },
       {
         requirement: 'Allow users with <strong>super-user</strong> permissions',
-        class: this.data.details.security.superUser,
-        method: this.data.selected.security.superUser,
-        effective: this.data.selected.mergedSecurity.superUser,
+        class: this.data().details.security.superUser,
+        method: this.data().selected.security.superUser,
+        effective: this.data().selected.mergedSecurity.superUser,
         comments: '',
       },
       {
         requirement: 'Require Context',
-        class: this.data.details.security.requireContext,
-        method: this.data.selected.security.requireContext,
-        effective: this.data.selected.mergedSecurity.requireContext,
+        class: this.data().details.security.requireContext,
+        method: this.data().selected.security.requireContext,
+        effective: this.data().selected.mergedSecurity.requireContext,
         comments: 'If required, the context must be included - see also headers',
       },
     ];

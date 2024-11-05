@@ -4,17 +4,19 @@ import { Component } from '@angular/core';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { ContentItem } from '../models/content-item.model';
 import { ContentItemsActionsParams, ContentItemType } from './content-items-actions.models';
 
 @Component({
-  selector: 'app-content-items-actions',
+  selector: 'app-data-bundle-actions',
   templateUrl: './content-items-actions.component.html',
   standalone: true,
   imports: [
     MatRippleModule,
     MatIconModule,
     MatMenuModule,
+    TippyDirective,
   ],
 })
 export class ContentItemsActionsComponent implements ICellRendererAngularComp {

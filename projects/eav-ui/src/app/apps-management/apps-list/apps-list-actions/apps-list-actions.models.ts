@@ -1,5 +1,5 @@
-import { App } from '../../models/app.model';
 import { LightSpeedActionsParams } from '../../../admin-shared/lightspeed-action/lightspeed-actions.models';
+import { App } from '../../models/app.model';
 
 export type AppsListActionsType = 'deleteApp' | 'flushCache';
 

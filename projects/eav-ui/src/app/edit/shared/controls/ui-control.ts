@@ -3,7 +3,6 @@ import isEqual from 'lodash-es/isEqual';
 import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
 import { classLog } from '../../../shared/logging';
 import { DebugFields } from '../../edit-debug';
-import { FieldConfigSet } from '../../fields/field-config-set.model';
 import { FieldValueHelpers } from '../helpers/field-value.helpers';
 import { ValidationMsgHelper } from '../validation/validation-messages.helpers';
 import { AbstractControlPro } from '../validation/validation.helpers';
@@ -15,7 +14,7 @@ const logSpecs = {
   set: false,
   disable: false,
   getErrors: true,
-  fields: [...DebugFields, 'minValue'],
+  fields: [...DebugFields, '*'],
 };
 
 const pfx = 'ValidationMessage.';
@@ -43,13 +42,10 @@ export class UiControl {
     return new UiControl({ dirty: false, invalid: false, touched: false, value: null, disabled: false } as AbstractControl);
   }
 
-  //#region simple direct properties
+  //#region simple direct properties & complex properties
   get dirty() { return this.control.dirty; }
   get invalid() { return this.control.invalid; }
   get touched() { return this.control.touched; }
-  //#endregion
-
-  //#region complex properties
   get disabled() { return this.control.disabled || this.moreDisabled; }
   get touchedAndInvalid() { return this.control.touched && this.control.invalid; }
   //#endregion
@@ -65,11 +61,11 @@ export class UiControl {
     const before = this.control.value;
     this.log.aIfInList('fields', this.name, { before, newValue }, 'setIfChanged');
     if (isEqual(newValue, this.control.value)) return;
-    this.set(newValue);
+    this.#set(newValue);
   }
 
   /** Use to update form controls value */
-  set(newValue: FieldValue): void {
+  #set(newValue: FieldValue): void {
     const control = this.control;
     const before = control.value;
     this.log.aIfInList('fields', this.name, { before, newValue }, 'set');
@@ -80,6 +76,7 @@ export class UiControl {
     if (!control.dirty && !FieldValueHelpers.fieldValuesAreEqual(before, newValue))
       control.markAsDirty();
 
+    // Note: 2024-10-21 ca. 18.02 we have some timing issues, error always seems to show previous error; maybe fixed now, otherwise revisit
     // Set value must happen at the end, otherwise errors will be late by one cycle
     // for example, they could show "required" after the value was
     control.patchValue(newValue);
@@ -116,17 +113,21 @@ export class UiControl {
   //#endregion
 
   /** Calculates error message */
-  getErrors(config: FieldConfigSet): string {
+  getErrors(): string {
     const control = this.control;
-    const l = this.log.fnIfInList('getErrors', 'fields', config.fieldName, { control, config });
-    if (!control.invalid) return l.r('', 'valid');
-    if (!control.dirty && !control.touched) return l.r('', 'not dirty or touched');
+    const errors = control.errors;
+    const l = this.log.fnIfInList('getErrors', 'fields', this.name, { control, name: this.name });
+    if (!control.invalid)
+      return l.r('', 'valid');
+    if (!control.dirty && !control.touched)
+      return l.r('', 'not dirty or touched');
 
-    for (const errorKey of Object.keys(control.errors)) {
+    for (const errorKey of Object.keys(errors)) {
       const error = (errorKey === 'formulaError')
-        ? control.errors['formulaMessage'] ?? ValidationMsgHelper.validationMessages[errorKey]?.(config)
-        : ValidationMsgHelper.validationMessages[errorKey]?.(config);
-      if (error) return l.r(error, 'error found');
+        ? control.errors['formulaMessage'] ?? ValidationMsgHelper.messages[errorKey]?.(true)
+        : ValidationMsgHelper.messages[errorKey]?.(true);
+      if (error)
+        return l.r(error, 'error found');
     }
 
     return l.r('', 'no error');
@@ -139,15 +140,18 @@ export class UiControl {
 
   getWarnings(): string {
     const control = this.control as AbstractControlPro;
-    if (control._warning$.value == null) { return ''; }
-    if (!control.dirty && !control.touched) { return ''; }
+    if (control._warning == null)
+      return '';
+    if (!control.dirty && !control.touched)
+      return '';
 
     let warning = '';
-    for (const warningKey of Object.keys(control._warning$.value)) {
+    for (const warningKey of Object.keys(control._warning)) {
       warning = (warningKey === 'formulaWarning')
-        ? control._warning$.value['formulaMessage'] ?? this.#warningMessages[warningKey]
+        ? control._warning['formulaMessage'] ?? this.#warningMessages[warningKey]
         : this.#warningMessages[warningKey];
-      if (warning) break;
+      if (warning)
+        break;
     }
     return warning;
   }

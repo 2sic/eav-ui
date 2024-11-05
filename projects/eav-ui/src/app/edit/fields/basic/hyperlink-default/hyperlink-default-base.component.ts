@@ -87,7 +87,7 @@ export class HyperlinkDefaultBaseComponent implements OnInit {
     PagePicker.open(this.config, this.group, this.matDialog, this.viewContainerRef, this.changeDetectorRef, (page) => {
       // convert to page:xyz format (if it wasn't cancelled)
       if (!page) return;
-      this.fieldState.ui().set(`page:${page.id}`);
+      this.fieldState.ui().setIfChanged(`page:${page.id}`);
     });
   }
 

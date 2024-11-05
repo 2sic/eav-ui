@@ -1,10 +1,8 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { Component, OnInit, signal } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { Component, computed } from '@angular/core';
+import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, RouterOutlet } from '@angular/router';
 import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';
-import { ViewUsageData } from '../../models/view-usage-data.model';
-import { ViewUsage } from '../../models/view-usage.model';
 import { ViewsService } from '../../services/views.service';
 // tslint:disable-next-line:max-line-length
 import { MatButtonModule } from '@angular/material/button';
@@ -28,14 +26,11 @@ import { buildData } from './views-usage.helpers';
     RouterOutlet,
     SxcGridModule,
     TippyDirective,
+    MatDialogModule,
   ],
 })
-export class ViewsUsageComponent implements OnInit {
+export class ViewsUsageComponent {
   gridOptions = this.buildGridOptions();
-
-  viewUsage = signal<ViewUsage>(undefined);
-  viewTooltip = signal(undefined);
-  data = signal<ViewUsageData[]>(undefined);
 
   private viewsService = transient(ViewsService);
 
@@ -44,18 +39,23 @@ export class ViewsUsageComponent implements OnInit {
     private route: ActivatedRoute,
   ) { }
 
-  ngOnInit() {
-    const viewGuid = this.route.snapshot.paramMap.get('guid');
-    this.viewsService.getUsage(viewGuid).subscribe(viewUsages => {
+  viewGuid = this.route.snapshot.paramMap.get('guid');
 
-      const viewUsage = viewUsages[0];
-      this.viewUsage.set(viewUsage);
-      const viewTooltip = `ID: ${viewUsage.Id}\nGUID: ${viewUsage.Guid}`;
-      this.viewTooltip.set(viewTooltip);
-      const data = buildData(viewUsage);
-      this.data.set(data);
-    });
+  #usage = this.viewsService.getUsage(this.viewGuid);
+
+  view = computed(() => {
+    const usage = this.#usage();
+    if (usage === undefined)
+      return undefined;
+
+    return {
+      viewUsageName: usage[0]?.Name,
+      viewTooltip: `ID: ${usage[0].Id}\nGUID: ${usage[0].Guid}`,
+      data: buildData(usage[0]),
+    }
   }
+  );
+
 
   closeDialog() {
     this.dialog.close();

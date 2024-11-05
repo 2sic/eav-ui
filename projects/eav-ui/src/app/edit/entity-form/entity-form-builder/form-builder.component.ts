@@ -1,4 +1,4 @@
-import { Component, inject, Injector, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, Injector, input, OnDestroy, OnInit } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { filter, map, Observable, take } from 'rxjs';
@@ -10,7 +10,6 @@ import { FieldsTranslateService } from '../../state/fields-translate.service';
 import { EntityFormComponent } from '../entity-form-component/entity-form.component';
 import { EntityFormStateService } from '../entity-form-state.service';
 import { EntityFormSyncService } from '../entity-form-sync.service';
-import { AbstractControlPro } from './../../shared/validation/validation.helpers';
 import { FieldInitSpecs } from './field-init-specs.model';
 import { FormFieldsBuilderService } from './form-fields-builder.service';
 import { FormFieldsSyncService } from './form-fields-sync.service';
@@ -39,14 +38,12 @@ const logSpecs = {
   ],
 })
 export class EntityFormBuilderComponent implements OnInit, OnDestroy {
-
-  @Input() entityGuid: string;
-  @Input() index: number;
-
+  entityGuid = input<string>();
+  index = input<number>();
 
   log = classLog({EntityFormBuilderComponent}, logSpecs);
 
-  /** Inject and start the form state service */
+  /** Inject the form state service to start it here */
   #formStateSvc = inject(EntityFormStateService);
 
   #formulaDesignerService = inject(FormulaDesignerService);
@@ -59,23 +56,23 @@ export class EntityFormBuilderComponent implements OnInit, OnDestroy {
   #fieldsSyncSvc = transient(FormFieldsSyncService);
   #formSyncSvc = transient(EntityFormSyncService);
 
-  constructor( ) { }
+  constructor() { }
 
   public form = this.#formStateSvc.formGroup;
 
   ngOnInit() {
-    const entityGuid = this.entityGuid;
+    const entityGuid = this.entityGuid();
     const l = this.log.fnIf('ngOnInit', { entityGuid });
     this.#fieldsSettingsSvc.init(entityGuid);
     this.#formulaDesignerService.itemSettingsServices[entityGuid] = this.#fieldsSettingsSvc;
     this.#fieldsTranslateSvc.init(entityGuid);
 
-    const ftp$ = this.getFieldsToProcess$(entityGuid);
+    const fields$ = this.#getFieldsToProcess$(entityGuid);
 
     // Create all the controls in the form right at the beginning
-    ftp$.pipe(take(1)).subscribe(allFields => this.#formFieldsBuilderService.createFields(entityGuid, this.form, allFields));
+    fields$.pipe(take(1)).subscribe(allFields => this.#formFieldsBuilderService.createFields(entityGuid, this.form, allFields));
 
-    this.#fieldsSyncSvc.keepFieldsAndStateInSync(this.form, ftp$);
+    this.#fieldsSyncSvc.keepFieldsAndStateInSync(this.form, fields$);
 
     // Sync state to parent: dirty, isValid, value changes
     this.#formSyncSvc.setupSync(entityGuid);
@@ -85,12 +82,9 @@ export class EntityFormBuilderComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.#fieldsSettingsSvc.disableForCleanUp();
-    Object.values(this.form.controls).forEach((control: AbstractControlPro) => {
-      control._warning$.complete();
-    });
   }
 
-  getFieldsToProcess$(entityGuid: string): Observable<FieldInitSpecs[]> {
+  #getFieldsToProcess$(entityGuid: string): Observable<FieldInitSpecs[]> {
     const l = this.log.fnIf('getFieldsToProcess', null, entityGuid);
     const form = this.form;
 
@@ -103,14 +97,14 @@ export class EntityFormBuilderComponent implements OnInit, OnDestroy {
         filter(fields => fields != null && Object.keys(fields).length > 0),
         map(allFields => {
           const fields: FieldInitSpecs[] = Object.entries(allFields)
-            .map(([fieldName, fieldProps]) => {
-              const hasControl = form.controls.hasOwnProperty(fieldName);
-              const control = hasControl ? form.controls[fieldName] : null;
+            .map(([name, props]) => {
+              const hasControl = form.controls.hasOwnProperty(name);
+              const control = hasControl ? form.controls[name] : null;
               return {
-                name: fieldName,
-                props: fieldProps,
-                inputType: fieldProps.constants.inputTypeSpecs.inputType,
-                value: fieldProps.value,
+                name,
+                props,
+                inputType: props.constants.inputTypeSpecs.inputType,
+                value: props.value,
                 hasControl,
                 control,
               } satisfies FieldInitSpecs;

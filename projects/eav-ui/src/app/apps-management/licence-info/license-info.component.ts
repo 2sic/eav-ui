@@ -1,14 +1,14 @@
 import { AgGridAngular } from '@ag-grid-community/angular';
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
 import { GridOptions, ModuleRegistry } from '@ag-grid-community/core';
-import { AsyncPipe, NgClass } from '@angular/common';
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { AsyncPipe, JsonPipe, NgClass } from '@angular/common';
+import { ChangeDetectorRef, Component, computed, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogActions } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterOutlet } from '@angular/router';
-import { BehaviorSubject, catchError, forkJoin, map, Observable, of, share, startWith, Subject, switchMap, tap, timer } from 'rxjs';
+import { catchError, forkJoin, map, Observable, of, share, startWith, Subject, switchMap, tap, timer } from 'rxjs';
 import { transient } from '../../../../../core';
 import { ExpirationExtension } from '../../features/expiration-extension';
 import { FeatureState } from '../../features/models';
@@ -51,16 +51,14 @@ import { LicensesOrderPipe } from './licenses-order.pipe';
     LicensesOrderPipe,
     ActiveFeaturesCountPipe,
     TippyDirective,
+    JsonPipe,
   ],
 })
-export class LicenseInfoComponent implements OnInit, OnDestroy {
+export class LicenseInfoComponent implements OnInit {
   @ViewChild(AgGridAngular) private gridRef?: AgGridAngular;
 
-  disabled$ = new BehaviorSubject(false);
   gridOptions = this.#buildGridOptions();
-
   #refreshLicenses$ = new Subject<void>();
-
   viewModel$: Observable<LicenseInfoViewModel>;
 
   #featuresConfigSvc = transient(FeaturesConfigService);
@@ -74,13 +72,50 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
     ModuleRegistry.registerModules([ClientSideRowModelModule]);
   }
 
+  disabled = signal(false);
+  #refreshLicensesSig = signal(0);
+
+  licensesSig = computed(() => {
+    const refreshState = this.#refreshLicensesSig();
+    this.disabled.set(false);
+    return this.#featuresConfigSvc.getLicensesSig();
+
+  });
+  // TODO: @2dg, ask 2dm licensesSig refresh is false
+  // licensesSignal = this.#featuresConfigSvc.getLicensesSig(); // Holt das Signal, nicht den Wert
+
+  // licensesSig2 = computed(() => {
+  //   const refreshState = this.#refreshLicensesSig(); // Ein Refresh-Mechanismus
+  //   const licenses = this.licensesSignal(); // Holt die Liste der Lizenzen (License[]), nicht das Signal selbst
+
+  //   this.disabled.set(false);
+
+  //   // Überprüfen, ob Lizenzen vorhanden sind, bevor sie erweitert werden
+  //   if (licenses) {
+  //     return licenses.map(l => ({
+  //       ...ExpirationExtension.expandLicense(l), // Lizenz erweitern
+  //       Features: l.Features.map((f: Feature) => ExpirationExtension.expandFeature(f)), // Features erweitern
+  //     }));
+  //   }
+
+  //   // Fallback, falls keine Lizenzen vorhanden sind
+  //   return [];
+  // });
+
+
   ngOnInit(): void {
-    this.#dialogRouter.doOnDialogClosed(() => this.#refreshLicenses$.next());
+    this.#dialogRouter.doOnDialogClosed(() => {
+      this.#refreshLicenses$.next()
+      this.#refreshLicensesSig.set(this.#refreshLicensesSig() + 1);
+    });
+
     this.viewModel$ =
       this.#refreshLicenses$.pipe(
         startWith(undefined),
-        switchMap(() => this.#featuresConfigSvc.getLicenses().pipe(catchError(() => of(undefined)))),
-        tap(() => this.disabled$.next(false)),
+        switchMap(() => this.#featuresConfigSvc.getLicenses().pipe(catchError(() => of(undefined)))), // Use new http Signals
+        tap(() => {
+          this.disabled.set(false);
+        }),
 
         // Fiddle with the data for development tests
         // 2023-11-16 2dm disabled - causes trouble in production
@@ -109,10 +144,6 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
         );
   }
 
-  ngOnDestroy(): void {
-    this.disabled$.complete();
-  }
-
   trackLicenses(index: number, license: License): string {
     return license.Guid;
   }
@@ -139,16 +170,18 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
   }
 
   #toggleFeature(feature: Feature, enabled: boolean): void {
-    this.disabled$.next(true);
+    this.disabled.set(true);
     const state: FeatureState = {
       FeatureGuid: feature.guid,
       Enabled: enabled,
     };
     forkJoin([this.#featuresConfigSvc.saveFeatures([state]), timer(100)]).subscribe({
       error: () => {
+        this.#refreshLicensesSig.set(this.#refreshLicensesSig() + 1);
         this.#refreshLicenses$.next();
       },
       next: () => {
+        this.#refreshLicensesSig.set(this.#refreshLicensesSig() + 1);
         this.#refreshLicenses$.next();
       },
     });
@@ -219,7 +252,7 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
           cellRenderer: FeaturesStatusComponent,
           cellRendererParams: (() => {
             const params: FeaturesStatusParams & IdFieldParams<Feature> = {
-              isDisabled: (feature) => !feature.isConfigurable || this.disabled$.value,
+              isDisabled: (feature) => !feature.isConfigurable || this.disabled(),
               onToggle: (feature, enabled) => this.#toggleFeature(feature, enabled),
               tooltipGetter: (feature: Feature) => feature.isConfigurable ? "Toggle off | default | on" : "This feature can't be configured",
             };
@@ -236,3 +269,5 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
 interface LicenseInfoViewModel {
   licenses: (License & ExpirationExtension)[];
 }
+
+

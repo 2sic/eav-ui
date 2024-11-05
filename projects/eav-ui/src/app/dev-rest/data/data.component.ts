@@ -1,16 +1,15 @@
 import { Context as DnnContext } from '@2sic.com/sxc-angular';
 import { AsyncPipe } from '@angular/common';
-import { Component, HostBinding, Input, OnDestroy } from '@angular/core';
+import { Component, HostBinding, OnDestroy } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
-import { BehaviorSubject, combineLatest, filter, map, share, switchMap } from 'rxjs';
+import { combineLatest, filter, map, share, switchMap } from 'rxjs';
 import { generateApiCalls } from '..';
 import { transient } from '../../../../../core';
 import { EntityLightIdentifier } from '../../../../../edit-types/src/EntityLight';
-import { ContentType } from '../../app-administration/models';
 import { ContentTypesService } from '../../app-administration/services';
 import { PermissionsService } from '../../permissions';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
@@ -24,7 +23,7 @@ import { DevRestTabExamplesComponent } from '../tab-examples/tab-examples.compon
 import { DevRestHttpHeadersComponent } from '../tab-headers/tab-headers.component';
 import { DevRestTabIntroductionComponent } from '../tab-introduction/tab-introduction.component';
 import { DevRestTabPermissionsComponent } from '../tab-permissions/tab-permissions.component';
-import { DevRestDataViewModel } from './data-template-vars';
+import { DevRestDataModel } from './data-template-vars';
 import { DevRestDataIntroductionComponent } from './introduction/introduction.component';
 
 
@@ -53,14 +52,13 @@ const pathToContent = 'app/{appname}/data/{typename}';
     AsyncPipe,
   ],
 })
-export class DevRestDataComponent extends DevRestBase<DevRestDataViewModel> implements OnDestroy {
+export class DevRestDataComponent extends DevRestBase<DevRestDataModel> implements OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
-  @Input() contentTypeInput$: BehaviorSubject<ContentType>;
 
   private entityService = transient(EntityService);
   private contentTypesService = transient(ContentTypesService);
 
-
+  // TODO: @2dg Offen ViewModel
   constructor(
     dialog: MatDialogRef<DevRestDataComponent>,
     router: Router,
@@ -116,7 +114,7 @@ export class DevRestDataComponent extends DevRestBase<DevRestDataViewModel> impl
         this.dialogSettings$
     ]).pipe(
       map(([contentType, scenario, permissions, root, item, diag]) => {
-        var result: DevRestDataViewModel = {
+        var result: DevRestDataModel = {
           ...this.buildBaseViewModel(contentType.Name, contentType.StaticName, diag, permissions, root, scenario),
           contentType,
           itemId: item.Id,

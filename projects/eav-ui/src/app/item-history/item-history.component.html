@@ -1,94 +1,97 @@
 <div class="eav-dialog eav-no-scrollbar">
   <div class="eav-dialog-header">
     <div class="eav-dialog-header__title">Item History</div>
-    <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
+    <button mat-icon-button tippy="Close dialog" (click)="dialog.close()">
       <mat-icon>close</mat-icon>
     </button>
   </div>
   <div class="eav-dialog-content">
     <p>Check version history for this item and restore the version you need.</p>
     @if (historyItems()?.length > 0) {
-    <div class="eav-compare-box">
-      <mat-form-field color="accent" class="eav-mat-form-field eav-compare-box__dropdown">
-        <mat-select [value]="compareWith()" name="Scope" (selectionChange)="compareChange($event.value)">
-          <mat-option value="previous">Compare with: Previous</mat-option>
-          <mat-option value="live">Compare with: Live</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
+      <div class="eav-compare-box">
+        <mat-form-field color="accent" class="eav-mat-form-field eav-compare-box__dropdown">
+          <mat-select [value]="compareWith()" name="Scope" (selectionChange)="compareChange($event.value)">
+            <mat-option value="previous">Compare with: Previous</mat-option>
+            <mat-option value="live">Compare with: Live</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
     }
     <div>
       @if (historyItems() === null) {
-      <div>Loading...</div>
+        <div>Loading...</div>
       }
       @if (historyItems()?.length === 0) {
-      <div>No previous versions of this item found</div>
+        <div>No previous versions of this item found</div>
       }
       @if (historyItems()?.length > 0) {
-      <mat-accordion multi class="eav-history-tables">
-        @for (historyItem of historyItems(); track historyItem) {
-        <mat-expansion-panel [expanded]="expandedPanels[historyItem.versionNumber]"
-          (expandedChange)="panelExpandedChange($event, historyItem.versionNumber)">
-          <mat-expansion-panel-header>
-            <mat-panel-title>Version {{ historyItem.versionNumber }}</mat-panel-title>
-            <mat-panel-description>{{ historyItem.timeStamp | date:'yyyy-MM-dd hh:mm' }}</mat-panel-description>
-          </mat-expansion-panel-header>
-          @if (expandedPanels[historyItem.versionNumber]) {
-          @for (attribute of historyItem.attributes; track attribute) {
-          <div class="eav-table-row">
-            <div class="eav-table-row__main eav-row-main"
-              (click)="attributeExpandedToggle(historyItem.versionNumber, attribute.name)">
-              <div class="eav-row-main__label eav-history-{{ attribute.change }}">
-                {{ attribute.name }}
-              </div>
-              <div class="eav-row-main__value eav-history-{{ attribute.change }}">
-                @if (!expandedAttributes[historyItem.versionNumber + attribute.name]) {
-                {{ attribute.values[0]?.value }}
-                }
-              </div>
-              <div class="eav-row-main__type">
-                <i>[{{ attribute.dataType }}]</i>
-              </div>
-            </div>
-            @if (expandedAttributes[historyItem.versionNumber + attribute.name]) {
-            <div class="eav-table-row__details">
-              @for (value of attribute.values; track value) {
-              <div class="eav-detail-row">
-                <div class="eav-detail-row__label eav-history-{{ value.change }}">{{ value.langKey }}:</div>
-                <div class="eav-detail-row__value">
-                  @if (value.change !== 'changed') {
-                  <div class="eav-history-{{ value.change }}">
-                    {{ value.change === 'deleted' ? value.oldValue : value.value }}
+        <mat-accordion multi class="eav-history-tables">
+          @for (historyItem of historyItems(); track historyItem) {
+            <mat-expansion-panel [expanded]="expandedPanels[historyItem.versionNumber]"
+              (expandedChange)="panelExpandedChange($event, historyItem.versionNumber)">
+              <mat-expansion-panel-header>
+                <mat-panel-title>Version {{ historyItem.versionNumber }}</mat-panel-title>
+                
+                <mat-panel-description [tippy]="historyItem.timeStamp | date:'yyyy-MM-dd hh:mm UTC':'UTC'">
+                  {{ getLocalDate(historyItem.timeStamp) | date:'yyyy-MM-dd hh:mm' }}
+                </mat-panel-description>
+              </mat-expansion-panel-header>
+              @if (expandedPanels[historyItem.versionNumber]) {
+                @for (attribute of historyItem.attributes; track attribute) {
+                  <div class="eav-table-row">
+                    <div class="eav-table-row__main eav-row-main"
+                      (click)="attributeExpandedToggle(historyItem.versionNumber, attribute.name)">
+                      <div class="eav-row-main__label eav-history-{{ attribute.change }}">
+                        {{ attribute.name }}
+                      </div>
+                      <div class="eav-row-main__value eav-history-{{ attribute.change }}">
+                        @if (!expandedAttributes[historyItem.versionNumber + attribute.name]) {
+                          {{ attribute.values[0]?.value }}
+                        }
+                      </div>
+                      <div class="eav-row-main__type">
+                        <i>[{{ attribute.dataType }}]</i>
+                      </div>
+                    </div>
+                    @if (expandedAttributes[historyItem.versionNumber + attribute.name]) {
+                      <div class="eav-table-row__details">
+                        @for (value of attribute.values; track value) {
+                          <div class="eav-detail-row">
+                            <div class="eav-detail-row__label eav-history-{{ value.change }}">{{ value.langKey }}:</div>
+                            <div class="eav-detail-row__value">
+                              @if (value.change !== 'changed') {
+                                <div class="eav-history-{{ value.change }}">
+                                  {{ value.change === 'deleted' ? value.oldValue : value.value }}
+                                </div>
+                              }
+                              @if (value.change === 'changed') {
+                                <div class="eav-history-new">{{ value.value }}</div>
+                                <div class="eav-history-deleted eav-history-deleted__value">{{ value.oldValue }}</div>
+                              }
+                            </div>
+                          </div>
+                        }
+                      </div>
+                    }
                   </div>
-                  }
-                  @if (value.change === 'changed') {
-                  <div class="eav-history-new">{{ value.value }}</div>
-                  <div class="eav-history-deleted eav-history-deleted__value">{{ value.oldValue }}</div>
+                }
+                <div class="eav-row-actions">
+                  @if (!historyItem.isLastVersion) {
+                    <button mat-raised-button color="accent" (click)="restore(historyItem.changeSetId)">
+                      Restore
+                    </button>
                   }
                 </div>
-              </div>
               }
-            </div>
-            }
-          </div>
+            </mat-expansion-panel>
           }
-          <div class="eav-row-actions">
-            @if (!historyItem.isLastVersion) {
-            <button mat-raised-button color="accent" (click)="restore(historyItem.changeSetId)">
-              Restore
-            </button>
-            }
-          </div>
-          }
-        </mat-expansion-panel>
-        }
-      </mat-accordion>
+        </mat-accordion>
       }
     </div>
     @if (historyItems()?.length > 0) {
-    <mat-paginator color="accent" showFirstLastButtons="true" [length]="version().length" [pageSize]="pageSize()"
-      [pageSizeOptions]="pageSizeOptions" (page)="pageChange($event)">
-    </mat-paginator>
+      <mat-paginator color="accent" showFirstLastButtons="true" [length]="version().length" [pageSize]="pageSize()"
+        [pageSizeOptions]="pageSizeOptions" (page)="pageChange($event)">
+      </mat-paginator>
     }
   </div>
 </div>

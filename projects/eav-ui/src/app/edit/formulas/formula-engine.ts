@@ -67,7 +67,7 @@ export class FormulaEngine {
   #promiseHandler: FormulaPromiseHandler;
   #attributes: EavContentTypeAttribute[];
 
-  runAllFields(engine: FieldsPropsEngine, cycle: FieldsPropsEngineCycle) {
+  runAllFields(propsEngine: FieldsPropsEngine, cycle: FieldsPropsEngineCycle) {
     const fieldsProps: Record<string, FieldProps> = {};
     const valueUpdates: ItemValuesOfLanguage = {};
     const fieldUpdates: NameValuePair[] = [];
@@ -98,7 +98,7 @@ export class FormulaEngine {
         attr.Name,
         fieldConstants,
         latestSettings,
-        engine.item.Header,
+        propsEngine.item.Header,
         valueBefore,
         propsBefore,
         reuseExecSpecs,
@@ -114,8 +114,8 @@ export class FormulaEngine {
       if (allResults.fields)
         fieldUpdates.push(...allResults.fields);
 
-      const debugDetails = lAttr.enabled; // this.log.specs.fields?.includes(attr.Name) || this.log.specs.fields?.includes('*');
-      const translationState = fss.getTranslationState(values, fixed.DisableTranslation, engine.languages, debugDetails);
+      const debugDetails = lAttr.enabled;
+      const translationState = fss.getTranslationState(values, fixed.DisableTranslation, propsEngine.languages, debugDetails);
 
       if (allResults.options.list)
         lAttr.a('picker options', { options: allResults.options.list, version: allResults.options.ver });

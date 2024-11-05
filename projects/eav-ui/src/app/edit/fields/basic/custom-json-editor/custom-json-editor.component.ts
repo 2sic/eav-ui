@@ -7,7 +7,6 @@ import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings
 import { MonacoEditorComponent } from '../../../../monaco-editor/monaco-editor.component';
 import { JsonSchema } from '../../../../monaco-editor/monaco-editor.models';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { SignalEquals } from '../../../../shared/signals/signal-equals';
 import { FormConfigService } from '../../../form/form-config.service';
 import { FieldMetadata } from '../../field-metadata.decorator';
 import { FieldState } from '../../field-state';
@@ -38,7 +37,7 @@ export class CustomJsonEditorComponent {
   protected basics = this.#fieldState.basics;
   #settings = this.#fieldState.settings;
 
-  #rows = computed(() => this.#settings().Rows, SignalEquals.number);
+  #rows = this.#fieldState.settingExt('Rows');
   protected focused = computed(() => this.#config.focused$);
 
   protected editorHeight = computed(() => {

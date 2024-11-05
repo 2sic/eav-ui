@@ -88,8 +88,7 @@ export class EditRoutingService extends ServiceBase implements OnDestroy {
     );
   }
 
-  // TODO: @2pp - if this is only used in the field-injector.service, then make injector required
-  isExpandedSignal(fieldId: number, entityGuid: string, injector?: Injector): Signal<boolean> {
+  public isExpandedSignal(fieldId: number, entityGuid: string, injector: Injector): Signal<boolean> {
     // Create a unique key by combining fieldId and entityGuid, then check cache
     const key = `${fieldId}-${entityGuid}`;
     const cached = this.#signalsExpandedCache[key];

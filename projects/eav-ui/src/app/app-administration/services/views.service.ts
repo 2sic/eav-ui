@@ -1,28 +1,29 @@
 import { Injectable } from '@angular/core';
 import { FileUploadResult } from '../../shared/components/file-upload-dialog';
+import { HttpServiceBase } from '../../shared/services/http-service-base';
 import { Polymorphism } from '../models/polymorphism.model';
 import { ViewUsage } from '../models/view-usage.model';
 import { View } from '../models/view.model';
-import { HttpServiceBase } from '../../shared/services/http-service-base';
 
-const webApiViewRoot = 'admin/view/';
-const webApiViews = webApiViewRoot + 'all';
-const webApiViewDelete = webApiViewRoot + 'delete';
-const webApiViewImport = webApiViewRoot + 'import';
-const webApiViewPolymorph = webApiViewRoot + 'polymorphism';
-const webApiViewUsage = webApiViewRoot + 'usage';
+const webApiViews = 'admin/view/all';
+const webApiViewDelete = 'admin/view/delete';
+const webApiViewImport = 'admin/view/import';
+const webApiViewPolymorph = 'admin/view/polymorphism';
+const webApiViewUsage = 'admin/view/usage';
+const webApiJson = 'admin/view/json';
+
 
 @Injectable()
 export class ViewsService extends HttpServiceBase {
 
   getAll() {
-    return this.http.get<View[]>(this.apiUrl(webApiViews), {
+    return this.getSignal<View[]>(webApiViews, {
       params: { appId: this.appId }
     });
   }
 
   delete(id: number) {
-    return this.http.get<boolean>(this.apiUrl(webApiViewDelete), {
+    return this.getHttpApiUrl<boolean>(webApiViewDelete, {
       params: { appId: this.appId, Id: id.toString() },
     });
   }
@@ -36,22 +37,22 @@ export class ViewsService extends HttpServiceBase {
   }
 
   export(id: number) {
-    const url = this.apiUrl(webApiViewRoot + 'json')
+    const url = this.apiUrl(webApiJson)
       + '?appId=' + this.appId
       + '&viewId=' + id;
-
     window.open(url, '_blank', '');
   }
 
   getPolymorphism() {
-    return this.http.get<Polymorphism>(this.apiUrl(webApiViewPolymorph), {
+    return this.getSignal<Polymorphism>(webApiViewPolymorph, {
       params: { appId: this.appId }
     });
   }
 
   getUsage(guid: string) {
-    return this.http.get<ViewUsage[]>(this.apiUrl(webApiViewUsage), {
+    return this.getSignal<ViewUsage[]>(webApiViewUsage, {
       params: { appId: this.appId, guid }
     });
   }
+
 }

@@ -1,31 +1,39 @@
 import { Injectable } from '@angular/core';
-import { webApiAppRoot } from '../../import-app/services/import-app.service';
+import { HttpServiceBase } from '../../shared/services/http-service-base';
 import { SiteLanguage, SiteLanguagePermissions } from '../models/site-language.model';
 import { SystemInfoSet } from '../models/system-info.model';
-import { HttpServiceBase } from '../../shared/services/http-service-base';
 
-const webApiZoneRoot = 'admin/zone/';
+const webApiZoneRootGetLanguages = 'admin/zone/GetLanguages';
+const webApiZoneRootSwitchLanguage = 'admin/zone/SwitchLanguage';
+const webApiZoneRootGetSystemInfo = 'admin/zone/GetSystemInfo';
+const webApiAppRootRootlanguages = 'admin/app/languages';
 
 @Injectable()
 export class ZoneService extends HttpServiceBase {
 
-  getLanguages() {
-    return this.http.get<SiteLanguage[]>(this.apiUrl(webApiZoneRoot + 'GetLanguages'));
+  getLanguage(initial: undefined) {
+    return this.getSignal<SiteLanguage[]>(webApiZoneRootGetLanguages, {}, initial);
   }
 
   toggleLanguage(code: string, enable: boolean) {
-    return this.http.get<null>(this.apiUrl(webApiZoneRoot + 'SwitchLanguage'), {
+    return this.getHttpApiUrl<null>(webApiZoneRootSwitchLanguage, {
       params: { cultureCode: code, enable: enable.toString() },
     });
   }
 
-  getSystemInfo() {
-    return this.http.get<SystemInfoSet>(this.apiUrl(webApiZoneRoot + 'GetSystemInfo'));
+  // toggleLanguageSig(code: string, enable: boolean)  {
+  //   return this.getSignal<null>(webApiZoneRootSwitchLanguage, {
+  //     params: { cultureCode: code, enable: enable.toString() },
+  //   });
+  // }
+
+  getSystemInfo(initial: undefined) {
+    return this.getSignal<SystemInfoSet>(webApiZoneRootGetSystemInfo, {}, initial);
   }
 
-  getLanguagesPermissions() {
-    return this.http.get<SiteLanguagePermissions[]>(this.apiUrl(webApiAppRoot + 'languages'), {
+  getLanguagesPermissions(initial: undefined) {
+    return this.getSignal<SiteLanguagePermissions[]>(webApiAppRootRootlanguages, {
       params: { appId: this.appId },
-    });
-  }
+    }, initial);
+  };
 }

@@ -39,7 +39,7 @@ export class PickerPartBaseComponent {
   /** Picker Data Bundle with Source and state etc. */
   protected pickerData = this.fieldState.pickerData;
 
-  protected isInFreeTextMode = this.pickerData.state.isInFreeTextMode;
+  protected isInFreeTextMode = this.pickerData.isInFreeTextMode;
 
   protected ui = this.fieldState.ui;
 
@@ -75,8 +75,6 @@ export class PickerPartBaseComponent {
   toggleFreeText(disabled: boolean): void {
     this.log.a(`toggleFreeText ${disabled}`);
     if (disabled) return;
-    this.pickerData.state.toggleFreeTextMode();
+    this.pickerData.toggleFreeTextMode();
   }
-
-
 }

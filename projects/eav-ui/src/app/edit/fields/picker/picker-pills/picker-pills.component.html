@@ -18,7 +18,7 @@
         @if (itemCount()) {
           <mat-list class="eav-list my-pills">
             @for (item of selectedItems(); track (item.value + $index)) {
-              <mat-list-item role="listitem" class="eav-list-item">
+              <mat-list-item role="listitem" class="eav-list-item" [tippy]="item.tooltip">
                 <span mat-line>{{ item.label }}</span>
               </mat-list-item>
             }

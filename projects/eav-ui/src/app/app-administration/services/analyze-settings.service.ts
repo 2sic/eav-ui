@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { computed, Injectable, signal, Signal } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { Of } from '../../../../../core';
 import { webApiAppRoot } from '../../import-app/services/import-app.service';
@@ -8,9 +8,30 @@ import { AnalyzeParts, SettingsStackItem } from '../sub-dialogs/analyze-settings
 @Injectable()
 export class AnalyzeSettingsService extends HttpServiceBase {
 
+
+  // TEMP, not sure if this are correct
+  getStackSig(part: Of<typeof AnalyzeParts>, key?: string, view?: string, stringifyValue = false): Signal<SettingsStackItem[]> {
+    const stackSignal = signal<SettingsStackItem[]>([]);
+
+    this.getAndWrite<SettingsStackItem[]>(webApiAppRoot + 'GetStack', {
+      params: {
+        appId: this.appId,
+        part,
+        ...(key && { key }),
+        ...(view && { view }),
+      },
+    }, stackSignal);
+
+    return computed(() => stringifyValue
+      ? stackSignal().map(stackItem => ({ ...stackItem, _value: JSON.stringify(stackItem.Value) }))
+      : stackSignal()
+    );
+  }
+
+
   getStack(part: Of<typeof AnalyzeParts>, key?: string, view?: string, stringifyValue = false): Observable<SettingsStackItem[]> {
-    return this.http.get<SettingsStackItem[]>(
-      this.apiUrl(webApiAppRoot + 'GetStack'),{
+
+    return this.getHttp<SettingsStackItem[]>(webApiAppRoot + 'GetStack', {
       params: {
         appId: this.appId,
         part,
@@ -19,6 +40,7 @@ export class AnalyzeSettingsService extends HttpServiceBase {
       },
     }).pipe(
       map(stack => {
+
         if (!stringifyValue) { return stack; }
 
         for (const stackItem of stack) {

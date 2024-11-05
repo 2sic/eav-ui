@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { ReplaceConfig } from '../../replace-content/replace-config.model';
+import { HttpServiceBase } from '../../shared/services/http-service-base';
 import { ContentGroup, ContentGroupAdd } from '../models/content-group.model';
 import { GroupHeader } from '../models/group-header.model';
-import { HttpServiceBase } from '../../shared/services/http-service-base';
 
 const webApiContentGroup = 'cms/contentgroup/';
 
@@ -10,7 +10,7 @@ const webApiContentGroup = 'cms/contentgroup/';
 export class ContentGroupService extends HttpServiceBase {
 
   getItems(item: ContentGroup) {
-    return this.http.get<ReplaceConfig>(this.apiUrl(webApiContentGroup + 'replace'), {
+    return this.getHttpApiUrl<ReplaceConfig>(webApiContentGroup + 'replace', {
       params: { appId: this.appId, guid: item.guid, part: item.part, index: item.index.toString() }
     });
   }
@@ -29,7 +29,7 @@ export class ContentGroupService extends HttpServiceBase {
   }
 
   getList(contentGroup: ContentGroup) {
-    return this.http.get<GroupHeader[]>(this.apiUrl(webApiContentGroup + 'itemlist'), {
+    return this.getHttpApiUrl<GroupHeader[]>(webApiContentGroup + 'itemlist', {
       params: { appId: this.appId, guid: contentGroup.guid, part: contentGroup.part }
     });
   }
@@ -40,9 +40,10 @@ export class ContentGroupService extends HttpServiceBase {
     });
   }
 
-  getHeader(contentGroup: ContentGroup) {
-    return this.http.get<GroupHeader>(this.apiUrl(webApiContentGroup + 'header'), {
+  getHeader(contentGroup: ContentGroup, initial: GroupHeader) {
+    return this.getSignal<GroupHeader>(webApiContentGroup + 'header', {
       params: { appId: this.appId, guid: contentGroup.guid }
-    });
+    }, initial);
   }
+
 }

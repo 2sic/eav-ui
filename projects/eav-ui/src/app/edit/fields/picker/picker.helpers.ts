@@ -1,48 +1,22 @@
 import groupBy from 'lodash-es/groupBy';
-import { PickerOptionCustom } from '../../../../../../edit-types/src/DropdownOption';
 import { guidRegex } from '../../../shared/constants/guid.constants';
-import { classLog } from '../../../shared/logging';
 import { PickerItem } from './models/picker-item.model';
 
-export function correctStringEmptyValue(
-  valueAsArray: string[], // The value as an array of strings from state-adapter mapper
-  dropdownOptions: PickerOptionCustom[] // Options are used only for legacy use case is where the value is an empty string
-): PickerItem[] {
-
-  const log = classLog({correctStringEmptyValue}, null);
-
-  const result = valueAsArray.map(value => {
-    const option = dropdownOptions?.find(o => o.Value == value);
-    return ({
-      // if it's a free text value or not found, disable edit and delete
-      noEdit: true,
-      noDelete: true,
-      // either the real value or null if text-field or not found
-      id: null,
-      label: option?.Title ?? value,
-      tooltip: `${value}`,
-      value: value?.toString() ?? '', // safe to-string
-    } satisfies PickerItem);
-  });
-
-  log.a('correctStringEmptyValue', {
-    dropdownOptions,
-    valueAsArray,
-    result,
-  });
-  return result;
+export function pickerItemsAllowsEmpty(dropdownOptions?: PickerItem[]): boolean {
+  return dropdownOptions?.some(o => o.value == '');
 }
 
 /** Convert string value in string array if a value is type string */
-export function convertValueToArray(value: string | string[], separator: string, dropdownOptions?: PickerOptionCustom[]): string[] {
+export function convertValueToArray(value: string | string[], separator: string, emptyIsValid: boolean): string[] {
   // Special case: String-picker old with "empty" being selected
   // In most dropdowns, empty would mean not-selected, but in string-dropdowns, it _can_ be a valid value
   // So we must check if there is an empty value in the dropdown options
   // And if this is true, return an array with an empty string being "selected"
-  if (value == '' && dropdownOptions?.some(o => o.Value == ''))
+  if (value == '' && emptyIsValid)
     return [''];
 
-  if (value == '' || !value) return [];
+  if (value == '' || !value)
+    return [];
 
   return (Array.isArray(value))
     ? value
@@ -51,10 +25,10 @@ export function convertValueToArray(value: string | string[], separator: string,
 
 /** Convert string array value in string value if a value is type array */
 export function convertArrayToString(value: string | string[], separator: string): string {
-  if (!value) { return ''; }
-
-  if (Array.isArray(value)) { return value.join(separator); }
-
+  if (!value)
+    return '';
+  if (Array.isArray(value))
+    return value.join(separator);
   return value;
 }
 

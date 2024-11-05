@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
-import { FieldsSettingsService } from '../../state/fields-settings.service';
-import { InputTypeHelpers } from '../../../shared/fields/input-type-helpers';
 import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
+import { InputTypeHelpers } from '../../../shared/fields/input-type-helpers';
+import { classLog } from '../../../shared/logging';
 import { FieldLogicManager } from '../../fields/logic/field-logic-manager';
 import { FieldLogicWithValueInit } from '../../fields/logic/field-logic-with-init';
-import { ValidationHelpers, ValidationHelperSpecs } from '../../shared/validation/validation.helpers';
-import { EntityFormStateService } from '../entity-form-state.service';
 import { AdamCacheService } from '../../shared/adam/adam-cache.service';
-import { classLog } from '../../../shared/logging';
+import { ValidationHelpers, ValidationHelperSpecs } from '../../shared/validation/validation.helpers';
+import { FieldsSettingsService } from '../../state/fields-settings.service';
+import { EntityFormStateService } from '../entity-form-state.service';
 import { FieldInitSpecs } from './field-init-specs.model';
 
 @Injectable()
@@ -52,12 +52,12 @@ export class FormFieldsBuilderService {
 
       // Build control in the Angular form with validators
       const disabled = fieldProps.settings.uiDisabled;
-      const valSpecs = new ValidationHelperSpecs(fieldName, inputType, this.fieldsSettingsSvc.settings[fieldName], this.fieldsSettingsSvc);
+      const fss = this.fieldsSettingsSvc;
+      const valSpecs = new ValidationHelperSpecs(fieldName, inputType, fss.settings[fieldName], fss.fieldProps[fieldName], () => fss.pickerData);
       const validators = ValidationHelpers.getValidators(valSpecs, inputType);
       const newControl = this.formBuilder.control({ disabled, value: initialValue }, validators);
       // TODO: build all fields at once. That should be faster
       form.addControl(fieldName, newControl);
-      ValidationHelpers.ensureWarning(form.controls[fieldName]);
     }
 
     this.entityFormConfigSvc.controlsCreated.set(true);

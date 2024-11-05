@@ -18,7 +18,7 @@ import { eavConstants, ScopeOption } from '../../../shared/constants/eav.constan
 import { ClickStopPropagationDirective } from '../../../shared/directives/click-stop-propagation.directive';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { classLog } from '../../../shared/logging';
-import { computedObj, httpToSignal, signalObj } from '../../../shared/signals/signal.utilities';
+import { computedObj, signalObj } from '../../../shared/signals/signal.utilities';
 import { contentTypeNameError, contentTypeNamePattern } from '../../constants/content-type.patterns';
 import { ContentTypeEdit } from '../../models/content-type.model';
 import { ContentTypesService } from '../../services/content-types.service';
@@ -49,7 +49,7 @@ export class EditContentTypeComponent implements AfterViewInit {
   log = classLog({EditContentTypeComponent});
 
   @HostBinding('className') hostClass = 'dialog-component';
-  
+
   #contentTypeSvc = transient(ContentTypesService);
 
   /** Parameters in case of rename; scope should always be set as we want to always create in that scope*/
@@ -67,7 +67,7 @@ export class EditContentTypeComponent implements AfterViewInit {
 
   #loadContentTypeOnEdit(): void {
     // If we're in new mode, just keep empty values
-    if (!this.modeIsEdit) 
+    if (!this.modeIsEdit)
       return;
 
     // Preload infos about the current content type if we're in edit mode (not new)
@@ -99,18 +99,18 @@ export class EditContentTypeComponent implements AfterViewInit {
     ChangeStaticName: false,
     NewStaticName: '',
   } as ContentTypeEdit);
-  
+
   // TODO: @2dg this is a suggestion how to handle http requests in a more signal-like way
   // @2dg note that doing this in the constructor would often be better, but I wanted to prove this way work.
   // Scope Options Http will fire once when data arrives
-  #scopeOptionsHttp = httpToSignal('scopeOptionsHttp', this.#contentTypeSvc.getScopes());
+
+  #scopeOptionsHttp = this.#contentTypeSvc.getScopesSig(undefined);
   #scopeOptionsManual = signalObj<ScopeOption[]>('scopeOptionsManual', []);
   protected scopeOptions = computedObj<ScopeOption[]>('scopeOptions', () => {
     const fromHttp = this.#scopeOptionsHttp();
     const manual = this.#scopeOptionsManual();
     return (fromHttp) ? manual.concat(this.#convertScopeOptions(fromHttp)) : manual;
   });
-
 
 
   #convertScopeOptions(scopeOptions: ScopeOption[]) {

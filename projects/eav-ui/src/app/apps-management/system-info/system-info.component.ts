@@ -1,4 +1,4 @@
-import { NgTemplateOutlet } from '@angular/common';
+import { JsonPipe, NgTemplateOutlet } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -10,6 +10,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { map, take } from 'rxjs';
 import { transient } from '../../../../../core';
+import { DocsLinkHelperComponent } from '../../admin-shared/docs-link-helper/docs-link-helper.component';
 import { DialogConfigAppService } from '../../app-administration/services/dialog-config-app.service';
 import { FeatureNames } from '../../features/feature-names';
 import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
@@ -20,8 +21,6 @@ import { EavWindow } from '../../shared/models/eav-window.model';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { ClipboardService } from '../../shared/services/clipboard.service';
 import { DialogService } from '../../shared/services/dialog.service';
-import { SiteLanguage } from '../models/site-language.model';
-import { SystemInfoSet } from '../models/system-info.model';
 import { SxcInsightsService } from '../services/sxc-insights.service';
 import { ZoneService } from '../services/zone.service';
 import { InfoTemplate } from './system-info.models';
@@ -45,6 +44,8 @@ declare const window: EavWindow;
     FeatureTextInfoComponent,
     FieldHintComponent,
     TippyDirective,
+    DocsLinkHelperComponent,
+    JsonPipe,
   ],
 })
 export class SystemInfoComponent implements OnInit {
@@ -60,13 +61,21 @@ export class SystemInfoComponent implements OnInit {
   pageLogDuration: number;
   positiveWholeNumber = /^[1-9][0-9]*$/;
 
-
   loading = signal(false);
-  languages = signal<SiteLanguage[] | undefined>(undefined);
-  systemInfoSet = signal<SystemInfoSet | undefined>(undefined);
+  #refresh = signal(0);
+
+  languages = computed(() => {
+    const r = this.#refresh();
+    return this.#zoneSvc.getLanguage(undefined);
+  })
+
+  systemInfoSet = computed(() => {
+    const r = this.#refresh();
+    return this.#zoneSvc.getSystemInfo(undefined);
+  })
 
   systemInfos = computed(() => {
-    const systemInfoSetValue = this.systemInfoSet();
+    const systemInfoSetValue = this.systemInfoSet()();
     if (systemInfoSetValue == null) return;
     const url = this.#dialogRouter.router.url + '/' + "registration";
     const info: InfoTemplate[] = [
@@ -94,8 +103,8 @@ export class SystemInfoComponent implements OnInit {
   });
 
   siteInfos = computed(() => {
-    const systemInfoSetValue = this.systemInfoSet();
-    const languagesValue = this.languages();
+    const systemInfoSetValue = this.systemInfoSet()();
+    const languagesValue = this.languages()();
 
     if (systemInfoSetValue == null || languagesValue == null) return;
 
@@ -129,7 +138,7 @@ export class SystemInfoComponent implements OnInit {
   });
 
   warningIcon = computed(() => {
-    const systemInfoSetValue = this.systemInfoSet();
+    const systemInfoSetValue = this.systemInfoSet()();
     if (systemInfoSetValue == null) return undefined;
     if (systemInfoSetValue.Messages.WarningsObsolete || systemInfoSetValue.Messages.WarningsOther) {
       return 'warning';
@@ -138,7 +147,7 @@ export class SystemInfoComponent implements OnInit {
   });
 
   warningInfos = computed(() => {
-    const systemInfoSetValue = this.systemInfoSet();
+    const systemInfoSetValue = this.systemInfoSet()();
     if (systemInfoSetValue == null) return undefined;
 
     const info: InfoTemplate[] = [
@@ -174,15 +183,12 @@ export class SystemInfoComponent implements OnInit {
   constructor(
     private snackBar: MatSnackBar,
   ) { }
-  
+
   protected clipboard = transient(ClipboardService);
 
   ngOnInit(): void {
-    this.getSystemInfo();
-    this.getLanguages();
     this.#dialogRouter.doOnDialogClosed(() => {
-      this.getSystemInfo();
-      this.getLanguages();
+      this.#refresh.set(this.#refresh() + 1);
     });
   }
 
@@ -217,6 +223,7 @@ export class SystemInfoComponent implements OnInit {
     router.navigate([router.url.replace('system', '') + sideNavPath]);
   }
 
+  // TODO: 2dg new with Signals
   activatePageLog(form: NgForm) {
     this.loading.set(true);
     this.snackBar.open('Activating...');
@@ -230,25 +237,4 @@ export class SystemInfoComponent implements OnInit {
     form.resetForm();
   }
 
-  private getSystemInfo(): void {
-    this.#zoneSvc.getSystemInfo().subscribe({
-      error: () => {
-        this.systemInfoSet.set(undefined);
-      },
-      next: (systemInfoSet) => {
-        this.systemInfoSet.set(systemInfoSet);
-      },
-    });
-  }
-
-  private getLanguages(): void {
-    this.#zoneSvc.getLanguages().subscribe({
-      error: () => {
-        this.languages.set(undefined);
-      },
-      next: (languages) => {
-        this.languages.set(languages);
-      },
-    });
-  }
 }

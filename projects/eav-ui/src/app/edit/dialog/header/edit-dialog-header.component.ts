@@ -1,5 +1,5 @@
 import { UpperCasePipe } from '@angular/common';
-import { Component, computed, EventEmitter, inject, Input, Output, ViewContainerRef } from '@angular/core';
+import { Component, computed, inject, input, output, ViewContainerRef } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
@@ -31,8 +31,8 @@ import { PublishStatusDialogComponent } from './publish-status-dialog/publish-st
   ],
 })
 export class EditDialogHeaderComponent {
-  @Input() disabled: boolean;
-  @Output() private closeDialog = new EventEmitter<null>();
+  disabled = input<boolean>();
+  protected closeDialog = output<void>();
 
   #formsStateSvc = inject(FormsStateService);
   #features = inject(FeaturesScopedService);
@@ -71,5 +71,4 @@ export class EditDialogHeaderComponent {
   openUnlicensedDialog() {
     openFeaturesUsedButUnlicensedDialog(this.matDialog, this.viewContainerRef);
   }
-
 }

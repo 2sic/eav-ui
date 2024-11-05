@@ -6,13 +6,16 @@
   <div
     class="eav-grid-action-button {{ appHasLightSpeed ? '' : 'disabled' }}"
     matRipple
-    [tippy]="appHasLightSpeed ? lightSpeed.Title : 'Not yet configured for LightSpeed'"
-    (click)="openLightspeed()"
+    [tippy]="appHasLightSpeed ? lightSpeed().Title : 'Not yet configured for LightSpeed'"
   >
     @if (appLightSpeedEnabled) {
-      <mat-icon matBadgeSize="small" matBadge="✅" matBadgePosition="below after" aria-hidden="false"> bolt </mat-icon>
+      <a class="default-link" [href]="'#' + params().lightSpeedLink(lightSpeedOwner())">
+        <mat-icon matBadgeSize="small" matBadge="✅" matBadgePosition="below after" aria-hidden="false"> bolt </mat-icon>
+      </a>
     } @else {
-      <mat-icon matBadgeSize="small" matBadge="⛔" matBadgePosition="below after" aria-hidden="false"> bolt </mat-icon>
+      <a class="default-link" [href]="'#' + params().lightSpeedLink(lightSpeedOwner())">
+        <mat-icon matBadgeSize="small" matBadge="⛔" matBadgePosition="below after" aria-hidden="false"> bolt </mat-icon>
+      </a>
     }
   </div>
 }

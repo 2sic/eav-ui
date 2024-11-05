@@ -8,12 +8,14 @@ import { EntityReader } from '../shared/helpers';
 import { EavEntityAttributes } from '../shared/models/eav';
 import { ItemService } from './item.service';
 
+const logSpecs = {
+  logChanges: false,
+};
+
 @Injectable()
 export class FieldsSignalsHelper {
 
-  log = classLog({FieldsSignalsHelper}, {
-    logChanges: false,
-  });
+  log = classLog({FieldsSignalsHelper}, logSpecs);
 
   constructor(private itemSvc: ItemService) {
     if (this.log.specs.logChanges) {

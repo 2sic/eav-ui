@@ -96,12 +96,12 @@ export class UrlHelpers {
     return input.replace(/[^A-Za-z0-9\[\] ]/g, (a) => (latinMap[a] || a));
   }
 
-  static readQueryStringParameters(url: string): Record<string, string> {
+  static urlParamsToDic(url: string): Record<string, string> {
     const queryParams: Record<string, string> = {};
     url.split('&').forEach(f => {
-      if (f.split('=').length === 2) {
-        queryParams[f.split('=')[0]] = decodeURIComponent(f.split('=')[1].replace(/\+/g, ' '));
-      }
+      const p = f.split('=');
+      if (p.length === 2)
+        queryParams[p[0]] = decodeURIComponent(p[1].replace(/\+/g, ' '));
     });
     return queryParams;
   }

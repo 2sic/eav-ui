@@ -1,12 +1,12 @@
 import { Language } from '../../../form/form-languages.model';
 
-export interface LanguageButton extends Language {
-  buttonText: string;
+export interface LanguageOption extends Language {
+  label: string;
 }
 
 /** Calculates properties of language buttons, e.g. name to be displayed */
-export function getLanguageButtons(languages: Language[]): LanguageButton[] {
-  const languageButtons: LanguageButton[] = [];
+export function getLanguageOptions(languages: Language[]): LanguageOption[] {
+  const languageButtons: LanguageOption[] = [];
   const shortCodesCount: Record<string, number> = {};
 
   // count the number of repetitions of the same language without region key
@@ -25,7 +25,7 @@ export function getLanguageButtons(languages: Language[]): LanguageButton[] {
 
     languageButtons.push({
       ...language,
-      buttonText: (shortCodesCount[shortCode] > 1) ? `${shortCode} (${language.NameId})` : shortCode,
+      label: (shortCodesCount[shortCode] > 1) ? `${shortCode} (${language.NameId})` : shortCode,
     });
   });
 

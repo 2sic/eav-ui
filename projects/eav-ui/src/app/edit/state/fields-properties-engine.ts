@@ -56,8 +56,7 @@ export class FieldsPropsEngine {
   public modifiedChecker: FieldsValuesModifiedHelper;
   #fieldsValues: FieldsSignalsHelper;
 
-  constructor() {
-  }
+  constructor() { }
 
   /** Setup everything which won't change throughout cycles */
   init(
@@ -66,6 +65,7 @@ export class FieldsPropsEngine {
     item: EavItem,
     contentType: Signal<EavContentType>,
     reader: Signal<EntityReader>,
+    labelReader: Signal<EntityReader>,
     fieldsValues: FieldsSignalsHelper,
     forceDebug: boolean | null = null
   ): this {
@@ -86,7 +86,7 @@ export class FieldsPropsEngine {
     // Constant field parts which don't ever change.
     // They can only be created once the inputTypes and contentTypes are available
     this.#fieldLangConstants = this.#constantsService
-      .init(item, ct, reader, fss)
+      .init(item, ct, reader, labelReader, fss)
       .stableDataOfLanguage();
 
     this.#updateHelper = this.#getPreparedParts(reader, ct, slotIsEmpty);

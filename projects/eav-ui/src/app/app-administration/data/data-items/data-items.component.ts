@@ -1,11 +1,10 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
-import { ContentType } from '../../models';
-import { DataItemsParams } from './data-items.models';
-import { MatIconModule } from '@angular/material/icon';
 import { MatRippleModule } from '@angular/material/core';
+import { MatIconModule } from '@angular/material/icon';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
+import { ContentType } from '../../models';
 
 @Component({
   selector: 'app-data-items',
@@ -20,10 +19,16 @@ import { TippyDirective } from '../../../shared/directives/tippy.directive';
 })
 export class DataItemsComponent implements ICellRendererAngularComp {
   value: number;
-  private params: DataItemsParams;
-  private contentType: ContentType;
+  
+  /** Params, directly typed here and anywhere it's used should use this type definition */
+  public params: {
+    addItemUrl(contentType: ContentType): string;
+    itemsUrl(contentType: ContentType): string;
+  };
 
-  agInit(params: ICellRendererParams & DataItemsParams): void {
+  protected contentType: ContentType;
+
+  agInit(params: ICellRendererParams & DataItemsComponent["params"]): void {
     this.params = params;
     this.contentType = params.data;
     this.value = params.value;
@@ -31,13 +36,5 @@ export class DataItemsComponent implements ICellRendererAngularComp {
 
   refresh(params?: any): boolean {
     return true;
-  }
-
-  showItems(): void {
-    this.params.onShowItems(this.contentType);
-  }
-
-  addItem(): void {
-    this.params.onAddItem(this.contentType);
   }
 }

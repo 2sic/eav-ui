@@ -1,14 +1,39 @@
 <!-- Show all language tab-buttons on a edit dialog -->
 <div class="scrollable__overlay">
+  <!-- Shadows when scrolling lots of languages -->
   <div #leftShadow class="scrollable__overlay--left-shadow"></div>
   <div #rightShadow class="scrollable__overlay--right-shadow"></div>
-  <div #scrollable class="scrollable lang-switch" tippyTranslate="Message.CantSwitchLanguage" [tippyDisabled]="!disabled">
+
+  <!-- Scrolling area when lots of languages -->
+  <div #scrollable class="scrollable lang-switch" tippyTranslate="Message.CantSwitchLanguage" [tippyDisabled]="!disabled()">
     @for (langButton of buttons; track langButton) {
-      <button mat-flat-button class="lang-switch__button"
-        [color]="current() === langButton.NameId ? 'accent' : 'white'" (mousedown)="lngButtonMouseDown($event)"
-        (click)="lngButtonClick($event, langButton)" [tippy]="langButton.Culture" [tippyDisabled]="disabled">
-        {{ langButton.buttonText }}
-      </button>
+      <!-- Current Button is a bit different, not clickable, but has language settings on hover -->
+      @if (current() === langButton.NameId) {
+        <button mat-flat-button
+          class="lang-switch__button hover-area"
+          color="accent"
+          [tippy]="langButton.Culture"
+          [tippyDisabled]="disabled()"
+        >
+          {{ langButton.label }}
+          <!-- manually switch with true/false | so it doesn't show inside the UI (WIP) -->
+          @if (true) { 
+            <mat-icon iconPositionEnd class="hover-only" tippy="Language Settings" (click)="languageSettings()">settings</mat-icon>
+          }
+        </button>
+      }
+      @else {
+        <button mat-flat-button
+          class="lang-switch__button"
+          color="white"
+          (mousedown)="lngButtonMouseDown($event)"
+          (click)="lngButtonClick($event, langButton)"
+          [tippy]="langButton.Culture"
+          [tippyDisabled]="disabled()"
+        >
+          {{ langButton.label }}
+        </button>
+      }
     }
   </div>
 </div>
