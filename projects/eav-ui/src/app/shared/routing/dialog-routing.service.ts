@@ -70,7 +70,7 @@ export class DialogRoutingService extends ServiceBase {
   /**
    * Get the URL for a sub-route of the current route.
    */
-  urlSubRoute(params: string) {
+  public urlSubRoute(params: string) {
     const tree = this.router.createUrlTree([params], { relativeTo: this.route });
     const routeUrl = this.router.serializeUrl(tree);
     return routeUrl;

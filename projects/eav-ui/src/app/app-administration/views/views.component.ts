@@ -198,39 +198,26 @@ export class ViewsComponent implements OnInit {
   }
 
 
-  #getLightSpeedLink(viewUnk?: View): string {
-    const form = this.#openLightSpeed(viewUnk as View);
-    const formUrl = convertFormToUrl(form);
-    const x = this.router.url; // TODO: @2dm, why i use this in the case an the other not in App List ?
-    const urlString = `${x}/edit/${formUrl}`;
-    return this.#dialogRouter.urlSubRoute(urlString);
-  }
-
-   #openLightSpeed(view: View) {
-    const shared = {
-      ClientData: {
-        parameters: {
-          forView: true,
-          showDuration: false,
-        },
-      },
-    }
-
+  #getLightSpeedLink(view?: View): string {
     const form: EditForm = {
       items: [
-        (view.lightSpeed != null)
-          ? {
-            ...shared,
-            ...EditPrep.editId(view.lightSpeed.Id),
-          }
-          : {
-            ...shared,
-            ...EditPrep.newMetadata(view.Guid, eavConstants.appMetadata.LightSpeed.ContentTypeName, eavConstants.metadata.entity),
+        {
+          ClientData: {
+            parameters: {
+              forView: true,
+              showDuration: false,
+            },
           },
+          ...(
+            (view.lightSpeed != null)
+              ? EditPrep.editId(view.lightSpeed.Id)
+              : EditPrep.newMetadata(view.Guid, eavConstants.appMetadata.LightSpeed.ContentTypeName, eavConstants.metadata.entity)
+          )
+        },
       ],
     };
 
-    return form;
+    return this.#dialogRouter.urlSubRoute(`edit/${convertFormToUrl(form)}`);
   }
 
 
@@ -343,7 +330,7 @@ export class ViewsComponent implements OnInit {
           cellRendererParams: {
             enableCodeGetter: () => this.enableCodeGetter(),
             enablePermissionsGetter: () => this.enablePermissionsGetter(),
-            lightSpeedLink: (view: unknown) => this.#getLightSpeedLink(view as View),
+            lightSpeedLink: (view: View) => this.#getLightSpeedLink(view),
             openLightspeedFeatureInfo: () => openLightSpeedFeatInfo(),
             do: (verb, view) => {
               switch (verb) {

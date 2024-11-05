@@ -143,8 +143,7 @@ export class AppsListComponent implements OnInit {
     });
   }
 
-  #getLightSpeedLink(appUnk?: App): string {
-    const app = appUnk as App;
+  #getLightSpeedLink(app?: App): string {
     const formUrl = convertFormToUrl(AppAdminHelpers.getLightSpeedEditParams(app.Id));
     const urlString = `${this.context.zoneId}/${app.Id}/edit/${formUrl}`;
     return this.#dialogRouter.urlSubRoute(urlString);
