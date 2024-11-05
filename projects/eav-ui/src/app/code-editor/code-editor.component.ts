@@ -1,4 +1,5 @@
 import { NgClass } from '@angular/common';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Component, computed, effect, NgZone, OnDestroy, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
@@ -7,6 +8,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
+import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import type * as Monaco from 'monaco-editor';
 import { forkJoin, fromEvent, of, share, switchMap } from 'rxjs';
 import { Of, transient } from '../../../../core';
@@ -24,6 +26,7 @@ import { RxHelpers } from '../shared/rxJs/rx.helpers';
 import { Context } from '../shared/services/context';
 import { CodeAndEditionWarningsComponent } from './code-and-edition-warnings/code-and-edition-warnings.component';
 import { CodeAndEditionWarningsSnackBarData } from './code-and-edition-warnings/code-and-edition-warnings.models';
+import { translateLoaderFactoryCode } from './code-editor-translate-loader-factory';
 import { Explorers, Tab, ViewInfo, ViewKey } from './code-editor.models';
 import { CodeSnippetsComponent } from './code-snippets/code-snippets.component';
 import { CodeTemplatesComponent } from './code-templates/code-templates.component';
@@ -49,7 +52,18 @@ import { SourceService } from './services/source.service';
     ClickStopPropagationDirective,
     TippyDirective,
     ToggleDebugDirective,
+    HttpClientModule,
+    TranslateModule,
+  
   ],
+  providers: [
+    {
+      provide: TranslateLoader,
+      useFactory: translateLoaderFactoryCode,
+      deps: [HttpClient],
+    },
+    TranslateService,
+  ]
 })
 export class CodeEditorComponent extends BaseComponent implements OnInit, OnDestroy {
   @ViewChild(MonacoEditorComponent) private monacoEditorRef: MonacoEditorComponent;
