@@ -8,6 +8,7 @@ import { appAdministrationDialog } from './app-admin-main/app-admin-main.dialog-
 import { CopilotSpecs } from './copilot/copilot-specs';
 import { GoToCopilot } from './copilot/go-to-copilot';
 import { AppStateComponent } from './import-export-menu/app-state/app-state.component';
+import { dataBundlesDialog } from './import-export-menu/data-bundles/data-bundles-detail/data-bundles-dialog.config';
 import { DataBundlesComponent } from './import-export-menu/data-bundles/data-bundles.component';
 import { ExportAppPartsComponent } from './import-export-menu/export-app-parts/export-app-parts.component';
 import { ExportAppComponent } from './import-export-menu/export-app/export-app.component';
@@ -255,6 +256,11 @@ export const appAdministrationRoutes: Routes = [
         data: { breadcrumb: 'Data Bundles' },
         children: [
           ...EditRoutes,
+          {
+            path: 'details/:name/:guid',
+            component: DialogEntryComponent,
+            data: { dialog: dataBundlesDialog, title: 'Data Bundles Details' },
+          },
         ]
       },
       {

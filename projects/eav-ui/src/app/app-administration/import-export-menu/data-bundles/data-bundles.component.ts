@@ -4,9 +4,7 @@ import { Component, computed, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
-import { TranslateService } from '@ngx-translate/core';
 import { transient } from 'projects/core';
-import { Observable } from 'rxjs';
 import { ContentExportService } from '../../../content-export/services/content-export.service';
 import { ContentItem } from '../../../content-items/models/content-item.model';
 import { ContentItemsService } from '../../../content-items/services/content-items.service';
@@ -17,9 +15,9 @@ import { convertFormToUrl } from '../../../shared/helpers/url-prep.helper';
 import { EditForm, EditPrep } from '../../../shared/models/edit-form.model';
 import { SxcGridModule } from '../../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../../../shared/routing/dialog-routing.service';
-import { QueryService } from '../../../shared/services/query.service';
 import { DataBundleActionsComponent } from './data-bundles-actions/data-bundles-actions.component';
 import { DataBundlesActionsParams } from './data-bundles-actions/data-bundles-actions.models';
+import { DataBundlesService } from './data-bundles-query.service';
 
 @Component({
   selector: 'app-data-bundles',
@@ -40,12 +38,11 @@ export class DataBundlesComponent {
   #contentItemsSvc = transient(ContentItemsService);
   #contentExportSvc = transient(ContentExportService);
   #dialogRouter = transient(DialogRoutingService);
-  // TODO: @2dg should have a better name, this is like calling a string a string. What is it for?
-  #contentTypeGuid = "d7f2e4fa-5306-41bb-a3cd-d9529c838879";
+  #dataBundlesService = transient(DataBundlesService);
 
-  #queryService = transient(QueryService);
+  #defaultContentTypeId = "d7f2e4fa-5306-41bb-a3cd-d9529c838879";
 
-  constructor(private translate: TranslateService,) { }
+  constructor() { }
 
   // TODO: @2dg - odd place to put CSS, should be in the template or in the scss
   height = 'height: 135px';
@@ -54,16 +51,17 @@ export class DataBundlesComponent {
 
   dataBundles = computed(() => {
     this.#refresh(); // is use to trigger a refresh when new data or data are modified
-    return this.#contentItemsSvc.getAllSig(this.#contentTypeGuid, undefined);
+    return this.#contentItemsSvc.getAllSig(this.#defaultContentTypeId, undefined);
   });
 
-  #queryResults = signal<any[]>([]);
+  // ContentItem
+  #queryResults = signal<ContentItem[] | any>([]);
 
   #queryData = computed(() => {
     const dataBundles = this.dataBundles()();
     dataBundles?.forEach(dataBundle => {
       if (dataBundle?.Guid) {
-        this.#fetchQuery(dataBundle.Guid).subscribe({
+        this.#dataBundlesService.fetchQuery(dataBundle.Guid).subscribe({
           next: (data) => {
             const bundleQuery = {
               Guid: dataBundle.Guid,
@@ -79,14 +77,13 @@ export class DataBundlesComponent {
 
   dataSourceData = computed(() => {
     const dataBundles = this.dataBundles()() || [];
-    // TODO: @2dg no German comments
     this.#queryData(); // Get query data
     const queryResults = this.#queryResults();
 
     const countEntitiesAndContentTypes = (guid: string) => {
-      const result = queryResults.find(result => result.Guid === guid)?.Result || [];
-      const entityCount = result.filter((item: any) => item.TypeName == "ContentType").length;
-      const contentTypeCount = result.filter((item: any) => item.TypeName != "ContentType").length;
+      const result = queryResults.find((result: ContentItem) => result.Guid === guid)?.Result || [];
+      const entityCount = result.filter((item: ContentItem) => item.TypeName == "ContentType").length;
+      const contentTypeCount = result.filter((item: ContentItem) => item.TypeName != "ContentType").length;
       return { entityCount, contentTypeCount };
     };
 
@@ -114,37 +111,6 @@ export class DataBundlesComponent {
     this.#dialogRouter.doOnDialogClosed(() => this.#fetchItems());
   }
 
-  // TODO: @2dg #Code-Smell: This looks like it was copied from somewhere else.
-  // TODO: @2dm Yes, A part was copied and reused as an observable
-  #fetchQuery(guid?: string): Observable<any> {
-    const stream = 'Default';
-    const params = `configurationguid=${guid}`;
-
-    return new Observable(observer => {
-      this.#queryService.getFromQuery(`System.BundleDetails/${stream}`, params, null).subscribe({
-        next: (data) => {
-          if (!data) {
-            console.error(this.translate.instant('Fields.Picker.QueryErrorNoData'));
-            observer.error('No data found');
-            return;
-          }
-          if (!data[stream]) {
-            console.error(this.translate.instant('Fields.Picker.QueryStreamNotFound') + ' ' + stream);
-            observer.error('Stream not found');
-            return;
-          }
-          observer.next(data[stream]);
-          observer.complete();
-        },
-        error: (error) => {
-          console.error(`${this.translate.instant('Fields.Picker.QueryError')} - ${error.data}`);
-          observer.error(error);
-        }
-      });
-    });
-  }
-
-
   #fetchItems() {
     this.#refresh.update(value => value + 1)
   }
@@ -153,7 +119,7 @@ export class DataBundlesComponent {
     const form: EditForm = {
       items: [
         item == null
-          ? EditPrep.newFromType(this.#contentTypeGuid)
+          ? EditPrep.newFromType(this.#defaultContentTypeId)
           : EditPrep.editId(item.Id)
       ],
     };
@@ -185,34 +151,41 @@ export class DataBundlesComponent {
     // });
   }
 
+  #openDialog(name: string, guid: string) {
+    // Open dialog via Url and Guide
+    this.#dialogRouter.navRelative([`details/${name}/${guid}`]);
+  }
+
 
   #buildGridOptions(): GridOptions {
     const gridOptions: GridOptions = {
       ...defaultGridOptions,
+      onCellClicked: (event) => {
+        this.#openDialog(event.data.Name, event.data.Guid);
+        // console.log('Cell clicked', event.data.Guid);
+      },
       columnDefs: [
         {
-          ...ColumnDefinitions.TextWideActionClass,
+          ...ColumnDefinitions.TextWideMin100,
           headerName: 'Name',
           field: 'Name',
           flex: 2,
-          onCellClicked: (p: { data: ContentItem }) => this.editItem(p.data),
+          // onCellClicked: (p: { data: ContentItem }) => this.editItem(p.data),
         },
         {
-          ...ColumnDefinitions.TextWideFlex3,
+          ...ColumnDefinitions.TextWideMin100,
           headerName: 'File-Name',
           field: 'FileName',
         },
         {
-          ...ColumnDefinitions.TextWideActionClass,
+          ...ColumnDefinitions.Number2,
           headerName: 'Entities',
           field: 'Entities',
-          onCellClicked: (p: { data: ContentItem }) => this.editItem(p.data), // Later: Dialog Entities
         },
         {
-          ...ColumnDefinitions.TextWideActionClass,
+          ...ColumnDefinitions.Number2,
           headerName: 'Content-Type',
           field: 'ContentType',
-          onCellClicked: (p: { data: ContentItem }) => this.editItem(p.data), // Later: Dialog Content-Type
         },
         {
           ...ColumnDefinitions.ActionsPinnedRight3,
@@ -221,6 +194,7 @@ export class DataBundlesComponent {
             const params: DataBundlesActionsParams = {
               do: (verb, item) => {
                 switch (verb) {
+                  case 'edit': this.editItem(item); break;
                   case 'download': this.#download(item); break;
                   case 'saveState': this.#saveState(item); break;
                   case 'restoreState': this.#restoreState(item); break;
