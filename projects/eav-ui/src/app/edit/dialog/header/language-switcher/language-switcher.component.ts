@@ -1,5 +1,7 @@
-import { AfterViewInit, Component, ElementRef, NgZone, OnDestroy, ViewChild, computed, input } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, NgZone, OnDestroy, ViewChild, ViewContainerRef, computed, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
+import { MatIcon } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { UserLanguageService } from 'projects/eav-ui/src/app/shared/services/user-language.service';
@@ -9,6 +11,7 @@ import { FormConfigService } from '../../../form/form-config.service';
 import { FormLanguageService } from '../../../form/form-language.service';
 import { Language } from '../../../form/form-languages.model';
 import { LanguageService } from '../../../localization/language.service';
+import { SeparateLanguagesDialogComponent } from '../separate-languages-dialog/separate-languages-dialog';
 import { CenterSelectedHelper } from './center-selected.helper';
 import { getLanguageOptions } from './language-switcher.helpers';
 import { MouseScrollHelper } from './mouse-scroll.helper';
@@ -21,6 +24,7 @@ import { ShowShadowsHelper } from './show-shadows.helper';
   standalone: true,
   imports: [
     MatButtonModule,
+    MatIcon,
     TippyDirective,
   ],
 })
@@ -31,6 +35,7 @@ export class LanguageSwitcherComponent implements AfterViewInit, OnDestroy {
   @ViewChild('scrollable') private headerRef: ElementRef;
   @ViewChild('leftShadow') private leftShadowRef: ElementRef;
   @ViewChild('rightShadow') private rightShadowRef: ElementRef;
+
   disabled = input<boolean>();
 
   private centerSelectedHelper: CenterSelectedHelper;
@@ -49,6 +54,8 @@ export class LanguageSwitcherComponent implements AfterViewInit, OnDestroy {
     private snackBar: MatSnackBar,
     private translate: TranslateService,
     private userLanguageSvc: UserLanguageService,
+    private matDialog: MatDialog,
+    private viewContainerRef: ViewContainerRef,
   ) { }
 
   ngAfterViewInit() {
@@ -58,7 +65,7 @@ export class LanguageSwitcherComponent implements AfterViewInit, OnDestroy {
       this.leftShadowRef.nativeElement,
       this.rightShadowRef.nativeElement,
     );
-    this.mouseScrollHelper = new MouseScrollHelper(this.ngZone, this.headerRef.nativeElement, this.areButtonsDisabled.bind(this));
+    this.mouseScrollHelper = new MouseScrollHelper(this.ngZone, this.headerRef.nativeElement, () => this.disabled());
     this.centerSelectedHelper = new CenterSelectedHelper(this.ngZone, this.headerRef.nativeElement);
   }
 
@@ -89,7 +96,11 @@ export class LanguageSwitcherComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  private areButtonsDisabled() {
-    return this.disabled();
+  languageSettings() {
+    this.matDialog.open(SeparateLanguagesDialogComponent, {
+      autoFocus: false,
+      viewContainerRef: this.viewContainerRef,
+      width: '750px',
+    });
   }
 }

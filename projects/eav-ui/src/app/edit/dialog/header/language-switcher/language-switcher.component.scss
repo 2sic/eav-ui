@@ -61,3 +61,16 @@
 .hidden {
   visibility: hidden;
 }
+
+.hover-area .hover-only {
+  display: none;
+  // visibility: hidden;
+  // opacity: 0;
+  // transition: visibility 0s, opacity 0.5s linear;
+}
+
+.hover-area:hover .hover-only {
+  display: block;
+  // visibility: visible;
+  // opacity: 1;
+}

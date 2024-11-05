@@ -1,4 +1,5 @@
 <mat-card class="eav-header">
+  <!-- Close button to the left -->
   <button
     mat-icon-button
     class="eav-exit-button"
@@ -7,19 +8,16 @@
   >
     <mat-icon class="eav-icon">{{ config.isParentDialog ? 'clear' : 'arrow_back' }}</mat-icon>
   </button>
+
+  <!-- Language Bar (if used). The empty div is always needed because ATM the alignment would otherwise be off (should fix) -->
   <div class="eav-languages">
-    @if (hasLanguages) {
+    @if (hasLanguages()) {
       @defer {
         <app-language-switcher [disabled]="disabled()"></app-language-switcher>
       }
     }
   </div>
-  <!-- && false | so it doesn't show inside the UI (WIP) -->
-  @if (hasLanguages && true) { 
-    <button mat-icon-button tippy="Language Settings" (click)="openSeparateLanguagesDialog()">
-      <mat-icon class="eav-icon">translate</mat-icon>
-    </button>
-  }
+
   <!-- END -->
   @if (readOnly().isReadOnly) {
     <mat-icon class="eav-hint-icon" [tippyTranslate]="'General.ReadOnlyHint.' + readOnly().reason"> lock </mat-icon>
