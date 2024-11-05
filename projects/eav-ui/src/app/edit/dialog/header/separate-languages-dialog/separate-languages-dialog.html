@@ -1,13 +1,15 @@
 <div class="eav-dialog">
   <div class="eav-dialog-header">
     <div class="eav-dialog-header__title">Language UI Settings (BETA)</div>
-    <!-- TODO: @2pp - add close "X" button to the top right, then remove the close at the end of the dialog -->
+    <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
+      <mat-icon>close</mat-icon>
+    </button>
   </div>
 
   <div class="eav-dialog-content">
     <p>
-      By default, the UI language will match the current language of the content.
-      But sometimes you may prefer to to have a different behavior.
+      By default, the UI language will match the current language of the content. But sometimes you may prefer to to have a different
+      behavior.
     </p>
 
     <h3>Choose language</h3>
@@ -16,37 +18,31 @@
       TODO: @2pp fix things
       - The currently stored value should be visible (ATM the dropdowns are always empty)
       - When I re-open the dialog, I expect the previously stored value to be selected - or the top "blank" option
-      - Make sure the input fields are as wide as possible, so the values don't need to wrap
     -->
 
-    <!-- <div class="selection-menu"> -->
-      <!-- Dropdown for Labels and Help Texts -->
-      <mat-form-field tippy="Changes the language for all texts and labels" appearance="fill">
-        <mat-label>Labels and Help Texts</mat-label>
-        <mat-select (selectionChange)="setLabelLanguage($event.value, 'labels')">
-          <mat-option value="">Always same as content (default)</mat-option>
-          @for (o of options; track o.Code) {
-            <mat-option value="{{ o.Code.toLocaleLowerCase() }}">{{ o.label }}</mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
-      
-      <br>
+    <!-- Dropdown for Labels and Help Texts -->
+    <mat-form-field tippy="Changes the language for all texts and labels" appearance="fill" color="accent">
+      <mat-label>Labels and Help Texts</mat-label>
+      <mat-select (selectionChange)="setLabelLanguage($event.value, 'labels')">
+        <mat-option value="">Always same as content (default)</mat-option>
+        @for (o of options; track o.Code) {
+        <mat-option value="{{ o.Code.toLocaleLowerCase() }}">{{ o.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    
+    <br />
+    <br />
 
-      <!-- Dropdown for UI Elements -->
-      <mat-form-field tippy="Changes the language for all UI Elements" appearance="fill">
-        <mat-label>UI Elements</mat-label>
-        <mat-select (selectionChange)="setUiLanguage($event.value, 'ui')">
-          <mat-option value="">Always same as content (default)</mat-option>
-          @for (o of options; track o.Code) {
-            <mat-option value="{{ o.Code.toLocaleLowerCase() }}">{{ o.label }}</mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
-    <!-- </div> -->
+    <!-- Dropdown for UI Elements -->
+    <mat-form-field tippy="Changes the language for all UI Elements" appearance="fill" color="accent">
+      <mat-label>UI Elements</mat-label>
+      <mat-select (selectionChange)="setUiLanguage($event.value, 'ui')">
+        <mat-option value="">Always same as content (default)</mat-option>
+        @for (option of options; track option.Code) {
+        <mat-option value="{{ option.Code.toLocaleLowerCase() }}">{{ option.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
   </div>
-
-  <mat-dialog-actions align="end">
-    <button mat-button mat-dialog-close>Close</button>
-  </mat-dialog-actions>
 </div>

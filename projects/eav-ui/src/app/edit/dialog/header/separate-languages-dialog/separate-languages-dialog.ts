@@ -5,6 +5,7 @@ import {
   MatDialogClose,
   MatDialogContent,
   MatDialogModule,
+  MatDialogRef,
   MatDialogTitle
 } from '@angular/material/dialog';
 import { MatFormFieldModule } from "@angular/material/form-field";
@@ -38,7 +39,12 @@ export class SeparateLanguagesDialogComponent {
   #languageSvc = inject(LanguageService);
   #userLanguageSvc = inject(UserLanguageService);
 
-  constructor() { }
+  constructor(
+    private dialog: MatDialogRef<SeparateLanguagesDialogComponent>) { }
+
+  closeDialog() {
+    this.dialog.close();
+  }
 
   protected options = getLanguageOptions(this.#languageSvc.getAll());
 
