@@ -277,9 +277,9 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
         cellRenderer: ContentItemsActionsComponent,
         cellRendererParams: (() => {
           const params: ContentItemsActionsParams = {
+            urlTo: (verb, item) => '#' + this.#urlToClone(item),
             do: (verb, item) => {
               switch (verb) {
-                case 'clone': this.clone(item); break;
                 case 'export': this.export(item); break;
                 case 'delete': this.delete(item); break;
               }
@@ -326,12 +326,12 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     return columnDefs;
   }
 
-  private clone(item: ContentItem) {
-    const form: EditForm = {
-      items: [EditPrep.copy(this.#contentTypeStaticName, item.Id)],
-    };
-    const formUrl = convertFormToUrl(form);
-    this.#dialogRouter.navRelative([`edit/${formUrl}`]);
+  #urlToClone(item: ContentItem) {
+    return this.#dialogRouter.urlSubRoute(
+      `edit/${convertFormToUrl({
+        items: [EditPrep.copy(this.#contentTypeStaticName, item.Id)],
+      })}`
+    );
   }
 
   private export(item: ContentItem) {

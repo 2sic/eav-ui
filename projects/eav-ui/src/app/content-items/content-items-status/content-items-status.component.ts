@@ -26,7 +26,6 @@ type GoToUrls = 'openMetadata'
   ],
 })
 export class ContentItemsStatusComponent implements ICellRendererAngularComp {
-  // contentType: ContentType;
   value: PubMeta;
   disableMetadata: boolean;
   metadataCount: number;
@@ -42,7 +41,6 @@ export class ContentItemsStatusComponent implements ICellRendererAngularComp {
     this.params = params;
     this.value = params.value;
     this.item = params.data;
-    // this.contentType = params.data;
     this.disableMetadata = this.item._EditInfo.DisableMetadata;
 
     this.metadataCount = this.item.Metadata?.length ?? 0;
@@ -63,5 +61,4 @@ export class ContentItemsStatusComponent implements ICellRendererAngularComp {
   refresh(params?: any): boolean {
     return true;
   }
-
 }
