@@ -34,7 +34,6 @@ import { ContentItemsActionsComponent } from './content-items-actions/content-it
 import { ContentItemsActionsParams } from './content-items-actions/content-items-actions.models';
 import { ContentItemsEntityComponent } from './content-items-entity/content-items-entity.component';
 import { ContentItemsStatusComponent } from './content-items-status/content-items-status.component';
-import { ContentItemsStatusParams } from './content-items-status/content-items-status.models';
 import { buildFilterModel } from './content-items.helpers';
 import { CreateMetadataDialogComponent } from './create-metadata-dialog/create-metadata-dialog.component';
 import { MetadataInfo } from './create-metadata-dialog/create-metadata-dialog.models';
@@ -145,14 +144,17 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     }
   }
 
-  openMetadata(item: ContentItem) {
-    const url = GoToMetadata.getUrlEntity(
+  #urlToMetadata(item: ContentItem) {
+    return this.#dialogRouter.urlSubRoute(GoToMetadata.getUrlEntity(
       item.Guid,
       `Metadata for Entity: ${item._Title} (${item.Id})`,
       this.#contentTypeStaticName,
-    );
-    this.#dialogRouter.navRelative([url]);
+    ));
   }
+
+  // openMetadata(item: ContentItem) {
+  //   this.#dialogRouter.navRelative([this.#urlToMetadata(item)]);
+  // }
 
   editItem(item?: ContentItem) {
     const form: EditForm = {
@@ -248,12 +250,9 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
           return published;
         },
         cellRenderer: ContentItemsStatusComponent,
-        cellRendererParams: (() => {
-          const params: ContentItemsStatusParams = {
-            onOpenMetadata: (item) => this.openMetadata(item),
-          };
-          return params;
-        })(),
+        cellRendererParams: (() => ({
+          urlTo: (verb, item) => '#' + this.#urlToMetadata(item),
+        } satisfies ContentItemsStatusComponent['params']))(),
       },
       {
         ...ColumnDefinitions.TextWidePrimary,

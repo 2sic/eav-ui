@@ -1,15 +1,16 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { ICellRendererParams } from '@ag-grid-community/core';
-import { Component } from '@angular/core';
-import { ContentItem } from '../models/content-item.model';
-import { PubMeta } from '../pub-meta-filter/pub-meta-filter.model';
-import { ContentItemsStatusParams } from './content-items-status.models';
-import { EavForInAdminUi } from '../../edit/shared/models/eav';
-import { MatBadgeModule } from '@angular/material/badge';
 import { NgClass } from '@angular/common';
+import { Component } from '@angular/core';
+import { MatBadgeModule } from '@angular/material/badge';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
+import { EavForInAdminUi } from '../../edit/shared/models/eav';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
+import { ContentItem } from '../models/content-item.model';
+import { PubMeta } from '../pub-meta-filter/pub-meta-filter.model';
+
+type GoToUrls = 'openMetadata'
 
 @Component({
   selector: 'app-content-items-status',
@@ -25,18 +26,23 @@ import { TippyDirective } from '../../shared/directives/tippy.directive';
   ],
 })
 export class ContentItemsStatusComponent implements ICellRendererAngularComp {
+  // contentType: ContentType;
   value: PubMeta;
   disableMetadata: boolean;
   metadataCount: number;
   metadataTooltip: string;
 
-  private item: ContentItem;
-  private params: ICellRendererParams & ContentItemsStatusParams;
+  protected item: ContentItem;
 
-  agInit(params: ICellRendererParams & ContentItemsStatusParams): void {
-    this.value = params.value;
+  public params: {
+    urlTo(verb: GoToUrls, item: ContentItem): string;
+  };
+
+  agInit(params: ICellRendererParams & ContentItemsStatusComponent['params']): void {
     this.params = params;
+    this.value = params.value;
     this.item = params.data;
+    // this.contentType = params.data;
     this.disableMetadata = this.item._EditInfo.DisableMetadata;
 
     this.metadataCount = this.item.Metadata?.length ?? 0;
@@ -58,7 +64,4 @@ export class ContentItemsStatusComponent implements ICellRendererAngularComp {
     return true;
   }
 
-  openMetadata(): void {
-    this.params.onOpenMetadata(this.item);
-  }
 }
