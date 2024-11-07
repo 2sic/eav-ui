@@ -1,6 +1,7 @@
 import { ColDef, GridApi, GridOptions, GridReadyEvent, ValueGetterParams } from '@ag-grid-community/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectorRef, Component, computed, inject, OnDestroy, OnInit, signal, ViewContainerRef } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogActions, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -19,6 +20,7 @@ import { FileUploadDialogData } from '../shared/components/file-upload-dialog';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
 import { keyFilters } from '../shared/constants/session.constants';
 import { DragAndDropDirective } from '../shared/directives/drag-and-drop.directive';
+import { TippyDirective } from '../shared/directives/tippy.directive';
 import { ToggleDebugDirective } from '../shared/directives/toggle-debug.directive';
 import { DataTypeCatalog } from '../shared/fields/data-type-catalog';
 import { Field } from '../shared/fields/field.model';
@@ -30,6 +32,7 @@ import { SafeHtmlPipe } from '../shared/pipes/safe-html.pipe';
 import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
 import { EntityEditService } from '../shared/services/entity-edit.service';
 import { GlobalConfigService } from '../shared/services/global-config.service';
+import { computedObj } from '../shared/signals/signal.utilities';
 import { ContentItemsActionsComponent } from './content-items-actions/content-items-actions.component';
 import { ContentItemsActionsParams } from './content-items-actions/content-items-actions.models';
 import { ContentItemsEntityComponent } from './content-items-entity/content-items-entity.component';
@@ -57,6 +60,7 @@ import { ContentItemsService } from './services/content-items.service';
     DragAndDropDirective,
     ToggleDebugDirective,
     SxcGridModule,
+    TippyDirective,
   ],
 })
 export class ContentItemsComponent implements OnInit, OnDestroy {
@@ -79,12 +83,19 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     private changeDetectorRef: ChangeDetectorRef,
   ) { }
 
-
   gridOptions: GridOptions = {
     ...defaultGridOptions,
+    onFilterChanged: _ => this.#filterChanged.update(v => v + 1),
   };
 
-  #gridApi$ = new BehaviorSubject<GridApi>(null);
+  /** Signal to tell other signals that the filter changed */
+  #filterChanged = signal(0);
+
+  // TODO: @2pp this subject can probably be replaced with a signal
+  // + an effect (in the constructor) for the one case where it has a .pipe(...)
+  #gridApi$ = new BehaviorSubject<GridApi<ContentItem>>(null);
+  #gridApiSigTemp = toSignal(this.#gridApi$);
+
   #contentTypeStaticName = this.#dialogRouter.getParam('contentTypeStaticName');
   contentType = this.#contentTypesSvc.retrieveContentTypeSig(this.#contentTypeStaticName, undefined);
 
@@ -110,8 +121,8 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
 
   onGridReady(params: GridReadyEvent) {
     this.#gridApi$.next(params.api);
+    this.urlToExportContent();
   }
-
 
   private fetchItems() {
     this.#refresh.update(value => value + 1)
@@ -121,7 +132,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     this.#contentItemsSvc.getColumns(this.#contentTypeStaticName).subscribe(columns => {
       // filter out ephemeral columns as they don't have data to show
       const columnsWithoutEphemeral = columns.filter(column => !column.IsEphemeral);
-      const columnDefs = this.buildColumnDefs(columnsWithoutEphemeral);
+      const columnDefs = this.#buildColumnDefs(columnsWithoutEphemeral);
       const filterModel = buildFilterModel(sessionStorage.getItem(keyFilters), columnDefs);
       if (this.#gridApi$.value) {
         this.setColumnDefs(columnDefs, filterModel);
@@ -181,6 +192,28 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     this.#dialogRouter.navRelative([`export/${this.#contentTypeStaticName}${ids.length > 0 ? `/${ids}` : ''}`]);
   }
 
+  urlToExportContent = computedObj('urlToExportContent', () => { 
+    const value = this.#gridApiSigTemp();
+    if (!value)
+      return '';
+    
+    // Watch for filter changes, as the IDs are probably different on each change
+    this.#filterChanged();
+
+    const hasFilters = Object.keys(value.getFilterModel()).length > 0;
+    const ids: number[] = [];
+  
+    if (hasFilters)
+      value.forEachNodeAfterFilterAndSort(n => ids.push(n.data.Id));
+
+    const url = this.#dialogRouter.urlSubRoute(
+      `export/${this.#contentTypeStaticName}${ids.length > 0 ? `/${ids.join(',')}` : ''}`
+    );
+    
+    return `#${url}`;
+  });
+
+
   filesDropped(files: File[]) {
     const importFile = files[0];
     const ext = importFile.name.substring(importFile.name.lastIndexOf('.') + 1).toLocaleLowerCase();
@@ -227,7 +260,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     this.snackBar.open('Check console for filter information', undefined, { duration: 3000 });
   }
 
-  private buildColumnDefs(columns: Field[]) {
+  #buildColumnDefs(columns: Field[]) {
     const columnDefs: ColDef[] = [
       {
         ...ColumnDefinitions.IdWithDefaultRenderer,
