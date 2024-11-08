@@ -52,8 +52,11 @@
         </button>
       }
     </div>
-    <button mat-fab mat-elevation-z24 class="grid-fab" tippy="Add item" (click)="editItem(null)">
-      <mat-icon>add</mat-icon>
-    </button>
+    <a [href]="urlToNewItem()">
+      <!-- (click)="editItem(null)" -->
+      <button mat-fab mat-elevation-z24 class="grid-fab" tippy="Add item">
+        <mat-icon>add</mat-icon>
+      </button>
+    </a>
   </mat-dialog-actions>
 </div>

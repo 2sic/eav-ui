@@ -178,6 +178,20 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     this.#dialogRouter.navRelative([`edit/${formUrl}`]);
   }
 
+  urlToNewItem(item?: ContentItem) {
+    const url = this.#dialogRouter.urlSubRoute(
+      `edit/${convertFormToUrl({
+        items: [
+          item == null
+            ? EditPrep.newFromType(this.#contentTypeStaticName)
+            : EditPrep.editId(item.Id)
+        ],
+      })}`
+    );
+    
+    return `#${url}`;
+  }
+
   urlToExportContent = computedObj('urlToExportContent', () => { 
     const value = this.#gridApiSigTemp();
     if (!value)
