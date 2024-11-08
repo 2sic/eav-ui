@@ -31,10 +31,12 @@
           <span>Data</span>
         </button>
       </a>
-      <button mat-button class="eav-button__with-icon" tippy="Import xml list" (click)="importContent()">
-        <mat-icon class="eav-icon">cloud_upload</mat-icon>
-        <span>Data</span>
-      </button>
+      <a [href]="urlToImportContent()">
+        <button mat-button class="eav-button__with-icon" tippy="Import xml list" tippyPlacement="top">
+          <mat-icon class="eav-icon">cloud_upload</mat-icon>
+          <span>Data</span>
+        </button>
+      </a>
       <button mat-button class="eav-button__with-icon" tippy="Import single json item" (click)="importItem()">
         <mat-icon class="eav-icon">cloud_upload</mat-icon>
         <span>Item</span>

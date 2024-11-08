@@ -11,7 +11,6 @@ import { BehaviorSubject, filter, take } from 'rxjs';
 import { transient } from '../../../../core';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { ContentExportService } from '../content-export/services/content-export.service';
-import { ContentImportDialogData } from '../content-import/content-import-dialog.config';
 import { GoToMetadata } from '../metadata';
 import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
 import { BooleanFilterComponent } from '../shared/components/boolean-filter/boolean-filter.component';
@@ -179,19 +178,6 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     this.#dialogRouter.navRelative([`edit/${formUrl}`]);
   }
 
-  exportContent() {
-    const filterModel = this.#gridApi$.value.getFilterModel();
-    const hasFilters = Object.keys(filterModel).length > 0;
-    const ids: number[] = [];
-    if (hasFilters) {
-      this.#gridApi$.value.forEachNodeAfterFilterAndSort(rowNode => {
-        const contentItem: ContentItem = rowNode.data;
-        ids.push(contentItem.Id);
-      });
-    }
-    this.#dialogRouter.navRelative([`export/${this.#contentTypeStaticName}${ids.length > 0 ? `/${ids}` : ''}`]);
-  }
-
   urlToExportContent = computedObj('urlToExportContent', () => { 
     const value = this.#gridApiSigTemp();
     if (!value)
@@ -219,7 +205,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     const ext = importFile.name.substring(importFile.name.lastIndexOf('.') + 1).toLocaleLowerCase();
     switch (ext) {
       case 'xml':
-        this.importContent(files);
+        this.urlToImportContent(files);
         break;
       case 'json':
         this.importItem(files);
@@ -227,9 +213,15 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     }
   }
 
-  importContent(files?: File[]) {
-    const dialogData: ContentImportDialogData = { files };
-    this.#dialogRouter.navRelative([`${this.#contentTypeStaticName}/import`], { state: dialogData });
+  urlToImportContent(files?: File[]) {
+    // Special, because the /import is at the end of the URL
+    // is a TODO: @2pp, but maybe needs some more work (might be used from diff places)
+    // It's also fishy, that the URL contains the GUID twice
+    const url = this.#dialogRouter.urlSubRoute(
+      `${this.#contentTypeStaticName}${files ? `/${files.map(f => f.name).join(',')}` : ''}/import`
+    );
+    
+    return `#${url}`;
   }
 
   importItem(files?: File[]) {
