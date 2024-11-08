@@ -16,6 +16,7 @@ import { FileUploadDialogData } from '../../shared/components/file-upload-dialog
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
+import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm, EditPrep } from '../../shared/models/edit-form.model';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
@@ -43,6 +44,7 @@ import { calculateViewType } from './views.helpers';
     RouterOutlet,
     SxcGridModule,
     DragAndDropDirective,
+    TippyDirective,
   ],
 })
 export class ViewsComponent implements OnInit {
@@ -76,7 +78,6 @@ export class ViewsComponent implements OnInit {
   }
   );
 
-
   #polymorphism = computed(() => {
     const refresh = this.#refresh();
     return this.#viewsSvc.getPolymorphism();
@@ -90,7 +91,6 @@ export class ViewsComponent implements OnInit {
       ? 'not configured'
       : (internalSignal().Resolver === null ? 'disabled' : 'using ' + internalSignal().Resolver);
   });
-
 
   ngOnInit() {
 
@@ -115,7 +115,6 @@ export class ViewsComponent implements OnInit {
   #fetchTemplates() {
     this.#refresh.update(value => value + 1);
   }
-
 
   editView(view?: View) {
     const form: EditForm = {
@@ -148,17 +147,20 @@ export class ViewsComponent implements OnInit {
     this.#dialogRouter.navParentFirstChild([subPath]);
   }
 
-  editPolymorphisms() {
+  urlToEditPolymorphisms() {
     if (!this.#polymorphism) return;
 
-    const form: EditForm = {
-      items: [
-        !this.#polymorphism()().Id
-          ? EditPrep.newFromType(this.#polymorphism()().TypeName)
-          : EditPrep.editId(this.#polymorphism()().Id),
-      ],
-    };
-    this.openEdit(form);
+    const url = this.#dialogRouter.urlSubRoute(
+      `edit/${convertFormToUrl({
+        items: [
+          !this.#polymorphism()().Id
+            ? EditPrep.newFromType(this.#polymorphism()().TypeName)
+            : EditPrep.editId(this.#polymorphism()().Id),
+        ],
+      })}`
+    );
+
+    return `#${url}`;
   }
 
   private enableCodeGetter() {
