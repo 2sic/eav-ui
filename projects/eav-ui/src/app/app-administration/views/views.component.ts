@@ -148,15 +148,19 @@ export class ViewsComponent implements OnInit {
   }
 
   urlToEditPolymorphisms() {
-    if (!this.#polymorphism) return;
+    const polymorphismSignal = this.#polymorphism();
+    if (!polymorphismSignal) return;
+
+    const polymorphism = polymorphismSignal();
+    if (!polymorphism) return;
+
+    const itemsEntry = !polymorphism.Id
+      ? EditPrep.newFromType(polymorphism.TypeName)
+      : EditPrep.editId(polymorphism.Id);
 
     const url = this.#dialogRouter.urlSubRoute(
       `edit/${convertFormToUrl({
-        items: [
-          !this.#polymorphism()().Id
-            ? EditPrep.newFromType(this.#polymorphism()().TypeName)
-            : EditPrep.editId(this.#polymorphism()().Id),
-        ],
+        items: [itemsEntry],
       })}`
     );
 
