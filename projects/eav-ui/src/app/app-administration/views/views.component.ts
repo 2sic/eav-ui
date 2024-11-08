@@ -128,6 +128,18 @@ export class ViewsComponent implements OnInit {
     this.openEdit(form);
   }
 
+  urlToNewView() {
+    const url = this.#dialogRouter.urlSubRoute(
+      `edit/${convertFormToUrl({
+        items: [
+          EditPrep.newFromType(eavConstants.contentTypes.template, { ...(this.appIsGlobal && { Location: 'Global' }) })
+        ],
+      })}`
+    );
+
+    return `#${url}`;
+  }
+
   private openEdit(form: EditForm) {
     this.openChildDialog(`edit/${convertFormToUrl(form)}`);
   }

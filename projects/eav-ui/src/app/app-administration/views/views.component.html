@@ -27,9 +27,11 @@
         <span>View</span>
       </button>
     </div>
-    <button mat-fab mat-elevation-z24 class="grid-fab" tippy="Create a new view" (click)="editView(null)">
-      <mat-icon>add</mat-icon>
-    </button>
+    <a [href]="urlToNewView()">
+      <button mat-fab mat-elevation-z24 class="grid-fab" tippy="Create a new view">
+        <mat-icon>add</mat-icon>
+      </button>
+    </a>
   </mat-dialog-actions>
 </div>
 
