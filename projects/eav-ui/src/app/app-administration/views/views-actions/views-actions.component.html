@@ -12,13 +12,18 @@
   }
 
   @if (!view.EditInfo.DisableMetadata) {
-    <div class="eav-grid-action-button highlight" matRipple tippy="Metadata"
-      (click)="do('openMetadata')">
-      <mat-icon [matBadge]="view.Metadata.length" matBadgeColor="accent" matBadgeSize="small"
-        [matBadgeHidden]="!view.Metadata.length" matBadgePosition="below after" aria-hidden="false">
+    <a [href]="params.urlTo('openMetadata', view)" class="eav-grid-action-button default-link highlight" matRipple tippy="Metadata">
+      <mat-icon
+        [matBadge]="view.Metadata.length"
+        matBadgeColor="accent"
+        matBadgeSize="small"
+        [matBadgeHidden]="!view.Metadata.length"
+        matBadgePosition="below after"
+        aria-hidden="false"
+      >
         local_offer
       </mat-icon>
-    </div>
+    </a>
   }
   @else {
     <div class="eav-grid-action-button disabled">

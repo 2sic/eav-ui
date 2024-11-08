@@ -187,12 +187,14 @@ export class ViewsComponent implements OnInit {
     this.openChildDialog(GoToPermissions.getUrlEntity(view.Guid));
   }
 
-  private openMetadata(view: View) {
-    const url = GoToMetadata.getUrlEntity(
-      view.Guid,
-      `Metadata for View: ${view.Name} (${view.Id})`,
+  #urlToOpenMetadata(view: View) {    
+    // Auto sets the # to the front
+    return this.#dialogRouter.urlSubRoute(
+      GoToMetadata.getUrlEntity(
+        view.Guid,
+        `Metadata for View: ${view.Name} (${view.Id})`,
+      )
     );
-    this.openChildDialog(url);
   }
 
   private cloneView(view: View) {
@@ -350,11 +352,11 @@ export class ViewsComponent implements OnInit {
             enablePermissionsGetter: () => this.enablePermissionsGetter(),
             lightSpeedLink: (view: View) => this.#getLightSpeedLink(view),
             openLightspeedFeatureInfo: () => openLightSpeedFeatInfo(),
+            urlTo: (verb, item) => '#' + this.#urlToOpenMetadata(item),
             do: (verb, view) => {
               switch (verb) {
                 case 'openCode': this.openCode(view); break;
                 case 'openPermissions': this.openPermissions(view); break;
-                case 'openMetadata': this.openMetadata(view); break;
                 case 'cloneView': this.cloneView(view); break;
                 case 'exportView': this.exportView(view); break;
                 case 'deleteView': this.deleteView(view); break;
