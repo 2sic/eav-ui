@@ -116,15 +116,18 @@ export class ViewsComponent implements OnInit {
     this.#refresh.update(value => value + 1);
   }
 
-  editView(view?: View) {
-    const form: EditForm = {
-      items: [
-        view == null
-          ? EditPrep.newFromType(eavConstants.contentTypes.template, { ...(this.appIsGlobal && { Location: 'Global' }) })
-          : EditPrep.editId(view.Id),
-      ],
-    };
-    this.openEdit(form);
+  #urlToOpenEditView(view?: View) {
+    const url = this.#dialogRouter.urlSubRoute(
+      `edit/${convertFormToUrl({
+        items: [
+          view == null
+            ? EditPrep.newFromType(eavConstants.contentTypes.template, { ...(this.appIsGlobal && { Location: 'Global' }) })
+            : EditPrep.editId(view.Id),
+        ],
+      })}`
+    );
+    
+    return `#${url}`
   }
 
   urlToNewView() {
@@ -219,7 +222,6 @@ export class ViewsComponent implements OnInit {
     });
   }
 
-
   #getLightSpeedLink(view?: View): string {
     const form: EditForm = {
       items: [
@@ -276,7 +278,8 @@ export class ViewsComponent implements OnInit {
           sort: 'asc',
           onCellClicked: (params) => {
             const view: View = params.data;
-            this.editView(view);
+            // TODO: @2pp - ensure is treated as a real link
+            window.location.href = this.#urlToOpenEditView(view);
           },
         },
         {
