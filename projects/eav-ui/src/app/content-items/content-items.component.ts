@@ -162,10 +162,6 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     ));
   }
 
-  // openMetadata(item: ContentItem) {
-  //   this.#dialogRouter.navRelative([this.#urlToMetadata(item)]);
-  // }
-
   editItem(item?: ContentItem) {
     const form: EditForm = {
       items: [

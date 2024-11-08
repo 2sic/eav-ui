@@ -187,7 +187,7 @@ export class ViewsComponent implements OnInit {
     this.openChildDialog(GoToPermissions.getUrlEntity(view.Guid));
   }
 
-  #urlToOpenMetadata(view: View) {    
+  #urlToOpenMetadata(view: View) {
     // Auto sets the # to the front
     return this.#dialogRouter.urlSubRoute(
       GoToMetadata.getUrlEntity(
@@ -197,11 +197,13 @@ export class ViewsComponent implements OnInit {
     );
   }
 
-  private cloneView(view: View) {
-    const form: EditForm = {
-      items: [EditPrep.copy(eavConstants.contentTypes.template, view.Id)],
-    };
-    this.openEdit(form);
+  #urlToCloneView(view: View) {
+    // Auto sets the # to the front
+    return this.#dialogRouter.urlSubRoute(
+      `edit/${convertFormToUrl({
+        items: [EditPrep.copy(eavConstants.contentTypes.template, view.Id)],
+      })}`
+    );
   }
 
   private exportView(view: View) {
@@ -352,12 +354,16 @@ export class ViewsComponent implements OnInit {
             enablePermissionsGetter: () => this.enablePermissionsGetter(),
             lightSpeedLink: (view: View) => this.#getLightSpeedLink(view),
             openLightspeedFeatureInfo: () => openLightSpeedFeatInfo(),
-            urlTo: (verb, item) => '#' + this.#urlToOpenMetadata(item),
+            urlTo: (verb, item) => {
+              switch (verb) {
+                case 'openMetadata': return '#' + this.#urlToOpenMetadata(item);
+                case 'cloneView': return '#' + this.#urlToCloneView(item);
+              }
+            },
             do: (verb, view) => {
               switch (verb) {
                 case 'openCode': this.openCode(view); break;
                 case 'openPermissions': this.openPermissions(view); break;
-                case 'cloneView': this.cloneView(view); break;
                 case 'exportView': this.exportView(view); break;
                 case 'deleteView': this.deleteView(view); break;
               }

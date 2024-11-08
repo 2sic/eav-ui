@@ -61,10 +61,12 @@
 
 <mat-menu #menu="matMenu" class="grid-more-menu">
   <ng-template matMenuContent>
-    <button mat-menu-item (click)="do('cloneView')">
-      <mat-icon>file_copy</mat-icon>
-      <span>Copy</span>
-    </button>
+    <a [href]="params.urlTo('cloneView', view)" class="eav-grid-action-button default-link highlight" matRipple tippy="Metadata">
+      <button mat-menu-item>
+        <mat-icon>file_copy</mat-icon>
+        <span>Copy</span>
+      </button>
+    </a>
     <button mat-menu-item (click)=" do('exportView')">
       <mat-icon>cloud_download</mat-icon>
       <span>Export</span>

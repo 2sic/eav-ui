@@ -1,7 +1,7 @@
 import { LightSpeedActionsParams } from '../../../admin-shared/lightspeed-action/lightspeed-actions.models';
 import { View } from '../../models/view.model';
 
-export type ViewActionsType = 'openCode' | 'openPermissions' | 'cloneView' | 'exportView' | 'deleteView';
+export type ViewActionsType = 'openCode' | 'openPermissions' | 'exportView' | 'deleteView' | 'cloneView' | 'openMetadata';
 
 export interface ViewActionsParams extends LightSpeedActionsParams {
   enableCodeGetter(): boolean;
