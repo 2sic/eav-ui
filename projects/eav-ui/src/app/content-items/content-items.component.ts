@@ -226,7 +226,6 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     );
   });
 
-
   filesDropped(files: File[]) {
     const importFile = files[0];
     const ext = importFile.name.substring(importFile.name.lastIndexOf('.') + 1).toLocaleLowerCase();
@@ -249,7 +248,8 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     );
   }
 
-  // TODO: @2pp | make this the same as in views
+  // TODO: Should be a link, but is tricky to do with the current setup
+  // as it's doing somethingwith the files, which is not possible with a link
   importItem(files?: File[]) {
     const dialogData: FileUploadDialogData = { files };
     this.#dialogRouter.navRelative(['import'], { state: dialogData });
@@ -431,4 +431,3 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     return rawValue.toString();
   }
 }
-
