@@ -11,6 +11,7 @@ import { FeatureNames } from '../../features/feature-names';
 import { openFeatureDialog } from '../../features/shared/base-feature.component';
 import { GoToMetadata } from '../../metadata';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
+import { AgGridHelper } from '../../shared/ag-grid/ag-grid-helper';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { eavConstants } from '../../shared/constants/eav.constants';
@@ -74,8 +75,7 @@ export class ViewsComponent implements OnInit {
   views = computed(() => {
     const refresh = this.#refresh();
     return this.#viewsSvc.getAll();
-  }
-  );
+  });
 
   #polymorphism = computed(() => {
     const refresh = this.#refresh();
@@ -106,18 +106,22 @@ export class ViewsComponent implements OnInit {
     });
   }
 
-  urlToImportView() {
-    const url = this.#dialogRouter.urlSubRoute('import');
-    
-    return `#${url}`
+  // This method is called multiple times, to reduce redundancy.
+  // It calls the urlSubRoute method from the dialogRouter service
+  // and sets a # infront of the url, so angular can differentiate
+  // angular routes from ordinary urls.
+  #urlTo(url: string) {
+    return '#' + this.#dialogRouter.urlSubRoute(url);
   }
+
+  urlToImportView() { return this.#urlTo('import'); }
 
   #fetchTemplates() {
     this.#refresh.update(value => value + 1);
   }
 
   #urlToOpenEditView(view?: View) {
-    const url = this.#dialogRouter.urlSubRoute(
+    return this.#urlTo(
       `edit/${convertFormToUrl({
         items: [
           view == null
@@ -126,29 +130,26 @@ export class ViewsComponent implements OnInit {
         ],
       })}`
     );
-
-    return `#${url}`
   }
 
   urlToNewView() {
-    const url = this.#dialogRouter.urlSubRoute(
+    return this.#urlTo(
       `edit/${convertFormToUrl({
         items: [
           EditPrep.newFromType(eavConstants.contentTypes.template, { ...(this.appIsGlobal && { Location: 'Global' }) })
         ],
       })}`
     );
-
-    return `#${url}`;
   }
 
-  private openEdit(form: EditForm) {
-    this.openChildDialog(`edit/${convertFormToUrl(form)}`);
-  }
+  // 2pp | not in use?
+  // private openEdit(form: EditForm) {
+  //   this.openChildDialog(`edit/${convertFormToUrl(form)}`);
+  // }
 
-  private openChildDialog(subPath: string) {
-    this.#dialogRouter.navParentFirstChild([subPath]);
-  }
+  // private openChildDialog(subPath: string) {
+  //   this.#dialogRouter.navParentFirstChild([subPath]);
+  // }
 
   urlToEditPolymorphisms() {
     const polymorphismSignal = this.#polymorphism();
@@ -161,13 +162,11 @@ export class ViewsComponent implements OnInit {
       ? EditPrep.newFromType(polymorphism.TypeName)
       : EditPrep.editId(polymorphism.Id);
 
-    const url = this.#dialogRouter.urlSubRoute(
+    return this.#urlTo(
       `edit/${convertFormToUrl({
         items: [itemsEntry],
       })}`
     );
-
-    return `#${url}`;
   }
 
   private enableCodeGetter() {
@@ -179,9 +178,9 @@ export class ViewsComponent implements OnInit {
   }
 
   #urlToOpenUsage(view: View) {
-    const url = this.#dialogRouter.urlSubRoute(`usage/${view.Guid}`);
-
-    return `#${url}`;
+    return this.#urlTo(
+      `usage/${view.Guid}`
+    );
   }
 
   private openCode(view: View) {
@@ -283,11 +282,7 @@ export class ViewsComponent implements OnInit {
           field: 'Name',
           cellClass: 'primary-action highlight'.split(' '),
           sort: 'asc',
-          onCellClicked: (params) => {
-            const view: View = params.data;
-            // TODO: @2pp - ensure is treated as a real link
-            window.location.href = this.#urlToOpenEditView(view);
-          },
+          cellRenderer: (p: { data: View, }) => AgGridHelper.cellLink(this.#urlToOpenEditView(p.data), p.data.Name),
         },
         {
           ...ColumnDefinitions.ItemsText,
@@ -299,11 +294,7 @@ export class ViewsComponent implements OnInit {
         {
           ...ColumnDefinitions.Number,
           field: 'Used',
-          onCellClicked: (p) => {
-            const view: View = p.data;
-            // TODO: @2pp - ensure is treated as a real link
-            window.location.href = this.#urlToOpenUsage(view);
-          }
+          cellRenderer: (p: { data: View, }) => AgGridHelper.cellLink(this.#urlToOpenUsage(p.data), p.data.Used.toString()),
         },
         {
           ...ColumnDefinitions.TextNarrow,
