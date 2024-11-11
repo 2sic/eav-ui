@@ -12,6 +12,7 @@ import { transient } from '../../../../core';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { ContentExportService } from '../content-export/services/content-export.service';
 import { GoToMetadata } from '../metadata';
+import { AgGridHelper } from '../shared/ag-grid/ag-grid-helper';
 import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
 import { BooleanFilterComponent } from '../shared/components/boolean-filter/boolean-filter.component';
 import { EntityFilterComponent } from '../shared/components/entity-filter/entity-filter.component';
@@ -154,6 +155,14 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     }
   }
 
+  // This method is called multiple times, to reduce redundancy.
+  // It calls the urlSubRoute method from the dialogRouter service
+  // and sets a # infront of the url, so angular can differentiate
+  // angular routes from ordinary urls.
+  #urlTo(url: string) {
+    return '#' + this.#dialogRouter.urlSubRoute(url);
+  }
+
   #urlToMetadata(item: ContentItem) {
     return this.#dialogRouter.urlSubRoute(GoToMetadata.getUrlEntity(
       item.Guid,
@@ -174,8 +183,20 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     this.#dialogRouter.navRelative([`edit/${formUrl}`]);
   }
 
+  #urlToOpenEditView(item?: ContentItem) {
+    return this.#urlTo(
+      `edit/${convertFormToUrl({
+        items: [
+          item == null
+            ? EditPrep.newFromType(this.#contentTypeStaticName)
+            : EditPrep.editId(item.Id)
+        ]
+      })}`
+    )
+  }
+
   urlToNewItem(item?: ContentItem) {
-    const url = this.#dialogRouter.urlSubRoute(
+    return this.#urlTo(
       `edit/${convertFormToUrl({
         items: [
           item == null
@@ -184,29 +205,25 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
         ],
       })}`
     );
-    
-    return `#${url}`;
   }
 
-  urlToExportContent = computedObj('urlToExportContent', () => { 
+  urlToExportContent = computedObj('urlToExportContent', () => {
     const value = this.#gridApiSigTemp();
     if (!value)
       return '';
-    
+
     // Watch for filter changes, as the IDs are probably different on each change
     this.#filterChanged();
 
     const hasFilters = Object.keys(value.getFilterModel()).length > 0;
     const ids: number[] = [];
-  
+
     if (hasFilters)
       value.forEachNodeAfterFilterAndSort(n => ids.push(n.data.Id));
 
-    const url = this.#dialogRouter.urlSubRoute(
+    return this.#urlTo(
       `export/${this.#contentTypeStaticName}${ids.length > 0 ? `/${ids.join(',')}` : ''}`
     );
-    
-    return `#${url}`;
   });
 
 
@@ -227,13 +244,12 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     // Special, because the /import is at the end of the URL
     // is a TODO: @2pp, but maybe needs some more work (might be used from diff places)
     // It's also fishy, that the URL contains the GUID twice
-    const url = this.#dialogRouter.urlSubRoute(
+    return this.#urlTo(
       `${this.#contentTypeStaticName}${files ? `/${files.map(f => f.name).join(',')}` : ''}/import`
     );
-    
-    return `#${url}`;
   }
 
+  // TODO: @2pp | make this the same as in views
   importItem(files?: File[]) {
     const dialogData: FileUploadDialogData = { files };
     this.#dialogRouter.navRelative(['import'], { state: dialogData });
@@ -294,7 +310,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
         headerName: 'Item (Entity)',
         field: '_Title',
         flex: 2,
-        onCellClicked: (p: { data: ContentItem }) => this.editItem(p.data),
+        cellRenderer: (p: { data: ContentItem, }) => AgGridHelper.cellLink(this.#urlToOpenEditView(p.data), p.data.Title),
       },
       {
         headerName: 'Stats',
