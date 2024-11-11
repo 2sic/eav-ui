@@ -110,6 +110,8 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
     }
   }
 
+  // TODO: @2pp | Should be a link, but is tricky to do with the current setup
+  // as it's doing somethingwith the files, which is not possible with a link
   importType(files?: File[]) {
     const dialogData: FileUploadDialogData = { files };
     this.#dialogRouter.navRelative(['import'], { state: dialogData });
@@ -122,6 +124,16 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
       if (contentType.EditInfo.ReadOnly) return;
       this.#dialogRouter.navRelative([`${contentType.NameId}/edit`]);
     }
+  }
+
+  urlToNewView() {
+    return this.#urlTo(
+      `edit/${convertFormToUrl({
+        items: [
+          EditPrep.newFromType(eavConstants.contentTypes.template)
+        ],
+      })}`
+    );
   }
 
   #fetchContentTypes() {
@@ -314,19 +326,19 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
       items: [
         !contentType.Properties
           ? {
-              ...EditPrep.newMetadata(contentType.NameId, eavConstants.contentTypes.contentType, eavConstants.metadata.contentType),
-              Prefill: {
-                Label: contentType.Name,
-                Description: contentType.Description
-              },
-            }
+            ...EditPrep.newMetadata(contentType.NameId, eavConstants.contentTypes.contentType, eavConstants.metadata.contentType),
+            Prefill: {
+              Label: contentType.Name,
+              Description: contentType.Description
+            },
+          }
           : EditPrep.editId(contentType.Properties.Id),
       ],
     };
     return convertFormToUrl(form);
   }
 
-
+  // 2pp | not in use?
   // #createOrEditMetadata(contentType: ContentType) {
   //   this.#dialogRouter.navParentFirstChild([`edit/${this.#routeCreateOrEditMetadata(contentType)}`]);
   // }
@@ -335,9 +347,9 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
   //   this.#dialogRouter.navParentFirstChild([GoToPermissions.getUrlContentType(contentType.NameId)]);
   // }
 
-  #routeMetadata(ct: ContentType) {
-    return GoToMetadata.getUrlContentType(ct.NameId, `Metadata for Content Type: ${ct.Name} (${ct.Id})`);
-  }
+  // #routeMetadata(ct: ContentType) {
+  //   return GoToMetadata.getUrlContentType(ct.NameId, `Metadata for Content Type: ${ct.Name} (${ct.Id})`);
+  // }
 
   // #openMetadata(contentType: ContentType) {
   //   this.#dialogRouter.navParentFirstChild([this.#routeMetadata(contentType)]);

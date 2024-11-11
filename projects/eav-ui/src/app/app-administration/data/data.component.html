@@ -1,15 +1,22 @@
 <div class="grid-wrapper mat-tab-grid-wrapper">
-  <ag-grid-angular class="ag-theme-material" [rowData]="contentTypes()" [gridOptions]="gridOptions" appDragAndDrop
-    [allowedFileTypes]="'xml,json'" (filesDropped)="filesDropped($event)">
+  <!-- This is the table, you see in the Data Tab. The fields are defined inside the TS file -->
+  <ag-grid-angular
+    class="ag-theme-material"
+    [rowData]="contentTypes()"
+    [gridOptions]="gridOptions"
+    appDragAndDrop
+    [allowedFileTypes]="'xml,json'"
+    (filesDropped)="filesDropped($event)"
+  >
   </ag-grid-angular>
   <mat-dialog-actions class="eav-dialog-actions">
     <div class="eav-dialog-actions-div">
       <mat-form-field color="accent" class="eav-mat-form-field eav-scope-dropdown">
         <mat-select [ngModel]="scope()" name="Scope" (ngModelChange)="changeScope($event)">
-          @for (scopeOption of (scopeOptions()); track scopeOption) {
-          <mat-option [value]="scopeOption.name">
-            {{ 'Scope: ' + scopeOption.label }}
-          </mat-option>
+          @for (scopeOption of scopeOptions(); track scopeOption) {
+            <mat-option [value]="scopeOption.name">
+              {{ 'Scope: ' + scopeOption.label }}
+            </mat-option>
           }
           <mat-option [value]="dropdownInsertValue">Scope: Other...</mat-option>
         </mat-select>
@@ -19,17 +26,17 @@
         <span>Content Type</span>
       </button>
       @if (isDebug()) {
-      <button mat-button class="eav-button__with-icon" color="accent" tippy="Create a ghost content type"
-        (click)="createGhost()">
-        <mat-icon class="eav-icon">share</mat-icon>
-        <span>Ghost</span>
-      </button>
+        <button mat-button class="eav-button__with-icon" color="accent" tippy="Create a ghost content type" (click)="createGhost()">
+          <mat-icon class="eav-icon">share</mat-icon>
+          <span>Ghost</span>
+        </button>
       }
     </div>
-    <button mat-fab mat-elevation-z24 class="grid-fab" tippy="Create a new content type"
-      (click)="editContentType(null)">
-      <mat-icon>add</mat-icon>
-    </button>
+    <a [href]="urlToNewView()">
+      <button mat-fab mat-elevation-z24 class="grid-fab" tippy="Create a new content type" tippyPlacement="top">
+        <mat-icon>add</mat-icon>
+      </button>
+    </a>
   </mat-dialog-actions>
 </div>
 <router-outlet></router-outlet>

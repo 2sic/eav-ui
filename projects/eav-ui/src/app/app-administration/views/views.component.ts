@@ -11,11 +11,12 @@ import { FeatureNames } from '../../features/feature-names';
 import { openFeatureDialog } from '../../features/shared/base-feature.component';
 import { GoToMetadata } from '../../metadata';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
+import { AgGridHelper } from '../../shared/ag-grid/ag-grid-helper';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
-import { FileUploadDialogData } from '../../shared/components/file-upload-dialog';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
+import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm, EditPrep } from '../../shared/models/edit-form.model';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
@@ -43,6 +44,7 @@ import { calculateViewType } from './views.helpers';
     RouterOutlet,
     SxcGridModule,
     DragAndDropDirective,
+    TippyDirective,
   ],
 })
 export class ViewsComponent implements OnInit {
@@ -73,9 +75,7 @@ export class ViewsComponent implements OnInit {
   views = computed(() => {
     const refresh = this.#refresh();
     return this.#viewsSvc.getAll();
-  }
-  );
-
+  });
 
   #polymorphism = computed(() => {
     const refresh = this.#refresh();
@@ -90,7 +90,6 @@ export class ViewsComponent implements OnInit {
       ? 'not configured'
       : (internalSignal().Resolver === null ? 'disabled' : 'using ' + internalSignal().Resolver);
   });
-
 
   ngOnInit() {
 
@@ -107,46 +106,67 @@ export class ViewsComponent implements OnInit {
     });
   }
 
-  importView(files?: File[]) {
-    const dialogData: FileUploadDialogData = { files };
-    this.#dialogRouter.navParentFirstChild(['import'], { state: dialogData });
+  // This method is called multiple times, to reduce redundancy.
+  // It calls the urlSubRoute method from the dialogRouter service
+  // and sets a # infront of the url, so angular can differentiate
+  // angular routes from ordinary urls.
+  #urlTo(url: string) {
+    return '#' + this.#dialogRouter.urlSubRoute(url);
   }
+
+  urlToImportView() { return this.#urlTo('import'); }
 
   #fetchTemplates() {
     this.#refresh.update(value => value + 1);
   }
 
-
-  editView(view?: View) {
-    const form: EditForm = {
-      items: [
-        view == null
-          ? EditPrep.newFromType(eavConstants.contentTypes.template, { ...(this.appIsGlobal && { Location: 'Global' }) })
-          : EditPrep.editId(view.Id),
-      ],
-    };
-    this.openEdit(form);
+  #urlToOpenEditView(view?: View) {
+    return this.#urlTo(
+      `edit/${convertFormToUrl({
+        items: [
+          view == null
+            ? EditPrep.newFromType(eavConstants.contentTypes.template, { ...(this.appIsGlobal && { Location: 'Global' }) })
+            : EditPrep.editId(view.Id),
+        ],
+      })}`
+    );
   }
 
-  private openEdit(form: EditForm) {
-    this.openChildDialog(`edit/${convertFormToUrl(form)}`);
+  urlToNewView() {
+    return this.#urlTo(
+      `edit/${convertFormToUrl({
+        items: [
+          EditPrep.newFromType(eavConstants.contentTypes.template, { ...(this.appIsGlobal && { Location: 'Global' }) })
+        ],
+      })}`
+    );
   }
 
-  private openChildDialog(subPath: string) {
-    this.#dialogRouter.navParentFirstChild([subPath]);
-  }
+  // 2pp | not in use?
+  // private openEdit(form: EditForm) {
+  //   this.openChildDialog(`edit/${convertFormToUrl(form)}`);
+  // }
 
-  editPolymorphisms() {
-    if (!this.#polymorphism) return;
+  // private openChildDialog(subPath: string) {
+  //   this.#dialogRouter.navParentFirstChild([subPath]);
+  // }
 
-    const form: EditForm = {
-      items: [
-        !this.#polymorphism()().Id
-          ? EditPrep.newFromType(this.#polymorphism()().TypeName)
-          : EditPrep.editId(this.#polymorphism()().Id),
-      ],
-    };
-    this.openEdit(form);
+  urlToEditPolymorphisms() {
+    const polymorphismSignal = this.#polymorphism();
+    if (!polymorphismSignal) return;
+
+    const polymorphism = polymorphismSignal();
+    if (!polymorphism) return;
+
+    const itemsEntry = !polymorphism.Id
+      ? EditPrep.newFromType(polymorphism.TypeName)
+      : EditPrep.editId(polymorphism.Id);
+
+    return this.#urlTo(
+      `edit/${convertFormToUrl({
+        items: [itemsEntry],
+      })}`
+    );
   }
 
   private enableCodeGetter() {
@@ -157,31 +177,42 @@ export class ViewsComponent implements OnInit {
     return this.enablePermissions;
   }
 
-  private openUsage(view: View) {
-    this.openChildDialog(`usage/${view.Guid}`);
+  #urlToOpenUsage(view: View) {
+    return this.#urlTo(
+      `usage/${view.Guid}`
+    );
   }
 
   private openCode(view: View) {
     this.#dialogSvc.openCodeFile(view.TemplatePath, view.IsShared, view.Id);
   }
 
-  private openPermissions(view: View) {
-    this.openChildDialog(GoToPermissions.getUrlEntity(view.Guid));
-  }
-
-  private openMetadata(view: View) {
-    const url = GoToMetadata.getUrlEntity(
-      view.Guid,
-      `Metadata for View: ${view.Name} (${view.Id})`,
+  #urlToOpenPermissions(view: View) {
+    // Sets the # infront when calling this function
+    return this.#dialogRouter.urlSubRoute(
+      GoToPermissions.getUrlEntity(
+        view.Guid
+      )
     );
-    this.openChildDialog(url);
   }
 
-  private cloneView(view: View) {
-    const form: EditForm = {
-      items: [EditPrep.copy(eavConstants.contentTypes.template, view.Id)],
-    };
-    this.openEdit(form);
+  #urlToOpenMetadata(view: View) {
+    // Sets the # infront when calling this function
+    return this.#dialogRouter.urlSubRoute(
+      GoToMetadata.getUrlEntity(
+        view.Guid,
+        `Metadata for View: ${view.Name} (${view.Id})`,
+      )
+    );
+  }
+
+  #urlToCloneView(view: View) {
+    // Sets the # infront when calling this function
+    return this.#dialogRouter.urlSubRoute(
+      `edit/${convertFormToUrl({
+        items: [EditPrep.copy(eavConstants.contentTypes.template, view.Id)],
+      })}`
+    );
   }
 
   private exportView(view: View) {
@@ -196,7 +227,6 @@ export class ViewsComponent implements OnInit {
       this.#fetchTemplates();
     });
   }
-
 
   #getLightSpeedLink(view?: View): string {
     const form: EditForm = {
@@ -252,10 +282,7 @@ export class ViewsComponent implements OnInit {
           field: 'Name',
           cellClass: 'primary-action highlight'.split(' '),
           sort: 'asc',
-          onCellClicked: (params) => {
-            const view: View = params.data;
-            this.editView(view);
-          },
+          cellRenderer: (p: { data: View, }) => AgGridHelper.cellLink(this.#urlToOpenEditView(p.data), p.data.Name),
         },
         {
           ...ColumnDefinitions.ItemsText,
@@ -267,7 +294,7 @@ export class ViewsComponent implements OnInit {
         {
           ...ColumnDefinitions.Number,
           field: 'Used',
-          onCellClicked: (p) => this.openUsage(p.data as View),
+          cellRenderer: (p: { data: View, }) => AgGridHelper.cellLink(this.#urlToOpenUsage(p.data), p.data.Used.toString()),
         },
         {
           ...ColumnDefinitions.TextNarrow,
@@ -332,12 +359,16 @@ export class ViewsComponent implements OnInit {
             enablePermissionsGetter: () => this.enablePermissionsGetter(),
             lightSpeedLink: (view: View) => this.#getLightSpeedLink(view),
             openLightspeedFeatureInfo: () => openLightSpeedFeatInfo(),
+            urlTo: (verb, item) => {
+              switch (verb) {
+                case 'openMetadata': return '#' + this.#urlToOpenMetadata(item);
+                case 'cloneView': return '#' + this.#urlToCloneView(item);
+                case 'openPermissions': return '#' + this.#urlToOpenPermissions(item);
+              }
+            },
             do: (verb, view) => {
               switch (verb) {
                 case 'openCode': this.openCode(view); break;
-                case 'openPermissions': this.openPermissions(view); break;
-                case 'openMetadata': this.openMetadata(view); break;
-                case 'cloneView': this.cloneView(view); break;
                 case 'exportView': this.exportView(view); break;
                 case 'deleteView': this.deleteView(view); break;
               }

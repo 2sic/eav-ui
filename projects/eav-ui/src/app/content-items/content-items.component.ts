@@ -1,6 +1,7 @@
 import { ColDef, GridApi, GridOptions, GridReadyEvent, ValueGetterParams } from '@ag-grid-community/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectorRef, Component, computed, inject, OnDestroy, OnInit, signal, ViewContainerRef } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogActions, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -10,8 +11,8 @@ import { BehaviorSubject, filter, take } from 'rxjs';
 import { transient } from '../../../../core';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { ContentExportService } from '../content-export/services/content-export.service';
-import { ContentImportDialogData } from '../content-import/content-import-dialog.config';
 import { GoToMetadata } from '../metadata';
+import { AgGridHelper } from '../shared/ag-grid/ag-grid-helper';
 import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
 import { BooleanFilterComponent } from '../shared/components/boolean-filter/boolean-filter.component';
 import { EntityFilterComponent } from '../shared/components/entity-filter/entity-filter.component';
@@ -19,6 +20,7 @@ import { FileUploadDialogData } from '../shared/components/file-upload-dialog';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
 import { keyFilters } from '../shared/constants/session.constants';
 import { DragAndDropDirective } from '../shared/directives/drag-and-drop.directive';
+import { TippyDirective } from '../shared/directives/tippy.directive';
 import { ToggleDebugDirective } from '../shared/directives/toggle-debug.directive';
 import { DataTypeCatalog } from '../shared/fields/data-type-catalog';
 import { Field } from '../shared/fields/field.model';
@@ -30,11 +32,11 @@ import { SafeHtmlPipe } from '../shared/pipes/safe-html.pipe';
 import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
 import { EntityEditService } from '../shared/services/entity-edit.service';
 import { GlobalConfigService } from '../shared/services/global-config.service';
+import { computedObj } from '../shared/signals/signal.utilities';
 import { ContentItemsActionsComponent } from './content-items-actions/content-items-actions.component';
 import { ContentItemsActionsParams } from './content-items-actions/content-items-actions.models';
 import { ContentItemsEntityComponent } from './content-items-entity/content-items-entity.component';
 import { ContentItemsStatusComponent } from './content-items-status/content-items-status.component';
-import { ContentItemsStatusParams } from './content-items-status/content-items-status.models';
 import { buildFilterModel } from './content-items.helpers';
 import { CreateMetadataDialogComponent } from './create-metadata-dialog/create-metadata-dialog.component';
 import { MetadataInfo } from './create-metadata-dialog/create-metadata-dialog.models';
@@ -58,6 +60,7 @@ import { ContentItemsService } from './services/content-items.service';
     DragAndDropDirective,
     ToggleDebugDirective,
     SxcGridModule,
+    TippyDirective,
   ],
 })
 export class ContentItemsComponent implements OnInit, OnDestroy {
@@ -80,12 +83,19 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     private changeDetectorRef: ChangeDetectorRef,
   ) { }
 
-
   gridOptions: GridOptions = {
     ...defaultGridOptions,
+    onFilterChanged: _ => this.#filterChanged.update(v => v + 1),
   };
 
-  #gridApi$ = new BehaviorSubject<GridApi>(null);
+  /** Signal to tell other signals that the filter changed */
+  #filterChanged = signal(0);
+
+  // TODO: @2pp this subject can probably be replaced with a signal
+  // + an effect (in the constructor) for the one case where it has a .pipe(...)
+  #gridApi$ = new BehaviorSubject<GridApi<ContentItem>>(null);
+  #gridApiSigTemp = toSignal(this.#gridApi$);
+
   #contentTypeStaticName = this.#dialogRouter.getParam('contentTypeStaticName');
   contentType = this.#contentTypesSvc.retrieveContentTypeSig(this.#contentTypeStaticName, undefined);
 
@@ -111,8 +121,8 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
 
   onGridReady(params: GridReadyEvent) {
     this.#gridApi$.next(params.api);
+    this.urlToExportContent();
   }
-
 
   private fetchItems() {
     this.#refresh.update(value => value + 1)
@@ -122,7 +132,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     this.#contentItemsSvc.getColumns(this.#contentTypeStaticName).subscribe(columns => {
       // filter out ephemeral columns as they don't have data to show
       const columnsWithoutEphemeral = columns.filter(column => !column.IsEphemeral);
-      const columnDefs = this.buildColumnDefs(columnsWithoutEphemeral);
+      const columnDefs = this.#buildColumnDefs(columnsWithoutEphemeral);
       const filterModel = buildFilterModel(sessionStorage.getItem(keyFilters), columnDefs);
       if (this.#gridApi$.value) {
         this.setColumnDefs(columnDefs, filterModel);
@@ -145,13 +155,20 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     }
   }
 
-  openMetadata(item: ContentItem) {
-    const url = GoToMetadata.getUrlEntity(
+  // This method is called multiple times, to reduce redundancy.
+  // It calls the urlSubRoute method from the dialogRouter service
+  // and sets a # infront of the url, so angular can differentiate
+  // angular routes from ordinary urls.
+  #urlTo(url: string) {
+    return '#' + this.#dialogRouter.urlSubRoute(url);
+  }
+
+  #urlToMetadata(item: ContentItem) {
+    return this.#dialogRouter.urlSubRoute(GoToMetadata.getUrlEntity(
       item.Guid,
       `Metadata for Entity: ${item._Title} (${item.Id})`,
       this.#contentTypeStaticName,
-    );
-    this.#dialogRouter.navRelative([url]);
+    ));
   }
 
   editItem(item?: ContentItem) {
@@ -166,25 +183,55 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     this.#dialogRouter.navRelative([`edit/${formUrl}`]);
   }
 
-  exportContent() {
-    const filterModel = this.#gridApi$.value.getFilterModel();
-    const hasFilters = Object.keys(filterModel).length > 0;
-    const ids: number[] = [];
-    if (hasFilters) {
-      this.#gridApi$.value.forEachNodeAfterFilterAndSort(rowNode => {
-        const contentItem: ContentItem = rowNode.data;
-        ids.push(contentItem.Id);
-      });
-    }
-    this.#dialogRouter.navRelative([`export/${this.#contentTypeStaticName}${ids.length > 0 ? `/${ids}` : ''}`]);
+  #urlToOpenEditView(item?: ContentItem) {
+    return this.#urlTo(
+      `edit/${convertFormToUrl({
+        items: [
+          item == null
+            ? EditPrep.newFromType(this.#contentTypeStaticName)
+            : EditPrep.editId(item.Id)
+        ]
+      })}`
+    )
   }
+
+  urlToNewItem(item?: ContentItem) {
+    return this.#urlTo(
+      `edit/${convertFormToUrl({
+        items: [
+          item == null
+            ? EditPrep.newFromType(this.#contentTypeStaticName)
+            : EditPrep.editId(item.Id)
+        ],
+      })}`
+    );
+  }
+
+  urlToExportContent = computedObj('urlToExportContent', () => {
+    const value = this.#gridApiSigTemp();
+    if (!value)
+      return '';
+
+    // Watch for filter changes, as the IDs are probably different on each change
+    this.#filterChanged();
+
+    const hasFilters = Object.keys(value.getFilterModel()).length > 0;
+    const ids: number[] = [];
+
+    if (hasFilters)
+      value.forEachNodeAfterFilterAndSort(n => ids.push(n.data.Id));
+
+    return this.#urlTo(
+      `export/${this.#contentTypeStaticName}${ids.length > 0 ? `/${ids.join(',')}` : ''}`
+    );
+  });
 
   filesDropped(files: File[]) {
     const importFile = files[0];
     const ext = importFile.name.substring(importFile.name.lastIndexOf('.') + 1).toLocaleLowerCase();
     switch (ext) {
       case 'xml':
-        this.importContent(files);
+        this.urlToImportContent(files);
         break;
       case 'json':
         this.importItem(files);
@@ -192,11 +239,17 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     }
   }
 
-  importContent(files?: File[]) {
-    const dialogData: ContentImportDialogData = { files };
-    this.#dialogRouter.navRelative([`${this.#contentTypeStaticName}/import`], { state: dialogData });
+  urlToImportContent(files?: File[]) {
+    // Special, because the /import is at the end of the URL
+    // is a TODO: @2pp, but maybe needs some more work (might be used from diff places)
+    // It's also fishy, that the URL contains the GUID twice
+    return this.#urlTo(
+      `${this.#contentTypeStaticName}${files ? `/${files.map(f => f.name).join(',')}` : ''}/import`
+    );
   }
 
+  // TODO: Should be a link, but is tricky to do with the current setup
+  // as it's doing somethingwith the files, which is not possible with a link
   importItem(files?: File[]) {
     const dialogData: FileUploadDialogData = { files };
     this.#dialogRouter.navRelative(['import'], { state: dialogData });
@@ -225,7 +278,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     this.snackBar.open('Check console for filter information', undefined, { duration: 3000 });
   }
 
-  private buildColumnDefs(columns: Field[]) {
+  #buildColumnDefs(columns: Field[]) {
     const columnDefs: ColDef[] = [
       {
         ...ColumnDefinitions.IdWithDefaultRenderer,
@@ -248,19 +301,16 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
           return published;
         },
         cellRenderer: ContentItemsStatusComponent,
-        cellRendererParams: (() => {
-          const params: ContentItemsStatusParams = {
-            onOpenMetadata: (item) => this.openMetadata(item),
-          };
-          return params;
-        })(),
+        cellRendererParams: (() => ({
+          urlTo: (verb, item) => '#' + this.#urlToMetadata(item),
+        } satisfies ContentItemsStatusComponent['params']))(),
       },
       {
         ...ColumnDefinitions.TextWidePrimary,
         headerName: 'Item (Entity)',
         field: '_Title',
         flex: 2,
-        onCellClicked: (p: { data: ContentItem }) => this.editItem(p.data),
+        cellRenderer: (p: { data: ContentItem, }) => AgGridHelper.cellLink(this.#urlToOpenEditView(p.data), p.data.Title),
       },
       {
         headerName: 'Stats',
@@ -278,9 +328,9 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
         cellRenderer: ContentItemsActionsComponent,
         cellRendererParams: (() => {
           const params: ContentItemsActionsParams = {
+            urlTo: (verb, item) => '#' + this.#urlToClone(item),
             do: (verb, item) => {
               switch (verb) {
-                case 'clone': this.clone(item); break;
                 case 'export': this.export(item); break;
                 case 'delete': this.delete(item); break;
               }
@@ -327,12 +377,12 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     return columnDefs;
   }
 
-  private clone(item: ContentItem) {
-    const form: EditForm = {
-      items: [EditPrep.copy(this.#contentTypeStaticName, item.Id)],
-    };
-    const formUrl = convertFormToUrl(form);
-    this.#dialogRouter.navRelative([`edit/${formUrl}`]);
+  #urlToClone(item: ContentItem) {
+    return this.#dialogRouter.urlSubRoute(
+      `edit/${convertFormToUrl({
+        items: [EditPrep.copy(this.#contentTypeStaticName, item.Id)],
+      })}`
+    );
   }
 
   private export(item: ContentItem) {
@@ -381,4 +431,3 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     return rawValue.toString();
   }
 }
-

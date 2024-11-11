@@ -10,6 +10,8 @@ import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { View } from '../../models/view.model';
 import { ViewActionsParams, ViewActionsType } from './views-actions.models';
 
+type GoToUrls = 'openMetadata' | 'cloneView' | 'openPermissions';
+
 @Component({
   selector: 'app-views-actions',
   templateUrl: './views-actions.component.html',
@@ -24,12 +26,15 @@ import { ViewActionsParams, ViewActionsType } from './views-actions.models';
   ]
 })
 export class ViewsActionsComponent implements ICellRendererAngularComp {
-  view: View;
+  protected view: View;
   enableCode: boolean;
   enablePermissions: boolean;
-  params: ICellRendererParams & ViewActionsParams;
 
-  agInit(params: ICellRendererParams & ViewActionsParams): void {
+  public params: ICellRendererParams & ViewActionsParams & {
+    urlTo(verb: GoToUrls, view: View): string;
+  };
+
+  agInit(params: ICellRendererParams & ViewsActionsComponent['params']): void {
     this.params = params;
     this.view = this.params.data;
     this.enableCode = this.params.enableCodeGetter();

@@ -4,20 +4,36 @@
   </div>
 
   @if (!disableMetadata) {
-  <div class="eav-grid-action-button highlight" matRipple
-    [ngClass]="{ 'hide-until-row-hover': !metadataCount && !value.metadata }" [tippy]="metadataTooltip"
-    (click)="openMetadata()">
-    <mat-icon [matBadge]="metadataCount" matBadgeColor="accent" matBadgeSize="small" [matBadgeHidden]="!metadataCount"
-      matBadgePosition="below after" aria-hidden="false">{{ value.metadata ? 'loyalty' : 'local_offer' }}
-    </mat-icon>
-  </div>
+    <a
+      class="eav-grid-action-button default-link highlight"
+      matRipple
+      [tippy]="metadataTooltip"
+      [href]="params.urlTo('openMetadata', item)"
+      [ngClass]="{ 'hide-until-row-hover': !metadataCount && !value.metadata }"
+    >
+      <mat-icon
+        [matBadge]="metadataCount"
+        matBadgeColor="accent"
+        matBadgeSize="small"
+        [matBadgeHidden]="!metadataCount"
+        matBadgePosition="below after"
+        aria-hidden="false"
+        >{{ value.metadata ? 'loyalty' : 'local_offer' }}
+      </mat-icon>
+    </a>
   }
-  @if (disableMetadata && !(!metadataCount && !value.metadata)) {
-  <div class="eav-grid-action-button disabled">
-    <mat-icon [matBadge]="metadataCount" matBadgeColor="accent" matBadgeSize="small" matBadgeDisabled="true"
-      [matBadgeHidden]="!metadataCount" matBadgePosition="below after" aria-hidden="false">{{ value.metadata ? 'loyalty'
-      : 'local_offer' }}
-    </mat-icon>
-  </div>
+  @else if (disableMetadata && !(!metadataCount && !value.metadata)) {
+    <div class="eav-grid-action-button disabled">
+      <mat-icon
+        [matBadge]="metadataCount"
+        matBadgeColor="accent"
+        matBadgeSize="small"
+        matBadgeDisabled="true"
+        [matBadgeHidden]="!metadataCount"
+        matBadgePosition="below after"
+        aria-hidden="false"
+        >{{ value.metadata ? 'loyalty' : 'local_offer' }}
+      </mat-icon>
+    </div>
   }
 </div>
