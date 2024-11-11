@@ -124,6 +124,16 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
     }
   }
 
+  urlToNewView() {
+    return this.#urlTo(
+      `edit/${convertFormToUrl({
+        items: [
+          EditPrep.newFromType(eavConstants.contentTypes.template)
+        ],
+      })}`
+    );
+  }
+
   #fetchContentTypes() {
     this.#contentTypeSvc.retrieveContentTypes(this.scope()).subscribe(contentTypes => {
       for (const contentType of contentTypes) {
@@ -314,18 +324,19 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
       items: [
         !contentType.Properties
           ? {
-              ...EditPrep.newMetadata(contentType.NameId, eavConstants.contentTypes.contentType, eavConstants.metadata.contentType),
-              Prefill: {
-                Label: contentType.Name,
-                Description: contentType.Description
-              },
-            }
+            ...EditPrep.newMetadata(contentType.NameId, eavConstants.contentTypes.contentType, eavConstants.metadata.contentType),
+            Prefill: {
+              Label: contentType.Name,
+              Description: contentType.Description
+            },
+          }
           : EditPrep.editId(contentType.Properties.Id),
       ],
     };
     return convertFormToUrl(form);
   }
 
+  // 2pp | not in use?
   // #createOrEditMetadata(contentType: ContentType) {
   //   this.#dialogRouter.navParentFirstChild([`edit/${this.#routeCreateOrEditMetadata(contentType)}`]);
   // }
@@ -334,9 +345,9 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
   //   this.#dialogRouter.navParentFirstChild([GoToPermissions.getUrlContentType(contentType.NameId)]);
   // }
 
-  #routeMetadata(ct: ContentType) {
-    return GoToMetadata.getUrlContentType(ct.NameId, `Metadata for Content Type: ${ct.Name} (${ct.Id})`);
-  }
+  // #routeMetadata(ct: ContentType) {
+  //   return GoToMetadata.getUrlContentType(ct.NameId, `Metadata for Content Type: ${ct.Name} (${ct.Id})`);
+  // }
 
   // #openMetadata(contentType: ContentType) {
   //   this.#dialogRouter.navParentFirstChild([this.#routeMetadata(contentType)]);
