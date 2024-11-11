@@ -326,7 +326,6 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
     return convertFormToUrl(form);
   }
 
-
   // #createOrEditMetadata(contentType: ContentType) {
   //   this.#dialogRouter.navParentFirstChild([`edit/${this.#routeCreateOrEditMetadata(contentType)}`]);
   // }

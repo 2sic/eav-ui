@@ -123,7 +123,5 @@ export class DevRestDataComponent extends DevRestBase<DevRestDataModel> implemen
         return result;
       }),
     );
-
   }
-
 }

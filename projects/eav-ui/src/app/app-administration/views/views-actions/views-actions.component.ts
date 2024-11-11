@@ -10,7 +10,7 @@ import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { View } from '../../models/view.model';
 import { ViewActionsParams, ViewActionsType } from './views-actions.models';
 
-type GoToUrls = 'openMetadata' | 'cloneView';
+type GoToUrls = 'openMetadata' | 'cloneView' | 'openPermissions';
 
 @Component({
   selector: 'app-views-actions',

@@ -126,7 +126,7 @@ export class ViewsComponent implements OnInit {
         ],
       })}`
     );
-    
+
     return `#${url}`
   }
 
@@ -178,20 +178,27 @@ export class ViewsComponent implements OnInit {
     return this.enablePermissions;
   }
 
-  private openUsage(view: View) {
-    this.openChildDialog(`usage/${view.Guid}`);
+  #urlToOpenUsage(view: View) {
+    const url = this.#dialogRouter.urlSubRoute(`usage/${view.Guid}`);
+
+    return `#${url}`;
   }
 
   private openCode(view: View) {
     this.#dialogSvc.openCodeFile(view.TemplatePath, view.IsShared, view.Id);
   }
 
-  private openPermissions(view: View) {
-    this.openChildDialog(GoToPermissions.getUrlEntity(view.Guid));
+  #urlToOpenPermissions(view: View) {
+    // Sets the # infront when calling this function
+    return this.#dialogRouter.urlSubRoute(
+      GoToPermissions.getUrlEntity(
+        view.Guid
+      )
+    );
   }
 
   #urlToOpenMetadata(view: View) {
-    // Auto sets the # to the front
+    // Sets the # infront when calling this function
     return this.#dialogRouter.urlSubRoute(
       GoToMetadata.getUrlEntity(
         view.Guid,
@@ -201,7 +208,7 @@ export class ViewsComponent implements OnInit {
   }
 
   #urlToCloneView(view: View) {
-    // Auto sets the # to the front
+    // Sets the # infront when calling this function
     return this.#dialogRouter.urlSubRoute(
       `edit/${convertFormToUrl({
         items: [EditPrep.copy(eavConstants.contentTypes.template, view.Id)],
@@ -292,7 +299,11 @@ export class ViewsComponent implements OnInit {
         {
           ...ColumnDefinitions.Number,
           field: 'Used',
-          onCellClicked: (p) => this.openUsage(p.data as View),
+          onCellClicked: (p) => {
+            const view: View = p.data;
+            // TODO: @2pp - ensure is treated as a real link
+            window.location.href = this.#urlToOpenUsage(view);
+          }
         },
         {
           ...ColumnDefinitions.TextNarrow,
@@ -361,12 +372,12 @@ export class ViewsComponent implements OnInit {
               switch (verb) {
                 case 'openMetadata': return '#' + this.#urlToOpenMetadata(item);
                 case 'cloneView': return '#' + this.#urlToCloneView(item);
+                case 'openPermissions': return '#' + this.#urlToOpenPermissions(item);
               }
             },
             do: (verb, view) => {
               switch (verb) {
                 case 'openCode': this.openCode(view); break;
-                case 'openPermissions': this.openPermissions(view); break;
                 case 'exportView': this.exportView(view); break;
                 case 'deleteView': this.deleteView(view); break;
               }

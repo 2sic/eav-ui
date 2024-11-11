@@ -1,11 +1,9 @@
 <div class="actions-component">
   @if (!view.EditInfo.DisableEdit && enableCode) {
-    <div class="eav-grid-action-button highlight" matRipple tippy="Code"
-      (click)="do('openCode')">
+    <div class="eav-grid-action-button highlight" matRipple tippy="Code" (click)="do('openCode')">
       <mat-icon>code</mat-icon>
     </div>
-  }
-  @else {
+  } @else {
     <div class="eav-grid-action-button disabled">
       <mat-icon>code</mat-icon>
     </div>
@@ -24,32 +22,49 @@
         local_offer
       </mat-icon>
     </a>
-  }
-  @else {
+  } @else {
     <div class="eav-grid-action-button disabled">
-      <mat-icon [matBadge]="view.Metadata.length" matBadgeColor="accent" matBadgeSize="small" matBadgeDisabled="true"
-        [matBadgeHidden]="!view.Metadata.length" matBadgePosition="below after" aria-hidden="false">
+      <mat-icon
+        [matBadge]="view.Metadata.length"
+        matBadgeColor="accent"
+        matBadgeSize="small"
+        matBadgeDisabled="true"
+        [matBadgeHidden]="!view.Metadata.length"
+        matBadgePosition="below after"
+        aria-hidden="false"
+      >
         local_offer
       </mat-icon>
     </div>
   }
 
   @if (!view.EditInfo.DisableEdit && enablePermissions) {
-    <div class="eav-grid-action-button highlight" matRipple
-      tippy="Permissions" (click)="do('openPermissions')">
-      <mat-icon [matBadge]="view.Permissions.Count" matBadgeColor="accent" matBadgeSize="small"
-        [matBadgeHidden]="!view.Permissions.Count" matBadgePosition="below after" aria-hidden="false">
+    <a [href]="params.urlTo('openPermissions', view)" class="eav-grid-action-button default-link highlight" matRipple tippy="Permissions">
+      <mat-icon
+        [matBadge]="view.Permissions.Count"
+        matBadgeColor="accent"
+        matBadgeSize="small"
+        [matBadgeHidden]="!view.Permissions.Count"
+        matBadgePosition="below after"
+        aria-hidden="false"
+      >
         person
       </mat-icon>
-    </div>
-  }
-  @else {
-    <div class="eav-grid-action-button disabled">
-      <mat-icon [matBadge]="view.Permissions.Count" matBadgeColor="accent" matBadgeSize="small" matBadgeDisabled="true"
-        [matBadgeHidden]="!view.Permissions.Count" matBadgePosition="below after" aria-hidden="false">
+    </a>
+  } @else {
+    <a [href]="params.urlTo('openPermissions', view)" class="eav-grid-action-button default-link disabled" matRipple>
+      <mat-icon
+        [matBadge]="view.Permissions.Count"
+        matBadgeColor="accent"
+        matBadgeSize="small"
+        matBadgeDisabled="true"
+        [matBadgeHidden]="!view.Permissions.Count"
+        matBadgePosition="below after"
+        aria-hidden="false"
+      >
         person
       </mat-icon>
-    </div>
+    </a>
   }
 
   <app-lightspeed-action [lightSpeedOwner]="view" [params]="params" [lightSpeed]="view.lightSpeed"></app-lightspeed-action>
@@ -67,7 +82,7 @@
         <span>Copy</span>
       </button>
     </a>
-    <button mat-menu-item (click)=" do('exportView')">
+    <button mat-menu-item (click)="do('exportView')">
       <mat-icon>cloud_download</mat-icon>
       <span>Export</span>
     </button>
