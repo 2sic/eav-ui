@@ -5,29 +5,25 @@
     [gridOptions]="gridOptions"
     appDragAndDrop
     [allowedFileTypes]="'json'"
-    (filesDropped)="importView($event)"
+    (filesDropped)="urlToImportView()"
   >
   </ag-grid-angular>
   <mat-dialog-actions class="eav-dialog-actions">
     <div class="eav-dialog-actions-div">
       <a [href]="urlToEditPolymorphisms()">
-        <button
-          mat-button
-          class="eav-polymorph-button"
-          tippy="Configure polymorphism"
-          tippyPlacement="top"
-          [disabled]="appIsInherited"
-        >
+        <button mat-button class="eav-polymorph-button" tippy="Configure polymorphism" tippyPlacement="top" [disabled]="appIsInherited">
           <span class="eav-polymorph-button-span">
             <img class="eav-polymorph-logo" [src]="polymorphLogo" />
             <span>Polymorphism {{ polymorphStatus() }}</span>
           </span>
         </button>
       </a>
-      <button mat-button class="eav-button__with-icon" tippy="Import view" tippyPlacement="top" (click)="importView()">
-        <mat-icon class="eav-icon">cloud_upload</mat-icon>
-        <span>View</span>
-      </button>
+      <a [href]="urlToImportView()">
+        <button mat-button class="eav-button__with-icon" tippy="Import view" tippyPlacement="top">
+          <mat-icon class="eav-icon">cloud_upload</mat-icon>
+          <span>View</span>
+        </button>
+      </a>
     </div>
     <a [href]="urlToNewView()">
       <button mat-fab mat-elevation-z24 class="grid-fab" tippy="Create a new view" tippyPlacement="top">

@@ -12,7 +12,6 @@ import { openFeatureDialog } from '../../features/shared/base-feature.component'
 import { GoToMetadata } from '../../metadata';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
-import { FileUploadDialogData } from '../../shared/components/file-upload-dialog';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
@@ -107,9 +106,10 @@ export class ViewsComponent implements OnInit {
     });
   }
 
-  importView(files?: File[]) {
-    const dialogData: FileUploadDialogData = { files };
-    this.#dialogRouter.navParentFirstChild(['import'], { state: dialogData });
+  urlToImportView() {
+    const url = this.#dialogRouter.urlSubRoute('import');
+    
+    return `#${url}`
   }
 
   #fetchTemplates() {
