@@ -150,50 +150,54 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     this.#contentItemsService.getAll(staticName).subscribe(contentItems => {
       let form: EditForm;
 
-      switch (staticName) {
-        case eavConstants.contentTypes.systemSettings:
-        case eavConstants.contentTypes.systemResources:
-          const systemSettingsEntities = contentItems.filter(i => systemSettingsScope === SystemSettingsScopes.App
-            ? !i.SettingsEntityScope
-            : i.SettingsEntityScope === SystemSettingsScopes.Site);
-          if (systemSettingsEntities.length > 1) {
-            throw new Error(`Found too many settings for type ${staticName}`);
-          }
-          const systemSettingsEntity = systemSettingsEntities[0];
-          form = {
-            items: [
-              systemSettingsEntity == null
-                ? EditPrep.newFromType(staticName, {
-                  ...(systemSettingsScope === SystemSettingsScopes.Site && { SettingsEntityScope: SystemSettingsScopes.Site }),
-                })
-                : EditPrep.editId(systemSettingsEntity.Id)
-            ],
-          };
-          break;
-        case eavConstants.contentTypes.customSettings:
-        case eavConstants.contentTypes.customResources:
-          if (contentItems.length > 1) {
-            throw new Error(`Found too many settings for type ${staticName}`);
-          }
-          const customSettingsEntity = contentItems[0];
-          form = {
-            items: [
-              customSettingsEntity == null
-                ? EditPrep.newFromType(staticName)
-                : EditPrep.editId(customSettingsEntity.Id)
-            ],
-          };
-          break;
-        default:
-          if (contentItems.length < 1) throw new Error(`Found no settings for type ${staticName}`);
-          if (contentItems.length > 1) throw new Error(`Found too many settings for type ${staticName}`);
-          form = {
-            items: [EditPrep.editId(contentItems[0].Id)],
-          };
-      }
+      try {
+        switch (staticName) {
+          case eavConstants.contentTypes.systemSettings:
+          case eavConstants.contentTypes.systemResources:
+            const systemSettingsEntities = contentItems.filter(i => systemSettingsScope === SystemSettingsScopes.App
+              ? !i.SettingsEntityScope
+              : i.SettingsEntityScope === SystemSettingsScopes.Site);
+            if (systemSettingsEntities.length > 1) {
+              throw new Error(`Found too many settings for type ${staticName}`);
+            }
+            const systemSettingsEntity = systemSettingsEntities[0];
+            form = {
+              items: [
+                systemSettingsEntity == null
+                  ? EditPrep.newFromType(staticName, {
+                    ...(systemSettingsScope === SystemSettingsScopes.Site && { SettingsEntityScope: SystemSettingsScopes.Site }),
+                  })
+                  : EditPrep.editId(systemSettingsEntity.Id)
+              ],
+            };
+            break;
+          case eavConstants.contentTypes.customSettings:
+          case eavConstants.contentTypes.customResources:
+            if (contentItems.length > 1) {
+              throw new Error(`Found too many settings for type ${staticName}`);
+            }
+            const customSettingsEntity = contentItems[0];
+            form = {
+              items: [
+                customSettingsEntity == null
+                  ? EditPrep.newFromType(staticName)
+                  : EditPrep.editId(customSettingsEntity.Id)
+              ],
+            };
+            break;
+          default:
+            if (contentItems.length < 1) throw new Error(`Found no settings for type ${staticName}`);
+            if (contentItems.length > 1) throw new Error(`Found too many settings for type ${staticName}`);
+            form = {
+              items: [EditPrep.editId(contentItems[0].Id)],
+            };
+        }
 
-      const formUrl = convertFormToUrl(form);
-      this.#dialogRouter.navParentFirstChild([`edit/${formUrl}`]);
+        const formUrl = convertFormToUrl(form);
+        this.#dialogRouter.navParentFirstChild([`edit/${formUrl}`]);
+      } catch (error) {
+        this.#dialogRouter.navParentFirstChild(['message/e'], { queryParams: { error: error.message } });
+      }
     });
   }
 

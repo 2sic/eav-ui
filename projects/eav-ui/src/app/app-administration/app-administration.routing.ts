@@ -243,12 +243,12 @@ export const appAdministrationRoutes: Routes = [
               {
                 path: 'e',
                 loadComponent: () => import('./app-configuration/error/error.component').then(m => m.ErrorComponent),
-                // data: { i18n: 'error' },
+                data: { i18n: 'error' },
               },
               {
                 path: 'm',
                 loadComponent: () => import('./app-configuration/message/message.component').then(m => m.MessageComponent),
-                // data: { i18n: 'message' },
+                data: { i18n: 'message' },
               },
             ],
           },
