@@ -1,4 +1,13 @@
-<div class="error-container">
-  <h1>Error</h1>
-  <p>{{ errorMessage }}</p>
+<div class="eav-dialog">
+  <div class="eav-dialog-header">
+    <div class="eav-dialog-header__title">Error Messages</div>
+    <button mat-icon-button mat-dialog-close tippy="Close dialog">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <div class="eav-dialog-content">
+    <p>{{ errorMessage }}</p>
+  </div>
+  <!-- <mat-dialog-actions>
+  </mat-dialog-actions> -->
 </div>

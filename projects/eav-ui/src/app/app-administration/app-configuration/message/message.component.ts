@@ -1,10 +1,34 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogActions, MatDialogClose, MatDialogContent, MatDialogModule, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-message',
   templateUrl: './message.component.html',
-  styleUrls: ['./message.component.scss'],
   standalone: true,
-  imports: []
+  imports: [
+    MatDialogModule,
+    MatButtonModule,
+    MatDialogActions,
+    MatDialogClose,
+    MatDialogContent,
+    MatDialogTitle,
+    MatIconModule,
+  ]
 })
-export class MessageComponent {}
+export class MessageComponent implements OnInit {
+  message: string;
+
+  constructor(
+    private route: ActivatedRoute,
+    public dialog: MatDialogRef<MessageComponent>,
+  ) { }
+
+  ngOnInit() {
+    this.route.queryParams.subscribe(params => {
+      this.message = params['message'] || 'Something went wrong. Please try again later.';
+    });
+  }
+}

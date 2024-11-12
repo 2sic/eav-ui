@@ -1,4 +1,13 @@
-<div class="message-container">
-  <h1>Message</h1>
-  <p>This is a message component.</p>
+<div class="eav-dialog">
+  <div class="eav-dialog-header">
+    <div class="eav-dialog-header__title">Messages</div>
+    <button mat-icon-button mat-dialog-close tippy="Close dialog">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <div class="eav-dialog-content">
+    <p>{{ message }}</p>
+  </div>
+  <!-- <mat-dialog-actions>
+  </mat-dialog-actions> -->
 </div>
