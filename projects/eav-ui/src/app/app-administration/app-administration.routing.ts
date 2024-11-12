@@ -5,6 +5,8 @@ import { GoToMetadata } from '../metadata';
 import { GoToPermissions } from '../permissions/go-to-permissions';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
 import { appAdministrationDialog } from './app-admin-main/app-admin-main.dialog-config';
+import { errorDialog } from './app-configuration/error/error-dialog.config';
+import { messageDialog } from './app-configuration/message/message-dialog.config';
 import { CopilotSpecs } from './copilot/copilot-specs';
 import { GoToCopilot } from './copilot/go-to-copilot';
 import { AppStateComponent } from './import-export-menu/app-state/app-state.component';
@@ -243,12 +245,12 @@ export const appAdministrationRoutes: Routes = [
               {
                 path: 'e',
                 component: DialogEntryComponent,
-                data: { dialog: import('./app-configuration/error/error.component').then(m => m.ErrorComponent), i18n: 'error' },
+                data: { dialog: errorDialog, i18n: 'error' },
               },
               {
                 path: 'm',
                 component: DialogEntryComponent,
-                data: { dialog: import('./app-configuration/message/message.component').then(m => m.MessageComponent), i18n: 'message' },
+                data: { dialog: messageDialog, i18n: 'message' },
               },
             ],
           },
