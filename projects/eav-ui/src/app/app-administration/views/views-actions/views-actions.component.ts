@@ -1,5 +1,6 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { ICellRendererParams } from '@ag-grid-community/core';
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatRippleModule } from '@angular/material/core';
@@ -23,12 +24,14 @@ type GoToUrls = 'openMetadata' | 'cloneView' | 'openPermissions';
     MatMenuModule,
     TippyDirective,
     LightSpeedActionsComponent,
+    CommonModule
   ]
 })
 export class ViewsActionsComponent implements ICellRendererAngularComp {
   protected view: View;
   enableCode: boolean;
   enablePermissions: boolean;
+  isEnabled: boolean;
 
   public params: ICellRendererParams & ViewActionsParams & {
     urlTo(verb: GoToUrls, view: View): string;
@@ -39,6 +42,7 @@ export class ViewsActionsComponent implements ICellRendererAngularComp {
     this.view = this.params.data;
     this.enableCode = this.params.enableCodeGetter();
     this.enablePermissions = this.params.enablePermissionsGetter();
+    this.isEnabled = !this.view.EditInfo.DisableEdit && this.enablePermissions
   }
 
   refresh(params?: any): boolean {

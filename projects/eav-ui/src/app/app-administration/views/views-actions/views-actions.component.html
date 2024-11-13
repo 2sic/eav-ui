@@ -37,36 +37,25 @@
       </mat-icon>
     </div>
   }
-
-  @if (!view.EditInfo.DisableEdit && enablePermissions) {
-    <a [href]="params.urlTo('openPermissions', view)" class="eav-grid-action-button default-link highlight" matRipple tippy="Permissions">
-      <mat-icon
-        [matBadge]="view.Permissions.Count"
-        matBadgeColor="accent"
-        matBadgeSize="small"
-        [matBadgeHidden]="!view.Permissions.Count"
-        matBadgePosition="below after"
-        aria-hidden="false"
-      >
-        person
-      </mat-icon>
-    </a>
-  } @else {
-    <a [href]="params.urlTo('openPermissions', view)" class="eav-grid-action-button default-link disabled" matRipple>
-      <mat-icon
-        [matBadge]="view.Permissions.Count"
-        matBadgeColor="accent"
-        matBadgeSize="small"
-        matBadgeDisabled="true"
-        [matBadgeHidden]="!view.Permissions.Count"
-        matBadgePosition="below after"
-        aria-hidden="false"
-      >
-        person
-      </mat-icon>
-    </a>
-  }
-
+  <a
+    [href]="params.urlTo('openPermissions', view)"
+    class="eav-grid-action-button default-link"
+    [ngClass]="{ highlight: isEnabled, disabled: !isEnabled }"
+    [ngStyle]="{ 'pointer-events': isEnabled ? 'auto' : 'none' }"
+    matRipple
+    tippy="Permissions"
+  >
+    <mat-icon
+      [matBadge]="view.Permissions.Count"
+      matBadgeColor="accent"
+      matBadgeSize="small"
+      [matBadgeHidden]="!view.Permissions.Count"
+      matBadgePosition="below after"
+      aria-hidden="false"
+    >
+      person
+    </mat-icon>
+  </a>
   <app-lightspeed-action [lightSpeedOwner]="view" [params]="params" [lightSpeed]="view.lightSpeed"></app-lightspeed-action>
 
   <div class="eav-grid-action-button highlight" matRipple tippy="More" [matMenuTriggerFor]="menu">
