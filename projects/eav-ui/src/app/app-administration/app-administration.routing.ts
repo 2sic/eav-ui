@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { GoToDevRest } from '../dev-rest';
 import { EditRoutes, EditRoutesNoHistory } from '../edit/edit.routing';
+import { featureInfoDialog } from '../features/feature-info-dialog/feature-info-dialog.config';
 import { GoToMetadata } from '../metadata';
 import { GoToPermissions } from '../permissions/go-to-permissions';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
@@ -225,6 +226,14 @@ export const appAdministrationRoutes: Routes = [
             data: { dialog: languagePermissionsDialog, title: 'Language Permissions' },
             children: [
               { ...GoToPermissions.route, data: { title: 'Language Permissions' } },
+            ],
+          },
+          {
+            path: 'edit-language-permissions',
+            component: DialogEntryComponent,
+            data: { dialog: featureInfoDialog },
+            children: [
+              { ...GoToPermissions.route },
             ],
           },
           { ...GoToPermissions.route, data: { title: 'App Permissions' } },
