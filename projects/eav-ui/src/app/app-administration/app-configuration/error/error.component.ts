@@ -1,6 +1,7 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialogActions, MatDialogClose, MatDialogContent, MatDialogModule, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
+import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute } from '@angular/router';
 
@@ -9,12 +10,9 @@ import { ActivatedRoute } from '@angular/router';
   templateUrl: './error.component.html',
   standalone: true,
   imports: [
+    CommonModule,
     MatDialogModule,
     MatButtonModule,
-    MatDialogActions,
-    MatDialogClose,
-    MatDialogContent,
-    MatDialogTitle,
     MatIconModule,
   ]
 })
@@ -23,8 +21,8 @@ export class ErrorComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    public dialog: MatDialogRef<ErrorComponent>,
-  ) { }
+    public dialogRef: MatDialogRef<ErrorComponent>
+  ) {}
 
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
