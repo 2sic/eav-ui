@@ -509,8 +509,8 @@
           [label]=""
           [icon]=""
         ></app-docs-link-helper>
-        <!-- <a [href]="urlToOpenLanguagePermissions(false)"> -->
-          <button mat-button class="eav-button__with-icon" (click)="openLanguagePermissions(false)">
+        <a [href]="urlToOpenLanguagePermissions(langPermsEnabled())">
+          <button mat-button class="eav-button__with-icon">
             <mat-icon
               [matBadgeHidden]="langPermsEnabled()"
               matBadgeSize="small"
@@ -523,7 +523,7 @@
             </mat-icon>
             <span>Language Permissions</span>
           </button>
-        <!-- </a> -->
+        </a>
       </mat-card-actions>
     </mat-card>
   </div>

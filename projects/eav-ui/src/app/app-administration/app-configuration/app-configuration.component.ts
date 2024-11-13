@@ -14,7 +14,6 @@ import { ContentItemsService } from '../../content-items/services/content-items.
 import { FeatureNames } from '../../features/feature-names';
 import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
 import { FeaturesScopedService } from '../../features/features-scoped.service';
-import { openFeatureDialog } from '../../features/shared/base-feature.component';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { SystemSettingsScopes, eavConstants } from '../../shared/constants/eav.constants';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
@@ -142,7 +141,7 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.snackBar.dismiss();
   }
-  
+
   #urlTo(url: string) {
     return '#' + this.#dialogRouter.urlSubRoute(url);
   }
@@ -151,7 +150,7 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     this.#contentItemsService.getAll(staticName).subscribe(contentItems => {
       let form: EditForm;
       let errorMsg: string;
-  
+
       switch (staticName) {
         case eavConstants.contentTypes.systemSettings:
         case eavConstants.contentTypes.systemResources:
@@ -168,16 +167,16 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
               items: [
                 systemSettingsEntity == null
                   ? EditPrep.newFromType(staticName, {
-                      ...(systemSettingsScope === SystemSettingsScopes.Site && {
-                        SettingsEntityScope: SystemSettingsScopes.Site,
-                      }),
-                    })
+                    ...(systemSettingsScope === SystemSettingsScopes.Site && {
+                      SettingsEntityScope: SystemSettingsScopes.Site,
+                    }),
+                  })
                   : EditPrep.editId(systemSettingsEntity.Id),
               ],
             };
           }
           break;
-  
+
         case eavConstants.contentTypes.customSettings:
         case eavConstants.contentTypes.customResources:
           if (contentItems.length > 1) {
@@ -193,7 +192,7 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
             };
           }
           break;
-  
+
         default:
           if (contentItems.length < 1) {
             errorMsg = `Found no settings for type ${staticName}`;
@@ -205,7 +204,7 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
             };
           }
       }
-  
+
       if (errorMsg) {
         // Navigate to the error component with the error message
         this.#dialogRouter.navParentFirstChild(['message/e'], {
@@ -222,7 +221,7 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     this.#contentItemsService.getAll(staticName).subscribe(contentItems => {
       let form: EditForm;
       let errorMsg: string;
-  
+
       switch (staticName) {
         case eavConstants.contentTypes.systemSettings:
         case eavConstants.contentTypes.systemResources:
@@ -239,16 +238,16 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
               items: [
                 systemSettingsEntity == null
                   ? EditPrep.newFromType(staticName, {
-                      ...(systemSettingsScope === SystemSettingsScopes.Site && {
-                        SettingsEntityScope: SystemSettingsScopes.Site,
-                      }),
-                    })
+                    ...(systemSettingsScope === SystemSettingsScopes.Site && {
+                      SettingsEntityScope: SystemSettingsScopes.Site,
+                    }),
+                  })
                   : EditPrep.editId(systemSettingsEntity.Id),
               ],
             };
           }
           break;
-  
+
         case eavConstants.contentTypes.customSettings:
         case eavConstants.contentTypes.customResources:
           if (contentItems.length > 1) {
@@ -264,7 +263,7 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
             };
           }
           break;
-  
+
         default:
           if (contentItems.length < 1) {
             errorMsg = `Found no settings for type ${staticName}`;
@@ -276,7 +275,7 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
             };
           }
       }
-  
+
       if (errorMsg) {
         // Navigate to the error component with the error message
         this.#dialogRouter.navParentFirstChild(['message/e'], {
@@ -314,18 +313,11 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     this.#dialogRouter.navParentFirstChild([GoToPermissions.getUrlApp(this.context.appId)]);
   }
 
-  openLanguagePermissions(enabled: boolean) {
-    if (enabled)
-      this.#dialogRouter.navParentFirstChild(['language-permissions']);
-    else
-      openFeatureDialog(this.matDialog, FeatureNames.PermissionsByLanguage, this.viewContainerRef, this.changeDetectorRef);
-  }
-
   urlToOpenLanguagePermissions(enabled: boolean) {
-    // if (enabled)
-    return this.#urlTo('language-permissions')
-    // else
-      // openFeatureDialog(this.matDialog, FeatureNames.PermissionsByLanguage, this.viewContainerRef, this.changeDetectorRef);
+    if (enabled)
+      return this.#urlTo('language-permissions')
+    else
+      return this.#urlTo('edit-language-permissions')
   }
 
   analyze(part: Of<typeof AnalyzeParts>) {
