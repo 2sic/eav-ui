@@ -90,8 +90,7 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
   appIn = computed(() => {
     const refresh = this.#refresh();
     return this.#appInternalsService.getAppInternals(undefined)
-  }
-  );
+  });
 
   viewModelSig = computed(() => {
     const appInternalsSig = this.appIn()();
@@ -126,7 +125,6 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     private changeDetectorRef: ChangeDetectorRef,
   ) { }
 
-
   ngOnInit() {
     this.#dialogRouter.doOnDialogClosed(() => {
       this.#refresh.update(value => value + 1);
@@ -143,6 +141,10 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.snackBar.dismiss();
+  }
+  
+  #urlTo(url: string) {
+    return '#' + this.#dialogRouter.urlSubRoute(url);
   }
 
   edit(staticName: string, systemSettingsScope?: Of<typeof SystemSettingsScopes>) {
@@ -319,10 +321,16 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
       openFeatureDialog(this.matDialog, FeatureNames.PermissionsByLanguage, this.viewContainerRef, this.changeDetectorRef);
   }
 
+  urlToOpenLanguagePermissions(enabled: boolean) {
+    // if (enabled)
+    return this.#urlTo('language-permissions')
+    // else
+      // openFeatureDialog(this.matDialog, FeatureNames.PermissionsByLanguage, this.viewContainerRef, this.changeDetectorRef);
+  }
+
   analyze(part: Of<typeof AnalyzeParts>) {
     this.#dialogRouter.navParentFirstChild([`analyze/${part}`]);
   }
-
 
   fixContentType(staticName: string, action: 'edit' | 'config') {
     this.#contentTypesSvc.retrieveContentTypes(eavConstants.scopes.configuration.value).subscribe(contentTypes => {

@@ -509,19 +509,21 @@
           [label]=""
           [icon]=""
         ></app-docs-link-helper>
-        <button mat-button class="eav-button__with-icon" (click)="openLanguagePermissions(langPermsEnabled())">
-          <mat-icon
-            [matBadgeHidden]="langPermsEnabled()"
-            matBadgeSize="small"
-            matBadge="💎"
-            matBadgePosition="below after"
-            aria-hidden="false"
-            class="eav-icon"
-          >
-            person
-          </mat-icon>
-          <span>Language Permissions</span>
-        </button>
+        <!-- <a [href]="urlToOpenLanguagePermissions(false)"> -->
+          <button mat-button class="eav-button__with-icon" (click)="openLanguagePermissions(false)">
+            <mat-icon
+              [matBadgeHidden]="langPermsEnabled()"
+              matBadgeSize="small"
+              matBadge="💎"
+              matBadgePosition="below after"
+              aria-hidden="false"
+              class="eav-icon"
+            >
+              person
+            </mat-icon>
+            <span>Language Permissions</span>
+          </button>
+        <!-- </a> -->
       </mat-card-actions>
     </mat-card>
   </div>

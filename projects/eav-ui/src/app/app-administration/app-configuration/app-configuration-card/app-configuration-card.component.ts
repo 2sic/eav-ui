@@ -39,7 +39,6 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
   #contentItemsSvc = transient(ContentItemsService);
   #dialogRouter = transient(DialogRoutingService);
 
-
   constructor(
     private context: Context,
     private snackBar: MatSnackBar,
@@ -53,7 +52,6 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
     const refresh = this.#refresh();
     return this.#appInternalsSvc.getAppInternals(undefined);
   });
-
 
   ngOnInit() {
     this.#dialogRouter.doOnDialogClosed(() => {
