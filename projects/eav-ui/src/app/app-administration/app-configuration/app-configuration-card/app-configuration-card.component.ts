@@ -68,6 +68,10 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
 
   protected clipboard = transient(ClipboardService);
 
+  #urlTo(url: string) {
+    return '#' + this.#dialogRouter.urlSubRoute(url);
+  }
+
   edit() {
     const staticName = eavConstants.contentTypes.appConfiguration;
     this.#contentItemsSvc.getAll(staticName).subscribe(contentItems => {
@@ -84,17 +88,16 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
     });
   }
 
-  openMetadata() {
-    const url = GoToMetadata.getUrlApp(
-      this.context.appId,
-      `Metadata for App: ${this.dialogSettings().Context.App.Name} (${this.context.appId})`,
+  urlToOpenMetadata() {
+    return this.#urlTo(
+      GoToMetadata.getUrlApp(
+        this.context.appId,
+        `Metadata for App: ${this.dialogSettings().Context.App.Name} (${this.context.appId})`,
+      )
     );
-    this.#dialogRouter.navParentFirstChild([url]);
   }
 
   formatValue(value?: string): string {
     return value === "" ? "-" : value ?? "-";
   }
-
 }
-

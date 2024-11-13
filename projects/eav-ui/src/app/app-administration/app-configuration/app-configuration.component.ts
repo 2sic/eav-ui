@@ -85,7 +85,6 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
   #dialogConfigSvc = transient(DialogConfigAppService);
   #dialogRouter = transient(DialogRoutingService);
 
-
   #refresh = signal(0);
 
   appIn = computed(() => {
