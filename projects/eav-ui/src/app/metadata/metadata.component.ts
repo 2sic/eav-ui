@@ -98,7 +98,6 @@ export class MetadataComponent implements OnInit {
       : undefined;
   });
 
-
   metadataSet = signal<MetadataDto>({ Items: [], Recommendations: [] } as MetadataDto);
 
   recommendations = computed(() => {
@@ -173,7 +172,6 @@ export class MetadataComponent implements OnInit {
     const x = EditPrep.constructMetadataInfo(this.#params.targetType, this.#params.keyType, this.#params.key);
     return EditPrep.newMetadataFromInfo(contentType, x);
   }
-
 
   #fetchMetadata() {
     const logGetMetadata = this.log.rxTap('getMetadata');

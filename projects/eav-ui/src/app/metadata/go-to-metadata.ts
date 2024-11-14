@@ -31,7 +31,7 @@ export class GoToMetadata {
   static getUrl(targetType: number, keyType: Of<typeof MetadataKeyTypes>, key: string, dialogTitle?: string, contentTypeStaticName?: string): string {
     let url = `metadata/${targetType}/${keyType}/${key}`;
     if (dialogTitle) {
-      url += `/title/${encodeURIComponent(dialogTitle)}`;
+      url += `/title/${dialogTitle}`;
     }
     if (contentTypeStaticName) {
       url += `/contentType/${contentTypeStaticName}`;
