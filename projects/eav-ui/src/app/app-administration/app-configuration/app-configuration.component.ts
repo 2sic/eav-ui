@@ -309,8 +309,8 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     this.#dialogRouter.navParentFirstChild([`fields/${staticName}`]);
   }
 
-  openPermissions() {
-    this.#dialogRouter.navParentFirstChild([GoToPermissions.getUrlApp(this.context.appId)]);
+  urlToOpenPermissions() {
+    return this.#urlTo(GoToPermissions.getUrlApp(this.context.appId));
   }
 
   urlToOpenLanguagePermissions(enabled: boolean) {
