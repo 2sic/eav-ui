@@ -76,5 +76,4 @@ export class GoToMetadata {
       contentTypeStaticName,
     );
   }
-
 }

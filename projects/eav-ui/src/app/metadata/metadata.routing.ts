@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
+import { EditRoutes } from '../edit/edit.routing';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
 import { metadataDialog } from './metadata-dialog.config';
-import { EditRoutes } from '../edit/edit.routing';
 
 export const metadataRoutes: Routes = [
   {
@@ -11,4 +11,3 @@ export const metadataRoutes: Routes = [
     children: EditRoutes
   },
 ];
-
