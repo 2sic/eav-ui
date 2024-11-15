@@ -76,6 +76,14 @@ export class QueriesComponent implements OnInit {
     this.#refresh.update(value => value + 1);
   }
 
+  #urlTo(url: string) {
+    return '#' + this.#dialogRouter.urlSubRoute(url);
+  }
+
+  urlToImportQuery() {
+    return this.#urlTo(`import`);
+  }
+
   importQuery(files?: File[]) {
     const dialogData: FileUploadDialogData = { files };
     this.#dialogRouter.navParentFirstChild(['import'], { state: dialogData });
@@ -103,10 +111,6 @@ export class QueriesComponent implements OnInit {
       case QueryActions.Delete:
         return this.deleteQuery(query);
     }
-  }
-
-  #urlTo(url: string) {
-    return '#' + this.#dialogRouter.urlSubRoute(url);
   }
 
   urlToNewQuery() {
