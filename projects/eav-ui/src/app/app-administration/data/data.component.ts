@@ -119,6 +119,10 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
     this.#dialogRouter.navRelative(['import'], { state: dialogData });
   }
 
+  urlToImportType() {
+    return this.#urlTo('import');
+  }
+
   editContentType(contentType: ContentType) {
     if (!contentType) {
       this.#dialogRouter.navRelative(['add']);
