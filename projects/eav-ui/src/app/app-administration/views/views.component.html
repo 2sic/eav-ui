@@ -5,7 +5,7 @@
     [gridOptions]="gridOptions"
     appDragAndDrop
     [allowedFileTypes]="'json'"
-    (filesDropped)="urlToImportView()"
+    (filesDropped)="importView($event)"
   >
   </ag-grid-angular>
   <mat-dialog-actions class="eav-dialog-actions">
