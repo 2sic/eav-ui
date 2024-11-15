@@ -24,6 +24,7 @@ import { defaultGridOptions } from '../../shared/constants/default-grid-options.
 import { dropdownInsertValue } from '../../shared/constants/dropdown-insert-value.constant';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
+import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { toString } from '../../shared/helpers/file-to-base64.helper';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm, EditPrep } from '../../shared/models/edit-form.model';
@@ -55,6 +56,7 @@ import { DataItemsComponent } from './data-items/data-items.component';
     RouterOutlet,
     SxcGridModule,
     DragAndDropDirective,
+    TippyDirective,
   ],
 })
 export class DataComponent extends BaseComponent implements OnInit, OnDestroy {

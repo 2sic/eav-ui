@@ -217,7 +217,7 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     });
   }
 
-  // TODO: @2pp - finish the migration on edit cases
+  // TODO: @2pp - implement migration on edit cases
   urlToEdit(staticName: string, systemSettingsScope?: Of<typeof SystemSettingsScopes>) {
     this.#contentItemsService.getAll(staticName).subscribe(contentItems => {
       let form: EditForm;
