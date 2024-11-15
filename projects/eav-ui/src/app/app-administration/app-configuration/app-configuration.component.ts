@@ -217,6 +217,7 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     });
   }
 
+  // TODO: @2pp - finish the migration on edit cases
   urlToEdit(staticName: string, systemSettingsScope?: Of<typeof SystemSettingsScopes>) {
     this.#contentItemsService.getAll(staticName).subscribe(contentItems => {
       let form: EditForm;
@@ -281,9 +282,12 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
         this.#dialogRouter.navParentFirstChild(['message/e'], {
           queryParams: { error: errorMsg },
         });
+
+        return '';
       } else {
-        const formUrl = convertFormToUrl(form);
-        this.#dialogRouter.navParentFirstChild([`edit/${formUrl}`]);
+        return this.#urlTo(
+          `edit/${convertFormToUrl(form)}`
+        )
       }
     });
   }
@@ -320,8 +324,12 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
       return this.#urlTo('edit-language-permissions')
   }
 
-  analyze(part: Of<typeof AnalyzeParts>) {
-    this.#dialogRouter.navParentFirstChild([`analyze/${part}`]);
+  // analyze(part: Of<typeof AnalyzeParts>) {
+  //   this.#dialogRouter.navParentFirstChild([`analyze/${part}`]);
+  // }
+
+  urlToAnalyze(part: Of<typeof AnalyzeParts>) {
+    return this.#urlTo(`analyze/${part}`);
   }
 
   fixContentType(staticName: string, action: 'edit' | 'config') {
