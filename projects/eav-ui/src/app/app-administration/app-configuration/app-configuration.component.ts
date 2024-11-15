@@ -309,8 +309,14 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     this.#dialogSvc.openAppAdministration(globalPrimaryApp.ZoneId, globalPrimaryApp.AppId, 'app');
   }
 
+  // TODO: @2pp - finish the migration on config cases
+  // need to find out where the last usecases in UI are
   config(staticName: string) {
     this.#dialogRouter.navParentFirstChild([`fields/${staticName}`]);
+  }
+
+  urlToConfig(staticName: string) {
+    return this.#urlTo(`fields/${staticName}`);
   }
 
   urlToOpenPermissions() {
@@ -323,10 +329,6 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     else
       return this.#urlTo('edit-language-permissions')
   }
-
-  // analyze(part: Of<typeof AnalyzeParts>) {
-  //   this.#dialogRouter.navParentFirstChild([`analyze/${part}`]);
-  // }
 
   urlToAnalyze(part: Of<typeof AnalyzeParts>) {
     return this.#urlTo(`analyze/${part}`);

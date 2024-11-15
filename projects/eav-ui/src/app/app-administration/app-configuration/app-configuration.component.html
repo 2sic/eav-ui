@@ -168,20 +168,18 @@
                       >edit</mat-icon
                     >
                   </button>
-                  <button
-                    mat-icon-button
-                    (click)="config(eavConstants.contentTypes.settings)"
-                    tippy="Configure fields of the custom app settings"
-                  >
-                    <mat-icon
-                      matBadgeColor="accent"
-                      matBadgeSize="small"
-                      [matBadge]="viewModelSig()?.customSettingsFieldsCount || null"
-                      matBadgePosition="below after"
-                      aria-hidden="false"
-                      >dns</mat-icon
-                    >
-                  </button>
+                  <a [href]="urlToConfig(eavConstants.contentTypes.settings)" class="default-link">
+                    <button mat-icon-button tippy="Configure fields of the custom app settings">
+                      <mat-icon
+                        matBadgeColor="accent"
+                        matBadgeSize="small"
+                        [matBadge]="viewModelSig()?.customSettingsFieldsCount || null"
+                        matBadgePosition="below after"
+                        aria-hidden="false"
+                        >dns</mat-icon
+                      >
+                    </button>
+                  </a>
                 </td>
               </tr>
               <ng-container *ngTemplateOutlet="goToSite"></ng-container>
@@ -358,20 +356,18 @@
                       >edit</mat-icon
                     >
                   </button>
-                  <button
-                    mat-icon-button
-                    (click)="config(eavConstants.contentTypes.resources)"
-                    tippy="Configure fields of the custom app resources"
-                  >
-                    <mat-icon
-                      matBadgeColor="accent"
-                      matBadgeSize="small"
-                      [matBadge]="viewModelSig()?.customResourcesFieldsCount || null"
-                      matBadgePosition="below after"
-                      aria-hidden="false"
-                      >dns</mat-icon
-                    >
-                  </button>
+                  <a [href]="urlToConfig(eavConstants.contentTypes.resources)" class="default-link">
+                    <button mat-icon-button tippy="Configure fields of the custom app resources">
+                      <mat-icon
+                        matBadgeColor="accent"
+                        matBadgeSize="small"
+                        [matBadge]="viewModelSig()?.customResourcesFieldsCount || null"
+                        matBadgePosition="below after"
+                        aria-hidden="false"
+                        >dns</mat-icon
+                      >
+                    </button>
+                  </a>
                 </td>
               </tr>
               <ng-container *ngTemplateOutlet="goToSite"></ng-container>
