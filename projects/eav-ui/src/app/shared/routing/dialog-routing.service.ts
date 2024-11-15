@@ -21,9 +21,7 @@ export class DialogRoutingService extends ServiceBase {
   constructor(
     public router: Router,
     public route: ActivatedRoute
-  ) {
-    super();
-  }
+  ) { super(); }
 
   get snapshot() { return this.route.snapshot; }
 
@@ -52,7 +50,6 @@ export class DialogRoutingService extends ServiceBase {
       return acc;
     }, {} as Record<string, string>);
   }
-
 
   state<T = any>() { return this.router.getCurrentNavigation().extras?.state as T; }
 
@@ -106,5 +103,4 @@ export class DialogRoutingService extends ServiceBase {
       filter(([hadChildBefore, hasChildNow]) => hadChildBefore && !hasChildNow),
     )
   }
-
 }

@@ -37,7 +37,6 @@ export class FeatureComponentBase {
   }
 }
 
-
 export function openFeatureDialog(dialog: MatDialog, featureId: string, viewContainerRef: ViewContainerRef, changeDetectorRef: ChangeDetectorRef) {
   dialog.open(FeatureInfoDialogComponent, {
     autoFocus: false,

@@ -21,12 +21,12 @@
           <mat-option [value]="dropdownInsertValue">Scope: Other...</mat-option>
         </mat-select>
       </mat-form-field>
-      <button mat-button class="eav-button__with-icon" tippy="Import content type" (click)="importType()">
+      <button mat-button class="eav-button__with-icon" tippy="Import content type" tippyPlacement="top" (click)="importType()">
         <mat-icon class="eav-icon">cloud_upload</mat-icon>
         <span>Content Type</span>
       </button>
       @if (isDebug()) {
-        <button mat-button class="eav-button__with-icon" color="accent" tippy="Create a ghost content type" (click)="createGhost()">
+        <button mat-button class="eav-button__with-icon" color="accent" tippy="Create a ghost content type" tippyPlacement="top" (click)="createGhost()">
           <mat-icon class="eav-icon">share</mat-icon>
           <span>Ghost</span>
         </button>

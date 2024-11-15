@@ -1,10 +1,14 @@
 import { Routes } from '@angular/router';
 import { GoToDevRest } from '../dev-rest';
 import { EditRoutes, EditRoutesNoHistory } from '../edit/edit.routing';
+import { featureInfoDialog } from '../features/feature-info-dialog/feature-info-dialog.config';
+import { FeatureNames } from '../features/feature-names';
 import { GoToMetadata } from '../metadata';
 import { GoToPermissions } from '../permissions/go-to-permissions';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
 import { appAdministrationDialog } from './app-admin-main/app-admin-main.dialog-config';
+import { errorDialog } from './app-configuration/error/error-dialog.config';
+import { messageDialog } from './app-configuration/message/message-dialog.config';
 import { CopilotSpecs } from './copilot/copilot-specs';
 import { GoToCopilot } from './copilot/go-to-copilot';
 import { AppStateComponent } from './import-export-menu/app-state/app-state.component';
@@ -225,6 +229,14 @@ export const appAdministrationRoutes: Routes = [
               { ...GoToPermissions.route, data: { title: 'Language Permissions' } },
             ],
           },
+          {
+            path: 'edit-language-permissions',
+            component: DialogEntryComponent,
+            data: { dialog: featureInfoDialog, featureId: FeatureNames.PermissionsByLanguage },
+            children: [
+              { ...GoToPermissions.route },
+            ],
+          },
           { ...GoToPermissions.route, data: { title: 'App Permissions' } },
           {
             path: 'analyze/:part',
@@ -237,9 +249,23 @@ export const appAdministrationRoutes: Routes = [
               },
             ],
           },
+          {
+            path: 'message',
+            children: [
+              {
+                path: 'e',
+                component: DialogEntryComponent,
+                data: { dialog: errorDialog, i18n: 'error' },
+              },
+              {
+                path: 'm',
+                component: DialogEntryComponent,
+                data: { dialog: messageDialog, i18n: 'message' },
+              },
+            ],
+          },
         ],
       },
-
       {
         path: 'import-export',
         component: ImportExportComponent,

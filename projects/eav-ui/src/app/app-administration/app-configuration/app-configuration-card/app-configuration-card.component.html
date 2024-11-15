@@ -66,18 +66,20 @@
         >
         <span>Edit</span>
       </button>
-      <button mat-button class="eav-button__with-icon" (click)="openMetadata()">
-        <mat-icon
-          matBadgeColor="accent"
-          matBadgeSize="small"
-          [matBadge]="appSettingsInternal()()?.MetadataList.Items.length || null"
-          matBadgePosition="below after"
-          aria-hidden="false"
-          class="eav-icon"
-          >local_offer</mat-icon
-        >
-        <span>Metadata</span>
-      </button>
+      <a [href]="urlToOpenMetadata()">
+        <button mat-button class="eav-button__with-icon">
+          <mat-icon
+            matBadgeColor="accent"
+            matBadgeSize="small"
+            [matBadge]="appSettingsInternal()()?.MetadataList.Items.length || null"
+            matBadgePosition="below after"
+            aria-hidden="false"
+            class="eav-icon"
+            >local_offer</mat-icon
+          >
+          <span>Metadata</span>
+        </button>
+      </a>
     </mat-card-actions>
   </mat-card>
 }

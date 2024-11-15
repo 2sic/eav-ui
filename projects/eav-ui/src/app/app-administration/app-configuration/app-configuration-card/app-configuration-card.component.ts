@@ -39,7 +39,6 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
   #contentItemsSvc = transient(ContentItemsService);
   #dialogRouter = transient(DialogRoutingService);
 
-
   constructor(
     private context: Context,
     private snackBar: MatSnackBar,
@@ -54,7 +53,6 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
     return this.#appInternalsSvc.getAppInternals(undefined);
   });
 
-
   ngOnInit() {
     this.#dialogRouter.doOnDialogClosed(() => {
       this.#refresh.update(value => value + 1);
@@ -67,6 +65,10 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
   }
 
   protected clipboard = transient(ClipboardService);
+
+  #urlTo(url: string) {
+    return '#' + this.#dialogRouter.urlSubRoute(url);
+  }
 
   edit() {
     const staticName = eavConstants.contentTypes.appConfiguration;
@@ -84,17 +86,16 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
     });
   }
 
-  openMetadata() {
-    const url = GoToMetadata.getUrlApp(
-      this.context.appId,
-      `Metadata for App: ${this.dialogSettings().Context.App.Name} (${this.context.appId})`,
+  urlToOpenMetadata() {
+    return this.#urlTo(
+      GoToMetadata.getUrlApp(
+        this.context.appId,
+        `Metadata for App: ${this.dialogSettings().Context.App.Name} (${this.context.appId})`,
+      )
     );
-    this.#dialogRouter.navParentFirstChild([url]);
   }
 
   formatValue(value?: string): string {
     return value === "" ? "-" : value ?? "-";
   }
-
 }
-

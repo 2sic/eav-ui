@@ -1,8 +1,11 @@
 <div class="eav-dialog">
   <div class="eav-dialog-header">
     <div class="eav-dialog-header__title">Log Specs Editor</div>
+    <button mat-icon-button mat-dialog-close tippy="Close dialog">
+      <mat-icon>close</mat-icon>
+    </button>
   </div>
-  <div class="eav-dialog-content">
+  <div class="eav-dialog-content" style="padding-bottom: 0;">
     <app-monaco-editor
       [filename]="filename"
       [value]="logSpecs"
@@ -10,11 +13,10 @@
       (valueChanged)="onValueChanged($event)"
       (focused)="onFocused(true)"
       (blurred)="onFocused(false)"
-      style="height: 300px; width: 100%"
+      style="height: 350px; width: 100%"
     />
   </div>
   <mat-dialog-actions>
-    <button mat-button (click)="onClose()">Close</button>
     <button mat-icon-button (click)="onSave()" tippy="Save Specs">
       <mat-icon>save</mat-icon>
     </button>

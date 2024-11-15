@@ -16,6 +16,7 @@ import { FileUploadDialogData } from '../../shared/components/file-upload-dialog
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
+import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm, EditPrep } from '../../shared/models/edit-form.model';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
@@ -39,6 +40,7 @@ import { QueriesActionsComponent } from './queries-actions/queries-actions.compo
     // AsyncPipe,
     SxcGridModule,
     DragAndDropDirective,
+    TippyDirective,
   ],
 })
 export class QueriesComponent implements OnInit {
@@ -103,6 +105,20 @@ export class QueriesComponent implements OnInit {
     }
   }
 
+  #urlTo(url: string) {
+    return '#' + this.#dialogRouter.urlSubRoute(url);
+  }
+
+  urlToNewQuery() {
+    return this.#urlTo(
+      `edit/${convertFormToUrl({
+        items: [
+          EditPrep.newFromType(eavConstants.contentTypes.query, { TestParameters: eavConstants.pipelineDesigner.testParameters })
+        ],
+      })}`
+    );
+  }
+
   editQuery(query: Query) {
     const form: EditForm = {
       items: [
@@ -113,10 +129,6 @@ export class QueriesComponent implements OnInit {
     };
     const formUrl = convertFormToUrl(form);
     this.#dialogRouter.navParentFirstChild([`edit/${formUrl}`]);
-  }
-
-  #urlTo(url: string) {
-    return '#' + this.#dialogRouter.urlSubRoute(url);
   }
 
   #urlToOpenVisualQueryDesigner(query: Query): string {
