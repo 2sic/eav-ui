@@ -291,14 +291,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
             },
             do: (verb, ct) => {
               switch (verb) {
-                // case 'createUpdateMetaData': this.#createOrEditMetadata(contentType); break;
-                // case 'openPermissions': this.#openPermissions(contentType); break;
-                // case 'editContentType': this.editContentType(contentType); break;
-                // case 'openMetadata': this.#openMetadata(contentType); break;
-                // case 'openRestApi': this.#openRestApi(contentType); break;
                 case 'typeExport': this.#exportType(ct); break;
-                // case 'dataExport': this.#openDataExport(contentType); break;
-                // case 'dataImport': this.#openDataImport(contentType); break;
                 case 'deleteContentType': this.#deleteContentType(ct); break;
               }
             }
@@ -340,34 +333,10 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
     return convertFormToUrl(form);
   }
 
-  // 2pp | not in use?
-  // #createOrEditMetadata(contentType: ContentType) {
-  //   this.#dialogRouter.navParentFirstChild([`edit/${this.#routeCreateOrEditMetadata(contentType)}`]);
-  // }
-
-  // #openPermissions(contentType: ContentType) {
-  //   this.#dialogRouter.navParentFirstChild([GoToPermissions.getUrlContentType(contentType.NameId)]);
-  // }
-
-  // #routeMetadata(ct: ContentType) {
-  //   return GoToMetadata.getUrlContentType(ct.NameId, `Metadata for Content Type: ${ct.Name} (${ct.Id})`);
-  // }
-
-  // #openMetadata(contentType: ContentType) {
-  //   this.#dialogRouter.navParentFirstChild([this.#routeMetadata(contentType)]);
-  // }
-
-  // #openRestApi(contentType: ContentType) {
-  //   this.#dialogRouter.navParentFirstChild([GoToDevRest.getUrlData(contentType)]);
-  // }
-
   #exportType(contentType: ContentType) {
     this.#contentExportSvc.exportJson(contentType.NameId);
   }
 
-  // #openDataExport(contentType: ContentType) {
-  //   this.#dialogRouter.navRelative([`export/${contentType.NameId}`]);
-  // }
 
   #openDataImport(contentType: ContentType, files?: File[]) {
     this.#dialogRouter.navRelative([`${contentType.NameId}/import`], { state: { files } satisfies ContentImportDialogData });
