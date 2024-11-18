@@ -24,6 +24,7 @@ import { defaultGridOptions } from '../../shared/constants/default-grid-options.
 import { dropdownInsertValue } from '../../shared/constants/dropdown-insert-value.constant';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
+import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { toString } from '../../shared/helpers/file-to-base64.helper';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm, EditPrep } from '../../shared/models/edit-form.model';
@@ -55,6 +56,7 @@ import { DataItemsComponent } from './data-items/data-items.component';
     RouterOutlet,
     SxcGridModule,
     DragAndDropDirective,
+    TippyDirective,
   ],
 })
 export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
@@ -110,6 +112,8 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
     }
   }
 
+  // TODO: @2pp | Should be a link, but is tricky to do with the current setup
+  // as it's doing somethingwith the files, which is not possible with a link
   importType(files?: File[]) {
     const dialogData: FileUploadDialogData = { files };
     this.#dialogRouter.navRelative(['import'], { state: dialogData });
@@ -122,6 +126,16 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
       if (contentType.EditInfo.ReadOnly) return;
       this.#dialogRouter.navRelative([`${contentType.NameId}/edit`]);
     }
+  }
+
+  urlToNewView() {
+    return this.#urlTo(
+      `edit/${convertFormToUrl({
+        items: [
+          EditPrep.newFromType(eavConstants.contentTypes.template)
+        ],
+      })}`
+    );
   }
 
   #fetchContentTypes() {
@@ -277,14 +291,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
             },
             do: (verb, ct) => {
               switch (verb) {
-                // case 'createUpdateMetaData': this.#createOrEditMetadata(contentType); break;
-                // case 'openPermissions': this.#openPermissions(contentType); break;
-                // case 'editContentType': this.editContentType(contentType); break;
-                // case 'openMetadata': this.#openMetadata(contentType); break;
-                // case 'openRestApi': this.#openRestApi(contentType); break;
                 case 'typeExport': this.#exportType(ct); break;
-                // case 'dataExport': this.#openDataExport(contentType); break;
-                // case 'dataImport': this.#openDataImport(contentType); break;
                 case 'deleteContentType': this.#deleteContentType(ct); break;
               }
             }
@@ -314,46 +321,22 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
       items: [
         !contentType.Properties
           ? {
-              ...EditPrep.newMetadata(contentType.NameId, eavConstants.contentTypes.contentType, eavConstants.metadata.contentType),
-              Prefill: {
-                Label: contentType.Name,
-                Description: contentType.Description
-              },
-            }
+            ...EditPrep.newMetadata(contentType.NameId, eavConstants.contentTypes.contentType, eavConstants.metadata.contentType),
+            Prefill: {
+              Label: contentType.Name,
+              Description: contentType.Description
+            },
+          }
           : EditPrep.editId(contentType.Properties.Id),
       ],
     };
     return convertFormToUrl(form);
   }
 
-
-  // #createOrEditMetadata(contentType: ContentType) {
-  //   this.#dialogRouter.navParentFirstChild([`edit/${this.#routeCreateOrEditMetadata(contentType)}`]);
-  // }
-
-  // #openPermissions(contentType: ContentType) {
-  //   this.#dialogRouter.navParentFirstChild([GoToPermissions.getUrlContentType(contentType.NameId)]);
-  // }
-
-  #routeMetadata(ct: ContentType) {
-    return GoToMetadata.getUrlContentType(ct.NameId, `Metadata for Content Type: ${ct.Name} (${ct.Id})`);
-  }
-
-  // #openMetadata(contentType: ContentType) {
-  //   this.#dialogRouter.navParentFirstChild([this.#routeMetadata(contentType)]);
-  // }
-
-  // #openRestApi(contentType: ContentType) {
-  //   this.#dialogRouter.navParentFirstChild([GoToDevRest.getUrlData(contentType)]);
-  // }
-
   #exportType(contentType: ContentType) {
     this.#contentExportSvc.exportJson(contentType.NameId);
   }
 
-  // #openDataExport(contentType: ContentType) {
-  //   this.#dialogRouter.navRelative([`export/${contentType.NameId}`]);
-  // }
 
   #openDataImport(contentType: ContentType, files?: File[]) {
     this.#dialogRouter.navRelative([`${contentType.NameId}/import`], { state: { files } satisfies ContentImportDialogData });

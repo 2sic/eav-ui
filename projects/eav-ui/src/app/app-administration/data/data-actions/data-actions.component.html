@@ -1,13 +1,9 @@
 <div class="actions-component">
   @if (!contentType.EditInfo.DisableEdit || contentType.Properties) {
-    <a class="eav-grid-action-button default-link highlight" matRipple
-      tippy="Description and more"
-      [href]="urlTo('createUpdateMetaData')"
-    >
+    <a class="eav-grid-action-button default-link highlight" matRipple tippy="Description and more" [href]="urlTo('createUpdateMetaData')">
       <mat-icon>edit</mat-icon>
     </a>
-  }
-  @else {
+  } @else {
     <div class="eav-grid-action-button disabled">
       <mat-icon>edit</mat-icon>
     </div>
@@ -15,16 +11,28 @@
 
   @if (!contentType.EditInfo.DisableMetadata) {
     <a class="eav-grid-action-button default-link highlight" matRipple tippy="Metadata" [href]="urlTo('openMetadata')">
-      <mat-icon [matBadge]="contentType.Metadata.length" matBadgePosition="below after" matBadgeColor="accent"
-        matBadgeSize="small" [matBadgeHidden]="!contentType.Metadata.length" aria-hidden="false">
+      <mat-icon
+        [matBadge]="contentType.Metadata.length"
+        matBadgePosition="below after"
+        matBadgeColor="accent"
+        matBadgeSize="small"
+        [matBadgeHidden]="!contentType.Metadata.length"
+        aria-hidden="false"
+      >
         local_offer
       </mat-icon>
     </a>
-  }
-  @else {
+  } @else {
     <div class="eav-grid-action-button disabled">
-      <mat-icon [matBadge]="contentType.Metadata.length" matBadgePosition="below after" matBadgeColor="accent"
-        matBadgeSize="small" matBadgeDisabled="true" [matBadgeHidden]="!contentType.Metadata.length" aria-hidden="false">
+      <mat-icon
+        [matBadge]="contentType.Metadata.length"
+        matBadgePosition="below after"
+        matBadgeColor="accent"
+        matBadgeSize="small"
+        matBadgeDisabled="true"
+        [matBadgeHidden]="!contentType.Metadata.length"
+        aria-hidden="false"
+      >
         local_offer
       </mat-icon>
     </div>
@@ -32,17 +40,30 @@
 
   @if (!contentType.EditInfo.DisableEdit && enablePermissions) {
     <a class="eav-grid-action-button default-link highlight" matRipple tippy="Permissions" [href]="urlTo('openPermissions')">
-      <mat-icon [matBadge]="contentType.Permissions.Count" matBadgePosition="below after" matBadgeColor="accent"
-        matBadgeSize="small" [matBadgeHidden]="!contentType.Permissions.Count" aria-hidden="false">
-      person</mat-icon>
+      <mat-icon
+        [matBadge]="contentType.Permissions.Count"
+        matBadgePosition="below after"
+        matBadgeColor="accent"
+        matBadgeSize="small"
+        [matBadgeHidden]="!contentType.Permissions.Count"
+        aria-hidden="false"
+      >
+        person</mat-icon
+      >
     </a>
-  }
-  @else {
+  } @else {
     <div class="eav-grid-action-button disabled">
-      <mat-icon [matBadge]="contentType.Permissions.Count" matBadgePosition="below after" matBadgeColor="accent"
-        matBadgeSize="small" matBadgeDisabled="true" [matBadgeHidden]="!contentType.Permissions.Count"
-        aria-hidden="false">
-      person</mat-icon>
+      <mat-icon
+        [matBadge]="contentType.Permissions.Count"
+        matBadgePosition="below after"
+        matBadgeColor="accent"
+        matBadgeSize="small"
+        matBadgeDisabled="true"
+        [matBadgeHidden]="!contentType.Permissions.Count"
+        aria-hidden="false"
+      >
+        person
+      </mat-icon>
     </div>
   }
 

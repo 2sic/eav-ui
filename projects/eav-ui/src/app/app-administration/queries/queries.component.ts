@@ -1,5 +1,4 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { AsyncPipe } from '@angular/common';
 import { Component, computed, OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogActions } from '@angular/material/dialog';
@@ -11,11 +10,13 @@ import { ContentExportService } from '../../content-export/services/content-expo
 import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
 import { GoToMetadata } from '../../metadata';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
+import { AgGridHelper } from '../../shared/ag-grid/ag-grid-helper';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { FileUploadDialogData } from '../../shared/components/file-upload-dialog';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
+import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm, EditPrep } from '../../shared/models/edit-form.model';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
@@ -36,9 +37,10 @@ import { QueriesActionsComponent } from './queries-actions/queries-actions.compo
     MatButtonModule,
     MatIconModule,
     RouterOutlet,
-    AsyncPipe,
+    // AsyncPipe,
     SxcGridModule,
     DragAndDropDirective,
+    TippyDirective,
   ],
 })
 export class QueriesComponent implements OnInit {
@@ -61,8 +63,7 @@ export class QueriesComponent implements OnInit {
   queries = computed(() => {
     const refresh = this.#refresh();
     return this.#pipelineSvc.getAllSig(eavConstants.contentTypes.query, undefined)
-  }
-  );
+  });
 
   ngOnInit() {
     this.#dialogRouter.doOnDialogClosed(() => this.#fetchQueries());
@@ -104,6 +105,20 @@ export class QueriesComponent implements OnInit {
     }
   }
 
+  #urlTo(url: string) {
+    return '#' + this.#dialogRouter.urlSubRoute(url);
+  }
+
+  urlToNewQuery() {
+    return this.#urlTo(
+      `edit/${convertFormToUrl({
+        items: [
+          EditPrep.newFromType(eavConstants.contentTypes.query, { TestParameters: eavConstants.pipelineDesigner.testParameters })
+        ],
+      })}`
+    );
+  }
+
   editQuery(query: Query) {
     const form: EditForm = {
       items: [
@@ -116,9 +131,15 @@ export class QueriesComponent implements OnInit {
     this.#dialogRouter.navParentFirstChild([`edit/${formUrl}`]);
   }
 
-  private openVisualQueryDesigner(query: Query) {
-    if (query._EditInfo.ReadOnly) return;
-    this.#dialogSvc.openQueryDesigner(query.Id);
+  #urlToOpenVisualQueryDesigner(query: Query): string {
+    // TODO: @2pp | "../../" works, but isn't cleanest way.
+    // Prob. need to change routing for this?
+    // TODO: @2pp | ensure this opens in new tab
+    return this.#urlTo(
+      `../../query/${convertFormToUrl({
+        items: [EditPrep.editId(query.Id)],
+      } satisfies EditForm)}`
+    );
   }
 
   private openMetadata(query: Query) {
@@ -173,10 +194,7 @@ export class QueriesComponent implements OnInit {
             const query: Query = p.data;
             return `${query._EditInfo.DisableEdit ? 'no-outline' : 'primary-action highlight'}`.split(' ');
           },
-          onCellClicked: (p) => {
-            const query: Query = p.data;
-            this.openVisualQueryDesigner(query);
-          },
+          cellRenderer: (p: { data: Query }) => AgGridHelper.cellLink(this.#urlToOpenVisualQueryDesigner(p.data), p.data.Name),
         },
         {
           ...ColumnDefinitions.TextWideFlex3,

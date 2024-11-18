@@ -14,7 +14,6 @@ import { ContentItemsService } from '../../content-items/services/content-items.
 import { FeatureNames } from '../../features/feature-names';
 import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
 import { FeaturesScopedService } from '../../features/features-scoped.service';
-import { openFeatureDialog } from '../../features/shared/base-feature.component';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { SystemSettingsScopes, eavConstants } from '../../shared/constants/eav.constants';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
@@ -85,14 +84,12 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
   #dialogConfigSvc = transient(DialogConfigAppService);
   #dialogRouter = transient(DialogRoutingService);
 
-
   #refresh = signal(0);
 
   appIn = computed(() => {
     const refresh = this.#refresh();
     return this.#appInternalsService.getAppInternals(undefined)
-  }
-  );
+  });
 
   viewModelSig = computed(() => {
     const appInternalsSig = this.appIn()();
@@ -127,7 +124,6 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     private changeDetectorRef: ChangeDetectorRef,
   ) { }
 
-
   ngOnInit() {
     this.#dialogRouter.doOnDialogClosed(() => {
       this.#refresh.update(value => value + 1);
@@ -146,54 +142,153 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     this.snackBar.dismiss();
   }
 
+  #urlTo(url: string) {
+    return '#' + this.#dialogRouter.urlSubRoute(url);
+  }
+
   edit(staticName: string, systemSettingsScope?: Of<typeof SystemSettingsScopes>) {
     this.#contentItemsService.getAll(staticName).subscribe(contentItems => {
       let form: EditForm;
+      let errorMsg: string;
 
       switch (staticName) {
         case eavConstants.contentTypes.systemSettings:
         case eavConstants.contentTypes.systemResources:
-          const systemSettingsEntities = contentItems.filter(i => systemSettingsScope === SystemSettingsScopes.App
-            ? !i.SettingsEntityScope
-            : i.SettingsEntityScope === SystemSettingsScopes.Site);
+          const systemSettingsEntities = contentItems.filter(i =>
+            systemSettingsScope === SystemSettingsScopes.App
+              ? !i.SettingsEntityScope
+              : i.SettingsEntityScope === SystemSettingsScopes.Site
+          );
           if (systemSettingsEntities.length > 1) {
-            throw new Error(`Found too many settings for type ${staticName}`);
+            errorMsg = `Found too many settings for type ${staticName}`;
+          } else {
+            const systemSettingsEntity = systemSettingsEntities[0];
+            form = {
+              items: [
+                systemSettingsEntity == null
+                  ? EditPrep.newFromType(staticName, {
+                    ...(systemSettingsScope === SystemSettingsScopes.Site && {
+                      SettingsEntityScope: SystemSettingsScopes.Site,
+                    }),
+                  })
+                  : EditPrep.editId(systemSettingsEntity.Id),
+              ],
+            };
           }
-          const systemSettingsEntity = systemSettingsEntities[0];
-          form = {
-            items: [
-              systemSettingsEntity == null
-                ? EditPrep.newFromType(staticName, {
-                  ...(systemSettingsScope === SystemSettingsScopes.Site && { SettingsEntityScope: SystemSettingsScopes.Site }),
-                })
-                : EditPrep.editId(systemSettingsEntity.Id)
-            ],
-          };
           break;
+
         case eavConstants.contentTypes.customSettings:
         case eavConstants.contentTypes.customResources:
           if (contentItems.length > 1) {
-            throw new Error(`Found too many settings for type ${staticName}`);
+            errorMsg = `Found too many settings for type ${staticName}`;
+          } else {
+            const customSettingsEntity = contentItems[0];
+            form = {
+              items: [
+                customSettingsEntity == null
+                  ? EditPrep.newFromType(staticName)
+                  : EditPrep.editId(customSettingsEntity.Id),
+              ],
+            };
           }
-          const customSettingsEntity = contentItems[0];
-          form = {
-            items: [
-              customSettingsEntity == null
-                ? EditPrep.newFromType(staticName)
-                : EditPrep.editId(customSettingsEntity.Id)
-            ],
-          };
           break;
+
         default:
-          if (contentItems.length < 1) throw new Error(`Found no settings for type ${staticName}`);
-          if (contentItems.length > 1) throw new Error(`Found too many settings for type ${staticName}`);
-          form = {
-            items: [EditPrep.editId(contentItems[0].Id)],
-          };
+          if (contentItems.length < 1) {
+            errorMsg = `Found no settings for type ${staticName}`;
+          } else if (contentItems.length > 1) {
+            errorMsg = `Found too many settings for type ${staticName}`;
+          } else {
+            form = {
+              items: [EditPrep.editId(contentItems[0].Id)],
+            };
+          }
       }
 
-      const formUrl = convertFormToUrl(form);
-      this.#dialogRouter.navParentFirstChild([`edit/${formUrl}`]);
+      if (errorMsg) {
+        // Navigate to the error component with the error message
+        this.#dialogRouter.navParentFirstChild(['message/e'], {
+          queryParams: { error: errorMsg },
+        });
+      } else {
+        const formUrl = convertFormToUrl(form);
+        this.#dialogRouter.navParentFirstChild([`edit/${formUrl}`]);
+      }
+    });
+  }
+
+  // TODO: @2pp - implement migration on edit cases
+  urlToEdit(staticName: string, systemSettingsScope?: Of<typeof SystemSettingsScopes>) {
+    this.#contentItemsService.getAll(staticName).subscribe(contentItems => {
+      let form: EditForm;
+      let errorMsg: string;
+
+      switch (staticName) {
+        case eavConstants.contentTypes.systemSettings:
+        case eavConstants.contentTypes.systemResources:
+          const systemSettingsEntities = contentItems.filter(i =>
+            systemSettingsScope === SystemSettingsScopes.App
+              ? !i.SettingsEntityScope
+              : i.SettingsEntityScope === SystemSettingsScopes.Site
+          );
+          if (systemSettingsEntities.length > 1) {
+            errorMsg = `Found too many settings for type ${staticName}`;
+          } else {
+            const systemSettingsEntity = systemSettingsEntities[0];
+            form = {
+              items: [
+                systemSettingsEntity == null
+                  ? EditPrep.newFromType(staticName, {
+                    ...(systemSettingsScope === SystemSettingsScopes.Site && {
+                      SettingsEntityScope: SystemSettingsScopes.Site,
+                    }),
+                  })
+                  : EditPrep.editId(systemSettingsEntity.Id),
+              ],
+            };
+          }
+          break;
+
+        case eavConstants.contentTypes.customSettings:
+        case eavConstants.contentTypes.customResources:
+          if (contentItems.length > 1) {
+            errorMsg = `Found too many settings for type ${staticName}`;
+          } else {
+            const customSettingsEntity = contentItems[0];
+            form = {
+              items: [
+                customSettingsEntity == null
+                  ? EditPrep.newFromType(staticName)
+                  : EditPrep.editId(customSettingsEntity.Id),
+              ],
+            };
+          }
+          break;
+
+        default:
+          if (contentItems.length < 1) {
+            errorMsg = `Found no settings for type ${staticName}`;
+          } else if (contentItems.length > 1) {
+            errorMsg = `Found too many settings for type ${staticName}`;
+          } else {
+            form = {
+              items: [EditPrep.editId(contentItems[0].Id)],
+            };
+          }
+      }
+
+      if (errorMsg) {
+        // Navigate to the error component with the error message
+        this.#dialogRouter.navParentFirstChild(['message/e'], {
+          queryParams: { error: errorMsg },
+        });
+
+        return '';
+      } else {
+        return this.#urlTo(
+          `edit/${convertFormToUrl(form)}`
+        )
+      }
     });
   }
 
@@ -214,25 +309,30 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     this.#dialogSvc.openAppAdministration(globalPrimaryApp.ZoneId, globalPrimaryApp.AppId, 'app');
   }
 
+  // TODO: @2pp - finish the migration on config cases
+  // need to find out where the last usecases in UI are
   config(staticName: string) {
     this.#dialogRouter.navParentFirstChild([`fields/${staticName}`]);
   }
 
-  openPermissions() {
-    this.#dialogRouter.navParentFirstChild([GoToPermissions.getUrlApp(this.context.appId)]);
+  urlToConfig(staticName: string) {
+    return this.#urlTo(`fields/${staticName}`);
   }
 
-  openLanguagePermissions(enabled: boolean) {
+  urlToOpenPermissions() {
+    return this.#urlTo(GoToPermissions.getUrlApp(this.context.appId));
+  }
+
+  urlToOpenLanguagePermissions(enabled: boolean) {
     if (enabled)
-      this.#dialogRouter.navParentFirstChild(['language-permissions']);
+      return this.#urlTo('language-permissions')
     else
-      openFeatureDialog(this.matDialog, FeatureNames.PermissionsByLanguage, this.viewContainerRef, this.changeDetectorRef);
+      return this.#urlTo('edit-language-permissions')
   }
 
-  analyze(part: Of<typeof AnalyzeParts>) {
-    this.#dialogRouter.navParentFirstChild([`analyze/${part}`]);
+  urlToAnalyze(part: Of<typeof AnalyzeParts>) {
+    return this.#urlTo(`analyze/${part}`);
   }
-
 
   fixContentType(staticName: string, action: 'edit' | 'config') {
     this.#contentTypesSvc.retrieveContentTypes(eavConstants.scopes.configuration.value).subscribe(contentTypes => {

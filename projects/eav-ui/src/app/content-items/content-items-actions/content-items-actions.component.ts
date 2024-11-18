@@ -8,6 +8,8 @@ import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { ContentItem } from '../models/content-item.model';
 import { ContentItemsActionsParams, ContentItemType } from './content-items-actions.models';
 
+type GoToUrls = 'clone'
+
 @Component({
   selector: 'app-data-bundle-actions',
   templateUrl: './content-items-actions.component.html',
@@ -20,11 +22,13 @@ import { ContentItemsActionsParams, ContentItemType } from './content-items-acti
   ],
 })
 export class ContentItemsActionsComponent implements ICellRendererAngularComp {
-  item: ContentItem;
+  protected item: ContentItem;
 
-  private params: ICellRendererParams & ContentItemsActionsParams;
+  public params: ContentItemsActionsParams & {
+    urlTo(verb: GoToUrls, item: ContentItem): string;
+  };
 
-  agInit(params: ICellRendererParams & ContentItemsActionsParams): void {
+  agInit(params: ICellRendererParams & ContentItemsActionsComponent['params']): void {
     this.params = params;
     this.item = params.data;
   }
@@ -32,7 +36,6 @@ export class ContentItemsActionsComponent implements ICellRendererAngularComp {
   refresh(params?: any): boolean {
     return true;
   }
-
 
   do(verb: ContentItemType): void {
     this.params.do(verb, this.item);

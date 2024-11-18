@@ -80,17 +80,19 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
       })
     );
 
+    // October 2024 2dg
+    // Unclear whether this workaround is still needed, when switching to signal it was commented out October 2024
+    // Leave comment in until Q2 2025
+
     // this.viewModel$ = combineLatest([
     //   this.vsSvc.pipelineModel$,
     // ]).pipe(
     //   map(([pipelineModel]) => {
     //     if (pipelineModel == null) return;
-
     //     // workaround for jsPlumb not working with dom elements which it initialized on previously.
     //     // This wipes dom entirely and gives us new elements
-    // TODO: @2dm Check with Daniel
     //     this.hardReset = true;
-    //     this.changeDetectorRef.detectChanges();
+    //     this.changeDetectorRef.detectChanges(); // Forces the view to re-render
     //     this.hardReset = false;
     //     const viewModel: PlumbEditorViewModel = {
     //       removed: "removeLater",

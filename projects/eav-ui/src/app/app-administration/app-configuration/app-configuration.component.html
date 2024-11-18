@@ -168,20 +168,18 @@
                       >edit</mat-icon
                     >
                   </button>
-                  <button
-                    mat-icon-button
-                    (click)="config(eavConstants.contentTypes.settings)"
-                    tippy="Configure fields of the custom app settings"
-                  >
-                    <mat-icon
-                      matBadgeColor="accent"
-                      matBadgeSize="small"
-                      [matBadge]="viewModelSig()?.customSettingsFieldsCount || null"
-                      matBadgePosition="below after"
-                      aria-hidden="false"
-                      >dns</mat-icon
-                    >
-                  </button>
+                  <a [href]="urlToConfig(eavConstants.contentTypes.settings)" class="default-link">
+                    <button mat-icon-button tippy="Configure fields of the custom app settings">
+                      <mat-icon
+                        matBadgeColor="accent"
+                        matBadgeSize="small"
+                        [matBadge]="viewModelSig()?.customSettingsFieldsCount || null"
+                        matBadgePosition="below after"
+                        aria-hidden="false"
+                        >dns</mat-icon
+                      >
+                    </button>
+                  </a>
                 </td>
               </tr>
               <ng-container *ngTemplateOutlet="goToSite"></ng-container>
@@ -193,15 +191,12 @@
       <div class="eav-card-space-div"></div>
       <mat-card-actions align="start">
         <app-docs-link-helper [link]="'https://go.2sxc.org/settings'" [label]="" [icon]=""></app-docs-link-helper>
-        <button
-          mat-button
-          class="eav-button__with-icon"
-          (click)="analyze(AnalyzeParts.Settings)"
-          tippy="See the result of combining all settings"
-        >
-          <mat-icon class="eav-icon">manage_search</mat-icon>
-          <span>Analyze Combined Settings</span>
-        </button>
+        <a [href]="urlToAnalyze(AnalyzeParts.Settings)">
+          <button mat-button class="eav-button__with-icon" tippy="See the result of combining all settings">
+            <mat-icon class="eav-icon">manage_search</mat-icon>
+            <span>Analyze Combined Settings</span>
+          </button>
+        </a>
       </mat-card-actions>
     </mat-card>
     <!-- Resources -->
@@ -361,20 +356,18 @@
                       >edit</mat-icon
                     >
                   </button>
-                  <button
-                    mat-icon-button
-                    (click)="config(eavConstants.contentTypes.resources)"
-                    tippy="Configure fields of the custom app resources"
-                  >
-                    <mat-icon
-                      matBadgeColor="accent"
-                      matBadgeSize="small"
-                      [matBadge]="viewModelSig()?.customResourcesFieldsCount || null"
-                      matBadgePosition="below after"
-                      aria-hidden="false"
-                      >dns</mat-icon
-                    >
-                  </button>
+                  <a [href]="urlToConfig(eavConstants.contentTypes.resources)" class="default-link">
+                    <button mat-icon-button tippy="Configure fields of the custom app resources">
+                      <mat-icon
+                        matBadgeColor="accent"
+                        matBadgeSize="small"
+                        [matBadge]="viewModelSig()?.customResourcesFieldsCount || null"
+                        matBadgePosition="below after"
+                        aria-hidden="false"
+                        >dns</mat-icon
+                      >
+                    </button>
+                  </a>
                 </td>
               </tr>
               <ng-container *ngTemplateOutlet="goToSite"></ng-container>
@@ -386,15 +379,12 @@
       <div class="eav-card-space-div"></div>
       <mat-card-actions align="start">
         <app-docs-link-helper [link]="'https://go.2sxc.org/settings'" [label]="" [icon]=""></app-docs-link-helper>
-        <button
-          mat-button
-          class="eav-button__with-icon"
-          (click)="analyze(AnalyzeParts.Resources)"
-          tippy="See the result of combining all resources"
-        >
-          <mat-icon class="eav-icon">manage_search</mat-icon>
-          <span>Analyze Combined Resources</span>
-        </button>
+        <a [href]="urlToAnalyze(AnalyzeParts.Resources)">
+          <button mat-button class="eav-button__with-icon" tippy="See the result of combining all resources">
+            <mat-icon class="eav-icon">manage_search</mat-icon>
+            <span>Analyze Combined Resources</span>
+          </button>
+        </a>
       </mat-card-actions>
     </mat-card>
     <!-- Templates which are re-used in the table above -->
@@ -477,51 +467,50 @@
       <div class="eav-card-space-div"></div>
       <mat-card-actions align="start">
         <app-docs-link-helper [link]="'https://docs.2sxc.org/basics/app/permissions.html'" [label]="" [icon]=""></app-docs-link-helper>
-        <button
-          mat-button
-          class="eav-button__with-icon"
-          [disabled]="!dialogSettings.Context.Enable.AppPermissions"
-          (click)="openPermissions()"
-        >
-          <mat-icon
-            matBadgeColor="accent"
-            matBadgeSize="small"
-            matBadgePosition="below after"
-            [matBadge]="dialogSettings.Context.App.Permissions.Count || null"
-            aria-hidden="false"
-            class="eav-icon"
-            >person</mat-icon
-          >
-          <span>
-            Edit Permissions
-            @if (!dialogSettings.Context.Enable.AppPermissions) {
-              @if (isGlobal) {
-                (not on Global App)
+        <a [href]="urlToOpenPermissions()">
+          <button mat-button class="eav-button__with-icon" [disabled]="!dialogSettings.Context.Enable.AppPermissions">
+            <mat-icon
+              matBadgeColor="accent"
+              matBadgeSize="small"
+              matBadgePosition="below after"
+              [matBadge]="dialogSettings.Context.App.Permissions.Count || null"
+              aria-hidden="false"
+              class="eav-icon"
+              >person</mat-icon
+            >
+            <span>
+              Edit Permissions
+              @if (!dialogSettings.Context.Enable.AppPermissions) {
+                @if (isGlobal) {
+                  (not on Global App)
+                }
+                @if (isApp) {
+                  (not on Content)
+                }
               }
-              @if (isApp) {
-                (not on Content)
-              }
-            }
-          </span>
-        </button>
+            </span>
+          </button>
+        </a>
         <app-docs-link-helper
           [link]="'https://patrons.2sxc.org/features/feat/PermissionsByLanguage'"
           [label]=""
           [icon]=""
         ></app-docs-link-helper>
-        <button mat-button class="eav-button__with-icon" (click)="openLanguagePermissions(langPermsEnabled())">
-          <mat-icon
-            [matBadgeHidden]="langPermsEnabled()"
-            matBadgeSize="small"
-            matBadge="💎"
-            matBadgePosition="below after"
-            aria-hidden="false"
-            class="eav-icon"
-          >
-            person
-          </mat-icon>
-          <span>Language Permissions</span>
-        </button>
+        <a [href]="urlToOpenLanguagePermissions(langPermsEnabled())">
+          <button mat-button class="eav-button__with-icon">
+            <mat-icon
+              [matBadgeHidden]="langPermsEnabled()"
+              matBadgeSize="small"
+              matBadge="💎"
+              matBadgePosition="below after"
+              aria-hidden="false"
+              class="eav-icon"
+            >
+              person
+            </mat-icon>
+            <span>Language Permissions</span>
+          </button>
+        </a>
       </mat-card-actions>
     </mat-card>
   </div>

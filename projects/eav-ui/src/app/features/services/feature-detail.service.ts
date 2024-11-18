@@ -44,7 +44,4 @@ export class FeatureDetailService extends HttpServiceBase {
       params: { nameId }
     });
   }
-
-
-
 }

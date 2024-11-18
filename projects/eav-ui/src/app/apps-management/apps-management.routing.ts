@@ -69,4 +69,3 @@ export const appsManagementRoutes: Routes = [
     ],
   },
 ];
-

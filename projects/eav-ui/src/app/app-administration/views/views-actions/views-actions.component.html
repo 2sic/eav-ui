@@ -1,52 +1,61 @@
 <div class="actions-component">
   @if (!view.EditInfo.DisableEdit && enableCode) {
-    <div class="eav-grid-action-button highlight" matRipple tippy="Code"
-      (click)="do('openCode')">
+    <div class="eav-grid-action-button highlight" matRipple tippy="Code" (click)="do('openCode')">
       <mat-icon>code</mat-icon>
     </div>
-  }
-  @else {
+  } @else {
     <div class="eav-grid-action-button disabled">
       <mat-icon>code</mat-icon>
     </div>
   }
 
   @if (!view.EditInfo.DisableMetadata) {
-    <div class="eav-grid-action-button highlight" matRipple tippy="Metadata"
-      (click)="do('openMetadata')">
-      <mat-icon [matBadge]="view.Metadata.length" matBadgeColor="accent" matBadgeSize="small"
-        [matBadgeHidden]="!view.Metadata.length" matBadgePosition="below after" aria-hidden="false">
+    <a [href]="params.urlTo('openMetadata', view)" class="eav-grid-action-button default-link highlight" matRipple tippy="Metadata">
+      <mat-icon
+        [matBadge]="view.Metadata.length"
+        matBadgeColor="accent"
+        matBadgeSize="small"
+        [matBadgeHidden]="!view.Metadata.length"
+        matBadgePosition="below after"
+        aria-hidden="false"
+      >
+        local_offer
+      </mat-icon>
+    </a>
+  } @else {
+    <div class="eav-grid-action-button disabled">
+      <mat-icon
+        [matBadge]="view.Metadata.length"
+        matBadgeColor="accent"
+        matBadgeSize="small"
+        matBadgeDisabled="true"
+        [matBadgeHidden]="!view.Metadata.length"
+        matBadgePosition="below after"
+        aria-hidden="false"
+      >
         local_offer
       </mat-icon>
     </div>
   }
-  @else {
-    <div class="eav-grid-action-button disabled">
-      <mat-icon [matBadge]="view.Metadata.length" matBadgeColor="accent" matBadgeSize="small" matBadgeDisabled="true"
-        [matBadgeHidden]="!view.Metadata.length" matBadgePosition="below after" aria-hidden="false">
-        local_offer
-      </mat-icon>
-    </div>
-  }
-
-  @if (!view.EditInfo.DisableEdit && enablePermissions) {
-    <div class="eav-grid-action-button highlight" matRipple
-      tippy="Permissions" (click)="do('openPermissions')">
-      <mat-icon [matBadge]="view.Permissions.Count" matBadgeColor="accent" matBadgeSize="small"
-        [matBadgeHidden]="!view.Permissions.Count" matBadgePosition="below after" aria-hidden="false">
-        person
-      </mat-icon>
-    </div>
-  }
-  @else {
-    <div class="eav-grid-action-button disabled">
-      <mat-icon [matBadge]="view.Permissions.Count" matBadgeColor="accent" matBadgeSize="small" matBadgeDisabled="true"
-        [matBadgeHidden]="!view.Permissions.Count" matBadgePosition="below after" aria-hidden="false">
-        person
-      </mat-icon>
-    </div>
-  }
-
+  <a
+    [href]="params.urlTo('openPermissions', view)"
+    class="eav-grid-action-button default-link"
+    [ngClass]="{ highlight: isEnabled, disabled: !isEnabled }"
+    [ngStyle]="{ 'pointer-events': isEnabled ? 'auto' : 'none' }"
+    matRipple
+    tippy="Permissions"
+  >
+    <mat-icon
+      [matBadge]="view.Permissions.Count"
+      matBadgeColor="accent"
+      matBadgeSize="small"
+      [matBadgeHidden]="!view.Permissions.Count"
+      matBadgePosition="below after"
+      aria-hidden="false"
+    >
+      person
+    </mat-icon>
+  </a>
   <app-lightspeed-action [lightSpeedOwner]="view" [params]="params" [lightSpeed]="view.lightSpeed"></app-lightspeed-action>
 
   <div class="eav-grid-action-button highlight" matRipple tippy="More" [matMenuTriggerFor]="menu">
@@ -56,11 +65,13 @@
 
 <mat-menu #menu="matMenu" class="grid-more-menu">
   <ng-template matMenuContent>
-    <button mat-menu-item (click)="do('cloneView')">
-      <mat-icon>file_copy</mat-icon>
-      <span>Copy</span>
-    </button>
-    <button mat-menu-item (click)=" do('exportView')">
+    <a [href]="params.urlTo('cloneView', view)" class="eav-grid-action-button default-link highlight" matRipple tippy="Metadata">
+      <button mat-menu-item>
+        <mat-icon>file_copy</mat-icon>
+        <span>Copy</span>
+      </button>
+    </a>
+    <button mat-menu-item (click)="do('exportView')">
       <mat-icon>cloud_download</mat-icon>
       <span>Export</span>
     </button>

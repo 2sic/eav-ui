@@ -47,7 +47,6 @@ export class LightSpeedActionsComponent {
     return this.lightSpeed()?.IsEnabled == true;
   }
 
-
   openLightspeedFeatureInfo(): void {
     this.params().openLightspeedFeatureInfo();
   }

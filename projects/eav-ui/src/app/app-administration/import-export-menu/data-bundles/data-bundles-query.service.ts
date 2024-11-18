@@ -21,6 +21,10 @@ export class DataBundlesService {
     private translate: TranslateService,
   ) { }
 
+  // TODO: @2pp
+  // 1. make this typed - create a type etc.
+  // 2. ask 2dg why the extensive error handling - and then probably remove?
+  // 3. review w/2dg to find out why it has all this error handling
   fetchQuery(guid?: string): Observable<any> {
     const stream = 'Default';
     const params = `configurationguid=${guid}`;
