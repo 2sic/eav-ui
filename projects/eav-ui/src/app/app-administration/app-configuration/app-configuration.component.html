@@ -168,17 +168,19 @@
                       >edit</mat-icon
                     >
                   </button>
-                  <a [href]="urlToConfig(eavConstants.contentTypes.settings)" class="default-link">
-                    <button mat-icon-button tippy="Configure fields of the custom app settings">
-                      <mat-icon
-                        matBadgeColor="accent"
-                        matBadgeSize="small"
-                        [matBadge]="viewModelSig()?.customSettingsFieldsCount || null"
-                        matBadgePosition="below after"
-                        aria-hidden="false"
-                        >dns</mat-icon
-                      >
-                    </button>
+                  <a
+                    [href]="urlToConfig(eavConstants.contentTypes.settings)"
+                    mat-icon-button
+                    tippy="Configure fields of the custom app settings"
+                  >
+                    <mat-icon
+                      matBadgeColor="accent"
+                      matBadgeSize="small"
+                      [matBadge]="viewModelSig()?.customSettingsFieldsCount || null"
+                      matBadgePosition="below after"
+                      aria-hidden="false"
+                      >dns</mat-icon
+                    >
                   </a>
                 </td>
               </tr>
@@ -191,11 +193,14 @@
       <div class="eav-card-space-div"></div>
       <mat-card-actions align="start">
         <app-docs-link-helper [link]="'https://go.2sxc.org/settings'" [label]="" [icon]=""></app-docs-link-helper>
-        <a [href]="urlToAnalyze(AnalyzeParts.Settings)">
-          <button mat-button class="eav-button__with-icon" tippy="See the result of combining all settings">
-            <mat-icon class="eav-icon">manage_search</mat-icon>
-            <span>Analyze Combined Settings</span>
-          </button>
+        <a
+          [href]="urlToAnalyze(AnalyzeParts.Settings)"
+          mat-button
+          class="eav-button__with-icon"
+          tippy="See the result of combining all settings"
+        >
+          <mat-icon class="eav-icon">manage_search</mat-icon>
+          <span>Analyze Combined Settings</span>
         </a>
       </mat-card-actions>
     </mat-card>
@@ -356,17 +361,19 @@
                       >edit</mat-icon
                     >
                   </button>
-                  <a [href]="urlToConfig(eavConstants.contentTypes.resources)" class="default-link">
-                    <button mat-icon-button tippy="Configure fields of the custom app resources">
-                      <mat-icon
-                        matBadgeColor="accent"
-                        matBadgeSize="small"
-                        [matBadge]="viewModelSig()?.customResourcesFieldsCount || null"
-                        matBadgePosition="below after"
-                        aria-hidden="false"
-                        >dns</mat-icon
-                      >
-                    </button>
+                  <a
+                    [href]="urlToConfig(eavConstants.contentTypes.resources)"
+                    mat-icon-button
+                    tippy="Configure fields of the custom app resources"
+                  >
+                    <mat-icon
+                      matBadgeColor="accent"
+                      matBadgeSize="small"
+                      [matBadge]="viewModelSig()?.customResourcesFieldsCount || null"
+                      matBadgePosition="below after"
+                      aria-hidden="false"
+                      >dns</mat-icon
+                    >
                   </a>
                 </td>
               </tr>
@@ -379,11 +386,14 @@
       <div class="eav-card-space-div"></div>
       <mat-card-actions align="start">
         <app-docs-link-helper [link]="'https://go.2sxc.org/settings'" [label]="" [icon]=""></app-docs-link-helper>
-        <a [href]="urlToAnalyze(AnalyzeParts.Resources)">
-          <button mat-button class="eav-button__with-icon" tippy="See the result of combining all resources">
-            <mat-icon class="eav-icon">manage_search</mat-icon>
-            <span>Analyze Combined Resources</span>
-          </button>
+        <a
+          [href]="urlToAnalyze(AnalyzeParts.Resources)"
+          mat-button
+          class="eav-button__with-icon"
+          tippy="See the result of combining all resources"
+        >
+          <mat-icon class="eav-icon">manage_search</mat-icon>
+          <span>Analyze Combined Resources</span>
         </a>
       </mat-card-actions>
     </mat-card>
@@ -424,19 +434,23 @@
       <div class="eav-card-space-div"></div>
       <mat-card-actions align="start">
         <app-docs-link-helper [link]="'https://go.2sxc.org/lightspeed'" [label]="" [icon]=""></app-docs-link-helper>
-        <a class="default-link" [href]="'#' + getLightSpeedLink()">
-          <button mat-button class="eav-button__with-icon" disabled="{{ !lightSpeedEnabled() }}">
-            <mat-icon
-              matBadgeColor="accent"
-              matBadgeSize="small"
-              [matBadge]="viewModelSig()?.appLightSpeedCount || null"
-              matBadgePosition="below after"
-              aria-hidden="false"
-              class="eav-icon"
-              >bolt</mat-icon
-            >
-            <span>Edit LightSpeed</span>
-          </button>
+        <a
+          class="default-link"
+          [href]="urlToGetLightSpeedLink()"
+          mat-button
+          class="eav-button__with-icon"
+          disabled="{{ !lightSpeedEnabled() }}"
+        >
+          <mat-icon
+            matBadgeColor="accent"
+            matBadgeSize="small"
+            [matBadge]="viewModelSig()?.appLightSpeedCount || null"
+            matBadgePosition="below after"
+            aria-hidden="false"
+            class="eav-icon"
+            >bolt</mat-icon
+          >
+          <span>Edit LightSpeed</span>
         </a>
       </mat-card-actions>
     </mat-card>
@@ -467,49 +481,50 @@
       <div class="eav-card-space-div"></div>
       <mat-card-actions align="start">
         <app-docs-link-helper [link]="'https://docs.2sxc.org/basics/app/permissions.html'" [label]="" [icon]=""></app-docs-link-helper>
-        <a [href]="urlToOpenPermissions()">
-          <button mat-button class="eav-button__with-icon" [disabled]="!dialogSettings.Context.Enable.AppPermissions">
-            <mat-icon
-              matBadgeColor="accent"
-              matBadgeSize="small"
-              matBadgePosition="below after"
-              [matBadge]="dialogSettings.Context.App.Permissions.Count || null"
-              aria-hidden="false"
-              class="eav-icon"
-              >person</mat-icon
-            >
-            <span>
-              Edit Permissions
-              @if (!dialogSettings.Context.Enable.AppPermissions) {
-                @if (isGlobal) {
-                  (not on Global App)
-                }
-                @if (isApp) {
-                  (not on Content)
-                }
+        <a
+          [href]="urlToOpenPermissions()"
+          mat-button
+          class="eav-button__with-icon"
+          [disabled]="!dialogSettings.Context.Enable.AppPermissions"
+        >
+          <mat-icon
+            matBadgeColor="accent"
+            matBadgeSize="small"
+            matBadgePosition="below after"
+            [matBadge]="dialogSettings.Context.App.Permissions.Count || null"
+            aria-hidden="false"
+            class="eav-icon"
+            >person</mat-icon
+          >
+          <span>
+            Edit Permissions
+            @if (!dialogSettings.Context.Enable.AppPermissions) {
+              @if (isGlobal) {
+                (not on Global App)
               }
-            </span>
-          </button>
+              @if (isApp) {
+                (not on Content)
+              }
+            }
+          </span>
         </a>
         <app-docs-link-helper
           [link]="'https://patrons.2sxc.org/features/feat/PermissionsByLanguage'"
           [label]=""
           [icon]=""
         ></app-docs-link-helper>
-        <a [href]="urlToOpenLanguagePermissions(langPermsEnabled())">
-          <button mat-button class="eav-button__with-icon">
-            <mat-icon
-              [matBadgeHidden]="langPermsEnabled()"
-              matBadgeSize="small"
-              matBadge="💎"
-              matBadgePosition="below after"
-              aria-hidden="false"
-              class="eav-icon"
-            >
-              person
-            </mat-icon>
-            <span>Language Permissions</span>
-          </button>
+        <a [href]="urlToOpenLanguagePermissions(langPermsEnabled())" mat-button class="eav-button__with-icon">
+          <mat-icon
+            [matBadgeHidden]="langPermsEnabled()"
+            matBadgeSize="small"
+            matBadge="💎"
+            matBadgePosition="below after"
+            aria-hidden="false"
+            class="eav-icon"
+          >
+            person
+          </mat-icon>
+          <span>Language Permissions</span>
         </a>
       </mat-card-actions>
     </mat-card>

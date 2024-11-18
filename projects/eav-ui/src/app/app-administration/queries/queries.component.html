@@ -9,16 +9,12 @@
   >
   </ag-grid-angular>
   <mat-dialog-actions class="eav-dialog-actions">
-    <a [href]="urlToImportQuery()">
-      <button mat-button class="eav-button__with-icon" tippy="Import query" tippyPlacement="top">
-        <mat-icon class="eav-icon">cloud_upload</mat-icon>
-        <span>Query</span>
-      </button>
+    <a [href]="urlToImportQuery()" mat-button class="eav-button__with-icon" tippy="Import query" tippyPlacement="top">
+      <mat-icon class="eav-icon">cloud_upload</mat-icon>
+      <span>Query</span>
     </a>
-    <a [href]="urlToNewQuery()">
-      <button mat-fab mat-elevation-z24 class="grid-fab" tippy="Create a new query" tippyPlacement="top">
-        <mat-icon>add</mat-icon>
-      </button>
+    <a [href]="urlToNewQuery()" mat-fab mat-elevation-z24 class="grid-fab" tippy="Create a new query" tippyPlacement="top">
+      <mat-icon>add</mat-icon>
     </a>
   </mat-dialog-actions>
 </div>

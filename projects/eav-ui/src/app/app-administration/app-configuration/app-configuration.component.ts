@@ -292,11 +292,12 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     });
   }
 
-  getLightSpeedLink(): string {
-    const form = AppAdminHelpers.getLightSpeedEditParams(this.context.appId);
-    const formUrl = convertFormToUrl(form);
-    const urlString = `edit/${formUrl}`;
-    return this.#dialogRouter.urlSubRoute(urlString);
+  urlToGetLightSpeedLink(): string {
+    return this.#urlTo(
+      `edit/${convertFormToUrl(
+        AppAdminHelpers.getLightSpeedEditParams(this.context.appId)
+      )}`
+    );
   }
 
   openSiteSettings() {
