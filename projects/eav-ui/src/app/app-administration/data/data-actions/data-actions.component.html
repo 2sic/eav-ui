@@ -1,6 +1,6 @@
 <div class="actions-component">
   @if (!contentType.EditInfo.DisableEdit || contentType.Properties) {
-    <a class="eav-grid-action-button default-link highlight" matRipple tippy="Description and more" [href]="urlTo('createUpdateMetaData')">
+    <a [href]="urlTo('createUpdateMetaData')" class="eav-grid-action-button default-link highlight" matRipple tippy="Description and more">
       <mat-icon>edit</mat-icon>
     </a>
   } @else {
@@ -10,7 +10,7 @@
   }
 
   @if (!contentType.EditInfo.DisableMetadata) {
-    <a class="eav-grid-action-button default-link highlight" matRipple tippy="Metadata" [href]="urlTo('openMetadata')">
+    <a [href]="urlTo('openMetadata')" class="eav-grid-action-button default-link highlight" matRipple tippy="Metadata">
       <mat-icon
         [matBadge]="contentType.Metadata.length"
         matBadgePosition="below after"
@@ -39,7 +39,7 @@
   }
 
   @if (!contentType.EditInfo.DisableEdit && enablePermissions) {
-    <a class="eav-grid-action-button default-link highlight" matRipple tippy="Permissions" [href]="urlTo('openPermissions')">
+    <a [href]="urlTo('openPermissions')" class="eav-grid-action-button default-link highlight" matRipple tippy="Permissions">
       <mat-icon
         [matBadge]="contentType.Permissions.Count"
         matBadgePosition="below after"

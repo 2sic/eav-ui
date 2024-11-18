@@ -111,9 +111,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
         break;
     }
   }
-
-  // TODO: @2pp | Should be a link, but is tricky to do with the current setup
-  // as it's doing somethingwith the files, which is not possible with a link
+  
   importType(files?: File[]) {
     const dialogData: FileUploadDialogData = { files };
     this.#dialogRouter.navRelative(['import'], { state: dialogData });

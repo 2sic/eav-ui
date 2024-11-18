@@ -18,6 +18,7 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class MessageComponent implements OnInit {
   message: string;
+  isError: boolean;
 
   constructor(
     private route: ActivatedRoute,
@@ -26,7 +27,8 @@ export class MessageComponent implements OnInit {
 
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
-      this.message = params['message'] || 'Something went wrong. Please try again later.';
+      this.message = params['error'] || 'Something went wrong. Please try again later.';
+      this.isError = !!params['error']; // Turns string into boolean
     });
   }
 }
