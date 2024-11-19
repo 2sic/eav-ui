@@ -82,52 +82,52 @@
             }
             <!-- Settings for Primary App -->
             @if (isPrimary) {
-            <tr>
-              <th>Site</th>
-              <td>
-                <a [href]="appSiteSystemSettingsUrl()" mat-icon-button tippy="Edit site system settings">
-                  <mat-icon
-                    matBadgeColor="accent"
-                    matBadgeSize="small"
-                    [matBadge]="viewModelSig()?.systemSettingsCount || null"
-                    matBadgePosition="below after"
-                    aria-hidden="false"
-                    >edit</mat-icon
+              <tr>
+                <th>Site</th>
+                <td>
+                  <a [href]="appSiteSystemSettingsUrl()" mat-icon-button tippy="Edit site system settings">
+                    <mat-icon
+                      matBadgeColor="accent"
+                      matBadgeSize="small"
+                      [matBadge]="viewModelSig()?.systemSettingsCount || null"
+                      matBadgePosition="below after"
+                      aria-hidden="false"
+                      >edit</mat-icon
+                    >
+                  </a>
+                </td>
+                <td>
+                  <button
+                    mat-icon-button
+                    (click)="fixContentType(eavConstants.contentTypes.customSettings, 'edit')"
+                    tippy="Edit custom site settings"
                   >
-                </a>
-              </td>
-              <td>
-                <button
-                  mat-icon-button
-                  (click)="fixContentType(eavConstants.contentTypes.customSettings, 'edit')"
-                  tippy="Edit custom site settings"
-                >
-                  <mat-icon
-                    matBadgeColor="accent"
-                    matBadgeSize="small"
-                    [matBadge]="viewModelSig()?.customSettingsCount || null"
-                    matBadgePosition="below after"
-                    aria-hidden="false"
-                    >edit</mat-icon
+                    <mat-icon
+                      matBadgeColor="accent"
+                      matBadgeSize="small"
+                      [matBadge]="viewModelSig()?.customSettingsCount || null"
+                      matBadgePosition="below after"
+                      aria-hidden="false"
+                      >edit</mat-icon
+                    >
+                  </button>
+                  <button
+                    mat-icon-button
+                    (click)="fixContentType(eavConstants.contentTypes.customSettings, 'config')"
+                    tippy="Configure fields of the custom site settings"
                   >
-                </button>
-                <button
-                  mat-icon-button
-                  (click)="fixContentType(eavConstants.contentTypes.customSettings, 'config')"
-                  tippy="Configure fields of the custom site settings"
-                >
-                  <mat-icon
-                    matBadgeColor="accent"
-                    matBadgeSize="small"
-                    [matBadge]="viewModelSig()?.customSettingsFieldsCount || null"
-                    matBadgePosition="below after"
-                    aria-hidden="false"
-                    >dns</mat-icon
-                  >
-                </button>
-              </td>
-            </tr>
-            <ng-container *ngTemplateOutlet="goToGlobal"></ng-container>
+                    <mat-icon
+                      matBadgeColor="accent"
+                      matBadgeSize="small"
+                      [matBadge]="viewModelSig()?.customSettingsFieldsCount || null"
+                      matBadgePosition="below after"
+                      aria-hidden="false"
+                      >dns</mat-icon
+                    >
+                  </button>
+                </td>
+              </tr>
+              <ng-container *ngTemplateOutlet="goToGlobal"></ng-container>
             }
             <!-- Settings for App and Content -->
             @if (isApp) {
@@ -218,11 +218,7 @@
               <tr>
                 <th>Global</th>
                 <td>
-                  <button
-                    mat-icon-button
-                    (click)="edit(eavConstants.contentTypes.systemResources, SystemSettingsScopes.App)"
-                    tippy="Edit global system resources"
-                  >
+                  <a [href]="appGlobalSystemResourcesUrl()" mat-icon-button tippy="Edit global system resources">
                     <mat-icon
                       matBadgeColor="accent"
                       matBadgeSize="small"
@@ -231,7 +227,7 @@
                       aria-hidden="false"
                       >edit</mat-icon
                     >
-                  </button>
+                  </a>
                 </td>
                 <td>
                   <button
@@ -270,11 +266,7 @@
               <tr>
                 <th>Site</th>
                 <td>
-                  <button
-                    mat-icon-button
-                    (click)="edit(eavConstants.contentTypes.systemResources, SystemSettingsScopes.Site)"
-                    tippy="Edit site system resources"
-                  >
+                  <a [href]="appSiteSystemResourcesUrl()" mat-icon-button tippy="Edit site system resources">
                     <mat-icon
                       matBadgeColor="accent"
                       matBadgeSize="small"
@@ -283,7 +275,7 @@
                       aria-hidden="false"
                       >edit</mat-icon
                     >
-                  </button>
+                  </a>
                 </td>
                 <td>
                   <button
@@ -323,11 +315,7 @@
               <tr>
                 <th>{{ dialogSettings.Context.App.Name }}</th>
                 <td>
-                  <button
-                    mat-icon-button
-                    (click)="edit(eavConstants.contentTypes.systemResources, SystemSettingsScopes.App)"
-                    tippy="Edit app system resources"
-                  >
+                  <a [href]="appContentSystemResourcesUrl()" mat-icon-button tippy="Edit app system resources">
                     <mat-icon
                       matBadgeColor="accent"
                       matBadgeSize="small"
@@ -336,10 +324,10 @@
                       aria-hidden="false"
                       >edit</mat-icon
                     >
-                  </button>
+                  </a>
                 </td>
                 <td>
-                  <button mat-icon-button (click)="edit(eavConstants.contentTypes.resources)" tippy="Edit custom app resources">
+                  <a [href]="appContentCustomResourcesUrl()" mat-icon-button tippy="Edit custom app resources">
                     <mat-icon
                       matBadgeColor="accent"
                       matBadgeSize="small"
@@ -348,7 +336,7 @@
                       aria-hidden="false"
                       >edit</mat-icon
                     >
-                  </button>
+                  </a>
                   <a
                     [href]="urlToConfig(eavConstants.contentTypes.resources)"
                     mat-icon-button
