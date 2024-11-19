@@ -67,6 +67,12 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
   isPrimary: boolean;
   isApp: boolean;
 
+  // Url signals for edit routes
+  appSystemSettingsUrl = signal('');
+  appCustomSettingsUrl = signal('');
+
+
+
   // More proper ViewModel
   appSettingsInternal$ = new Subject<AppInternals>();
 
@@ -122,7 +128,11 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
-  ) { }
+  ) {
+    // this.urlToEditSystem(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App)
+    this.appSystemSettingsUrl = this.urlToEditSystem(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App);
+    this.appCustomSettingsUrl = this.urlToEditDefault(eavConstants.contentTypes.settings);
+  }
 
   ngOnInit() {
     this.#dialogRouter.doOnDialogClosed(() => {
@@ -217,79 +227,89 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     });
   }
 
-  // TODO: @2pp - implement migration on edit cases
-  urlToEdit(staticName: string, systemSettingsScope?: Of<typeof SystemSettingsScopes>) {
+  // case eavConstants.contentTypes.systemSettings:
+  // case eavConstants.contentTypes.systemResources:
+  urlToEditSystem(staticName: string, systemSettingsScope?: Of<typeof SystemSettingsScopes>) {
+    const url = signal('');
     this.#contentItemsService.getAll(staticName).subscribe(contentItems => {
-      let form: EditForm;
-      let errorMsg: string;
-
-      switch (staticName) {
-        case eavConstants.contentTypes.systemSettings:
-        case eavConstants.contentTypes.systemResources:
-          const systemSettingsEntities = contentItems.filter(i =>
-            systemSettingsScope === SystemSettingsScopes.App
-              ? !i.SettingsEntityScope
-              : i.SettingsEntityScope === SystemSettingsScopes.Site
-          );
-          if (systemSettingsEntities.length > 1) {
-            errorMsg = `Found too many settings for type ${staticName}`;
-          } else {
-            const systemSettingsEntity = systemSettingsEntities[0];
-            form = {
-              items: [
-                systemSettingsEntity == null
-                  ? EditPrep.newFromType(staticName, {
-                    ...(systemSettingsScope === SystemSettingsScopes.Site && {
-                      SettingsEntityScope: SystemSettingsScopes.Site,
-                    }),
-                  })
-                  : EditPrep.editId(systemSettingsEntity.Id),
-              ],
-            };
-          }
-          break;
-
-        case eavConstants.contentTypes.customSettings:
-        case eavConstants.contentTypes.customResources:
-          if (contentItems.length > 1) {
-            errorMsg = `Found too many settings for type ${staticName}`;
-          } else {
-            const customSettingsEntity = contentItems[0];
-            form = {
-              items: [
-                customSettingsEntity == null
-                  ? EditPrep.newFromType(staticName)
-                  : EditPrep.editId(customSettingsEntity.Id),
-              ],
-            };
-          }
-          break;
-
-        default:
-          if (contentItems.length < 1) {
-            errorMsg = `Found no settings for type ${staticName}`;
-          } else if (contentItems.length > 1) {
-            errorMsg = `Found too many settings for type ${staticName}`;
-          } else {
-            form = {
-              items: [EditPrep.editId(contentItems[0].Id)],
-            };
-          }
-      }
-
-      if (errorMsg) {
-        // Navigate to the error component with the error message
-        this.#dialogRouter.navParentFirstChild(['message/e'], {
-          queryParams: { error: errorMsg },
+      const systemSettingsEntities = contentItems.filter(i =>
+        systemSettingsScope === SystemSettingsScopes.App
+          ? !i.SettingsEntityScope
+          : i.SettingsEntityScope === SystemSettingsScopes.Site
+      );
+      if (systemSettingsEntities.length > 1) {
+        this.#dialogRouter.navRelative(['message/e'], {
+          queryParams: { error: `Found too many settings for type ${staticName}` },
         });
-
-        return '';
       } else {
-        return this.#urlTo(
-          `edit/${convertFormToUrl(form)}`
-        )
+        const systemSettingsEntity = systemSettingsEntities[0];
+        url.set(this.#urlTo(
+          `edit/${convertFormToUrl({
+            items: [
+              systemSettingsEntity == null
+                ? EditPrep.newFromType(staticName, {
+                  ...(systemSettingsScope === SystemSettingsScopes.Site && {
+                    SettingsEntityScope: SystemSettingsScopes.Site,
+                  }),
+                })
+                : EditPrep.editId(systemSettingsEntity.Id),
+            ],
+          })}`
+        ));
       }
     });
+
+    return url;
+  }
+
+  // case eavConstants.contentTypes.customSettings:
+  // case eavConstants.contentTypes.customResources:
+  urlToEditCustom(staticName: string) {
+    const url = signal('');
+    this.#contentItemsService.getAll(staticName).subscribe(contentItems => {
+      if (contentItems.length > 1) {
+        this.#dialogRouter.navRelative(['message/e'], {
+          queryParams: { error: `Found too many settings for type ${staticName}` },
+        });
+      } else {
+        const customSettingsEntity = contentItems[0];
+        url.set(this.#urlTo(
+          `edit/${convertFormToUrl({
+            items: [
+              customSettingsEntity == null
+                ? EditPrep.newFromType(staticName)
+                : EditPrep.editId(customSettingsEntity.Id),
+            ],
+          })}`
+        ));
+      }
+    });
+
+    return url;
+  }
+
+  // case default:
+  urlToEditDefault(staticName: string) {
+    const url = signal('');
+    this.#contentItemsService.getAll(staticName).subscribe(contentItems => {
+      if (contentItems.length < 1) {
+        this.#dialogRouter.navRelative(['message/e'], {
+          queryParams: { error: `Found no settings for type ${staticName}` },
+        });
+      } else if (contentItems.length > 1) {
+        this.#dialogRouter.navRelative(['message/e'], {
+          queryParams: { error: `Found too many settings for type ${staticName}` },
+        });
+      } else {
+        url.set(this.#urlTo(
+          `edit/${convertFormToUrl({
+            items: [EditPrep.editId(contentItems[0].Id)],
+          })}`
+        ));
+      }
+    });
+
+    return url;
   }
 
   urlToGetLightSpeedLink(): string {

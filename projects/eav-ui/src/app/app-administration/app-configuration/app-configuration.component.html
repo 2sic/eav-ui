@@ -142,11 +142,7 @@
               <tr>
                 <th>{{ dialogSettings.Context.App.Name }}</th>
                 <td>
-                  <button
-                    mat-icon-button
-                    (click)="edit(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App)"
-                    tippy="Edit app system settings"
-                  >
+                  <a [href]="appSystemSettingsUrl()" mat-icon-button tippy="Edit app system settings">
                     <mat-icon
                       matBadgeColor="accent"
                       matBadgeSize="small"
@@ -155,10 +151,10 @@
                       aria-hidden="false"
                       >edit</mat-icon
                     >
-                  </button>
+                  </a>
                 </td>
                 <td>
-                  <button mat-icon-button (click)="edit(eavConstants.contentTypes.settings)" tippy="Edit custom app settings">
+                  <a [href]="appCustomSettingsUrl()" mat-icon-button (click)="edit(eavConstants.contentTypes.settings)" tippy="Edit custom app settings">
                     <mat-icon
                       matBadgeColor="accent"
                       matBadgeSize="small"
@@ -167,7 +163,7 @@
                       aria-hidden="false"
                       >edit</mat-icon
                     >
-                  </button>
+                  </a>
                   <a
                     [href]="urlToConfig(eavConstants.contentTypes.settings)"
                     mat-icon-button
