@@ -68,10 +68,10 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
   isApp: boolean;
 
   // Url signals for edit routes
-  appSystemSettingsUrl = signal('');
-  appCustomSettingsUrl = signal('');
-
-
+  appContentSystemSettingsUrl = signal('');
+  appContentCustomSettingsUrl = signal('');
+  appGlobalSystemSettingsUrl = signal('');
+  appSiteSystemSettingsUrl = signal('');
 
   // More proper ViewModel
   appSettingsInternal$ = new Subject<AppInternals>();
@@ -129,9 +129,10 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
   ) {
-    // this.urlToEditSystem(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App)
-    this.appSystemSettingsUrl = this.urlToEditSystem(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App);
-    this.appCustomSettingsUrl = this.urlToEditDefault(eavConstants.contentTypes.settings);
+    this.appGlobalSystemSettingsUrl = this.urlToEditSystem(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App);
+    this.appContentSystemSettingsUrl = this.urlToEditSystem(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App);
+    this.appSiteSystemSettingsUrl = this.urlToEditSystem(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.Site);
+    this.appContentCustomSettingsUrl = this.urlToEditDefault(eavConstants.contentTypes.settings);
   }
 
   ngOnInit() {
