@@ -232,9 +232,9 @@
                       >edit</mat-icon
                     >
                   </a>
-                  <button
+                  <a
+                    [href]="urlToConfig(eavConstants.contentTypes.customResources)"
                     mat-icon-button
-                    (click)="fixContentType(eavConstants.contentTypes.customResources, 'config')"
                     tippy="Configure fields of the custom global resources"
                   >
                     <mat-icon
@@ -245,7 +245,7 @@
                       aria-hidden="false"
                       >dns</mat-icon
                     >
-                  </button>
+                  </a>
                 </td>
               </tr>
             }
@@ -266,11 +266,7 @@
                   </a>
                 </td>
                 <td>
-                  <button
-                    mat-icon-button
-                    (click)="fixContentType(eavConstants.contentTypes.customResources, 'edit')"
-                    tippy="Edit custom site resources"
-                  >
+                  <a [href]="appSiteCustomResourcesUrl()" mat-icon-button tippy="Edit custom site resources">
                     <mat-icon
                       matBadgeColor="accent"
                       matBadgeSize="small"
@@ -279,10 +275,10 @@
                       aria-hidden="false"
                       >edit</mat-icon
                     >
-                  </button>
-                  <button
+                  </a>
+                  <a
+                    [href]="urlToConfig(eavConstants.contentTypes.customResources)"
                     mat-icon-button
-                    (click)="fixContentType(eavConstants.contentTypes.customResources, 'config')"
                     tippy="Configure fields of the custom site resources"
                   >
                     <mat-icon
@@ -293,7 +289,7 @@
                       aria-hidden="false"
                       >dns</mat-icon
                     >
-                  </button>
+                  </a>
                 </td>
               </tr>
               <ng-container *ngTemplateOutlet="goToGlobal"></ng-container>
