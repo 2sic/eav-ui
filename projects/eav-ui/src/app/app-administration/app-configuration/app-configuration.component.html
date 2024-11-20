@@ -93,11 +93,7 @@
                   </a>
                 </td>
                 <td>
-                  <button
-                    mat-icon-button
-                    (click)="fixContentType(eavConstants.contentTypes.customSettings, 'edit')"
-                    tippy="Edit custom site settings"
-                  >
+                  <a [href]="appSiteCustomSettingsUrl()" mat-icon-button tippy="Edit site system settings">
                     <mat-icon
                       matBadgeColor="accent"
                       matBadgeSize="small"
@@ -106,10 +102,10 @@
                       aria-hidden="false"
                       >edit</mat-icon
                     >
-                  </button>
-                  <button
+                  </a>
+                  <a
+                    [href]="urlToConfig(eavConstants.contentTypes.customSettings)"
                     mat-icon-button
-                    (click)="fixContentType(eavConstants.contentTypes.customSettings, 'config')"
                     tippy="Configure fields of the custom site settings"
                   >
                     <mat-icon
@@ -120,7 +116,7 @@
                       aria-hidden="false"
                       >dns</mat-icon
                     >
-                  </button>
+                  </a>
                 </td>
               </tr>
               <ng-container *ngTemplateOutlet="goToGlobal"></ng-container>

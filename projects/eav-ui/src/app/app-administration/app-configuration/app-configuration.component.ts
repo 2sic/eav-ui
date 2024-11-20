@@ -78,6 +78,7 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
   appContentCustomResourcesUrl = signal('');
   appGlobalCustomResourcesUrl = signal('');
   appGlobalCustomSettingsUrl = signal('');
+  appSiteCustomSettingsUrl = signal('');
 
   // More proper ViewModel
   appSettingsInternal$ = new Subject<AppInternals>();
@@ -143,6 +144,7 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     this.appContentCustomResourcesUrl = this.urlToEditDefault(eavConstants.contentTypes.resources);
     this.appGlobalCustomResourcesUrl = this.urlToEditCustom(eavConstants.contentTypes.customResources);
     this.appGlobalCustomSettingsUrl = this.urlToEditCustom(eavConstants.contentTypes.customSettings);
+    this.appSiteCustomSettingsUrl = this.urlToEditCustom(eavConstants.contentTypes.customSettings);
   }
 
   ngOnInit() {
