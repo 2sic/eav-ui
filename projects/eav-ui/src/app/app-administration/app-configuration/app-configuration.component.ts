@@ -248,7 +248,7 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
       );
       if (systemSettingsEntities.length > 1) {
         this.#dialogRouter.navRelative(['message/e'], {
-          queryParams: { error: `Found too many settings for type ${staticName}` },
+          queryParams: { error: 'AppAdmin.ErrorTooManyAppSettings' },
         });
       } else {
         const systemSettingsEntity = systemSettingsEntities[0];
@@ -278,7 +278,7 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     this.#contentItemsService.getAll(staticName).subscribe(contentItems => {
       if (contentItems.length > 1) {
         this.#dialogRouter.navRelative(['message/e'], {
-          queryParams: { error: `Found too many settings for type ${staticName}` },
+          queryParams: { error: 'AppAdmin.ErrorTooManyAppSettings' },
         });
       } else {
         const customSettingsEntity = contentItems[0];
@@ -303,11 +303,11 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     this.#contentItemsService.getAll(staticName).subscribe(contentItems => {
       if (contentItems.length < 1) {
         this.#dialogRouter.navRelative(['message/e'], {
-          queryParams: { error: `Found no settings for type ${staticName}` },
+          queryParams: { error: 'AppAdmin.ErrorNoManyAppSettings' },
         });
       } else if (contentItems.length > 1) {
         this.#dialogRouter.navRelative(['message/e'], {
-          queryParams: { error: `Found too many settings for type ${staticName}` },
+          queryParams: { error: 'AppAdmin.ErrorTooManyAppSettings' },
         });
       } else {
         url.set(this.#urlTo(

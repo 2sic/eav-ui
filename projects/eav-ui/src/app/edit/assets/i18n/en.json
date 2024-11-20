@@ -297,7 +297,7 @@
   "License-EditUi-Warning-Tooltip": "You're using features which are not licensed.",
   "AppAdmin": {
     "ErrorTooManyAppSettings": "Found too many settings.",
-    "ErrorTooManyAppResources": "Found too many settings.",
+    "ErrorTooManyAppResources": "Found too many resources.",
     "ErrorNoAppSettings": "Found no settings.",
     "ErrorNoAppResources": "Found no resources."
   }

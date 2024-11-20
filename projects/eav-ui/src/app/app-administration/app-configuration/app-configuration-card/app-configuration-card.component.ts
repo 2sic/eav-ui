@@ -80,11 +80,11 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
 
       if (contentItems.length < 1)
         this.#dialogRouter.navRelative(['message/e'], {
-          queryParams: { error: `Found no settings for type ${staticName}` },
+          queryParams: { error: 'AppAdmin.ErrorNoManyAppSettings' },
         });
       if (contentItems.length > 1)
         this.#dialogRouter.navRelative(['message/e'], {
-          queryParams: { error: `Found too many settings for type ${staticName}` },
+          queryParams: { error: 'AppAdmin.ErrorTooManyAppSettings' },
         });
 
       url.set(this.#urlTo(

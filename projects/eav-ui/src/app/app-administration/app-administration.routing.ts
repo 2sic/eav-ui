@@ -251,7 +251,7 @@ export const appAdministrationRoutes: Routes = [
           {
             path: 'message/:type',
             component: DialogEntryComponent,
-            data: { dialog: messageDialog, i18n: 'error' },
+            data: { dialog: messageDialog, i18n: 'An unexpected error happened.' },
           },
         ],
       },

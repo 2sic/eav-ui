@@ -4,6 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-message',
@@ -14,6 +15,7 @@ import { ActivatedRoute } from '@angular/router';
     MatDialogModule,
     MatButtonModule,
     MatIconModule,
+    TranslateModule,
   ]
 })
 export class MessageComponent implements OnInit {
