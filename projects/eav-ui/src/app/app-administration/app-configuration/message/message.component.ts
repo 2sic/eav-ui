@@ -4,6 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-message',
@@ -14,10 +15,12 @@ import { ActivatedRoute } from '@angular/router';
     MatDialogModule,
     MatButtonModule,
     MatIconModule,
+    TranslateModule,
   ]
 })
 export class MessageComponent implements OnInit {
   message: string;
+  isError: boolean;
 
   constructor(
     private route: ActivatedRoute,
@@ -26,7 +29,8 @@ export class MessageComponent implements OnInit {
 
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
-      this.message = params['message'] || 'Something went wrong. Please try again later.';
+      this.message = params['error'] || 'Something went wrong. Please try again later.';
+      this.isError = !!params['error']; // Turns string into boolean
     });
   }
 }

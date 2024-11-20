@@ -255,6 +255,10 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     this.#dialogRouter.navRelative(['import'], { state: dialogData });
   }
 
+  urlToImportItem() {
+    return this.#urlTo('import');
+  }
+
   createMetadata() {
     const metadataDialogRef = this.matDialog.open(CreateMetadataDialogComponent, {
       autoFocus: false,

@@ -37,11 +37,7 @@
               <tr>
                 <th>Global</th>
                 <td>
-                  <button
-                    mat-icon-button
-                    (click)="edit(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App)"
-                    tippy="Edit global system settings"
-                  >
+                  <a [href]="appGlobalSystemSettingsUrl()" mat-icon-button tippy="Edit global system settings">
                     <mat-icon
                       matBadgeColor="accent"
                       matBadgeSize="small"
@@ -50,14 +46,10 @@
                       aria-hidden="false"
                       >edit</mat-icon
                     >
-                  </button>
+                  </a>
                 </td>
                 <td>
-                  <button
-                    mat-icon-button
-                    (click)="fixContentType(eavConstants.contentTypes.customSettings, 'edit')"
-                    tippy="Edit custom global settings"
-                  >
+                  <a [href]="appGlobalCustomSettingsUrl()" mat-icon-button tippy="Edit custom global settings">
                     <mat-icon
                       matBadgeColor="accent"
                       matBadgeSize="small"
@@ -66,10 +58,10 @@
                       aria-hidden="false"
                       >edit</mat-icon
                     >
-                  </button>
-                  <button
+                  </a>
+                  <a
+                    [href]="urlToConfig(eavConstants.contentTypes.customSettings)"
                     mat-icon-button
-                    (click)="fixContentType(eavConstants.contentTypes.customSettings, 'config')"
                     tippy="Configure fields of the custom global settings"
                   >
                     <mat-icon
@@ -80,7 +72,7 @@
                       aria-hidden="false"
                       >dns</mat-icon
                     >
-                  </button>
+                  </a>
                 </td>
               </tr>
             }
@@ -89,11 +81,7 @@
               <tr>
                 <th>Site</th>
                 <td>
-                  <button
-                    mat-icon-button
-                    (click)="edit(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.Site)"
-                    tippy="Edit site system settings"
-                  >
+                  <a [href]="appSiteSystemSettingsUrl()" mat-icon-button tippy="Edit site system settings">
                     <mat-icon
                       matBadgeColor="accent"
                       matBadgeSize="small"
@@ -102,14 +90,10 @@
                       aria-hidden="false"
                       >edit</mat-icon
                     >
-                  </button>
+                  </a>
                 </td>
                 <td>
-                  <button
-                    mat-icon-button
-                    (click)="fixContentType(eavConstants.contentTypes.customSettings, 'edit')"
-                    tippy="Edit custom site settings"
-                  >
+                  <a [href]="appSiteCustomSettingsUrl()" mat-icon-button tippy="Edit site system settings">
                     <mat-icon
                       matBadgeColor="accent"
                       matBadgeSize="small"
@@ -118,10 +102,10 @@
                       aria-hidden="false"
                       >edit</mat-icon
                     >
-                  </button>
-                  <button
+                  </a>
+                  <a
+                    [href]="urlToConfig(eavConstants.contentTypes.customSettings)"
                     mat-icon-button
-                    (click)="fixContentType(eavConstants.contentTypes.customSettings, 'config')"
                     tippy="Configure fields of the custom site settings"
                   >
                     <mat-icon
@@ -132,7 +116,7 @@
                       aria-hidden="false"
                       >dns</mat-icon
                     >
-                  </button>
+                  </a>
                 </td>
               </tr>
               <ng-container *ngTemplateOutlet="goToGlobal"></ng-container>
@@ -142,11 +126,7 @@
               <tr>
                 <th>{{ dialogSettings.Context.App.Name }}</th>
                 <td>
-                  <button
-                    mat-icon-button
-                    (click)="edit(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App)"
-                    tippy="Edit app system settings"
-                  >
+                  <a [href]="appContentSystemSettingsUrl()" mat-icon-button tippy="Edit app system settings">
                     <mat-icon
                       matBadgeColor="accent"
                       matBadgeSize="small"
@@ -155,10 +135,10 @@
                       aria-hidden="false"
                       >edit</mat-icon
                     >
-                  </button>
+                  </a>
                 </td>
                 <td>
-                  <button mat-icon-button (click)="edit(eavConstants.contentTypes.settings)" tippy="Edit custom app settings">
+                  <a [href]="appContentCustomSettingsUrl()" mat-icon-button tippy="Edit custom app settings">
                     <mat-icon
                       matBadgeColor="accent"
                       matBadgeSize="small"
@@ -167,18 +147,20 @@
                       aria-hidden="false"
                       >edit</mat-icon
                     >
-                  </button>
-                  <a [href]="urlToConfig(eavConstants.contentTypes.settings)" class="default-link">
-                    <button mat-icon-button tippy="Configure fields of the custom app settings">
-                      <mat-icon
-                        matBadgeColor="accent"
-                        matBadgeSize="small"
-                        [matBadge]="viewModelSig()?.customSettingsFieldsCount || null"
-                        matBadgePosition="below after"
-                        aria-hidden="false"
-                        >dns</mat-icon
-                      >
-                    </button>
+                  </a>
+                  <a
+                    [href]="urlToConfig(eavConstants.contentTypes.settings)"
+                    mat-icon-button
+                    tippy="Configure fields of the custom app settings"
+                  >
+                    <mat-icon
+                      matBadgeColor="accent"
+                      matBadgeSize="small"
+                      [matBadge]="viewModelSig()?.customSettingsFieldsCount || null"
+                      matBadgePosition="below after"
+                      aria-hidden="false"
+                      >dns</mat-icon
+                    >
                   </a>
                 </td>
               </tr>
@@ -191,11 +173,14 @@
       <div class="eav-card-space-div"></div>
       <mat-card-actions align="start">
         <app-docs-link-helper [link]="'https://go.2sxc.org/settings'" [label]="" [icon]=""></app-docs-link-helper>
-        <a [href]="urlToAnalyze(AnalyzeParts.Settings)">
-          <button mat-button class="eav-button__with-icon" tippy="See the result of combining all settings">
-            <mat-icon class="eav-icon">manage_search</mat-icon>
-            <span>Analyze Combined Settings</span>
-          </button>
+        <a
+          [href]="urlToAnalyze(AnalyzeParts.Settings)"
+          mat-button
+          class="eav-button__with-icon"
+          tippy="See the result of combining all settings"
+        >
+          <mat-icon class="eav-icon">manage_search</mat-icon>
+          <span>Analyze Combined Settings</span>
         </a>
       </mat-card-actions>
     </mat-card>
@@ -225,11 +210,7 @@
               <tr>
                 <th>Global</th>
                 <td>
-                  <button
-                    mat-icon-button
-                    (click)="edit(eavConstants.contentTypes.systemResources, SystemSettingsScopes.App)"
-                    tippy="Edit global system resources"
-                  >
+                  <a [href]="appGlobalSystemResourcesUrl()" mat-icon-button tippy="Edit global system resources">
                     <mat-icon
                       matBadgeColor="accent"
                       matBadgeSize="small"
@@ -238,14 +219,10 @@
                       aria-hidden="false"
                       >edit</mat-icon
                     >
-                  </button>
+                  </a>
                 </td>
                 <td>
-                  <button
-                    mat-icon-button
-                    (click)="fixContentType(eavConstants.contentTypes.customResources, 'edit')"
-                    tippy="Edit custom global resources"
-                  >
+                  <a [href]="appGlobalCustomResourcesUrl()" mat-icon-button tippy="Edit custom global resources">
                     <mat-icon
                       matBadgeColor="accent"
                       matBadgeSize="small"
@@ -254,10 +231,10 @@
                       aria-hidden="false"
                       >edit</mat-icon
                     >
-                  </button>
-                  <button
+                  </a>
+                  <a
+                    [href]="urlToConfig(eavConstants.contentTypes.customResources)"
                     mat-icon-button
-                    (click)="fixContentType(eavConstants.contentTypes.customResources, 'config')"
                     tippy="Configure fields of the custom global resources"
                   >
                     <mat-icon
@@ -268,7 +245,7 @@
                       aria-hidden="false"
                       >dns</mat-icon
                     >
-                  </button>
+                  </a>
                 </td>
               </tr>
             }
@@ -277,11 +254,7 @@
               <tr>
                 <th>Site</th>
                 <td>
-                  <button
-                    mat-icon-button
-                    (click)="edit(eavConstants.contentTypes.systemResources, SystemSettingsScopes.Site)"
-                    tippy="Edit site system resources"
-                  >
+                  <a [href]="appSiteSystemResourcesUrl()" mat-icon-button tippy="Edit site system resources">
                     <mat-icon
                       matBadgeColor="accent"
                       matBadgeSize="small"
@@ -290,14 +263,10 @@
                       aria-hidden="false"
                       >edit</mat-icon
                     >
-                  </button>
+                  </a>
                 </td>
                 <td>
-                  <button
-                    mat-icon-button
-                    (click)="fixContentType(eavConstants.contentTypes.customResources, 'edit')"
-                    tippy="Edit custom site resources"
-                  >
+                  <a [href]="appSiteCustomResourcesUrl()" mat-icon-button tippy="Edit custom site resources">
                     <mat-icon
                       matBadgeColor="accent"
                       matBadgeSize="small"
@@ -306,10 +275,10 @@
                       aria-hidden="false"
                       >edit</mat-icon
                     >
-                  </button>
-                  <button
+                  </a>
+                  <a
+                    [href]="urlToConfig(eavConstants.contentTypes.customResources)"
                     mat-icon-button
-                    (click)="fixContentType(eavConstants.contentTypes.customResources, 'config')"
                     tippy="Configure fields of the custom site resources"
                   >
                     <mat-icon
@@ -320,7 +289,7 @@
                       aria-hidden="false"
                       >dns</mat-icon
                     >
-                  </button>
+                  </a>
                 </td>
               </tr>
               <ng-container *ngTemplateOutlet="goToGlobal"></ng-container>
@@ -330,11 +299,7 @@
               <tr>
                 <th>{{ dialogSettings.Context.App.Name }}</th>
                 <td>
-                  <button
-                    mat-icon-button
-                    (click)="edit(eavConstants.contentTypes.systemResources, SystemSettingsScopes.App)"
-                    tippy="Edit app system resources"
-                  >
+                  <a [href]="appContentSystemResourcesUrl()" mat-icon-button tippy="Edit app system resources">
                     <mat-icon
                       matBadgeColor="accent"
                       matBadgeSize="small"
@@ -343,10 +308,10 @@
                       aria-hidden="false"
                       >edit</mat-icon
                     >
-                  </button>
+                  </a>
                 </td>
                 <td>
-                  <button mat-icon-button (click)="edit(eavConstants.contentTypes.resources)" tippy="Edit custom app resources">
+                  <a [href]="appContentCustomResourcesUrl()" mat-icon-button tippy="Edit custom app resources">
                     <mat-icon
                       matBadgeColor="accent"
                       matBadgeSize="small"
@@ -355,18 +320,20 @@
                       aria-hidden="false"
                       >edit</mat-icon
                     >
-                  </button>
-                  <a [href]="urlToConfig(eavConstants.contentTypes.resources)" class="default-link">
-                    <button mat-icon-button tippy="Configure fields of the custom app resources">
-                      <mat-icon
-                        matBadgeColor="accent"
-                        matBadgeSize="small"
-                        [matBadge]="viewModelSig()?.customResourcesFieldsCount || null"
-                        matBadgePosition="below after"
-                        aria-hidden="false"
-                        >dns</mat-icon
-                      >
-                    </button>
+                  </a>
+                  <a
+                    [href]="urlToConfig(eavConstants.contentTypes.resources)"
+                    mat-icon-button
+                    tippy="Configure fields of the custom app resources"
+                  >
+                    <mat-icon
+                      matBadgeColor="accent"
+                      matBadgeSize="small"
+                      [matBadge]="viewModelSig()?.customResourcesFieldsCount || null"
+                      matBadgePosition="below after"
+                      aria-hidden="false"
+                      >dns</mat-icon
+                    >
                   </a>
                 </td>
               </tr>
@@ -379,11 +346,14 @@
       <div class="eav-card-space-div"></div>
       <mat-card-actions align="start">
         <app-docs-link-helper [link]="'https://go.2sxc.org/settings'" [label]="" [icon]=""></app-docs-link-helper>
-        <a [href]="urlToAnalyze(AnalyzeParts.Resources)">
-          <button mat-button class="eav-button__with-icon" tippy="See the result of combining all resources">
-            <mat-icon class="eav-icon">manage_search</mat-icon>
-            <span>Analyze Combined Resources</span>
-          </button>
+        <a
+          [href]="urlToAnalyze(AnalyzeParts.Resources)"
+          mat-button
+          class="eav-button__with-icon"
+          tippy="See the result of combining all resources"
+        >
+          <mat-icon class="eav-icon">manage_search</mat-icon>
+          <span>Analyze Combined Resources</span>
         </a>
       </mat-card-actions>
     </mat-card>
@@ -424,19 +394,23 @@
       <div class="eav-card-space-div"></div>
       <mat-card-actions align="start">
         <app-docs-link-helper [link]="'https://go.2sxc.org/lightspeed'" [label]="" [icon]=""></app-docs-link-helper>
-        <a class="default-link" [href]="'#' + getLightSpeedLink()">
-          <button mat-button class="eav-button__with-icon" disabled="{{ !lightSpeedEnabled() }}">
-            <mat-icon
-              matBadgeColor="accent"
-              matBadgeSize="small"
-              [matBadge]="viewModelSig()?.appLightSpeedCount || null"
-              matBadgePosition="below after"
-              aria-hidden="false"
-              class="eav-icon"
-              >bolt</mat-icon
-            >
-            <span>Edit LightSpeed</span>
-          </button>
+        <a
+          class="default-link"
+          [href]="urlToGetLightSpeedLink()"
+          mat-button
+          class="eav-button__with-icon"
+          disabled="{{ !lightSpeedEnabled() }}"
+        >
+          <mat-icon
+            matBadgeColor="accent"
+            matBadgeSize="small"
+            [matBadge]="viewModelSig()?.appLightSpeedCount || null"
+            matBadgePosition="below after"
+            aria-hidden="false"
+            class="eav-icon"
+            >bolt</mat-icon
+          >
+          <span>Edit LightSpeed</span>
         </a>
       </mat-card-actions>
     </mat-card>
@@ -467,49 +441,50 @@
       <div class="eav-card-space-div"></div>
       <mat-card-actions align="start">
         <app-docs-link-helper [link]="'https://docs.2sxc.org/basics/app/permissions.html'" [label]="" [icon]=""></app-docs-link-helper>
-        <a [href]="urlToOpenPermissions()">
-          <button mat-button class="eav-button__with-icon" [disabled]="!dialogSettings.Context.Enable.AppPermissions">
-            <mat-icon
-              matBadgeColor="accent"
-              matBadgeSize="small"
-              matBadgePosition="below after"
-              [matBadge]="dialogSettings.Context.App.Permissions.Count || null"
-              aria-hidden="false"
-              class="eav-icon"
-              >person</mat-icon
-            >
-            <span>
-              Edit Permissions
-              @if (!dialogSettings.Context.Enable.AppPermissions) {
-                @if (isGlobal) {
-                  (not on Global App)
-                }
-                @if (isApp) {
-                  (not on Content)
-                }
+        <a
+          [href]="urlToOpenPermissions()"
+          mat-button
+          class="eav-button__with-icon"
+          [disabled]="!dialogSettings.Context.Enable.AppPermissions"
+        >
+          <mat-icon
+            matBadgeColor="accent"
+            matBadgeSize="small"
+            matBadgePosition="below after"
+            [matBadge]="dialogSettings.Context.App.Permissions.Count || null"
+            aria-hidden="false"
+            class="eav-icon"
+            >person</mat-icon
+          >
+          <span>
+            Edit Permissions
+            @if (!dialogSettings.Context.Enable.AppPermissions) {
+              @if (isGlobal) {
+                (not on Global App)
               }
-            </span>
-          </button>
+              @if (isApp) {
+                (not on Content)
+              }
+            }
+          </span>
         </a>
         <app-docs-link-helper
           [link]="'https://patrons.2sxc.org/features/feat/PermissionsByLanguage'"
           [label]=""
           [icon]=""
         ></app-docs-link-helper>
-        <a [href]="urlToOpenLanguagePermissions(langPermsEnabled())">
-          <button mat-button class="eav-button__with-icon">
-            <mat-icon
-              [matBadgeHidden]="langPermsEnabled()"
-              matBadgeSize="small"
-              matBadge="💎"
-              matBadgePosition="below after"
-              aria-hidden="false"
-              class="eav-icon"
-            >
-              person
-            </mat-icon>
-            <span>Language Permissions</span>
-          </button>
+        <a [href]="urlToOpenLanguagePermissions(langPermsEnabled())" mat-button class="eav-button__with-icon">
+          <mat-icon
+            [matBadgeHidden]="langPermsEnabled()"
+            matBadgeSize="small"
+            matBadge="💎"
+            matBadgePosition="below after"
+            aria-hidden="false"
+            class="eav-icon"
+          >
+            person
+          </mat-icon>
+          <span>Language Permissions</span>
         </a>
       </mat-card-actions>
     </mat-card>
