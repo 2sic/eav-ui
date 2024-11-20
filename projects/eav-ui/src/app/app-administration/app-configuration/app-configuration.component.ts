@@ -76,6 +76,7 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
   appContentSystemResourcesUrl = signal('');
   appSiteSystemResourcesUrl = signal('');
   appContentCustomResourcesUrl = signal('');
+  appGlobalCustomResourcesUrl = signal('');
 
   // More proper ViewModel
   appSettingsInternal$ = new Subject<AppInternals>();
@@ -88,9 +89,7 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
   protected langPermsEnabled = this.features.isEnabled[FeatureNames.PermissionsByLanguage];
 
   #appInternalsService = transient(AppInternalsService);
-
   #contentItemsService = transient(ContentItemsService);
-
   #dialogConfigSvc = transient(DialogConfigAppService);
   #dialogRouter = transient(DialogRoutingService);
 
@@ -141,6 +140,7 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     this.appSiteSystemResourcesUrl = this.urlToEditSystem(eavConstants.contentTypes.systemResources, SystemSettingsScopes.Site);
     this.appContentCustomSettingsUrl = this.urlToEditDefault(eavConstants.contentTypes.settings);
     this.appContentCustomResourcesUrl = this.urlToEditDefault(eavConstants.contentTypes.resources);
+    this.appGlobalCustomResourcesUrl = this.urlToEditCustom(eavConstants.contentTypes.customResources);
   }
 
   ngOnInit() {

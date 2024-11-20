@@ -230,11 +230,7 @@
                   </a>
                 </td>
                 <td>
-                  <button
-                    mat-icon-button
-                    (click)="fixContentType(eavConstants.contentTypes.customResources, 'edit')"
-                    tippy="Edit custom global resources"
-                  >
+                  <a [href]="appGlobalCustomResourcesUrl()" mat-icon-button tippy="Edit custom global resources">
                     <mat-icon
                       matBadgeColor="accent"
                       matBadgeSize="small"
@@ -243,7 +239,7 @@
                       aria-hidden="false"
                       >edit</mat-icon
                     >
-                  </button>
+                  </a>
                   <button
                     mat-icon-button
                     (click)="fixContentType(eavConstants.contentTypes.customResources, 'config')"

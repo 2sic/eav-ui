@@ -294,5 +294,11 @@
     "Close": "Close"
   },
   "License-EditUi-Warning-Label": "Preview",
-  "License-EditUi-Warning-Tooltip": "You're using features which are not licensed."
+  "License-EditUi-Warning-Tooltip": "You're using features which are not licensed.",
+  "AppAdmin": {
+    "ErrorTooManyAppSettings": "Found too many settings.",
+    "ErrorTooManyAppResources": "Found too many settings.",
+    "ErrorNoAppSettings": "Found no settings.",
+    "ErrorNoAppResources": "Found no resources."
+  }
 }
