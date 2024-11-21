@@ -1,4 +1,3 @@
-import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
@@ -8,16 +7,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { guidRegex } from '../../../shared/constants/guid.constants';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { ContentType } from '../../models/content-type.model';
+import { AgActionsAlwaysRefresh } from '../../queries/ag-actions';
 
-type GoToUrls = 'createUpdateMetaData'
-  | 'openPermissions'
-  | 'editContentType'
-  | 'openMetadata'
-  | 'openRestApi'
-  | 'dataExport'
-  | 'dataImport';
-
-type DataActions = 'typeExport' | 'deleteContentType';
 
 @Component({
   selector: 'app-data-actions',
@@ -31,13 +22,21 @@ type DataActions = 'typeExport' | 'deleteContentType';
     TippyDirective,
   ],
 })
-export class DataActionsComponent implements ICellRendererAngularComp {
+export class DataActionsComponent extends AgActionsAlwaysRefresh {
   contentType: ContentType;
   enablePermissions: boolean;
+
   public params: {
     enablePermissionsGetter(): boolean;
-    do(verb: DataActions, contentType: ContentType): void;
-    urlTo(verb: GoToUrls, contentType: ContentType): string;
+
+    do(verb: 'typeExport' | 'deleteContentType', contentType: ContentType): void;
+    urlTo(verb: 'createUpdateMetaData'
+      | 'openPermissions'
+      | 'editContentType'
+      | 'openMetadata'
+      | 'openRestApi'
+      | 'dataExport'
+      | 'dataImport', contentType: ContentType): string;
   };
 
   agInit(params: ICellRendererParams & DataActionsComponent['params']): void {
@@ -47,15 +46,15 @@ export class DataActionsComponent implements ICellRendererAngularComp {
     this.enablePermissions = enablePermissions && guidRegex().test(this.contentType.StaticName);
   }
 
-  refresh(params?: any): boolean {
-    return true;
-  }
+  // refresh(params?: any): boolean {
+  //   return true;
+  // }
 
-  do(verb: DataActions): void {
-    this.params.do(verb, this.contentType);
-  }
+  // do(verb: DataActions): void {
+  //   this.params.do(verb, this.contentType);
+  // }
 
-  urlTo(verb: GoToUrls): string {
-    return this.params.urlTo(verb, this.contentType);
-  }
+  // urlTo(verb: GoToUrls): string {
+  //   return this.params.urlTo(verb, this.contentType);
+  // }
 }

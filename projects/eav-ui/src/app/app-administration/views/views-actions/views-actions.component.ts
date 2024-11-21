@@ -41,7 +41,6 @@ export class ViewsActionsComponent extends AgActionsAlwaysRefresh { // } impleme
     enablePermissionsGetter(): boolean;
   
     do(verb: 'openCode' | 'openPermissions' | 'exportView' | 'deleteView' | 'cloneView' | 'openMetadata', view: View): void;
-  
     urlTo(verb: 'openMetadata' | 'cloneView' | 'openPermissions', view: View): string;
   };
 
