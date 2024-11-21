@@ -14,3 +14,12 @@ export class AgActionsComponent<TParams extends ICellRendererParams, TData> impl
     return true;
   }
 }
+
+export abstract class AgActionsAlwaysRefresh implements ICellRendererAngularComp {
+
+  abstract agInit(params: any): void;
+
+  refresh(params?: any): boolean {
+    return true;
+  }
+}

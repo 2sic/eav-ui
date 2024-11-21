@@ -28,7 +28,6 @@ import { View, ViewEntity } from '../models/view.model';
 import { DialogConfigAppService } from '../services/dialog-config-app.service';
 import { ViewsService } from '../services/views.service';
 import { ViewsActionsComponent } from './views-actions/views-actions.component';
-import { ViewActionsParams } from './views-actions/views-actions.models';
 import { ViewsShowComponent } from './views-show/views-show.component';
 import { ViewsTypeComponent } from './views-type/views-type.component';
 import { calculateViewType } from './views.helpers';
@@ -379,7 +378,8 @@ export class ViewsComponent implements OnInit {
                 case 'deleteView': this.deleteView(view); break;
               }
             },
-          } satisfies ViewActionsParams,
+          // } satisfies ViewActionsParams,
+          } satisfies ViewsActionsComponent["params"],
         },
       ],
     };
