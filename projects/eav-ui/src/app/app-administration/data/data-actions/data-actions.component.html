@@ -1,6 +1,6 @@
 <div class="actions-component">
   @if (!contentType.EditInfo.DisableEdit || contentType.Properties) {
-    <a [href]="urlTo('createUpdateMetaData')" class="eav-grid-action-button default-link highlight" matRipple tippy="Description and more">
+    <a [href]="params.urlTo('createUpdateMetaData', contentType)" class="eav-grid-action-button default-link highlight" matRipple tippy="Description and more">
       <mat-icon>edit</mat-icon>
     </a>
   } @else {
@@ -10,7 +10,7 @@
   }
 
   @if (!contentType.EditInfo.DisableMetadata) {
-    <a [href]="urlTo('openMetadata')" class="eav-grid-action-button default-link highlight" matRipple tippy="Metadata">
+    <a [href]="params.urlTo('openMetadata', contentType)" class="eav-grid-action-button default-link highlight" matRipple tippy="Metadata">
       <mat-icon
         [matBadge]="contentType.Metadata.length"
         matBadgePosition="below after"
@@ -39,7 +39,7 @@
   }
 
   @if (!contentType.EditInfo.DisableEdit && enablePermissions) {
-    <a [href]="urlTo('openPermissions')" class="eav-grid-action-button default-link highlight" matRipple tippy="Permissions">
+    <a [href]="params.urlTo('openPermissions', contentType)" class="eav-grid-action-button default-link highlight" matRipple tippy="Permissions">
       <mat-icon
         [matBadge]="contentType.Permissions.Count"
         matBadgePosition="below after"
@@ -74,27 +74,27 @@
 
 <mat-menu #menu="matMenu" class="grid-more-menu">
   <ng-template matMenuContent>
-    <a mat-menu-item [disabled]="contentType.EditInfo.DisableRename" [href]="urlTo('editContentType')">
+    <a [href]="params.urlTo('editContentType', contentType)" mat-menu-item [disabled]="contentType.EditInfo.DisableRename">
       <mat-icon>settings</mat-icon>
       <span>Rename</span>
     </a>
-    <a mat-menu-item [href]="urlTo('openRestApi')">
+    <a mat-menu-item [href]="params.urlTo('openRestApi', contentType)">
       <mat-icon svgIcon="code-curly"></mat-icon>
       <span>REST API</span>
     </a>
-    <button mat-menu-item (click)="do('typeExport')">
+    <button mat-menu-item (click)="params.do('typeExport', contentType)">
       <mat-icon>cloud_download</mat-icon>
       <span>Export content type</span>
     </button>
-    <a mat-menu-item [href]="urlTo('dataExport')">
+    <a mat-menu-item [href]="params.urlTo('dataExport', contentType)">
       <mat-icon>cloud_download</mat-icon>
       <span>Export data</span>
     </a>
-    <a mat-menu-item [href]="urlTo('dataImport')">
+    <a mat-menu-item [href]="params.urlTo('dataImport', contentType)">
       <mat-icon>cloud_upload</mat-icon>
       <span>Import data</span>
     </a>
-    <button mat-menu-item [disabled]="contentType.EditInfo.DisableDelete" (click)="do('deleteContentType')">
+    <button mat-menu-item [disabled]="contentType.EditInfo.DisableDelete" (click)="params.do('deleteContentType', contentType)">
       <mat-icon>delete</mat-icon>
       <span>Delete</span>
     </button>

@@ -182,19 +182,29 @@ export class DataBundlesComponent {
         {
           ...ColumnDefinitions.ActionsPinnedRight3,
           cellRenderer: DataBundleActionsComponent,
-          cellRendererParams: (() => {
-            const params: DataBundlesActionsParams = {
-              do: (verb, item) => {
-                switch (verb) {
-                  case 'edit': this.editItem(item); break;
-                  case 'download': this.#download(item); break;
-                  case 'saveState': this.#saveState(item); break;
-                  case 'restoreState': this.#restoreState(item); break;
-                }
+          cellRendererParams: {
+            do: (verb, item) => {
+              switch (verb) {
+                case 'edit': this.editItem(item); break;
+                case 'download': this.#download(item); break;
+                case 'saveState': this.#saveState(item); break;
+                case 'restoreState': this.#restoreState(item); break;
               }
-            } satisfies DataBundlesActionsParams;
-            return params;
-          })(),
+            }
+          } satisfies DataBundlesActionsParams,
+          // cellRendererParams: (() => {
+          //   const params: DataBundlesActionsParams = {
+          //     do: (verb, item) => {
+          //       switch (verb) {
+          //         case 'edit': this.editItem(item); break;
+          //         case 'download': this.#download(item); break;
+          //         case 'saveState': this.#saveState(item); break;
+          //         case 'restoreState': this.#restoreState(item); break;
+          //       }
+          //     }
+          //   } satisfies DataBundlesActionsParams;
+          //   return params;
+          // })(),
         },
       ],
     };

@@ -166,8 +166,11 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     this.snackBar.dismiss();
   }
 
-  #urlTo(url: string) {
-    return '#' + this.#dialogRouter.urlSubRoute(url);
+  #urlTo(url: string, queryParams?: { [key: string]: any }) {
+    let newUrl = '#' + this.#dialogRouter.urlSubRoute(url);
+    if (queryParams)
+      newUrl += `?${new URLSearchParams(queryParams).toString()}`;
+    return newUrl;
   }
 
   // case eavConstants.contentTypes.systemSettings:
@@ -181,9 +184,7 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
           : i.SettingsEntityScope === SystemSettingsScopes.Site
       );
       if (systemSettingsEntities.length > 1) {
-        this.#dialogRouter.navRelative(['message/e'], {
-          queryParams: { error: 'AppAdmin.ErrorTooManyAppSettings' },
-        });
+        url.set(this.#urlTo('message/e', { error: 'AppAdmin.ErrorTooManyAppSettings' }));
       } else {
         const systemSettingsEntity = systemSettingsEntities[0];
         url.set(this.#urlTo(
@@ -211,9 +212,7 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     const url = signal('');
     this.#contentItemsService.getAll(staticName).subscribe(contentItems => {
       if (contentItems.length > 1) {
-        this.#dialogRouter.navRelative(['message/e'], {
-          queryParams: { error: 'AppAdmin.ErrorTooManyAppSettings' },
-        });
+        url.set(this.#urlTo('message/e', { error: 'AppAdmin.ErrorTooManyAppSettings' }));
       } else {
         const customSettingsEntity = contentItems[0];
         url.set(this.#urlTo(
@@ -236,13 +235,9 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     const url = signal('');
     this.#contentItemsService.getAll(staticName).subscribe(contentItems => {
       if (contentItems.length < 1) {
-        this.#dialogRouter.navRelative(['message/e'], {
-          queryParams: { error: 'AppAdmin.ErrorNoManyAppSettings' },
-        });
+        url.set(this.#urlTo('message/e', { error: 'AppAdmin.ErrorNoManyAppSettings' }));
       } else if (contentItems.length > 1) {
-        this.#dialogRouter.navRelative(['message/e'], {
-          queryParams: { error: 'AppAdmin.ErrorTooManyAppSettings' },
-        });
+        url.set(this.#urlTo('message/e', { error: 'AppAdmin.ErrorTooManyAppSettings' }));
       } else {
         url.set(this.#urlTo(
           `edit/${convertFormToUrl({

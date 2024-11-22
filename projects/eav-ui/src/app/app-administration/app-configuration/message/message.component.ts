@@ -30,7 +30,7 @@ export class MessageComponent implements OnInit {
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
       this.message = params['error'] || 'Something went wrong. Please try again later.';
-      this.isError = !!params['error']; // Turns string into boolean
+      this.isError = !!params['error']; // Converts string to boolean
     });
   }
 }

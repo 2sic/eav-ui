@@ -33,7 +33,6 @@ export class DataBundleActionsComponent implements ICellRendererAngularComp {
     return true;
   }
 
-
   do(verb: DataBundlesType) {
     this.params.do(verb, this.item);
   }

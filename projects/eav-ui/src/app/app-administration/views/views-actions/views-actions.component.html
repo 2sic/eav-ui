@@ -1,6 +1,6 @@
 <div class="actions-component">
   @if (!view.EditInfo.DisableEdit && enableCode) {
-    <div class="eav-grid-action-button highlight" matRipple tippy="Code" (click)="do('openCode')">
+    <div class="eav-grid-action-button highlight" matRipple tippy="Code" (click)="params.do('openCode', view)">
       <mat-icon>code</mat-icon>
     </div>
   } @else {
@@ -71,11 +71,11 @@
         <span>Copy</span>
       </button>
     </a>
-    <button mat-menu-item (click)="do('exportView')">
+    <button mat-menu-item (click)="params.do('exportView', view)">
       <mat-icon>cloud_download</mat-icon>
       <span>Export</span>
     </button>
-    <button mat-menu-item [disabled]="view.EditInfo.DisableDelete" (click)="do('deleteView')">
+    <button mat-menu-item [disabled]="view.EditInfo.DisableDelete" (click)="params.do('deleteView', view)">
       <mat-icon>delete</mat-icon>
       <span>Delete</span>
     </button>
