@@ -166,10 +166,14 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     this.snackBar.dismiss();
   }
 
-  #urlTo(url: string, queryParams?: { [key: string]: any }) {
+  #urlTo(url: string, queryParams?: { [key: string]: string }, errComponent?: string) {
     let newUrl = '#' + this.#dialogRouter.urlSubRoute(url);
-    if (queryParams)
+    if (queryParams) {
       newUrl += `?${new URLSearchParams(queryParams).toString()}`;
+    }
+    if (errComponent) {
+      newUrl += `&errComponent=${errComponent}`;
+    }
     return newUrl;
   }
 
@@ -184,7 +188,7 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
           : i.SettingsEntityScope === SystemSettingsScopes.Site
       );
       if (systemSettingsEntities.length > 1) {
-        url.set(this.#urlTo('message/e', { error: 'AppAdmin.ErrorTooManyAppSettings' }));
+        url.set(this.#urlTo('message/e', { error: 'AppAdmin.ErrorTooManyAppSettings' }, staticName));
       } else {
         const systemSettingsEntity = systemSettingsEntities[0];
         url.set(this.#urlTo(
@@ -212,7 +216,7 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     const url = signal('');
     this.#contentItemsService.getAll(staticName).subscribe(contentItems => {
       if (contentItems.length > 1) {
-        url.set(this.#urlTo('message/e', { error: 'AppAdmin.ErrorTooManyAppSettings' }));
+        url.set(this.#urlTo('message/e', { error: 'AppAdmin.ErrorTooManyAppSettings' }, staticName));
       } else {
         const customSettingsEntity = contentItems[0];
         url.set(this.#urlTo(
@@ -235,9 +239,9 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     const url = signal('');
     this.#contentItemsService.getAll(staticName).subscribe(contentItems => {
       if (contentItems.length < 1) {
-        url.set(this.#urlTo('message/e', { error: 'AppAdmin.ErrorNoManyAppSettings' }));
+        url.set(this.#urlTo('message/e', { error: 'AppAdmin.ErrorNoManyAppSettings' }, staticName));
       } else if (contentItems.length > 1) {
-        url.set(this.#urlTo('message/e', { error: 'AppAdmin.ErrorTooManyAppSettings' }));
+        url.set(this.#urlTo('message/e', { error: 'AppAdmin.ErrorTooManyAppSettings' }, staticName));
       } else {
         url.set(this.#urlTo(
           `edit/${convertFormToUrl({
