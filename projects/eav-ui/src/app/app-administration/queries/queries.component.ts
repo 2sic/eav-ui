@@ -90,7 +90,7 @@ export class QueriesComponent implements OnInit {
   }
 
   /**
-   * Experiment by 2dm 2020-11-20 - trying to reduce the ceremony around menus
+   * Experiment by @2dm 2020-11-20 - trying to reduce the ceremony around menus
    * Once this works, we would then remove all the 3-line functions below, as they
    * would just be added here (if that's the only place they are used)
    */

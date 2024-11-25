@@ -9,20 +9,6 @@ import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { Query } from '../../models/query.model';
 import { QueriesActionsParams, QueryActions } from './queries-actions';
 
-class AgActionsComponent<TParams extends ICellRendererParams, TData> implements ICellRendererAngularComp {
-  item: TData;
-  params: TParams;
-
-  agInit(params: TParams): void {
-    this.params = params;
-    this.item = this.params.data;
-  }
-
-  refresh(params?: any): boolean {
-    return true;
-  }
-}
-
 @Component({
   selector: 'app-queries-actions',
   templateUrl: './queries-actions.component.html',
@@ -35,12 +21,19 @@ class AgActionsComponent<TParams extends ICellRendererParams, TData> implements 
     TippyDirective,
   ],
 })
-export class QueriesActionsComponent extends AgActionsComponent<ICellRendererParams & QueriesActionsParams, Query> {
+export class QueriesActionsComponent implements ICellRendererAngularComp {
+  item: Query;
+  params: ICellRendererParams & QueriesActionsParams;
   enablePermissions: boolean;
   actions = QueryActions;
 
   agInit(params: ICellRendererParams & QueriesActionsParams): void {
-    super.agInit(params);
+    this.params = params;
+    this.item = this.params.data;
     this.enablePermissions = this.params.getEnablePermissions();
+  }
+
+  refresh(params?: any): boolean {
+    return true;
   }
 }
