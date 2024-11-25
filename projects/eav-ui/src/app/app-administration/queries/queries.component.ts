@@ -84,33 +84,21 @@ export class QueriesComponent implements OnInit {
     return this.#urlTo(`import`);
   }
 
+  #urlToEdit(query: Query) {
+    return this.#urlTo(
+      `edit/${convertFormToUrl({
+        items: [
+          query == null
+            ? EditPrep.newFromType(eavConstants.contentTypes.query, { TestParameters: eavConstants.pipelineDesigner.testParameters })
+            : EditPrep.editId(query.Id),
+        ],
+      })}`
+    );
+  }
+
   importQuery(files?: File[]) {
     const dialogData: FileUploadDialogData = { files };
     this.#dialogRouter.navParentFirstChild(['import'], { state: dialogData });
-  }
-
-  /**
-   * Experiment by 2dm 2020-11-20 - trying to reduce the ceremony around menus
-   * Once this works, we would then remove all the 3-line functions below, as they
-   * would just be added here (if that's the only place they are used)
-   */
-  private doMenuAction(action: QueryActions, query: Query) {
-    switch (action) {
-      case QueryActions.Edit:
-        return this.editQuery(query);
-      case QueryActions.Metadata:
-        return this.openMetadata(query);
-      case QueryActions.Rest:
-        return this.#dialogRouter.navParentFirstChild([GoToDevRest.getUrlQueryInAdmin(query.Guid)]);
-      case QueryActions.Clone:
-        return this.cloneQuery(query);
-      case QueryActions.Permissions:
-        return this.openPermissions(query);
-      case QueryActions.Export:
-        return this.exportQuery(query);
-      case QueryActions.Delete:
-        return this.deleteQuery(query);
-    }
   }
 
   urlToNewQuery() {
@@ -121,18 +109,6 @@ export class QueriesComponent implements OnInit {
         ],
       })}`
     );
-  }
-
-  editQuery(query: Query) {
-    const form: EditForm = {
-      items: [
-        query == null
-          ? EditPrep.newFromType(eavConstants.contentTypes.query, { TestParameters: eavConstants.pipelineDesigner.testParameters })
-          : EditPrep.editId(query.Id),
-      ],
-    };
-    const formUrl = convertFormToUrl(form);
-    this.#dialogRouter.navParentFirstChild([`edit/${formUrl}`]);
   }
 
   #urlToOpenVisualQueryDesigner(query: Query): string {
@@ -146,12 +122,21 @@ export class QueriesComponent implements OnInit {
     );
   }
 
-  private openMetadata(query: Query) {
-    const url = GoToMetadata.getUrlEntity(
-      query.Guid,
-      `Metadata for Query: ${query.Name} (${query.Id})`,
+  #urlToOpenMetadata(query: Query): string {
+    return this.#urlTo(
+      GoToMetadata.getUrlEntity(
+        query.Guid,
+        `Metadata for Query: ${query.Name} (${query.Id})`,
+      )
     );
-    this.#dialogRouter.navParentFirstChild([url]);
+  }
+
+  #urlToPermissoins(query: Query): string {
+    return this.#urlTo(GoToPermissions.getUrlEntity(query.Guid));
+  }
+
+  #urlToRestApi(query: Query): string {
+    return this.#urlTo(GoToDevRest.getUrlQueryInAdmin(query.Guid));
   }
 
   private cloneQuery(query: Query) {
@@ -160,10 +145,6 @@ export class QueriesComponent implements OnInit {
       this.snackBar.open('Copied', null, { duration: 2000 });
       this.#fetchQueries();
     });
-  }
-
-  private openPermissions(query: Query) {
-    this.#dialogRouter.navParentFirstChild([GoToPermissions.getUrlEntity(query.Guid)]);
   }
 
   private exportQuery(query: Query) {
@@ -210,7 +191,21 @@ export class QueriesComponent implements OnInit {
           cellRendererParams: (() => {
             const params: QueriesActionsParams = {
               getEnablePermissions: () => this.enablePermissions,
-              do: (action, query) => this.doMenuAction(action, query),
+              do: (action, query) => {
+                switch (action) {
+                  case QueryActions.Clone: return this.cloneQuery(query);
+                  case QueryActions.Export: return this.exportQuery(query);
+                  case QueryActions.Delete: return this.deleteQuery(query);
+                }
+              },
+              urlTo: (action, query) => {
+                switch (action) {
+                  case QueryActions.Edit: return this.#urlToEdit(query);
+                  case QueryActions.Metadata: return this.#urlToOpenMetadata(query);
+                  case QueryActions.Rest: return this.#urlToRestApi(query);
+                  case QueryActions.Permissions: return this.#urlToPermissoins(query);
+                }
+              },
             };
             return params;
           })(),
