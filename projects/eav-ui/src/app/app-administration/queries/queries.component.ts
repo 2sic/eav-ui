@@ -101,26 +101,6 @@ export class QueriesComponent implements OnInit {
     this.#dialogRouter.navParentFirstChild(['import'], { state: dialogData });
   }
 
-  /**
-   * Experiment by @2dm 2020-11-20 - trying to reduce the ceremony around menus
-   * Once this works, we would then remove all the 3-line functions below, as they
-   * would just be added here (if that's the only place they are used)
-   */
-  private doMenuAction(action: QueryActions, query: Query) {
-    switch (action) {
-      case QueryActions.Rest:
-        return this.#dialogRouter.navParentFirstChild([GoToDevRest.getUrlQueryInAdmin(query.Guid)]);
-      case QueryActions.Clone:
-        return this.cloneQuery(query);
-      case QueryActions.Permissions:
-        return this.openPermissions(query);
-      case QueryActions.Export:
-        return this.exportQuery(query);
-      case QueryActions.Delete:
-        return this.deleteQuery(query);
-    }
-  }
-
   urlToNewQuery() {
     return this.#urlTo(
       `edit/${convertFormToUrl({
@@ -151,16 +131,20 @@ export class QueriesComponent implements OnInit {
     );
   }
 
+  #urlToPermissoins(query: Query): string {
+    return this.#urlTo(GoToPermissions.getUrlEntity(query.Guid));
+  }
+
+  #urlToRestApi(query: Query): string {
+    return this.#urlTo(GoToDevRest.getUrlQueryInAdmin(query.Guid));
+  }
+
   private cloneQuery(query: Query) {
     this.snackBar.open('Copying...');
     this.#pipelineSvc.clonePipeline(query.Id).subscribe(() => {
       this.snackBar.open('Copied', null, { duration: 2000 });
       this.#fetchQueries();
     });
-  }
-
-  private openPermissions(query: Query) {
-    this.#dialogRouter.navParentFirstChild([GoToPermissions.getUrlEntity(query.Guid)]);
   }
 
   private exportQuery(query: Query) {
@@ -207,11 +191,19 @@ export class QueriesComponent implements OnInit {
           cellRendererParams: (() => {
             const params: QueriesActionsParams = {
               getEnablePermissions: () => this.enablePermissions,
-              do: (action, query) => this.doMenuAction(action, query),
+              do: (action, query) => {
+                switch (action) {
+                  case QueryActions.Clone: return this.cloneQuery(query);
+                  case QueryActions.Export: return this.exportQuery(query);
+                  case QueryActions.Delete: return this.deleteQuery(query);
+                }
+              },
               urlTo: (action, query) => {
                 switch (action) {
                   case QueryActions.Edit: return this.#urlToEdit(query);
                   case QueryActions.Metadata: return this.#urlToOpenMetadata(query);
+                  case QueryActions.Rest: return this.#urlToRestApi(query);
+                  case QueryActions.Permissions: return this.#urlToPermissoins(query);
                 }
               },
             };

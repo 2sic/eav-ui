@@ -34,7 +34,7 @@
   }
 
   @if (!item._EditInfo.DisableEdit && enablePermissions) {
-    <div class="eav-grid-action-button highlight" matRipple tippy="Permissions" (click)="params.do(actions.Permissions, item)">
+    <a [href]="params.urlTo(actions.Permissions, item)" class="eav-grid-action-button default-link highlight" matRipple tippy="Permissions">
       <mat-icon
         [matBadge]="item._Permissions.Count"
         matBadgeColor="accent"
@@ -45,7 +45,7 @@
       >
         person
       </mat-icon>
-    </div>
+    </a>
   }
   @if (item._EditInfo.DisableEdit || !enablePermissions) {
     <div class="eav-grid-action-button disabled">
@@ -70,10 +70,10 @@
 
 <mat-menu #menu="matMenu" class="grid-more-menu">
   <ng-template matMenuContent>
-    <button mat-menu-item (click)="params.do(actions.Rest, item)">
+    <a [href]="params.urlTo(actions.Rest, item)" mat-menu-item class="default-link">
       <mat-icon svgIcon="code-curly"></mat-icon>
       <span>REST API</span>
-    </button>
+    </a>
     <button mat-menu-item (click)="params.do(actions.Clone, item)">
       <mat-icon>file_copy</mat-icon>
       <span>Copy</span>
