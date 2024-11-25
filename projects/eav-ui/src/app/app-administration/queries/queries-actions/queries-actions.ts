@@ -13,10 +13,7 @@ export enum QueryActions {
   Delete,
 }
 
-interface IAgActions<TAction, TData> {
-  do(action: TAction, query: TData): void;
-}
-
-export interface QueriesActionsParams extends IAgActions<QueryActions, Query> {
+export interface QueriesActionsParams {
+  do(action: QueryActions, query: Query): void;
   getEnablePermissions(): boolean;
 }
