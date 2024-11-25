@@ -4,7 +4,7 @@
   </a>
 
   @if (!item._EditInfo.DisableMetadata) {
-    <div class="eav-grid-action-button highlight" matRipple tippy="Metadata" (click)="params.do(actions.Metadata, item)">
+    <a [href]="params.urlTo(actions.Metadata, item)" class="eav-grid-action-button default-link highlight" matRipple tippy="Metadata">
       <mat-icon
         [matBadge]="item.Metadata?.length"
         matBadgeColor="accent"
@@ -15,7 +15,7 @@
       >
         local_offer
       </mat-icon>
-    </div>
+    </a>
   }
   @if (item._EditInfo.DisableMetadata) {
     <div class="eav-grid-action-button disabled">

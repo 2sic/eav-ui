@@ -108,8 +108,6 @@ export class QueriesComponent implements OnInit {
    */
   private doMenuAction(action: QueryActions, query: Query) {
     switch (action) {
-      case QueryActions.Metadata:
-        return this.openMetadata(query);
       case QueryActions.Rest:
         return this.#dialogRouter.navParentFirstChild([GoToDevRest.getUrlQueryInAdmin(query.Guid)]);
       case QueryActions.Clone:
@@ -144,12 +142,13 @@ export class QueriesComponent implements OnInit {
     );
   }
 
-  private openMetadata(query: Query) {
-    const url = GoToMetadata.getUrlEntity(
-      query.Guid,
-      `Metadata for Query: ${query.Name} (${query.Id})`,
+  #urlToOpenMetadata(query: Query): string {
+    return this.#urlTo(
+      GoToMetadata.getUrlEntity(
+        query.Guid,
+        `Metadata for Query: ${query.Name} (${query.Id})`,
+      )
     );
-    this.#dialogRouter.navParentFirstChild([url]);
   }
 
   private cloneQuery(query: Query) {
@@ -212,6 +211,7 @@ export class QueriesComponent implements OnInit {
               urlTo: (action, query) => {
                 switch (action) {
                   case QueryActions.Edit: return this.#urlToEdit(query);
+                  case QueryActions.Metadata: return this.#urlToOpenMetadata(query);
                 }
               },
             };
