@@ -84,6 +84,18 @@ export class QueriesComponent implements OnInit {
     return this.#urlTo(`import`);
   }
 
+  #urlToEdit(query: Query) {
+    return this.#urlTo(
+      `edit/${convertFormToUrl({
+        items: [
+          query == null
+            ? EditPrep.newFromType(eavConstants.contentTypes.query, { TestParameters: eavConstants.pipelineDesigner.testParameters })
+            : EditPrep.editId(query.Id),
+        ],
+      })}`
+    );
+  }
+
   importQuery(files?: File[]) {
     const dialogData: FileUploadDialogData = { files };
     this.#dialogRouter.navParentFirstChild(['import'], { state: dialogData });
@@ -96,8 +108,6 @@ export class QueriesComponent implements OnInit {
    */
   private doMenuAction(action: QueryActions, query: Query) {
     switch (action) {
-      case QueryActions.Edit:
-        return this.editQuery(query);
       case QueryActions.Metadata:
         return this.openMetadata(query);
       case QueryActions.Rest:
@@ -121,18 +131,6 @@ export class QueriesComponent implements OnInit {
         ],
       })}`
     );
-  }
-
-  editQuery(query: Query) {
-    const form: EditForm = {
-      items: [
-        query == null
-          ? EditPrep.newFromType(eavConstants.contentTypes.query, { TestParameters: eavConstants.pipelineDesigner.testParameters })
-          : EditPrep.editId(query.Id),
-      ],
-    };
-    const formUrl = convertFormToUrl(form);
-    this.#dialogRouter.navParentFirstChild([`edit/${formUrl}`]);
   }
 
   #urlToOpenVisualQueryDesigner(query: Query): string {
@@ -211,6 +209,11 @@ export class QueriesComponent implements OnInit {
             const params: QueriesActionsParams = {
               getEnablePermissions: () => this.enablePermissions,
               do: (action, query) => this.doMenuAction(action, query),
+              urlTo: (action, query) => {
+                switch (action) {
+                  case QueryActions.Edit: return this.#urlToEdit(query);
+                }
+              },
             };
             return params;
           })(),

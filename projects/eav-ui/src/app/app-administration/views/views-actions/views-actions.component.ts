@@ -11,10 +11,6 @@ import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { View } from '../../models/view.model';
 import { AgActionsAlwaysRefresh } from '../../queries/ag-actions/ag-actions-component';
 
-// type GoToUrls = 'openMetadata' | 'cloneView' | 'openPermissions';
-
-// type ViewActionsType = 'openCode' | 'openPermissions' | 'exportView' | 'deleteView' | 'cloneView' | 'openMetadata';
-
 @Component({
   selector: 'app-views-actions',
   templateUrl: './views-actions.component.html',
@@ -29,7 +25,7 @@ import { AgActionsAlwaysRefresh } from '../../queries/ag-actions/ag-actions-comp
     CommonModule
   ]
 })
-export class ViewsActionsComponent extends AgActionsAlwaysRefresh { // } implements ICellRendererAngularComp {
+export class ViewsActionsComponent extends AgActionsAlwaysRefresh {
   protected view: View;
   enableCode: boolean;
   enablePermissions: boolean;

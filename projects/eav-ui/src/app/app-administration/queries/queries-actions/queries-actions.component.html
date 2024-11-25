@@ -1,39 +1,63 @@
 <div class="actions-component">
-  <div class="eav-grid-action-button highlight" matRipple tippy="Edit" (click)="params.do(actions.Edit, item)">
+  <a [href]="params.urlTo(actions.Edit, item)" class="eav-grid-action-button default-link highlight" matRipple tippy="Edit">
     <mat-icon>edit</mat-icon>
-  </div>
+  </a>
 
   @if (!item._EditInfo.DisableMetadata) {
-    <div class="eav-grid-action-button highlight" matRipple tippy="Metadata"
-      (click)="params.do(actions.Metadata, item)">
-      <mat-icon [matBadge]="item.Metadata?.length" matBadgeColor="accent" matBadgeSize="small"
-        [matBadgeHidden]="!item.Metadata?.length" matBadgePosition="below after" aria-hidden="false">
+    <div class="eav-grid-action-button highlight" matRipple tippy="Metadata" (click)="params.do(actions.Metadata, item)">
+      <mat-icon
+        [matBadge]="item.Metadata?.length"
+        matBadgeColor="accent"
+        matBadgeSize="small"
+        [matBadgeHidden]="!item.Metadata?.length"
+        matBadgePosition="below after"
+        aria-hidden="false"
+      >
         local_offer
       </mat-icon>
     </div>
   }
   @if (item._EditInfo.DisableMetadata) {
     <div class="eav-grid-action-button disabled">
-      <mat-icon [matBadge]="item.Metadata?.length" matBadgeColor="accent" matBadgeSize="small" matBadgeDisabled="true"
-        [matBadgeHidden]="!item.Metadata?.length" matBadgePosition="below after" aria-hidden="false">
+      <mat-icon
+        [matBadge]="item.Metadata?.length"
+        matBadgeColor="accent"
+        matBadgeSize="small"
+        matBadgeDisabled="true"
+        [matBadgeHidden]="!item.Metadata?.length"
+        matBadgePosition="below after"
+        aria-hidden="false"
+      >
         local_offer
       </mat-icon>
     </div>
   }
 
   @if (!item._EditInfo.DisableEdit && enablePermissions) {
-    <div class="eav-grid-action-button highlight" matRipple
-      tippy="Permissions" (click)="params.do(actions.Permissions, item)">
-      <mat-icon [matBadge]="item._Permissions.Count" matBadgeColor="accent" matBadgeSize="small"
-        [matBadgeHidden]="!item._Permissions.Count" matBadgePosition="below after" aria-hidden="false">
+    <div class="eav-grid-action-button highlight" matRipple tippy="Permissions" (click)="params.do(actions.Permissions, item)">
+      <mat-icon
+        [matBadge]="item._Permissions.Count"
+        matBadgeColor="accent"
+        matBadgeSize="small"
+        [matBadgeHidden]="!item._Permissions.Count"
+        matBadgePosition="below after"
+        aria-hidden="false"
+      >
         person
       </mat-icon>
     </div>
   }
   @if (item._EditInfo.DisableEdit || !enablePermissions) {
     <div class="eav-grid-action-button disabled">
-      <mat-icon [matBadge]="item._Permissions.Count" matBadgeColor="accent" matBadgeSize="small" matBadgeDisabled="true"
-        [matBadgeHidden]="!item._Permissions.Count" matBadgePosition="below after" aria-hidden="false">
+      <mat-icon
+        [matBadge]="item._Permissions.Count"
+        matBadgeColor="accent"
+        matBadgeSize="small"
+        matBadgeDisabled="true"
+        [matBadgeHidden]="!item._Permissions.Count"
+        matBadgePosition="below after"
+        aria-hidden="false"
+      >
         person
       </mat-icon>
     </div>
@@ -54,7 +78,7 @@
       <mat-icon>file_copy</mat-icon>
       <span>Copy</span>
     </button>
-    <button mat-menu-item (click)=" params.do(actions.Export, item)">
+    <button mat-menu-item (click)="params.do(actions.Export, item)">
       <mat-icon>cloud_download</mat-icon>
       <span>Export</span>
     </button>

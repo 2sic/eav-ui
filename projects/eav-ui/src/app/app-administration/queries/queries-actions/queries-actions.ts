@@ -14,6 +14,8 @@ export enum QueryActions {
 }
 
 export interface QueriesActionsParams {
-  do(action: QueryActions, query: Query): void;
   getEnablePermissions(): boolean;
+  
+  urlTo(action: QueryActions, query: Query): void;
+  do(action: QueryActions, query: Query): void;
 }
