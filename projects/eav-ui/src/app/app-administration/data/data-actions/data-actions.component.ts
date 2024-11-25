@@ -7,7 +7,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { guidRegex } from '../../../shared/constants/guid.constants';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { ContentType } from '../../models/content-type.model';
-import { AgActionsAlwaysRefresh } from '../../queries/ag-actions';
+import { AgActionsAlwaysRefresh } from '../../queries/ag-actions/ag-actions-component';
 
 
 @Component({
@@ -45,16 +45,4 @@ export class DataActionsComponent extends AgActionsAlwaysRefresh {
     const enablePermissions = this.params.enablePermissionsGetter();
     this.enablePermissions = enablePermissions && guidRegex().test(this.contentType.StaticName);
   }
-
-  // refresh(params?: any): boolean {
-  //   return true;
-  // }
-
-  // do(verb: DataActions): void {
-  //   this.params.do(verb, this.contentType);
-  // }
-
-  // urlTo(verb: GoToUrls): string {
-  //   return this.params.urlTo(verb, this.contentType);
-  // }
 }

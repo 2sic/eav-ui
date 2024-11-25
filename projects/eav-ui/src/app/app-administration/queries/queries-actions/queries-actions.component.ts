@@ -1,3 +1,4 @@
+import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
@@ -6,8 +7,21 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { Query } from '../../models/query.model';
-import { AgActionsComponent } from '../ag-actions';
 import { QueriesActionsParams, QueryActions } from './queries-actions';
+
+class AgActionsComponent<TParams extends ICellRendererParams, TData> implements ICellRendererAngularComp {
+  item: TData;
+  params: TParams;
+
+  agInit(params: TParams): void {
+    this.params = params;
+    this.item = this.params.data;
+  }
+
+  refresh(params?: any): boolean {
+    return true;
+  }
+}
 
 @Component({
   selector: 'app-queries-actions',

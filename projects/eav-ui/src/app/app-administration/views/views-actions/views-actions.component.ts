@@ -9,7 +9,7 @@ import { LightSpeedActionsComponent } from "../../../admin-shared/lightspeed-act
 import { LightSpeedActionsParams } from '../../../admin-shared/lightspeed-action/lightspeed-actions.models';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { View } from '../../models/view.model';
-import { AgActionsAlwaysRefresh } from '../../queries/ag-actions';
+import { AgActionsAlwaysRefresh } from '../../queries/ag-actions/ag-actions-component';
 
 // type GoToUrls = 'openMetadata' | 'cloneView' | 'openPermissions';
 
@@ -51,12 +51,4 @@ export class ViewsActionsComponent extends AgActionsAlwaysRefresh { // } impleme
     this.enablePermissions = this.params.enablePermissionsGetter();
     this.isEnabled = !this.view.EditInfo.DisableEdit && this.enablePermissions
   }
-
-  // refresh(params?: any): boolean {
-  //   return true;
-  // }
-
-  // do(verb: ViewActionsType): void {
-  //   this.params.do(verb, this.view);
-  // }
 }
