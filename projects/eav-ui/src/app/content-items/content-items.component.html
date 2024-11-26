@@ -25,23 +25,17 @@
   </div>
   <mat-dialog-actions class="eav-dialog-actions">
     <div class="eav-dialog-actions-div">
-      <a [href]="urlToExportContent()">
-        <button mat-button class="eav-button__with-icon" tippy="Export xml list" tippyPlacement="top">
-          <mat-icon class="eav-icon">cloud_download</mat-icon>
-          <span>Data</span>
-        </button>
+      <a [href]="urlToExportContent()" mat-button class="eav-button__with-icon" tippy="Export xml list" tippyPlacement="top">
+        <mat-icon class="eav-icon">cloud_download</mat-icon>
+        <span>Data</span>
       </a>
-      <a [href]="urlToImportContent()">
-        <button mat-button class="eav-button__with-icon" tippy="Import xml list" tippyPlacement="top">
-          <mat-icon class="eav-icon">cloud_upload</mat-icon>
-          <span>Data</span>
-        </button>
+      <a [href]="urlToImportContent()" mat-button class="eav-button__with-icon" tippy="Import xml list" tippyPlacement="top">
+        <mat-icon class="eav-icon">cloud_upload</mat-icon>
+        <span>Data</span>
       </a>
-      <a [href]="urlToImportItem()">
-        <button mat-button class="eav-button__with-icon" tippy="Import single json item" tippyPlacement="top">
-          <mat-icon class="eav-icon">cloud_upload</mat-icon>
-          <span>Item</span>
-        </button>
+      <a [href]="urlToImportItem()" mat-button class="eav-button__with-icon" tippy="Import single json item" tippyPlacement="top">
+        <mat-icon class="eav-icon">cloud_upload</mat-icon>
+        <span>Item</span>
       </a>
       <button mat-button class="eav-button__with-icon" tippy="Create metadata" tippyPlacement="top" (click)="createMetadata()">
         <mat-icon class="eav-icon">local_offer</mat-icon>
@@ -61,10 +55,8 @@
         </button>
       }
     </div>
-    <a [href]="urlToNewItem()">
-      <button mat-fab mat-elevation-z24 class="grid-fab" tippy="Add item">
-        <mat-icon>add</mat-icon>
-      </button>
+    <a [href]="urlToNewItem()" mat-fab mat-elevation-z24 class="grid-fab" tippy="Add item">
+      <mat-icon>add</mat-icon>
     </a>
   </mat-dialog-actions>
 </div>
