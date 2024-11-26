@@ -97,7 +97,7 @@ export class QueriesComponent implements OnInit {
 
   importQuery(files?: File[]) {
     const dialogData: FileUploadDialogData = { files };
-    this.#dialogRouter.navParentFirstChild(['import'], { state: dialogData });
+    this.#dialogRouter.navRelative(['import'], { state: dialogData });
   }
 
   urlToNewQuery() {

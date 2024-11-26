@@ -118,7 +118,7 @@ export class ViewsComponent implements OnInit {
 
   importView(files?: File[]) {
     const dialogData: FileUploadDialogData = { files };
-    this.#dialogRouter.navParentFirstChild(['import'], { state: dialogData });
+    this.#dialogRouter.navRelative(['import'], { state: dialogData });
   }
 
   #fetchTemplates() {
