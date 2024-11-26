@@ -10,7 +10,6 @@ import { ContentExportService } from '../../content-export/services/content-expo
 import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
 import { GoToMetadata } from '../../metadata';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
-import { AgGridHelper } from '../../shared/ag-grid/ag-grid-helper';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { FileUploadDialogData } from '../../shared/components/file-upload-dialog';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
@@ -112,9 +111,7 @@ export class QueriesComponent implements OnInit {
   }
 
   #urlToOpenVisualQueryDesigner(query: Query): string {
-    // TODO: @2pp | "../../" works, but isn't cleanest way.
-    // Prob. need to change routing for this?
-    // TODO: @2pp | ensure this opens in new tab
+    // "../../" is needed, because the routing is that way
     return this.#urlTo(
       `../../query/${convertFormToUrl({
         items: [EditPrep.editId(query.Id)],
@@ -179,7 +176,10 @@ export class QueriesComponent implements OnInit {
             const query: Query = p.data;
             return `${query._EditInfo.DisableEdit ? 'no-outline' : 'primary-action highlight'}`.split(' ');
           },
-          cellRenderer: (p: { data: Query }) => AgGridHelper.cellLink(this.#urlToOpenVisualQueryDesigner(p.data), p.data.Name),
+          cellRenderer: (p: { data: Query }) =>
+            `<a href="${this.#urlToOpenVisualQueryDesigner(p.data)}" target="_blank" class="default-link" style="display: block; width: 100%; height: 100%;">
+              ${p.data.Name}
+            </a>`,
         },
         {
           ...ColumnDefinitions.TextWideFlex3,
