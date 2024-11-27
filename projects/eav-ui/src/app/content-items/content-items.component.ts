@@ -248,8 +248,6 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     );
   }
 
-  // TODO: Should be a link, but is tricky to do with the current setup
-  // as it's doing somethingwith the files, which is not possible with a link
   importItem(files?: File[]) {
     const dialogData: FileUploadDialogData = { files };
     this.#dialogRouter.navRelative(['import'], { state: dialogData });

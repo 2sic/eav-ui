@@ -95,7 +95,7 @@ export class ContentTypesService extends HttpServiceBase {
 
   delete(contentType: ContentType) {
     return this.http.delete<boolean>(this.apiUrl(webApiTypeDelete), {
-      params: { appid: this.appId, staticName: contentType.StaticName },
+      params: { appid: this.appId, staticName: contentType.NameId },
     });
   }
 

@@ -74,8 +74,8 @@ export class EditContentTypeComponent implements AfterViewInit {
     this.#contentTypeSvc.retrieveContentType(this.#typeNameId).subscribe(fromHttp => {
       this.contentType.set({
         ...fromHttp,
-        ChangeStaticName: false,
-        NewStaticName: fromHttp.NameId,
+        ChangeNameId: false,
+        NewNameId: fromHttp.NameId,
       } satisfies ContentTypeEdit);
     });
   }
@@ -96,8 +96,8 @@ export class EditContentTypeComponent implements AfterViewInit {
     Name: '',
     Description: '',
     Scope: this.#scope,
-    ChangeStaticName: false,
-    NewStaticName: '',
+    ChangeNameId: false,
+    NewNameId: '',
   } as ContentTypeEdit);
 
   // TODO: @2dg this is a suggestion how to handle http requests in a more signal-like way

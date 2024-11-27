@@ -40,6 +40,6 @@ export interface ContentTypeProperties {
 }
 
 export interface ContentTypeEdit extends ContentType {
-  ChangeStaticName: boolean;
-  NewStaticName: string;
+  ChangeNameId: boolean;
+  NewNameId: string;
 }
