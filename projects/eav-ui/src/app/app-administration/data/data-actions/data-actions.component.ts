@@ -43,6 +43,6 @@ export class DataActionsComponent extends AgActionsAlwaysRefresh {
     this.params = params;
     this.contentType = params.data;
     const enablePermissions = this.params.enablePermissionsGetter();
-    this.enablePermissions = enablePermissions && guidRegex().test(this.contentType.StaticName);
+    this.enablePermissions = enablePermissions && guidRegex().test(this.contentType.NameId);
   }
 }

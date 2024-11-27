@@ -46,7 +46,7 @@ import { ContentTypesService } from '../../services/content-types.service';
 })
 export class EditContentTypeComponent implements AfterViewInit {
 
-  log = classLog({EditContentTypeComponent});
+  log = classLog({ EditContentTypeComponent });
 
   @HostBinding('className') hostClass = 'dialog-component';
 
@@ -75,7 +75,7 @@ export class EditContentTypeComponent implements AfterViewInit {
       this.contentType.set({
         ...fromHttp,
         ChangeStaticName: false,
-        NewStaticName: fromHttp.StaticName,
+        NewStaticName: fromHttp.NameId,
       } satisfies ContentTypeEdit);
     });
   }
