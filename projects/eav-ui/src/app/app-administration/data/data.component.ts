@@ -111,7 +111,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
         break;
     }
   }
-  
+
   importType(files?: File[]) {
     const dialogData: FileUploadDialogData = { files };
     this.#dialogRouter.navRelative(['import'], { state: dialogData });
@@ -128,16 +128,6 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
       if (contentType.EditInfo.ReadOnly) return;
       this.#dialogRouter.navRelative([`${contentType.NameId}/edit`]);
     }
-  }
-
-  urlToNewView() {
-    return this.#urlTo(
-      `edit/${convertFormToUrl({
-        items: [
-          EditPrep.newFromType(eavConstants.contentTypes.template)
-        ],
-      })}`
-    );
   }
 
   #fetchContentTypes() {
@@ -316,6 +306,10 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
     return convertFormToUrl({
       items: [EditPrep.newFromType(contentType.NameId)],
     } satisfies EditForm);
+  }
+
+  urlToNewContentType(): string {
+    return this.#urlTo('add');
   }
 
   #routeCreateOrEditMetadata(contentType: ContentType): string {
