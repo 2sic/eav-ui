@@ -100,9 +100,10 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
     }
   }
 
-  trackField(index: number, field: any): any {
-    return field.StaticName; // Replace with your unique field identifier
-  }
+  // 2pp not in use? 
+  // trackField(index: number, field: Field): string {
+  //   return field.StaticName; // Replace with your unique field identifier
+  // }
 
   ngOnInit() {
     this.editMode = this.route.snapshot.paramMap.get('editMode') as 'name' | 'inputType';
