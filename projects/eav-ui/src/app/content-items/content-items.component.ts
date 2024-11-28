@@ -241,8 +241,6 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
 
   urlToImportContent(files?: File[]) {
     // Special, because the /import is at the end of the URL
-    // is a TODO: @2pp, but maybe needs some more work (might be used from diff places)
-    // It's also fishy, that the URL contains the GUID twice
     return this.#urlTo(
       `${this.#contentTypeStaticName}${files ? `/${files.map(f => f.name).join(',')}` : ''}/import`
     );
