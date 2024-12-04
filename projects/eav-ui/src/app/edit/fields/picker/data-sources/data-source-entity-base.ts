@@ -7,7 +7,7 @@ import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 import { QueryService } from '../../../../shared/services/query.service';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
 import { DataWithLoading } from '../models/data-with-loading';
-import { PickerItem } from './../models/picker-item.model';
+import { PickerItem } from '../models/picker-item.model';
 import { DataSourceBase, logSpecsDataSourceBase } from './data-source-base';
 
 export const logSpecsDataSourceEntityQueryBase: typeof logSpecsDataSourceBase & any = {
@@ -26,7 +26,7 @@ export const logSpecsDataSourceEntityQueryBase: typeof logSpecsDataSourceBase & 
  * - queries
  */
 @Injectable()
-export abstract class DataSourceEntityQueryBase extends DataSourceBase {
+export abstract class DataSourceEntityBase extends DataSourceBase {
 
   //#region Inject and blank constructor
 

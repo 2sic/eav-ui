@@ -7,7 +7,7 @@ import { computedObj } from '../../../../shared/signals/signal.utilities';
 import { FormConfigService } from '../../../form/form-config.service';
 import { DataWithLoading } from '../models/data-with-loading';
 import { PickerItem, PickerItemFactory } from '../models/picker-item.model';
-import { DataSourceEntityQueryBase, logSpecsDataSourceEntityQueryBase } from './data-source-entity-query-base';
+import { DataSourceEntityBase, logSpecsDataSourceEntityQueryBase } from './data-source-entity-base';
 
 // TODO: NEXT STEPS
 // 5. afterwards check all edge cases.
@@ -17,7 +17,7 @@ import { DataSourceEntityQueryBase, logSpecsDataSourceEntityQueryBase } from './
 // - I believe some kind of clean-up is still necessary...?
 
 @Injectable()
-export class DataSourceQuery extends DataSourceEntityQueryBase {
+export class DataSourceQuery extends DataSourceEntityBase {
 
   log = classLog({DataSourceQuery}, logSpecsDataSourceEntityQueryBase, true);
 

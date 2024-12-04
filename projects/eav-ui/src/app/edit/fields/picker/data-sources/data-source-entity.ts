@@ -3,10 +3,10 @@ import { map, Observable } from "rxjs";
 import { classLog } from '../../../../shared/logging';
 import { DataWithLoading } from '../models/data-with-loading';
 import { PickerItem } from '../models/picker-item.model';
-import { DataSourceEntityQueryBase, logSpecsDataSourceEntityQueryBase } from './data-source-entity-query-base';
+import { DataSourceEntityBase, logSpecsDataSourceEntityQueryBase } from './data-source-entity-base';
 
 @Injectable()
-export class DataSourceEntity extends DataSourceEntityQueryBase {
+export class DataSourceEntity extends DataSourceEntityBase {
 
   log = classLog({ DataSourceEntity }, logSpecsDataSourceEntityQueryBase);
 

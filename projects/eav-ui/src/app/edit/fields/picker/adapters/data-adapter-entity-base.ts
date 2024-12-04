@@ -15,7 +15,7 @@ import { FormConfigService } from '../../../form/form-config.service';
 import { EditRoutingService } from '../../../routing/edit-routing.service';
 import { FieldMask } from '../../../shared/helpers';
 import { FieldState } from '../../field-state';
-import { DataSourceEntityQueryBase } from '../data-sources/data-source-entity-query-base';
+import { DataSourceEntityBase } from '../data-sources/data-source-entity-base';
 import { PickerItem, PickerItemFactory } from '../models/picker-item.model';
 import { DeleteEntityProps } from "../models/picker.models";
 import { PickerFeatures } from '../picker-features.model';
@@ -97,7 +97,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase implements D
   initPrefetch(prefetchGuids: string[]): void {
     this.syncParams();
     this.log.fnIfInList('initPrefetch', 'fields', this.name, { prefetchGuids });
-    (this.dataSource() as DataSourceEntityQueryBase).initPrefetch?.(prefetchGuids);
+    (this.dataSource() as DataSourceEntityBase).initPrefetch?.(prefetchGuids);
   }
 
   forceReloadData(missingData: string[]): void {
