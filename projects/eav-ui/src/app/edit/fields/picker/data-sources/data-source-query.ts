@@ -19,7 +19,7 @@ import { DataSourceEntityQueryBase, logSpecsDataSourceEntityQueryBase } from './
 @Injectable()
 export class DataSourceQuery extends DataSourceEntityQueryBase {
 
-  log = classLog({DataSourceQuery}, logSpecsDataSourceEntityQueryBase);
+  log = classLog({DataSourceQuery}, logSpecsDataSourceEntityQueryBase, true);
 
   #translate = inject(TranslateService);
 

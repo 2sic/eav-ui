@@ -58,6 +58,8 @@ export class ValidationHelpers {
   static #required(specs: ValidationHelperSpecs): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const s = this.#ensureWarningsAndGetSettingsIfNoIgnore(control, specs);
+      // if (Array.isArray(control.value))
+      //   console.log('2dm #required', control.value)
       if (s == null || !s.valueRequired) return null;
       return Validators.required(control);
     };

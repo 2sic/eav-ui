@@ -58,6 +58,16 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
 
   #createEntityTypes = computedObj('createEntityTypes', () => this.fieldState.settings().CreateTypes);
 
+  /** 
+   * Sync params: patch the data-source with the current settings
+   * Should be implemented in Entity & Query, probably not in AppAssets
+   */
+  syncParams(): void { }
+
+  onAfterViewInit(): void {
+    this.syncParams();
+  }
+
   /** The features depend on contentType names being available to support create */
   public myFeatures = computedObj<Partial<PickerFeatures>>('features', () => {
     // if we don't know the content-type, we can't create new entities

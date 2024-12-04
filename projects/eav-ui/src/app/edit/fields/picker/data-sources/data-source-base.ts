@@ -24,7 +24,7 @@ export const logSpecsDataSourceBase = {
   data: false,
   triggerGetAll: false,
   addToRefresh: false,
-  fields: [...DebugFields],
+  fields: [...DebugFields, 'Categories'],
   newIconOptions: false,
   fileLoadSettings: false,
 }
