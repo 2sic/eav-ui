@@ -8,6 +8,7 @@ import { computedObj, signalObj } from '../../../shared/signals/signal.utilities
 import { DebugFields } from '../../edit-debug';
 import { DataAdapterBase } from './adapters/data-adapter-base';
 import { DataAdapterCanRefresh } from './adapters/data-adapter-can-refresh';
+import { DataAdapterEntityBase } from './adapters/data-adapter-entity-base';
 import { StateAdapter } from "./adapters/state-adapter";
 import { PickerItem } from './models/picker-item.model';
 import { mergePickerFeatures, PickerFeatures, PickerFeaturesForControl } from './picker-features.model';
@@ -43,6 +44,7 @@ export class PickerData {
   name: string;
 
   constructor() {
+    // Log the options when they change (if enabled)
     if (this.log.enabled && this.log.specs.allOptions) {
       effect(() => {
         const ready = this.ready();
@@ -201,14 +203,16 @@ export class PickerData {
 
   #toSelectedWithUiInfo(selected: string[], opts: PickerItem[]): PickerItem[] {
     const l = this.log.fnIfInList('addInfosFromSourceForUi', 'fields', this.name, { selected, opts });
+
     const result = selected.map(item => {
       // If the selected item is not in the data, show the raw / original item
       const original = opts.find(e => e.value === item);
+
       return original
         // Since we seem to have more information from the source, use that
         ? createPickerItemFromItem(original, original.label ?? this.#translate.instant('Fields.Picker.EntityNotFound'))
         // If it's not in the data, just show the value
-        : createPickerItemFromValue(item);
+        : this.#createPickerItemFromValue(item);
     });
     return l.r(result);
   }
@@ -222,24 +226,29 @@ export class PickerData {
   }
 
   //#endregion
+
+  #createPickerItemFromValue(value: string): PickerItem {
+    value = value?.toString() ?? '';  // safe to-string, so it's never 'undefined'
+
+    const validDataExpected = this.source instanceof DataAdapterEntityBase;
+
+    return {
+      // Special: if e.g. string with free text value which is not found, disable edit and delete.
+      // Otherwise we may see an edit-pencil for a value that is not in the dropdown (eg. a system query)
+      noEdit: true,
+      noDelete: true,
+      // either the real value or null if text-field or not found
+      id: null,
+      label: value + (validDataExpected ? ' ⚠️': ''),
+      tooltip: value + (validDataExpected ? ` ⚠️ ${this.#translate.instant('Fields.Picker.EntityNotFound')} - could result in error` : ' (manual entry)'),
+      value,
+    } satisfies PickerItem;
+  }
 }
 
 //#region Helper Functions for PickerItem
 
-function createPickerItemFromValue(value: string): PickerItem {
-  value = value?.toString() ?? '';  // safe to-string, so it's never 'undefined'
-  return {
-    // Special: if e.g. string with free text value which is not found, disable edit and delete.
-    // Otherwise we may see an edit-pencil for a value that is not in the dropdown (eg. a system query)
-    noEdit: true,
-    noDelete: true,
-    // either the real value or null if text-field or not found
-    id: null,
-    label: value,
-    tooltip: `${value} (manual entry)`,
-    value,
-  } satisfies PickerItem;
-}
+
 
 function createPickerItemFromItem(original: PickerItem, label: string) {
   return {

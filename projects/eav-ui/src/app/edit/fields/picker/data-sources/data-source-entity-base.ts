@@ -62,7 +62,7 @@ export abstract class DataSourceEntityBase extends DataSourceBase {
    * - the params change (in many cases just at start, but sometimes ongoing eg. view-data picker)
    * @memberof DataSourceEntityQueryBase
    */
-  #all = toSignal(combineLatest([
+  #fullList = toSignal(combineLatest([
     this.#paramsDebounced$,
     this.getAll$.pipe(distinctUntilChanged(), filter(getAll => !!getAll), map(x => [])),
   ]).pipe(
@@ -79,7 +79,7 @@ export abstract class DataSourceEntityBase extends DataSourceBase {
 
   public override data = computedObj('data', () => {
     const prefetch = this.#prefetchNew().data;
-    const all = this.#all().data;
+    const all = this.#fullList().data;
     const modified = this.#modified().data;
     const data = [...new Map([...prefetch, ...all, ...modified].map(item => [item.value, item])).values()];
     this.log.a('data', { prefetch, all, overrides: modified, data });
@@ -87,12 +87,12 @@ export abstract class DataSourceEntityBase extends DataSourceBase {
   });
 
   /** Signal with loading-status */
-  public override loading = computedObj('loading', () => this.#all().loading || this.#modified().loading) as WritableSignal<boolean>;
+  public override loading = computedObj('loading', () => this.#fullList().loading || this.#modified().loading) as WritableSignal<boolean>;
 
   initPrefetch(entityGuids: string[]): void {
     const l = this.log.fnIfInList('initPrefetch', 'fields', this.fieldName, { entityGuids });
     const guids = entityGuids.filter(RxHelpers.distinct);
-    this.#loadMoreIntoSignal(this.#prefetchNew, guids, 'initPrefetch');
+    this.#loadMoreIntoCache(this.#prefetchNew, guids, 'initPrefetch');
     l.end();
   }
 
@@ -105,11 +105,14 @@ export abstract class DataSourceEntityBase extends DataSourceBase {
 
   public override addToRefresh(additionalGuids: string[]): void {
     const l = this.log.fnIf('addToRefresh', { additionalGuids });
-    this.#loadMoreIntoSignal(this.#modified, additionalGuids, 'addToRefresh');
+    this.#loadMoreIntoCache(this.#modified, additionalGuids, 'addToRefresh');
     l.end();
   }
 
-  #loadMoreIntoSignal(target: WritableSignal<DataWithLoading<PickerItem[]>>, additionalGuids: string[], msgForLog: string): void {
+  /**
+   * Load some data and place it inside a target signal cache, adding to existing data.
+   */
+  #loadMoreIntoCache(target: WritableSignal<DataWithLoading<PickerItem[]>>, additionalGuids: string[], msgForLog: string): void {
     const params = this.#typeOrParams();
     const l = this.log.fnIfInList('loadMoreIntoSignal', 'fields', this.fieldName, { additionalGuids, params, msgForLog });
     if (additionalGuids == null || additionalGuids.length === 0)

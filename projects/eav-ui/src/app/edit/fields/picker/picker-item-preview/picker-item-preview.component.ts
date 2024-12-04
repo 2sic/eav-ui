@@ -4,6 +4,9 @@ import { NgxTippyModule } from 'ngx-tippy-wrapper';
 import { FieldSettingsWithPickerSource } from '../../../../../../../edit-types/src/PickerSources';
 import { PickerItem } from '../models/picker-item.model';
 
+/**
+ * Preview as an image/icon of an item.
+ */
 @Component({
   selector: 'app-picker-item-preview',
   templateUrl: './picker-item-preview.component.html',
