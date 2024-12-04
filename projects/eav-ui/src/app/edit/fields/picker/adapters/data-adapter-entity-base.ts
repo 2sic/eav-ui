@@ -20,6 +20,7 @@ import { PickerItem, PickerItemFactory } from '../models/picker-item.model';
 import { DeleteEntityProps } from "../models/picker.models";
 import { PickerFeatures } from '../picker-features.model';
 import { DataAdapterBase } from "./data-adapter-base";
+import { DataAdapterCanRefresh } from './data-adapter-can-refresh';
 
 export const logSpecsDataAdapterEntityBase = {
   ...DataAdapterBase.logSpecs,
@@ -27,7 +28,7 @@ export const logSpecsDataAdapterEntityBase = {
   getPrefill: true, // for create Entity & query
 };
 
-export abstract class DataAdapterEntityBase extends DataAdapterBase {
+export abstract class DataAdapterEntityBase extends DataAdapterBase implements DataAdapterCanRefresh {
 
   //#region Services, constructor, log
 

@@ -21,12 +21,6 @@ export class DataAdapterCss extends DataAdapterBase {
 
   public myFeatures = signalObj('features', { edit: false, create: false, delete: false, } satisfies Partial<PickerFeatures>);
 
-  /** should never be needed as we have synchronously all data in settings */
-  override initPrefetch(prefetchGuids: string[]): void { }
-
-  /** should never be needed as we can't add new data */
-  override forceReloadData(missingData: string[]): void { }
-
   fetchItems(): void {
     this.log.fnIf('fetchItems');
     this.dataSource().triggerGetAll();

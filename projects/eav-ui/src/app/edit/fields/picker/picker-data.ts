@@ -7,6 +7,7 @@ import { classLog } from '../../../shared/logging';
 import { computedObj, signalObj } from '../../../shared/signals/signal.utilities';
 import { DebugFields } from '../../edit-debug';
 import { DataAdapterBase } from './adapters/data-adapter-base';
+import { DataAdapterCanRefresh } from './adapters/data-adapter-can-refresh';
 import { StateAdapter } from "./adapters/state-adapter";
 import { PickerItem } from './models/picker-item.model';
 import { mergePickerFeatures, PickerFeatures, PickerFeaturesForControl } from './picker-features.model';
@@ -71,8 +72,8 @@ export class PickerData {
     // This will place the prefetch items into the available-items list
     // Otherwise related entities would only show as GUIDs.
     const values = state.values();
-    l.a('setup', { initiallySelected: values })
-    source.initPrefetch(values);
+    l.a('setup', { initiallySelected: values });
+    (source as DataAdapterBase & DataAdapterCanRefresh)?.initPrefetch(values);
 
     // When everything is done, mark as ready
     this.ready.set(true);
@@ -193,7 +194,7 @@ export class PickerData {
     const l = this.log.fn('addNewlyCreatedItem', { result, newItemGuid });
     if (!this.state.values().includes(newItemGuid)) {
       this.state.add(newItemGuid);
-      this.source.forceReloadData([newItemGuid]);
+      (this.source as DataAdapterBase & DataAdapterCanRefresh)?.forceReloadData([newItemGuid]);
     }
     l.end();
   }

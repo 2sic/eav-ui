@@ -55,10 +55,6 @@ export abstract class DataAdapterBase {
 
   //#endregion
 
-  abstract initPrefetch(prefetchGuids: string[]): void;
-
-  abstract forceReloadData(missingData: string[]): void;
-
   abstract deleteItem(props: DeleteEntityProps): void;
 
   abstract editItem(editParams: { entityGuid: string, entityId: number }, entityType: string): void;
