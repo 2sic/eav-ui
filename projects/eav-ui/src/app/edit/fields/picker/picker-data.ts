@@ -75,7 +75,7 @@ export class PickerData {
     // Otherwise related entities would only show as GUIDs.
     const values = state.values();
     l.a('setup', { initiallySelected: values });
-    (source as DataAdapterBase & DataAdapterCanRefresh)?.initPrefetch(values);
+    (source as DataAdapterBase & DataAdapterCanRefresh)?.initPrefetch?.(values);
 
     // When everything is done, mark as ready
     this.ready.set(true);
@@ -196,7 +196,7 @@ export class PickerData {
     const l = this.log.fn('addNewlyCreatedItem', { result, newItemGuid });
     if (!this.state.values().includes(newItemGuid)) {
       this.state.add(newItemGuid);
-      (this.source as DataAdapterBase & DataAdapterCanRefresh)?.forceReloadData([newItemGuid]);
+      (this.source as DataAdapterBase & DataAdapterCanRefresh)?.forceReloadData?.([newItemGuid]);
     }
     l.end();
   }

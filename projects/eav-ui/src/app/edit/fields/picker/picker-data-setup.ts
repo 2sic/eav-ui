@@ -68,7 +68,7 @@ export class PickerDataSetup {
     // l.end('ok', { state, source });
 
     // Perform any post-init actions for the source - ATM only on Entity/Query
-    (pickerData.source as DataAdapterEntityBase)?.onAfterViewInit();
+    (pickerData.source as DataAdapterEntityBase)?.onAfterViewInit?.();
     
     return l.rSilent(pickerData);
   }
