@@ -201,11 +201,11 @@ export class ViewsComponent implements OnInit {
   }
 
   #urlToOpenMetadata(view: View) {
-    // Sets the # infront when calling this function
+    // Sets the # infront when calling this function  
     return this.#dialogRouter.urlSubRoute(
       GoToMetadata.getUrlEntity(
         view.Guid,
-        `Metadata for View: ${view.Name} (${view.Id})`,
+        `Metadata for View: ${view.Name} (${view.Id})`
       )
     );
   }
