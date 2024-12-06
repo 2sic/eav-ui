@@ -16,21 +16,20 @@ import { buildPageSearch, buildPageTree } from './page-picker.helpers';
 import { PageEntity, PagePickerDialogData, PageSearchItem, PageTreeItem } from './page-picker.models';
 
 @Component({
-  selector: 'app-page-picker',
-  templateUrl: './page-picker.component.html',
-  styleUrls: ['./page-picker.component.scss'],
-  standalone: true,
-  imports: [
-    MatFormFieldModule,
-    MatInputModule,
-    FormsModule,
-    NgTemplateOutlet,
-    NgClass,
-    MatIconModule,
-    MatDialogActions,
-    TranslateModule,
-    TippyDirective,
-  ],
+    selector: 'app-page-picker',
+    templateUrl: './page-picker.component.html',
+    styleUrls: ['./page-picker.component.scss'],
+    imports: [
+        MatFormFieldModule,
+        MatInputModule,
+        FormsModule,
+        NgTemplateOutlet,
+        NgClass,
+        MatIconModule,
+        MatDialogActions,
+        TranslateModule,
+        TippyDirective,
+    ]
 })
 export class PagePickerComponent implements OnInit {
   selected: number;

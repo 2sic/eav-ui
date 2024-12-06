@@ -12,19 +12,18 @@ import { DialogRoutingService } from '../../shared/routing/dialog-routing.servic
 import { ContentTypesService } from '../services';
 
 @Component({
-  selector: 'app-data-rest-api',
-  standalone: true,
-  imports: [
-    MatSelectModule,
-    MatButtonModule,
-    MatCardModule,
-    MatIconModule,
-    ReactiveFormsModule,
-    DevRestDataComponent,
-    RouterOutlet,
-    SxcGridModule,
-  ],
-  templateUrl: './data-rest-api.component.html',
+    selector: 'app-data-rest-api',
+    imports: [
+        MatSelectModule,
+        MatButtonModule,
+        MatCardModule,
+        MatIconModule,
+        ReactiveFormsModule,
+        DevRestDataComponent,
+        RouterOutlet,
+        SxcGridModule,
+    ],
+    templateUrl: './data-rest-api.component.html'
 })
 export class DataRestApiComponent {
   #contentTypesSvc = transient(ContentTypesService);

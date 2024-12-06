@@ -12,17 +12,16 @@ import { BooleanBaseComponent } from '../boolean-default/boolean-base.component'
 import { BooleanTristateLogic } from './boolean-tristate-logic';
 
 @Component({
-  selector: InputTypeCatalog.BooleanTristate,
-  templateUrl: './boolean-tristate.component.html',
-  styleUrls: ['./boolean-tristate.component.scss'],
-  standalone: true,
-  imports: [
-    FormsModule,
-    ReactiveFormsModule,
-    MatSlideToggleModule,
-    NgClass,
-    FieldHelperTextComponent,
-  ],
+    selector: InputTypeCatalog.BooleanTristate,
+    templateUrl: './boolean-tristate.component.html',
+    styleUrls: ['./boolean-tristate.component.scss'],
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        MatSlideToggleModule,
+        NgClass,
+        FieldHelperTextComponent,
+    ]
 })
 @FieldMetadata({ ...WrappersLocalizationOnly })
 export class BooleanTristateComponent extends BooleanBaseComponent {

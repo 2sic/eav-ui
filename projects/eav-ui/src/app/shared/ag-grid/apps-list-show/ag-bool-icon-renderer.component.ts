@@ -7,14 +7,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { NgClass } from '@angular/common';
 
 @Component({
-  selector: 'app-ag-bool-icon-renderer',
-  templateUrl: './ag-bool-icon-renderer.html',
-  standalone: true,
-  imports: [
-    TippyDirective,
-    MatIconModule,
-    NgClass,
-  ],
+    selector: 'app-ag-bool-icon-renderer',
+    templateUrl: './ag-bool-icon-renderer.html',
+    imports: [
+        TippyDirective,
+        MatIconModule,
+        NgClass,
+    ]
 })
 export class AgBoolIconRenderer implements ICellRendererAngularComp {
   value: boolean;

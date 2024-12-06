@@ -9,13 +9,12 @@ import { AppIconsService } from './shared/icons/app-icons.service';
 import { Context } from './shared/services/context';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [
-    RouterModule,
-  ],
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        RouterModule,
+    ]
 })
 export class AppComponent extends SxcAppComponent implements OnInit, OnDestroy {
   #subscriptions = new Subscription();

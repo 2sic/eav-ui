@@ -22,19 +22,18 @@ interface TranslationInfo {
 }
 
 @Component({
-  selector: 'app-translate-menu-dialog',
-  templateUrl: './translate-menu-dialog.component.html',
-  styleUrls: ['./translate-menu-dialog.component.scss'],
-  standalone: true,
-  imports: [
-    MatCardModule,
-    MatListModule,
-    NgClass,
-    MatIconModule,
-    MatButtonModule,
-    AsyncPipe,
-    TranslateModule,
-  ],
+    selector: 'app-translate-menu-dialog',
+    templateUrl: './translate-menu-dialog.component.html',
+    styleUrls: ['./translate-menu-dialog.component.scss'],
+    imports: [
+        MatCardModule,
+        MatListModule,
+        NgClass,
+        MatIconModule,
+        MatButtonModule,
+        AsyncPipe,
+        TranslateModule,
+    ]
 })
 export class TranslateMenuDialogComponent extends TranslateHelperComponent {
 

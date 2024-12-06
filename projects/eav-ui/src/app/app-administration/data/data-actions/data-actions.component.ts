@@ -11,16 +11,15 @@ import { AgActionsAlwaysRefresh } from '../../queries/ag-actions/ag-actions-comp
 
 
 @Component({
-  selector: 'app-data-actions',
-  templateUrl: './data-actions.component.html',
-  standalone: true,
-  imports: [
-    MatRippleModule,
-    MatIconModule,
-    MatBadgeModule,
-    MatMenuModule,
-    TippyDirective,
-  ],
+    selector: 'app-data-actions',
+    templateUrl: './data-actions.component.html',
+    imports: [
+        MatRippleModule,
+        MatIconModule,
+        MatBadgeModule,
+        MatMenuModule,
+        TippyDirective,
+    ]
 })
 export class DataActionsComponent extends AgActionsAlwaysRefresh {
   contentType: ContentType;

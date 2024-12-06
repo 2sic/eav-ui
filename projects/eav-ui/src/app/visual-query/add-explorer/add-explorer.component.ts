@@ -11,17 +11,16 @@ import { VisualQueryStateService } from '../services/visual-query.service';
 import { filterAndSortDataSources } from './add-explorer.helpers';
 
 @Component({
-  selector: 'app-add-explorer',
-  templateUrl: './add-explorer.component.html',
-  styleUrls: ['./add-explorer.component.scss'],
-  standalone: true,
-  imports: [
-    MatSlideToggleModule,
-    MatIconModule,
-    AsyncPipe,
-    KeyValuePipe,
-    TippyDirective,
-  ],
+    selector: 'app-add-explorer',
+    templateUrl: './add-explorer.component.html',
+    styleUrls: ['./add-explorer.component.scss'],
+    imports: [
+        MatSlideToggleModule,
+        MatIconModule,
+        AsyncPipe,
+        KeyValuePipe,
+        TippyDirective,
+    ]
 })
 export class AddExplorerComponent {
   toggledItems: string[] = [];

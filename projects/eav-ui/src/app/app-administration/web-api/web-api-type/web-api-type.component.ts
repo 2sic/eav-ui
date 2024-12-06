@@ -4,10 +4,9 @@ import { Component } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
-  selector: 'app-web-api-type',
-  templateUrl: './web-api-type.component.html',
-  standalone: true,
-  imports: [MatIconModule],
+    selector: 'app-web-api-type',
+    templateUrl: './web-api-type.component.html',
+    imports: [MatIconModule]
 })
 export class WebApiTypeComponent implements ICellRendererAngularComp {
   value: boolean;

@@ -5,10 +5,9 @@ import { FileUploadDialogComponent, FileUploadDialogData, UploadTypes } from '..
 import { PipelinesService } from '../../services/pipelines.service';
 
 @Component({
-  selector: 'app-import-query',
-  templateUrl: './import-query.component.html',
-  standalone: true,
-  imports: [FileUploadDialogComponent,],
+    selector: 'app-import-query',
+    templateUrl: './import-query.component.html',
+    imports: [FileUploadDialogComponent,]
 })
 export class ImportQueryComponent {
   uploadType = UploadTypes.Query;

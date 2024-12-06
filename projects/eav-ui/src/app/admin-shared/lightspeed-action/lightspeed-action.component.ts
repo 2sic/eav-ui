@@ -15,15 +15,14 @@ import { LightSpeedActionsParams } from './lightspeed-actions.models';
  *
  */
 @Component({
-  selector: 'app-lightspeed-action',
-  templateUrl: './lightspeed-action.component.html',
-  standalone: true,
-  imports: [
-    TippyDirective,
-    MatIconModule,
-    MatBadgeModule,
-    MatRippleModule,
-  ],
+    selector: 'app-lightspeed-action',
+    templateUrl: './lightspeed-action.component.html',
+    imports: [
+        TippyDirective,
+        MatIconModule,
+        MatBadgeModule,
+        MatRippleModule,
+    ]
 })
 export class LightSpeedActionsComponent {
   /** App needed for lightspeed checks */

@@ -13,20 +13,19 @@ import { FeaturesScopedService } from '../../../features/features-scoped.service
 import { ExportAppService } from '../../services/export-app.service';
 
 @Component({
-  selector: 'app-export-app',
-  templateUrl: './export-app.component.html',
-  styleUrls: ['./export-app.component.scss'],
-  standalone: true,
-  imports: [
-    MatCheckboxModule,
-    FormsModule,
-    MatDialogActions,
-    MatButtonModule,
-    MatIconModule,
-    FeatureIconIndicatorComponent,
-    FeatureIconComponent,
-    DocsLinkHelperComponent,
-  ],
+    selector: 'app-export-app',
+    templateUrl: './export-app.component.html',
+    styleUrls: ['./export-app.component.scss'],
+    imports: [
+        MatCheckboxModule,
+        FormsModule,
+        MatDialogActions,
+        MatButtonModule,
+        MatIconModule,
+        FeatureIconIndicatorComponent,
+        FeatureIconComponent,
+        DocsLinkHelperComponent,
+    ]
 })
 export class ExportAppComponent {
 

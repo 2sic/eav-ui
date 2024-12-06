@@ -7,16 +7,15 @@ import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.
 import { PickerPartBaseComponent } from '../picker-part-base.component';
 
 @Component({
-  selector: 'app-picker-pills',
-  templateUrl: './picker-pills.component.html',
-  styleUrls: ['./picker-pills.component.scss'],
-  standalone: true,
-  imports: [
-    MatFormFieldModule,
-    NgClass,
-    MatRippleModule,
-    MatListModule,
-    TippyDirective,
-  ],
+    selector: 'app-picker-pills',
+    templateUrl: './picker-pills.component.html',
+    styleUrls: ['./picker-pills.component.scss'],
+    imports: [
+        MatFormFieldModule,
+        NgClass,
+        MatRippleModule,
+        MatListModule,
+        TippyDirective,
+    ]
 })
 export class PickerPillsComponent extends PickerPartBaseComponent { }

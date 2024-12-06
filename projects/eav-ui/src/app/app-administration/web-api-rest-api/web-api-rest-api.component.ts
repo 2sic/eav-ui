@@ -12,19 +12,18 @@ import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.mod
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 
 @Component({
-  selector: 'app-web-api-rest-api',
-  standalone: true,
-  imports: [
-    MatSelectModule,
-    MatButtonModule,
-    MatCardModule,
-    MatIconModule,
-    ReactiveFormsModule,
-    DevRestQueryComponent,
-    RouterOutlet,
-    SxcGridModule,
-  ],
-  templateUrl: './web-api-rest-api.component.html',
+    selector: 'app-web-api-rest-api',
+    imports: [
+        MatSelectModule,
+        MatButtonModule,
+        MatCardModule,
+        MatIconModule,
+        ReactiveFormsModule,
+        DevRestQueryComponent,
+        RouterOutlet,
+        SxcGridModule,
+    ],
+    templateUrl: './web-api-rest-api.component.html'
 })
 export class WebApiRestApiComponent {
   #sourceSvc = transient(SourceService);

@@ -10,19 +10,18 @@ import { PickerInlineHeaderComponent } from '../picker-inline/picker-inline-head
 import { PickerPreviewLabelComponent } from '../picker-item-label/picker-item-label.component';
 
 @Component({
-  selector: 'app-picker-checkboxes',
-  templateUrl: './picker-checkboxes.component.html',
-  styleUrls: ['./picker-checkboxes.component.scss'],
-  standalone: true,
-  imports: [
-    MatFormFieldModule,
-    MatRippleModule,
-    MatCheckbox,
-    NgClass,
-    TippyDirective,
-    PickerInlineHeaderComponent,
-    PickerPreviewLabelComponent,
-  ],
+    selector: 'app-picker-checkboxes',
+    templateUrl: './picker-checkboxes.component.html',
+    styleUrls: ['./picker-checkboxes.component.scss'],
+    imports: [
+        MatFormFieldModule,
+        MatRippleModule,
+        MatCheckbox,
+        NgClass,
+        TippyDirective,
+        PickerInlineHeaderComponent,
+        PickerPreviewLabelComponent,
+    ]
 })
 export class PickerCheckboxesComponent extends PickerInlineBaseComponent {
 

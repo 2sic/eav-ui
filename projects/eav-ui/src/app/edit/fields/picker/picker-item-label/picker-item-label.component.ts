@@ -8,16 +8,15 @@ import { PickerItemButtonsComponent } from '../picker-item-buttons/picker-item-b
 import { PickerItemPreviewComponent } from '../picker-item-preview/picker-item-preview.component';
 
 @Component({
-  selector: 'app-picker-item-label',
-  standalone: true,
-  imports: [
-    PickerItemPreviewComponent,
-    PickerIconHelpComponent,
-    PickerIconInfoComponent,
-    PickerItemButtonsComponent,
-  ],
-  templateUrl: './picker-item-label.component.html',
-  styleUrl: './picker-item-label.component.scss'
+    selector: 'app-picker-item-label',
+    imports: [
+        PickerItemPreviewComponent,
+        PickerIconHelpComponent,
+        PickerIconInfoComponent,
+        PickerItemButtonsComponent,
+    ],
+    templateUrl: './picker-item-label.component.html',
+    styleUrl: './picker-item-label.component.scss'
 })
 export class PickerPreviewLabelComponent {
   /** The item to show the label/buttons for */

@@ -46,20 +46,19 @@ import { PubMeta } from './pub-meta-filter/pub-meta-filter.model';
 import { ContentItemsService } from './services/content-items.service';
 
 @Component({
-  selector: 'app-content-items',
-  templateUrl: './content-items.component.html',
-  standalone: true,
-  imports: [
-    MatButtonModule,
-    MatIconModule,
-    RouterOutlet,
-    MatDialogActions,
-    SafeHtmlPipe,
-    DragAndDropDirective,
-    ToggleDebugDirective,
-    SxcGridModule,
-    TippyDirective,
-  ],
+    selector: 'app-content-items',
+    templateUrl: './content-items.component.html',
+    imports: [
+        MatButtonModule,
+        MatIconModule,
+        RouterOutlet,
+        MatDialogActions,
+        SafeHtmlPipe,
+        DragAndDropDirective,
+        ToggleDebugDirective,
+        SxcGridModule,
+        TippyDirective,
+    ]
 })
 export class ContentItemsComponent implements OnInit {
 

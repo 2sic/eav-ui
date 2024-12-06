@@ -9,15 +9,14 @@ import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.
 import { DataBundlesActionsParams, DataBundlesType } from './data-bundles-actions.models';
 
 @Component({
-  selector: 'app-data-bundle-actions',
-  templateUrl: './data-bundles-actions.component.html',
-  standalone: true,
-  imports: [
-    MatRippleModule,
-    MatIconModule,
-    MatMenuModule,
-    TippyDirective,
-  ],
+    selector: 'app-data-bundle-actions',
+    templateUrl: './data-bundles-actions.component.html',
+    imports: [
+        MatRippleModule,
+        MatIconModule,
+        MatMenuModule,
+        TippyDirective,
+    ]
 })
 export class DataBundleActionsComponent implements ICellRendererAngularComp {
   item: ContentItem;

@@ -12,17 +12,16 @@ import { computedObj } from '../../../shared/signals/signal.utilities';
 import { FeatureDetailsDialogData } from './feature-details-dialog.models';
 
 @Component({
-  selector: 'app-feature-details-dialog',
-  templateUrl: './feature-details-dialog.component.html',
-  standalone: true,
-  imports: [
-    MatCardModule,
-    MatButtonModule,
-    MatIconModule,
-    TippyDirective,
-    SafeHtmlPipe,
-    TranslateModule,
-  ]
+    selector: 'app-feature-details-dialog',
+    templateUrl: './feature-details-dialog.component.html',
+    imports: [
+        MatCardModule,
+        MatButtonModule,
+        MatIconModule,
+        TippyDirective,
+        SafeHtmlPipe,
+        TranslateModule,
+    ]
 })
 export class FeatureDetailsDialogComponent {
   specs = input<FeatureDetailsDialogData>();

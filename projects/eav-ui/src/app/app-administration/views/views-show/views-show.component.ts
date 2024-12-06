@@ -4,10 +4,9 @@ import { Component } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
-  selector: 'app-views-show',
-  templateUrl: './views-show.component.html',
-  standalone: true,
-  imports: [MatIconModule],
+    selector: 'app-views-show',
+    templateUrl: './views-show.component.html',
+    imports: [MatIconModule]
 })
 export class ViewsShowComponent implements ICellRendererAngularComp {
   value: boolean;

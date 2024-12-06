@@ -5,10 +5,9 @@ import { TrueFalseParams } from './true-false.models';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
-  selector: 'app-rest-api-true-false',
-  templateUrl: './true-false.component.html',
-  standalone: true,
-  imports: [MatIconModule],
+    selector: 'app-rest-api-true-false',
+    templateUrl: './true-false.component.html',
+    imports: [MatIconModule]
 })
 export class TrueFalseComponent implements ICellRendererAngularComp {
   icon: string;

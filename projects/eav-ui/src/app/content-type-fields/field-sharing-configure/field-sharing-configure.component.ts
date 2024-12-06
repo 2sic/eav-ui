@@ -26,21 +26,20 @@ const logSpecs = {
 const noInheritGuid = '00000000-0000-0000-0000-000000000000';
 
 @Component({
-  selector: 'app-field-sharing-configure',
-  templateUrl: './field-sharing-configure.component.html',
-  styleUrls: ['./field-sharing-configure.component.scss'],
-  standalone: true,
-  imports: [
-    MatButtonModule,
-    MatIconModule,
-    MatCardModule,
-    MatTableModule,
-    NgClass,
-    NgTemplateOutlet,
-    TranslateModule,
-    FeatureTextInfoComponent,
-    FeatureIconTextComponent,
-  ],
+    selector: 'app-field-sharing-configure',
+    templateUrl: './field-sharing-configure.component.html',
+    styleUrls: ['./field-sharing-configure.component.scss'],
+    imports: [
+        MatButtonModule,
+        MatIconModule,
+        MatCardModule,
+        MatTableModule,
+        NgClass,
+        NgTemplateOutlet,
+        TranslateModule,
+        FeatureTextInfoComponent,
+        FeatureIconTextComponent,
+    ]
 })
 export class ShareOrInheritDialogComponent {
 

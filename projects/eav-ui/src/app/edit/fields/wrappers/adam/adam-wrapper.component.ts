@@ -7,15 +7,14 @@ import { AdamBrowserComponent } from './adam-browser/adam-browser.component';
 import { AdamHintComponent } from './adam-hint/adam-hint.component';
 
 @Component({
-  selector: WrappersCatalog.AdamWrapper,
-  templateUrl: './adam-wrapper.component.html',
-  styleUrls: ['./adam-wrapper.component.scss'],
-  standalone: true,
-  imports: [
-    AdamBrowserComponent,
-    NgClass,
-    AdamHintComponent,
-  ],
+    selector: WrappersCatalog.AdamWrapper,
+    templateUrl: './adam-wrapper.component.html',
+    styleUrls: ['./adam-wrapper.component.scss'],
+    imports: [
+        AdamBrowserComponent,
+        NgClass,
+        AdamHintComponent,
+    ]
 })
 export class AdamWrapperComponent implements OnInit {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;

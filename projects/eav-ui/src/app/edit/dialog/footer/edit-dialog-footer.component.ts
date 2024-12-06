@@ -17,20 +17,19 @@ import { LogsDumpComponent } from './logs-dump/logs-dump.component';
 declare const window: EavWindow;
 
 @Component({
-  selector: 'app-edit-dialog-footer',
-  templateUrl: './edit-dialog-footer.component.html',
-  styleUrls: ['./edit-dialog-footer.component.scss'],
-  standalone: true,
-  imports: [
-    MatCardModule,
-    MatButtonModule,
-    MatIconModule,
-    NgClass,
-    DataDumpComponent,
-    FormulaDesignerComponent,
-    LogsDumpComponent,
-    TippyDirective,
-  ],
+    selector: 'app-edit-dialog-footer',
+    templateUrl: './edit-dialog-footer.component.html',
+    styleUrls: ['./edit-dialog-footer.component.scss'],
+    imports: [
+        MatCardModule,
+        MatButtonModule,
+        MatIconModule,
+        NgClass,
+        DataDumpComponent,
+        FormulaDesignerComponent,
+        LogsDumpComponent,
+        TippyDirective,
+    ]
 })
 export class EditDialogFooterComponent {
 

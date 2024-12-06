@@ -15,18 +15,17 @@ import { ContentExpandAnimation } from "./content-expand.animation";
 import { PreviewHeight } from "./expandable-wrapper.models";
 
 @Component({
-  selector: WrappersCatalog.ExpandableWrapper,
-  templateUrl: './expandable-wrapper.component.html',
-  styleUrls: ['./expandable-wrapper.component.scss'],
-  animations: [ContentExpandAnimation],
-  standalone: true,
-  imports: [
-    FieldHelperTextComponent,
-    DialogPopupComponent,
-    CommonModule,
-    DialogPopupComponent,
-    FieldHelperTextComponent
-],
+    selector: WrappersCatalog.ExpandableWrapper,
+    templateUrl: './expandable-wrapper.component.html',
+    styleUrls: ['./expandable-wrapper.component.scss'],
+    animations: [ContentExpandAnimation],
+    imports: [
+        FieldHelperTextComponent,
+        DialogPopupComponent,
+        CommonModule,
+        DialogPopupComponent,
+        FieldHelperTextComponent
+    ]
 })
 export class ExpandableWrapperComponent implements AfterViewInit, OnDestroy {
   

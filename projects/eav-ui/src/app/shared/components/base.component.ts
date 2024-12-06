@@ -9,8 +9,9 @@ import { Subscription } from 'rxjs';
  * Note that as with time, we wish to get away from these, as we don't want to use many observables any more.
  */
 @Component({
-  selector: 'app-base-component',
-  template: ''
+    selector: 'app-base-component',
+    template: '',
+    standalone: false
 })
 // tslint:disable-next-line:directive-class-suffix
 export abstract class BaseComponent implements OnDestroy {

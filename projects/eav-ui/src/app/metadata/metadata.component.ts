@@ -33,23 +33,22 @@ import { MetadataSaveDialogComponent } from './metadata-save-dialog/metadata-sav
 import { MetadataDto, MetadataItem, MetadataRecommendation } from './models/metadata.model';
 
 @Component({
-  selector: 'app-metadata',
-  templateUrl: './metadata.component.html',
-  styleUrls: ['./metadata.component.scss'],
-  standalone: true,
-  imports: [
-    MatButtonModule,
-    MatIconModule,
-    RouterOutlet,
-    SxcGridModule,
-    MatDialogActions,
-    EcoFabSpeedDialComponent,
-    NgClass,
-    EcoFabSpeedDialTriggerComponent,
-    EcoFabSpeedDialActionsComponent,
-    MatBadgeModule,
-    SafeHtmlPipe,
-  ],
+    selector: 'app-metadata',
+    templateUrl: './metadata.component.html',
+    styleUrls: ['./metadata.component.scss'],
+    imports: [
+        MatButtonModule,
+        MatIconModule,
+        RouterOutlet,
+        SxcGridModule,
+        MatDialogActions,
+        EcoFabSpeedDialComponent,
+        NgClass,
+        EcoFabSpeedDialTriggerComponent,
+        EcoFabSpeedDialActionsComponent,
+        MatBadgeModule,
+        SafeHtmlPipe,
+    ]
 })
 export class MetadataComponent implements OnInit {
 

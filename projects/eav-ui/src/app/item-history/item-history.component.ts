@@ -19,21 +19,20 @@ import { ItemHistoryResult } from './models/item-history-result.model';
 import { VersionsService } from './services/versions.service';
 
 @Component({
-  selector: 'app-item-history',
-  templateUrl: './item-history.component.html',
-  styleUrls: ['./item-history.component.scss'],
-  standalone: true,
-  imports: [
-    MatButtonModule,
-    MatIconModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatOptionModule,
-    MatExpansionModule,
-    MatPaginatorModule,
-    DatePipe,
-    TippyDirective,
-  ],
+    selector: 'app-item-history',
+    templateUrl: './item-history.component.html',
+    styleUrls: ['./item-history.component.scss'],
+    imports: [
+        MatButtonModule,
+        MatIconModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatOptionModule,
+        MatExpansionModule,
+        MatPaginatorModule,
+        DatePipe,
+        TippyDirective,
+    ]
 })
 export class ItemHistoryComponent {
   @HostBinding('className') hostClass = 'dialog-component';

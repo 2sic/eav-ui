@@ -12,18 +12,17 @@ import { View } from '../../models/view.model';
 import { AgActionsAlwaysRefresh } from '../../queries/ag-actions/ag-actions-component';
 
 @Component({
-  selector: 'app-views-actions',
-  templateUrl: './views-actions.component.html',
-  standalone: true,
-  imports: [
-    MatRippleModule,
-    MatIconModule,
-    MatBadgeModule,
-    MatMenuModule,
-    TippyDirective,
-    LightSpeedActionsComponent,
-    CommonModule
-  ]
+    selector: 'app-views-actions',
+    templateUrl: './views-actions.component.html',
+    imports: [
+        MatRippleModule,
+        MatIconModule,
+        MatBadgeModule,
+        MatMenuModule,
+        TippyDirective,
+        LightSpeedActionsComponent,
+        CommonModule
+    ]
 })
 export class ViewsActionsComponent extends AgActionsAlwaysRefresh {
   protected view: View;

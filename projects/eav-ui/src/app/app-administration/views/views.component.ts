@@ -33,19 +33,18 @@ import { ViewsTypeComponent } from './views-type/views-type.component';
 import { calculateViewType } from './views.helpers';
 
 @Component({
-  selector: 'app-views',
-  templateUrl: './views.component.html',
-  styleUrls: ['./views.component.scss'],
-  standalone: true,
-  imports: [
-    MatDialogActions,
-    MatButtonModule,
-    MatIconModule,
-    RouterOutlet,
-    SxcGridModule,
-    DragAndDropDirective,
-    TippyDirective,
-  ],
+    selector: 'app-views',
+    templateUrl: './views.component.html',
+    styleUrls: ['./views.component.scss'],
+    imports: [
+        MatDialogActions,
+        MatButtonModule,
+        MatIconModule,
+        RouterOutlet,
+        SxcGridModule,
+        DragAndDropDirective,
+        TippyDirective,
+    ]
 })
 export class ViewsComponent implements OnInit {
   #dialogSvc = transient(DialogService);

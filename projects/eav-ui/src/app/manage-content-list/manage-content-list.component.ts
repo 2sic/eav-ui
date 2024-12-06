@@ -20,24 +20,23 @@ import { GroupHeader } from './models/group-header.model';
 import { ContentGroupService } from './services/content-group.service';
 
 @Component({
-  selector: 'app-manage-content-list',
-  templateUrl: './manage-content-list.component.html',
-  styleUrls: ['./manage-content-list.component.scss'],
-  standalone: true,
-  imports: [
-    RouterOutlet,
-    CdkScrollable,
-    MatButtonModule,
-    MatIconModule,
-    CdkDropList,
-    CdkDrag,
-    MatDialogActions,
-    TranslateModule,
-    MatDialogModule,
-    TippyDirective,
-    MousedownStopPropagationDirective,
-    JsonPipe,
-  ],
+    selector: 'app-manage-content-list',
+    templateUrl: './manage-content-list.component.html',
+    styleUrls: ['./manage-content-list.component.scss'],
+    imports: [
+        RouterOutlet,
+        CdkScrollable,
+        MatButtonModule,
+        MatIconModule,
+        CdkDropList,
+        CdkDrag,
+        MatDialogActions,
+        TranslateModule,
+        MatDialogModule,
+        TippyDirective,
+        MousedownStopPropagationDirective,
+        JsonPipe,
+    ]
 })
 export class ManageContentListComponent implements OnInit {
   @HostBinding('className') hostClass = 'dialog-component';

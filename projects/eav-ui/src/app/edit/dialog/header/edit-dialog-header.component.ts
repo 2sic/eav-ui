@@ -16,19 +16,18 @@ import { LanguageSwitcherComponent } from './language-switcher/language-switcher
 import { PublishStatusDialogComponent } from './publish-status-dialog/publish-status-dialog.component';
 
 @Component({
-  selector: 'app-edit-dialog-header',
-  templateUrl: './edit-dialog-header.component.html',
-  styleUrls: ['./edit-dialog-header.component.scss'],
-  standalone: true,
-  imports: [
-    MatCardModule,
-    MatButtonModule,
-    MatIconModule,
-    LanguageSwitcherComponent,
-    UpperCasePipe,
-    TranslateModule,
-    TippyDirective,
-  ],
+    selector: 'app-edit-dialog-header',
+    templateUrl: './edit-dialog-header.component.html',
+    styleUrls: ['./edit-dialog-header.component.scss'],
+    imports: [
+        MatCardModule,
+        MatButtonModule,
+        MatIconModule,
+        LanguageSwitcherComponent,
+        UpperCasePipe,
+        TranslateModule,
+        TippyDirective,
+    ]
 })
 export class EditDialogHeaderComponent {
   disabled = input<boolean>();

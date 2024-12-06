@@ -8,18 +8,17 @@ import { MatDividerModule } from '@angular/material/divider';
 import { TippyDirective } from '../../../../../shared/directives/tippy.directive';
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'adam-hint',
-  templateUrl: './adam-hint.component.html',
-  styleUrls: ['./adam-hint.component.scss'],
-  standalone: true,
-  imports: [
-    MatDividerModule,
-    MatIconModule,
-    AsyncPipe,
-    TranslateModule,
-    TippyDirective,
-  ],
+    // tslint:disable-next-line:component-selector
+    selector: 'adam-hint',
+    templateUrl: './adam-hint.component.html',
+    styleUrls: ['./adam-hint.component.scss'],
+    imports: [
+        MatDividerModule,
+        MatIconModule,
+        AsyncPipe,
+        TranslateModule,
+        TippyDirective,
+    ]
 })
 export class AdamHintComponent {
   public features = inject(FeaturesScopedService);

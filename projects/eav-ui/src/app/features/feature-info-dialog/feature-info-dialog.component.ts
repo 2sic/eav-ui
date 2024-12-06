@@ -7,12 +7,11 @@ import { ClipboardService } from "../../shared/services/clipboard.service";
 import { FeatureDetailService } from "../services/feature-detail.service";
 
 @Component({
-  selector: 'app-feature-info-dialog',
-  templateUrl: './feature-info-dialog.component.html',
-  standalone: true,
-  imports: [
-    FeatureDetailsDialogComponent
-  ]
+    selector: 'app-feature-info-dialog',
+    templateUrl: './feature-info-dialog.component.html',
+    imports: [
+        FeatureDetailsDialogComponent
+    ]
 })
 export class FeatureInfoDialogComponent implements OnInit {
   #featureDetailSvc = transient(FeatureDetailService);

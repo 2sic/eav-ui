@@ -21,18 +21,17 @@ import { DataBundlesActionsParams } from './data-bundles-actions/data-bundles-ac
 import { DataBundlesService } from './data-bundles-query.service';
 
 @Component({
-  selector: 'app-data-bundles',
-  standalone: true,
-  imports: [
-    FeatureTextInfoComponent,
-    SxcGridModule,
-    MatButtonModule,
-    MatIconModule,
-    RouterModule,
-    JsonPipe,
-  ],
-  templateUrl: './data-bundles.component.html',
-  styleUrl: './data-bundles.component.scss'
+    selector: 'app-data-bundles',
+    imports: [
+        FeatureTextInfoComponent,
+        SxcGridModule,
+        MatButtonModule,
+        MatIconModule,
+        RouterModule,
+        JsonPipe,
+    ],
+    templateUrl: './data-bundles.component.html',
+    styleUrl: './data-bundles.component.scss'
 })
 export class DataBundlesComponent {
 

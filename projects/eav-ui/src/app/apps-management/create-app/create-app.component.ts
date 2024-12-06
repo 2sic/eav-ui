@@ -15,22 +15,21 @@ import { appNameError, appNamePattern } from '../constants/app.patterns';
 import { AppsListService } from '../services/apps-list.service';
 
 @Component({
-  selector: 'app-create-app',
-  templateUrl: './create-app.component.html',
-  standalone: true,
-  imports: [
-    RouterOutlet,
-    FormsModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    MatOptionModule,
-    MatDialogActions,
-    MatButtonModule,
-    AsyncPipe,
-    FieldHintComponent,
-  ],
+    selector: 'app-create-app',
+    templateUrl: './create-app.component.html',
+    imports: [
+        RouterOutlet,
+        FormsModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatSelectModule,
+        MatOptionModule,
+        MatDialogActions,
+        MatButtonModule,
+        AsyncPipe,
+        FieldHintComponent,
+    ]
 })
 export class CreateAppComponent {
   @HostBinding('className') hostClass = 'dialog-component';

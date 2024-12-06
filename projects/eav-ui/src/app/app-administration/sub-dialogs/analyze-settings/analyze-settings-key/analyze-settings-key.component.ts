@@ -7,14 +7,13 @@ import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { ClipboardService } from '../../../../shared/services/clipboard.service';
 
 @Component({
-  selector: 'app-analyze-settings-key',
-  templateUrl: './analyze-settings-key.component.html',
-  styleUrls: ['./analyze-settings-key.component.scss'],
-  standalone: true,
-  imports: [
-    MatRippleModule,
-    TippyDirective,
-  ],
+    selector: 'app-analyze-settings-key',
+    templateUrl: './analyze-settings-key.component.html',
+    styleUrls: ['./analyze-settings-key.component.scss'],
+    imports: [
+        MatRippleModule,
+        TippyDirective,
+    ]
 })
 export class AnalyzeSettingsKeyComponent implements ICellRendererAngularComp {
   key: string;

@@ -21,19 +21,18 @@ import { TranslateMenuDialogData } from '../translate-menu-dialog/translate-menu
 import { TranslateMenuHelpers } from './translate-menu.helpers';
 
 @Component({
-  selector: 'app-translate-menu',
-  templateUrl: './translate-menu.component.html',
-  styleUrls: ['./translate-menu.component.scss'],
-  standalone: true,
-  imports: [
-    NgClass,
-    MatButtonModule,
-    MatMenuModule,
-    MatIconModule,
-    FeatureIconIndicatorComponent,
-    TranslateModule,
-    TippyDirective,
-  ],
+    selector: 'app-translate-menu',
+    templateUrl: './translate-menu.component.html',
+    styleUrls: ['./translate-menu.component.scss'],
+    imports: [
+        NgClass,
+        MatButtonModule,
+        MatMenuModule,
+        MatIconModule,
+        FeatureIconIndicatorComponent,
+        TranslateModule,
+        TippyDirective,
+    ]
 })
 export class TranslateMenuComponent {
   hideTranslateButton = input<boolean>();

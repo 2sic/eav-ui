@@ -19,20 +19,19 @@ import { InstallerService } from '../../../shared/services/installer.service';
 import { ImportAppPartsService } from '../../services/import-app-parts.service';
 
 @Component({
-  selector: 'app-import-app-parts',
-  templateUrl: './import-app-parts.component.html',
-  styleUrls: ['./import-app-parts.component.scss'],
-  standalone: true,
-  imports: [
-    FileUploadDialogComponent,
-    NgClass,
-    MatDialogModule,
-    MatProgressSpinnerModule,
-    SafeHtmlPipe,
-    DragAndDropDirective,
-    MatButtonModule,
-    MatIconModule,
-  ],
+    selector: 'app-import-app-parts',
+    templateUrl: './import-app-parts.component.html',
+    styleUrls: ['./import-app-parts.component.scss'],
+    imports: [
+        FileUploadDialogComponent,
+        NgClass,
+        MatDialogModule,
+        MatProgressSpinnerModule,
+        SafeHtmlPipe,
+        DragAndDropDirective,
+        MatButtonModule,
+        MatIconModule,
+    ]
 })
 export class ImportAppPartsComponent extends BaseComponent implements OnInit, OnDestroy {
   // Code are copied from file-upload-dialog

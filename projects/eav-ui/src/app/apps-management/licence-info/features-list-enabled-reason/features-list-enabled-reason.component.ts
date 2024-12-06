@@ -5,10 +5,9 @@ import { Feature } from '../../../features/models/feature.model';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 
 @Component({
-  selector: 'app-features-list-enabled-reason',
-  templateUrl: './features-list-enabled-reason.component.html',
-  standalone: true,
-  imports: [TippyDirective],
+    selector: 'app-features-list-enabled-reason',
+    templateUrl: './features-list-enabled-reason.component.html',
+    imports: [TippyDirective]
 })
 export class FeaturesListEnabledReasonComponent implements ICellRendererAngularComp {
   value: boolean;

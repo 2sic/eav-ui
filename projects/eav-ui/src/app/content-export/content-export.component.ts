@@ -18,20 +18,19 @@ import { ContentExport } from './models/content-export.model';
 import { ContentExportService } from './services/content-export.service';
 
 @Component({
-  selector: 'app-content-export',
-  templateUrl: './content-export.component.html',
-  styleUrls: ['./content-export.component.scss'],
-  standalone: true,
-  imports: [
-    FormsModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatOptionModule,
-    MatRadioModule,
-    MatDialogActions,
-    MatButtonModule,
-    AsyncPipe,
-  ],
+    selector: 'app-content-export',
+    templateUrl: './content-export.component.html',
+    styleUrls: ['./content-export.component.scss'],
+    imports: [
+        FormsModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatOptionModule,
+        MatRadioModule,
+        MatDialogActions,
+        MatButtonModule,
+        AsyncPipe,
+    ]
 })
 export class ContentExportComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';

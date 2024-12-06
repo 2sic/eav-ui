@@ -25,17 +25,16 @@ const logSpecs = {
 const jsPlumbUrl = 'https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.14.5/js/jsplumb.min.js';
 
 @Component({
-  selector: 'app-plumb-editor',
-  templateUrl: './plumb-editor.component.html',
-  styles: [':host { display: block; width: 100%; height: 100%; }'],
-  standalone: true,
-  imports: [
-    NgStyle,
-    NgClass,
-    MatIconModule,
-    AsyncPipe,
-    MousedownStopPropagationDirective,
-  ],
+    selector: 'app-plumb-editor',
+    templateUrl: './plumb-editor.component.html',
+    styles: [':host { display: block; width: 100%; height: 100%; }'],
+    imports: [
+        NgStyle,
+        NgClass,
+        MatIconModule,
+        AsyncPipe,
+        MousedownStopPropagationDirective,
+    ]
 })
 export class PlumbEditorComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
 

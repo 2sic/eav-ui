@@ -6,10 +6,9 @@ import { PickerComponent } from '../../picker/picker.component';
 import { NumberPickerLogic } from './number-picker-logic';
 
 @Component({
-  selector: InputTypeCatalog.NumberPicker,
-  templateUrl: '../../picker/picker.component.html',
-  standalone: true,
-  imports: PickerImports,
+    selector: InputTypeCatalog.NumberPicker,
+    templateUrl: '../../picker/picker.component.html',
+    imports: PickerImports
 })
 export class NumberPickerComponent extends PickerComponent implements OnInit, OnDestroy {
 

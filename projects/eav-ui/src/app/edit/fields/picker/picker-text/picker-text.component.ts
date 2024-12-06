@@ -7,15 +7,14 @@ import { computedObj } from '../../../../shared/signals/signal.utilities';
 import { PickerPartBaseComponent } from '../picker-part-base.component';
 
 @Component({
-  selector: 'app-picker-text',
-  templateUrl: './picker-text.component.html',
-  standalone: true,
-  imports: [
-    MatFormFieldModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatInputModule,
-  ],
+    selector: 'app-picker-text',
+    templateUrl: './picker-text.component.html',
+    imports: [
+        MatFormFieldModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatInputModule,
+    ]
 })
 export class PickerTextComponent extends PickerPartBaseComponent {
   

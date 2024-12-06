@@ -7,12 +7,11 @@ import { TranslateModule } from '@ngx-translate/core';
 @Component({
     selector: 'app-auto-translate-disabled-warning-dialog',
     templateUrl: './auto-translate-disabled-warning-dialog.component.html',
-    standalone: true,
     imports: [
         MatCardModule,
         MatButtonModule,
         TranslateModule,
-    ],
+    ]
 })
 export class AutoTranslateDisabledWarningDialog implements OnInit {
   constructor(

@@ -34,25 +34,24 @@ import { FeaturesStatusParams } from './features-status/features-status.models';
 import { LicensesOrderPipe } from './licenses-order.pipe';
 
 @Component({
-  selector: 'app-license-info',
-  templateUrl: './license-info.component.html',
-  styleUrls: ['./license-info.component.scss'],
-  standalone: true,
-  imports: [
-    MatExpansionModule,
-    MatIconModule,
-    NgClass,
-    SxcGridModule,
-    AgGridHeightDirective,
-    MatDialogActions,
-    MatButtonModule,
-    RouterOutlet,
-    AsyncPipe,
-    LicensesOrderPipe,
-    ActiveFeaturesCountPipe,
-    TippyDirective,
-    JsonPipe,
-  ],
+    selector: 'app-license-info',
+    templateUrl: './license-info.component.html',
+    styleUrls: ['./license-info.component.scss'],
+    imports: [
+        MatExpansionModule,
+        MatIconModule,
+        NgClass,
+        SxcGridModule,
+        AgGridHeightDirective,
+        MatDialogActions,
+        MatButtonModule,
+        RouterOutlet,
+        AsyncPipe,
+        LicensesOrderPipe,
+        ActiveFeaturesCountPipe,
+        TippyDirective,
+        JsonPipe,
+    ]
 })
 export class LicenseInfoComponent implements OnInit {
   @ViewChild(AgGridAngular) private gridRef?: AgGridAngular;

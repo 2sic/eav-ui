@@ -7,14 +7,13 @@ import { FeaturesScopedService } from '../../../../features/features-scoped.serv
 import { FeatureIconComponent } from '../../../../features/feature-icon/feature-icon.component';
 
 @Component({
-  selector: WrappersCatalog.FeatureWarningWrapper,
-  templateUrl: './feature-warning-wrapper.component.html',
-  styleUrls: ['./feature-warning-wrapper.component.scss'],
-  standalone: true,
-  imports: [
-    NgClass,
-    FeatureIconComponent,
-  ],
+    selector: WrappersCatalog.FeatureWarningWrapper,
+    templateUrl: './feature-warning-wrapper.component.html',
+    styleUrls: ['./feature-warning-wrapper.component.scss'],
+    imports: [
+        NgClass,
+        FeatureIconComponent,
+    ]
 })
 export class FeatureWarningWrapperComponent {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;

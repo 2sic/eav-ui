@@ -8,14 +8,13 @@ import { JsonHelpers } from '../../../../shared/helpers/json.helpers';
 import { ClipboardService } from '../../../../shared/services/clipboard.service';
 
 @Component({
-  selector: 'app-analyze-settings-value',
-  templateUrl: './analyze-settings-value.component.html',
-  styleUrls: ['./analyze-settings-value.component.scss'],
-  standalone: true,
-  imports: [
-    MatRippleModule,
-    TippyDirective,
-  ],
+    selector: 'app-analyze-settings-value',
+    templateUrl: './analyze-settings-value.component.html',
+    styleUrls: ['./analyze-settings-value.component.scss'],
+    imports: [
+        MatRippleModule,
+        TippyDirective,
+    ]
 })
 export class AnalyzeSettingsValueComponent implements ICellRendererAngularComp {
   value: string;

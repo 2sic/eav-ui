@@ -18,18 +18,17 @@ import { FileUploadDialogData, FileUploadMessageTypes, FileUploadResult, UploadT
 
 
 @Component({
-  selector: 'app-file-upload-dialog',
-  templateUrl: './file-upload-dialog.component.html',
-  styleUrls: ['./file-upload-dialog.component.scss'],
-  standalone: true,
-  imports: [
-    NgClass,
-    MatDialogModule,
-    MatProgressSpinnerModule,
-    SafeHtmlPipe,
-    DragAndDropDirective,
-    MatButtonModule,
-  ]
+    selector: 'app-file-upload-dialog',
+    templateUrl: './file-upload-dialog.component.html',
+    styleUrls: ['./file-upload-dialog.component.scss'],
+    imports: [
+        NgClass,
+        MatDialogModule,
+        MatProgressSpinnerModule,
+        SafeHtmlPipe,
+        DragAndDropDirective,
+        MatButtonModule,
+    ]
 })
 export class FileUploadDialogComponent extends BaseComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';

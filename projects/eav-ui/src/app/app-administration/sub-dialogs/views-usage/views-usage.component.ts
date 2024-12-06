@@ -17,17 +17,16 @@ import { ViewsUsageStatusFilterComponent } from './views-usage-status-filter/vie
 import { buildData } from './views-usage.helpers';
 
 @Component({
-  selector: 'app-views-usage',
-  templateUrl: './views-usage.component.html',
-  standalone: true,
-  imports: [
-    MatButtonModule,
-    MatIconModule,
-    RouterOutlet,
-    SxcGridModule,
-    TippyDirective,
-    MatDialogModule,
-  ],
+    selector: 'app-views-usage',
+    templateUrl: './views-usage.component.html',
+    imports: [
+        MatButtonModule,
+        MatIconModule,
+        RouterOutlet,
+        SxcGridModule,
+        TippyDirective,
+        MatDialogModule,
+    ]
 })
 export class ViewsUsageComponent {
   gridOptions = this.buildGridOptions();

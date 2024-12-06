@@ -13,15 +13,14 @@ import { AnalyzeSettingsValueComponent } from '../analyze-settings-value/analyze
 import { AnalyzeParts, SettingsStackItem } from '../analyze-settings.models';
 
 @Component({
-  selector: 'app-settings-item-details',
-  templateUrl: './settings-item-details.component.html',
-  styleUrls: ['./settings-item-details.component.scss'],
-  standalone: true,
-  imports: [
-    MatButtonModule,
-    MatIconModule,
-    SxcGridModule,
-  ],
+    selector: 'app-settings-item-details',
+    templateUrl: './settings-item-details.component.html',
+    styleUrls: ['./settings-item-details.component.scss'],
+    imports: [
+        MatButtonModule,
+        MatIconModule,
+        SxcGridModule,
+    ]
 })
 export class SettingsItemDetailsComponent implements OnInit {
   part: Of<typeof AnalyzeParts>;

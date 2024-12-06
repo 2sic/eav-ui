@@ -13,17 +13,15 @@ import { Context } from '../../shared/services/context';
 import { CopilotService } from './copilot-service';
 
 @Component({
-  selector: 'app-copilot-generator',
-  standalone: true,
-
-  templateUrl: './copilot-generator.component.html',
-  imports: [
-    MatSelectModule,
-    MatButtonModule,
-    MatCardModule,
-    MatIconModule,
-    CommonModule,
-  ]
+    selector: 'app-copilot-generator',
+    templateUrl: './copilot-generator.component.html',
+    imports: [
+        MatSelectModule,
+        MatButtonModule,
+        MatCardModule,
+        MatIconModule,
+        CommonModule,
+    ]
 })
 export class CopilotGeneratorComponent {
 

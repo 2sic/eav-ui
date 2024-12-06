@@ -28,25 +28,24 @@ import { InfoTemplate } from './system-info.models';
 declare const window: EavWindow;
 
 @Component({
-  selector: 'app-system-info',
-  templateUrl: './system-info.component.html',
-  standalone: true,
-  imports: [
-    MatCardModule,
-    MatIconModule,
-    RouterLink,
-    NgTemplateOutlet,
-    MatButtonModule,
-    FormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    RouterOutlet,
-    FeatureTextInfoComponent,
-    FieldHintComponent,
-    TippyDirective,
-    DocsLinkHelperComponent,
-    JsonPipe,
-  ],
+    selector: 'app-system-info',
+    templateUrl: './system-info.component.html',
+    imports: [
+        MatCardModule,
+        MatIconModule,
+        RouterLink,
+        NgTemplateOutlet,
+        MatButtonModule,
+        FormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        RouterOutlet,
+        FeatureTextInfoComponent,
+        FieldHintComponent,
+        TippyDirective,
+        DocsLinkHelperComponent,
+        JsonPipe,
+    ]
 })
 export class SystemInfoComponent implements OnInit {
 

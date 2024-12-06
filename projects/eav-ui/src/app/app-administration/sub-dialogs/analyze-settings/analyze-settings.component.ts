@@ -22,20 +22,19 @@ import { AnalyzeSettingsValueComponent } from './analyze-settings-value/analyze-
 import { AnalyzeParts } from './analyze-settings.models';
 
 @Component({
-  selector: 'app-analyze-settings',
-  templateUrl: './analyze-settings.component.html',
-  styleUrls: ['./analyze-settings.component.scss'],
-  standalone: true,
-  imports: [
-    MatButtonModule,
-    MatIconModule,
-    RouterOutlet,
-    MatFormFieldModule,
-    MatSelectModule,
-    FormsModule,
-    MatOptionModule,
-    SxcGridModule,
-  ],
+    selector: 'app-analyze-settings',
+    templateUrl: './analyze-settings.component.html',
+    styleUrls: ['./analyze-settings.component.scss'],
+    imports: [
+        MatButtonModule,
+        MatIconModule,
+        RouterOutlet,
+        MatFormFieldModule,
+        MatSelectModule,
+        FormsModule,
+        MatOptionModule,
+        SxcGridModule,
+    ]
 })
 export class AnalyzeSettingsComponent implements OnInit {
   part: Of<typeof AnalyzeParts>;

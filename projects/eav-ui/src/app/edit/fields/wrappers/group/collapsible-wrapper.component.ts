@@ -14,17 +14,16 @@ import { EmptyDefaultLogic } from './collapsible-wrapper-logic';
 
 
 @Component({
-  selector: WrappersCatalog.CollapsibleWrapper,
-  templateUrl: './collapsible-wrapper.component.html',
-  styleUrls: ['./collapsible-wrapper.component.scss'],
-  standalone: true,
-  imports: [
-    MatCardModule,
-    NgClass,
-    MatIconModule,
-    ChangeAnchorTargetDirective,
-    SafeHtmlPipe,
-  ],
+    selector: WrappersCatalog.CollapsibleWrapper,
+    templateUrl: './collapsible-wrapper.component.html',
+    styleUrls: ['./collapsible-wrapper.component.scss'],
+    imports: [
+        MatCardModule,
+        NgClass,
+        MatIconModule,
+        ChangeAnchorTargetDirective,
+        SafeHtmlPipe,
+    ]
 })
 export class CollapsibleWrapperComponent {
 

@@ -63,34 +63,32 @@ const logSpecs = {
  * - Footer
  */
 @Component({
-  selector: 'app-edit-dialog-main',
-  templateUrl: './edit-dialog-main.component.html',
-  styleUrls: ['./edit-dialog-main.component.scss'],
-  standalone: true,
-  imports: [
-    MatDialogActions,
-    NgClass,
-    EditDialogHeaderComponent,
-    CdkScrollable,
-    FormSlideDirective,
-    EntityFormBuilderComponent,
-    MatRippleModule,
-    MatIconModule,
-    EditDialogFooterComponent,
-    AsyncPipe,
-    TranslateModule,
-    ...ExtendedFabSpeedDialImports,
-    ToggleDebugDirective,
-  ],
-  providers: [
-    EditRoutingService,
-    FormsStateService,
-    // This is shared across all entities on this form
-    FormulaDesignerService,
-
-    // TODO: probably move to each picker component (Errors)
-    PickerTreeDataHelper,
-  ],
+    selector: 'app-edit-dialog-main',
+    templateUrl: './edit-dialog-main.component.html',
+    styleUrls: ['./edit-dialog-main.component.scss'],
+    imports: [
+        MatDialogActions,
+        NgClass,
+        EditDialogHeaderComponent,
+        CdkScrollable,
+        FormSlideDirective,
+        EntityFormBuilderComponent,
+        MatRippleModule,
+        MatIconModule,
+        EditDialogFooterComponent,
+        AsyncPipe,
+        TranslateModule,
+        ...ExtendedFabSpeedDialImports,
+        ToggleDebugDirective,
+    ],
+    providers: [
+        EditRoutingService,
+        FormsStateService,
+        // This is shared across all entities on this form
+        FormulaDesignerService,
+        // TODO: probably move to each picker component (Errors)
+        PickerTreeDataHelper,
+    ]
 })
 export class EditDialogMainComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
 

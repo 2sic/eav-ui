@@ -16,7 +16,6 @@ import { isCtrlS } from '../../main/keyboard-shortcuts';
     selector: 'app-publish-status-dialog',
     templateUrl: './publish-status-dialog.component.html',
     styleUrls: ['./publish-status-dialog.component.scss'],
-    standalone: true,
     imports: [
         MatCardModule,
         MatListModule,
@@ -24,7 +23,7 @@ import { isCtrlS } from '../../main/keyboard-shortcuts';
         MatIconModule,
         AsyncPipe,
         TranslateModule,
-    ],
+    ]
 })
 export class PublishStatusDialogComponent {
   PublishModes = PublishModes;

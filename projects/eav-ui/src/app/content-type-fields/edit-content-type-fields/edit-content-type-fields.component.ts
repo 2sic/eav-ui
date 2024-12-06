@@ -27,25 +27,24 @@ import { calculateDataTypes, DataType } from './edit-content-type-fields.helpers
 import { ReservedNamesValidatorDirective } from './reserved-names.directive';
 
 @Component({
-  selector: 'app-edit-content-type-fields',
-  templateUrl: './edit-content-type-fields.component.html',
-  styleUrls: ['./edit-content-type-fields.component.scss'],
-  standalone: true,
-  imports: [
-    FormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    ReservedNamesValidatorDirective,
-    MatSelectModule,
-    MatIconModule,
-    MatOptionModule,
-    NgClass,
-    MatDialogActions,
-    MatButtonModule,
-    AsyncPipe,
-    TranslateModule,
-    FieldHintComponent,
-  ],
+    selector: 'app-edit-content-type-fields',
+    templateUrl: './edit-content-type-fields.component.html',
+    styleUrls: ['./edit-content-type-fields.component.scss'],
+    imports: [
+        FormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        ReservedNamesValidatorDirective,
+        MatSelectModule,
+        MatIconModule,
+        MatOptionModule,
+        NgClass,
+        MatDialogActions,
+        MatButtonModule,
+        AsyncPipe,
+        TranslateModule,
+        FieldHintComponent,
+    ]
 })
 export class EditContentTypeFieldsComponent extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
   @HostBinding('className') hostClass = 'dialog-component';

@@ -18,17 +18,16 @@ import { LanguagesPermissionsActionsComponent } from './languages-permissions-ac
 import { LanguagesPermissionsActionsParams } from './languages-permissions-actions/languages-permissions-actions.models';
 
 @Component({
-  selector: 'app-language-permissions',
-  templateUrl: './language-permissions.component.html',
-  standalone: true,
-  imports: [
-    MatButtonModule,
-    MatIconModule,
-    RouterOutlet,
-    MatDialogActions,
-    SxcGridModule,
-    JsonPipe,
-  ],
+    selector: 'app-language-permissions',
+    templateUrl: './language-permissions.component.html',
+    imports: [
+        MatButtonModule,
+        MatIconModule,
+        RouterOutlet,
+        MatDialogActions,
+        SxcGridModule,
+        JsonPipe,
+    ]
 })
 export class LanguagePermissionsComponent implements OnInit {
   gridOptions: GridOptions = this.#buildGridOptions();

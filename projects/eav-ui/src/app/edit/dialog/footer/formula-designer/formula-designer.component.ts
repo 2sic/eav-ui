@@ -33,25 +33,24 @@ import { SelectTargets } from './formula-designer.models';
 import { SnippetLabelSizePipe } from './snippet-label-size.pipe';
 
 @Component({
-  selector: 'app-formula-designer',
-  templateUrl: './formula-designer.component.html',
-  styleUrls: ['./formula-designer.component.scss'],
-  standalone: true,
-  imports: [
-    MatFormFieldModule,
-    MatSelectModule,
-    FormsModule,
-    MatOptionModule,
-    NgClass,
-    MatInputModule,
-    MatButtonModule,
-    MatIconModule,
-    MonacoEditorComponent,
-    MatMenuModule,
-    JsonPipe,
-    SnippetLabelSizePipe,
-    TippyDirective,
-  ],
+    selector: 'app-formula-designer',
+    templateUrl: './formula-designer.component.html',
+    styleUrls: ['./formula-designer.component.scss'],
+    imports: [
+        MatFormFieldModule,
+        MatSelectModule,
+        FormsModule,
+        MatOptionModule,
+        NgClass,
+        MatInputModule,
+        MatButtonModule,
+        MatIconModule,
+        MonacoEditorComponent,
+        MatMenuModule,
+        JsonPipe,
+        SnippetLabelSizePipe,
+        TippyDirective,
+    ]
 })
 export class FormulaDesignerComponent implements OnInit, OnDestroy {
 

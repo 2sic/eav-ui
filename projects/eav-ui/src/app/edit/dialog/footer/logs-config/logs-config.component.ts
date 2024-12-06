@@ -16,24 +16,23 @@ import { ConfigEditorDialogComponent } from '../logs-config/config-editor-dialog
 import { SpecsEditorDialogComponent } from '../logs-config/specs-editor-dialog/specs-editor-dialog.component';
 
 @Component({
-  selector: 'app-logs-config',
-  templateUrl: './logs-config.component.html',
-  styleUrls: ['./logs-config.component.scss'],
-  standalone: true,
-  imports: [
-    NgClass,
-    AsyncPipe,
-    DatePipe,
-    CommonModule,
-    MatIconModule,
-    MatButtonModule,
-    TippyDirective,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatOptionModule,
-    FormsModule,
-    MatInputModule,
-  ],
+    selector: 'app-logs-config',
+    templateUrl: './logs-config.component.html',
+    styleUrls: ['./logs-config.component.scss'],
+    imports: [
+        NgClass,
+        AsyncPipe,
+        DatePipe,
+        CommonModule,
+        MatIconModule,
+        MatButtonModule,
+        TippyDirective,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatOptionModule,
+        FormsModule,
+        MatInputModule,
+    ]
 })
 export class LogsConfigComponent {
   LogSeverities = LogSeverities;

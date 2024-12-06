@@ -20,21 +20,20 @@ import { DialogConfigAppService } from '../services/dialog-config-app.service';
 import { AppAdminMenu } from './app-admin-menu';
 
 @Component({
-  selector: 'app-app-admin-main',
-  templateUrl: './app-admin-main.component.html',
-  styleUrls: ['./app-admin-main.component.scss'],
-  standalone: true,
-  imports: [
-    MatToolbarModule,
-    MatIconModule,
-    BreadcrumbModule,
-    MatButtonModule,
-    MatSidenavModule,
-    RouterOutlet,
-    AsyncPipe,
-    NavItemListComponent,
-    ToggleDebugDirective,
-  ],
+    selector: 'app-app-admin-main',
+    templateUrl: './app-admin-main.component.html',
+    styleUrls: ['./app-admin-main.component.scss'],
+    imports: [
+        MatToolbarModule,
+        MatIconModule,
+        BreadcrumbModule,
+        MatButtonModule,
+        MatSidenavModule,
+        RouterOutlet,
+        AsyncPipe,
+        NavItemListComponent,
+        ToggleDebugDirective,
+    ]
 })
 export class AppAdminMainComponent implements OnInit {
 

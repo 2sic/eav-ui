@@ -34,28 +34,27 @@ const logSpecs = {
 }
 
 @Component({
-  selector: 'app-picker-search',
-  templateUrl: './picker-search.component.html',
-  styleUrls: ['./picker-search.component.scss'],
-  standalone: true,
-  imports: [
-    MatFormFieldModule,
-    FormsModule,
-    ReactiveFormsModule,
-    NgClass,
-    MatInputModule,
-    MatAutocompleteModule,
-    MatButtonModule,
-    MatIconModule,
-    MatOptionModule,
-    MatTreeModule,
-    TranslateModule,
-    PickerItemButtonsComponent,
-    ClickStopPropagationDirective,
-    TippyDirective,
-    PickerPreviewLabelComponent,
-    PickerItemPreviewComponent,
-  ]
+    selector: 'app-picker-search',
+    templateUrl: './picker-search.component.html',
+    styleUrls: ['./picker-search.component.scss'],
+    imports: [
+        MatFormFieldModule,
+        FormsModule,
+        ReactiveFormsModule,
+        NgClass,
+        MatInputModule,
+        MatAutocompleteModule,
+        MatButtonModule,
+        MatIconModule,
+        MatOptionModule,
+        MatTreeModule,
+        TranslateModule,
+        PickerItemButtonsComponent,
+        ClickStopPropagationDirective,
+        TippyDirective,
+        PickerPreviewLabelComponent,
+        PickerItemPreviewComponent,
+    ]
 })
 export class PickerSearchComponent extends PickerPartBaseComponent implements OnInit {
 

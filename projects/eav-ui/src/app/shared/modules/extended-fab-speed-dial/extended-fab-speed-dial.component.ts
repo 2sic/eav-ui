@@ -15,19 +15,18 @@ import { ExtendedFabSpeedDialTriggerDirective } from './extended-fab-speed-dial-
  * So never import this component directly, but instead import the ExtendedFabSpeedDialImports.
  */
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'extended-fab-speed-dial',
-  templateUrl: './extended-fab-speed-dial.component.html',
-  styleUrls: ['./extended-fab-speed-dial.component.scss'],
-  encapsulation: ViewEncapsulation.None,
-  standalone: true,
-  imports: [
-    ExtendedFabSpeedDialTriggerContentDirective,
-    ExtendedFabSpeedDialActionsContentDirective,
-    ExtendedFabSpeedDialTriggerDirective,
-    ExtendedFabSpeedDialActionDirective,
-    NgTemplateOutlet
-  ],
+    // tslint:disable-next-line:component-selector
+    selector: 'extended-fab-speed-dial',
+    templateUrl: './extended-fab-speed-dial.component.html',
+    styleUrls: ['./extended-fab-speed-dial.component.scss'],
+    encapsulation: ViewEncapsulation.None,
+    imports: [
+        ExtendedFabSpeedDialTriggerContentDirective,
+        ExtendedFabSpeedDialActionsContentDirective,
+        ExtendedFabSpeedDialTriggerDirective,
+        ExtendedFabSpeedDialActionDirective,
+        NgTemplateOutlet
+    ]
 })
 export class ExtendedFabSpeedDialComponent extends BaseComponent implements AfterContentInit, OnDestroy {
   @ContentChild(ExtendedFabSpeedDialTriggerContentDirective) trigger: ExtendedFabSpeedDialTriggerContentDirective;

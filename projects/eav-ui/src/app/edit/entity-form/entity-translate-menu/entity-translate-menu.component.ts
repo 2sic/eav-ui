@@ -17,18 +17,17 @@ import { FieldsTranslateService } from '../../state/fields-translate.service';
 import { ItemService } from '../../state/item.service';
 
 @Component({
-  selector: 'app-entity-translate-menu',
-  templateUrl: './entity-translate-menu.component.html',
-  styleUrls: ['./entity-translate-menu.component.scss'],
-  standalone: true,
-  imports: [
-    MatButtonModule,
-    MatMenuModule,
-    MatIconModule,
-    FeatureIconIndicatorComponent,
-    UpperCasePipe,
-    TranslateModule,
-  ],
+    selector: 'app-entity-translate-menu',
+    templateUrl: './entity-translate-menu.component.html',
+    styleUrls: ['./entity-translate-menu.component.scss'],
+    imports: [
+        MatButtonModule,
+        MatMenuModule,
+        MatIconModule,
+        FeatureIconIndicatorComponent,
+        UpperCasePipe,
+        TranslateModule,
+    ]
 })
 export class EntityTranslateMenuComponent {
   entityGuid = input<string>();

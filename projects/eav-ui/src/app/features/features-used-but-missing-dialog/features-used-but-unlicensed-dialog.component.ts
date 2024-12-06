@@ -18,18 +18,17 @@ const logSpecs = {
 };
 
 @Component({
-  selector: 'app-features-used-but-unlicensed-dialog',
-  templateUrl: './features-used-but-unlicensed-dialog.component.html',
-  standalone: true,
-  imports: [
-    MatCardModule,
-    MatButtonModule,
-    MatIconModule,
-    TranslateModule,
-    TippyDirective,
-    SafeHtmlPipe,
-    FeatureDetailsDialogComponent,
-  ]
+    selector: 'app-features-used-but-unlicensed-dialog',
+    templateUrl: './features-used-but-unlicensed-dialog.component.html',
+    imports: [
+        MatCardModule,
+        MatButtonModule,
+        MatIconModule,
+        TranslateModule,
+        TippyDirective,
+        SafeHtmlPipe,
+        FeatureDetailsDialogComponent,
+    ]
 })
 export class FeaturesUsedButUnlicensedComponent {
 

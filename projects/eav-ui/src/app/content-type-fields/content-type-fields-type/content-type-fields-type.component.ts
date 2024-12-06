@@ -6,13 +6,12 @@ import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { calculateTypeIcon } from '../content-type-fields.helpers';
 
 @Component({
-  selector: 'app-content-type-fields-type',
-  templateUrl: './content-type-fields-type.component.html',
-  standalone: true,
-  imports: [
-    MatIconModule,
-    TippyDirective,
-  ],
+    selector: 'app-content-type-fields-type',
+    templateUrl: './content-type-fields-type.component.html',
+    imports: [
+        MatIconModule,
+        TippyDirective,
+    ]
 })
 export class ContentTypeFieldsTypeComponent implements ICellRendererAngularComp {
   value: string;

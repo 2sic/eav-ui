@@ -11,15 +11,14 @@ import { WebApi } from '../../models/web-api.model';
 import { WebApiActionsParams } from './web-api-actions.models';
 
 @Component({
-  selector: 'app-web-api-actions',
-  templateUrl: './web-api-actions.component.html',
-  standalone: true,
-  imports: [
-    MatRippleModule,
-    MatIconModule,
-    MatMenuModule,
-    TippyDirective,
-  ],
+    selector: 'app-web-api-actions',
+    templateUrl: './web-api-actions.component.html',
+    imports: [
+        MatRippleModule,
+        MatIconModule,
+        MatMenuModule,
+        TippyDirective,
+    ]
 })
 export class WebApiActionsComponent implements ICellRendererAngularComp {
   enableCode: boolean;

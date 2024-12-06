@@ -13,19 +13,18 @@ import { DialogRoutingService } from '../../shared/routing/dialog-routing.servic
 import { PipelinesService } from '../services';
 
 @Component({
-  selector: 'app-web-api-rest-api',
-  standalone: true,
-  imports: [
-    MatSelectModule,
-    MatButtonModule,
-    MatCardModule,
-    MatIconModule,
-    ReactiveFormsModule,
-    DevRestQueryComponent,
-    RouterOutlet,
-    SxcGridModule,
-  ],
-  templateUrl: './queries-rest-api.component.html',
+    selector: 'app-web-api-rest-api',
+    imports: [
+        MatSelectModule,
+        MatButtonModule,
+        MatCardModule,
+        MatIconModule,
+        ReactiveFormsModule,
+        DevRestQueryComponent,
+        RouterOutlet,
+        SxcGridModule,
+    ],
+    templateUrl: './queries-rest-api.component.html'
 })
 export class QueriesRestApiComponent {
   #pipelinesSvc = transient(PipelinesService);

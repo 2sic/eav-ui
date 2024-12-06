@@ -15,22 +15,21 @@ import { ClipboardService } from '../../../../..//shared/services/clipboard.serv
 import { MonacoEditorComponent } from '../../../../../monaco-editor/monaco-editor.component';
 import { TippyDirective } from '../../../../../shared/directives/tippy.directive';
 @Component({
-  standalone: true,
-  imports: [
-    MatDialogModule,
-    FormsModule,
-    MonacoEditorComponent,
-    MatButtonModule,
-    MatDialogActions,
-    MatDialogClose,
-    MatDialogContent,
-    MatDialogTitle,
-    ClipboardModule,
-    MatIconModule,
-    TippyDirective,
-  ],
-  selector: 'app-monaco-editor-dialog',
-  templateUrl: './config-editor-dialog.component.html',
+    imports: [
+        MatDialogModule,
+        FormsModule,
+        MonacoEditorComponent,
+        MatButtonModule,
+        MatDialogActions,
+        MatDialogClose,
+        MatDialogContent,
+        MatDialogTitle,
+        ClipboardModule,
+        MatIconModule,
+        TippyDirective,
+    ],
+    selector: 'app-monaco-editor-dialog',
+    templateUrl: './config-editor-dialog.component.html'
 })
 export class ConfigEditorDialogComponent {
 

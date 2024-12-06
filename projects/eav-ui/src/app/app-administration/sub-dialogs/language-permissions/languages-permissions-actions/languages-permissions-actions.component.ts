@@ -10,16 +10,15 @@ import { SiteLanguagePermissions } from '../../../../apps-management/models/site
 import { LanguagesPermissionsActionsParams } from './languages-permissions-actions.models';
 
 @Component({
-  selector: 'app-languages-permissions-actions',
-  templateUrl: './languages-permissions-actions.component.html',
-  standalone: true,
-  imports: [
-    MatRippleModule,
-    MatIconModule,
-    MatBadgeModule,
-    TippyDirective,
-    JsonPipe
-  ],
+    selector: 'app-languages-permissions-actions',
+    templateUrl: './languages-permissions-actions.component.html',
+    imports: [
+        MatRippleModule,
+        MatIconModule,
+        MatBadgeModule,
+        TippyDirective,
+        JsonPipe
+    ]
 })
 export class LanguagesPermissionsActionsComponent implements ICellRendererAngularComp {
   language: SiteLanguagePermissions;

@@ -10,14 +10,13 @@ import { CustomGpsLogic } from './custom-gps-logic';
 import { StringWysiwygLogic } from './string-wysiwyg-logic';
 
 @Component({
-  selector: InputTypeCatalog.ExternalWebComponent,
-  templateUrl: './external-web-component.component.html',
-  standalone: true,
-  imports: [
-    MatProgressSpinnerModule,
-    ConnectorComponent,
-    AsyncPipe,
-  ],
+    selector: InputTypeCatalog.ExternalWebComponent,
+    templateUrl: './external-web-component.component.html',
+    imports: [
+        MatProgressSpinnerModule,
+        ConnectorComponent,
+        AsyncPipe,
+    ]
 })
 export class ExternalWebComponentComponent {
 

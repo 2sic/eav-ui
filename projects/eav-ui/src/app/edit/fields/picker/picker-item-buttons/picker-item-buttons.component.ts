@@ -9,16 +9,15 @@ import { PickerFeaturesItem } from '../picker-features.model';
 import { PickerPartBaseComponent } from '../picker-part-base.component';
 
 @Component({
-  standalone: true,
-  selector: 'app-picker-item-buttons',
-  templateUrl: './picker-item-buttons.component.html',
-  styleUrl: './picker-item-buttons.component.scss',
-  imports: [
-    MatButtonModule,
-    MatIconModule,
-    TippyDirective,
-    ClickStopPropagationDirective,
-  ],
+    selector: 'app-picker-item-buttons',
+    templateUrl: './picker-item-buttons.component.html',
+    styleUrl: './picker-item-buttons.component.scss',
+    imports: [
+        MatButtonModule,
+        MatIconModule,
+        TippyDirective,
+        ClickStopPropagationDirective,
+    ]
 })
 export class PickerItemButtonsComponent extends PickerPartBaseComponent {
 

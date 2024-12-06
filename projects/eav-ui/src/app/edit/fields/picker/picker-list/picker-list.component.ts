@@ -13,21 +13,20 @@ import { PickerPartBaseComponent } from '../picker-part-base.component';
 import { ReorderIndexes } from './reorder-index.models';
 
 @Component({
-  selector: 'app-picker-list',
-  templateUrl: './picker-list.component.html',
-  styleUrls: ['./picker-list.component.scss'],
-  standalone: true,
-  imports: [
-    MatFormFieldModule,
-    MatIconModule,
-    MatButtonModule,
-    NgClass,
-    CdkDropList,
-    CdkDrag,
-    PickerItemButtonsComponent,
-    TippyDirective,
-    MousedownStopPropagationDirective,
-  ],
+    selector: 'app-picker-list',
+    templateUrl: './picker-list.component.html',
+    styleUrls: ['./picker-list.component.scss'],
+    imports: [
+        MatFormFieldModule,
+        MatIconModule,
+        MatButtonModule,
+        NgClass,
+        CdkDropList,
+        CdkDrag,
+        PickerItemButtonsComponent,
+        TippyDirective,
+        MousedownStopPropagationDirective,
+    ]
 })
 export class PickerListComponent extends PickerPartBaseComponent {
   

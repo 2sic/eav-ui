@@ -5,11 +5,10 @@ import { ExtendedColDef } from '../models/extended-col-def.model';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 
 @Component({
-  selector: 'app-content-items-entity',
-  templateUrl: './content-items-entity.component.html',
-  styleUrls: ['./content-items-entity.component.scss'],
-  standalone: true,
-  imports: [TippyDirective,],
+    selector: 'app-content-items-entity',
+    templateUrl: './content-items-entity.component.html',
+    styleUrls: ['./content-items-entity.component.scss'],
+    imports: [TippyDirective,]
 })
 export class ContentItemsEntityComponent implements ICellRendererAngularComp {
   encodedValue: string;

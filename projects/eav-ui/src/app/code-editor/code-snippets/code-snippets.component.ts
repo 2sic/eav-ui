@@ -11,20 +11,19 @@ import { SnippetsSets } from '../models/snippet.model';
 import { ObjectToArrayPipe } from './object-to-array.pipe';
 
 @Component({
-  selector: 'app-code-snippets',
-  templateUrl: './code-snippets.component.html',
-  styleUrls: ['./code-snippets.component.scss'],
-  standalone: true,
-  imports: [
-    MatIconModule,
-    MatRippleModule,
-    KeyValuePipe,
-    TranslateModule,
-    ObjectToArrayPipe,
-    ClickStopPropagationDirective,
-    TippyDirective,
-    SafeHtmlPipe,
-  ],
+    selector: 'app-code-snippets',
+    templateUrl: './code-snippets.component.html',
+    styleUrls: ['./code-snippets.component.scss'],
+    imports: [
+        MatIconModule,
+        MatRippleModule,
+        KeyValuePipe,
+        TranslateModule,
+        ObjectToArrayPipe,
+        ClickStopPropagationDirective,
+        TippyDirective,
+        SafeHtmlPipe,
+    ]
 })
 export class CodeSnippetsComponent {
   snippets = input<SnippetsSets>();

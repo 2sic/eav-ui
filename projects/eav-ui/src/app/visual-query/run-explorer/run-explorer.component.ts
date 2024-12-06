@@ -12,16 +12,15 @@ import { VisualQueryStateService } from '../services/visual-query.service';
 import { calculateWarnings } from './run-explorer.helpers';
 
 @Component({
-  selector: 'app-run-explorer',
-  templateUrl: './run-explorer.component.html',
-  styleUrls: ['./run-explorer.component.scss'],
-  standalone: true,
-  imports: [
-    MatButtonModule,
-    MatIconModule,
-    MatSlideToggleModule,
-    AsyncPipe,
-  ],
+    selector: 'app-run-explorer',
+    templateUrl: './run-explorer.component.html',
+    styleUrls: ['./run-explorer.component.scss'],
+    imports: [
+        MatButtonModule,
+        MatIconModule,
+        MatSlideToggleModule,
+        AsyncPipe,
+    ]
 })
 export class RunExplorerComponent {
 

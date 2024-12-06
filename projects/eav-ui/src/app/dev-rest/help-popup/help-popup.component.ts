@@ -6,14 +6,13 @@ import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { HelpPopupData } from './help-popup.models';
 
 @Component({
-  selector: 'app-help-popup',
-  templateUrl: './help-popup.component.html',
-  standalone: true,
-  imports: [
-    MatButtonModule,
-    TippyDirective,
-    MatIconModule,
-  ],
+    selector: 'app-help-popup',
+    templateUrl: './help-popup.component.html',
+    imports: [
+        MatButtonModule,
+        TippyDirective,
+        MatIconModule,
+    ]
 })
 export class HelpPopupComponent implements OnInit {
 

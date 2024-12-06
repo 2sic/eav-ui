@@ -9,21 +9,20 @@ import { RunExplorerComponent } from './run-explorer/run-explorer.component';
 import { VisualQueryStateService } from './services/visual-query.service';
 
 @Component({
-  selector: 'app-visual-query',
-  templateUrl: './visual-query.component.html',
-  styleUrls: ['./visual-query.component.scss'],
-  standalone: true,
-  imports: [
-    RouterOutlet,
-    NgClass,
-    MatIconModule,
-    RunExplorerComponent,
-    AddExplorerComponent,
-    PlumbEditorComponent,
-  ],
-  providers: [
-    VisualQueryStateService,  // Shared State for the entire Visual Query, - init run here
-  ],
+    selector: 'app-visual-query',
+    templateUrl: './visual-query.component.html',
+    styleUrls: ['./visual-query.component.scss'],
+    imports: [
+        RouterOutlet,
+        NgClass,
+        MatIconModule,
+        RunExplorerComponent,
+        AddExplorerComponent,
+        PlumbEditorComponent,
+    ],
+    providers: [
+        VisualQueryStateService, // Shared State for the entire Visual Query, - init run here
+    ]
 })
 export class VisualQueryComponent implements OnInit {
   @ViewChild(PlumbEditorComponent) plumbEditor: PlumbEditorComponent;

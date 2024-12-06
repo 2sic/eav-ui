@@ -8,14 +8,13 @@ import { PickerItem } from '../models/picker-item.model';
  * Preview as an image/icon of an item.
  */
 @Component({
-  selector: 'app-picker-item-preview',
-  templateUrl: './picker-item-preview.component.html',
-  styleUrl: './picker-item-preview.component.scss',
-  standalone: true,
-  imports: [
-    MatIcon,
-    NgxTippyModule,
-  ]
+    selector: 'app-picker-item-preview',
+    templateUrl: './picker-item-preview.component.html',
+    styleUrl: './picker-item-preview.component.scss',
+    imports: [
+        MatIcon,
+        NgxTippyModule,
+    ]
 })
 export class PickerItemPreviewComponent {
 

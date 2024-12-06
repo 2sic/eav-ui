@@ -7,15 +7,14 @@ import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-message',
-  templateUrl: './message.component.html',
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatDialogModule,
-    MatButtonModule,
-    MatIconModule,
-  ]
+    selector: 'app-message',
+    templateUrl: './message.component.html',
+    imports: [
+        CommonModule,
+        MatDialogModule,
+        MatButtonModule,
+        MatIconModule,
+    ]
 })
 export class MessageComponent implements OnInit {
   message: string;

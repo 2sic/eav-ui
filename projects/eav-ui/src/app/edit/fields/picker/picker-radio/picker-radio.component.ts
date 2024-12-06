@@ -10,19 +10,18 @@ import { PickerInlineHeaderComponent } from '../picker-inline/picker-inline-head
 import { PickerPreviewLabelComponent } from '../picker-item-label/picker-item-label.component';
 
 @Component({
-  selector: 'app-picker-radio',
-  templateUrl: './picker-radio.component.html',
-  styleUrls: ['./picker-radio.component.scss'],
-  standalone: true,
-  imports: [
-    MatFormFieldModule,
-    MatRippleModule,
-    MatRadioButton,
-    NgClass,
-    TippyDirective,
-    PickerInlineHeaderComponent,
-    PickerPreviewLabelComponent,
-  ],
+    selector: 'app-picker-radio',
+    templateUrl: './picker-radio.component.html',
+    styleUrls: ['./picker-radio.component.scss'],
+    imports: [
+        MatFormFieldModule,
+        MatRippleModule,
+        MatRadioButton,
+        NgClass,
+        TippyDirective,
+        PickerInlineHeaderComponent,
+        PickerPreviewLabelComponent,
+    ]
 })
 export class PickerRadioComponent extends PickerInlineBaseComponent {
 

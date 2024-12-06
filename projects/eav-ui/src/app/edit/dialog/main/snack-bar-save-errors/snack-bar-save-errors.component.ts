@@ -7,8 +7,7 @@ import { TranslateModule } from '@ngx-translate/core';
     selector: 'app-snack-bar-save-errors',
     templateUrl: './snack-bar-save-errors.component.html',
     styleUrls: ['./snack-bar-save-errors.component.scss'],
-    standalone: true,
-    imports: [TranslateModule],
+    imports: [TranslateModule]
 })
 export class SnackBarSaveErrorsComponent {
   constructor(@Inject(MAT_SNACK_BAR_DATA) public snackBarData: SaveErrorsSnackBarData) { }

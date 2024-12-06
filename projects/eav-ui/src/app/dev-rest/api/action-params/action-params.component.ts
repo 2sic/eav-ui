@@ -9,13 +9,12 @@ import { TrueFalseComponent } from '../true-false/true-false.component';
 import { TrueFalseParams } from '../true-false/true-false.models';
 
 @Component({
-  selector: 'app-dev-rest-api-action-params',
-  templateUrl: './action-params.component.html',
-  standalone: true,
-  imports: [
-    MatIconModule,
-    SxcGridModule,
-  ],
+    selector: 'app-dev-rest-api-action-params',
+    templateUrl: './action-params.component.html',
+    imports: [
+        MatIconModule,
+        SxcGridModule,
+    ]
 })
 export class DevRestApiActionParamsComponent {
   data = input<WebApiAction>();

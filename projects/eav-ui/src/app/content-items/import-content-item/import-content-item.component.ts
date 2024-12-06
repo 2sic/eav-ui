@@ -5,10 +5,9 @@ import { FileUploadDialogComponent, FileUploadDialogData, UploadTypes } from '..
 import { ContentItemsService } from '../services/content-items.service';
 
 @Component({
-  selector: 'app-import-content-item',
-  templateUrl: './import-content-item.component.html',
-  standalone: true,
-  imports: [FileUploadDialogComponent,],
+    selector: 'app-import-content-item',
+    templateUrl: './import-content-item.component.html',
+    imports: [FileUploadDialogComponent,]
 })
 export class ImportContentItemComponent {
 

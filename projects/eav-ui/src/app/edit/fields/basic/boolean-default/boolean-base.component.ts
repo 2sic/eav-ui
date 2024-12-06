@@ -4,8 +4,9 @@ import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings
 import { FieldState } from '../../field-state';
 
 @Component({
-  selector: 'app-boolean-base',
-  template: '',
+    selector: 'app-boolean-base',
+    template: '',
+    standalone: false
 })
 // @FieldMetadata({ ...WrappersLocalizationOnly })
 export abstract class BooleanBaseComponent {

@@ -11,17 +11,16 @@ import { BooleanBaseComponent } from './boolean-base.component';
 import { BooleanDefaultLogic } from './boolean-default-logic';
 
 @Component({
-  selector: InputTypeCatalog.BooleanDefault,
-  templateUrl: './boolean-default.component.html',
-  styleUrls: ['./boolean-default.component.scss'],
-  standalone: true,
-  imports: [
-    FormsModule,
-    ReactiveFormsModule,
-    MatSlideToggleModule,
-    NgClass,
-    FieldHelperTextComponent,
-  ],
+    selector: InputTypeCatalog.BooleanDefault,
+    templateUrl: './boolean-default.component.html',
+    styleUrls: ['./boolean-default.component.scss'],
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        MatSlideToggleModule,
+        NgClass,
+        FieldHelperTextComponent,
+    ]
 })
 @FieldMetadata({ ...WrappersLocalizationOnly })
 export class BooleanDefaultComponent extends BooleanBaseComponent {
