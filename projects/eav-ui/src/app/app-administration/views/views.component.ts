@@ -206,8 +206,8 @@ export class ViewsComponent implements OnInit {
     return this.#dialogRouter.urlSubRoute(
       GoToMetadata.getUrlEntity(
         view.Guid,
-        `Metadata for View: ${view.Name} (${view.Id})`,
-      )
+        // Encode the title and replace '/' with '%2F'
+        `Metadata for View: ${view.Name.replace(/\//g, '%2F')} (${view.Id})`)
     );
   }
 
