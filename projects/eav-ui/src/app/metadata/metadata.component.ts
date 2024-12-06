@@ -107,8 +107,15 @@ export class MetadataComponent implements OnInit {
     );
   });
 
-  protected title = decodeURIComponent(this.#dialogRoutes.getParam('title') ?? '');
-
+  protected title = (() => {
+    try {
+      return decodeURIComponent(this.#dialogRoutes.getParam('title') ?? '');
+    } catch (e) {
+      console.error('Couldn\'t properly decode title');
+      return this.#dialogRoutes.getParam('title') ?? '';
+    }
+  })();
+  
   ngOnInit() {
     this.#fetchMetadata();
     this.#dialogRoutes.doOnDialogClosed(() => this.#fetchMetadata());
