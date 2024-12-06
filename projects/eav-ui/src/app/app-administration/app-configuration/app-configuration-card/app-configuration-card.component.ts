@@ -12,7 +12,7 @@ import { eavConstants } from '../../../shared/constants/eav.constants';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { convertFormToUrl } from '../../../shared/helpers/url-prep.helper';
 import { DialogSettings } from '../../../shared/models/dialog-settings.model';
-import { EditForm, EditPrep } from '../../../shared/models/edit-form.model';
+import { EditPrep } from '../../../shared/models/edit-form.model';
 import { DialogRoutingService } from '../../../shared/routing/dialog-routing.service';
 import { ClipboardService } from '../../../shared/services/clipboard.service';
 import { Context } from '../../../shared/services/context';
@@ -39,10 +39,14 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
   #contentItemsSvc = transient(ContentItemsService);
   #dialogRouter = transient(DialogRoutingService);
 
+  appConfigurationUrl = signal('');
+
   constructor(
     private context: Context,
     private snackBar: MatSnackBar,
-  ) { }
+  ) {
+    this.appConfigurationUrl = (this.urlToEdit());
+  }
 
   contentItem = this.#contentItemsSvc.getAllSig(eavConstants.contentTypes.appConfiguration, undefined);
 
@@ -57,7 +61,6 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
     this.#dialogRouter.doOnDialogClosed(() => {
       this.#refresh.update(value => value + 1);
     });
-
   }
 
   ngOnDestroy() {
@@ -70,20 +73,28 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
     return '#' + this.#dialogRouter.urlSubRoute(url);
   }
 
-  edit() {
+  urlToEdit() {
+    let url = signal('');
     const staticName = eavConstants.contentTypes.appConfiguration;
     this.#contentItemsSvc.getAll(staticName).subscribe(contentItems => {
-      let form: EditForm;
 
-      if (contentItems.length < 1) throw new Error(`Found no settings for type ${staticName}`);
-      if (contentItems.length > 1) throw new Error(`Found too many settings for type ${staticName}`);
-      form = {
-        items: [EditPrep.editId(contentItems[0].Id)],
-      };
+      if (contentItems.length < 1)
+        this.#dialogRouter.navRelative(['message/e'], {
+          queryParams: { error: 'AppAdmin.ErrorNoManyAppSettings' },
+        });
+      if (contentItems.length > 1)
+        this.#dialogRouter.navRelative(['message/e'], {
+          queryParams: { error: 'AppAdmin.ErrorTooManyAppSettings' },
+        });
 
-      const formUrl = convertFormToUrl(form);
-      this.#dialogRouter.navParentFirstChild([`edit/${formUrl}`]);
+      url.set(this.#urlTo(
+        `edit/${convertFormToUrl({
+          items: [EditPrep.editId(contentItems[0].Id)],
+        })}`
+      ));
     });
+
+    return url;
   }
 
   urlToOpenMetadata() {

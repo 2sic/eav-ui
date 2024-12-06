@@ -46,7 +46,7 @@ import { ContentTypesService } from '../../services/content-types.service';
 })
 export class EditContentTypeComponent implements AfterViewInit {
 
-  log = classLog({EditContentTypeComponent});
+  log = classLog({ EditContentTypeComponent });
 
   @HostBinding('className') hostClass = 'dialog-component';
 
@@ -74,8 +74,8 @@ export class EditContentTypeComponent implements AfterViewInit {
     this.#contentTypeSvc.retrieveContentType(this.#typeNameId).subscribe(fromHttp => {
       this.contentType.set({
         ...fromHttp,
-        ChangeStaticName: false,
-        NewStaticName: fromHttp.StaticName,
+        ChangeNameId: false,
+        NewNameId: fromHttp.NameId,
       } satisfies ContentTypeEdit);
     });
   }
@@ -93,11 +93,12 @@ export class EditContentTypeComponent implements AfterViewInit {
   protected loading = signalObj<boolean>('loading', false);
   protected contentType = signalObj<ContentTypeEdit>('contentType', {
     StaticName: '',
+    // TODO: @2pp - use NameId: '', instead of StaticName
     Name: '',
     Description: '',
     Scope: this.#scope,
-    ChangeStaticName: false,
-    NewStaticName: '',
+    ChangeNameId: false,
+    NewNameId: '',
   } as ContentTypeEdit);
 
   // TODO: @2dg this is a suggestion how to handle http requests in a more signal-like way
@@ -112,7 +113,6 @@ export class EditContentTypeComponent implements AfterViewInit {
     return (fromHttp) ? manual.concat(this.#convertScopeOptions(fromHttp)) : manual;
   });
 
-
   #convertScopeOptions(scopeOptions: ScopeOption[]) {
     const newScopes: ScopeOption[] = [];
     scopeOptions.forEach(scopeOption => {
@@ -126,7 +126,6 @@ export class EditContentTypeComponent implements AfterViewInit {
       } satisfies ScopeOption);
     return newScopes;
   }
-
 
   // workaround for angular component issue #13870
   ngAfterViewInit() {

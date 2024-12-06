@@ -33,7 +33,7 @@
         <mat-select formControlName="contentType" required
           [placeholder]="!contentTypes()()?.length ? 'No items found' : ''">
           @for (contentType of contentTypes()(); track contentType) {
-          <mat-option [value]="contentType.StaticName">
+          <mat-option [value]="contentType.NameId">
             {{ contentType.Label }}
           </mat-option>
           }

@@ -15,10 +15,10 @@ export abstract class DataAdapterBase {
     all: false,
     setupEmpty: false,
     connectState: false,
-    initPrefetch: false,
+    initPrefetch: true,
     fetchItems: false,
     constructor: false,
-    fields: [...DebugFields],
+    fields: [...DebugFields, 'Categories'],
   };
 
   log: ClassLogger<typeof DataAdapterBase.logSpecs>;
@@ -54,17 +54,6 @@ export abstract class DataAdapterBase {
   }
 
   //#endregion
-
-  /** Sync params - should be implemented eg. in Entity / Query */
-  abstract syncParams(): void;
-
-  onAfterViewInit(): void {
-    this.syncParams();
-  }
-
-  abstract initPrefetch(prefetchGuids: string[]): void;
-
-  abstract forceReloadData(missingData: string[]): void;
 
   abstract deleteItem(props: DeleteEntityProps): void;
 

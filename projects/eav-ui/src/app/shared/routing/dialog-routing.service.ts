@@ -88,12 +88,6 @@ export class DialogRoutingService extends ServiceBase {
     return this.router.navigate(commands, { ...extras, relativeTo: this.route });
   }
 
-  // TODO: @2pp UNCLEAR if this is needed, as it appears to do the same as navRelative, just in a difficult manner.
-  // TODO: Review and replace with navRelative where possible, probably we don't need this.
-  public navParentFirstChild(commands: any[], extras?: Omit<NavigationExtras, 'relativeTo'>): Promise<boolean> {
-    return this.router.navigate(commands, { ...extras, relativeTo: this.route.parent.firstChild });
-  }
-
   childDialogClosed$() {
     return this.router.events.pipe(
       filter(event => event instanceof NavigationEnd),

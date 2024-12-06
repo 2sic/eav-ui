@@ -2,8 +2,6 @@ import type { SxcGlobal } from '@2sic.com/2sxc-typings';
 
 interface EavWindowProps {
   contextId: number;
-  /** requirejs */
-  define: any;
   draggingClass: string;
   // 2024-10-08 2dm removed since it causes dependencies on fieldLogicManager for anything that uses the EavWindow
   // eavFieldLogicManager: FieldLogicManager;
@@ -16,10 +14,8 @@ interface EavWindowProps {
       };
     };
   };
-  /** requirejs */
+  /** requirejs - only used by theload-scripts.helper.ts */
   require: any;
-  /** requirejs */
-  requirejs: any;
   sxcVersion: string;
   windowBodyTimeouts: number[];
   $2sxc: SxcGlobal;

@@ -19,15 +19,15 @@ const webApiTypeAddGhost = 'admin/type/addghost';
 @Injectable()
 export class ContentTypesService extends HttpServiceBase {
 
-  retrieveContentType(staticName: string) {
+  retrieveContentType(nameId: string) {
     return this.getHttpApiUrl<ContentType>(webApiTypeGet, {
-      params: { appId: this.appId, contentTypeId: staticName }
+      params: { appId: this.appId, contentTypeId: nameId }
     });
   }
 
-  retrieveContentTypeSig(staticName: string, initial: undefined): Signal<ContentType> {
+  retrieveContentTypeSig(nameId: string, initial: undefined): Signal<ContentType> {
     return this.getSignal<ContentType>(webApiTypeGet, {
-      params: { appId: this.appId, contentTypeId: staticName }
+      params: { appId: this.appId, contentTypeId: nameId }
     }, initial);
   }
 
@@ -78,7 +78,6 @@ export class ContentTypesService extends HttpServiceBase {
     return scopeOptionsSignal;
   }
 
-
   getScopesV2() {
     return this.getHttpApiUrl<{ old: Record<string, string>, scopes: ScopeDetailsDto[] }>(webApiTypeScopes, {
       params: { appId: this.appId }
@@ -95,7 +94,7 @@ export class ContentTypesService extends HttpServiceBase {
 
   delete(contentType: ContentType) {
     return this.http.delete<boolean>(this.apiUrl(webApiTypeDelete), {
-      params: { appid: this.appId, staticName: contentType.StaticName },
+      params: { appid: this.appId, staticName: contentType.NameId }, // TODO: @2pp - replace staticName with NameId
     });
   }
 
@@ -109,9 +108,9 @@ export class ContentTypesService extends HttpServiceBase {
     });
   }
 
-  createGhost(sourceStaticName: string) {
+  createGhost(sourceNameId: string) {
     return this.http.post<boolean>(this.apiUrl(webApiTypeAddGhost), null, {
-      params: { appid: this.appId, sourceStaticName },
+      params: { appid: this.appId, sourceNameId },
     });
   }
 }

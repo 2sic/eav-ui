@@ -43,7 +43,7 @@ export class GoToDevRest {
   // todo: setup not quite elegant, using relative route. Should be refactored to use absolute route
   /** Route to Data REST - for use in Admin-List */
   static getUrlData(contentType: ContentType): string {
-    return `../../${GoToDevRest.routeData}/${contentType.StaticName}`;
+    return `../../${GoToDevRest.routeData}/${contentType.NameId}`;
     // return `${base}/data/${contentType.StaticName}`;
   }
 

@@ -95,7 +95,9 @@ export class DevRestDataComponent extends DevRestBase<DevRestDataModel> implemen
     const itemOfThisType$ = this.entityService.getEntities$(
       contentType$.pipe(
         filter(ct => !!ct),
-        map(ct => ({ contentTypeName: ct.StaticName })),
+        map(ct => {
+          return { contentTypeName: ct.NameId };
+        }),
       ),
     ).pipe(
       map(list => list.length
@@ -106,16 +108,16 @@ export class DevRestDataComponent extends DevRestBase<DevRestDataModel> implemen
 
     // Prepare everything for use in the template
     this.viewModel$ = combineLatest([
-        contentType$,
-        this.scenario$,
-        this.permissions$,
-        root$,
-        itemOfThisType$,
-        this.dialogSettings$
+      contentType$,
+      this.scenario$,
+      this.permissions$,
+      root$,
+      itemOfThisType$,
+      this.dialogSettings$
     ]).pipe(
       map(([contentType, scenario, permissions, root, item, diag]) => {
         var result: DevRestDataModel = {
-          ...this.buildBaseViewModel(contentType.Name, contentType.StaticName, diag, permissions, root, scenario),
+          ...this.buildBaseViewModel(contentType.Name, contentType.NameId, diag, permissions, root, scenario),
           contentType,
           itemId: item.Id,
           apiCalls: generateApiCalls(dnnContext.$2sxc, scenario, context, root, item.Id),

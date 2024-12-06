@@ -1,13 +1,11 @@
 import { ColDef, GridApi, GridOptions, GridReadyEvent, ValueGetterParams } from '@ag-grid-community/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectorRef, Component, computed, inject, OnDestroy, OnInit, signal, ViewContainerRef } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { ChangeDetectorRef, Component, computed, effect, inject, OnInit, signal, ViewContainerRef, WritableSignal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogActions, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
-import { BehaviorSubject, filter, take } from 'rxjs';
 import { transient } from '../../../../core';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { ContentExportService } from '../content-export/services/content-export.service';
@@ -63,7 +61,7 @@ import { ContentItemsService } from './services/content-items.service';
     TippyDirective,
   ],
 })
-export class ContentItemsComponent implements OnInit, OnDestroy {
+export class ContentItemsComponent implements OnInit {
 
   log = classLog({ ContentItemsComponent });
 
@@ -81,7 +79,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
-  ) { }
+  ) { effect(() => this.fetchColumns()); }
 
   gridOptions: GridOptions = {
     ...defaultGridOptions,
@@ -91,10 +89,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   /** Signal to tell other signals that the filter changed */
   #filterChanged = signal(0);
 
-  // TODO: @2pp this subject can probably be replaced with a signal
-  // + an effect (in the constructor) for the one case where it has a .pipe(...)
-  #gridApi$ = new BehaviorSubject<GridApi<ContentItem>>(null);
-  #gridApiSigTemp = toSignal(this.#gridApi$);
+  #gridApiSigTemp: WritableSignal<GridApi<ContentItem>> = signal<GridApi<ContentItem>>(null);
 
   #contentTypeStaticName = this.#dialogRouter.getParam('contentTypeStaticName');
   contentType = this.#contentTypesSvc.retrieveContentTypeSig(this.#contentTypeStaticName, undefined);
@@ -107,12 +102,8 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   });
 
   ngOnInit() {
-    this.fetchColumns();
+    this.urlToExportContent();
     this.#dialogRouter.doOnDialogClosed(() => this.fetchItems());
-  }
-
-  ngOnDestroy() {
-    this.#gridApi$.complete();
   }
 
   closeDialog() {
@@ -120,7 +111,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   }
 
   onGridReady(params: GridReadyEvent) {
-    this.#gridApi$.next(params.api);
+    this.#gridApiSigTemp.set(params.api);
     this.urlToExportContent();
   }
 
@@ -134,24 +125,16 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
       const columnsWithoutEphemeral = columns.filter(column => !column.IsEphemeral);
       const columnDefs = this.#buildColumnDefs(columnsWithoutEphemeral);
       const filterModel = buildFilterModel(sessionStorage.getItem(keyFilters), columnDefs);
-      if (this.#gridApi$.value) {
+      if (this.#gridApiSigTemp())
         this.setColumnDefs(columnDefs, filterModel);
-      } else {
-        this.#gridApi$.pipe(
-          filter(gridApi => gridApi != null), // firefox does web requests faster than drawing grid and getting gridApi
-          take(1),
-        ).subscribe(gridApi => {
-          this.setColumnDefs(columnDefs, filterModel);
-        });
-      }
     });
   }
 
   private setColumnDefs(columnDefs: ColDef[], filterModel: AgGridFilterModel) {
-    this.#gridApi$.value.setColumnDefs(columnDefs);
+    this.#gridApiSigTemp().setColumnDefs(columnDefs);
     if (filterModel) {
       this.log.a('Will try to apply filter:', filterModel);
-      this.#gridApi$.value.setFilterModel(filterModel);
+      this.#gridApiSigTemp().setFilterModel(filterModel);
     }
   }
 
@@ -241,18 +224,18 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
 
   urlToImportContent(files?: File[]) {
     // Special, because the /import is at the end of the URL
-    // is a TODO: @2pp, but maybe needs some more work (might be used from diff places)
-    // It's also fishy, that the URL contains the GUID twice
     return this.#urlTo(
       `${this.#contentTypeStaticName}${files ? `/${files.map(f => f.name).join(',')}` : ''}/import`
     );
   }
 
-  // TODO: Should be a link, but is tricky to do with the current setup
-  // as it's doing somethingwith the files, which is not possible with a link
   importItem(files?: File[]) {
     const dialogData: FileUploadDialogData = { files };
     this.#dialogRouter.navRelative(['import'], { state: dialogData });
+  }
+
+  urlToImportItem() {
+    return this.#urlTo('import');
   }
 
   createMetadata() {
@@ -274,7 +257,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   }
 
   debugFilter() {
-    console.warn('Current filter:', this.#gridApi$.value.getFilterModel());
+    console.warn('Current filter:', this.#gridApiSigTemp().getFilterModel());
     this.snackBar.open('Check console for filter information', undefined, { duration: 3000 });
   }
 

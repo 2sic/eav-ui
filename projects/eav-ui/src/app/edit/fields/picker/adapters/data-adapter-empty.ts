@@ -30,14 +30,6 @@ export class DataAdapterEmpty extends DataAdapterBase {
     return l.rSilent(this);
   }
 
-  /** should never be needed as we have synchronously all data in settings */
-  override initPrefetch(prefetchGuids: string[]): void { }
-
-  /** should never be needed as we can't add new data */
-  override forceReloadData(missingData: string[]): void { }
-
-  override syncParams(): void { };
-
   fetchItems(): void {
     this.log.a('fetchItems');
     this.dataSource().triggerGetAll();

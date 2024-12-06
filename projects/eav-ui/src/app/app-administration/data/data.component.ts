@@ -112,11 +112,13 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
     }
   }
 
-  // TODO: @2pp | Should be a link, but is tricky to do with the current setup
-  // as it's doing somethingwith the files, which is not possible with a link
   importType(files?: File[]) {
     const dialogData: FileUploadDialogData = { files };
     this.#dialogRouter.navRelative(['import'], { state: dialogData });
+  }
+
+  urlToImportType() {
+    return this.#urlTo('import');
   }
 
   editContentType(contentType: ContentType) {
@@ -126,16 +128,6 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
       if (contentType.EditInfo.ReadOnly) return;
       this.#dialogRouter.navRelative([`${contentType.NameId}/edit`]);
     }
-  }
-
-  urlToNewView() {
-    return this.#urlTo(
-      `edit/${convertFormToUrl({
-        items: [
-          EditPrep.newFromType(eavConstants.contentTypes.template)
-        ],
-      })}`
-    );
   }
 
   #fetchContentTypes() {
@@ -316,6 +308,10 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
     } satisfies EditForm);
   }
 
+  urlToNewContentType(): string {
+    return this.#urlTo('add');
+  }
+
   #routeCreateOrEditMetadata(contentType: ContentType): string {
     const form: EditForm = {
       items: [
@@ -332,6 +328,27 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
     };
     return convertFormToUrl(form);
   }
+
+  // 2pp | not in use?
+  // #createOrEditMetadata(contentType: ContentType) {
+  //   this.#dialogRouter.navParentFirstChild([`edit/${this.#routeCreateOrEditMetadata(contentType)}`]);
+  // }
+
+  // #openPermissions(contentType: ContentType) {
+  //   this.#dialogRouter.navParentFirstChild([GoToPermissions.getUrlContentType(contentType.NameId)]);
+  // }
+
+  // #routeMetadata(ct: ContentType) {
+  //   return GoToMetadata.getUrlContentType(ct.NameId, `Metadata for Content Type: ${ct.Name} (${ct.Id})`);
+  // }
+
+  // #openMetadata(contentType: ContentType) {
+  //   this.#dialogRouter.navParentFirstChild([this.#routeMetadata(contentType)]);
+  // }
+
+  // #openRestApi(contentType: ContentType) {
+  //   this.#dialogRouter.navParentFirstChild([GoToDevRest.getUrlData(contentType)]);
+  // }
 
   #exportType(contentType: ContentType) {
     this.#contentExportSvc.exportJson(contentType.NameId);

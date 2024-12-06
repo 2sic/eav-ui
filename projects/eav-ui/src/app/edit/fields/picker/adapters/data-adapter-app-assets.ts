@@ -18,10 +18,7 @@ export class DataAdapterAppAssets extends DataAdapterEntityBase {
 
   constructor() { super(); }
 
-  override syncParams(): void { }
-
   fetchItems(): void {
-    this.syncParams();
     this.dataSource().triggerGetAll();
   }
 }

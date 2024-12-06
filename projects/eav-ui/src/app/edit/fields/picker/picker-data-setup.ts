@@ -11,6 +11,7 @@ import { DataAdapterBase } from './adapters/data-adapter-base';
 import { DataAdapterCss } from './adapters/data-adapter-css';
 import { DataAdapterEmpty } from './adapters/data-adapter-empty';
 import { DataAdapterEntity } from './adapters/data-adapter-entity';
+import { DataAdapterEntityBase } from './adapters/data-adapter-entity-base';
 import { DataAdapterQuery } from './adapters/data-adapter-query';
 import { DataAdapterString } from './adapters/data-adapter-string';
 import { StateAdapter } from './adapters/state-adapter';
@@ -66,7 +67,9 @@ export class PickerDataSetup {
 
     // l.end('ok', { state, source });
 
-    pickerData.source.onAfterViewInit()
+    // Perform any post-init actions for the source - ATM only on Entity/Query
+    (pickerData.source as DataAdapterEntityBase)?.onAfterViewInit?.();
+    
     return l.rSilent(pickerData);
   }
 

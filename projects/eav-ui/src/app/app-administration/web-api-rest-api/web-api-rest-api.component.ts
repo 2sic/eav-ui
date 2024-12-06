@@ -54,6 +54,6 @@ export class WebApiRestApiComponent {
 
   openRestApi(apiRoute: string): void {
     if (!apiRoute) return;
-    this.#dialogRouter.navParentFirstChild([encodeURIComponent(apiRoute)]);
+    this.#dialogRouter.navRelative([encodeURIComponent(apiRoute)]);
   }
 }

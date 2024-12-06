@@ -15,11 +15,12 @@ import { FormConfigService } from '../../../form/form-config.service';
 import { EditRoutingService } from '../../../routing/edit-routing.service';
 import { FieldMask } from '../../../shared/helpers';
 import { FieldState } from '../../field-state';
-import { DataSourceEntityQueryBase } from '../data-sources/data-source-entity-query-base';
+import { DataSourceEntityBase } from '../data-sources/data-source-entity-base';
 import { PickerItem, PickerItemFactory } from '../models/picker-item.model';
 import { DeleteEntityProps } from "../models/picker.models";
 import { PickerFeatures } from '../picker-features.model';
 import { DataAdapterBase } from "./data-adapter-base";
+import { DataAdapterCanRefresh } from './data-adapter-can-refresh';
 
 export const logSpecsDataAdapterEntityBase = {
   ...DataAdapterBase.logSpecs,
@@ -27,7 +28,7 @@ export const logSpecsDataAdapterEntityBase = {
   getPrefill: true, // for create Entity & query
 };
 
-export abstract class DataAdapterEntityBase extends DataAdapterBase {
+export abstract class DataAdapterEntityBase extends DataAdapterBase implements DataAdapterCanRefresh {
 
   //#region Services, constructor, log
 
@@ -58,6 +59,16 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
 
   #createEntityTypes = computedObj('createEntityTypes', () => this.fieldState.settings().CreateTypes);
 
+  /** 
+   * Sync params: patch the data-source with the current settings
+   * Should be implemented in Entity & Query, probably not in AppAssets
+   */
+  syncParams(): void { }
+
+  onAfterViewInit(): void {
+    this.syncParams();
+  }
+
   /** The features depend on contentType names being available to support create */
   public myFeatures = computedObj<Partial<PickerFeatures>>('features', () => {
     // if we don't know the content-type, we can't create new entities
@@ -86,7 +97,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
   initPrefetch(prefetchGuids: string[]): void {
     this.syncParams();
     this.log.fnIfInList('initPrefetch', 'fields', this.name, { prefetchGuids });
-    (this.dataSource() as DataSourceEntityQueryBase).initPrefetch?.(prefetchGuids);
+    (this.dataSource() as DataSourceEntityBase).initPrefetch?.(prefetchGuids);
   }
 
   forceReloadData(missingData: string[]): void {

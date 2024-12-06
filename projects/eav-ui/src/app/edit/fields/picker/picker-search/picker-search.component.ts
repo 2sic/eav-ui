@@ -160,13 +160,13 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
     return l.r(this.selectedItem().tooltip, 'ok');
   }
 
-  // 2024-04-30 2dm: seems this is always a string, will simplify the code
+  
   displayFn(value: string): string {
     const selectedItem = this.selectedItem();
     this.#logItemChecks.a(`displayFn: value: '${value}'`, { selectedItem });
     // and probably clean up if it's stable for a few days
     if (value == null) return '';
-    let returnValue = this.pickerData.optionsAll().find(ae => ae.value == value)?.label;
+    const returnValue = this.pickerData.optionsAll().find(ae => ae.value == value)?.label;
 
     // If nothing yet, try to return label of selected or fallback to return the value
     // note: not quite sure, but I believe this is for scenarios where a manual entry was done
@@ -240,7 +240,7 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
     var placeholder = allOptions.length > 0
       ? this.translate.instant('Fields.Picker.Search')
       : this.translate.instant('Fields.Picker.QueryNoItems');
-    this.#logItemChecks.a(`getPlaceholder error: result '${placeholder}'`, { allOptions });
+    this.#logItemChecks.a(`getPlaceholder: '${placeholder}'`, { allOptions });
     return placeholder;
   }
 

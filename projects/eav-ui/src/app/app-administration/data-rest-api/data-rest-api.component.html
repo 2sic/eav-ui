@@ -4,7 +4,7 @@
     <mat-select formControlName="contentType" (valueChange)="openRestApi($event)">
       @if (contentTypes()) {
         @for (contentType of contentTypes().sort() ; track contentType) {
-        <mat-option [value]="contentType.StaticName" >
+        <mat-option [value]="contentType.NameId" >
           {{ contentType.Label }}
         </mat-option>
         }

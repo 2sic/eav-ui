@@ -1,13 +1,11 @@
 import { AfterViewInit, Component, ElementRef, input, OnChanges, OnDestroy, output, SimpleChanges, ViewChild } from '@angular/core';
+import loader from '@monaco-editor/loader';
 import type * as Monaco from 'monaco-editor';
 import { JsonSchema } from '.';
 import { Snippet } from '../code-editor/models/snippet.model';
 import { Tooltip } from '../code-editor/models/tooltip.model';
-import { EavWindow } from '../shared/models/eav-window.model';
 import { nameof } from '../shared/typescript-helpers';
 import { MonacoInstance } from './monaco-instance';
-
-declare const window: EavWindow;
 
 @Component({
   selector: 'app-monaco-editor',
@@ -39,13 +37,7 @@ export class MonacoEditorComponent implements AfterViewInit, OnChanges, OnDestro
   constructor() { }
 
   ngAfterViewInit(): void {
-    window.require.config({
-      paths: {
-        vs: ['https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.46.0/min/vs'],
-      },
-    });
-
-    window.require(['vs/editor/editor.main'], (monaco: typeof Monaco) => {
+    loader.init().then(monaco => {
       this.monaco = monaco;
       this.createEditor(this.autoFocus());
     });

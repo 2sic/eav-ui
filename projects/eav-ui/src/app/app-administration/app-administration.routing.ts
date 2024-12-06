@@ -7,7 +7,6 @@ import { GoToMetadata } from '../metadata';
 import { GoToPermissions } from '../permissions/go-to-permissions';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
 import { appAdministrationDialog } from './app-admin-main/app-admin-main.dialog-config';
-import { errorDialog } from './app-configuration/error/error-dialog.config';
 import { messageDialog } from './app-configuration/message/message-dialog.config';
 import { CopilotSpecs } from './copilot/copilot-specs';
 import { GoToCopilot } from './copilot/go-to-copilot';
@@ -250,19 +249,9 @@ export const appAdministrationRoutes: Routes = [
             ],
           },
           {
-            path: 'message',
-            children: [
-              {
-                path: 'e',
-                component: DialogEntryComponent,
-                data: { dialog: errorDialog, i18n: 'error' },
-              },
-              {
-                path: 'm',
-                component: DialogEntryComponent,
-                data: { dialog: messageDialog, i18n: 'message' },
-              },
-            ],
+            path: 'message/:type',
+            component: DialogEntryComponent,
+            data: { dialog: messageDialog, i18n: 'An unexpected error happened.', errComponent: 'not found' },
           },
         ],
       },

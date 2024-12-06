@@ -64,7 +64,7 @@
             <mat-label>Content Type</mat-label>
             <mat-select formControlName="contentTypeForContentItems" [placeholder]="!vm.contentTypes.length ? 'No items found' : ''">
               @for (contentType of vm.contentTypes; track contentType) {
-                <mat-option [value]="contentType.StaticName">
+                <mat-option [value]="contentType.NameId">
                   {{ contentType.Label }}
                 </mat-option>
               }
@@ -113,7 +113,7 @@
                 @if (vm.guidedKey) {
                   <mat-select formControlName="key" required [placeholder]="!vm.contentTypes.length ? 'No items found' : ''">
                     @for (contentType of vm.contentTypes; track contentType) {
-                      <mat-option [value]="contentType.StaticName">
+                      <mat-option [value]="contentType.NameId">
                         {{ contentType.Label }}
                       </mat-option>
                     }
