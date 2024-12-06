@@ -1,6 +1,5 @@
 import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 import { CdkScrollable } from '@angular/cdk/scrolling';
-import { JsonPipe } from '@angular/common';
 import { Component, computed, HostBinding, OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogActions, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -35,7 +34,6 @@ import { ContentGroupService } from './services/content-group.service';
         MatDialogModule,
         TippyDirective,
         MousedownStopPropagationDirective,
-        JsonPipe,
     ]
 })
 export class ManageContentListComponent implements OnInit {

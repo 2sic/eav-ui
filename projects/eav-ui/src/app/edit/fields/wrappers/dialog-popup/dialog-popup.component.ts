@@ -1,4 +1,4 @@
-import { AsyncPipe, CommonModule, NgClass } from '@angular/common';
+import { CommonModule, NgClass } from '@angular/common';
 import { Component, computed, effect, ElementRef, inject, input, NgZone, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -33,7 +33,6 @@ import { WrappersCatalog } from '../wrappers.constants';
         ...ExtendedFabSpeedDialImports,
         TippyDirective,
         CommonModule,
-        AsyncPipe,
     ]
 })
 // tslint:disable-next-line:max-line-length

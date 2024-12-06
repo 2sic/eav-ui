@@ -1,11 +1,10 @@
-import { FeatureNames } from './../../../../../features/feature-names';
-import { FeaturesScopedService } from '../../../../../features/features-scoped.service';
 import { Component, inject } from '@angular/core';
-import { TranslateModule } from '@ngx-translate/core';
-import { AsyncPipe } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
+import { TranslateModule } from '@ngx-translate/core';
+import { FeaturesScopedService } from '../../../../../features/features-scoped.service';
 import { TippyDirective } from '../../../../../shared/directives/tippy.directive';
+import { FeatureNames } from './../../../../../features/feature-names';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -15,7 +14,6 @@ import { TippyDirective } from '../../../../../shared/directives/tippy.directive
     imports: [
         MatDividerModule,
         MatIconModule,
-        AsyncPipe,
         TranslateModule,
         TippyDirective,
     ]

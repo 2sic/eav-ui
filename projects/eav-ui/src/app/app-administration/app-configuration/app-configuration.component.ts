@@ -1,4 +1,4 @@
-import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
+import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef, computed, inject, signal } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
@@ -45,7 +45,6 @@ import { AppConfigurationCardComponent } from './app-configuration-card/app-conf
         AppConfigurationCardComponent,
         FeatureTextInfoComponent,
         RouterOutlet,
-        AsyncPipe,
         TippyDirective,
         DocsLinkHelperComponent,
     ]

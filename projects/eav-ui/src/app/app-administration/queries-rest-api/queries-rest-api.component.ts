@@ -6,7 +6,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { RouterOutlet } from '@angular/router';
 import { transient } from '../../../../../core';
-import { DevRestQueryComponent } from '../../dev-rest/query/query.component';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
@@ -20,7 +19,6 @@ import { PipelinesService } from '../services';
         MatCardModule,
         MatIconModule,
         ReactiveFormsModule,
-        DevRestQueryComponent,
         RouterOutlet,
         SxcGridModule,
     ],

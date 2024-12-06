@@ -1,4 +1,3 @@
-import { JsonPipe, NgTemplateOutlet } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -34,7 +33,6 @@ declare const window: EavWindow;
         MatCardModule,
         MatIconModule,
         RouterLink,
-        NgTemplateOutlet,
         MatButtonModule,
         FormsModule,
         MatFormFieldModule,
@@ -44,7 +42,6 @@ declare const window: EavWindow;
         FieldHintComponent,
         TippyDirective,
         DocsLinkHelperComponent,
-        JsonPipe,
     ]
 })
 export class SystemInfoComponent implements OnInit {

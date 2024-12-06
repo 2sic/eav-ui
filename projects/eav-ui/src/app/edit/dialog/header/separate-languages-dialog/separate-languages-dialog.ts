@@ -1,12 +1,8 @@
 import { Component, inject } from "@angular/core";
 import { MatButtonModule } from '@angular/material/button';
 import {
-  MatDialogActions,
-  MatDialogClose,
-  MatDialogContent,
   MatDialogModule,
-  MatDialogRef,
-  MatDialogTitle
+  MatDialogRef
 } from '@angular/material/dialog';
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from '@angular/material/icon';
@@ -21,11 +17,7 @@ import { getLanguageOptions } from '../language-switcher/language-switcher.helpe
     templateUrl: './separate-languages-dialog.html',
     styleUrls: ['./separate-languages-dialog.scss'],
     imports: [
-        MatDialogTitle,
         MatDialogModule,
-        MatDialogContent,
-        MatDialogActions,
-        MatDialogClose,
         MatIconModule,
         MatButtonModule,
         TippyDirective,

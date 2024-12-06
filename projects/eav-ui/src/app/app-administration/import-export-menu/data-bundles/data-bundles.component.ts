@@ -1,5 +1,4 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { JsonPipe } from '@angular/common';
 import { Component, computed, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -28,7 +27,6 @@ import { DataBundlesService } from './data-bundles-query.service';
         MatButtonModule,
         MatIconModule,
         RouterModule,
-        JsonPipe,
     ],
     templateUrl: './data-bundles.component.html',
     styleUrl: './data-bundles.component.scss'

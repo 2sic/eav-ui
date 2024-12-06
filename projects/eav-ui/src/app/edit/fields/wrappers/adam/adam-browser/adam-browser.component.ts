@@ -1,6 +1,6 @@
 import { Context as DnnContext } from '@2sic.com/sxc-angular';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { AsyncPipe, NgClass } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { ChangeDetectorRef, Component, effect, inject, OnInit, output, ViewContainerRef } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatDialog } from '@angular/material/dialog';
@@ -66,7 +66,6 @@ const logSpecs = {
         MatIconModule,
         PasteClipboardImageDirective,
         MatBadgeModule,
-        AsyncPipe,
         TranslateModule,
         ClickStopPropagationDirective,
         TippyDirective,

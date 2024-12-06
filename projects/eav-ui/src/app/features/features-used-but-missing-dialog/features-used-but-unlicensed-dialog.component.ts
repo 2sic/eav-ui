@@ -6,9 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
 import { transient } from '../../../../../core';
 import { FeatureDetailsDialogComponent } from '../../apps-management/licence-info/feature-details-dialog/feature-details-dialog.component';
-import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { classLog, commonSpecs } from '../../shared/logging';
-import { SafeHtmlPipe } from '../../shared/pipes/safe-html.pipe';
 import { FeaturesScopedService } from '../features-scoped.service';
 import { FeatureDetailService } from '../services/feature-detail.service';
 
@@ -25,8 +23,6 @@ const logSpecs = {
         MatButtonModule,
         MatIconModule,
         TranslateModule,
-        TippyDirective,
-        SafeHtmlPipe,
         FeatureDetailsDialogComponent,
     ]
 })

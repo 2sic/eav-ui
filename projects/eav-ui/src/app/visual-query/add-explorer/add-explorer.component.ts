@@ -1,4 +1,4 @@
-import { AsyncPipe, KeyValue, KeyValuePipe } from '@angular/common';
+import { KeyValue, KeyValuePipe } from '@angular/common';
 import { Component, computed, signal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -17,7 +17,6 @@ import { filterAndSortDataSources } from './add-explorer.helpers';
     imports: [
         MatSlideToggleModule,
         MatIconModule,
-        AsyncPipe,
         KeyValuePipe,
         TippyDirective,
     ]

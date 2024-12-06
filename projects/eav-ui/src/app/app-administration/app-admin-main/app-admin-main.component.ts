@@ -1,5 +1,4 @@
 import { MediaMatcher } from '@angular/cdk/layout';
-import { AsyncPipe } from '@angular/common';
 import { Component, OnInit, signal, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogRef } from '@angular/material/dialog';
@@ -30,7 +29,6 @@ import { AppAdminMenu } from './app-admin-menu';
         MatButtonModule,
         MatSidenavModule,
         RouterOutlet,
-        AsyncPipe,
         NavItemListComponent,
         ToggleDebugDirective,
     ]

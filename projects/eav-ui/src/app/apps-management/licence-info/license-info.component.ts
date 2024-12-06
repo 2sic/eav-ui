@@ -1,7 +1,7 @@
 import { AgGridAngular } from '@ag-grid-community/angular';
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
 import { GridOptions, ModuleRegistry } from '@ag-grid-community/core';
-import { AsyncPipe, JsonPipe, NgClass } from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
 import { ChangeDetectorRef, Component, computed, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogActions } from '@angular/material/dialog';
@@ -50,7 +50,6 @@ import { LicensesOrderPipe } from './licenses-order.pipe';
         LicensesOrderPipe,
         ActiveFeaturesCountPipe,
         TippyDirective,
-        JsonPipe,
     ]
 })
 export class LicenseInfoComponent implements OnInit {

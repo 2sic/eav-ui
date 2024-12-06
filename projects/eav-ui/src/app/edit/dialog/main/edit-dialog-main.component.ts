@@ -1,5 +1,5 @@
 import { CdkScrollable } from '@angular/cdk/scrolling';
-import { AsyncPipe, NgClass } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { AfterViewInit, Component, computed, effect, inject, OnDestroy, OnInit, QueryList, signal, ViewChildren } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatRippleModule } from '@angular/material/core';
@@ -76,7 +76,6 @@ const logSpecs = {
         MatRippleModule,
         MatIconModule,
         EditDialogFooterComponent,
-        AsyncPipe,
         TranslateModule,
         ...ExtendedFabSpeedDialImports,
         ToggleDebugDirective,

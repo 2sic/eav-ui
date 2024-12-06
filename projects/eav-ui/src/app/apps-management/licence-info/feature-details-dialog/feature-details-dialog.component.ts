@@ -5,7 +5,6 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
 import { transient } from '../../../../../../core/transient';
-import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';
 import { ClipboardService } from '../../../shared/services/clipboard.service';
 import { computedObj } from '../../../shared/signals/signal.utilities';
@@ -18,7 +17,6 @@ import { FeatureDetailsDialogData } from './feature-details-dialog.models';
         MatCardModule,
         MatButtonModule,
         MatIconModule,
-        TippyDirective,
         SafeHtmlPipe,
         TranslateModule,
     ]

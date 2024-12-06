@@ -6,7 +6,6 @@ import { BaseComponent } from '../../components/base.component';
 import { ExtendedFabSpeedDialActionDirective } from './extended-fab-speed-dial-action.directive';
 import { ExtendedFabSpeedDialActionsContentDirective } from './extended-fab-speed-dial-actions-content.directive';
 import { ExtendedFabSpeedDialTriggerContentDirective } from './extended-fab-speed-dial-trigger-content.directive';
-import { ExtendedFabSpeedDialTriggerDirective } from './extended-fab-speed-dial-trigger.directive';
 
 /**
  * Special Speed-Dial kind of FAB which opens more menu items on hover.
@@ -21,10 +20,6 @@ import { ExtendedFabSpeedDialTriggerDirective } from './extended-fab-speed-dial-
     styleUrls: ['./extended-fab-speed-dial.component.scss'],
     encapsulation: ViewEncapsulation.None,
     imports: [
-        ExtendedFabSpeedDialTriggerContentDirective,
-        ExtendedFabSpeedDialActionsContentDirective,
-        ExtendedFabSpeedDialTriggerDirective,
-        ExtendedFabSpeedDialActionDirective,
         NgTemplateOutlet
     ]
 })

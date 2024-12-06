@@ -1,4 +1,3 @@
-import { AsyncPipe } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
@@ -15,7 +14,6 @@ import { StringWysiwygLogic } from './string-wysiwyg-logic';
     imports: [
         MatProgressSpinnerModule,
         ConnectorComponent,
-        AsyncPipe,
     ]
 })
 export class ExternalWebComponentComponent {

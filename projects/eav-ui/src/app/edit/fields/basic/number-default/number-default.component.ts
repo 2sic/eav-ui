@@ -1,4 +1,3 @@
-import { AsyncPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -19,7 +18,6 @@ import { NumberDefaultLogic } from './number-default-logic';
         ReactiveFormsModule,
         MatInputModule,
         FieldHelperTextComponent,
-        AsyncPipe,
     ]
 })
 @FieldMetadata({ ...WrappersLocalizationOnly })

@@ -1,4 +1,4 @@
-import { AsyncPipe, DatePipe, NgClass } from '@angular/common';
+import { DatePipe, NgClass } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -12,7 +12,6 @@ import { LogsConfigComponent } from "../logs-config/logs-config.component";
     styleUrls: ['./logs-dump.component.scss'],
     imports: [
         NgClass,
-        AsyncPipe,
         DatePipe,
         MatIconModule,
         MatButtonModule,

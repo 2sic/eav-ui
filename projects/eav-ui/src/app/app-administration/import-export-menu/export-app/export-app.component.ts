@@ -6,7 +6,6 @@ import { MatDialogActions } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { transient } from '../../../../../../core';
 import { DocsLinkHelperComponent } from '../../../admin-shared/docs-link-helper/docs-link-helper.component';
-import { FeatureIconIndicatorComponent } from '../../../features/feature-icon-indicator/feature-icon-indicator.component';
 import { FeatureIconComponent } from '../../../features/feature-icon/feature-icon.component';
 import { FeatureNames } from '../../../features/feature-names';
 import { FeaturesScopedService } from '../../../features/features-scoped.service';
@@ -22,7 +21,6 @@ import { ExportAppService } from '../../services/export-app.service';
         MatDialogActions,
         MatButtonModule,
         MatIconModule,
-        FeatureIconIndicatorComponent,
         FeatureIconComponent,
         DocsLinkHelperComponent,
     ]

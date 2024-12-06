@@ -1,4 +1,4 @@
-import { AsyncPipe, CommonModule, DatePipe, NgClass } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -20,9 +20,6 @@ import { SpecsEditorDialogComponent } from '../logs-config/specs-editor-dialog/s
     templateUrl: './logs-config.component.html',
     styleUrls: ['./logs-config.component.scss'],
     imports: [
-        NgClass,
-        AsyncPipe,
-        DatePipe,
         CommonModule,
         MatIconModule,
         MatButtonModule,

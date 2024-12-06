@@ -1,5 +1,4 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { JsonPipe } from '@angular/common';
 import { Component, computed, OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogActions, MatDialogRef } from '@angular/material/dialog';
@@ -26,7 +25,6 @@ import { LanguagesPermissionsActionsParams } from './languages-permissions-actio
         RouterOutlet,
         MatDialogActions,
         SxcGridModule,
-        JsonPipe,
     ]
 })
 export class LanguagePermissionsComponent implements OnInit {

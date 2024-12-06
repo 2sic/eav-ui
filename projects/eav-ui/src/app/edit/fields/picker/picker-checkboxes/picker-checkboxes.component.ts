@@ -1,4 +1,3 @@
-import { NgClass } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { MatRippleModule } from '@angular/material/core';
@@ -17,7 +16,6 @@ import { PickerPreviewLabelComponent } from '../picker-item-label/picker-item-la
         MatFormFieldModule,
         MatRippleModule,
         MatCheckbox,
-        NgClass,
         TippyDirective,
         PickerInlineHeaderComponent,
         PickerPreviewLabelComponent,

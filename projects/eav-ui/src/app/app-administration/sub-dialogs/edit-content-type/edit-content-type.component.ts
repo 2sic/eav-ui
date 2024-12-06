@@ -1,4 +1,3 @@
-import { AsyncPipe } from '@angular/common';
 import { AfterViewInit, Component, HostBinding } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -37,7 +36,6 @@ import { ContentTypesService } from '../../services/content-types.service';
         MatButtonModule,
         MatIconModule,
         MatDialogActions,
-        AsyncPipe,
         FieldHintComponent,
         ClickStopPropagationDirective,
         TippyDirective,

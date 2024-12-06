@@ -6,8 +6,7 @@ import {
   MAT_DIALOG_DATA,
   MatDialogActions,
   MatDialogClose,
-  MatDialogContent, MatDialogModule, MatDialogRef,
-  MatDialogTitle
+  MatDialogModule, MatDialogRef
 } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { transient } from '../../../../../../../../core/transient';
@@ -22,8 +21,6 @@ import { TippyDirective } from '../../../../../shared/directives/tippy.directive
         MatButtonModule,
         MatDialogActions,
         MatDialogClose,
-        MatDialogContent,
-        MatDialogTitle,
         ClipboardModule,
         MatIconModule,
         TippyDirective,

@@ -1,4 +1,4 @@
-import { AsyncPipe, NgClass } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { Component, Inject, OnInit, computed, inject } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -30,7 +30,6 @@ import { TranslationStateCore } from '../translate-state.model';
         MatListModule,
         NgClass,
         MatIconModule,
-        AsyncPipe,
         TranslateModule,
         SafeHtmlPipe,
     ]

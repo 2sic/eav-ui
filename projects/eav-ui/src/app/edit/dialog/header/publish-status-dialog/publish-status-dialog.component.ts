@@ -1,4 +1,4 @@
-import { AsyncPipe, NgClass } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialogRef } from '@angular/material/dialog';
@@ -21,7 +21,6 @@ import { isCtrlS } from '../../main/keyboard-shortcuts';
         MatListModule,
         NgClass,
         MatIconModule,
-        AsyncPipe,
         TranslateModule,
     ]
 })

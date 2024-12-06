@@ -4,7 +4,6 @@ import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MousedownStopPropagationDirective } from '../../../../shared/directives/mousedown-stop-propagation.directive';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { classLog } from '../../../../shared/logging';
 import { PickerItem } from '../models/picker-item.model';
@@ -25,7 +24,6 @@ import { ReorderIndexes } from './reorder-index.models';
         CdkDrag,
         PickerItemButtonsComponent,
         TippyDirective,
-        MousedownStopPropagationDirective,
     ]
 })
 export class PickerListComponent extends PickerPartBaseComponent {

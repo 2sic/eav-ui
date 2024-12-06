@@ -1,4 +1,3 @@
-import { DatePipe } from '@angular/common';
 import { Component, computed, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerInputEvent, MatDatepickerModule } from '@angular/material/datepicker';
@@ -37,7 +36,6 @@ import { DateTimeDefaultLogic } from './datetime-default-logic';
         FieldHelperTextComponent,
         OwlDayJsDateTimeModule,
         MatDayjsModule,
-        DatePipe,
         TippyDirective,
     ]
 })

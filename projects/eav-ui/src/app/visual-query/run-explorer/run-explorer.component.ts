@@ -1,4 +1,3 @@
-import { AsyncPipe } from '@angular/common';
 import { Component, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -19,7 +18,6 @@ import { calculateWarnings } from './run-explorer.helpers';
         MatButtonModule,
         MatIconModule,
         MatSlideToggleModule,
-        AsyncPipe,
     ]
 })
 export class RunExplorerComponent {

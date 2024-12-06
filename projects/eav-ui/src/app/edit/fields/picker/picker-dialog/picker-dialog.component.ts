@@ -1,4 +1,3 @@
-import { AsyncPipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -22,7 +21,6 @@ import { PickerTextComponent } from '../picker-text/picker-text.component';
         MatButtonModule,
         MatMenuModule,
         MatIconModule,
-        AsyncPipe,
         TippyDirective,
     ]
 })

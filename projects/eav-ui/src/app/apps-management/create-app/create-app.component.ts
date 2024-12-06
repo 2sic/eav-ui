@@ -1,4 +1,3 @@
-import { AsyncPipe } from '@angular/common';
 import { Component, HostBinding, signal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -27,7 +26,6 @@ import { AppsListService } from '../services/apps-list.service';
         MatOptionModule,
         MatDialogActions,
         MatButtonModule,
-        AsyncPipe,
         FieldHintComponent,
     ]
 })

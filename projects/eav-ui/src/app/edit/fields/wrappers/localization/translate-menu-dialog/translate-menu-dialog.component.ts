@@ -1,4 +1,4 @@
-import { AsyncPipe, NgClass } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { Component, computed, Inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -31,7 +31,6 @@ interface TranslationInfo {
         NgClass,
         MatIconModule,
         MatButtonModule,
-        AsyncPipe,
         TranslateModule,
     ]
 })
