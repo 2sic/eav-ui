@@ -63,7 +63,7 @@
   #auto="matAutocomplete"
   [displayWith]="displayFn.bind(this)"
   [hideSingleSelectionIndicator]="true"
-  (optionSelected)="optionSelected($event, selectedItem())"
+  (optionSelected)="optionSelected($event)"
   (closed)="onClosed()"
   (opened)="onOpened(settings().showAsTree)"
 >
