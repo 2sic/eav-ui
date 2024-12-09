@@ -1,6 +1,6 @@
 import { ColDef, GridApi, GridOptions, GridReadyEvent, ValueGetterParams } from '@ag-grid-community/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectorRef, Component, computed, inject, OnInit, signal, ViewContainerRef, WritableSignal } from '@angular/core';
+import { ChangeDetectorRef, Component, computed, effect, inject, OnInit, signal, ViewContainerRef, WritableSignal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogActions, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -78,7 +78,7 @@ export class ContentItemsComponent implements OnInit {
     private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
-  ) { }
+  ) { effect(() => this.fetchColumns()); }
 
   gridOptions: GridOptions = {
     ...defaultGridOptions,
@@ -111,7 +111,6 @@ export class ContentItemsComponent implements OnInit {
 
   onGridReady(params: GridReadyEvent) {
     this.#gridApiSigTemp.set(params.api);
-    this.fetchColumns();
     this.urlToExportContent();
   }
 
