@@ -66,7 +66,7 @@ export class DialogPopupComponent {
 
     effect(() => {
       this.isSavingStatus = this.#entityFormStateService.isSaving();
-    }, { allowSignalWrites: true });
+    });
 
 
 

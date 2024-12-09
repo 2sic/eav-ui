@@ -93,7 +93,7 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
       const config = adamSettings();
       // console.warn('adamConfig in Hyperlink-Default', config);
       this.config.adam.setConfig(config);
-    }, { allowSignalWrites: true });
+    });
   }
 
   ngOnInit() {

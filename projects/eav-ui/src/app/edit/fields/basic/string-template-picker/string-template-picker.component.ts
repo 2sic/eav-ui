@@ -82,7 +82,7 @@ export class StringTemplatePickerComponent {
     effect(() => this.#onLocationChange(this.#locationMask.result()));
 
     // Watch for changes to the Type mask
-    effect(() => this.#setFileConfig(this.#typeMask.result()), { allowSignalWrites: true });
+    effect(() => this.#setFileConfig(this.#typeMask.result()));
   }
 
   #setFileConfig(type: string) {

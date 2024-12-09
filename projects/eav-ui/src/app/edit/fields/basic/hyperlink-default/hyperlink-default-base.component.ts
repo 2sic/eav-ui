@@ -65,7 +65,7 @@ export class HyperlinkDefaultBaseComponent implements OnInit {
       this.log.a('controlStatus effect');
       const status = this.fieldState.uiValue();
       this.fetchLink(status);
-    }, { injector: this.#injector, allowSignalWrites: true });
+    }, { injector: this.#injector });
   }
 
   adamItem = computedObj('adamItem', () => {

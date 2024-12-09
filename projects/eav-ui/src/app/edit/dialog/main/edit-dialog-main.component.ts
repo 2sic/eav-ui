@@ -138,15 +138,6 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
     if (pref.data().pinned == null)
       pref.set('pinned', this.#formConfig.config.dialogContext.User?.IsSystemAdmin ?? false);
 
-    // Watch to save based on messages from sub-dialogs.
-    // effect(() => {
-    //   console.log(this.formsStateService.triggerTrySaveAndMaybeClose())
-    //   // TODO: Old Code Wird x fach aufgerufen
-    //   const { tryToSave, close } = this.formsStateService.triggerTrySaveAndMaybeClose();
-    //   if (!tryToSave) return;
-    //   this.saveAll(close);
-    // }, { allowSignalWrites: true });
-
     let previousState = { tryToSave: false, close: false };
 
     effect(() => {
@@ -157,7 +148,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
       }
 
       previousState = currentState;  // Zustand aktualisieren
-    }, { allowSignalWrites: true });
+    });
 
   }
 

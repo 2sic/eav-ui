@@ -190,9 +190,7 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
       });
 
       this.#viewInfos.set(viewInfos);   // Set the initial `viewInfos` before loading the data
-    },
-      { allowSignalWrites: true }
-    );
+    });
 
     // Update title ongoing
     effect(() => {

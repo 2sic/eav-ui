@@ -67,7 +67,7 @@ export class StringUrlPathComponent {
     });
 
     // Listen to the mask changes to update the field
-    effect(() => this.#publishFieldMaskResult(this.#maskedValueCleaned()), { allowSignalWrites: true });
+    effect(() => this.#publishFieldMaskResult(this.#maskedValueCleaned()));
   }
 
 

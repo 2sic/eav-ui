@@ -60,14 +60,11 @@ export class FieldsSettingsService {
     const allPropsOrNull = computedObj<Record<string, FieldProps> | null>('allPropsOrNull', () => this.#startSync() && this.#allProps());
 
     // Transfer changes to the props state to the public property
-    effect(
-      () => {
-        const update = allPropsOrNull();
-        if (!update) return;
-        this.allProps.set(update);
-      },
-      { allowSignalWrites: true }
-    );
+    effect(() => {
+      const update = allPropsOrNull();
+      if (!update) return;
+      this.allProps.set(update);
+    });
 
     // Start the picker sync
     this.#pickerSync.startSync(allPropsOrNull);

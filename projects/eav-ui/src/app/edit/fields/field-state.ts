@@ -63,7 +63,7 @@ export class FieldState<TValue extends FieldValue = FieldValue, TSettings extend
         return;
       for (const feature of reqFeaturesFromSettings)
         featuresSvc.requireFeature(feature, `Used in field ${this.name}`);
-    }, { allowSignalWrites: true, injector: injectorForEffects });
+    }, { injector: injectorForEffects });
 
   }
 
