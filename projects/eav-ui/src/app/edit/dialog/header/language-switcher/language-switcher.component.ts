@@ -5,6 +5,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { UserLanguageService } from 'projects/eav-ui/src/app/shared/services/user-language.service';
+import { transient } from '../../../../../../../core/transient';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { classLog } from '../../../../shared/logging';
 import { FormConfigService } from '../../../form/form-config.service';
@@ -45,6 +46,8 @@ export class LanguageSwitcherComponent implements AfterViewInit, OnDestroy {
 
   buttons = getLanguageOptions(this.languageService.getAll());
 
+  #userLanguageSvc = transient(UserLanguageService);
+
   constructor(
     private languageService: LanguageService,
     private languageInstanceService: FormLanguageService,
@@ -52,7 +55,6 @@ export class LanguageSwitcherComponent implements AfterViewInit, OnDestroy {
     private formConfig: FormConfigService,
     private snackBar: MatSnackBar,
     private translate: TranslateService,
-    private userLanguageSvc: UserLanguageService,
     private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
   ) { }
@@ -90,7 +92,7 @@ export class LanguageSwitcherComponent implements AfterViewInit, OnDestroy {
       this.languageInstanceService.setCurrent(this.formConfig.config.formId, language.NameId);
 
       // Also set the UI language
-      const lngCode = this.userLanguageSvc.getUiCode(language.NameId);
+      const lngCode = this.#userLanguageSvc.getUiCode(language.NameId);
       this.translate.use(lngCode);
     }
   }

@@ -47,7 +47,7 @@ export class FieldsSettingsService {
   #formConfig = inject(FormConfigService);
   #contentTypeSvc = inject(ContentTypeService);
   #itemSvc = inject(ItemService);
-  #usrLangSvc = inject(UserLanguageService);
+  #usrLangSvc = transient(UserLanguageService);
 
   // Transient services for this instance only
   #propsEngine = transient(FieldsPropsEngine);

@@ -53,9 +53,11 @@ export class EditInitializerService {
 
   public loaded = signal(false);
 
-  private formDataService = transient(FormDataService);
+  #formDataService = transient(FormDataService);
 
-  private initialFormValues: Record<string, ItemValuesOfLanguage> = {};
+  #userLanguageSvc = transient(UserLanguageService);
+
+  #initialFormValues: Record<string, ItemValuesOfLanguage> = {};
 
   constructor(
     private route: ActivatedRoute,
@@ -72,7 +74,6 @@ export class EditInitializerService {
     private adamCacheService: AdamCacheService,
     private linkCacheService: LinkCacheService,
     private featuresService: FeaturesScopedService,
-    private userLanguageSvc: UserLanguageService,
   ) { }
 
   fetchFormData(): void {
@@ -91,7 +92,7 @@ export class EditInitializerService {
     l.a('fetchFormData', form);
 
     const editItems = JSON.stringify(form.items);
-    this.formDataService.fetchFormData(editItems).subscribe(dataFromBackend => {
+    this.#formDataService.fetchFormData(editItems).subscribe(dataFromBackend => {
       // 2dm 2024-06-01 preserve prefill and client-data from original
       // and stop relying on round-trip to keep it
       const formData: EavEditLoadDto = {
@@ -154,7 +155,7 @@ export class EditInitializerService {
 
     var langs = loadDto.Context.Language;
     // WARNING! TranslateService is a new instance for every form and language must be set for every one of them
-    const userLangCode = this.userLanguageSvc.getUiCode(langs.Current);
+    const userLangCode = this.#userLanguageSvc.getUiCode(langs.Current);
     this.translate.use(userLangCode);
 
     // load language data only for parent dialog to not overwrite languages when opening child dialogs
@@ -185,7 +186,7 @@ export class EditInitializerService {
     for (const item of items)
       for (const currentLang of allLangs) {
         const formValues = new EntityReader(currentLang, language.primary).currentValues(item.Entity.Attributes);
-        this.initialFormValues[this.#initialValuesCacheKey(item.Entity.Guid, currentLang)] = formValues;
+        this.#initialFormValues[this.#initialValuesCacheKey(item.Entity.Guid, currentLang)] = formValues;
       }
   }
 
@@ -194,7 +195,7 @@ export class EditInitializerService {
   }
 
   getInitialValues(entityGuid: string, language: string): ItemValuesOfLanguage {
-    return this.initialFormValues[this.#initialValuesCacheKey(entityGuid, language)];
+    return this.#initialFormValues[this.#initialValuesCacheKey(entityGuid, language)];
   }
   //#endregion
 

@@ -4,7 +4,7 @@ import { StateManagerLocal } from '../user/state-manager';
 
 const storeKey = 'user-language';
 
-@Injectable({ providedIn: 'root' }) // TODO: MAYBE don't use root. probably get with transient - 2dm must review this before we finalize
+@Injectable()
 export class UserLanguageService {
 
   constructor() { }

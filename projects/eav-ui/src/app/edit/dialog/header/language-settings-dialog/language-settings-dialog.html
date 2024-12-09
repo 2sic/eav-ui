@@ -17,7 +17,7 @@
     <!-- Dropdown for Labels and Help Texts -->
     <mat-form-field tippy="Preferred language for texts and labels" appearance="fill" color="accent">
       <mat-label>Labels and Help Texts</mat-label>
-      <mat-select [value]="getLabelLanguage()" (selectionChange)="setLabelLanguage($event.value, 'labels')">
+      <mat-select [value]="userLanguageSvc.getLabelStored()" (selectionChange)="userLanguageSvc.setLabel($event.value)">
         <mat-option value="">Use current language (default)</mat-option>
         @for (o of options; track o.Code) {
           <mat-option value="{{ o.Code.toLocaleLowerCase() }}">{{ o.label }}</mat-option>
@@ -31,7 +31,7 @@
     <!-- Dropdown for UI Elements -->
     <mat-form-field tippy="Preferred language for buttons and controls" appearance="fill" color="accent">
       <mat-label>Buttons and Controls</mat-label>
-      <mat-select [value]="getUiLanguage()" (selectionChange)="setUiLanguage($event.value, 'ui')">
+      <mat-select [value]="userLanguageSvc.getUiStored()" (selectionChange)="userLanguageSvc.setUi($event.value)">
         <mat-option value="">Use current language (default)</mat-option>
         @for (option of options; track option.Code) {
           <mat-option value="{{ option.Code.toLocaleLowerCase() }}">{{ option.label }}</mat-option>

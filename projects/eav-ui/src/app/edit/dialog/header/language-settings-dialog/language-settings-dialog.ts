@@ -5,6 +5,7 @@ import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from "@angular/material/select";
 import { UserLanguageService } from "projects/eav-ui/src/app/shared/services/user-language.service";
+import { transient } from '../../../../../../../core/transient';
 import { TippyDirective } from "../../../../shared/directives/tippy.directive";
 import { LanguageService } from '../../../localization/language.service';
 import { getLanguageOptions } from '../language-switcher/language-switcher.helpers';
@@ -24,26 +25,16 @@ import { getLanguageOptions } from '../language-switcher/language-switcher.helpe
 })
 export class LanguageSettingsDialogComponent {
 
+  /** Language SVC - to get list of all possible languages */
   #languageSvc = inject(LanguageService);
-  #userLanguageSvc = inject(UserLanguageService);
 
-  constructor(protected dialog: MatDialogRef<LanguageSettingsDialogComponent>) { }
-  
+  /** User language service - to get/set the current language */
+  protected userLanguageSvc = transient(UserLanguageService);
+
+  /** Dialog reference, for close */
+  protected dialog = inject(MatDialogRef<LanguageSettingsDialogComponent>);
+
+  constructor() { }
+
   protected options = getLanguageOptions(this.#languageSvc.getAll());
-
-  setLabelLanguage(selectedLang: string, type: string): void {
-    this.#userLanguageSvc.setLabel(selectedLang);
-  }
-
-  getLabelLanguage(): String {
-    return this.#userLanguageSvc.getLabelStored();
-  }
-
-  setUiLanguage(selectedLang: string, type: string): void {
-    this.#userLanguageSvc.setUi(selectedLang);
-  }
-
-  getUiLanguage(): String {
-    return this.#userLanguageSvc.getUiStored();
-  }
 }
