@@ -8,12 +8,11 @@ import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
 import { StringFontIconPickerLogic } from './string-font-icon-picker-logic';
 
 @Component({
-  selector: InputTypeCatalog.StringFontIconPicker,
-  templateUrl: '../../picker/picker.component.html',
-  standalone: true,
-  imports: [
-    PickerImports,
-  ],
+    selector: InputTypeCatalog.StringFontIconPicker,
+    templateUrl: '../../picker/picker.component.html',
+    imports: [
+        PickerImports,
+    ]
 })
 @FieldMetadata({ ...WrappersLocalizationOnly })
 export class StringFontIconPickerComponent extends PickerComponent {

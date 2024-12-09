@@ -11,18 +11,17 @@ import { HelpPopupData } from '../help-popup/help-popup.models';
 import { Scenario } from '../scenarios';
 
 @Component({
-  selector: 'app-selector-with-help',
-  templateUrl: './selector-with-help.component.html',
-  styleUrls: ['../header-selector.scss'],
-  standalone: true,
-  imports: [
-    MatFormFieldModule,
-    MatSelectModule,
-    MatOptionModule,
-    MatButtonModule,
-    TippyDirective,
-    MatIconModule,
-  ],
+    selector: 'app-selector-with-help',
+    templateUrl: './selector-with-help.component.html',
+    styleUrls: ['../header-selector.scss'],
+    imports: [
+        MatFormFieldModule,
+        MatSelectModule,
+        MatOptionModule,
+        MatButtonModule,
+        TippyDirective,
+        MatIconModule,
+    ]
 })
 export class SelectorWithHelpComponent implements OnInit {
   label = input<string>();

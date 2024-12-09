@@ -1,4 +1,3 @@
-import { DatePipe } from '@angular/common';
 import { Component, computed, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerInputEvent, MatDatepickerModule } from '@angular/material/datepicker';
@@ -24,23 +23,21 @@ import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
 import { DateTimeDefaultLogic } from './datetime-default-logic';
 
 @Component({
-  selector: InputTypeCatalog.DateTimeDefault,
-  templateUrl: './datetime-default.component.html',
-  styleUrls: ['./datetime-default.component.scss'],
-  standalone: true,
-  imports: [
-    MatFormFieldModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatInputModule,
-    MatDatepickerModule,
-    OwlDateTimeModule,
-    FieldHelperTextComponent,
-    OwlDayJsDateTimeModule,
-    MatDayjsModule,
-    DatePipe,
-    TippyDirective,
-  ],
+    selector: InputTypeCatalog.DateTimeDefault,
+    templateUrl: './datetime-default.component.html',
+    styleUrls: ['./datetime-default.component.scss'],
+    imports: [
+        MatFormFieldModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatInputModule,
+        MatDatepickerModule,
+        OwlDateTimeModule,
+        FieldHelperTextComponent,
+        OwlDayJsDateTimeModule,
+        MatDayjsModule,
+        TippyDirective,
+    ]
 })
 @FieldMetadata({ ...WrappersLocalizationOnly })
 export class DatetimeDefaultComponent {

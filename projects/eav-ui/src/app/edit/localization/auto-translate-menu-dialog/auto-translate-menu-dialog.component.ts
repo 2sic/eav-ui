@@ -1,4 +1,4 @@
-import { AsyncPipe, NgClass } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { Component, Inject, OnInit, computed, inject } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -21,20 +21,18 @@ import { SnackBarWarningDemoComponent } from '../snack-bar-warning-demo/snack-ba
 import { TranslationStateCore } from '../translate-state.model';
 
 @Component({
-  selector: 'app-auto-translate-menu-dialog',
-  templateUrl: './auto-translate-menu-dialog.component.html',
-  styleUrls: ['./auto-translate-menu-dialog.component.scss'],
-  standalone: true,
-  imports: [
-    MatCardModule,
-    FeatureTextInfoComponent,
-    MatListModule,
-    NgClass,
-    MatIconModule,
-    AsyncPipe,
-    TranslateModule,
-    SafeHtmlPipe,
-  ],
+    selector: 'app-auto-translate-menu-dialog',
+    templateUrl: './auto-translate-menu-dialog.component.html',
+    styleUrls: ['./auto-translate-menu-dialog.component.scss'],
+    imports: [
+        MatCardModule,
+        FeatureTextInfoComponent,
+        MatListModule,
+        NgClass,
+        MatIconModule,
+        TranslateModule,
+        SafeHtmlPipe,
+    ]
 })
 export class AutoTranslateMenuDialogComponent extends TranslateHelperComponent implements OnInit {
 

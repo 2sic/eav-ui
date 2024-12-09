@@ -14,19 +14,18 @@ import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
 import { StringDefaultLogic } from './string-default-logic';
 
 @Component({
-  selector: InputTypeCatalog.StringDefault,
-  templateUrl: './string-default.component.html',
-  styleUrls: ['./string-default.component.scss'],
-  standalone: true,
-  imports: [
-    MatFormFieldModule,
-    FormsModule,
-    ReactiveFormsModule,
-    NgClass,
-    MatInputModule,
-    NgStyle,
-    FieldHelperTextComponent,
-  ],
+    selector: InputTypeCatalog.StringDefault,
+    templateUrl: './string-default.component.html',
+    styleUrls: ['./string-default.component.scss'],
+    imports: [
+        MatFormFieldModule,
+        FormsModule,
+        ReactiveFormsModule,
+        NgClass,
+        MatInputModule,
+        NgStyle,
+        FieldHelperTextComponent,
+    ]
 })
 @FieldMetadata({ ...WrappersLocalizationOnly })
 export class StringDefaultComponent {

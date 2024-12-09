@@ -41,23 +41,22 @@ import { DataFieldsComponent } from './data-fields/data-fields.component';
 import { DataItemsComponent } from './data-items/data-items.component';
 
 @Component({
-  selector: 'app-data',
-  templateUrl: './data.component.html',
-  styleUrls: ['./data.component.scss'],
-  standalone: true,
-  imports: [
-    MatDialogActions,
-    MatFormFieldModule,
-    MatSelectModule,
-    FormsModule,
-    MatOptionModule,
-    MatButtonModule,
-    MatIconModule,
-    RouterOutlet,
-    SxcGridModule,
-    DragAndDropDirective,
-    TippyDirective,
-  ],
+    selector: 'app-data',
+    templateUrl: './data.component.html',
+    styleUrls: ['./data.component.scss'],
+    imports: [
+        MatDialogActions,
+        MatFormFieldModule,
+        MatSelectModule,
+        FormsModule,
+        MatOptionModule,
+        MatButtonModule,
+        MatIconModule,
+        RouterOutlet,
+        SxcGridModule,
+        DragAndDropDirective,
+        TippyDirective,
+    ]
 })
 export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
 

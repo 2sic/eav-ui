@@ -7,24 +7,21 @@ import { MatSelectModule } from '@angular/material/select';
 import { RouterOutlet } from '@angular/router';
 import { transient } from '../../../../../core';
 import { SourceService } from '../../code-editor/services/source.service';
-import { DevRestQueryComponent } from '../../dev-rest/query/query.component';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 
 @Component({
-  selector: 'app-web-api-rest-api',
-  standalone: true,
-  imports: [
-    MatSelectModule,
-    MatButtonModule,
-    MatCardModule,
-    MatIconModule,
-    ReactiveFormsModule,
-    DevRestQueryComponent,
-    RouterOutlet,
-    SxcGridModule,
-  ],
-  templateUrl: './web-api-rest-api.component.html',
+    selector: 'app-web-api-rest-api',
+    imports: [
+        MatSelectModule,
+        MatButtonModule,
+        MatCardModule,
+        MatIconModule,
+        ReactiveFormsModule,
+        RouterOutlet,
+        SxcGridModule,
+    ],
+    templateUrl: './web-api-rest-api.component.html'
 })
 export class WebApiRestApiComponent {
   #sourceSvc = transient(SourceService);

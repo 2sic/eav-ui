@@ -1,5 +1,4 @@
 import { MediaMatcher } from '@angular/cdk/layout';
-import { AsyncPipe } from '@angular/common';
 import { Component, OnInit, signal, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogRef } from '@angular/material/dialog';
@@ -20,21 +19,19 @@ import { DialogConfigAppService } from '../services/dialog-config-app.service';
 import { AppAdminMenu } from './app-admin-menu';
 
 @Component({
-  selector: 'app-app-admin-main',
-  templateUrl: './app-admin-main.component.html',
-  styleUrls: ['./app-admin-main.component.scss'],
-  standalone: true,
-  imports: [
-    MatToolbarModule,
-    MatIconModule,
-    BreadcrumbModule,
-    MatButtonModule,
-    MatSidenavModule,
-    RouterOutlet,
-    AsyncPipe,
-    NavItemListComponent,
-    ToggleDebugDirective,
-  ],
+    selector: 'app-app-admin-main',
+    templateUrl: './app-admin-main.component.html',
+    styleUrls: ['./app-admin-main.component.scss'],
+    imports: [
+        MatToolbarModule,
+        MatIconModule,
+        BreadcrumbModule,
+        MatButtonModule,
+        MatSidenavModule,
+        RouterOutlet,
+        NavItemListComponent,
+        ToggleDebugDirective,
+    ]
 })
 export class AppAdminMainComponent implements OnInit {
 

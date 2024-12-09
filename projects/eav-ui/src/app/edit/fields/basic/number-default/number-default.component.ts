@@ -1,4 +1,3 @@
-import { AsyncPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -11,17 +10,15 @@ import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
 import { NumberDefaultLogic } from './number-default-logic';
 
 @Component({
-  selector: InputTypeCatalog.NumberDefault,
-  templateUrl: './number-default.component.html',
-  standalone: true,
-  imports: [
-    MatFormFieldModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatInputModule,
-    FieldHelperTextComponent,
-    AsyncPipe,
-  ],
+    selector: InputTypeCatalog.NumberDefault,
+    templateUrl: './number-default.component.html',
+    imports: [
+        MatFormFieldModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatInputModule,
+        FieldHelperTextComponent,
+    ]
 })
 @FieldMetadata({ ...WrappersLocalizationOnly })
 export class NumberDefaultComponent {

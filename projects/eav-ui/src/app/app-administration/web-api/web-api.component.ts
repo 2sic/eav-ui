@@ -20,17 +20,16 @@ import { WebApiActionsComponent } from './web-api-actions/web-api-actions.compon
 import { WebApiActionsParams } from './web-api-actions/web-api-actions.models';
 
 @Component({
-  selector: 'app-web-api',
-  templateUrl: './web-api.component.html',
-  standalone: true,
-  imports: [
-    SxcGridModule,
-    MatDialogActions,
-    MatButtonModule,
-    MatMenuModule,
-    MatIconModule,
-    RouterOutlet,
-  ]
+    selector: 'app-web-api',
+    templateUrl: './web-api.component.html',
+    imports: [
+        SxcGridModule,
+        MatDialogActions,
+        MatButtonModule,
+        MatMenuModule,
+        MatIconModule,
+        RouterOutlet,
+    ]
 })
 export class WebApiComponent implements OnInit {
 

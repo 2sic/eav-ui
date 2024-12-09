@@ -13,17 +13,16 @@ import { PubMeta } from '../pub-meta-filter/pub-meta-filter.model';
 type GoToUrls = 'openMetadata'
 
 @Component({
-  selector: 'app-content-items-status',
-  templateUrl: './content-items-status.component.html',
-  styleUrls: ['./content-items-status.component.scss'],
-  standalone: true,
-  imports: [
-    MatIconModule,
-    MatRippleModule,
-    NgClass,
-    MatBadgeModule,
-    TippyDirective,
-  ],
+    selector: 'app-content-items-status',
+    templateUrl: './content-items-status.component.html',
+    styleUrls: ['./content-items-status.component.scss'],
+    imports: [
+        MatIconModule,
+        MatRippleModule,
+        NgClass,
+        MatBadgeModule,
+        TippyDirective,
+    ]
 })
 export class ContentItemsStatusComponent implements ICellRendererAngularComp {
   value: PubMeta;

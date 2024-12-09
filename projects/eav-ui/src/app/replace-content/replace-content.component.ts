@@ -19,24 +19,23 @@ import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
 import { computedObj, signalObj } from '../shared/signals/signal.utilities';
 
 @Component({
-  selector: 'app-replace-content',
-  templateUrl: './replace-content.component.html',
-  styleUrls: ['./replace-content.component.scss'],
-  standalone: true,
-  imports: [
-    RouterOutlet,
-    MatFormFieldModule,
-    MatInputModule,
-    MatAutocompleteModule,
-    FormsModule,
-    CdkVirtualScrollViewport,
-    CdkFixedSizeVirtualScroll,
-    CdkVirtualForOf,
-    MatOptionModule,
-    MatButtonModule,
-    MatIconModule,
-    MatDialogActions,
-  ],
+    selector: 'app-replace-content',
+    templateUrl: './replace-content.component.html',
+    styleUrls: ['./replace-content.component.scss'],
+    imports: [
+        RouterOutlet,
+        MatFormFieldModule,
+        MatInputModule,
+        MatAutocompleteModule,
+        FormsModule,
+        CdkVirtualScrollViewport,
+        CdkFixedSizeVirtualScroll,
+        CdkVirtualForOf,
+        MatOptionModule,
+        MatButtonModule,
+        MatIconModule,
+        MatDialogActions,
+    ]
 })
 export class ReplaceContentComponent implements OnInit {
   @HostBinding('className') hostClass = 'dialog-component';

@@ -26,26 +26,25 @@ import { TippyDirective } from './../../../../shared/directives/tippy.directive'
 
 
 @Component({
-  selector: WrappersCatalog.HyperlinkDefaultExpandableWrapper,
-  templateUrl: './hyperlink-default-expandable-wrapper.component.html',
-  styleUrls: ['./hyperlink-default-expandable-wrapper.component.scss'],
-  animations: [ContentExpandAnimation],
-  standalone: true,
-  imports: [
-    NgClass,
-    MatIconModule,
-    NgStyle,
-    TranslateModule,
-    TippyDirective,
-    DialogPopupComponent,
-    FieldHelperTextComponent,
-    FeatureIconTextComponent,
-    PasteClipboardImageDirective,
-    CommonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-  ],
+    selector: WrappersCatalog.HyperlinkDefaultExpandableWrapper,
+    templateUrl: './hyperlink-default-expandable-wrapper.component.html',
+    styleUrls: ['./hyperlink-default-expandable-wrapper.component.scss'],
+    animations: [ContentExpandAnimation],
+    imports: [
+        NgClass,
+        MatIconModule,
+        NgStyle,
+        TranslateModule,
+        TippyDirective,
+        DialogPopupComponent,
+        FieldHelperTextComponent,
+        FeatureIconTextComponent,
+        PasteClipboardImageDirective,
+        CommonModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatButtonModule,
+    ]
 })
 // tslint:disable-next-line:max-line-length
 export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefaultBaseComponent implements AfterViewInit, OnDestroy {

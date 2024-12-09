@@ -1,5 +1,4 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { JsonPipe } from '@angular/common';
 import { Component, computed, OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogActions, MatDialogRef } from '@angular/material/dialog';
@@ -18,17 +17,15 @@ import { LanguagesPermissionsActionsComponent } from './languages-permissions-ac
 import { LanguagesPermissionsActionsParams } from './languages-permissions-actions/languages-permissions-actions.models';
 
 @Component({
-  selector: 'app-language-permissions',
-  templateUrl: './language-permissions.component.html',
-  standalone: true,
-  imports: [
-    MatButtonModule,
-    MatIconModule,
-    RouterOutlet,
-    MatDialogActions,
-    SxcGridModule,
-    JsonPipe,
-  ],
+    selector: 'app-language-permissions',
+    templateUrl: './language-permissions.component.html',
+    imports: [
+        MatButtonModule,
+        MatIconModule,
+        RouterOutlet,
+        MatDialogActions,
+        SxcGridModule,
+    ]
 })
 export class LanguagePermissionsComponent implements OnInit {
   gridOptions: GridOptions = this.#buildGridOptions();

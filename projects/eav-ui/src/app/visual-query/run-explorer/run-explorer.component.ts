@@ -1,4 +1,3 @@
-import { AsyncPipe } from '@angular/common';
 import { Component, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -12,16 +11,14 @@ import { VisualQueryStateService } from '../services/visual-query.service';
 import { calculateWarnings } from './run-explorer.helpers';
 
 @Component({
-  selector: 'app-run-explorer',
-  templateUrl: './run-explorer.component.html',
-  styleUrls: ['./run-explorer.component.scss'],
-  standalone: true,
-  imports: [
-    MatButtonModule,
-    MatIconModule,
-    MatSlideToggleModule,
-    AsyncPipe,
-  ],
+    selector: 'app-run-explorer',
+    templateUrl: './run-explorer.component.html',
+    styleUrls: ['./run-explorer.component.scss'],
+    imports: [
+        MatButtonModule,
+        MatIconModule,
+        MatSlideToggleModule,
+    ]
 })
 export class RunExplorerComponent {
 

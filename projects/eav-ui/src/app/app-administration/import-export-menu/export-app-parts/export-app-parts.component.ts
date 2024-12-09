@@ -18,24 +18,23 @@ import { ContentTypesService } from '../../services/content-types.service';
 import { ExportAppPartsService } from '../../services/export-app-parts.service';
 
 @Component({
-  selector: 'app-export-app-parts',
-  templateUrl: './export-app-parts.component.html',
-  styleUrls: ['./export-app-parts.component.scss'],
-  standalone: true,
-  imports: [
-    MatFormFieldModule,
-    MatSelectModule,
-    FormsModule,
-    MatOptionModule,
-    MatButtonModule,
-    MatIconModule,
-    MatCheckboxModule,
-    MatDialogActions,
-    FieldHintComponent,
-    ClickStopPropagationDirective,
-    TippyDirective,
-    MatDialogModule,
-  ],
+    selector: 'app-export-app-parts',
+    templateUrl: './export-app-parts.component.html',
+    styleUrls: ['./export-app-parts.component.scss'],
+    imports: [
+        MatFormFieldModule,
+        MatSelectModule,
+        FormsModule,
+        MatOptionModule,
+        MatButtonModule,
+        MatIconModule,
+        MatCheckboxModule,
+        MatDialogActions,
+        FieldHintComponent,
+        ClickStopPropagationDirective,
+        TippyDirective,
+        MatDialogModule,
+    ]
 })
 export class ExportAppPartsComponent {
   @HostBinding('className') hostClass = 'dialog-component';

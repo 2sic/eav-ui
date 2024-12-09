@@ -1,4 +1,3 @@
-import { AsyncPipe } from '@angular/common';
 import { AfterViewInit, Component, HostBinding } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -24,25 +23,23 @@ import { ContentTypeEdit } from '../../models/content-type.model';
 import { ContentTypesService } from '../../services/content-types.service';
 
 @Component({
-  selector: 'app-edit-content-type',
-  templateUrl: './edit-content-type.component.html',
-  styleUrls: ['./edit-content-type.component.scss'],
-  standalone: true,
-  imports: [
-    FormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatExpansionModule,
-    MatSelectModule,
-    MatOptionModule,
-    MatButtonModule,
-    MatIconModule,
-    MatDialogActions,
-    AsyncPipe,
-    FieldHintComponent,
-    ClickStopPropagationDirective,
-    TippyDirective,
-  ],
+    selector: 'app-edit-content-type',
+    templateUrl: './edit-content-type.component.html',
+    styleUrls: ['./edit-content-type.component.scss'],
+    imports: [
+        FormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatExpansionModule,
+        MatSelectModule,
+        MatOptionModule,
+        MatButtonModule,
+        MatIconModule,
+        MatDialogActions,
+        FieldHintComponent,
+        ClickStopPropagationDirective,
+        TippyDirective,
+    ]
 })
 export class EditContentTypeComponent implements AfterViewInit {
 

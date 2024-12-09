@@ -1,4 +1,4 @@
-import { AsyncPipe, KeyValue, KeyValuePipe } from '@angular/common';
+import { KeyValue, KeyValuePipe } from '@angular/common';
 import { Component, computed, signal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -11,17 +11,15 @@ import { VisualQueryStateService } from '../services/visual-query.service';
 import { filterAndSortDataSources } from './add-explorer.helpers';
 
 @Component({
-  selector: 'app-add-explorer',
-  templateUrl: './add-explorer.component.html',
-  styleUrls: ['./add-explorer.component.scss'],
-  standalone: true,
-  imports: [
-    MatSlideToggleModule,
-    MatIconModule,
-    AsyncPipe,
-    KeyValuePipe,
-    TippyDirective,
-  ],
+    selector: 'app-add-explorer',
+    templateUrl: './add-explorer.component.html',
+    styleUrls: ['./add-explorer.component.scss'],
+    imports: [
+        MatSlideToggleModule,
+        MatIconModule,
+        KeyValuePipe,
+        TippyDirective,
+    ]
 })
 export class AddExplorerComponent {
   toggledItems: string[] = [];

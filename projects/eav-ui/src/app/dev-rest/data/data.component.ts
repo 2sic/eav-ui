@@ -30,27 +30,26 @@ import { DevRestDataIntroductionComponent } from './introduction/introduction.co
 const pathToContent = 'app/{appname}/data/{typename}';
 
 @Component({
-  selector: 'app-dev-rest-data',
-  templateUrl: './data.component.html',
-  styleUrls: ['../dev-rest-all.scss'],
-  // we need preserve whitespace - otherwise spaces are missing in some conditional HTML
-  preserveWhitespaces: true,
-  standalone: true,
-  imports: [
-    MatButtonModule,
-    TippyDirective,
-    MatIconModule,
-    RouterOutlet,
-    SelectorWithHelpComponent,
-    MatTabsModule,
-    DevRestDataIntroductionComponent,
-    DevRestTabIntroductionComponent,
-    DevRestTabExamplesComponent,
-    DevRestUrlsAndCodeComponent,
-    DevRestTabPermissionsComponent,
-    DevRestHttpHeadersComponent,
-    AsyncPipe,
-  ],
+    selector: 'app-dev-rest-data',
+    templateUrl: './data.component.html',
+    styleUrls: ['../dev-rest-all.scss'],
+    // we need preserve whitespace - otherwise spaces are missing in some conditional HTML
+    preserveWhitespaces: true,
+    imports: [
+        MatButtonModule,
+        TippyDirective,
+        MatIconModule,
+        RouterOutlet,
+        SelectorWithHelpComponent,
+        MatTabsModule,
+        DevRestDataIntroductionComponent,
+        DevRestTabIntroductionComponent,
+        DevRestTabExamplesComponent,
+        DevRestUrlsAndCodeComponent,
+        DevRestTabPermissionsComponent,
+        DevRestHttpHeadersComponent,
+        AsyncPipe,
+    ]
 })
 export class DevRestDataComponent extends DevRestBase<DevRestDataModel> implements OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';

@@ -18,16 +18,15 @@ import { CheckboxCellComponent } from './checkbox-cell/checkbox-cell.component';
 import { CheckboxCellParams } from './checkbox-cell/checkbox-cell.model';
 
 @Component({
-  selector: 'app-add-app-from-folder',
-  templateUrl: './add-app-from-folder.component.html',
-  styleUrls: ['./add-app-from-folder.component.scss'],
-  standalone: true,
-  imports: [
-    MatDialogActions,
-    MatButtonModule,
-    FeatureTextInfoComponent,
-    SxcGridModule,
-  ],
+    selector: 'app-add-app-from-folder',
+    templateUrl: './add-app-from-folder.component.html',
+    styleUrls: ['./add-app-from-folder.component.scss'],
+    imports: [
+        MatDialogActions,
+        MatButtonModule,
+        FeatureTextInfoComponent,
+        SxcGridModule,
+    ]
 })
 export class AddAppFromFolderComponent  {
   @HostBinding('className') hostClass = 'dialog-component';

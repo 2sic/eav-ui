@@ -20,25 +20,24 @@ import { ClickStopPropagationDirective } from '../../shared/directives/click-sto
 import { MetadataSaveFormValues } from './metadata-save-dialog.models';
 
 @Component({
-  selector: 'app-metadata-save-dialog',
-  templateUrl: './metadata-save-dialog.component.html',
-  styleUrls: ['./metadata-save-dialog.component.scss'],
-  standalone: true,
-  imports: [
-    MatCardModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatOptionModule,
-    MatInputModule,
-    MatButtonModule,
-    NgClass,
-    MatIconModule,
-    MatSlideToggleModule,
-    FieldHintComponent,
-    ClickStopPropagationDirective,
-  ]
+    selector: 'app-metadata-save-dialog',
+    templateUrl: './metadata-save-dialog.component.html',
+    styleUrls: ['./metadata-save-dialog.component.scss'],
+    imports: [
+        MatCardModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatOptionModule,
+        MatInputModule,
+        MatButtonModule,
+        NgClass,
+        MatIconModule,
+        MatSlideToggleModule,
+        FieldHintComponent,
+        ClickStopPropagationDirective,
+    ]
 })
 export class MetadataSaveDialogComponent implements OnInit {
   @HostBinding('className') hostClass = 'dialog-component';

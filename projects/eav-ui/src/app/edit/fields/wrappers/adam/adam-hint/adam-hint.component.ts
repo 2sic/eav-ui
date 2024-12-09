@@ -1,25 +1,22 @@
-import { FeatureNames } from './../../../../../features/feature-names';
-import { FeaturesScopedService } from '../../../../../features/features-scoped.service';
 import { Component, inject } from '@angular/core';
-import { TranslateModule } from '@ngx-translate/core';
-import { AsyncPipe } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
+import { TranslateModule } from '@ngx-translate/core';
+import { FeaturesScopedService } from '../../../../../features/features-scoped.service';
 import { TippyDirective } from '../../../../../shared/directives/tippy.directive';
+import { FeatureNames } from './../../../../../features/feature-names';
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'adam-hint',
-  templateUrl: './adam-hint.component.html',
-  styleUrls: ['./adam-hint.component.scss'],
-  standalone: true,
-  imports: [
-    MatDividerModule,
-    MatIconModule,
-    AsyncPipe,
-    TranslateModule,
-    TippyDirective,
-  ],
+    // tslint:disable-next-line:component-selector
+    selector: 'adam-hint',
+    templateUrl: './adam-hint.component.html',
+    styleUrls: ['./adam-hint.component.scss'],
+    imports: [
+        MatDividerModule,
+        MatIconModule,
+        TranslateModule,
+        TippyDirective,
+    ]
 })
 export class AdamHintComponent {
   public features = inject(FeaturesScopedService);

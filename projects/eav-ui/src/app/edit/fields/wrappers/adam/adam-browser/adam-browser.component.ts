@@ -1,6 +1,6 @@
 import { Context as DnnContext } from '@2sic.com/sxc-angular';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { AsyncPipe, NgClass } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { ChangeDetectorRef, Component, effect, inject, OnInit, output, ViewContainerRef } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatDialog } from '@angular/material/dialog';
@@ -42,36 +42,34 @@ const logSpecs = {
 }
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'adam-browser',
-  templateUrl: './adam-browser.component.html',
-  styleUrls: ['./adam-browser.component.scss'],
-  animations: [
-    trigger('adamShowAnimate', [
-      state('closed', style({
-        height: '0',
-        overflow: 'hidden',
-      })),
-      state('open', style({
-        height: '*',
-        overflow: 'hidden',
-      })),
-      transition('closed => open', [
-        animate('300ms cubic-bezier(0.4, 0.0, 0.2, 1)'),
-      ]),
-    ]),
-  ],
-  standalone: true,
-  imports: [
-    NgClass,
-    MatIconModule,
-    PasteClipboardImageDirective,
-    MatBadgeModule,
-    AsyncPipe,
-    TranslateModule,
-    ClickStopPropagationDirective,
-    TippyDirective,
-  ],
+    // tslint:disable-next-line:component-selector
+    selector: 'adam-browser',
+    templateUrl: './adam-browser.component.html',
+    styleUrls: ['./adam-browser.component.scss'],
+    animations: [
+        trigger('adamShowAnimate', [
+            state('closed', style({
+                height: '0',
+                overflow: 'hidden',
+            })),
+            state('open', style({
+                height: '*',
+                overflow: 'hidden',
+            })),
+            transition('closed => open', [
+                animate('300ms cubic-bezier(0.4, 0.0, 0.2, 1)'),
+            ]),
+        ]),
+    ],
+    imports: [
+        NgClass,
+        MatIconModule,
+        PasteClipboardImageDirective,
+        MatBadgeModule,
+        TranslateModule,
+        ClickStopPropagationDirective,
+        TippyDirective,
+    ]
 })
 export class AdamBrowserComponent implements OnInit {
   

@@ -22,20 +22,19 @@ const logSpecs = {
 }
 
 @Component({
-  selector: 'app-edit-entity-form-builder',
-  templateUrl: './form-builder.component.html',
-  styleUrls: ['./form-builder.component.scss'],
-  standalone: true,
-  imports: [
-    FormsModule,
-    ReactiveFormsModule,
-    EntityFormComponent,
-  ],
-  providers: [
-    FieldsSettingsService,  // used for all field settings - must be shared from here
-    FieldsTranslateService, // used for field translations and uses FieldsSettingsService, so also shared here
-    EntityFormStateService, // used for sharing information about this entity form
-  ],
+    selector: 'app-edit-entity-form-builder',
+    templateUrl: './form-builder.component.html',
+    styleUrls: ['./form-builder.component.scss'],
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        EntityFormComponent,
+    ],
+    providers: [
+        FieldsSettingsService, // used for all field settings - must be shared from here
+        FieldsTranslateService, // used for field translations and uses FieldsSettingsService, so also shared here
+        EntityFormStateService, // used for sharing information about this entity form
+    ]
 })
 export class EntityFormBuilderComponent implements OnInit, OnDestroy {
   entityGuid = input<string>();

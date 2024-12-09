@@ -19,16 +19,15 @@ import { PermissionsActionsParams } from './permissions-actions/permissions-acti
 import { PermissionsService } from './services/permissions.service';
 
 @Component({
-  selector: 'app-permissions',
-  templateUrl: './permissions.component.html',
-  standalone: true,
-  imports: [
-    MatButtonModule,
-    MatIconModule,
-    RouterOutlet,
-    MatDialogActions,
-    SxcGridModule,
-  ],
+    selector: 'app-permissions',
+    templateUrl: './permissions.component.html',
+    imports: [
+        MatButtonModule,
+        MatIconModule,
+        RouterOutlet,
+        MatDialogActions,
+        SxcGridModule,
+    ]
 })
 export class PermissionsComponent implements OnInit {
   gridOptions = this.buildGridOptions();

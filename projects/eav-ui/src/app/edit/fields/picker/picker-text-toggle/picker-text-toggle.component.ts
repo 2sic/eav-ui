@@ -8,18 +8,17 @@ import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { FieldState } from '../../field-state';
 
 @Component({
-  selector: 'app-picker-toggle-text',
-  templateUrl: './picker-text-toggle.component.html',
-  styleUrls: ['./picker-text-toggle.component.scss'],
-  standalone: true,
-  imports: [
-    MatFormFieldModule,
-    MatButtonModule,
-    NgClass,
-    MatIconModule,
-    ClickStopPropagationDirective,
-    TippyDirective,
-  ],
+    selector: 'app-picker-toggle-text',
+    templateUrl: './picker-text-toggle.component.html',
+    styleUrls: ['./picker-text-toggle.component.scss'],
+    imports: [
+        MatFormFieldModule,
+        MatButtonModule,
+        NgClass,
+        MatIconModule,
+        ClickStopPropagationDirective,
+        TippyDirective,
+    ]
 })
 export class PickerTextToggleComponent {
   csDisabled = input<boolean>();

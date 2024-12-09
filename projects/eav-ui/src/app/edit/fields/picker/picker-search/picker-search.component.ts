@@ -10,7 +10,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatTreeModule } from '@angular/material/tree';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { transient } from '../../../../../../../core/transient';
-import { ClickStopPropagationDirective } from '../../../../shared/directives/click-stop-propagation.directive';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { classLog } from '../../../../shared/logging';
 import { GlobalConfigService } from '../../../../shared/services/global-config.service';
@@ -34,28 +33,26 @@ const logSpecs = {
 }
 
 @Component({
-  selector: 'app-picker-search',
-  templateUrl: './picker-search.component.html',
-  styleUrls: ['./picker-search.component.scss'],
-  standalone: true,
-  imports: [
-    MatFormFieldModule,
-    FormsModule,
-    ReactiveFormsModule,
-    NgClass,
-    MatInputModule,
-    MatAutocompleteModule,
-    MatButtonModule,
-    MatIconModule,
-    MatOptionModule,
-    MatTreeModule,
-    TranslateModule,
-    PickerItemButtonsComponent,
-    ClickStopPropagationDirective,
-    TippyDirective,
-    PickerPreviewLabelComponent,
-    PickerItemPreviewComponent,
-  ]
+    selector: 'app-picker-search',
+    templateUrl: './picker-search.component.html',
+    styleUrls: ['./picker-search.component.scss'],
+    imports: [
+        MatFormFieldModule,
+        FormsModule,
+        ReactiveFormsModule,
+        NgClass,
+        MatInputModule,
+        MatAutocompleteModule,
+        MatButtonModule,
+        MatIconModule,
+        MatOptionModule,
+        MatTreeModule,
+        TranslateModule,
+        PickerItemButtonsComponent,
+        TippyDirective,
+        PickerPreviewLabelComponent,
+        PickerItemPreviewComponent,
+    ]
 })
 export class PickerSearchComponent extends PickerPartBaseComponent implements OnInit {
 

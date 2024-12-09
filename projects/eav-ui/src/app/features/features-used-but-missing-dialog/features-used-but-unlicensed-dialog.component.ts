@@ -6,9 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
 import { transient } from '../../../../../core';
 import { FeatureDetailsDialogComponent } from '../../apps-management/licence-info/feature-details-dialog/feature-details-dialog.component';
-import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { classLog, commonSpecs } from '../../shared/logging';
-import { SafeHtmlPipe } from '../../shared/pipes/safe-html.pipe';
 import { FeaturesScopedService } from '../features-scoped.service';
 import { FeatureDetailService } from '../services/feature-detail.service';
 
@@ -18,18 +16,15 @@ const logSpecs = {
 };
 
 @Component({
-  selector: 'app-features-used-but-unlicensed-dialog',
-  templateUrl: './features-used-but-unlicensed-dialog.component.html',
-  standalone: true,
-  imports: [
-    MatCardModule,
-    MatButtonModule,
-    MatIconModule,
-    TranslateModule,
-    TippyDirective,
-    SafeHtmlPipe,
-    FeatureDetailsDialogComponent,
-  ]
+    selector: 'app-features-used-but-unlicensed-dialog',
+    templateUrl: './features-used-but-unlicensed-dialog.component.html',
+    imports: [
+        MatCardModule,
+        MatButtonModule,
+        MatIconModule,
+        TranslateModule,
+        FeatureDetailsDialogComponent,
+    ]
 })
 export class FeaturesUsedButUnlicensedComponent {
 

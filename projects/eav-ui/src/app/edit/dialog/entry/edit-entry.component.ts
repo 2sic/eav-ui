@@ -16,24 +16,22 @@ import { FeaturesScopedService } from '../../../features/features-scoped.service
  * But if a sub-dialog is opened, this will start anew, with it's own provided services etc.
  */
 @Component({
-  selector: 'app-edit-entry',
-  templateUrl: './edit-entry.component.html',
-  standalone: true,
-  imports: [
-    RouterOutlet,
-    EditDialogMainComponent,
-  ],
-  providers: [
-    // must be by Providers
-    LoggingService,
-
-    // Shared Services across the edit form
-    FeaturesScopedService,    // for checking if features are enabled - this can change from dialog to dialog
-    EditInitializerService,   // for loading the data and having it ready downstream
-    Context,                  // Form context, such as what app etc. - the same for the entire form
-    FormConfigService,        // form configuration valid for this entire form; will be initialized by the EditInitializerService
-    ScriptsLoaderService,     // Loader for external scripts. Shared as it keeps track of what's been loaded. Maybe should be providedIn: 'root'?
-  ],
+    selector: 'app-edit-entry',
+    templateUrl: './edit-entry.component.html',
+    imports: [
+        RouterOutlet,
+        EditDialogMainComponent,
+    ],
+    providers: [
+        // must be by Providers
+        LoggingService,
+        // Shared Services across the edit form
+        FeaturesScopedService, // for checking if features are enabled - this can change from dialog to dialog
+        EditInitializerService, // for loading the data and having it ready downstream
+        Context, // Form context, such as what app etc. - the same for the entire form
+        FormConfigService, // form configuration valid for this entire form; will be initialized by the EditInitializerService
+        ScriptsLoaderService, // Loader for external scripts. Shared as it keeps track of what's been loaded. Maybe should be providedIn: 'root'?
+    ]
 })
 export class EditEntryComponent implements OnInit {
 

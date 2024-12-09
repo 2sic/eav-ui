@@ -16,25 +16,24 @@ import { PickerTextToggleComponent } from '../picker-text-toggle/picker-text-tog
 import { PickerTextComponent } from '../picker-text/picker-text.component';
 
 @Component({
-  selector: 'app-picker-preview',
-  templateUrl: './picker-preview.component.html',
-  styleUrls: ['./picker-preview.component.scss'],
-  standalone: true,
-  imports: [
-    NgTemplateOutlet,
-    NgClass,
-    MatButtonModule,
-    MatMenuModule,
-    MatIconModule,
-    TippyDirective,
-    PickerPillsComponent,
-    PickerTextToggleComponent,
-    PickerSearchComponent,
-    PickerTextComponent,
-    PickerCheckboxesComponent,
-    PickerRadioComponent,
-    FieldHelperTextComponent,
-  ],
+    selector: 'app-picker-preview',
+    templateUrl: './picker-preview.component.html',
+    styleUrls: ['./picker-preview.component.scss'],
+    imports: [
+        NgTemplateOutlet,
+        NgClass,
+        MatButtonModule,
+        MatMenuModule,
+        MatIconModule,
+        TippyDirective,
+        PickerPillsComponent,
+        PickerTextToggleComponent,
+        PickerSearchComponent,
+        PickerTextComponent,
+        PickerCheckboxesComponent,
+        PickerRadioComponent,
+        FieldHelperTextComponent,
+    ]
 })
 export class PickerPreviewComponent extends PickerPartBaseComponent {
 

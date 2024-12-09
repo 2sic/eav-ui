@@ -1,4 +1,4 @@
-import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
+import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef, computed, inject, signal } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
@@ -33,23 +33,21 @@ import { AnalyzeParts } from '../sub-dialogs/analyze-settings/analyze-settings.m
 import { AppConfigurationCardComponent } from './app-configuration-card/app-configuration-card.component';
 
 @Component({
-  selector: 'app-app-configuration',
-  templateUrl: './app-configuration.component.html',
-  styleUrls: ['./app-configuration.component.scss'],
-  standalone: true,
-  imports: [
-    MatCardModule,
-    MatIconModule,
-    MatButtonModule,
-    MatBadgeModule,
-    NgTemplateOutlet,
-    AppConfigurationCardComponent,
-    FeatureTextInfoComponent,
-    RouterOutlet,
-    AsyncPipe,
-    TippyDirective,
-    DocsLinkHelperComponent,
-  ],
+    selector: 'app-app-configuration',
+    templateUrl: './app-configuration.component.html',
+    styleUrls: ['./app-configuration.component.scss'],
+    imports: [
+        MatCardModule,
+        MatIconModule,
+        MatButtonModule,
+        MatBadgeModule,
+        NgTemplateOutlet,
+        AppConfigurationCardComponent,
+        FeatureTextInfoComponent,
+        RouterOutlet,
+        TippyDirective,
+        DocsLinkHelperComponent,
+    ]
 })
 export class AppConfigurationComponent implements OnInit, OnDestroy {
 

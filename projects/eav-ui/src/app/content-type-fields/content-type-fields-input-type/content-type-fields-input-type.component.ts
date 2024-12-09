@@ -7,13 +7,12 @@ import { Field } from '../../shared/fields/field.model';
 import { ContentTypeFieldsInputTypeParams } from './content-type-fields-input-type.models';
 
 @Component({
-  selector: 'app-content-type-fields-input-type',
-  templateUrl: './content-type-fields-input-type.component.html',
-  standalone: true,
-  imports: [
-    MatRippleModule,
-    MatIconModule,
-  ],
+    selector: 'app-content-type-fields-input-type',
+    templateUrl: './content-type-fields-input-type.component.html',
+    imports: [
+        MatRippleModule,
+        MatIconModule,
+    ]
 })
 export class ContentTypeFieldsInputTypeComponent implements ICellRendererAngularComp {
   value: string;

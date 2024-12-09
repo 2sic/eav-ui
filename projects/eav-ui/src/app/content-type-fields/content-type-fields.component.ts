@@ -36,19 +36,18 @@ import { FieldSharingAddMany } from './field-sharing-add-many/field-sharing-add-
 import { ShareOrInheritDialogComponent } from './field-sharing-configure/field-sharing-configure.component';
 
 @Component({
-  selector: 'app-content-type-fields',
-  templateUrl: './content-type-fields.component.html',
-  standalone: true,
-  imports: [
-    MatButtonModule,
-    MatIconModule,
-    RouterOutlet,
-    NgClass,
-    MatDialogActions,
-    ToggleDebugDirective,
-    SxcGridModule,
-    TranslateModule,
-  ],
+    selector: 'app-content-type-fields',
+    templateUrl: './content-type-fields.component.html',
+    imports: [
+        MatButtonModule,
+        MatIconModule,
+        RouterOutlet,
+        NgClass,
+        MatDialogActions,
+        ToggleDebugDirective,
+        SxcGridModule,
+        TranslateModule,
+    ]
 })
 export class ContentTypeFieldsComponent implements OnInit {
 

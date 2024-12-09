@@ -9,7 +9,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { BehaviorSubject, catchError, filter, fromEvent, map, of, switchMap, take, tap } from 'rxjs';
 import { transient } from '../../../../../../core';
 import { BaseComponent } from '../../../shared/components/base.component';
-import { FileUploadDialogComponent, FileUploadDialogData, FileUploadMessageTypes, FileUploadResult, UploadTypes } from '../../../shared/components/file-upload-dialog';
+import { FileUploadDialogData, FileUploadMessageTypes, FileUploadResult, UploadTypes } from '../../../shared/components/file-upload-dialog';
 import { DragAndDropDirective } from '../../../shared/directives/drag-and-drop.directive';
 import { CrossWindowMessage, InstallPackage, InstallSettings, SpecsForInstaller } from '../../../shared/models/installer-models';
 import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';
@@ -19,20 +19,18 @@ import { InstallerService } from '../../../shared/services/installer.service';
 import { ImportAppPartsService } from '../../services/import-app-parts.service';
 
 @Component({
-  selector: 'app-import-app-parts',
-  templateUrl: './import-app-parts.component.html',
-  styleUrls: ['./import-app-parts.component.scss'],
-  standalone: true,
-  imports: [
-    FileUploadDialogComponent,
-    NgClass,
-    MatDialogModule,
-    MatProgressSpinnerModule,
-    SafeHtmlPipe,
-    DragAndDropDirective,
-    MatButtonModule,
-    MatIconModule,
-  ],
+    selector: 'app-import-app-parts',
+    templateUrl: './import-app-parts.component.html',
+    styleUrls: ['./import-app-parts.component.scss'],
+    imports: [
+        NgClass,
+        MatDialogModule,
+        MatProgressSpinnerModule,
+        SafeHtmlPipe,
+        DragAndDropDirective,
+        MatButtonModule,
+        MatIconModule,
+    ]
 })
 export class ImportAppPartsComponent extends BaseComponent implements OnInit, OnDestroy {
   // Code are copied from file-upload-dialog

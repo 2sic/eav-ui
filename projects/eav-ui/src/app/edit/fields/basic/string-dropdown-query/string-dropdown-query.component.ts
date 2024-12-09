@@ -6,10 +6,9 @@ import { PickerComponent } from '../../picker/picker.component';
 import { StringDropdownQueryLogic } from './string-dropdown-query-logic';
 
 @Component({
-  selector: InputTypeCatalog.StringDropdownQuery,
-  templateUrl: '../../picker/picker.component.html',
-  standalone: true,
-  imports: PickerImports,
+    selector: InputTypeCatalog.StringDropdownQuery,
+    templateUrl: '../../picker/picker.component.html',
+    imports: PickerImports
 })
 export class StringDropdownQueryComponent extends PickerComponent {
 

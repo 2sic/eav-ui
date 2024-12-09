@@ -1,4 +1,4 @@
-import { AsyncPipe, DatePipe, NgClass } from '@angular/common';
+import { DatePipe, NgClass } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -7,19 +7,17 @@ import { LogEntry, LoggingService, LogSeverities } from '../../../shared/service
 import { LogsConfigComponent } from "../logs-config/logs-config.component";
 
 @Component({
-  selector: 'app-logs-dump',
-  templateUrl: './logs-dump.component.html',
-  styleUrls: ['./logs-dump.component.scss'],
-  standalone: true,
-  imports: [
-    NgClass,
-    AsyncPipe,
-    DatePipe,
-    MatIconModule,
-    MatButtonModule,
-    LogsConfigComponent,
-    TippyDirective,
-],
+    selector: 'app-logs-dump',
+    templateUrl: './logs-dump.component.html',
+    styleUrls: ['./logs-dump.component.scss'],
+    imports: [
+        NgClass,
+        DatePipe,
+        MatIconModule,
+        MatButtonModule,
+        LogsConfigComponent,
+        TippyDirective,
+    ]
 })
 export class LogsDumpComponent {
   LogSeverities = LogSeverities;

@@ -19,18 +19,17 @@ import { Context } from '../../../shared/services/context';
 import { AppInternalsService } from '../../services/app-internals.service';
 
 @Component({
-  selector: 'app-app-configuration-card',
-  templateUrl: './app-configuration-card.component.html',
-  styleUrls: ['./app-configuration-card.component.scss'],
-  standalone: true,
-  imports: [
-    MatCardModule,
-    MatIconModule,
-    MatButtonModule,
-    MatBadgeModule,
-    TippyDirective,
-    DocsLinkHelperComponent,
-  ],
+    selector: 'app-app-configuration-card',
+    templateUrl: './app-configuration-card.component.html',
+    styleUrls: ['./app-configuration-card.component.scss'],
+    imports: [
+        MatCardModule,
+        MatIconModule,
+        MatButtonModule,
+        MatBadgeModule,
+        TippyDirective,
+        DocsLinkHelperComponent,
+    ]
 })
 export class AppConfigurationCardComponent implements OnInit, OnDestroy {
   dialogSettings = input.required<DialogSettings>();

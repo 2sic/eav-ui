@@ -10,20 +10,19 @@ import { FileLocationFormValues } from '..';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
 
 @Component({
-  selector: 'app-file-location-dialog',
-  templateUrl: './file-location-dialog.component.html',
-  styleUrls: ['./file-location-dialog.component.scss'],
-  standalone: true,
-  imports: [
-    MatCardModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatOptionModule,
-    MatButtonModule,
-    FieldHintComponent,
-  ]
+    selector: 'app-file-location-dialog',
+    templateUrl: './file-location-dialog.component.html',
+    styleUrls: ['./file-location-dialog.component.scss'],
+    imports: [
+        MatCardModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatOptionModule,
+        MatButtonModule,
+        FieldHintComponent,
+    ]
 })
 export class FileLocationDialogComponent implements OnInit {
   @HostBinding('className') hostClass = 'dialog-component';

@@ -10,13 +10,12 @@ import { Context } from '../../services/context';
 declare const window: EavWindow;
 
 @Component({
-  selector: 'app-dialog-entry',
-  templateUrl: './dialog-entry.component.html',
-  standalone: true,
-  imports: [],
-  providers: [
-    Context, // this is used in the dialog to get the correct App
-  ],
+    selector: 'app-dialog-entry',
+    templateUrl: './dialog-entry.component.html',
+    imports: [],
+    providers: [
+        Context, // this is used in the dialog to get the correct App
+    ]
 })
 export class DialogEntryComponent implements OnInit, OnDestroy {
   

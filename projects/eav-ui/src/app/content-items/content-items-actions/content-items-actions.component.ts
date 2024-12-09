@@ -11,15 +11,14 @@ import { ContentItemsActionsParams, ContentItemType } from './content-items-acti
 type GoToUrls = 'clone'
 
 @Component({
-  selector: 'app-data-bundle-actions',
-  templateUrl: './content-items-actions.component.html',
-  standalone: true,
-  imports: [
-    MatRippleModule,
-    MatIconModule,
-    MatMenuModule,
-    TippyDirective,
-  ],
+    selector: 'app-data-bundle-actions',
+    templateUrl: './content-items-actions.component.html',
+    imports: [
+        MatRippleModule,
+        MatIconModule,
+        MatMenuModule,
+        TippyDirective,
+    ]
 })
 export class ContentItemsActionsComponent implements ICellRendererAngularComp {
   protected item: ContentItem;

@@ -7,10 +7,9 @@ import { View } from '../../models';
 import { calculateViewType } from '../views.helpers';
 
 @Component({
-  selector: 'app-views-type',
-  templateUrl: './views-type.component.html',
-  standalone: true,
-  imports: [MatIconModule, TippyDirective,],
+    selector: 'app-views-type',
+    templateUrl: './views-type.component.html',
+    imports: [MatIconModule, TippyDirective,]
 })
 export class ViewsTypeComponent implements ICellRendererAngularComp {
   value: string;

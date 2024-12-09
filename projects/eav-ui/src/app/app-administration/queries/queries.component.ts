@@ -28,19 +28,18 @@ import { QueriesActionsParams, QueryActions } from './queries-actions/queries-ac
 import { QueriesActionsComponent } from './queries-actions/queries-actions.component';
 
 @Component({
-  selector: 'app-queries',
-  templateUrl: './queries.component.html',
-  standalone: true,
-  imports: [
-    MatDialogActions,
-    MatButtonModule,
-    MatIconModule,
-    RouterOutlet,
-    // AsyncPipe,
-    SxcGridModule,
-    DragAndDropDirective,
-    TippyDirective,
-  ],
+    selector: 'app-queries',
+    templateUrl: './queries.component.html',
+    imports: [
+        MatDialogActions,
+        MatButtonModule,
+        MatIconModule,
+        RouterOutlet,
+        // AsyncPipe,
+        SxcGridModule,
+        DragAndDropDirective,
+        TippyDirective,
+    ]
 })
 export class QueriesComponent implements OnInit {
 

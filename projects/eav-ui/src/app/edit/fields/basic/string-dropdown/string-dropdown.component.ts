@@ -6,10 +6,9 @@ import { PickerComponent } from '../../picker/picker.component';
 import { EntityDefaultLogic } from '../entity-default/entity-default-logic';
 
 @Component({
-  selector: InputTypeCatalog.StringDropdown,
-  templateUrl: '../../picker/picker.component.html',
-  standalone: true,
-  imports: PickerImports,
+    selector: InputTypeCatalog.StringDropdown,
+    templateUrl: '../../picker/picker.component.html',
+    imports: PickerImports
 })
 export class StringDropdownComponent extends PickerComponent implements OnInit, OnDestroy {
 

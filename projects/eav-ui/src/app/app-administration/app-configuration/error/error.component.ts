@@ -6,15 +6,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
-  selector: 'app-error',
-  templateUrl: './error.component.html',
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatDialogModule,
-    MatButtonModule,
-    MatIconModule,
-  ]
+    selector: 'app-error',
+    templateUrl: './error.component.html',
+    imports: [
+        CommonModule,
+        MatDialogModule,
+        MatButtonModule,
+        MatIconModule,
+    ]
 })
 export class ErrorComponent implements OnInit {
   errorMessage: string;

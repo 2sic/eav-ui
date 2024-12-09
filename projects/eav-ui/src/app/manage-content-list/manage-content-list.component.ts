@@ -1,6 +1,5 @@
 import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 import { CdkScrollable } from '@angular/cdk/scrolling';
-import { JsonPipe } from '@angular/common';
 import { Component, computed, HostBinding, OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogActions, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -20,24 +19,22 @@ import { GroupHeader } from './models/group-header.model';
 import { ContentGroupService } from './services/content-group.service';
 
 @Component({
-  selector: 'app-manage-content-list',
-  templateUrl: './manage-content-list.component.html',
-  styleUrls: ['./manage-content-list.component.scss'],
-  standalone: true,
-  imports: [
-    RouterOutlet,
-    CdkScrollable,
-    MatButtonModule,
-    MatIconModule,
-    CdkDropList,
-    CdkDrag,
-    MatDialogActions,
-    TranslateModule,
-    MatDialogModule,
-    TippyDirective,
-    MousedownStopPropagationDirective,
-    JsonPipe,
-  ],
+    selector: 'app-manage-content-list',
+    templateUrl: './manage-content-list.component.html',
+    styleUrls: ['./manage-content-list.component.scss'],
+    imports: [
+        RouterOutlet,
+        CdkScrollable,
+        MatButtonModule,
+        MatIconModule,
+        CdkDropList,
+        CdkDrag,
+        MatDialogActions,
+        TranslateModule,
+        MatDialogModule,
+        TippyDirective,
+        MousedownStopPropagationDirective,
+    ]
 })
 export class ManageContentListComponent implements OnInit {
   @HostBinding('className') hostClass = 'dialog-component';

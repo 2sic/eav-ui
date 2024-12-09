@@ -6,14 +6,13 @@ import { FormsModule } from '@angular/forms';
 import { MatRadioModule } from '@angular/material/radio';
 
 @Component({
-  selector: 'app-boolean-filter',
-  templateUrl: './boolean-filter.component.html',
-  styleUrls: ['./boolean-filter.component.scss'],
-  standalone: true,
-  imports: [
-    FormsModule,
-    MatRadioModule,
-  ]
+    selector: 'app-boolean-filter',
+    templateUrl: './boolean-filter.component.html',
+    styleUrls: ['./boolean-filter.component.scss'],
+    imports: [
+        FormsModule,
+        MatRadioModule,
+    ]
 })
 export class BooleanFilterComponent implements IFilterAngularComp {
   filter = '';

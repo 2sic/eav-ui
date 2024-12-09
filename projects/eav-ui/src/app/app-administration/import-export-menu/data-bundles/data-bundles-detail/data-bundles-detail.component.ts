@@ -15,15 +15,14 @@ import { DataBundlesDetailActionsComponent } from './data-bundles-detail-actions
 import { DataBundlesDetailActionsParams } from './data-bundles-detail-actions/data-bundles-detail-actions.models';
 
 @Component({
-  selector: 'app-data-bundles-detail',
-  standalone: true,
-  imports: [
-    MatButtonModule,
-    MatIconModule,
-    SxcGridModule,
-  ],
-  templateUrl: './data-bundles-detail.component.html',
-  styleUrl: './data-bundles-detail.component.scss'
+    selector: 'app-data-bundles-detail',
+    imports: [
+        MatButtonModule,
+        MatIconModule,
+        SxcGridModule,
+    ],
+    templateUrl: './data-bundles-detail.component.html',
+    styleUrl: './data-bundles-detail.component.scss'
 })
 export class DataBundlesDetailComponent {
 

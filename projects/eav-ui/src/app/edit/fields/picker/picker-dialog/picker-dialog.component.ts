@@ -1,4 +1,3 @@
-import { AsyncPipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -12,20 +11,18 @@ import { PickerSearchComponent } from '../picker-search/picker-search.component'
 import { PickerTextComponent } from '../picker-text/picker-text.component';
 
 @Component({
-  selector: 'app-picker-dialog',
-  templateUrl: './picker-dialog.component.html',
-  standalone: true,
-  imports: [
-    PickerListComponent,
-    PickerSearchComponent,
-    PickerTextComponent,
-    FieldHelperTextComponent,
-    MatButtonModule,
-    MatMenuModule,
-    MatIconModule,
-    AsyncPipe,
-    TippyDirective,
-  ],
+    selector: 'app-picker-dialog',
+    templateUrl: './picker-dialog.component.html',
+    imports: [
+        PickerListComponent,
+        PickerSearchComponent,
+        PickerTextComponent,
+        FieldHelperTextComponent,
+        MatButtonModule,
+        MatMenuModule,
+        MatIconModule,
+        TippyDirective,
+    ]
 })
 export class PickerDialogComponent extends PickerPartBaseComponent {
 

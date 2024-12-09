@@ -6,10 +6,9 @@ import { PickerComponent } from '../../picker/picker.component';
 import { StringPickerLogic } from './string-picker-logic';
 
 @Component({
-  selector: InputTypeCatalog.StringPicker,
-  templateUrl: '../../picker/picker.component.html',
-  standalone: true,
-  imports: PickerImports,
+    selector: InputTypeCatalog.StringPicker,
+    templateUrl: '../../picker/picker.component.html',
+    imports: PickerImports
 })
 export class StringPickerComponent extends PickerComponent implements OnInit, OnDestroy {
 

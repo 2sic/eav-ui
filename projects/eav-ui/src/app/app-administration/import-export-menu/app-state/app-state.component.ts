@@ -10,17 +10,16 @@ import { ExportAppService } from '../../services/export-app.service';
 import { ImportAppPartsService } from '../../services/import-app-parts.service';
 
 @Component({
-  selector: 'app-app-state',
-  templateUrl: './app-state.component.html',
-  styleUrls: ['./app-state.component.scss'],
-  standalone: true,
-  imports: [
-    MatCardModule,
-    MatIconModule,
-    MatButtonModule,
-    FeatureTextInfoComponent,
-    MatDialogActions,
-  ],
+    selector: 'app-app-state',
+    templateUrl: './app-state.component.html',
+    styleUrls: ['./app-state.component.scss'],
+    imports: [
+        MatCardModule,
+        MatIconModule,
+        MatButtonModule,
+        FeatureTextInfoComponent,
+        MatDialogActions,
+    ]
 })
 export class AppStateComponent implements OnDestroy {
 

@@ -1,4 +1,3 @@
-import { JsonPipe, NgTemplateOutlet } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -28,25 +27,22 @@ import { InfoTemplate } from './system-info.models';
 declare const window: EavWindow;
 
 @Component({
-  selector: 'app-system-info',
-  templateUrl: './system-info.component.html',
-  standalone: true,
-  imports: [
-    MatCardModule,
-    MatIconModule,
-    RouterLink,
-    NgTemplateOutlet,
-    MatButtonModule,
-    FormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    RouterOutlet,
-    FeatureTextInfoComponent,
-    FieldHintComponent,
-    TippyDirective,
-    DocsLinkHelperComponent,
-    JsonPipe,
-  ],
+    selector: 'app-system-info',
+    templateUrl: './system-info.component.html',
+    imports: [
+        MatCardModule,
+        MatIconModule,
+        RouterLink,
+        MatButtonModule,
+        FormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        RouterOutlet,
+        FeatureTextInfoComponent,
+        FieldHintComponent,
+        TippyDirective,
+        DocsLinkHelperComponent,
+    ]
 })
 export class SystemInfoComponent implements OnInit {
 

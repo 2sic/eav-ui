@@ -33,22 +33,21 @@ import { AppsListActionsComponent } from './apps-list-actions/apps-list-actions.
 import { AppsListActionsParams } from './apps-list-actions/apps-list-actions.models';
 
 @Component({
-  selector: 'app-apps-list',
-  templateUrl: './apps-list.component.html',
-  standalone: true,
-  imports: [
-    SxcGridModule,
-    MatDialogActions,
-    EcoFabSpeedDialComponent,
-    NgClass,
-    EcoFabSpeedDialTriggerComponent,
-    MatButtonModule,
-    MatIconModule,
-    EcoFabSpeedDialActionsComponent,
-    MatBadgeModule,
-    RouterOutlet,
-    DragAndDropDirective,
-  ],
+    selector: 'app-apps-list',
+    templateUrl: './apps-list.component.html',
+    imports: [
+        SxcGridModule,
+        MatDialogActions,
+        EcoFabSpeedDialComponent,
+        NgClass,
+        EcoFabSpeedDialTriggerComponent,
+        MatButtonModule,
+        MatIconModule,
+        EcoFabSpeedDialActionsComponent,
+        MatBadgeModule,
+        RouterOutlet,
+        DragAndDropDirective,
+    ]
 })
 export class AppsListComponent implements OnInit {
 

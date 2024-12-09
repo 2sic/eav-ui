@@ -24,23 +24,22 @@ import { signalObj } from '../../shared/signals/signal.utilities';
 import { ReservedNamesValidatorDirective } from '../edit-content-type-fields/reserved-names.directive';
 
 @Component({
-  selector: 'app-field-sharing-add-many',
-  templateUrl: './field-sharing-add-many.component.html',
-  styleUrls: ['./field-sharing-add-many.component.scss'],
-  standalone: true,
-  imports: [
-    MatCardModule,
-    MatTableModule,
-    MatButtonModule,
-    FormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    ReservedNamesValidatorDirective,
-    MatDialogActions,
-    TranslateModule,
-    FeatureTextInfoComponent,
-    FieldHintComponent,
-  ],
+    selector: 'app-field-sharing-add-many',
+    templateUrl: './field-sharing-add-many.component.html',
+    styleUrls: ['./field-sharing-add-many.component.scss'],
+    imports: [
+        MatCardModule,
+        MatTableModule,
+        MatButtonModule,
+        FormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        ReservedNamesValidatorDirective,
+        MatDialogActions,
+        TranslateModule,
+        FeatureTextInfoComponent,
+        FieldHintComponent,
+    ]
 })
 export class FieldSharingAddMany extends BaseComponent implements OnInit {
   @HostBinding('className') hostClass = 'dialog-component';

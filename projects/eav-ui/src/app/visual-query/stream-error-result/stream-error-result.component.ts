@@ -10,16 +10,15 @@ import { StreamErrorResultDialogData } from './stream-error-result.models';
 declare const window: EavWindow;
 
 @Component({
-  selector: 'app-stream-error-result',
-  templateUrl: './stream-error-result.component.html',
-  styleUrls: ['./stream-error-result.component.scss'],
-  standalone: true,
-  imports: [
-    MatButtonModule,
-    MatIconModule,
-    MatDialogActions,
-    JsonPipe,
-  ],
+    selector: 'app-stream-error-result',
+    templateUrl: './stream-error-result.component.html',
+    styleUrls: ['./stream-error-result.component.scss'],
+    imports: [
+        MatButtonModule,
+        MatIconModule,
+        MatDialogActions,
+        JsonPipe,
+    ]
 })
 export class StreamErrorResultComponent implements OnInit {
   errorData: StreamErrorData;

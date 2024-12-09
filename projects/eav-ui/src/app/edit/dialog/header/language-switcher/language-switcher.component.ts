@@ -18,15 +18,14 @@ import { MouseScrollHelper } from './mouse-scroll.helper';
 import { ShowShadowsHelper } from './show-shadows.helper';
 
 @Component({
-  selector: 'app-language-switcher',
-  templateUrl: './language-switcher.component.html',
-  styleUrls: ['./language-switcher.component.scss'],
-  standalone: true,
-  imports: [
-    MatButtonModule,
-    MatIcon,
-    TippyDirective,
-  ],
+    selector: 'app-language-switcher',
+    templateUrl: './language-switcher.component.html',
+    styleUrls: ['./language-switcher.component.scss'],
+    imports: [
+        MatButtonModule,
+        MatIcon,
+        TippyDirective,
+    ]
 })
 export class LanguageSwitcherComponent implements AfterViewInit, OnDestroy {
 

@@ -12,20 +12,19 @@ import { FieldHintComponent } from '../../shared/components/field-hint/field-hin
 import { AppsListService } from '../services/apps-list.service';
 
 @Component({
-  selector: 'app-create-inherited-app',
-  templateUrl: './create-inherited-app.component.html',
-  standalone: true,
-  imports: [
-    RouterOutlet,
-    FormsModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatOptionModule,
-    MatDialogActions,
-    MatButtonModule,
-    FieldHintComponent
-  ],
+    selector: 'app-create-inherited-app',
+    templateUrl: './create-inherited-app.component.html',
+    imports: [
+        RouterOutlet,
+        FormsModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatOptionModule,
+        MatDialogActions,
+        MatButtonModule,
+        FieldHintComponent
+    ]
 })
 export class CreateInheritedAppComponent{
   @HostBinding('className') hostClass = 'dialog-component';

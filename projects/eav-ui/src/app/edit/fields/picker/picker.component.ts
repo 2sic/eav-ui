@@ -11,10 +11,9 @@ import { PickerImports } from './picker-providers.constant';
 import { PickerSearchComponent } from './picker-search/picker-search.component';
 
 @Component({
-  // selector: none since it's a base class
-  templateUrl: './picker.component.html',
-  standalone: true,
-  imports: PickerImports,
+    // selector: none since it's a base class
+    templateUrl: './picker.component.html',
+    imports: PickerImports
 })
 export abstract class PickerComponent extends BaseComponent implements OnInit, OnDestroy {
 

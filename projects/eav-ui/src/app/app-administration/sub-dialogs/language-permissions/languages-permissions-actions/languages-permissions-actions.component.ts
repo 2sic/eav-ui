@@ -1,6 +1,5 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { ICellRendererParams } from '@ag-grid-community/core';
-import { JsonPipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatRippleModule } from '@angular/material/core';
@@ -10,16 +9,14 @@ import { SiteLanguagePermissions } from '../../../../apps-management/models/site
 import { LanguagesPermissionsActionsParams } from './languages-permissions-actions.models';
 
 @Component({
-  selector: 'app-languages-permissions-actions',
-  templateUrl: './languages-permissions-actions.component.html',
-  standalone: true,
-  imports: [
-    MatRippleModule,
-    MatIconModule,
-    MatBadgeModule,
-    TippyDirective,
-    JsonPipe
-  ],
+    selector: 'app-languages-permissions-actions',
+    templateUrl: './languages-permissions-actions.component.html',
+    imports: [
+        MatRippleModule,
+        MatIconModule,
+        MatBadgeModule,
+        TippyDirective,
+    ]
 })
 export class LanguagesPermissionsActionsComponent implements ICellRendererAngularComp {
   language: SiteLanguagePermissions;

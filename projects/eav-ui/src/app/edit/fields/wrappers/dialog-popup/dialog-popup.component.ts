@@ -1,4 +1,4 @@
-import { AsyncPipe, CommonModule, NgClass } from '@angular/common';
+import { CommonModule, NgClass } from '@angular/common';
 import { Component, computed, effect, ElementRef, inject, input, NgZone, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -19,23 +19,21 @@ import { ContentExpandAnimation } from '../expand-dialog/content-expand.animatio
 import { WrappersCatalog } from '../wrappers.constants';
 
 @Component({
-  selector: WrappersCatalog.DialogPopup,
-  templateUrl: './dialog-popup.component.html',
-  styleUrls: ['./dialog-popup.component.scss'],
-  animations: [ContentExpandAnimation],
-  standalone: true,
-  imports: [
-    NgClass,
-    MatCardModule,
-    MatRippleModule,
-    MatButtonModule,
-    MatIconModule,
-    TranslateModule,
-    ...ExtendedFabSpeedDialImports,
-    TippyDirective,
-    CommonModule,
-    AsyncPipe,
-  ],
+    selector: WrappersCatalog.DialogPopup,
+    templateUrl: './dialog-popup.component.html',
+    styleUrls: ['./dialog-popup.component.scss'],
+    animations: [ContentExpandAnimation],
+    imports: [
+        NgClass,
+        MatCardModule,
+        MatRippleModule,
+        MatButtonModule,
+        MatIconModule,
+        TranslateModule,
+        ...ExtendedFabSpeedDialImports,
+        TippyDirective,
+        CommonModule,
+    ]
 })
 // tslint:disable-next-line:max-line-length
 export class DialogPopupComponent {

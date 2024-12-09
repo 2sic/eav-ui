@@ -9,17 +9,16 @@ import { VisualQueryStateService } from '../services/visual-query.service';
 import { QueryResultDialogData } from './query-result.models';
 
 @Component({
-  selector: 'app-query-result',
-  templateUrl: './query-result.component.html',
-  styleUrls: ['./query-result.component.scss'],
-  standalone: true,
-  imports: [
-    MatButtonModule,
-    MatIconModule,
-    MatTabsModule,
-    JsonPipe,
-    KeyValuePipe,
-  ],
+    selector: 'app-query-result',
+    templateUrl: './query-result.component.html',
+    styleUrls: ['./query-result.component.scss'],
+    imports: [
+        MatButtonModule,
+        MatIconModule,
+        MatTabsModule,
+        JsonPipe,
+        KeyValuePipe,
+    ]
 })
 export class QueryResultComponent implements OnInit {
   parameters: string[];

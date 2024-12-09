@@ -15,17 +15,16 @@ import { ContentImport, EvaluateContentResult, ImportContentResult } from './mod
 import { ContentImportService } from './services/content-import.service';
 
 @Component({
-  selector: 'app-content-import',
-  templateUrl: './content-import.component.html',
-  styleUrls: ['./content-import.component.scss'],
-  standalone: true,
-  imports: [
-    FormsModule,
-    MatButtonModule,
-    MatRadioModule,
-    MatDialogActions,
-    DragAndDropDirective,
-  ],
+    selector: 'app-content-import',
+    templateUrl: './content-import.component.html',
+    styleUrls: ['./content-import.component.scss'],
+    imports: [
+        FormsModule,
+        MatButtonModule,
+        MatRadioModule,
+        MatDialogActions,
+        DragAndDropDirective,
+    ]
 })
 export class ContentImportComponent implements OnInit {
   @HostBinding('className') hostClass = 'dialog-component';

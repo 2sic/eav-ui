@@ -18,20 +18,19 @@ import { ContentExpandAnimation } from "../expand-dialog/content-expand.animatio
 import { WrappersCatalog } from "../wrappers.constants";
 
 @Component({
-  selector: WrappersCatalog.HyperlinkLibraryExpandableWrapper,
-  templateUrl: './hyperlink-library-expandable-wrapper.component.html',
-  styleUrls: ['./hyperlink-library-expandable-wrapper.component.scss'],
-  animations: [ContentExpandAnimation],
-  standalone: true,
-  imports: [
-    DialogPopupComponent,
-    MatIconModule,
-    MatRippleModule,
-    FieldHelperTextComponent,
-    FeatureIconTextComponent,
-    TranslateModule,
-    CommonModule,
-  ],
+    selector: WrappersCatalog.HyperlinkLibraryExpandableWrapper,
+    templateUrl: './hyperlink-library-expandable-wrapper.component.html',
+    styleUrls: ['./hyperlink-library-expandable-wrapper.component.scss'],
+    animations: [ContentExpandAnimation],
+    imports: [
+        DialogPopupComponent,
+        MatIconModule,
+        MatRippleModule,
+        FieldHelperTextComponent,
+        FeatureIconTextComponent,
+        TranslateModule,
+        CommonModule,
+    ]
 })
 // tslint:disable-next-line:max-line-length
 export class HyperlinkLibraryExpandableWrapperComponent implements AfterViewInit, OnDestroy {

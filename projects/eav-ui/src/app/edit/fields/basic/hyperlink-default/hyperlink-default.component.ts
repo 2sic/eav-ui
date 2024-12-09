@@ -24,24 +24,23 @@ import { HyperlinkDefaultBaseComponent } from './hyperlink-default-base.componen
 import { HyperlinkDefaultLogic } from './hyperlink-default-logic';
 
 @Component({
-  selector: InputTypeCatalog.HyperlinkDefault,
-  templateUrl: './hyperlink-default.component.html',
-  styleUrls: ['./hyperlink-default.component.scss'],
-  standalone: true,
-  imports: [
-    MatButtonModule,
-    MatIconModule,
-    NgClass,
-    MatMenuModule,
-    MatCardModule,
-    MatFormFieldModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatInputModule,
-    PasteClipboardImageDirective,
-    TranslateModule,
-    TippyDirective,
-  ],
+    selector: InputTypeCatalog.HyperlinkDefault,
+    templateUrl: './hyperlink-default.component.html',
+    styleUrls: ['./hyperlink-default.component.scss'],
+    imports: [
+        MatButtonModule,
+        MatIconModule,
+        NgClass,
+        MatMenuModule,
+        MatCardModule,
+        MatFormFieldModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatInputModule,
+        PasteClipboardImageDirective,
+        TranslateModule,
+        TippyDirective,
+    ]
 })
 @FieldMetadata({
   wrappers: [

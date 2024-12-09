@@ -1,5 +1,5 @@
 import { CdkScrollable } from '@angular/cdk/scrolling';
-import { AsyncPipe, NgClass } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { AfterViewInit, Component, computed, effect, inject, OnDestroy, OnInit, QueryList, signal, ViewChildren } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatRippleModule } from '@angular/material/core';
@@ -63,34 +63,31 @@ const logSpecs = {
  * - Footer
  */
 @Component({
-  selector: 'app-edit-dialog-main',
-  templateUrl: './edit-dialog-main.component.html',
-  styleUrls: ['./edit-dialog-main.component.scss'],
-  standalone: true,
-  imports: [
-    MatDialogActions,
-    NgClass,
-    EditDialogHeaderComponent,
-    CdkScrollable,
-    FormSlideDirective,
-    EntityFormBuilderComponent,
-    MatRippleModule,
-    MatIconModule,
-    EditDialogFooterComponent,
-    AsyncPipe,
-    TranslateModule,
-    ...ExtendedFabSpeedDialImports,
-    ToggleDebugDirective,
-  ],
-  providers: [
-    EditRoutingService,
-    FormsStateService,
-    // This is shared across all entities on this form
-    FormulaDesignerService,
-
-    // TODO: probably move to each picker component (Errors)
-    PickerTreeDataHelper,
-  ],
+    selector: 'app-edit-dialog-main',
+    templateUrl: './edit-dialog-main.component.html',
+    styleUrls: ['./edit-dialog-main.component.scss'],
+    imports: [
+        MatDialogActions,
+        NgClass,
+        EditDialogHeaderComponent,
+        CdkScrollable,
+        FormSlideDirective,
+        EntityFormBuilderComponent,
+        MatRippleModule,
+        MatIconModule,
+        EditDialogFooterComponent,
+        TranslateModule,
+        ...ExtendedFabSpeedDialImports,
+        ToggleDebugDirective,
+    ],
+    providers: [
+        EditRoutingService,
+        FormsStateService,
+        // This is shared across all entities on this form
+        FormulaDesignerService,
+        // TODO: probably move to each picker component (Errors)
+        PickerTreeDataHelper,
+    ]
 })
 export class EditDialogMainComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
 

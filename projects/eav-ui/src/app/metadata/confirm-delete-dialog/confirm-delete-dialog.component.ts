@@ -6,15 +6,14 @@ import { SafeHtmlPipe } from '../../shared/pipes/safe-html.pipe';
 import { ConfirmDeleteDialogData } from './confirm-delete-dialog.models';
 
 @Component({
-  selector: 'app-confirm-delete-dialog',
-  templateUrl: './confirm-delete-dialog.component.html',
-  styleUrls: ['./confirm-delete-dialog.component.scss'],
-  standalone: true,
-  imports: [
-    MatCardModule,
-    MatButtonModule,
-    SafeHtmlPipe,
-  ],
+    selector: 'app-confirm-delete-dialog',
+    templateUrl: './confirm-delete-dialog.component.html',
+    styleUrls: ['./confirm-delete-dialog.component.scss'],
+    imports: [
+        MatCardModule,
+        MatButtonModule,
+        SafeHtmlPipe,
+    ]
 })
 export class ConfirmDeleteDialogComponent {
   @HostBinding('className') hostClass = 'dialog-component';

@@ -8,14 +8,13 @@ import { FieldState } from '../../field-state';
 import { WrappersCatalog } from '../wrappers.constants';
 
 @Component({
-  selector: WrappersCatalog.LocalizationWrapper,
-  templateUrl: './localization-wrapper.component.html',
-  styleUrls: ['./localization-wrapper.component.scss'],
-  standalone: true,
-  imports: [
-    NgClass,
-    TranslateMenuComponent,
-  ],
+    selector: WrappersCatalog.LocalizationWrapper,
+    templateUrl: './localization-wrapper.component.html',
+    styleUrls: ['./localization-wrapper.component.scss'],
+    imports: [
+        NgClass,
+        TranslateMenuComponent,
+    ]
 })
 export class LocalizationWrapperComponent {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;

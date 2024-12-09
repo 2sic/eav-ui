@@ -11,17 +11,16 @@ import { ClipboardService } from '../../shared/services/clipboard.service';
 import { InfoBoxComponent } from '../info-box/info-box.component';
 
 @Component({
-  selector: 'app-dev-rest-urls-and-code',
-  templateUrl: './dev-rest-urls-and-code.component.html',
-  styleUrls: ['./dev-rest-urls-and-code.component.scss'],
-  standalone: true,
-  imports: [
-    MatExpansionModule,
-    MatButtonModule,
-    TippyDirective,
-    MatIconModule,
-    InfoBoxComponent,
-  ]
+    selector: 'app-dev-rest-urls-and-code',
+    templateUrl: './dev-rest-urls-and-code.component.html',
+    styleUrls: ['./dev-rest-urls-and-code.component.scss'],
+    imports: [
+        MatExpansionModule,
+        MatButtonModule,
+        TippyDirective,
+        MatIconModule,
+        InfoBoxComponent,
+    ]
 })
 export class DevRestUrlsAndCodeComponent {
   data = input<DevRestBaseModel>();

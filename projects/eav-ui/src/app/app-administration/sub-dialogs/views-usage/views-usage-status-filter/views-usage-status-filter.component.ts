@@ -7,11 +7,10 @@ import { FormsModule } from '@angular/forms';
 import { MatRadioModule } from '@angular/material/radio';
 
 @Component({
-  selector: 'app-views-usage-status-filter',
-  templateUrl: './views-usage-status-filter.component.html',
-  styleUrls: ['./views-usage-status-filter.component.scss'],
-  standalone: true,
-  imports: [MatRadioModule, FormsModule],
+    selector: 'app-views-usage-status-filter',
+    templateUrl: './views-usage-status-filter.component.html',
+    styleUrls: ['./views-usage-status-filter.component.scss'],
+    imports: [MatRadioModule, FormsModule]
 })
 export class ViewsUsageStatusFilterComponent implements IFilterAngularComp {
   isVisible = '';
