@@ -19,9 +19,8 @@ import { PagePicker } from '../../page-picker/page-picker.helper';
 import { Preview } from './hyperlink-default.models';
 
 @Component({
-    selector: 'app-base-field-hyperlink-component',
-    template: '',
-    standalone: false
+  selector: 'app-base-field-hyperlink-component',
+  template: '',
 })
 // tslint:disable-next-line:directive-class-suffix
 export class HyperlinkDefaultBaseComponent implements OnInit {

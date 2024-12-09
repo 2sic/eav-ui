@@ -18,7 +18,6 @@ const logSpecs = {
 
 @Directive({
   selector: '[appPasteClipboardImage]',
-  standalone: true
 })
 export class PasteClipboardImageDirective implements OnInit, OnDestroy {
 

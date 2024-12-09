@@ -3,11 +3,10 @@ import { AbstractControl, NG_VALIDATORS, ValidationErrors, Validator } from '@an
 import { Field } from '../../shared/fields/field.model';
 
 @Directive({
-    selector: '[appReservedNames]',
-    providers: [
-      { provide: NG_VALIDATORS, useExisting: ReservedNamesValidatorDirective, multi: true },
-    ],
-    standalone: true,
+  selector: '[appReservedNames]',
+  providers: [
+    { provide: NG_VALIDATORS, useExisting: ReservedNamesValidatorDirective, multi: true },
+  ],
 })
 export class ReservedNamesValidatorDirective implements Validator {
   appReservedNames = input<Record<string, string>>({});

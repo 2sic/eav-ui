@@ -1,8 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-    name: 'snippetLabelSize',
-    standalone: true
+  name: 'snippetLabelSize',
 })
 export class SnippetLabelSizePipe implements PipeTransform {
 

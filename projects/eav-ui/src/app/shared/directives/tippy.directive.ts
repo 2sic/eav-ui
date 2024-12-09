@@ -6,7 +6,6 @@ import tippy, { Instance, Placement, Props } from 'tippy.js';
 
 @Directive({
   selector: '[tippy], [tippyTranslate]',
-  standalone: true
 })
 export class TippyDirective implements OnChanges, OnDestroy {
   /** Message to show in Tippy - raw */

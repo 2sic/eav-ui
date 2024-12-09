@@ -1,18 +1,17 @@
 import { Component, effect, inject, Injector, OnInit } from '@angular/core';
+import { AdamConfig } from '../../../../../../../edit-types/src/AdamConfig';
+import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
+import { computedObj } from '../../../../shared/signals/signal.utilities';
+import { FieldMetadata } from '../../field-metadata.decorator';
+import { FieldState } from '../../field-state';
+import { WrappersCatalog } from '../../wrappers/wrappers.constants';
 import { HyperlinkLibraryLogic } from './hyperlink-library-logic';
 import { AdamControl } from './hyperlink-library.models';
-import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { FieldState } from '../../field-state';
-import { FieldMetadata } from '../../field-metadata.decorator';
-import { WrappersCatalog } from '../../wrappers/wrappers.constants';
-import { AdamConfig } from '../../../../../../../edit-types/src/AdamConfig';
-import { computedObj } from '../../../../shared/signals/signal.utilities';
 
 @Component({
   selector: InputTypeCatalog.HyperlinkLibrary,
   template: '', // note: no template - it will just show the adam component in the popup
   styleUrls: [],
-  standalone: true,
 })
 @FieldMetadata({
   wrappers: [

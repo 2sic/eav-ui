@@ -15,7 +15,6 @@ import { Context } from '../shared/services/context';
 @Component({
     selector: 'app-dev-rest-base',
     template: '',
-    standalone: false
 })
 // tslint:disable-next-line:component-class-suffix
 export class DevRestBase<ViewModelType> implements OnDestroy {

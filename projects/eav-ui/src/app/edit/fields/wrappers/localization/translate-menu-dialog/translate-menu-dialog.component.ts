@@ -15,24 +15,18 @@ import { FieldsTranslateService } from '../../../../state/fields-translate.servi
 import { getTemplateLanguages } from './translate-menu-dialog.helpers';
 import { TranslateMenuDialogData } from './translate-menu-dialog.models';
 
-interface TranslationInfo {
-  showLanguageSelection: boolean;
-  i18nRoot: string;
-  submitDisabled: boolean;
-}
-
 @Component({
-    selector: 'app-translate-menu-dialog',
-    templateUrl: './translate-menu-dialog.component.html',
-    styleUrls: ['./translate-menu-dialog.component.scss'],
-    imports: [
-        MatCardModule,
-        MatListModule,
-        NgClass,
-        MatIconModule,
-        MatButtonModule,
-        TranslateModule,
-    ]
+  selector: 'app-translate-menu-dialog',
+  templateUrl: './translate-menu-dialog.component.html',
+  styleUrls: ['./translate-menu-dialog.component.scss'],
+  imports: [
+    MatCardModule,
+    MatListModule,
+    NgClass,
+    MatIconModule,
+    MatButtonModule,
+    TranslateModule,
+  ]
 })
 export class TranslateMenuDialogComponent extends TranslateHelperComponent {
 

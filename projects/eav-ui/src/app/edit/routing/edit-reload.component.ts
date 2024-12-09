@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { classLog } from '../../shared/logging';
-import { EditUrlParams } from './edit-url-params.model';
 import { UrlHelpers } from '../shared/helpers';
+import { EditUrlParams } from './edit-url-params.model';
 
 /**
  * The purpose of this component is to refresh the edit dialog completely.
@@ -16,7 +16,6 @@ import { UrlHelpers } from '../shared/helpers';
 @Component({
   selector: 'app-edit-reload',
   template: '',
-  standalone: true,
 })
 export class EditReloadComponent {
 

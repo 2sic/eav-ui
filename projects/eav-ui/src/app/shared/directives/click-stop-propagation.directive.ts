@@ -3,7 +3,6 @@ import { classLog } from '../logging';
 
 @Directive({
   selector: '[appClickStopPropagation]',
-  standalone: true,
 })
 export class ClickStopPropagationDirective {
 

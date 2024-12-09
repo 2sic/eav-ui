@@ -3,7 +3,6 @@ import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
 
 @Pipe({
   name: 'depthPadding',
-  standalone: true
 })
 export class DepthPaddingPipe implements PipeTransform {
 

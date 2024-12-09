@@ -3,7 +3,6 @@ import { GlobalConfigService } from '../services/global-config.service';
 
 @Directive({
   selector: '[appToggleDebug]',
-  standalone: true
 })
 export class ToggleDebugDirective {
 

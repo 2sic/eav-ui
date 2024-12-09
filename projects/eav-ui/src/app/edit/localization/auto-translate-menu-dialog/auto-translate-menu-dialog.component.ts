@@ -21,18 +21,18 @@ import { SnackBarWarningDemoComponent } from '../snack-bar-warning-demo/snack-ba
 import { TranslationStateCore } from '../translate-state.model';
 
 @Component({
-    selector: 'app-auto-translate-menu-dialog',
-    templateUrl: './auto-translate-menu-dialog.component.html',
-    styleUrls: ['./auto-translate-menu-dialog.component.scss'],
-    imports: [
-        MatCardModule,
-        FeatureTextInfoComponent,
-        MatListModule,
-        NgClass,
-        MatIconModule,
-        TranslateModule,
-        SafeHtmlPipe,
-    ]
+  selector: 'app-auto-translate-menu-dialog',
+  templateUrl: './auto-translate-menu-dialog.component.html',
+  styleUrls: ['./auto-translate-menu-dialog.component.scss'],
+  imports: [
+    MatCardModule,
+    FeatureTextInfoComponent,
+    MatListModule,
+    NgClass,
+    MatIconModule,
+    TranslateModule,
+    SafeHtmlPipe,
+  ]
 })
 export class AutoTranslateMenuDialogComponent extends TranslateHelperComponent implements OnInit {
 

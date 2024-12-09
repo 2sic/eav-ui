@@ -3,7 +3,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { fromEvent } from 'rxjs';
 import { BaseDirective } from './base.directive';
 
-@Directive({ selector: '[appDragAndDrop]', standalone: true })
+@Directive({
+  selector: '[appDragAndDrop]',
+})
 export class DragAndDropDirective extends BaseDirective implements OnInit, OnDestroy {
   markStyle = input<'outline' | 'fill' | 'shadow'>('outline');
   /** Comma separated file types, e.g. 'txt,doc,docx' */

@@ -11,9 +11,8 @@ import { EditRoutingService } from '../../routing/edit-routing.service';
  * Base class for Picker Part Components.
  */
 @Component({
-    selector: 'app-picker-part-base',
-    template: '',
-    standalone: false
+  selector: 'app-picker-part-base',
+  template: '',
 })
 export class PickerPartBaseComponent {
 
