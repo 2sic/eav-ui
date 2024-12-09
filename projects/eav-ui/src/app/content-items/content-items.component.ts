@@ -88,7 +88,7 @@ export class ContentItemsComponent implements OnInit {
   /** Signal to tell other signals that the filter changed */
   #filterChanged = signal(0);
 
-  #gridApiSigTemp: WritableSignal<GridApi<ContentItem>> = signal<GridApi<ContentItem>>(null);
+  #gridApiSig: WritableSignal<GridApi<ContentItem>> = signal<GridApi<ContentItem>>(null);
 
   #contentTypeStaticName = this.#dialogRouter.getParam('contentTypeStaticName');
   contentType = this.#contentTypesSvc.retrieveContentTypeSig(this.#contentTypeStaticName, undefined);
@@ -110,7 +110,7 @@ export class ContentItemsComponent implements OnInit {
   }
 
   onGridReady(params: GridReadyEvent) {
-    this.#gridApiSigTemp.set(params.api);
+    this.#gridApiSig.set(params.api);
     this.fetchColumns();
     this.urlToExportContent();
   }
@@ -125,16 +125,16 @@ export class ContentItemsComponent implements OnInit {
       const columnsWithoutEphemeral = columns.filter(column => !column.IsEphemeral);
       const columnDefs = this.#buildColumnDefs(columnsWithoutEphemeral);
       const filterModel = buildFilterModel(sessionStorage.getItem(keyFilters), columnDefs);
-      if (this.#gridApiSigTemp())
+      if (this.#gridApiSig())
         this.setColumnDefs(columnDefs, filterModel);
     });
   }
 
   private setColumnDefs(columnDefs: ColDef[], filterModel: AgGridFilterModel) {
-    this.#gridApiSigTemp().setColumnDefs(columnDefs);
+    this.#gridApiSig().setColumnDefs(columnDefs);
     if (filterModel) {
       this.log.a('Will try to apply filter:', filterModel);
-      this.#gridApiSigTemp().setFilterModel(filterModel);
+      this.#gridApiSig().setFilterModel(filterModel);
     }
   }
 
@@ -191,7 +191,7 @@ export class ContentItemsComponent implements OnInit {
   }
 
   urlToExportContent = computedObj('urlToExportContent', () => {
-    const value = this.#gridApiSigTemp();
+    const value = this.#gridApiSig();
     if (!value)
       return '';
 
@@ -257,7 +257,7 @@ export class ContentItemsComponent implements OnInit {
   }
 
   debugFilter() {
-    console.warn('Current filter:', this.#gridApiSigTemp().getFilterModel());
+    console.warn('Current filter:', this.#gridApiSig().getFilterModel());
     this.snackBar.open('Check console for filter information', undefined, { duration: 3000 });
   }
 
