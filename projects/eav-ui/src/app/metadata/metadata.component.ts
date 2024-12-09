@@ -114,7 +114,7 @@ export class MetadataComponent implements OnInit {
       return this.#dialogRoutes.getParam('title') ?? '';
     }
   })();
-
+  
   ngOnInit() {
     this.#fetchMetadata();
     this.#dialogRoutes.doOnDialogClosed(() => this.#fetchMetadata());
