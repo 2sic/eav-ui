@@ -19,7 +19,7 @@ const logSpecs = {
 @Injectable()
 export class DataSourceCss extends DataSourceBase {
 
-  log = classLog({ DataSourceCss }, logSpecs, true);
+  log = classLog({ DataSourceCss }, logSpecs);
 
   constructor(private scriptsLoaderService: ScriptsLoaderService) {
     super();

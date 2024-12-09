@@ -20,7 +20,7 @@ export abstract class FieldLogicBase {
   #log: ClassLogger<typeof logSpecs>;
 
   constructor(inheritingClass: Record<string, unknown> | string, logThis?: boolean) {
-    this.#log = classLog(inheritingClass ?? {FieldLogicBase}, logSpecs, logThis);
+    this.#log = classLog(inheritingClass ?? {FieldLogicBase}, logSpecs, null, logThis);
     this.name ??= this.#log.name;
     this.log.fnIf('constructor');
   }

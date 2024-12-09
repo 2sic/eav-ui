@@ -21,7 +21,7 @@ const logSpecs = {
 @Injectable()
 export class FormulaCacheService {
 
-  log = classLog({FormulaCacheService}, logSpecs, false);
+  log = classLog({FormulaCacheService}, logSpecs);
 
   #cacheBuilder = transient(FormulaCacheBuilder);
 

@@ -1,12 +1,12 @@
+import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
 import { DataTypeCatalog } from "../../../shared/fields/data-type-catalog";
 import { InputTypeCatalog } from "../../../shared/fields/input-type-catalog";
-import { FieldFormulasResultRaw, FieldValueOrResultRaw } from "./formula-results.models";
-import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
-import { PickerItem } from '../../fields/picker/models/picker-item.model';
-import { DebugFields } from '../../edit-debug';
 import { classLog } from '../../../shared/logging';
-import { InputTypeSpecs } from '../../shared/input-types/input-type-specs.model';
+import { DebugFields } from '../../edit-debug';
 import { StateUiMapperBase } from '../../fields/picker/adapters/state-ui-mapper-base';
+import { PickerItem } from '../../fields/picker/models/picker-item.model';
+import { InputTypeSpecs } from '../../shared/input-types/input-type-specs.model';
+import { FieldFormulasResultRaw, FieldValueOrResultRaw } from "./formula-results.models";
 
 const logSpecs = {
   all: false,
@@ -22,7 +22,7 @@ const logSpecs = {
  */
 export class FormulaValueCorrections {
 
-  log = classLog({FormulaValueCorrections}, logSpecs, true);
+  log = classLog({FormulaValueCorrections}, logSpecs);
 
   constructor(
     private fieldName: string,

@@ -28,7 +28,7 @@ const logSpecs = {
 })
 export class FeaturesUsedButUnlicensedComponent {
 
-  log = classLog({ FeaturesUsedButUnlicensedComponent }, logSpecs, true);
+  log = classLog({ FeaturesUsedButUnlicensedComponent }, logSpecs);
 
   #features = inject(FeaturesScopedService);
 

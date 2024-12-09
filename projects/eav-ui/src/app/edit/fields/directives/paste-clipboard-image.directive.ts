@@ -21,7 +21,7 @@ const logSpecs = {
 })
 export class PasteClipboardImageDirective implements OnInit, OnDestroy {
 
-  log = classLog({PasteClipboardImageDirective}, logSpecs, false);
+  log = classLog({PasteClipboardImageDirective}, logSpecs);
 
   config = input<FieldConfigSet>();
   elementType = input<string>();

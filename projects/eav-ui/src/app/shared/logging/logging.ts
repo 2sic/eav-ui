@@ -18,11 +18,13 @@ import { LogManager } from './log-manager';
  * - wait with this, until we've refactored everything to use the new classLog and the logFn / logFnIf functions
  * @param owner a mini-class with 1 property, being the name of the class; optionally also the name as string, but not recommended
  * @param specs optional object containing further specs. If provided, can be used in `log.fnIf()` calls 
+ * @param pleaseUseClassLogEnabled blocker: to enable logging, please use classLogEnabled(...) so it's easier to find and disable again before release
  * @returns 
  */
 export function classLog<TSpecs extends Record<string, unknown> = any>(
   owner: Record<string, unknown> | string,
   specs?: TSpecs,
+  pleaseUseClassLogEnabled?: string,
   enabled: boolean = false
 ): ClassLogger<TSpecs> {
   // Pick the first key as the name of the class
@@ -46,4 +48,11 @@ export function classLog<TSpecs extends Record<string, unknown> = any>(
   return (mainSpecs.enabled)
     ? new ClassLoggerReal<TSpecs>(mainSpecs)
     : new ClassLoggerNoop(specs);
+}
+
+export function classLogEnabled<TSpecs extends Record<string, unknown> = any>(
+  owner: Record<string, unknown> | string,
+  specs?: TSpecs,
+): ClassLogger<TSpecs> {
+  return classLog(owner, specs, null, true);
 }

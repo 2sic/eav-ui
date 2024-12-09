@@ -32,7 +32,7 @@ export function paramsInitFactory(injector: Injector): () => void {
     console.log('Initial route:', url ?? window.location.href);
   }
 
-  const log = classLog({ paramsInitFactory }, null, true);
+  const log = classLog({ paramsInitFactory }, null);
 
   return () => {
     const l = log.fn('paramsInitFactory');

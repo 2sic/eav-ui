@@ -43,7 +43,7 @@ const noInheritGuid = '00000000-0000-0000-0000-000000000000';
 })
 export class ShareOrInheritDialogComponent {
 
-  log = classLog({ShareOrInheritDialogComponent}, logSpecs, true);
+  log = classLog({ShareOrInheritDialogComponent}, logSpecs);
 
   #contentTypesFieldsSvc = transient(ContentTypesFieldsService);
 

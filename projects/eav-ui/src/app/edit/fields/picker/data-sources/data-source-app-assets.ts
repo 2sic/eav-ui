@@ -8,7 +8,7 @@ import { DataSourceEntityBase, logSpecsDataSourceEntityQueryBase } from './data-
 @Injectable()
 export class DataSourceAppAssets extends DataSourceEntityBase {
 
-  log = classLog({ DataSourceAppAssets }, logSpecsDataSourceEntityQueryBase, true);
+  log = classLog({ DataSourceAppAssets }, logSpecsDataSourceEntityQueryBase);
 
   constructor() {
     super();
