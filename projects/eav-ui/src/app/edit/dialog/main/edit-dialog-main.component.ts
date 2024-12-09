@@ -7,7 +7,6 @@ import { MatDialogActions, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import 'reflect-metadata';
 import { delay, fromEvent, of, startWith } from 'rxjs';
 import { transient } from '../../../../../../core';
 import { BaseComponent } from '../../../shared/components/base.component';
@@ -63,31 +62,31 @@ const logSpecs = {
  * - Footer
  */
 @Component({
-    selector: 'app-edit-dialog-main',
-    templateUrl: './edit-dialog-main.component.html',
-    styleUrls: ['./edit-dialog-main.component.scss'],
-    imports: [
-        MatDialogActions,
-        NgClass,
-        EditDialogHeaderComponent,
-        CdkScrollable,
-        FormSlideDirective,
-        EntityFormBuilderComponent,
-        MatRippleModule,
-        MatIconModule,
-        EditDialogFooterComponent,
-        TranslateModule,
-        ...ExtendedFabSpeedDialImports,
-        ToggleDebugDirective,
-    ],
-    providers: [
-        EditRoutingService,
-        FormsStateService,
-        // This is shared across all entities on this form
-        FormulaDesignerService,
-        // TODO: probably move to each picker component (Errors)
-        PickerTreeDataHelper,
-    ]
+  selector: 'app-edit-dialog-main',
+  templateUrl: './edit-dialog-main.component.html',
+  styleUrls: ['./edit-dialog-main.component.scss'],
+  imports: [
+    MatDialogActions,
+    NgClass,
+    EditDialogHeaderComponent,
+    CdkScrollable,
+    FormSlideDirective,
+    EntityFormBuilderComponent,
+    MatRippleModule,
+    MatIconModule,
+    EditDialogFooterComponent,
+    TranslateModule,
+    ...ExtendedFabSpeedDialImports,
+    ToggleDebugDirective,
+  ],
+  providers: [
+    EditRoutingService,
+    FormsStateService,
+    // This is shared across all entities on this form
+    FormulaDesignerService,
+    // TODO: probably move to each picker component (Errors)
+    PickerTreeDataHelper,
+  ]
 })
 export class EditDialogMainComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
 
@@ -138,16 +137,15 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
     if (pref.data().pinned == null)
       pref.set('pinned', this.#formConfig.config.dialogContext.User?.IsSystemAdmin ?? false);
 
-    let previousState = { tryToSave: false, close: false };
+    let previous = { tryToSave: false, close: false };
 
     effect(() => {
-      const currentState = this.formsStateService.triggerTrySaveAndMaybeClose();
+      const current = this.formsStateService.triggerTrySaveAndMaybeClose();
 
-      if (currentState.tryToSave && (currentState.tryToSave !== previousState.tryToSave || currentState.close !== previousState.close)) {
-        this.saveAll(currentState.close);
-      }
+      if (current.tryToSave && (current.tryToSave !== previous.tryToSave || current.close !== previous.close))
+        this.saveAll(current.close);
 
-      previousState = currentState;  // Zustand aktualisieren
+      previous = current;
     });
 
   }
