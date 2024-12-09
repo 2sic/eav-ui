@@ -17,9 +17,7 @@
         >
           {{ langButton.label }}
           <!-- manually switch with true/false | so it doesn't show inside the UI (WIP) -->
-          @if (true) { 
-            <mat-icon iconPositionEnd class="hover-only" tippy="Language Settings" (click)="languageSettings()">settings</mat-icon>
-          }
+          <mat-icon iconPositionEnd class="hover-only" tippy="Language Settings" (click)="languageSettings()">settings</mat-icon>
         </button>
       }
       @else {

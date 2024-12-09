@@ -1,24 +1,24 @@
 <div class="eav-dialog">
   <div class="eav-dialog-header">
-    <div class="eav-dialog-header__title">Language UI Settings (BETA)</div>
-    <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
+    <div class="eav-dialog-header__title">Language Settings (BETA)</div>
+    <button mat-icon-button tippy="Close dialog" (click)="dialog.close()">
       <mat-icon>close</mat-icon>
     </button>
   </div>
 
   <div class="eav-dialog-content">
     <p>
-      By default, the UI language will match the current language of the content. But sometimes you may prefer to to have a different
-      behavior.
+      By default, buttons and labels will use the current language.
+      Here you can choose a different behavior.
     </p>
 
-    <h3>Choose language</h3>
+    <h3>Your Language Preferences</h3>
 
     <!-- Dropdown for Labels and Help Texts -->
-    <mat-form-field tippy="Changes the language for all texts and labels" appearance="fill" color="accent">
+    <mat-form-field tippy="Preferred language for texts and labels" appearance="fill" color="accent">
       <mat-label>Labels and Help Texts</mat-label>
       <mat-select [value]="getLabelLanguage()" (selectionChange)="setLabelLanguage($event.value, 'labels')">
-        <mat-option value="">Always same as content (default)</mat-option>
+        <mat-option value="">Use current language (default)</mat-option>
         @for (o of options; track o.Code) {
           <mat-option value="{{ o.Code.toLocaleLowerCase() }}">{{ o.label }}</mat-option>
         }
@@ -29,10 +29,10 @@
     <br />
 
     <!-- Dropdown for UI Elements -->
-    <mat-form-field tippy="Changes the language for all UI Elements" appearance="fill" color="accent">
-      <mat-label>UI Elements</mat-label>
+    <mat-form-field tippy="Preferred language for buttons and controls" appearance="fill" color="accent">
+      <mat-label>Buttons and Controls</mat-label>
       <mat-select [value]="getUiLanguage()" (selectionChange)="setUiLanguage($event.value, 'ui')">
-        <mat-option value="">Always same as content (default)</mat-option>
+        <mat-option value="">Use current language (default)</mat-option>
         @for (option of options; track option.Code) {
           <mat-option value="{{ option.Code.toLocaleLowerCase() }}">{{ option.label }}</mat-option>
         }

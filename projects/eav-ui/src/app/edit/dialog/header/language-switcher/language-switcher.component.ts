@@ -11,21 +11,21 @@ import { FormConfigService } from '../../../form/form-config.service';
 import { FormLanguageService } from '../../../form/form-language.service';
 import { Language } from '../../../form/form-languages.model';
 import { LanguageService } from '../../../localization/language.service';
-import { SeparateLanguagesDialogComponent } from '../separate-languages-dialog/separate-languages-dialog';
+import { LanguageSettingsDialogComponent } from '../language-settings-dialog/language-settings-dialog';
 import { CenterSelectedHelper } from './center-selected.helper';
 import { getLanguageOptions } from './language-switcher.helpers';
 import { MouseScrollHelper } from './mouse-scroll.helper';
 import { ShowShadowsHelper } from './show-shadows.helper';
 
 @Component({
-    selector: 'app-language-switcher',
-    templateUrl: './language-switcher.component.html',
-    styleUrls: ['./language-switcher.component.scss'],
-    imports: [
-        MatButtonModule,
-        MatIcon,
-        TippyDirective,
-    ]
+  selector: 'app-language-switcher',
+  templateUrl: './language-switcher.component.html',
+  styleUrls: ['./language-switcher.component.scss'],
+  imports: [
+    MatButtonModule,
+    MatIcon,
+    TippyDirective,
+  ]
 })
 export class LanguageSwitcherComponent implements AfterViewInit, OnDestroy {
 
@@ -96,7 +96,7 @@ export class LanguageSwitcherComponent implements AfterViewInit, OnDestroy {
   }
 
   languageSettings() {
-    this.matDialog.open(SeparateLanguagesDialogComponent, {
+    this.matDialog.open(LanguageSettingsDialogComponent, {
       autoFocus: false,
       viewContainerRef: this.viewContainerRef,
       width: '750px',

@@ -1,9 +1,6 @@
 import { Component, inject } from "@angular/core";
 import { MatButtonModule } from '@angular/material/button';
-import {
-  MatDialogModule,
-  MatDialogRef
-} from '@angular/material/dialog';
+import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from "@angular/material/select";
@@ -13,30 +10,25 @@ import { LanguageService } from '../../../localization/language.service';
 import { getLanguageOptions } from '../language-switcher/language-switcher.helpers';
 
 @Component({
-    selector: 'app-separate-languages-header',
-    templateUrl: './separate-languages-dialog.html',
-    styleUrls: ['./separate-languages-dialog.scss'],
-    imports: [
-        MatDialogModule,
-        MatIconModule,
-        MatButtonModule,
-        TippyDirective,
-        MatFormFieldModule,
-        MatSelectModule,
-    ]
+  selector: 'app-separate-languages-header',
+  templateUrl: './language-settings-dialog.html',
+  styleUrls: ['./language-settings-dialog.scss'],
+  imports: [
+    MatDialogModule,
+    MatIconModule,
+    MatButtonModule,
+    TippyDirective,
+    MatFormFieldModule,
+    MatSelectModule,
+  ]
 })
-export class SeparateLanguagesDialogComponent {
+export class LanguageSettingsDialogComponent {
 
   #languageSvc = inject(LanguageService);
   #userLanguageSvc = inject(UserLanguageService);
 
-  constructor(
-    private dialog: MatDialogRef<SeparateLanguagesDialogComponent>) { }
-
-  closeDialog() {
-    this.dialog.close();
-  }
-
+  constructor(protected dialog: MatDialogRef<LanguageSettingsDialogComponent>) { }
+  
   protected options = getLanguageOptions(this.#languageSvc.getAll());
 
   setLabelLanguage(selectedLang: string, type: string): void {
