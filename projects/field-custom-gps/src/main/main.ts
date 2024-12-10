@@ -33,6 +33,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
   private marker: google.maps.Marker;
   private eventListeners: ElementEventListener[];
   private defaultCoordinates: google.maps.LatLngLiteral;
+  private iconPin: HTMLAnchorElement
 
   constructor() {
     super();
@@ -52,6 +53,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
     this.lngInput = this.querySelector<HTMLInputElement>('#lng');
     const addressMaskContainer = this.querySelector<HTMLDivElement>('#address-mask-container');
     this.iconSearch = this.querySelector<HTMLAnchorElement>('#icon-search');
+    this.iconPin = this.querySelector<HTMLAnchorElement>('#icon-pin');
     const formattedAddressContainer = this.querySelector<HTMLInputElement>('#formatted-address-container');
     this.mapContainer = this.querySelector<HTMLDivElement>('#map');
 
@@ -119,7 +121,9 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
     this.lngInput.addEventListener('change', onLatLngInputChange);
 
     const autoSelect = () => { this.autoSelect(); };
+
     this.iconSearch.addEventListener('click', autoSelect);
+    this.iconPin.addEventListener('click', () => { this.setLocation() });
 
     this.eventListeners.push(
       { element: this.latInput, type: 'change', listener: onLatLngInputChange },
@@ -130,6 +134,37 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
     this.marker.addListener('dragend', (event: google.maps.MapMouseEvent) => {
       this.onMarkerDragend(event);
     });
+  }
+
+  private setLocation(): void {
+    if (navigator.geolocation) {
+      const formattedAddressContainer = this.querySelector<HTMLInputElement>('#formatted-address-container');
+      formattedAddressContainer.value = 'Locating...';
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const latLng: google.maps.LatLngLiteral = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          };
+          this.updateHtml(latLng);
+          this.updateForm(latLng);
+
+          // Use the Google Maps Geocoding API to get address
+          this.geocoder.geocode({ location: latLng }, (results, status) => {
+            if (status === google.maps.GeocoderStatus.OK && results[0]) {
+              formattedAddressContainer.value = results[0].formatted_address;
+            } else {
+              formattedAddressContainer.value = 'Unable to retrieve address';
+            }
+          });
+        },
+        (error) => {
+          console.error('Error getting location:', error);
+        }
+      );
+    } else {
+      console.error('Geolocation is not supported by this browser.');
+    }
   }
 
   private updateHtml(latLng: google.maps.LatLngLiteral): void {
