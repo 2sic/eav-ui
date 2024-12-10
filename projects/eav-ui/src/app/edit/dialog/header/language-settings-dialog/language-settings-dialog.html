@@ -14,15 +14,16 @@
 
     <h3>Your Language Preferences</h3>
 
-    <!-- TODO: @2pp - these two blocks are almost identical. Pls create a template below to re-use with parameters -->
     <!-- Dropdown for Labels and Help Texts -->
+    <!-- TODO: @2pp - these two blocks are almost identical. Pls create a component for this section to re-use with parameters -->
     <mat-form-field tippy="Preferred language for texts and labels in the form" appearance="fill" color="accent">
       <mat-label>
         Form Labels and Help Texts
         {{ userLanguageSvc.isForced('form') ? '(disabled)' : '' }}
       </mat-label>
+      <!-- Note that if it's forced, it should show the applied value, otherwise the stored one which is the user-setting -->
       <mat-select
-        [value]="userLanguageSvc.stored('form')"
+        [value]="userLanguageSvc.isForced('form') ? userLanguageSvc.value('form') : userLanguageSvc.stored('form')"
         (selectionChange)="userLanguageSvc.save('form', $event.value)"
         [disabled]="userLanguageSvc.isForced('form')"
       >
@@ -32,6 +33,7 @@
         }
       </mat-select>
     </mat-form-field>
+    <!-- End future component -->
 
     <br />
     <br />
@@ -41,16 +43,16 @@
       <mat-label>
         Buttons and Controls
         {{ userLanguageSvc.isForced('ui') ? '(disabled)' : '' }}
-        ui: {{userLanguageSvc.value('ui')}}
       </mat-label>
+      <!-- Note that if it's forced, it should show the applied value, otherwise the stored one which is the user-setting -->
       <mat-select
-        [value]="userLanguageSvc.isForced('ui') ? userLanguageSvc.value('ui') : userLanguageSvc.stored('ui')"
+        [value]="(userLanguageSvc.isForced('ui') ? userLanguageSvc.value('ui') : userLanguageSvc.stored('ui')) ?? ''"
         (selectionChange)="userLanguageSvc.save('ui', $event.value)"
         [disabled]="userLanguageSvc.isForced('ui')"
       >
         <mat-option value="">Use current language (default)</mat-option>
         @for (option of options; track option.Code) {
-          <mat-option value="{{ option.Code.toLocaleLowerCase() }}">{{ option.label }}</mat-option>
+          <mat-option [value]="option.Code.toLocaleLowerCase()">{{ option.label }}</mat-option>
         }
       </mat-select>
     </mat-form-field>

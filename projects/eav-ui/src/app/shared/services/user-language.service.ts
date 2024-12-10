@@ -39,7 +39,7 @@ export class UserLanguageService {
 
   /** Set the UI language in the store */
   save(part: possibleKeys, language: string) {
-    this.#stateManager.add(part, language);
+    this.#stateManager.add(part, language || null); // try to save null instead of ""
   }
 
   /** Get the code like 'en' or 'de' for setting the language */
@@ -50,6 +50,12 @@ export class UserLanguageService {
   isForced(part: possibleKeys): boolean {
     return this.#config(part)?.force;
   }
+
+  userConfigurable(): boolean {
+    const isConfigurable = this.#dialogUiSettings()?.languageUserSettings;
+    return isConfigurable !== false && isConfigurable !== "false";
+  }
+
 
   // note: for now just here, if we need it more often
   // create some service which caches the object instead of deserializing every time
