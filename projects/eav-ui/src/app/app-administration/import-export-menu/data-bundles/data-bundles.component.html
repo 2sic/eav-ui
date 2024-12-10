@@ -16,7 +16,15 @@
   </p>
   <div class="grid-height" [style]="height">
     <div class="grid-wrapper mat-tab-grid-wrapper">
-      <ag-grid-angular class="ag-theme-material" [rowData]="dataSourceData()" [gridOptions]="gridOptions"> </ag-grid-angular>
+      <ag-grid-angular
+        class="ag-theme-material"
+        [rowData]="dataSourceData()"
+        [gridOptions]="gridOptions"
+        appDragAndDrop
+        [allowedFileTypes]="'xml,json'"
+        (filesDropped)="filesDropped($event)"
+      >
+      </ag-grid-angular>
     </div>
   </div>
 
@@ -26,20 +34,8 @@
     </button>
   </div>
 
-  <!-- TODO: @2dg
-    - get all bundle configurations using existing services and show them here as a table, Content Type is "d7f2e4fa-5306-41bb-a3cd-d9529c838879"
-    - Columns
-      - Name (with edit on click)
-      - File-Name
-      - Entities (just write "0" for now)
-      - Content-Type (just write "0" for now)
-      - Download (which will open a link to the download endpoint ca. this: .../admin/type/JsonBundleExport?appId=770&exportConfiguration=GUID-GUID-GUID&indentation=1)
-      - Save State (feature not ready, just create the column)
-      - Restore State (feature not ready, just create the column)
-    - also at the end, create a (+) button to create a new configuration
-  -->
-
   <!-- Import Bundles -->
+   <!-- TODO: @2dg Import Button? -->
   <h3>Import Bundles</h3>
   <p>To import a bundle, TODO... Note that all data and schema will be overwritten by the imported data in the bundle.</p>
 </div>

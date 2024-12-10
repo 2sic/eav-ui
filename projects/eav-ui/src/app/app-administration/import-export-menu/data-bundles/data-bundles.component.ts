@@ -9,7 +9,9 @@ import { ContentItemsService } from '../../../content-items/services/content-ite
 import { FeatureTextInfoComponent } from '../../../features/feature-text-info/feature-text-info.component';
 import { AgGridHelper } from '../../../shared/ag-grid/ag-grid-helper';
 import { ColumnDefinitions } from '../../../shared/ag-grid/column-definitions';
+import { FileUploadDialogData } from '../../../shared/components/file-upload-dialog';
 import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';
+import { DragAndDropDirective } from '../../../shared/directives/drag-and-drop.directive';
 import { convertFormToUrl } from '../../../shared/helpers/url-prep.helper';
 import { EditForm, EditPrep } from '../../../shared/models/edit-form.model';
 import { SxcGridModule } from '../../../shared/modules/sxc-grid-module/sxc-grid.module';
@@ -27,6 +29,7 @@ import { DataBundlesService } from './data-bundles.service';
         MatButtonModule,
         MatIconModule,
         RouterModule,
+        DragAndDropDirective,
     ],
     templateUrl: './data-bundles.component.html',
     styleUrl: './data-bundles.component.scss'
@@ -42,7 +45,6 @@ export class DataBundlesComponent {
   #defaultContentTypeId = "d7f2e4fa-5306-41bb-a3cd-d9529c838879";
 
   constructor() { }
-
   height = 'height: 135px';
 
   #refresh = signal(0);
@@ -113,6 +115,25 @@ export class DataBundlesComponent {
 
   #fetchItems() {
     this.#refresh.update(value => value + 1)
+  }
+
+  filesDropped(files: File[]) {
+    const importFile = files[0];
+    const ext = importFile.name.substring(importFile.name.lastIndexOf('.') + 1).toLocaleLowerCase();
+    switch (ext) {
+      case 'xml':
+        this.#importDataBundles(files);
+        break;
+      case 'json':
+        this.#importDataBundles(files);
+        break;
+    }
+  }
+
+  #importDataBundles(files?: File[]) {
+    console.log('importItem', files);
+    const dialogData: FileUploadDialogData = { files };
+    this.#dialogRouter.navRelative(['import'], { state: dialogData });
   }
 
   editItem(item?: ContentItem) {

@@ -91,6 +91,7 @@ export class AppsListComponent implements OnInit {
   }
 
   // TODO: @2dg - try to fix this so the link is directly in the HTML without a function call
+  // @2dg Window not exist in Html an a have other Styles
   browseCatalog(): void {
     window.open('https://2sxc.org/apps', '_blank');
   }
