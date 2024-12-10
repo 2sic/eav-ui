@@ -4,7 +4,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { transient } from 'projects/core';
-import { ContentExportService } from '../../../content-export/services/content-export.service';
 import { ContentItem } from '../../../content-items/models/content-item.model';
 import { ContentItemsService } from '../../../content-items/services/content-items.service';
 import { FeatureTextInfoComponent } from '../../../features/feature-text-info/feature-text-info.component';
@@ -17,7 +16,8 @@ import { SxcGridModule } from '../../../shared/modules/sxc-grid-module/sxc-grid.
 import { DialogRoutingService } from '../../../shared/routing/dialog-routing.service';
 import { DataBundleActionsComponent } from './data-bundles-actions/data-bundles-actions.component';
 import { DataBundlesActionsParams } from './data-bundles-actions/data-bundles-actions.models';
-import { DataBundlesService } from './data-bundles-query.service';
+import { DataBundlesQueryService } from './data-bundles-query.service';
+import { DataBundlesService } from './data-bundles.service';
 
 @Component({
     selector: 'app-data-bundles',
@@ -34,8 +34,9 @@ import { DataBundlesService } from './data-bundles-query.service';
 export class DataBundlesComponent {
 
   #contentItemsSvc = transient(ContentItemsService);
-  #contentExportSvc = transient(ContentExportService);
   #dialogRouter = transient(DialogRoutingService);
+
+  #dataBundlesQueryService = transient(DataBundlesQueryService);
   #dataBundlesService = transient(DataBundlesService);
 
   #defaultContentTypeId = "d7f2e4fa-5306-41bb-a3cd-d9529c838879";
@@ -59,7 +60,7 @@ export class DataBundlesComponent {
     const dataBundles = this.dataBundles()();
     dataBundles?.forEach(dataBundle => {
       if (dataBundle?.Guid) {
-        this.#dataBundlesService.fetchQuery(dataBundle.Guid).subscribe({
+        this.#dataBundlesQueryService.fetchQuery(dataBundle.Guid).subscribe({
           next: (data) => {
             const bundleQuery = {
               Guid: dataBundle.Guid,
@@ -127,11 +128,13 @@ export class DataBundlesComponent {
   }
 
   #download(item: ContentItem) {
-    this.#contentExportSvc.exportDataBundle(item.Guid);
+    this.#dataBundlesService.exportDataBundle(item.Guid);
   }
 
   #saveState(item: ContentItem) {
-    console.log('Save State', item);
+    // public bool BundleSave(IUser user, Guid exportConfiguration, int indentation)
+    this.#dataBundlesService.saveDataBundles(item.Guid);
+
     // this.snackBar.open('Exporting...');
     // this.#exportAppSvc.exportForVersionControl({ includeContentGroups: true, resetAppGuid: false, withFiles: false }).subscribe({
     //   next: _ => this.snackBar.open('Export completed into the \'App_Data\' folder.', null, { duration: 3000 }),

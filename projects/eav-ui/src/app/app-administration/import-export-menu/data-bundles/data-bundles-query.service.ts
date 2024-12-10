@@ -4,16 +4,13 @@ import { transient } from 'projects/core';
 import { Observable } from 'rxjs';
 import { QueryService } from '../../../shared/services/query.service';
 
-
-
-
 /**
  * Helper to handle dialog routings, especially:
  * 1. handling on-child-closed events (it also takes care of subscriptions)
  * 2. accessing the router and route - a very common task when you have dialogs
  */
 @Injectable()
-export class DataBundlesService {
+export class DataBundlesQueryService {
 
   #queryService = transient(QueryService);
 
