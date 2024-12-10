@@ -26,7 +26,6 @@ import { Context } from '../../shared/services/context';
 import { DialogService } from '../../shared/services/dialog.service';
 import { AppAdminHelpers } from '../app-admin-helpers';
 import { AppInternals } from '../models/app-internals.model';
-import { ContentTypesService } from '../services';
 import { AppInternalsService } from '../services/app-internals.service';
 import { DialogConfigAppService } from '../services/dialog-config-app.service';
 import { AnalyzeParts } from '../sub-dialogs/analyze-settings/analyze-settings.models';
@@ -52,7 +51,7 @@ import { AppConfigurationCardComponent } from './app-configuration-card/app-conf
 export class AppConfigurationComponent implements OnInit, OnDestroy {
 
   #dialogSvc = transient(DialogService);
-  #contentTypesSvc = transient(ContentTypesService);
+  // #contentTypesSvc = transient(ContentTypesService);
 
   dialogSettings: DialogSettings;
 

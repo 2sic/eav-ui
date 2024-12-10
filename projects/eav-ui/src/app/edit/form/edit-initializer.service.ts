@@ -155,7 +155,7 @@ export class EditInitializerService {
 
     var langs = loadDto.Context.Language;
     // WARNING! TranslateService is a new instance for every form and language must be set for every one of them
-    const userLangCode = this.#userLanguageSvc.getUiCode(langs.Current);
+    const userLangCode = this.#userLanguageSvc.uiCode(langs.Current);
     this.translate.use(userLangCode);
 
     // load language data only for parent dialog to not overwrite languages when opening child dialogs
