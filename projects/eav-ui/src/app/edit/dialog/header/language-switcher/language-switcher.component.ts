@@ -46,7 +46,7 @@ export class LanguageSwitcherComponent implements AfterViewInit, OnDestroy {
 
   buttons = getLanguageOptions(this.languageService.getAll());
 
-  #userLanguageSvc = transient(UserLanguageService);
+  userLanguageSvc = transient(UserLanguageService);
 
   constructor(
     private languageService: LanguageService,
@@ -92,7 +92,7 @@ export class LanguageSwitcherComponent implements AfterViewInit, OnDestroy {
       this.languageInstanceService.setCurrent(this.formConfig.config.formId, language.NameId);
 
       // Also set the UI language
-      const lngCode = this.#userLanguageSvc.uiCode(language.NameId);
+      const lngCode = this.userLanguageSvc.uiCode(language.NameId);
       this.translate.use(lngCode);
     }
   }

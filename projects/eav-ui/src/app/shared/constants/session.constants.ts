@@ -29,10 +29,10 @@ export const partOfPageDefault = 'false';
 
 /** Language settings - multiple values (JSON), WIP 18.03 */
 export const dialogSettings = `${prefix}dialogSettings`;
-export const languageUi = `${prefix}languageui`;
-export const languageLabels = `${prefix}languagelabels`;
 
 export interface DialogUiSettings {
+  /** enable / disable the language-dialog button */
+  languageUserSettings?: boolean | string;
   languageUi?: string;
   languageForm?: string;
 }
