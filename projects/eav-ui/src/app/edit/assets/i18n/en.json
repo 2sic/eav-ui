@@ -300,5 +300,9 @@
     "ErrorTooManyAppResources": "Found too many resources for {{ errComponent }}.",
     "ErrorNoAppSettings": "Found no settings for {{ errComponent }}.",
     "ErrorNoAppResources": "Found no resources for {{ errComponent }}."
+  },
+  "LanguageSettings": {
+    "Title": "Language Settings (BETA)",
+    "Intro": "TODO @2pp"
   }
 }

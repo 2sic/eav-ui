@@ -102,6 +102,7 @@ export class LanguageSwitcherComponent implements AfterViewInit, OnDestroy {
       autoFocus: false,
       viewContainerRef: this.viewContainerRef,
       width: '750px',
+      position: { top: '50px' },
     });
   }
 }
