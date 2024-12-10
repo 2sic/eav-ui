@@ -8,7 +8,6 @@ export interface PickerItem {
   /** The value to store */
   value: string;
 
-  /** TODO: @2dg later should be required */
   /** The previewValue to Show (Icon, etc.) */
   previewValue?: string;
 

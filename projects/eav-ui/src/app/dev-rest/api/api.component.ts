@@ -73,8 +73,6 @@ export class DevRestApiComponent extends DevRestBase<DevRestApiModel> implements
 
   private sourceService = transient(SourceService);
 
-  // TODO: @2dg Offen ViewModel
-
   constructor(
     /** Context for this dialog. Used for appId, zoneId, tabId, etc. */
     context: Context,
