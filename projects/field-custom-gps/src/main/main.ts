@@ -15,9 +15,9 @@ import * as styles from './main.scss';
 const gpsDialogTag = 'field-custom-gps-dialog';
 
 class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<string> {
-  
-  log = classLog({FieldCustomGpsDialog});
-  
+
+  log = classLog({ FieldCustomGpsDialog });
+
   fieldInitialized: boolean;
   connector: Connector<string>;
 
@@ -52,7 +52,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
     this.lngInput = this.querySelector<HTMLInputElement>('#lng');
     const addressMaskContainer = this.querySelector<HTMLDivElement>('#address-mask-container');
     this.iconSearch = this.querySelector<HTMLAnchorElement>('#icon-search');
-    const formattedAddressContainer = this.querySelector<HTMLSpanElement>('#formatted-address-container');
+    const formattedAddressContainer = this.querySelector<HTMLInputElement>('#formatted-address-container');
     this.mapContainer = this.querySelector<HTMLDivElement>('#map');
 
     const expConnector = this.connector._experimental;
@@ -67,10 +67,11 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
 
     const addressMaskSetting = settings.AddressMask || settings['Address Mask'];
     this.addressMask = expConnector.getFieldMask(addressMaskSetting, 'Gps');
-    this.log.a(`${gpsDialogTag} addressMask:`, {addressMaskSetting});
+
+    this.log.a(`${gpsDialogTag} addressMask:`, { addressMaskSetting });
     if (addressMaskSetting) {
       addressMaskContainer.classList.remove('hidden');
-      formattedAddressContainer.innerText = this.addressMask.result();
+      formattedAddressContainer.value = this.addressMask.result();
     }
 
     // TODO: TRY to refactor to use the new context.app.getSetting(...) in the formulas-data
@@ -104,7 +105,12 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
     if (!this.connector.data.value) {
       this.updateHtml(this.defaultCoordinates);
     } else {
-      this.updateHtml(parseLatLng(this.connector.data.value));
+      try {
+        this.updateHtml(parseLatLng(this.connector.data.value));
+      } catch (e) {
+        console.error('Invalid data.value:', this.connector.data.value);
+        this.updateHtml(this.defaultCoordinates);
+      }
     }
 
     // listen to inputs, iconSearch and marker. Update inputs, map, marker and form
@@ -155,7 +161,10 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
 
   private autoSelect(): void {
     this.log.a(`${gpsDialogTag} geocoder called`);
-    const address = this.addressMask.result();
+
+    const formattedAddressContainer = this.querySelector<HTMLInputElement>('#formatted-address-container');
+    const address = formattedAddressContainer.value;
+
     this.geocoder.geocode({
       address,
     }, (results, status) => {
