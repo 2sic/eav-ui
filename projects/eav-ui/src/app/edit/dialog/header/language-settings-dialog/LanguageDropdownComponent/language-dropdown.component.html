@@ -1,0 +1,16 @@
+<mat-form-field [tippy]="tooltip" appearance="fill" color="accent">
+  <mat-label>
+    {{ label }}
+    {{ userLanguageSvc.isForced(optionType) ? '(disabled)' : '' }}
+  </mat-label>
+  <mat-select
+    [value]="selectedValue"
+    (selectionChange)="onSelectionChange($event)"
+    [disabled]="userLanguageSvc.isForced(optionType)"
+  >
+    <mat-option value="">Use current language (default)</mat-option>
+    <ng-container *ngFor="let option of options">
+      <mat-option [value]="option.Code.toLocaleLowerCase()">{{ option.label }}</mat-option>
+    </ng-container>
+  </mat-select>
+</mat-form-field>

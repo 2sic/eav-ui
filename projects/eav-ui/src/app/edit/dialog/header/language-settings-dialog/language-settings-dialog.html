@@ -14,47 +14,20 @@
 
     <h3>Your Language Preferences</h3>
 
-    <!-- Dropdown for Labels and Help Texts -->
-    <!-- TODO: @2pp - these two blocks are almost identical. Pls create a component for this section to re-use with parameters -->
-    <mat-form-field tippy="Preferred language for texts and labels in the form" appearance="fill" color="accent">
-      <mat-label>
-        Form Labels and Help Texts
-        {{ userLanguageSvc.isForced('form') ? '(disabled)' : '' }}
-      </mat-label>
-      <!-- Note that if it's forced, it should show the applied value, otherwise the stored one which is the user-setting -->
-      <mat-select
-        [value]="userLanguageSvc.isForced('form') ? userLanguageSvc.value('form') : userLanguageSvc.stored('form')"
-        (selectionChange)="userLanguageSvc.save('form', $event.value)"
-        [disabled]="userLanguageSvc.isForced('form')"
-      >
-        <mat-option value="">Use current language (default)</mat-option>
-        @for (o of options; track o.Code) {
-          <mat-option value="{{ o.Code.toLocaleLowerCase() }}">{{ o.label }}</mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
-    <!-- End future component -->
+    <app-language-dropdown
+      [label]="'Form Labels and Help Texts'"
+      [tooltip]="'Preferred language for texts and labels in the form'"
+      [optionType]="'form'"
+      [options]="options"
+      [userLanguageSvc]="userLanguageSvc"
+    ></app-language-dropdown>
 
-    <br />
-    <br />
-
-    <!-- Dropdown for UI Elements -->
-    <mat-form-field tippy="Preferred language for buttons and controls" appearance="fill" color="accent">
-      <mat-label>
-        Buttons and Controls
-        {{ userLanguageSvc.isForced('ui') ? '(disabled)' : '' }}
-      </mat-label>
-      <!-- Note that if it's forced, it should show the applied value, otherwise the stored one which is the user-setting -->
-      <mat-select
-        [value]="(userLanguageSvc.isForced('ui') ? userLanguageSvc.value('ui') : userLanguageSvc.stored('ui')) ?? ''"
-        (selectionChange)="userLanguageSvc.save('ui', $event.value)"
-        [disabled]="userLanguageSvc.isForced('ui')"
-      >
-        <mat-option value="">Use current language (default)</mat-option>
-        @for (option of options; track option.Code) {
-          <mat-option [value]="option.Code.toLocaleLowerCase()">{{ option.label }}</mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
+    <app-language-dropdown
+      [label]="'Buttons and Controls'"
+      [tooltip]="'Preferred language for buttons and controls'"
+      [optionType]="'ui'"
+      [options]="options"
+      [userLanguageSvc]="userLanguageSvc"
+    ></app-language-dropdown>
   </div>
 </div>
