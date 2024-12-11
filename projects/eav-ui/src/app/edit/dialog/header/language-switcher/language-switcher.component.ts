@@ -3,7 +3,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { UserLanguageService } from 'projects/eav-ui/src/app/shared/services/user-language.service';
 import { transient } from '../../../../../../../core/transient';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
@@ -26,6 +26,7 @@ import { ShowShadowsHelper } from './show-shadows.helper';
     MatButtonModule,
     MatIcon,
     TippyDirective,
+    TranslateModule,
   ]
 })
 export class LanguageSwitcherComponent implements AfterViewInit, OnDestroy {
