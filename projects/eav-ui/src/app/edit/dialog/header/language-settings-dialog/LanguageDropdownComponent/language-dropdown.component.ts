@@ -5,6 +5,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
+import { TranslateModule } from '@ngx-translate/core';
 import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
 
 @Component({
@@ -18,7 +19,8 @@ import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.
     TippyDirective,
     MatFormFieldModule,
     MatSelectModule,
-    CommonModule
+    CommonModule,
+    TranslateModule,
   ]
 })
 export class LanguageDropdownComponent {

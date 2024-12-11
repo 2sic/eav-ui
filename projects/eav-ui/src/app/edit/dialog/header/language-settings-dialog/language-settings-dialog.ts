@@ -4,6 +4,7 @@ import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from "@angular/material/select";
+import { TranslateModule } from "@ngx-translate/core";
 import { UserLanguageService } from "projects/eav-ui/src/app/shared/services/user-language.service";
 import { transient } from '../../../../../../../core/transient';
 import { TippyDirective } from "../../../../shared/directives/tippy.directive";
@@ -22,7 +23,8 @@ import { LanguageDropdownComponent } from "./LanguageDropdownComponent/language-
     TippyDirective,
     MatFormFieldModule,
     MatSelectModule,
-    LanguageDropdownComponent
+    LanguageDropdownComponent,
+    TranslateModule,
   ]
 })
 export class LanguageSettingsDialogComponent {

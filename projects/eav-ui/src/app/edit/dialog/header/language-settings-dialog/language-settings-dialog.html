@@ -1,6 +1,6 @@
 <div class="eav-dialog">
   <div class="eav-dialog-header">
-    <div class="eav-dialog-header__title">Language Settings (BETA)</div>
+    <div class="eav-dialog-header__title">{{'LanguageSettings.Title' | translate}}</div>
     <button mat-icon-button tippy="Close dialog" (click)="dialog.close()">
       <mat-icon>close</mat-icon>
     </button>
@@ -8,11 +8,10 @@
 
   <div class="eav-dialog-content">
     <p>
-      By default, buttons and labels will use the current language.
-      Here you can choose a different behavior.
+      {{'LanguageSettings.Intro' | translate}}
     </p>
 
-    <h3>Your Language Preferences</h3>
+    <h3>{{'LanguageSettings.Subtitle' | translate}}</h3>
 
     <app-language-dropdown
       [label]="'Form Labels and Help Texts'"

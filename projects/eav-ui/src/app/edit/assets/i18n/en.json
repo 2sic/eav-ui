@@ -303,6 +303,8 @@
   },
   "LanguageSettings": {
     "Title": "Language Settings (BETA)",
-    "Intro": "TODO @2pp"
+    "Intro": "By default, buttons and labels will use the current language. Here you can choose a different behavior.",
+    "Subtitle": "Your Language Preferences",
+    "UseCurrentLanguage": "Use current language (default)"
   }
 }

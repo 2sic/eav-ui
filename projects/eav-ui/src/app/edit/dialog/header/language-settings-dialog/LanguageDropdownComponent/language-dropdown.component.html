@@ -8,7 +8,9 @@
     (selectionChange)="onSelectionChange($event)"
     [disabled]="userLanguageSvc.isForced(optionType)"
   >
-    <mat-option value="">Use current language (default)</mat-option>
+    <mat-option value="">
+      {{'LanguageSettings.UseCurrentLanguage' | translate}}
+      </mat-option>
     <ng-container *ngFor="let option of options">
       <mat-option [value]="option.Code.toLocaleLowerCase()">{{ option.label }}</mat-option>
     </ng-container>
