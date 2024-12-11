@@ -2,6 +2,7 @@ import { GridOptions } from '@ag-grid-community/core';
 import { Component, computed, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterModule } from '@angular/router';
 import { transient } from 'projects/core';
 import { ContentItem } from '../../../content-items/models/content-item.model';
@@ -44,8 +45,13 @@ export class DataBundlesComponent {
 
   #defaultContentTypeId = "d7f2e4fa-5306-41bb-a3cd-d9529c838879";
 
-  constructor() { }
   height = 'height: 135px';
+
+  constructor(private snackBar: MatSnackBar) { }
+
+  ngOnDestroy() {
+    this.snackBar.dismiss();
+  }
 
   #refresh = signal(0);
 
@@ -153,25 +159,20 @@ export class DataBundlesComponent {
   }
 
   #saveState(item: ContentItem) {
-    // public bool BundleSave(IUser user, Guid exportConfiguration, int indentation)
-    this.#dataBundlesService.saveDataBundles(item.Guid);
-
-    // this.snackBar.open('Exporting...');
-    // this.#exportAppSvc.exportForVersionControl({ includeContentGroups: true, resetAppGuid: false, withFiles: false }).subscribe({
-    //   next: _ => this.snackBar.open('Export completed into the \'App_Data\' folder.', null, { duration: 3000 }),
-    //   error: _ => this.snackBar.open('Export failed. Please check console for more information', null, { duration: 3000 }),
-    // });
+    this.snackBar.open('Save Bundle State...');
+    this.#dataBundlesService.saveDataBundles(item.Guid ).subscribe({
+      next: _ => this.snackBar.open('Export completed into the \'App_Data\' folder.', null, { duration: 3000 }),
+      error: _ => this.snackBar.open('Export failed. Please check console for more information', null, { duration: 3000 }),
+    });
   }
 
   #restoreState(item: ContentItem) {
-    console.log('Restore State', item);
-    // if (!confirm('Are you sure? All changes since last xml export will be lost'))
-    //   return;
-    // this.snackBar.open('Resetting...');
-    // this.#importAppPartsSvc.resetApp(false /*withFiles*/).subscribe({
-    //   next: _ => this.snackBar.open('Reset worked! Since this is a complex operation, please restart the Website to ensure all caches are correct', null, { duration: 30000 }),
-    //   error: _ => this.snackBar.open('Reset failed. Please check console for more details', null, { duration: 3000 }),
-    // });
+    console.log('restoreState', item);
+    this.snackBar.open('Restore Bundle State...');
+    this.#dataBundlesService.restoreDataBundles(item.FileName).subscribe({
+      next: _ => this.snackBar.open('Reset worked! Since this is a complex operation, please restart the Website to ensure all caches are correct', null, { duration: 30000 }),
+      error: _ => this.snackBar.open('Reset failed. Please check console for more details', null, { duration: 3000 }),
+    });
   }
 
   #buildGridOptions(): GridOptions {

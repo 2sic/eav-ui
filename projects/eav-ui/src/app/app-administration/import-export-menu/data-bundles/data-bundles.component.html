@@ -1,4 +1,8 @@
-<div class="outer-container-app">
+<div class="outer-container-app"
+  appDragAndDrop
+  [allowedFileTypes]="'xml,json'"
+  (filesDropped)="filesDropped($event)"
+  >
   <!-- Intro -->
   <h2>Data Bundles (BETA)</h2>
   <p>
@@ -19,11 +23,7 @@
       <ag-grid-angular
         class="ag-theme-material"
         [rowData]="dataSourceData()"
-        [gridOptions]="gridOptions"
-        appDragAndDrop
-        [allowedFileTypes]="'xml,json'"
-        (filesDropped)="filesDropped($event)"
-      >
+        [gridOptions]="gridOptions">
       </ag-grid-angular>
     </div>
   </div>
