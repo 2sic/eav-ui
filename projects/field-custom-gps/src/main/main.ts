@@ -8,7 +8,7 @@ import { EavCustomInputField } from '../../../edit-types/src/EavCustomInputField
 import { FieldSettings } from '../../../edit-types/src/FieldSettings';
 import { IFieldMask } from '../../../edit-types/src/IFieldMask';
 import { CoordinatesDto } from '../preview/coordinates';
-import { buildTemplate, parseLatLng, stringifyLatLng } from '../shared/helpers';
+import { buildTemplate, customGpsIcons, parseLatLng, stringifyLatLng } from '../shared/helpers';
 import * as template from './main.html';
 import * as styles from './main.scss';
 
@@ -53,7 +53,9 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
     this.lngInput = this.querySelector<HTMLInputElement>('#lng');
     const addressMaskContainer = this.querySelector<HTMLDivElement>('#address-mask-container');
     this.iconSearch = this.querySelector<HTMLAnchorElement>('#icon-search');
+    this.iconSearch.insertAdjacentHTML('afterbegin', customGpsIcons.search);
     this.iconPin = this.querySelector<HTMLAnchorElement>('#icon-pin');
+    this.iconPin.insertAdjacentHTML('afterbegin', customGpsIcons.person);
     const formattedAddressContainer = this.querySelector<HTMLInputElement>('#formatted-address-container');
     this.mapContainer = this.querySelector<HTMLDivElement>('#map');
 
