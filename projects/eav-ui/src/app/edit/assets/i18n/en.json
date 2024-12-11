@@ -305,6 +305,10 @@
     "Title": "Language Settings (BETA)",
     "Intro": "By default, buttons and labels will use the current language. Here you can choose a different behavior.",
     "Subtitle": "Your Language Preferences",
-    "UseCurrentLanguage": "Use current language (default)"
+    "UseCurrentLanguage": "Use current language (default)",
+    "ButtonsAndControlsOptionLabel": "Buttons and Controls",
+    "ButtonsAndControlsTooltip": "Preferred language for buttons and controls",
+    "LabelsAndTextsOptionLabel": "Form Labels and Help Texts",
+    "LabelsAndTextsTooltip": "Preferred language for texts and labels in the form"
   }
 }

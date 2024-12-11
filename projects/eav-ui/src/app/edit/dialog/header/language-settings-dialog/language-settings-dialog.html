@@ -14,16 +14,16 @@
     <h3>{{'LanguageSettings.Subtitle' | translate}}</h3>
 
     <app-language-dropdown
-      [label]="'Form Labels and Help Texts'"
-      [tooltip]="'Preferred language for texts and labels in the form'"
+      [label]="'LanguageSettings.LabelsAndTextsOptionLabel'"
+      [tooltip]="'LanguageSettings.LabelsAndTextsTooltip'"
       [optionType]="'form'"
       [options]="options"
       [userLanguageSvc]="userLanguageSvc"
     ></app-language-dropdown>
 
     <app-language-dropdown
-      [label]="'Buttons and Controls'"
-      [tooltip]="'Preferred language for buttons and controls'"
+      [label]="'LanguageSettings.ButtonsAndControlsOptionLabel'"
+      [tooltip]="'LanguageSettings.ButtonsAndControlsTooltip'"
       [optionType]="'ui'"
       [options]="options"
       [userLanguageSvc]="userLanguageSvc"

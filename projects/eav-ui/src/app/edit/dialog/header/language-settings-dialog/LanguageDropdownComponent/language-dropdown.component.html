@@ -1,6 +1,6 @@
-<mat-form-field [tippy]="tooltip" appearance="fill" color="accent">
+<mat-form-field [tippy]="tooltip | translate" appearance="fill" color="accent">
   <mat-label>
-    {{ label }}
+    {{ label | translate }}
     {{ userLanguageSvc.isForced(optionType) ? '(disabled)' : '' }}
   </mat-label>
   <mat-select
