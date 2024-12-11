@@ -9,6 +9,7 @@ import { transient } from '../../../../../../../core/transient';
 import { TippyDirective } from "../../../../shared/directives/tippy.directive";
 import { LanguageService } from '../../../localization/language.service';
 import { getLanguageOptions } from '../language-switcher/language-switcher.helpers';
+import { LanguageDropdownComponent } from "./LanguageDropdownComponent/language-dropdown.component";
 
 @Component({
   selector: 'app-separate-languages-header',
@@ -21,6 +22,7 @@ import { getLanguageOptions } from '../language-switcher/language-switcher.helpe
     TippyDirective,
     MatFormFieldModule,
     MatSelectModule,
+    LanguageDropdownComponent
   ]
 })
 export class LanguageSettingsDialogComponent {

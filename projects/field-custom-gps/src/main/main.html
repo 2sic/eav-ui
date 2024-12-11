@@ -1,3 +1,14 @@
+<!-- Search Icon -->
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=search"
+/>
+<!-- Pin Icon -->
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=person_pin_circle"
+/>
+
 <div class="custom-gps-container">
   <div class="map-info">
     <div class="input-component">
@@ -9,14 +20,15 @@
       <label for="lng">Lng:</label>
       <input id="lng" type="number" step="0.001" />
     </div>
+    <a id="icon-pin" class="btn"><i class="material-symbols-outlined"> person_pin_circle </i></a>
   </div>
 
   <div id="address-mask-container" class="map-info address-mask-container hidden">
     <a id="icon-search" class="btn">
-      <i class="material-icons-outlined">search</i>
+      <i class="material-symbols-outlined"> search </i>
     </a>
-    <span id="formatted-address-container"></span>
+    <input id="formatted-address-container" type="text" />
   </div>
 
-  <div id="map" class="map-info__map"></div>
+  <div id="map" class="map-info__map" />
 </div>
