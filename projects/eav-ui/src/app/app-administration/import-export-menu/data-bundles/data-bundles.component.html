@@ -1,8 +1,4 @@
-<div class="outer-container-app"
-  appDragAndDrop
-  [allowedFileTypes]="'xml,json'"
-  (filesDropped)="filesDropped($event)"
-  >
+<div class="outer-container-app" appDragAndDrop [allowedFileTypes]="'xml,json'" (filesDropped)="filesDropped($event)">
   <!-- Intro -->
   <h2>Data Bundles (BETA)</h2>
   <p>
@@ -13,30 +9,84 @@
   <app-feature-text-info [featureNameId]="'DataExportImportBundles'"></app-feature-text-info>
 
   <!-- Explanation about other places to export/import -->
-  <h3>Bundle Export Configurations</h3>
-  <p>
-    Bundles must be defined by creating a <strong>Bundle Configuration</strong>, and then assigning Content-Types and Data to that
-    configuration.
-  </p>
-  <div class="grid-height" [style]="height">
-    <div class="grid-wrapper mat-tab-grid-wrapper">
-      <ag-grid-angular
-        class="ag-theme-material"
-        [rowData]="dataSourceData()"
-        [gridOptions]="gridOptions">
-      </ag-grid-angular>
+  <div class="info-container">
+    <div>
+      <h3>Bundle Export Configurations</h3>
+      <p>
+        Bundles must be defined by creating a <strong>Bundle Configuration</strong>, and then assigning Content-Types and Data to that
+        configuration.
+      </p>
+    </div>
+    <div>
+      <!-- Add new Export Config -->
+      <button mat-fab mat-elevation-z24 class="grid-fab" tippy="Add item" (click)="editItem(null)">
+        <mat-icon>add</mat-icon>
+      </button>
     </div>
   </div>
 
-  <div class="fab-button-pos">
-    <button mat-fab mat-elevation-z24 class="grid-fab" tippy="Add item" (click)="editItem(null)">
-      <mat-icon>add</mat-icon>
-    </button>
+  <div class="grid-height" [style]="height">
+    <div class="grid-wrapper mat-tab-grid-wrapper">
+      <ag-grid-angular class="ag-theme-material" [rowData]="dataSourceData()" [gridOptions]="gridOptions"> </ag-grid-angular>
+    </div>
   </div>
 
   <!-- Import Bundles -->
-   <!-- TODO: @2dg Import Button? -->
   <h3>Import Bundles</h3>
-  <p>To import a bundle, TODO... Note that all data and schema will be overwritten by the imported data in the bundle.</p>
+  <p>To import a bundle, Note that all data and schema will be overwritten by the imported data in the bundle.</p>
+
+  <!-- New Import Button -->
+  @if (uploading()) {
+    <mat-spinner mode="indeterminate" diameter="20" color="accent"></mat-spinner>
+  }
+  <!--  Select Button -->
+  <div>
+    <button class="select-btn" mat-raised-button tippy="Open file browser" [disabled]="uploading()" (click)="fileInput.click()">
+      @if (!files().length) {
+        <div>Select or drop file</div>
+      }
+      @for (file of files(); track file) {
+        <div>{{ file.name }}</div>
+      }
+    </button>
+    <input #fileInput type="file" multiple (change)="filesChanged($event)" class="hide" />
+  </div>
+  <!-- Info Div -->
+  @if (result()) {
+    <div class="eav-result-container">
+      @if (result().Success) {
+        <div class="sxc-message sxc-message-info">Upload succeeded. See the messages below for more information.</div>
+      }
+      @if (!result().Success) {
+        <div class="sxc-message sxc-message-error">Upload failed. See the messages below for more information.</div>
+      }
+      @for (message of result().Messages; track message) {
+        <div
+          class="sxc-message"
+          [ngClass]="{
+            'sxc-message-warning': message.MessageType === FileUploadMessageTypes.Warning,
+            'sxc-message-success': message.MessageType === FileUploadMessageTypes.Success,
+            'sxc-message-error': message.MessageType === FileUploadMessageTypes.Error,
+          }"
+        >
+          {{ message.Text }}
+        </div>
+      }
+    </div>
+  }
+<!-- Upload Button -->
+  @if (!result()?.Success) {
+    <button
+      style="margin-top: 16px"
+      mat-button
+      class="eav-button__with-icon"
+      tippy="Import File"
+      [disabled]="!files().length || uploading() || !!result()"
+      (click)="upload()"
+    >
+      <mat-icon class="eav-icon">cloud_upload</mat-icon>
+      <span>Upload</span>
+    </button>
+  }
 </div>
 <router-outlet></router-outlet>

@@ -49,5 +49,4 @@ export class DataBundlesService extends HttpServiceBase {
       }
     });
   }
-
 }

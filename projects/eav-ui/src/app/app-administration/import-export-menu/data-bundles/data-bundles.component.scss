@@ -8,3 +8,15 @@
   display: flex;
   justify-content: end;
 }
+
+.eav-result-container {
+  margin-top: 16px;
+  max-height: calc(100vh - 74px - 23px - 57px - 200px);
+  overflow-y: auto;
+}
+
+.info-container{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
