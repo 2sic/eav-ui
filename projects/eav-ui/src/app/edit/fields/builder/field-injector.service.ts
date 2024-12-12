@@ -4,7 +4,7 @@ import { AbstractControl } from '@angular/forms';
 import { combineLatest, tap } from 'rxjs';
 import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
 import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
-import { FeaturesScopedService } from '../../../features/features-scoped.service';
+import { FeaturesService } from '../../../features/features.service';
 import { InputTypeHelpers } from '../../../shared/fields/input-type-helpers';
 import { classLog } from '../../../shared/logging';
 import { mapUntilObjChanged } from '../../../shared/rxJs/mapUntilChanged';
@@ -40,7 +40,7 @@ export class FieldStateInjectorFactory {
   #envInjector = inject(EnvironmentInjector);
   #fieldsSettingsSvc = inject(FieldsSettingsService);
   #entityFormStateSvc = inject(EntityFormStateService);
-  #featuresSvc = inject(FeaturesScopedService);
+  #featuresSvc = inject(FeaturesService);
 
   #editRoutingService = inject(EditRoutingService);
 

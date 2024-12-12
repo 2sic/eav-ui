@@ -8,7 +8,7 @@ import { MatInputModule } from "@angular/material/input";
 import { TranslateModule } from "@ngx-translate/core";
 import { FeatureIconTextComponent } from '../../../../features/feature-icon-text/feature-icon-text.component';
 import { FeatureNames } from '../../../../features/feature-names';
-import { FeaturesScopedService } from '../../../../features/features-scoped.service';
+import { FeaturesService } from '../../../../features/features.service';
 import { SignalEquals } from '../../../../shared/signals/signal-equals';
 import { FormConfigService } from "../../../form/form-config.service";
 import { FormsStateService } from "../../../form/forms-state.service";
@@ -70,7 +70,7 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
     editRoutingService: EditRoutingService,
     private zone: NgZone,
     public formsStateService: FormsStateService,
-    private featuresService: FeaturesScopedService,
+    private featuresService: FeaturesService,
   ) {
     super(
       eavService,

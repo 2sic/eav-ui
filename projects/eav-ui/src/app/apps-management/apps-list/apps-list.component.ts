@@ -12,7 +12,7 @@ import { EcoFabSpeedDialActionsComponent, EcoFabSpeedDialComponent, EcoFabSpeedD
 import { transient } from '../../../../../core';
 import { AppAdminHelpers } from '../../app-administration/app-admin-helpers';
 import { FeatureNames } from '../../features/feature-names';
-import { FeaturesScopedService } from '../../features/features-scoped.service';
+import { FeaturesService } from '../../features/features.service';
 import { openFeatureDialog } from '../../features/shared/base-feature.component';
 import { AgBoolCellIconsParams } from '../../shared/ag-grid/apps-list-show/ag-bool-icon-params';
 import { AgBoolIconRenderer } from '../../shared/ag-grid/apps-list-show/ag-bool-icon-renderer.component';
@@ -55,7 +55,7 @@ export class AppsListComponent implements OnInit {
 
   gridOptions = this.#buildGridOptions();
 
-  public features = inject(FeaturesScopedService);
+  public features = inject(FeaturesService);
   protected isAddFromFolderEnabled = this.features.isEnabled[FeatureNames.AppSyncWithSiteFiles];
 
   #appsListSvc = transient(AppsListService);

@@ -5,8 +5,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
-import { FeaturesScopedService } from '../../../features/features-scoped.service';
 import { openFeaturesUsedButUnlicensedDialog } from '../../../features/features-used-but-missing-dialog/features-used-but-unlicensed-dialog.component';
+import { FeaturesService } from '../../../features/features.service';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { FormConfigService } from '../../form/form-config.service';
 import { FormPublishingService } from '../../form/form-publishing.service';
@@ -34,7 +34,7 @@ export class EditDialogHeaderComponent {
   protected closeDialog = output<void>();
 
   #formsStateSvc = inject(FormsStateService);
-  #features = inject(FeaturesScopedService);
+  #features = inject(FeaturesService);
 
   constructor(
     private matDialog: MatDialog,

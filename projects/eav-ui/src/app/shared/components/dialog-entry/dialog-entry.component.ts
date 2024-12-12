@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, Type, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, Injector, OnDestroy, OnInit, Type, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NavigateFormResult } from '../../../edit/routing/edit-routing.service';
@@ -10,12 +10,12 @@ import { Context } from '../../services/context';
 declare const window: EavWindow;
 
 @Component({
-    selector: 'app-dialog-entry',
-    templateUrl: './dialog-entry.component.html',
-    imports: [],
-    providers: [
-        Context, // this is used in the dialog to get the correct App
-    ]
+  selector: 'app-dialog-entry',
+  templateUrl: './dialog-entry.component.html',
+  imports: [],
+  providers: [
+    Context, // this is used in the dialog to get the correct App
+  ]
 })
 export class DialogEntryComponent implements OnInit, OnDestroy {
   
@@ -31,6 +31,7 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private context: Context,
     private changeDetectorRef: ChangeDetectorRef,
+    private injector: Injector,
   ) {
     const navigation = this.router.getCurrentNavigation();
     this.#dialogData = navigation?.extras?.state || {};
@@ -44,7 +45,7 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
 
     l.a('Open dialog: '+ dialogConfig.name, { id: this.context.id, context: this.context });
 
-    dialogConfig.getComponent().then(component => {
+    dialogConfig.getComponent(this.injector).then(component => {
       // spm Workaround for "feature" where you can't open new dialog while last one is still opening
       // https://github.com/angular/components/commit/728cf1c8ebd49e089f4bae945511bb0918972c26
       const dialog = (this.matDialog as any);

@@ -7,7 +7,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { transient } from '../../../../../core';
 import { FeatureDetailsDialogComponent } from '../../apps-management/licence-info/feature-details-dialog/feature-details-dialog.component';
 import { classLog, commonSpecs } from '../../shared/logging';
-import { FeaturesScopedService } from '../features-scoped.service';
+import { FeaturesService } from '../features.service';
 import { FeatureDetailService } from '../services/feature-detail.service';
 
 const logSpecs = {
@@ -30,7 +30,7 @@ export class FeaturesUsedButUnlicensedComponent {
 
   log = classLog({ FeaturesUsedButUnlicensedComponent }, logSpecs);
 
-  #features = inject(FeaturesScopedService);
+  #features = inject(FeaturesService);
 
   #featureDetails = transient(FeatureDetailService);
 

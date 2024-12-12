@@ -14,7 +14,7 @@ import { fieldNameError, fieldNamePattern } from '../../app-administration/const
 import { ContentType } from '../../app-administration/models';
 import { FeatureNames } from '../../features/feature-names';
 import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
-import { FeaturesScopedService } from '../../features/features-scoped.service';
+import { FeaturesService } from '../../features/features.service';
 import { openFeatureDialog } from '../../features/shared/base-feature.component';
 import { BaseComponent } from '../../shared/components/base.component';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
@@ -45,7 +45,7 @@ export class FieldSharingAddMany extends BaseComponent implements OnInit {
   @HostBinding('className') hostClass = 'dialog-component';
   @ViewChild('ngForm', { read: NgForm }) private form: NgForm;
 
-  #features = inject(FeaturesScopedService);
+  #features = inject(FeaturesService);
 
   #contentTypesFieldsSvc = transient(ContentTypesFieldsService);
 

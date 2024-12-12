@@ -1,6 +1,6 @@
 import { EntityLight } from '../../../../../../../edit-types/src/EntityLight';
 import { FeatureNames } from '../../../../features/feature-names';
-import { FeaturesScopedService } from '../../../../features/features-scoped.service';
+import { FeaturesService } from '../../../../features/features.service';
 import { classLog } from '../../../../shared/logging';
 import { FormConfigService } from '../../../form/form-config.service';
 import { PickerItem } from '../models/picker-item.model';
@@ -27,7 +27,7 @@ export class DataSourceMasksHelper {
   constructor(
     private name: string,
     private settings: DataSourceMaskSettings,
-    features: FeaturesScopedService,
+    features: FeaturesService,
     private formConfig: FormConfigService,
     parentLog: { enableChildren: boolean }, enableLog?: boolean
   ) {

@@ -8,7 +8,7 @@ import { transient } from '../../../../../../core';
 import { DocsLinkHelperComponent } from '../../../admin-shared/docs-link-helper/docs-link-helper.component';
 import { FeatureIconComponent } from '../../../features/feature-icon/feature-icon.component';
 import { FeatureNames } from '../../../features/feature-names';
-import { FeaturesScopedService } from '../../../features/features-scoped.service';
+import { FeaturesService } from '../../../features/features.service';
 import { ExportAppService } from '../../services/export-app.service';
 
 @Component({
@@ -32,7 +32,7 @@ export class ExportAppComponent {
   appInfo = this.#exportAppService.getAppInfo(undefined);
 
 
-  protected features = inject(FeaturesScopedService);
+  protected features = inject(FeaturesService);
   protected expAssetsAdvEnabled = this.features.isEnabled[FeatureNames.AppExportAssetsAdvanced];
 
   // Use Signals

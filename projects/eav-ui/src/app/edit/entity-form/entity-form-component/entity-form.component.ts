@@ -8,7 +8,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { transient } from '../../../../../../core';
 import { FeatureNames } from '../../../features/feature-names';
-import { FeaturesScopedService } from '../../../features/features-scoped.service';
+import { FeaturesService } from '../../../features/features.service';
 import { eavConstants } from '../../../shared/constants/eav.constants';
 import { MousedownStopPropagationDirective } from '../../../shared/directives/mousedown-stop-propagation.directive';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
@@ -80,7 +80,7 @@ export class EntityFormComponent implements OnInit, AfterViewChecked, OnDestroy 
   collapse = false;
   noteTouched: boolean = false;
 
-  #features = inject(FeaturesScopedService);
+  #features = inject(FeaturesService);
   #editUiShowNotes = this.#features.isEnabled[FeatureNames.EditUiShowNotes];
   #editUiShowMetadataFor = this.#features.isEnabled[FeatureNames.EditUiShowMetadataFor];
 

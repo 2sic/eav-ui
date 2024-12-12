@@ -10,7 +10,7 @@ import { EavCustomInputField } from '../../../../../../edit-types/src/EavCustomI
 import { FieldConfig } from '../../../../../../edit-types/src/FieldConfig';
 import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
 import { FeatureNames } from '../../../features/feature-names';
-import { FeaturesScopedService } from '../../../features/features-scoped.service';
+import { FeaturesService } from '../../../features/features.service';
 import { openFeatureDialog } from '../../../features/shared/base-feature.component';
 import { classLog } from '../../../shared/logging';
 import { ServiceBase } from '../../../shared/services/service-base';
@@ -48,7 +48,7 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
   #translateService = inject(TranslateService);
   #contentTypeService = inject(ContentTypeService);
   #inputTypeService = inject(InputTypeService);
-  #featuresService = inject(FeaturesScopedService);
+  #featuresService = inject(FeaturesService);
   #editRoutingService = inject(EditRoutingService);
   #dialog = inject(MatDialog);
   #snackBar = inject(MatSnackBar);

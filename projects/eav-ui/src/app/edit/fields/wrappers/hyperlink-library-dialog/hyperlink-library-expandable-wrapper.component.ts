@@ -6,7 +6,7 @@ import { TranslateModule } from "@ngx-translate/core";
 import { AdamItem } from '../../../../../../../edit-types/src/AdamItem';
 import { FeatureIconTextComponent } from "../../../../features/feature-icon-text/feature-icon-text.component";
 import { FeatureNames } from '../../../../features/feature-names';
-import { FeaturesScopedService } from '../../../../features/features-scoped.service';
+import { FeaturesService } from '../../../../features/features.service';
 import { SignalEquals } from '../../../../shared/signals/signal-equals';
 import { FormsStateService } from "../../../form/forms-state.service";
 import { EditRoutingService } from "../../../routing/edit-routing.service";
@@ -58,7 +58,7 @@ export class HyperlinkLibraryExpandableWrapperComponent implements AfterViewInit
     private zone: NgZone,
     private editRoutingService: EditRoutingService,
     public formsStateService: FormsStateService,
-    private featuresService: FeaturesScopedService,
+    private featuresService: FeaturesService,
   ) { }
 
   ngAfterViewInit() {

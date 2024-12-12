@@ -7,7 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
 import { transient } from 'projects/core';
 import { FeatureNames } from '../../../../features/feature-names';
-import { FeaturesScopedService } from '../../../../features/features-scoped.service';
+import { FeaturesService } from '../../../../features/features.service';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { ExtendedFabSpeedDialImports } from '../../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
 import { EntityFormStateService } from '../../../entity-form/entity-form-state.service';
@@ -60,7 +60,7 @@ export class DialogPopupComponent {
 
   constructor(
     public formsStateService: FormsStateService,
-    private featuresService: FeaturesScopedService,
+    private featuresService: FeaturesService,
     private zone: NgZone,
   ) {
 

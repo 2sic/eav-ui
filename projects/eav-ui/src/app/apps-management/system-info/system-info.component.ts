@@ -13,7 +13,7 @@ import { DocsLinkHelperComponent } from '../../admin-shared/docs-link-helper/doc
 import { DialogConfigAppService } from '../../app-administration/services/dialog-config-app.service';
 import { FeatureNames } from '../../features/feature-names';
 import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
-import { FeaturesScopedService } from '../../features/features-scoped.service';
+import { FeaturesService } from '../../features/features.service';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { EavWindow } from '../../shared/models/eav-window.model';
@@ -46,7 +46,7 @@ declare const window: EavWindow;
 })
 export class SystemInfoComponent implements OnInit {
 
-  public features = inject(FeaturesScopedService);
+  public features = inject(FeaturesService);
 
   #dialogSettings = transient(DialogConfigAppService);
   #sxcInsightsService = transient(SxcInsightsService);

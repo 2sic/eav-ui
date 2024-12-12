@@ -19,7 +19,7 @@ declare const window: EavWindow;
  */
 export function paramsInitFactory(injector: Injector): () => void {
 
-  const log = classLog({ paramsInitFactory }, null);
+  const log = classLog({ paramsInitFactory });
 
   return () => {
     const l = log.fn('paramsInitFactory');

@@ -11,7 +11,7 @@ import { transient } from '../../../../../../../../core/transient';
 import { AdamConfig } from '../../../../../../../../edit-types/src/AdamConfig';
 import { AdamItem } from '../../../../../../../../edit-types/src/AdamItem';
 import { FeatureNames } from '../../../../../features/feature-names';
-import { FeaturesScopedService } from '../../../../../features/features-scoped.service';
+import { FeaturesService } from '../../../../../features/features.service';
 import { openFeatureDialog } from '../../../../../features/shared/base-feature.component';
 import { eavConstants } from '../../../../../shared/constants/eav.constants';
 import { ClickStopPropagationDirective } from '../../../../../shared/directives/click-stop-propagation.directive';
@@ -79,7 +79,7 @@ export class AdamBrowserComponent implements OnInit {
 
   protected fieldState = inject(FieldState);
   #editRoutingService = inject(EditRoutingService);
-  #features = inject(FeaturesScopedService);
+  #features = inject(FeaturesService);
 
   #adamService = transient(AdamService);
   #dialogRouter = transient(DialogRoutingService);

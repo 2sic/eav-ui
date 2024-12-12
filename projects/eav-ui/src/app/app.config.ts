@@ -8,7 +8,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { routes } from './app.routes';
-import { FeaturesScopedService } from './features/features-scoped.service';
+import { FeaturesService } from './features/features.service';
 import { paramsInitFactory } from './params-init.factory';
 import { HandleErrorsInterceptor } from './shared/interceptors/handle-errors.interceptor';
 import { SetHeadersInterceptor } from './shared/interceptors/set-headers.interceptor';
@@ -32,7 +32,7 @@ export const appConfig: ApplicationConfig = {
 
     // The feature service must be provided in root at first, so it's always there
     // But certain dialogs will want to use their own.
-    FeaturesScopedService,
+    FeaturesService,
 
     { provide: APP_INITIALIZER, useFactory: paramsInitFactory, deps: [Injector], multi: true },
     { provide: LocationStrategy, useClass: HashLocationStrategy },

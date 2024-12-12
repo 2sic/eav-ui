@@ -13,7 +13,7 @@ import { DocsLinkHelperComponent } from '../../admin-shared/docs-link-helper/doc
 import { ContentItemsService } from '../../content-items/services/content-items.service';
 import { FeatureNames } from '../../features/feature-names';
 import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
-import { FeaturesScopedService } from '../../features/features-scoped.service';
+import { FeaturesService } from '../../features/features.service';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { SystemSettingsScopes, eavConstants } from '../../shared/constants/eav.constants';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
@@ -81,7 +81,7 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
   appSettingsInternal$ = new Subject<AppInternals>();
 
   public appStateAdvanced = false;
-  public features = inject(FeaturesScopedService);
+  public features = inject(FeaturesService);
 
   protected lightSpeedEnabled = this.features.isEnabled[FeatureNames.LightSpeed];
   protected cspEnabled = this.features.isEnabled[FeatureNames.ContentSecurityPolicy];

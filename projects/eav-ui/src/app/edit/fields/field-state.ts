@@ -5,7 +5,7 @@ import { BasicControlSettings } from '../../../../../edit-types/src/BasicControl
 import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
 import { FieldValue } from '../../../../../edit-types/src/FieldValue';
 import { FeatureNames } from '../../features/feature-names';
-import { FeaturesScopedService } from '../../features/features-scoped.service';
+import { FeaturesService } from '../../features/features.service';
 import { computedObj, signalObj } from '../../shared/signals/signal.utilities';
 import { TranslationState } from '../localization/translate-state.model';
 import { UiControl } from '../shared/controls/ui-control';
@@ -50,7 +50,7 @@ export class FieldState<TValue extends FieldValue = FieldValue, TSettings extend
 
     pickerData: PickerData,
 
-    featuresSvc: FeaturesScopedService,
+    featuresSvc: FeaturesService,
 
     injectorForEffects: Injector,
   ) {
