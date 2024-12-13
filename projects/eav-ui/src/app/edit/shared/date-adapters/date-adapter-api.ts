@@ -141,10 +141,8 @@ import 'dayjs/locale/zh';
 // import 'dayjs/locale/zh-hk';
 // import 'dayjs/locale/zh-tw';
 
-
-
-
 export * from './mat-dayjs-date-adapter/mat-dayjs-date-adapter.module';
 
-export { MatDayjsDateAdapter, MatDayjsDateAdapterOptions, MAT_DAYJS_DATE_ADAPTER_OPTIONS } from './mat-dayjs-date-adapter/mat-dayjs-date-adapter';
+export { MAT_DAYJS_DATE_ADAPTER_OPTIONS, MatDayjsDateAdapter, MatDayjsDateAdapterOptions } from './mat-dayjs-date-adapter/mat-dayjs-date-adapter';
 export { MAT_DAYJS_DATE_FORMATS } from './mat-dayjs-date-adapter/mat-dayjs-date-formats';
+

@@ -1,8 +1,9 @@
-import { Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerInputEvent, MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatTimepickerModule } from '@angular/material/timepicker';
 import { DateTimeAdapter, OwlDateTimeModule } from '@danielmoncada/angular-datetime-picker';
 import { OwlDayJsDateTimeModule } from '@danielmoncada/angular-datetime-picker-dayjs-adapter';
 import { TranslateService } from '@ngx-translate/core';
@@ -31,31 +32,36 @@ import { DateTimeDefaultLogic } from './datetime-default-logic';
         FormsModule,
         ReactiveFormsModule,
         MatInputModule,
-        MatDatepickerModule,
         OwlDateTimeModule,
         FieldHelperTextComponent,
         OwlDayJsDateTimeModule,
         MatDayjsModule,
         TippyDirective,
-    ]
+        MatDatepickerModule,
+        MatTimepickerModule,
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 @FieldMetadata({ ...WrappersLocalizationOnly })
 export class DatetimeDefaultComponent {
-
+  
   log = classLog({DatetimeDefaultComponent});
-
+  
   protected fieldState = inject(FieldState) as FieldState<string, FieldSettings & FieldSettingsDateTime>;
-
+  
   protected group = this.fieldState.group;
-
+  
   protected ui = this.fieldState.ui;
   uiValue = this.fieldState.uiValue;
   protected basics = this.fieldState.basics;
-
+  
   protected useTimePicker = this.fieldState.settingExt('UseTimePicker');
-
+  
   /** The date/time picker needs the date-info cleaned up, so it doesn't do time-zone handling */
   valueForTimePicker = computed(() => this.uiValue()?.replace('Z', ''), SignalEquals.string);
+  
+  // Time value (angular material date & time picker output)
+  value: Date = new Date();
 
   private matDayjsDateAdapter = transient(MatDayjsDateAdapter);
   constructor(
