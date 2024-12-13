@@ -18,11 +18,17 @@
 } @else {
   <mat-form-field color="accent">
     <mat-label>Date</mat-label>
-    <input matInput [disabled]="ui().disabled" [matDatepicker]="datepicker" [(ngModel)]="dateValue" />
-    <mat-datepicker #datepicker />
-    <mat-datepicker-toggle [for]="datepicker" matSuffix />
+    <input
+      matInput
+      [disabled]="ui().disabled"
+      [matDatepicker]="datepicker"
+      [(ngModel)]="dateValue"
+      (ngModelChange)="updateFormattedValue()"
+    />
+    <mat-datepicker #datepicker></mat-datepicker>
+    <mat-datepicker-toggle [for]="datepicker" matSuffix></mat-datepicker-toggle>
   </mat-form-field>
-
+  
   <mat-form-field color="accent">
     <mat-label>Time</mat-label>
     <input
@@ -31,9 +37,10 @@
       [matTimepicker]="timepicker"
       [(ngModel)]="timeValue"
       [ngModelOptions]="{ updateOn: 'blur' }"
+      (ngModelChange)="updateFormattedValue()"
     />
-    <mat-timepicker #timepicker />
-    <mat-timepicker-toggle [for]="timepicker" matSuffix />
+    <mat-timepicker #timepicker></mat-timepicker>
+    <mat-timepicker-toggle [for]="timepicker" matSuffix></mat-timepicker-toggle>
     <mat-timepicker [options]="timePickerOptions" #timepicker></mat-timepicker>
   </mat-form-field>
 
