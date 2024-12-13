@@ -17,33 +17,30 @@
   </mat-form-field>
 } @else {
   <mat-form-field color="accent">
-    <mat-label>{{ basics().label }}</mat-label>
-    <input
-      matInput
-      [disabled]="ui().disabled"
-      [matDatepicker]="datepicker"
-      [placeholder]="basics().placeholder"
-      [required]="basics().required"
-      [ngModel]="value"
-      (dateChange)="updateDate($event)"
-    />
-    <mat-datepicker-toggle matSuffix [for]="datepicker"></mat-datepicker-toggle>
-    <mat-datepicker #datepicker></mat-datepicker>
+    <mat-label>Date</mat-label>
+    <input matInput [disabled]="ui().disabled" [matDatepicker]="datepicker" [(ngModel)]="dateValue" />
+    <mat-datepicker #datepicker />
+    <mat-datepicker-toggle [for]="datepicker" matSuffix />
   </mat-form-field>
-  
+
   <mat-form-field color="accent">
     <mat-label>Time</mat-label>
     <input
       matInput
       [disabled]="ui().disabled"
       [matTimepicker]="timepicker"
-      [(ngModel)]="value"
+      [(ngModel)]="timeValue"
       [ngModelOptions]="{ updateOn: 'blur' }"
-      (timeChange)="updateTime($event)"
     />
-    <mat-timepicker-toggle [for]="timepicker" matSuffix></mat-timepicker-toggle>
+    <mat-timepicker #timepicker />
+    <mat-timepicker-toggle [for]="timepicker" matSuffix />
     <mat-timepicker [options]="timePickerOptions" #timepicker></mat-timepicker>
   </mat-form-field>
+
+  <!-- Date and Time values will be auto combined into this field - or auto split when field is beeing written -->
+  <!-- <mat-form-field>
+    <input matInput />
+  </mat-form-field> -->
 
   <!-- OLD -->
   <mat-form-field [formGroup]="group" color="accent" class="eav-mat-form-field">

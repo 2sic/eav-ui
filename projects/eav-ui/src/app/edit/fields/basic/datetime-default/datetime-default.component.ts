@@ -61,7 +61,8 @@ export class DatetimeDefaultComponent {
   valueForTimePicker = computed(() => this.uiValue()?.replace('Z', ''), SignalEquals.string);
 
   // Time value (angular material date & time picker output)
-  value: Dayjs = dayjs();
+  dateValue: Dayjs = dayjs();
+  timeValue: Dayjs = dayjs();
 
   // Predefined options for the time picker
   timePickerOptions: MatTimepickerOption<Dayjs>[] = [
@@ -79,7 +80,6 @@ export class DatetimeDefaultComponent {
     private translate: TranslateService,
     private owlDayjsDateAdapter: DateTimeAdapter<Dayjs>,
   ) {
-    this.updateFormattedValue();
     dayjs.extend(utc); // 'neutral' time for OwlDateTime 
     const currentLang = this.translate.currentLang;
     dayjs.locale(currentLang);
@@ -96,25 +96,31 @@ export class DatetimeDefaultComponent {
 
   updateDate(event: MatDatepickerInputEvent<Dayjs>) {
     if (event.value) {
-      this.value = this.value
+      this.dateValue = this.dateValue
         .year(event.value.year())
         .month(event.value.month())
         .date(event.value.date());
       this.updateFormattedValue();
     }
   }
-    
+
   updateTime(event: any) {
     if (event.value) {
-      this.value = this.value
+      this.timeValue = this.timeValue
         .hour(event.value.hour())
         .minute(event.value.minute())
         .second(event.value.second());
       this.updateFormattedValue();
     }
   }
-  
-  private updateFormattedValue() {
-    this.ui().setIfChanged(this.value.toISOString());
+
+  updateFormattedValue() {
+    const combinedValue = this.dateValue
+      .hour(this.timeValue.hour())
+      .minute(this.timeValue.minute())
+      .second(this.timeValue.second());
+
+    this.ui().setIfChanged(combinedValue.toISOString());
+    return combinedValue.toISOString();
   }
 }
