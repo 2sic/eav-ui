@@ -16,36 +16,36 @@
     <mat-label>{{ basics().label }}</mat-label>
   </mat-form-field>
 } @else {
-  <mat-form-field>
+  <mat-form-field color="accent">
     <mat-label>{{ basics().label }}</mat-label>
     <input
       matInput
-      class="eav-translate-on-dblclick"
       [disabled]="ui().disabled"
       [matDatepicker]="datepicker"
       [placeholder]="basics().placeholder"
       [required]="basics().required"
-      [value]="value"
+      [ngModel]="value"
       (dateChange)="updateDate($event)"
     />
     <mat-datepicker-toggle matSuffix [for]="datepicker"></mat-datepicker-toggle>
     <mat-datepicker #datepicker></mat-datepicker>
   </mat-form-field>
   
-  <mat-form-field>
-    <mat-label>Meeting time</mat-label>
+  <mat-form-field color="accent">
+    <mat-label>Time</mat-label>
     <input
       matInput
+      [disabled]="ui().disabled"
       [matTimepicker]="timepicker"
       [(ngModel)]="value"
       [ngModelOptions]="{ updateOn: 'blur' }"
-      [disabled]="ui().disabled"
       (timeChange)="updateTime($event)"
     />
     <mat-timepicker-toggle [for]="timepicker" matSuffix></mat-timepicker-toggle>
-    <mat-timepicker #timepicker></mat-timepicker>
+    <mat-timepicker [options]="timePickerOptions" #timepicker></mat-timepicker>
   </mat-form-field>
 
+  <!-- OLD -->
   <mat-form-field [formGroup]="group" color="accent" class="eav-mat-form-field">
     <!-- Date & Time Picker - use the OWL picker (not ideal, but looks similar)  -->
     <input

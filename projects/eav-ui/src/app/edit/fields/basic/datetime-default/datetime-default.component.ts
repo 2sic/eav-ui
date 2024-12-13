@@ -1,10 +1,9 @@
-import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerInputEvent, MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatTimepickerModule } from '@angular/material/timepicker';
+import { MatTimepickerModule, MatTimepickerOption } from '@angular/material/timepicker';
 import { DateTimeAdapter, OwlDateTimeModule } from '@danielmoncada/angular-datetime-picker';
 import { OwlDayJsDateTimeModule } from '@danielmoncada/angular-datetime-picker-dayjs-adapter';
 import { TranslateService } from '@ngx-translate/core';
@@ -42,7 +41,6 @@ import { DateTimeDefaultLogic } from './datetime-default-logic';
     MatTimepickerModule,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DatePipe]
 })
 @FieldMetadata({ ...WrappersLocalizationOnly })
 export class DatetimeDefaultComponent {
@@ -63,13 +61,23 @@ export class DatetimeDefaultComponent {
   valueForTimePicker = computed(() => this.uiValue()?.replace('Z', ''), SignalEquals.string);
 
   // Time value (angular material date & time picker output)
-  value: Date = new Date();
+  value: Dayjs = dayjs();
+
+  // Predefined options for the time picker
+  timePickerOptions: MatTimepickerOption<Dayjs>[] = [
+    { label: '12:00 AM', value: dayjs().hour(0).minute(0).second(0) },   // Midnight
+    { label: '06:00 AM', value: dayjs().hour(6).minute(0).second(0) },
+    { label: '08:00 AM', value: dayjs().hour(8).minute(0).second(0) },
+    { label: '10:00 AM', value: dayjs().hour(10).minute(0).second(0) },
+    { label: '12:00 PM', value: dayjs().hour(12).minute(0).second(0) },  // Noon
+    { label: '06:00 PM', value: dayjs().hour(18).minute(0).second(0) },
+  ];
 
   private matDayjsDateAdapter = transient(MatDayjsDateAdapter);
+
   constructor(
     private translate: TranslateService,
     private owlDayjsDateAdapter: DateTimeAdapter<Dayjs>,
-    private datePipe: DatePipe
   ) {
     this.updateFormattedValue();
     dayjs.extend(utc); // 'neutral' time for OwlDateTime 
@@ -86,46 +94,27 @@ export class DatetimeDefaultComponent {
     console.log('ui old', this.ui());
   }
 
-  updateDate(event: MatDatepickerInputEvent<Date>) {
-    let selectedDate: Date | undefined;
-
-    if ('value' in event && event.value) {
-      selectedDate = event.value instanceof Date ? event.value : new Date(event.value);
-    } else {
-      console.error('Invalid event format for date:', event);
-      return;
-    }
-  
-    if (!isNaN(selectedDate?.getTime() ?? NaN)) {
-      this.value.setFullYear(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
+  updateDate(event: MatDatepickerInputEvent<Dayjs>) {
+    if (event.value) {
+      this.value = this.value
+        .year(event.value.year())
+        .month(event.value.month())
+        .date(event.value.date());
       this.updateFormattedValue();
-      console.log('Date updated:', this.value);
-    } else {
-      console.error('Invalid date value:', event);
     }
   }
     
   updateTime(event: any) {
-    let selectedTime: Date | undefined;
-
-    if ('value' in event && event.value) {
-      selectedTime = new Date(event.value);
-    } else {
-      console.error('Invalid event format for time:', event);
-      return;
-    }
-  
-    if (!isNaN(selectedTime.getTime())) {
-      this.value.setHours(selectedTime.getHours(), selectedTime.getMinutes(), selectedTime.getSeconds());
+    if (event.value) {
+      this.value = this.value
+        .hour(event.value.hour())
+        .minute(event.value.minute())
+        .second(event.value.second());
       this.updateFormattedValue();
-      console.log('Time updated:', this.value);
-    } else {
-      console.error('Invalid time value:', event);
     }
   }
   
   private updateFormattedValue() {
-    // Synchronize the `value` into the desired ISO format
-    this.ui().setIfChanged(dayjs(this.value).toISOString());
+    this.ui().setIfChanged(this.value.toISOString());
   }
 }
