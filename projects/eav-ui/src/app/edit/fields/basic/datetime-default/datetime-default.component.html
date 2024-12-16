@@ -28,7 +28,13 @@
   @if (useTimePicker()) {
     <ng-container matSuffix>
       <!-- Hidden input for Angular Material Time Picker -->
-      <input matInput [matTimepicker]="timepicker" style="display: none" #timeInput />
+      <input
+        matInput
+        [matTimepicker]="timepicker"
+        style="display: none"
+        #timeInput
+        [value]="timeValue"
+      />
       <mat-timepicker #timepicker [options]="timePickerOptions"></mat-timepicker>
       <mat-timepicker-toggle [for]="timepicker" matSuffix tippyTranslate="Fields.DateTime.OpenTime" />
     </ng-container>
