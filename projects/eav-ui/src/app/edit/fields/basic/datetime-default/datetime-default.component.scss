@@ -7,3 +7,7 @@
   background-color: var(--mat-datepicker-calendar-container-background-color);
   color: var(--mat-datepicker-calendar-container-text-color);
 }
+
+::ng-deep .mat-timepicker-panel {
+  max-width: 10rem !important;
+}
