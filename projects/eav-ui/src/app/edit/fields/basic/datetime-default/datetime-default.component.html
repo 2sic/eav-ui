@@ -1,4 +1,4 @@
-<mat-form-field color="accent">
+<mat-form-field color="accent" class="eav-mat-form-field">
   <mat-label>Date & Time</mat-label>
   <!-- Visible input for OWL picker -->
   <input
@@ -10,20 +10,20 @@
     [value]="valueForTimePicker()"
     (dateTimeChange)="updateValue($event)"
   />
-  <mat-datepicker-toggle matSuffix [owlDateTimeTrigger]="owlPicker"></mat-datepicker-toggle>
+  <mat-datepicker-toggle matSuffix [owlDateTimeTrigger]="owlPicker" tippyTranslate="Fields.DateTime.Open" />
   <owl-date-time #owlPicker></owl-date-time>
 
   <!-- Hidden input for Angular Material Date Picker -->
   <input matInput [matDatepicker]="datepicker" style="display: none" (dateChange)="updateDate($event)" #dateInput />
   <mat-datepicker #datepicker></mat-datepicker>
-  <mat-datepicker-toggle [for]="datepicker" matSuffix></mat-datepicker-toggle>
+  <mat-datepicker-toggle [for]="datepicker" matSuffix tippyTranslate="Fields.DateTime.OpenCalender"/>
 
   @if (useTimePicker()) {
     <ng-container matSuffix>
       <!-- Hidden input for Angular Material Time Picker -->
       <input matInput [matTimepicker]="timepicker" style="display: none" #timeInput />
       <mat-timepicker #timepicker [options]="timePickerOptions"></mat-timepicker>
-      <mat-timepicker-toggle [for]="timepicker" matSuffix></mat-timepicker-toggle>
+      <mat-timepicker-toggle [for]="timepicker" matSuffix tippyTranslate="Fields.DateTime.OpenTime"/>
     </ng-container>
   }
 </mat-form-field>

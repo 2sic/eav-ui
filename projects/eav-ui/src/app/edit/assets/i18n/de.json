@@ -189,7 +189,9 @@
       }
     },
     "DateTime": {
-      "Open": "Kalendar öffnen"
+      "Open": "Kalendar öffnen",
+      "OpenCalender": "Kalendar öffnen",
+      "OpenTime": "Zeit wählen"
     },
     "String": {
       "Dropdown": "Bestehendens auswählen",

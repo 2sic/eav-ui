@@ -77,12 +77,22 @@ export class DatetimeDefaultComponent implements AfterViewInit {
     private translate: TranslateService,
     private owlDayjsDateAdapter: DateTimeAdapter<Dayjs>
   ) {
-    dayjs.extend(utc); // 'neutral' time for OWLDateTime
+    dayjs.extend(utc); // Extend dayjs with UTC support
     const currentLang = this.translate.currentLang;
     dayjs.locale(currentLang);
     this.matDayjsDateAdapter.setLocale(currentLang);
     this.owlDayjsDateAdapter.setLocale(currentLang);
     DateTimeDefaultLogic.importMe();
+  
+    // Initialize dateValue and timeValue from saved data
+    const savedValue = this.uiValue();
+    if (savedValue) {
+      const parsedDate = dayjs(savedValue).utc();
+      if (parsedDate.isValid()) {
+        this.dateValue = parsedDate.startOf('day');
+        this.timeValue = parsedDate;
+      }
+    }
   }
 
   ngAfterViewInit(): void {
@@ -110,14 +120,16 @@ export class DatetimeDefaultComponent implements AfterViewInit {
       this.dateValue = this.dateValue
         .year(event.value.year())
         .month(event.value.month())
-        .date(event.value.date());
+        .date(event.value.date())
+        .utc(true);
+
       this.updateFormattedValue();
     }
   }
 
-  // Combines the date and time values into a single ISO string
   updateFormattedValue() {
     const combinedValue = this.dateValue
+      .utc(true)
       .hour(this.timeValue.hour())
       .minute(this.timeValue.minute())
       .second(this.timeValue.second());
