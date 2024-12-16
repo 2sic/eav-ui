@@ -1,45 +1,30 @@
-@if (!useTimePicker()) {
-  <!-- Date-Picker only - use the classic Angular-Material date picker -->
-  <mat-form-field [formGroup]="group" color="accent" class="eav-mat-form-field">
-    <input
-      matInput
-      class="eav-translate-on-dblclick"
-      [disabled]="ui().disabled"
-      [matDatepicker]="picker"
-      [placeholder]="basics().placeholder"
-      [required]="basics().required"
-      [value]="uiValue()"
-      (dateChange)="updateValue($event)"
-    />
-    <mat-datepicker-toggle matTextSuffix [for]="picker" tippyTranslate="Fields.DateTime.Open"> </mat-datepicker-toggle>
-    <mat-datepicker #picker></mat-datepicker>
-    <mat-label>{{ basics().label }}</mat-label>
-  </mat-form-field>
-} @else {
-  <mat-form-field color="accent">
-    <mat-label>Date & Time</mat-label>
-    <!-- Visible input for OWL picker -->
-    <input
-      matInput
-      [disabled]="ui().disabled"
-      [owlDateTime]="owlPicker"
-      [placeholder]="basics().placeholder"
-      [required]="basics().required"
-      [value]="valueForTimePicker()"
-      (dateTimeChange)="updateValue($event)"
-    />
-    <mat-datepicker-toggle matSuffix [owlDateTimeTrigger]="owlPicker"></mat-datepicker-toggle>
-    <owl-date-time #owlPicker></owl-date-time>
+<mat-form-field color="accent">
+  <mat-label>Date & Time</mat-label>
+  <!-- Visible input for OWL picker -->
+  <input
+    matInput
+    [disabled]="ui().disabled"
+    [owlDateTime]="owlPicker"
+    [placeholder]="basics().placeholder"
+    [required]="basics().required"
+    [value]="valueForTimePicker()"
+    (dateTimeChange)="updateValue($event)"
+  />
+  <mat-datepicker-toggle matSuffix [owlDateTimeTrigger]="owlPicker"></mat-datepicker-toggle>
+  <owl-date-time #owlPicker></owl-date-time>
 
-    <!-- Hidden input for Angular Material Date Picker -->
-    <input matInput [matDatepicker]="datepicker" style="display: none" (dateChange)="updateDate($event)" #dateInput />
-    <mat-datepicker #datepicker></mat-datepicker>
-    <mat-datepicker-toggle [for]="datepicker" matSuffix></mat-datepicker-toggle>
+  <!-- Hidden input for Angular Material Date Picker -->
+  <input matInput [matDatepicker]="datepicker" style="display: none" (dateChange)="updateDate($event)" #dateInput />
+  <mat-datepicker #datepicker></mat-datepicker>
+  <mat-datepicker-toggle [for]="datepicker" matSuffix></mat-datepicker-toggle>
 
-    <!-- Hidden input for Angular Material Time Picker -->
-    <input matInput [matTimepicker]="timepicker" style="display: none" #timeInput />
-    <mat-timepicker #timepicker [options]="timePickerOptions"></mat-timepicker>
-    <mat-timepicker-toggle [for]="timepicker" matSuffix></mat-timepicker-toggle>
-  </mat-form-field>
-}
+  @if (useTimePicker()) {
+    <ng-container matSuffix>
+      <!-- Hidden input for Angular Material Time Picker -->
+      <input matInput [matTimepicker]="timepicker" style="display: none" #timeInput />
+      <mat-timepicker #timepicker [options]="timePickerOptions"></mat-timepicker>
+      <mat-timepicker-toggle [for]="timepicker" matSuffix></mat-timepicker-toggle>
+    </ng-container>
+  }
+</mat-form-field>
 <app-field-helper-text></app-field-helper-text>

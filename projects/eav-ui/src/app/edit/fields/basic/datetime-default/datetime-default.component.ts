@@ -89,7 +89,6 @@ export class DatetimeDefaultComponent implements AfterViewInit {
     if (this.myComponentRef) {
       this.myComponentRef.selected.subscribe(value => {
         if (value) {
-          console.log('timeValue', value);
           this.timeValue = this.timeValue
             .hour(value.value.hour())
             .minute(value.value.minute())
@@ -107,7 +106,6 @@ export class DatetimeDefaultComponent implements AfterViewInit {
 
   // Updates dateValue when a date is selected in the Material Date Picker
   updateDate(event: MatDatepickerInputEvent<Dayjs>) {
-    console.log('updateDate', event);
     if (event.value) {
       this.dateValue = this.dateValue
         .year(event.value.year())
