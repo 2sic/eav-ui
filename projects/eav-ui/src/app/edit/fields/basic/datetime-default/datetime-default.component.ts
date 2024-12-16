@@ -1,16 +1,16 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, computed, inject, ViewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerInputEvent, MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatTimepickerModule, MatTimepickerOption } from '@angular/material/timepicker';
+import { MatTimepicker, MatTimepickerModule, MatTimepickerOption } from '@angular/material/timepicker';
 import { DateTimeAdapter, OwlDateTimeModule } from '@danielmoncada/angular-datetime-picker';
 import { OwlDayJsDateTimeModule } from '@danielmoncada/angular-datetime-picker-dayjs-adapter';
 import { TranslateService } from '@ngx-translate/core';
 import dayjs, { Dayjs } from 'dayjs';
 import utc from 'dayjs/plugin/utc'; // 'neutral' time for OwlDateTime picker
+import { transient } from 'projects/core';
 import { FieldSettingsDateTime } from 'projects/edit-types/src/FieldSettings-DateTime';
-import { transient } from '../../../../../../../core/transient';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
@@ -43,26 +43,23 @@ import { DateTimeDefaultLogic } from './datetime-default-logic';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 @FieldMetadata({ ...WrappersLocalizationOnly })
-export class DatetimeDefaultComponent {
+export class DatetimeDefaultComponent implements AfterViewInit {
 
   log = classLog({ DatetimeDefaultComponent });
 
+  @ViewChild(MatTimepicker) myComponentRef: MatTimepicker<Dayjs>;
+
   protected fieldState = inject(FieldState) as FieldState<string, FieldSettings & FieldSettingsDateTime>;
-
   protected group = this.fieldState.group;
-
   protected ui = this.fieldState.ui;
   uiValue = this.fieldState.uiValue;
   protected basics = this.fieldState.basics;
-
   protected useTimePicker = this.fieldState.settingExt('UseTimePicker');
 
-  /** The date/time picker needs the date-info cleaned up, so it doesn't do time-zone handling */
   valueForTimePicker = computed(() => this.uiValue()?.replace('Z', ''), SignalEquals.string);
 
-  // Time value (angular material date & time picker output)
-  dateValue: Dayjs = dayjs();
-  timeValue: Dayjs = dayjs();
+  dateValue: Dayjs = dayjs(); // Selected date value
+  timeValue: Dayjs = dayjs(); // Selected time value
 
   // Predefined options for the time picker
   timePickerOptions: MatTimepickerOption<Dayjs>[] = [
@@ -78,9 +75,9 @@ export class DatetimeDefaultComponent {
 
   constructor(
     private translate: TranslateService,
-    private owlDayjsDateAdapter: DateTimeAdapter<Dayjs>,
+    private owlDayjsDateAdapter: DateTimeAdapter<Dayjs>
   ) {
-    dayjs.extend(utc); // 'neutral' time for OwlDateTime 
+    dayjs.extend(utc); // 'neutral' time for OWLDateTime
     const currentLang = this.translate.currentLang;
     dayjs.locale(currentLang);
     this.matDayjsDateAdapter.setLocale(currentLang);
@@ -88,13 +85,29 @@ export class DatetimeDefaultComponent {
     DateTimeDefaultLogic.importMe();
   }
 
+  ngAfterViewInit(): void {
+    if (this.myComponentRef) {
+      this.myComponentRef.selected.subscribe(value => {
+        if (value) {
+          console.log('timeValue', value);
+          this.timeValue = this.timeValue
+            .hour(value.value.hour())
+            .minute(value.value.minute())
+            .second(value.value.second());
+          this.updateFormattedValue();
+        }
+      });
+    }
+  }
+
   updateValue(event: MatDatepickerInputEvent<Dayjs>) {
     const newValue = event.value != null ? event.value.utc(true).toJSON() : null;
     this.ui().setIfChanged(newValue);
-    console.log('ui old', this.ui());
   }
 
+  // Updates dateValue when a date is selected in the Material Date Picker
   updateDate(event: MatDatepickerInputEvent<Dayjs>) {
+    console.log('updateDate', event);
     if (event.value) {
       this.dateValue = this.dateValue
         .year(event.value.year())
@@ -104,16 +117,7 @@ export class DatetimeDefaultComponent {
     }
   }
 
-  updateTime(event: any) {
-    if (event.value) {
-      this.timeValue = this.timeValue
-        .hour(event.value.hour())
-        .minute(event.value.minute())
-        .second(event.value.second());
-      this.updateFormattedValue();
-    }
-  }
-
+  // Combines the date and time values into a single ISO string
   updateFormattedValue() {
     const combinedValue = this.dateValue
       .hour(this.timeValue.hour())

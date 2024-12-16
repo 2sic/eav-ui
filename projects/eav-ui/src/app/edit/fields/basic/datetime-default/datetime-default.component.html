@@ -17,44 +17,10 @@
   </mat-form-field>
 } @else {
   <mat-form-field color="accent">
-    <mat-label>Date</mat-label>
+    <mat-label>Date & Time</mat-label>
+    <!-- Visible input for OWL picker -->
     <input
       matInput
-      [disabled]="ui().disabled"
-      [matDatepicker]="datepicker"
-      [(ngModel)]="dateValue"
-      (ngModelChange)="updateFormattedValue()"
-    />
-    <mat-datepicker #datepicker></mat-datepicker>
-    <mat-datepicker-toggle [for]="datepicker" matSuffix></mat-datepicker-toggle>
-  </mat-form-field>
-  
-  <mat-form-field color="accent">
-    <mat-label>Time</mat-label>
-    <input
-      matInput
-      [disabled]="ui().disabled"
-      [matTimepicker]="timepicker"
-      [(ngModel)]="timeValue"
-      [ngModelOptions]="{ updateOn: 'blur' }"
-      (ngModelChange)="updateFormattedValue()"
-    />
-    <mat-timepicker #timepicker></mat-timepicker>
-    <mat-timepicker-toggle [for]="timepicker" matSuffix></mat-timepicker-toggle>
-    <mat-timepicker [options]="timePickerOptions" #timepicker></mat-timepicker>
-  </mat-form-field>
-
-  <!-- Date and Time values will be auto combined into this field - or auto split when field is beeing written -->
-  <!-- <mat-form-field>
-    <input matInput />
-  </mat-form-field> -->
-
-  <!-- OLD -->
-  <mat-form-field [formGroup]="group" color="accent" class="eav-mat-form-field">
-    <!-- Date & Time Picker - use the OWL picker (not ideal, but looks similar)  -->
-    <input
-      matInput
-      class="eav-translate-on-dblclick"
       [disabled]="ui().disabled"
       [owlDateTime]="owlPicker"
       [placeholder]="basics().placeholder"
@@ -62,9 +28,18 @@
       [value]="valueForTimePicker()"
       (dateTimeChange)="updateValue($event)"
     />
-    <mat-datepicker-toggle matTextSuffix [owlDateTimeTrigger]="owlPicker" tippyTranslate="Fields.DateTime.Open"> </mat-datepicker-toggle>
+    <mat-datepicker-toggle matSuffix [owlDateTimeTrigger]="owlPicker"></mat-datepicker-toggle>
     <owl-date-time #owlPicker></owl-date-time>
-    <mat-label>{{ basics().label }}</mat-label>
+
+    <!-- Hidden input for Angular Material Date Picker -->
+    <input matInput [matDatepicker]="datepicker" style="display: none" (dateChange)="updateDate($event)" #dateInput />
+    <mat-datepicker #datepicker></mat-datepicker>
+    <mat-datepicker-toggle [for]="datepicker" matSuffix></mat-datepicker-toggle>
+
+    <!-- Hidden input for Angular Material Time Picker -->
+    <input matInput [matTimepicker]="timepicker" style="display: none" #timeInput />
+    <mat-timepicker #timepicker [options]="timePickerOptions"></mat-timepicker>
+    <mat-timepicker-toggle [for]="timepicker" matSuffix></mat-timepicker-toggle>
   </mat-form-field>
 }
 <app-field-helper-text></app-field-helper-text>
