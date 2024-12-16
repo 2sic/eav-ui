@@ -14,16 +14,23 @@
   <owl-date-time #owlPicker></owl-date-time>
 
   <!-- Hidden input for Angular Material Date Picker -->
-  <input matInput [matDatepicker]="datepicker" style="display: none" (dateChange)="updateDate($event)" #dateInput />
+  <input
+    matInput
+    [matDatepicker]="datepicker"
+    style="display: none"
+    (dateChange)="updateDate($event)"
+    #dateInput
+    [value]="valueForTimePicker()"
+  />
   <mat-datepicker #datepicker></mat-datepicker>
-  <mat-datepicker-toggle [for]="datepicker" matSuffix tippyTranslate="Fields.DateTime.OpenCalender"/>
+  <mat-datepicker-toggle [for]="datepicker" matSuffix tippyTranslate="Fields.DateTime.OpenCalender" />
 
   @if (useTimePicker()) {
     <ng-container matSuffix>
       <!-- Hidden input for Angular Material Time Picker -->
       <input matInput [matTimepicker]="timepicker" style="display: none" #timeInput />
       <mat-timepicker #timepicker [options]="timePickerOptions"></mat-timepicker>
-      <mat-timepicker-toggle [for]="timepicker" matSuffix tippyTranslate="Fields.DateTime.OpenTime"/>
+      <mat-timepicker-toggle [for]="timepicker" matSuffix tippyTranslate="Fields.DateTime.OpenTime" />
     </ng-container>
   }
 </mat-form-field>
