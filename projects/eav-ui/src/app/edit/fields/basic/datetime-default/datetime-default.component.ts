@@ -3,7 +3,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerInputEvent, MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatTimepicker, MatTimepickerModule, MatTimepickerOption } from '@angular/material/timepicker';
+import { MatTimepicker, MatTimepickerModule } from '@angular/material/timepicker';
 import { DateTimeAdapter, OwlDateTimeModule } from '@danielmoncada/angular-datetime-picker';
 import { OwlDayJsDateTimeModule } from '@danielmoncada/angular-datetime-picker-dayjs-adapter';
 import { TranslateService } from '@ngx-translate/core';
@@ -22,6 +22,8 @@ import { FieldState } from '../../field-state';
 import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
 import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
 import { DateTimeDefaultLogic } from './datetime-default-logic';
+
+dayjs.extend(utc); // Extend dayjs with UTC support
 
 @Component({
   selector: InputTypeCatalog.DateTimeDefault,
@@ -59,18 +61,38 @@ export class DatetimeDefaultComponent implements AfterViewInit {
   valueForDatePicker = computed(() => this.uiValue()?.replace('Z', ''), SignalEquals.string);
   valueForTimePicker = computed(() => dayjs(this.uiValue()).utc());
 
+  computedTimeLabel(): string {
+    return this.valueForTimePicker().utc().format('hh:mm A');
+  }
+
   dateValue: Dayjs = dayjs();
   timeValue: Dayjs = dayjs();
 
-  // Predefined options for the time picker
-  timePickerOptions: MatTimepickerOption<Dayjs>[] = [
-    { label: '12:00 AM', value: dayjs().hour(0).minute(0).second(0) },   // Midnight
-    { label: '06:00 AM', value: dayjs().hour(6).minute(0).second(0) },
-    { label: '08:00 AM', value: dayjs().hour(8).minute(0).second(0) },
-    { label: '10:00 AM', value: dayjs().hour(10).minute(0).second(0) },
-    { label: '12:00 PM', value: dayjs().hour(12).minute(0).second(0) },  // Noon
-    { label: '06:00 PM', value: dayjs().hour(18).minute(0).second(0) },
-  ];
+  timePickerOptions = computed(() => {
+    const predefinedOptions = [
+      { label: '12:00 AM', value: dayjs().hour(0).minute(0).second(0) },
+      { label: '06:00 AM', value: dayjs().hour(6).minute(0).second(0) },
+      { label: '08:00 AM', value: dayjs().hour(8).minute(0).second(0) },
+      { label: '10:00 AM', value: dayjs().hour(10).minute(0).second(0) },
+      { label: '12:00 PM', value: dayjs().hour(12).minute(0).second(0) },
+      { label: '06:00 PM', value: dayjs().hour(18).minute(0).second(0) },
+    ];
+
+    // Custom option with local time
+    const customOption = {
+      label: this.computedTimeLabel(),
+      value: dayjs()
+        .hour(this.valueForTimePicker().hour())
+        .minute(this.valueForTimePicker().minute())
+        .second(0),
+    };
+
+    // Combine and sort the options by time
+    const allOptions = [...predefinedOptions, customOption];
+    allOptions.sort((a, b) => a.value.valueOf() - b.value.valueOf());
+
+    return allOptions;
+  });
 
   private matDayjsDateAdapter = transient(MatDayjsDateAdapter);
 
@@ -78,7 +100,6 @@ export class DatetimeDefaultComponent implements AfterViewInit {
     private translate: TranslateService,
     private owlDayjsDateAdapter: DateTimeAdapter<Dayjs>
   ) {
-    dayjs.extend(utc); // Extend dayjs with UTC support
     const currentLang = this.translate.currentLang;
     dayjs.locale(currentLang);
     this.matDayjsDateAdapter.setLocale(currentLang);

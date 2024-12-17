@@ -35,7 +35,7 @@
         #timeInput
         [value]="valueForTimePicker()"
       />
-      <mat-timepicker #timepicker [options]="timePickerOptions"></mat-timepicker>
+      <mat-timepicker #timepicker [options]="timePickerOptions()"></mat-timepicker>
       <mat-timepicker-toggle [for]="timepicker" matSuffix tippyTranslate="Fields.DateTime.OpenTime" />
     </ng-container>
   }
