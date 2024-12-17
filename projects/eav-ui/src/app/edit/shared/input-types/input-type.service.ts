@@ -40,10 +40,11 @@ export class InputTypeService extends SignalStoreBase<string, InputTypeMetadata>
   private getSpecsInternal(attribute: EavContentTypeAttribute, inputTypes: InputTypeMetadata[]): InputTypeSpecs {
     const inputTypeMetadata = inputTypes.find(i => i.Type === attribute.InputType);
     const inputType = attribute.InputType as Of<typeof InputTypeCatalog>;
+    const name = inputType.toString();
     const calculated: InputTypeSpecs = {
       inputType,
       isExternal: !!inputTypeMetadata?.AngularAssets,
-      isString: inputType.toString().startsWith('string'),
+      mustUseGuid: !name.startsWith('string') && !name.startsWith('number'),
       componentTagName: `field-${inputType}`,
       componentTagDialogName: `field-${inputType}-dialog`,
       metadata: inputTypeMetadata,

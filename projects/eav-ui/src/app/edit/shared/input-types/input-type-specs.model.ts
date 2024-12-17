@@ -10,8 +10,8 @@ export interface InputTypeSpecs {
   /** info if it's an external web-component like the WYSIWYG */
   isExternal: boolean;
 
-  /** Is the input type a string? */
-  isString: boolean;
+  /** Must the selected data always be a GUID? Yes if entity, not if string/number */
+  mustUseGuid: boolean;
 
   /** Is the input type a new picker - eg. to modify Formula behavior */
   isNewPicker: boolean;

@@ -21,15 +21,16 @@ export class DataSourceEntity extends DataSourceEntityBase {
   protected override getFromBackend(typeName: string, guids: string[], purposeForLog: string): Observable<DataWithLoading<PickerItem[]>> {
     const fields = this.fieldsToRetrieve(this.settings());
     var l = this.log.fnIf('getFromBackend', { typeName, guids, fields }, purposeForLog);
-    return this.querySvc.getEntities({ contentTypes: [typeName], itemIds: guids, fields, log: this.log.name })
+    const fieldMask = this.createMaskHelper();
+    const entities = this.querySvc.getEntities({ contentTypes: [typeName], itemIds: guids, fields, log: this.log.name })
       .pipe(
         // tap(list => l.a('getEntities', { typeName, list })),
         map(list => {
-          const fieldMask = this.createMaskHelper();
           const data = list.Default.map(entity => fieldMask.data2PickerItem({ entity, streamName: null, valueMustUseGuid: true }));
           return { data, loading: false } as DataWithLoading<PickerItem[]>;
         }),
       )
+    return l.r(entities);
   }
 
 }

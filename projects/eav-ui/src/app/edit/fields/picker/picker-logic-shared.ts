@@ -150,11 +150,11 @@ export class PickerLogicShared {
 
     if (isCustomSource) {
       if (typeName === PickerConfigs.UiPickerSourceCustomList) {
-        const valuesRaw = (typeConfig as unknown as PickerSourceCustomList).Values ?? '';
+        const valuesRaw = (typeConfig as UiPickerSourcesAll & PickerSourceCustomList).Values ?? '';
         // note that 'value-label' is the only format supported by the new picker config
         fs._options ??= new DataSourceDropDownOptions().parseOptions(value as string, 'string', 'value-label', valuesRaw) ?? [];
       } else if (typeName === PickerConfigs.UiPickerSourceCustomCsv) {
-        const csv = (typeConfig as unknown as PickerSourceCustomCsv).Csv;
+        const csv = (typeConfig as UiPickerSourcesAll & PickerSourceCustomCsv).Csv;
         fs._options ??= new DataSourceParserCsv().parse(csv);
         fs.requiredFeatures = [FeatureNames.PickerSourceCsv];
         fs.PreviewValue = typeConfig.PreviewValue ?? '';
@@ -200,7 +200,7 @@ export class PickerLogicShared {
     if (pickerDisplayConfigName !== UiPickerModeIsTree)
       return null;
 
-    const specs = tools.reader.flatten(pickerDisplayConfigurations[0]) as UiPickerModeTree;
+    const specs = tools.reader.flatten<UiPickerModeTree>(pickerDisplayConfigurations[0]);
     const final: UiPickerModeTree = {
       Title: specs.Title ?? '',
       ConfigModel: UiPickerModeIsTree,
