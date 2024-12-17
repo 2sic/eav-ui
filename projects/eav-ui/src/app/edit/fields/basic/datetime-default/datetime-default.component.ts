@@ -78,8 +78,8 @@ export class DatetimeDefaultComponent implements AfterViewInit {
       { label: '06:00 PM', value: dayjs().hour(18).minute(0).second(0) },
     ];
 
-    // Custom option with local time
-    const customOption = {
+    // Selected option by user
+    const userOption = {
       label: this.computedTimeLabel(),
       value: dayjs()
         .hour(this.valueForTimePicker().hour())
@@ -87,8 +87,12 @@ export class DatetimeDefaultComponent implements AfterViewInit {
         .second(0),
     };
 
+    // Check if the custom option is already in the predefined and return if so
+    if (predefinedOptions.some(option => option.value.valueOf() === userOption.value.valueOf()))
+      return predefinedOptions;
+
     // Combine and sort the options by time
-    const allOptions = [...predefinedOptions, customOption];
+    const allOptions = [...predefinedOptions, userOption];
     allOptions.sort((a, b) => a.value.valueOf() - b.value.valueOf());
 
     return allOptions;
