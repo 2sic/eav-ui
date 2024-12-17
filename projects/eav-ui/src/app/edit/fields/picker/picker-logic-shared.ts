@@ -7,7 +7,7 @@ import { FieldSettingsWithPickerSource, PickerSourceCustomCsv, PickerSourceCusto
 import { FeatureNames } from '../../../features/feature-names';
 import { classLog } from '../../../shared/logging';
 import { EavEntity } from '../../shared/models/eav';
-import { calculateDropdownOptions } from '../basic/string-picker/string-picker.helpers';
+import { DataSourceDropDownOptions } from '../basic/string-picker/string-picker.helpers';
 import { FieldLogicUpdate } from '../logic/field-logic-base';
 import { FieldLogicTools } from '../logic/field-logic-tools';
 import { PickerConfigs, PickerSourcesCustom, UiPickerModeIsTree } from './constants/picker-config-model.constants';
@@ -152,7 +152,7 @@ export class PickerLogicShared {
       if (typeName === PickerConfigs.UiPickerSourceCustomList) {
         const valuesRaw = (typeConfig as unknown as PickerSourceCustomList).Values ?? '';
         // note that 'value-label' is the only format supported by the new picker config
-        fs._options ??= calculateDropdownOptions(value as string, 'string', 'value-label', valuesRaw) ?? [];
+        fs._options ??= new DataSourceDropDownOptions().parseOptions(value as string, 'string', 'value-label', valuesRaw) ?? [];
       } else if (typeName === PickerConfigs.UiPickerSourceCustomCsv) {
         const csv = (typeConfig as unknown as PickerSourceCustomCsv).Csv;
         fs._options ??= new DataSourceParserCsv().parse(csv);
