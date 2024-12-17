@@ -27,24 +27,24 @@ import { calculateDataTypes, DataType } from './edit-content-type-fields.helpers
 import { ReservedNamesValidatorDirective } from './reserved-names.directive';
 
 @Component({
-    selector: 'app-edit-content-type-fields',
-    templateUrl: './edit-content-type-fields.component.html',
-    styleUrls: ['./edit-content-type-fields.component.scss'],
-    imports: [
-        FormsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        ReservedNamesValidatorDirective,
-        MatSelectModule,
-        MatIconModule,
-        MatOptionModule,
-        NgClass,
-        MatDialogActions,
-        MatButtonModule,
-        AsyncPipe,
-        TranslateModule,
-        FieldHintComponent,
-    ]
+  selector: 'app-edit-content-type-fields',
+  templateUrl: './edit-content-type-fields.component.html',
+  styleUrls: ['./edit-content-type-fields.component.scss'],
+  imports: [
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    ReservedNamesValidatorDirective,
+    MatSelectModule,
+    MatIconModule,
+    MatOptionModule,
+    NgClass,
+    MatDialogActions,
+    MatButtonModule,
+    AsyncPipe,
+    TranslateModule,
+    FieldHintComponent,
+  ]
 })
 export class EditContentTypeFieldsComponent extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
   @HostBinding('className') hostClass = 'dialog-component';
@@ -68,14 +68,13 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
   #contentType: ContentType;
   #inputTypeOptions: FieldInputTypeOption[];
 
-  #contentTypesSvc = transient(ContentTypesService);
-  #contentTypesFieldsSvc = transient(ContentTypesFieldsService);
+  #typesSvc = transient(ContentTypesService);
+  #typesFieldsSvc = transient(ContentTypesFieldsService);
 
   constructor(
     protected dialog: MatDialogRef<EditContentTypeFieldsComponent>,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
-    // private matDialog: MatDialog,
   ) {
     super();
     this.dialog.disableClose = true;
@@ -92,27 +91,20 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
 
   ngAfterViewInit(): void {
     // Wait for the inputFields to be available
-    if (this.autoFocusInputField) {
-      setTimeout(() => {
-        this.autoFocusInputField.first.nativeElement.focus();
-      }, 250); // Delay execution to ensure the view is fully rendered
-    }
+    // But delay execution to ensure the view is fully rendered
+    if (this.autoFocusInputField)
+      setTimeout(() => this.autoFocusInputField.first?.nativeElement?.focus(), 250);
   }
-
-  // 2pp not in use? 
-  // trackField(index: number, field: Field): string {
-  //   return field.StaticName; // Replace with your unique field identifier
-  // }
 
   ngOnInit() {
     this.editMode = this.route.snapshot.paramMap.get('editMode') as 'name' | 'inputType';
 
-    const contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
-    const contentType$ = this.#contentTypesSvc.retrieveContentType(contentTypeStaticName).pipe(share());
-    const fields$ = contentType$.pipe(switchMap(contentType => this.#contentTypesFieldsSvc.getFields(contentType.StaticName)));
-    const dataTypes$ = this.#contentTypesFieldsSvc.typeListRetrieve().pipe(map(rawDataTypes => calculateDataTypes(rawDataTypes)));
-    const inputTypes$ = this.#contentTypesFieldsSvc.getInputTypesList();
-    const reservedNames$ = this.#contentTypesFieldsSvc.getReservedNames();
+    const typeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
+    const contentType$ = this.#typesSvc.retrieveContentType(typeStaticName).pipe(share());
+    const fields$ = contentType$.pipe(switchMap(ct => this.#typesFieldsSvc.getFields(ct.StaticName)));
+    const dataTypes$ = this.#typesFieldsSvc.typeListRetrieve().pipe(map(raw => calculateDataTypes(raw)));
+    const inputTypes$ = this.#typesFieldsSvc.getInputTypesList();
+    const reservedNames$ = this.#typesFieldsSvc.getReservedNames();
 
     forkJoin([contentType$, fields$, dataTypes$, inputTypes$, reservedNames$]).subscribe(
       ([contentType, fields, dataTypes, inputTypes, reservedNames]) => {
@@ -158,10 +150,6 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
     super.ngOnDestroy();
   }
 
-  // closeDialog() {
-  //   this.dialog.close();
-  // }
-
   filterInputTypeOptions(index: number) {
     this.filteredInputTypeOptions[index] = this.#inputTypeOptions.filter(
       option => option.dataType === this.fields[index].Type.toLocaleLowerCase()
@@ -178,7 +166,7 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
 
   calculateHints(index: number) {
     const selectedDataType = this.dataTypes.find(dataType => dataType.name === this.fields[index].Type);
-    const selectedInputType = this.#inputTypeOptions.find(inputTypeOption => inputTypeOption.inputType === this.fields[index].InputType);
+    const selectedInputType = this.#inputTypeOptions.find(option => option.inputType === this.fields[index].InputType);
     this.dataTypeHints[index] = selectedDataType?.description ?? '';
     this.inputTypeHints[index] = selectedInputType?.isObsolete
       ? `OBSOLETE - ${selectedInputType.obsoleteMessage}`
@@ -189,37 +177,33 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
     return this.#inputTypeOptions.find(option => option.inputType === inputName);
   }
 
-  // addSharedField() {
-  //   this.matDialog.open(AddSharingFieldsComponent, {
-  //     autoFocus: false,
-  //     width: '1600px',
-  //     data: { contentType: this.#contentType, existingFields: this.existingFields }
-  //   });
-  // }
-
   save() {
     this.saving$.next(true);
     this.snackBar.open('Saving...');
 
+    // Prepare finalize-action to reuse below
     const doneAndClose = () => {
       this.saving$.next(false);
       this.snackBar.open('Saved', null, { duration: 2000 });
       this.dialog.close();
     }
+
     if (this.editMode != null) {
       const field = this.fields[0];
       if (this.editMode === 'name') {
-        this.#contentTypesFieldsSvc.rename(field.Id, this.#contentType.Id, field.StaticName)
+        this.#typesFieldsSvc
+          .rename(field.Id, this.#contentType.Id, field.StaticName)
           .subscribe(() => doneAndClose());
       } else if (this.editMode === 'inputType') {
-        this.#contentTypesFieldsSvc.updateInputType(field.Id, field.StaticName, field.InputType)
+        this.#typesFieldsSvc
+          .updateInputType(field.Id, field.StaticName, field.InputType)
           .subscribe(() => doneAndClose());
       }
     } else {
       of(...this.fields).pipe(
         filter(field => !!field.StaticName),
         concatMap(field =>
-          this.#contentTypesFieldsSvc.add(field, this.#contentType.Id).pipe(catchError(error => of(null)))
+          this.#typesFieldsSvc.add(field, this.#contentType.Id).pipe(catchError(_ => of(null)))
         ),
         toArray(),
       ).subscribe(() => doneAndClose());
