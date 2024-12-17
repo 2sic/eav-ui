@@ -1,6 +1,6 @@
 import { CdkScrollable } from '@angular/cdk/scrolling';
 import { NgClass } from '@angular/common';
-import { AfterViewInit, Component, computed, effect, inject, OnDestroy, OnInit, QueryList, signal, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, computed, effect, inject, OnDestroy, OnInit, QueryList, signal, untracked, ViewChildren } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatRippleModule } from '@angular/material/core';
 import { MatDialogActions, MatDialogRef } from '@angular/material/dialog';
@@ -105,8 +105,6 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
   #loadIconsService = transient(LoadIconsService);
   #formDataService = transient(FormDataService);
   #entityFormStateService = transient(EntityFormStateService);
-  isSaving = this.#entityFormStateService.isSaving;
-
 
   protected viewInitiated = signal(false);
 
@@ -137,15 +135,11 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
     if (pref.data().pinned == null)
       pref.set('pinned', this.#formConfig.config.dialogContext.User?.IsSystemAdmin ?? false);
 
-    let previous = { tryToSave: false, close: false };
-
+    // Watch for the "try-save" event from the forms
     effect(() => {
       const current = this.formsStateService.triggerTrySaveAndMaybeClose();
-
-      if (current.tryToSave && (current.tryToSave !== previous.tryToSave || current.close !== previous.close))
-        this.saveAll(current.close);
-
-      previous = current;
+      if (current.tryToSave)
+        untracked(() => this.saveAll(current.close));
     });
 
   }
@@ -155,7 +149,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
   protected items = this.itemService.getManySignal(this.#formConfig.config.itemGuids);
 
   protected formsValid = this.formsStateService.formsValidTemp;
-  protected saveButtonDisabled = this.formsStateService.saveButtonDisabled;
+  saveDisabled = computed(() => this.#entityFormStateService.isSaving() || this.formsStateService.saveButtonDisabled());
   protected hideHeader = this.languageStore.getHideHeaderSignal(this.#formConfig.config.formId);
 
   //#region Footer - Show once or more, hide again, and expand footer (extra large footer)
@@ -192,7 +186,6 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
   ngOnInit() {
     this.editRoutingService.init();
     this.#loadIconsService.load();
-    this.formsStateService.init();
     this.formulaDesignerService.cache.init();
 
     this.#startSubscriptions();
@@ -233,11 +226,12 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
   }
 
   /** Save all forms */
-  saveAll(close: boolean) {
+  saveAll(close: boolean): boolean {
     this.#entityFormStateService.isSaving.set(true);
 
     const l = this.log.fn('saveAll', { close });
     if (this.formsStateService.formsAreValid()) {
+      // #1 Case form is valid
 
       const items = this.formBuilderRefs
         .map(formBuilderRef => {
@@ -292,7 +286,9 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
         },
       });
     } else {
-      // Case form is not valid
+      // #2 Case form is not valid
+      // Quickly set saving to false, otherwise further saves will be blocked
+      this.#entityFormStateService.isSaving.set(false);
 
       // check if there is even a formBuilder to process, otherwise exit
       if (this.formBuilderRefs == null)

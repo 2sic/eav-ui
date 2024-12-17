@@ -59,30 +59,6 @@ export class FormsStateService {
     }
   }
 
-  init() {
-    // 2024-09-23 2dm - moved up to Signal creation, probably not needed as late-init
-    // which also causes trouble if consumers
-    // leave for 2-3 weeks, then remove the init call.
-
-    // const itemHeaders = signal(this.formConfig.config.itemGuids
-    //   .map(guid => this.itemService.getItemHeaderSignal(guid))
-    // );
-    // const language = this.languageService.getAllSignal();
-
-    // const readOnly = computedObj('readOnly', () => {
-    //   const itemsReadOnly = itemHeaders().some(itemHeader => itemHeader().EditInfo?.ReadOnly ?? false);
-    //   const languageAllowed = language().find(l => l.NameId === this.formConfig.language().current)?.IsAllowed ?? true;
-    //   const isReadOnly = itemsReadOnly || !languageAllowed;
-    //   const reason = itemsReadOnly ? 'Form' : !languageAllowed ? 'Language' : undefined;
-
-    //   return {
-    //     isReadOnly,
-    //     reason,
-    //   } satisfies FormReadOnly;
-    // });
-    // this.readOnly = readOnly;
-  }
-
   getFormValid(entityGuid: string) {
     return this.#formsValid[entityGuid];
   }

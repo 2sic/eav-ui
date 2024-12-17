@@ -1,11 +1,12 @@
 import { CommonModule, NgClass } from '@angular/common';
-import { Component, computed, effect, ElementRef, inject, input, NgZone, ViewChild } from '@angular/core';
+import { Component, computed, ElementRef, inject, input, NgZone, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
 import { transient } from 'projects/core';
+import { computedObj } from 'projects/eav-ui/src/app/shared/signals/signal.utilities';
 import { FeatureNames } from '../../../../features/feature-names';
 import { FeaturesService } from '../../../../features/features.service';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
@@ -45,32 +46,21 @@ export class DialogPopupComponent {
   public config = this.fieldState.config;
   public basics = this.fieldState.basics;
   #editRoutingService = inject(EditRoutingService);
+  formsStateService = inject(FormsStateService);
+  private featuresService = inject(FeaturesService);
 
   applyEmptyClass = input<boolean>();
 
   #dropzoneDraggingHelper: DropzoneDraggingHelper;
 
   #entityFormStateService = transient(EntityFormStateService);
-  isSaving = this.#entityFormStateService.isSaving;
-  te = this.#entityFormStateService.isSaving();
-
-  isSavingStatus: boolean;
-
-
-
+  
   constructor(
-    public formsStateService: FormsStateService,
-    private featuresService: FeaturesService,
     private zone: NgZone,
-  ) {
+  ) { }
+  
+  saveDisabled = computedObj('saveDisabled', () => this.#entityFormStateService.isSaving() || this.formsStateService.saveButtonDisabled());
 
-    effect(() => {
-      this.isSavingStatus = this.#entityFormStateService.isSaving();
-    });
-
-
-
-  }
   open = this.fieldState.isOpen
 
   ngAfterViewInit() {

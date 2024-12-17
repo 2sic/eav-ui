@@ -7,11 +7,11 @@ import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
 import { NumberDropdownLogic } from './number-dropdown-logic';
 
 @Component({
-    selector: InputTypeCatalog.NumberDropdown,
-    templateUrl: '../../picker/picker.component.html',
-    imports: [
-        PickerImports
-    ]
+  selector: InputTypeCatalog.NumberDropdown,
+  templateUrl: '../../picker/picker.component.html',
+  imports: [
+    PickerImports
+  ]
 })
 @FieldMetadata({ ...WrappersLocalizationOnly })
 export class NumberDropdownComponent extends PickerComponent {
@@ -20,6 +20,5 @@ export class NumberDropdownComponent extends PickerComponent {
     super();
     this.constructorEnd();
     NumberDropdownLogic.importMe();
-    // EntityDefaultLogic.importMe();
   }
 }
