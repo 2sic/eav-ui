@@ -120,14 +120,17 @@ export class PickerLogicShared {
       fs.StreamName = specsQuery.StreamName ?? 'Default';// stream name could be multiple stream names
       fs.UrlParameters = specsQuery.QueryParameters ?? '';
 
-      // The Query may specify another value to be used as the value (but it's unlikely)
+      // May specify another value to be used as the value - eg. for strings/numbers
       fs.Value = specsQuery.Value ?? '';
     }
 
     /** Entity Data Source */
     if (sourceIsEntity) {
       const specsEntity = typeConfig as PickerSourceEntity;
-      (fs as unknown as FieldSettingsEntity).EntityType = specsEntity.ContentTypeNames ?? '';// possible multiple types
+      (fs as FieldSettingsEntity).EntityType = specsEntity.ContentTypeNames ?? '';// possible multiple types
+
+      // May specify another value to be used as the value - eg. for strings/numbers
+      fs.Value = specsEntity.Value ?? '';
     }
 
     // Do this for all, as it's a common property - e.g. Css, AppAssets, etc.

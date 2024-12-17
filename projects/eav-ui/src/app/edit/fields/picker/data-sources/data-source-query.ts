@@ -109,7 +109,7 @@ export class DataSourceQuery extends DataSourceEntityBase {
       .filter(streamName => data[streamName])
       .reduce((acc, streamName) => {
         const converted = data[streamName]
-          .map(entity => maskHelper.data2PickerItem({ entity, streamName, valueMustUseGuid }));
+          .map(entity => maskHelper.data2PickerItem({ entity, streamName, valueMustUseGuid, valueDefaultsToGuid: true }));
         return acc.concat(converted);
       }, []);
 

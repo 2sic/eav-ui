@@ -46,8 +46,8 @@ export class DataSourceMasksHelper {
   #masks: DataSourceMasks;
 
   /** Convert an Entity data to Picker-Item, processing any masks */
-  data2PickerItem({ entity, streamName, valueMustUseGuid }
-    : { entity: EntityLight; streamName: string | undefined; valueMustUseGuid: boolean; }
+  data2PickerItem({ entity, streamName, valueMustUseGuid, valueDefaultsToGuid = false }
+    : { entity: EntityLight; streamName: string | undefined; valueMustUseGuid: boolean; valueDefaultsToGuid?: boolean; }
   ): PickerItem {
 
     const l = this.log.fnIf('data2PickerItem', { entity, streamName, valueMustUseGuid });
@@ -56,10 +56,10 @@ export class DataSourceMasksHelper {
 
     // Figure out Value to use if we don't use masks - fallback is to use the Guid
     const value = (() => {
-      if (valueMustUseGuid) return entity.Guid;
-
-      if (entity[masks.value] === undefined) return entity.Value;
-
+      if (valueMustUseGuid || (valueDefaultsToGuid && !masks.value))
+        return entity.Guid;
+      if (entity[masks.value] === undefined)
+        return entity.Value;
       const maybe = entity[masks.value];
       // the value could be an empty string (pickers); not sure if it can be null though
       return maybe !== undefined ? `${maybe}` : entity.Guid;

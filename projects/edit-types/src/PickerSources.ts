@@ -54,13 +54,14 @@ interface PickerSourceEntityAndQuery extends PickerSourceCommonWithLabel {
   
   /** Additional fields to retrieve for whatever purpose... */
   MoreFields: string;
+
+  Value: string;
 }
 
 export interface PickerSourceQuery extends PickerSourceEntityAndQuery {
   Query: string;
   QueryParameters: string;
   StreamName: string;
-  Value: string;
   Label: string;
 }
 
