@@ -56,10 +56,11 @@ export class DatetimeDefaultComponent implements AfterViewInit {
   protected basics = this.fieldState.basics;
   protected useTimePicker = this.fieldState.settingExt('UseTimePicker');
 
-  valueForTimePicker = computed(() => this.uiValue()?.replace('Z', ''), SignalEquals.string);
+  valueForDatePicker = computed(() => this.uiValue()?.replace('Z', ''), SignalEquals.string);
+  valueForTimePicker = computed(() => dayjs(this.uiValue()).utc());
 
-  dateValue: Dayjs = dayjs(); // Selected date value
-  timeValue: Dayjs = dayjs(); // Selected time value
+  dateValue: Dayjs = dayjs();
+  timeValue: Dayjs = dayjs();
 
   // Predefined options for the time picker
   timePickerOptions: MatTimepickerOption<Dayjs>[] = [
@@ -83,7 +84,6 @@ export class DatetimeDefaultComponent implements AfterViewInit {
     this.matDayjsDateAdapter.setLocale(currentLang);
     this.owlDayjsDateAdapter.setLocale(currentLang);
     DateTimeDefaultLogic.importMe();
-  
     // Initialize dateValue and timeValue from saved data
     const savedValue = this.uiValue();
     if (savedValue) {
@@ -103,6 +103,7 @@ export class DatetimeDefaultComponent implements AfterViewInit {
             .hour(value.value.hour())
             .minute(value.value.minute())
             .second(value.value.second());
+
           this.updateFormattedValue();
         }
       });

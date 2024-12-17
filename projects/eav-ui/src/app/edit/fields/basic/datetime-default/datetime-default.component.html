@@ -7,7 +7,7 @@
     [owlDateTime]="owlPicker"
     [placeholder]="basics().placeholder"
     [required]="basics().required"
-    [value]="valueForTimePicker()"
+    [value]="valueForDatePicker()"
     (dateTimeChange)="updateValue($event)"
   />
   <mat-datepicker-toggle matSuffix [owlDateTimeTrigger]="owlPicker" tippyTranslate="Fields.DateTime.Open" />
@@ -20,7 +20,7 @@
     style="display: none"
     (dateChange)="updateDate($event)"
     #dateInput
-    [value]="valueForTimePicker()"
+    [value]="valueForDatePicker()"
   />
   <mat-datepicker #datepicker></mat-datepicker>
   <mat-datepicker-toggle [for]="datepicker" matSuffix tippyTranslate="Fields.DateTime.OpenCalender" />
@@ -33,7 +33,7 @@
         [matTimepicker]="timepicker"
         style="display: none"
         #timeInput
-        [value]="timeValue"
+        [value]="valueForTimePicker()"
       />
       <mat-timepicker #timepicker [options]="timePickerOptions"></mat-timepicker>
       <mat-timepicker-toggle [for]="timepicker" matSuffix tippyTranslate="Fields.DateTime.OpenTime" />
