@@ -244,7 +244,7 @@
     "Splitter.l": "Trennung mit grosser Lücke"
   },
   "Features": {
-    "NotActivated": "Diese Funktion ist nicht aktiviert - mehr erfahren"
+    "NotActivated": "Die Funktion '{{name}}' ist nicht aktiviert - mehr erfahren"
   },
   "License-EditUi-Warning-Label": "Vorschau",
   "License-EditUi-Warning-Tooltip": "Du verwendest Funktionen, die nicht lizenziert sind.",

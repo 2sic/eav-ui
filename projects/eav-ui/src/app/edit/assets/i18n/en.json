@@ -282,7 +282,7 @@
     "Splitter.l": "Gap with a large height"
   },
   "Features": {
-    "NotActivated": "This feature is not activated - find out more",
+    "NotActivated": "The feature '{{name}}' is not activated - find out more",
     "NotActive": "Not active",
     "Active": "Active",
     "Status": "Status",
