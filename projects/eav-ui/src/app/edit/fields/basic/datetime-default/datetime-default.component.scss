@@ -8,8 +8,18 @@
   color: var(--mat-datepicker-calendar-container-text-color);
 }
 
+// Set Simepicker to the right
 ::ng-deep .mat-timepicker-panel {
+  --mat-option-selected-state-label-text-color: black;
   max-width: 10rem !important;
+  position: absolute !important;
+  right: 0 !important;
 }
 
-// TODO: @2pp - ensure it's aligned to the right
+::ng-deep .cdk-overlay-pane:has(.mat-timepicker-panel) {
+  position: relative !important;
+}
+
+.picker-input {
+  display: none;
+}

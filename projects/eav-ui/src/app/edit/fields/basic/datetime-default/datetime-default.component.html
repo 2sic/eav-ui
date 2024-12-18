@@ -17,12 +17,12 @@
   <input
     matInput
     [matDatepicker]="datepicker"
-    style="display: none"
+    class="picker-input"
     (dateChange)="updateDate($event)"
     #dateInput
     [value]="valueForDatePicker()"
   />
-  <mat-datepicker #datepicker></mat-datepicker>
+  <mat-datepicker #datepicker xPosition="end"></mat-datepicker>
   <mat-datepicker-toggle [for]="datepicker" matSuffix tippyTranslate="Fields.DateTime.OpenCalender" />
 
   @if (useTimePicker()) {
@@ -31,11 +31,11 @@
       <input
         matInput
         [matTimepicker]="timepicker"
-        style="display: none"
+        class="picker-input"
         #timeInput
         [value]="valueForTimePicker()"
       />
-      <mat-timepicker #timepicker [options]="timePickerOptions()"></mat-timepicker>
+      <mat-timepicker #timepicker [options]="timePickerOptions()" xPosition="end"></mat-timepicker>
       <mat-timepicker-toggle [for]="timepicker" matSuffix tippyTranslate="Fields.DateTime.OpenTime" />
     </ng-container>
   }
