@@ -89,10 +89,10 @@ export class DatetimeDefaultComponent implements AfterViewInit {
 
     // Check if the custom option is already in the predefined and return if so
     if (predefinedOptions.some(
-        option =>
-          option.value.utc().hour() === userOption.value.utc().hour() &&
-          option.value.utc().minute() === userOption.value.utc().minute()
-      ))
+      option =>
+        option.value.utc().hour() === userOption.value.utc().hour() &&
+        option.value.utc().minute() === userOption.value.utc().minute()
+    ))
       return predefinedOptions;
 
     // Combine and sort the options by time
@@ -133,6 +133,9 @@ export class DatetimeDefaultComponent implements AfterViewInit {
             .minute(value.value.minute())
             .second(value.value.second());
 
+          // Update the UI value also valueForTimePicker()
+          this.ui().setIfChanged(this.timeValue.toISOString());
+          // Combine dateValue and timeValue
           this.updateFormattedValue();
         }
       });
@@ -160,9 +163,9 @@ export class DatetimeDefaultComponent implements AfterViewInit {
   updateFormattedValue() {
     const combinedValue = this.dateValue
       .utc(true)
-      .hour(this.timeValue.hour())
-      .minute(this.timeValue.minute())
-      .second(this.timeValue.second());
+      .hour(this.valueForTimePicker().hour())
+      .minute(this.valueForTimePicker().minute())
+      .second(this.valueForTimePicker().second());
 
     this.ui().setIfChanged(combinedValue.toISOString());
     return combinedValue.toISOString();
