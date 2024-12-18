@@ -73,6 +73,7 @@ export class DatetimeDefaultComponent implements AfterViewInit {
     const userOption = {
       label: this.dateTimeValue().format('hh:mm A'),
       value: dayjs()
+        .utc(true)
         .hour(this.dateTimeValue().hour())
         .minute(this.dateTimeValue().minute())
         .second(0),
@@ -112,7 +113,7 @@ export class DatetimeDefaultComponent implements AfterViewInit {
       this.timePickerRef.selected.subscribe(timeData => {
         if (timeData) {
           const timeValue = timeData.value.utc(true);
-          this.updateFormattedValue(timeValue);
+          this.updateFormattedValue(null, timeValue);
         }
       });
     }
@@ -122,7 +123,7 @@ export class DatetimeDefaultComponent implements AfterViewInit {
   updateDate(event: MatDatepickerInputEvent<Dayjs>) {
     if (event.value) {
       const dateValue = event.value.utc(true);
-      this.updateFormattedValue(dateValue);
+      this.updateFormattedValue(dateValue, null);
     }
   }
 
@@ -131,26 +132,25 @@ export class DatetimeDefaultComponent implements AfterViewInit {
     // If either date or time is undefined, return early
     if (!date && !time)
       return;
-
+  
+    let currentDateTime = dayjs(this.uiValue()).utc(true);
+  
     if (date) {
-      const updatedDate = dayjs()
-        .utc(true)
+      currentDateTime = currentDateTime
         .year(date.year())
         .month(date.month())
-        .date(date.date());
-
-      this.ui().setIfChanged(updatedDate.toISOString());
+        .date(date.date())
     }
-
+  
     if (time) {
-      const updatedTime = dayjs()
-        .utc(true)
+      currentDateTime = currentDateTime
         .hour(time.hour())
         .minute(time.minute())
         .second(time.second());
-
-      this.ui().setIfChanged(updatedTime.toISOString());
     }
+  
+    this.ui().setIfChanged(currentDateTime.toISOString());
+    return currentDateTime.toISOString();
   }
 
   // Old OWL DateTime Picker
