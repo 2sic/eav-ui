@@ -57,7 +57,7 @@ export class DatetimeDefaultComponent implements AfterViewInit {
   protected basics = this.fieldState.basics;
   protected useTimePicker = this.fieldState.settingExt('UseTimePicker');
 
-  dateTimeValue = computed(() => dayjs(this.uiValue()).utc(true));
+  dateTimeValue = computed(() => dayjs(this.uiValue()));
 
   timePickerOptions = computed(() => {
     const predefinedOptions = [
@@ -69,11 +69,9 @@ export class DatetimeDefaultComponent implements AfterViewInit {
       { label: '06:00 PM', value: dayjs().hour(18).minute(0).second(0) },
     ];
 
-    // Selected option by user
     const userOption = {
       label: this.dateTimeValue().format('hh:mm A'),
       value: dayjs()
-        .utc(true)
         .hour(this.dateTimeValue().hour())
         .minute(this.dateTimeValue().minute())
         .second(0),
@@ -82,12 +80,10 @@ export class DatetimeDefaultComponent implements AfterViewInit {
     // Check if the custom option is already in the predefined and return if so
     if (predefinedOptions.some(
       option =>
-        option.value.utc().hour() === userOption.value.utc().hour() &&
-        option.value.utc().minute() === userOption.value.utc().minute()
-    ))
-      return predefinedOptions;
+        option.value.hour() === userOption.value.hour() &&
+        option.value.minute() === userOption.value.minute()
+    )) return predefinedOptions;
 
-    // Combine and sort the options by time
     const allOptions = [...predefinedOptions, userOption];
     allOptions.sort((a, b) => a.value.valueOf() - b.value.valueOf());
 
@@ -112,7 +108,7 @@ export class DatetimeDefaultComponent implements AfterViewInit {
     if (this.timePickerRef) {
       this.timePickerRef.selected.subscribe(timeData => {
         if (timeData) {
-          const timeValue = timeData.value.utc(true);
+          const timeValue = timeData.value;
           this.updateFormattedValue(null, timeValue);
         }
       });
@@ -122,40 +118,38 @@ export class DatetimeDefaultComponent implements AfterViewInit {
   // Material Date Picker Event Handler
   updateDate(event: MatDatepickerInputEvent<Dayjs>) {
     if (event.value) {
-      const dateValue = event.value.utc(true);
+      const dateValue = event.value;
       this.updateFormattedValue(dateValue, null);
     }
   }
 
   // Combines the date and time values and updates the UI
   updateFormattedValue(date?: Dayjs, time?: Dayjs) {
-    // If either date or time is undefined, return early
-    if (!date && !time)
-      return;
-  
-    let currentDateTime = dayjs(this.uiValue()).utc(true);
-  
+    if (!date && !time) return;
+
+    let currentDateTime = dayjs(this.uiValue());
+
     if (date) {
       currentDateTime = currentDateTime
         .year(date.year())
         .month(date.month())
-        .date(date.date())
+        .date(date.date());
     }
-  
+
     if (time) {
       currentDateTime = currentDateTime
         .hour(time.hour())
         .minute(time.minute())
         .second(time.second());
     }
-  
+
     this.ui().setIfChanged(currentDateTime.toISOString());
     return currentDateTime.toISOString();
   }
 
   // Old OWL DateTime Picker
   updateValue(event: MatDatepickerInputEvent<Dayjs>) {
-    const newValue = event.value != null ? event.value.utc(true).toJSON() : null;
+    const newValue = event.value != null ? event.value.toJSON() : null;
     this.ui().setIfChanged(newValue);
   }
 }
