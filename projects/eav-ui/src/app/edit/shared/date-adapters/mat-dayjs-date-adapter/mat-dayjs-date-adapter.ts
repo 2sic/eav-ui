@@ -277,6 +277,10 @@ export class MatDayjsDateAdapter extends DateAdapter<Dayjs> {
     return l.r(value ? this.dayJs(value).locale(this.locale) : null);
   }
 
+  override parseTime(time: string, format: string): Dayjs {
+    return dayjs(time, format, this.locale, true);
+  }
+
   override getSeconds(date: Dayjs): number {
     return date.second();
   }

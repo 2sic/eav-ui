@@ -57,32 +57,45 @@ export class DatetimeDefaultComponent implements AfterViewInit {
   protected basics = this.fieldState.basics;
   protected useTimePicker = this.fieldState.settingExt('UseTimePicker');
 
-  dateTimeValue = computed(() => dayjs(this.uiValue()));
+  // not in use, but is there if needed
+  // timeValue = new FormControl<Dayjs | null>(null);
+  // dateValue = new FormControl<Dayjs | null>(null)
+
+  dateTimeValue = computed(() => {
+    const uiValue = this.uiValue(); // Access the raw UI value
+    if (!uiValue) return dayjs().utc(); // Fallback if no value
+    const dayJsValue = dayjs.utc(uiValue); // Parse as UTC
+    return dayJsValue; // Return as UTC
+  });
 
   timePickerOptions = computed(() => {
     const predefinedOptions = [
-      { label: '12:00 AM', value: dayjs().hour(0).minute(0).second(0) },
-      { label: '06:00 AM', value: dayjs().hour(6).minute(0).second(0) },
-      { label: '08:00 AM', value: dayjs().hour(8).minute(0).second(0) },
-      { label: '10:00 AM', value: dayjs().hour(10).minute(0).second(0) },
-      { label: '12:00 PM', value: dayjs().hour(12).minute(0).second(0) },
-      { label: '06:00 PM', value: dayjs().hour(18).minute(0).second(0) },
+      { label: '12:00 AM', value: dayjs().utc().hour(0).minute(0).second(0) },
+      { label: '06:00 AM', value: dayjs().utc().hour(6).minute(0).second(0) },
+      { label: '08:00 AM', value: dayjs().utc().hour(8).minute(0).second(0) },
+      { label: '10:00 AM', value: dayjs().utc().hour(10).minute(0).second(0) },
+      { label: '12:00 PM', value: dayjs().utc().hour(12).minute(0).second(0) },
+      { label: '06:00 PM', value: dayjs().utc().hour(18).minute(0).second(0) },
     ];
 
     const userOption = {
       label: this.dateTimeValue().format('hh:mm A'),
       value: dayjs()
+        .utc()
         .hour(this.dateTimeValue().hour())
         .minute(this.dateTimeValue().minute())
         .second(0),
     };
 
     // Check if the custom option is already in the predefined and return if so
-    if (predefinedOptions.some(
-      option =>
-        option.value.hour() === userOption.value.hour() &&
-        option.value.minute() === userOption.value.minute()
-    )) return predefinedOptions;
+    if (
+      predefinedOptions.some(
+        (option) =>
+          option.value.hour() === userOption.value.hour() &&
+          option.value.minute() === userOption.value.minute()
+      )
+    )
+      return predefinedOptions;
 
     const allOptions = [...predefinedOptions, userOption];
     allOptions.sort((a, b) => a.value.valueOf() - b.value.valueOf());
@@ -115,6 +128,17 @@ export class DatetimeDefaultComponent implements AfterViewInit {
     }
   }
 
+  onTimeInputChange(event: any): void {
+    const inputValue = event.target.value;
+
+    // Parse the inputValue to create a Dayjs object
+    const time = dayjs(inputValue, 'HH:mm');
+
+    if (time.isValid()) {
+      this.updateFormattedValue(undefined, time);
+    }
+  }
+
   // Material Date Picker Event Handler
   updateDate(event: MatDatepickerInputEvent<Dayjs>) {
     if (event.value) {
@@ -123,11 +147,21 @@ export class DatetimeDefaultComponent implements AfterViewInit {
     }
   }
 
-  // Combines the date and time values and updates the UI
+  updateDateTime(event: Event) {
+    const inputElement = event.target as HTMLInputElement;
+    const newDateTime = inputElement.value;
+
+    const time = dayjs().utc().hour(dayjs(newDateTime).utc().hour()).minute(dayjs(newDateTime).utc().minute()).second(dayjs(newDateTime).second());
+    const date = dayjs().utc().year(dayjs(newDateTime).utc().year()).month(dayjs(newDateTime).utc().month()).day(dayjs(newDateTime).day());
+
+    this.updateFormattedValue(date, time);
+  }
+  
+  // Combines the date and time values and updates the aUI
   updateFormattedValue(date?: Dayjs, time?: Dayjs) {
     if (!date && !time) return;
 
-    let currentDateTime = dayjs(this.uiValue());
+    let currentDateTime = dayjs(this.uiValue()).utc();
 
     if (date) {
       currentDateTime = currentDateTime
@@ -145,11 +179,11 @@ export class DatetimeDefaultComponent implements AfterViewInit {
 
     this.ui().setIfChanged(currentDateTime.toISOString());
     return currentDateTime.toISOString();
-  }
+  };
 
   // Old OWL DateTime Picker
-  updateValue(event: MatDatepickerInputEvent<Dayjs>) {
-    const newValue = event.value != null ? event.value.toJSON() : null;
-    this.ui().setIfChanged(newValue);
-  }
+  // updateValue(event: MatDatepickerInputEvent<Dayjs>) {
+  //   const newValue = event.value != null ? event.value.toJSON() : null;
+  //   this.ui().setIfChanged(newValue);
+  // }
 }
