@@ -70,16 +70,16 @@ export class DatetimeDefaultComponent implements AfterViewInit {
 
   timePickerOptions = computed(() => {
     const predefinedOptions = [
-      { label: '12:00 AM', value: dayjs().utc().hour(0).minute(0).second(0) },
-      { label: '06:00 AM', value: dayjs().utc().hour(6).minute(0).second(0) },
-      { label: '08:00 AM', value: dayjs().utc().hour(8).minute(0).second(0) },
-      { label: '10:00 AM', value: dayjs().utc().hour(10).minute(0).second(0) },
-      { label: '12:00 PM', value: dayjs().utc().hour(12).minute(0).second(0) },
-      { label: '06:00 PM', value: dayjs().utc().hour(18).minute(0).second(0) },
+      { label: '00:00', value: dayjs().utc().hour(0).minute(0).second(0) },
+      { label: '06:00', value: dayjs().utc().hour(6).minute(0).second(0) },
+      { label: '08:00', value: dayjs().utc().hour(8).minute(0).second(0) },
+      { label: '10:00', value: dayjs().utc().hour(10).minute(0).second(0) },
+      { label: '12:00', value: dayjs().utc().hour(12).minute(0).second(0) },
+      { label: '18:00', value: dayjs().utc().hour(18).minute(0).second(0) },
     ];
 
     const userOption = {
-      label: this.dateTimeValue().format('hh:mm A'),
+      label: this.dateTimeValue().format('HH:mm'),
       value: dayjs()
         .utc()
         .hour(this.dateTimeValue().hour())
@@ -149,8 +149,8 @@ export class DatetimeDefaultComponent implements AfterViewInit {
 
   updateDateTime(event: Event) {
     const inputElement = event.target as HTMLInputElement;
+    // const newDateTime = this.matDayjsDateAdapter.parse(inputElement.value, 'DD.MM.YYYY HH:mm');
     const newDateTime = inputElement.value;
-
     const time = dayjs().utc().hour(dayjs(newDateTime).utc().hour()).minute(dayjs(newDateTime).utc().minute()).second(dayjs(newDateTime).second());
     const date = dayjs().utc().year(dayjs(newDateTime).utc().year()).month(dayjs(newDateTime).utc().month()).day(dayjs(newDateTime).day());
 
@@ -176,6 +176,9 @@ export class DatetimeDefaultComponent implements AfterViewInit {
         .minute(time.minute())
         .second(time.second());
     }
+    // console.log('currentDateTime', currentDateTime);
+    // const updatedDateTime = this.matDayjsDateAdapter.parse(currentDateTime.utc(), 'YYYY-MM-DDTHH:mm:ss[Z]');
+    // console.log('updatedDateTime', updatedDateTime);
 
     this.ui().setIfChanged(currentDateTime.toISOString());
     return currentDateTime.toISOString();
