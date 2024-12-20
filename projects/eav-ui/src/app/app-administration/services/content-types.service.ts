@@ -25,7 +25,7 @@ export class ContentTypesService extends HttpServiceBase {
     });
   }
 
-  retrieveContentTypeSig(nameId: string, initial: undefined): Signal<ContentType> {
+  retrieveContentTypeSig(nameId: string, initial: ContentType): Signal<ContentType> {
     return this.getSignal<ContentType>(webApiTypeGet, {
       params: { appId: this.appId, contentTypeId: nameId }
     }, initial);
@@ -57,6 +57,7 @@ export class ContentTypesService extends HttpServiceBase {
     );
   }
 
+  // todo: switch to using the GetSignal with `map` parameter similar to the initial version above
   getScopesSig(initial: undefined): Signal<ScopeOption[]> {
     const scopesSignal = this.getSignal<{ old: Record<string, string>, scopes: ScopeDetailsDto[] }>(
       webApiTypeScopes,

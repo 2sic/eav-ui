@@ -78,7 +78,7 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
     super();
     this.dialog.disableClose = true;
     this.subscriptions.add(
-      this.dialog.backdropClick().subscribe(event => {
+      this.dialog.backdropClick().subscribe(_ => {
         if (this.form.dirty) {
           const confirmed = confirm('You have unsaved changes. Are you sure you want to close this dialog?');
           if (!confirmed) return;
@@ -114,7 +114,9 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
         this.reservedNames = ReservedNamesValidatorDirective.mergeReserved(reservedNames, fields);
 
         if (this.editMode != null) {
-          const editFieldId = this.route.snapshot.paramMap.get('id') ? parseInt(this.route.snapshot.paramMap.get('id'), 10) : null;
+          const editFieldId = this.route.snapshot.paramMap.get('id')
+            ? parseInt(this.route.snapshot.paramMap.get('id'), 10)
+            : null;
           const editField = fields.find(field => field.Id === editFieldId);
           if (this.editMode === 'name')
             delete this.reservedNames[editField.StaticName];
@@ -199,13 +201,15 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
           .subscribe(() => doneAndClose());
       }
     } else {
-      of(...this.fields).pipe(
-        filter(field => !!field.StaticName),
-        concatMap(field =>
-          this.#typesFieldsSvc.add(field, this.#contentType.Id).pipe(catchError(_ => of(null)))
-        ),
-        toArray(),
-      ).subscribe(() => doneAndClose());
+      of(...this.fields)
+        .pipe(
+          filter(field => !!field.StaticName),
+          concatMap(field =>
+            this.#typesFieldsSvc.add(field, this.#contentType.Id).pipe(catchError(_ => of(null)))
+          ),
+          toArray(),
+        )
+        .subscribe(() => doneAndClose());
     }
   }
 }
