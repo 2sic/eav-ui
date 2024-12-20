@@ -40,7 +40,7 @@ export class HttpServiceBase {
 
   protected getHttpApiUrl<ResultType>(endpoint: string, options?: Parameters<typeof this.http.get>[1]) {
     const url = this.apiUrl(endpoint);
-    return this.http.get<ResultType>(url, options);
+    return this.http.get<ResultType>(url, options ?? undefined); // has a quick, null would fail, undefined is ok
   }
 
   protected getHttp<ResultType>(endpoint: string, options?: Parameters<typeof this.http.get>[1]) {

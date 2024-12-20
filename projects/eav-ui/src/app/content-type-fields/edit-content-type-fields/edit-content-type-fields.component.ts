@@ -1,5 +1,5 @@
-import { AsyncPipe, NgClass } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, HostBinding, OnDestroy, OnInit, QueryList, signal, ViewChild, ViewChildren } from '@angular/core';
+import { NgClass } from '@angular/common';
+import { AfterViewInit, Component, ElementRef, HostBinding, OnInit, QueryList, signal, ViewChild, ViewChildren } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
@@ -11,7 +11,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { BehaviorSubject, catchError, concatMap, filter, forkJoin, of, share, switchMap, toArray } from 'rxjs';
+import { catchError, concatMap, filter, forkJoin, of, share, switchMap, toArray } from 'rxjs';
 import { transient } from '../../../../../core';
 import { fieldNameError, fieldNamePattern } from '../../app-administration/constants/field-name.patterns';
 import { ContentType } from '../../app-administration/models/content-type.model';
@@ -31,6 +31,8 @@ interface Hints {
   data: string;
 }
 
+type FieldSubset = Pick<Field, 'Id' | 'Type' | 'InputType' | 'StaticName' | 'IsTitle' | 'SortOrder'>;
+
 @Component({
   selector: 'app-edit-content-type-fields',
   templateUrl: './edit-content-type-fields.component.html',
@@ -46,33 +48,17 @@ interface Hints {
     NgClass,
     MatDialogActions,
     MatButtonModule,
-    AsyncPipe,
     TranslateModule,
     FieldHintComponent,
   ]
 })
-export class EditContentTypeFieldsComponent extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
+export class EditContentTypeFieldsComponent extends BaseComponent implements OnInit, AfterViewInit {
   @HostBinding('className') hostClass = 'dialog-component';
   @ViewChild('ngForm', { read: NgForm }) private form: NgForm;
   @ViewChildren('autoFocusInputField') autoFocusInputField!: QueryList<ElementRef>;
 
   #typesSvc = transient(ContentTypesService);
   #typesFieldsSvc = transient(ContentTypesFieldsService);
-
-  fields = signalObj<Partial<Field>[]>('fields', []);
-  reservedNames: Record<string, string> = {};
-  editMode: 'name' | 'inputType';
-  filteredInputTypeOptions: FieldInputTypeOption[][] = [];
-  fieldNamePattern = fieldNamePattern;
-  fieldNameError = fieldNameError;
-  findIcon = calculateTypeIcon;
-  findLabel = calculateTypeLabel;
-  loading$ = new BehaviorSubject(true);
-  saving = signal(false);
-
-  #contentType: ContentType;
-  dataTypes = this.#typesFieldsSvc.dataTypes();
-  #inputTypeOptions = this.#typesFieldsSvc.getInputTypes();
 
   constructor(
     protected dialog: MatDialogRef<EditContentTypeFieldsComponent>,
@@ -92,6 +78,33 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
     );
   }
 
+  fields = signalObj<FieldSubset[]>('fields', []);
+  editMode = this.route.snapshot.paramMap.get('editMode') as 'name' | 'inputType';
+  filteredInputTypeOptions: FieldInputTypeOption[][] = [];
+  fieldNamePattern = fieldNamePattern;
+  fieldNameError = fieldNameError;
+  findIcon = calculateTypeIcon;
+  findLabel = calculateTypeLabel;
+  saving = signal(false);
+
+  #contentType: ContentType;
+  dataTypes = this.#typesFieldsSvc.dataTypes();
+  #inputTypeOptions = this.#typesFieldsSvc.getInputTypes();
+
+  #reservedNamesSystem = this.#typesFieldsSvc.reservedNames();
+
+  reservedNames = computedObj('reservedNamesAll', () => {
+    // setup watchers
+    const fields = this.fields();
+    const reservedNames = this.#reservedNamesSystem();
+    const merged = ReservedNamesValidatorDirective.mergeReserved(reservedNames, fields);
+    
+    // If we're about to rename, allow the current name to be reused
+    if (this.editMode === 'name')
+      delete merged[fields[0].StaticName];
+    return merged;
+  });
+
   ngAfterViewInit(): void {
     // Wait for the inputFields to be available
     // But delay execution to ensure the view is fully rendered
@@ -100,7 +113,6 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
   }
 
   ngOnInit() {
-    this.editMode = this.route.snapshot.paramMap.get('editMode') as 'name' | 'inputType';
 
     const typeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
     const contentType$ = this.#typesSvc
@@ -108,27 +120,19 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
       .pipe(share());
     const fields$ = contentType$
       .pipe(switchMap(ct => this.#typesFieldsSvc.getFields(ct.NameId)));
-    const reservedNames$ = this.#typesFieldsSvc.getReservedNames();
 
-    forkJoin([contentType$, fields$, reservedNames$]).subscribe(
-      ([contentType, fields, reservedNames]) => {
+    forkJoin([contentType$, fields$]).subscribe(
+      ([contentType, fields]) => {
         this.#contentType = contentType;
-        // this.existingFields = fields;
-
-        this.reservedNames = ReservedNamesValidatorDirective.mergeReserved(reservedNames, fields);
 
         if (this.editMode != null) {
           const editFieldId = this.route.snapshot.paramMap.get('id')
             ? parseInt(this.route.snapshot.paramMap.get('id'), 10)
             : null;
           const editField = fields.find(field => field.Id === editFieldId);
-          if (this.editMode === 'name')
-            delete this.reservedNames[editField.StaticName];
           this.fields.set([editField]);
         } else
           this.fields.set(this.#generateNewList(fields.length));
-
-        this.loading$.next(false);
       }
     );
   }
@@ -142,12 +146,7 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
       // first one is title, if there were no fields before
       IsTitle: existingFieldCount === 0 && k === 0,
       SortOrder: existingFieldCount + k + 1,
-    }))
-  }
-
-  ngOnDestroy() {
-    this.loading$.complete();
-    super.ngOnDestroy();
+    } satisfies FieldSubset));
   }
 
   /** 2D array of all possible options (by field index) */

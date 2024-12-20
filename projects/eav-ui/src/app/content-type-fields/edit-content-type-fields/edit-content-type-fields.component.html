@@ -12,7 +12,7 @@
       }
     </div>
   </div>
-  @if ((loading$ | async) === false) {
+  @if (fields().length) {
     <form #ngForm="ngForm" (ngSubmit)="save()">
       <div class="eav-dialog-content">
         @for (field of fields(); track field; let i = $index) {
@@ -23,7 +23,7 @@
                 <input
                   matInput
                   [pattern]="fieldNamePattern"
-                  [appReservedNames]="reservedNames"
+                  [appReservedNames]="reservedNames()"
                   [(ngModel)]="field.StaticName"
                   [name]="'StaticName' + i"
                   #staticName="ngModel"

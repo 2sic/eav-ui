@@ -69,6 +69,10 @@ export class ContentTypesFieldsService extends HttpServiceBase {
     return this.getHttpApiUrl<Record<string, string>>(webApiReservedNames);
   }
 
+  reservedNames() {
+    return this.getSignal<Record<string, string>>(webApiReservedNames, null, {});
+  }
+
   /** Get all fields for some content type */
   getFields(contentTypeStaticName: string) {
     return this.getHttpApiUrl<Field[]>(webApiFieldsAll, this.paramsAppId({ staticName: contentTypeStaticName }))

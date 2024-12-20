@@ -1,6 +1,5 @@
 import { Directive, input } from '@angular/core';
 import { AbstractControl, NG_VALIDATORS, ValidationErrors, Validator } from '@angular/forms';
-import { Field } from '../../shared/fields/field.model';
 
 @Directive({
   selector: '[appReservedNames]',
@@ -20,7 +19,7 @@ export class ReservedNamesValidatorDirective implements Validator {
     return reservedName ? { reservedNames: this.appReservedNames()[reservedName] } : null;
   }
 
-  static mergeReserved(reservedNames: Record<string, string>, fields: Field[]) {
+  static mergeReserved(reservedNames: Record<string, string>, fields: {StaticName: string }[]) {
     const existingFields: Record<string, string> = {};
     fields.forEach(field => {
       existingFields[field.StaticName] = 'this field already exists';
