@@ -73,6 +73,7 @@
                   [(ngModel)]="field.InputType"
                   [name]="'InputType' + i"
                   [disabled]="editMode === 'name'"
+                  panelClass="eav-type-field-type-select"
                 >
                   <mat-select-trigger>
                     <span>{{ getInputTypeOption(field.InputType)?.label }}</span>

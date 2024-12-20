@@ -30,3 +30,9 @@
   text-decoration: black line-through;
   color: dimgray;
 }
+
+// Get the panel of the selection to be longer
+// so that the user can see all options
+::ng-deep .mdc-menu-surface.mat-mdc-select-panel.eav-type-field-type-select {
+  max-height: 500px;
+}
