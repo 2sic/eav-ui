@@ -55,7 +55,7 @@
                     <mat-icon class="eav-type-icon">{{ findIcon(field.Type) }}</mat-icon>
                     <span>{{ findLabel(field.Type) }}</span>
                   </mat-select-trigger>
-                  @for (dataType of dataTypes; track dataType) {
+                  @for (dataType of dataTypes(); track dataType) {
                     <mat-option [value]="dataType.name">
                       <mat-icon class="eav-type-icon">{{ dataType.icon }}</mat-icon>
                       <span>{{ dataType.label }}</span>

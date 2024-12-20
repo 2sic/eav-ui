@@ -3,6 +3,7 @@ import { map } from 'rxjs';
 import { Of } from '../../../../../core';
 import { ContentType } from '../../app-administration/models/content-type.model';
 import { webApiTypeRoot } from '../../app-administration/services';
+import { calculateDataTypes, DataType } from '../../content-type-fields/edit-content-type-fields/edit-content-type-fields.helpers';
 import { HttpServiceBase } from '../services/http-service-base';
 import { Field, FieldInputTypeOption } from './field.model';
 import { InputTypeCatalog } from './input-type-catalog';
@@ -40,8 +41,9 @@ export class ContentTypesFieldsService extends HttpServiceBase {
     };
   }
 
-  typeListRetrieve() {
-    return this.getHttpApiUrl<string[]>(webApiDataTypes, this.paramsAppId());
+  /** Get list of data types available in the system, such as 'string', 'number' etc. */
+  dataTypes() {
+    return this.getSignal<DataType[], string[]>(webApiDataTypes, this.paramsAppId(), [], raw => calculateDataTypes(raw));
   }
 
   getInputTypes() {

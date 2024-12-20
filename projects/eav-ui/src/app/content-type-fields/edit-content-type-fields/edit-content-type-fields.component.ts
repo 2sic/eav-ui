@@ -11,7 +11,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { BehaviorSubject, catchError, concatMap, filter, forkJoin, map, of, share, switchMap, toArray } from 'rxjs';
+import { BehaviorSubject, catchError, concatMap, filter, forkJoin, of, share, switchMap, toArray } from 'rxjs';
 import { Of, transient } from '../../../../../core';
 import { fieldNameError, fieldNamePattern } from '../../app-administration/constants/field-name.patterns';
 import { ContentType } from '../../app-administration/models/content-type.model';
@@ -23,7 +23,6 @@ import { DataTypeCatalog } from '../../shared/fields/data-type-catalog';
 import { Field, FieldInputTypeOption } from '../../shared/fields/field.model';
 import { InputTypeCatalog } from '../../shared/fields/input-type-catalog';
 import { calculateTypeIcon, calculateTypeLabel } from '../content-type-fields.helpers';
-import { calculateDataTypes, DataType } from './edit-content-type-fields.helpers';
 import { ReservedNamesValidatorDirective } from './reserved-names.directive';
 
 @Component({
@@ -57,7 +56,6 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
   fields: Partial<Field>[] = [];
   reservedNames: Record<string, string> = {};
   editMode: 'name' | 'inputType';
-  dataTypes: DataType[];
   filteredInputTypeOptions: FieldInputTypeOption[][] = [];
   dataTypeHints: string[] = [];
   inputTypeHints: string[] = [];
@@ -69,6 +67,7 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
   saving$ = new BehaviorSubject(false);
 
   #contentType: ContentType;
+  dataTypes = this.#typesFieldsSvc.dataTypes();
   #inputTypeOptions = this.#typesFieldsSvc.getInputTypes();
 
   constructor(
@@ -105,15 +104,11 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
       .pipe(share());
     const fields$ = contentType$
       .pipe(switchMap(ct => this.#typesFieldsSvc.getFields(ct.NameId)));
-    const dataTypes$ = this.#typesFieldsSvc
-      .typeListRetrieve()
-      .pipe(map(raw => calculateDataTypes(raw)));
     const reservedNames$ = this.#typesFieldsSvc.getReservedNames();
 
-    forkJoin([contentType$, fields$, dataTypes$, reservedNames$]).subscribe(
-      ([contentType, fields, dataTypes, reservedNames]) => {
+    forkJoin([contentType$, fields$, reservedNames$]).subscribe(
+      ([contentType, fields, reservedNames]) => {
         this.#contentType = contentType;
-        this.dataTypes = dataTypes;
         // this.existingFields = fields;
 
         this.reservedNames = ReservedNamesValidatorDirective.mergeReserved(reservedNames, fields);
@@ -169,7 +164,7 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
 
   calculateHints(index: number) {
     const field = this.fields[index];
-    const selectedDataType = this.dataTypes.find(dataType => dataType.name === field.Type);
+    const selectedDataType = this.dataTypes().find(dataType => dataType.name === field.Type);
     const selectedInputType = this.#inputTypeOptions().find(option => option.inputType === field.InputType);
     this.dataTypeHints[index] = selectedDataType?.description ?? '';
     this.inputTypeHints[index] = selectedInputType?.isObsolete
