@@ -1,5 +1,5 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
@@ -73,6 +73,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
   contentTypes = signal<ContentType[]>(undefined);
   scope = signal<string>(undefined);
   scopeOptions = signal<ScopeDetailsDto[]>([]);
+  scopeSelected = computed(() => this.scopeOptions().find(s => s.name === this.scope()));
 
   /** Possible scopes - the ones from the backend + manually entered scopes by the current user */
   gridOptions = this.#buildGridOptions();
