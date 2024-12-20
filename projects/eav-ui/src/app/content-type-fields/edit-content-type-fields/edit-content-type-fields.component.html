@@ -15,7 +15,7 @@
   @if ((loading$ | async) === false) {
     <form #ngForm="ngForm" (ngSubmit)="save()">
       <div class="eav-dialog-content">
-        @for (field of fields; track field; let i = $index) {
+        @for (field of fields(); track field; let i = $index) {
           <div class="eav-row-container">
             <div class="eav-edit-input">
               <mat-form-field color="accent" class="eav-mat-form-field">
@@ -46,8 +46,8 @@
               <mat-form-field color="accent" class="eav-mat-form-field">
                 <mat-label>Data Type</mat-label>
                 <mat-select
-                  (selectionChange)="filterInputTypeOptions(i); resetInputType(i); calculateHints(i)"
-                  [(ngModel)]="field.Type"
+                  (selectionChange)="setFieldType(i, $event.value)"
+                  [ngModel]="field.Type"
                   [name]="'Type' + i"
                   [disabled]="editMode != null"
                   panelClass="eav-type-field-type-select"
@@ -58,20 +58,21 @@
                   </mat-select-trigger>
                   @for (dataType of dataTypes(); track dataType) {
                     <mat-option [value]="dataType.name">
+                      {{ dataType.label }}
+                      <!-- Icon must come last; Angular will put it first. Otherwise we can't type the name of the label to quickly find an entry -->
                       <mat-icon class="eav-type-icon">{{ dataType.icon }}</mat-icon>
-                      <span>{{ dataType.label }}</span>
                     </mat-option>
                   }
                 </mat-select>
               </mat-form-field>
-              <app-field-hint>{{ dataTypeHints[i] }}</app-field-hint>
+              <app-field-hint>{{ hints()[i].data }}</app-field-hint>
             </div>
             <div class="eav-edit-input">
               <mat-form-field color="accent" class="eav-mat-form-field">
                 <mat-label>Input Type</mat-label>
                 <mat-select
-                  (selectionChange)="calculateHints(i)"
-                  [(ngModel)]="field.InputType"
+                  (selectionChange)="updateFieldPart(i, { InputType: $event.value })"
+                  [ngModel]="field.InputType"
                   [name]="'InputType' + i"
                   [disabled]="editMode === 'name'"
                   panelClass="eav-type-field-input-type-select"
@@ -80,20 +81,20 @@
                     <span>{{ getInputTypeOption(field.InputType)?.label }}</span>
                     <mat-icon class="eav-input-icon">{{ getInputTypeOption(field.InputType)?.icon }}</mat-icon>
                   </mat-select-trigger>
-                  @for (option of filteredInputTypeOptions[i]; track option) {
+                  @for (option of inputTypeOptions()[i]; track option) {
                     <mat-option [value]="option.inputType" [ngClass]="{ 'eav-input-obsolete': option.isObsolete }">
-                      <!-- div is needed here because <mat-option> by default puts mat-icon on the first place if it exists -->
-                      <div>
-                        <span>{{ option.label }}</span>
-                        @if (option.icon) {
+                      {{ option.label }}
+                      @if (option.icon) {
+                        <!-- span is needed here because <mat-option> by default puts mat-icon to the beginning -->
+                        <span>
                           <mat-icon class="eav-input-icon">{{ option.icon }}</mat-icon>
-                        }
-                      </div>
+                        </span>
+                      }
                     </mat-option>
                   }
                 </mat-select>
               </mat-form-field>
-              <app-field-hint>{{ inputTypeHints[i] }}</app-field-hint>
+              <app-field-hint>{{ hints()[i].input }}</app-field-hint>
             </div>
           </div>
         }
@@ -103,7 +104,7 @@
       <mat-dialog-actions>
         <div class="spacer"></div>
         <button mat-raised-button type="button" (click)="dialog.close()">Cancel</button>
-        <button mat-raised-button type="submit" color="accent" [disabled]="!ngForm.form.valid || (saving$ | async)">Save</button>
+        <button mat-raised-button type="submit" color="accent" [disabled]="!ngForm.form.valid || saving()">Save</button>
       </mat-dialog-actions>
     </form>
   }
