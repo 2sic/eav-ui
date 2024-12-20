@@ -1,26 +1,18 @@
 <mat-form-field color="accent" class="eav-mat-form-field">
   <mat-label>Date & Time</mat-label>
   <!-- Visible input for OWL picker -->
-  <!-- <input
-    matInput
-    [disabled]="ui().disabled"
-    [owlDateTime]="owlPicker" (dateTimeChange)="updateValue($event)"
-    [placeholder]="basics().placeholder"
-    [required]="basics().required"
-    [value]="dateTimeValue()"
-    (dateTimeChange)="updateValue($event)"
-  /> -->
-  <!-- <mat-datepicker-toggle matSuffix [owlDateTimeTrigger]="owlPicker" tippyTranslate="Fields.DateTime.Open" />
-  <owl-date-time #owlPicker></owl-date-time> -->
   <input
     matInput
     [disabled]="ui().disabled"
+    [owlDateTime]="owlPicker"
+    (dateTimeChange)="updateDateTime($event)"
     [placeholder]="basics().placeholder"
     [required]="basics().required"
     [value]="dateTimeValue()"
-    (blur)="updateDateTime($event)"
   />
-
+  <!-- <mat-datepicker-toggle matSuffix [owlDateTimeTrigger]="owlPicker" tippyTranslate="Fields.DateTime.Open" /> -->
+  <owl-date-time #owlPicker></owl-date-time>
+  
   <!-- Hidden input for Angular Material Date Picker -->
   <input
     matInput
@@ -51,8 +43,4 @@
     </ng-container>
   }
 </mat-form-field>
-<!-- <pre>date: {{ dateTimeValue() }}</pre>
-<pre>utc date: {{ dateTimeValue().utc() }}</pre>
-<pre>formatted date: {{ dateTimeValue().format('YYYY-MM-DD HH:mm') }}</pre>
-<pre>formatted utc date: {{ dateTimeValue().utc().format('YYYY-MM-DD HH:mm') }}</pre> -->
 <app-field-helper-text></app-field-helper-text>
