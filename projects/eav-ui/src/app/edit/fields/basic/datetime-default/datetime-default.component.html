@@ -1,6 +1,7 @@
 <mat-form-field color="accent" class="eav-mat-form-field">
   <mat-label>Date & Time</mat-label>
-  <!-- Visible input for OWL picker -->
+  <!-- Visible input For both Date & Time Picker -->
+  <!-- propertybinding for a template reference of owl-date-time instance -->
   <input
     matInput
     [disabled]="ui().disabled"
@@ -10,6 +11,7 @@
     [required]="basics().required"
     [value]="dateTimeValue()"
   />
+  <!-- Isn't used anymore, but remains in code if needed -->
   <!-- <mat-datepicker-toggle matSuffix [owlDateTimeTrigger]="owlPicker" tippyTranslate="Fields.DateTime.Open" /> -->
   <owl-date-time #owlPicker></owl-date-time>
   
@@ -22,7 +24,6 @@
     #dateInput
     [value]="dateTimeValue()"
   />
-  <!-- [formControl]="dateValue" -->
   <mat-datepicker #datepicker xPosition="end"></mat-datepicker>
   <mat-datepicker-toggle [for]="datepicker" matSuffix tippyTranslate="Fields.DateTime.OpenCalender" />
 
@@ -37,8 +38,7 @@
         [value]="dateTimeValue()"
         (input)="onTimeInputChange($event)"
       />
-      <!-- [formControl]="timeValue" -->
-      <mat-timepicker #timepicker [options]="timePickerOptions()" xPosition="end"></mat-timepicker>
+      <mat-timepicker #timepicker [options]="timePickerOptions()"></mat-timepicker>
       <mat-timepicker-toggle [for]="timepicker" matSuffix tippyTranslate="Fields.DateTime.OpenTime" />
     </ng-container>
   }
