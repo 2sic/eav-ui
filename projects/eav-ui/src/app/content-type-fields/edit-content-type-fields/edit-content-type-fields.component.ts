@@ -51,6 +51,9 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
   @ViewChild('ngForm', { read: NgForm }) private form: NgForm;
   @ViewChildren('autoFocusInputField') autoFocusInputField!: QueryList<ElementRef>;
 
+  #typesSvc = transient(ContentTypesService);
+  #typesFieldsSvc = transient(ContentTypesFieldsService);
+
   fields: Partial<Field>[] = [];
   reservedNames: Record<string, string> = {};
   editMode: 'name' | 'inputType';
@@ -66,10 +69,7 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
   saving$ = new BehaviorSubject(false);
 
   #contentType: ContentType;
-  #inputTypeOptions: FieldInputTypeOption[];
-
-  #typesSvc = transient(ContentTypesService);
-  #typesFieldsSvc = transient(ContentTypesFieldsService);
+  #inputTypeOptions = this.#typesFieldsSvc.getInputTypes();
 
   constructor(
     protected dialog: MatDialogRef<EditContentTypeFieldsComponent>,
@@ -100,17 +100,20 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
     this.editMode = this.route.snapshot.paramMap.get('editMode') as 'name' | 'inputType';
 
     const typeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
-    const contentType$ = this.#typesSvc.retrieveContentType(typeStaticName).pipe(share());
-    const fields$ = contentType$.pipe(switchMap(ct => this.#typesFieldsSvc.getFields(ct.StaticName)));
-    const dataTypes$ = this.#typesFieldsSvc.typeListRetrieve().pipe(map(raw => calculateDataTypes(raw)));
-    const inputTypes$ = this.#typesFieldsSvc.getInputTypesList();
+    const contentType$ = this.#typesSvc
+      .retrieveContentType(typeStaticName)
+      .pipe(share());
+    const fields$ = contentType$
+      .pipe(switchMap(ct => this.#typesFieldsSvc.getFields(ct.NameId)));
+    const dataTypes$ = this.#typesFieldsSvc
+      .typeListRetrieve()
+      .pipe(map(raw => calculateDataTypes(raw)));
     const reservedNames$ = this.#typesFieldsSvc.getReservedNames();
 
-    forkJoin([contentType$, fields$, dataTypes$, inputTypes$, reservedNames$]).subscribe(
-      ([contentType, fields, dataTypes, inputTypes, reservedNames]) => {
+    forkJoin([contentType$, fields$, dataTypes$, reservedNames$]).subscribe(
+      ([contentType, fields, dataTypes, reservedNames]) => {
         this.#contentType = contentType;
         this.dataTypes = dataTypes;
-        this.#inputTypeOptions = inputTypes;
         // this.existingFields = fields;
 
         this.reservedNames = ReservedNamesValidatorDirective.mergeReserved(reservedNames, fields);
@@ -151,7 +154,7 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
   }
 
   filterInputTypeOptions(index: number) {
-    this.filteredInputTypeOptions[index] = this.#inputTypeOptions.filter(
+    this.filteredInputTypeOptions[index] = this.#inputTypeOptions().filter(
       option => option.dataType === this.fields[index].Type.toLocaleLowerCase()
     );
   }
@@ -165,8 +168,9 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
   }
 
   calculateHints(index: number) {
-    const selectedDataType = this.dataTypes.find(dataType => dataType.name === this.fields[index].Type);
-    const selectedInputType = this.#inputTypeOptions.find(option => option.inputType === this.fields[index].InputType);
+    const field = this.fields[index];
+    const selectedDataType = this.dataTypes.find(dataType => dataType.name === field.Type);
+    const selectedInputType = this.#inputTypeOptions().find(option => option.inputType === field.InputType);
     this.dataTypeHints[index] = selectedDataType?.description ?? '';
     this.inputTypeHints[index] = selectedInputType?.isObsolete
       ? `OBSOLETE - ${selectedInputType.obsoleteMessage}`
@@ -174,7 +178,7 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
   }
 
   getInputTypeOption(inputName: string) {
-    return this.#inputTypeOptions.find(option => option.inputType === inputName);
+    return this.#inputTypeOptions().find(option => option.inputType === inputName);
   }
 
   save() {

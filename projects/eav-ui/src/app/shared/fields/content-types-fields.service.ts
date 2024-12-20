@@ -44,24 +44,23 @@ export class ContentTypesFieldsService extends HttpServiceBase {
     return this.getHttpApiUrl<string[]>(webApiDataTypes, this.paramsAppId());
   }
 
-  getInputTypesList() {
-    return this.getHttpApiUrl<InputTypeMetadata[]>(webApiInputTypes, this.paramsAppId())
-      .pipe(
-        map(inputConfigs => {
-          const inputTypeOptions = inputConfigs.map(config => ({
-            dataType: config.Type.substring(0, config.Type.indexOf('-')),
-            inputType: config.Type,
-            label: config.Label,
-            description: config.Description,
-            isDefault: config.IsDefault,
-            isObsolete: config.IsObsolete,
-            isRecommended: config.IsRecommended,
-            obsoleteMessage: config.ObsoleteMessage,
-            icon: config.IsDefault ? 'star' : config.IsRecommended ? 'star_outline' : null,
-          } satisfies FieldInputTypeOption));
-          return inputTypeOptions;
-        }),
-      );
+  getInputTypes() {
+    return this.getSignal<FieldInputTypeOption[], InputTypeMetadata[]>(
+      webApiInputTypes,
+      this.paramsAppId(),
+      [],
+      inputConfigs => inputConfigs.map(config => ({
+        dataType: config.Type.substring(0, config.Type.indexOf('-')),
+        inputType: config.Type,
+        label: config.Label,
+        description: config.Description,
+        isDefault: config.IsDefault,
+        isObsolete: config.IsObsolete,
+        isRecommended: config.IsRecommended,
+        obsoleteMessage: config.ObsoleteMessage,
+        icon: config.IsDefault ? 'stars' : config.IsRecommended ? 'star' : null,
+      } satisfies FieldInputTypeOption)),
+    );
   }
 
   getReservedNames() {
