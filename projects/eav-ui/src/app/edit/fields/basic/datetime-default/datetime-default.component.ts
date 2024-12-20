@@ -60,7 +60,7 @@ export class DatetimeDefaultComponent implements AfterViewInit {
   dateTimeValue = computed(() => dayjs.utc(this.uiValue() || dayjs().utc()));
 
   timePickerOptions = computed(() => {
-    const template = dayjs().hour(0).minute(0).second(0);
+    const template = dayjs().utc().hour(0).minute(0).second(0);
 
     const predefinedOptions = [
       { label: '00:00 AM', value: template.hour(0) },
