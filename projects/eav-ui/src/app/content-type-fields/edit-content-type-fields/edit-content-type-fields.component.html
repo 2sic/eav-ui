@@ -51,6 +51,7 @@
                   [name]="'Type' + i"
                   [disabled]="editMode != null"
                   panelClass="eav-type-field-type-select"
+                  panelWidth=""
                 >
                   <mat-select-trigger>
                     <mat-icon class="eav-type-icon">{{ findIcon(field.Type) }}</mat-icon>
@@ -76,6 +77,7 @@
                   [name]="'InputType' + i"
                   [disabled]="editMode === 'name'"
                   panelClass="eav-type-field-input-type-select"
+                  panelWidth=""
                 >
                   <mat-select-trigger>
                     <span>{{ getInputTypeOption(field.InputType)?.label }}</span>
