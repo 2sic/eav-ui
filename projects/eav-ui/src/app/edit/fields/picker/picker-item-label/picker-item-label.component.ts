@@ -1,5 +1,6 @@
-import { Component, input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { FieldSettingsWithPickerSource } from '../../../../../../../edit-types/src/PickerSources';
+import { FeatureIconComponent } from '../../../../features/feature-icon/feature-icon.component';
 import { PickerItem } from '../models/picker-item.model';
 import { PickerFeaturesItem } from '../picker-features.model';
 import { PickerIconHelpComponent } from '../picker-icon-help/picker-icon-help.component';
@@ -8,15 +9,16 @@ import { PickerItemButtonsComponent } from '../picker-item-buttons/picker-item-b
 import { PickerItemPreviewComponent } from '../picker-item-preview/picker-item-preview.component';
 
 @Component({
-    selector: 'app-picker-item-label',
-    imports: [
-        PickerItemPreviewComponent,
-        PickerIconHelpComponent,
-        PickerIconInfoComponent,
-        PickerItemButtonsComponent,
-    ],
-    templateUrl: './picker-item-label.component.html',
-    styleUrl: './picker-item-label.component.scss'
+  selector: 'app-picker-item-label',
+  imports: [
+    PickerItemPreviewComponent,
+    PickerIconHelpComponent,
+    PickerIconInfoComponent,
+    PickerItemButtonsComponent,
+    FeatureIconComponent,
+  ],
+  templateUrl: './picker-item-label.component.html',
+  styleUrl: './picker-item-label.component.scss'
 })
 export class PickerPreviewLabelComponent {
   /** The item to show the label/buttons for */
@@ -34,4 +36,15 @@ export class PickerPreviewLabelComponent {
   /** If the buttons should show or not - I believe ATM it's always true */
   show = input<boolean>(false);
 
+  featureWarnings = computed(() => {
+    const conditions = this.item().rules;
+    if (!conditions) return [];
+    const list = conditions
+      .split(';')
+      .map(c => c.trim())
+      .filter(c => c.startsWith('warn-req=feature:'))
+      .map(c => c.split(':')[1]);
+    console.log('list', list);
+    return list;
+  }, { debugName: 'featureWarnings' });
 }

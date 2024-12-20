@@ -11,9 +11,6 @@ export interface PickerItem {
   /** The previewValue to Show (Icon, etc.) */
   previewValue?: string;
 
-  /** Maybe the setting for the visualizer - eg. "none", "text", "icon-font", "icon-svg", "image" */
-  // previewType?: string;
-
   /** The HTML to show in the preview */
   previewHtml?: string;
 
@@ -80,8 +77,24 @@ export interface PickerItem {
   /**
    * The data of the underlying original entity.
    * Used in formulas and field masks for all properties.
+   * Named `data` and not `entity` because in theory the data could come from elsewhere and never be an entity. 
    */
-  entity?: EntityLight;
+  data?: EntityLight;
+
+  /**
+   * WIP to list features required for this item.
+   * 
+   * Goal is to probably have a CSV always consisting of prefix like 
+   * 
+   * * `feature:` and then a feature ID such as `feature:PickerUiRadio` + a possible action such as `hint=feature:PickerUiRadio`
+   * * later `package:` and then a package
+   * * later `permission:` and then a permission
+   * 
+   * Important: This is beta and not for public use; ATM used in the radio/checkboxes of pickers and only there.
+   * It can still change at any time, both format and implementation.
+   */
+  rules?: string;
+
 }
 
 export class PickerItemFactory {

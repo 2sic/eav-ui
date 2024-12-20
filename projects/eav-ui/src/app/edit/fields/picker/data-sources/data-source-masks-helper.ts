@@ -16,6 +16,8 @@ const logSpecs = {
   buildMasks: false,
 }
 
+type MaskedPickerParts = Pick<PickerItem, 'label' | 'tooltip' | 'info' | 'link' | 'previewValue'>;
+
 /**
  * Helper class to process masks for a DataSource.
  * Masks are strings with placeholders, vs. just the name of the field to show.
@@ -83,7 +85,7 @@ export class DataSourceMasksHelper {
     if (!masks.hasPlaceholders) {
       const result: PickerItem = {
         id: entity.Id,
-        entity: entity,
+        data: entity,
         value,
         previewValue,
         label,
@@ -91,6 +93,7 @@ export class DataSourceMasksHelper {
         info: masks.info,
         link: masks.link,
         sourceStreamName: streamName ?? null,
+        rules: entity["Rules"],
       };
       return l.r(result, 'no masks');
     }
@@ -103,16 +106,17 @@ export class DataSourceMasksHelper {
 
     return l.r({
       id: entity.Id,
-      entity: entity,
+      data: entity,
       ...fromMasks,
       value,
       label: finalLabel,
       sourceStreamName: streamName ?? null,
-    } as PickerItem, 'with masks');
+      rules: entity["Rules"],
+    } satisfies PickerItem, 'with masks');
   }
 
   /** Process all placeholders in all masks to get tooltip, info, link and title */
-  #parseMasks(masks: DataSourceMasks, data: Record<string, any>): Partial<PickerItem> {
+  #parseMasks(masks: DataSourceMasks, data: Record<string, any>): MaskedPickerParts {
     const l = this.log.fnIf('parseMasks', { masks, data });
     let label = masks.label;
 
@@ -150,7 +154,7 @@ export class DataSourceMasksHelper {
       previewValue = previewValue.replace(search, valueItem);
     });
 
-    return l.r({ label, tooltip, info, link, previewValue } satisfies Partial<PickerItem>, 'result');
+    return l.r({ label, tooltip, info, link, previewValue } satisfies MaskedPickerParts, 'result');
   }
 
   /** Get the mask - if possibly from current objects cache */
