@@ -51,17 +51,20 @@ export class ContentTypesFieldsService extends HttpServiceBase {
       webApiInputTypes,
       this.paramsAppId(),
       [],
-      inputConfigs => inputConfigs.map(config => ({
-        dataType: config.Type.substring(0, config.Type.indexOf('-')),
-        inputType: config.Type,
-        label: config.Label,
-        description: config.Description,
-        isDefault: config.IsDefault,
-        isObsolete: config.IsObsolete,
-        isRecommended: config.IsRecommended,
-        obsoleteMessage: config.ObsoleteMessage,
-        icon: config.IsDefault ? 'stars' : config.IsRecommended ? 'star' : null,
-      } satisfies FieldInputTypeOption)),
+      inputConfigs => inputConfigs
+        .map(config => ({
+          dataType: config.Type.substring(0, config.Type.indexOf('-')),
+          inputType: config.Type,
+          label: config.Label,
+          description: config.Description,
+          isDefault: config.IsDefault,
+          isObsolete: config.IsObsolete,
+          isRecommended: config.IsRecommended,
+          obsoleteMessage: config.ObsoleteMessage,
+          icon: config.IsDefault ? 'stars' : config.IsRecommended ? 'star' : null,
+          sort: (config.IsObsolete ? 'z' : config.IsDefault ? 'a' : config.IsRecommended ? 'b' : 'c') + config.Label,
+        } satisfies FieldInputTypeOption & { sort: string}))
+      .sort((a, b) => a.sort.localeCompare(b.sort)),
     );
   }
 
