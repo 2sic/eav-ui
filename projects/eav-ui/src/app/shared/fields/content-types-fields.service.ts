@@ -93,6 +93,22 @@ export class ContentTypesFieldsService extends HttpServiceBase {
       );
   }
 
+  getFieldsSig(contentTypeStaticName: string) {
+    return this.getSignal<Field[]>(webApiFieldsAll, this.paramsAppId({ staticName: contentTypeStaticName }), [], fields => {
+      if (fields) {
+        for (const fld of fields) {
+          if (!fld.Metadata) continue;
+          const md = fld.Metadata;
+          const allMd = md.All;
+          const typeMd = md[fld.Type];
+          const inputMd = md[fld.InputType];
+          md.merged = { ...allMd, ...typeMd, ...inputMd };
+        }
+      }
+      return fields;
+    });
+  }
+
   /** Get all possible sharable fields for a new sharing */
   getShareableFields() {
     return this.getHttpApiUrl<Field[]>(webApiFieldsGetShared, this.paramsAppId());

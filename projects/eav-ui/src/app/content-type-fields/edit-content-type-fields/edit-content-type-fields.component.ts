@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, HostBinding, OnInit, QueryList, signal, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostBinding, linkedSignal, QueryList, Signal, signal, ViewChild, ViewChildren } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
@@ -11,10 +11,9 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { catchError, concatMap, filter, forkJoin, of, share, switchMap, toArray } from 'rxjs';
+import { catchError, concatMap, filter, of, toArray } from 'rxjs';
 import { transient } from '../../../../../core';
 import { fieldNameError, fieldNamePattern } from '../../app-administration/constants/field-name.patterns';
-import { ContentType } from '../../app-administration/models/content-type.model';
 import { ContentTypesService } from '../../app-administration/services/content-types.service';
 import { BaseComponent } from '../../shared/components/base.component';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
@@ -22,7 +21,7 @@ import { ContentTypesFieldsService } from '../../shared/fields/content-types-fie
 import { DataTypeCatalog } from '../../shared/fields/data-type-catalog';
 import { Field, FieldInputTypeOption } from '../../shared/fields/field.model';
 import { InputTypeCatalog } from '../../shared/fields/input-type-catalog';
-import { computedObj, signalObj } from '../../shared/signals/signal.utilities';
+import { computedObj } from '../../shared/signals/signal.utilities';
 import { calculateTypeIcon, calculateTypeLabel } from '../content-type-fields.helpers';
 import { ReservedNamesValidatorDirective } from './reserved-names.directive';
 
@@ -52,7 +51,7 @@ type FieldSubset = Pick<Field, 'Id' | 'Type' | 'InputType' | 'StaticName' | 'IsT
     FieldHintComponent,
   ]
 })
-export class EditContentTypeFieldsComponent extends BaseComponent implements OnInit, AfterViewInit {
+export class EditContentTypeFieldsComponent extends BaseComponent implements AfterViewInit {
   @HostBinding('className') hostClass = 'dialog-component';
   @ViewChild('ngForm', { read: NgForm }) private form: NgForm;
   @ViewChildren('autoFocusInputField') autoFocusInputField!: QueryList<ElementRef>;
@@ -78,25 +77,59 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
     );
   }
 
-  fields = signalObj<FieldSubset[]>('fields', []);
-  editMode = this.route.snapshot.paramMap.get('editMode') as 'name' | 'inputType';
-  filteredInputTypeOptions: FieldInputTypeOption[][] = [];
+  // External functions / constants to pass to the view
   fieldNamePattern = fieldNamePattern;
   fieldNameError = fieldNameError;
   findIcon = calculateTypeIcon;
   findLabel = calculateTypeLabel;
+
+  /** Edit mode is either not set (new fields) or edit-name / edit-inputType */
+  editMode = this.route.snapshot.paramMap.get('editMode') as 'name' | 'inputType';
+  filteredInputTypeOptions: FieldInputTypeOption[][] = [];
   saving = signal(false);
 
-  #contentType: ContentType;
+  /** Data types such as string, number, ... */
   dataTypes = this.#typesFieldsSvc.dataTypes();
+
   #inputTypeOptions = this.#typesFieldsSvc.getInputTypes();
+  #contentTypeSig = this.#typesSvc.retrieveContentTypeSig(this.route.snapshot.paramMap.get('contentTypeStaticName'), null);
 
+  // Existing fields - to setup reserved names and initialize the fields
+  existingFieldsLazy = computedObj<Signal<Field[]>>('rawFields', () => {
+    const contentType = this.#contentTypeSig();
+    return contentType
+      ? this.#typesFieldsSvc.getFieldsSig(contentType.NameId)
+      : signal([]);
+  });
+
+  fields = (() => {
+    // Get the fields once the data is ready
+    const initial = computedObj('fields', () => {
+      const fields = this.existingFieldsLazy()();
+      if (this.editMode != null) {
+        if (fields.length === 0) return [];
+        const routeId = this.route.snapshot.paramMap.get('id');
+        const editFieldId = routeId ? parseInt(routeId, 10) : null;
+        const editField = fields.find(field => field.Id === editFieldId);
+        return [editField];
+      } else
+        return this.#generateNewList(fields.length);
+    });
+
+    return linkedSignal({
+      source: initial,
+      computation: fields => fields,
+    });
+  })();
+
+  // Figure out the reserved names which should not be used as field names
   #reservedNamesSystem = this.#typesFieldsSvc.reservedNames();
-
   reservedNames = computedObj('reservedNamesAll', () => {
     // setup watchers
-    const fields = this.fields();
+    const fields = this.existingFieldsLazy()();
     const reservedNames = this.#reservedNamesSystem();
+    if (fields.length === 0)
+      return reservedNames;
     const merged = ReservedNamesValidatorDirective.mergeReserved(reservedNames, fields);
     
     // If we're about to rename, allow the current name to be reused
@@ -112,32 +145,7 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
       setTimeout(() => this.autoFocusInputField.first?.nativeElement?.focus(), 250);
   }
 
-  ngOnInit() {
-
-    const typeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
-    const contentType$ = this.#typesSvc
-      .retrieveContentType(typeStaticName)
-      .pipe(share());
-    const fields$ = contentType$
-      .pipe(switchMap(ct => this.#typesFieldsSvc.getFields(ct.NameId)));
-
-    forkJoin([contentType$, fields$]).subscribe(
-      ([contentType, fields]) => {
-        this.#contentType = contentType;
-
-        if (this.editMode != null) {
-          const editFieldId = this.route.snapshot.paramMap.get('id')
-            ? parseInt(this.route.snapshot.paramMap.get('id'), 10)
-            : null;
-          const editField = fields.find(field => field.Id === editFieldId);
-          this.fields.set([editField]);
-        } else
-          this.fields.set(this.#generateNewList(fields.length));
-      }
-    );
-  }
-
-  #generateNewList(existingFieldCount: number) {
+  #generateNewList(existingFieldCount: number): FieldSubset[] {
     return [...Array(8).keys()].map(k => ({
       Id: 0,
       Type: DataTypeCatalog.String,
@@ -207,7 +215,7 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
       const field = this.fields()[0];
       if (this.editMode === 'name') {
         this.#typesFieldsSvc
-          .rename(field.Id, this.#contentType.Id, field.StaticName)
+          .rename(field.Id, this.#contentTypeSig().Id, field.StaticName)
           .subscribe(() => doneAndClose());
       } else if (this.editMode === 'inputType') {
         this.#typesFieldsSvc
@@ -219,7 +227,7 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
         .pipe(
           filter(field => !!field.StaticName),
           concatMap(field =>
-            this.#typesFieldsSvc.add(field, this.#contentType.Id).pipe(catchError(_ => of(null)))
+            this.#typesFieldsSvc.add(field, this.#contentTypeSig().Id).pipe(catchError(_ => of(null)))
           ),
           toArray(),
         )
