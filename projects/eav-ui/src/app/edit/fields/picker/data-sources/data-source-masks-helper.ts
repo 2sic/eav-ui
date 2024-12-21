@@ -165,13 +165,6 @@ export class DataSourceMasksHelper {
     return this.#masks;
   }
 
-  // TODO: WE can probably get rid of this now, by just supplying the setting on creation of the object
-  /** modify/patch the current objects mask */
-  public patchMasks(patch: Partial<DataSourceMasks>) {
-    this.#masks = { ...this.#getMasks(), ...patch };
-    this.log.aIf('patchMasks', { masks: this.#masks });
-  }
-
   #buildMasks(): DataSourceMasks {
     const settings = this.settings;
     const l = this.log.fnIf('buildMasks', { settings });

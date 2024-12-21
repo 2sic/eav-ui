@@ -1,20 +1,22 @@
-import { Component, input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { NgxTippyModule } from 'ngx-tippy-wrapper';
 import { FieldSettingsWithPickerSource } from '../../../../../../../edit-types/src/PickerSources';
 import { PickerItem } from '../models/picker-item.model';
 
+const debug = false;
+
 /**
  * Preview as an image/icon of an item.
  */
 @Component({
-    selector: 'app-picker-item-preview',
-    templateUrl: './picker-item-preview.component.html',
-    styleUrl: './picker-item-preview.component.scss',
-    imports: [
-        MatIcon,
-        NgxTippyModule,
-    ]
+  selector: 'app-picker-item-preview',
+  templateUrl: './picker-item-preview.component.html',
+  styleUrl: './picker-item-preview.component.scss',
+  imports: [
+    MatIcon,
+    NgxTippyModule,
+  ]
 })
 export class PickerItemPreviewComponent {
 
@@ -22,11 +24,27 @@ export class PickerItemPreviewComponent {
 
   settings = input.required<FieldSettingsWithPickerSource>();
 
-  replaceDot(value: string): string {
+  debugMessage = computed(() => {
+    if (!debug) return '';
+
+    const settings = this.settings();
+    const previewType = settings.PreviewType;
+
+    const item = this.item();
+
+    const msg = `Debug:: Preview type: ${previewType}; PreviewValue: '${item?.previewValue}'; Item: ${JSON.stringify(item)}`;
+    console.log('debug message', msg, item);
+    return '';
+  });
+
+  /** Remove the dot from the class name, as it would be wrong in the class-attribute. */
+  classWithoutDot(value: string): string {
     return value?.replace(/\./g, '');
   }
 
   imageResize(originalImage: string, width: number, height: number): string {
+
+    if (!originalImage) return originalImage;
 
     // Remove w and h parameters completely
     let optimizedImage = originalImage

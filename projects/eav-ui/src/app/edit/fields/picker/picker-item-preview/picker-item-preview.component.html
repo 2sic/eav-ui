@@ -1,10 +1,13 @@
 <!-- Type Text for String are Default -->
 
-<!-- Type Font Icon -->
-@if (item()) {
+{{ debugMessage() }}
+
+<!-- Only try to show something if we have a valid item and a valid preview-value -->
+@if (item()?.previewValue) {
   @switch (settings().PreviewType) {
+    <!-- Type Font Icon -->
     @case ("icon-css") {
-      <i class="icon-preview {{ replaceDot(item().previewValue) }}"></i>
+      <i class="icon-preview {{ classWithoutDot(item().previewValue) }}"></i>
     }
     <!-- Type Material Icon -->
     @case ("icon-symbol") {

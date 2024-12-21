@@ -95,7 +95,7 @@ export class PickerLogicShared {
       return { fs, typeConfig };
     }
 
-    // Properties to transfer from both query and entity
+    // Properties to transfer from just about all sources
     fs.CreateTypes = typeConfig.CreateTypes ?? '';// possible multiple types
     fs.MoreFields = typeConfig.MoreFields ?? '';
     fs.Label = typeConfig.Label ?? '';
@@ -103,6 +103,12 @@ export class PickerLogicShared {
     fs.ItemTooltip = typeConfig.ItemTooltip ?? '';
     fs.ItemLink = typeConfig.ItemLink ?? '';
     fs.PreviewType = typeConfig.PreviewType ?? '';
+
+    // May specify another value to be used as the value - eg. for strings/numbers
+    fs.Value = typeConfig.Value ?? '';
+
+    // Do this for all, as it's a common property - e.g. Css, AppAssets, etc.
+    fs.PreviewValue = typeConfig.PreviewValue ?? '';
 
     const sourceIsQuery = typeName === PickerConfigs.UiPickerSourceQuery;
     const sourceIsEntity = typeName === PickerConfigs.UiPickerSourceEntity;
@@ -119,28 +125,18 @@ export class PickerLogicShared {
       fs.Query = specsQuery.Query ?? '';
       fs.StreamName = specsQuery.StreamName ?? 'Default';// stream name could be multiple stream names
       fs.UrlParameters = specsQuery.QueryParameters ?? '';
-
-      // May specify another value to be used as the value - eg. for strings/numbers
-      fs.Value = specsQuery.Value ?? '';
     }
 
     /** Entity Data Source */
     if (sourceIsEntity) {
       const specsEntity = typeConfig as PickerSourceEntity;
       (fs as FieldSettingsEntity).EntityType = specsEntity.ContentTypeNames ?? '';// possible multiple types
-
-      // May specify another value to be used as the value - eg. for strings/numbers
-      fs.Value = specsEntity.Value ?? '';
     }
-
-    // Do this for all, as it's a common property - e.g. Css, AppAssets, etc.
-    fs.PreviewValue = typeConfig.PreviewValue ?? '';
 
     /** Css File Data Source */
     if (sourceIsCss) {
       fs.CssSourceFile = typeConfig.CssSourceFile ?? '';
       fs.CssSelectorFilter = typeConfig.CssSelectorFilter ?? '';
-      fs.Value = typeConfig.Value ?? '';
     }
 
     /** App Assets Source */
@@ -160,7 +156,6 @@ export class PickerLogicShared {
         const csv = (typeConfig as UiPickerSourcesAll & PickerSourceCustomCsv).Csv;
         fs._options ??= new DataSourceParserCsv().parse(csv);
         fs.requiredFeatures = [FeatureNames.PickerSourceCsv];
-        fs.PreviewValue = typeConfig.PreviewValue ?? '';
       }
     }
 

@@ -3,7 +3,6 @@ import { EntityLight } from '../../../../../../../edit-types/src/EntityLight';
 import { classLogEnabled } from '../../../../shared/logging';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
 import { DataSourceBase, logSpecsDataSourceBase } from './data-source-base';
-import { DataSourceMasksHelper } from './data-source-masks-helper';
 
 const logSpecs = {
   ...logSpecsDataSourceBase,
@@ -22,12 +21,12 @@ export class DataSourceString extends DataSourceBase {
 
   loading = signalObj('loading', false);
 
-  #dataMaskHelper = (() => {
-    // Make sure the converter/builder uses the "Value" field for the final 'value'
-    const maskHelper = new DataSourceMasksHelper(this.fieldName, this.settings(), this.features, this.formConfig, this.log);
-    maskHelper.patchMasks({ value: 'Value' })
-    return maskHelper;
-  })();
+  /**
+   * The Data Mask Helper to create Picker Items from the source data
+   * Make sure the converter/builder uses the "Value" field
+   * as all the dropdown sources (CSV, etc.) use that field.
+   */
+  #dataMaskHelper = (() => this.createMaskHelper({ Value: 'Value' }))();
 
   data = computedObj('data', () => {
     const options = this.settings()._options;
