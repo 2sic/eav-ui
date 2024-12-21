@@ -1,10 +1,10 @@
 import { Directive, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import { delay, filter, fromEvent, map, merge, pairwise } from 'rxjs';
 import { BaseDirective } from '../../../shared/directives/base.directive';
+import { classLog } from '../../../shared/logging';
 import { mapUntilChanged } from '../../../shared/rxJs/mapUntilChanged';
 import { FormConfigService } from '../../form/form-config.service';
 import { LanguageService } from '../../localization/language.service';
-import { classLog } from '../../../shared/logging';
 
 const classNext = 'next';
 const classPrevious = 'previous';
@@ -12,7 +12,6 @@ const animationNames = ['move-next', 'move-previous'];
 
 @Directive({
   selector: '[appFormSlide]',
-  standalone: true
 })
 export class FormSlideDirective extends BaseDirective implements OnInit, OnDestroy {
 

@@ -8,8 +8,7 @@ import { NumberPickerLogic } from './number-picker-logic';
 @Component({
   selector: InputTypeCatalog.NumberPicker,
   templateUrl: '../../picker/picker.component.html',
-  standalone: true,
-  imports: PickerImports,
+  imports: PickerImports
 })
 export class NumberPickerComponent extends PickerComponent implements OnInit, OnDestroy {
 

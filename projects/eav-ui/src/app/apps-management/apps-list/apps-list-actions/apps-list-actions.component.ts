@@ -11,17 +11,16 @@ import { LightSpeedActionsComponent } from '../../../admin-shared/lightspeed-act
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 
 @Component({
-  selector: 'app-apps-list-actions',
-  templateUrl: './apps-list-actions.component.html',
-  standalone: true,
-  imports: [
-    TippyDirective,
-    MatIconModule,
-    MatBadgeModule,
-    MatRippleModule,
-    MatMenuModule,
-    LightSpeedActionsComponent,
-  ],
+    selector: 'app-apps-list-actions',
+    templateUrl: './apps-list-actions.component.html',
+    imports: [
+        TippyDirective,
+        MatIconModule,
+        MatBadgeModule,
+        MatRippleModule,
+        MatMenuModule,
+        LightSpeedActionsComponent,
+    ]
 })
 export class AppsListActionsComponent implements ICellRendererAngularComp {
   app: App;

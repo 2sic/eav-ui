@@ -40,7 +40,7 @@ export class HttpServiceBase {
 
   protected getHttpApiUrl<ResultType>(endpoint: string, options?: Parameters<typeof this.http.get>[1]) {
     const url = this.apiUrl(endpoint);
-    return this.http.get<ResultType>(url, options);
+    return this.http.get<ResultType>(url, options ?? undefined); // has a quick, null would fail, undefined is ok
   }
 
   protected getHttp<ResultType>(endpoint: string, options?: Parameters<typeof this.http.get>[1]) {
@@ -53,10 +53,28 @@ export class HttpServiceBase {
     });
   }
 
-  protected getSignal<ResultType>(endpoint: string, options?: Parameters<typeof this.http.get>[1], initial?: ResultType): Signal<ResultType> {
+  /**
+   * @template ResultType Type of the final resulting data in the signal
+   * @template HttpType Type of the data returned by the http call; will match ResultType if no map is provided
+   * @param endpoint url / endpoint
+   * @param options http options
+   * @param initial initial value for the signal, before the http call
+   * @param map optional mapping function to transform the http result into the signal result
+   * @returns 
+   */
+  protected getSignal<ResultType, HttpType = ResultType>(
+    endpoint: string,
+    options?: Parameters<typeof this.http.get>[1],
+    initial?: ResultType,
+    map?: (x: HttpType) => ResultType,
+  ): Signal<ResultType> {
+    // prepare the target signal
     const target = signal<ResultType>(initial);
-    this.getHttpApiUrl<ResultType>(endpoint, options).subscribe(d => {
-      target.set(d)
+    // do http call and set the result
+    this.getHttpApiUrl<HttpType>(endpoint, options).subscribe(d => {
+      // if we have a map function, use it, otherwise just cast
+      const transformed = map ? map(d) : (d as unknown as ResultType);
+      target.set(transformed)
     });
     return target;
   }

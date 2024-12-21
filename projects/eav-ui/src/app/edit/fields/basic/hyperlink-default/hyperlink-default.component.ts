@@ -24,24 +24,23 @@ import { HyperlinkDefaultBaseComponent } from './hyperlink-default-base.componen
 import { HyperlinkDefaultLogic } from './hyperlink-default-logic';
 
 @Component({
-  selector: InputTypeCatalog.HyperlinkDefault,
-  templateUrl: './hyperlink-default.component.html',
-  styleUrls: ['./hyperlink-default.component.scss'],
-  standalone: true,
-  imports: [
-    MatButtonModule,
-    MatIconModule,
-    NgClass,
-    MatMenuModule,
-    MatCardModule,
-    MatFormFieldModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatInputModule,
-    PasteClipboardImageDirective,
-    TranslateModule,
-    TippyDirective,
-  ],
+    selector: InputTypeCatalog.HyperlinkDefault,
+    templateUrl: './hyperlink-default.component.html',
+    styleUrls: ['./hyperlink-default.component.scss'],
+    imports: [
+        MatButtonModule,
+        MatIconModule,
+        NgClass,
+        MatMenuModule,
+        MatCardModule,
+        MatFormFieldModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatInputModule,
+        PasteClipboardImageDirective,
+        TranslateModule,
+        TippyDirective,
+    ]
 })
 @FieldMetadata({
   wrappers: [
@@ -94,7 +93,7 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
       const config = adamSettings();
       // console.warn('adamConfig in Hyperlink-Default', config);
       this.config.adam.setConfig(config);
-    }, { allowSignalWrites: true });
+    });
   }
 
   ngOnInit() {

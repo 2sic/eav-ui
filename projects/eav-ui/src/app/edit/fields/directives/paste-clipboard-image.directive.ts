@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { FeatureNames } from '../../../features/feature-names';
-import { FeaturesScopedService } from '../../../features/features-scoped.service';
+import { FeaturesService } from '../../../features/features.service';
 import { openFeatureDialog } from '../../../features/shared/base-feature.component';
 import { classLog } from '../../../shared/logging';
 import { ElementEventListener } from '../../shared/controls/element-event-listener.model';
@@ -18,11 +18,10 @@ const logSpecs = {
 
 @Directive({
   selector: '[appPasteClipboardImage]',
-  standalone: true
 })
 export class PasteClipboardImageDirective implements OnInit, OnDestroy {
 
-  log = classLog({PasteClipboardImageDirective}, logSpecs, false);
+  log = classLog({PasteClipboardImageDirective}, logSpecs);
 
   config = input<FieldConfigSet>();
   elementType = input<string>();
@@ -32,7 +31,7 @@ export class PasteClipboardImageDirective implements OnInit, OnDestroy {
 
   constructor(
     private elementRef: ElementRef,
-    private features: FeaturesScopedService,
+    private features: FeaturesService,
     private snackBar: MatSnackBar,
     private translate: TranslateService,
     private matDialog: MatDialog,

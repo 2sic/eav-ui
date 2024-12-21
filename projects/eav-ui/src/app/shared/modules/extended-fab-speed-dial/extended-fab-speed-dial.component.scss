@@ -81,13 +81,17 @@ extended-fab-speed-dial {
       }
     }
 
-    &[disabled] {
+    // 2024-12-17 2dm changed to use appear-disabled
+    // so the user can still click and get notified about what's wrong
+    &[disabled], &.appear-disabled {
       cursor: default;
       color: rgba(0, 0, 0, 0.26);
       background-color: rgba(29, 39, 61, 0.12);
     }
 
-    &:hover:not([disabled]) {
+    // Show details incl. keyboard shortcuts on hover, even if disabled (changed 2024-12-17)
+    // &:hover:not([disabled]) {
+    &:hover {
       > span {
         max-width: 256px;
       }

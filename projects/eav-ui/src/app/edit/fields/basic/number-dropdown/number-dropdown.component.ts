@@ -9,10 +9,9 @@ import { NumberDropdownLogic } from './number-dropdown-logic';
 @Component({
   selector: InputTypeCatalog.NumberDropdown,
   templateUrl: '../../picker/picker.component.html',
-  standalone: true,
   imports: [
     PickerImports
-  ],
+  ]
 })
 @FieldMetadata({ ...WrappersLocalizationOnly })
 export class NumberDropdownComponent extends PickerComponent {
@@ -21,6 +20,5 @@ export class NumberDropdownComponent extends PickerComponent {
     super();
     this.constructorEnd();
     NumberDropdownLogic.importMe();
-    // EntityDefaultLogic.importMe();
   }
 }

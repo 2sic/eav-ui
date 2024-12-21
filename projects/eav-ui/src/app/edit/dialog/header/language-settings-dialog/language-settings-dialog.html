@@ -1,0 +1,32 @@
+<div class="eav-dialog">
+  <div class="eav-dialog-header">
+    <div class="eav-dialog-header__title">{{'LanguageSettings.Title' | translate}}</div>
+    <button mat-icon-button tippy="Close dialog" (click)="dialog.close()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <div class="eav-dialog-content">
+    <p>
+      {{'LanguageSettings.Intro' | translate}}
+    </p>
+
+    <h3>{{'LanguageSettings.Subtitle' | translate}}</h3>
+
+    <app-language-dropdown
+      [label]="'LanguageSettings.LabelsAndTextsOptionLabel'"
+      [tooltip]="'LanguageSettings.LabelsAndTextsTooltip'"
+      [optionType]="'form'"
+      [options]="options"
+      [userLanguageSvc]="userLanguageSvc"
+    ></app-language-dropdown>
+
+    <app-language-dropdown
+      [label]="'LanguageSettings.ButtonsAndControlsOptionLabel'"
+      [tooltip]="'LanguageSettings.ButtonsAndControlsTooltip'"
+      [optionType]="'ui'"
+      [options]="options"
+      [userLanguageSvc]="userLanguageSvc"
+    ></app-language-dropdown>
+  </div>
+</div>

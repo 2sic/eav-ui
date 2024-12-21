@@ -6,10 +6,9 @@ import { SxcGridModule } from '../../../shared/modules/sxc-grid-module/sxc-grid.
 import { DevRestApiModel } from '../api-template-vars';
 
 @Component({
-  selector: 'app-dev-api-permissions',
-  templateUrl: './permissions.component.html',
-  standalone: true,
-  imports: [SxcGridModule,],
+    selector: 'app-dev-api-permissions',
+    templateUrl: './permissions.component.html',
+    imports: [SxcGridModule,]
 })
 export class DevRestApiPermissionsComponent implements OnInit, OnChanges {
   data = input<DevRestApiModel>();

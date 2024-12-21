@@ -7,14 +7,13 @@ import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
-  selector: 'app-analyze-settings-total-results',
-  templateUrl: './analyze-settings-total-results.component.html',
-  styleUrls: ['./analyze-settings-total-results.component.scss'],
-  standalone: true,
-  imports: [
-    MatIconModule,
-    MatRippleModule,
-  ],
+    selector: 'app-analyze-settings-total-results',
+    templateUrl: './analyze-settings-total-results.component.html',
+    styleUrls: ['./analyze-settings-total-results.component.scss'],
+    imports: [
+        MatIconModule,
+        MatRippleModule,
+    ]
 })
 export class AnalyzeSettingsTotalResultsComponent implements ICellRendererAngularComp {
   totalResults: number;

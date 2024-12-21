@@ -1,13 +1,16 @@
 <!-- Type Text for String are Default -->
 
-<!-- Type Font Icon -->
-@if (item()) {
+{{ debugMessage() }}
+
+<!-- Only try to show something if we have a valid item and a valid preview-value -->
+@if (item()?.previewValue) {
   @switch (settings().PreviewType) {
+    <!-- Type Font Icon -->
     @case ("icon-css") {
-      <i class="icon-preview {{ replaceDot(item().previewValue) }}"></i>
+      <i class="icon-preview {{ classWithoutDot(item().previewValue) }}"></i>
     }
     <!-- Type Material Icon -->
-    @case ("icon-symbol") {
+    @case ("icon-material") {
       <!-- TODO: ATM it can only take material icons, but in future it should be able to also take other icons, in which case the tag would have to be reworked... -->
       <mat-icon>{{ item().previewValue }}</mat-icon> &nbsp;
     }

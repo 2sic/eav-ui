@@ -25,22 +25,21 @@ import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
 import { templateTypes } from './string-template-picker.constants';
 
 @Component({
-  selector: InputTypeCatalog.StringTemplatePicker,
-  templateUrl: './string-template-picker.component.html',
-  styleUrls: ['./string-template-picker.component.scss'],
-  standalone: true,
-  imports: [
-    MatFormFieldModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatSelectModule,
-    MatOptionModule,
-    MatButtonModule,
-    MatIconModule,
-    FieldHelperTextComponent,
-    TranslateModule,
-    TippyDirective,
-  ],
+    selector: InputTypeCatalog.StringTemplatePicker,
+    templateUrl: './string-template-picker.component.html',
+    styleUrls: ['./string-template-picker.component.scss'],
+    imports: [
+        MatFormFieldModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatSelectModule,
+        MatOptionModule,
+        MatButtonModule,
+        MatIconModule,
+        FieldHelperTextComponent,
+        TranslateModule,
+        TippyDirective,
+    ]
 })
 @FieldMetadata({ ...WrappersLocalizationOnly })
 export class StringTemplatePickerComponent {
@@ -83,7 +82,7 @@ export class StringTemplatePickerComponent {
     effect(() => this.#onLocationChange(this.#locationMask.result()));
 
     // Watch for changes to the Type mask
-    effect(() => this.#setFileConfig(this.#typeMask.result()), { allowSignalWrites: true });
+    effect(() => this.#setFileConfig(this.#typeMask.result()));
   }
 
   #setFileConfig(type: string) {

@@ -16,20 +16,19 @@ import { Context } from '../../shared/services/context';
 import { AppsManagementNavItems } from './managment-nav-items';
 
 @Component({
-  selector: 'app-apps-management-nav',
-  templateUrl: './apps-management-nav.component.html',
-  styleUrls: ['./apps-management-nav.component.scss'],
-  standalone: true,
-  imports: [
-    MatToolbarModule,
-    MatIconModule,
-    BreadcrumbModule,
-    MatButtonModule,
-    MatSidenavModule,
-    RouterOutlet,
-    NavItemListComponent,
-    ToggleDebugDirective,
-  ],
+    selector: 'app-apps-management-nav',
+    templateUrl: './apps-management-nav.component.html',
+    styleUrls: ['./apps-management-nav.component.scss'],
+    imports: [
+        MatToolbarModule,
+        MatIconModule,
+        BreadcrumbModule,
+        MatButtonModule,
+        MatSidenavModule,
+        RouterOutlet,
+        NavItemListComponent,
+        ToggleDebugDirective,
+    ]
 })
 export class AppsManagementNavComponent implements OnInit {
   @ViewChild('sidenav') sidenav!: MatSidenav;

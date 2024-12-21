@@ -6,7 +6,7 @@ import { TranslateModule } from "@ngx-translate/core";
 import { AdamItem } from '../../../../../../../edit-types/src/AdamItem';
 import { FeatureIconTextComponent } from "../../../../features/feature-icon-text/feature-icon-text.component";
 import { FeatureNames } from '../../../../features/feature-names';
-import { FeaturesScopedService } from '../../../../features/features-scoped.service';
+import { FeaturesService } from '../../../../features/features.service';
 import { SignalEquals } from '../../../../shared/signals/signal-equals';
 import { FormsStateService } from "../../../form/forms-state.service";
 import { EditRoutingService } from "../../../routing/edit-routing.service";
@@ -18,20 +18,19 @@ import { ContentExpandAnimation } from "../expand-dialog/content-expand.animatio
 import { WrappersCatalog } from "../wrappers.constants";
 
 @Component({
-  selector: WrappersCatalog.HyperlinkLibraryExpandableWrapper,
-  templateUrl: './hyperlink-library-expandable-wrapper.component.html',
-  styleUrls: ['./hyperlink-library-expandable-wrapper.component.scss'],
-  animations: [ContentExpandAnimation],
-  standalone: true,
-  imports: [
-    DialogPopupComponent,
-    MatIconModule,
-    MatRippleModule,
-    FieldHelperTextComponent,
-    FeatureIconTextComponent,
-    TranslateModule,
-    CommonModule,
-  ],
+    selector: WrappersCatalog.HyperlinkLibraryExpandableWrapper,
+    templateUrl: './hyperlink-library-expandable-wrapper.component.html',
+    styleUrls: ['./hyperlink-library-expandable-wrapper.component.scss'],
+    animations: [ContentExpandAnimation],
+    imports: [
+        DialogPopupComponent,
+        MatIconModule,
+        MatRippleModule,
+        FieldHelperTextComponent,
+        FeatureIconTextComponent,
+        TranslateModule,
+        CommonModule,
+    ]
 })
 // tslint:disable-next-line:max-line-length
 export class HyperlinkLibraryExpandableWrapperComponent implements AfterViewInit, OnDestroy {
@@ -59,7 +58,7 @@ export class HyperlinkLibraryExpandableWrapperComponent implements AfterViewInit
     private zone: NgZone,
     private editRoutingService: EditRoutingService,
     public formsStateService: FormsStateService,
-    private featuresService: FeaturesScopedService,
+    private featuresService: FeaturesService,
   ) { }
 
   ngAfterViewInit() {

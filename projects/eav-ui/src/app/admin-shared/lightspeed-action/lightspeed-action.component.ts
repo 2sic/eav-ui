@@ -4,7 +4,7 @@ import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { LightSpeedInfo } from '../../apps-management/models/LightSpeedInfo';
 import { FeatureNames } from '../../features/feature-names';
-import { FeaturesScopedService } from '../../features/features-scoped.service';
+import { FeaturesService } from '../../features/features.service';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { LightSpeedActionsParams } from './lightspeed-actions.models';
 
@@ -15,15 +15,14 @@ import { LightSpeedActionsParams } from './lightspeed-actions.models';
  *
  */
 @Component({
-  selector: 'app-lightspeed-action',
-  templateUrl: './lightspeed-action.component.html',
-  standalone: true,
-  imports: [
-    TippyDirective,
-    MatIconModule,
-    MatBadgeModule,
-    MatRippleModule,
-  ],
+    selector: 'app-lightspeed-action',
+    templateUrl: './lightspeed-action.component.html',
+    imports: [
+        TippyDirective,
+        MatIconModule,
+        MatBadgeModule,
+        MatRippleModule,
+    ]
 })
 export class LightSpeedActionsComponent {
   /** App needed for lightspeed checks */
@@ -33,7 +32,7 @@ export class LightSpeedActionsComponent {
 
   lightSpeed = input.required<LightSpeedInfo | null>();
 
-  public features = inject(FeaturesScopedService);
+  public features = inject(FeaturesService);
 
   constructor() { }
 

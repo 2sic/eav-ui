@@ -26,7 +26,10 @@
 
         <extended-fab-speed-dial class="adam">
           <ng-template extendedFabSpeedDialTriggerContent>
-            <button extended-fab-speed-dial-trigger matRipple (click)="closeDialog()" [disabled]="isSaving()">
+            <button extended-fab-speed-dial-trigger
+              matRipple
+              (click)="closeDialog()"
+            >
               <mat-icon>done</mat-icon>
               <span>{{ 'Form.Buttons.Return.Tip' | translate }}</span>
             </button>
@@ -35,7 +38,7 @@
             <button
               extended-fab-speed-dial-action
               matRipple
-              [disabled]="formsStateService.saveButtonDisabled() || isSaving()"
+              [ngClass]="{ 'appear-disabled': saveDisabled() }"
               (click)="saveAll(false)"
             >
               <span>{{ 'Form.Buttons.Save' | translate }}</span>
@@ -44,7 +47,7 @@
             <button
               extended-fab-speed-dial-action
               matRipple
-              [disabled]="formsStateService.saveButtonDisabled() || isSaving()"
+              [ngClass]="{ 'appear-disabled': saveDisabled() }"
               (click)="saveAll(true)"
             >
               <span>{{ 'Form.Buttons.SaveAndClose' | translate }}</span>

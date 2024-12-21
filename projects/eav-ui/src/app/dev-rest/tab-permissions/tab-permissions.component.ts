@@ -13,16 +13,15 @@ import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.mod
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 
 @Component({
-  selector: 'app-dev-rest-tab-permissions',
-  templateUrl: './tab-permissions.component.html',
-  standalone: true,
-  imports: [
-    MatButtonModule,
-    TippyDirective,
-    MatIconModule,
-    MatBadgeModule,
-    SxcGridModule,
-  ],
+    selector: 'app-dev-rest-tab-permissions',
+    templateUrl: './tab-permissions.component.html',
+    imports: [
+        MatButtonModule,
+        TippyDirective,
+        MatIconModule,
+        MatBadgeModule,
+        SxcGridModule,
+    ]
 })
 export class DevRestTabPermissionsComponent {
   data = input<DevRestBaseModel>();

@@ -7,6 +7,11 @@
   </div>
 
   <div class="picker-option-info">
+    <!-- Show feature warnings if available. Do this first, to avoid the icons from fluttering back and forth -->
+    @for (feature of featureWarnings(); track feature)
+    {
+      <app-feature-icon [featureNameId]="feature"></app-feature-icon>
+    }
     <app-picker-help [helpLink]="item().link"></app-picker-help>
     <app-picker-icon-info [infoBox]="item().info"></app-picker-icon-info>
     <!-- Action items such as edit, remove, delete -->

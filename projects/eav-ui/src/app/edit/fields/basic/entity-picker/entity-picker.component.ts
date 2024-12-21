@@ -6,10 +6,9 @@ import { PickerComponent } from '../../picker/picker.component';
 import { EntityPickerLogic } from './entity-picker-logic';
 
 @Component({
-  selector: InputTypeCatalog.EntityPicker,
-  templateUrl: '../../picker/picker.component.html',
-  standalone: true,
-  imports: PickerImports,
+    selector: InputTypeCatalog.EntityPicker,
+    templateUrl: '../../picker/picker.component.html',
+    imports: PickerImports
 })
 export class EntityPickerComponent extends PickerComponent implements OnInit, OnDestroy {
 

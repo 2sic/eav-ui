@@ -7,11 +7,12 @@ import { DialogContext } from '../shared/models/dialog-settings.model';
 import { ComputedCacheHelper } from '../shared/signals/computed-cache';
 import { computedObj, signalObj } from '../shared/signals/signal.utilities';
 import { FeatureNames } from './feature-names';
+import { FeaturesDisableAutoLoadService } from './features-disable-autoload.service';
 import { FeatureSummary } from './models/feature-summary.model';
 
 const logSpecs = {
   all: false,
-  constructor: false,
+  constructor: true,
   load: false,
   getAll: false,
   requireFeature: true,
@@ -19,25 +20,24 @@ const logSpecs = {
 };
 
 /**
- * Singleton Service to provide information about enabled/disabled features.
- *
- * It currently has a strange architecture, since it's singleton,
- * but needs context data.
- * So the GlobalDialogConfigService seems to call the loadFromService.
- * TODO: 2dm: I don't like this, should rethink the architecture, feels a bit flaky.
- * 2024-08-28 2dm modified this, but still not perfect.
- * ATM it would still load the dialog-settings by itself, even if the form service would provide it. on .load(...)
+ * Service to provide information about enabled/disabled features.
  */
 @Injectable()
-export class FeaturesScopedService {
+export class FeaturesService {
 
-  log = classLog({FeaturesScopedService}, logSpecs);
+  log = classLog({FeaturesService}, logSpecs);
 
   #dialogConfigSvc = transient(DialogConfigAppService);
 
-  constructor() {
+  constructor(disableAutoLoad: FeaturesDisableAutoLoadService) {
     this.log.fnIf('constructor');
-    this.#dialogConfigSvc.getCurrent$().subscribe(ds => this.load(ds.Context));
+
+    // If auto-load is disable (special edge case when opening the dialog directly to the edit-form)
+    // then don't do this, because in some cases the person opening the dialog doesn't have the necessary permission.
+    if (!disableAutoLoad.disableAutoLoad)
+      this.#dialogConfigSvc.getCurrent$().subscribe(ds => this.load(ds.Context));
+    else
+      this.log.a('auto-load disabled');
   }
 
   load(dialogContext: DialogContext, formData?: EavEditLoadDto) {

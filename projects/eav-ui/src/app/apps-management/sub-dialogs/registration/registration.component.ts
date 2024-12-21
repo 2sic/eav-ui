@@ -15,17 +15,16 @@ import { FeaturesConfigService } from '../../services/features-config.service';
 import { ZoneService } from '../../services/zone.service';
 
 @Component({
-  selector: 'app-registration',
-  templateUrl: './registration.component.html',
-  styleUrls: ['./registration.component.scss'],
-  standalone: true,
-  imports: [
-    MatCardModule,
-    MatIconModule,
-    MatButtonModule,
-    TippyDirective,
-    SafeHtmlPipe,
-  ],
+    selector: 'app-registration',
+    templateUrl: './registration.component.html',
+    styleUrls: ['./registration.component.scss'],
+    imports: [
+        MatCardModule,
+        MatIconModule,
+        MatButtonModule,
+        TippyDirective,
+        SafeHtmlPipe,
+    ]
 })
 export class RegistrationComponent {
   @HostBinding('className') hostClass = 'dialog-component';

@@ -1,4 +1,4 @@
-import { AsyncPipe, NgClass } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { Component, computed, Inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -15,26 +15,18 @@ import { FieldsTranslateService } from '../../../../state/fields-translate.servi
 import { getTemplateLanguages } from './translate-menu-dialog.helpers';
 import { TranslateMenuDialogData } from './translate-menu-dialog.models';
 
-interface TranslationInfo {
-  showLanguageSelection: boolean;
-  i18nRoot: string;
-  submitDisabled: boolean;
-}
-
 @Component({
   selector: 'app-translate-menu-dialog',
   templateUrl: './translate-menu-dialog.component.html',
   styleUrls: ['./translate-menu-dialog.component.scss'],
-  standalone: true,
   imports: [
     MatCardModule,
     MatListModule,
     NgClass,
     MatIconModule,
     MatButtonModule,
-    AsyncPipe,
     TranslateModule,
-  ],
+  ]
 })
 export class TranslateMenuDialogComponent extends TranslateHelperComponent {
 

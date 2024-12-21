@@ -28,6 +28,8 @@
       "Flushcache",
       "guids",
       "jsonify",
+      "languagelabels",
+      "languageui",
       "lightspeed",
       "listpreview",
       "numlist",

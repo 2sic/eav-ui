@@ -6,16 +6,15 @@ import { TranslateModule } from '@ngx-translate/core';
 import { UnsavedChangesSnackBarData } from './snack-bar-unsaved-changes.models';
 
 @Component({
-  selector: 'app-snack-bar-unsaved-changes',
-  templateUrl: './snack-bar-unsaved-changes.component.html',
-  styleUrls: ['./snack-bar-unsaved-changes.component.scss'],
-  standalone: true,
-  imports: [
-    MatButtonModule,
-    UpperCasePipe,
-    TranslateModule,
-    UpperCasePipe
-  ],
+    selector: 'app-snack-bar-unsaved-changes',
+    templateUrl: './snack-bar-unsaved-changes.component.html',
+    styleUrls: ['./snack-bar-unsaved-changes.component.scss'],
+    imports: [
+        MatButtonModule,
+        UpperCasePipe,
+        TranslateModule,
+        UpperCasePipe
+    ]
 })
 export class SnackBarUnsavedChangesComponent {
   constructor(

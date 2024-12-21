@@ -1,4 +1,4 @@
-import { AsyncPipe, NgClass } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialogRef } from '@angular/material/dialog';
@@ -16,15 +16,13 @@ import { isCtrlS } from '../../main/keyboard-shortcuts';
     selector: 'app-publish-status-dialog',
     templateUrl: './publish-status-dialog.component.html',
     styleUrls: ['./publish-status-dialog.component.scss'],
-    standalone: true,
     imports: [
         MatCardModule,
         MatListModule,
         NgClass,
         MatIconModule,
-        AsyncPipe,
         TranslateModule,
-    ],
+    ]
 })
 export class PublishStatusDialogComponent {
   PublishModes = PublishModes;

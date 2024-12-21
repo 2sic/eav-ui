@@ -8,14 +8,13 @@ import { MetadataItem } from '../models/metadata.model';
 import { MetadataActionsParams } from './metadata-actions.models';
 
 @Component({
-  selector: 'app-metadata-actions',
-  templateUrl: './metadata-actions.component.html',
-  standalone: true,
-  imports: [
-    MatRippleModule,
-    MatIconModule,
-    TippyDirective,
-  ],
+    selector: 'app-metadata-actions',
+    templateUrl: './metadata-actions.component.html',
+    imports: [
+        MatRippleModule,
+        MatIconModule,
+        TippyDirective,
+    ]
 })
 export class MetadataActionsComponent implements ICellRendererAngularComp {
   private params: ICellRendererParams & MetadataActionsParams;

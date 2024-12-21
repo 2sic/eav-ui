@@ -4,11 +4,10 @@ import { CodeAndEditionWarningsSnackBarData } from './code-and-edition-warnings.
 import { MatButtonModule } from '@angular/material/button';
 
 @Component({
-  selector: 'app-code-and-edition-warnings',
-  templateUrl: './code-and-edition-warnings.component.html',
-  styleUrls: ['./code-and-edition-warnings.component.scss'],
-  standalone: true,
-  imports: [MatButtonModule],
+    selector: 'app-code-and-edition-warnings',
+    templateUrl: './code-and-edition-warnings.component.html',
+    styleUrls: ['./code-and-edition-warnings.component.scss'],
+    imports: [MatButtonModule]
 })
 export class CodeAndEditionWarningsComponent {
   constructor(

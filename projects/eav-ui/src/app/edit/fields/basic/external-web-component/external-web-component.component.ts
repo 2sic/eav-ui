@@ -1,4 +1,3 @@
-import { AsyncPipe } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
@@ -10,14 +9,12 @@ import { CustomGpsLogic } from './custom-gps-logic';
 import { StringWysiwygLogic } from './string-wysiwyg-logic';
 
 @Component({
-  selector: InputTypeCatalog.ExternalWebComponent,
-  templateUrl: './external-web-component.component.html',
-  standalone: true,
-  imports: [
-    MatProgressSpinnerModule,
-    ConnectorComponent,
-    AsyncPipe,
-  ],
+    selector: InputTypeCatalog.ExternalWebComponent,
+    templateUrl: './external-web-component.component.html',
+    imports: [
+        MatProgressSpinnerModule,
+        ConnectorComponent,
+    ]
 })
 export class ExternalWebComponentComponent {
 

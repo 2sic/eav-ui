@@ -13,8 +13,8 @@ import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
 import { Context } from '../shared/services/context';
 
 @Component({
-  selector: 'app-dev-rest-base',
-  template: ''
+    selector: 'app-dev-rest-base',
+    template: '',
 })
 // tslint:disable-next-line:component-class-suffix
 export class DevRestBase<ViewModelType> implements OnDestroy {

@@ -244,8 +244,18 @@
     "Splitter.l": "Trennung mit grosser Lücke"
   },
   "Features": {
-    "NotActivated": "Diese Funktion ist nicht aktiviert - mehr erfahren"
+    "NotActivated": "Die Funktion '{{name}}' ist nicht aktiviert - mehr erfahren"
   },
   "License-EditUi-Warning-Label": "Vorschau",
-  "License-EditUi-Warning-Tooltip": "Du verwendest Funktionen, die nicht lizenziert sind."
+  "License-EditUi-Warning-Tooltip": "Du verwendest Funktionen, die nicht lizenziert sind.",
+  "LanguageSettings": {
+    "Title": "Spracheinstellungen (BETA)",
+    "Intro": "Standardmässig verwenden Schaltflächen und Beschriftungen die aktuelle Sprache. Hier können Sie ein anderes Verhalten wählen.",
+    "Subtitle": "Ihre Spracheinstellungen",
+    "UseCurrentLanguage": "Aktuelle Sprache verwenden (Standard)",
+    "ButtonsAndControlsOptionLabel": "Schaltflächen und Steuerelemente",
+    "ButtonsAndControlsTooltip": "Bevorzugte Sprache für Schaltflächen und Steuerelemente",
+    "LabelsAndTextsOptionLabel": "Formularbeschriftungen und Hilfetexte",
+    "LabelsAndTextsTooltip": "Bevorzugte Sprache für Texte und Beschriftungen in Formularen"
+  }
 }

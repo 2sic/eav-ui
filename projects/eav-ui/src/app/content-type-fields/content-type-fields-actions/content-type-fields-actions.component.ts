@@ -12,17 +12,16 @@ import { MatRippleModule } from '@angular/material/core';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 
 @Component({
-  selector: 'app-content-type-fields-actions',
-  templateUrl: './content-type-fields-actions.component.html',
-  styleUrls: ['./content-type-fields-actions.component.scss'],
-  standalone: true,
-  imports: [
-    MatRippleModule,
-    MatIconModule,
-    MatBadgeModule,
-    MatMenuModule,
-    TippyDirective,
-  ],
+    selector: 'app-content-type-fields-actions',
+    templateUrl: './content-type-fields-actions.component.html',
+    styleUrls: ['./content-type-fields-actions.component.scss'],
+    imports: [
+        MatRippleModule,
+        MatIconModule,
+        MatBadgeModule,
+        MatMenuModule,
+        TippyDirective,
+    ]
 })
 export class ContentTypeFieldsActionsComponent implements ICellRendererAngularComp {
   field: Field;

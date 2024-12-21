@@ -9,15 +9,14 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 
 @Component({
-  selector: 'app-features-status',
-  templateUrl: './features-status.component.html',
-  styleUrls: ['./features-status.component.scss'],
-  standalone: true,
-  imports: [
-    MatSlideToggleModule,
-    NgClass,
-    TippyDirective,
-  ],
+    selector: 'app-features-status',
+    templateUrl: './features-status.component.html',
+    styleUrls: ['./features-status.component.scss'],
+    imports: [
+        MatSlideToggleModule,
+        NgClass,
+        TippyDirective,
+    ]
 })
 export class FeaturesStatusComponent implements ICellRendererAngularComp {
   value: boolean | null;

@@ -1,4 +1,3 @@
-import { JsonPipe, NgTemplateOutlet } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -14,7 +13,7 @@ import { DocsLinkHelperComponent } from '../../admin-shared/docs-link-helper/doc
 import { DialogConfigAppService } from '../../app-administration/services/dialog-config-app.service';
 import { FeatureNames } from '../../features/feature-names';
 import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
-import { FeaturesScopedService } from '../../features/features-scoped.service';
+import { FeaturesService } from '../../features/features.service';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { EavWindow } from '../../shared/models/eav-window.model';
@@ -28,29 +27,26 @@ import { InfoTemplate } from './system-info.models';
 declare const window: EavWindow;
 
 @Component({
-  selector: 'app-system-info',
-  templateUrl: './system-info.component.html',
-  standalone: true,
-  imports: [
-    MatCardModule,
-    MatIconModule,
-    RouterLink,
-    NgTemplateOutlet,
-    MatButtonModule,
-    FormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    RouterOutlet,
-    FeatureTextInfoComponent,
-    FieldHintComponent,
-    TippyDirective,
-    DocsLinkHelperComponent,
-    JsonPipe,
-  ],
+    selector: 'app-system-info',
+    templateUrl: './system-info.component.html',
+    imports: [
+        MatCardModule,
+        MatIconModule,
+        RouterLink,
+        MatButtonModule,
+        FormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        RouterOutlet,
+        FeatureTextInfoComponent,
+        FieldHintComponent,
+        TippyDirective,
+        DocsLinkHelperComponent,
+    ]
 })
 export class SystemInfoComponent implements OnInit {
 
-  public features = inject(FeaturesScopedService);
+  public features = inject(FeaturesService);
 
   #dialogSettings = transient(DialogConfigAppService);
   #sxcInsightsService = transient(SxcInsightsService);

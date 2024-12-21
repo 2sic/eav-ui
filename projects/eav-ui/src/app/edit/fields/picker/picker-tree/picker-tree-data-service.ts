@@ -32,17 +32,17 @@ export class PickerTreeDataService {
         const all = allItems();
         // if the objects don't have a data property, we can't convert them to tree items
         // todo: not sure why this happens, possibly early cycles don't have it yet?
-        const treeItems = all?.[0]?.entity == null
+        const treeItems = all?.[0]?.data == null
           ? [] as PickerTreeItem[]
           : this.treeHelper.preConvertAllItems(treeConfig, all);
 
-        if (treeItems?.[0]?.entity != undefined) {
+        if (treeItems?.[0]?.data != undefined) {
           this.treeHelper.updateConfig(treeConfig);
           this.treeHelper.addTreeItems(treeItems);
 
           const filteredData = treeItems.filter(x => relationshipIsParentChild //check for two streams type also
-            ? !treeItems.some(y => y.entity[treeConfig?.TreeParentChildRefField]?.some((z: { Id: number; }) => z.Id === x.id))
-            : x.entity[treeConfig?.TreeChildParentRefField]?.length == 0);
+            ? !treeItems.some(y => y.data[treeConfig?.TreeParentChildRefField]?.some((z: { Id: number; }) => z.Id === x.id))
+            : x.data[treeConfig?.TreeChildParentRefField]?.length == 0);
           this.treeHelper.updateSelectedData(filteredData);
         }
       });

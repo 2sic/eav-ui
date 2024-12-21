@@ -11,7 +11,6 @@ import { MonacoInstance } from './monaco-instance';
   selector: 'app-monaco-editor',
   templateUrl: './monaco-editor.component.html',
   styleUrls: ['./monaco-editor.component.scss'],
-  standalone: true,
 })
 export class MonacoEditorComponent implements AfterViewInit, OnChanges, OnDestroy {
   @ViewChild('editor') private editorRef: ElementRef<HTMLElement>;

@@ -6,17 +6,16 @@ import { TippyDirective } from '../../directives/tippy.directive';
 import { NavItem } from '../../models/nav-item.model';
 
 @Component({
-  selector: 'app-nav-item-list',
-  templateUrl: './nav-item-list.component.html',
-  styleUrl: './nav-item-list.component.scss',
-  standalone: true,
-  imports: [
-    MatIconModule,
-    NgClass,
-    RouterLink,
-    RouterLinkActive,
-    TippyDirective,
-  ],
+    selector: 'app-nav-item-list',
+    templateUrl: './nav-item-list.component.html',
+    styleUrl: './nav-item-list.component.scss',
+    imports: [
+        MatIconModule,
+        NgClass,
+        RouterLink,
+        RouterLinkActive,
+        TippyDirective,
+    ]
 })
 export class NavItemListComponent implements OnInit {
   navItem = input<NavItem>();

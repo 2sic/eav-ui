@@ -5,10 +5,9 @@ import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { PickerImports } from '../../picker/picker-providers.constant';
 
 @Component({
-  selector: InputTypeCatalog.EntityContentBlocks,
-  templateUrl: '../../picker/picker.component.html',
-  standalone: true,
-  imports: PickerImports,
+    selector: InputTypeCatalog.EntityContentBlocks,
+    templateUrl: '../../picker/picker.component.html',
+    imports: PickerImports
 })
 export class EntityContentBlockComponent extends EntityDefaultComponent implements OnInit, OnDestroy {
 

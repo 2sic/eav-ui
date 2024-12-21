@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Directive, ViewContainerRef, inject, input } from '@
 import { MatDialog } from '@angular/material/dialog';
 import { computedObj } from '../../shared/signals/signal.utilities';
 import { FeatureInfoDialogComponent } from '../feature-info-dialog/feature-info-dialog.component';
-import { FeaturesScopedService } from '../features-scoped.service';
+import { FeaturesService } from '../features.service';
 
 /**
  * Base component for various UI components which inform that a feature is not enabled.
@@ -20,7 +20,7 @@ export class FeatureComponentBase {
   #matDialog = inject(MatDialog);
   #viewContainerRef = inject(ViewContainerRef);
   #changeDetectorRef = inject(ChangeDetectorRef);
-  #featuresService = inject(FeaturesScopedService);
+  #featuresService = inject(FeaturesService);
 
   constructor() { }
 

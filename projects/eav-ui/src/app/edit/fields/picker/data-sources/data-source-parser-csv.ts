@@ -3,7 +3,7 @@ import { PickerOptionCustomExtended } from '../../../../../../../edit-types/src/
 import { classLog } from '../../../../shared/logging';
 
 const logSpecs = {
-  all: false,
+  all: true,
   parse: true,
 };
 
@@ -39,7 +39,7 @@ export class DataSourceParserCsv {
     const header = x?.meta.fields ?? [];
     const preEmpty = header.reduce((acc, h) => ({
       ...acc,
-      [h]: null }),
+      [h]: null }) as { [key: string]: any },
       {}
     ) as { [key: string]: any };
     const { Value, ...empty } = preEmpty;

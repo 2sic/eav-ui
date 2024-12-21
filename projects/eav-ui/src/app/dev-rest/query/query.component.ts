@@ -29,26 +29,25 @@ import { DevRestQueryModel } from './query-template-vars';
 
 const pathToQuery = 'app/{appname}/query/{queryname}';
 @Component({
-  selector: 'app-dev-rest-query',
-  templateUrl: './query.component.html',
-  standalone: true,
-  imports: [
-    MatButtonModule,
-    TippyDirective,
-    MatIconModule,
-    RouterOutlet,
-    SelectorWithHelpComponent,
-    MatTabsModule,
-    DevRestQueryIntroductionComponent,
-    DevRestTabIntroductionComponent,
-    DevRestTabExamplesComponent,
-    MatFormFieldModule,
-    MatInputModule,
-    DevRestUrlsAndCodeComponent,
-    DevRestTabPermissionsComponent,
-    DevRestHttpHeadersComponent,
-    AsyncPipe,
-  ],
+    selector: 'app-dev-rest-query',
+    templateUrl: './query.component.html',
+    imports: [
+        MatButtonModule,
+        TippyDirective,
+        MatIconModule,
+        RouterOutlet,
+        SelectorWithHelpComponent,
+        MatTabsModule,
+        DevRestQueryIntroductionComponent,
+        DevRestTabIntroductionComponent,
+        DevRestTabExamplesComponent,
+        MatFormFieldModule,
+        MatInputModule,
+        DevRestUrlsAndCodeComponent,
+        DevRestTabPermissionsComponent,
+        DevRestHttpHeadersComponent,
+        AsyncPipe,
+    ]
 })
 export class DevRestQueryComponent extends DevRestBase<DevRestQueryModel> implements OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';

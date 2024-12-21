@@ -8,17 +8,16 @@ import { ChangeAnchorTargetDirective } from '../directives/change-anchor-target.
 import { FieldState } from '../field-state';
 
 @Component({
-  selector: 'app-field-helper-text',
-  templateUrl: './field-help-text.component.html',
-  styleUrls: ['./field-help-text.component.scss'],
-  standalone: true,
-  imports: [
-    NgClass,
-    MatFormFieldModule,
-    ChangeAnchorTargetDirective,
-    TranslateModule,
-    SafeHtmlPipe,
-  ],
+    selector: 'app-field-helper-text',
+    templateUrl: './field-help-text.component.html',
+    styleUrls: ['./field-help-text.component.scss'],
+    imports: [
+        NgClass,
+        MatFormFieldModule,
+        ChangeAnchorTargetDirective,
+        TranslateModule,
+        SafeHtmlPipe,
+    ]
 })
 export class FieldHelperTextComponent {
   disableError = input<boolean>(false);

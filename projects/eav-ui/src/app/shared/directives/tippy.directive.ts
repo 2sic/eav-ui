@@ -6,7 +6,6 @@ import tippy, { Instance, Placement, Props } from 'tippy.js';
 
 @Directive({
   selector: '[tippy], [tippyTranslate]',
-  standalone: true
 })
 export class TippyDirective implements OnChanges, OnDestroy {
   /** Message to show in Tippy - raw */
@@ -17,6 +16,9 @@ export class TippyDirective implements OnChanges, OnDestroy {
 
   /** disable Tippy */
   tippyDisabled = input<string | boolean | null | undefined>();
+
+  /** Data to use with the tippy-message. For mixing in with the tippyTranslate */
+  tippyData = input<Record<string, unknown> | null>();
 
   /**
    * 'top' | 'top-start' | 'top-end' |
@@ -66,7 +68,7 @@ export class TippyDirective implements OnChanges, OnDestroy {
     if (changes['tippy'] != null || changes['tippyTranslate'] != null || changes['tippyFontSize'] != null) {
       const val = this.tippyTranslate()?.toString() ?? '';
       const contents = val
-        ? this.translate?.instant(val) ?? val // temp with null-check in case the service is missing ATM
+        ? this.translate?.instant(val, this.tippyData()) ?? val // temp with null-check in case the service is missing ATM
         : this.tippy()?.toString() ?? '';
 
       // Disable Tippy if no content, but re-enable if content is added later

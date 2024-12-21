@@ -1,5 +1,5 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
@@ -41,23 +41,22 @@ import { DataFieldsComponent } from './data-fields/data-fields.component';
 import { DataItemsComponent } from './data-items/data-items.component';
 
 @Component({
-  selector: 'app-data',
-  templateUrl: './data.component.html',
-  styleUrls: ['./data.component.scss'],
-  standalone: true,
-  imports: [
-    MatDialogActions,
-    MatFormFieldModule,
-    MatSelectModule,
-    FormsModule,
-    MatOptionModule,
-    MatButtonModule,
-    MatIconModule,
-    RouterOutlet,
-    SxcGridModule,
-    DragAndDropDirective,
-    TippyDirective,
-  ],
+    selector: 'app-data',
+    templateUrl: './data.component.html',
+    styleUrls: ['./data.component.scss'],
+    imports: [
+        MatDialogActions,
+        MatFormFieldModule,
+        MatSelectModule,
+        FormsModule,
+        MatOptionModule,
+        MatButtonModule,
+        MatIconModule,
+        RouterOutlet,
+        SxcGridModule,
+        DragAndDropDirective,
+        TippyDirective,
+    ]
 })
 export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
 
@@ -74,6 +73,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
   contentTypes = signal<ContentType[]>(undefined);
   scope = signal<string>(undefined);
   scopeOptions = signal<ScopeDetailsDto[]>([]);
+  scopeSelected = computed(() => this.scopeOptions().find(s => s.name === this.scope()));
 
   /** Possible scopes - the ones from the backend + manually entered scopes by the current user */
   gridOptions = this.#buildGridOptions();

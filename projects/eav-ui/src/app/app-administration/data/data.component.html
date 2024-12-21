@@ -12,10 +12,18 @@
   <mat-dialog-actions class="eav-dialog-actions">
     <div class="eav-dialog-actions-div">
       <mat-form-field color="accent" class="eav-mat-form-field eav-scope-dropdown">
-        <mat-select [ngModel]="scope()" name="Scope" (ngModelChange)="changeScope($event)">
+        <mat-select
+          [ngModel]="scope()"
+          name="Scope"
+          (ngModelChange)="changeScope($event)"
+          panelWidth=""
+        >
+          <mat-select-trigger>
+            <span>Scope: {{ scopeSelected()?.label }}</span>
+          </mat-select-trigger>
           @for (scopeOption of scopeOptions(); track scopeOption) {
             <mat-option [value]="scopeOption.name">
-              {{ 'Scope: ' + scopeOption.label }}
+              {{ scopeOption.label }}
             </mat-option>
           }
           <mat-option [value]="dropdownInsertValue">Scope: Other...</mat-option>

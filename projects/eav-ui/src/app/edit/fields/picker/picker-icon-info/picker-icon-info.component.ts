@@ -4,14 +4,13 @@ import { ClickStopPropagationDirective } from '../../../../shared/directives/cli
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 
 @Component({
-  selector: 'app-picker-icon-info',
-  standalone: true,
-  imports: [
-    MatIconModule,
-    TippyDirective,
-    ClickStopPropagationDirective,
-  ],
-  templateUrl: './picker-icon-info.component.html',
+    selector: 'app-picker-icon-info',
+    imports: [
+        MatIconModule,
+        TippyDirective,
+        ClickStopPropagationDirective,
+    ],
+    templateUrl: './picker-icon-info.component.html'
 })
 export class PickerIconInfoComponent {
   infoBox = input<string>();

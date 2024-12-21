@@ -20,7 +20,7 @@ import { Preview } from './hyperlink-default.models';
 
 @Component({
   selector: 'app-base-field-hyperlink-component',
-  template: ''
+  template: '',
 })
 // tslint:disable-next-line:directive-class-suffix
 export class HyperlinkDefaultBaseComponent implements OnInit {
@@ -65,7 +65,7 @@ export class HyperlinkDefaultBaseComponent implements OnInit {
       this.log.a('controlStatus effect');
       const status = this.fieldState.uiValue();
       this.fetchLink(status);
-    }, { injector: this.#injector, allowSignalWrites: true });
+    }, { injector: this.#injector });
   }
 
   adamItem = computedObj('adamItem', () => {

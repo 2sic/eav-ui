@@ -3,10 +3,9 @@ import { FieldState } from '../../field-state';
 import { WrappersCatalog } from '../wrappers.constants';
 
 @Component({
-  selector: WrappersCatalog.HiddenWrapper,
-  templateUrl: './hidden-wrapper.component.html',
-  standalone: true,
-  imports: [],
+    selector: WrappersCatalog.HiddenWrapper,
+    templateUrl: './hidden-wrapper.component.html',
+    imports: []
 })
 export class HiddenWrapperComponent {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;

@@ -33,12 +33,6 @@ export class DataSourceQuery extends DataSourceEntityBase {
   #streamName = computedObj('streamName', () => this.settings().StreamName);
 
   /**
-   * Behavior changes a bit if the query is meant to supply data for string-inputs
-   * ...mainly because the value is allowed to be any field, not just the Guid.
-   */
-  #isForStringField = this.fieldState.config.inputTypeSpecs.isString;
-
-  /**
    * Get the data from a query - all or only the ones listed in the guids
    */
   protected override getFromBackend(params: string, guids: string[], purposeForLog: string): Observable<DataWithLoading<PickerItem[]>> {
@@ -92,32 +86,44 @@ export class DataSourceQuery extends DataSourceEntityBase {
 
 
   #transformData(data: QueryStreams, streamName: string | null): PickerItem[] {
-    const valueMustBeGuid = !this.#isForStringField;
-    const l = this.log.fn('transformData', { data, streamName, isForStringField: this.#isForStringField });
+    
+    const l = this.log.fn('transformData', { data, streamName });
     if (!data)
-      return [PickerItemFactory.message(this.#translate, 'Fields.Picker.QueryErrorNoData')];
+      return l.r([PickerItemFactory.message(this.#translate, 'Fields.Picker.QueryErrorNoData')], 'data is null');
+    
+    // Behavior changes a bit if the query is meant to supply data for string-inputs
+    // ...mainly because the value is allowed to be any field, not just the Guid.
+    const inputSpecs = this.fieldState.config.inputTypeSpecs;
+    const valueMustUseGuid = inputSpecs.mustUseGuid;
+    const streamNames = streamName.split(',');
+    l.values({ inputType: inputSpecs.inputType, valueMustUseGuid, streamNames });
 
-    let items: PickerItem[] = [];
-    let errors: PickerItem[] = [];
-    streamName.split(',').forEach(stream => {
-      if (!data[stream]) {
-        errors.push(PickerItemFactory.placeholder(this.#translate, 'Fields.Picker.QueryStreamNotFound', ' ' + stream));
-        return; // TODO: @SDV test if this acts like continue or break
-      }
+    // If expected streams are missing, create placeholders
+    const errors = streamNames
+      .filter(streamName => !data[streamName])
+      .map(streamName => PickerItemFactory.placeholder(this.#translate, 'Fields.Picker.QueryStreamNotFound', ' ' + streamName));
 
-      items = items.concat(data[stream].map(entity => this.createMaskHelper().data2PickerItem({
-        entity,
-        streamName: stream,
-        valueMustUseGuid: valueMustBeGuid
-      })));
-    });
-    return l.r([...errors, ...this.#setDisableEdit(items)]);
+    // Create the items
+    const maskHelper = this.createMaskHelper();
+    const items = streamNames
+      .filter(streamName => data[streamName])
+      .reduce((acc, streamName) => {
+        const converted = data[streamName]
+          .map(entity => maskHelper.data2PickerItem({ entity, streamName, valueMustUseGuid, valueDefaultsToGuid: true }));
+        return acc.concat(converted);
+      }, []);
+
+    // Set read-only flags on items from other apps
+    const itemsMaybeReadOnly = this.#setDisableEdit(items);
+
+    // Merge errors and items
+    return l.r([...errors, ...itemsMaybeReadOnly]);
   }
 
   #setDisableEdit<T extends PickerItem>(queryEntities: T[]): T[] {
     if (queryEntities)
       queryEntities.forEach(e => {
-        const appId = e.entity?.AppId;
+        const appId = e.data?.AppId;
         e.noEdit = appId != null && appId !== this.#appId;
         e.noDelete = e.noEdit;
       });

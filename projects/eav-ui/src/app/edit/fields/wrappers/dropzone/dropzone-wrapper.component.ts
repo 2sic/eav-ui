@@ -12,14 +12,13 @@ import { DropzoneConfigInstance, DropzoneType } from './dropzone-wrapper.models'
 import { DropzoneWysiwyg } from './dropzone-wysiwyg';
 
 @Component({
-  selector: WrappersCatalog.DropzoneWrapper,
-  templateUrl: './dropzone-wrapper.component.html',
-  styleUrls: ['./dropzone-wrapper.component.scss'],
-  standalone: true,
-  imports: [
-    NgClass,
-    DropzoneModule,
-  ],
+    selector: WrappersCatalog.DropzoneWrapper,
+    templateUrl: './dropzone-wrapper.component.html',
+    styleUrls: ['./dropzone-wrapper.component.scss'],
+    imports: [
+        NgClass,
+        DropzoneModule,
+    ]
 })
 export class DropzoneWrapperComponent implements AfterViewInit {
   

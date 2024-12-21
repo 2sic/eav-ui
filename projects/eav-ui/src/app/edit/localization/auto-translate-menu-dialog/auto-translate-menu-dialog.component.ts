@@ -1,4 +1,4 @@
-import { AsyncPipe, NgClass } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { Component, Inject, OnInit, computed, inject } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -8,7 +8,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateModule } from '@ngx-translate/core';
 import { FeatureNames } from '../../../features/feature-names';
 import { FeatureTextInfoComponent } from '../../../features/feature-text-info/feature-text-info.component';
-import { FeaturesScopedService } from '../../../features/features-scoped.service';
+import { FeaturesService } from '../../../features/features.service';
 import { TranslateHelperComponent } from '../../../shared/components/translate-helper.component';
 import { EditApiKeyPaths } from '../../../shared/constants/eav.constants';
 import { ApiKeySpecs } from '../../../shared/models/dialog-context.models';
@@ -24,21 +24,19 @@ import { TranslationStateCore } from '../translate-state.model';
   selector: 'app-auto-translate-menu-dialog',
   templateUrl: './auto-translate-menu-dialog.component.html',
   styleUrls: ['./auto-translate-menu-dialog.component.scss'],
-  standalone: true,
   imports: [
     MatCardModule,
     FeatureTextInfoComponent,
     MatListModule,
     NgClass,
     MatIconModule,
-    AsyncPipe,
     TranslateModule,
     SafeHtmlPipe,
-  ],
+  ]
 })
 export class AutoTranslateMenuDialogComponent extends TranslateHelperComponent implements OnInit {
 
-  public features = inject(FeaturesScopedService);
+  public features = inject(FeaturesService);
   public isTranslateWithGoogleFeatureEnabled = this.features.isEnabled[FeatureNames.EditUiTranslateWithGoogle];
 
   protected languagesSig = computed(() => {

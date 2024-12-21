@@ -3,6 +3,7 @@ import { map } from 'rxjs';
 import { Of } from '../../../../../core';
 import { ContentType } from '../../app-administration/models/content-type.model';
 import { webApiTypeRoot } from '../../app-administration/services';
+import { calculateDataTypes, DataType } from '../../content-type-fields/edit-content-type-fields/edit-content-type-fields.helpers';
 import { HttpServiceBase } from '../services/http-service-base';
 import { Field, FieldInputTypeOption } from './field.model';
 import { InputTypeCatalog } from './input-type-catalog';
@@ -40,32 +41,39 @@ export class ContentTypesFieldsService extends HttpServiceBase {
     };
   }
 
-  typeListRetrieve() {
-    return this.getHttpApiUrl<string[]>(webApiDataTypes, this.paramsAppId());
+  /** Get list of data types available in the system, such as 'string', 'number' etc. */
+  dataTypes() {
+    return this.getSignal<DataType[], string[]>(webApiDataTypes, this.paramsAppId(), [], raw => calculateDataTypes(raw));
   }
 
-  getInputTypesList() {
-    return this.getHttpApiUrl<InputTypeMetadata[]>(webApiInputTypes, this.paramsAppId())
-      .pipe(
-        map(inputConfigs => {
-          const inputTypeOptions = inputConfigs.map(config => ({
-            dataType: config.Type.substring(0, config.Type.indexOf('-')),
-            inputType: config.Type,
-            label: config.Label,
-            description: config.Description,
-            isDefault: config.IsDefault,
-            isObsolete: config.IsObsolete,
-            isRecommended: config.IsRecommended,
-            obsoleteMessage: config.ObsoleteMessage,
-            icon: config.IsDefault ? 'star' : config.IsRecommended ? 'star_outline' : null,
-          } satisfies FieldInputTypeOption));
-          return inputTypeOptions;
-        }),
-      );
+  getInputTypes() {
+    return this.getSignal<FieldInputTypeOption[], InputTypeMetadata[]>(
+      webApiInputTypes,
+      this.paramsAppId(),
+      [],
+      inputConfigs => inputConfigs
+        .map(config => ({
+          dataType: config.Type.substring(0, config.Type.indexOf('-')),
+          inputType: config.Type,
+          label: config.Label,
+          description: config.Description,
+          isDefault: config.IsDefault,
+          isObsolete: config.IsObsolete,
+          isRecommended: config.IsRecommended,
+          obsoleteMessage: config.ObsoleteMessage,
+          icon: config.IsDefault ? 'stars' : config.IsRecommended ? 'star' : null,
+          sort: (config.IsObsolete ? 'z' : config.IsDefault ? 'a' : config.IsRecommended ? 'b' : 'c') + config.Label,
+        } satisfies FieldInputTypeOption & { sort: string}))
+      .sort((a, b) => a.sort.localeCompare(b.sort)),
+    );
   }
 
   getReservedNames() {
     return this.getHttpApiUrl<Record<string, string>>(webApiReservedNames);
+  }
+
+  reservedNames() {
+    return this.getSignal<Record<string, string>>(webApiReservedNames, null, {});
   }
 
   /** Get all fields for some content type */
@@ -86,6 +94,22 @@ export class ContentTypesFieldsService extends HttpServiceBase {
           return fields;
         }),
       );
+  }
+
+  getFieldsSig(contentTypeStaticName: string) {
+    return this.getSignal<Field[]>(webApiFieldsAll, this.paramsAppId({ staticName: contentTypeStaticName }), [], fields => {
+      if (fields) {
+        for (const fld of fields) {
+          if (!fld.Metadata) continue;
+          const md = fld.Metadata;
+          const allMd = md.All;
+          const typeMd = md[fld.Type];
+          const inputMd = md[fld.InputType];
+          md.merged = { ...allMd, ...typeMd, ...inputMd };
+        }
+      }
+      return fields;
+    });
   }
 
   /** Get all possible sharable fields for a new sharing */

@@ -10,7 +10,7 @@ import { Subscription } from 'rxjs';
  */
 @Component({
   selector: 'app-base-component',
-  template: ''
+  template: '',
 })
 // tslint:disable-next-line:directive-class-suffix
 export abstract class BaseComponent implements OnDestroy {

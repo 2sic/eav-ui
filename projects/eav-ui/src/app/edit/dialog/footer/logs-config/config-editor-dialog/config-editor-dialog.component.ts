@@ -6,8 +6,7 @@ import {
   MAT_DIALOG_DATA,
   MatDialogActions,
   MatDialogClose,
-  MatDialogContent, MatDialogModule, MatDialogRef,
-  MatDialogTitle
+  MatDialogModule, MatDialogRef
 } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { transient } from '../../../../../../../../core/transient';
@@ -15,22 +14,19 @@ import { ClipboardService } from '../../../../..//shared/services/clipboard.serv
 import { MonacoEditorComponent } from '../../../../../monaco-editor/monaco-editor.component';
 import { TippyDirective } from '../../../../../shared/directives/tippy.directive';
 @Component({
-  standalone: true,
-  imports: [
-    MatDialogModule,
-    FormsModule,
-    MonacoEditorComponent,
-    MatButtonModule,
-    MatDialogActions,
-    MatDialogClose,
-    MatDialogContent,
-    MatDialogTitle,
-    ClipboardModule,
-    MatIconModule,
-    TippyDirective,
-  ],
-  selector: 'app-monaco-editor-dialog',
-  templateUrl: './config-editor-dialog.component.html',
+    imports: [
+        MatDialogModule,
+        FormsModule,
+        MonacoEditorComponent,
+        MatButtonModule,
+        MatDialogActions,
+        MatDialogClose,
+        ClipboardModule,
+        MatIconModule,
+        TippyDirective,
+    ],
+    selector: 'app-monaco-editor-dialog',
+    templateUrl: './config-editor-dialog.component.html'
 })
 export class ConfigEditorDialogComponent {
 

@@ -4,11 +4,10 @@ import { FormConfigService } from '../../../form/form-config.service';
 import { ItemService } from '../../../state/item.service';
 
 @Component({
-  selector: 'app-data-dump',
-  templateUrl: './data-dump.component.html',
-  styleUrls: ['./data-dump.component.scss'],
-  standalone: true,
-  imports: [JsonPipe],
+    selector: 'app-data-dump',
+    templateUrl: './data-dump.component.html',
+    styleUrls: ['./data-dump.component.scss'],
+    imports: [JsonPipe]
 })
 export class DataDumpComponent {
   protected items = this.itemService.getManySignal(this.formConfig.config.itemGuids);

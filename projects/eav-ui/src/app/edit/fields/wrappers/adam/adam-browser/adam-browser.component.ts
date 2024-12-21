@@ -1,6 +1,6 @@
 import { Context as DnnContext } from '@2sic.com/sxc-angular';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { AsyncPipe, NgClass } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { ChangeDetectorRef, Component, effect, inject, OnInit, output, ViewContainerRef } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatDialog } from '@angular/material/dialog';
@@ -11,7 +11,7 @@ import { transient } from '../../../../../../../../core/transient';
 import { AdamConfig } from '../../../../../../../../edit-types/src/AdamConfig';
 import { AdamItem } from '../../../../../../../../edit-types/src/AdamItem';
 import { FeatureNames } from '../../../../../features/feature-names';
-import { FeaturesScopedService } from '../../../../../features/features-scoped.service';
+import { FeaturesService } from '../../../../../features/features.service';
 import { openFeatureDialog } from '../../../../../features/shared/base-feature.component';
 import { eavConstants } from '../../../../../shared/constants/eav.constants';
 import { ClickStopPropagationDirective } from '../../../../../shared/directives/click-stop-propagation.directive';
@@ -42,36 +42,34 @@ const logSpecs = {
 }
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'adam-browser',
-  templateUrl: './adam-browser.component.html',
-  styleUrls: ['./adam-browser.component.scss'],
-  animations: [
-    trigger('adamShowAnimate', [
-      state('closed', style({
-        height: '0',
-        overflow: 'hidden',
-      })),
-      state('open', style({
-        height: '*',
-        overflow: 'hidden',
-      })),
-      transition('closed => open', [
-        animate('300ms cubic-bezier(0.4, 0.0, 0.2, 1)'),
-      ]),
-    ]),
-  ],
-  standalone: true,
-  imports: [
-    NgClass,
-    MatIconModule,
-    PasteClipboardImageDirective,
-    MatBadgeModule,
-    AsyncPipe,
-    TranslateModule,
-    ClickStopPropagationDirective,
-    TippyDirective,
-  ],
+    // tslint:disable-next-line:component-selector
+    selector: 'adam-browser',
+    templateUrl: './adam-browser.component.html',
+    styleUrls: ['./adam-browser.component.scss'],
+    animations: [
+        trigger('adamShowAnimate', [
+            state('closed', style({
+                height: '0',
+                overflow: 'hidden',
+            })),
+            state('open', style({
+                height: '*',
+                overflow: 'hidden',
+            })),
+            transition('closed => open', [
+                animate('300ms cubic-bezier(0.4, 0.0, 0.2, 1)'),
+            ]),
+        ]),
+    ],
+    imports: [
+        NgClass,
+        MatIconModule,
+        PasteClipboardImageDirective,
+        MatBadgeModule,
+        TranslateModule,
+        ClickStopPropagationDirective,
+        TippyDirective,
+    ]
 })
 export class AdamBrowserComponent implements OnInit {
   
@@ -81,7 +79,7 @@ export class AdamBrowserComponent implements OnInit {
 
   protected fieldState = inject(FieldState);
   #editRoutingService = inject(EditRoutingService);
-  #features = inject(FeaturesScopedService);
+  #features = inject(FeaturesService);
 
   #adamService = transient(AdamService);
   #dialogRouter = transient(DialogRoutingService);

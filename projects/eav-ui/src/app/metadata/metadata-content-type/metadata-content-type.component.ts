@@ -5,11 +5,10 @@ import { MetadataItem } from '../models/metadata.model';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 
 @Component({
-  selector: 'app-metadata-content-type',
-  templateUrl: './metadata-content-type.component.html',
-  styleUrls: ['./metadata-content-type.component.scss'],
-  standalone: true,
-  imports: [TippyDirective,],
+    selector: 'app-metadata-content-type',
+    templateUrl: './metadata-content-type.component.html',
+    styleUrls: ['./metadata-content-type.component.scss'],
+    imports: [TippyDirective,]
 })
 export class MetadataContentTypeComponent implements ICellRendererAngularComp {
   value: string;

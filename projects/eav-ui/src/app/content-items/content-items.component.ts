@@ -1,6 +1,6 @@
 import { ColDef, GridApi, GridOptions, GridReadyEvent, ValueGetterParams } from '@ag-grid-community/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectorRef, Component, computed, effect, inject, OnInit, signal, ViewContainerRef, WritableSignal } from '@angular/core';
+import { ChangeDetectorRef, Component, computed, inject, OnInit, signal, ViewContainerRef, WritableSignal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogActions, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -46,20 +46,19 @@ import { PubMeta } from './pub-meta-filter/pub-meta-filter.model';
 import { ContentItemsService } from './services/content-items.service';
 
 @Component({
-  selector: 'app-content-items',
-  templateUrl: './content-items.component.html',
-  standalone: true,
-  imports: [
-    MatButtonModule,
-    MatIconModule,
-    RouterOutlet,
-    MatDialogActions,
-    SafeHtmlPipe,
-    DragAndDropDirective,
-    ToggleDebugDirective,
-    SxcGridModule,
-    TippyDirective,
-  ],
+    selector: 'app-content-items',
+    templateUrl: './content-items.component.html',
+    imports: [
+        MatButtonModule,
+        MatIconModule,
+        RouterOutlet,
+        MatDialogActions,
+        SafeHtmlPipe,
+        DragAndDropDirective,
+        ToggleDebugDirective,
+        SxcGridModule,
+        TippyDirective,
+    ]
 })
 export class ContentItemsComponent implements OnInit {
 
@@ -79,7 +78,7 @@ export class ContentItemsComponent implements OnInit {
     private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
-  ) { effect(() => this.fetchColumns()); }
+  ) { }
 
   gridOptions: GridOptions = {
     ...defaultGridOptions,
@@ -89,7 +88,7 @@ export class ContentItemsComponent implements OnInit {
   /** Signal to tell other signals that the filter changed */
   #filterChanged = signal(0);
 
-  #gridApiSigTemp: WritableSignal<GridApi<ContentItem>> = signal<GridApi<ContentItem>>(null);
+  #gridApiSig: WritableSignal<GridApi<ContentItem>> = signal<GridApi<ContentItem>>(null);
 
   #contentTypeStaticName = this.#dialogRouter.getParam('contentTypeStaticName');
   contentType = this.#contentTypesSvc.retrieveContentTypeSig(this.#contentTypeStaticName, undefined);
@@ -111,7 +110,8 @@ export class ContentItemsComponent implements OnInit {
   }
 
   onGridReady(params: GridReadyEvent) {
-    this.#gridApiSigTemp.set(params.api);
+    this.#gridApiSig.set(params.api);
+    this.fetchColumns();
     this.urlToExportContent();
   }
 
@@ -125,16 +125,16 @@ export class ContentItemsComponent implements OnInit {
       const columnsWithoutEphemeral = columns.filter(column => !column.IsEphemeral);
       const columnDefs = this.#buildColumnDefs(columnsWithoutEphemeral);
       const filterModel = buildFilterModel(sessionStorage.getItem(keyFilters), columnDefs);
-      if (this.#gridApiSigTemp())
+      if (this.#gridApiSig())
         this.setColumnDefs(columnDefs, filterModel);
     });
   }
 
   private setColumnDefs(columnDefs: ColDef[], filterModel: AgGridFilterModel) {
-    this.#gridApiSigTemp().setColumnDefs(columnDefs);
+    this.#gridApiSig().setColumnDefs(columnDefs);
     if (filterModel) {
       this.log.a('Will try to apply filter:', filterModel);
-      this.#gridApiSigTemp().setFilterModel(filterModel);
+      this.#gridApiSig().setFilterModel(filterModel);
     }
   }
 
@@ -191,7 +191,7 @@ export class ContentItemsComponent implements OnInit {
   }
 
   urlToExportContent = computedObj('urlToExportContent', () => {
-    const value = this.#gridApiSigTemp();
+    const value = this.#gridApiSig();
     if (!value)
       return '';
 
@@ -257,7 +257,7 @@ export class ContentItemsComponent implements OnInit {
   }
 
   debugFilter() {
-    console.warn('Current filter:', this.#gridApiSigTemp().getFilterModel());
+    console.warn('Current filter:', this.#gridApiSig().getFilterModel());
     this.snackBar.open('Check console for filter information', undefined, { duration: 3000 });
   }
 

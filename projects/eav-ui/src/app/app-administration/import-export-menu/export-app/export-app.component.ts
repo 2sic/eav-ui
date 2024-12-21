@@ -6,27 +6,24 @@ import { MatDialogActions } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { transient } from '../../../../../../core';
 import { DocsLinkHelperComponent } from '../../../admin-shared/docs-link-helper/docs-link-helper.component';
-import { FeatureIconIndicatorComponent } from '../../../features/feature-icon-indicator/feature-icon-indicator.component';
 import { FeatureIconComponent } from '../../../features/feature-icon/feature-icon.component';
 import { FeatureNames } from '../../../features/feature-names';
-import { FeaturesScopedService } from '../../../features/features-scoped.service';
+import { FeaturesService } from '../../../features/features.service';
 import { ExportAppService } from '../../services/export-app.service';
 
 @Component({
-  selector: 'app-export-app',
-  templateUrl: './export-app.component.html',
-  styleUrls: ['./export-app.component.scss'],
-  standalone: true,
-  imports: [
-    MatCheckboxModule,
-    FormsModule,
-    MatDialogActions,
-    MatButtonModule,
-    MatIconModule,
-    FeatureIconIndicatorComponent,
-    FeatureIconComponent,
-    DocsLinkHelperComponent,
-  ],
+    selector: 'app-export-app',
+    templateUrl: './export-app.component.html',
+    styleUrls: ['./export-app.component.scss'],
+    imports: [
+        MatCheckboxModule,
+        FormsModule,
+        MatDialogActions,
+        MatButtonModule,
+        MatIconModule,
+        FeatureIconComponent,
+        DocsLinkHelperComponent,
+    ]
 })
 export class ExportAppComponent {
 
@@ -35,7 +32,7 @@ export class ExportAppComponent {
   appInfo = this.#exportAppService.getAppInfo(undefined);
 
 
-  protected features = inject(FeaturesScopedService);
+  protected features = inject(FeaturesService);
   protected expAssetsAdvEnabled = this.features.isEnabled[FeatureNames.AppExportAssetsAdvanced];
 
   // Use Signals

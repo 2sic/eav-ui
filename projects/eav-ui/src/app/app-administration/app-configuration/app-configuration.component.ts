@@ -1,4 +1,4 @@
-import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
+import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef, computed, inject, signal } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
@@ -13,7 +13,7 @@ import { DocsLinkHelperComponent } from '../../admin-shared/docs-link-helper/doc
 import { ContentItemsService } from '../../content-items/services/content-items.service';
 import { FeatureNames } from '../../features/feature-names';
 import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
-import { FeaturesScopedService } from '../../features/features-scoped.service';
+import { FeaturesService } from '../../features/features.service';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { SystemSettingsScopes, eavConstants } from '../../shared/constants/eav.constants';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
@@ -26,35 +26,32 @@ import { Context } from '../../shared/services/context';
 import { DialogService } from '../../shared/services/dialog.service';
 import { AppAdminHelpers } from '../app-admin-helpers';
 import { AppInternals } from '../models/app-internals.model';
-import { ContentTypesService } from '../services';
 import { AppInternalsService } from '../services/app-internals.service';
 import { DialogConfigAppService } from '../services/dialog-config-app.service';
 import { AnalyzeParts } from '../sub-dialogs/analyze-settings/analyze-settings.models';
 import { AppConfigurationCardComponent } from './app-configuration-card/app-configuration-card.component';
 
 @Component({
-  selector: 'app-app-configuration',
-  templateUrl: './app-configuration.component.html',
-  styleUrls: ['./app-configuration.component.scss'],
-  standalone: true,
-  imports: [
-    MatCardModule,
-    MatIconModule,
-    MatButtonModule,
-    MatBadgeModule,
-    NgTemplateOutlet,
-    AppConfigurationCardComponent,
-    FeatureTextInfoComponent,
-    RouterOutlet,
-    AsyncPipe,
-    TippyDirective,
-    DocsLinkHelperComponent,
-  ],
+    selector: 'app-app-configuration',
+    templateUrl: './app-configuration.component.html',
+    styleUrls: ['./app-configuration.component.scss'],
+    imports: [
+        MatCardModule,
+        MatIconModule,
+        MatButtonModule,
+        MatBadgeModule,
+        NgTemplateOutlet,
+        AppConfigurationCardComponent,
+        FeatureTextInfoComponent,
+        RouterOutlet,
+        TippyDirective,
+        DocsLinkHelperComponent,
+    ]
 })
 export class AppConfigurationComponent implements OnInit, OnDestroy {
 
   #dialogSvc = transient(DialogService);
-  #contentTypesSvc = transient(ContentTypesService);
+  // #contentTypesSvc = transient(ContentTypesService);
 
   dialogSettings: DialogSettings;
 
@@ -84,7 +81,7 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
   appSettingsInternal$ = new Subject<AppInternals>();
 
   public appStateAdvanced = false;
-  public features = inject(FeaturesScopedService);
+  public features = inject(FeaturesService);
 
   protected lightSpeedEnabled = this.features.isEnabled[FeatureNames.LightSpeed];
   protected cspEnabled = this.features.isEnabled[FeatureNames.ContentSecurityPolicy];

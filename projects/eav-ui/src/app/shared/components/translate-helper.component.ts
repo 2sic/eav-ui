@@ -18,14 +18,16 @@ interface TranslationInfo {
 }
 
 @Component({
-  selector: 'app-translate-helper-component',
-  template: ''
+  selector: 'app-translate-helper-component-base',
+  template: '',
 })
 export abstract class TranslateHelperComponent {
 
-  private languageService: LanguageService = inject(LanguageService);
-  private itemService: ItemService = inject(ItemService);
-  public formConfig: FormConfigService = inject(FormConfigService);
+  #languageService = inject(LanguageService);
+  #itemService = inject(ItemService);
+  public formConfig = inject(FormConfigService);
+
+  constructor(@Inject(MAT_DIALOG_DATA) public dialogData: TranslateMenuDialogData) {}
 
   TranslationLinks = TranslationLinks;
   I18nKeys = I18nKeys;
@@ -45,9 +47,7 @@ export abstract class TranslateHelperComponent {
     };
   });
 
-  protected languages = this.languageService.getAllSignal();
-  protected itemAttributes = this.itemService.itemAttributesSignal(this.dialogData.config.entityGuid);
-
-  constructor(@Inject(MAT_DIALOG_DATA) public dialogData: TranslateMenuDialogData) {}
+  protected languages = this.#languageService.getAllSignal();
+  protected itemAttributes = this.#itemService.itemAttributesSignal(this.dialogData.config.entityGuid);
 
 }

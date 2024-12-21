@@ -1,7 +1,7 @@
 import { AgGridAngular } from '@ag-grid-community/angular';
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
 import { GridOptions, ModuleRegistry } from '@ag-grid-community/core';
-import { AsyncPipe, JsonPipe, NgClass } from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
 import { ChangeDetectorRef, Component, computed, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogActions } from '@angular/material/dialog';
@@ -34,25 +34,23 @@ import { FeaturesStatusParams } from './features-status/features-status.models';
 import { LicensesOrderPipe } from './licenses-order.pipe';
 
 @Component({
-  selector: 'app-license-info',
-  templateUrl: './license-info.component.html',
-  styleUrls: ['./license-info.component.scss'],
-  standalone: true,
-  imports: [
-    MatExpansionModule,
-    MatIconModule,
-    NgClass,
-    SxcGridModule,
-    AgGridHeightDirective,
-    MatDialogActions,
-    MatButtonModule,
-    RouterOutlet,
-    AsyncPipe,
-    LicensesOrderPipe,
-    ActiveFeaturesCountPipe,
-    TippyDirective,
-    JsonPipe,
-  ],
+    selector: 'app-license-info',
+    templateUrl: './license-info.component.html',
+    styleUrls: ['./license-info.component.scss'],
+    imports: [
+        MatExpansionModule,
+        MatIconModule,
+        NgClass,
+        SxcGridModule,
+        AgGridHeightDirective,
+        MatDialogActions,
+        MatButtonModule,
+        RouterOutlet,
+        AsyncPipe,
+        LicensesOrderPipe,
+        ActiveFeaturesCountPipe,
+        TippyDirective,
+    ]
 })
 export class LicenseInfoComponent implements OnInit {
   @ViewChild(AgGridAngular) private gridRef?: AgGridAngular;

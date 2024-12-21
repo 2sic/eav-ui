@@ -11,7 +11,7 @@ import { transient } from '../../../../../core/transient';
 import { FeatureIconTextComponent } from '../../features/feature-icon-text/feature-icon-text.component';
 import { FeatureNames } from '../../features/feature-names';
 import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
-import { FeaturesScopedService } from '../../features/features-scoped.service';
+import { FeaturesService } from '../../features/features.service';
 import { ContentTypesFieldsService } from '../../shared/fields/content-types-fields.service';
 import { Field } from '../../shared/fields/field.model';
 import { classLog } from '../../shared/logging';
@@ -26,31 +26,30 @@ const logSpecs = {
 const noInheritGuid = '00000000-0000-0000-0000-000000000000';
 
 @Component({
-  selector: 'app-field-sharing-configure',
-  templateUrl: './field-sharing-configure.component.html',
-  styleUrls: ['./field-sharing-configure.component.scss'],
-  standalone: true,
-  imports: [
-    MatButtonModule,
-    MatIconModule,
-    MatCardModule,
-    MatTableModule,
-    NgClass,
-    NgTemplateOutlet,
-    TranslateModule,
-    FeatureTextInfoComponent,
-    FeatureIconTextComponent,
-  ],
+    selector: 'app-field-sharing-configure',
+    templateUrl: './field-sharing-configure.component.html',
+    styleUrls: ['./field-sharing-configure.component.scss'],
+    imports: [
+        MatButtonModule,
+        MatIconModule,
+        MatCardModule,
+        MatTableModule,
+        NgClass,
+        NgTemplateOutlet,
+        TranslateModule,
+        FeatureTextInfoComponent,
+        FeatureIconTextComponent,
+    ]
 })
 export class ShareOrInheritDialogComponent {
 
-  log = classLog({ShareOrInheritDialogComponent}, logSpecs, true);
+  log = classLog({ShareOrInheritDialogComponent}, logSpecs);
 
   #contentTypesFieldsSvc = transient(ContentTypesFieldsService);
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public dialogData: Field,
-    public features: FeaturesScopedService,
+    public features: FeaturesService,
     protected dialog: MatDialogRef<ShareOrInheritDialogComponent>,
   ) {
     const l = this.log.fnIf('constructor', {dialogData});

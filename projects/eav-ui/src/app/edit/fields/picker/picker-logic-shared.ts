@@ -7,7 +7,7 @@ import { FieldSettingsWithPickerSource, PickerSourceCustomCsv, PickerSourceCusto
 import { FeatureNames } from '../../../features/feature-names';
 import { classLog } from '../../../shared/logging';
 import { EavEntity } from '../../shared/models/eav';
-import { calculateDropdownOptions } from '../basic/string-picker/string-picker.helpers';
+import { DataSourceDropDownOptions } from '../basic/string-picker/string-picker.helpers';
 import { FieldLogicUpdate } from '../logic/field-logic-base';
 import { FieldLogicTools } from '../logic/field-logic-tools';
 import { PickerConfigs, PickerSourcesCustom, UiPickerModeIsTree } from './constants/picker-config-model.constants';
@@ -95,7 +95,7 @@ export class PickerLogicShared {
       return { fs, typeConfig };
     }
 
-    // Properties to transfer from both query and entity
+    // Properties to transfer from just about all sources
     fs.CreateTypes = typeConfig.CreateTypes ?? '';// possible multiple types
     fs.MoreFields = typeConfig.MoreFields ?? '';
     fs.Label = typeConfig.Label ?? '';
@@ -103,6 +103,12 @@ export class PickerLogicShared {
     fs.ItemTooltip = typeConfig.ItemTooltip ?? '';
     fs.ItemLink = typeConfig.ItemLink ?? '';
     fs.PreviewType = typeConfig.PreviewType ?? '';
+
+    // May specify another value to be used as the value - eg. for strings/numbers
+    fs.Value = typeConfig.Value ?? '';
+
+    // Do this for all, as it's a common property - e.g. Css, AppAssets, etc.
+    fs.PreviewValue = typeConfig.PreviewValue ?? '';
 
     const sourceIsQuery = typeName === PickerConfigs.UiPickerSourceQuery;
     const sourceIsEntity = typeName === PickerConfigs.UiPickerSourceEntity;
@@ -119,25 +125,18 @@ export class PickerLogicShared {
       fs.Query = specsQuery.Query ?? '';
       fs.StreamName = specsQuery.StreamName ?? 'Default';// stream name could be multiple stream names
       fs.UrlParameters = specsQuery.QueryParameters ?? '';
-
-      // The Query may specify another value to be used as the value (but it's unlikely)
-      fs.Value = specsQuery.Value ?? '';
     }
 
     /** Entity Data Source */
     if (sourceIsEntity) {
       const specsEntity = typeConfig as PickerSourceEntity;
-      (fs as unknown as FieldSettingsEntity).EntityType = specsEntity.ContentTypeNames ?? '';// possible multiple types
+      (fs as FieldSettingsEntity).EntityType = specsEntity.ContentTypeNames ?? '';// possible multiple types
     }
-
-    // Do this for all, as it's a common property - e.g. Css, AppAssets, etc.
-    fs.PreviewValue = typeConfig.PreviewValue ?? '';
 
     /** Css File Data Source */
     if (sourceIsCss) {
       fs.CssSourceFile = typeConfig.CssSourceFile ?? '';
       fs.CssSelectorFilter = typeConfig.CssSelectorFilter ?? '';
-      fs.Value = typeConfig.Value ?? '';
     }
 
     /** App Assets Source */
@@ -150,14 +149,13 @@ export class PickerLogicShared {
 
     if (isCustomSource) {
       if (typeName === PickerConfigs.UiPickerSourceCustomList) {
-        const valuesRaw = (typeConfig as unknown as PickerSourceCustomList).Values ?? '';
+        const valuesRaw = (typeConfig as UiPickerSourcesAll & PickerSourceCustomList).Values ?? '';
         // note that 'value-label' is the only format supported by the new picker config
-        fs._options ??= calculateDropdownOptions(value as string, 'string', 'value-label', valuesRaw) ?? [];
+        fs._options ??= new DataSourceDropDownOptions().parseOptions(value as string, 'string', 'value-label', valuesRaw) ?? [];
       } else if (typeName === PickerConfigs.UiPickerSourceCustomCsv) {
-        const csv = (typeConfig as unknown as PickerSourceCustomCsv).Csv;
+        const csv = (typeConfig as UiPickerSourcesAll & PickerSourceCustomCsv).Csv;
         fs._options ??= new DataSourceParserCsv().parse(csv);
         fs.requiredFeatures = [FeatureNames.PickerSourceCsv];
-        fs.PreviewValue = typeConfig.PreviewValue ?? '';
       }
     }
 
@@ -200,7 +198,7 @@ export class PickerLogicShared {
     if (pickerDisplayConfigName !== UiPickerModeIsTree)
       return null;
 
-    const specs = tools.reader.flatten(pickerDisplayConfigurations[0]) as UiPickerModeTree;
+    const specs = tools.reader.flatten<UiPickerModeTree>(pickerDisplayConfigurations[0]);
     const final: UiPickerModeTree = {
       Title: specs.Title ?? '',
       ConfigModel: UiPickerModeIsTree,

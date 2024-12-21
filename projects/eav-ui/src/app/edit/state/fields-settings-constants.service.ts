@@ -29,7 +29,7 @@ const logSpecs = {
 @Injectable()
 export class FieldsSettingsConstantsService {
 
-  log = classLog({FieldsSettingsConstantsService}, logSpecs, true);
+  log = classLog({FieldsSettingsConstantsService}, logSpecs);
 
   constructor(
     private formConfig: FormConfigService,

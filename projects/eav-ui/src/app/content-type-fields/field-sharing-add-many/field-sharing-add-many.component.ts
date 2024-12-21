@@ -14,7 +14,7 @@ import { fieldNameError, fieldNamePattern } from '../../app-administration/const
 import { ContentType } from '../../app-administration/models';
 import { FeatureNames } from '../../features/feature-names';
 import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
-import { FeaturesScopedService } from '../../features/features-scoped.service';
+import { FeaturesService } from '../../features/features.service';
 import { openFeatureDialog } from '../../features/shared/base-feature.component';
 import { BaseComponent } from '../../shared/components/base.component';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
@@ -24,29 +24,28 @@ import { signalObj } from '../../shared/signals/signal.utilities';
 import { ReservedNamesValidatorDirective } from '../edit-content-type-fields/reserved-names.directive';
 
 @Component({
-  selector: 'app-field-sharing-add-many',
-  templateUrl: './field-sharing-add-many.component.html',
-  styleUrls: ['./field-sharing-add-many.component.scss'],
-  standalone: true,
-  imports: [
-    MatCardModule,
-    MatTableModule,
-    MatButtonModule,
-    FormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    ReservedNamesValidatorDirective,
-    MatDialogActions,
-    TranslateModule,
-    FeatureTextInfoComponent,
-    FieldHintComponent,
-  ],
+    selector: 'app-field-sharing-add-many',
+    templateUrl: './field-sharing-add-many.component.html',
+    styleUrls: ['./field-sharing-add-many.component.scss'],
+    imports: [
+        MatCardModule,
+        MatTableModule,
+        MatButtonModule,
+        FormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        ReservedNamesValidatorDirective,
+        MatDialogActions,
+        TranslateModule,
+        FeatureTextInfoComponent,
+        FieldHintComponent,
+    ]
 })
 export class FieldSharingAddMany extends BaseComponent implements OnInit {
   @HostBinding('className') hostClass = 'dialog-component';
   @ViewChild('ngForm', { read: NgForm }) private form: NgForm;
 
-  #features = inject(FeaturesScopedService);
+  #features = inject(FeaturesService);
 
   #contentTypesFieldsSvc = transient(ContentTypesFieldsService);
 

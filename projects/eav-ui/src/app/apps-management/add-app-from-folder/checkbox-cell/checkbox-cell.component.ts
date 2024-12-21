@@ -7,7 +7,6 @@ import { CheckboxCellParams } from './checkbox-cell.model';
   selector: 'app-checkbox-cell',
   templateUrl: './checkbox-cell.component.html',
   styleUrls: ['./checkbox-cell.component.scss'],
-  standalone: true,
 })
 export class CheckboxCellComponent implements ICellRendererAngularComp {
   params: ICellRendererParams & CheckboxCellParams;

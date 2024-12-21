@@ -1,13 +1,14 @@
-import { AsyncPipe, CommonModule, NgClass } from '@angular/common';
-import { Component, computed, effect, ElementRef, inject, input, NgZone, ViewChild } from '@angular/core';
+import { CommonModule, NgClass } from '@angular/common';
+import { Component, computed, ElementRef, inject, input, NgZone, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
 import { transient } from 'projects/core';
+import { computedObj } from 'projects/eav-ui/src/app/shared/signals/signal.utilities';
 import { FeatureNames } from '../../../../features/feature-names';
-import { FeaturesScopedService } from '../../../../features/features-scoped.service';
+import { FeaturesService } from '../../../../features/features.service';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { ExtendedFabSpeedDialImports } from '../../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
 import { EntityFormStateService } from '../../../entity-form/entity-form-state.service';
@@ -19,23 +20,21 @@ import { ContentExpandAnimation } from '../expand-dialog/content-expand.animatio
 import { WrappersCatalog } from '../wrappers.constants';
 
 @Component({
-  selector: WrappersCatalog.DialogPopup,
-  templateUrl: './dialog-popup.component.html',
-  styleUrls: ['./dialog-popup.component.scss'],
-  animations: [ContentExpandAnimation],
-  standalone: true,
-  imports: [
-    NgClass,
-    MatCardModule,
-    MatRippleModule,
-    MatButtonModule,
-    MatIconModule,
-    TranslateModule,
-    ...ExtendedFabSpeedDialImports,
-    TippyDirective,
-    CommonModule,
-    AsyncPipe,
-  ],
+    selector: WrappersCatalog.DialogPopup,
+    templateUrl: './dialog-popup.component.html',
+    styleUrls: ['./dialog-popup.component.scss'],
+    animations: [ContentExpandAnimation],
+    imports: [
+        NgClass,
+        MatCardModule,
+        MatRippleModule,
+        MatButtonModule,
+        MatIconModule,
+        TranslateModule,
+        ...ExtendedFabSpeedDialImports,
+        TippyDirective,
+        CommonModule,
+    ]
 })
 // tslint:disable-next-line:max-line-length
 export class DialogPopupComponent {
@@ -47,32 +46,21 @@ export class DialogPopupComponent {
   public config = this.fieldState.config;
   public basics = this.fieldState.basics;
   #editRoutingService = inject(EditRoutingService);
+  formsStateService = inject(FormsStateService);
+  private featuresService = inject(FeaturesService);
 
   applyEmptyClass = input<boolean>();
 
   #dropzoneDraggingHelper: DropzoneDraggingHelper;
 
   #entityFormStateService = transient(EntityFormStateService);
-  isSaving = this.#entityFormStateService.isSaving;
-  te = this.#entityFormStateService.isSaving();
-
-  isSavingStatus: boolean;
-
-
-
+  
   constructor(
-    public formsStateService: FormsStateService,
-    private featuresService: FeaturesScopedService,
     private zone: NgZone,
-  ) {
+  ) { }
+  
+  saveDisabled = computedObj('saveDisabled', () => this.#entityFormStateService.isSaving() || this.formsStateService.saveButtonDisabled());
 
-    effect(() => {
-      this.isSavingStatus = this.#entityFormStateService.isSaving();
-    }, { allowSignalWrites: true });
-
-
-
-  }
   open = this.fieldState.isOpen
 
   ngAfterViewInit() {

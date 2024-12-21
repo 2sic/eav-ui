@@ -5,30 +5,25 @@ import {
   MAT_DIALOG_DATA,
   MatDialogActions,
   MatDialogClose,
-  MatDialogContent,
   MatDialogModule,
-  MatDialogRef,
-  MatDialogTitle,
+  MatDialogRef
 } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MonacoEditorComponent } from '../../../../../monaco-editor/monaco-editor.component';
 import { TippyDirective } from '../../../../../shared/directives/tippy.directive';
 @Component({
-  standalone: true,
-  imports: [
-    MatDialogModule,
-    FormsModule,
-    MonacoEditorComponent,
-    MatButtonModule,
-    MatDialogActions,                                                                                                                                                                                                                                
-    MatDialogClose,
-    MatDialogContent,
-    MatDialogTitle,
-    MatIconModule,
-    TippyDirective,
-  ],
-  selector: 'app-monaco-editor-dialog',
-  templateUrl: './specs-editor-dialog.component.html',
+    imports: [
+        MatDialogModule,
+        FormsModule,
+        MonacoEditorComponent,
+        MatButtonModule,
+        MatDialogActions,
+        MatDialogClose,
+        MatIconModule,
+        TippyDirective,
+    ],
+    selector: 'app-monaco-editor-dialog',
+    templateUrl: './specs-editor-dialog.component.html'
 })
 export class SpecsEditorDialogComponent {
 

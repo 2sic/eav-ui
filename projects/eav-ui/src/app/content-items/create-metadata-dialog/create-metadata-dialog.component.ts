@@ -29,27 +29,26 @@ import { MetadataDialogViewModel, MetadataFormValues, MetadataInfo, TargetTypeOp
 import { metadataKeyValidator } from './metadata-key.validator';
 
 @Component({
-  selector: 'app-create-metadata-dialog',
-  templateUrl: './create-metadata-dialog.component.html',
-  standalone: true,
-  imports: [
-    FormsModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatOptionModule,
-    MatInputModule,
-    NgTemplateOutlet,
-    MatButtonModule,
-    NgClass,
-    MatIconModule,
-    MatDialogActions,
-    MatSlideToggleModule,
-    AsyncPipe,
-    FieldHintComponent,
-    ClickStopPropagationDirective,
-    TippyDirective,
-  ]
+    selector: 'app-create-metadata-dialog',
+    templateUrl: './create-metadata-dialog.component.html',
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatOptionModule,
+        MatInputModule,
+        NgTemplateOutlet,
+        MatButtonModule,
+        NgClass,
+        MatIconModule,
+        MatDialogActions,
+        MatSlideToggleModule,
+        AsyncPipe,
+        FieldHintComponent,
+        ClickStopPropagationDirective,
+        TippyDirective,
+    ]
 })
 export class CreateMetadataDialogComponent extends BaseComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';

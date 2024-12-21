@@ -1,14 +1,13 @@
 import { Component, inject } from '@angular/core';
-import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
+import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldMetadata } from '../../field-metadata.decorator';
 import { FieldState } from '../../field-state';
-import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
+import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
 
 @Component({
   selector: InputTypeCatalog.CustomDefault,
   templateUrl: './custom-default.component.html',
   styleUrls: ['./custom-default.component.scss'],
-  standalone: true,
 })
 @FieldMetadata({ ...WrappersLocalizationOnly })
 export class CustomDefaultComponent {

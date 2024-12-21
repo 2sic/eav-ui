@@ -3,15 +3,16 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { UserLanguageService } from 'projects/eav-ui/src/app/shared/services/user-language.service';
+import { transient } from '../../../../../../../core/transient';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { classLog } from '../../../../shared/logging';
 import { FormConfigService } from '../../../form/form-config.service';
 import { FormLanguageService } from '../../../form/form-language.service';
 import { Language } from '../../../form/form-languages.model';
 import { LanguageService } from '../../../localization/language.service';
-import { SeparateLanguagesDialogComponent } from '../separate-languages-dialog/separate-languages-dialog';
+import { LanguageSettingsDialogComponent } from '../language-settings-dialog/language-settings-dialog';
 import { CenterSelectedHelper } from './center-selected.helper';
 import { getLanguageOptions } from './language-switcher.helpers';
 import { MouseScrollHelper } from './mouse-scroll.helper';
@@ -21,12 +22,12 @@ import { ShowShadowsHelper } from './show-shadows.helper';
   selector: 'app-language-switcher',
   templateUrl: './language-switcher.component.html',
   styleUrls: ['./language-switcher.component.scss'],
-  standalone: true,
   imports: [
     MatButtonModule,
     MatIcon,
     TippyDirective,
-  ],
+    TranslateModule,
+  ]
 })
 export class LanguageSwitcherComponent implements AfterViewInit, OnDestroy {
 
@@ -46,6 +47,8 @@ export class LanguageSwitcherComponent implements AfterViewInit, OnDestroy {
 
   buttons = getLanguageOptions(this.languageService.getAll());
 
+  userLanguageSvc = transient(UserLanguageService);
+
   constructor(
     private languageService: LanguageService,
     private languageInstanceService: FormLanguageService,
@@ -53,7 +56,6 @@ export class LanguageSwitcherComponent implements AfterViewInit, OnDestroy {
     private formConfig: FormConfigService,
     private snackBar: MatSnackBar,
     private translate: TranslateService,
-    private userLanguageSvc: UserLanguageService,
     private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
   ) { }
@@ -91,16 +93,17 @@ export class LanguageSwitcherComponent implements AfterViewInit, OnDestroy {
       this.languageInstanceService.setCurrent(this.formConfig.config.formId, language.NameId);
 
       // Also set the UI language
-      const lngCode = this.userLanguageSvc.getUiCode(language.NameId);
+      const lngCode = this.userLanguageSvc.uiCode(language.NameId);
       this.translate.use(lngCode);
     }
   }
 
   languageSettings() {
-    this.matDialog.open(SeparateLanguagesDialogComponent, {
+    this.matDialog.open(LanguageSettingsDialogComponent, {
       autoFocus: false,
       viewContainerRef: this.viewContainerRef,
       width: '750px',
+      position: { top: '50px' },
     });
   }
 }

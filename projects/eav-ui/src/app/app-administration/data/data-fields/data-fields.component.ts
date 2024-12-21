@@ -8,15 +8,14 @@ import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { ContentType } from '../../models/content-type.model';
 
 @Component({
-  selector: 'app-data-fields',
-  templateUrl: './data-fields.component.html',
-  standalone: true,
-  imports: [
-    MatRippleModule,
-    MatIconModule,
-    MatBadgeModule,
-    TippyDirective,
-  ],
+    selector: 'app-data-fields',
+    templateUrl: './data-fields.component.html',
+    imports: [
+        MatRippleModule,
+        MatIconModule,
+        MatBadgeModule,
+        TippyDirective,
+    ]
 })
 export class DataFieldsComponent implements ICellRendererAngularComp {
   value: number;

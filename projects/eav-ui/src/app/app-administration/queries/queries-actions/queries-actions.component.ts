@@ -10,16 +10,15 @@ import { Query } from '../../models/query.model';
 import { QueriesActionsParams, QueryActions } from './queries-actions';
 
 @Component({
-  selector: 'app-queries-actions',
-  templateUrl: './queries-actions.component.html',
-  standalone: true,
-  imports: [
-    MatRippleModule,
-    MatIconModule,
-    MatBadgeModule,
-    MatMenuModule,
-    TippyDirective,
-  ],
+    selector: 'app-queries-actions',
+    templateUrl: './queries-actions.component.html',
+    imports: [
+        MatRippleModule,
+        MatIconModule,
+        MatBadgeModule,
+        MatMenuModule,
+        TippyDirective,
+    ]
 })
 export class QueriesActionsComponent implements ICellRendererAngularComp {
   item: Query;

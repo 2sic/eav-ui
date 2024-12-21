@@ -5,10 +5,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { Field } from '../../shared/fields/field.model';
 
 @Component({
-  selector: 'app-content-type-fields-special',
-  templateUrl: './content-type-fields-special.component.html',
-  standalone: true,
-  imports: [MatIconModule,],
+    selector: 'app-content-type-fields-special',
+    templateUrl: './content-type-fields-special.component.html',
+    imports: [MatIconModule,]
 })
 export class ContentTypeFieldsSpecialComponent implements ICellRendererAngularComp {
   hasFormulas: boolean;

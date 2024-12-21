@@ -15,17 +15,16 @@ import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
 import { CustomJsonEditorLogic, StringJsonLogic } from './custom-json-editor-logic';
 
 @Component({
-  selector: InputTypeCatalog.CustomJsonEditor,
-  templateUrl: './custom-json-editor.component.html',
-  styleUrls: ['./custom-json-editor.component.scss'],
-  standalone: true,
-  imports: [
-    NgClass,
-    MatFormFieldModule,
-    MonacoEditorComponent,
-    NgStyle,
-    FieldHelperTextComponent,
-  ],
+    selector: InputTypeCatalog.CustomJsonEditor,
+    templateUrl: './custom-json-editor.component.html',
+    styleUrls: ['./custom-json-editor.component.scss'],
+    imports: [
+        NgClass,
+        MatFormFieldModule,
+        MonacoEditorComponent,
+        NgStyle,
+        FieldHelperTextComponent,
+    ]
 })
 @FieldMetadata({ ...WrappersLocalizationOnly })
 export class CustomJsonEditorComponent {

@@ -7,7 +7,6 @@ import { ConnectorHelper } from './connector.helper';
 @Component({
   selector: 'app-connector',
   templateUrl: './connector.component.html',
-  standalone: true,
 })
 export class ConnectorComponent implements AfterViewInit {
 

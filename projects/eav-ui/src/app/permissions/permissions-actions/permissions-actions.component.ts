@@ -8,14 +8,13 @@ import { Permission } from '../models/permission.model';
 import { PermissionsActionsParams } from './permissions-actions.models';
 
 @Component({
-  selector: 'app-permissions-actions',
-  templateUrl: './permissions-actions.component.html',
-  standalone: true,
-  imports: [
-    MatRippleModule,
-    MatIconModule,
-    TippyDirective,
-  ],
+    selector: 'app-permissions-actions',
+    templateUrl: './permissions-actions.component.html',
+    imports: [
+        MatRippleModule,
+        MatIconModule,
+        TippyDirective,
+    ]
 })
 export class PermissionsActionsComponent implements ICellRendererAngularComp {
   private params: ICellRendererParams & PermissionsActionsParams;

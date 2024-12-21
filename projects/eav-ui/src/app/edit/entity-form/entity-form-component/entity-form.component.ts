@@ -8,7 +8,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { transient } from '../../../../../../core';
 import { FeatureNames } from '../../../features/feature-names';
-import { FeaturesScopedService } from '../../../features/features-scoped.service';
+import { FeaturesService } from '../../../features/features.service';
 import { eavConstants } from '../../../shared/constants/eav.constants';
 import { MousedownStopPropagationDirective } from '../../../shared/directives/mousedown-stop-propagation.directive';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
@@ -42,25 +42,24 @@ const logSpecs = {
  * This wraps a single entity in the multi-entities-form.
  */
 @Component({
-  selector: 'app-edit-entity-form',
-  templateUrl: './entity-form.component.html',
-  styleUrls: ['./entity-form.component.scss'],
-  standalone: true,
-  imports: [
-    MatCardModule,
-    MatIconModule,
-    MatButtonModule,
-    CdkDrag,
-    CdkDragHandle,
-    MatSlideToggleModule,
-    EntityTranslateMenuComponent,
-    ChangeAnchorTargetDirective,
-    EditControlsBuilderDirective,
-    TranslateModule,
-    TippyDirective,
-    SafeHtmlPipe,
-    MousedownStopPropagationDirective,
-  ],
+    selector: 'app-edit-entity-form',
+    templateUrl: './entity-form.component.html',
+    styleUrls: ['./entity-form.component.scss'],
+    imports: [
+        MatCardModule,
+        MatIconModule,
+        MatButtonModule,
+        CdkDrag,
+        CdkDragHandle,
+        MatSlideToggleModule,
+        EntityTranslateMenuComponent,
+        ChangeAnchorTargetDirective,
+        EditControlsBuilderDirective,
+        TranslateModule,
+        TippyDirective,
+        SafeHtmlPipe,
+        MousedownStopPropagationDirective,
+    ]
 })
 export class EntityFormComponent implements OnInit, AfterViewChecked, OnDestroy {
 
@@ -81,7 +80,7 @@ export class EntityFormComponent implements OnInit, AfterViewChecked, OnDestroy 
   collapse = false;
   noteTouched: boolean = false;
 
-  #features = inject(FeaturesScopedService);
+  #features = inject(FeaturesService);
   #editUiShowNotes = this.#features.isEnabled[FeatureNames.EditUiShowNotes];
   #editUiShowMetadataFor = this.#features.isEnabled[FeatureNames.EditUiShowMetadataFor];
 

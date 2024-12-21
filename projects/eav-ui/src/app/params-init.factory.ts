@@ -19,26 +19,13 @@ declare const window: EavWindow;
  */
 export function paramsInitFactory(injector: Injector): () => void {
 
-  /** Helper to transfer various url-parameters to the session */
-  function transferParamsToSessionStorage(queryParametersFromUrl: Record<string, string>): void {
-    for (const [paramKey, paramValue] of Object.entries(queryParametersFromUrl)) {
-      if (paramValue == null) continue;
-      sessionStorage.setItem(prefix + paramKey, paramValue);
-    }
-  }
-
-  /** Log initial route so a developer can re-open the dialog with the link in the console */
-  function logInitialRoute(url?: string): void {
-    console.log('Initial route:', url ?? window.location.href);
-  }
-
-  const log = classLog({ paramsInitFactory }, null, true);
+  const log = classLog({ paramsInitFactory });
 
   return () => {
     const l = log.fn('paramsInitFactory');
     // console.log('Setting parameters config and clearing route');
-    const s = sessionStorage;
-    const eavKeys = Object.keys(s).filter(key => key.startsWith(prefix));
+    const sS = sessionStorage;
+    const eavKeys = Object.keys(sS).filter(key => key.startsWith(prefix));
     const urlHash = window.location.hash;
     const isParamsRoute = !urlHash.startsWith('#/');
     if (isParamsRoute) {
@@ -47,11 +34,11 @@ export function paramsInitFactory(injector: Injector): () => void {
 
       // Flush our part of the session, just to be sure it's a clean slate
       for (const key of eavKeys)
-        s.removeItem(key);
+        sS.removeItem(key);
 
       // save url which opened the dialog and set edit dialog as the default
-      s.setItem(keyUrl, window.location.href);
-      s.setItem(keyDialog, DialogTypeConstants.Edit);
+      sS.setItem(keyUrl, window.location.href);
+      sS.setItem(keyDialog, DialogTypeConstants.Edit);
 
       // Transfer URL params to session storage, without the leading '#' char
       const paramsDic = UrlHelpers.urlParamsToDic(urlHash.substring(1));
@@ -59,53 +46,49 @@ export function paramsInitFactory(injector: Injector): () => void {
 
       // Redirect to the expected dialog
       const router = injector.get(Router);
-      // const zoneId = s.getItem(keyZoneId);
-      // const appId = s.getItem(keyAppId);
-      const dialog = s.getItem(keyDialog) as Of<typeof DialogTypeConstants>;
-      const contentType = s.getItem(keyContentType);
-      const items = s.getItem(keyItems);
-      // const getZoneFull = () => `${zoneId}/v2/${s.getItem(keyModuleId)}/${s.getItem(keyContentBlockId)}`;
-      // const getZoneApp = () => `${zoneId}/${appId}`;
-      const getFull = () => `${s.getItem(keyZoneId)}/v2/${s.getItem(keyModuleId)}/${s.getItem(keyContentBlockId)}/${s.getItem(keyAppId)}`;
+      const dialog = sS.getItem(keyDialog) as Of<typeof DialogTypeConstants>;
+      const contentType = sS.getItem(keyContentType);
+      const items = sS.getItem(keyItems);
+      const getFull = () => `${sS.getItem(keyZoneId)}/v2/${sS.getItem(keyModuleId)}/${sS.getItem(keyContentBlockId)}/${sS.getItem(keyAppId)}`;
       l.a('dialog: ' + dialog);
       switch (dialog) {
         case DialogTypeConstants.Zone:
-          const extrasZone: ExtrasParam = JSON.parse(s.getItem(keyExtras));
+          const extrasZone: ExtrasParam = JSON.parse(sS.getItem(keyExtras));
           router.navigate([`${getFull()}/apps${extrasZone?.tab ? `/${extrasZone.tab}` : ''}`]);
-          break;
+          return;
         case DialogTypeConstants.Apps:
           router.navigate([`${getFull()}/apps/list`]);
-          break;
+          return;
         case DialogTypeConstants.AppImport:
           router.navigate([`${getFull()}/import`]);
-          break;
+          return;
         case DialogTypeConstants.App:
-          const extrasApp: ExtrasParam = JSON.parse(s.getItem(keyExtras));
+          const extrasApp: ExtrasParam = JSON.parse(sS.getItem(keyExtras));
           router.navigate([`${getFull()}/app${extrasApp?.tab ? `/${extrasApp.tab}` : ''}${extrasApp?.scope ? `/${extrasApp.scope}` : ''}`]);
-          break;
+          return;
         case DialogTypeConstants.ContentType:
           router.navigate([`${getFull()}/fields/${contentType}`]);
-          break;
+          return;
         case DialogTypeConstants.ContentItems:
           router.navigate([`${getFull()}/items/${contentType}`]);
-          break;
+          return;
         case DialogTypeConstants.Edit:
           const editItems: ItemEditIdentifier[] = JSON.parse(items);
           const form: EditForm = { items: editItems };
           const formUrl = convertFormToUrl(form);
           router.navigate([`${getFull()}/edit/${formUrl}`]);
-          break;
+          return;
         case DialogTypeConstants.ItemHistory:
           const historyItems: ItemEditIdentifier[] = JSON.parse(items);
           router.navigate([`${getFull()}/versions/${historyItems[0].EntityId}`]);
-          break;
+          return;
         case DialogTypeConstants.Develop:
           router.navigate([`${getFull()}/code`]);
-          break;
+          return;
         case DialogTypeConstants.PipelineDesigner:
-          const pipelineId = s.getItem(keyPipelineId);
+          const pipelineId = sS.getItem(keyPipelineId);
           router.navigate([`${getFull()}/query/${pipelineId}`]);
-          break;
+          return;
         case DialogTypeConstants.Replace:
           const repItem = (JSON.parse(items) as ItemInListIdentifier[])[0];
           const rGuid = repItem.Parent;
@@ -114,21 +97,25 @@ export function paramsInitFactory(injector: Injector): () => void {
           const add = repItem.Add;
           const queryParams = add ? { add: true } : {};
           router.navigate([`${getFull()}/${rGuid}/${rPart}/${rIndex}/replace`], { queryParams });
-          break;
+          return;
         case DialogTypeConstants.InstanceList:
           const grpItem = (JSON.parse(items) as ItemInListIdentifier[])[0];
           const gGuid = grpItem.Parent;
           const gPart = grpItem.Field;
           const gIndex = grpItem.Index;
           router.navigate([`${getFull()}/${gGuid}/${gPart}/${gIndex}/reorder`]);
-          break;
+          return;
         default:
           alert(`Cannot open unknown dialog "${dialog}"`);
           try {
             window.parent.$2sxc.totalPopup.close();
           } catch (error) { }
+          return;
       }
-    } else if (eavKeys.length === 0) {
+    }
+    
+    // Not normal entry-Param-Route
+    if (eavKeys.length === 0) {
       // if not params route and no params are saved, e.g. browser was reopened,
       // check if we have additional context info in the url behind a ##
       const urlWithCtx = urlHash.split('##')
@@ -158,7 +145,20 @@ export function paramsInitFactory(injector: Injector): () => void {
     } else {
       l.a('No Params Route, but params saved..., assume refresh of previously working UI');
       // Log initial route so a developer can re-open the dialog with the link in the console
-      logInitialRoute(s.getItem(keyUrl));
+      logInitialRoute(sS.getItem(keyUrl));
     }
   };
 }
+
+  /** Helper to transfer various url-parameters to the session */
+  function transferParamsToSessionStorage(queryParametersFromUrl: Record<string, string>): void {
+    for (const [paramKey, paramValue] of Object.entries(queryParametersFromUrl)) {
+      if (paramValue == null) continue;
+      sessionStorage.setItem(prefix + paramKey, paramValue);
+    }
+  }
+
+  /** Log initial route so a developer can re-open the dialog with the link in the console */
+  function logInitialRoute(url?: string): void {
+    console.log('Initial route:', url ?? window.location.href);
+  }

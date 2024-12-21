@@ -4,7 +4,7 @@ import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings
 import { FieldSettingsPickerMasks, FieldSettingsPickerMerged } from '../../../../../../../edit-types/src/FieldSettings-Pickers';
 import { FieldValue } from '../../../../../../../edit-types/src/FieldValue';
 import { FieldSettingsWithPickerSource } from '../../../../../../../edit-types/src/PickerSources';
-import { FeaturesScopedService } from '../../../../features/features-scoped.service';
+import { FeaturesService } from '../../../../features/features.service';
 import { classLog, ClassLogger } from '../../../../shared/logging';
 import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 import { ServiceBase } from '../../../../shared/services/service-base';
@@ -38,7 +38,7 @@ export abstract class DataSourceBase extends ServiceBase {
   protected fieldState = inject(FieldState) as FieldState<FieldValue, FieldSettingsWithPickerSource & FieldSettingsPickerMerged>;
 
   /** For feature checks in the info/tooltip etc. of picker data */
-  protected features = inject(FeaturesScopedService);
+  protected features = inject(FeaturesService);
 
   /** To get info if the current user is a developer */
   protected formConfig = inject(FormConfigService);

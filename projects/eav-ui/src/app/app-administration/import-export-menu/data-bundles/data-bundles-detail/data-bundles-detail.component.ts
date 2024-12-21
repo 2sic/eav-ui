@@ -10,24 +10,23 @@ import { ColumnDefinitions } from 'projects/eav-ui/src/app/shared/ag-grid/column
 import { defaultGridOptions } from 'projects/eav-ui/src/app/shared/constants/default-grid-options.constants';
 import { SxcGridModule } from 'projects/eav-ui/src/app/shared/modules/sxc-grid-module/sxc-grid.module';
 import { switchMap, tap } from 'rxjs';
-import { DataBundlesService } from '../data-bundles-query.service';
+import { DataBundlesQueryService } from '../data-bundles-query.service';
 import { DataBundlesDetailActionsComponent } from './data-bundles-detail-actions/data-bundles-detail-actions.component';
 import { DataBundlesDetailActionsParams } from './data-bundles-detail-actions/data-bundles-detail-actions.models';
 
 @Component({
-  selector: 'app-data-bundles-detail',
-  standalone: true,
-  imports: [
-    MatButtonModule,
-    MatIconModule,
-    SxcGridModule,
-  ],
-  templateUrl: './data-bundles-detail.component.html',
-  styleUrl: './data-bundles-detail.component.scss'
+    selector: 'app-data-bundles-detail',
+    imports: [
+        MatButtonModule,
+        MatIconModule,
+        SxcGridModule,
+    ],
+    templateUrl: './data-bundles-detail.component.html',
+    styleUrl: './data-bundles-detail.component.scss'
 })
 export class DataBundlesDetailComponent {
 
-  #dataBundlesService = transient(DataBundlesService);
+  #dataBundlesQueryService = transient(DataBundlesQueryService);
   dataBundles = signal<ContentItem[]>(null);
   dataBundleName = signal<string>(null);
 
@@ -45,7 +44,7 @@ export class DataBundlesDetailComponent {
         tap(params => {
           this.dataBundleName.set(params.name);
         }),
-        switchMap(params => this.#dataBundlesService.fetchQuery(params.guid)),
+        switchMap(params => this.#dataBundlesQueryService.fetchQuery(params.guid)),
         tap(d => this.dataBundles.set(d))
       )
       .subscribe();

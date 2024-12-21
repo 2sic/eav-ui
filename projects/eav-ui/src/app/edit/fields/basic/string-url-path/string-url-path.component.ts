@@ -13,16 +13,15 @@ import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
 import { StringUrlPathLogic } from './string-url-path-logic';
 
 @Component({
-  selector: InputTypeCatalog.StringUrlPath,
-  templateUrl: './string-url-path.component.html',
-  standalone: true,
-  imports: [
-    MatFormFieldModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatInputModule,
-    FieldHelperTextComponent,
-  ],
+    selector: InputTypeCatalog.StringUrlPath,
+    templateUrl: './string-url-path.component.html',
+    imports: [
+        MatFormFieldModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatInputModule,
+        FieldHelperTextComponent,
+    ]
 })
 @FieldMetadata({ ...WrappersLocalizationOnly })
 export class StringUrlPathComponent {
@@ -68,7 +67,7 @@ export class StringUrlPathComponent {
     });
 
     // Listen to the mask changes to update the field
-    effect(() => this.#publishFieldMaskResult(this.#maskedValueCleaned()), { allowSignalWrites: true });
+    effect(() => this.#publishFieldMaskResult(this.#maskedValueCleaned()));
   }
 
 

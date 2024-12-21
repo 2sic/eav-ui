@@ -2,7 +2,7 @@
 
 // import { Directive, ElementRef, NgZone, OnDestroy, OnInit } from '@angular/core';
 
-// @Directive({ selector: '[appMatFormFieldTextarea]', standalone: true })
+// @Directive({ selector: '[appMatFormFieldTextarea]' })
 // export class MatFormFieldTextareaDirective implements OnInit, OnDestroy {
 //   private observer: ResizeObserver;
 //   private debounce = 500;

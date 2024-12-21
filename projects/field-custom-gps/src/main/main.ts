@@ -8,16 +8,16 @@ import { EavCustomInputField } from '../../../edit-types/src/EavCustomInputField
 import { FieldSettings } from '../../../edit-types/src/FieldSettings';
 import { IFieldMask } from '../../../edit-types/src/IFieldMask';
 import { CoordinatesDto } from '../preview/coordinates';
-import { buildTemplate, parseLatLng, stringifyLatLng } from '../shared/helpers';
+import { buildTemplate, customGpsIcons, parseLatLng, stringifyLatLng } from '../shared/helpers';
 import * as template from './main.html';
 import * as styles from './main.scss';
 
 const gpsDialogTag = 'field-custom-gps-dialog';
 
 class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<string> {
-  
-  log = classLog({FieldCustomGpsDialog});
-  
+
+  log = classLog({ FieldCustomGpsDialog });
+
   fieldInitialized: boolean;
   connector: Connector<string>;
 
@@ -33,6 +33,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
   private marker: google.maps.Marker;
   private eventListeners: ElementEventListener[];
   private defaultCoordinates: google.maps.LatLngLiteral;
+  private iconPin: HTMLAnchorElement
 
   constructor() {
     super();
@@ -52,7 +53,10 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
     this.lngInput = this.querySelector<HTMLInputElement>('#lng');
     const addressMaskContainer = this.querySelector<HTMLDivElement>('#address-mask-container');
     this.iconSearch = this.querySelector<HTMLAnchorElement>('#icon-search');
-    const formattedAddressContainer = this.querySelector<HTMLSpanElement>('#formatted-address-container');
+    this.iconSearch.insertAdjacentHTML('afterbegin', customGpsIcons.search);
+    this.iconPin = this.querySelector<HTMLAnchorElement>('#icon-pin');
+    this.iconPin.insertAdjacentHTML('afterbegin', customGpsIcons.person);
+    const formattedAddressContainer = this.querySelector<HTMLInputElement>('#formatted-address-container');
     this.mapContainer = this.querySelector<HTMLDivElement>('#map');
 
     const expConnector = this.connector._experimental;
@@ -67,10 +71,11 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
 
     const addressMaskSetting = settings.AddressMask || settings['Address Mask'];
     this.addressMask = expConnector.getFieldMask(addressMaskSetting, 'Gps');
-    this.log.a(`${gpsDialogTag} addressMask:`, {addressMaskSetting});
+
+    this.log.a(`${gpsDialogTag} addressMask:`, { addressMaskSetting });
     if (addressMaskSetting) {
       addressMaskContainer.classList.remove('hidden');
-      formattedAddressContainer.innerText = this.addressMask.result();
+      formattedAddressContainer.value = this.addressMask.result();
     }
 
     // TODO: TRY to refactor to use the new context.app.getSetting(...) in the formulas-data
@@ -104,7 +109,12 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
     if (!this.connector.data.value) {
       this.updateHtml(this.defaultCoordinates);
     } else {
-      this.updateHtml(parseLatLng(this.connector.data.value));
+      try {
+        this.updateHtml(parseLatLng(this.connector.data.value));
+      } catch (e) {
+        console.error('Invalid data.value:', this.connector.data.value);
+        this.updateHtml(this.defaultCoordinates);
+      }
     }
 
     // listen to inputs, iconSearch and marker. Update inputs, map, marker and form
@@ -113,7 +123,9 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
     this.lngInput.addEventListener('change', onLatLngInputChange);
 
     const autoSelect = () => { this.autoSelect(); };
+
     this.iconSearch.addEventListener('click', autoSelect);
+    this.iconPin.addEventListener('click', () => { this.setLocation() });
 
     this.eventListeners.push(
       { element: this.latInput, type: 'change', listener: onLatLngInputChange },
@@ -124,6 +136,37 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
     this.marker.addListener('dragend', (event: google.maps.MapMouseEvent) => {
       this.onMarkerDragend(event);
     });
+  }
+
+  private setLocation(): void {
+    if (navigator.geolocation) {
+      const formattedAddressContainer = this.querySelector<HTMLInputElement>('#formatted-address-container');
+      formattedAddressContainer.value = 'Locating...';
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const latLng: google.maps.LatLngLiteral = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          };
+          this.updateHtml(latLng);
+          this.updateForm(latLng);
+
+          // Use the Google Maps Geocoding API to get address
+          this.geocoder.geocode({ location: latLng }, (results, status) => {
+            if (status === google.maps.GeocoderStatus.OK && results[0]) {
+              formattedAddressContainer.value = results[0].formatted_address;
+            } else {
+              formattedAddressContainer.value = 'Unable to retrieve address';
+            }
+          });
+        },
+        (error) => {
+          console.error('Error getting location:', error);
+        }
+      );
+    } else {
+      console.error('Geolocation is not supported by this browser.');
+    }
   }
 
   private updateHtml(latLng: google.maps.LatLngLiteral): void {
@@ -155,7 +198,10 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
 
   private autoSelect(): void {
     this.log.a(`${gpsDialogTag} geocoder called`);
-    const address = this.addressMask.result();
+
+    const formattedAddressContainer = this.querySelector<HTMLInputElement>('#formatted-address-container');
+    const address = formattedAddressContainer.value;
+
     this.geocoder.geocode({
       address,
     }, (results, status) => {

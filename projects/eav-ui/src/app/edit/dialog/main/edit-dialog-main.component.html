@@ -15,30 +15,36 @@
         }">
       <div class="eav-layout-grid">
         <div class="eav-layout-grid__inner">
-          @if (!delayForm())
-          {
-          <div class="eav-layout-grid__cell--span-12" appFormSlide>
-            @for (item of items(); track item.Entity.Guid; let i = $index)
-            {
-            <div>
-              <app-edit-entity-form-builder [entityGuid]="item.Entity.Guid" [index]="i"></app-edit-entity-form-builder>
+          @if (!delayForm()) {
+            <div class="eav-layout-grid__cell--span-12" appFormSlide>
+              @for (item of items(); track item.Entity.Guid; let i = $index) {
+                <div>
+                  <app-edit-entity-form-builder [entityGuid]="item.Entity.Guid" [index]="i"></app-edit-entity-form-builder>
+                </div>
+              }
             </div>
-            }
-          </div>
           }
         </div>
       </div>
     </div>
     @if (viewInitiated()) {
-      <extended-fab-speed-dial [disabled]="saveButtonDisabled()">
+      <extended-fab-speed-dial>
         <ng-template extendedFabSpeedDialTriggerContent>
-          <button extended-fab-speed-dial-trigger matRipple [disabled]="saveButtonDisabled() || isSaving()" (click)="saveAll(true)">
-            <mat-icon (click)="saveButtonDisabled() && saveAll(false)">done</mat-icon>
+          <button extended-fab-speed-dial-trigger
+            matRipple
+            [ngClass]="{ 'appear-disabled': saveDisabled() }"
+            (click)="saveAll(true)"
+          >
+            <mat-icon>done</mat-icon>
             <span>{{ 'Form.Buttons.SaveAndClose' | translate }}</span>
           </button>
         </ng-template>
         <ng-template extendedFabSpeedDialActionsContent>
-          <button extended-fab-speed-dial-action matRipple [disabled]="saveButtonDisabled() || isSaving()" (click)="saveAll(false)">
+          <button extended-fab-speed-dial-action
+            matRipple
+            [ngClass]="{ 'appear-disabled': saveDisabled() }"
+            (click)="saveAll(false)"
+          >
             <span>{{ 'Form.Buttons.Save' | translate }}</span>
             <mat-icon>save</mat-icon>
           </button>
@@ -48,8 +54,8 @@
   </div>
   @if (footerShowOnceOrMore()) {
     @defer {
-    <app-edit-dialog-footer [style.display]="footerShow() ? 'block' : 'none'" mat-dialog-actions>
-    </app-edit-dialog-footer>
+      <app-edit-dialog-footer [style.display]="footerShow() ? 'block' : 'none'" mat-dialog-actions>
+      </app-edit-dialog-footer>
     }
   }
 </div>

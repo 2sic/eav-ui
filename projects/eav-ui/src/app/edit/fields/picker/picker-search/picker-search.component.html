@@ -7,7 +7,9 @@
 >
   <!-- Show Icon or Image -->
   <div class="show-input-container">
-    <app-picker-item-preview [item]="getSelectedItem(selectedItem()?.value)" [settings]="fieldState.settings()"></app-picker-item-preview>
+    <!-- Note: very patching quick style-fix to get alignment look ok. Should be researched and fixed properly -->
+    <app-picker-item-preview [item]="getSelectedItem(selectedItem()?.value)" [settings]="fieldState.settings()" style="height: 29px;">
+    </app-picker-item-preview>
 
     <!-- The initial input showing the selected value - one only. As soon as there are more, this control won't show any more -->
     <input
@@ -63,7 +65,7 @@
   #auto="matAutocomplete"
   [displayWith]="displayFn.bind(this)"
   [hideSingleSelectionIndicator]="true"
-  (optionSelected)="optionSelected($event, selectedItem())"
+  (optionSelected)="optionSelected($event)"
   (closed)="onClosed()"
   (opened)="onOpened(settings().showAsTree)"
 >

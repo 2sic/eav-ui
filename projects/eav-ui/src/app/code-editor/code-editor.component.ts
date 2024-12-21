@@ -37,33 +37,31 @@ import { SnippetsService } from './services/snippets.service';
 import { SourceService } from './services/source.service';
 
 @Component({
-  selector: 'app-code-editor',
-  templateUrl: './code-editor.component.html',
-  styleUrls: ['./code-editor.component.scss'],
-  standalone: true,
-  imports: [
-    NgClass,
-    MatIconModule,
-    CodeTemplatesComponent,
-    CodeSnippetsComponent,
-    MatProgressSpinnerModule,
-    MonacoEditorComponent_1,
-    MatButtonModule,
-    ClickStopPropagationDirective,
-    TippyDirective,
-    ToggleDebugDirective,
-    HttpClientModule,
-    TranslateModule,
-  
-  ],
-  providers: [
-    {
-      provide: TranslateLoader,
-      useFactory: translateLoaderFactoryCode,
-      deps: [HttpClient],
-    },
-    TranslateService,
-  ]
+    selector: 'app-code-editor',
+    templateUrl: './code-editor.component.html',
+    styleUrls: ['./code-editor.component.scss'],
+    imports: [
+        NgClass,
+        MatIconModule,
+        CodeTemplatesComponent,
+        CodeSnippetsComponent,
+        MatProgressSpinnerModule,
+        MonacoEditorComponent_1,
+        MatButtonModule,
+        ClickStopPropagationDirective,
+        TippyDirective,
+        ToggleDebugDirective,
+        HttpClientModule,
+        TranslateModule,
+    ],
+    providers: [
+        {
+            provide: TranslateLoader,
+            useFactory: translateLoaderFactoryCode,
+            deps: [HttpClient],
+        },
+        TranslateService,
+    ]
 })
 export class CodeEditorComponent extends BaseComponent implements OnInit, OnDestroy {
   @ViewChild(MonacoEditorComponent) private monacoEditorRef: MonacoEditorComponent;
@@ -192,9 +190,7 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
       });
 
       this.#viewInfos.set(viewInfos);   // Set the initial `viewInfos` before loading the data
-    },
-      { allowSignalWrites: true }
-    );
+    });
 
     // Update title ongoing
     effect(() => {

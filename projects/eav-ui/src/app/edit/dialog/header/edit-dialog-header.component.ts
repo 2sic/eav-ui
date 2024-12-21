@@ -5,8 +5,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
-import { FeaturesScopedService } from '../../../features/features-scoped.service';
 import { openFeaturesUsedButUnlicensedDialog } from '../../../features/features-used-but-missing-dialog/features-used-but-unlicensed-dialog.component';
+import { FeaturesService } from '../../../features/features.service';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { FormConfigService } from '../../form/form-config.service';
 import { FormPublishingService } from '../../form/form-publishing.service';
@@ -16,26 +16,25 @@ import { LanguageSwitcherComponent } from './language-switcher/language-switcher
 import { PublishStatusDialogComponent } from './publish-status-dialog/publish-status-dialog.component';
 
 @Component({
-  selector: 'app-edit-dialog-header',
-  templateUrl: './edit-dialog-header.component.html',
-  styleUrls: ['./edit-dialog-header.component.scss'],
-  standalone: true,
-  imports: [
-    MatCardModule,
-    MatButtonModule,
-    MatIconModule,
-    LanguageSwitcherComponent,
-    UpperCasePipe,
-    TranslateModule,
-    TippyDirective,
-  ],
+    selector: 'app-edit-dialog-header',
+    templateUrl: './edit-dialog-header.component.html',
+    styleUrls: ['./edit-dialog-header.component.scss'],
+    imports: [
+        MatCardModule,
+        MatButtonModule,
+        MatIconModule,
+        LanguageSwitcherComponent,
+        UpperCasePipe,
+        TranslateModule,
+        TippyDirective,
+    ]
 })
 export class EditDialogHeaderComponent {
   disabled = input<boolean>();
   protected closeDialog = output<void>();
 
   #formsStateSvc = inject(FormsStateService);
-  #features = inject(FeaturesScopedService);
+  #features = inject(FeaturesService);
 
   constructor(
     private matDialog: MatDialog,

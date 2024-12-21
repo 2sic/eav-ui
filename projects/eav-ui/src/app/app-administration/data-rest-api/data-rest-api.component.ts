@@ -6,25 +6,22 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { RouterOutlet } from '@angular/router';
 import { transient } from '../../../../../core';
-import { DevRestDataComponent } from '../../dev-rest/data/data.component';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { ContentTypesService } from '../services';
 
 @Component({
-  selector: 'app-data-rest-api',
-  standalone: true,
-  imports: [
-    MatSelectModule,
-    MatButtonModule,
-    MatCardModule,
-    MatIconModule,
-    ReactiveFormsModule,
-    DevRestDataComponent,
-    RouterOutlet,
-    SxcGridModule,
-  ],
-  templateUrl: './data-rest-api.component.html',
+    selector: 'app-data-rest-api',
+    imports: [
+        MatSelectModule,
+        MatButtonModule,
+        MatCardModule,
+        MatIconModule,
+        ReactiveFormsModule,
+        RouterOutlet,
+        SxcGridModule,
+    ],
+    templateUrl: './data-rest-api.component.html'
 })
 export class DataRestApiComponent {
   #contentTypesSvc = transient(ContentTypesService);

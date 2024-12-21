@@ -3,7 +3,6 @@ import { License } from '../models/license.model';
 
 @Pipe({
   name: 'activeFeaturesCount',
-  standalone: true
 })
 export class ActiveFeaturesCountPipe implements PipeTransform {
 

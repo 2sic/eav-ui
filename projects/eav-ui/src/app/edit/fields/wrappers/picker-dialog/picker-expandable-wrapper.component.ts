@@ -10,17 +10,16 @@ import { WrappersCatalog } from "../wrappers.constants";
 
 
 @Component({
-  selector: WrappersCatalog.PickerExpandableWrapper,
-  templateUrl: './picker-expandable-wrapper.component.html',
-  styleUrls: ['./picker-expandable-wrapper.component.scss'],
-  animations: [ContentExpandAnimation],
-  standalone: true,
-  imports: [
-    MatCardModule,
-    DialogPopupComponent,
-    DialogPopupComponent,
-    CommonModule,
-  ],
+    selector: WrappersCatalog.PickerExpandableWrapper,
+    templateUrl: './picker-expandable-wrapper.component.html',
+    styleUrls: ['./picker-expandable-wrapper.component.scss'],
+    animations: [ContentExpandAnimation],
+    imports: [
+        MatCardModule,
+        DialogPopupComponent,
+        DialogPopupComponent,
+        CommonModule,
+    ]
 })
 export class PickerExpandableWrapperComponent {
 

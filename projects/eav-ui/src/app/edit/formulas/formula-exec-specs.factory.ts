@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { FeaturesScopedService } from '../../features/features-scoped.service';
+import { FeaturesService } from '../../features/features.service';
 import { ItemIdentifierShared } from '../../shared/models/edit-form.model';
 import { GlobalConfigService } from '../../shared/services/global-config.service';
 import { EditInitializerService } from '../form/edit-initializer.service';
@@ -17,7 +17,7 @@ import { FormulaExecutionSpecs } from './run/formula-objects-internal-data';
 @Injectable()
 export class FormulaExecutionSpecsFactory {
 
-  #features = inject(FeaturesScopedService).getAll();
+  #features = inject(FeaturesService).getAll();
   
   constructor(
     private formConfig: FormConfigService,

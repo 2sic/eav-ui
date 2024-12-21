@@ -1,7 +1,9 @@
 import { Directive, ElementRef, input, OnInit } from '@angular/core';
 import { MatInput } from '@angular/material/input';
 
-@Directive({ selector: '[appMatInputAutofocus]', standalone: true })
+@Directive({
+  selector: '[appMatInputAutofocus]',
+})
 export class MatInputAutofocusDirective implements OnInit {
   autofocusSelectValue = input<string | boolean | null | undefined>(false);
 

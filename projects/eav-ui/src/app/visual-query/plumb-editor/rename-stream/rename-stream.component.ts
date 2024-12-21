@@ -20,24 +20,23 @@ import { VisualQueryStateService } from '../../services/visual-query.service';
 import { RenameStreamDialogControls, RenameStreamDialogData, RenameStreamDialogFormValue } from './rename-stream.models';
 
 @Component({
-  selector: 'app-rename-stream',
-  templateUrl: './rename-stream.component.html',
-  standalone: true,
-  imports: [
-    MatButtonModule,
-    MatIconModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    MatOptionModule,
-    NgClass,
-    MatDialogActions,
-    MatSlideToggleModule,
-    FieldHintComponent,
-    ClickStopPropagationDirective,
-  ],
+    selector: 'app-rename-stream',
+    templateUrl: './rename-stream.component.html',
+    imports: [
+        MatButtonModule,
+        MatIconModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatSelectModule,
+        MatOptionModule,
+        NgClass,
+        MatDialogActions,
+        MatSlideToggleModule,
+        FieldHintComponent,
+        ClickStopPropagationDirective,
+    ]
 })
 export class RenameStreamComponent extends BaseComponent implements OnInit {
   @HostBinding('className') hostClass = 'dialog-component';

@@ -16,21 +16,20 @@ import { DepthPaddingPipe } from './depth-padding.pipe';
 import { SortItemsPipe } from './order-items.pipe';
 
 @Component({
-  selector: 'app-code-templates',
-  templateUrl: './code-templates.component.html',
-  styleUrls: ['./code-templates.component.scss'],
-  standalone: true,
-  imports: [
-    NgTemplateOutlet,
-    NgClass,
-    MatIconModule,
-    MatButtonModule,
-    MatMenuModule,
-    DepthPaddingPipe,
-    SortItemsPipe,
-    ClickStopPropagationDirective,
-    TippyDirective,
-  ],
+    selector: 'app-code-templates',
+    templateUrl: './code-templates.component.html',
+    styleUrls: ['./code-templates.component.scss'],
+    imports: [
+        NgTemplateOutlet,
+        NgClass,
+        MatIconModule,
+        MatButtonModule,
+        MatMenuModule,
+        DepthPaddingPipe,
+        SortItemsPipe,
+        ClickStopPropagationDirective,
+        TippyDirective,
+    ]
 })
 export class CodeTemplatesComponent implements OnChanges {
   view? = input<SourceView>();

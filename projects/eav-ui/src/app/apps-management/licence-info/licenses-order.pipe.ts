@@ -2,8 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { License } from '../models/license.model';
 
 @Pipe({
-    name: 'licensesOrder',
-    standalone: true
+  name: 'licensesOrder',
 })
 export class LicensesOrderPipe implements PipeTransform {
 

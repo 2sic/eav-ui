@@ -1,6 +1,6 @@
 import { EntityLight } from '../../../../../../../edit-types/src/EntityLight';
 import { FeatureNames } from '../../../../features/feature-names';
-import { FeaturesScopedService } from '../../../../features/features-scoped.service';
+import { FeaturesService } from '../../../../features/features.service';
 import { classLog } from '../../../../shared/logging';
 import { FormConfigService } from '../../../form/form-config.service';
 import { PickerItem } from '../models/picker-item.model';
@@ -16,6 +16,8 @@ const logSpecs = {
   buildMasks: false,
 }
 
+type MaskedPickerParts = Pick<PickerItem, 'label' | 'tooltip' | 'info' | 'link' | 'previewValue'>;
+
 /**
  * Helper class to process masks for a DataSource.
  * Masks are strings with placeholders, vs. just the name of the field to show.
@@ -27,7 +29,7 @@ export class DataSourceMasksHelper {
   constructor(
     private name: string,
     private settings: DataSourceMaskSettings,
-    features: FeaturesScopedService,
+    features: FeaturesService,
     private formConfig: FormConfigService,
     parentLog: { enableChildren: boolean }, enableLog?: boolean
   ) {
@@ -46,8 +48,8 @@ export class DataSourceMasksHelper {
   #masks: DataSourceMasks;
 
   /** Convert an Entity data to Picker-Item, processing any masks */
-  data2PickerItem({ entity, streamName, valueMustUseGuid }
-    : { entity: EntityLight; streamName: string | undefined; valueMustUseGuid: boolean; }
+  data2PickerItem({ entity, streamName, valueMustUseGuid, valueDefaultsToGuid = false }
+    : { entity: EntityLight; streamName: string | undefined; valueMustUseGuid: boolean; valueDefaultsToGuid?: boolean; }
   ): PickerItem {
 
     const l = this.log.fnIf('data2PickerItem', { entity, streamName, valueMustUseGuid });
@@ -56,10 +58,10 @@ export class DataSourceMasksHelper {
 
     // Figure out Value to use if we don't use masks - fallback is to use the Guid
     const value = (() => {
-      if (valueMustUseGuid) return entity.Guid;
-
-      if (entity[masks.value] === undefined) return entity.Value;
-
+      if (valueMustUseGuid || (valueDefaultsToGuid && !masks.value))
+        return entity.Guid;
+      if (entity[masks.value] === undefined)
+        return entity.Value;
       const maybe = entity[masks.value];
       // the value could be an empty string (pickers); not sure if it can be null though
       return maybe !== undefined ? `${maybe}` : entity.Guid;
@@ -83,7 +85,7 @@ export class DataSourceMasksHelper {
     if (!masks.hasPlaceholders) {
       const result: PickerItem = {
         id: entity.Id,
-        entity: entity,
+        data: entity,
         value,
         previewValue,
         label,
@@ -91,6 +93,7 @@ export class DataSourceMasksHelper {
         info: masks.info,
         link: masks.link,
         sourceStreamName: streamName ?? null,
+        rules: entity["Rules"],
       };
       return l.r(result, 'no masks');
     }
@@ -103,16 +106,17 @@ export class DataSourceMasksHelper {
 
     return l.r({
       id: entity.Id,
-      entity: entity,
+      data: entity,
       ...fromMasks,
       value,
       label: finalLabel,
       sourceStreamName: streamName ?? null,
-    } as PickerItem, 'with masks');
+      rules: entity["Rules"],
+    } satisfies PickerItem, 'with masks');
   }
 
   /** Process all placeholders in all masks to get tooltip, info, link and title */
-  #parseMasks(masks: DataSourceMasks, data: Record<string, any>): Partial<PickerItem> {
+  #parseMasks(masks: DataSourceMasks, data: Record<string, any>): MaskedPickerParts {
     const l = this.log.fnIf('parseMasks', { masks, data });
     let label = masks.label;
 
@@ -150,7 +154,7 @@ export class DataSourceMasksHelper {
       previewValue = previewValue.replace(search, valueItem);
     });
 
-    return l.r({ label, tooltip, info, link, previewValue } satisfies Partial<PickerItem>, 'result');
+    return l.r({ label, tooltip, info, link, previewValue } satisfies MaskedPickerParts, 'result');
   }
 
   /** Get the mask - if possibly from current objects cache */
@@ -159,13 +163,6 @@ export class DataSourceMasksHelper {
     this.#masks = this.#buildMasks();
     this.log.aIf('getMasks', { masks: this.#masks });
     return this.#masks;
-  }
-
-  // TODO: WE can probably get rid of this now, by just supplying the setting on creation of the object
-  /** modify/patch the current objects mask */
-  public patchMasks(patch: Partial<DataSourceMasks>) {
-    this.#masks = { ...this.#getMasks(), ...patch };
-    this.log.aIf('patchMasks', { masks: this.#masks });
   }
 
   #buildMasks(): DataSourceMasks {

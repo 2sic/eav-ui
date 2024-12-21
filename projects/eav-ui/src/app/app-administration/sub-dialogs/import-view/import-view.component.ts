@@ -5,12 +5,11 @@ import { FileUploadDialogComponent, FileUploadDialogData, UploadTypes } from '..
 import { ViewsService } from '../../services/views.service';
 
 @Component({
-  selector: 'app-import-view',
-  templateUrl: './import-view.component.html',
-  standalone: true,
-  imports: [
-    FileUploadDialogComponent,
-  ],
+    selector: 'app-import-view',
+    templateUrl: './import-view.component.html',
+    imports: [
+        FileUploadDialogComponent,
+    ]
 })
 export class ImportViewComponent {
 

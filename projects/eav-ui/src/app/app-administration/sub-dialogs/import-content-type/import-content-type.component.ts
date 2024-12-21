@@ -4,12 +4,11 @@ import { transient } from '../../../../../../core';
 import { FileUploadDialogComponent, FileUploadDialogData, UploadTypes } from '../../../shared/components/file-upload-dialog';
 import { ContentTypesService } from '../../services/content-types.service';
 @Component({
-  selector: 'app-import-content-type',
-  templateUrl: './import-content-type.component.html',
-  standalone: true,
-  imports: [
-    FileUploadDialogComponent,
-  ],
+    selector: 'app-import-data-bundles',
+    templateUrl: './import-content-type.component.html',
+    imports: [
+        FileUploadDialogComponent,
+    ]
 })
 export class ImportContentTypeComponent {
 

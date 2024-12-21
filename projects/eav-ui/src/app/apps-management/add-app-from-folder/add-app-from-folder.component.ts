@@ -6,7 +6,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { transient } from '../../../../../core';
 import { FeatureNames } from '../../features/feature-names';
 import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
-import { FeaturesScopedService } from '../../features/features-scoped.service';
+import { FeaturesService } from '../../features/features.service';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from "../../shared/constants/default-grid-options.constants";
@@ -18,16 +18,15 @@ import { CheckboxCellComponent } from './checkbox-cell/checkbox-cell.component';
 import { CheckboxCellParams } from './checkbox-cell/checkbox-cell.model';
 
 @Component({
-  selector: 'app-add-app-from-folder',
-  templateUrl: './add-app-from-folder.component.html',
-  styleUrls: ['./add-app-from-folder.component.scss'],
-  standalone: true,
-  imports: [
-    MatDialogActions,
-    MatButtonModule,
-    FeatureTextInfoComponent,
-    SxcGridModule,
-  ],
+    selector: 'app-add-app-from-folder',
+    templateUrl: './add-app-from-folder.component.html',
+    styleUrls: ['./add-app-from-folder.component.scss'],
+    imports: [
+        MatDialogActions,
+        MatButtonModule,
+        FeatureTextInfoComponent,
+        SxcGridModule,
+    ]
 })
 export class AddAppFromFolderComponent  {
   @HostBinding('className') hostClass = 'dialog-component';
@@ -35,7 +34,7 @@ export class AddAppFromFolderComponent  {
   gridOptions = this.buildGridOptions();
   installing: boolean = false;
 
-  public features = inject(FeaturesScopedService);
+  public features = inject(FeaturesService);
   #isAddFromFolderEnabled = this.features.isEnabled[FeatureNames.AppSyncWithSiteFiles];
   #appsListService = transient(AppsListService);
 

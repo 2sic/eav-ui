@@ -27,7 +27,6 @@ const logSpecs = {
  */
 @Directive({
   selector: '[appEditControlsBuilder]',
-  standalone: true,
 })
 export class EditControlsBuilderDirective implements OnInit, OnDestroy {
 

@@ -14,13 +14,12 @@ import { SiteLanguagesStatusComponent } from './site-languages-status/site-langu
 import { SiteLanguagesStatusParams } from './site-languages-status/site-languages-status.models';
 
 @Component({
-  selector: 'app-site-languages',
-  templateUrl: './site-languages.component.html',
-  standalone: true,
-  imports: [
-    MatDialogActions,
-    SxcGridModule,
-  ],
+    selector: 'app-site-languages',
+    templateUrl: './site-languages.component.html',
+    imports: [
+        MatDialogActions,
+        SxcGridModule,
+    ]
 })
 export class SiteLanguagesComponent {
   gridOptions = this.#buildGridOptions();

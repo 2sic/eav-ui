@@ -12,7 +12,7 @@ import { EcoFabSpeedDialActionsComponent, EcoFabSpeedDialComponent, EcoFabSpeedD
 import { transient } from '../../../../../core';
 import { AppAdminHelpers } from '../../app-administration/app-admin-helpers';
 import { FeatureNames } from '../../features/feature-names';
-import { FeaturesScopedService } from '../../features/features-scoped.service';
+import { FeaturesService } from '../../features/features.service';
 import { openFeatureDialog } from '../../features/shared/base-feature.component';
 import { AgBoolCellIconsParams } from '../../shared/ag-grid/apps-list-show/ag-bool-icon-params';
 import { AgBoolIconRenderer } from '../../shared/ag-grid/apps-list-show/ag-bool-icon-renderer.component';
@@ -33,22 +33,21 @@ import { AppsListActionsComponent } from './apps-list-actions/apps-list-actions.
 import { AppsListActionsParams } from './apps-list-actions/apps-list-actions.models';
 
 @Component({
-  selector: 'app-apps-list',
-  templateUrl: './apps-list.component.html',
-  standalone: true,
-  imports: [
-    SxcGridModule,
-    MatDialogActions,
-    EcoFabSpeedDialComponent,
-    NgClass,
-    EcoFabSpeedDialTriggerComponent,
-    MatButtonModule,
-    MatIconModule,
-    EcoFabSpeedDialActionsComponent,
-    MatBadgeModule,
-    RouterOutlet,
-    DragAndDropDirective,
-  ],
+    selector: 'app-apps-list',
+    templateUrl: './apps-list.component.html',
+    imports: [
+        SxcGridModule,
+        MatDialogActions,
+        EcoFabSpeedDialComponent,
+        NgClass,
+        EcoFabSpeedDialTriggerComponent,
+        MatButtonModule,
+        MatIconModule,
+        EcoFabSpeedDialActionsComponent,
+        MatBadgeModule,
+        RouterOutlet,
+        DragAndDropDirective,
+    ]
 })
 export class AppsListComponent implements OnInit {
 
@@ -56,7 +55,7 @@ export class AppsListComponent implements OnInit {
 
   gridOptions = this.#buildGridOptions();
 
-  public features = inject(FeaturesScopedService);
+  public features = inject(FeaturesService);
   protected isAddFromFolderEnabled = this.features.isEnabled[FeatureNames.AppSyncWithSiteFiles];
 
   #appsListSvc = transient(AppsListService);
@@ -92,6 +91,7 @@ export class AppsListComponent implements OnInit {
   }
 
   // TODO: @2dg - try to fix this so the link is directly in the HTML without a function call
+  // @2dg Window not exist in Html an a have other Styles
   browseCatalog(): void {
     window.open('https://2sxc.org/apps', '_blank');
   }

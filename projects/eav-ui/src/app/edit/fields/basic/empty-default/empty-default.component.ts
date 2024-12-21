@@ -5,7 +5,6 @@ import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
   selector: InputTypeCatalog.EmptyDefault,
   template: '',
   styleUrls: [],
-  standalone: true,
 })
 export class EmptyDefaultComponent {
 

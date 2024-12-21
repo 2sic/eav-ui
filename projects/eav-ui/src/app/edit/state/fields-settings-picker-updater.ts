@@ -1,9 +1,9 @@
 import { effect, Signal } from '@angular/core';
-import { FieldProps } from './fields-configs.model';
-import { computedObj } from '../../shared/signals/signal.utilities';
 import { classLog } from '../../shared/logging';
-import { PickerData } from '../fields/picker/picker-data';
+import { computedObj } from '../../shared/signals/signal.utilities';
 import { PickerItem } from '../fields/picker/models/picker-item.model';
+import { PickerData } from '../fields/picker/picker-data';
+import { FieldProps } from './fields-configs.model';
 
 const logSpecs = {
   all: false,
@@ -31,10 +31,10 @@ export class FieldSettingsPickerUpdater {
     const selOnly = computedObj('selOnly', () => this.#filterRelevant(source(), 'sel'));
 
     // Options-Transfer
-    effect(() => this.#transferPickerData(optsOnly(), 'opts'), { allowSignalWrites: true });
+    effect(() => this.#transferPickerData(optsOnly(), 'opts'));
 
     // Selected-Transfer
-    effect(() => this.#transferPickerData(selOnly(), 'sel'), { allowSignalWrites: true });
+    effect(() => this.#transferPickerData(selOnly(), 'sel'));
 
     l.end();
   }

@@ -8,16 +8,15 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
 @Component({
-  selector: 'app-entity-filter',
-  templateUrl: './entity-filter.component.html',
-  styleUrls: ['./entity-filter.component.scss'],
-  standalone: true,
-  imports: [
-    FormsModule,
-    MatRadioModule,
-    MatFormFieldModule,
-    MatInputModule,
-  ]
+    selector: 'app-entity-filter',
+    templateUrl: './entity-filter.component.html',
+    styleUrls: ['./entity-filter.component.scss'],
+    imports: [
+        FormsModule,
+        MatRadioModule,
+        MatFormFieldModule,
+        MatInputModule,
+    ]
 })
 export class EntityFilterComponent implements IFilterAngularComp {
   @ViewChild('valueInput') private valueInputRef: ElementRef<HTMLInputElement>;

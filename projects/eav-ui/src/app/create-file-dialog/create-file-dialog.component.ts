@@ -21,24 +21,23 @@ import { FieldHintComponent } from '../shared/components/field-hint/field-hint.c
 import { MatInputAutofocusDirective } from '../shared/directives/mat-input-autofocus.directive';
 
 @Component({
-  selector: 'app-create-file-dialog',
-  templateUrl: './create-file-dialog.component.html',
-  styleUrls: ['./create-file-dialog.component.scss'],
-  standalone: true,
-  imports: [
-    FormsModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatOptionModule,
-    MatInputModule,
-    MatProgressSpinnerModule,
-    MatButtonModule,
-    NgClass,
-    AsyncPipe,
-    FieldHintComponent,
-    MatInputAutofocusDirective,
-  ],
+    selector: 'app-create-file-dialog',
+    templateUrl: './create-file-dialog.component.html',
+    styleUrls: ['./create-file-dialog.component.scss'],
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatOptionModule,
+        MatInputModule,
+        MatProgressSpinnerModule,
+        MatButtonModule,
+        NgClass,
+        AsyncPipe,
+        FieldHintComponent,
+        MatInputAutofocusDirective,
+    ]
 })
 export class CreateFileDialogComponent extends BaseComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';

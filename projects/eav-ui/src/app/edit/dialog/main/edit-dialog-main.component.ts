@@ -1,13 +1,12 @@
 import { CdkScrollable } from '@angular/cdk/scrolling';
-import { AsyncPipe, NgClass } from '@angular/common';
-import { AfterViewInit, Component, computed, effect, inject, OnDestroy, OnInit, QueryList, signal, ViewChildren } from '@angular/core';
+import { NgClass } from '@angular/common';
+import { AfterViewInit, Component, computed, effect, inject, OnDestroy, OnInit, QueryList, signal, untracked, ViewChildren } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatRippleModule } from '@angular/material/core';
 import { MatDialogActions, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import 'reflect-metadata';
 import { delay, fromEvent, of, startWith } from 'rxjs';
 import { transient } from '../../../../../../core';
 import { BaseComponent } from '../../../shared/components/base.component';
@@ -66,7 +65,6 @@ const logSpecs = {
   selector: 'app-edit-dialog-main',
   templateUrl: './edit-dialog-main.component.html',
   styleUrls: ['./edit-dialog-main.component.scss'],
-  standalone: true,
   imports: [
     MatDialogActions,
     NgClass,
@@ -77,7 +75,6 @@ const logSpecs = {
     MatRippleModule,
     MatIconModule,
     EditDialogFooterComponent,
-    AsyncPipe,
     TranslateModule,
     ...ExtendedFabSpeedDialImports,
     ToggleDebugDirective,
@@ -87,10 +84,9 @@ const logSpecs = {
     FormsStateService,
     // This is shared across all entities on this form
     FormulaDesignerService,
-
     // TODO: probably move to each picker component (Errors)
     PickerTreeDataHelper,
-  ],
+  ]
 })
 export class EditDialogMainComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
 
@@ -109,8 +105,6 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
   #loadIconsService = transient(LoadIconsService);
   #formDataService = transient(FormDataService);
   #entityFormStateService = transient(EntityFormStateService);
-  isSaving = this.#entityFormStateService.isSaving;
-
 
   protected viewInitiated = signal(false);
 
@@ -141,26 +135,12 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
     if (pref.data().pinned == null)
       pref.set('pinned', this.#formConfig.config.dialogContext.User?.IsSystemAdmin ?? false);
 
-    // Watch to save based on messages from sub-dialogs.
-    // effect(() => {
-    //   console.log(this.formsStateService.triggerTrySaveAndMaybeClose())
-    //   // TODO: Old Code Wird x fach aufgerufen
-    //   const { tryToSave, close } = this.formsStateService.triggerTrySaveAndMaybeClose();
-    //   if (!tryToSave) return;
-    //   this.saveAll(close);
-    // }, { allowSignalWrites: true });
-
-    let previousState = { tryToSave: false, close: false };
-
+    // Watch for the "try-save" event from the forms
     effect(() => {
-      const currentState = this.formsStateService.triggerTrySaveAndMaybeClose();
-
-      if (currentState.tryToSave && (currentState.tryToSave !== previousState.tryToSave || currentState.close !== previousState.close)) {
-        this.saveAll(currentState.close);
-      }
-
-      previousState = currentState;  // Zustand aktualisieren
-    }, { allowSignalWrites: true });
+      const current = this.formsStateService.triggerTrySaveAndMaybeClose();
+      if (current.tryToSave)
+        untracked(() => this.saveAll(current.close));
+    });
 
   }
 
@@ -169,7 +149,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
   protected items = this.itemService.getManySignal(this.#formConfig.config.itemGuids);
 
   protected formsValid = this.formsStateService.formsValidTemp;
-  protected saveButtonDisabled = this.formsStateService.saveButtonDisabled;
+  saveDisabled = computed(() => this.#entityFormStateService.isSaving() || this.formsStateService.saveButtonDisabled());
   protected hideHeader = this.languageStore.getHideHeaderSignal(this.#formConfig.config.formId);
 
   //#region Footer - Show once or more, hide again, and expand footer (extra large footer)
@@ -206,7 +186,6 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
   ngOnInit() {
     this.editRoutingService.init();
     this.#loadIconsService.load();
-    this.formsStateService.init();
     this.formulaDesignerService.cache.init();
 
     this.#startSubscriptions();
@@ -247,11 +226,12 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
   }
 
   /** Save all forms */
-  saveAll(close: boolean) {
+  saveAll(close: boolean): boolean {
     this.#entityFormStateService.isSaving.set(true);
 
     const l = this.log.fn('saveAll', { close });
     if (this.formsStateService.formsAreValid()) {
+      // #1 Case form is valid
 
       const items = this.formBuilderRefs
         .map(formBuilderRef => {
@@ -306,7 +286,9 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
         },
       });
     } else {
-      // Case form is not valid
+      // #2 Case form is not valid
+      // Quickly set saving to false, otherwise further saves will be blocked
+      this.#entityFormStateService.isSaving.set(false);
 
       // check if there is even a formBuilder to process, otherwise exit
       if (this.formBuilderRefs == null)
