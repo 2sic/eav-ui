@@ -57,7 +57,7 @@ export class DatetimeDefaultComponent implements AfterViewInit {
   protected basics = this.fieldState.basics;
   protected useTimePicker = this.fieldState.settingExt('UseTimePicker');
 
-  dateTimeValue = computed(() => dayjs.utc(this.uiValue() || dayjs().utc()));
+  dateTimeValue = computed(() => dayjs.utc(this.uiValue()));
 
   timePickerOptions = computed(() => {
     const template = dayjs().utc().hour(0).minute(0).second(0);
@@ -116,17 +116,16 @@ export class DatetimeDefaultComponent implements AfterViewInit {
     }
   }
 
-  onTimeInputChange(event: any): void {
+  updateTime(event: any): void {
     const time = dayjs(event.target.value, 'HH:mm');
-
     if (time.isValid())
-      this.updateFormattedValue(undefined, time);
+      this.updateFormattedValue(null, time);
   }
 
   // Material Date Picker Event Handler
   updateDate(event: MatDatepickerInputEvent<Dayjs>) {
     const dateValue = event.value;
-    if (dateValue)
+    if (dateValue.isValid())
       this.updateFormattedValue(dateValue, null);
   }
 
@@ -141,7 +140,8 @@ export class DatetimeDefaultComponent implements AfterViewInit {
   updateFormattedValue(date?: Dayjs, time?: Dayjs) {
     if (!date && !time) return;
 
-    let currentDateTime = dayjs(this.uiValue()).utc();
+    // Set current date and time from UI or initiate with current date and 12:00 AM
+    let currentDateTime = dayjs(this.uiValue()).isValid() ? dayjs(this.uiValue()).utc() : dayjs().utc().hour(0).minute(0).second(0);
 
     if (date)
       currentDateTime = currentDateTime

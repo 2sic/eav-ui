@@ -36,10 +36,10 @@
         class="picker-input"
         #timeInput
         [value]="dateTimeValue()"
-        (input)="onTimeInputChange($event)"
+        (input)="updateTime($event)"
       />
       <mat-timepicker #timepicker [options]="timePickerOptions()"></mat-timepicker>
-      <mat-timepicker-toggle [for]="timepicker" matSuffix tippyTranslate="Fields.DateTime.OpenTime" />
+      <mat-timepicker-toggle [for]="timepicker" tippyTranslate="Fields.DateTime.OpenTime" />
     </ng-container>
   }
 </mat-form-field>
