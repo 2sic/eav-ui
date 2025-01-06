@@ -77,14 +77,15 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
     const staticName = eavConstants.contentTypes.appConfiguration;
     this.#contentItemsSvc.getAll(staticName).subscribe(contentItems => {
 
-      if (contentItems.length < 1)
-        this.#dialogRouter.navRelative(['message/e'], {
-          queryParams: { error: 'AppAdmin.ErrorNoAppSettings' },
-        });
-      if (contentItems.length > 1)
-        this.#dialogRouter.navRelative(['message/e'], {
-          queryParams: { error: 'AppAdmin.ErrorTooManyAppSettings' },
-        });
+      /* @2pp - issue fix: https://github.com/2sic/2sxc/issues/3534 */
+      // if (contentItems.length < 1)
+      //   this.#dialogRouter.navRelative(['message/e'], {
+      //     queryParams: { error: 'AppAdmin.ErrorNoAppSettings' },
+      // });
+      // if (contentItems.length > 1)
+      //   this.#dialogRouter.navRelative(['message/e'], {
+      //     queryParams: { error: 'AppAdmin.ErrorTooManyAppSettings' },
+      // });
 
       url.set(this.#urlTo(
         `edit/${convertFormToUrl({
