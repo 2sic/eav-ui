@@ -79,7 +79,7 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
 
       if (contentItems.length < 1)
         this.#dialogRouter.navRelative(['message/e'], {
-          queryParams: { error: 'AppAdmin.ErrorNoManyAppSettings' },
+          queryParams: { error: 'AppAdmin.ErrorNoAppSettings' },
         });
       if (contentItems.length > 1)
         this.#dialogRouter.navRelative(['message/e'], {

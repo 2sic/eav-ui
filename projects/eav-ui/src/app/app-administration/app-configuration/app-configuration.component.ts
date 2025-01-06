@@ -236,7 +236,7 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     const url = signal('');
     this.#contentItemsService.getAll(staticName).subscribe(contentItems => {
       if (contentItems.length < 1) {
-        url.set(this.#urlTo('message/e', { error: 'AppAdmin.ErrorNoManyAppSettings' }, staticName));
+        url.set(this.#urlTo('message/e', { error: 'AppAdmin.ErrorNoAppSettings' }, staticName));
       } else if (contentItems.length > 1) {
         url.set(this.#urlTo('message/e', { error: 'AppAdmin.ErrorTooManyAppSettings' }, staticName));
       } else {
