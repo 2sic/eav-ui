@@ -60,10 +60,16 @@ export class DatetimeDefaultComponent implements AfterViewInit {
   dateTimeValue = computed(() => dayjs.utc(this.uiValue() || dayjs().utc()));
 
   timePickerOptions = computed(() => {
-    const predefinedOptions = [0, 6, 8, 10, 12, 18].map(hour => {
-      const value = dayjs().utc().hour(hour).minute(0).second(0);
-      return { label: value.format('HH:mm A'), value };
-    });
+    const template = dayjs().utc().hour(0).minute(0).second(0);
+
+    const predefinedOptions = [
+      { label: '00:00 AM', value: template.hour(0) },
+      { label: '06:00 AM', value: template.hour(6) },
+      { label: '08:00 AM', value: template.hour(8) },
+      { label: '10:00 AM', value: template.hour(10) },
+      { label: '12:00 PM', value: template.hour(12) },
+      { label: '06:00 PM', value: template.hour(18) },
+    ];
 
     const userOption = {
       label: this.dateTimeValue().format('HH:mm A'),
