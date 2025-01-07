@@ -61,11 +61,7 @@
 }
 
 .btn {
-  border: 1px solid silver;
-  border-radius: 4px;
-
   &:hover {
-    background-color: rgba(69, 79, 99, 0.08);
     cursor: pointer;
   }
 }
@@ -81,4 +77,10 @@
   &:hover {
     border-bottom: 1px solid #002753;
   }
+}
+
+#formatted-address-container {
+  border: #002753 1px solid;
+  border-radius: 5px;
+  padding: 4px;
 }

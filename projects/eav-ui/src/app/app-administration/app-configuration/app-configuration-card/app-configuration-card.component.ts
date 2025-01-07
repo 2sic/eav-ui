@@ -77,6 +77,8 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
     const staticName = eavConstants.contentTypes.appConfiguration;
     this.#contentItemsSvc.getAll(staticName).subscribe(contentItems => {
 
+      // TODO: @2pp - check the statements below and if fails, show error dialog
+
       /* @2pp - issue fix: https://github.com/2sic/2sxc/issues/3534 */
       // if (contentItems.length < 1)
       //   this.#dialogRouter.navRelative(['message/e'], {
