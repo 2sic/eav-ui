@@ -4,6 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { TranslateService } from '@ngx-translate/core';
 import { transient } from '../../../../../../core';
 import { DocsLinkHelperComponent } from '../../../admin-shared/docs-link-helper/docs-link-helper.component';
 import { ContentItemsService } from '../../../content-items/services/content-items.service';
@@ -43,6 +44,7 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
   constructor(
     private context: Context,
     private snackBar: MatSnackBar,
+    private translate: TranslateService,
   ) {
     this.appConfigurationUrl = (this.urlToEdit());
   }
@@ -77,17 +79,20 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
     const staticName = eavConstants.contentTypes.appConfiguration;
     this.#contentItemsSvc.getAll(staticName).subscribe(contentItems => {
 
-      // TODO: @2pp - check the statements below and if fails, show error dialog
-
-      /* @2pp - issue fix: https://github.com/2sic/2sxc/issues/3534 */
-      // if (contentItems.length < 1)
-      //   this.#dialogRouter.navRelative(['message/e'], {
-      //     queryParams: { error: 'AppAdmin.ErrorNoAppSettings' },
-      // });
-      // if (contentItems.length > 1)
-      //   this.#dialogRouter.navRelative(['message/e'], {
-      //     queryParams: { error: 'AppAdmin.ErrorTooManyAppSettings' },
-      // });
+      if (contentItems.length < 1) {
+        this.snackBar.open(this.translate.instant('AppAdmin.ErrorNoAppSettings', { errComponent: 'Global Settings' }) , 'Close', {
+          duration: 5000,
+          panelClass: ['error-snackbar']
+        });
+        return '';
+      }
+      if (contentItems.length > 1) {
+        this.snackBar.open(this.translate.instant('AppAdmin.ErrorTooManyAppSettings', { errComponent: 'Global Settings' }) , 'Close', {
+          duration: 5000,
+          panelClass: ['error-snackbar']
+        });
+        return '';
+      }
 
       url.set(this.#urlTo(
         `edit/${convertFormToUrl({
