@@ -22,18 +22,24 @@ export interface PageEntity extends EntityLightIdentifier {
   /** The URL of the page */
   Url: string;
 
-  /** If the page is visible in the navigation */
-  Visible: boolean;
+  /**
+   * If the page is visible in the navigation
+   * Previously called `Visible`, changed to `IsNavigation` in v19.01
+   */
+  IsNavigation: boolean;
 
-  /** If the page would be clickable in the navigation, or just a name to show (usually opening sub-pages) */
-  Clickable: boolean;
+  /**
+   * If the page would be clickable in the navigation, or just a name to show (usually opening sub-pages)
+   * Previously called `Clickable`, changed to `IsClickable` in v19.01
+   */
+  IsClickable: boolean;
 }
 
 export interface PageSearchItem {
   id: number;
   name: string;
   path: string;
-  isVisible: boolean;
+  isNavigation: boolean;
   isClickable: boolean;
 }
 
