@@ -40,6 +40,7 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
   #dialogRouter = transient(DialogRoutingService);
 
   appConfigurationUrl = signal('');
+  appConfigAvailable = signal(false);
 
   constructor(
     private context: Context,
@@ -49,7 +50,7 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
     this.appConfigurationUrl = (this.urlToEdit());
   }
 
-  contentItem = this.#contentItemsSvc.getAllSig(eavConstants.contentTypes.appConfiguration, undefined);
+  contentItem = this.#contentItemsSvc.getAllSig(eavConstants.contentTypes.customSettings, undefined);
 
   #refresh = signal(0);
 
@@ -76,24 +77,14 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
 
   urlToEdit() {
     let url = signal('');
-    const staticName = eavConstants.contentTypes.appConfiguration;
-    this.#contentItemsSvc.getAll(staticName).subscribe(contentItems => {
+    this.#contentItemsSvc.getAll(
+      eavConstants.contentTypes.appConfiguration
+    ).subscribe(contentItems => {
 
-      if (contentItems.length < 1) {
-        this.snackBar.open(this.translate.instant('AppAdmin.ErrorNoAppSettings', { errComponent: 'Global Settings' }) , 'Close', {
-          duration: 5000,
-          panelClass: ['error-snackbar']
-        });
-        return '';
-      }
-      if (contentItems.length > 1) {
-        this.snackBar.open(this.translate.instant('AppAdmin.ErrorTooManyAppSettings', { errComponent: 'Global Settings' }) , 'Close', {
-          duration: 5000,
-          panelClass: ['error-snackbar']
-        });
-        return '';
-      }
+      if (contentItems.length !== 1)
+        return ''
 
+      this.appConfigAvailable.set(true);
       url.set(this.#urlTo(
         `edit/${convertFormToUrl({
           items: [EditPrep.editId(contentItems[0].Id)],

@@ -77,6 +77,10 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
   appSiteCustomSettingsUrl = signal('');
   appSiteCustomResourcesUrl = signal('');
 
+  customSettingsAvailable = signal(false);
+  customResourcesAvailable = signal(false);
+
+
   // More proper ViewModel
   appSettingsInternal$ = new Subject<AppInternals>();
 
@@ -131,6 +135,7 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
   ) {
+    // Set the urls for the edit links when ContentTypes are loaded
     this.appGlobalSystemSettingsUrl = this.urlToEditSystem(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App);
     this.appContentSystemSettingsUrl = this.urlToEditSystem(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App);
     this.appSiteSystemSettingsUrl = this.urlToEditSystem(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.Site);
@@ -157,6 +162,10 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
       this.isPrimary = appScope === AppScopes.Site;
       this.isApp = appScope === AppScopes.App;
     });
+    
+    // Disable the Links when the setting contenttypes are not defined
+    this.customSettingsAvailable.set(this.#contentItemsService.getAllSig(eavConstants.contentTypes.settings, undefined).length === 1);
+    this.customResourcesAvailable.set(this.#contentItemsService.getAllSig(eavConstants.contentTypes.customResources, undefined).length === 1);
   }
 
   ngOnDestroy() {

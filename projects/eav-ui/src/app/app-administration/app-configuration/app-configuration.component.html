@@ -49,7 +49,12 @@
                   </a>
                 </td>
                 <td>
-                  <a [href]="appGlobalCustomSettingsUrl()" mat-icon-button tippy="Edit custom global settings">
+                  <a
+                    [href]="appGlobalCustomSettingsUrl()"
+                    mat-icon-button
+                    [disabled]="!customSettingsAvailable()"
+                    tippy="Edit custom global settings"
+                  >
                     <mat-icon
                       matBadgeColor="accent"
                       matBadgeSize="small"
@@ -62,6 +67,7 @@
                   <a
                     [href]="urlToConfig(eavConstants.contentTypes.customSettings)"
                     mat-icon-button
+                    [disabled]="!customSettingsAvailable()"
                     tippy="Configure fields of the custom global settings"
                   >
                     <mat-icon
@@ -222,7 +228,12 @@
                   </a>
                 </td>
                 <td>
-                  <a [href]="appGlobalCustomResourcesUrl()" mat-icon-button tippy="Edit custom global resources">
+                  <a
+                    [href]="appGlobalCustomResourcesUrl()"
+                    mat-icon-button
+                    [disabled]="!customResourcesAvailable()"
+                    tippy="Edit custom global resources"
+                  >
                     <mat-icon
                       matBadgeColor="accent"
                       matBadgeSize="small"
@@ -235,6 +246,7 @@
                   <a
                     [href]="urlToConfig(eavConstants.contentTypes.customResources)"
                     mat-icon-button
+                    [disabled]="!customResourcesAvailable()"
                     tippy="Configure fields of the custom global resources"
                   >
                     <mat-icon
