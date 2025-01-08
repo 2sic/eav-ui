@@ -1,25 +1,27 @@
 <mat-form-field color="accent" class="eav-mat-form-field">
-  <mat-label>Date & Time</mat-label>
-  <!-- Visible input For both Date & Time Picker -->
-  <!-- propertybinding for a template reference of owl-date-time instance -->
-  <input
-    matInput
-    [disabled]="ui().disabled"
-    [owlDateTime]="owlPicker"
-    (dateTimeChange)="updateDateTime($event)"
-    [placeholder]="basics().placeholder"
-    [required]="basics().required"
-    [value]="dateTimeValue()"
-  />
-  <!-- Isn't used anymore, but remains in code if needed -->
-  <!-- <mat-datepicker-toggle matSuffix [owlDateTimeTrigger]="owlPicker" tippyTranslate="Fields.DateTime.Open" /> -->
-  <owl-date-time #owlPicker />
-  
-  <!-- Hidden input for Angular Material Date Picker -->
+  <mat-label>Date{{ useTimePicker() ? ' & Time' : '' }} </mat-label>
+  @if (useTimePicker()) {
+    <!-- Visible input For both Date & Time Picker -->
+    <!-- propertybinding for a template reference of owl-date-time instance -->
+    <input
+      matInput
+      [disabled]="ui().disabled"
+      [owlDateTime]="owlPicker"
+      (dateTimeChange)="updateDateTime($event)"
+      [placeholder]="basics().placeholder"
+      [required]="basics().required"
+      [value]="dateTimeValue()"
+    />
+    <!-- Isn't used anymore, but remains in code if needed -->
+    <!-- <mat-datepicker-toggle matSuffix [owlDateTimeTrigger]="owlPicker" tippyTranslate="Fields.DateTime.Open" /> -->
+    <owl-date-time #owlPicker />
+  }
+
+  <!-- Hidden input if not useTimePicker for Angular Material Date Picker -->
   <input
     matInput
     [matDatepicker]="datepicker"
-    class="picker-input"
+    [class.picker-input]="useTimePicker()"
     #dateInput
     [value]="dateTimeValue()"
     (dateChange)="updateDate($event)"

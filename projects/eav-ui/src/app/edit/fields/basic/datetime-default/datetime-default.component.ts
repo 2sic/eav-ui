@@ -100,7 +100,10 @@ export class DatetimeDefaultComponent implements AfterViewInit {
     private translate: TranslateService,
     private owlDayjsDateAdapter: DateTimeAdapter<Dayjs>
   ) {
+    // Set the Date/Time format to the browser's language (de-De, en.En, etc.)
+    this.translate.currentLang = navigator.language;
     const currentLang = this.translate.currentLang;
+    
     dayjs.locale(currentLang);
     this.matDayjsDateAdapter.setLocale(currentLang);
     this.owlDayjsDateAdapter.setLocale(currentLang);
@@ -155,7 +158,12 @@ export class DatetimeDefaultComponent implements AfterViewInit {
         .minute(time.minute())
         .second(time.second());
 
-    this.ui().setIfChanged(currentDateTime.toISOString());
-    return currentDateTime.toISOString();
+        // Only return the date if the 
+    if(!this.useTimePicker())
+      this.ui().setIfChanged(currentDateTime.utc().hour(0).toISOString());
+    else
+      this.ui().setIfChanged(currentDateTime.toISOString());
+
+      return currentDateTime.toISOString();
   };
 }
