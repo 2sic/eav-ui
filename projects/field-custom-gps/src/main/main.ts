@@ -55,7 +55,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
     this.iconSearch = this.querySelector<HTMLAnchorElement>('#icon-search');
     this.iconSearch.insertAdjacentHTML('afterbegin', customGpsIcons.search);
     this.iconPin = this.querySelector<HTMLAnchorElement>('#icon-pin');
-    this.iconPin.insertAdjacentHTML('afterbegin', customGpsIcons.person);
+    this.iconPin.insertAdjacentHTML('afterbegin', customGpsIcons.locationPin);
     const formattedAddressContainer = this.querySelector<HTMLInputElement>('#formatted-address-container');
     this.mapContainer = this.querySelector<HTMLDivElement>('#map');
 
