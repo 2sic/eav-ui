@@ -52,7 +52,7 @@
                   <a
                     [href]="appGlobalCustomSettingsUrl()"
                     mat-icon-button
-                    [disabled]="!customSettingsAvailable()"
+                    [disabled]="!customGlobalSettingsAvailable()"
                     tippy="Edit custom global settings"
                   >
                     <mat-icon
@@ -67,7 +67,7 @@
                   <a
                     [href]="urlToConfig(eavConstants.contentTypes.customSettings)"
                     mat-icon-button
-                    [disabled]="!customSettingsAvailable()"
+                    [disabled]="!customGlobalSettingsAvailable()"
                     tippy="Configure fields of the custom global settings"
                   >
                     <mat-icon
@@ -99,7 +99,12 @@
                   </a>
                 </td>
                 <td>
-                  <a [href]="appSiteCustomSettingsUrl()" mat-icon-button tippy="Edit site system settings">
+                  <a
+                    [href]="appSiteCustomSettingsUrl()"
+                    mat-icon-button
+                    [disabled]="!customSiteSettingsAvailable()"
+                    tippy="Edit site system settings"
+                  >
                     <mat-icon
                       matBadgeColor="accent"
                       matBadgeSize="small"
@@ -112,6 +117,7 @@
                   <a
                     [href]="urlToConfig(eavConstants.contentTypes.customSettings)"
                     mat-icon-button
+                    [disabled]="!customSiteSettingsAvailable()"
                     tippy="Configure fields of the custom site settings"
                   >
                     <mat-icon
@@ -231,7 +237,7 @@
                   <a
                     [href]="appGlobalCustomResourcesUrl()"
                     mat-icon-button
-                    [disabled]="!customResourcesAvailable()"
+                    [disabled]="!customGlobalResourcesAvailable()"
                     tippy="Edit custom global resources"
                   >
                     <mat-icon
@@ -246,7 +252,7 @@
                   <a
                     [href]="urlToConfig(eavConstants.contentTypes.customResources)"
                     mat-icon-button
-                    [disabled]="!customResourcesAvailable()"
+                    [disabled]="!customGlobalResourcesAvailable()"
                     tippy="Configure fields of the custom global resources"
                   >
                     <mat-icon
@@ -278,7 +284,12 @@
                   </a>
                 </td>
                 <td>
-                  <a [href]="appSiteCustomResourcesUrl()" mat-icon-button tippy="Edit custom site resources">
+                  <a
+                    [href]="appSiteCustomResourcesUrl()"
+                    mat-icon-button
+                    [disabled]="!customSiteResourcesAvailable()"
+                    tippy="Edit custom site resources"
+                  >
                     <mat-icon
                       matBadgeColor="accent"
                       matBadgeSize="small"
@@ -291,6 +302,7 @@
                   <a
                     [href]="urlToConfig(eavConstants.contentTypes.customResources)"
                     mat-icon-button
+                    [disabled]="!customSiteResourcesAvailable()"
                     tippy="Configure fields of the custom site resources"
                   >
                     <mat-icon

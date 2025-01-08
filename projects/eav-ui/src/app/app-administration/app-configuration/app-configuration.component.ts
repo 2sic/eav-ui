@@ -77,8 +77,10 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
   appSiteCustomSettingsUrl = signal('');
   appSiteCustomResourcesUrl = signal('');
 
-  customSettingsAvailable = signal(false);
-  customResourcesAvailable = signal(false);
+  customGlobalSettingsAvailable = signal(false);
+  customGlobalResourcesAvailable = signal(false);
+  customSiteSettingsAvailable = signal(false);
+  customSiteResourcesAvailable = signal(false);
 
 
   // More proper ViewModel
@@ -164,8 +166,10 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     });
     
     // Disable the Links when the setting contenttypes are not defined
-    this.customSettingsAvailable.set(this.#contentItemsService.getAllSig(eavConstants.contentTypes.settings, undefined).length === 1);
-    this.customResourcesAvailable.set(this.#contentItemsService.getAllSig(eavConstants.contentTypes.customResources, undefined).length === 1);
+    this.customGlobalSettingsAvailable.set(this.#contentItemsService.getAllSig(eavConstants.contentTypes.customSettings, undefined).length === 1);
+    this.customGlobalResourcesAvailable.set(this.#contentItemsService.getAllSig(eavConstants.contentTypes.customResources, undefined).length === 1);
+    this.customSiteSettingsAvailable.set(this.#contentItemsService.getAllSig(eavConstants.contentTypes.customSettings, undefined).length === 1);
+    this.customSiteResourcesAvailable.set(this.#contentItemsService.getAllSig(eavConstants.contentTypes.customResources, undefined).length === 1);
   }
 
   ngOnDestroy() {
