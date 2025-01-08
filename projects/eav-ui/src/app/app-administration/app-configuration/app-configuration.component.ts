@@ -136,21 +136,7 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
-  ) {
-    // Set the urls for the edit links when ContentTypes are loaded
-    this.appGlobalSystemSettingsUrl = this.urlToEditSystem(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App);
-    this.appContentSystemSettingsUrl = this.urlToEditSystem(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App);
-    this.appSiteSystemSettingsUrl = this.urlToEditSystem(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.Site);
-    this.appGlobalSystemResourcesUrl = this.urlToEditSystem(eavConstants.contentTypes.systemResources, SystemSettingsScopes.App);
-    this.appContentSystemResourcesUrl = this.urlToEditSystem(eavConstants.contentTypes.systemResources, SystemSettingsScopes.App);
-    this.appSiteSystemResourcesUrl = this.urlToEditSystem(eavConstants.contentTypes.systemResources, SystemSettingsScopes.Site);
-    this.appContentCustomSettingsUrl = this.urlToEditDefault(eavConstants.contentTypes.settings);
-    this.appContentCustomResourcesUrl = this.urlToEditDefault(eavConstants.contentTypes.resources);
-    this.appGlobalCustomResourcesUrl = this.urlToEditCustom(eavConstants.contentTypes.customResources);
-    this.appSiteCustomResourcesUrl = this.urlToEditCustom(eavConstants.contentTypes.customResources);
-    this.appGlobalCustomSettingsUrl = this.urlToEditCustom(eavConstants.contentTypes.customSettings);
-    this.appSiteCustomSettingsUrl = this.urlToEditCustom(eavConstants.contentTypes.customSettings);
-  }
+  ) { }
 
   ngOnInit() {
     this.#dialogRouter.doOnDialogClosed(() => {
@@ -164,16 +150,36 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
       this.isPrimary = appScope === AppScopes.Site;
       this.isApp = appScope === AppScopes.App;
     });
-    
+  }
+
+  ngAfterViewInit() {
+    // Load the data after the UI is rendered
+    this.loadData();
+  }
+
+  ngOnDestroy() {
+    this.snackBar.dismiss();
+  }
+
+  loadData() {
+    this.appGlobalSystemSettingsUrl = this.urlToEditSystem(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App);
+    this.appContentSystemSettingsUrl = this.urlToEditSystem(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App);
+    this.appSiteSystemSettingsUrl = this.urlToEditSystem(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.Site);
+    this.appGlobalSystemResourcesUrl = this.urlToEditSystem(eavConstants.contentTypes.systemResources, SystemSettingsScopes.App);
+    this.appContentSystemResourcesUrl = this.urlToEditSystem(eavConstants.contentTypes.systemResources, SystemSettingsScopes.App);
+    this.appSiteSystemResourcesUrl = this.urlToEditSystem(eavConstants.contentTypes.systemResources, SystemSettingsScopes.Site);
+    this.appContentCustomSettingsUrl = this.urlToEditDefault(eavConstants.contentTypes.settings);
+    this.appContentCustomResourcesUrl = this.urlToEditDefault(eavConstants.contentTypes.resources);
+    this.appGlobalCustomResourcesUrl = this.urlToEditCustom(eavConstants.contentTypes.customResources);
+    this.appSiteCustomResourcesUrl = this.urlToEditCustom(eavConstants.contentTypes.customResources);
+    this.appGlobalCustomSettingsUrl = this.urlToEditCustom(eavConstants.contentTypes.customSettings);
+    this.appSiteCustomSettingsUrl = this.urlToEditCustom(eavConstants.contentTypes.customSettings);
+
     // Disable the Links when the setting contenttypes are not defined
     this.customGlobalSettingsAvailable.set(this.#contentItemsService.getAllSig(eavConstants.contentTypes.customSettings, undefined).length === 1);
     this.customGlobalResourcesAvailable.set(this.#contentItemsService.getAllSig(eavConstants.contentTypes.customResources, undefined).length === 1);
     this.customSiteSettingsAvailable.set(this.#contentItemsService.getAllSig(eavConstants.contentTypes.customSettings, undefined).length === 1);
     this.customSiteResourcesAvailable.set(this.#contentItemsService.getAllSig(eavConstants.contentTypes.customResources, undefined).length === 1);
-  }
-
-  ngOnDestroy() {
-    this.snackBar.dismiss();
   }
 
   #urlTo(url: string, queryParams?: { [key: string]: string }, errComponent?: string) {
