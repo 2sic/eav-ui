@@ -1,11 +1,11 @@
 import * as search from '../assets/icons/font-awesome/magnifying-glass.svg';
 import * as mapMarker from '../assets/icons/font-awesome/map-marker-alt-solid.svg';
-import * as person from '../assets/icons/font-awesome/person.svg';
+import * as locationPin from '../assets/icons/google-material/location-pin.svg';
 
 export const customGpsIcons = {
   mapMarker: mapMarker.default,
   search: search.default,
-  person: person.default,
+  locationPin: locationPin.default,
 };
 
 export function buildTemplate(template: string, styles: string): string {

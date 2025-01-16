@@ -7,3 +7,22 @@
   background-color: var(--mat-datepicker-calendar-container-background-color);
   color: var(--mat-datepicker-calendar-container-text-color);
 }
+
+// The Date and Timepicker input fields are hidden because the result gets merged into a third input field
+.picker-input {
+  display: none;
+}
+
+// Set Timepicker to the right
+::ng-deep .mat-timepicker-panel {
+  --mat-option-selected-state-label-text-color: black;
+  max-width: 10rem !important;
+  position: absolute !important;
+  right: 0 !important;
+}
+
+::ng-deep .cdk-overlay-pane:has(.mat-timepicker-panel) {
+  position: relative !important;
+}
+
+// Datepicker is set to the right using xPosition="end" on the picker element itself

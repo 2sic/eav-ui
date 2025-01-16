@@ -53,7 +53,13 @@
     <div class="eav-card-space-div"></div>
     <mat-card-actions align="start">
       <app-docs-link-helper [link]="'https://docs.2sxc.org/basics/app/configuration.html'" [label]="" [icon]=""></app-docs-link-helper>
-      <a [href]="appConfigurationUrl()" mat-button class="eav-button__with-icon" tippy="Edit app system resources">
+      <a
+        [href]="appConfigurationUrl()"
+        mat-button
+        [disabled]="!appConfigAvailable()"
+        class="eav-button__with-icon"
+        tippy="Edit app system resources"
+      >
         <mat-icon
           matBadgeColor="accent"
           matBadgeSize="small"

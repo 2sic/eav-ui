@@ -30,7 +30,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
   private lngInput: HTMLInputElement;
   private map: google.maps.Map;
   private mapContainer: HTMLDivElement;
-  private marker: google.maps.Marker;
+  private marker: any;
   private eventListeners: ElementEventListener[];
   private defaultCoordinates: google.maps.LatLngLiteral;
   private iconPin: HTMLAnchorElement
@@ -55,7 +55,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
     this.iconSearch = this.querySelector<HTMLAnchorElement>('#icon-search');
     this.iconSearch.insertAdjacentHTML('afterbegin', customGpsIcons.search);
     this.iconPin = this.querySelector<HTMLAnchorElement>('#icon-pin');
-    this.iconPin.insertAdjacentHTML('afterbegin', customGpsIcons.person);
+    this.iconPin.insertAdjacentHTML('afterbegin', customGpsIcons.locationPin);
     const formattedAddressContainer = this.querySelector<HTMLInputElement>('#formatted-address-container');
     this.mapContainer = this.querySelector<HTMLDivElement>('#map');
 
@@ -89,12 +89,19 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
     this.connector.loadScript('google', `https://maps.googleapis.com/maps/api/js?key=${googleMapsParams}&callback=Function.prototype`, () => { this.mapScriptLoaded(); });
   }
 
-  private mapScriptLoaded(): void {
+  private async mapScriptLoaded(): Promise<void> {
     this.log.a(`${gpsDialogTag} mapScriptLoaded called`);
-    this.map = new google.maps.Map(this.mapContainer, {
+
+    //@ts-ignore
+    const { Map } = await google.maps.importLibrary("maps") as google.maps.MapsLibrary;
+    //@ts-ignore
+    const { AdvancedMarkerElement } = await google.maps.importLibrary("marker") as google.maps.MarkerLibrary;
+
+    this.map = new Map(this.mapContainer, {
       zoom: 15,
       center: this.defaultCoordinates,
       gestureHandling: 'greedy',
+      mapId: 'DEMO_MAP_ID',
       streetViewControlOptions: {
         position: google.maps.ControlPosition.RIGHT_CENTER,
       },
@@ -102,7 +109,13 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
         position: google.maps.ControlPosition.RIGHT_CENTER,
       },
     });
-    this.marker = new google.maps.Marker({ position: this.defaultCoordinates, map: this.map, draggable: true });
+
+    this.marker = new AdvancedMarkerElement({
+      map: this.map,
+      position: this.defaultCoordinates,
+      gmpDraggable: true,
+    });
+
     this.geocoder = new google.maps.Geocoder();
 
     // set initial values
@@ -173,7 +186,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
     this.latInput.value = latLng.lat?.toString() ?? '';
     this.lngInput.value = latLng.lng?.toString() ?? '';
     this.map.setCenter(latLng);
-    this.marker.setPosition(latLng);
+    this.marker.position = latLng;
   }
 
   private updateForm(latLng: google.maps.LatLngLiteral): void {

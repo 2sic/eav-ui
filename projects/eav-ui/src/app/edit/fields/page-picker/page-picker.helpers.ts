@@ -14,8 +14,8 @@ export function buildPageSearch(pages: PageEntity[]): PageSearchItem[] {
       id: page.Id,
       name: page.Name,
       path,
-      isVisible: page.Visible,
-      isClickable: page.Clickable,
+      isNavigation: page.IsNavigation,
+      isClickable: page.IsClickable,
     };
     return item;
   });
@@ -32,8 +32,8 @@ export function buildPageTree(pages: PageEntity[]): PageTreeItem[] {
       id: page.Id,
       name: page.Name,
       parentId: page.ParentId,
-      isVisible: page.Visible,
-      isClickable: page.Clickable,
+      isNavigation: page.IsNavigation,
+      isClickable: page.IsClickable,
     };
     return item;
   });

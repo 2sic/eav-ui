@@ -77,6 +77,12 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
   appSiteCustomSettingsUrl = signal('');
   appSiteCustomResourcesUrl = signal('');
 
+  customGlobalSettingsAvailable = signal(false);
+  customGlobalResourcesAvailable = signal(false);
+  customSiteSettingsAvailable = signal(false);
+  customSiteResourcesAvailable = signal(false);
+
+
   // More proper ViewModel
   appSettingsInternal$ = new Subject<AppInternals>();
 
@@ -130,20 +136,7 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
-  ) {
-    this.appGlobalSystemSettingsUrl = this.urlToEditSystem(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App);
-    this.appContentSystemSettingsUrl = this.urlToEditSystem(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App);
-    this.appSiteSystemSettingsUrl = this.urlToEditSystem(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.Site);
-    this.appGlobalSystemResourcesUrl = this.urlToEditSystem(eavConstants.contentTypes.systemResources, SystemSettingsScopes.App);
-    this.appContentSystemResourcesUrl = this.urlToEditSystem(eavConstants.contentTypes.systemResources, SystemSettingsScopes.App);
-    this.appSiteSystemResourcesUrl = this.urlToEditSystem(eavConstants.contentTypes.systemResources, SystemSettingsScopes.Site);
-    this.appContentCustomSettingsUrl = this.urlToEditDefault(eavConstants.contentTypes.settings);
-    this.appContentCustomResourcesUrl = this.urlToEditDefault(eavConstants.contentTypes.resources);
-    this.appGlobalCustomResourcesUrl = this.urlToEditCustom(eavConstants.contentTypes.customResources);
-    this.appSiteCustomResourcesUrl = this.urlToEditCustom(eavConstants.contentTypes.customResources);
-    this.appGlobalCustomSettingsUrl = this.urlToEditCustom(eavConstants.contentTypes.customSettings);
-    this.appSiteCustomSettingsUrl = this.urlToEditCustom(eavConstants.contentTypes.customSettings);
-  }
+  ) { }
 
   ngOnInit() {
     this.#dialogRouter.doOnDialogClosed(() => {
@@ -159,8 +152,34 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     });
   }
 
+  ngAfterViewInit() {
+    // Load the data after the UI is rendered
+    this.loadData();
+  }
+
   ngOnDestroy() {
     this.snackBar.dismiss();
+  }
+
+  loadData() {
+    this.appGlobalSystemSettingsUrl = this.urlToEditSystem(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App);
+    this.appContentSystemSettingsUrl = this.urlToEditSystem(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App);
+    this.appSiteSystemSettingsUrl = this.urlToEditSystem(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.Site);
+    this.appGlobalSystemResourcesUrl = this.urlToEditSystem(eavConstants.contentTypes.systemResources, SystemSettingsScopes.App);
+    this.appContentSystemResourcesUrl = this.urlToEditSystem(eavConstants.contentTypes.systemResources, SystemSettingsScopes.App);
+    this.appSiteSystemResourcesUrl = this.urlToEditSystem(eavConstants.contentTypes.systemResources, SystemSettingsScopes.Site);
+    this.appContentCustomSettingsUrl = this.urlToEditDefault(eavConstants.contentTypes.settings);
+    this.appContentCustomResourcesUrl = this.urlToEditDefault(eavConstants.contentTypes.resources);
+    this.appGlobalCustomResourcesUrl = this.urlToEditCustom(eavConstants.contentTypes.customResources);
+    this.appSiteCustomResourcesUrl = this.urlToEditCustom(eavConstants.contentTypes.customResources);
+    this.appGlobalCustomSettingsUrl = this.urlToEditCustom(eavConstants.contentTypes.customSettings);
+    this.appSiteCustomSettingsUrl = this.urlToEditCustom(eavConstants.contentTypes.customSettings);
+
+    // Disable the Links when the setting contenttypes are not defined
+    this.customGlobalSettingsAvailable.set(this.#contentItemsService.getAllSig(eavConstants.contentTypes.customSettings, undefined).length === 1);
+    this.customGlobalResourcesAvailable.set(this.#contentItemsService.getAllSig(eavConstants.contentTypes.customResources, undefined).length === 1);
+    this.customSiteSettingsAvailable.set(this.#contentItemsService.getAllSig(eavConstants.contentTypes.customSettings, undefined).length === 1);
+    this.customSiteResourcesAvailable.set(this.#contentItemsService.getAllSig(eavConstants.contentTypes.customResources, undefined).length === 1);
   }
 
   #urlTo(url: string, queryParams?: { [key: string]: string }, errComponent?: string) {
@@ -236,7 +255,7 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     const url = signal('');
     this.#contentItemsService.getAll(staticName).subscribe(contentItems => {
       if (contentItems.length < 1) {
-        url.set(this.#urlTo('message/e', { error: 'AppAdmin.ErrorNoManyAppSettings' }, staticName));
+        url.set(this.#urlTo('message/e', { error: 'AppAdmin.ErrorNoAppSettings' }, staticName));
       } else if (contentItems.length > 1) {
         url.set(this.#urlTo('message/e', { error: 'AppAdmin.ErrorTooManyAppSettings' }, staticName));
       } else {

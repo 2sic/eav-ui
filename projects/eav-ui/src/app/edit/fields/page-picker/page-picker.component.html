@@ -40,7 +40,7 @@
                 <span class="page-name" [tippy]="page.name">{{ page.name }}</span>
               </div>
               <div class="page-icons">
-                @if (!page.isVisible) {
+                @if (!page.isNavigation) {
                 <mat-icon class="page-visible-clickable-icon">visibility_off</mat-icon>
                 }
                 @if (!page.isClickable) {

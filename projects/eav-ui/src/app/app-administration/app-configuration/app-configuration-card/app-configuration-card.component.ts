@@ -4,6 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { TranslateService } from '@ngx-translate/core';
 import { transient } from '../../../../../../core';
 import { DocsLinkHelperComponent } from '../../../admin-shared/docs-link-helper/docs-link-helper.component';
 import { ContentItemsService } from '../../../content-items/services/content-items.service';
@@ -39,15 +40,17 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
   #dialogRouter = transient(DialogRoutingService);
 
   appConfigurationUrl = signal('');
+  appConfigAvailable = signal(false);
 
   constructor(
     private context: Context,
     private snackBar: MatSnackBar,
+    private translate: TranslateService,
   ) {
     this.appConfigurationUrl = (this.urlToEdit());
   }
 
-  contentItem = this.#contentItemsSvc.getAllSig(eavConstants.contentTypes.appConfiguration, undefined);
+  contentItem = this.#contentItemsSvc.getAllSig(eavConstants.contentTypes.customSettings, undefined);
 
   #refresh = signal(0);
 
@@ -74,18 +77,14 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
 
   urlToEdit() {
     let url = signal('');
-    const staticName = eavConstants.contentTypes.appConfiguration;
-    this.#contentItemsSvc.getAll(staticName).subscribe(contentItems => {
+    this.#contentItemsSvc.getAll(
+      eavConstants.contentTypes.appConfiguration
+    ).subscribe(contentItems => {
 
-      if (contentItems.length < 1)
-        this.#dialogRouter.navRelative(['message/e'], {
-          queryParams: { error: 'AppAdmin.ErrorNoManyAppSettings' },
-        });
-      if (contentItems.length > 1)
-        this.#dialogRouter.navRelative(['message/e'], {
-          queryParams: { error: 'AppAdmin.ErrorTooManyAppSettings' },
-        });
+      if (contentItems.length !== 1)
+        return ''
 
+      this.appConfigAvailable.set(true);
       url.set(this.#urlTo(
         `edit/${convertFormToUrl({
           items: [EditPrep.editId(contentItems[0].Id)],

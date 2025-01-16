@@ -67,7 +67,7 @@ export class PagePickerComponent implements OnInit {
   select(page: PageTreeItem | PageSearchItem): void {
     // filters out pages without parent (broken)
     if (page.id == null) return;
-    if (!page.isClickable || !page.isVisible) {
+    if (!page.isClickable || !page.isNavigation) {
       const ok = window.confirm(this.translate.instant('Fields.Hyperlink.PagePicker.HiddenOrSystemPageWarning'));
       if (!ok) return;
     }

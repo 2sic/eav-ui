@@ -9,45 +9,37 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  padding: 4px;
-  padding-left: 14px;
-  border-bottom: 1px solid #e1e1e1;
+  justify-content: space-between;
+  padding: 1rem 0.5rem;
+  border-bottom: 2px solid #e1e1e1;
   background: white;
 
-  #icon-pin {
-    margin-left: 1rem;
-    padding: 0.5rem;
-  }
-
-  label,
-  #icon-search {
-    margin-right: 8px;
+  .location-component {
     display: flex;
-    justify-content: center;
     align-items: center;
-    font-size: 12px;
-    text-transform: uppercase;
-    padding: 4px;
-  }
+    flex-wrap: wrap;
 
-  #icon-search i {
-    font-size: 14px;
-    width: 14px;
-    height: 14px;
-    font-weight: bold;
-  }
-
-  input {
-    margin-right: 8px;
-    padding: 4px 16px;
-    border: none;
-    background: transparent;
-    outline: none !important;
+    .input-component {
+      overflow: hidden;
+      max-width: 10rem;
+      border: #002753 1px solid;
+      border-radius: 5px;
+      padding: 4px;
+    }
   }
 }
 
-.address-mask-container {
-  flex-wrap: nowrap;
+label{
+  display: flex;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+input {
+  padding: 4px;
+  border: none;
+  background: transparent;
+  outline: none !important;
 }
 
 .map-info__map {
@@ -60,25 +52,19 @@
   display: none;
 }
 
-.btn {
-  border: 1px solid silver;
-  border-radius: 4px;
-
-  &:hover {
-    background-color: rgba(69, 79, 99, 0.08);
-    cursor: pointer;
-  }
+.btn:hover {
+  cursor: pointer;
 }
 
-.input-component {
+.search-component {
   display: flex;
-  background-color: rgba(69, 79, 99, 0.08);
+  border: #002753 1px solid;
+  border-radius: 5px;
   padding: 4px;
-  border-radius: 4px 4px 0 0;
-  border-bottom: 1px solid silver;
-  margin: 8px 0;
 
-  &:hover {
-    border-bottom: 1px solid #002753;
+  #icon-search {
+    margin-right: 4px;
+    display: flex;
+    align-items: center;
   }
 }

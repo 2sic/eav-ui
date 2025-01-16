@@ -216,7 +216,9 @@
       }
     },
     "DateTime": {
-      "Open": "Open calendar"
+      "Open": "Open calendar",
+      "OpenCalender": "Open calendar",
+      "OpenTime": "Pick time"
     },
     "String": {
       "Dropdown": "Pick existing value",
