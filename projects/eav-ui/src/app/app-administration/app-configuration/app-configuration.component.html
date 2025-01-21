@@ -32,66 +32,72 @@
             </tr>
           </thead>
           <tbody>
-            <!-- Settings for Global App -->
+            <tr>
+              <th>Global</th>
+              <td>
+                <a [href]="buttons().systemSettings.url" mat-icon-button [tippy]="buttons().systemSettings.tooltip">
+                  <mat-icon
+                    matBadgeColor="accent"
+                    matBadgeSize="small"
+                    [matBadge]="buttons().systemSettings.count"
+                    matBadgePosition="below after"
+                    aria-hidden="false"
+                    >edit</mat-icon
+                  >
+                </a>
+              </td>
+              <td>
+                <a
+                  [href]="buttons().customSettings.url"
+                  mat-icon-button
+                  [tippy]="buttons().customSettings.tooltip"
+                >
+                  <mat-icon
+                    matBadgeColor="accent"
+                    matBadgeSize="small"
+                    [matBadge]="buttons().customSettings.count"
+                    matBadgePosition="below after"
+                    aria-hidden="false"
+                    >edit</mat-icon
+                  >
+                </a>
+                <a
+                  [href]="buttons().customSettingsFields.url"
+                  mat-icon-button
+                  [tippy]="buttons().customSettingsFields.tooltip"
+                >
+                  <mat-icon
+                    matBadgeColor="accent"
+                    matBadgeSize="small"
+                    [matBadge]="buttons().customSettingsFields.count"
+                    matBadgePosition="below after"
+                    aria-hidden="false"
+                    >dns</mat-icon
+                  >
+                </a>
+              </td>
+            </tr>
+            <!-- More Buttons -->
             @if (isGlobal) {
-              <tr>
-                <th>Global</th>
-                <td>
-                  <a [href]="appGlobalSystemSettingsUrl()" mat-icon-button tippy="Edit global system settings">
-                    <mat-icon
-                      matBadgeColor="accent"
-                      matBadgeSize="small"
-                      [matBadge]="viewModelSig()?.systemSettingsCount || null"
-                      matBadgePosition="below after"
-                      aria-hidden="false"
-                      >edit</mat-icon
-                    >
-                  </a>
-                </td>
-                <td>
-                  <a
-                    [href]="appGlobalCustomSettingsUrl()"
-                    mat-icon-button
-                    [disabled]="!customGlobalSettingsAvailable()"
-                    tippy="Edit custom global settings"
-                  >
-                    <mat-icon
-                      matBadgeColor="accent"
-                      matBadgeSize="small"
-                      [matBadge]="viewModelSig()?.customSettingsCount || null"
-                      matBadgePosition="below after"
-                      aria-hidden="false"
-                      >edit</mat-icon
-                    >
-                  </a>
-                  <a
-                    [href]="urlToConfig(eavConstants.contentTypes.customSettings)"
-                    mat-icon-button
-                    [disabled]="!customGlobalSettingsAvailable()"
-                    tippy="Configure fields of the custom global settings"
-                  >
-                    <mat-icon
-                      matBadgeColor="accent"
-                      matBadgeSize="small"
-                      [matBadge]="viewModelSig()?.customSettingsFieldsCount || null"
-                      matBadgePosition="below after"
-                      aria-hidden="false"
-                      >dns</mat-icon
-                    >
-                  </a>
-                </td>
-              </tr>
             }
+            @else if (isPrimary) {
+              <ng-container *ngTemplateOutlet="goToGlobal"></ng-container>
+            }
+            @else if (isApp) {
+              <ng-container *ngTemplateOutlet="goToSite"></ng-container>
+              <ng-container *ngTemplateOutlet="goToGlobal"></ng-container>
+            }
+            <!-- TODO: @2pp - this is how I deduplicated code for settings -->
             <!-- Settings for Primary App -->
-            @if (isPrimary) {
+            <!-- @if (isPrimary) {
               <tr>
                 <th>Site</th>
                 <td>
-                  <a [href]="appSiteSystemSettingsUrl()" mat-icon-button tippy="Edit site system settings">
+                  <a [href]="buttons().systemSettings.url" mat-icon-button [tippy]="buttons().systemSettings.tooltip">
                     <mat-icon
                       matBadgeColor="accent"
                       matBadgeSize="small"
-                      [matBadge]="viewModelSig()?.systemSettingsCount || null"
+                      [matBadge]="buttons().systemSettings.count"
                       matBadgePosition="below after"
                       aria-hidden="false"
                       >edit</mat-icon
@@ -100,15 +106,14 @@
                 </td>
                 <td>
                   <a
-                    [href]="appSiteCustomSettingsUrl()"
+                    [href]="buttons().customSettings.url"
                     mat-icon-button
-                    [disabled]="!customSiteSettingsAvailable()"
-                    tippy="Edit site system settings"
+                    [tippy]="buttons().customSettings.tooltip"
                   >
                     <mat-icon
                       matBadgeColor="accent"
                       matBadgeSize="small"
-                      [matBadge]="viewModelSig()?.customSettingsCount || null"
+                      [matBadge]="buttons().customSettings.count"
                       matBadgePosition="below after"
                       aria-hidden="false"
                       >edit</mat-icon
@@ -117,13 +122,12 @@
                   <a
                     [href]="urlToConfig(eavConstants.contentTypes.customSettings)"
                     mat-icon-button
-                    [disabled]="!customSiteSettingsAvailable()"
-                    tippy="Configure fields of the custom site settings"
+                    [tippy]="buttons().customSettingsFields.tooltip"
                   >
                     <mat-icon
                       matBadgeColor="accent"
                       matBadgeSize="small"
-                      [matBadge]="viewModelSig()?.customSettingsFieldsCount || null"
+                      [matBadge]="buttons().customSettingsFields.count"
                       matBadgePosition="below after"
                       aria-hidden="false"
                       >dns</mat-icon
@@ -132,17 +136,17 @@
                 </td>
               </tr>
               <ng-container *ngTemplateOutlet="goToGlobal"></ng-container>
-            }
+            } -->
             <!-- Settings for App and Content -->
-            @if (isApp) {
+            <!-- @if (isApp) {
               <tr>
                 <th>{{ dialogSettings.Context.App.Name }}</th>
                 <td>
-                  <a [href]="appContentSystemSettingsUrl()" mat-icon-button tippy="Edit app system settings">
+                  <a [href]="buttons().systemSettings.url" mat-icon-button [tippy]="buttons().systemSettings.tooltip">
                     <mat-icon
                       matBadgeColor="accent"
                       matBadgeSize="small"
-                      [matBadge]="viewModelSig()?.systemSettingsCount || null"
+                      [matBadge]="buttons().systemSettings.count"
                       matBadgePosition="below after"
                       aria-hidden="false"
                       >edit</mat-icon
@@ -150,11 +154,11 @@
                   </a>
                 </td>
                 <td>
-                  <a [href]="appContentCustomSettingsUrl()" mat-icon-button tippy="Edit custom app settings">
+                  <a [href]="buttons().customSettings.url" mat-icon-button [tippy]="buttons().customSettings.tooltip">
                     <mat-icon
                       matBadgeColor="accent"
                       matBadgeSize="small"
-                      [matBadge]="viewModelSig()?.customSettingsCount || null"
+                      [matBadge]="buttons().customSettings.count"
                       matBadgePosition="below after"
                       aria-hidden="false"
                       >edit</mat-icon
@@ -163,12 +167,12 @@
                   <a
                     [href]="urlToConfig(eavConstants.contentTypes.settings)"
                     mat-icon-button
-                    tippy="Configure fields of the custom app settings"
+                    [tippy]="buttons().customSettingsFields.tooltip"
                   >
                     <mat-icon
                       matBadgeColor="accent"
                       matBadgeSize="small"
-                      [matBadge]="viewModelSig()?.customSettingsFieldsCount || null"
+                      [matBadge]="buttons().customSettingsFields.count"
                       matBadgePosition="below after"
                       aria-hidden="false"
                       >dns</mat-icon
@@ -178,7 +182,7 @@
               </tr>
               <ng-container *ngTemplateOutlet="goToSite"></ng-container>
               <ng-container *ngTemplateOutlet="goToGlobal"></ng-container>
-            }
+            } -->
           </tbody>
         </table>
       </mat-card-content>
@@ -217,6 +221,9 @@
             </tr>
           </thead>
           <tbody>
+            <!-- TODO: @2pp - deduplicate resources like I deduplicated the settings 
+              but be very careful to test & verify every scenario
+            -->
             <!-- Resources for Global App -->
             @if (isGlobal) {
               <tr>
@@ -237,7 +244,6 @@
                   <a
                     [href]="appGlobalCustomResourcesUrl()"
                     mat-icon-button
-                    [disabled]="!customGlobalResourcesAvailable()"
                     tippy="Edit custom global resources"
                   >
                     <mat-icon
@@ -252,7 +258,6 @@
                   <a
                     [href]="urlToConfig(eavConstants.contentTypes.customResources)"
                     mat-icon-button
-                    [disabled]="!customGlobalResourcesAvailable()"
                     tippy="Configure fields of the custom global resources"
                   >
                     <mat-icon
@@ -287,7 +292,6 @@
                   <a
                     [href]="appSiteCustomResourcesUrl()"
                     mat-icon-button
-                    [disabled]="!customSiteResourcesAvailable()"
                     tippy="Edit custom site resources"
                   >
                     <mat-icon
@@ -302,7 +306,6 @@
                   <a
                     [href]="urlToConfig(eavConstants.contentTypes.customResources)"
                     mat-icon-button
-                    [disabled]="!customSiteResourcesAvailable()"
                     tippy="Configure fields of the custom site resources"
                   >
                     <mat-icon

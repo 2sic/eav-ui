@@ -30,6 +30,20 @@ import { DialogConfigAppService } from '../services/dialog-config-app.service';
 import { AnalyzeParts } from '../sub-dialogs/analyze-settings/analyze-settings.models';
 import { AppConfigurationCardComponent } from './app-configuration-card/app-configuration-card.component';
 
+interface Triplet {
+  tooltip: string,
+  url: string,
+  count: number,
+}
+interface Buttons {
+  systemSettings: Triplet,
+  customSettings: Triplet,
+  customSettingsFields: Triplet,
+  systemResources: Triplet,
+  customResources: Triplet,
+  customResourcesFields: Triplet,
+}
+
 @Component({
     selector: 'app-app-configuration',
     templateUrl: './app-configuration.component.html',
@@ -76,10 +90,12 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
   appSiteCustomSettingsUrl = signal('');
   appSiteCustomResourcesUrl = signal('');
 
-  customGlobalSettingsAvailable = signal(false);
-  customGlobalResourcesAvailable = signal(false);
-  customSiteSettingsAvailable = signal(false);
-  customSiteResourcesAvailable = signal(false);
+  // TODO: @2pp this was a mistake - change in logic.
+  //       need to discuss, as it's not clear why you introduced this
+  // customGlobalSettingsAvailable = signal(false);
+  // customGlobalResourcesAvailable = signal(false);
+  // customSiteSettingsAvailable = signal(false);
+  // customSiteResourcesAvailable = signal(false);
 
 
   // More proper ViewModel
@@ -99,31 +115,31 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
 
   #refresh = signal(0);
 
-  appIn = computed(() => {
+  #appSpecs = computed(() => {
     const _ = this.#refresh();
     return this.#appInternalsService.getAppInternals(undefined)
   });
 
   viewModelSig = computed(() => {
-    const appInternalsSig = this.appIn()();
-    if (!appInternalsSig)
+    const appSpecs = this.#appSpecs()();
+    if (!appSpecs)
       return null;
 
-    const props = appInternalsSig?.EntityLists;
+    const props = appSpecs?.EntityLists;
     const lsTypeName = eavConstants.appMetadata.LightSpeed.ContentTypeName;
 
     const result: AppConfigurationViewModel = {
-      appLightSpeedCount: appInternalsSig.MetadataList.Items.filter(i => i._Type.Name === lsTypeName).length,
+      appLightSpeedCount: appSpecs.MetadataList.Items.filter(i => i._Type.Name === lsTypeName).length,
       systemSettingsCount: this.isPrimary
         ? props.SettingsSystem.filter(i => i.SettingsEntityScope === SystemSettingsScopes.Site).length
         : props.SettingsSystem.filter(i => !i.SettingsEntityScope).length,
       customSettingsCount: props.AppSettings?.length,
-      customSettingsFieldsCount: appInternalsSig.FieldAll.AppSettings?.length,
+      customSettingsFieldsCount: appSpecs.FieldAll.AppSettings?.length,
       systemResourcesCount: this.isPrimary
         ? props.ResourcesSystem.filter(i => i.SettingsEntityScope === SystemSettingsScopes.Site).length
         : props.ResourcesSystem.filter(i => !i.SettingsEntityScope).length,
       customResourcesCount: props.AppResources?.length,
-      customResourcesFieldsCount: appInternalsSig?.FieldAll.AppResources?.length,
+      customResourcesFieldsCount: appSpecs?.FieldAll.AppResources?.length,
     };
 
     return result;
@@ -133,6 +149,8 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     private context: Context,
     private snackBar: MatSnackBar,
   ) { }
+
+
 
   ngOnInit() {
     this.#dialogRouter.doOnDialogClosed(() => {
@@ -145,6 +163,8 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
       this.isGlobal = appScope === AppScopes.Global;
       this.isPrimary = appScope === AppScopes.Site;
       this.isApp = appScope === AppScopes.App;
+
+      this.#ready.set(true);
     });
   }
 
@@ -156,6 +176,59 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.snackBar.dismiss();
   }
+
+  #ready = signal(false);
+  buttons = computed<Buttons>(() => {
+    // if not ready, return a full object with empty values
+    const ready = this.#ready();
+    if (!ready) {
+      const nothing : Triplet = { tooltip: '', url: '', count: null };
+      return {
+        systemSettings: nothing,
+        customSettings: nothing,
+        customSettingsFields: nothing,
+        systemResources: nothing,
+        customResources: nothing,
+        customResourcesFields: nothing,
+      }
+    }
+
+    const viewModel = this.viewModelSig();
+    const scopeName = this.isGlobal ? 'Global' : this.isPrimary ? 'Site' : 'App';
+    return {
+      systemSettings: {
+        tooltip: `Edit ${scopeName} system settings`,
+        url: this.isGlobal ? this.appGlobalSystemSettingsUrl() : this.isPrimary ? this.appSiteSystemSettingsUrl() : this.appContentSystemSettingsUrl(),
+        count: viewModel?.systemSettingsCount || null,
+      },
+      customSettings: {
+        tooltip: `Edit ${scopeName} custom settings`,
+        url: this.isGlobal ? this.appGlobalCustomSettingsUrl() : this.isPrimary ? this.appSiteCustomSettingsUrl() : this.appContentCustomSettingsUrl(),
+        count: viewModel?.customSettingsCount || null,
+      },
+      customSettingsFields: {
+        tooltip: `Configure fields of the custom ${scopeName} settings`,
+        url: this.urlToConfig(this.isApp ? eavConstants.contentTypes.settings : eavConstants.contentTypes.customSettings),
+        count: viewModel?.customSettingsFieldsCount || null,
+      },
+      systemResources: {
+        tooltip: `Edit ${scopeName} system resources`,
+        url: this.appContentSystemResourcesUrl(),
+        count: viewModel?.systemResourcesCount || null,
+      },
+      customResources: {
+        tooltip: `Edit ${scopeName} custom resources`,
+        url: this.appContentCustomResourcesUrl(),
+        count: viewModel?.customResourcesCount || null,
+      },
+      customResourcesFields: {
+        tooltip: `Edit ${scopeName} custom resources fields`,
+        url: this.urlToConfig(eavConstants.contentTypes.resources),
+        count: viewModel?.customResourcesFieldsCount || null,
+      },
+    } satisfies Buttons;
+  });
+
 
   loadData() {
     // TODO: @2pp THIS IS COMPLETELY WRONG
@@ -180,12 +253,12 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     // TODO: @2pp - your solution was not good, it resulted in sending 4 server requests instead of 2
     // TODO: @2pp this is also wrong - the signal will return and always have length 0! so something is pretty wrong here
     // See also comments above... should be a signal + computed
-    const customSettings = this.#contentItemsService.getAllSig(eavConstants.contentTypes.customSettings,  /* initial: */ null);
-    const customResources = this.#contentItemsService.getAllSig(eavConstants.contentTypes.customResources,  /* initial: */ null);
-    this.customGlobalSettingsAvailable.set(customSettings.length === 1);
-    this.customGlobalResourcesAvailable.set(customResources.length === 1);
-    this.customSiteSettingsAvailable.set(customSettings.length === 1);
-    this.customSiteResourcesAvailable.set(customResources.length === 1);
+    // const customSettings = this.#contentItemsService.getAllSig(eavConstants.contentTypes.customSettings,  /* initial: */ null);
+    // const customResources = this.#contentItemsService.getAllSig(eavConstants.contentTypes.customResources,  /* initial: */ null);
+    // this.customGlobalSettingsAvailable.set(customSettings.length === 1);
+    // this.customGlobalResourcesAvailable.set(customResources.length === 1);
+    // this.customSiteSettingsAvailable.set(customSettings.length === 1);
+    // this.customSiteResourcesAvailable.set(customResources.length === 1);
   }
 
   #urlTo(url: string, queryParams?: { [key: string]: string }, errComponent?: string) {
