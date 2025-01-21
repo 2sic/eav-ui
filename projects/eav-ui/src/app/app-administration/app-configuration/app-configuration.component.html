@@ -18,7 +18,7 @@
         <mat-icon>settings</mat-icon>
       </mat-card-header>
       <mat-card-content>
-        DEBUG ⚠️ types: {{ customTypesExist() | json }}
+        <!-- DEBUG ⚠️ types: {{ customTypesExist() | json }} -->
         <p>
           Settings are things like SQL-connection strings, default "items-to-show" numbers and similar. If necessary, settings like a link
           to an RSS-Feed could be different in each language.
@@ -83,9 +83,7 @@
               </td>
             </tr>
             <!-- More Buttons -->
-            @if (isGlobal) {
-            }
-            @else if (isPrimary) {
+            @if (isPrimary) {
               <ng-container *ngTemplateOutlet="goToGlobal"></ng-container>
             }
             @else if (isApp) {
@@ -230,55 +228,62 @@
               but be very careful to test & verify every scenario
             -->
             <!-- Resources for Global App -->
-            @if (isGlobal) {
-              <tr>
-                <th>Global</th>
-                <td>
-                  <a [href]="appGlobalSystemResourcesUrl()" mat-icon-button tippy="Edit global system resources">
-                    <mat-icon
-                      matBadgeColor="accent"
-                      matBadgeSize="small"
-                      [matBadge]="viewModelSig()?.systemResourcesCount || null"
-                      matBadgePosition="below after"
-                      aria-hidden="false"
-                      >edit</mat-icon
-                    >
-                  </a>
-                </td>
-                <td>
-                  <a
-                    [href]="appGlobalCustomResourcesUrl()"
-                    mat-icon-button
-                    tippy="Edit custom global resources"
+            <tr>
+              <th>{{ buttons().topRowLabel }}</th>
+              <td>
+                <a [href]="buttons().systemResources.url" mat-icon-button [tippy]="buttons().systemResources.tooltip">
+                  <mat-icon
+                    matBadgeColor="accent"
+                    matBadgeSize="small"
+                    [matBadge]="buttons().systemResources.count"
+                    matBadgePosition="below after"
+                    aria-hidden="false"
+                    >edit</mat-icon
                   >
-                    <mat-icon
-                      matBadgeColor="accent"
-                      matBadgeSize="small"
-                      [matBadge]="viewModelSig()?.customResourcesCount || null"
-                      matBadgePosition="below after"
-                      aria-hidden="false"
-                      >edit</mat-icon
-                    >
-                  </a>
-                  <a
-                    [href]="urlToConfig(eavConstants.contentTypes.customResources)"
-                    mat-icon-button
-                    tippy="Configure fields of the custom global resources"
+                </a>
+              </td>
+              <td>
+                <a
+                  [href]="buttons().customResources.url"
+                  (click)="fixContentTypeIfNecessary(buttons().customResources.url, buttons().customResourcesType, $event)"
+                  mat-icon-button
+                  [tippy]="buttons().customResources.tooltip"
+                >
+                  <mat-icon
+                    matBadgeColor="accent"
+                    matBadgeSize="small"
+                    [matBadge]="buttons().customResources.count"
+                    matBadgePosition="below after"
+                    aria-hidden="false"
+                    >edit</mat-icon
                   >
-                    <mat-icon
-                      matBadgeColor="accent"
-                      matBadgeSize="small"
-                      [matBadge]="viewModelSig()?.customResourcesFieldsCount || null"
-                      matBadgePosition="below after"
-                      aria-hidden="false"
-                      >dns</mat-icon
-                    >
-                  </a>
-                </td>
-              </tr>
+                </a>
+                <a
+                  [href]="buttons().customResourcesFields.url"
+                  (click)="fixContentTypeIfNecessary(buttons().customResources.url, buttons().customResourcesType, $event)"
+                  mat-icon-button
+                  [tippy]="buttons().customResourcesFields.tooltip"
+                >
+                  <mat-icon
+                    matBadgeColor="accent"
+                    matBadgeSize="small"
+                    [matBadge]="buttons().customResourcesFields.count"
+                    matBadgePosition="below after"
+                    aria-hidden="false"
+                    >dns</mat-icon
+                  >
+                </a>
+              </td>
+            </tr>
+            @if (isPrimary) {
+              <ng-container *ngTemplateOutlet="goToGlobal"></ng-container>
+            }
+            @else if (isApp) {
+              <ng-container *ngTemplateOutlet="goToSite"></ng-container>
+              <ng-container *ngTemplateOutlet="goToGlobal"></ng-container>
             }
             <!-- Resources for Primary App -->
-            @if (isPrimary) {
+            <!-- @if (isPrimary) {
               <tr>
                 <th>Site</th>
                 <td>
@@ -325,9 +330,9 @@
                 </td>
               </tr>
               <ng-container *ngTemplateOutlet="goToGlobal"></ng-container>
-            }
+            } -->
             <!-- Resources for App and Content -->
-            @if (isApp) {
+            <!-- @if (isApp) {
               <tr>
                 <th>{{ dialogSettings.Context.App.Name }}</th>
                 <td>
@@ -371,7 +376,7 @@
               </tr>
               <ng-container *ngTemplateOutlet="goToSite"></ng-container>
               <ng-container *ngTemplateOutlet="goToGlobal"></ng-container>
-            }
+            } -->
           </tbody>
         </table>
       </mat-card-content>

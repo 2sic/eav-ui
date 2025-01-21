@@ -228,17 +228,19 @@ export class AppConfigurationComponent implements OnInit {
       // TODO: @2pp do this part too. Note that it's not done - the values can be wrong
       systemResources: {
         tooltip: `Edit ${scopeName} system resources`,
-        url: this.appContentSystemResourcesUrl(),
+        url: this.isGlobal ? this.appGlobalSystemResourcesUrl() : this.isPrimary ? this.appSiteSystemResourcesUrl() : this.appContentSystemResourcesUrl(),
         count: viewModel?.systemResourcesCount || null,
       },
       customResources: {
         tooltip: `Edit ${scopeName} custom resources`,
-        url: this.appContentCustomResourcesUrl(),
+        url: typesExist.resources
+          ? this.isGlobal ? this.appGlobalCustomResourcesUrl() : this.isPrimary ? this.appSiteCustomResourcesUrl() : this.appContentCustomResourcesUrl()
+          : null,
         count: viewModel?.customResourcesCount || null,
       },
       customResourcesFields: {
         tooltip: `Edit ${scopeName} custom resources fields`,
-        url: this.urlToConfig(typeNames.resources),
+        url: this.urlToConfig(customResourcesType),
         count: viewModel?.customResourcesFieldsCount || null,
       },
     } satisfies Buttons;
