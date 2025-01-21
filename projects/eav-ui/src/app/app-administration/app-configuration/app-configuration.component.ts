@@ -1,10 +1,9 @@
-import { NgTemplateOutlet } from '@angular/common';
-import { Component, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
+import { JsonPipe, NgTemplateOutlet } from '@angular/common';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
 import { Subject } from 'rxjs';
 import { Of, transient } from '../../../../../core';
@@ -25,46 +24,35 @@ import { Context } from '../../shared/services/context';
 import { DialogService } from '../../shared/services/dialog.service';
 import { AppAdminHelpers } from '../app-admin-helpers';
 import { AppInternals } from '../models/app-internals.model';
+import { ContentTypeEdit } from '../models/content-type.model';
 import { AppInternalsService } from '../services/app-internals.service';
+import { ContentTypesService } from '../services/content-types.service';
 import { DialogConfigAppService } from '../services/dialog-config-app.service';
 import { AnalyzeParts } from '../sub-dialogs/analyze-settings/analyze-settings.models';
 import { AppConfigurationCardComponent } from './app-configuration-card/app-configuration-card.component';
 
-interface Triplet {
-  tooltip: string,
-  url: string,
-  count: number,
-}
-interface Buttons {
-  systemSettings: Triplet,
-  customSettings: Triplet,
-  customSettingsFields: Triplet,
-  systemResources: Triplet,
-  customResources: Triplet,
-  customResourcesFields: Triplet,
-}
-
 @Component({
-    selector: 'app-app-configuration',
-    templateUrl: './app-configuration.component.html',
-    styleUrls: ['./app-configuration.component.scss'],
-    imports: [
-        MatCardModule,
-        MatIconModule,
-        MatButtonModule,
-        MatBadgeModule,
-        NgTemplateOutlet,
-        AppConfigurationCardComponent,
-        FeatureTextInfoComponent,
-        RouterOutlet,
-        TippyDirective,
-        DocsLinkHelperComponent,
-    ]
+  selector: 'app-app-configuration',
+  templateUrl: './app-configuration.component.html',
+  styleUrls: ['./app-configuration.component.scss'],
+  imports: [
+    MatCardModule,
+    MatIconModule,
+    MatButtonModule,
+    MatBadgeModule,
+    NgTemplateOutlet,
+    AppConfigurationCardComponent,
+    FeatureTextInfoComponent,
+    RouterOutlet,
+    TippyDirective,
+    DocsLinkHelperComponent,
+    JsonPipe,
+  ]
 })
-export class AppConfigurationComponent implements OnInit, OnDestroy {
+export class AppConfigurationComponent implements OnInit {
 
   #dialogSvc = transient(DialogService);
-  // #contentTypesSvc = transient(ContentTypesService);
+  #contentTypesSvc = transient(ContentTypesService);
 
   dialogSettings: DialogSettings;
 
@@ -115,13 +103,13 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
 
   #refresh = signal(0);
 
-  #appSpecs = computed(() => {
+  #appSpecsLazy = computed(() => {
     const _ = this.#refresh();
     return this.#appInternalsService.getAppInternals(undefined)
   });
 
   viewModelSig = computed(() => {
-    const appSpecs = this.#appSpecs()();
+    const appSpecs = this.#appSpecsLazy()();
     if (!appSpecs)
       return null;
 
@@ -145,17 +133,25 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     return result;
   });
 
+  /** Test if local types exist, otherwise they must be created before opening dialogs */
+  customTypesExist = computed(() => {
+    const appSpecs = this.#appSpecsLazy()();
+    return (!appSpecs)
+      ? { settings: false, resources: false }
+      : {
+          settings: appSpecs.FieldAll.AppSettings != null,
+          resources: appSpecs.FieldAll.AppResources != null,
+        }
+  });
+
   constructor(
     private context: Context,
-    private snackBar: MatSnackBar,
   ) { }
 
 
 
   ngOnInit() {
-    this.#dialogRouter.doOnDialogClosed(() => {
-      this.#refresh.update(value => value + 1);
-    });
+    this.#dialogRouter.doOnDialogClosed(() => this.#refresh.update(v => v++));
 
     this.#dialogConfigSvc.getCurrent$().subscribe((dialogSettings) => {
       this.dialogSettings = dialogSettings;
@@ -173,17 +169,16 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     this.loadData();
   }
 
-  ngOnDestroy() {
-    this.snackBar.dismiss();
-  }
-
   #ready = signal(false);
   buttons = computed<Buttons>(() => {
     // if not ready, return a full object with empty values
     const ready = this.#ready();
     if (!ready) {
-      const nothing : Triplet = { tooltip: '', url: '', count: null };
+      const nothing : ButtonSpecs = { tooltip: '', url: '', count: null };
       return {
+        topRowLabel: 'loading...',
+        customSettingsType: '',
+        customResourcesType: '',
         systemSettings: nothing,
         customSettings: nothing,
         customSettingsFields: nothing,
@@ -193,24 +188,44 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
       }
     }
 
-    const viewModel = this.viewModelSig();
+    // The name of the top row, to use in the row label and tooltips
     const scopeName = this.isGlobal ? 'Global' : this.isPrimary ? 'Site' : 'App';
+
+    // The statistics of the entities - should later be simplified once code is improved @2pp
+    const viewModel = this.viewModelSig();
+
+    const typeNames = eavConstants.contentTypes;
+    const customSettingsType = this.isApp ? typeNames.settings : typeNames.customSettings;
+    const customResourcesType = this.isApp ? typeNames.resources : typeNames.customResources;
+    // Detect if the custom types exist
+    const typesExist = this.customTypesExist();
     return {
+      topRowLabel: scopeName,
+      customSettingsType: customSettingsType,
+      customResourcesType: customResourcesType,
       systemSettings: {
         tooltip: `Edit ${scopeName} system settings`,
+        // TODO: @2pp fix this, it's just patch
+        // correctly we should not even retrieve the other urls we don't need, so this can be improved a lot
         url: this.isGlobal ? this.appGlobalSystemSettingsUrl() : this.isPrimary ? this.appSiteSystemSettingsUrl() : this.appContentSystemSettingsUrl(),
         count: viewModel?.systemSettingsCount || null,
       },
       customSettings: {
         tooltip: `Edit ${scopeName} custom settings`,
-        url: this.isGlobal ? this.appGlobalCustomSettingsUrl() : this.isPrimary ? this.appSiteCustomSettingsUrl() : this.appContentCustomSettingsUrl(),
+        // TODO: @2pp fix this, it's just patch, urls...
+        url: typesExist.settings
+          ? this.isGlobal ? this.appGlobalCustomSettingsUrl() : this.isPrimary ? this.appSiteCustomSettingsUrl() : this.appContentCustomSettingsUrl()
+          : null,
         count: viewModel?.customSettingsCount || null,
       },
       customSettingsFields: {
         tooltip: `Configure fields of the custom ${scopeName} settings`,
-        url: this.urlToConfig(this.isApp ? eavConstants.contentTypes.settings : eavConstants.contentTypes.customSettings),
+        url: typesExist.settings
+          ? this.urlToConfig(customSettingsType)
+          : null,
         count: viewModel?.customSettingsFieldsCount || null,
       },
+      // TODO: @2pp do this part too. Note that it's not done - the values can be wrong
       systemResources: {
         tooltip: `Edit ${scopeName} system resources`,
         url: this.appContentSystemResourcesUrl(),
@@ -223,7 +238,7 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
       },
       customResourcesFields: {
         tooltip: `Edit ${scopeName} custom resources fields`,
-        url: this.urlToConfig(eavConstants.contentTypes.resources),
+        url: this.urlToConfig(typeNames.resources),
         count: viewModel?.customResourcesFieldsCount || null,
       },
     } satisfies Buttons;
@@ -358,13 +373,13 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
   }
 
   openSiteSettings() {
-    const sitePrimaryApp = this.dialogSettings.Context.Site.PrimaryApp;
-    this.#dialogSvc.openAppAdministration(sitePrimaryApp.ZoneId, sitePrimaryApp.AppId, 'app');
+    const siteApp = this.dialogSettings.Context.Site.PrimaryApp;
+    this.#dialogSvc.openAppAdministration(siteApp.ZoneId, siteApp.AppId, 'app');
   }
 
   openGlobalSettings() {
-    const globalPrimaryApp = this.dialogSettings.Context.System.PrimaryApp;
-    this.#dialogSvc.openAppAdministration(globalPrimaryApp.ZoneId, globalPrimaryApp.AppId, 'app');
+    const globalApp = this.dialogSettings.Context.System.PrimaryApp;
+    this.#dialogSvc.openAppAdministration(globalApp.ZoneId, globalApp.AppId, 'app');
   }
 
   urlToConfig(staticName: string) {
@@ -385,6 +400,72 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
   urlToAnalyze(part: Of<typeof AnalyzeParts>) {
     return this.#urlTo(`analyze/${part}`);
   }
+
+  fixContentTypeIfNecessary(url: string, typeName: string, event: MouseEvent) {
+    // If we have a url, everything is fine so we can just return and let the click happen
+    if (url) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    
+    // Create the Content-Type
+    const newContentType = {
+      StaticName: '',
+      // NameId: '',
+      Name: typeName,
+      Description: '',
+      Scope: eavConstants.scopes.configuration.value,
+      // ChangeStaticName: false,
+      ChangeNameId: false,
+      // NewStaticName: '',
+      NewNameId: '',
+    } as ContentTypeEdit;
+
+    this.#contentTypesSvc.save(newContentType).subscribe(success => {
+      if (!success) return;
+      // trigger refresh
+      this.#refresh.update(v => v + 1);
+
+      // Inform user
+      alert('I just had to create the Content Type. Please try again 👍🏼.');
+    });
+    return false;
+  }
+
+  // 2025-01-21 2dm had to restore this functionality, keep this code till 2025-Q2 just in case
+  // fixContentType(staticName: string, action: 'edit' | 'config') {
+  //   this.#contentTypesSvc.retrieveContentTypes(eavConstants.scopes.configuration.value).subscribe(contentTypes => {
+  //     const contentTypeExists = contentTypes.some(ct => ct.Name === staticName);
+  //     if (contentTypeExists) {
+  //       if (action === 'edit') {
+  //         this.edit(staticName);
+  //       } else if (action === 'config') {
+  //         this.config(staticName);
+  //       }
+  //     } else {
+  //       const newContentType = {
+  //         StaticName: '',
+  //         // NameId: '',
+  //         Name: staticName,
+  //         Description: '',
+  //         Scope: eavConstants.scopes.configuration.value,
+  //         // ChangeStaticName: false,
+  //         ChangeNameId: false,
+  //         // NewStaticName: '',
+  //         NewNameId: '',
+  //       } as ContentTypeEdit;
+  //       this.#contentTypesSvc.save(newContentType).subscribe(success => {
+  //         if (!success) return;
+
+  //         if (action === 'edit') {
+  //           this.edit(staticName);
+  //         } else if (action === 'config') {
+  //           this.config(staticName);
+  //         }
+  //       });
+  //     }
+  //   });
+  // }
 }
 
 class AppConfigurationViewModel {
@@ -397,4 +478,26 @@ class AppConfigurationViewModel {
   systemResourcesCount: number;
   customResourcesCount: number;
   customResourcesFieldsCount: number;
+}
+
+
+
+interface ButtonSpecs {
+  /** Tooltip on the button */
+  tooltip: string,
+  /** url to open a dialog, or null if the content-type doesn't exist and requires pre-work */
+  url: string,
+  /** count of fields or entities */
+  count: number,
+}
+interface Buttons {
+  topRowLabel: string,
+  customSettingsType: string,
+  customResourcesType: string,
+  systemSettings: ButtonSpecs,
+  customSettings: ButtonSpecs,
+  customSettingsFields: ButtonSpecs,
+  systemResources: ButtonSpecs,
+  customResources: ButtonSpecs,
+  customResourcesFields: ButtonSpecs,
 }
