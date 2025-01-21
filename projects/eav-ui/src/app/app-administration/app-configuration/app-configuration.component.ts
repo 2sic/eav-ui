@@ -1,4 +1,4 @@
-import { JsonPipe, NgTemplateOutlet } from '@angular/common';
+import { NgTemplateOutlet } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
@@ -46,13 +46,23 @@ import { AppConfigurationCardComponent } from './app-configuration-card/app-conf
     RouterOutlet,
     TippyDirective,
     DocsLinkHelperComponent,
-    JsonPipe,
   ]
 })
 export class AppConfigurationComponent implements OnInit {
 
+  #featuresSvc = inject(FeaturesService);
+
   #dialogSvc = transient(DialogService);
   #contentTypesSvc = transient(ContentTypesService);
+  #appInternalsService = transient(AppInternalsService);
+  #contentItemsService = transient(ContentItemsService);
+  #dialogConfigSvc = transient(DialogConfigAppService);
+  #dialogRouter = transient(DialogRoutingService);
+
+  constructor(
+    private context: Context,
+  ) { }
+
 
   dialogSettings: DialogSettings;
 
@@ -60,9 +70,9 @@ export class AppConfigurationComponent implements OnInit {
   AnalyzeParts = AnalyzeParts;
   SystemSettingsScopes = SystemSettingsScopes;
   AppScopes = AppScopes;
-  isGlobal: boolean;
-  isPrimary: boolean;
-  isApp: boolean;
+  isGlobal = signal(false);
+  isSite = signal(false);
+  isApp = signal(false);
 
   // Url signals for edit routes
   appContentSystemSettingsUrl = signal('');
@@ -90,25 +100,21 @@ export class AppConfigurationComponent implements OnInit {
   appSettingsInternal$ = new Subject<AppInternals>();
 
   public appStateAdvanced = false;
-  public features = inject(FeaturesService);
 
-  protected lightSpeedEnabled = this.features.isEnabled[FeatureNames.LightSpeed];
-  protected cspEnabled = this.features.isEnabled[FeatureNames.ContentSecurityPolicy];
-  protected langPermsEnabled = this.features.isEnabled[FeatureNames.PermissionsByLanguage];
+  protected lightSpeedEnabled = this.#featuresSvc.isEnabled[FeatureNames.LightSpeed];
+  protected cspEnabled = this.#featuresSvc.isEnabled[FeatureNames.ContentSecurityPolicy];
+  protected langPermsEnabled = this.#featuresSvc.isEnabled[FeatureNames.PermissionsByLanguage];
 
-  #appInternalsService = transient(AppInternalsService);
-  #contentItemsService = transient(ContentItemsService);
-  #dialogConfigSvc = transient(DialogConfigAppService);
-  #dialogRouter = transient(DialogRoutingService);
 
   #refresh = signal(0);
 
   #appSpecsLazy = computed(() => {
     const _ = this.#refresh();
-    return this.#appInternalsService.getAppInternals(undefined)
+    return this.#appInternalsService.getAppInternals(/* initial: */ null)
   });
 
-  viewModelSig = computed(() => {
+  /** Statistics for the content-types and fields for later */
+  #dataStatistics = computed(() => {
     const appSpecs = this.#appSpecsLazy()();
     if (!appSpecs)
       return null;
@@ -116,14 +122,15 @@ export class AppConfigurationComponent implements OnInit {
     const props = appSpecs?.EntityLists;
     const lsTypeName = eavConstants.appMetadata.LightSpeed.ContentTypeName;
 
-    const result: AppConfigurationViewModel = {
+    const isSite = this.isSite();
+    const result: TempDataStatistics = {
       appLightSpeedCount: appSpecs.MetadataList.Items.filter(i => i._Type.Name === lsTypeName).length,
-      systemSettingsCount: this.isPrimary
+      systemSettingsCount: isSite
         ? props.SettingsSystem.filter(i => i.SettingsEntityScope === SystemSettingsScopes.Site).length
         : props.SettingsSystem.filter(i => !i.SettingsEntityScope).length,
       customSettingsCount: props.AppSettings?.length,
       customSettingsFieldsCount: appSpecs.FieldAll.AppSettings?.length,
-      systemResourcesCount: this.isPrimary
+      systemResourcesCount: isSite
         ? props.ResourcesSystem.filter(i => i.SettingsEntityScope === SystemSettingsScopes.Site).length
         : props.ResourcesSystem.filter(i => !i.SettingsEntityScope).length,
       customResourcesCount: props.AppResources?.length,
@@ -133,8 +140,8 @@ export class AppConfigurationComponent implements OnInit {
     return result;
   });
 
-  /** Test if local types exist, otherwise they must be created before opening dialogs */
-  customTypesExist = computed(() => {
+  /** Test if current types for settings/resources exist, otherwise they must be created before opening dialogs */
+  #customTypesExist = computed(() => {
     const appSpecs = this.#appSpecsLazy()();
     return (!appSpecs)
       ? { settings: false, resources: false }
@@ -144,10 +151,6 @@ export class AppConfigurationComponent implements OnInit {
         }
   });
 
-  constructor(
-    private context: Context,
-  ) { }
-
 
 
   ngOnInit() {
@@ -156,9 +159,9 @@ export class AppConfigurationComponent implements OnInit {
     this.#dialogConfigSvc.getCurrent$().subscribe((dialogSettings) => {
       this.dialogSettings = dialogSettings;
       const appScope = dialogSettings.Context.App.SettingsScope;
-      this.isGlobal = appScope === AppScopes.Global;
-      this.isPrimary = appScope === AppScopes.Site;
-      this.isApp = appScope === AppScopes.App;
+      this.isGlobal.set(appScope === AppScopes.Global);
+      this.isSite.set(appScope === AppScopes.Site);
+      this.isApp.set(appScope === AppScopes.App);
 
       this.#ready.set(true);
     });
@@ -185,20 +188,26 @@ export class AppConfigurationComponent implements OnInit {
         systemResources: nothing,
         customResources: nothing,
         customResourcesFields: nothing,
+        lightspeed: nothing,
       }
     }
 
+    // read signals
+    const isGlobal = this.isGlobal();
+    const isSite = this.isSite();
+    const isApp = this.isApp();
+
     // The name of the top row, to use in the row label and tooltips
-    const scopeName = this.isGlobal ? 'Global' : this.isPrimary ? 'Site' : 'App';
+    const scopeName = isGlobal ? 'Global' : isSite ? 'Site' : 'App';
 
     // The statistics of the entities - should later be simplified once code is improved @2pp
-    const viewModel = this.viewModelSig();
+    const viewModel = this.#dataStatistics();
 
     const typeNames = eavConstants.contentTypes;
-    const customSettingsType = this.isApp ? typeNames.settings : typeNames.customSettings;
-    const customResourcesType = this.isApp ? typeNames.resources : typeNames.customResources;
+    const customSettingsType = isApp ? typeNames.settings : typeNames.customSettings;
+    const customResourcesType = isApp ? typeNames.resources : typeNames.customResources;
     // Detect if the custom types exist
-    const typesExist = this.customTypesExist();
+    const typesExist = this.#customTypesExist();
     return {
       topRowLabel: scopeName,
       customSettingsType: customSettingsType,
@@ -207,14 +216,14 @@ export class AppConfigurationComponent implements OnInit {
         tooltip: `Edit ${scopeName} system settings`,
         // TODO: @2pp fix this, it's just patch
         // correctly we should not even retrieve the other urls we don't need, so this can be improved a lot
-        url: this.isGlobal ? this.appGlobalSystemSettingsUrl() : this.isPrimary ? this.appSiteSystemSettingsUrl() : this.appContentSystemSettingsUrl(),
+        url: isGlobal ? this.appGlobalSystemSettingsUrl() : isSite ? this.appSiteSystemSettingsUrl() : this.appContentSystemSettingsUrl(),
         count: viewModel?.systemSettingsCount || null,
       },
       customSettings: {
         tooltip: `Edit ${scopeName} custom settings`,
         // TODO: @2pp fix this, it's just patch, urls...
         url: typesExist.settings
-          ? this.isGlobal ? this.appGlobalCustomSettingsUrl() : this.isPrimary ? this.appSiteCustomSettingsUrl() : this.appContentCustomSettingsUrl()
+          ? isGlobal ? this.appGlobalCustomSettingsUrl() : isSite ? this.appSiteCustomSettingsUrl() : this.appContentCustomSettingsUrl()
           : null,
         count: viewModel?.customSettingsCount || null,
       },
@@ -225,16 +234,15 @@ export class AppConfigurationComponent implements OnInit {
           : null,
         count: viewModel?.customSettingsFieldsCount || null,
       },
-      // TODO: @2pp do this part too. Note that it's not done - the values can be wrong
       systemResources: {
         tooltip: `Edit ${scopeName} system resources`,
-        url: this.isGlobal ? this.appGlobalSystemResourcesUrl() : this.isPrimary ? this.appSiteSystemResourcesUrl() : this.appContentSystemResourcesUrl(),
+        url: isGlobal ? this.appGlobalSystemResourcesUrl() : isSite ? this.appSiteSystemResourcesUrl() : this.appContentSystemResourcesUrl(),
         count: viewModel?.systemResourcesCount || null,
       },
       customResources: {
         tooltip: `Edit ${scopeName} custom resources`,
         url: typesExist.resources
-          ? this.isGlobal ? this.appGlobalCustomResourcesUrl() : this.isPrimary ? this.appSiteCustomResourcesUrl() : this.appContentCustomResourcesUrl()
+          ? isGlobal ? this.appGlobalCustomResourcesUrl() : isSite ? this.appSiteCustomResourcesUrl() : this.appContentCustomResourcesUrl()
           : null,
         count: viewModel?.customResourcesCount || null,
       },
@@ -242,6 +250,11 @@ export class AppConfigurationComponent implements OnInit {
         tooltip: `Edit ${scopeName} custom resources fields`,
         url: this.urlToConfig(customResourcesType),
         count: viewModel?.customResourcesFieldsCount || null,
+      },
+      lightspeed: {
+        tooltip: `Edit ${scopeName} LightSpeed`,
+        url: this.urlToGetLightSpeedLink(),
+        count: viewModel?.appLightSpeedCount || null,
       },
     } satisfies Buttons;
   });
@@ -470,7 +483,7 @@ export class AppConfigurationComponent implements OnInit {
   // }
 }
 
-class AppConfigurationViewModel {
+class TempDataStatistics {
   // Lightspeed
   appLightSpeedCount: number;
 
@@ -502,4 +515,5 @@ interface Buttons {
   systemResources: ButtonSpecs,
   customResources: ButtonSpecs,
   customResourcesFields: ButtonSpecs,
+  lightspeed: ButtonSpecs,
 }

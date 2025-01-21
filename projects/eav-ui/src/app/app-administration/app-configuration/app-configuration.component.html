@@ -1,10 +1,11 @@
-@if (viewModelSig()) {
-  @if (isGlobal || isPrimary) {
+<!-- one of the three triggers must be true -->
+@if (isGlobal() || isSite() || isApp()) {
+  @if (isGlobal() || isSite()) {
     <div class="alert alert-info scope-info">
-      @if (isGlobal) {
+      @if (isGlobal()) {
         This is the Global App. Anything configured here will affect all Sites and Apps in this installation.
       }
-      @if (isPrimary) {
+      @if (isSite()) {
         This is the Primary App of this Site. You can also configure site wide settings and resources here.
       }
       See <a href="https://go.2sxc.org/settings" target="_blank">docs</a>.
@@ -83,10 +84,10 @@
               </td>
             </tr>
             <!-- More Buttons -->
-            @if (isPrimary) {
+            @if (isSite()) {
               <ng-container *ngTemplateOutlet="goToGlobal"></ng-container>
             }
-            @else if (isApp) {
+            @else if (isApp()) {
               <ng-container *ngTemplateOutlet="goToSite"></ng-container>
               <ng-container *ngTemplateOutlet="goToGlobal"></ng-container>
             }
@@ -275,10 +276,10 @@
                 </a>
               </td>
             </tr>
-            @if (isPrimary) {
+            @if (isSite()) {
               <ng-container *ngTemplateOutlet="goToGlobal"></ng-container>
             }
-            @else if (isApp) {
+            @else if (isApp()) {
               <ng-container *ngTemplateOutlet="goToSite"></ng-container>
               <ng-container *ngTemplateOutlet="goToGlobal"></ng-container>
             }
@@ -433,7 +434,7 @@
         <app-docs-link-helper [link]="'https://go.2sxc.org/lightspeed'" [label]="" [icon]=""></app-docs-link-helper>
         <a
           class="default-link"
-          [href]="urlToGetLightSpeedLink()"
+          [href]="buttons().lightspeed.url"
           mat-button
           class="eav-button__with-icon"
           disabled="{{ !lightSpeedEnabled() }}"
@@ -441,7 +442,7 @@
           <mat-icon
             matBadgeColor="accent"
             matBadgeSize="small"
-            [matBadge]="viewModelSig()?.appLightSpeedCount || null"
+            [matBadge]="buttons().lightspeed.count"
             matBadgePosition="below after"
             aria-hidden="false"
             class="eav-icon"
@@ -496,10 +497,10 @@
           <span>
             Edit Permissions
             @if (!dialogSettings.Context.Enable.AppPermissions) {
-              @if (isGlobal) {
+              @if (isGlobal()) {
                 (not on Global App)
               }
-              @if (isApp) {
+              @if (isApp()) {
                 (not on Content)
               }
             }
