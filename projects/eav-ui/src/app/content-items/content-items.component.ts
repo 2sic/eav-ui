@@ -91,7 +91,7 @@ export class ContentItemsComponent implements OnInit {
   #gridApiSig: WritableSignal<GridApi<ContentItem>> = signal<GridApi<ContentItem>>(null);
 
   #contentTypeStaticName = this.#dialogRouter.getParam('contentTypeStaticName');
-  contentType = this.#contentTypesSvc.retrieveContentTypeSig(this.#contentTypeStaticName, undefined);
+  contentType = this.#contentTypesSvc.retrieveContentTypeSig(this.#contentTypeStaticName,  /* initial: */ null);
 
   #refresh = signal(0);
 

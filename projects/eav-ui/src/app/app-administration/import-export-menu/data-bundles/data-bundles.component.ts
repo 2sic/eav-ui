@@ -70,7 +70,7 @@ export class DataBundlesComponent {
 
   dataBundles = computed(() => {
     this.#refresh(); // is use to trigger a refresh when new data or data are modified
-    return this.#contentItemsSvc.getAllSig(this.#defaultContentTypeId, undefined);
+    return this.#contentItemsSvc.getAllSig(this.#defaultContentTypeId,  /* initial: */ null);
   });
 
   // ContentItem

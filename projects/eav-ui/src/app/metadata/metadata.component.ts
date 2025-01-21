@@ -88,7 +88,7 @@ export class MetadataComponent implements OnInit {
   // });
 
   // Signal to get itemFor - must be _outside_ the computed property, otherwise it regenerates infinitely
-  #itemsFromHttp = this.#contentItemSvc.getAllSig(this.#params.contentTypeStaticName, undefined);
+  #itemsFromHttp = this.#contentItemSvc.getAllSig(this.#params.contentTypeStaticName,  /* initial: */ null);
 
   itemFor = computed<EavForInAdminUi | undefined>(() => {
     const item = this.#itemsFromHttp()?.find(i => i.Guid === this.#params.key);
