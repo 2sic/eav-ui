@@ -1,9 +1,8 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef, computed, inject, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
@@ -101,7 +100,7 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
   #refresh = signal(0);
 
   appIn = computed(() => {
-    const refresh = this.#refresh();
+    const _ = this.#refresh();
     return this.#appInternalsService.getAppInternals(undefined)
   });
 
@@ -133,9 +132,6 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
   constructor(
     private context: Context,
     private snackBar: MatSnackBar,
-    private matDialog: MatDialog,
-    private viewContainerRef: ViewContainerRef,
-    private changeDetectorRef: ChangeDetectorRef,
   ) { }
 
   ngOnInit() {
@@ -162,6 +158,11 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
   }
 
   loadData() {
+    // TODO: @2pp THIS IS COMPLETELY WRONG
+    // You are requesting the same data over and over again, just to generate a single url.
+    // Correct solution is to
+    // 1. get all the data you need in a single request and put it in a signal
+    // 2. make the urls computed signals based on that signal
     this.appGlobalSystemSettingsUrl = this.urlToEditSystem(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App);
     this.appContentSystemSettingsUrl = this.urlToEditSystem(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App);
     this.appSiteSystemSettingsUrl = this.urlToEditSystem(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.Site);
@@ -176,10 +177,15 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     this.appSiteCustomSettingsUrl = this.urlToEditCustom(eavConstants.contentTypes.customSettings);
 
     // Disable the Links when the setting contenttypes are not defined
-    this.customGlobalSettingsAvailable.set(this.#contentItemsService.getAllSig(eavConstants.contentTypes.customSettings, undefined).length === 1);
-    this.customGlobalResourcesAvailable.set(this.#contentItemsService.getAllSig(eavConstants.contentTypes.customResources, undefined).length === 1);
-    this.customSiteSettingsAvailable.set(this.#contentItemsService.getAllSig(eavConstants.contentTypes.customSettings, undefined).length === 1);
-    this.customSiteResourcesAvailable.set(this.#contentItemsService.getAllSig(eavConstants.contentTypes.customResources, undefined).length === 1);
+    // TODO: @2pp - your solution was not good, it resulted in sending 4 server requests instead of 2
+    // TODO: @2pp this is also wrong - the signal will return and always have length 0! so something is pretty wrong here
+    // See also comments above... should be a signal + computed
+    const customSettings = this.#contentItemsService.getAllSig(eavConstants.contentTypes.customSettings,  /* initial: */ null);
+    const customResources = this.#contentItemsService.getAllSig(eavConstants.contentTypes.customResources,  /* initial: */ null);
+    this.customGlobalSettingsAvailable.set(customSettings.length === 1);
+    this.customGlobalResourcesAvailable.set(customResources.length === 1);
+    this.customSiteSettingsAvailable.set(customSettings.length === 1);
+    this.customSiteResourcesAvailable.set(customResources.length === 1);
   }
 
   #urlTo(url: string, queryParams?: { [key: string]: string }, errComponent?: string) {
