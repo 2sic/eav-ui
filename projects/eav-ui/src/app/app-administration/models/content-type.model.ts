@@ -42,4 +42,11 @@ export interface ContentTypeProperties {
 export interface ContentTypeEdit extends ContentType {
   ChangeNameId: boolean;
   NewNameId: string;
+  // TODO: @2pp - you can't just rename these properties, they are sent to the server for saving
+  // you just renamed them without a task to do it :(
+  // pls discuss w/2dm
+  // ChangeStaticName: boolean;
+  // NewStaticName: string;
+  // ChangeNameId: boolean;
+  // NewNameId: string;
 }
