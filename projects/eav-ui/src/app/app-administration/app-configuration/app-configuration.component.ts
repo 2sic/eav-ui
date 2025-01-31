@@ -70,6 +70,7 @@ export class AppConfigurationComponent implements OnInit {
   SystemSettingsScopes = SystemSettingsScopes;
   AppScopes = AppScopes;
 
+  // 2pp WIP
   currentSettings = signal(undefined);
  
   // isGlobal = computed(() => this.currentSettings() === AppScopes.Global);
@@ -81,15 +82,15 @@ export class AppConfigurationComponent implements OnInit {
   isApp = signal(false);
   
   #ready = signal(false);
+  // WIP END
 
   // Signal for all appSettigns data 
   appSettingsData = signal('');
 
   // Url signals for edit routes
-  appContentSystemSettingsUrl = signal('');
+  appSystemSettingsUrl = signal('');
+
   appContentCustomSettingsUrl = signal('');
-  appGlobalSystemSettingsUrl = signal('');
-  appSiteSystemSettingsUrl = signal('');
   appGlobalSystemResourcesUrl = signal('');
   appContentSystemResourcesUrl = signal('');
   appSiteSystemResourcesUrl = signal('');
@@ -173,12 +174,8 @@ export class AppConfigurationComponent implements OnInit {
       this.isApp.set(appScope === AppScopes.App);
 
       this.#ready.set(true);
+      this.loadData();
     });
-  }
-
-  ngAfterViewInit() {
-    // Load the data after the UI is rendered
-    this.loadData();
   }
 
   buttons = computed<Buttons>(() => {
@@ -230,7 +227,7 @@ export class AppConfigurationComponent implements OnInit {
         tooltip: `Edit ${scopeName} system settings`,
         // TODO: @2pp fix this, it's just patch
         // correctly we should not even retrieve the other urls we don't need, so this can be improved a lot
-        url: isGlobal ? this.appGlobalSystemSettingsUrl() : isSite ? this.appSiteSystemSettingsUrl() : this.appContentSystemSettingsUrl(),
+        url: this.appSystemSettingsUrl(),
         count: viewModel?.systemSettingsCount || null,
       },
       customSettings: {
@@ -283,10 +280,13 @@ export class AppConfigurationComponent implements OnInit {
     // Correct solution is to
     // 1. get all the data you need in a single request and put it in a signal
     // 2. make the urls computed signals based on that signal
-    
-    this.appGlobalSystemSettingsUrl = this.urlToEditSystem(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App);
-    this.appContentSystemSettingsUrl = this.urlToEditSystem(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App);
-    this.appSiteSystemSettingsUrl = this.urlToEditSystem(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.Site);
+
+    // Assign System Settings Url
+    this.appSystemSettingsUrl = this.urlToEditSystem(
+      eavConstants.contentTypes.systemSettings,
+      this.isGlobal() ? SystemSettingsScopes.App : this.isSite() ? SystemSettingsScopes.Site : SystemSettingsScopes.App
+    );
+
     this.appGlobalSystemResourcesUrl = this.urlToEditSystem(eavConstants.contentTypes.systemResources, SystemSettingsScopes.App);
     this.appContentSystemResourcesUrl = this.urlToEditSystem(eavConstants.contentTypes.systemResources, SystemSettingsScopes.App);
     this.appSiteSystemResourcesUrl = this.urlToEditSystem(eavConstants.contentTypes.systemResources, SystemSettingsScopes.Site);
