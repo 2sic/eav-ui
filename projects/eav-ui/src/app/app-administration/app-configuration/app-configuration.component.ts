@@ -1,5 +1,6 @@
 import { NgTemplateOutlet } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -63,16 +64,27 @@ export class AppConfigurationComponent implements OnInit {
     private context: Context,
   ) { }
 
-
   dialogSettings: DialogSettings;
 
   eavConstants = eavConstants;
   AnalyzeParts = AnalyzeParts;
   SystemSettingsScopes = SystemSettingsScopes;
   AppScopes = AppScopes;
+
+  currentSettings = signal(undefined);
+ 
   isGlobal = signal(false);
   isSite = signal(false);
   isApp = signal(false);
+
+  // isGlobal = computed(() => this.currentSettings() === AppScopes.Global);
+  // isSite = computed(() => this.currentSettings() === AppScopes.Site);
+  // isApp = computed(() => this.currentSettings() === AppScopes.App);
+
+  #ready = signal(false);
+
+  // Signal for all appSettigns data 
+  appSettingsData = signal('');
 
   // Url signals for edit routes
   appContentSystemSettingsUrl = signal('');
@@ -95,7 +107,6 @@ export class AppConfigurationComponent implements OnInit {
   // customSiteSettingsAvailable = signal(false);
   // customSiteResourcesAvailable = signal(false);
 
-
   // More proper ViewModel
   appSettingsInternal$ = new Subject<AppInternals>();
 
@@ -104,7 +115,6 @@ export class AppConfigurationComponent implements OnInit {
   protected lightSpeedEnabled = this.#featuresSvc.isEnabled[FeatureNames.LightSpeed];
   protected cspEnabled = this.#featuresSvc.isEnabled[FeatureNames.ContentSecurityPolicy];
   protected langPermsEnabled = this.#featuresSvc.isEnabled[FeatureNames.PermissionsByLanguage];
-
 
   #refresh = signal(0);
 
@@ -116,6 +126,7 @@ export class AppConfigurationComponent implements OnInit {
   /** Statistics for the content-types and fields for later */
   #dataStatistics = computed(() => {
     const appSpecs = this.#appSpecsLazy()();
+
     if (!appSpecs)
       return null;
 
@@ -151,10 +162,14 @@ export class AppConfigurationComponent implements OnInit {
         }
   });
 
-
-
   ngOnInit() {
+    // Update dialog router when child a dialog was closesd
     this.#dialogRouter.doOnDialogClosed(() => this.#refresh.update(v => v++));
+    this.currentSettings.set(
+      toSignal(this.#dialogConfigSvc.getCurrent$())
+    );
+
+    console.log(this.currentSettings());  
 
     this.#dialogConfigSvc.getCurrent$().subscribe((dialogSettings) => {
       this.dialogSettings = dialogSettings;
@@ -172,7 +187,6 @@ export class AppConfigurationComponent implements OnInit {
     this.loadData();
   }
 
-  #ready = signal(false);
   buttons = computed<Buttons>(() => {
     // if not ready, return a full object with empty values
     const ready = this.#ready();
@@ -192,11 +206,10 @@ export class AppConfigurationComponent implements OnInit {
       }
     }
 
-    // read signals
+    // From the current settings computed booleans containing the scope state
     const isGlobal = this.isGlobal();
     const isSite = this.isSite();
     const isApp = this.isApp();
-
     // The name of the top row, to use in the row label and tooltips
     const scopeName = isGlobal ? 'Global' : isSite ? 'Site' : 'App';
 
@@ -204,8 +217,13 @@ export class AppConfigurationComponent implements OnInit {
     const viewModel = this.#dataStatistics();
 
     const typeNames = eavConstants.contentTypes;
-    const customSettingsType = isApp ? typeNames.settings : typeNames.customSettings;
-    const customResourcesType = isApp ? typeNames.resources : typeNames.customResources;
+    const customSettingsType = isApp
+      ? typeNames.settings
+      : typeNames.customSettings;
+    const customResourcesType = isApp
+      ? typeNames.resources
+      : typeNames.customResources;
+
     // Detect if the custom types exist
     const typesExist = this.#customTypesExist();
     return {
@@ -236,7 +254,11 @@ export class AppConfigurationComponent implements OnInit {
       },
       systemResources: {
         tooltip: `Edit ${scopeName} system resources`,
-        url: isGlobal ? this.appGlobalSystemResourcesUrl() : isSite ? this.appSiteSystemResourcesUrl() : this.appContentSystemResourcesUrl(),
+        url: isGlobal
+          ? this.appGlobalSystemResourcesUrl()
+          : isSite
+            ? this.appSiteSystemResourcesUrl()
+            : this.appContentSystemResourcesUrl(),
         count: viewModel?.systemResourcesCount || null,
       },
       customResources: {
@@ -259,13 +281,13 @@ export class AppConfigurationComponent implements OnInit {
     } satisfies Buttons;
   });
 
-
   loadData() {
     // TODO: @2pp THIS IS COMPLETELY WRONG
     // You are requesting the same data over and over again, just to generate a single url.
     // Correct solution is to
     // 1. get all the data you need in a single request and put it in a signal
     // 2. make the urls computed signals based on that signal
+    
     this.appGlobalSystemSettingsUrl = this.urlToEditSystem(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App);
     this.appContentSystemSettingsUrl = this.urlToEditSystem(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App);
     this.appSiteSystemSettingsUrl = this.urlToEditSystem(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.Site);
@@ -293,12 +315,12 @@ export class AppConfigurationComponent implements OnInit {
 
   #urlTo(url: string, queryParams?: { [key: string]: string }, errComponent?: string) {
     let newUrl = '#' + this.#dialogRouter.urlSubRoute(url);
-    if (queryParams) {
+
+    if (queryParams)
       newUrl += `?${new URLSearchParams(queryParams).toString()}`;
-    }
-    if (errComponent) {
+    if (errComponent) 
       newUrl += `&errComponent=${errComponent}`;
-    }
+  
     return newUrl;
   }
 
@@ -494,8 +516,6 @@ class TempDataStatistics {
   customResourcesCount: number;
   customResourcesFieldsCount: number;
 }
-
-
 
 interface ButtonSpecs {
   /** Tooltip on the button */
