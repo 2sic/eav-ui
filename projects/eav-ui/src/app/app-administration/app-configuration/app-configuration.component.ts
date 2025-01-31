@@ -96,29 +96,35 @@ export class AppConfigurationComponent implements OnInit {
     this.isGlobal() ? SystemSettingsScopes.App : this.isSite() ? SystemSettingsScopes.Site : SystemSettingsScopes.App
   );
 
-
   // Assign Default Custom Content Settings Url
-  appContentCustomSettingsUrl = this.urlToEditDefault(eavConstants.contentTypes.settings);
+  appContentCustomSettingsUrl = this.urlToEditDefault(
+    eavConstants.contentTypes.settings
+  );
 
   // Assign Default Custom Content Resources Url
-  appContentCustomResourcesUrl = this.urlToEditDefault(eavConstants.contentTypes.resources);
+  appContentCustomResourcesUrl = this.urlToEditDefault(
+    eavConstants.contentTypes.resources
+  );
 
-  // Assign Default Custom Global and Site Resources Url
-  appGlobalCustomResourcesUrl = this.urlToEditCustom(eavConstants.contentTypes.customResources);
-  appSiteCustomResourcesUrl = this.urlToEditCustom(eavConstants.contentTypes.customResources);
+  // Assign Default Custom Global Resources Url
+  appGlobalCustomResourcesUrl = this.urlToEditCustom(
+    eavConstants.contentTypes.customResources
+  );
+  
+  // Assign Default Custom Site Resources Url
+  appSiteCustomResourcesUrl = this.urlToEditCustom(
+    eavConstants.contentTypes.customResources
+  );
 
-  // Assign Default Custom Content and Site Settings Url
+  // Assign Default Custom Global Settings Url
   appGlobalCustomSettingsUrl = this.urlToEditCustom(eavConstants.contentTypes.customSettings);
-  appSiteCustomSettingsUrl = this.urlToEditCustom(eavConstants.contentTypes.customSettings);
+  
+  // Assign Default Custom Site Settings Url
+  appSiteCustomSettingsUrl = this.urlToEditCustom(
+    eavConstants.contentTypes.customSettings
+  );
   
   /*=== END ===*/
-
-  // TODO: @2pp this was a mistake - change in logic.
-  //       need to discuss, as it's not clear why you introduced this
-  // customGlobalSettingsAvailable = signal(false);
-  // customGlobalResourcesAvailable = signal(false);
-  // customSiteSettingsAvailable = signal(false);
-  // customSiteResourcesAvailable = signal(false);
 
   // More proper ViewModel
   appSettingsInternal$ = new Subject<AppInternals>();
