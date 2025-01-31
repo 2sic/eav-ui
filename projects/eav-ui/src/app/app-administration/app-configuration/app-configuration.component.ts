@@ -85,7 +85,6 @@ export class AppConfigurationComponent implements OnInit {
 
   /*=== URL SIGNALS FOR EDIT ROUTES ===*/
 
-
   // Assign System Settings Url
   #appSystemSettingsUrlSource: Signal<string>;
   appSystemSettingsUrl = computed(() => {
@@ -103,10 +102,19 @@ export class AppConfigurationComponent implements OnInit {
 
   
   // Assign System Resources Url
-  appSystemResourcesUrl = this.urlToEditSystem(
-    eavConstants.contentTypes.systemResources,
-    this.isGlobal() ? SystemSettingsScopes.App : this.isSite() ? SystemSettingsScopes.Site : SystemSettingsScopes.App
-  );
+  #appSystemResourcesUrlSource: Signal<string>;
+  appSystemResourcesUrl = computed(() => {
+    const isGlobal = this.isGlobal();
+    const isSite = this.isSite();
+    if (isGlobal == null || isSite == null) return null;
+    // Ensure that the source is only created once when global/site are ready.
+    this.#appSystemResourcesUrlSource ??= this.urlToEditSystem(
+      eavConstants.contentTypes.systemResources,
+      isGlobal ? SystemSettingsScopes.App : isSite ? SystemSettingsScopes.Site : SystemSettingsScopes.App
+    );
+    // return value unwrapped
+    return this.#appSystemResourcesUrlSource();
+  })
 
   // Assign Default Custom Content Settings Url
   appContentCustomSettingsUrl = this.urlToEditDefault(
