@@ -116,7 +116,7 @@ export class AppConfigurationComponent implements OnInit {
   })
 
   //============== Custm Settings ==============
-
+  // WIP
   // Assign Custom Settings Url
   #appCustomSettingsUrlSource: Signal<string>;
   appCustomSettingsUrl = computed(() => {
@@ -148,8 +148,23 @@ export class AppConfigurationComponent implements OnInit {
   );
 
   //============== Custom Resources ==============
+  // WIP
+  // Assign Custom Resources Url
+  #appCustomResourcesUrlSource: Signal<string>;
+  appCustomResourcesUrl = computed(() => {
+    const isGlobal = this.isGlobal();
+    const isSite = this.isSite();
+    if (isGlobal == null || isSite == null) return null;
+    // Ensure that the source is only created once when global/site are ready.
+    this.#appCustomResourcesUrlSource ??= this.urlToEditSystem(
+      eavConstants.contentTypes.systemResources,
+      isGlobal ? SystemSettingsScopes.App : isSite ? SystemSettingsScopes.Site : SystemSettingsScopes.App
+    );
+    // return value unwrapped
+    return this.#appCustomResourcesUrlSource();
+  })
 
-  // Assign Default Custom Content Resources Url
+  // Assign Default Custom Resources Url
   appContentCustomResourcesUrl = this.urlToEditDefault(
     eavConstants.contentTypes.resources
   );
