@@ -71,20 +71,18 @@ export class AppConfigurationComponent implements OnInit {
   SystemSettingsScopes = SystemSettingsScopes;
   AppScopes = AppScopes;
 
-  // 2pp WIP
+  // Settings for the current dialog
   currentSettings = toSignal(this.#dialogConfigSvc.getCurrent$());
 
+  // Booleans containing the current scope state
   isGlobal = computed(() => this.currentSettings()?.Context.App.SettingsScope === AppScopes.Global);
   isSite = computed(() => this.currentSettings()?.Context.App.SettingsScope === AppScopes.Site);
   isApp = computed(() => this.currentSettings()?.Context.App.SettingsScope === AppScopes.App);
   
+  // Boolean signal for when dialog is loaded
   #ready = signal(false);
-  // WIP END
 
-  // Signal for all appSettigns data 
-  appSettingsData = signal('');
-
-  /* Url signals for edit routes */
+  /*=== URL SIGNALS FOR EDIT ROUTES ===*/
 
   // Assign System Settings Url
   appSystemSettingsUrl = this.urlToEditSystem(
@@ -98,12 +96,22 @@ export class AppConfigurationComponent implements OnInit {
     this.isGlobal() ? SystemSettingsScopes.App : this.isSite() ? SystemSettingsScopes.Site : SystemSettingsScopes.App
   );
 
-  appContentCustomSettingsUrl = signal('');
-  appContentCustomResourcesUrl = signal('');
-  appGlobalCustomResourcesUrl = signal('');
-  appGlobalCustomSettingsUrl = signal('');
-  appSiteCustomSettingsUrl = signal('');
-  appSiteCustomResourcesUrl = signal('');
+
+  // Assign Default Custom Content Settings Url
+  appContentCustomSettingsUrl = this.urlToEditDefault(eavConstants.contentTypes.settings);
+
+  // Assign Default Custom Content Resources Url
+  appContentCustomResourcesUrl = this.urlToEditDefault(eavConstants.contentTypes.resources);
+
+  // Assign Default Custom Global and Site Resources Url
+  appGlobalCustomResourcesUrl = this.urlToEditCustom(eavConstants.contentTypes.customResources);
+  appSiteCustomResourcesUrl = this.urlToEditCustom(eavConstants.contentTypes.customResources);
+
+  // Assign Default Custom Content and Site Settings Url
+  appGlobalCustomSettingsUrl = this.urlToEditCustom(eavConstants.contentTypes.customSettings);
+  appSiteCustomSettingsUrl = this.urlToEditCustom(eavConstants.contentTypes.customSettings);
+  
+  /*=== END ===*/
 
   // TODO: @2pp this was a mistake - change in logic.
   //       need to discuss, as it's not clear why you introduced this
@@ -175,7 +183,6 @@ export class AppConfigurationComponent implements OnInit {
       this.dialogSettings = dialogSettings;
 
       this.#ready.set(true);
-      this.loadData();
     });
   }
 
@@ -270,20 +277,6 @@ export class AppConfigurationComponent implements OnInit {
       },
     } satisfies Buttons;
   });
-
-  loadData() {
-    // Assign Default Custom Content Settings and Resources Url
-    this.appContentCustomSettingsUrl = this.urlToEditDefault(eavConstants.contentTypes.settings);
-    this.appContentCustomResourcesUrl = this.urlToEditDefault(eavConstants.contentTypes.resources);
-
-    // Assign Default Custom Global and Site Resources Url
-    this.appGlobalCustomResourcesUrl = this.urlToEditCustom(eavConstants.contentTypes.customResources);
-    this.appSiteCustomResourcesUrl = this.urlToEditCustom(eavConstants.contentTypes.customResources);
-
-    // Assign Default Custom Content and Site Settings Url
-    this.appGlobalCustomSettingsUrl = this.urlToEditCustom(eavConstants.contentTypes.customSettings);
-    this.appSiteCustomSettingsUrl = this.urlToEditCustom(eavConstants.contentTypes.customSettings);
-  }
 
   #urlTo(url: string, queryParams?: { [key: string]: string }, errComponent?: string) {
     let newUrl = '#' + this.#dialogRouter.urlSubRoute(url);
