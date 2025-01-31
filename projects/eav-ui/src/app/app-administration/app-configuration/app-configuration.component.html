@@ -418,7 +418,7 @@
     </ng-template>
   </div>
   <div class="eav-cards-box">
-    <app-app-configuration-card [dialogSettings]="dialogSettings"> </app-app-configuration-card>
+    <app-app-configuration-card [dialogSettings]="dialogSettings2()"> </app-app-configuration-card>
     <!-- LightSpeed -->
     <mat-card class="eav-card">
       <mat-card-header class="eav-card-header">
@@ -483,20 +483,20 @@
           [href]="urlToOpenPermissions()"
           mat-button
           class="eav-button__with-icon"
-          [disabled]="!dialogSettings.Context.Enable.AppPermissions"
+          [disabled]="!dialogSettings2().Context.Enable.AppPermissions"
         >
           <mat-icon
             matBadgeColor="accent"
             matBadgeSize="small"
             matBadgePosition="below after"
-            [matBadge]="dialogSettings.Context.App.Permissions.Count || null"
+            [matBadge]="dialogSettings2().Context.App.Permissions.Count || null"
             aria-hidden="false"
             class="eav-icon"
             >person</mat-icon
           >
           <span>
             Edit Permissions
-            @if (!dialogSettings.Context.Enable.AppPermissions) {
+            @if (!dialogSettings2().Context.Enable.AppPermissions) {
               @if (isGlobal()) {
                 (not on Global App)
               }

@@ -18,7 +18,6 @@ import { SystemSettingsScopes, eavConstants } from '../../shared/constants/eav.c
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { AppScopes } from '../../shared/models/dialog-context.models';
-import { DialogSettings } from '../../shared/models/dialog-settings.model';
 import { EditPrep } from '../../shared/models/edit-form.model';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { Context } from '../../shared/services/context';
@@ -64,9 +63,6 @@ export class AppConfigurationComponent implements OnInit {
     private context: Context,
   ) { }
 
-  // TODO: REPLACE WITH SIGNAL
-  dialogSettings: DialogSettings;
-
   eavConstants = eavConstants;
   AnalyzeParts = AnalyzeParts;
   SystemSettingsScopes = SystemSettingsScopes;
@@ -80,7 +76,7 @@ export class AppConfigurationComponent implements OnInit {
   isGlobal = computed(() => { const cs = this.#currentScope(); return cs == null ? null : cs === AppScopes.Global; });
   isSite = computed(() => { const cs = this.#currentScope(); return cs == null ? null : cs === AppScopes.Site; });
   isApp = computed(() => { const cs = this.#currentScope(); return cs == null ? null : cs === AppScopes.App });
-  
+
   // Boolean signal for when dialog is loaded
 
   /*=== URL SIGNALS FOR EDIT ROUTES ===*/
@@ -101,7 +97,7 @@ export class AppConfigurationComponent implements OnInit {
     // return value unwrapped
     return this.#appSystemSettingsUrlSource();
   })
-  
+
   //============== System Resources ==============
 
   // Assign System Resources Url
@@ -136,21 +132,22 @@ export class AppConfigurationComponent implements OnInit {
     return this.#appCustomSettingsUrlSource();
   })
 
-    // Assign Default Custom Content Settings Url
-    appContentCustomSettingsUrl = this.urlToEditDefault(
-      eavConstants.contentTypes.settings
-    );
+  // Assign Default Custom Content Settings Url
+  appContentCustomSettingsUrl = this.urlToEditDefault(
+    eavConstants.contentTypes.settings
+  );
 
-    // Assign Default Custom Global Settings Url
-    appGlobalCustomSettingsUrl = this.urlToEditCustom(
-      eavConstants.contentTypes.customSettings
-    );
-    
-    // Assign Default Custom Site Settings Url
-    appSiteCustomSettingsUrl = this.urlToEditCustom(
-      eavConstants.contentTypes.customSettings
-    );
-//============== Custom Resources ==============
+  // Assign Default Custom Global Settings Url
+  appGlobalCustomSettingsUrl = this.urlToEditCustom(
+    eavConstants.contentTypes.customSettings
+  );
+
+  // Assign Default Custom Site Settings Url
+  appSiteCustomSettingsUrl = this.urlToEditCustom(
+    eavConstants.contentTypes.customSettings
+  );
+
+  //============== Custom Resources ==============
 
   // Assign Default Custom Content Resources Url
   appContentCustomResourcesUrl = this.urlToEditDefault(
@@ -161,12 +158,13 @@ export class AppConfigurationComponent implements OnInit {
   appGlobalCustomResourcesUrl = this.urlToEditCustom(
     eavConstants.contentTypes.customResources
   );
-  
+
   // Assign Default Custom Site Resources Url
   appSiteCustomResourcesUrl = this.urlToEditCustom(
     eavConstants.contentTypes.customResources
   );
-//============== END ==============
+
+  //============== END ==============
 
   // More proper ViewModel
   appSettingsInternal$ = new Subject<AppInternals>();
@@ -226,17 +224,13 @@ export class AppConfigurationComponent implements OnInit {
   ngOnInit() {
     // Update dialog router when child a dialog was closesd
     this.#dialogRouter.doOnDialogClosed(() => this.#refresh.update(v => v++));
-
-    this.#dialogConfigSvc.getCurrent$().subscribe((dialogSettings) => {
-      this.dialogSettings = dialogSettings;
-    });
   }
 
   buttons = computed<Buttons>(() => {
     // if not ready, return a full object with empty values
     const ready = this.dialogSettings2() != null;
     if (!ready) {
-      const nothing : ButtonSpecs = { tooltip: '', url: '', count: null };
+      const nothing: ButtonSpecs = { tooltip: '', url: '', count: null };
       return {
         topRowLabel: 'loading...',
         customSettingsType: '',
@@ -329,9 +323,9 @@ export class AppConfigurationComponent implements OnInit {
 
     if (queryParams)
       newUrl += `?${new URLSearchParams(queryParams).toString()}`;
-    if (errComponent) 
+    if (errComponent)
       newUrl += `&errComponent=${errComponent}`;
-  
+
     return newUrl;
   }
 
@@ -421,12 +415,12 @@ export class AppConfigurationComponent implements OnInit {
   }
 
   openSiteSettings() {
-    const siteApp = this.dialogSettings.Context.Site.PrimaryApp;
+    const siteApp = this.dialogSettings2().Context.Site.PrimaryApp;
     this.#dialogSvc.openAppAdministration(siteApp.ZoneId, siteApp.AppId, 'app');
   }
 
   openGlobalSettings() {
-    const globalApp = this.dialogSettings.Context.System.PrimaryApp;
+    const globalApp = this.dialogSettings2().Context.System.PrimaryApp;
     this.#dialogSvc.openAppAdministration(globalApp.ZoneId, globalApp.AppId, 'app');
   }
 
@@ -455,7 +449,7 @@ export class AppConfigurationComponent implements OnInit {
 
     event.preventDefault();
     event.stopPropagation();
-    
+
     // Create the Content-Type
     const newContentType = {
       StaticName: '',
