@@ -194,7 +194,7 @@ export class AppConfigurationComponent implements OnInit {
     const isApp = this.isApp();
 
     // The name of the top row, to use in the row label and tooltips
-    const scopeName = isGlobal ? 'Global' : isSite ? 'Site' : 'App';
+    const scopeName = this.currentSettings().Context.App.SettingsScope;
 
     // The statistics of the entities - should later be simplified once code is improved @2pp
     const viewModel = this.#dataStatistics();
@@ -280,10 +280,15 @@ export class AppConfigurationComponent implements OnInit {
       this.isGlobal() ? SystemSettingsScopes.App : this.isSite() ? SystemSettingsScopes.Site : SystemSettingsScopes.App
     );
     
+    // Assign Default Custom Content Settings and Resources Url
     this.appContentCustomSettingsUrl = this.urlToEditDefault(eavConstants.contentTypes.settings);
     this.appContentCustomResourcesUrl = this.urlToEditDefault(eavConstants.contentTypes.resources);
+
+    // Assign Default Custom Global and Site Resources Url
     this.appGlobalCustomResourcesUrl = this.urlToEditCustom(eavConstants.contentTypes.customResources);
     this.appSiteCustomResourcesUrl = this.urlToEditCustom(eavConstants.contentTypes.customResources);
+
+    // Assign Default Custom Content and Site Settings Url
     this.appGlobalCustomSettingsUrl = this.urlToEditCustom(eavConstants.contentTypes.customSettings);
     this.appSiteCustomSettingsUrl = this.urlToEditCustom(eavConstants.contentTypes.customSettings);
 
