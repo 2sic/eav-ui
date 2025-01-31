@@ -69,8 +69,8 @@ export class AppConfigurationComponent implements OnInit {
   AppScopes = AppScopes;
 
   // Settings for the current dialog
-  dialogSettings2 = toSignal(this.#dialogConfigSvc.getCurrent$());
-  #currentScope = computed(() => this.dialogSettings2()?.Context.App.SettingsScope);
+  dialogSettings = toSignal(this.#dialogConfigSvc.getCurrent$());
+  #currentScope = computed(() => this.dialogSettings()?.Context.App.SettingsScope);
 
   // Booleans containing the current scope state
   isGlobal = computed(() => { const cs = this.#currentScope(); return cs == null ? null : cs === AppScopes.Global; });
@@ -228,7 +228,7 @@ export class AppConfigurationComponent implements OnInit {
 
   buttons = computed<Buttons>(() => {
     // if not ready, return a full object with empty values
-    const ready = this.dialogSettings2() != null;
+    const ready = this.dialogSettings() != null;
     if (!ready) {
       const nothing: ButtonSpecs = { tooltip: '', url: '', count: null };
       return {
@@ -251,7 +251,7 @@ export class AppConfigurationComponent implements OnInit {
     const isApp = !!this.isApp();
 
     // The name of the top row, to use in the row label and tooltips
-    const scopeName = this.dialogSettings2().Context.App.SettingsScope;
+    const scopeName = this.dialogSettings().Context.App.SettingsScope;
 
     // The statistics of the entities - should later be simplified once code is improved @2pp
     const viewModel = this.#dataStatistics();
@@ -415,12 +415,12 @@ export class AppConfigurationComponent implements OnInit {
   }
 
   openSiteSettings() {
-    const siteApp = this.dialogSettings2().Context.Site.PrimaryApp;
+    const siteApp = this.dialogSettings().Context.Site.PrimaryApp;
     this.#dialogSvc.openAppAdministration(siteApp.ZoneId, siteApp.AppId, 'app');
   }
 
   openGlobalSettings() {
-    const globalApp = this.dialogSettings2().Context.System.PrimaryApp;
+    const globalApp = this.dialogSettings().Context.System.PrimaryApp;
     this.#dialogSvc.openAppAdministration(globalApp.ZoneId, globalApp.AppId, 'app');
   }
 
