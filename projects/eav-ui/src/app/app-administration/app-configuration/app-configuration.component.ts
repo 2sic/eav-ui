@@ -1,6 +1,5 @@
 import { NgTemplateOutlet } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -73,14 +72,14 @@ export class AppConfigurationComponent implements OnInit {
 
   currentSettings = signal(undefined);
  
-  isGlobal = signal(false);
-  isSite = signal(false);
-  isApp = signal(false);
-
   // isGlobal = computed(() => this.currentSettings() === AppScopes.Global);
   // isSite = computed(() => this.currentSettings() === AppScopes.Site);
   // isApp = computed(() => this.currentSettings() === AppScopes.App);
-
+  
+  isGlobal = signal(false);
+  isSite = signal(false);
+  isApp = signal(false);
+  
   #ready = signal(false);
 
   // Signal for all appSettigns data 
@@ -165,11 +164,6 @@ export class AppConfigurationComponent implements OnInit {
   ngOnInit() {
     // Update dialog router when child a dialog was closesd
     this.#dialogRouter.doOnDialogClosed(() => this.#refresh.update(v => v++));
-    this.currentSettings.set(
-      toSignal(this.#dialogConfigSvc.getCurrent$())
-    );
-
-    console.log(this.currentSettings());  
 
     this.#dialogConfigSvc.getCurrent$().subscribe((dialogSettings) => {
       this.dialogSettings = dialogSettings;
@@ -210,6 +204,7 @@ export class AppConfigurationComponent implements OnInit {
     const isGlobal = this.isGlobal();
     const isSite = this.isSite();
     const isApp = this.isApp();
+
     // The name of the top row, to use in the row label and tooltips
     const scopeName = isGlobal ? 'Global' : isSite ? 'Site' : 'App';
 
@@ -226,6 +221,7 @@ export class AppConfigurationComponent implements OnInit {
 
     // Detect if the custom types exist
     const typesExist = this.#customTypesExist();
+
     return {
       topRowLabel: scopeName,
       customSettingsType: customSettingsType,
