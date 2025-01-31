@@ -1,5 +1,6 @@
 import { NgTemplateOutlet } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -71,16 +72,11 @@ export class AppConfigurationComponent implements OnInit {
   AppScopes = AppScopes;
 
   // 2pp WIP
-  currentSettings = signal(undefined);
-  // toSignal -> 
- 
-  // isGlobal = computed(() => this.currentSettings() === AppScopes.Global);
-  // isSite = computed(() => this.currentSettings() === AppScopes.Site);
-  // isApp = computed(() => this.currentSettings() === AppScopes.App);
-  
-  isGlobal = signal(false);
-  isSite = signal(false);
-  isApp = signal(false);
+  currentSettings = toSignal(this.#dialogConfigSvc.getCurrent$());
+
+  isGlobal = computed(() => this.currentSettings()?.Context.App.SettingsScope === AppScopes.Global);
+  isSite = computed(() => this.currentSettings()?.Context.App.SettingsScope === AppScopes.Site);
+  isApp = computed(() => this.currentSettings()?.Context.App.SettingsScope === AppScopes.App);
   
   #ready = signal(false);
   // WIP END
@@ -167,10 +163,6 @@ export class AppConfigurationComponent implements OnInit {
 
     this.#dialogConfigSvc.getCurrent$().subscribe((dialogSettings) => {
       this.dialogSettings = dialogSettings;
-      const appScope = dialogSettings.Context.App.SettingsScope;
-      this.isGlobal.set(appScope === AppScopes.Global);
-      this.isSite.set(appScope === AppScopes.Site);
-      this.isApp.set(appScope === AppScopes.App);
 
       this.#ready.set(true);
       this.loadData();
