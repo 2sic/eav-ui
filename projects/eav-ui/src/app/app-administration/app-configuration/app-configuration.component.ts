@@ -1,5 +1,5 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, OnInit, Signal, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
@@ -72,24 +72,36 @@ export class AppConfigurationComponent implements OnInit {
   AppScopes = AppScopes;
 
   // Settings for the current dialog
-  currentSettings = toSignal(this.#dialogConfigSvc.getCurrent$());
+  #currentSettings = toSignal(this.#dialogConfigSvc.getCurrent$());
+  #currentScope = computed(() => this.#currentSettings()?.Context.App.SettingsScope);
 
   // Booleans containing the current scope state
-  isGlobal = computed(() => this.currentSettings()?.Context.App.SettingsScope === AppScopes.Global);
-  isSite = computed(() => this.currentSettings()?.Context.App.SettingsScope === AppScopes.Site);
-  isApp = computed(() => this.currentSettings()?.Context.App.SettingsScope === AppScopes.App);
+  isGlobal = computed(() => { const cs = this.#currentScope(); return cs == null ? null : cs === AppScopes.Global; });
+  isSite = computed(() => { const cs = this.#currentScope(); return cs == null ? null : cs === AppScopes.Site; });
+  isApp = computed(() => { const cs = this.#currentScope(); return cs == null ? null : cs === AppScopes.App });
   
   // Boolean signal for when dialog is loaded
   #ready = signal(false);
 
   /*=== URL SIGNALS FOR EDIT ROUTES ===*/
 
-  // Assign System Settings Url
-  appSystemSettingsUrl = this.urlToEditSystem(
-    eavConstants.contentTypes.systemSettings,
-    this.isGlobal() ? SystemSettingsScopes.App : this.isSite() ? SystemSettingsScopes.Site : SystemSettingsScopes.App
-  );
 
+  // Assign System Settings Url
+  #appSystemSettingsUrlSource: Signal<string>;
+  appSystemSettingsUrl = computed(() => {
+    const isGlobal = this.isGlobal();
+    const isSite = this.isSite();
+    if (isGlobal == null || isSite == null) return null;
+    // Ensure that the source is only created once when global/site are ready.
+    this.#appSystemSettingsUrlSource ??= this.urlToEditSystem(
+      eavConstants.contentTypes.systemSettings,
+      isGlobal ? SystemSettingsScopes.App : isSite ? SystemSettingsScopes.Site : SystemSettingsScopes.App
+    );
+    // return value unwrapped
+    return this.#appSystemSettingsUrlSource();
+  })
+
+  
   // Assign System Resources Url
   appSystemResourcesUrl = this.urlToEditSystem(
     eavConstants.contentTypes.systemResources,
@@ -214,12 +226,12 @@ export class AppConfigurationComponent implements OnInit {
     }
 
     // From the current settings computed booleans containing the scope state
-    const isGlobal = this.isGlobal();
-    const isSite = this.isSite();
-    const isApp = this.isApp();
+    const isGlobal = !!this.isGlobal();
+    const isSite = !!this.isSite();
+    const isApp = !!this.isApp();
 
     // The name of the top row, to use in the row label and tooltips
-    const scopeName = this.currentSettings().Context.App.SettingsScope;
+    const scopeName = this.#currentSettings().Context.App.SettingsScope;
 
     // The statistics of the entities - should later be simplified once code is improved @2pp
     const viewModel = this.#dataStatistics();
