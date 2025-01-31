@@ -84,9 +84,19 @@ export class AppConfigurationComponent implements OnInit {
   // Signal for all appSettigns data 
   appSettingsData = signal('');
 
-  // Url signals for edit routes
-  appSystemSettingsUrl = signal('');
-  appSystemResourcesUrl = signal('');
+  /* Url signals for edit routes */
+
+  // Assign System Settings Url
+  appSystemSettingsUrl = this.urlToEditSystem(
+    eavConstants.contentTypes.systemSettings,
+    this.isGlobal() ? SystemSettingsScopes.App : this.isSite() ? SystemSettingsScopes.Site : SystemSettingsScopes.App
+  );
+
+  // Assign System Resources Url
+  appSystemResourcesUrl = this.urlToEditSystem(
+    eavConstants.contentTypes.systemResources,
+    this.isGlobal() ? SystemSettingsScopes.App : this.isSite() ? SystemSettingsScopes.Site : SystemSettingsScopes.App
+  );
 
   appContentCustomSettingsUrl = signal('');
   appContentCustomResourcesUrl = signal('');
@@ -262,24 +272,6 @@ export class AppConfigurationComponent implements OnInit {
   });
 
   loadData() {
-    // TODO: @2pp THIS IS COMPLETELY WRONG
-    // You are requesting the same data over and over again, just to generate a single url.
-    // Correct solution is to
-    // 1. get all the data you need in a single request and put it in a signal
-    // 2. make the urls computed signals based on that signal
-
-    // Assign System Settings Url
-    this.appSystemSettingsUrl = this.urlToEditSystem(
-      eavConstants.contentTypes.systemSettings,
-      this.isGlobal() ? SystemSettingsScopes.App : this.isSite() ? SystemSettingsScopes.Site : SystemSettingsScopes.App
-    );
-
-    // Assign System Resources Url
-    this.appSystemResourcesUrl = this.urlToEditSystem(
-      eavConstants.contentTypes.systemResources,
-      this.isGlobal() ? SystemSettingsScopes.App : this.isSite() ? SystemSettingsScopes.Site : SystemSettingsScopes.App
-    );
-    
     // Assign Default Custom Content Settings and Resources Url
     this.appContentCustomSettingsUrl = this.urlToEditDefault(eavConstants.contentTypes.settings);
     this.appContentCustomResourcesUrl = this.urlToEditDefault(eavConstants.contentTypes.resources);
@@ -291,17 +283,6 @@ export class AppConfigurationComponent implements OnInit {
     // Assign Default Custom Content and Site Settings Url
     this.appGlobalCustomSettingsUrl = this.urlToEditCustom(eavConstants.contentTypes.customSettings);
     this.appSiteCustomSettingsUrl = this.urlToEditCustom(eavConstants.contentTypes.customSettings);
-
-    // Disable the Links when the setting contenttypes are not defined
-    // TODO: @2pp - your solution was not good, it resulted in sending 4 server requests instead of 2
-    // TODO: @2pp this is also wrong - the signal will return and always have length 0! so something is pretty wrong here
-    // See also comments above... should be a signal + computed
-    // const customSettings = this.#contentItemsService.getAllSig(eavConstants.contentTypes.customSettings,  /* initial: */ null);
-    // const customResources = this.#contentItemsService.getAllSig(eavConstants.contentTypes.customResources,  /* initial: */ null);
-    // this.customGlobalSettingsAvailable.set(customSettings.length === 1);
-    // this.customGlobalResourcesAvailable.set(customResources.length === 1);
-    // this.customSiteSettingsAvailable.set(customSettings.length === 1);
-    // this.customSiteResourcesAvailable.set(customResources.length === 1);
   }
 
   #urlTo(url: string, queryParams?: { [key: string]: string }, errComponent?: string) {
