@@ -64,6 +64,7 @@ export class AppConfigurationComponent implements OnInit {
     private context: Context,
   ) { }
 
+  // TODO: REPLACE WITH SIGNAL
   dialogSettings: DialogSettings;
 
   eavConstants = eavConstants;
@@ -72,8 +73,8 @@ export class AppConfigurationComponent implements OnInit {
   AppScopes = AppScopes;
 
   // Settings for the current dialog
-  #currentSettings = toSignal(this.#dialogConfigSvc.getCurrent$());
-  #currentScope = computed(() => this.#currentSettings()?.Context.App.SettingsScope);
+  dialogSettings2 = toSignal(this.#dialogConfigSvc.getCurrent$());
+  #currentScope = computed(() => this.dialogSettings2()?.Context.App.SettingsScope);
 
   // Booleans containing the current scope state
   isGlobal = computed(() => { const cs = this.#currentScope(); return cs == null ? null : cs === AppScopes.Global; });
@@ -81,11 +82,10 @@ export class AppConfigurationComponent implements OnInit {
   isApp = computed(() => { const cs = this.#currentScope(); return cs == null ? null : cs === AppScopes.App });
   
   // Boolean signal for when dialog is loaded
-  #ready = signal(false);
 
   /*=== URL SIGNALS FOR EDIT ROUTES ===*/
 
-//============== System Settings ==============
+  //============== System Settings ==============
 
   // Assign System Settings Url
   #appSystemSettingsUrlSource: Signal<string>;
@@ -102,7 +102,7 @@ export class AppConfigurationComponent implements OnInit {
     return this.#appSystemSettingsUrlSource();
   })
   
-//============== System Resources ==============
+  //============== System Resources ==============
 
   // Assign System Resources Url
   #appSystemResourcesUrlSource: Signal<string>;
@@ -119,7 +119,7 @@ export class AppConfigurationComponent implements OnInit {
     return this.#appSystemResourcesUrlSource();
   })
 
-//============== Custm Settings ==============
+  //============== Custm Settings ==============
 
   // Assign Custom Settings Url
   #appCustomSettingsUrlSource: Signal<string>;
@@ -229,14 +229,12 @@ export class AppConfigurationComponent implements OnInit {
 
     this.#dialogConfigSvc.getCurrent$().subscribe((dialogSettings) => {
       this.dialogSettings = dialogSettings;
-
-      this.#ready.set(true);
     });
   }
 
   buttons = computed<Buttons>(() => {
     // if not ready, return a full object with empty values
-    const ready = this.#ready();
+    const ready = this.dialogSettings2() != null;
     if (!ready) {
       const nothing : ButtonSpecs = { tooltip: '', url: '', count: null };
       return {
@@ -259,7 +257,7 @@ export class AppConfigurationComponent implements OnInit {
     const isApp = !!this.isApp();
 
     // The name of the top row, to use in the row label and tooltips
-    const scopeName = this.#currentSettings().Context.App.SettingsScope;
+    const scopeName = this.dialogSettings2().Context.App.SettingsScope;
 
     // The statistics of the entities - should later be simplified once code is improved @2pp
     const viewModel = this.#dataStatistics();
