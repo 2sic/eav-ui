@@ -117,7 +117,9 @@ export class AppConfigurationComponent implements OnInit {
   );
 
   // Assign Default Custom Global Settings Url
-  appGlobalCustomSettingsUrl = this.urlToEditCustom(eavConstants.contentTypes.customSettings);
+  appGlobalCustomSettingsUrl = this.urlToEditCustom(
+    eavConstants.contentTypes.customSettings
+  );
   
   // Assign Default Custom Site Settings Url
   appSiteCustomSettingsUrl = this.urlToEditCustom(
