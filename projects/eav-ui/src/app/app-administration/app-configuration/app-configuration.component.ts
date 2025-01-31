@@ -116,7 +116,7 @@ export class AppConfigurationComponent implements OnInit {
   })
 
   //============== Custm Settings ==============
-  // WIP
+  
   // Assign Custom Settings Url
   #appCustomSettingsUrlSource: Signal<string>;
   appCustomSettingsUrl = computed(() => {
@@ -125,30 +125,15 @@ export class AppConfigurationComponent implements OnInit {
     if (isGlobal == null || isSite == null) return null;
     // Ensure that the source is only created once when global/site are ready.
     this.#appCustomSettingsUrlSource ??= this.urlToEditSystem(
-      eavConstants.contentTypes.systemResources,
+      isGlobal ? eavConstants.contentTypes.customSettings : isSite ? eavConstants.contentTypes.customSettings : eavConstants.contentTypes.settings,
       isGlobal ? SystemSettingsScopes.App : isSite ? SystemSettingsScopes.Site : SystemSettingsScopes.App
     );
     // return value unwrapped
     return this.#appCustomSettingsUrlSource();
   })
 
-  // Assign Default Custom Content Settings Url
-  appContentCustomSettingsUrl = this.urlToEditDefault(
-    eavConstants.contentTypes.settings
-  );
-
-  // Assign Default Custom Global Settings Url
-  appGlobalCustomSettingsUrl = this.urlToEditCustom(
-    eavConstants.contentTypes.customSettings
-  );
-
-  // Assign Default Custom Site Settings Url
-  appSiteCustomSettingsUrl = this.urlToEditCustom(
-    eavConstants.contentTypes.customSettings
-  );
-
   //============== Custom Resources ==============
-  // WIP
+  
   // Assign Custom Resources Url
   #appCustomResourcesUrlSource: Signal<string>;
   appCustomResourcesUrl = computed(() => {
@@ -157,27 +142,12 @@ export class AppConfigurationComponent implements OnInit {
     if (isGlobal == null || isSite == null) return null;
     // Ensure that the source is only created once when global/site are ready.
     this.#appCustomResourcesUrlSource ??= this.urlToEditSystem(
-      eavConstants.contentTypes.systemResources,
+      isGlobal ? eavConstants.contentTypes.customResources : isSite ? eavConstants.contentTypes.customResources : eavConstants.contentTypes.resources,
       isGlobal ? SystemSettingsScopes.App : isSite ? SystemSettingsScopes.Site : SystemSettingsScopes.App
     );
     // return value unwrapped
     return this.#appCustomResourcesUrlSource();
   })
-
-  // Assign Default Custom Resources Url
-  appContentCustomResourcesUrl = this.urlToEditDefault(
-    eavConstants.contentTypes.resources
-  );
-
-  // Assign Default Custom Global Resources Url
-  appGlobalCustomResourcesUrl = this.urlToEditCustom(
-    eavConstants.contentTypes.customResources
-  );
-
-  // Assign Default Custom Site Resources Url
-  appSiteCustomResourcesUrl = this.urlToEditCustom(
-    eavConstants.contentTypes.customResources
-  );
 
   //============== END ==============
 
@@ -297,7 +267,7 @@ export class AppConfigurationComponent implements OnInit {
         tooltip: `Edit ${scopeName} custom settings`,
         // TODO: @2pp fix this, it's just patch, urls...
         url: typesExist.settings
-          ? isGlobal ? this.appGlobalCustomSettingsUrl() : isSite ? this.appSiteCustomSettingsUrl() : this.appContentCustomSettingsUrl()
+          ? this.appCustomSettingsUrl()
           : null,
         count: viewModel?.customSettingsCount || null,
       },
@@ -316,7 +286,7 @@ export class AppConfigurationComponent implements OnInit {
       customResources: {
         tooltip: `Edit ${scopeName} custom resources`,
         url: typesExist.resources
-          ? isGlobal ? this.appGlobalCustomResourcesUrl() : isSite ? this.appSiteCustomResourcesUrl() : this.appContentCustomResourcesUrl()
+          ? this.appCustomResourcesUrl()
           : null,
         count: viewModel?.customResourcesCount || null,
       },
