@@ -72,6 +72,7 @@ export class AppConfigurationComponent implements OnInit {
 
   // 2pp WIP
   currentSettings = signal(undefined);
+  // toSignal -> 
  
   // isGlobal = computed(() => this.currentSettings() === AppScopes.Global);
   // isSite = computed(() => this.currentSettings() === AppScopes.Site);
@@ -89,11 +90,9 @@ export class AppConfigurationComponent implements OnInit {
 
   // Url signals for edit routes
   appSystemSettingsUrl = signal('');
+  appSystemResourcesUrl = signal('');
 
   appContentCustomSettingsUrl = signal('');
-  appGlobalSystemResourcesUrl = signal('');
-  appContentSystemResourcesUrl = signal('');
-  appSiteSystemResourcesUrl = signal('');
   appContentCustomResourcesUrl = signal('');
   appGlobalCustomResourcesUrl = signal('');
   appGlobalCustomSettingsUrl = signal('');
@@ -247,11 +246,7 @@ export class AppConfigurationComponent implements OnInit {
       },
       systemResources: {
         tooltip: `Edit ${scopeName} system resources`,
-        url: isGlobal
-          ? this.appGlobalSystemResourcesUrl()
-          : isSite
-            ? this.appSiteSystemResourcesUrl()
-            : this.appContentSystemResourcesUrl(),
+        url: this.appSystemResourcesUrl(),
         count: viewModel?.systemResourcesCount || null,
       },
       customResources: {
@@ -287,9 +282,12 @@ export class AppConfigurationComponent implements OnInit {
       this.isGlobal() ? SystemSettingsScopes.App : this.isSite() ? SystemSettingsScopes.Site : SystemSettingsScopes.App
     );
 
-    this.appGlobalSystemResourcesUrl = this.urlToEditSystem(eavConstants.contentTypes.systemResources, SystemSettingsScopes.App);
-    this.appContentSystemResourcesUrl = this.urlToEditSystem(eavConstants.contentTypes.systemResources, SystemSettingsScopes.App);
-    this.appSiteSystemResourcesUrl = this.urlToEditSystem(eavConstants.contentTypes.systemResources, SystemSettingsScopes.Site);
+    // Assign System Resources Url
+    this.appSystemResourcesUrl = this.urlToEditSystem(
+      eavConstants.contentTypes.systemResources,
+      this.isGlobal() ? SystemSettingsScopes.App : this.isSite() ? SystemSettingsScopes.Site : SystemSettingsScopes.App
+    );
+    
     this.appContentCustomSettingsUrl = this.urlToEditDefault(eavConstants.contentTypes.settings);
     this.appContentCustomResourcesUrl = this.urlToEditDefault(eavConstants.contentTypes.resources);
     this.appGlobalCustomResourcesUrl = this.urlToEditCustom(eavConstants.contentTypes.customResources);
