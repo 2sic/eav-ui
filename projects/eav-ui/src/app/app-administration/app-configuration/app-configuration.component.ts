@@ -85,6 +85,8 @@ export class AppConfigurationComponent implements OnInit {
 
   /*=== URL SIGNALS FOR EDIT ROUTES ===*/
 
+//============== System Settings ==============
+
   // Assign System Settings Url
   #appSystemSettingsUrlSource: Signal<string>;
   appSystemSettingsUrl = computed(() => {
@@ -99,8 +101,9 @@ export class AppConfigurationComponent implements OnInit {
     // return value unwrapped
     return this.#appSystemSettingsUrlSource();
   })
-
   
+//============== System Resources ==============
+
   // Assign System Resources Url
   #appSystemResourcesUrlSource: Signal<string>;
   appSystemResourcesUrl = computed(() => {
@@ -116,10 +119,38 @@ export class AppConfigurationComponent implements OnInit {
     return this.#appSystemResourcesUrlSource();
   })
 
-  // Assign Default Custom Content Settings Url
-  appContentCustomSettingsUrl = this.urlToEditDefault(
-    eavConstants.contentTypes.settings
-  );
+//============== Custm Settings ==============
+
+  // Assign Custom Settings Url
+  #appCustomSettingsUrlSource: Signal<string>;
+  appCustomSettingsUrl = computed(() => {
+    const isGlobal = this.isGlobal();
+    const isSite = this.isSite();
+    if (isGlobal == null || isSite == null) return null;
+    // Ensure that the source is only created once when global/site are ready.
+    this.#appCustomSettingsUrlSource ??= this.urlToEditSystem(
+      eavConstants.contentTypes.systemResources,
+      isGlobal ? SystemSettingsScopes.App : isSite ? SystemSettingsScopes.Site : SystemSettingsScopes.App
+    );
+    // return value unwrapped
+    return this.#appCustomSettingsUrlSource();
+  })
+
+    // Assign Default Custom Content Settings Url
+    appContentCustomSettingsUrl = this.urlToEditDefault(
+      eavConstants.contentTypes.settings
+    );
+
+    // Assign Default Custom Global Settings Url
+    appGlobalCustomSettingsUrl = this.urlToEditCustom(
+      eavConstants.contentTypes.customSettings
+    );
+    
+    // Assign Default Custom Site Settings Url
+    appSiteCustomSettingsUrl = this.urlToEditCustom(
+      eavConstants.contentTypes.customSettings
+    );
+//============== Custom Resources ==============
 
   // Assign Default Custom Content Resources Url
   appContentCustomResourcesUrl = this.urlToEditDefault(
@@ -135,18 +166,7 @@ export class AppConfigurationComponent implements OnInit {
   appSiteCustomResourcesUrl = this.urlToEditCustom(
     eavConstants.contentTypes.customResources
   );
-
-  // Assign Default Custom Global Settings Url
-  appGlobalCustomSettingsUrl = this.urlToEditCustom(
-    eavConstants.contentTypes.customSettings
-  );
-  
-  // Assign Default Custom Site Settings Url
-  appSiteCustomSettingsUrl = this.urlToEditCustom(
-    eavConstants.contentTypes.customSettings
-  );
-  
-  /*=== END ===*/
+//============== END ==============
 
   // More proper ViewModel
   appSettingsInternal$ = new Subject<AppInternals>();
