@@ -77,8 +77,6 @@ export class AppConfigurationComponent implements OnInit {
   isSite = computed(() => { const cs = this.#currentScope(); return cs == null ? null : cs === AppScopes.Site; });
   isApp = computed(() => { const cs = this.#currentScope(); return cs == null ? null : cs === AppScopes.App });
 
-  // Boolean signal for when dialog is loaded
-
   /*=== URL SIGNALS FOR EDIT ROUTES ===*/
 
   //============== System Settings ==============
@@ -258,14 +256,11 @@ export class AppConfigurationComponent implements OnInit {
       customResourcesType: customResourcesType,
       systemSettings: {
         tooltip: `Edit ${scopeName} system settings`,
-        // TODO: @2pp fix this, it's just patch
-        // correctly we should not even retrieve the other urls we don't need, so this can be improved a lot
         url: this.appSystemSettingsUrl(),
         count: viewModel?.systemSettingsCount || null,
       },
       customSettings: {
         tooltip: `Edit ${scopeName} custom settings`,
-        // TODO: @2pp fix this, it's just patch, urls...
         url: typesExist.settings
           ? this.appCustomSettingsUrl()
           : null,
