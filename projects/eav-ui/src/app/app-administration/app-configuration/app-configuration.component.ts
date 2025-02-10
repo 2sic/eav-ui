@@ -114,7 +114,7 @@ export class AppConfigurationComponent implements OnInit {
   })
 
   //============== Custm Settings ==============
-  
+
   // Assign Custom Settings Url
   #appCustomSettingsUrlSource: Signal<string>;
   appCustomSettingsUrl = computed(() => {
@@ -131,7 +131,7 @@ export class AppConfigurationComponent implements OnInit {
   })
 
   //============== Custom Resources ==============
-  
+
   // Assign Custom Resources Url
   #appCustomResourcesUrlSource: Signal<string>;
   appCustomResourcesUrl = computed(() => {
@@ -430,28 +430,36 @@ export class AppConfigurationComponent implements OnInit {
     event.preventDefault();
     event.stopPropagation();
 
-    // Create the Content-Type
-    const newContentType = {
-      StaticName: '',
-      // NameId: '',
-      Name: typeName,
-      Description: '',
-      Scope: eavConstants.scopes.configuration.value,
-      // ChangeStaticName: false,
-      ChangeNameId: false,
-      // NewStaticName: '',
-      NewNameId: '',
-    } as ContentTypeEdit;
+    // Check server if the content-type exists
+    this.#contentTypesSvc.retrieveContentTypes(eavConstants.scopes.configuration.value).subscribe(contentTypes => {
+      const contentTypeExists = contentTypes.some(ct => ct.Name === typeName);
+      if (contentTypeExists) {
+        // Open Edit dialog
+        this.urlToEditCustom(typeName);
+      } else {
+        const newContentType = {
+          StaticName: '',
+          // NameId: '',
+          Name: typeName,
+          Description: '',
+          Scope: eavConstants.scopes.configuration.value,
+          // ChangeStaticName: false,
+          ChangeNameId: false,
+          // NewStaticName: '',
+          NewNameId: '',
+        } as ContentTypeEdit;
 
-    this.#contentTypesSvc.save(newContentType).subscribe(success => {
-      if (!success) return;
-      // trigger refresh
-      this.#refresh.update(v => v + 1);
+        this.#contentTypesSvc.save(newContentType).subscribe(success => {
+          if (!success) return;
+          // trigger refresh
+          this.#refresh.update(v => v + 1);
 
-      // Inform user
-      alert('Created a new Content Type. Please try again 👍🏼.');
+          // Inform user
+          alert('Created a new Content Type. Please try again 👍🏼.');
+        });
+        return false;
+      }
     });
-    return false;
   }
 
   // 2025-01-21 2dm had to restore this functionality, keep this code till 2025-Q2 just in case
