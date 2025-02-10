@@ -449,7 +449,7 @@ export class AppConfigurationComponent implements OnInit {
       this.#refresh.update(v => v + 1);
 
       // Inform user
-      alert('I just had to create the Content Type. Please try again 👍🏼.');
+      alert('Created a new Content Type. Please try again 👍🏼.');
     });
     return false;
   }
@@ -510,6 +510,7 @@ interface ButtonSpecs {
   /** count of fields or entities */
   count: number,
 }
+
 interface Buttons {
   topRowLabel: string,
   customSettingsType: string,
