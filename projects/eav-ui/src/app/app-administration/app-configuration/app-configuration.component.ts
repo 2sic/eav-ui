@@ -434,20 +434,18 @@ export class AppConfigurationComponent implements OnInit {
     this.#contentTypesSvc.retrieveContentTypes(eavConstants.scopes.configuration.value).subscribe(contentTypes => {
       const contentTypeExists = contentTypes.some(ct => ct.Name === typeName);
       if (contentTypeExists) {
-        const customSettingsEntity = contentTypes[0];
-
         // Open Edit dialog
         const url = (this.#urlTo(
           `edit/${convertFormToUrl({
-            items: [
-              customSettingsEntity == null
-                ? EditPrep.newFromType(typeName)
-                : EditPrep.editId(customSettingsEntity.Id),
-            ],
+            items: [EditPrep.newFromType(typeName)],
           })}`
         ));
-        if (url) window.open(url, '_blank');
-        else console.log("url not ready", url);
+        if(url) {
+          window.open(url, "_self");
+          return
+        }
+        else
+          return
       } else {
         const newContentType = {
           StaticName: '',
