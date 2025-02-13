@@ -1,5 +1,5 @@
 <mat-form-field color="accent" class="eav-mat-form-field">
-  <mat-label>Date{{ useTimePicker() ? ' & Time' : '' }} </mat-label>
+  <mat-label>{{ basics().label }}</mat-label>
   @if (useTimePicker()) {
     <!-- Visible input For both Date & Time Picker -->
     <!-- propertybinding for a template reference of owl-date-time instance -->
