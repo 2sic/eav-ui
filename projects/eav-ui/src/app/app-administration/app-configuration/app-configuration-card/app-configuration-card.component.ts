@@ -1,4 +1,4 @@
-import { Component, computed, effect, input, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, computed, input, OnDestroy, OnInit, signal } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -48,10 +48,10 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
     this.appConfigurationUrl = (this.urlToEdit());
 
     // debug
-    effect(() => {
-      const ci = this.contentItem();
-      console.log("CI", ci);
-    });
+    // effect(() => {
+    //   const ci = this.contentItem();
+    //   console.log("CI", ci);
+    // });
   }
 
   // TODO: @2pp - you recently changed this to customSettings which is wrong, unclear why you did it
