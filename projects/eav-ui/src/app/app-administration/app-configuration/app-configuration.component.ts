@@ -1,5 +1,6 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, OnInit, Signal, computed, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -17,7 +18,6 @@ import { SystemSettingsScopes, eavConstants } from '../../shared/constants/eav.c
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { AppScopes } from '../../shared/models/dialog-context.models';
-import { DialogSettings } from '../../shared/models/dialog-settings.model';
 import { EditPrep } from '../../shared/models/edit-form.model';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { Context } from '../../shared/services/context';
@@ -63,38 +63,91 @@ export class AppConfigurationComponent implements OnInit {
     private context: Context,
   ) { }
 
-
-  dialogSettings: DialogSettings;
-
   eavConstants = eavConstants;
   AnalyzeParts = AnalyzeParts;
   SystemSettingsScopes = SystemSettingsScopes;
   AppScopes = AppScopes;
-  isGlobal = signal(false);
-  isSite = signal(false);
-  isApp = signal(false);
 
-  // Url signals for edit routes
-  appContentSystemSettingsUrl = signal('');
-  appContentCustomSettingsUrl = signal('');
-  appGlobalSystemSettingsUrl = signal('');
-  appSiteSystemSettingsUrl = signal('');
-  appGlobalSystemResourcesUrl = signal('');
-  appContentSystemResourcesUrl = signal('');
-  appSiteSystemResourcesUrl = signal('');
-  appContentCustomResourcesUrl = signal('');
-  appGlobalCustomResourcesUrl = signal('');
-  appGlobalCustomSettingsUrl = signal('');
-  appSiteCustomSettingsUrl = signal('');
-  appSiteCustomResourcesUrl = signal('');
+  // Settings for the current dialog
+  dialogSettings = toSignal(this.#dialogConfigSvc.getCurrent$());
+  #currentScope = computed(() => this.dialogSettings()?.Context.App.SettingsScope);
 
-  // TODO: @2pp this was a mistake - change in logic.
-  //       need to discuss, as it's not clear why you introduced this
-  // customGlobalSettingsAvailable = signal(false);
-  // customGlobalResourcesAvailable = signal(false);
-  // customSiteSettingsAvailable = signal(false);
-  // customSiteResourcesAvailable = signal(false);
+  // Booleans containing the current scope state
+  isGlobal = computed(() => { const cs = this.#currentScope(); return cs == null ? null : cs === AppScopes.Global; });
+  isSite = computed(() => { const cs = this.#currentScope(); return cs == null ? null : cs === AppScopes.Site; });
+  isApp = computed(() => { const cs = this.#currentScope(); return cs == null ? null : cs === AppScopes.App });
 
+  /*=== URL SIGNALS FOR EDIT ROUTES ===*/
+
+  //============== System Settings ==============
+
+  // Assign System Settings Url
+  #appSystemSettingsUrlSource: Signal<string>;
+  appSystemSettingsUrl = computed(() => {
+    const isGlobal = this.isGlobal();
+    const isSite = this.isSite();
+    if (isGlobal == null || isSite == null) return null;
+    // Ensure that the source is only created once when global/site are ready.
+    this.#appSystemSettingsUrlSource ??= this.urlToEditSystem(
+      eavConstants.contentTypes.systemSettings,
+      isGlobal ? SystemSettingsScopes.App : isSite ? SystemSettingsScopes.Site : SystemSettingsScopes.App
+    );
+    // return value unwrapped
+    return this.#appSystemSettingsUrlSource();
+  })
+
+  //============== System Resources ==============
+
+  // Assign System Resources Url
+  #appSystemResourcesUrlSource: Signal<string>;
+  appSystemResourcesUrl = computed(() => {
+    const isGlobal = this.isGlobal();
+    const isSite = this.isSite();
+    if (isGlobal == null || isSite == null) return null;
+    // Ensure that the source is only created once when global/site are ready.
+    this.#appSystemResourcesUrlSource ??= this.urlToEditSystem(
+      eavConstants.contentTypes.systemResources,
+      isGlobal ? SystemSettingsScopes.App : isSite ? SystemSettingsScopes.Site : SystemSettingsScopes.App
+    );
+    // return value unwrapped
+    return this.#appSystemResourcesUrlSource();
+  })
+
+  //============== Custm Settings ==============
+
+  // Assign Custom Settings Url
+  #appCustomSettingsUrlSource: Signal<string>;
+  appCustomSettingsUrl = computed(() => {
+    const isGlobal = this.isGlobal();
+    const isSite = this.isSite();
+    if (isGlobal == null || isSite == null) return null;
+    // Ensure that the source is only created once when global/site are ready.
+    this.#appCustomSettingsUrlSource ??= this.urlToEditSystem(
+      isGlobal ? eavConstants.contentTypes.customSettings : isSite ? eavConstants.contentTypes.customSettings : eavConstants.contentTypes.settings,
+      isGlobal ? SystemSettingsScopes.App : isSite ? SystemSettingsScopes.Site : SystemSettingsScopes.App
+    );
+    // return value unwrapped
+    return this.#appCustomSettingsUrlSource();
+  })
+
+  //============== Custom Resources ==============
+
+  // Assign Custom Resources Url
+  #appCustomResourcesUrlSource: Signal<string>;
+  appCustomResourcesUrl = computed(() => {
+    const isGlobal = this.isGlobal();
+    const isSite = this.isSite();
+    if (isGlobal == null || isSite == null) return null;
+    // Ensure that the source is only created once when global/site are ready.
+    this.#appCustomResourcesUrlSource ??= this.urlToEditSystem(
+      isGlobal ? eavConstants.contentTypes.customResources : isSite ? eavConstants.contentTypes.customResources : eavConstants.contentTypes.resources,
+      isGlobal ? SystemSettingsScopes.App : isSite ? SystemSettingsScopes.Site : SystemSettingsScopes.App
+    );
+    // return value unwrapped
+    return this.#appCustomResourcesUrlSource();
+  })
+
+  //============== END ==============
 
   // More proper ViewModel
   appSettingsInternal$ = new Subject<AppInternals>();
@@ -104,7 +157,6 @@ export class AppConfigurationComponent implements OnInit {
   protected lightSpeedEnabled = this.#featuresSvc.isEnabled[FeatureNames.LightSpeed];
   protected cspEnabled = this.#featuresSvc.isEnabled[FeatureNames.ContentSecurityPolicy];
   protected langPermsEnabled = this.#featuresSvc.isEnabled[FeatureNames.PermissionsByLanguage];
-
 
   #refresh = signal(0);
 
@@ -116,6 +168,7 @@ export class AppConfigurationComponent implements OnInit {
   /** Statistics for the content-types and fields for later */
   #dataStatistics = computed(() => {
     const appSpecs = this.#appSpecsLazy()();
+
     if (!appSpecs)
       return null;
 
@@ -151,33 +204,16 @@ export class AppConfigurationComponent implements OnInit {
         }
   });
 
-
-
   ngOnInit() {
+    // Update dialog router when child a dialog was closesd
     this.#dialogRouter.doOnDialogClosed(() => this.#refresh.update(v => v++));
-
-    this.#dialogConfigSvc.getCurrent$().subscribe((dialogSettings) => {
-      this.dialogSettings = dialogSettings;
-      const appScope = dialogSettings.Context.App.SettingsScope;
-      this.isGlobal.set(appScope === AppScopes.Global);
-      this.isSite.set(appScope === AppScopes.Site);
-      this.isApp.set(appScope === AppScopes.App);
-
-      this.#ready.set(true);
-    });
   }
 
-  ngAfterViewInit() {
-    // Load the data after the UI is rendered
-    this.loadData();
-  }
-
-  #ready = signal(false);
   buttons = computed<Buttons>(() => {
     // if not ready, return a full object with empty values
-    const ready = this.#ready();
+    const ready = this.dialogSettings() != null;
     if (!ready) {
-      const nothing : ButtonSpecs = { tooltip: '', url: '', count: null };
+      const nothing: ButtonSpecs = { tooltip: '', url: '', count: null };
       return {
         topRowLabel: 'loading...',
         customSettingsType: '',
@@ -192,38 +228,41 @@ export class AppConfigurationComponent implements OnInit {
       }
     }
 
-    // read signals
-    const isGlobal = this.isGlobal();
-    const isSite = this.isSite();
-    const isApp = this.isApp();
+    // From the current settings computed booleans containing the scope state
+    const isGlobal = !!this.isGlobal();
+    const isSite = !!this.isSite();
+    const isApp = !!this.isApp();
 
     // The name of the top row, to use in the row label and tooltips
-    const scopeName = isGlobal ? 'Global' : isSite ? 'Site' : 'App';
+    const scopeName = this.dialogSettings().Context.App.SettingsScope;
 
     // The statistics of the entities - should later be simplified once code is improved @2pp
     const viewModel = this.#dataStatistics();
 
     const typeNames = eavConstants.contentTypes;
-    const customSettingsType = isApp ? typeNames.settings : typeNames.customSettings;
-    const customResourcesType = isApp ? typeNames.resources : typeNames.customResources;
+    const customSettingsType = isApp
+      ? typeNames.settings
+      : typeNames.customSettings;
+    const customResourcesType = isApp
+      ? typeNames.resources
+      : typeNames.customResources;
+
     // Detect if the custom types exist
     const typesExist = this.#customTypesExist();
+
     return {
       topRowLabel: scopeName,
       customSettingsType: customSettingsType,
       customResourcesType: customResourcesType,
       systemSettings: {
         tooltip: `Edit ${scopeName} system settings`,
-        // TODO: @2pp fix this, it's just patch
-        // correctly we should not even retrieve the other urls we don't need, so this can be improved a lot
-        url: isGlobal ? this.appGlobalSystemSettingsUrl() : isSite ? this.appSiteSystemSettingsUrl() : this.appContentSystemSettingsUrl(),
+        url: this.appSystemSettingsUrl(),
         count: viewModel?.systemSettingsCount || null,
       },
       customSettings: {
         tooltip: `Edit ${scopeName} custom settings`,
-        // TODO: @2pp fix this, it's just patch, urls...
         url: typesExist.settings
-          ? isGlobal ? this.appGlobalCustomSettingsUrl() : isSite ? this.appSiteCustomSettingsUrl() : this.appContentCustomSettingsUrl()
+          ? this.appCustomSettingsUrl()
           : null,
         count: viewModel?.customSettingsCount || null,
       },
@@ -236,13 +275,13 @@ export class AppConfigurationComponent implements OnInit {
       },
       systemResources: {
         tooltip: `Edit ${scopeName} system resources`,
-        url: isGlobal ? this.appGlobalSystemResourcesUrl() : isSite ? this.appSiteSystemResourcesUrl() : this.appContentSystemResourcesUrl(),
+        url: this.appSystemResourcesUrl(),
         count: viewModel?.systemResourcesCount || null,
       },
       customResources: {
         tooltip: `Edit ${scopeName} custom resources`,
         url: typesExist.resources
-          ? isGlobal ? this.appGlobalCustomResourcesUrl() : isSite ? this.appSiteCustomResourcesUrl() : this.appContentCustomResourcesUrl()
+          ? this.appCustomResourcesUrl()
           : null,
         count: viewModel?.customResourcesCount || null,
       },
@@ -259,46 +298,14 @@ export class AppConfigurationComponent implements OnInit {
     } satisfies Buttons;
   });
 
-
-  loadData() {
-    // TODO: @2pp THIS IS COMPLETELY WRONG
-    // You are requesting the same data over and over again, just to generate a single url.
-    // Correct solution is to
-    // 1. get all the data you need in a single request and put it in a signal
-    // 2. make the urls computed signals based on that signal
-    this.appGlobalSystemSettingsUrl = this.urlToEditSystem(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App);
-    this.appContentSystemSettingsUrl = this.urlToEditSystem(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App);
-    this.appSiteSystemSettingsUrl = this.urlToEditSystem(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.Site);
-    this.appGlobalSystemResourcesUrl = this.urlToEditSystem(eavConstants.contentTypes.systemResources, SystemSettingsScopes.App);
-    this.appContentSystemResourcesUrl = this.urlToEditSystem(eavConstants.contentTypes.systemResources, SystemSettingsScopes.App);
-    this.appSiteSystemResourcesUrl = this.urlToEditSystem(eavConstants.contentTypes.systemResources, SystemSettingsScopes.Site);
-    this.appContentCustomSettingsUrl = this.urlToEditDefault(eavConstants.contentTypes.settings);
-    this.appContentCustomResourcesUrl = this.urlToEditDefault(eavConstants.contentTypes.resources);
-    this.appGlobalCustomResourcesUrl = this.urlToEditCustom(eavConstants.contentTypes.customResources);
-    this.appSiteCustomResourcesUrl = this.urlToEditCustom(eavConstants.contentTypes.customResources);
-    this.appGlobalCustomSettingsUrl = this.urlToEditCustom(eavConstants.contentTypes.customSettings);
-    this.appSiteCustomSettingsUrl = this.urlToEditCustom(eavConstants.contentTypes.customSettings);
-
-    // Disable the Links when the setting contenttypes are not defined
-    // TODO: @2pp - your solution was not good, it resulted in sending 4 server requests instead of 2
-    // TODO: @2pp this is also wrong - the signal will return and always have length 0! so something is pretty wrong here
-    // See also comments above... should be a signal + computed
-    // const customSettings = this.#contentItemsService.getAllSig(eavConstants.contentTypes.customSettings,  /* initial: */ null);
-    // const customResources = this.#contentItemsService.getAllSig(eavConstants.contentTypes.customResources,  /* initial: */ null);
-    // this.customGlobalSettingsAvailable.set(customSettings.length === 1);
-    // this.customGlobalResourcesAvailable.set(customResources.length === 1);
-    // this.customSiteSettingsAvailable.set(customSettings.length === 1);
-    // this.customSiteResourcesAvailable.set(customResources.length === 1);
-  }
-
   #urlTo(url: string, queryParams?: { [key: string]: string }, errComponent?: string) {
     let newUrl = '#' + this.#dialogRouter.urlSubRoute(url);
-    if (queryParams) {
+
+    if (queryParams)
       newUrl += `?${new URLSearchParams(queryParams).toString()}`;
-    }
-    if (errComponent) {
+    if (errComponent)
       newUrl += `&errComponent=${errComponent}`;
-    }
+
     return newUrl;
   }
 
@@ -388,12 +395,12 @@ export class AppConfigurationComponent implements OnInit {
   }
 
   openSiteSettings() {
-    const siteApp = this.dialogSettings.Context.Site.PrimaryApp;
+    const siteApp = this.dialogSettings().Context.Site.PrimaryApp;
     this.#dialogSvc.openAppAdministration(siteApp.ZoneId, siteApp.AppId, 'app');
   }
 
   openGlobalSettings() {
-    const globalApp = this.dialogSettings.Context.System.PrimaryApp;
+    const globalApp = this.dialogSettings().Context.System.PrimaryApp;
     this.#dialogSvc.openAppAdministration(globalApp.ZoneId, globalApp.AppId, 'app');
   }
 
@@ -422,29 +429,47 @@ export class AppConfigurationComponent implements OnInit {
 
     event.preventDefault();
     event.stopPropagation();
-    
-    // Create the Content-Type
-    const newContentType = {
-      StaticName: '',
-      // NameId: '',
-      Name: typeName,
-      Description: '',
-      Scope: eavConstants.scopes.configuration.value,
-      // ChangeStaticName: false,
-      ChangeNameId: false,
-      // NewStaticName: '',
-      NewNameId: '',
-    } as ContentTypeEdit;
 
-    this.#contentTypesSvc.save(newContentType).subscribe(success => {
-      if (!success) return;
-      // trigger refresh
-      this.#refresh.update(v => v + 1);
+    // Check server if the content-type exists
+    this.#contentTypesSvc.retrieveContentTypes(eavConstants.scopes.configuration.value).subscribe(contentTypes => {
+      const contentTypeExists = contentTypes.some(ct => ct.Name === typeName);
+      if (contentTypeExists) {
+        // Open Edit dialog
+        const url = (this.#urlTo(
+          `edit/${convertFormToUrl({
+            items: [EditPrep.newFromType(typeName)],
+          })}`
+        ));
+        if(url) {
+          window.open(url, "_self");
+          return
+        }
+        else
+          return
+      } else {
+        const newContentType = {
+          StaticName: '',
+          // NameId: '',
+          Name: typeName,
+          Description: '',
+          Scope: eavConstants.scopes.configuration.value,
+          // ChangeStaticName: false,
+          ChangeNameId: false,
+          // NewStaticName: '',
+          NewNameId: '',
+        } as ContentTypeEdit;
 
-      // Inform user
-      alert('I just had to create the Content Type. Please try again 👍🏼.');
+        this.#contentTypesSvc.save(newContentType).subscribe(success => {
+          if (!success) return;
+          // trigger refresh
+          this.#refresh.update(v => v + 1);
+
+          // Inform user
+          alert('Created a new Content Type. Please try again 👍🏼.');
+        });
+        return false;
+      }
     });
-    return false;
   }
 
   // 2025-01-21 2dm had to restore this functionality, keep this code till 2025-Q2 just in case
@@ -495,8 +520,6 @@ class TempDataStatistics {
   customResourcesFieldsCount: number;
 }
 
-
-
 interface ButtonSpecs {
   /** Tooltip on the button */
   tooltip: string,
@@ -505,6 +528,7 @@ interface ButtonSpecs {
   /** count of fields or entities */
   count: number,
 }
+
 interface Buttons {
   topRowLabel: string,
   customSettingsType: string,

@@ -103,7 +103,6 @@ export class DatetimeDefaultComponent implements AfterViewInit {
     // Set the Date/Time format to the browser's language (de-De, en.En, etc.)
     this.translate.currentLang = navigator.language;
     const currentLang = this.translate.currentLang;
-    
     dayjs.locale(currentLang);
     this.matDayjsDateAdapter.setLocale(currentLang);
     this.owlDayjsDateAdapter.setLocale(currentLang);
@@ -121,21 +120,39 @@ export class DatetimeDefaultComponent implements AfterViewInit {
 
   updateTime(event: any): void {
     const time = dayjs(event.target.value, 'HH:mm');
+
+    if (time == null) {
+      this.ui().setIfChanged(null);
+      return;
+    }
+
     if (time.isValid())
       this.updateFormattedValue(null, time);
   }
 
   // Material Date Picker Event Handler
   updateDate(event: MatDatepickerInputEvent<Dayjs>) {
-    const dateValue = event.value;
-    if (dateValue.isValid())
-      this.updateFormattedValue(dateValue, null);
+    const date = event.value;
+
+    if (date == null) {
+      this.ui().setIfChanged(null);
+      return;
+    }
+
+    if (date.isValid())
+      this.updateFormattedValue(date, null);
   }
 
   updateDateTime(event: MatDatepickerInputEvent<Dayjs>) {
-    const timeValue = event.value;
+    const dateTime = event.value;
+    
+    if (dateTime == null) {
+      this.ui().setIfChanged(null);
+      return;
+    }
+
     this.ui().setIfChanged(
-      timeValue != null ? timeValue.utc(true).toJSON() : null
+      dateTime != null ? dateTime.utc(true).toJSON() : null
     );
   }
 
@@ -158,12 +175,12 @@ export class DatetimeDefaultComponent implements AfterViewInit {
         .minute(time.minute())
         .second(time.second());
 
-        // Only return the date if the 
-    if(!this.useTimePicker())
+    // Only return the date if the 
+    if (!this.useTimePicker())
       this.ui().setIfChanged(currentDateTime.utc().hour(0).toISOString());
     else
       this.ui().setIfChanged(currentDateTime.toISOString());
 
-      return currentDateTime.toISOString();
+    return currentDateTime.toISOString();
   };
 }

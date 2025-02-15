@@ -11,7 +11,7 @@ import { MatTreeModule } from '@angular/material/tree';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { transient } from '../../../../../../../core/transient';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
-import { classLog } from '../../../../shared/logging';
+import { classLog, classLogEnabled } from '../../../../shared/logging';
 import { GlobalConfigService } from '../../../../shared/services/global-config.service';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
 import { DebugFields } from '../../../edit-debug';
@@ -26,7 +26,7 @@ import { PickerTreeDataService } from '../picker-tree/picker-tree-data-service';
 
 const logSpecs = {
   all: false,
-  optionSelected: false,
+  optionSelected: true,
   focusOnSearchComponent: false,
   onClosed: true,
   onOpened: true,
@@ -59,7 +59,7 @@ const logSpecs = {
 export class PickerSearchComponent extends PickerPartBaseComponent implements OnInit {
 
   /** Main log */
-  log = classLog({ PickerSearchComponent }, logSpecs);
+  log = classLogEnabled({ PickerSearchComponent }, logSpecs);
 
   /** Special log which would fire a lot for each item doing disabled checks etc. */
   #logItemChecks = classLog(`PickerSearchComponent-ItemChecks`);
@@ -235,14 +235,22 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
     const multiValue = this.features().multiValue;
     const l = this.log.fnIf('optionSelected', { value: event.option.value, multiValue });
     const selected = event.option.value;
-    if (!multiValue) {
+
+    // 2025-02-15 2dm Expected behavior is
+    // 1. When single value, just set the value
+    // 2. When multi value in simple dropdown mode, just set the value (replace previous selection)
+    // 3. In multi-value when in the list-dialog, keep adding to the selection
+    const setToJustThisValue = this.showSelectedItem() || !multiValue;
+
+    if (setToJustThisValue) {
       l.a('no multiValue, will set to new');
       this.pickerData.state.set([selected]);
     } else {
       l.a('multiValue, will add to selection');
       this.pickerData.state.add(selected);
     }
-    // @SDV - This is needed so after choosing option element is not focused (it gets focused by default so if blur is outside of setTimeout it will happen before refocus)
+    // This is needed so after choosing option, this element is not focused.
+    // It gets focused by default so if blur is outside of setTimeout it will happen before refocus.
     setTimeout(() => this.autocomplete().nativeElement.blur());
   }
 
