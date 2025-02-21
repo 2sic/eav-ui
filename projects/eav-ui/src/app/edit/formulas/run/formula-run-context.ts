@@ -1,8 +1,8 @@
 import { Sxc } from '@2sic.com/2sxc-typings';
 import { FormulaVersions } from '../formula-definitions';
-import { FormulaV1Context, FormulaV1CtxApp, FormulaV1CtxCulture, FormulaV1CtxFeatures, FormulaV1CtxForm, FormulaV1CtxTarget, FormulaV1CtxTargetEntity, FormulaV1CtxUser } from './formula-run-context.model';
-import { FormulaExecutionSpecsWithRunParams } from './formula-objects-internal-data';
 import { FormulaExperimentalObject } from './formula-experimental-object';
+import { FormulaExecutionSpecsWithRunParams } from './formula-objects-internal-data';
+import { FormulaV1Context, FormulaV1CtxApp, FormulaV1CtxCulture, FormulaV1CtxFeatures, FormulaV1CtxForm, FormulaV1CtxTarget, FormulaV1CtxTargetEntity, FormulaV1CtxUser } from './formula-run-context.model';
 import { FormulaContextEntityInfo } from './formula-run-experimental.model';
 
 /**
@@ -65,7 +65,10 @@ export class FormulaContextObject implements FormulaV1Context {
  * new v18.01
  */
 class FormulaContextEntities {
-  constructor(private specs: FormulaExecutionSpecsWithRunParams) { }
+  #specs: FormulaExecutionSpecsWithRunParams
+  constructor(specs: FormulaExecutionSpecsWithRunParams) {
+    this.#specs = specs;
+  }
 
   /**
    * 
@@ -73,7 +76,7 @@ class FormulaContextEntities {
    * new v18.01
    */
   getAll() {
-    const v1Entities = this.specs.itemService.getMany(this.specs.formConfig.config.itemGuids).map(i => ({
+    const v1Entities = this.#specs.itemService.getMany(this.#specs.formConfig.config.itemGuids).map(i => ({
       guid: i.Entity.Guid,
       id: i.Entity.Id,
       type: {
