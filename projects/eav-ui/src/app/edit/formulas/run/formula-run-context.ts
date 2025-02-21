@@ -99,21 +99,28 @@ class FormulaContextEntities {
 }
 
 class FormulaContextFeatures implements FormulaV1CtxFeatures {
-  constructor(private specs: FormulaExecutionSpecsWithRunParams) { }
+  #specs: FormulaExecutionSpecsWithRunParams;
+  constructor(specs: FormulaExecutionSpecsWithRunParams) {
+    this.#specs = specs;
+  }
 
   isEnabled(name: string): boolean {
-    return this.specs.features().find(f => f.nameId === name)?.isEnabled ?? false;
+    return this.#specs.features().find(f => f.nameId === name)?.isEnabled ?? false;
   }
 }
 
 class FormulaContextForm implements FormulaV1CtxForm {
-  constructor(private specs: FormulaExecutionSpecsWithRunParams) { }
+  #specs: FormulaExecutionSpecsWithRunParams;
+
+  constructor(specs: FormulaExecutionSpecsWithRunParams) {
+    this.#specs = specs;
+  }
 
   runFormulas(): void {
-    const formula = this.specs.runParameters.formula;
+    const formula = this.#specs.runParameters.formula;
     if (formula.version === FormulaVersions.V1) {
       console.error('form.runFormulas() is being deprecated and will stop working end of 2024. Use V2 formulas and return the promise. Formulas will auto-run when it completes.');
-      this.specs.fieldsSettingsSvc.retriggerFormulas('form.runFormulas()');
+      this.#specs.fieldsSettingsSvc.retriggerFormulas('form.runFormulas()');
       return;
     }
     
