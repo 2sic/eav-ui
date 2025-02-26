@@ -12,9 +12,15 @@
     {
       <app-feature-icon [featureNameId]="feature"></app-feature-icon>
     }
+    <!-- Action items such as edit, remove, delete - in scenarios where they should be in front of the (i) etc. to avoid fluttering -->
+    @if (actionsFirst()) {
+      <app-picker-item-buttons class="my-item-actions" [show]="show()" [item]="item()" [index]="index()" [uiFeatures]="uiFeatures()"></app-picker-item-buttons>
+    }
     <app-picker-help [helpLink]="item().link"></app-picker-help>
     <app-picker-icon-info [infoBox]="item().info"></app-picker-icon-info>
     <!-- Action items such as edit, remove, delete -->
-    <app-picker-item-buttons class="my-item-actions" [show]="show()" [item]="item()" [index]="index()" [uiFeatures]="uiFeatures()"></app-picker-item-buttons>
+    @if (!actionsFirst()) {
+      <app-picker-item-buttons class="my-item-actions" [show]="show()" [item]="item()" [index]="index()" [uiFeatures]="uiFeatures()"></app-picker-item-buttons>
+    }
   </div>
 </div>
