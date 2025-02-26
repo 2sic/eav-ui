@@ -14,15 +14,15 @@ const logSpecs = {
 };
 
 @Component({
-    selector: 'app-picker-item-buttons',
-    templateUrl: './picker-item-buttons.component.html',
-    styleUrl: './picker-item-buttons.component.scss',
-    imports: [
-        MatButtonModule,
-        MatIconModule,
-        TippyDirective,
-        ClickStopPropagationDirective,
-    ]
+  selector: 'app-picker-item-buttons',
+  templateUrl: './picker-item-buttons.component.html',
+  styleUrl: './picker-item-buttons.component.scss',
+  imports: [
+    MatButtonModule,
+    MatIconModule,
+    TippyDirective,
+    ClickStopPropagationDirective,
+  ]
 })
 export class PickerItemButtonsComponent extends PickerPartBaseComponent {
 
@@ -47,8 +47,8 @@ export class PickerItemButtonsComponent extends PickerPartBaseComponent {
     // note that selected can be null, since a item in the list can be null
     const item = this.item();
     const show = this.show() && !!item;
-    const f = this.features();
-    const uif = this.uiFeatures();
+    const f = this.features();          // features from config, source-type etc.
+    const uif = this.uiFeatures();      // features requested by the parent-control
     const merged = {
       edit: f.edit && uif?.edit != false && show && !item?.noEdit,
       remove: f.remove && uif?.remove != false && show && !item?.noRemove,

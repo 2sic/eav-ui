@@ -15,15 +15,15 @@ import { mergePickerFeatures, PickerFeatures, PickerFeaturesForControl } from '.
 import { pickerItemsAllowsEmpty } from './picker.helpers';
 
 const logSpecs = {
-  all: true,
+  all: false,
   setup: false,
   addInfosFromSourceForUi: false,
   optionsWithMissing: false,
   selectedRaw: false,
   selectedOverride: false,
   selectedState: false,
-  features: false,
-  allOptions: true,
+  features: true,
+  allOptions: false,
   fields: [...DebugFields, '*'],
 }
 
@@ -168,7 +168,7 @@ export class PickerData {
 
   #settingsLazy = signalObj<Signal<FieldSettings & FieldSettingsPickerMerged>>('settingsLazy', null);
 
-  #featuresFromSettings = computedObj('featuresFromSettings', () => {
+  #featuresFromSettings = computedObj<PickerFeatures>('featuresFromSettings', () => {
     const s = this.#settingsLazy()();
     return {
       textEntry: s.EnableTextEntry,
@@ -176,18 +176,25 @@ export class PickerData {
       create: s.EnableCreate && !!s.CreateTypes,
       remove: s.EnableRemove,
       delete: s.EnableDelete,
-    } satisfies Partial<PickerFeatures>;
+      edit: s.EnableEdit,       // note: added in 19.03.02, seems to have been forgotten before?
+    } satisfies PickerFeatures;
   });
 
   /** Signal containing the features of the picker, basically to accumulate features such as "canEdit" */
   public features = computedObj<PickerFeaturesForControl>('features', () => {
-    const mergeSourceAndState = mergePickerFeatures(this.source.myFeatures(), this.state.myFeatures());
-    const mergeSettings = mergePickerFeatures(mergeSourceAndState, this.#featuresFromSettings());
+    const sourceFeatures = this.source.myFeatures();
+    const stateFeatures = this.state.myFeatures();
+    const settingsFeatures = this.#featuresFromSettings();
+    
+    const mergeSourceAndState = mergePickerFeatures(sourceFeatures, stateFeatures);
+    const mergeSettings = mergePickerFeatures(mergeSourceAndState, settingsFeatures);
     const forControl = {
       ...mergeSettings,
       showGoToListDialogButton: mergeSettings.multiValue,
       showAddNewButton: mergeSettings.create,
     } satisfies PickerFeaturesForControl;
+
+    this.log.aIf('features', { sourceFeatures, stateFeatures, settingsFeatures, mergeSourceAndState, mergeSettings, forControl });
     return forControl;
   });
 
