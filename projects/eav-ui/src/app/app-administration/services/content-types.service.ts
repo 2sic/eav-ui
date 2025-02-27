@@ -25,7 +25,7 @@ export class ContentTypesService extends HttpServiceBase {
     });
   }
 
-  retrieveContentTypeSig(nameId: string, initial: ContentType): Signal<ContentType> {
+  getTypeSig(nameId: string, initial: ContentType): Signal<ContentType> {
     return this.getSignal<ContentType>(webApiTypeGet, {
       params: { appId: this.appId, contentTypeId: nameId }
     }, initial);
@@ -37,7 +37,7 @@ export class ContentTypesService extends HttpServiceBase {
     });
   }
 
-  retrieveContentTypesSig(scope: string, initial: undefined): Signal<ContentType[]> {
+  getTypesSig(scope: string, initial: undefined): Signal<ContentType[]> {
     return this.getSignal<ContentType[]>(webApiTypes, {
       params: { appId: this.appId, scope }
     }, initial);

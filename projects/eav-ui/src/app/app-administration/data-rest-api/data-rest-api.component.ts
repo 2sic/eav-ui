@@ -27,7 +27,7 @@ export class DataRestApiComponent {
   #contentTypesSvc = transient(ContentTypesService);
   #dialogRouter = transient(DialogRoutingService);
 
-  #getAllContentTypes = this.#contentTypesSvc.retrieveContentTypesSig("Default", undefined);
+  #getAllContentTypes = this.#contentTypesSvc.getTypesSig("Default", undefined);
 
   contentTypes = computed(() => {
     const contentTypes = this.#getAllContentTypes();

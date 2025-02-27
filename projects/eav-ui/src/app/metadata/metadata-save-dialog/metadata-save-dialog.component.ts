@@ -58,7 +58,7 @@ export class MetadataSaveDialogComponent implements OnInit {
 
   contentTypes = computed(() => {
     const scope = this.scope();
-    return this.#contentTypesService.retrieveContentTypesSig(scope, undefined);
+    return this.#contentTypesService.getTypesSig(scope, undefined);
   });
 
 

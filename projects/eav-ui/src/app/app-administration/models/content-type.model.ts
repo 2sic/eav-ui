@@ -25,6 +25,9 @@ export interface ContentType {
   // UsesSharedDef: boolean; // 2022-01-04 2dm disabled, as we're now using the EditInfo.ReadOnly instead
   EditInfo: EditInfo;
   _compareLabel?: string;
+
+  /** Title field, so the table can find/show the title columns */
+  TitleField: string;
 }
 
 export interface ContentTypeProperties {
