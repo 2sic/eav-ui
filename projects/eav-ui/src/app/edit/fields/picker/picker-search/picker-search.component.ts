@@ -11,7 +11,7 @@ import { MatTreeModule } from '@angular/material/tree';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { transient } from '../../../../../../../core/transient';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
-import { classLog, classLogEnabled } from '../../../../shared/logging';
+import { classLog } from '../../../../shared/logging';
 import { GlobalConfigService } from '../../../../shared/services/global-config.service';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
 import { DebugFields } from '../../../edit-debug';
@@ -59,7 +59,7 @@ const logSpecs = {
 export class PickerSearchComponent extends PickerPartBaseComponent implements OnInit {
 
   /** Main log */
-  log = classLogEnabled({ PickerSearchComponent }, logSpecs);
+  log = classLog({ PickerSearchComponent }, logSpecs);
 
   /** Special log which would fire a lot for each item doing disabled checks etc. */
   #logItemChecks = classLog(`PickerSearchComponent-ItemChecks`);
