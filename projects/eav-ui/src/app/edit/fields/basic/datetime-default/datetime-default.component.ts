@@ -14,7 +14,7 @@ import { FieldSettingsDateTime } from 'projects/edit-types/src/FieldSettings-Dat
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { classLog } from '../../../../shared/logging';
+import { classLogEnabled } from '../../../../shared/logging';
 import { MatDayjsDateAdapter, MatDayjsModule } from '../../../shared/date-adapters/date-adapter-api';
 import { FieldMetadata } from '../../field-metadata.decorator';
 import { FieldState } from '../../field-state';
@@ -23,6 +23,13 @@ import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
 import { DateTimeDefaultLogic } from './datetime-default-logic';
 
 dayjs.extend(utc); // Extend dayjs with UTC support
+
+const logSpecs = {
+  all: false,
+  updateDate: true,
+  updateTime: true,
+  updateDateTime: true,
+}
 
 @Component({
   selector: InputTypeCatalog.DateTimeDefault,
@@ -46,7 +53,7 @@ dayjs.extend(utc); // Extend dayjs with UTC support
 @FieldMetadata({ ...WrappersLocalizationOnly })
 export class DatetimeDefaultComponent implements AfterViewInit {
 
-  log = classLog({ DatetimeDefaultComponent });
+  log = classLogEnabled({ DatetimeDefaultComponent }, logSpecs);
 
   @ViewChild(MatTimepicker) timePickerRef: MatTimepicker<Dayjs>;
 
@@ -119,6 +126,7 @@ export class DatetimeDefaultComponent implements AfterViewInit {
   }
 
   updateTime(event: any): void {
+    this.log.aIf('updateTime', {event});
     const time = dayjs(event.target.value, 'HH:mm');
 
     if (time == null) {
@@ -132,6 +140,7 @@ export class DatetimeDefaultComponent implements AfterViewInit {
 
   // Material Date Picker Event Handler
   updateDate(event: MatDatepickerInputEvent<Dayjs>) {
+    this.log.aIf('updateDate', {event});
     const date = event.value;
 
     if (date == null) {
@@ -141,10 +150,14 @@ export class DatetimeDefaultComponent implements AfterViewInit {
 
     if (date.isValid())
       this.updateFormattedValue(date, null);
+    else {
+      console.log('Invalid Date');
+    }
   }
 
   updateDateTime(event: MatDatepickerInputEvent<Dayjs>) {
     const dateTime = event.value;
+    this.log.aIf('updateDateTime', {event, dateTime});
     
     if (dateTime == null) {
       this.ui().setIfChanged(null);
@@ -161,7 +174,9 @@ export class DatetimeDefaultComponent implements AfterViewInit {
     if (!date && !time) return;
 
     // Set current date and time from UI or initiate with current date and 12:00 AM
-    let currentDateTime = dayjs(this.uiValue()).isValid() ? dayjs(this.uiValue()).utc() : dayjs().utc().hour(0).minute(0).second(0);
+    let currentDateTime = dayjs(this.uiValue()).isValid()
+      ? dayjs(this.uiValue()).utc()
+      : dayjs().utc().hour(0).minute(0).second(0);
 
     if (date)
       currentDateTime = currentDateTime

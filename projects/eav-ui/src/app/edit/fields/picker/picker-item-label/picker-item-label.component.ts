@@ -36,6 +36,9 @@ export class PickerPreviewLabelComponent {
   /** If the buttons should show or not - I believe ATM it's always true */
   show = input<boolean>(false);
 
+  /** Show the action-buttons before the (i) buttons */
+  actionsFirst = input<boolean>(false);
+
   featureWarnings = computed(() => {
     const conditions = this.item().rules;
     if (!conditions) return [];

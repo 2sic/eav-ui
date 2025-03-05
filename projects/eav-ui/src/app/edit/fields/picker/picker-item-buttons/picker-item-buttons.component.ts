@@ -1,6 +1,7 @@
 import { Component, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { classLog } from 'projects/eav-ui/src/app/shared/logging';
 import { ClickStopPropagationDirective } from '../../../../shared/directives/click-stop-propagation.directive';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { computedObj } from '../../../../shared/signals/signal.utilities';
@@ -8,18 +9,24 @@ import { PickerItem } from '../models/picker-item.model';
 import { PickerFeaturesItem } from '../picker-features.model';
 import { PickerPartBaseComponent } from '../picker-part-base.component';
 
+const logSpecs = {
+  buttons: true,
+};
+
 @Component({
-    selector: 'app-picker-item-buttons',
-    templateUrl: './picker-item-buttons.component.html',
-    styleUrl: './picker-item-buttons.component.scss',
-    imports: [
-        MatButtonModule,
-        MatIconModule,
-        TippyDirective,
-        ClickStopPropagationDirective,
-    ]
+  selector: 'app-picker-item-buttons',
+  templateUrl: './picker-item-buttons.component.html',
+  styleUrl: './picker-item-buttons.component.scss',
+  imports: [
+    MatButtonModule,
+    MatIconModule,
+    TippyDirective,
+    ClickStopPropagationDirective,
+  ]
 })
 export class PickerItemButtonsComponent extends PickerPartBaseComponent {
+
+  log = classLog({PickerItemButtonsComponent}, logSpecs);
 
   /** The item to show the label/buttons for */
   item = input.required<PickerItem>();
@@ -40,13 +47,15 @@ export class PickerItemButtonsComponent extends PickerPartBaseComponent {
     // note that selected can be null, since a item in the list can be null
     const item = this.item();
     const show = this.show() && !!item;
-    const f = this.features();
-    const uif = this.uiFeatures();
-    return {
+    const f = this.features();          // features from config, source-type etc.
+    const uif = this.uiFeatures();      // features requested by the parent-control
+    const merged = {
       edit: f.edit && uif?.edit != false && show && !item?.noEdit,
       remove: f.remove && uif?.remove != false && show && !item?.noRemove,
       delete: f.delete && uif?.delete != false && show && !item?.noDelete,
     };
+    this.log.aIf('buttons', { merged, item, show, f, uif });
+    return merged;
   });
   
 
