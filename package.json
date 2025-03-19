@@ -48,7 +48,7 @@
     "@angular/platform-browser": "^19.2.2",
     "@angular/platform-browser-dynamic": "^19.2.2",
     "@angular/router": "^19.2.2",
-    "@danielmoncada/angular-datetime-picker": "^18.1.0",
+    "@danielmoncada/angular-datetime-picker": "^19.1.0",
     "@danielmoncada/angular-datetime-picker-dayjs-adapter": "^3.0.1",
     "@ecodev/fab-speed-dial": "^17.0.0",
     "@monaco-editor/loader": "^1.5.0",
