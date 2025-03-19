@@ -27,6 +27,8 @@ export class DialogRoutingService extends ServiceBase {
 
   get url() { return this.router.url; }
 
+  get urlSegments() { return this.router.url.split('/'); }
+
   getParam(key: string): string {
     return this.route.snapshot.paramMap.get(key);
   }

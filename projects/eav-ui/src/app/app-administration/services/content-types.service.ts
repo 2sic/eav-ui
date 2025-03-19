@@ -37,7 +37,7 @@ export class ContentTypesService extends HttpServiceBase {
     });
   }
 
-  getTypesSig(scope: string, initial: undefined): Signal<ContentType[]> {
+  getTypesSig(scope: string, initial: ContentType[]): Signal<ContentType[]> {
     return this.getSignal<ContentType[]>(webApiTypes, {
       params: { appId: this.appId, scope }
     }, initial);

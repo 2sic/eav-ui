@@ -1,3 +1,4 @@
+import { httpResource } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { from, map, switchMap } from 'rxjs';
 import { FileUploadResult } from '../../shared/components/file-upload-dialog';
@@ -11,6 +12,7 @@ const logSpecs = {
   all: true,
   getAll: false,
   getAllSig: true,
+  getAllRes: true,
   importQuery: false,
   clonePipeline: false,
   delete: false,  
@@ -44,6 +46,16 @@ export class PipelinesService extends HttpServiceBase {
       params: { appId: this.appId, contentType }
     }, initial);
     return l.r(sig);
+  }
+
+  /** Experimental httpResource use! */
+  getAllRes(contentType: string, initial?: Query[]) {
+    const l = this.log.fnIf('getAllRes');
+    const res = httpResource<Query[]>(() => ({
+      url: webApiEntityList,
+      params: { appId: this.appId, contentType },
+    }), { defaultValue: initial });
+    return l.r(res);
   }
 
   importQuery(file: File) {

@@ -1,4 +1,4 @@
-import { Component, computed } from '@angular/core';
+import { Component, effect, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -27,26 +27,30 @@ export class DataRestApiComponent {
   #contentTypesSvc = transient(ContentTypesService);
   #dialogRouter = transient(DialogRoutingService);
 
-  #getAllContentTypes = this.#contentTypesSvc.getTypesSig("Default", undefined);
+  #formBuilder = inject(FormBuilder);
 
-  contentTypes = computed(() => {
-    const contentTypes = this.#getAllContentTypes();
+  constructor() {
+    // Update form if the url changes and the item is found
+    effect(() => {
+      const types = this.contentTypes();
+      if (types.length === 0)
+        return;
 
-    const urlSegments = this.#dialogRouter.url.split('/');
-    const urlStaticName = urlSegments[urlSegments.length - 1]
+      const urlStaticName = this.#dialogRouter.urlSegments.at(-1);
 
-    const selectedContentType = contentTypes?.find(contentType => contentType.NameId === urlStaticName);
-    if (selectedContentType)
-      this.contentTypeForm.get('contentType').setValue(selectedContentType.NameId);
+      const type = types.find(ct => ct.NameId === urlStaticName);
+      if (type)
+        this.contentTypeForm.get('contentType').setValue(type.NameId);
+    });
 
-    return contentTypes;
-  });
+  }
 
-  contentTypeForm: FormGroup = this.fb.group({
+  contentTypes = this.#contentTypesSvc.getTypesSig("Default", []);
+
+  contentTypeForm: FormGroup = this.#formBuilder.group({
     contentType: ['']
   });
 
-  constructor(private fb: FormBuilder,) { }
 
   openRestApi(event: string): void {
     if (!event) return;

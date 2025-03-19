@@ -1,4 +1,4 @@
-import { Component, computed } from '@angular/core';
+import { Component, computed, effect, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -10,6 +10,7 @@ import { eavConstants } from '../../shared/constants/eav.constants';
 import { classLog } from '../../shared/logging';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
+import { Query } from '../models';
 import { PipelinesService } from '../services';
 
 const logSpecs = {
@@ -36,25 +37,30 @@ export class QueriesRestApiComponent {
   #pipelinesSvc = transient(PipelinesService);
   #dialogRouter = transient(DialogRoutingService);
 
-  constructor(private fb: FormBuilder,) { }
+  #formBuilder = inject(FormBuilder);
 
-  #getAllQueryTypes = this.#pipelinesSvc.getAllSig(eavConstants.contentTypes.query);
+  constructor() {
+    // Update form if the url changes and the item is found
+    effect(() => {
+      const queryTypes = this.queryTypes();
+      if (queryTypes.length === 0)
+        return;
+      const urlGuidName = this.#dialogRouter.urlSegments.at(-1);
+      const selectedContentType = queryTypes.find(q => q.Guid === urlGuidName);
+      if (selectedContentType)
+        this.queryTypeForm.get('queryType').setValue(selectedContentType.Guid);
+    });
+  }
 
-  queryTypes = computed(() => {
-    const l = this.log.fn('queryTypes');
-    const queries = this.#getAllQueryTypes();
-    if (!queries) return l.r([]);
-    const urlSegments = this.#dialogRouter.url.split('/');
-    const urlGuidName = urlSegments[urlSegments.length - 1]
+  #getAllQueryTypes = this.#pipelinesSvc.getAllRes(eavConstants.contentTypes.query, []);
 
-    const selectedContentType = queries?.find(query => query.Guid === urlGuidName);
-    if (selectedContentType)
-      this.queryTypeForm.get('queryType').setValue(selectedContentType.Guid);
+  queryTypes = computed<Query[]>(() => {
+    const l = this.log.fnIf('queryTypes');
+    const queries = this.#getAllQueryTypes.value();
+    return l.r(queries || []);
+  }, { });
 
-    return l.r(queries);
-  });
-
-  queryTypeForm: FormGroup = this.fb.group({
+  queryTypeForm: FormGroup = this.#formBuilder.group({
     queryType: ['']
   });
 
