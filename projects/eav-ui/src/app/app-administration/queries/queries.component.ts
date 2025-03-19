@@ -1,5 +1,5 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { Component, computed, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogActions } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -17,41 +17,50 @@ import { eavConstants } from '../../shared/constants/eav.constants';
 import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
+import { classLog } from '../../shared/logging';
 import { EditForm, EditPrep } from '../../shared/models/edit-form.model';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
-import { DialogService } from '../../shared/services/dialog.service';
 import { Query } from '../models/query.model';
 import { DialogConfigAppService } from '../services/dialog-config-app.service';
 import { PipelinesService } from '../services/pipelines.service';
 import { QueriesActionsParams, QueryActions } from './queries-actions/queries-actions';
 import { QueriesActionsComponent } from './queries-actions/queries-actions.component';
 
+const logSpecs = {
+  all: false,
+  urlToOpenVisualQueryDesigner: true,
+  titleCellRenderer: true,
+  cloneQuery: false,
+  deleteQuery: false,
+  exportQuery: false,
+};
+
 @Component({
-    selector: 'app-queries',
-    templateUrl: './queries.component.html',
-    imports: [
-        MatDialogActions,
-        MatButtonModule,
-        MatIconModule,
-        RouterOutlet,
-        // AsyncPipe,
-        SxcGridModule,
-        DragAndDropDirective,
-        TippyDirective,
-    ]
+  selector: 'app-queries',
+  templateUrl: './queries.component.html',
+  imports: [
+    MatDialogActions,
+    MatButtonModule,
+    MatIconModule,
+    RouterOutlet,
+    SxcGridModule,
+    DragAndDropDirective,
+    TippyDirective,
+  ]
 })
 export class QueriesComponent implements OnInit {
 
+  log = classLog({ QueriesComponent }, logSpecs);
+
   #pipelineSvc = transient(PipelinesService);
   #contentExportSvc = transient(ContentExportService);
-  #dialogSvc = transient(DialogService);
   #dialogRouter = transient(DialogRoutingService);
   #dialogConfigSvc = transient(DialogConfigAppService);
 
-  constructor(
-    private snackBar: MatSnackBar,
-  ) { }
+  #snackBar = inject(MatSnackBar);
+
+  constructor() { }
 
   enablePermissions!: boolean;
   public gridOptions = this.buildGridOptions();
@@ -64,25 +73,40 @@ export class QueriesComponent implements OnInit {
   });
 
   ngOnInit() {
-    this.#dialogRouter.doOnDialogClosed(() => this.#fetchQueries());
+    // watch for return from dialog to reload queries
+    this.#dialogRouter.doOnDialogClosed(() => this.#triggerRefresh());
+
+    // get setting for enablePermissions on load
     this.#dialogConfigSvc.getCurrent$().subscribe(settings => {
       this.enablePermissions = settings.Context.Enable.AppPermissions;
     });
   }
 
-  #fetchQueries() {
-    this.#refresh.update(value => value + 1);
-  }
-
-  #urlTo(url: string) {
-    return '#' + this.#dialogRouter.urlSubRoute(url);
-  }
+  //#region methods for template actions
 
   urlToImportQuery() {
     return this.#urlTo(`import`);
   }
 
-  #urlToEdit(query: Query) {
+  importQuery(files?: File[]) {
+    this.#dialogRouter.navRelative(['import'], { state: { files } satisfies FileUploadDialogData });
+  }
+
+  urlToNewQuery() {
+    return this.#urlToEditOrNew(null);
+  }
+
+  //#endregion
+
+  #triggerRefresh() {
+    this.#refresh.update(v => v++);
+  }
+
+  #urlTo(url: string) {
+    return `#${this.#dialogRouter.urlSubRoute(url)}`;
+  }
+
+  #urlToEditOrNew(query?: Query) {
     return this.#urlTo(
       `edit/${convertFormToUrl({
         items: [
@@ -94,40 +118,24 @@ export class QueriesComponent implements OnInit {
     );
   }
 
-  importQuery(files?: File[]) {
-    const dialogData: FileUploadDialogData = { files };
-    this.#dialogRouter.navRelative(['import'], { state: dialogData });
-  }
-
-  urlToNewQuery() {
-    return this.#urlTo(
-      `edit/${convertFormToUrl({
-        items: [
-          EditPrep.newFromType(eavConstants.contentTypes.query, { TestParameters: eavConstants.pipelineDesigner.testParameters })
-        ],
-      })}`
-    );
-  }
-
   #urlToOpenVisualQueryDesigner(query: Query): string {
-    // "../../" is needed, because the routing is that way
-    return this.#urlTo(
+    const l = this.log.fnIf('urlToOpenVisualQueryDesigner', { query });
+    const url = this.#urlTo(
+      // "../../" is needed, because the routing is that way
       `../../query/${convertFormToUrl({
         items: [EditPrep.editId(query.Id)],
       } satisfies EditForm)}`
     );
+    return l.r(url);
   }
 
   #urlToOpenMetadata(query: Query): string {
     return this.#urlTo(
-      GoToMetadata.getUrlEntity(
-        query.Guid,
-        `Metadata for Query: ${query.Name} (${query.Id})`,
-      )
+      GoToMetadata.getUrlEntity(query.Guid, `Metadata for Query: ${query.Name} (${query.Id})`)
     );
   }
 
-  #urlToPermissoins(query: Query): string {
+  #urlToPermissions(query: Query): string {
     return this.#urlTo(GoToPermissions.getUrlEntity(query.Guid));
   }
 
@@ -136,24 +144,41 @@ export class QueriesComponent implements OnInit {
   }
 
   private cloneQuery(query: Query) {
-    this.snackBar.open('Copying...');
+    const l = this.log.fnIf('cloneQuery', { query });
+    this.#snackBar.open('Copying...');
     this.#pipelineSvc.clonePipeline(query.Id).subscribe(() => {
-      this.snackBar.open('Copied', null, { duration: 2000 });
-      this.#fetchQueries();
+      this.#snackBar.open('Copied', null, { duration: 2000 });
+      this.#triggerRefresh();
     });
+    l.end();
   }
 
   private exportQuery(query: Query) {
+    const l = this.log.fnIf('exportQuery', { query });
     this.#contentExportSvc.exportEntity(query.Id, 'Query', true);
+    l.end();
   }
 
   private deleteQuery(query: Query) {
-    if (!confirm(`Delete Pipeline '${query.Name}' (${query.Id})?`)) return;
-    this.snackBar.open('Deleting...');
+    const l = this.log.fnIf('deleteQuery', { query });
+    if (!confirm(`Delete Pipeline '${query.Name}' (${query.Id})?`))
+      return;
+    this.#snackBar.open('Deleting...');
     this.#pipelineSvc.delete(query.Id).subscribe(res => {
-      this.snackBar.open('Deleted', null, { duration: 2000 });
-      this.#fetchQueries();
+      this.#snackBar.open('Deleted', null, { duration: 2000 });
+      this.#triggerRefresh();
     });
+    l.end();
+  }
+
+  /** Render the title cell w/link - as own method to allow better debugging */
+  #titleCellRenderer(query: Query) {
+    const l = this.log.fnIf('titleCellRenderer', { query });
+    const url = this.#urlToOpenVisualQueryDesigner(query);
+    l.values({ url });
+    return `<a href="${url}" target="_blank" class="default-link" style="display: block; width: 100%; height: 100%;">
+              ${query.Name}
+            </a>`;
   }
 
   private buildGridOptions(): GridOptions {
@@ -162,23 +187,15 @@ export class QueriesComponent implements OnInit {
       columnDefs: [
         {
           ...ColumnDefinitions.IdWithDefaultRenderer,
-          cellClass: (p) => {
-            return `id-action no-padding no-outline ${p.data._EditInfo.ReadOnly ? 'disabled' : ''}`.split(' ');
-          },
+          cellClass: (p: { data: Query }) => `id-action no-padding no-outline ${p.data._EditInfo.ReadOnly ? 'disabled' : ''}`.split(' '),
           cellRendererParams: ColumnDefinitions.idFieldParamsTooltipGetter<Query>(),
         },
         {
           ...ColumnDefinitions.TextWide,
           field: 'Name',
           sort: 'asc',
-          cellClass: (p) => {
-            const query: Query = p.data;
-            return `${query._EditInfo.DisableEdit ? 'no-outline' : 'primary-action highlight'}`.split(' ');
-          },
-          cellRenderer: (p: { data: Query }) =>
-            `<a href="${this.#urlToOpenVisualQueryDesigner(p.data)}" target="_blank" class="default-link" style="display: block; width: 100%; height: 100%;">
-              ${p.data.Name}
-            </a>`,
+          cellClass: (p: { data: Query }) => `${p.data._EditInfo.DisableEdit ? 'no-outline' : 'primary-action highlight'}`.split(' '),
+          cellRenderer: (p: { data: Query }) => this.#titleCellRenderer(p.data),
         },
         {
           ...ColumnDefinitions.TextWideFlex3,
@@ -187,27 +204,24 @@ export class QueriesComponent implements OnInit {
         {
           ...ColumnDefinitions.ActionsPinnedRight4,
           cellRenderer: QueriesActionsComponent,
-          cellRendererParams: (() => {
-            const params: QueriesActionsParams = {
-              getEnablePermissions: () => this.enablePermissions,
-              do: (action, query) => {
-                switch (action) {
-                  case QueryActions.Clone: return this.cloneQuery(query);
-                  case QueryActions.Export: return this.exportQuery(query);
-                  case QueryActions.Delete: return this.deleteQuery(query);
-                }
-              },
-              urlTo: (action, query) => {
-                switch (action) {
-                  case QueryActions.Edit: return this.#urlToEdit(query);
-                  case QueryActions.Metadata: return this.#urlToOpenMetadata(query);
-                  case QueryActions.Rest: return this.#urlToRestApi(query);
-                  case QueryActions.Permissions: return this.#urlToPermissoins(query);
-                }
-              },
-            };
-            return params;
-          })(),
+          cellRendererParams: ({
+            getEnablePermissions: () => this.enablePermissions,
+            do: (action, query) => {
+              switch (action) {
+                case QueryActions.Clone: return this.cloneQuery(query);
+                case QueryActions.Export: return this.exportQuery(query);
+                case QueryActions.Delete: return this.deleteQuery(query);
+              }
+            },
+            urlTo: (action, query) => {
+              switch (action) {
+                case QueryActions.Edit: return this.#urlToEditOrNew(query);
+                case QueryActions.Metadata: return this.#urlToOpenMetadata(query);
+                case QueryActions.Rest: return this.#urlToRestApi(query);
+                case QueryActions.Permissions: return this.#urlToPermissions(query);
+              }
+            },
+          } satisfies QueriesActionsParams),
         },
       ],
     };
