@@ -64,7 +64,10 @@ export abstract class DataSourceEntityBase extends DataSourceBase {
    */
   #fullList = toSignal(combineLatest([
     this.#paramsDebounced$,
-    this.getAll$.pipe(distinctUntilChanged(), filter(getAll => !!getAll), map(x => [])),
+    this.getAll$.pipe(
+      distinctUntilChanged(),
+      filter(getAll => !!getAll),
+      map(x => [] as unknown[])),
   ]).pipe(
     // SwitchMap ensures that only the latest request is processed
     // This is important if parameters change, so that the old request is not used
