@@ -1,47 +1,57 @@
 <mat-form-field color="accent" class="eav-mat-form-field">
   <mat-label>{{ basics().label }}</mat-label>
+  <!-- OwlNG DateTimePicker Input -->
+  <!-- Visible Input-Field when both Date & Time Picker (no Picker) -->
+  <!-- Responsible for formatting -->
   @if (useTimePicker()) {
-    <!-- Visible input For both Date & Time Picker -->
-    <!-- propertybinding for a template reference of owl-date-time instance -->
     <input
       matInput
       [disabled]="ui().disabled"
+      [class.disabledInput]="ui().disabled"
       [owlDateTime]="owlPicker"
-      (dateTimeChange)="updateDateTime($event)"
-      [placeholder]="basics().placeholder"
       [required]="basics().required"
+      (dateTimeChange)="updateDateTime($event)"
       [value]="dateTimeValue()"
+      [placeholder]="basics().placeholder"
     />
-    <!-- Isn't used anymore, but remains in code if needed -->
-    <!-- <mat-datepicker-toggle matSuffix [owlDateTimeTrigger]="owlPicker" tippyTranslate="Fields.DateTime.Open" /> -->
     <owl-date-time #owlPicker />
   }
 
-  <!-- Hidden input if not useTimePicker for Angular Material Date Picker -->
+  <!-- Material DatePicker -->
+  <!-- Toggle for Dropdown -->
+  <!-- Input visible when TimePicker isn't used -->
   <input
     matInput
+    [disabled]="ui().disabled"
+    [class.disabledInput]="ui().disabled"
+    [class.hidden-picker-input]="useTimePicker()"
+    [required]="basics().required"
     [matDatepicker]="datepicker"
-    [class.picker-input]="useTimePicker()"
-    #dateInput
     [value]="dateTimeValue()"
+    [placeholder]="basics().placeholder"
     (dateChange)="updateDate($event)"
   />
   <mat-datepicker #datepicker xPosition="end" />
   <mat-datepicker-toggle [for]="datepicker" matSuffix tippyTranslate="Fields.DateTime.OpenCalender" />
 
+  <!-- Material TimePicker -->
+  <!-- Toggle for Dropdown -->
+  <!-- Input not visible at all times -->
   @if (useTimePicker()) {
     <ng-container matSuffix>
       <!-- Hidden input for Angular Material Time Picker -->
       <input
         matInput
+        [disabled]="ui().disabled"
+        [required]="basics().required"
         [matTimepicker]="timepicker"
-        class="picker-input"
-        #timeInput
+        class="hidden-picker-input"
         [value]="dateTimeValue()"
+        [placeholder]="basics().placeholder"
         (input)="updateTime($event)"
       />
       <mat-timepicker #timepicker [options]="timePickerOptions()" />
-      <mat-timepicker-toggle [for]="timepicker" tippyTranslate="Fields.DateTime.OpenTime" />
+      <mat-timepicker-toggle [disabled]="ui().disabled" [for]="timepicker" tippyTranslate="Fields.DateTime.OpenTime" />
     </ng-container>
   }
 </mat-form-field>

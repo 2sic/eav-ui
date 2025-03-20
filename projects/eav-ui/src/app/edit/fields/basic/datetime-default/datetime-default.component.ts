@@ -22,8 +22,6 @@ import { FieldHelperTextComponent } from '../../help-text/field-help-text.compon
 import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
 import { DateTimeDefaultLogic } from './datetime-default-logic';
 
-dayjs.extend(utc); // Extend dayjs with UTC support
-
 const logSpecs = {
   all: false,
   updateDate: true,
@@ -108,6 +106,7 @@ export class DatetimeDefaultComponent implements AfterViewInit {
     private owlDayjsDateAdapter: DateTimeAdapter<Dayjs>
   ) {
     // Set the Date/Time format to the browser's language (de-De, en.En, etc.)
+    dayjs.extend(utc); // 'neutral' time for OwlDateTime picker
     this.translate.currentLang = navigator.language;
     const currentLang = this.translate.currentLang;
     dayjs.locale(currentLang);
