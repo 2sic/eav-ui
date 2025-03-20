@@ -2,12 +2,10 @@
   <mat-form-field color="accent" class="eav-mat-form-field">
     <mat-label>Content-Type</mat-label>
     <mat-select formControlName="contentType" (valueChange)="openRestApi($event)">
-      @if (contentTypes()) {
-        @for (contentType of contentTypes().sort() ; track contentType) {
+      @for (contentType of contentTypes().sort() ; track contentType.Id) {
         <mat-option [value]="contentType.NameId" >
           {{ contentType.Label }}
         </mat-option>
-        }
       }
     </mat-select>
   </mat-form-field>

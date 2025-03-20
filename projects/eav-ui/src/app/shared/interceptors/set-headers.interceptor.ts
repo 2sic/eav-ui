@@ -8,17 +8,17 @@ export class SetHeadersInterceptor implements HttpInterceptor {
   constructor() { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    let modified: HttpRequest<any>;
-    if (req.body instanceof FormData) {
-      // sending files. Do not set content type so browser can add delimiter boundary automatically
+    // If sending files...
+    // Do not set content type so browser can add delimiter boundary automatically
+    if (req.body instanceof FormData)
       return next.handle(req);
-    } else {
-      modified = req.clone({
-        setHeaders: {
-          'Content-Type': 'application/json;charset=UTF-8',
-        }
-      });
-      return next.handle(modified);
-    }
+
+    // Standard case: Make sure the server knows we want JSON
+    const reqWithJsonContentType = req.clone({
+      setHeaders: {
+        'Content-Type': 'application/json;charset=UTF-8',
+      }
+    });
+    return next.handle(reqWithJsonContentType);
   }
 }

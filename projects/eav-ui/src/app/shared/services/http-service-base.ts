@@ -59,21 +59,21 @@ export class HttpServiceBase {
    * @param endpoint url / endpoint
    * @param options http options
    * @param initial initial value for the signal, before the http call
-   * @param map optional mapping function to transform the http result into the signal result
+   * @param reMap optional mapping function to transform the http result into the signal result
    * @returns 
    */
   protected getSignal<ResultType, HttpType = ResultType>(
     endpoint: string,
     options?: Parameters<typeof this.http.get>[1],
     initial?: ResultType,
-    map?: (x: HttpType) => ResultType,
+    reMap?: (x: HttpType) => ResultType,
   ): Signal<ResultType> {
     // prepare the target signal
     const target = signal<ResultType>(initial);
     // do http call and set the result
     this.getHttpApiUrl<HttpType>(endpoint, options).subscribe(d => {
       // if we have a map function, use it, otherwise just cast
-      const transformed = map ? map(d) : (d as unknown as ResultType);
+      const transformed = reMap ? reMap(d) : (d as unknown as ResultType);
       target.set(transformed)
     });
     return target;

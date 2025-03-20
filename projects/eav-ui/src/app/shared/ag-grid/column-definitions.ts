@@ -53,6 +53,7 @@ export class ColumnDefinitions {
     pinned: 'right',
   };
 
+  /** Icon Show Renderer - defaulting to BoolIconRenderer */
   static IconShow: ColDef = {
     headerName: 'Show',
     width: 70,

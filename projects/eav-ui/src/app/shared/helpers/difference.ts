@@ -13,7 +13,7 @@ import transform from 'lodash-es/transform';
  */
 export function difference(object: any, base: any) {
   function changes(object: any, base: any) {
-    return transform(object, function (result: Record<string, any>, value, key) {
+    return transform(object, function (result: Record<string, any>, value, key: string) {
       if (!isEqual(value, base[key])) {
         result[key] = (isObject(value) && isObject(base[key])) ? changes(value, base[key]) : value;
       }

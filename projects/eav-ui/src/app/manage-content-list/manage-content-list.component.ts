@@ -15,6 +15,7 @@ import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { EditForm, EditPrep } from '../shared/models/edit-form.model';
 import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
 import { signalObj } from '../shared/signals/signal.utilities';
+import { ContentGroup } from './models/content-group.model';
 import { GroupHeader } from './models/group-header.model';
 import { ContentGroupService } from './services/content-group.service';
 
@@ -52,11 +53,11 @@ export class ManageContentListComponent implements OnInit {
   protected items = signalObj<GroupHeader[]>('items', null);
 
   #contentGroup = convert(this.#dialogRoutes.getParams(['guid', 'part', 'index']), p => ({
-    id: null,
+    id: null as number,
     guid: p.guid,
     part: p.part,
     index: parseInt(p.index, 10),
-  }));
+  } satisfies ContentGroup));
 
   refresh = signal(0);
 
