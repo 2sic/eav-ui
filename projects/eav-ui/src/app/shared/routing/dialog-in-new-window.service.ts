@@ -1,13 +1,15 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { DialogTypeConstants } from '../constants/dialog-type.constants';
 // tslint:disable-next-line:max-line-length
 import { keyAppId, keyContentBlockId, keyDebug, keyDialog, keyExtras, keyIsShared, keyItems, keyModuleId, keyPartOfPage, keyUrl, keyZoneId, prefix } from '../constants/session.constants';
 import { DialogHashParams, ExtrasParam } from '../models/dialog-url-params.model';
 import { EditPrep, ViewOrFileIdentifier } from '../models/edit-form.model';
-import { HttpServiceBase } from './http-service-base';
+import { Context } from '../services/context';
 
 @Injectable()
-export class DialogService extends HttpServiceBase {
+export class DialogInNewWindowService {
+
+  protected context = inject(Context);
 
   openCodeFile(path: string, isShared: boolean, templateId?: number) {
     const form = {
@@ -21,19 +23,6 @@ export class DialogService extends HttpServiceBase {
       ...this.#buildHashParam(keyDialog, DialogTypeConstants.Develop),
       ...this.#buildHashParam(keyIsShared, isShared.toString()),
       ...this.#buildHashParam(keyItems, JSON.stringify(form.items)),
-    };
-    const url = this.#buildFullUrl(hashParams);
-    window.open(url, '_blank');
-  }
-
-  openAppsManagement(zoneId: number, tab?: string) {
-    const extras: ExtrasParam = {
-      ...(tab && { tab }),
-    };
-    const hashParams: DialogHashParams = {
-      ...this.#buildHashParam(keyZoneId, zoneId.toString()),
-      ...this.#buildHashParam(keyDialog, DialogTypeConstants.Zone),
-      ...(Object.keys(extras).length ? this.#buildHashParam(keyExtras, JSON.stringify(extras)) : ''),
     };
     const url = this.#buildFullUrl(hashParams);
     window.open(url, '_blank');
@@ -57,8 +46,8 @@ export class DialogService extends HttpServiceBase {
   /** A lot of the link is identical when opening the admin-dialogs in a new window */
   #buildSharedHashParams() {
     const hashParams: DialogHashParams = {
-      ...this.#buildHashParam(keyZoneId, this.zoneId),
-      ...this.#buildHashParam(keyAppId, this.appId),
+      ...this.#buildHashParam(keyZoneId, this.context.zoneId),
+      ...this.#buildHashParam(keyAppId, this.context.appId),
       ...this.#buildHashParam(keyModuleId, this.context.moduleId?.toString()),
       ...this.#buildHashParam(keyContentBlockId, this.context.contentBlockId?.toString()),
       ...this.#buildHashParam(keyPartOfPage),
@@ -68,9 +57,9 @@ export class DialogService extends HttpServiceBase {
   }
 
   /** Encodes param if necessary */
-  #buildHashParam(key: string, value?: string) {
+  #buildHashParam(key: string, value?: number | string) {
     const rawKey = key.replace(prefix, '');
-    const valueTemp = (value != null) ? value : sessionStorage.getItem(key);
+    const valueTemp = value ?? sessionStorage.getItem(key);
     const rawValue = encodeURIComponent(valueTemp);
     const hashParam: DialogHashParams = { [rawKey]: rawValue };
     return hashParam;

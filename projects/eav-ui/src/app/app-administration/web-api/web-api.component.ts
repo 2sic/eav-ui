@@ -13,7 +13,7 @@ import { TrueFalseComponent } from '../../dev-rest/api/true-false/true-false.com
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
-import { DialogService } from '../../shared/services/dialog.service';
+import { DialogInNewWindowService } from '../../shared/routing/dialog-in-new-window.service';
 import { WebApi } from '../models/web-api.model';
 import { DialogConfigAppService } from '../services/dialog-config-app.service';
 import { WebApiActionsComponent } from './web-api-actions/web-api-actions.component';
@@ -33,7 +33,7 @@ import { WebApiActionsParams } from './web-api-actions/web-api-actions.models';
 })
 export class WebApiComponent implements OnInit {
 
-  #dialogService = transient(DialogService);
+  #dialogInNewWindowSvc = transient(DialogInNewWindowService);
   #sourceService = transient(SourceService);
 
   enableCode!: boolean;
@@ -123,7 +123,7 @@ export class WebApiComponent implements OnInit {
   }
 
   private openCode(api: WebApi) {
-    this.#dialogService.openCodeFile(api.path, api.isShared);
+    this.#dialogInNewWindowSvc.openCodeFile(api.path, api.isShared);
   }
 
   private buildGridOptions(): GridOptions {

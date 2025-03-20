@@ -23,7 +23,6 @@ import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.mod
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { RouteLinkHelper } from '../../shared/routing/route-link-helper';
 import { Context } from '../../shared/services/context';
-import { DialogService } from '../../shared/services/dialog.service';
 import { Query } from '../models/query.model';
 import { DialogConfigAppService } from '../services/dialog-config-app.service';
 import { PipelinesService } from '../services/pipelines.service';
@@ -60,7 +59,6 @@ export class QueriesComponent implements OnInit {
   #contentExportSvc = transient(ContentExportService);
   #dialogRouter = transient(DialogRoutingService);
   #dialogConfigSvc = transient(DialogConfigAppService);
-  #openDialogSvc = transient(DialogService);
 
   #context = inject(Context);
   #snackBar = inject(MatSnackBar);

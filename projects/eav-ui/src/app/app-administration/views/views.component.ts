@@ -21,8 +21,8 @@ import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm, EditPrep } from '../../shared/models/edit-form.model';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
+import { DialogInNewWindowService } from '../../shared/routing/dialog-in-new-window.service';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
-import { DialogService } from '../../shared/services/dialog.service';
 import { Polymorphism } from '../models/polymorphism.model';
 import { View, ViewEntity } from '../models/view.model';
 import { DialogConfigAppService } from '../services/dialog-config-app.service';
@@ -47,7 +47,7 @@ import { calculateViewType } from './views.helpers';
     ]
 })
 export class ViewsComponent implements OnInit {
-  #dialogSvc = transient(DialogService);
+  #dialogInNewWindowSvc = transient(DialogInNewWindowService);
   enableCode: boolean;
   enablePermissions: boolean;
   appIsGlobal: boolean;
@@ -188,7 +188,7 @@ export class ViewsComponent implements OnInit {
   }
 
   private openCode(view: View) {
-    this.#dialogSvc.openCodeFile(view.TemplatePath, view.IsShared, view.Id);
+    this.#dialogInNewWindowSvc.openCodeFile(view.TemplatePath, view.IsShared, view.Id);
   }
 
   #urlToOpenPermissions(view: View) {
