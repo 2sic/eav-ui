@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, computed, ElementRef, inject, viewChild, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, computed, effect, ElementRef, inject, viewChild, ViewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerInputEvent, MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -116,6 +116,13 @@ export class DatetimeDefaultComponent implements AfterViewInit {
     this.matDayjsDateAdapter.setLocale(currentLang);
     this.owlDayjsDateAdapter.setLocale(currentLang);
     DateTimeDefaultLogic.importMe();
+
+    // For updating the disabled state automatically
+    effect(() => {
+      const owlDateTimeInput = this.owlDateTimeInput();
+      if (owlDateTimeInput?.nativeElement)
+        owlDateTimeInput.nativeElement.disabled = this.ui().disabled;
+    });
   }
 
   ngAfterViewInit(): void {
@@ -126,6 +133,8 @@ export class DatetimeDefaultComponent implements AfterViewInit {
       });
     }
 
+    // Owl-NG Picker has a problem with disabled inputs, so we have to disable it manually
+    // https://github.com/danielmoncada/date-time-picker/issues/215
     const owlDateTimeInput = this.owlDateTimeInput();
     if (owlDateTimeInput?.nativeElement)
       owlDateTimeInput.nativeElement.disabled = this.ui().disabled;
