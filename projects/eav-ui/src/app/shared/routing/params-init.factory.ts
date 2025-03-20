@@ -1,16 +1,16 @@
 import { Injector } from '@angular/core';
 import { Router } from '@angular/router';
-import { Of } from '../../../core';
-import { UrlHelpers } from './edit/shared/helpers/url.helpers';
-import { DialogTypeConstants } from './shared/constants/dialog-type.constants';
-import { keyAppId, keyContentBlockId, keyContentType, keyDialog, keyExtras, keyItems, keyModuleId, keyPipelineId, keyUrl, keyZoneId, prefix } from './shared/constants/session.constants';
-import { convertFormToUrl } from './shared/helpers/url-prep.helper';
-import { classLog } from './shared/logging';
-import { ExtrasParam } from './shared/models/dialog-url-params.model';
-import { EavWindow } from './shared/models/eav-window.model';
-import { EditForm, ItemEditIdentifier, ItemInListIdentifier } from './shared/models/edit-form.model';
-import { RouteContextInfo } from './shared/routing/route-context-info';
-import { RouteLinkHelper } from './shared/routing/route-link-helper';
+import { Of } from '../../../../../core';
+import { UrlHelpers } from '../../edit/shared/helpers/url.helpers';
+import { DialogTypeConstants } from '../constants/dialog-type.constants';
+import { keyAppId, keyContentBlockId, keyContentType, keyDialog, keyExtras, keyItems, keyModuleId, keyPipelineId, keyUrl, keyZoneId, prefix } from '../constants/session.constants';
+import { convertFormToUrl } from '../helpers/url-prep.helper';
+import { classLog } from '../logging';
+import { EavWindow } from '../models/eav-window.model';
+import { EditForm, ItemEditIdentifier, ItemInListIdentifier } from '../models/edit-form.model';
+import { ExtrasParam } from './dialog-url-params.model';
+import { RouteContextInfo } from './route-context-info';
+import { RouteLinkHelper } from './route-link-helper';
 
 declare const window: EavWindow;
 
