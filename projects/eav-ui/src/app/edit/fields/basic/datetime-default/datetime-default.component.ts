@@ -119,14 +119,13 @@ export class DatetimeDefaultComponent implements AfterViewInit {
     this.matDayjsDateAdapter.setLocale(currentLang);
     this.owlDayjsDateAdapter.setLocale(currentLang);
     DateTimeDefaultLogic.importMe();
-
-    // 2025-03-20 2pp - Workaround for a bug
-    // For updating the disabled state automatically
-    // For now not enabled, because it seems that the Owl bug self-repairs
-    // if it's been set once in the ngAfterViewInit().
-    // effect(() => this.workaroundSetDisabledForOwlDateTimePicker());
   }
 
+  // 2025-03-20 2pp - Workaround for a bug
+  // For updating the disabled state automatically
+  // For now not enabled, because it seems that the Owl bug self-repairs
+  // if it's been set once in the ngAfterViewInit().
+  // effect(() => this.workaroundSetDisabledForOwlDateTimePicker());
   ngAfterViewInit(): void {
     const l = this.log.fnIf('ngAfterViewInit');
     if (this.timePickerRef) { // Material Time Picker Event Handler

@@ -21,14 +21,7 @@
   right: 0 !important;
 }
 
-// The OwlNG Datepicker has an issue, where the disabled attribute isn't passed correctly
-// To fix this, this rule was added, to prevent the click event on the input field
-.disabledInput {
-  pointer-events: none;
-}
-
 ::ng-deep .cdk-overlay-pane:has(.mat-timepicker-panel) {
   position: relative !important;
 }
-
 // Datepicker is set to the right using xPosition="end" on the picker element itself

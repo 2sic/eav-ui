@@ -2,13 +2,12 @@
   <mat-label>{{ basics().label }}</mat-label>
   <!-- OwlNG DateTimePicker Input -->
   <!-- Visible Input-Field when both Date & Time Picker (no Picker) -->
-  <!-- Responsible for formatting -->
+  <!-- Also Responsible for formatting the dateTimeValue() -->
   @if (useTimePicker()) {
     <input
       matInput
       #owlDateTimeInput
       [disabled]="ui().disabled"
-      [class.disabledInput]="ui().disabled"
       [owlDateTime]="owlPicker"
       [required]="basics().required"
       (dateTimeChange)="updateDateTime($event)"
@@ -24,7 +23,6 @@
   <input
     matInput
     [disabled]="ui().disabled"
-    [class.disabledInput]="ui().disabled"
     [class.hidden-picker-input]="useTimePicker()"
     [required]="basics().required"
     [matDatepicker]="datepicker"
