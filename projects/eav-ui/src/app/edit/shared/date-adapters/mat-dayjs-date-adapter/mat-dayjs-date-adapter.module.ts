@@ -1,19 +1,9 @@
 import { NgModule } from '@angular/core';
-import { DateAdapter, MAT_DATE_LOCALE, MAT_DATE_FORMATS } from '@angular/material/core';
-import { MatDayjsDateAdapter, MAT_DAYJS_DATE_ADAPTER_OPTIONS } from './mat-dayjs-date-adapter'
-import { MAT_DAYJS_DATE_FORMATS } from './mat-dayjs-date-formats';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { OWL_DATE_TIME_FORMATS } from '@danielmoncada/angular-datetime-picker';
 import { OWL_DAYJS_DATE_TIME_ADAPTER_OPTIONS, OwlDayJsDateTimeAdapterOptions } from '@danielmoncada/angular-datetime-picker-dayjs-adapter';
-
-const OWL_DAYJS_FORMATS = {
-  parseInput: 'l LT',
-  fullPickerInput: 'l LT',
-  datePickerInput: 'l',
-  timePickerInput: 'LT',
-  monthYearLabel: 'MMM YYYY',
-  dateA11yLabel: 'LL',
-  monthYearA11yLabel: 'MMMM YYYY',
-};
+import { MAT_DAYJS_DATE_ADAPTER_OPTIONS, MatDayjsDateAdapter } from './mat-dayjs-date-adapter';
+import { MAT_DAYJS_DATE_FORMATS, OWL_DAYJS_FORMATS } from './mat-dayjs-date-formats';
 
 @NgModule({
   providers: [
@@ -35,4 +25,5 @@ const OWL_DAYJS_FORMATS = {
     }
   ],
 })
+
 export class MatDayjsModule { }

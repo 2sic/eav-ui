@@ -106,7 +106,8 @@ export class DatetimeDefaultComponent implements AfterViewInit {
     private owlDayjsDateAdapter: DateTimeAdapter<Dayjs>
   ) {
     // Set the Date/Time format to the browser's language (de-De, en.En, etc.)
-    dayjs.extend(utc); // 'neutral' time for OwlDateTime picker
+    dayjs.extend(utc);
+    // set date format based on the users browser language
     this.translate.currentLang = navigator.language;
     const currentLang = this.translate.currentLang;
     dayjs.locale(currentLang);
