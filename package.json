@@ -1,7 +1,7 @@
 {
   "name": "eav-ui",
   "// VERSION": "The version number is very important, as it's used for publishing the source maps",
-  "version": "19.03.03",
+  "version": "19.03.04",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -58,7 +58,7 @@
     "jsonc-parser": "^3.2.0",
     "lodash-es": "^4.17.21",
     "ngx-build-plus": "^14.0.0",
-    "ngx-dropzone-wrapper": "^11.0.0",
+    "ngx-dropzone-wrapper": "^17.0.0",
     "ngx-tippy-wrapper": "^6.3.0",
     "rxjs": "^7.8.2",
     "tinymce": "^6.8.5",
