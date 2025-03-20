@@ -9,6 +9,8 @@ import { classLog } from './shared/logging';
 import { ExtrasParam } from './shared/models/dialog-url-params.model';
 import { EavWindow } from './shared/models/eav-window.model';
 import { EditForm, ItemEditIdentifier, ItemInListIdentifier } from './shared/models/edit-form.model';
+import { RouteContextInfo } from './shared/routing/route-context-info';
+import { RouteLinkHelper } from './shared/routing/route-link-helper';
 
 declare const window: EavWindow;
 
@@ -49,7 +51,15 @@ export function paramsInitFactory(injector: Injector): () => void {
       const dialog = sS.getItem(keyDialog) as Of<typeof DialogTypeConstants>;
       const contentType = sS.getItem(keyContentType);
       const items = sS.getItem(keyItems);
-      const getFull = () => `${sS.getItem(keyZoneId)}/v2/${sS.getItem(keyModuleId)}/${sS.getItem(keyContentBlockId)}/${sS.getItem(keyAppId)}`;
+      // Before 2025-03-20, keep for a few days
+      // const getFull = () => `${sS.getItem(keyZoneId)}/v2/${sS.getItem(keyModuleId)}/${sS.getItem(keyContentBlockId)}/${sS.getItem(keyAppId)}`;
+      // New 2025-03-20; centralize code to create full route
+      const getFull = () => new RouteLinkHelper().routeRoot({
+        zoneId: sS.getItem(keyZoneId),
+        moduleId: sS.getItem(keyModuleId),
+        contentBlockId: sS.getItem(keyContentBlockId),
+        appId: sS.getItem(keyAppId),
+      } satisfies RouteContextInfo);
       l.a('dialog: ' + dialog);
       switch (dialog) {
         case DialogTypeConstants.Zone:

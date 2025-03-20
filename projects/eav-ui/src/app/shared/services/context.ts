@@ -1,8 +1,9 @@
 import { Injectable, Optional, SkipSelf } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { keyAppId, keyContentBlockId, keyModuleId, keyZoneId, prefix } from '../constants/session.constants';
-import { EavWindow } from '../models/eav-window.model';
 import { classLog } from '../logging';
+import { EavWindow } from '../models/eav-window.model';
+import { RouteContextInfo } from '../routing/route-context-info';
 
 declare const window: EavWindow;
 
@@ -18,9 +19,8 @@ const logSpecs = {
  * In other words, if you open another app in a deeper dialog in the app on Apps Management
  * (the component is deeper), you get the information from this app and not the initial app.
  */
-
 @Injectable()
-export class Context {
+export class Context implements RouteContextInfo {
 
   log = classLog({Context}, logSpecs);
 
