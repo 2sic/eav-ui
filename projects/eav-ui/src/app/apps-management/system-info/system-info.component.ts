@@ -17,9 +17,9 @@ import { FeaturesService } from '../../features/features.service';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { EavWindow } from '../../shared/models/eav-window.model';
+import { DialogInNewWindowService } from '../../shared/routing/dialog-in-new-window.service';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { ClipboardService } from '../../shared/services/clipboard.service';
-import { DialogService } from '../../shared/services/dialog.service';
 import { SxcInsightsService } from '../services/sxc-insights.service';
 import { ZoneService } from '../services/zone.service';
 import { InfoTemplate } from './system-info.models';
@@ -51,7 +51,7 @@ export class SystemInfoComponent implements OnInit {
   #dialogSettings = transient(DialogConfigAppService);
   #sxcInsightsService = transient(SxcInsightsService);
   #zoneSvc = transient(ZoneService);
-  #dialogSvc = transient(DialogService);
+  #dialogInNewWindowSvc = transient(DialogInNewWindowService);
   #dialogRouter = transient(DialogRoutingService);
 
   pageLogDuration: number;
@@ -200,7 +200,7 @@ export class SystemInfoComponent implements OnInit {
     this.#dialogSettings.getCurrent$()
       .pipe(map(dc => dc?.Context[partName].PrimaryApp), take(1))
       .subscribe(appIdentity => {
-        this.#dialogSvc.openAppAdministration(appIdentity.ZoneId, appIdentity.AppId, 'app');
+        this.#dialogInNewWindowSvc.openAppAdministration(appIdentity.ZoneId, appIdentity.AppId, 'app');
       })
   }
 

@@ -14,7 +14,7 @@ import { FieldSettingsDateTime } from 'projects/edit-types/src/FieldSettings-Dat
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { classLogEnabled } from '../../../../shared/logging';
+import { classLog } from '../../../../shared/logging';
 import { MatDayjsDateAdapter, MatDayjsModule } from '../../../shared/date-adapters/date-adapter-api';
 import { FieldMetadata } from '../../field-metadata.decorator';
 import { FieldState } from '../../field-state';
@@ -51,7 +51,7 @@ const logSpecs = {
 @FieldMetadata({ ...WrappersLocalizationOnly })
 export class DatetimeDefaultComponent implements AfterViewInit {
 
-  log = classLogEnabled({ DatetimeDefaultComponent }, logSpecs);
+  log = classLog({ DatetimeDefaultComponent }, logSpecs);
 
   @ViewChild(MatTimepicker) timePickerRef: MatTimepicker<Dayjs>;
 

@@ -5,6 +5,15 @@ const zoneApp = `:zoneId/:appId`;
 const full = `:zoneId/v2/:moduleId/:blockId/:appId`;
 
 export const routes: Routes = [
+  // OLD - maybe still in use... (this is only use of `zoneApp`, can probably be removed but must be tested)
+  {
+    path: `${zoneApp}/app`,
+    loadChildren: () => import('./app-administration/app-administration.routing').then(m => m.appAdministrationRoutes),
+    data: { title: 'App' },
+  },
+
+  // NEW
+  
   {
     path: `${full}/apps`,
     loadChildren: () => import('./apps-management/apps-management.routing').then(m => m.appsManagementRoutes),
@@ -14,13 +23,6 @@ export const routes: Routes = [
     path: `${full}/import`,
     loadChildren: () => import('./import-app/import-app.routing').then(m => m.importRoutes),
     data: { title: 'Import App' },
-  },
-
-  // OLD - probably still in use...
-  {
-    path: `${zoneApp}/app`,
-    loadChildren: () => import('./app-administration/app-administration.routing').then(m => m.appAdministrationRoutes),
-    data: { title: 'App' },
   },
  
   {

@@ -7,7 +7,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { RouterOutlet } from '@angular/router';
 import { transient } from '../../../../../core';
 import { SourceService } from '../../code-editor/services/source.service';
-import { classLogEnabled } from '../../shared/logging';
+import { classLog } from '../../shared/logging';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 
@@ -31,7 +31,7 @@ const logSpecs = {
     templateUrl: './web-api-rest-api.component.html'
 })
 export class WebApiRestApiComponent {
-  log = classLogEnabled({ WebApiRestApiComponent }, logSpecs);
+  log = classLog({ WebApiRestApiComponent }, logSpecs);
   #sourceSvc = transient(SourceService);
   #dialogRouter = transient(DialogRoutingService);
 
