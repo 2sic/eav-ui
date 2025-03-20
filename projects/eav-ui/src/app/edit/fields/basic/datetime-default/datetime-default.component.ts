@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, computed, effect, ElementRef, inject, viewChild, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, computed, ElementRef, inject, viewChild, ViewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerInputEvent, MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -14,7 +14,7 @@ import { FieldSettingsDateTime } from 'projects/edit-types/src/FieldSettings-Dat
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { classLog } from '../../../../shared/logging';
+import { classLogEnabled } from '../../../../shared/logging';
 import { MatDayjsDateAdapter, MatDayjsModule } from '../../../shared/date-adapters/date-adapter-api';
 import { FieldMetadata } from '../../field-metadata.decorator';
 import { FieldState } from '../../field-state';
@@ -24,9 +24,12 @@ import { DateTimeDefaultLogic } from './datetime-default-logic';
 
 const logSpecs = {
   all: false,
-  updateDate: true,
-  updateTime: true,
-  updateDateTime: true,
+  updateDate: false,
+  updateTime: false,
+  updateDateTime: false,
+  disabledEffect: true,
+  ngAfterViewInit: true,
+  workaroundSetDisabledForOwlDateTimePicker: true,
 }
 
 @Component({
@@ -51,7 +54,7 @@ const logSpecs = {
 @FieldMetadata({ ...WrappersLocalizationOnly })
 export class DatetimeDefaultComponent implements AfterViewInit {
 
-  log = classLog({ DatetimeDefaultComponent }, logSpecs);
+  log = classLogEnabled({ DatetimeDefaultComponent }, logSpecs);
 
   @ViewChild(MatTimepicker) timePickerRef: MatTimepicker<Dayjs>;
 
@@ -117,15 +120,15 @@ export class DatetimeDefaultComponent implements AfterViewInit {
     this.owlDayjsDateAdapter.setLocale(currentLang);
     DateTimeDefaultLogic.importMe();
 
+    // 2025-03-20 2pp - Workaround for a bug
     // For updating the disabled state automatically
-    effect(() => {
-      const owlDateTimeInput = this.owlDateTimeInput();
-      if (owlDateTimeInput?.nativeElement)
-        owlDateTimeInput.nativeElement.disabled = this.ui().disabled;
-    });
+    // For now not enabled, because it seems that the Owl bug self-repairs
+    // if it's been set once in the ngAfterViewInit().
+    // effect(() => this.workaroundSetDisabledForOwlDateTimePicker());
   }
 
   ngAfterViewInit(): void {
+    const l = this.log.fnIf('ngAfterViewInit');
     if (this.timePickerRef) { // Material Time Picker Event Handler
       this.timePickerRef.selected.subscribe(timeData => {
         if (timeData)
@@ -133,12 +136,24 @@ export class DatetimeDefaultComponent implements AfterViewInit {
       });
     }
 
-    // Owl-NG Picker has a problem with disabled inputs, so we have to disable it manually
-    // https://github.com/danielmoncada/date-time-picker/issues/215
+    // 2025-03-20 2pp - Workaround for a bug
+    this.workaroundSetDisabledForOwlDateTimePicker();
+    l.end();
+  }
+
+  /**
+   * 2025-03-20 2pp - Workaround for a bug
+   * Owl-NG Picker has a problem with disabled inputs, so we have to disable it manually
+   * https://github.com/danielmoncada/date-time-picker/issues/215
+   */
+  workaroundSetDisabledForOwlDateTimePicker(): void {
+    const l = this.log.fnIf('workaroundSetDisabledForOwlDateTimePicker');
     const owlDateTimeInput = this.owlDateTimeInput();
     if (owlDateTimeInput?.nativeElement)
       owlDateTimeInput.nativeElement.disabled = this.ui().disabled;
+    l.end(`Disabled: ${this.ui().disabled}`);
   }
+
 
   updateTime(event: any): void {
     this.log.aIf('updateTime', {event});
