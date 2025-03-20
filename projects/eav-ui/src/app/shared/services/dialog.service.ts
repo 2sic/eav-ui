@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { DialogTypeConstants } from '../constants/dialog-type.constants';
 // tslint:disable-next-line:max-line-length
-import { keyAppId, keyContentBlockId, keyDebug, keyDialog, keyExtras, keyIsShared, keyItems, keyModuleId, keyPartOfPage, keyPipelineId, keyUrl, keyZoneId, prefix } from '../constants/session.constants';
+import { keyAppId, keyContentBlockId, keyDebug, keyDialog, keyExtras, keyIsShared, keyItems, keyModuleId, keyPartOfPage, keyUrl, keyZoneId, prefix } from '../constants/session.constants';
 import { DialogHashParams, ExtrasParam } from '../models/dialog-url-params.model';
-import { EditForm, EditPrep, ViewOrFileIdentifier } from '../models/edit-form.model';
+import { EditPrep, ViewOrFileIdentifier } from '../models/edit-form.model';
 import { HttpServiceBase } from './http-service-base';
 
 @Injectable()
@@ -24,20 +24,6 @@ export class DialogService extends HttpServiceBase {
     };
     const url = this.#buildFullUrl(hashParams);
     window.open(url, '_blank');
-  }
-
-  linkToQueryDesigner(queryId: number) : string {
-    const form: EditForm = {
-      items: [EditPrep.editId(queryId)],
-    };
-
-    const hashParams: DialogHashParams = {
-      ...this.#buildHashParam(keyDialog, DialogTypeConstants.PipelineDesigner),
-      ...this.#buildHashParam(keyPipelineId, queryId.toString()),
-      ...this.#buildHashParam(keyItems, JSON.stringify(form.items)),
-    };
-    const url = this.#buildFullUrl(hashParams);
-    return url;
   }
 
   openAppsManagement(zoneId: number, tab?: string) {

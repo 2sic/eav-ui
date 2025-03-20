@@ -18,7 +18,7 @@ import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.dire
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { classLog } from '../../shared/logging';
-import { EditForm, EditPrep } from '../../shared/models/edit-form.model';
+import { EditPrep } from '../../shared/models/edit-form.model';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { RouteLinkHelper } from '../../shared/routing/route-link-helper';
@@ -125,16 +125,6 @@ export class QueriesComponent implements OnInit {
 
   #urlToOpenVisualQueryDesigner(query: Query): string {
     return '#/' + new RouteLinkHelper().routeTo(this.#context, `query/${query.Id}`);
-
-    return this.#openDialogSvc.linkToQueryDesigner(query.Id);
-    const l = this.log.fnIf('urlToOpenVisualQueryDesigner', { query });
-    const url = this.#urlTo(
-      // "../../" is needed, because the routing is that way
-      `../../query/${convertFormToUrl({
-        items: [EditPrep.editId(query.Id)],
-      } satisfies EditForm)}`
-    );
-    return l.r(url);
   }
 
   #urlToOpenMetadata(query: Query): string {
