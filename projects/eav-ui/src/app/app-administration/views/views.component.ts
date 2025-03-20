@@ -270,16 +270,13 @@ export class ViewsComponent implements OnInit {
       columnDefs: [
         {
           ...ColumnDefinitions.IdWithDefaultRenderer,
-          cellClass: (p) => {
-            const view: View = p.data;
-            return `id-action no-padding no-outline ${view.EditInfo.ReadOnly ? 'disabled' : ''}`.split(' ');
-          },
+          cellClass: (p: { data: View }) => `id-action no-padding no-outline ${p.data.EditInfo.ReadOnly ? 'disabled' : ''}`.split(' '),
           cellRendererParams: ColumnDefinitions.idFieldParamsTooltipGetter<View>()
         },
         {
           ...ColumnDefinitions.IconShow,
-          valueGetter: (p) => !(p.data as View).IsHidden,
           cellRenderer: ViewsShowComponent,
+          valueGetter: (p: { data: View }) => !(p.data).IsHidden,
         },
         {
           ...ColumnDefinitions.TextWide,
@@ -292,7 +289,7 @@ export class ViewsComponent implements OnInit {
           ...ColumnDefinitions.ItemsText,
           field: 'Type',
           width: 82,
-          valueGetter: (p) => calculateViewType(p.data as View).value,
+          valueGetter: (p: { data: View }) => calculateViewType(p.data).value,
           cellRenderer: ViewsTypeComponent,
         },
         {
@@ -313,47 +310,47 @@ export class ViewsComponent implements OnInit {
         {
           ...ColumnDefinitions.TextNarrow,
           headerName: 'Content',
-          valueGetter: (p) => (p.data as View).ContentType.Name,
+          valueGetter: (p: { data: View }) => (p.data).ContentType.Name,
         },
         {
           ...ColumnDefinitions.TextNarrow,
           headerName: 'Default',
           field: 'ContentDemo',
-          valueGetter: (p) => showItemDetails((p.data as View).ContentType),
+          valueGetter: (p: { data: View }) => showItemDetails((p.data).ContentType),
         },
         {
           ...ColumnDefinitions.TextNarrow,
           field: 'Presentation',
-          valueGetter: (p) => (p.data as View).PresentationType.Name,
+          valueGetter: (p: { data: View }) => (p.data).PresentationType.Name,
         },
         {
           ...ColumnDefinitions.TextNarrow,
           headerName: 'Default',
           field: 'PresentationDemo',
-          valueGetter: (p) => showItemDetails((p.data as View).PresentationType),
+          valueGetter: (p: { data: View }) => showItemDetails((p.data).PresentationType),
         },
         {
           ...ColumnDefinitions.TextNarrow,
           field: 'Header',
-          valueGetter: (p) => (p.data as View).ListContentType.Name,
+          valueGetter: (p: { data: View }) => (p.data).ListContentType.Name,
         },
         {
           ...ColumnDefinitions.TextNarrow,
           headerName: 'Default',
           field: 'HeaderDemo',
-          valueGetter: (p) => showItemDetails((p.data as View).ListContentType),
+          valueGetter: (p: { data: View }) => showItemDetails((p.data).ListContentType),
         },
         {
           ...ColumnDefinitions.TextNarrow,
           headerName: 'Header Pres.',
           field: 'HeaderPresentation',
-          valueGetter: (p) => (p.data as View).ListPresentationType.Name,
+          valueGetter: (p: { data: View }) => (p.data).ListPresentationType.Name,
         },
         {
           ...ColumnDefinitions.TextNarrow,
           headerName: 'Default',
           field: 'HeaderPresentationDemo',
-          valueGetter: (p) => showItemDetails((p.data as View).ListPresentationType),
+          valueGetter: (p: { data: View }) => showItemDetails((p.data).ListPresentationType),
         },
         {
           ...ColumnDefinitions.ActionsPinnedRight5,
@@ -377,7 +374,6 @@ export class ViewsComponent implements OnInit {
                 case 'deleteView': this.deleteView(view); break;
               }
             },
-          // } satisfies ViewActionsParams,
           } satisfies ViewsActionsComponent["params"],
         },
       ],
