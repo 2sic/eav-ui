@@ -1,16 +1,15 @@
 import { Injectable } from '@angular/core';
 import { DialogTypeConstants } from '../constants/dialog-type.constants';
 // tslint:disable-next-line:max-line-length
-import { keyAppId, keyContentBlockId, keyDebug, keyDialog, keyExtras, keyIsShared, keyItems, keyModuleId, keyPartOfPage, keyUrl, keyZoneId, prefix } from '../constants/session.constants';
+import { keyAppId, keyContentBlockId, keyDebug, keyDialog, keyExtras, keyIsShared, keyItems, keyModuleId, keyPartOfPage, keyPipelineId, keyUrl, keyZoneId, prefix } from '../constants/session.constants';
 import { DialogHashParams, ExtrasParam } from '../models/dialog-url-params.model';
-import { EditPrep, ViewOrFileIdentifier } from '../models/edit-form.model';
+import { EditForm, EditPrep, ViewOrFileIdentifier } from '../models/edit-form.model';
 import { HttpServiceBase } from './http-service-base';
 
 @Injectable()
 export class DialogService extends HttpServiceBase {
 
   openCodeFile(path: string, isShared: boolean, templateId?: number) {
-    const dialog = DialogTypeConstants.Develop;
     const form = {
       items: [{
         Path: path,
@@ -19,12 +18,26 @@ export class DialogService extends HttpServiceBase {
     };
 
     const hashParams: DialogHashParams = {
-      ...this.buildHashParam(keyDialog, dialog),
-      ...this.buildHashParam(keyIsShared, isShared.toString()),
-      ...this.buildHashParam(keyItems, JSON.stringify(form.items)),
+      ...this.#buildHashParam(keyDialog, DialogTypeConstants.Develop),
+      ...this.#buildHashParam(keyIsShared, isShared.toString()),
+      ...this.#buildHashParam(keyItems, JSON.stringify(form.items)),
     };
-    const url = this.buildFullUrl(hashParams);
+    const url = this.#buildFullUrl(hashParams);
     window.open(url, '_blank');
+  }
+
+  linkToQueryDesigner(queryId: number) : string {
+    const form: EditForm = {
+      items: [EditPrep.editId(queryId)],
+    };
+
+    const hashParams: DialogHashParams = {
+      ...this.#buildHashParam(keyDialog, DialogTypeConstants.PipelineDesigner),
+      ...this.#buildHashParam(keyPipelineId, queryId.toString()),
+      ...this.#buildHashParam(keyItems, JSON.stringify(form.items)),
+    };
+    const url = this.#buildFullUrl(hashParams);
+    return url;
   }
 
   openAppsManagement(zoneId: number, tab?: string) {
@@ -32,11 +45,11 @@ export class DialogService extends HttpServiceBase {
       ...(tab && { tab }),
     };
     const hashParams: DialogHashParams = {
-      ...this.buildHashParam(keyZoneId, zoneId.toString()),
-      ...this.buildHashParam(keyDialog, DialogTypeConstants.Zone),
-      ...(Object.keys(extras).length ? this.buildHashParam(keyExtras, JSON.stringify(extras)) : ''),
+      ...this.#buildHashParam(keyZoneId, zoneId.toString()),
+      ...this.#buildHashParam(keyDialog, DialogTypeConstants.Zone),
+      ...(Object.keys(extras).length ? this.#buildHashParam(keyExtras, JSON.stringify(extras)) : ''),
     };
-    const url = this.buildFullUrl(hashParams);
+    const url = this.#buildFullUrl(hashParams);
     window.open(url, '_blank');
   }
 
@@ -46,30 +59,30 @@ export class DialogService extends HttpServiceBase {
       ...(scope && { scope }),
     };
     const hashParams: DialogHashParams = {
-      ...this.buildHashParam(keyZoneId, zoneId.toString()),
-      ...this.buildHashParam(keyAppId, appId.toString()),
-      ...this.buildHashParam(keyDialog, DialogTypeConstants.App),
-      ...(Object.keys(extras).length ? this.buildHashParam(keyExtras, JSON.stringify(extras)) : ''),
+      ...this.#buildHashParam(keyZoneId, zoneId.toString()),
+      ...this.#buildHashParam(keyAppId, appId.toString()),
+      ...this.#buildHashParam(keyDialog, DialogTypeConstants.App),
+      ...(Object.keys(extras).length ? this.#buildHashParam(keyExtras, JSON.stringify(extras)) : ''),
     };
-    const url = this.buildFullUrl(hashParams);
+    const url = this.#buildFullUrl(hashParams);
     window.open(url, '_blank');
   }
 
   /** A lot of the link is identical when opening the admin-dialogs in a new window */
-  private buildSharedHashParams() {
+  #buildSharedHashParams() {
     const hashParams: DialogHashParams = {
-      ...this.buildHashParam(keyZoneId, this.zoneId),
-      ...this.buildHashParam(keyAppId, this.appId),
-      ...this.buildHashParam(keyModuleId, this.context.moduleId?.toString()),
-      ...this.buildHashParam(keyContentBlockId, this.context.contentBlockId?.toString()),
-      ...this.buildHashParam(keyPartOfPage),
-      ...(sessionStorage.getItem(keyDebug) ? this.buildHashParam(keyDebug) : {}),
+      ...this.#buildHashParam(keyZoneId, this.zoneId),
+      ...this.#buildHashParam(keyAppId, this.appId),
+      ...this.#buildHashParam(keyModuleId, this.context.moduleId?.toString()),
+      ...this.#buildHashParam(keyContentBlockId, this.context.contentBlockId?.toString()),
+      ...this.#buildHashParam(keyPartOfPage),
+      ...(sessionStorage.getItem(keyDebug) ? this.#buildHashParam(keyDebug) : {}),
     };
     return hashParams;
   }
 
   /** Encodes param if necessary */
-  private buildHashParam(key: string, value?: string) {
+  #buildHashParam(key: string, value?: string) {
     const rawKey = key.replace(prefix, '');
     const valueTemp = (value != null) ? value : sessionStorage.getItem(key);
     const rawValue = encodeURIComponent(valueTemp);
@@ -77,13 +90,14 @@ export class DialogService extends HttpServiceBase {
     return hashParam;
   }
 
-  private buildFullUrl(hashParams: DialogHashParams) {
+  /** Builds the full (ugly) url with all the hash parameters */
+  #buildFullUrl(hashParams: DialogHashParams) {
     const oldHref = sessionStorage.getItem(keyUrl);
     const oldUrl = new URL(oldHref);
     const newHref = oldUrl.origin + oldUrl.pathname + oldUrl.search;
 
     const allHashParams: DialogHashParams = {
-      ...this.buildSharedHashParams(),
+      ...this.#buildSharedHashParams(),
       ...hashParams,
     };
     const hashUrl = Object.entries(allHashParams).reduce((acc, [key, value]) => `${acc}&${key}=${value}`, '').replace('&', '#');
