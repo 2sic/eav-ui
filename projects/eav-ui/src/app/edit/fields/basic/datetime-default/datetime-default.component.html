@@ -6,6 +6,7 @@
   @if (useTimePicker()) {
     <input
       matInput
+      #owlDateTimeInput
       [disabled]="ui().disabled"
       [class.disabledInput]="ui().disabled"
       [owlDateTime]="owlPicker"

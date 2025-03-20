@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, computed, inject, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, computed, ElementRef, inject, viewChild, ViewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerInputEvent, MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -62,6 +62,8 @@ export class DatetimeDefaultComponent implements AfterViewInit {
   protected basics = this.fieldState.basics;
   protected useTimePicker = this.fieldState.settingExt('UseTimePicker');
 
+  owlDateTimeInput = viewChild<ElementRef<HTMLInputElement>>('owlDateTimeInput');
+
   dateTimeValue = computed(() => dayjs.utc(this.uiValue()));
 
   timePickerOptions = computed(() => {
@@ -123,6 +125,10 @@ export class DatetimeDefaultComponent implements AfterViewInit {
           this.updateFormattedValue(null, timeData.value);
       });
     }
+
+    const owlDateTimeInput = this.owlDateTimeInput();
+    if (owlDateTimeInput?.nativeElement)
+      owlDateTimeInput.nativeElement.disabled = this.ui().disabled;
   }
 
   updateTime(event: any): void {
