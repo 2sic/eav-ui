@@ -5,7 +5,7 @@ import { UrlHelpers } from '../../edit/shared/helpers/url.helpers';
 import { DialogTypeConstants } from '../constants/dialog-type.constants';
 import { keyAppId, keyContentBlockId, keyContentType, keyDialog, keyExtras, keyItems, keyModuleId, keyPipelineId, keyUrl, keyZoneId, prefix } from '../constants/session.constants';
 import { convertFormToUrl } from '../helpers/url-prep.helper';
-import { classLogEnabled } from '../logging';
+import { classLog } from '../logging';
 import { EavWindow } from '../models/eav-window.model';
 import { EditForm, ItemEditIdentifier, ItemInListIdentifier } from '../models/edit-form.model';
 import { ExtrasParam } from './dialog-url-params.model';
@@ -20,7 +20,7 @@ declare const window: EavWindow;
  * Changed to be a standalone object 2025-03-20 v19.03.03
  */
 export class AppEntryRouteHandler {
-  log = classLogEnabled({ AppEntryRouteHandler }, {
+  log = classLog({ AppEntryRouteHandler }, {
     all: true,
     constructor: false,
     processEntryUrl: false,
