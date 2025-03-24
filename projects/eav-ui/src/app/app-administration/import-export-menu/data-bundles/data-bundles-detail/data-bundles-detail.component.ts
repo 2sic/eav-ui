@@ -30,7 +30,6 @@ export class DataBundlesDetailComponent {
   dataBundles = signal<ContentItem[]>(null);
   dataBundleName = signal<string>(null);
 
-
   constructor(
     private dialog: MatDialogRef<DataBundlesDetailComponent>,
     private route: ActivatedRoute
@@ -45,7 +44,7 @@ export class DataBundlesDetailComponent {
           this.dataBundleName.set(params.name);
         }),
         switchMap(params => this.#dataBundlesQueryService.fetchQuery(params.guid)),
-        tap(d => this.dataBundles.set(d))
+        tap(d => this.dataBundles.set(d as ContentItem[]))
       )
       .subscribe();
   }

@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { transient } from 'projects/core';
+import { EntityLightIdentifier } from 'projects/edit-types/src/EntityLight';
 import { catchError, map, Observable, throwError } from 'rxjs';
+import { ContentItem } from '../../../content-items/models/content-item.model';
 import { QueryService } from '../../../shared/services/query.service';
 
 /**
@@ -16,21 +18,17 @@ export class DataBundlesQueryService {
 
   constructor(private translate: TranslateService) { }
 
-  // TODO: @2pp
-  // 1. make this typed - create a type etc.
-
-  fetchQuery(guid?: string): Observable<any> {
+  fetchQuery(guid?: string): Observable<ContentItem[] | EntityLightIdentifier[]> {
     const stream = 'Default';
     const params = `configurationguid=${guid}`;
-
+    
     return this.#queryService.getFromQuery(`System.BundleDetails/${stream}`, params, null).pipe(
       map((data) => {
-
         // Error handling
         if (!data || !data[stream] || data[stream].length === 0)
           throw new Error(`No data found by Params: ${params} | Stream: ${stream}`);
 
-        console.log(data[stream]);
+        console.log("data", data[stream]);
         return data[stream];
       }),
       catchError((error) => {
@@ -39,5 +37,4 @@ export class DataBundlesQueryService {
       })
     );
   }
-
 }
