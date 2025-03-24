@@ -117,7 +117,7 @@ export class DataBundlesComponent {
         Guid: bundle.Guid,
         Id: bundle.Id,
         Entities: entityCount,
-        ContentType: contentTypeCount
+        ContentType: contentTypeCount,
       };
     });
     // TODO: @2dg - this is a side-effect in a computed, which is very bad.
@@ -252,7 +252,12 @@ export class DataBundlesComponent {
           headerName: 'Name',
           field: 'Name',
           flex: 2,
-          cellRenderer: (p: { data: ContentItem }) => AgGridHelper.cellLink('#' + this.#dialogRouter.urlSubRoute(`details/${p.data.Guid}/${p.data.Name}`), p.data.Name),
+          // @2pp: Error prevention: If the query results can't be fetched, the name will be displayed without a link
+          cellRenderer: (p: { data: ContentItem }) => {
+            return !this.#queryResults().some((result: { Guid: string }) => result.Guid === p.data.Guid)
+              ? p.data.Name
+              : AgGridHelper.cellLink('#' + this.#dialogRouter.urlSubRoute(`details/${p.data.Guid}/${p.data.Name}`), p.data.Name);
+          }
         },
         {
           ...ColumnDefinitions.TextWideMin100,

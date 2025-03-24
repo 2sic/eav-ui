@@ -28,7 +28,6 @@ export class DataBundlesQueryService {
         if (!data || !data[stream] || data[stream].length === 0)
           throw new Error(`No data found by Params: ${params} | Stream: ${stream}`);
 
-        console.log("data", data[stream]);
         return data[stream];
       }),
       catchError((error) => {
