@@ -1,15 +1,22 @@
-@if (dataBundles()) {
+
   <div appToggleDebug class="eav-dialog nav-component-wrapper">
     <div class="eav-dialog-header">
-      <div class="eav-dialog-header__title">{{ dataBundleName() }} Detail</div>
+      <div class="eav-dialog-header__title">{{ dataBundleName() }} Data Bundles Detail</div>
       <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
         <mat-icon>close</mat-icon>
       </button>
     </div>
     <div class="eav-dialog-content nav-component-wrapper">
+
+      @if (dataBundles()?.length > 0) {
+        <!-- Show Grid if dataBundles Data.Length > 0 -->
       <div class="grid-wrapper mat-tab-grid-wrapper">
         <ag-grid-angular class="ag-theme-material" [rowData]="dataBundles()" [gridOptions]="gridOptions"> </ag-grid-angular>
       </div>
+      } @else {
+        <!-- No Data Bundles found -->
+        {{'Message.NoDataBundles' | translate}}
+      }
     </div>
   </div>
-}
+

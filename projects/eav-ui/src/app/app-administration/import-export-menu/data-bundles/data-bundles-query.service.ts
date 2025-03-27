@@ -24,14 +24,11 @@ export class DataBundlesQueryService {
     
     return this.#queryService.getFromQuery(`System.BundleDetails/${stream}`, params, null).pipe(
       map((data) => {
-        // Error handling
-        if (!data || !data[stream] || data[stream].length === 0)
-          throw new Error(`No data found by Params: ${params} | Stream: ${stream}`);
-
         return data[stream];
       }),
       catchError((error) => {
         console.error(`${this.translate.instant('Fields.Picker.QueryError:')} - ${error.data}`);
+        alert(`${this.translate.instant('Fields.Picker.QueryError:')} - ${error.data}`);
         return throwError(() => error);
       })
     );
