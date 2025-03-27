@@ -47,7 +47,8 @@
     "SwitchedLanguageToDefault": "ما زبان را به پیش‌فرض {{language}} تغییر داده‌ایم زیرا برخی یا همه مقادیر را ندارد",
     "CantSwitchLanguage": "تا زمانی که زبان فعلی همه مقادیر لازم را نداشته باشد، نمی توان زبان را تغییر داد",
     "PastingFilesIsNotEnabled": "درج (انتقال) فایل فعال نشده است.",
-    "FindOutMore": "اطلاعات بیشتر"
+    "FindOutMore": "اطلاعات بیشتر",
+    "NoDataBundles": "بسته داده ای یافت نشد"
   },
   "LangMenu": {
     "Translate": "ترجمه",

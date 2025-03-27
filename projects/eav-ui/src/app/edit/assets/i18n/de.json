@@ -47,7 +47,8 @@
     "SwitchedLanguageToDefault": "Es fehlen Werte in der Primärsprache, deshalb wurde auf die Standardsprache {{language}} umgestellt.",
     "CantSwitchLanguage": "Sprachwechsel erst möglich wenn alle Pflichtfelder in der aktuellen Sprache befüllt sind",
     "PastingFilesIsNotEnabled": "Dateien einfügen ist nicht verfügbar.",
-    "FindOutMore": "mehr"
+    "FindOutMore": "mehr",
+    "NoDataBundles": "Keine Entität oder kein Inhalt für Datenpakete gefunden. Bitte wählen Sie eine Entität oder einen Inhalt im MetaData Export Decorator aus."
   },
   "LangMenu": {
     "Translate": "Übersetzen",
