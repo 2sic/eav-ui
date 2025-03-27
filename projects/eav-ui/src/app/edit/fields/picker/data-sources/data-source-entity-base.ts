@@ -67,7 +67,7 @@ export abstract class DataSourceEntityBase extends DataSourceBase {
     this.getAll$.pipe(
       distinctUntilChanged(),
       filter(getAll => !!getAll),
-      map(x => [] as unknown[])),
+      map(() => [] as unknown[])),
   ]).pipe(
     // SwitchMap ensures that only the latest request is processed
     // This is important if parameters change, so that the old request is not used
