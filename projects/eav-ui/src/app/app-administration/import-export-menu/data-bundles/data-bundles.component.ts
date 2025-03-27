@@ -7,6 +7,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterModule } from '@angular/router';
 import { transient } from 'projects/core';
+import { EntityLightIdentifier } from 'projects/edit-types/src/EntityLight';
 import { take } from 'rxjs';
 import { ContentItem } from '../../../content-items/models/content-item.model';
 import { ContentItemsService } from '../../../content-items/services/content-items.service';
@@ -25,6 +26,11 @@ import { DataBundleActionsComponent } from './data-bundles-actions/data-bundles-
 import { DataBundlesActionsParams } from './data-bundles-actions/data-bundles-actions.models';
 import { DataBundlesQueryService } from './data-bundles-query.service';
 import { DataBundlesService } from './data-bundles.service';
+
+interface BundleQuery {
+  Guid: string;
+  Result: ContentItem[] | EntityLightIdentifier[];
+}
 
 @Component({
   selector: 'app-data-bundles',
@@ -73,9 +79,7 @@ export class DataBundlesComponent {
     return this.#contentItemsSvc.getAllSig(this.#defaultContentTypeId,  /* initial: */ null);
   });
 
-  // ContentItem
-  // TODO: @2dg - this 'any' is pretty bad, should be a proper type or better still, not used at all
-  #queryResults = signal<ContentItem[] | any>([]);
+  #queryResults = signal<BundleQuery[]>([]);
 
   // Prepare Date from Query Service
   #queryData = computed(() => {
@@ -87,7 +91,7 @@ export class DataBundlesComponent {
             const bundleQuery = {
               Guid: dataBundle.Guid,
               Result: data
-            };
+            } satisfies BundleQuery;
             this.#queryResults.set([...this.#queryResults(), bundleQuery]);
           },
           error: (err) => console.error("Query error: ", err)
@@ -103,7 +107,7 @@ export class DataBundlesComponent {
     const queryResults = this.#queryResults();
 
     const countEntitiesAndContentTypes = (guid: string) => {
-      const result = queryResults.find((result: ContentItem) => result.Guid === guid)?.Result || [];
+      const result = queryResults.find((result: BundleQuery) => result.Guid === guid)?.Result || [];
       const entityCount = result.filter((item: ContentItem) => item.TypeName == "ContentType").length;
       const contentTypeCount = result.filter((item: ContentItem) => item.TypeName != "ContentType").length;
       return { entityCount, contentTypeCount };
