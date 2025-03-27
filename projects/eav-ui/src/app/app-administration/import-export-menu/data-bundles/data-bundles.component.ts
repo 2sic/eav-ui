@@ -50,18 +50,17 @@ interface BundleQuery {
 })
 export class DataBundlesComponent {
 
-
   #contentItemsSvc = transient(ContentItemsService);
   #dialogRouter = transient(DialogRoutingService);
   #dataBundlesQueryService = transient(DataBundlesQueryService);
   #dataBundlesService = transient(DataBundlesService);
 
+  constructor(private snackBar: MatSnackBar) { }
+
   #defaultContentTypeId = "d7f2e4fa-5306-41bb-a3cd-d9529c838879";
   height = 'height: 135px';
   FileUploadMessageTypes = FileUploadMessageTypes;
   gridOptions = this.#buildGridOptions();
-
-  constructor(private snackBar: MatSnackBar) { }
 
   #refresh = signal(0);
   uploading = signal(false);
@@ -74,16 +73,17 @@ export class DataBundlesComponent {
     upload$: (files: File[]) => this.#dataBundlesService.import(files),
   };
 
-  dataBundles = computed(() => {
+  #dataBundles = computed(() => {
     this.#refresh(); // is use to trigger a refresh when new data or data are modified
     return this.#contentItemsSvc.getAllSig(this.#defaultContentTypeId,  /* initial: */ null);
   });
 
   #queryResults = signal<BundleQuery[]>([]);
 
+  // TODO: @2dg - this looks much more like an effect, #queryData contains signal<void> - pls fix
   // Prepare Date from Query Service
   #queryData = computed(() => {
-    const dataBundles = this.dataBundles()();
+    const dataBundles = this.#dataBundles()();
     dataBundles?.forEach(dataBundle => {
       if (dataBundle?.Guid) {
         this.#dataBundlesQueryService.fetchQuery(dataBundle.Guid).subscribe({
@@ -102,7 +102,7 @@ export class DataBundlesComponent {
 
   // Data from QueryData for Table
   dataSourceData = computed(() => {
-    const dataBundles = this.dataBundles()() || [];
+    const dataBundles = this.#dataBundles()() || [];
     this.#queryData(); // Get query data
     const queryResults = this.#queryResults();
 
