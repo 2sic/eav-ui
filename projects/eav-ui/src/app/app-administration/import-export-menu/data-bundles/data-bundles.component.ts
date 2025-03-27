@@ -1,6 +1,6 @@
 import { GridOptions } from '@ag-grid-community/core';
 import { NgClass } from '@angular/common';
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, effect, signal, untracked } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -55,10 +55,37 @@ export class DataBundlesComponent {
   #dataBundlesQueryService = transient(DataBundlesQueryService);
   #dataBundlesService = transient(DataBundlesService);
 
-  constructor(private snackBar: MatSnackBar) { }
+
+  #queryResults = signal<BundleQuery[]>([]);
+
+  constructor(private snackBar: MatSnackBar) {
+
+    effect(() => {
+      const dataBundles = this.#dataBundles()();
+      if (!dataBundles) return;
+    
+      dataBundles.forEach(dataBundle => {
+        if (!dataBundle?.Guid) return;
+    
+        this.#dataBundlesQueryService.fetchQuery(dataBundle.Guid).subscribe({
+          next: (data) => {
+            untracked(() => {
+              const bundleQuery = {
+                Guid: dataBundle.Guid,
+                Result: data
+              } satisfies BundleQuery;
+    
+              this.#queryResults.update(results => [...results, bundleQuery]);
+            });
+          },
+          error: (err) => console.error("Query error: ", err)
+        });
+      });
+    });
+
+   }
 
   #defaultContentTypeId = "d7f2e4fa-5306-41bb-a3cd-d9529c838879";
-  height = 'height: 135px';
   FileUploadMessageTypes = FileUploadMessageTypes;
   gridOptions = this.#buildGridOptions();
 
@@ -78,32 +105,9 @@ export class DataBundlesComponent {
     return this.#contentItemsSvc.getAllSig(this.#defaultContentTypeId,  /* initial: */ null);
   });
 
-  #queryResults = signal<BundleQuery[]>([]);
-
-  // TODO: @2dg - this looks much more like an effect, #queryData contains signal<void> - pls fix
-  // Prepare Date from Query Service
-  #queryData = computed(() => {
-    const dataBundles = this.#dataBundles()();
-    dataBundles?.forEach(dataBundle => {
-      if (dataBundle?.Guid) {
-        this.#dataBundlesQueryService.fetchQuery(dataBundle.Guid).subscribe({
-          next: (data) => {
-            const bundleQuery = {
-              Guid: dataBundle.Guid,
-              Result: data
-            } satisfies BundleQuery;
-            this.#queryResults.set([...this.#queryResults(), bundleQuery]);
-          },
-          error: (err) => console.error("Query error: ", err)
-        });
-      }
-    });
-  });
-
   // Data from QueryData for Table
   dataSourceData = computed(() => {
     const dataBundles = this.#dataBundles()() || [];
-    this.#queryData(); // Get query data
     const queryResults = this.#queryResults();
 
     const countEntitiesAndContentTypes = (guid: string) => {
@@ -124,11 +128,15 @@ export class DataBundlesComponent {
         ContentType: contentTypeCount,
       };
     });
-    // TODO: @2dg - this is a side-effect in a computed, which is very bad.
-    // Should be a separate computed
-    this.height = `height: ${result.length * 46 + 90}px`;
-
     return result;
+  });
+
+  heightStyle = computed(() => {
+    const dataSourceData = this.dataSourceData();
+    if(dataSourceData.length === 0) 
+      return `height: 135px`;
+    
+    return `height: ${dataSourceData.length * 46 + 90}px`;
   });
 
 
