@@ -129,7 +129,9 @@ export class DropzoneWrapperComponent implements AfterViewInit {
 
   #uploadFile(file: File & { upload?: { chunked: boolean; }; }) {
     const dropzone = this.dropzoneRef.dropzone();
-    file.upload = { chunked: dropzone.defaultOptions.chunking };
+    // 2025-03-29 previous used defaultOptions, but that doesn't seem to work any more
+    // switching to fallback to options - not sure if defaultOptions is still a thing...
+    file.upload = { chunked: dropzone.defaultOptions?.chunking ?? dropzone.options?.chunking };
     dropzone.processFile(file);
   }
 }
