@@ -1,10 +1,11 @@
 <div class="log-content fancy-scrollbar-light">
   <div class="menu">
-    <mat-form-field color="accent">
+    <mat-form-field id="search-input" color="accent">
+      <mat-label>Search</mat-label>
       <input matInput placeholder="Search" (input)="filterLogs($event)" />
     </mat-form-field>
 
-    <mat-form-field color="accent">
+    <mat-form-field id="active-filter-dropdown" color="accent">
       <mat-label>Show</mat-label>
       <mat-select [(value)]="selectedFilter" (selectionChange)="onFilterSelected($event.value)">
         <mat-option value=""> All </mat-option>
@@ -12,8 +13,12 @@
         <mat-option value="deactivated"> Deactivated </mat-option>
       </mat-select>
     </mat-form-field>
+    
+    <button mat-icon-button tippy="Toggle All Logs in View" (click)="checkAll()">
+      <mat-icon>check_box</mat-icon>
+    </button>
 
-    <button mat-icon-button (click)="saveConfig()" tippy="Save Configuration">
+    <button mat-icon-button (click)="saveConfig()" tippy="Save Configuration with all selected Logs">
       <mat-icon>save</mat-icon>
     </button>
 
@@ -21,15 +26,11 @@
       mat-icon-button
       [disabled]="selectedConfig === null"
       (click)="exportConfig()"
-      tippy="Export configuration"
+      tippy="Export the selected configuration from the saved Configs"
     >
       <mat-icon>ios_share</mat-icon>
     </button>
     
-    <button mat-icon-button tippy="Toggle All Logs" (click)="checkAll()">
-      <mat-icon>check_box</mat-icon>
-    </button>
-
     <mat-form-field color="accent">
       <mat-label>Configs</mat-label>
       <mat-select
