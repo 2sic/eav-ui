@@ -2,7 +2,6 @@ export interface DataSource {
   ContentType: string;
   Difficulty: number;
   DynamicIn: boolean;
-  DynamicOut: boolean;
   EnableConfig: boolean;
   HelpLink: string;
   Icon: string;
@@ -13,6 +12,8 @@ export interface DataSource {
   PrimaryType: string;
   TypeNameForUi: string;
   UiHint: string;
+
+  OutMode: 'dynamic' | 'static' | 'mirror-in';
 }
 
 export interface SortedDataSources {

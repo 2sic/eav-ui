@@ -4,10 +4,12 @@ import { eavConstants } from '../../shared/constants/eav.constants';
 import { classLog } from '../../shared/logging';
 import { DataSource, PipelineDataSource, PipelineModel, PipelineResult, PipelineResultStream, StreamWire, VisualDesignerData } from '../models';
 import { WindowWithJsPlumb } from '../window';
+import { findDefByType } from './datasource.helpers';
 import { EndpointsHelper } from './endpoints.helper';
 import { PlumbType } from './plumb-editor.models';
 import { RenameStreamComponent } from './rename-stream/rename-stream.component';
 import { RenameStreamDialogData } from './rename-stream/rename-stream.models';
+import { WiringsHelper } from './wirings.helper';
 
 const logSpecs = {
   all: true,
@@ -62,7 +64,7 @@ export class Plumber {
     this.#instance = window.jsPlumb.getInstance(this.#getInstanceDefaults(this.jsPlumbRoot));
     this.#instance.batch(() => {
       this.#initDomDataSources();
-      this.#initWirings();
+      new WiringsHelper(this, this.#instance, this.jsPlumbRoot, this.pipelineModel, this.dataSources).initWirings();
       this.#bindEvents();
     });
     // spm NOTE: repaint after initial paint fixes:
@@ -136,7 +138,7 @@ export class Plumber {
     });
   }
 
-  #nextLinePaintStyle(uuid: string) {
+  nextLinePaintStyle(uuid: string) {
     return (
       this.#uuidColorMap[uuid] ||
       (this.#uuidColorMap[uuid] = Object.assign({}, this.#linePaintDefault, { stroke: this.#lineColors[this.#lineCount++ % this.#maxCols] }))
@@ -147,7 +149,7 @@ export class Plumber {
     const defaults = {
       Container: container,
       Connector: ['Bezier', { curviness: 70 }],
-      PaintStyle: this.#nextLinePaintStyle('dummy'),
+      PaintStyle: this.nextLinePaintStyle('dummy'),
       HoverPaintStyle: {
         stroke: '#216477',
         strokeWidth: 4,
@@ -164,7 +166,7 @@ export class Plumber {
     for (const pipelineDataSource of this.pipelineModel.DataSources) {
       const domDataSource = this.jsPlumbRoot.querySelector<HTMLElement>('#' + dataSrcIdPrefix + pipelineDataSource.EntityGuid);
       if (!domDataSource) continue;
-      const dataSource = this.dataSources.find(ds => ds.PartAssemblyAndType === pipelineDataSource.PartAssemblyAndType);
+      const dataSource = findDefByType(this.dataSources, pipelineDataSource.PartAssemblyAndType);
       if (!dataSource) continue;
 
       if (this.pipelineModel.Pipeline.AllowEdit) {
@@ -186,14 +188,30 @@ export class Plumber {
       const outCount = dataSource.Out?.length ?? 0;
       l.a('dataSource.Out', { outCount, out: dataSource.Out });
       dataSource.Out?.forEach(name => {
-        this.#addEndpoint(domDataSource, name, false, pipelineDataSource, outCount);
+        this.addEndpoint(domDataSource, name, false, pipelineDataSource, outCount);
       });
+
+      // Add dynamic Out-Endpoints (if .OutMode is not static)
+      if (dataSource.OutMode != 'static') {
+        const dynOut = this.#endpoints.buildSourceEndpoint(pipelineDataSource.EntityGuid);
+        this.#instance.makeSource(domDataSource, dynOut, { filter: '.add-endpoint' });
+      }
+
+      // Add all in-Endpoints if OutMode is mirror-in
+      if (dataSource.OutMode === 'mirror-in') {
+        l.a('dataSource.OutMode', { outMode: dataSource.OutMode });
+        dataSource.In?.forEach(name => {
+          if (dataSource.Out?.some(outName => outName === name))
+            return;
+          // this.addEndpoint(domDataSource, name, false, pipelineDataSource, outCount);
+        });
+      }
 
       // Add In-Endpoints from Definition
       const inCount = dataSource.In?.length ?? 0;
       l.a('dataSource.In', { inCount, in: dataSource.In });
       dataSource.In?.forEach(name => {
-        this.#addEndpoint(domDataSource, name, true, pipelineDataSource, inCount);
+        this.addEndpoint(domDataSource, name, true, pipelineDataSource, inCount);
       });
 
       // Make DataSource a Target for new Endpoints (if .In is an Array)
@@ -203,68 +221,14 @@ export class Plumber {
         this.#instance.makeTarget(domDataSource, targetEndpointUnlimited);
       }
 
-      if (dataSource.DynamicOut)
-        this.#instance.makeSource(domDataSource, this.#endpoints.buildSourceEndpoint(pipelineDataSource.EntityGuid), { filter: '.add-endpoint' });
     }
     l.end();
   }
 
-  /** Create wires */
-  #initWirings() {
-    const l = this.log.fn('initWirings');
-    const wirings = this.pipelineModel.Pipeline.StreamWiring;
-    if (!wirings) return l.end('no wirings');
 
-    const inGroups = groupBy(wirings, wire => wire.To);
-    const outGroups = groupBy(wirings, wire => wire.From);
-
-    l.values({ inGroups, outGroups });
-
-    wirings.forEach(wire => {
-      // read connections from Pipeline
-      const sourceElementId = dataSrcIdPrefix + wire.From;
-      const fromUuid = sourceElementId + '_out_' + wire.Out;
-      const targetElementId = dataSrcIdPrefix + wire.To;
-      const toUuid = targetElementId + '_in_' + wire.In;
-
-      // Ensure In-Endpoint exist
-      if (!this.#instance.getEndpoint(fromUuid)) {
-        const domDataSource = this.jsPlumbRoot.querySelector<HTMLElement>('#' + sourceElementId);
-        if (!domDataSource) return;
-
-        const guid: string = domDataSource.id.replace(dataSrcIdPrefix, '');
-        const dataSource = this.pipelineModel.DataSources.find(pipeDataSource => pipeDataSource.EntityGuid === guid);
-        this.#addEndpoint(domDataSource, wire.Out, false, dataSource, outGroups[wire.From].length);
-      }
-
-      // Ensure Out-Endpoint exist
-      if (!this.#instance.getEndpoint(toUuid)) {
-        const domDataSource = this.jsPlumbRoot.querySelector<HTMLElement>('#' + targetElementId);
-        if (!domDataSource) return;
-
-        const guid: string = domDataSource.id.replace(dataSrcIdPrefix, '');
-        const dataSource = this.pipelineModel.DataSources.find(pipeDataSource => pipeDataSource.EntityGuid === guid);
-
-        // if (wire.In === "DEBUG") debugger;
-
-        this.#addEndpoint(domDataSource, wire.In, true, dataSource, inGroups[wire.To].length);
-      }
-
-      try {
-        this.#instance.connect({
-          uuids: [fromUuid, toUuid],
-          paintStyle: this.#nextLinePaintStyle(fromUuid),
-        });
-      } catch (e) {
-        console.error({ message: 'Connection failed', from: fromUuid, to: toUuid });
-      }
-    });
-    l.end();
-  }
-
-  #addEndpoint(domDataSource: HTMLElement, endpointName: string, isIn: boolean, queryDs: PipelineDataSource, count: number = 0) {
+  addEndpoint(domDataSource: HTMLElement, endpointName: string, isIn: boolean, queryDs: PipelineDataSource, count: number = 0) {
     const l = this.log.fnIf('addEndpoint', { endpointName, isIn, queryDs });
-    const dataSource = this.dataSources.find(d => d.PartAssemblyAndType === queryDs.PartAssemblyAndType);
+    const dataSource = findDefByType(this.dataSources, queryDs.PartAssemblyAndType);
     const connectionList = isIn ? dataSource.In : dataSource.Out;
     const hasDynamic = connectionList?.some(name => this.#endpoints.getEndpointInfo(name, false));
     // const count = connectionList?.length ?? -1;
@@ -340,7 +304,7 @@ export class Plumber {
       const pipelineDataSource = this.pipelineModel.DataSources.find(
         pipelineDS => pipelineDS.EntityGuid === domDataSource.id.replace(dataSrcIdPrefix, '')
       );
-      const dataSource = this.dataSources.find(ds => ds.PartAssemblyAndType === pipelineDataSource.PartAssemblyAndType);
+      const dataSource = findDefByType(this.dataSources, pipelineDataSource.PartAssemblyAndType);
       const label: string = info.targetEndpoint.getOverlay('endpointLabel').label;
       const isDynamic = !dataSource.In.some(name => this.#endpoints.getEndpointInfo(name, false).name === label);
       if (isDynamic)
@@ -372,10 +336,3 @@ export class Plumber {
   }
 
 }
-
-// https://stackoverflow.com/questions/14446511/most-efficient-method-to-groupby-on-an-array-of-objects
-const groupBy = <T, K extends keyof any>(arr: T[], key: (i: T) => K) =>
-  arr.reduce((groups, item) => {
-    (groups[key(item)] ||= []).push(item);
-    return groups;
-  }, {} as Record<K, T[]>);
