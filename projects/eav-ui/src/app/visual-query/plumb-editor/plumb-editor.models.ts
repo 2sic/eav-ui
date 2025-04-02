@@ -1,7 +1,4 @@
 
-export type PlumbUntypedAny = any;
-
-
 export interface TypeInfos {
   [guid: string]: TypeInfo;
 }

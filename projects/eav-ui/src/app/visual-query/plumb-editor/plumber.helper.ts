@@ -6,8 +6,7 @@ import { DataSource, PipelineDataSource, PipelineModel, PipelineResult, Pipeline
 import { WindowWithJsPlumb } from '../window';
 import { findDefByType } from './datasource.helpers';
 import { EndpointsHelper } from './endpoints.helper';
-import { JsPlumbConnection, JsPlumbEndpoint, JsPlumbOverlay } from './jsplumb.models';
-import { PlumbUntypedAny } from './plumb-editor.models';
+import { JsPlumbConnection, JsPlumbEndpoint, JsPlumbInstance, JsPlumbOverlay } from './jsplumb.models';
 import { RenameStreamComponent } from './rename-stream/rename-stream.component';
 import { RenameStreamDialogData } from './rename-stream/rename-stream.models';
 import { WiringsHelper } from './wirings.helper';
@@ -28,7 +27,7 @@ export class Plumber {
 
   log = classLogEnabled({Plumber}, logSpecs);
 
-  #instance: PlumbUntypedAny;
+  #instance: JsPlumbInstance;
   #lineCount = 0;
   #linePaintDefault = {
     stroke: '#61B7CF',
@@ -67,7 +66,7 @@ export class Plumber {
     this.#instance.batch(() => {
       this.#initDomDataSources();
       new WiringsHelper(this, this.#instance, this.jsPlumbRoot, this.pipelineModel, this.dataSources).initWirings();
-      this.#bindEvents();
+      this.#bindAttachAndDetachEvents();
     });
     // spm NOTE: repaint after initial paint fixes:
     // Error: <svg> attribute width: Expected length, "-Infinity".
@@ -90,15 +89,14 @@ export class Plumber {
   }
 
   getAllConnections() {
-    const connectionInfos: StreamWire[] = this.#instance.getAllConnections().map((connection: JsPlumbConnection) => {
-      const wire: StreamWire = {
+    const connectionInfos: StreamWire[] = this.#instance.getAllConnections()
+      .map((connection: JsPlumbConnection) => ({
         From: connection.sourceId.replace(dataSrcIdPrefix, ''),
         Out: connection.endpoints[0].getOverlay('endpointLabel').label,
         To: connection.targetId.replace(dataSrcIdPrefix, ''),
         In: connection.endpoints[1].getOverlay('endpointLabel').label,
-      };
-      return wire;
-    });
+      } satisfies StreamWire)
+    );
     return connectionInfos;
   }
 
@@ -122,8 +120,8 @@ export class Plumber {
 
       const sEndp: JsPlumbEndpoint = this.#instance.getEndpoint(fromUuid);
       sEndp?.connections
-        ?.filter((connection: JsPlumbConnection) => connection.endpoints[1].getUuid() === toUuid)
-        ?.forEach((connection: JsPlumbConnection) => {
+        ?.filter((connection) => connection.endpoints[1].getUuid() === toUuid)
+        ?.forEach((connection) => {
           const label = !stream.Error ? stream.Count.toString() : '';
           const cssClass = 'streamEntitiesCount ' + (!stream.Error ? '' : 'streamEntitiesError');
           connection.setLabel({
@@ -174,7 +172,8 @@ export class Plumber {
       if (this.pipelineModel.Pipeline.AllowEdit) {
         // WARNING! Must happen before instance.makeSource()
         this.#instance.draggable(domDataSource, {
-          grid: [20, 20], stop: (event: PlumbUntypedAny) => {
+          grid: [20, 20],
+          stop: (event: { el: HTMLElement, finalPos: number[] }) => {
             const element: HTMLElement = event.el;
             const pipelineDataSourceGuid: string = element.id.replace(dataSrcIdPrefix, '');
             const position: VisualDesignerData = {
@@ -304,23 +303,23 @@ export class Plumber {
     this.changeDetectorRef.markForCheck();
   }
 
-  #bindEvents() {
-    this.#instance.bind('connectionDetached', (info: PlumbUntypedAny) => {
+  #bindAttachAndDetachEvents() {
+    this.#instance.bind('connectionDetached', (info: JsPlumbConnection) => {
       if (this.#bulkDelete)
         return;
-      const domDataSource: HTMLElement = info.target;
+      const domDataSource = info.target;
       const pipelineDataSource = this.pipelineModel.DataSources.find(
         pipelineDS => pipelineDS.EntityGuid === domDataSource.id.replace(dataSrcIdPrefix, '')
       );
       const dataSource = findDefByType(this.dataSources, pipelineDataSource.PartAssemblyAndType);
-      const label: string = info.targetEndpoint.getOverlay('endpointLabel').label;
+      const label = info.targetEndpoint.getOverlay('endpointLabel').label;
       const isDynamic = !dataSource.In.some(name => this.#endpoints.getEndpointInfo(name, false).name === label);
       if (isDynamic)
         this.#instance.deleteEndpoint(info.targetEndpoint);
       setTimeout(() => { this.onConnectionsChanged(); });
     });
 
-    this.#instance.bind('connection', (info: PlumbUntypedAny) => {
+    this.#instance.bind('connection', (info: JsPlumbConnection) => {
       if (info.sourceId === info.targetId) {
         setTimeout(() => {
           this.#instance.deleteConnection(info.connection, { fireEvent: false });
@@ -328,17 +327,17 @@ export class Plumber {
         });
         return;
       }
-      const endpointLabel: JsPlumbOverlay = info.targetEndpoint.getOverlay('endpointLabel');
-      const labelPrompt: string = endpointLabel.getLabel();
+      const endpointOverlay = info.targetEndpoint.getOverlay('endpointLabel');
+      const labelPrompt = endpointOverlay.getLabel();
       const endpoints: JsPlumbEndpoint[] = this.#instance.getEndpoints(info.target.id);
       const targetEndpointHasSameLabel = endpoints.some(endpoint => {
-        const label: string = endpoint.getOverlay('endpointLabel').getLabel();
+        const label = endpoint.getOverlay('endpointLabel').getLabel();
         return label === labelPrompt &&
           info.targetEndpoint.id !== endpoint.id &&
           (endpoint.canvas as HTMLCanvasElement).classList.contains('targetEndpoint');
       });
       if (targetEndpointHasSameLabel)
-        endpointLabel.setLabel(`PleaseRename${Math.floor(Math.random() * 99999)}`);
+        endpointOverlay.setLabel(`PleaseRename${Math.floor(Math.random() * 99999)}`);
       setTimeout(() => { this.onConnectionsChanged(); });
     });
   }

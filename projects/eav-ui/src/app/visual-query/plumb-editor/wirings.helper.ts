@@ -1,7 +1,7 @@
 import { classLogEnabled } from '../../shared/logging';
 import { DataSource, PipelineDataSource, PipelineModel } from '../models';
 import { findDefByType } from './datasource.helpers';
-import { PlumbUntypedAny } from './plumb-editor.models';
+import { JsPlumbInstance } from './jsplumb.models';
 import { dataSrcIdPrefix, Plumber } from './plumber.helper';
 
 const logSpecs = {
@@ -17,7 +17,7 @@ export class WiringsHelper {
 
   constructor(
     private plumber: Plumber,
-    private instance: PlumbUntypedAny, 
+    private instance: JsPlumbInstance, 
     private jsPlumbRoot: HTMLElement, 
     private pipelineModel: PipelineModel,
     private dataSources: DataSource[]) {
