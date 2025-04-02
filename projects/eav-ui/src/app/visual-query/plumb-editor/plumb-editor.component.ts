@@ -14,6 +14,7 @@ import { classLog } from '../../shared/logging';
 import { PipelineDataSource, PipelineResultStream, VisualDesignerData } from '../models';
 import { QueryDefinitionService } from '../services/query-definition.service';
 import { VisualQueryStateService } from '../services/visual-query.service';
+import { findDefByType } from './datasource.helpers';
 import { calculateTypeInfos } from './plumb-editor.helpers';
 import { dataSrcIdPrefix, Plumber } from './plumber.helper';
 
@@ -158,7 +159,7 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
   }
 
   getTypeName(partAssemblyAndType: string) {
-    const dataSource = this.vsSvc.dataSources().find(ds => ds.PartAssemblyAndType === partAssemblyAndType);
+    const dataSource = findDefByType(this.vsSvc.dataSources(), partAssemblyAndType);
     return this.#queryDefinitionSvc.typeNameFilter(dataSource?.TypeNameForUi || partAssemblyAndType, 'className');
   }
 

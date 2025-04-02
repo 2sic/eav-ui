@@ -8,12 +8,14 @@ export interface TypeInfos {
 
 export interface TypeInfo {
   EnableConfig?: boolean;
-  DynamicIn?: boolean;
-  DynamicOut?: boolean;
+  DynamicIn: boolean;
+  DynamicOut: boolean;
   HelpLink?: string;
   Icon: string;
   Name: string;
   UiHint: string;
+
+  outMode: string;
 }
 
 export interface GuiTypes {

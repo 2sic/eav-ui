@@ -18,6 +18,7 @@ import { JsonHelpers } from '../../shared/helpers/json.helpers';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { ServiceBase } from '../../shared/services/service-base';
 import { DataSource, DataSourceConfig, DataSourceConfigs, DebugStreamInfo, PipelineDataSource, PipelineModel, PipelineResult, PipelineResultStream, StreamWire, VisualDesignerData } from '../models';
+import { findDefByType } from '../plumb-editor/datasource.helpers';
 import { QueryResultComponent } from '../query-result/query-result.component';
 import { QueryResultDialogData } from '../query-result/query-result.models';
 import { StreamErrorResultComponent } from '../stream-error-result/stream-error-result.component';
@@ -164,12 +165,15 @@ export class VisualQueryStateService extends ServiceBase implements OnDestroy {
   #calculateDataSourceConfigs(dataSources: PipelineDataSource[]) {
     const dataSourceConfigs: DataSourceConfigs = {};
     dataSources.forEach(dataSource => {
-      if (dataSource.EntityId == null) return;
+      if (dataSource.EntityId == null)
+        return;
       dataSourceConfigs[dataSource.EntityId] = [];
       dataSource.Metadata?.forEach(metadataItem => {
         Object.entries(metadataItem).forEach(([attributeName, attributeValue]) => {
-          if (attributeValue == null || attributeValue === '') return;
-          if (['Created', 'Guid', 'Id', 'Modified', 'Title', '_Type'].includes(attributeName)) return;
+          if (attributeValue == null || attributeValue === '')
+            return;
+          if (['Created', 'Guid', 'Id', 'Modified', 'Title', '_Type'].includes(attributeName))
+            return;
           if (Array.isArray(attributeValue) && attributeValue[0]?.Title !== null && attributeValue[0]?.Id !== null) {
             attributeValue = `${attributeValue[0].Title} (${attributeValue[0].Id})`;
           }
@@ -185,7 +189,7 @@ export class VisualQueryStateService extends ServiceBase implements OnDestroy {
   }
 
   editDataSource(pipelineDataSource: PipelineDataSource) {
-    const dataSource = this.dataSources().find(ds => ds.PartAssemblyAndType === pipelineDataSource.PartAssemblyAndType);
+    const dataSource = findDefByType(this.dataSources(), pipelineDataSource.PartAssemblyAndType);
     const contentTypeName = dataSource.ContentType;
     const { targetType, keyType } = eavConstants.metadata.entity;
     const key = pipelineDataSource.EntityGuid;
@@ -295,9 +299,9 @@ export class VisualQueryStateService extends ServiceBase implements OnDestroy {
         this.snackBar.open('Query reloaded', null, { duration: 2000 });
 
       this.#titleSvc.setTitle(`${pipelineModel.Pipeline.Name} - Visual Query`);
-      if (refreshPipeline)
-      this.pipelineModel.set(pipelineModel);
 
+      if (refreshPipeline)
+        this.pipelineModel.set(pipelineModel);
 
       if (refreshDataSourceConfigs)
         this.#calculateDataSourceConfigs(pipelineModel.DataSources);
