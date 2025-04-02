@@ -1,4 +1,5 @@
 import { Of } from "../../../../../core";
+import { DataSource } from '../../visual-query/models/data-sources.model';
 
 export const MetadataKeyTypes = {
   Guid: 'guid',
@@ -29,6 +30,39 @@ export interface MetadataKeyDefinition {
   keyType: Of<typeof MetadataKeyTypes>;
   hint?: string;
 }
+
+/** Prepare for reuse later */
+const outDataSource = {
+  Description: 'The template/script which will show this data',
+  EntityGuid: 'Out',
+  In: ['Default', 'Header'],
+  Name: '2sxc Target (View or API)',
+  PartAssemblyAndType: 'SexyContentTemplate',
+  PrimaryType: 'Target',
+  VisualDesignerData: { Top: 20, Left: 200, Width: 700 },
+};
+
+const dataSourceDifficulties = {
+  default: 100,
+  advanced: 200,
+};
+
+const outFinalTarget: DataSource = {
+  ContentType: undefined,
+  Difficulty: dataSourceDifficulties.default,
+  DynamicIn: true,
+  OutMode: 'static',
+  EnableConfig: undefined,
+  HelpLink: undefined,
+  Icon: undefined,
+  In: outDataSource.In,
+  Name: outDataSource.Name,
+  Out: undefined,
+  PartAssemblyAndType: outDataSource.PartAssemblyAndType,
+  PrimaryType: outDataSource.PrimaryType,
+  TypeNameForUi: undefined,
+  UiHint: undefined,
+};
 
 
 export const eavConstants = {
@@ -100,20 +134,13 @@ export const eavConstants = {
     imageDecorator: 'ImageDecorator',
   },
 
+
+
   pipelineDesigner: {
-    dataSourceDifficulties: {
-      default: 100,
-      advanced: 200,
-    },
-    outDataSource: {
-      Description: 'The template/script which will show this data',
-      EntityGuid: 'Out',
-      In: ['Default', 'Header'],
-      Name: '2sxc Target (View or API)',
-      PartAssemblyAndType: 'SexyContentTemplate',
-      PrimaryType: 'Target',
-      VisualDesignerData: { Top: 20, Left: 200, Width: 700 },
-    },
+    dataSourceDifficulties,
+    outDataSource,
+    /** Dummy target data */
+    outFinalTarget,
     defaultPipeline: {
       dataSources: [
         {
