@@ -1,14 +1,15 @@
 import { classLogEnabled } from '../../shared/logging';
-import { DataSource, PipelineDataSource, PipelineModel, StreamWire } from '../models';
+import { DataSource, PipelineDataSource, PipelineModel } from '../models';
 import { findDefByType } from './datasource.helpers';
-import { PlumbType } from './plumb-editor.models';
+import { PlumbUntypedAny } from './plumb-editor.models';
 import { dataSrcIdPrefix, Plumber } from './plumber.helper';
 
 const logSpecs = {
   all: false,
   initWirings: true,
-  ensureWireEndpointExists: false,
-  findDataSourceInDom: false,
+  ensureWireEndpointExists: true,
+  findDataSourceInDom: true,
+  fields: ['TestIn2'],
 }
 
 export class WiringsHelper {
@@ -16,7 +17,7 @@ export class WiringsHelper {
 
   constructor(
     private plumber: Plumber,
-    private instance: PlumbType, 
+    private instance: PlumbUntypedAny, 
     private jsPlumbRoot: HTMLElement, 
     private pipelineModel: PipelineModel,
     private dataSources: DataSource[]) {
@@ -36,19 +37,19 @@ export class WiringsHelper {
     wirings.forEach(wire => {
       // read connections from Pipeline
       const sourceElementId = dataSrcIdPrefix + wire.From;
-      const fromUuid = sourceElementId + '_out_' + wire.Out;
+      const outDomId = sourceElementId + '_out_' + wire.Out;
       const targetElementId = dataSrcIdPrefix + wire.To;
-      const toUuid = targetElementId + '_in_' + wire.In;
+      const inDomId = targetElementId + '_in_' + wire.In;
 
       // 2025-04-02 2dm standardized / reduced the code
 
       // Ensure Out-Endpoint exist
       const outWireLength = outGroups[wire.From].length;
-      this.#ensureWireEndpointExists(fromUuid, sourceElementId, wire, false, outWireLength);
+      this.#ensureWireEndpointExists(outDomId, sourceElementId, wire.Out, false, outWireLength);
 
       // Ensure In-Endpoint exist
       const inWireLength = inGroups[wire.To].length;
-      const set = this.#ensureWireEndpointExists(toUuid, targetElementId, wire, true, inWireLength);
+      const set = this.#ensureWireEndpointExists(inDomId, targetElementId, wire.In, true, inWireLength);
 
       // Try to add additional connections
       // Note that the set is null for all "Default" connections, since they already exist
@@ -56,8 +57,9 @@ export class WiringsHelper {
         // l.a('2dm set not null ' + set.dataSource.Name, {set});
         var def = findDefByType(this.dataSources, set.dataSource.PartAssemblyAndType);
         if (def.OutMode == 'mirror-in') {
-          l.a(`Will mirror in for ${toUuid}`, {set, def});
-          this.#ensureWireEndpointExists(toUuid, targetElementId, wire, false, inWireLength);
+          l.a(`Will mirror in for ${inDomId}`, {set, def});
+          const outDomIdOfIn = targetElementId + '_out_' + wire.In;
+          this.#ensureWireEndpointExists(outDomIdOfIn, targetElementId, wire.In, false, inWireLength);
         }
       } 
       // else console.log('2dm set null');
@@ -86,31 +88,31 @@ export class WiringsHelper {
 
       try {
         this.instance.connect({
-          uuids: [fromUuid, toUuid],
-          paintStyle: this.plumber.nextLinePaintStyle(fromUuid),
+          uuids: [outDomId, inDomId],
+          paintStyle: this.plumber.nextLinePaintStyle(outDomId),
         });
       } catch (e) {
-        console.error({ message: 'Connection failed', from: fromUuid, to: toUuid });
+        console.error({ message: 'Connection failed', from: outDomId, to: inDomId });
       }
     });
     l.end();
   }
   
 
-  #ensureWireEndpointExists(endpointId: string, sourceElementId: string, wire: StreamWire, isIn: boolean, count: number) : DataSourceSet | null {
-    const l = this.log.fnIf('ensureWireEndpointExists', { endpointId, sourceElementId, wire, isIn, count });
+  #ensureWireEndpointExists(endpointId: string, sourceElementId: string, name: string, isIn: boolean, count: number) : DataSourceSet | null {
+    const l = this.log.fnIfInList('ensureWireEndpointExists', 'fields', name, { endpointId, sourceElementId, name, isIn, count });
     // Find data source infos & DOM, if not found, do nothing
-    const set = this.#findDataSourceInDom(endpointId, sourceElementId);
+    const set = this.#findDataSourceInDom(endpointId, sourceElementId, name);
     if (set == null)
       return l.r(set, "set null");
 
-    const name = isIn ? wire.In : wire.Out;
+    // const name = isIn ? wire.In : wire.Out;
     this.plumber.addEndpoint(set.domDataSource, name, isIn, set.dataSource, count);
-    return l.r(set);
+    return l.r(set, 'ok');
   }
 
-  #findDataSourceInDom(endpointId: string, sourceElementId: string) : DataSourceSet | null {
-    const l = this.log.fnIf('findDataSourceInDom', { endpointId, sourceElementId });
+  #findDataSourceInDom(endpointId: string, sourceElementId: string, name: string) : DataSourceSet | null {
+    const l = this.log.fnIfInList('findDataSourceInDom', 'fields', name, { endpointId, sourceElementId, name });
     // if exists, do nothing
     if (this.instance.getEndpoint(endpointId))
       return l.r(null, "endpoint exists, exit");

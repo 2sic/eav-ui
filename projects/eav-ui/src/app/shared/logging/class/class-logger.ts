@@ -21,7 +21,14 @@ export interface ClassLogger<TSpecs extends unknown = any> {
   fn(name: string, data?: RecordOrGenerator, message?: string): FnLogger;
   fnCond(condition: boolean, name: string, data?: RecordOrGenerator, message?: string): FnLogger;
   fnIf(key: BooleanKeys<TSpecs> & string, data?: RecordOrGenerator, message?: string): FnLogger;
-  fnIfInList(key: BooleanKeys<TSpecs> & string, list: StringArrayKeys<TSpecs>, subKey: string, data?: RecordOrGenerator, message?: string): FnLogger;
+  fnIfInList(
+    key: BooleanKeys<TSpecs> & string,
+    /** typically 'fields' - must be an array property of the specs */
+    list: StringArrayKeys<TSpecs>,
+    subKey: string,
+    data?: RecordOrGenerator,
+    message?: string
+  ): FnLogger;
 }
 
 export type RecordOrGenerator = Record<string, unknown> | (() => Record<string, unknown>);

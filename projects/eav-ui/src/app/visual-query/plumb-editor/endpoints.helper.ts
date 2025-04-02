@@ -1,5 +1,6 @@
 import { classLog } from '../../shared/logging';
-import { EndpointInfo, PlumbType } from './plumb-editor.models';
+import { JsPlumbOverlay } from './jsplumb.models';
+import { EndpointInfo } from './plumb-editor.models';
 import { Plumber } from './plumber.helper';
 
 const logSpecs = {
@@ -60,7 +61,7 @@ export class EndpointsHelper {
       anchor: ['Continuous', { faces: ['top'] }],
       overlays: this.getEndpointOverlays(isSource),
       events: {
-        click: (endpointOrOverlay: PlumbType) => this.plumb.onChangeLabel(endpointOrOverlay, isSource, pipelineDataSourceGuid),
+        click: (endpointOrOverlay: JsPlumbOverlay) => this.plumb.onChangeLabel(endpointOrOverlay, isSource, pipelineDataSourceGuid),
       },
     };
     return l.r(sourceEndpoint);
@@ -78,7 +79,7 @@ export class EndpointsHelper {
       overlays: this.getEndpointOverlays(isSource),
       dropOptions: { hoverClass: 'hover', activeClass: 'active' },
       events: {
-        click: (endpointOrOverlay: PlumbType) => this.plumb.onChangeLabel(endpointOrOverlay, isSource, pipelineDataSourceGuid),
+        click: (endpointOrOverlay: JsPlumbOverlay) => this.plumb.onChangeLabel(endpointOrOverlay, isSource, pipelineDataSourceGuid),
       },
     };
     return l.r(targetEndpoint);

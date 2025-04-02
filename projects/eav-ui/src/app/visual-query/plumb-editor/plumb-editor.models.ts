@@ -1,5 +1,5 @@
 
-export type PlumbType = any;
+export type PlumbUntypedAny = any;
 
 
 export interface TypeInfos {

@@ -1,19 +1,21 @@
 import { ChangeDetectorRef, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { eavConstants } from '../../shared/constants/eav.constants';
-import { classLog } from '../../shared/logging';
+import { classLogEnabled } from '../../shared/logging';
 import { DataSource, PipelineDataSource, PipelineModel, PipelineResult, PipelineResultStream, StreamWire, VisualDesignerData } from '../models';
 import { WindowWithJsPlumb } from '../window';
 import { findDefByType } from './datasource.helpers';
 import { EndpointsHelper } from './endpoints.helper';
-import { PlumbType } from './plumb-editor.models';
+import { JsPlumbConnection, JsPlumbEndpoint, JsPlumbOverlay } from './jsplumb.models';
+import { PlumbUntypedAny } from './plumb-editor.models';
 import { RenameStreamComponent } from './rename-stream/rename-stream.component';
 import { RenameStreamDialogData } from './rename-stream/rename-stream.models';
 import { WiringsHelper } from './wirings.helper';
 
 const logSpecs = {
-  all: true,
+  all: false,
   addEndpoint: true,
+  fields: ['TestIn2'],
 }
 
 declare const window: WindowWithJsPlumb;
@@ -24,9 +26,9 @@ const endPointsWhereWeRotate = 3;
 
 export class Plumber {
 
-  log = classLog({Plumber}, logSpecs);
+  log = classLogEnabled({Plumber}, logSpecs);
 
-  #instance: PlumbType;
+  #instance: PlumbUntypedAny;
   #lineCount = 0;
   #linePaintDefault = {
     stroke: '#61B7CF',
@@ -88,7 +90,7 @@ export class Plumber {
   }
 
   getAllConnections() {
-    const connectionInfos: StreamWire[] = this.#instance.getAllConnections().map((connection: PlumbType) => {
+    const connectionInfos: StreamWire[] = this.#instance.getAllConnections().map((connection: JsPlumbConnection) => {
       const wire: StreamWire = {
         From: connection.sourceId.replace(dataSrcIdPrefix, ''),
         Out: connection.endpoints[0].getOverlay('endpointLabel').label,
@@ -102,7 +104,7 @@ export class Plumber {
 
   getStreamsOut() {
     const streamsOut: string[] = [];
-    this.#instance.selectEndpoints({ target: dataSrcIdPrefix + 'Out' }).each((endpoint: PlumbType) => {
+    this.#instance.selectEndpoints({ target: dataSrcIdPrefix + 'Out' }).each((endpoint: JsPlumbEndpoint) => {
       streamsOut.push(endpoint.getOverlay('endpointLabel').label);
     });
     const streamsOutStr = streamsOut.join(',');
@@ -118,17 +120,17 @@ export class Plumber {
       const fromUuid = sourceElementId + '_out_' + stream.SourceOut;
       const toUuid = targetElementId + '_in_' + stream.TargetIn;
 
-      const sEndp: PlumbType = this.#instance.getEndpoint(fromUuid);
+      const sEndp: JsPlumbEndpoint = this.#instance.getEndpoint(fromUuid);
       sEndp?.connections
-        ?.filter((connection: PlumbType) => connection.endpoints[1].getUuid() === toUuid)
-        ?.forEach((connection: PlumbType) => {
+        ?.filter((connection: JsPlumbConnection) => connection.endpoints[1].getUuid() === toUuid)
+        ?.forEach((connection: JsPlumbConnection) => {
           const label = !stream.Error ? stream.Count.toString() : '';
           const cssClass = 'streamEntitiesCount ' + (!stream.Error ? '' : 'streamEntitiesError');
           connection.setLabel({
             label,
             cssClass,
             events: {
-              click: (overlay: PlumbType) => {
+              click: () => {
                 if (!this.pipelineModel.Pipeline.AllowEdit) return;
                 this.onDebugStream(stream);
               },
@@ -172,7 +174,7 @@ export class Plumber {
       if (this.pipelineModel.Pipeline.AllowEdit) {
         // WARNING! Must happen before instance.makeSource()
         this.#instance.draggable(domDataSource, {
-          grid: [20, 20], stop: (event: PlumbType) => {
+          grid: [20, 20], stop: (event: PlumbUntypedAny) => {
             const element: HTMLElement = event.el;
             const pipelineDataSourceGuid: string = element.id.replace(dataSrcIdPrefix, '');
             const position: VisualDesignerData = {
@@ -227,14 +229,16 @@ export class Plumber {
 
 
   addEndpoint(domDataSource: HTMLElement, endpointName: string, isIn: boolean, queryDs: PipelineDataSource, count: number = 0) {
-    const l = this.log.fnIf('addEndpoint', { endpointName, isIn, queryDs });
-    const dataSource = findDefByType(this.dataSources, queryDs.PartAssemblyAndType);
-    const connectionList = isIn ? dataSource.In : dataSource.Out;
+    const l = this.log.fnIfInList('addEndpoint', 'fields', endpointName, { endpointName, isIn, queryDs });
+    const dsDefinition = findDefByType(this.dataSources, queryDs.PartAssemblyAndType);
+    const connectionList = isIn
+      ? dsDefinition.In
+      : dsDefinition.Out;
     const hasDynamic = connectionList?.some(name => this.#endpoints.getEndpointInfo(name, false));
     // const count = connectionList?.length ?? -1;
     const endpointInfo = this.#endpoints.getEndpointInfo(endpointName, hasDynamic);
 
-    l.a(`endpointInfo ${count}`, { dataSource, connectionList, isDynamic: hasDynamic, count, endpointInfo });
+    l.a(`endpointInfo ${count}`, { dataSource: dsDefinition, connectionList, hasDynamic, count, endpointInfo });
 
     // if (endpointName === "DEBUG") debugger;
 
@@ -265,7 +269,8 @@ export class Plumber {
         || queryDs.EntityGuid === eavConstants.pipelineDesigner.outDataSource.EntityGuid
     };
 
-    const endpoint: PlumbType = this.#instance.addEndpoint(domDataSource, model, params);
+    // Add endpoint and add label and css in case it must be angled
+    const endpoint: JsPlumbEndpoint = this.#instance.addEndpoint(domDataSource, model, params);
     const overlay = endpoint.getOverlay('endpointLabel');
     overlay.setLabel(endpointInfo.name);
     if (angled)
@@ -273,11 +278,13 @@ export class Plumber {
     l.end("end", {count, angled, overlay});
   }
 
-  public onChangeLabel(endpointOrOverlay: PlumbType, isSource: boolean, pipelineDataSourceGuid: string) {
+  public onChangeLabel(endpointOrOverlay: JsPlumbEndpoint | JsPlumbOverlay, isSource: boolean, pipelineDataSourceGuid: string) {
     if (!this.pipelineModel.Pipeline.AllowEdit)
       return;
 
-    const overlay: PlumbType = endpointOrOverlay.getOverlay ? endpointOrOverlay.getOverlay('endpointLabel') : endpointOrOverlay;
+    const overlay: JsPlumbOverlay = (endpointOrOverlay as JsPlumbEndpoint).getOverlay
+      ? (endpointOrOverlay as JsPlumbEndpoint).getOverlay('endpointLabel')
+      : endpointOrOverlay as JsPlumbOverlay;
     const data: RenameStreamDialogData = {
       pipelineDataSourceGuid,
       isSource,
@@ -298,8 +305,9 @@ export class Plumber {
   }
 
   #bindEvents() {
-    this.#instance.bind('connectionDetached', (info: PlumbType) => {
-      if (this.#bulkDelete) return;
+    this.#instance.bind('connectionDetached', (info: PlumbUntypedAny) => {
+      if (this.#bulkDelete)
+        return;
       const domDataSource: HTMLElement = info.target;
       const pipelineDataSource = this.pipelineModel.DataSources.find(
         pipelineDS => pipelineDS.EntityGuid === domDataSource.id.replace(dataSrcIdPrefix, '')
@@ -312,7 +320,7 @@ export class Plumber {
       setTimeout(() => { this.onConnectionsChanged(); });
     });
 
-    this.#instance.bind('connection', (info: PlumbType) => {
+    this.#instance.bind('connection', (info: PlumbUntypedAny) => {
       if (info.sourceId === info.targetId) {
         setTimeout(() => {
           this.#instance.deleteConnection(info.connection, { fireEvent: false });
@@ -320,9 +328,9 @@ export class Plumber {
         });
         return;
       }
-      const endpointLabel: PlumbType = info.targetEndpoint.getOverlay('endpointLabel');
+      const endpointLabel: JsPlumbOverlay = info.targetEndpoint.getOverlay('endpointLabel');
       const labelPrompt: string = endpointLabel.getLabel();
-      const endpoints: PlumbType[] = this.#instance.getEndpoints(info.target.id);
+      const endpoints: JsPlumbEndpoint[] = this.#instance.getEndpoints(info.target.id);
       const targetEndpointHasSameLabel = endpoints.some(endpoint => {
         const label: string = endpoint.getOverlay('endpointLabel').getLabel();
         return label === labelPrompt &&
