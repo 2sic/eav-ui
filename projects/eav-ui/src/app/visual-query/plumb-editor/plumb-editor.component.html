@@ -5,7 +5,7 @@
       @for (dataSource of visQuerySvc.pipelineModel().DataSources; track dataSource.EntityGuid) {
         <div
           #domDataSource
-          [id]="dataSrcIdPrefix + dataSource.EntityGuid"
+          [id]="domIdOfGuid(dataSource.EntityGuid)"
           class="dataSource"
           [ngStyle]="{
             top: dataSource.VisualDesignerData.Top + 'px',

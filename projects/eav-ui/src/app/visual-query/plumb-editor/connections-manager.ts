@@ -1,9 +1,9 @@
 import { classLogEnabled } from '../../shared/logging';
 import { DataSource, PipelineModel, StreamWire } from '../models';
 import { findDefByType, getEndpointLabel } from './datasource.helpers';
-import { EndpointsHelper } from './endpoints.helper';
+import { EndpointDefinitionsService } from './endpoint-definitions';
 import { JsPlumbConnection, JsPlumbInstance } from './jsplumb.models';
-import { dataSrcIdPrefix } from './plumber-constants';
+import { guidOfDomId } from './plumber-constants';
 
 const logSpecs = {
   all: false,
@@ -19,7 +19,7 @@ export class ConnectionsManager {
     private instance: JsPlumbInstance, 
     private pipelineModel: PipelineModel,
     private dataSources: DataSource[],
-    private endpoints: EndpointsHelper,
+    private endpointsSvc: EndpointDefinitionsService,
     private onConnectionsChanged: () => void,
   ) { }
 
@@ -34,9 +34,9 @@ export class ConnectionsManager {
   getAll(): StreamWire[] {
     const connectionInfos: StreamWire[] = this.instance.getAllConnections()
       .map((connection: JsPlumbConnection) => ({
-        From: connection.sourceId.replace(dataSrcIdPrefix, ''),
+        From: guidOfDomId(connection.sourceId),
         Out: getEndpointLabel(connection.endpoints[0]),
-        To: connection.targetId.replace(dataSrcIdPrefix, ''),
+        To: guidOfDomId(connection.targetId),
         In: getEndpointLabel(connection.endpoints[1]),
       } satisfies StreamWire)
     );
@@ -51,11 +51,11 @@ export class ConnectionsManager {
 
     const domDataSource = info.target;
     const pipelineDataSource = this.pipelineModel.DataSources.find(
-      pipelineDS => pipelineDS.EntityGuid === domDataSource.id.replace(dataSrcIdPrefix, '')
+      pipelineDS => pipelineDS.EntityGuid === guidOfDomId(domDataSource.id)
     );
     const dataSource = findDefByType(this.dataSources, pipelineDataSource.PartAssemblyAndType);
     const label = getEndpointLabel(info.targetEndpoint);
-    const isDynamic = !dataSource.In.some(name => this.endpoints.getEndpointInfo(name, false).name === label);
+    const isDynamic = !dataSource.In.some(name => this.endpointsSvc.getInfo(name, false).name === label);
     if (isDynamic)
       this.instance.deleteEndpoint(info.targetEndpoint);
     setTimeout(() => this.onConnectionsChanged());

@@ -22,6 +22,10 @@ export interface JsPlumbEndpoint {
   canvas: HTMLCanvasElement;
   id: string;
   delete(): void;
+  isTarget: boolean;
+  isSource: boolean;
+  addClass(className: string): void;
+  removeClass(className: string): void;
 }
 
 export interface JsPlumbOverlay {
@@ -42,7 +46,7 @@ export interface JsPlumbInstance {
   reset(): void;
   unbindContainer(): void;
   getAllConnections(): JsPlumbConnection[];
-  selectEndpoints(params: { element?: string, target?: string })
+  selectEndpoints(params: { element?: string, target?: string | boolean })
   : JsPlumbEndpoint[] & {
     delete(): void,
     each(callback: (endpoint: JsPlumbEndpoint) => void): void

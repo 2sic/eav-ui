@@ -16,7 +16,7 @@ import { QueryDefinitionService } from '../services/query-definition.service';
 import { VisualQueryStateService } from '../services/visual-query.service';
 import { findDefByType } from './datasource.helpers';
 import { calculateTypeInfos } from './plumb-editor.helpers';
-import { dataSrcIdPrefix } from './plumber-constants';
+import { domIdOfGuid } from './plumber-constants';
 import { Plumber } from './plumber.helper';
 
 const logSpecs = {
@@ -44,7 +44,8 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
   @ViewChild('domRoot') private domRootRef: ElementRef<HTMLDivElement>;
   @ViewChildren('domDataSource') private domDataSourcesRef: QueryList<ElementRef<HTMLDivElement>>;
 
-  dataSrcIdPrefix = dataSrcIdPrefix;
+  /** provide this fn to the UI */
+  domIdOfGuid = domIdOfGuid;
   hardReset = false;
 
   #plumber: Plumber;
@@ -119,12 +120,15 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
           this.domRootRef.nativeElement,
           this.visQuerySvc.pipelineModel(),
           this.visQuerySvc.dataSources(),
-          () => this.onConnectionsChanged(), //.bind(this),
+          () => this.onConnectionsChanged(),
           this.onDragend.bind(this),
           this.onDebugStream.bind(this),
-          this.matDialog,
-          this.viewContainerRef,
-          this.changeDetectorRef,
+          {
+            matDialog: this.matDialog,
+            viewContainerRef: this.viewContainerRef,
+            changeDetectorRef: this.changeDetectorRef,
+            onConnectionsChanged: () => this.onConnectionsChanged(),
+          },
         );
       })
     );
@@ -187,14 +191,16 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
 
   editName(dataSource: PipelineDataSource) {
     const newName = prompt('Rename data source', dataSource.Name)?.trim();
-    if (newName == null || newName === '') return;
+    if (newName == null || newName === '')
+      return;
 
     this.visQuerySvc.renameDataSource(dataSource.EntityGuid, newName);
   }
 
   editDescription(dataSource: PipelineDataSource) {
     const newDescription = prompt('Edit description', dataSource.Description)?.trim();
-    if (newDescription == null) return;
+    if (newDescription == null)
+      return;
 
     this.visQuerySvc.changeDataSourceDescription(dataSource.EntityGuid, newDescription);
   }

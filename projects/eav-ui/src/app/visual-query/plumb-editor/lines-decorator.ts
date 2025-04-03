@@ -1,7 +1,7 @@
 import { classLogEnabled } from '../../shared/logging';
 import { PipelineModel, PipelineResult, PipelineResultStream } from '../models';
 import { JsPlumbEndpoint, JsPlumbInstance } from './jsplumb.models';
-import { dataSrcIdPrefix } from './plumber-constants';
+import { domIdOfGuid } from './plumber-constants';
 
 const logSpecs = {
   all: false,
@@ -24,12 +24,14 @@ export class LinesDecorator {
   addEntityCount(result: PipelineResult) {
     const l = this.log.fnIf('putEntityCountOnConnections');
     result.Streams?.forEach(stream => {
-      const sourceElementId = dataSrcIdPrefix + stream.Source;
+      const outDomId = domIdOfGuid(stream.Source);
       const outTargets = ['00000000-0000-0000-0000-000000000000', this.pipelineModel.Pipeline.EntityGuid];
-      const targetElementId = outTargets.includes(stream.Target) ? dataSrcIdPrefix + 'Out' : dataSrcIdPrefix + stream.Target;
+      const inDomId = outTargets.includes(stream.Target)
+        ? domIdOfGuid('Out')
+        : domIdOfGuid(stream.Target);
 
-      const fromUuid = sourceElementId + '_out_' + stream.SourceOut;
-      const toUuid = targetElementId + '_in_' + stream.TargetIn;
+      const fromUuid = outDomId + '_out_' + stream.SourceOut;
+      const toUuid = inDomId + '_in_' + stream.TargetIn;
 
       const endpoint: JsPlumbEndpoint = this.instance.getEndpoint(fromUuid);
       endpoint?.connections
@@ -42,7 +44,8 @@ export class LinesDecorator {
             cssClass,
             events: {
               click: () => {
-                if (!this.pipelineModel.Pipeline.AllowEdit) return;
+                if (!this.pipelineModel.Pipeline.AllowEdit)
+                  return;
                 this.onDebugStream(stream);
               },
             },
