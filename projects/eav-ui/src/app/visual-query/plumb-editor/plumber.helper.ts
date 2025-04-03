@@ -2,7 +2,7 @@ import { classLogEnabled } from '../../shared/logging';
 import { DataSource, PipelineModel, PipelineResultStream, VisualDesignerData } from '../models';
 import { ConnectionLineColors } from './connection-line-colors';
 import { ConnectionsManager } from './connections-manager';
-import { findDefByType, getEndpointLabel } from './datasource.helpers';
+import { getEndpointLabel } from './datasource.helpers';
 import { EndpointDefinitionsService } from './endpoint-definitions';
 import { EndpointLabelRenameParts } from './endpoint-label-rename.model';
 import { EndpointsManager } from './endpoints-manager';
@@ -10,6 +10,7 @@ import { JsPlumbInstanceManager } from './jsplumb-instance-manager';
 import { JsPlumbEndpoint, JsPlumbInstance } from './jsplumb.models';
 import { LinesDecorator } from './lines-decorator';
 import { domIdOfGuid, guidOfDomId } from './plumber-constants';
+import { QueryDataManager } from './query-data-manager';
 import { WiringsHelper } from './wirings.helper';
 
 const logSpecs = {
@@ -39,29 +40,32 @@ export class Plumber {
 
   endpoints: EndpointsManager;
 
+  queryData: QueryDataManager;
+
   constructor(
     private jsPlumbRoot: HTMLElement,
-    private pipelineModel: PipelineModel,
+    private query: PipelineModel,
     private dataSources: DataSource[],
     private onConnectionsChangedParent: () => void,
     private onDragend: (pipelineDataSourceGuid: string, position: VisualDesignerData) => void,
     private onDebugStream: (stream: PipelineResultStream) => void,
     renameDialogParts: EndpointLabelRenameParts,
   ) {
-    this.#endpointDefs = new EndpointDefinitionsService(pipelineModel, renameDialogParts);
+    this.queryData = new QueryDataManager(this.jsPlumbRoot, this.query, this.dataSources);
+    this.#endpointDefs = new EndpointDefinitionsService(query, { ...renameDialogParts, onConnectionsChanged: () => this.#onConnectionsChanged() });
     this.#instanceManager = new JsPlumbInstanceManager(this.jsPlumbRoot, this.lineColors);
     this.#instance = this.#instanceManager.instance;
     // requires instance, so must happen after that
-    this.lineDecorator = new LinesDecorator(this.#instance, this.pipelineModel, this.onDebugStream);
-    this.connections = new ConnectionsManager(this.#instance, this.pipelineModel, this.dataSources, this.#endpointDefs, () => this.#onConnectionsChanged());
-    this.endpoints = new EndpointsManager(this.#instance, this.pipelineModel, this.dataSources, this.#endpointDefs, this.connections);
+    this.lineDecorator = new LinesDecorator(this.#instance, this.query, this.onDebugStream);
+    this.connections = new ConnectionsManager(this.#instance, this.query, this.dataSources, this.#endpointDefs, () => this.#onConnectionsChanged());
+    this.endpoints = new EndpointsManager(this.#instance, this.#endpointDefs, this.connections, this.queryData);
 
     // Suspend drawing while initializing
     this.#instance.batch(() => {
       this.#initDomDataSources();
-      new WiringsHelper(this, this.#instance, this.jsPlumbRoot, this.pipelineModel, this.dataSources).initWirings();
+      new WiringsHelper(this, this.#instance, this.queryData).initWirings();
       this.connections.setup();
-      this.endpoints.reOrientAllLabels();
+      this.endpoints.updateAfterChanges();
     });
 
     // spm NOTE: repaint after initial paint fixes:
@@ -71,7 +75,7 @@ export class Plumber {
   }
   #onConnectionsChanged() {
     // After connection changes, re-check if we need to slant the labels
-    this.endpoints.reOrientAllLabels();
+    this.endpoints.updateAfterChanges();
     // call the parent for storing the data etc.
     this.onConnectionsChangedParent();
   }
@@ -103,15 +107,12 @@ export class Plumber {
   /** Create sources, targets and endpoints */
   #initDomDataSources() {
     const l = this.log.fnIf('initDomDataSources');
-    for (const queryDs of this.pipelineModel.DataSources) {
-      const domDs = this.jsPlumbRoot.querySelector<HTMLElement>('#' + domIdOfGuid(queryDs.EntityGuid));
+    for (const queryDs of this.query.DataSources) {
+      const { domDataSource: domDs, definition: dataSource } = this.queryData.findDomAndDef(queryDs.EntityGuid, queryDs.PartAssemblyAndType);
       if (!domDs)
         continue;
-      const dataSource = findDefByType(this.dataSources, queryDs.PartAssemblyAndType);
-      if (!dataSource)
-        continue;
 
-      if (this.pipelineModel.Pipeline.AllowEdit) {
+      if (this.query.Pipeline.AllowEdit) {
         // WARNING! Must happen before instance.makeSource()
         this.#instance.draggable(domDs, {
           grid: [20, 20],
@@ -131,7 +132,7 @@ export class Plumber {
       const outCount = dataSource.Out?.length ?? 0;
       l.a('dataSource.Out', { outCount, out: dataSource.Out });
       dataSource.Out?.forEach(name => {
-        this.endpoints.addEndpoint(domDs, name, false, queryDs, outCount);
+        this.endpoints.addEndpoint(domDs, name, false, queryDs);
       });
 
       // Add dynamic Out-Endpoints (if .OutMode is not static)
@@ -140,21 +141,11 @@ export class Plumber {
         this.#instance.makeSource(domDs, dynOut, { filter: '.add-endpoint' });
       }
 
-      // Add all in-Endpoints if OutMode is mirror-in
-      // if (dataSource.OutMode === 'mirror-in') {
-      //   l.a('dataSource.OutMode', { outMode: dataSource.OutMode });
-      //   dataSource.In?.forEach(name => {
-      //     if (dataSource.Out?.some(outName => outName === name))
-      //       return;
-      //     // this.addEndpoint(domDataSource, name, false, pipelineDataSource, outCount);
-      //   });
-      // }
-
       // Add In-Endpoints from Definition
       const inCount = dataSource.In?.length ?? 0;
       l.a('dataSource.In', { inCount, in: dataSource.In });
       dataSource.In?.forEach(name => {
-        this.endpoints.addEndpoint(domDs, name, true, queryDs, inCount);
+        this.endpoints.addEndpoint(domDs, name, true, queryDs);
       });
 
       // Make DataSource a Target for new Endpoints (if .In is an Array)
@@ -167,35 +158,6 @@ export class Plumber {
     }
     l.end();
   }
-
-
-  // public onChangeLabel(endpointOrOverlay: JsPlumbEndpoint | JsPlumbOverlay, isSource: boolean, pipelineDataSourceGuid: string) {
-  //   if (!this.pipelineModel.Pipeline.AllowEdit)
-  //     return;
-
-  //   const overlay: JsPlumbOverlay = (endpointOrOverlay as JsPlumbEndpoint)?.getOverlay('endpointLabel')
-  //     ?? endpointOrOverlay as JsPlumbOverlay;
-
-  //   this.renameDialogParts.matDialog
-  //     .open(RenameStreamComponent, {
-  //       autoFocus: false,
-  //       data: {
-  //         pipelineDataSourceGuid,
-  //         isSource,
-  //         label: overlay.label,
-  //       } satisfies RenameStreamDialogData,
-  //       viewContainerRef: this.renameDialogParts.viewContainerRef,
-  //       width: '650px',
-  //     })
-  //     .afterClosed().subscribe(newLabel => {
-  //       if (!newLabel)
-  //         return;
-  //       overlay.setLabel(newLabel);
-  //       setTimeout(() => this.renameDialogParts.onConnectionsChanged());
-  //     });
-
-  //   this.renameDialogParts.changeDetectorRef.markForCheck();
-  // }
 
 
 }

@@ -43,12 +43,15 @@ export class EndpointDefinitionsService {
 
   getInfo(endpointName: string, isDynamic: boolean): EndpointInfo {
     const l = this.log.fnIf('getEndpointInfo', {endpointName, isDynamic});
-    let name: string;
-    let required: boolean;
+    // let name: string;
+    // let required: boolean;
 
+    // Trim name and see if it's required - marked with a trailing '*'
     const trimmed = endpointName.trim();
-    required = trimmed.endsWith('*');
-    name = !required ? trimmed : trimmed.substring(0, trimmed.length - 1);
+    const required = trimmed.endsWith('*');
+    const name = !required
+      ? trimmed
+      : trimmed.substring(0, trimmed.length - 1);
 
     if (isDynamic)
       return l.r({
@@ -59,8 +62,8 @@ export class EndpointDefinitionsService {
     return l.r({ name, required } satisfies EndpointInfo, 'notDynamic');
   }
 
-  buildSourceDef(pipelineDataSourceGuid: string, style?: string) {
-    const l = this.log.fnIf('buildSourceDef', {pipelineDataSourceGuid, style});
+  buildSourceDef(dsGuid: string, style?: string) {
+    const l = this.log.fnIf('buildSourceDef', {pipelineDataSourceGuid: dsGuid, style});
     const isSource = true;
     const sourceEndpoint = {
       paintStyle: { fill: 'transparent', radius: 10 },
@@ -70,14 +73,14 @@ export class EndpointDefinitionsService {
       anchor: ['Continuous', { faces: ['top'] }],
       overlays: this.#getEndpointOverlays(isSource),
       events: {
-        click: (endpointOrOverlay: JsPlumbOverlay) => this.onChangeLabel(endpointOrOverlay, isSource, pipelineDataSourceGuid),
+        click: (endpointOrOverlay: JsPlumbOverlay) => this.onChangeLabel(endpointOrOverlay, isSource, dsGuid),
       },
     };
     return l.r(sourceEndpoint);
   }
 
-  buildTargetDef(pipelineDataSourceGuid: string, style?: string) {
-    const l = this.log.fnIf('buildTargetDef', {pipelineDataSourceGuid, style});
+  buildTargetDef(dsGuid: string, style?: string) {
+    const l = this.log.fnIf('buildTargetDef', {pipelineDataSourceGuid: dsGuid, style});
     const isSource = false;
     const targetEndpoint = {
       paintStyle: { fill: 'transparent', radius: 10 },
@@ -88,7 +91,7 @@ export class EndpointDefinitionsService {
       overlays: this.#getEndpointOverlays(isSource),
       dropOptions: { hoverClass: 'hover', activeClass: 'active' },
       events: {
-        click: (endpointOrOverlay: JsPlumbOverlay) => this.onChangeLabel(endpointOrOverlay, isSource, pipelineDataSourceGuid),
+        click: (endpointOrOverlay: JsPlumbOverlay) => this.onChangeLabel(endpointOrOverlay, isSource, dsGuid),
       },
     };
     return l.r(targetEndpoint);
@@ -99,7 +102,8 @@ export class EndpointDefinitionsService {
     if (!this.pipelineModel.Pipeline.AllowEdit)
       return;
 
-    const overlay: JsPlumbOverlay = (endpointOrOverlay as JsPlumbEndpoint)?.getOverlay('endpointLabel')
+    debugger;
+    const overlay: JsPlumbOverlay = (endpointOrOverlay as JsPlumbEndpoint)?.getOverlay?.('endpointLabel')
       ?? endpointOrOverlay as JsPlumbOverlay;
 
     this.renameDialogParts.matDialog
