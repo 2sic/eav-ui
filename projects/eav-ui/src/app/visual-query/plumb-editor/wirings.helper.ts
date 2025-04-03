@@ -2,7 +2,8 @@ import { classLogEnabled } from '../../shared/logging';
 import { DataSource, PipelineDataSource, PipelineModel } from '../models';
 import { findDefByType } from './datasource.helpers';
 import { JsPlumbInstance } from './jsplumb.models';
-import { dataSrcIdPrefix, Plumber } from './plumber.helper';
+import { dataSrcIdPrefix } from './plumber-constants';
+import { Plumber } from './plumber.helper';
 
 const logSpecs = {
   all: false,
@@ -89,7 +90,7 @@ export class WiringsHelper {
       try {
         this.instance.connect({
           uuids: [outDomId, inDomId],
-          paintStyle: this.plumber.nextLinePaintStyle(outDomId),
+          paintStyle: this.plumber.lineColors.nextLinePaintStyle(outDomId),
         });
       } catch (e) {
         console.error({ message: 'Connection failed', from: outDomId, to: inDomId });

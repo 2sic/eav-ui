@@ -16,7 +16,8 @@ import { QueryDefinitionService } from '../services/query-definition.service';
 import { VisualQueryStateService } from '../services/visual-query.service';
 import { findDefByType } from './datasource.helpers';
 import { calculateTypeInfos } from './plumb-editor.helpers';
-import { dataSrcIdPrefix, Plumber } from './plumber.helper';
+import { dataSrcIdPrefix } from './plumber-constants';
+import { Plumber } from './plumber.helper';
 
 const logSpecs = {
   all: false,
@@ -53,16 +54,16 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
   #queryDefinitionSvc = transient(QueryDefinitionService);
 
   showDataSourceDetails = computed(() => {
-    const result = JsonHelpers.tryParse(this.vsSvc.pipelineModel()?.Pipeline.VisualDesignerData) ?? {};
+    const result = JsonHelpers.tryParse(this.visQuerySvc.pipelineModel()?.Pipeline.VisualDesignerData) ?? {};
     return result.ShowDataSourceDetails ?? false;
   });
 
   typeInfos = computed(() =>
-    calculateTypeInfos(this.vsSvc.pipelineModel()?.DataSources ?? [], this.vsSvc.dataSources()
+    calculateTypeInfos(this.visQuerySvc.pipelineModel()?.DataSources ?? [], this.visQuerySvc.dataSources()
     ));
 
   constructor(
-    public vsSvc: VisualQueryStateService, // Check if this not with transient better
+    public visQuerySvc: VisualQueryStateService, // Check if this not with transient better
     private changeDetectorRef: ChangeDetectorRef,
     private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
@@ -74,8 +75,8 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
     });
 
     this.subscriptions.add(
-      this.vsSvc.putEntityCountOnConnections$.subscribe(result => {
-        this.#plumber.putEntityCountOnConnections(result);
+      this.visQuerySvc.putEntityCountOnConnections$.subscribe(result => {
+        this.#plumber.lineDecorator.addEntityCount(result);
       })
     );
 
@@ -116,9 +117,9 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
         this.#plumber?.destroy();
         this.#plumber = new Plumber(
           this.domRootRef.nativeElement,
-          this.vsSvc.pipelineModel(),
-          this.vsSvc.dataSources(),
-          this.onConnectionsChanged.bind(this),
+          this.visQuerySvc.pipelineModel(),
+          this.visQuerySvc.dataSources(),
+          () => this.onConnectionsChanged(), //.bind(this),
           this.onDragend.bind(this),
           this.onDebugStream.bind(this),
           this.matDialog,
@@ -137,29 +138,29 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
   }
 
   onConnectionsChanged() {
-    const connections = this.#plumber.getAllConnections();
+    const connections = this.#plumber.connections.getAll();
     const streamsOut = this.#plumber.getStreamsOut();
-    this.vsSvc.changeConnections(connections, streamsOut);
+    this.visQuerySvc.changeConnections(connections, streamsOut);
   }
 
   onDragend(pipelineDataSourceGuid: string, position: VisualDesignerData) {
-    this.vsSvc.changeDataSourcePosition(pipelineDataSourceGuid, position);
+    this.visQuerySvc.changeDataSourcePosition(pipelineDataSourceGuid, position);
   }
 
   onDebugStream(stream: PipelineResultStream) {
-    this.vsSvc.debugStream(stream);
+    this.visQuerySvc.debugStream(stream);
   }
 
   configureDataSource(dataSource: PipelineDataSource): void {
     // ensure dataSource entity is saved
     if (dataSource.EntityGuid.includes('unsaved'))
-      return this.vsSvc.saveAndRun(true, false);
+      return this.visQuerySvc.saveAndRun(true, false);
 
-    this.vsSvc.editDataSource(dataSource);
+    this.visQuerySvc.editDataSource(dataSource);
   }
 
   getTypeName(partAssemblyAndType: string) {
-    const dataSource = findDefByType(this.vsSvc.dataSources(), partAssemblyAndType);
+    const dataSource = findDefByType(this.visQuerySvc.dataSources(), partAssemblyAndType);
     return this.#queryDefinitionSvc.typeNameFilter(dataSource?.TypeNameForUi || partAssemblyAndType, 'className');
   }
 
@@ -168,12 +169,16 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
   }
 
   remove(pipelineDataSource: PipelineDataSource) {
-    if (!confirm(`Delete ${pipelineDataSource.Name} data source?`)) return;
+    if (!confirm(`Delete ${pipelineDataSource.Name} data source?`))
+      return;
 
-    this.#plumber.removeEndpointsOnDataSource(pipelineDataSource.EntityGuid);
-    const connections = this.#plumber.getAllConnections();
+    // Update UI
+    this.#plumber.removeAllEndpoints(pipelineDataSource.EntityGuid);
+
+    // Tell backend to clean up
+    const connections = this.#plumber.connections.getAll();
     const streamsOut = this.#plumber.getStreamsOut();
-    this.vsSvc.removeDataSource(pipelineDataSource.EntityGuid, connections, streamsOut);
+    this.visQuerySvc.removeDataSource(pipelineDataSource.EntityGuid, connections, streamsOut);
   }
 
   openHelp(url: string) {
@@ -184,14 +189,14 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
     const newName = prompt('Rename data source', dataSource.Name)?.trim();
     if (newName == null || newName === '') return;
 
-    this.vsSvc.renameDataSource(dataSource.EntityGuid, newName);
+    this.visQuerySvc.renameDataSource(dataSource.EntityGuid, newName);
   }
 
   editDescription(dataSource: PipelineDataSource) {
     const newDescription = prompt('Edit description', dataSource.Description)?.trim();
     if (newDescription == null) return;
 
-    this.vsSvc.changeDataSourceDescription(dataSource.EntityGuid, newDescription);
+    this.visQuerySvc.changeDataSourceDescription(dataSource.EntityGuid, newDescription);
   }
 
 }

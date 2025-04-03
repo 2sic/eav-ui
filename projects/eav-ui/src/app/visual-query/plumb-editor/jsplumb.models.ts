@@ -47,6 +47,10 @@ export interface JsPlumbInstance {
     delete(): void,
     each(callback: (endpoint: JsPlumbEndpoint) => void): void
   };
+  /** 
+   * Suspend drawing, run the given function, and then re-enable drawing, optionally repainting everything.
+   * https://docs.jsplumbtoolkit.com/toolkit/5.x/community-apidocs/core.jsplumbinstance.batch
+   */
   batch(callback: () => void): void;
 
   draggable(element: HTMLElement, options: {
