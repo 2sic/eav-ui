@@ -214,7 +214,8 @@ export class FormulaRunField {
       switch (formula.version) {
         // Formula V1
         case FormulaVersions.V1:
-          const v1Raw = (formula.fn as FormulaFunctionV1)(params.data, params.context, params.experimental);
+          // 2025-04-22 #DropFormulaParamExperimental - remove this comment and warnings ca. 2026-Q2
+          const v1Raw = (formula.fn as FormulaFunctionV1)(params.data, params.context /*, params.experimental */);
           const { ok, v1Result: valueV1 } = valHelper.v1(v1Raw);
           if (ok) {
             l.a('V1 formula result is pure', { v1Raw, valueV1 });
@@ -228,20 +229,15 @@ export class FormulaRunField {
         // Formula V2
         case FormulaVersions.V2:
           //TODO: @2dm -> Added item as last argument so if ew use experimental anywhere nothing breaks
-          const v2Raw = (formula.fn as FormulaFunctionV1)(params.data, params.context, params.experimental);
+          // 2025-04-22 #DropFormulaParamExperimental - remove this comment and warnings ca. 2026-Q2
+          const v2Raw = (formula.fn as FormulaFunctionV1)(params.data, params.context /*, params.experimental */);
           const v2Value = valHelper.v2(v2Raw);
           devHelper.showResult(v2Value.options as any ?? v2Value.value, false, !!v2Value.promise);
           return v2Value;
 
         default:
           // default should never happen, so don't return any data to use; will probably error if this happens
-          // 2024-09-10 2dm adding throw error here to see if it's anywhere
-          // TODO: REMOVE option default everywhere ca. 2024-Q3
           throw new Error(`Formula version unknown not supported`);
-          // const defRaw = (formula.fn as FormulaFunctionDefault)();
-          // const defValue = valHelper.v2(defRaw);
-          // devHelper.showResult(defValue.value, false, false);
-          // return defValue;
       }
     } catch (error) {
       devHelper.showError(error);
