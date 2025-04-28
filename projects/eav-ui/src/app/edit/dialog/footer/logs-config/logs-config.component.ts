@@ -16,28 +16,30 @@ import { ConfigEditorDialogComponent } from '../logs-config/config-editor-dialog
 import { SpecsEditorDialogComponent } from '../logs-config/specs-editor-dialog/specs-editor-dialog.component';
 
 @Component({
-    selector: 'app-logs-config',
-    templateUrl: './logs-config.component.html',
-    styleUrls: ['./logs-config.component.scss'],
-    imports: [
-        CommonModule,
-        MatIconModule,
-        MatButtonModule,
-        TippyDirective,
-        MatFormFieldModule,
-        MatSelectModule,
-        MatOptionModule,
-        FormsModule,
-        MatInputModule,
-    ]
+  selector: 'app-logs-config',
+  templateUrl: './logs-config.component.html',
+  styleUrls: ['./logs-config.component.scss'],
+  imports: [
+    CommonModule,
+    MatIconModule,
+    MatButtonModule,
+    TippyDirective,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatOptionModule,
+    FormsModule,
+    MatInputModule,
+  ]
 })
 export class LogsConfigComponent {
   LogSeverities = LogSeverities;
   logManager = LogManager.singleton();
   allLogs = this.logManager.mergeAllSpecs;
   configs: string[] = [];
-  selectedConfig: string | null = null;
   sessionPrefix = 'logSpecs';
+  selectedFilter: "activated" | "deactivated" | "";
+  selectedConfig: string | null = null;
+  searchTerm: string = '';
 
   protected logs = this.loggingService.getLogsSignal();
 
@@ -57,18 +59,29 @@ export class LogsConfigComponent {
       // Reset all to unchecked
       for (const spec of Object.keys(this.allLogs)) {
         if (this.isChecked(spec)) {
-          this.toggleConfig(spec);
+          this.logManager.toggle(spec);
         }
       }
     } else {
       for (const spec of Object.keys(this.allLogs)) {
         if (!this.isChecked(spec)) {
-          this.toggleConfig(spec);
+          this.logManager.toggle(spec);
         }
       }
     }
 
-    this.allLogs = this.logManager.mergeAllSpecs;
+    this.applyFilters();
+  }
+
+  onFilterSelected(filter: "activated" | "deactivated" | ""): void {
+    this.selectedFilter = filter;
+    this.applyFilters();
+  }
+
+  filterLogs(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    this.searchTerm = inputElement.value.toLowerCase(); // Store the search term
+    this.applyFilters();
   }
 
   isChecked(name: string): boolean {
@@ -77,7 +90,7 @@ export class LogsConfigComponent {
 
   toggleConfig(name: string): void {
     this.logManager.toggle(name);
-    this.allLogs = this.logManager.mergeAllSpecs;
+    this.applyFilters();
   }
 
   /* Config Functions */
@@ -91,64 +104,63 @@ export class LogsConfigComponent {
   }
 
   onConfigSelected(configName: string | null): void {
-    if (configName) {
-      Object.keys(this.allLogs).forEach((logKey) => {
-        if (this.isChecked(logKey)) {
-          this.toggleConfig(logKey);
-        }
-      });
+    this.selectedConfig = configName;
+  }
 
-      const fullConfigKey = `${this.sessionPrefix}.${configName}`;
-      const configData = this.logManager.state.cache[fullConfigKey];
-
-      if (configData) {
-        Object.keys(configData).forEach((logKey) => {
-          const shouldEnable = (configData as any)[logKey]?.enabled ?? false;
-          if (shouldEnable) {
-            if (!this.isChecked(logKey)) {
-              this.toggleConfig(logKey);
-            }
-          }
-        });
-        this.allLogs = this.logManager.mergeAllSpecs;
-      }
+  private applyFilters(): void {
+ 
+    let filteredLogs = Object.entries(this.logManager.mergeAllSpecs); // Always start from full logs
+  
+    if (this.searchTerm) {
+      filteredLogs = filteredLogs.filter(([key]) => key.toLowerCase().includes(this.searchTerm));
     }
+  
+    if (this.selectedFilter === 'activated') {
+      filteredLogs = filteredLogs.filter(([, log]) => log.enabled);
+    } else if (this.selectedFilter === 'deactivated') {
+      filteredLogs = filteredLogs.filter(([, log]) => !log.enabled);
+    }
+  
+    this.allLogs = Object.fromEntries(filteredLogs);
   }
 
   saveConfig(): void {
     const configName = prompt('Enter the config name:');
-
+  
     if (configName) {
+      // Save all activated logs, irrespective of the filters
       const enabledConfigs = Object.fromEntries(
-        Object.entries(this.allLogs).filter(
+        Object.entries(this.logManager.mergeAllSpecs).filter(
           ([, config]) => config.enabled
         )
       );
-
+  
       const fullConfigKey = `${this.sessionPrefix}.${configName}`;
       this.logManager.state.add(fullConfigKey, enabledConfigs);
-
+  
       this.snackBar.open(`Config "${configName}" has been saved.`, null, {
         duration: 2000,
       });
       this.loadConfigsFromStateManager();
     }
   }
-
+  
   exportConfig(): void {
     const fullConfigKey = `${this.sessionPrefix}.${this.selectedConfig}`;
     const configData = this.logManager.state.cache[fullConfigKey];
 
-    if (configData) {
+    if (configData && Object.keys(configData).length > 0) {
       this.matDialog.open(ConfigEditorDialogComponent, {
         width: '800px',
         data: { configData },
       });
     } else {
-      this.snackBar.open(`Config "${this.selectedConfig}" not found.`, null, {
+      this.snackBar.open(`No active logs to export for "${this.selectedConfig}".`, null, {
         duration: 2000,
       });
     }
+    
+    this.applyFilters();
   }
 
   /* Specs Editor Dialog Functions */

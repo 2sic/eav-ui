@@ -45,6 +45,11 @@ import { PubMetaFilterComponent } from './pub-meta-filter/pub-meta-filter.compon
 import { PubMeta } from './pub-meta-filter/pub-meta-filter.model';
 import { ContentItemsService } from './services/content-items.service';
 
+const logSpecs = {
+  all: false,
+  items: true,
+}
+
 @Component({
     selector: 'app-content-items',
     templateUrl: './content-items.component.html',
@@ -62,7 +67,7 @@ import { ContentItemsService } from './services/content-items.service';
 })
 export class ContentItemsComponent implements OnInit {
 
-  log = classLog({ ContentItemsComponent });
+  log = classLog({ ContentItemsComponent }, logSpecs);
 
   isDebug = inject(GlobalConfigService).isDebug;
 
@@ -88,16 +93,23 @@ export class ContentItemsComponent implements OnInit {
   /** Signal to tell other signals that the filter changed */
   #filterChanged = signal(0);
 
+  /** Signal to trigger reloading of data */
+  #refresh = signal(0);
+
   #gridApiSig: WritableSignal<GridApi<ContentItem>> = signal<GridApi<ContentItem>>(null);
 
   #contentTypeStaticName = this.#dialogRouter.getParam('contentTypeStaticName');
-  contentType = this.#contentTypesSvc.retrieveContentTypeSig(this.#contentTypeStaticName,  /* initial: */ null);
+  contentType = this.#contentTypesSvc.getTypeSig(this.#contentTypeStaticName,  /* initial: */ null);
 
-  #refresh = signal(0);
+  #itemsRaw = computed(() => {
+    this.#refresh();  // watch for refresh
+    return this.#contentItemsSvc.getAllSig(this.#contentTypeStaticName, undefined);
+  });
 
   items = computed(() => {
-    const refresh = this.#refresh();
-    return this.#contentItemsSvc.getAllSig(this.#contentTypeStaticName, undefined);
+    const data = this.#itemsRaw()();
+    this.log.aIf('items', {data});
+    return data;
   });
 
   ngOnInit() {
@@ -293,7 +305,7 @@ export class ContentItemsComponent implements OnInit {
         headerName: 'Item (Entity)',
         field: '_Title',
         flex: 2,
-        cellRenderer: (p: { data: ContentItem, }) => AgGridHelper.cellLink(this.#urlToOpenEditView(p.data), p.data.Title),
+        cellRenderer: (p: { data: ContentItem, }) => AgGridHelper.cellLink(this.#urlToOpenEditView(p.data), p.data._Title),
       },
       {
         headerName: 'Stats',

@@ -92,7 +92,7 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements Aft
   dataTypes = this.#typesFieldsSvc.dataTypes();
 
   #inputTypeOptions = this.#typesFieldsSvc.getInputTypes();
-  #contentTypeSig = this.#typesSvc.retrieveContentTypeSig(this.route.snapshot.paramMap.get('contentTypeStaticName'), null);
+  #contentTypeSig = this.#typesSvc.getTypeSig(this.route.snapshot.paramMap.get('contentTypeStaticName'), null);
 
   // Existing fields - to setup reserved names and initialize the fields
   existingFieldsLazy = computedObj<Signal<Field[]>>('rawFields', () => {

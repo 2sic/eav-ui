@@ -9,7 +9,7 @@
 }
 
 // The Date and Timepicker input fields are hidden because the result gets merged into a third input field
-.picker-input {
+.hidden-picker-input {
   display: none;
 }
 
@@ -24,5 +24,4 @@
 ::ng-deep .cdk-overlay-pane:has(.mat-timepicker-panel) {
   position: relative !important;
 }
-
 // Datepicker is set to the right using xPosition="end" on the picker element itself

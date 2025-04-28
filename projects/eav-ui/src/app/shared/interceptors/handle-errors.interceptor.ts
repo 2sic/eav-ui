@@ -36,16 +36,17 @@ export class HandleErrorsInterceptor implements HttpInterceptor {
     const srvResp = error.error;
     if (srvResp) {
       const msg = srvResp.Message;
-      if (msg) { infoText += '\nMessage: ' + msg; }
+      if (msg)
+        infoText += '\nMessage: ' + msg;
       const msgDet = srvResp.MessageDetail || srvResp.ExceptionMessage;
-      if (msgDet) { infoText += '\nDetail: ' + msgDet; }
+      if (msgDet)
+        infoText += '\nDetail: ' + msgDet;
 
       if (msgDet && msgDet.indexOf('No action was found') === 0) {
-        if (msgDet.indexOf('that matches the name') > 0) {
+        if (msgDet.indexOf('that matches the name') > 0)
           infoText += '\n\nTip from 2sxc: you probably got the action-name wrong in your JS.';
-        } else if (msgDet.indexOf('that matches the request.') > 0) {
+        else if (msgDet.indexOf('that matches the request.') > 0)
           infoText += '\n\nTip from 2sxc: Seems like the parameters are the wrong amount or type.';
-        }
       }
 
       if (msg && msg.indexOf('Controller') === 0 && msg.indexOf('not found') > 0) {

@@ -1,3 +1,6 @@
+// TODO: @someday Change constants to be a object with these keys
+// to make code which uses them clearer that these are global constants
+
 export const prefix = 'eav-';
 export const keyZoneId = `${prefix}zoneId`;
 export const keyContentBlockId = `${prefix}cbid`;

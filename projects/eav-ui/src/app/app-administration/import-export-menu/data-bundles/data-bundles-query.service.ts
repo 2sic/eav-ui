@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { transient } from 'projects/core';
-import { Observable } from 'rxjs';
+import { EntityLightIdentifier } from 'projects/edit-types/src/EntityLight';
+import { catchError, map, Observable, throwError } from 'rxjs';
+import { ContentItem } from '../../../content-items/models/content-item.model';
 import { QueryService } from '../../../shared/services/query.service';
 
 /**
@@ -14,40 +16,21 @@ export class DataBundlesQueryService {
 
   #queryService = transient(QueryService);
 
-  constructor(
-    private translate: TranslateService,
-  ) { }
+  constructor(private translate: TranslateService) { }
 
-  // TODO: @2pp
-  // 1. make this typed - create a type etc.
-  // 2. ask 2dg why the extensive error handling - and then probably remove?
-  // 3. review w/2dg to find out why it has all this error handling
-  fetchQuery(guid?: string): Observable<any> {
+  fetchQuery(guid?: string): Observable<ContentItem[] | EntityLightIdentifier[]> {
     const stream = 'Default';
     const params = `configurationguid=${guid}`;
-
-    return new Observable(observer => {
-      this.#queryService.getFromQuery(`System.BundleDetails/${stream}`, params, null).subscribe({
-        next: (data) => {
-          if (!data) {
-            console.error(this.translate.instant('Fields.Picker.QueryErrorNoData'));
-            observer.error('No data found');
-            return;
-          }
-          if (!data[stream]) {
-            console.error(this.translate.instant('Fields.Picker.QueryStreamNotFound') + ' ' + stream);
-            observer.error('Stream not found');
-            return;
-          }
-          observer.next(data[stream]);
-          observer.complete();
-        },
-        error: (error) => {
-          console.error(`${this.translate.instant('Fields.Picker.QueryError')} - ${error.data}`);
-          observer.error(error);
-        }
-      });
-    });
+    
+    return this.#queryService.getFromQuery(`System.BundleDetails/${stream}`, params, null).pipe(
+      map((data) => {
+        return data[stream];
+      }),
+      catchError((error) => {
+        console.error(`${this.translate.instant('Fields.Picker.QueryError:')} - ${error.data}`);
+        alert(`${this.translate.instant('Fields.Picker.QueryError:')} - ${error.data}`);
+        return throwError(() => error);
+      })
+    );
   }
-
 }

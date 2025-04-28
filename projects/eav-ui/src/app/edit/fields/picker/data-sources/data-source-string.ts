@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { EntityLight } from '../../../../../../../edit-types/src/EntityLight';
-import { classLogEnabled } from '../../../../shared/logging';
+import { classLog } from '../../../../shared/logging';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
 import { DataSourceBase, logSpecsDataSourceBase } from './data-source-base';
 
@@ -12,7 +12,7 @@ const logSpecs = {
 @Injectable()
 export class DataSourceString extends DataSourceBase {
 
-  log = classLogEnabled({DataSourceString}, logSpecs);
+  log = classLog({DataSourceString}, logSpecs);
   
   constructor() {
     super();

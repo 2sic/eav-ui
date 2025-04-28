@@ -77,7 +77,7 @@ export class PickerTreeDataHelper {
     // todo: first variant isParentChild probably doesn't work yet
     const currentId = item?.data?.[pId];
     const expandable = isParentChild
-      ? itemInCorrectStream && (item.data[pcRef]?.length > 0 ?? false)
+      ? itemInCorrectStream && (item.data[pcRef]?.length > 0 || false)
       : itemInCorrectStream && !!allItems.find(x => {
         return (x.data[cpRef]?.[0]?.[pId] == currentId)
       }

@@ -4,6 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { transient } from 'projects/core';
 import { ContentItem } from 'projects/eav-ui/src/app/content-items/models/content-item.model';
 import { ColumnDefinitions } from 'projects/eav-ui/src/app/shared/ag-grid/column-definitions';
@@ -20,6 +21,7 @@ import { DataBundlesDetailActionsParams } from './data-bundles-detail-actions/da
         MatButtonModule,
         MatIconModule,
         SxcGridModule,
+        TranslateModule,
     ],
     templateUrl: './data-bundles-detail.component.html',
     styleUrl: './data-bundles-detail.component.scss'
@@ -29,7 +31,6 @@ export class DataBundlesDetailComponent {
   #dataBundlesQueryService = transient(DataBundlesQueryService);
   dataBundles = signal<ContentItem[]>(null);
   dataBundleName = signal<string>(null);
-
 
   constructor(
     private dialog: MatDialogRef<DataBundlesDetailComponent>,
@@ -45,7 +46,9 @@ export class DataBundlesDetailComponent {
           this.dataBundleName.set(params.name);
         }),
         switchMap(params => this.#dataBundlesQueryService.fetchQuery(params.guid)),
-        tap(d => this.dataBundles.set(d))
+        tap(d => {
+          this.dataBundles.set(d as ContentItem[])
+        })
       )
       .subscribe();
   }

@@ -112,7 +112,7 @@ export class EditRoutingService extends ServiceBase implements OnDestroy {
 
   /** Fires when child form is closed */
   childFormClosed() {
-    return this.#childFormResult$.pipe(map(_ => null));
+    return this.#childFormResult$.pipe(map(_ => null as string));
   }
 
   expand(expand: boolean, fieldId: number, entityGuid: string, componentTag?: string) {

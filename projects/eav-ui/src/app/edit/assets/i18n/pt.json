@@ -45,7 +45,8 @@
     "Deleting": "Deleting...",
     "DeleteError": "Delete failed. Please check console for more information",
     "SwitchedLanguageToDefault": "Alterámos a língua para a padrão {{language}} a atual tem alguns ou todos os valores em falta",
-    "CantSwitchLanguage": "Não pode alterar a língua até a atual ter todos os valores necessários preenchidos"
+    "CantSwitchLanguage": "Não pode alterar a língua até a atual ter todos os valores necessários preenchidos",
+    "NoDataBundles": "No entity or content found for data bundles. Please select an entity or content in the MetaData Export Decorator."
   },
   "LangMenu": {
     "Translate": "Traduzir",

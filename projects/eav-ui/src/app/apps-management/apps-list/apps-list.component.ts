@@ -90,8 +90,6 @@ export class AppsListComponent implements OnInit {
     this.fabOpen.set(open);
   }
 
-  // TODO: @2dg - try to fix this so the link is directly in the HTML without a function call
-  // @2dg Window not exist in Html an a have other Styles
   browseCatalog(): void {
     window.open('https://2sxc.org/apps', '_blank');
   }
@@ -109,8 +107,7 @@ export class AppsListComponent implements OnInit {
   }
 
   importApp(files?: File[]): void {
-    const dialogData: FileUploadDialogData = { files };
-    this.#dialogRouter.navRelative(['import'], { state: dialogData });
+    this.#dialogRouter.navRelative(['import'], { state: { files } satisfies FileUploadDialogData });
   }
 
   #deleteApp(app: App): void {
@@ -163,7 +160,6 @@ export class AppsListComponent implements OnInit {
         },
         {
           ...ColumnDefinitions.IconShow,
-          cellRenderer: AgBoolIconRenderer,
           cellRendererParams: { settings: () => AppListShowIcons },
         },
         {
@@ -171,8 +167,8 @@ export class AppsListComponent implements OnInit {
           field: 'Name',
           cellClass: 'apps-list-primary-action highlight'.split(' '),
           sort: 'asc',
-          cellRenderer: (p: ICellRendererParams) => {
-            const app: App = p.data;
+          cellRenderer: (p: ICellRendererParams & { data: App }) => {
+            const app = p.data;
             const url = this.#dialogRouter.urlSubRoute(app.Id.toString());
             return `
               <a class="default-link fill-cell" href="#${url}">

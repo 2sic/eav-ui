@@ -21,7 +21,7 @@ import { LogsConfigComponent } from "../logs-config/logs-config.component";
 })
 export class LogsDumpComponent {
   LogSeverities = LogSeverities;
-  showSettings = false;
+  showSettings = true;
 
   protected logs = this.loggingService.getLogsSignal();
 
@@ -41,8 +41,8 @@ export class LogsDumpComponent {
     }
   }
 
-  toggleDialog(): void {
-    this.showSettings = !this.showSettings;
+  showLogSettings(show: boolean): void {
+    this.showSettings = show;
   }
 }
 

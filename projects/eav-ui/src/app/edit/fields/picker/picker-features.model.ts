@@ -54,16 +54,21 @@ function fill(data: Partial<PickerFeatures>, fallback: boolean): PickerFeatures 
   };
 }
 
-export function mergePickerFeatures(first: Partial<PickerFeatures>, second: Partial<PickerFeatures>): PickerFeatures {
-  first = fill(first, true);
-  second = fill(second, true);
-  return {
-    create: first.create && second.create,
-    textEntry: first.textEntry && second.textEntry,
-    multiValue: first.multiValue && second.multiValue,
+const logMergePickerFeatures = false;
 
-    edit: first.edit && second.edit,
-    remove: first.remove && second.remove,
-    delete: first.delete && second.delete,
+export function mergePickerFeatures(first: Partial<PickerFeatures>, second: Partial<PickerFeatures>): PickerFeatures {
+  const firstTrue = fill(first, true);
+  const secondTrue = fill(second, true);
+  const result = {
+    create: firstTrue.create && secondTrue.create,
+    textEntry: firstTrue.textEntry && secondTrue.textEntry,
+    multiValue: firstTrue.multiValue && secondTrue.multiValue,
+
+    edit: firstTrue.edit && secondTrue.edit,
+    remove: firstTrue.remove && secondTrue.remove,
+    delete: firstTrue.delete && secondTrue.delete,
   };
+  if (logMergePickerFeatures)
+    console.log('mergePickerFeatures result', { result, first, second, firstTrue, secondTrue });
+  return result;
 }

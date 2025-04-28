@@ -47,7 +47,8 @@
     "SwitchedLanguageToDefault": "We have switched language to default {{language}} because it's missing some or all values",
     "CantSwitchLanguage": "Can't switch languages until current language has all required values",
     "PastingFilesIsNotEnabled": "Pasting files is not enabled.",
-    "FindOutMore": "Find out more"
+    "FindOutMore": "Find out more",
+    "NoDataBundles": "No Entity or Content for data bundles found. Select some Entity or Content on MetaData Export Decorator."
   },
   "LangMenu": {
     "Translate": "Translate",

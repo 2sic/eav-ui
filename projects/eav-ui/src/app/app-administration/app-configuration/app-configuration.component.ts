@@ -19,9 +19,9 @@ import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { AppScopes } from '../../shared/models/dialog-context.models';
 import { EditPrep } from '../../shared/models/edit-form.model';
+import { DialogInNewWindowService } from '../../shared/routing/dialog-in-new-window.service';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { Context } from '../../shared/services/context';
-import { DialogService } from '../../shared/services/dialog.service';
 import { AppAdminHelpers } from '../app-admin-helpers';
 import { AppInternals } from '../models/app-internals.model';
 import { ContentTypeEdit } from '../models/content-type.model';
@@ -52,7 +52,7 @@ export class AppConfigurationComponent implements OnInit {
 
   #featuresSvc = inject(FeaturesService);
 
-  #dialogSvc = transient(DialogService);
+  #dialogInNewWindowSvc = transient(DialogInNewWindowService);
   #contentTypesSvc = transient(ContentTypesService);
   #appInternalsService = transient(AppInternalsService);
   #contentItemsService = transient(ContentItemsService);
@@ -396,12 +396,12 @@ export class AppConfigurationComponent implements OnInit {
 
   openSiteSettings() {
     const siteApp = this.dialogSettings().Context.Site.PrimaryApp;
-    this.#dialogSvc.openAppAdministration(siteApp.ZoneId, siteApp.AppId, 'app');
+    this.#dialogInNewWindowSvc.openAppAdministration(siteApp.ZoneId, siteApp.AppId, 'app');
   }
 
   openGlobalSettings() {
     const globalApp = this.dialogSettings().Context.System.PrimaryApp;
-    this.#dialogSvc.openAppAdministration(globalApp.ZoneId, globalApp.AppId, 'app');
+    this.#dialogInNewWindowSvc.openAppAdministration(globalApp.ZoneId, globalApp.AppId, 'app');
   }
 
   urlToConfig(staticName: string) {

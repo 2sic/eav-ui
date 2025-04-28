@@ -1,8 +1,8 @@
 import { Sxc } from '@2sic.com/2sxc-typings';
 import { FormulaVersions } from '../formula-definitions';
-import { FormulaV1Context, FormulaV1CtxApp, FormulaV1CtxCulture, FormulaV1CtxFeatures, FormulaV1CtxForm, FormulaV1CtxTarget, FormulaV1CtxTargetEntity, FormulaV1CtxUser } from './formula-run-context.model';
-import { FormulaExecutionSpecsWithRunParams } from './formula-objects-internal-data';
 import { FormulaExperimentalObject } from './formula-experimental-object';
+import { FormulaExecutionSpecsWithRunParams } from './formula-objects-internal-data';
+import { FormulaV1Context, FormulaV1CtxApp, FormulaV1CtxCulture, FormulaV1CtxFeatures, FormulaV1CtxForm, FormulaV1CtxTarget, FormulaV1CtxTargetEntity, FormulaV1CtxUser } from './formula-run-context.model';
 import { FormulaContextEntityInfo } from './formula-run-experimental.model';
 
 /**
@@ -65,7 +65,10 @@ export class FormulaContextObject implements FormulaV1Context {
  * new v18.01
  */
 class FormulaContextEntities {
-  constructor(private specs: FormulaExecutionSpecsWithRunParams) { }
+  #specs: FormulaExecutionSpecsWithRunParams
+  constructor(specs: FormulaExecutionSpecsWithRunParams) {
+    this.#specs = specs;
+  }
 
   /**
    * 
@@ -73,7 +76,7 @@ class FormulaContextEntities {
    * new v18.01
    */
   getAll() {
-    const v1Entities = this.specs.itemService.getMany(this.specs.formConfig.config.itemGuids).map(i => ({
+    const v1Entities = this.#specs.itemService.getMany(this.#specs.formConfig.config.itemGuids).map(i => ({
       guid: i.Entity.Guid,
       id: i.Entity.Id,
       type: {
@@ -96,21 +99,28 @@ class FormulaContextEntities {
 }
 
 class FormulaContextFeatures implements FormulaV1CtxFeatures {
-  constructor(private specs: FormulaExecutionSpecsWithRunParams) { }
+  #specs: FormulaExecutionSpecsWithRunParams;
+  constructor(specs: FormulaExecutionSpecsWithRunParams) {
+    this.#specs = specs;
+  }
 
   isEnabled(name: string): boolean {
-    return this.specs.features().find(f => f.nameId === name)?.isEnabled ?? false;
+    return this.#specs.features().find(f => f.nameId === name)?.isEnabled ?? false;
   }
 }
 
 class FormulaContextForm implements FormulaV1CtxForm {
-  constructor(private specs: FormulaExecutionSpecsWithRunParams) { }
+  #specs: FormulaExecutionSpecsWithRunParams;
+
+  constructor(specs: FormulaExecutionSpecsWithRunParams) {
+    this.#specs = specs;
+  }
 
   runFormulas(): void {
-    const formula = this.specs.runParameters.formula;
+    const formula = this.#specs.runParameters.formula;
     if (formula.version === FormulaVersions.V1) {
       console.error('form.runFormulas() is being deprecated and will stop working end of 2024. Use V2 formulas and return the promise. Formulas will auto-run when it completes.');
-      this.specs.fieldsSettingsSvc.retriggerFormulas('form.runFormulas()');
+      this.#specs.fieldsSettingsSvc.retriggerFormulas('form.runFormulas()');
       return;
     }
     
