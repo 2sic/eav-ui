@@ -128,7 +128,7 @@ class FormulaContextForm implements FormulaV1CtxForm {
     // console.error('form.runFormulas() is not supported in V2 formulas. Just return a promise.');
 
     // New v20 - to be removed completely ca. EOY 2025
-    console.error('form.runFormulas() has been deprecated since v18 with a console-error. It is now disabled. Just return a promise to achieve the same effect, or better yet: update to V2 formulas.');
+    console.error('A formula uses form.runFormulas(). This is deprecated since v18.. It is now disabled. Change formula to V2 and return a promise to achieve the same effect.');
   }
 }
 
