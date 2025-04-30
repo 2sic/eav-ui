@@ -102,7 +102,7 @@ export class QueriesComponent implements OnInit {
   //#endregion
 
   #triggerRefresh() {
-    this.#refresh.update(v => v++);
+    this.#refresh.update(v => ++v); 
   }
 
   #urlTo(url: string) {
