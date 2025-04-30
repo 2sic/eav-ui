@@ -206,7 +206,7 @@ export class AppConfigurationComponent implements OnInit {
 
   ngOnInit() {
     // Update dialog router when child a dialog was closesd
-    this.#dialogRouter.doOnDialogClosed(() => this.#refresh.update(v => v++));
+    this.#dialogRouter.doOnDialogClosed(() => this.#refresh.update(v => ++v));
   }
 
   buttons = computed<Buttons>(() => {
