@@ -2,7 +2,7 @@
   <div #domRoot id="pipeline-root">
     <!-- do not use trackBy, jsPlumb drag stops working properly after delete -->
     @if (!hardReset) {
-      @for (dataSource of visQuerySvc.pipelineModel().DataSources; track dataSource.EntityGuid) {
+      @for (dataSource of visQuerySvc.pipelineModel().DataSources; track dataSource) {
         <div
           #domDataSource
           [id]="domIdOfGuid(dataSource.EntityGuid)"
