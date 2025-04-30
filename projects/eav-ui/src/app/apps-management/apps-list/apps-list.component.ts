@@ -224,7 +224,7 @@ export class AppsListComponent implements OnInit {
   }
 
   #loadApps(): void {
-    this.#refresh.update(v => v + 1);
+    this.#refresh.update(v => ++v);
   }
 
 }

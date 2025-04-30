@@ -128,7 +128,7 @@ export class ContentItemsComponent implements OnInit {
   }
 
   private fetchItems() {
-    this.#refresh.update(value => value + 1)
+    this.#refresh.update(v => ++v)
   }
 
   private fetchColumns() {

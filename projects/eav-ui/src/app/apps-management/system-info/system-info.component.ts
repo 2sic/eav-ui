@@ -184,7 +184,7 @@ export class SystemInfoComponent implements OnInit {
 
   ngOnInit(): void {
     this.#dialogRouter.doOnDialogClosed(() => {
-      this.#refresh.set(this.#refresh() + 1);
+      this.#refresh.update(v => ++v)
     });
   }
 

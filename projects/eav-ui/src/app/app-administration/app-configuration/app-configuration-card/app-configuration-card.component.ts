@@ -67,7 +67,7 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.#dialogRouter.doOnDialogClosed(() => {
-      this.#refresh.update(value => value + 1);
+      this.#refresh.update(v => ++v);
     });
   }
 

@@ -115,7 +115,7 @@ export class WebApiComponent implements OnInit {
   }
 
   private fetchWebApis() {
-    this.#refresh.update(value => value + 1);
+    this.#refresh.update(v => ++v);
   }
 
   private enableCodeGetter() {

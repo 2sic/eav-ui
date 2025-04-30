@@ -462,7 +462,7 @@ export class AppConfigurationComponent implements OnInit {
         this.#contentTypesSvc.save(newContentType).subscribe(success => {
           if (!success) return;
           // trigger refresh
-          this.#refresh.update(v => v + 1);
+          this.#refresh.update(v => ++v);
 
           // Inform user
           alert('Created a new Content Type. Please try again 👍🏼.');

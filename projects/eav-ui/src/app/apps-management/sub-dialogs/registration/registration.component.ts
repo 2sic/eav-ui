@@ -92,7 +92,7 @@ export class RegistrationComponent {
   }
 
   #refreshSystemInfo(): void {
-    this.#refresh.set(this.#refresh() + 1);
+    this.#refresh.update(v => ++v)
   }
 
 }

@@ -150,7 +150,7 @@ export class DataBundlesComponent {
   }
 
   #fetchItems() {
-    this.#refresh.update(value => value + 1)
+    this.#refresh.update(v => ++v)
   }
 
   // Files Drop

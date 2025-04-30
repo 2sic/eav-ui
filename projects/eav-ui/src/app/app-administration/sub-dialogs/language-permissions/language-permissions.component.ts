@@ -17,15 +17,15 @@ import { LanguagesPermissionsActionsComponent } from './languages-permissions-ac
 import { LanguagesPermissionsActionsParams } from './languages-permissions-actions/languages-permissions-actions.models';
 
 @Component({
-    selector: 'app-language-permissions',
-    templateUrl: './language-permissions.component.html',
-    imports: [
-        MatButtonModule,
-        MatIconModule,
-        RouterOutlet,
-        MatDialogActions,
-        SxcGridModule,
-    ]
+  selector: 'app-language-permissions',
+  templateUrl: './language-permissions.component.html',
+  imports: [
+    MatButtonModule,
+    MatIconModule,
+    RouterOutlet,
+    MatDialogActions,
+    SxcGridModule,
+  ]
 })
 export class LanguagePermissionsComponent implements OnInit {
   gridOptions: GridOptions = this.#buildGridOptions();
@@ -47,7 +47,7 @@ export class LanguagePermissionsComponent implements OnInit {
 
   ngOnInit(): void {
     this.#dialogRouting.doOnDialogClosed(() => {
-      this.#refresh.set(this.#refresh() + 1);
+      this.#refresh.update(v => ++v)
     });
 
   }
