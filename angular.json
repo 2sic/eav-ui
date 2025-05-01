@@ -89,16 +89,15 @@
           }
         },
         "test": {
-          "builder": "ngx-build-plus:karma",
+          "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/eav-ui/src/test.ts",
             "polyfills": "projects/eav-ui/src/polyfills.ts",
             "tsConfig": "projects/eav-ui/tsconfig.spec.json",
-            "karmaConfig": "projects/eav-ui/karma.conf.js",
             "inlineStyleLanguage": "css",
             "assets": ["projects/eav-ui/src/assets"],
             "styles": ["projects/eav-ui/src/styles.scss"],
-            "scripts": []
+            "scripts": [],
+            "karmaConfig": "projects/eav-ui/karma.conf.js"
           }
         },
         "lint": {
