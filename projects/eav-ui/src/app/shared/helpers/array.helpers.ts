@@ -20,7 +20,6 @@ export class ArrayHelpers {
 
 }
 
-
 // function onlyUnique<T extends unknown>(value: T, index: number, array: T[]): boolean {
 //   return array.indexOf(value) === index;
 // }
