@@ -22,7 +22,7 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "ngx-build-plus:browser",
+          "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "outputPath": "dist/eav-ui",
             "index": "projects/eav-ui/src/index-raw.html",
@@ -67,23 +67,23 @@
           "defaultConfiguration": "development"
         },
         "serve": {
-          "builder": "ngx-build-plus:dev-server",
+          "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "eav-ui:build",
+            "buildTarget": "eav-ui:build",
             "publicHost": "http://localhost:4200"
           },
           "configurations": {
             "production": {
-              "browserTarget": "eav-ui:build:production"
+              "buildTarget": "eav-ui:build:production"
             },
             "development": {
-              "browserTarget": "eav-ui:build:development"
+              "buildTarget": "eav-ui:build:development"
             }
           },
           "defaultConfiguration": "development"
         },
         "extract-i18n": {
-          "builder": "@angular/build:extract-i18n",
+          "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
             "buildTarget": "eav-ui:build"
           }
