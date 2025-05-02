@@ -1,6 +1,6 @@
 import { copyToClipboard } from "./copy-to-clipboard.helper";
 
-describe('copyToClipboard', () => {
+describe('CopyToClipboard Helper', () => {
   let appendChildSpy: jasmine.Spy;
   let removeChildSpy: jasmine.Spy;
   let execCommandSpy: jasmine.Spy;

@@ -1,6 +1,6 @@
 import { ArrayHelpers } from './array.helpers';
 
-describe('ArrayHelpers', () => {
+describe('Array Helpers', () => {
   it('should add an item if it is not in the array', () => {
     const array = [1, 2, 3];
     ArrayHelpers.toggleInArray(4, array);

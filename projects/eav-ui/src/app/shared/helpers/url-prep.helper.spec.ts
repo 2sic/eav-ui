@@ -2,7 +2,7 @@ import { _test } from "./url-prep.helper";
 
 const { paramEncode, paramDecode } = _test;
 
-describe('URL-PrepHelpers', () => {
+describe('URL-Prep Helpers', () => {
   const testCases = [
     { input: 'a/b', encoded: 'a%2Fb' },
     { input: 'a:b', encoded: 'a%3Ab' },
