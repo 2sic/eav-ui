@@ -289,3 +289,8 @@ function paramDecode(text: string) {
     .replace(/%7E/g, '~')
     .replace(/%2C/g, ',');
 }
+
+export const _test = {
+  paramEncode,
+  paramDecode,
+};
