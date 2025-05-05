@@ -4,7 +4,6 @@ import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { transient } from '../../../../../core';
 import { FeaturesService } from '../../features/features.service';
-import { InputTypeHelpers } from '../../shared/fields/input-type-helpers';
 import { Update$2sxcEnvFromContext } from '../../shared/helpers/update-env-vars-from-dialog-settings.helper';
 import { convertUrlToForm } from '../../shared/helpers/url-prep.helper';
 import { classLog } from '../../shared/logging';
@@ -12,25 +11,22 @@ import { ItemAddIdentifier } from '../../shared/models/edit-form.model';
 import { UserLanguageService } from '../../shared/services/user-language.service';
 import { calculateIsParentDialog, sortLanguages } from '../dialog/main/edit-dialog-main.helpers';
 import { EavEditLoadDto } from '../dialog/main/edit-dialog-main.models';
-import { FieldLogicManager } from '../fields/logic/field-logic-manager';
-import { FieldReader } from '../localization/field-reader';
 import { LanguageService } from '../localization/language.service';
 import { EditUrlParams } from '../routing/edit-url-params.model';
 import { AdamCacheService } from '../shared/adam/adam-cache.service';
 import { LinkCacheService } from '../shared/adam/link-cache.service';
 import { ContentTypeItemService } from '../shared/content-types/content-type-item.service';
 import { ContentTypeService } from '../shared/content-types/content-type.service';
-import { EntityReader } from '../shared/helpers';
 import { InputTypeService } from '../shared/input-types/input-type.service';
 import { EavContentType } from '../shared/models/eav/eav-content-type';
 import { EavEntity } from '../shared/models/eav/eav-entity';
-import { FieldsSettingsHelpers } from '../state/field-settings.helper';
 import { ItemService } from '../state/item.service';
 import { FormConfigService } from './form-config.service';
 import { FormDataService } from './form-data.service';
 import { FormLanguageService } from './form-language.service';
 import { FormPublishingService } from './form-publishing.service';
 import { InitialValuesService } from './initial-values-service';
+import { InitializeMissingValuesServices } from './initialize-missing-values-services';
 import { ItemsRequestRestoreHelper } from './items-request-restore-helper';
 
 const logSpecs = {
@@ -57,6 +53,7 @@ export class EditInitializerService {
   #formDataService = transient(FormDataService);
 
   #userLanguageSvc = transient(UserLanguageService);
+  #initMissingValuesSvc = transient(InitializeMissingValuesServices);
 
   constructor(
     private route: ActivatedRoute,
@@ -162,90 +159,11 @@ export class EditInitializerService {
   #initMissingValues(): void {
     const l = this.log.fnIf('initMissingValues');
 
-    const updater = this.itemService.updater;
-    const eavConfig = this.formConfig.config;
-    const formId = eavConfig.formId;
-    const items = this.itemService.getMany(eavConfig.itemGuids);
-    const inputTypes = this.inputTypeService.getAll();
-    const languages = this.languageService.getAll();
+    const switchToDefault = this.#initMissingValuesSvc.initMissingValues();
     const language = this.formConfig.language();
-    /** force UI to switch to default language, because some values are missing in the default language */
-    let switchToDefault = false;
-    const isCreateMode = eavConfig.createMode;
-
-    const fss = new FieldsSettingsHelpers("EditInitializerService");
-
-    for (const item of items) {
-      const contentType = this.contentTypeService.getContentTypeOfItem(item);
-
-      for (const ctAttribute of contentType.Attributes) {
-        const currentName = ctAttribute.Name;
-        const inputType = inputTypes.find(i => i.Type === ctAttribute.InputType);
-        const isEmptyType = InputTypeHelpers.isEmpty(inputType?.Type);
-        l.a(`Attribute: '${currentName}' InputType: '${inputType?.Type}' isEmptyType: '${isEmptyType}'`);
-
-        if (isEmptyType)
-          continue;
-
-        const logic = FieldLogicManager.singleton().getOrUnknown(inputType?.Type);
-
-        const attributeValues = item.Entity.Attributes[ctAttribute.Name];
-        const fieldSettings = fss.getDefaultSettings(
-          new EntityReader(language.primary, language.primary).flatten(ctAttribute.Metadata)
-        );
-
-        if (languages.length === 0) {
-          l.a(`${currentName} languages none, simple init`);
-          const firstValue = new FieldReader(attributeValues, '*').currentOrDefaultOrAny?.value;
-          if (logic.isValueEmpty(firstValue, isCreateMode))
-            updater.setDefaultValue(item, ctAttribute, inputType, fieldSettings, languages, language.primary);
-        } else {
-          l.a(`${currentName} languages many, complex init`);
-
-          // check if there is a value for the generic / all language
-          const disableI18n = inputType?.DisableI18n;
-          const noLanguageValue = new FieldReader(attributeValues, '*').currentOrDefault?.value;
-          l.a(currentName, { disableI18n, noLanguageValue });
-          if (!disableI18n && noLanguageValue !== undefined) {
-            // move * value to defaultLanguage
-            const transactionItem = updater.removeItemAttributeDimension(item.Entity.Guid, ctAttribute.Name, '*', true);
-            updater.addItemAttributeValue(
-              item.Entity.Guid,
-              ctAttribute.Name,
-              noLanguageValue,
-              language.primary,
-              false,
-              ctAttribute.Type,
-              false,
-              transactionItem,
-            );
-            l.a(`${currentName} exit`);
-            continue;
-          }
-
-          const defaultLanguageValue = new FieldReader(attributeValues, language.primary).currentOrDefault?.value;
-
-          const valueIsEmpty = logic.isValueEmpty(defaultLanguageValue, isCreateMode);
-          l.a(currentName, { currentName, valueIsEmpty, defaultLanguageValue, isCreateMode });
-          if (valueIsEmpty) {
-            const valUsed = updater.setDefaultValue(item, ctAttribute, inputType, fieldSettings, languages, language.primary);
-
-            // 2022-08-15 2dm added this
-            // If we run into more problems (like required date-fields which result in null)
-            // we may have to update the logic to use FieldLogicBase and add rules for each type what would be valid
-            // or test for IsRequired as well
-
-            // If the primary language isn't ready, enforce switch-to-default
-            // Skip this for ephemeral fields as they never load with content
-            // Also switch for fields which use null as default (like boolean-tristate) as this kind of "empty" is valid
-            if (valUsed != null && !fieldSettings.IsEphemeral)
-              switchToDefault = true;
-          }
-        }
-      }
-    }
 
     if (switchToDefault && language.current !== language.primary) {
+      const formId = this.formConfig.config.formId;
       this.languageStore.setCurrent(formId, language.primary);
       const message = this.translate.instant('Message.SwitchedLanguageToDefault', { language: language.primary });
       this.snackBar.open(message, null, { duration: 5000 });
