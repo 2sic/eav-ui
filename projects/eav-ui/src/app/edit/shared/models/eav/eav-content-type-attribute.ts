@@ -27,9 +27,10 @@ export class EavContentTypeAttribute {
   }
 
   static convertMany(ctAttributesDto: EavContentTypeAttributesDto[]): EavContentTypeAttribute[] {
-    if (ctAttributesDto == null) { return []; }
+    if (ctAttributesDto == null)
+      return [];
 
-    const attributes = ctAttributesDto.map(attribute1 => EavContentTypeAttribute.convertOne(attribute1));
+    const attributes = ctAttributesDto.map(a => EavContentTypeAttribute.convertOne(a));
     return attributes;
   }
 }

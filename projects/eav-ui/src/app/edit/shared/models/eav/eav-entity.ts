@@ -22,16 +22,17 @@ export class EavEntity {
       Owner: entityDto.Owner,
       Type: entityDto.Type,
       Version: entityDto.Version,
-      For: entityDto.For,
+      For: entityDto.For ?? null,
       Metadata: metadata,
     };
     return entity;
   }
 
   static convertMany(entitiesDto: EavEntityDto[]): EavEntity[] {
-    if (entitiesDto == null) { return null; }
+    if (entitiesDto == null)
+      return null;
 
-    const entities = entitiesDto.map(entityDto => EavEntity.convertOne(entityDto));
+    const entities = entitiesDto.map(e => EavEntity.convertOne(e));
     return entities;
   }
 }

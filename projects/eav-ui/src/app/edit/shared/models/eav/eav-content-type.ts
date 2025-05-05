@@ -31,9 +31,10 @@ export class EavContentType {
   }
 
   static convertMany(contentTypesDto: EavContentTypeDto[]): EavContentType[] {
-    if (contentTypesDto == null) { return null; }
+    if (contentTypesDto == null)
+      return null;
 
-    const contentTypes = contentTypesDto.map(contentTypeDto => EavContentType.convertOne(contentTypeDto));
-    return contentTypes;
+    const result = contentTypesDto.map(ct => EavContentType.convertOne(ct));
+    return result;
   }
 }

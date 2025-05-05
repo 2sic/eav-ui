@@ -33,9 +33,10 @@ export class EavEntityDto {
   }
 
   private static entitiesToDto(entities: EavEntity[]): EavEntityDto[] {
-    if (entities == null) { return null; }
+    if (entities == null)
+      return null;
 
-    const entities1 = entities.map(entity => EavEntityDto.entityToDto(entity));
-    return entities1;
+    const result = entities.map(e => EavEntityDto.entityToDto(e));
+    return result;
   }
 }
