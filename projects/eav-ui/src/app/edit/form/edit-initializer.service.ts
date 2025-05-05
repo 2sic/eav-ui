@@ -31,6 +31,7 @@ import { FormConfigService } from './form-config.service';
 import { FormDataService } from './form-data.service';
 import { FormLanguageService } from './form-language.service';
 import { FormPublishingService } from './form-publishing.service';
+import { ItemsRequestRestoreHelper } from './items-request-restore-helper';
 
 const logSpecs = {
   all: false,
@@ -82,53 +83,36 @@ export class EditInitializerService {
   fetchFormData(): void {
     const l = this.log.fnIf('fetchFormData');
     const inbound = convertUrlToForm((this.route.snapshot.params as EditUrlParams).items);
-    // 2024-06-01 2dm adding index to round trip
+    
+    // Reduce amount of data sent to backend by removing unneeded properties
+    const dataHelper = new ItemsRequestRestoreHelper(inbound.items);
     const form = {
       ...inbound,
-      items: inbound.items.map((item, index) => {
-        return {
-          ...item,
-          clientId: index,
-        };
-      }),
+      items: dataHelper.itemsForRequest(),
     }
     l.a('fetchFormData', form);
 
     const editItems = JSON.stringify(form.items);
-    this.#formDataService.fetchFormData(editItems).subscribe(dataFromBackend => {
-      // 2dm 2024-06-01 preserve prefill and client-data from original
-      // and stop relying on round-trip to keep it
-      const formData: EavEditLoadDto = {
-        ...dataFromBackend,
-        Items: dataFromBackend.Items.map(item => {
-          // try to find original item
-          const originalItem = form.items.find(i => i.clientId === item.Header.clientId);
-          l.a('fetchFormData - remix', {item, originalItem});
-
-          return originalItem == null
-            ? item
-            : {
-                ...item,
-                Header: {
-                  ...item.Header,
-                  Prefill: originalItem.Prefill,
-                  ClientData: originalItem.ClientData,
-                }
-              };
-        }),
-      };
-      l.a('fetchFormData - after remix', {formData});
+    this.#formDataService
+      .fetchFormData(editItems)
+      .subscribe(dataFromBackend => {
+        // Restore prefill and client-data from original
+        const formData: EavEditLoadDto = {
+          ...dataFromBackend,
+          Items: dataHelper.mergeResponse(dataFromBackend.Items),
+        };
+        l.a('fetchFormData - after remix', {formData});
 
 
-      // SDV: document what's happening here
-      this.featuresService.load(formData.Context, formData);
-      UpdateEnvVarsFromDialogSettings(formData.Context.App);
-      this.#importLoadedData(formData);
-      this.#keepInitialValues();
-      this.#initMissingValues();
+        // SDV: document what's happening here
+        this.featuresService.load(formData.Context, formData);
+        UpdateEnvVarsFromDialogSettings(formData.Context.App);
+        this.#importLoadedData(formData);
+        this.#keepInitialValues();
+        this.#initMissingValues();
 
-      this.loaded.set(true);
-    });
+        this.loaded.set(true);
+      });
   }
 
   #importLoadedData(loadDto: EavEditLoadDto): void {
