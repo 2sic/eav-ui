@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { classLogEnabled } from '../../shared/logging';
+import { classLog } from '../../shared/logging';
 import { LanguageService } from '../localization/language.service';
 import { EntityReader } from '../shared/helpers/entity-reader';
 import { ItemValuesOfLanguage } from '../state/item-values-of-language.model';
@@ -15,9 +15,9 @@ const logSpecs = {
 
 @Injectable()
 export class InitialValuesService {
-  log = classLogEnabled({InitialValuesService}, logSpecs);
+  log = classLog({InitialValuesService}, logSpecs);
   
-  #initialFormValues: Record<string, ItemValuesOfLanguage> = {};
+  #cache: Record<string, ItemValuesOfLanguage> = {};
   
   constructor(
     private formConfig: FormConfigService,
@@ -44,7 +44,7 @@ export class InitialValuesService {
       for (const currentLang of allLangs) {
         const formValues = new EntityReader(currentLang, language.primary).currentValues(item.Entity.Attributes);
         const cacheKey = this.#cacheKey(item.Entity.Guid, currentLang);
-        this.#initialFormValues[cacheKey] = formValues;
+        this.#cache[cacheKey] = formValues;
       }
   }
 
@@ -54,7 +54,7 @@ export class InitialValuesService {
 
   get(entityGuid: string, language: string): ItemValuesOfLanguage {
     const l = this.log.fnIf('get', { entityGuid, language });
-    const result = this.#initialFormValues[this.#cacheKey(entityGuid, language)];
+    const result = this.#cache[this.#cacheKey(entityGuid, language)];
     return l.r(result);
   }
 
