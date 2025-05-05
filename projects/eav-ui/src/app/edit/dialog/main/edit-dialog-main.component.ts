@@ -1,14 +1,16 @@
 import { CdkScrollable } from '@angular/cdk/scrolling';
 import { NgClass } from '@angular/common';
-import { AfterViewInit, Component, computed, effect, inject, OnDestroy, OnInit, QueryList, signal, untracked, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, computed, effect, Inject, inject, OnDestroy, OnInit, QueryList, signal, untracked, ViewChildren } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatRippleModule } from '@angular/material/core';
-import { MatDialogActions, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogActions, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { delay, fromEvent, of, startWith } from 'rxjs';
 import { transient } from '../../../../../../core';
+import { ClosingDialogState, DialogRoutingState } from '../../../apps-management/models/routeState.model';
 import { BaseComponent } from '../../../shared/components/base.component';
 import { ToggleDebugDirective } from '../../../shared/directives/toggle-debug.directive';
 import { classLog } from '../../../shared/logging';
@@ -106,7 +108,11 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
   #formDataService = transient(FormDataService);
   #entityFormStateService = transient(EntityFormStateService);
 
+  router = inject(Router);
+  route = inject(ActivatedRoute);
+
   protected viewInitiated = signal(false);
+  isReturnValueMode = false;
 
   constructor(
     private dialog: MatDialogRef<EditEntryComponent>,
@@ -124,10 +130,12 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
     private adamCacheService: AdamCacheService,
     private linkCacheService: LinkCacheService,
     private formulaDesignerService: FormulaDesignerService,
+    @Inject(MAT_DIALOG_DATA) dialogData: DialogRoutingState,
   ) {
     super();
     const l = this.log.fnIf('constructor');
     this.dialog.disableClose = true;
+    this.isReturnValueMode = dialogData?.returnValue;
 
 
     // Initialize default user preferences for footer show/hide
@@ -227,6 +235,20 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
 
   /** Save all forms */
   saveAll(close: boolean): boolean {
+
+    // if (this.isReturnValueMode) {
+
+    //   const currentUrl = this.router.url;
+    //   const urlBeforeEdit = currentUrl.split('/edit')[0];
+
+    //   // this.#formConfig.config.
+    //   this.router.navigate([urlBeforeEdit], { state: { dialogValue: "1212" } satisfies ClosingDialogState<any> });
+    //   return
+    // }
+
+
+
+
     this.#entityFormStateService.isSaving.set(true);
 
     const l = this.log.fn('saveAll', { close });
@@ -261,6 +283,19 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
         DraftShouldBranch: publishStatus.DraftShouldBranch,
       };
       l.a('SAVE FORM DATA:', { saveFormData });
+
+      // 
+      // Get Data via route per state 
+      //
+
+      if (this.isReturnValueMode) {
+        const urlBeforeEdit = this.router.url.split('/edit')[0];
+
+        this.router.navigate([urlBeforeEdit], { state: { dialogValue: saveFormData } satisfies ClosingDialogState<any> });
+        return
+      }
+
+      // Saving 
       this.snackBar.open(this.translate.instant('Message.Saving'), null, { duration: 2000 });
 
       this.#formDataService.saveFormData(saveFormData, this.#formConfig.config.partOfPage).subscribe({

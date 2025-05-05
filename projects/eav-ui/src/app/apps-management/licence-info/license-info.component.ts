@@ -287,6 +287,15 @@ export class LicenseInfoComponent implements OnInit {
       { state: { returnValue: true } satisfies DialogRoutingState },
     );
   }
+
+
+  openProtoTypeDialogEdit(): void {
+    this.#dialogRouter.navRelative(
+      ['protoTypeAppDialog'],
+      { state: { returnValue: true } satisfies DialogRoutingState },
+    );
+  }
+
 }
 
 

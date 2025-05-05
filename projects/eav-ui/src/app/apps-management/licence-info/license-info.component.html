@@ -2,9 +2,20 @@
 
   <!-- {{isDebug()}} -->
   <pre>
-  Button to show a Test Formular 2dg in Debug Mode
+  Button to show a Test Formular ProtoType 
  
   <button mat-raised-button (click)="openProtoTypeDialog()">Open Dialog</button>
+
+   <strong>Result after Close:</strong>
+
+   {{dialogValueNr() | json}}
+ </pre>
+
+
+ <pre>
+  Button to show a Edit Formular ProtoType 
+ 
+  <button mat-raised-button (click)="openProtoTypeDialogEdit()">Edit Dialog Open</button>
 
    <strong>Result after Close:</strong>
 

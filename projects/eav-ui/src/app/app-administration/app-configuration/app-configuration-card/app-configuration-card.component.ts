@@ -1,11 +1,14 @@
-import { Component, computed, input, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, input, OnDestroy, OnInit, signal } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { NavigationStart, Router } from '@angular/router';
+import { filter } from 'rxjs';
 import { transient } from '../../../../../../core';
 import { DocsLinkHelperComponent } from '../../../admin-shared/docs-link-helper/docs-link-helper.component';
+import { ClosingDialogState, DialogRoutingState } from '../../../apps-management/models/routeState.model';
 import { ContentItemsService } from '../../../content-items/services/content-items.service';
 import { GoToMetadata } from '../../../metadata';
 import { eavConstants } from '../../../shared/constants/eav.constants';
@@ -37,6 +40,8 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
   #appInternalsSvc = transient(AppInternalsService);
   #contentItemsSvc = transient(ContentItemsService);
   #dialogRouter = transient(DialogRoutingService);
+  router = inject(Router);
+
 
   appConfigurationUrl = signal('');
   appConfigAvailable = signal(false);
@@ -69,6 +74,19 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
     this.#dialogRouter.doOnDialogClosed(() => {
       this.#refresh.update(v => ++v);
     });
+
+
+    this.router.events
+    .pipe(filter(event => event instanceof NavigationStart))
+    .subscribe(() => {
+      const navigation = this.router.getCurrentNavigation();
+      if (navigation?.extras.state && navigation.extras.state.dialogValue) {
+        const state = navigation?.extras.state as ClosingDialogState<any>;
+        console.log("2dg Data after Close",state.dialogValue)
+        // this.dialogValueNr.set(state.dialogValue);
+      }
+    });
+
   }
 
   ngOnDestroy() {
@@ -108,6 +126,14 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
         `Metadata for App: ${this.dialogSettings().Context.App.Name} (${this.context.appId})`,
       )
     );
+  }
+
+  openAppConfigurationClick(){
+      let url = this.appConfigurationUrl();
+      url = url.replace('#', '');
+      this.router.navigate([url], {
+        state: { returnValue: true } as DialogRoutingState
+      });
   }
 
   formatValue(value?: string): string {
