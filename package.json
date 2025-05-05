@@ -10,7 +10,7 @@
   "scripts": {
     "// TESTING": "This is the standard test command, which should run for all tests",
     "test": "ng test",
-    "// TESTING CODE COVARAGE": "This is the test command which shows how much of the code is covered by tests",
+    "// TESTING CODE COVERAGE": "This is the test command which shows how much of the code is covered by tests",
     "test-coverage": "ng test --no-watch --code-coverage",
     "release": "set NODE_ENV=production && npm run prod-all",
     "dev-all": "npm run build-prepare && webpack --env parts=all && ng build --configuration development && npm run deploy",

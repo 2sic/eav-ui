@@ -75,6 +75,10 @@ export class EditInitializerService {
     this.log.aIf('constructor', null, "constructor");
   }
 
+  /**
+   * Fetch the form data from the backend and load it into the various services.
+   * This will also set the form config and language.
+   */
   fetchFormData(): void {
     const l = this.log.fnIf('fetchFormData');
     const itemsRaw = (this.route.snapshot.params as EditUrlParams).items;
@@ -107,14 +111,19 @@ export class EditInitializerService {
         // Remember initial values as the formulas sometimes need them
         this.initialValuesService.preserve();
 
-        // Initialize missing values in the form
+        // After preserving original values, initialize missing values in the form
         this.#initMissingValues();
 
-        // Set the form as loaded to trigger ready state in the UI
+        // Set the form as loaded to trigger the UI to be built
         this.loaded.set(true);
       });
   }
 
+  /**
+   * Import the loaded data into the various services and stores.
+   * This will also set the form config and language.
+   * @param loadDto The loaded data from the backend
+   */
   #importLoadedData(loadDto: EavEditLoadDto): void {
     const l = this.log.fnIf('importLoadedData');
 
@@ -172,6 +181,10 @@ export class EditInitializerService {
     this.publishStatusService.setPublishMode(publishMode, formId, this.formConfig);
   }
 
+  /**
+   * Initialize missing values in the form.
+   * If necessary, also switch the UI to the default language.
+   */
   #initMissingValues(): void {
     const l = this.log.fnIf('initMissingValues');
 
