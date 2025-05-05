@@ -35,7 +35,7 @@ export class EntityReader implements FormLanguage {
   // But we'll probably end up calling this from the EntityReader only, so it should be straight forward
   getBestValue<T>(attributeValues: EavField<T>, defaultValue: T = null): T {
     const fieldReader = new FieldReader<T>(attributeValues, this);
-    return fieldReader.currentOrDefaultOrAny?.Value ?? defaultValue;
+    return fieldReader.currentOrDefaultOrAny?.value ?? defaultValue;
     // return LocalizationHelpers.translate<T>(this, attributeValues as EavField<T>, defaultValue);
   }
 

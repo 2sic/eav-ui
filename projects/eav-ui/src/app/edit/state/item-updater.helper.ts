@@ -143,7 +143,7 @@ export class ItemUpdateHelper {
     //   // defaultLanguage,
     //   BestValueModes.Strict,
     // );
-    const defaultLanguageValue = new FieldReader(item.Entity.Attributes[ctAttribute.Name], defaultLanguage).currentOrDefault?.Value;
+    const defaultLanguageValue = new FieldReader(item.Entity.Attributes[ctAttribute.Name], defaultLanguage).currentOrDefault?.value;
 
     // 2023-08-31 2dm simplified; leave comments in till EOY in case I broke something
     const languageCode = (languages.length === 0 || inputType?.DisableI18n) ? '*' : defaultLanguage;

@@ -239,7 +239,7 @@ export class EditInitializerService {
 
         if (languages.length === 0) {
           l.a(`${currentName} languages none, simple init`);
-          const firstValue = new FieldReader(attributeValues, '*').currentOrDefaultOrAny?.Value;
+          const firstValue = new FieldReader(attributeValues, '*').currentOrDefaultOrAny?.value;
           if (logic.isValueEmpty(firstValue, isCreateMode))
             updater.setDefaultValue(item, ctAttribute, inputType, fieldSettings, languages, language.primary);
         } else {
@@ -247,7 +247,7 @@ export class EditInitializerService {
 
           // check if there is a value for the generic / all language
           const disableI18n = inputType?.DisableI18n;
-          const noLanguageValue = new FieldReader(attributeValues, '*').currentOrDefault?.Value;
+          const noLanguageValue = new FieldReader(attributeValues, '*').currentOrDefault?.value;
           l.a(currentName, { disableI18n, noLanguageValue });
           if (!disableI18n && noLanguageValue !== undefined) {
             // move * value to defaultLanguage
@@ -266,7 +266,7 @@ export class EditInitializerService {
             continue;
           }
 
-          const defaultLanguageValue = new FieldReader(attributeValues, language.primary).currentOrDefault?.Value;
+          const defaultLanguageValue = new FieldReader(attributeValues, language.primary).currentOrDefault?.value;
 
           const valueIsEmpty = logic.isValueEmpty(defaultLanguageValue, isCreateMode);
           l.a(currentName, { currentName, valueIsEmpty, defaultLanguageValue, isCreateMode });

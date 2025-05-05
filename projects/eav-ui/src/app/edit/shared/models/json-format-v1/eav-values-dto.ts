@@ -11,8 +11,8 @@ export class EavValuesDto<T> {
   static valuesToDto<T>(eavValues: EavField<T>): EavValuesDto<T> {
     const dtoValue: EavValuesDto<T> = {};
     for (const value of eavValues.Values) {
-      const dimensions = value.Dimensions.map(dimension => dimension.Value).join();
-      dtoValue[dimensions] = value.Value;
+      const dimensions = value.dimensions.map(dimension => dimension.dimCode).join();
+      dtoValue[dimensions] = value.value;
     }
     return dtoValue;
   }

@@ -4,15 +4,15 @@ import { EavFieldValue } from './eav-field-value';
 describe('EavValue.Create', () => {
   it('should create a basic value without dimensions',
     () => expect(EavFieldValue.create('hello', []))
-      .toEqual({ Value: 'hello', Dimensions: [] }));
+      .toEqual({ value: 'hello', dimensions: [] }));
 
   it('should create a basic value with a single dimension',
     () => expect(EavFieldValue.create('hello', [EavDimension.create('en')]))
-      .toEqual({ Value: 'hello', Dimensions: [{ Value: 'en' }] }));
+      .toEqual({ value: 'hello', dimensions: [{ dimCode: 'en' }] }));
 
   it('should create a basic value with multiple dimensions',
     () => expect(EavFieldValue.create('hello', [EavDimension.create('en'), EavDimension.create('fr')]))
-      .toEqual({ Value: 'hello', Dimensions: [{ Value: 'en' }, { Value: 'fr' }] }));
+      .toEqual({ value: 'hello', dimensions: [{ dimCode: 'en' }, { dimCode: 'fr' }] }));
 
 });
 
@@ -20,32 +20,32 @@ describe('EavValue.Create', () => {
 describe('EavValue.Convert', () => {
   it('should convert a basic value with one dimension',
     () => expect(EavFieldValue.convert({ 'en': 'hello' }))
-      .toEqual([{ Value: 'hello', Dimensions: [{ Value: 'en' }] }]));
+      .toEqual([{ value: 'hello', dimensions: [{ dimCode: 'en' }] }]));
 
   it('should convert a value with two values and each one dimension',
     () => expect(EavFieldValue.convert({ 'en': 'hello', 'fr': 'bonjour' }))
       .toEqual([
-        { Value: 'hello', Dimensions: [{ Value: 'en' }] },
-        { Value: 'bonjour', Dimensions: [{ Value: 'fr' }] },
+        { value: 'hello', dimensions: [{ dimCode: 'en' }] },
+        { value: 'bonjour', dimensions: [{ dimCode: 'fr' }] },
       ]));
 
   it('should convert a basic value with multiple dimensions',
     () => expect(EavFieldValue.convert({ 'en,fr': 'hello' }))
       .toEqual([
-        { Value: 'hello', Dimensions: [{ Value: 'en' }, { Value: 'fr' }] },
+        { value: 'hello', dimensions: [{ dimCode: 'en' }, { dimCode: 'fr' }] },
       ]));
   it('should convert a basic value with multiple dimensions',
     () => expect(EavFieldValue.convert({ 'en,*': 'hello', 'fr': 'bonjour' }))
       .toEqual([
-        { Value: 'hello', Dimensions: [{ Value: 'en' }, { Value: '*' }] },
-        { Value: 'bonjour', Dimensions: [{ Value: 'fr' }] },
+        { value: 'hello', dimensions: [{ dimCode: 'en' }, { dimCode: '*' }] },
+        { value: 'bonjour', dimensions: [{ dimCode: 'fr' }] },
       ]));
   it('should convert a basic value with multiple dimensions and additional values',
     () => expect(EavFieldValue.convert({ 'en,*': 'hello', 'fr': 'bonjour', 'de': 'hallo' }))
       .toEqual([
-        { Value: 'hello', Dimensions: [{ Value: 'en' }, { Value: '*' }] },
-        { Value: 'bonjour', Dimensions: [{ Value: 'fr' }] },
-        { Value: 'hallo', Dimensions: [{ Value: 'de' }] },
+        { value: 'hello', dimensions: [{ dimCode: 'en' }, { dimCode: '*' }] },
+        { value: 'bonjour', dimensions: [{ dimCode: 'fr' }] },
+        { value: 'hallo', dimensions: [{ dimCode: 'de' }] },
       ]));
 
 });

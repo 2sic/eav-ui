@@ -1,19 +1,19 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, Signal } from '@angular/core';
-import { EditApiKeyPaths } from '../../shared/constants/eav.constants';
-import { ApiKeySpecs } from '../../shared/models/dialog-context.models';
-import { FieldReader } from '../localization/field-reader';
-import { EavEntityAttributes, EavItem } from '../shared/models/eav';
-import { FieldsSettingsService } from './fields-settings.service';
-import { FormConfigService } from '../form/form-config.service';
-import { ItemHelper } from '../shared/helpers/item.helper';
-import { FormLanguage } from '../form/form-languages.model';
-import { ItemService } from './item.service';
-import { ContentTypeService } from '../shared/content-types/content-type.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
-import { FieldTranslationInfo } from './field-translation-info';
+import { EditApiKeyPaths } from '../../shared/constants/eav.constants';
 import { classLog } from '../../shared/logging';
+import { ApiKeySpecs } from '../../shared/models/dialog-context.models';
+import { FormConfigService } from '../form/form-config.service';
+import { FormLanguage } from '../form/form-languages.model';
+import { FieldReader } from '../localization/field-reader';
+import { ContentTypeService } from '../shared/content-types/content-type.service';
+import { ItemHelper } from '../shared/helpers/item.helper';
+import { EavEntityAttributes, EavItem } from '../shared/models/eav';
+import { FieldTranslationInfo } from './field-translation-info';
+import { FieldsSettingsService } from './fields-settings.service';
+import { ItemService } from './item.service';
 
 const apiKeyInDemoModeAlert = `This translation is a demo. Please provide your own Google Translate API key in the EAV configuration.`;
 
@@ -82,7 +82,7 @@ export class FieldsTranslateService {
     const fieldReaderPrimaryLang = new FieldReader(values, FormLanguage.bothPrimary(language));
     const defaultValue = fieldReaderPrimaryLang.current;
     if (!doesFieldHaveExistingDimension) 
-      return l.r(this.#addItemAttributeValueHelper(fieldName, defaultValue.Value, language.current, false));
+      return l.r(this.#addItemAttributeValueHelper(fieldName, defaultValue.value, language.current, false));
     else
       return l.rNull();
   }
@@ -136,7 +136,7 @@ export class FieldsTranslateService {
 
     // Filter out fields that have translation disabled
     fieldNames = fieldNames.filter(f => !this.#getInfo(f).DisableTranslation);
-    const textsForTranslation = fieldNames.map(f => new FieldReader(attributes[f], sourceLanguageKey).currentEditable.Value);
+    const textsForTranslation = fieldNames.map(f => new FieldReader(attributes[f], sourceLanguageKey).currentEditable.value);
 
     if (!areAllChecksKnown)
       fieldNames.forEach((field, i) => {
@@ -183,11 +183,11 @@ export class FieldsTranslateService {
       if (valueAlreadyExists)
         // Copy attribute value where language is languageKey to value where language is current language
         this.updater.updateItemAttributeValue(
-          this.#entityGuid, fieldName, valueTranslation.Value, language, false,
+          this.#entityGuid, fieldName, valueTranslation.value, language, false,
         );
       else
         // Copy attribute value where language is languageKey to new attribute with current language
-        this.#addItemAttributeValueHelper(fieldName, valueTranslation.Value, language.current, false);
+        this.#addItemAttributeValueHelper(fieldName, valueTranslation.value, language.current, false);
     } else
       this.log.a(`${language.current}: Cant copy value from ${copyFromLanguageKey} because that value does not exist.`);
   }
@@ -224,7 +224,7 @@ export class FieldsTranslateService {
     const canTranslateWithEmpty = this.findAutoTranslatableFields().filter(x => !cantTranslateAndEmpty.includes(x));
     // separate fields that have auto-translate enabled and are empty
     canTranslateWithEmpty.forEach(fieldName => {
-      const value = new FieldReader(attributes[fieldName], sourceLanguageKey).currentEditable?.Value;
+      const value = new FieldReader(attributes[fieldName], sourceLanguageKey).currentEditable?.value;
       if (value !== '' && value != null && value !== undefined)
         canTranslate.push(fieldName);
       // this is commented out because future edits on fields should automatically be passed to the other languages

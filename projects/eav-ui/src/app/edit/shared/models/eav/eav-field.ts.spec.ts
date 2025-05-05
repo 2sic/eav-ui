@@ -4,7 +4,7 @@ describe('EavField.convert()', () => {
   it('should convert a basic value with one dimension',
     () => expect(EavField.convert({ 'en': 'hello' }, 'string'))
       .toEqual({
-        Values: [{ Value: 'hello', Dimensions: [{ Value: 'en' }] }],
+        Values: [{ value: 'hello', dimensions: [{ dimCode: 'en' }] }],
         Type: 'string',
       }));
 
@@ -12,8 +12,8 @@ describe('EavField.convert()', () => {
     () => expect(EavField.convert({ 'en': 'hello', 'fr': 'bonjour' }, 'string'))
       .toEqual({
         Values: [
-          { Value: 'hello', Dimensions: [{ Value: 'en' }] },
-          { Value: 'bonjour', Dimensions: [{ Value: 'fr' }] }
+          { value: 'hello', dimensions: [{ dimCode: 'en' }] },
+          { value: 'bonjour', dimensions: [{ dimCode: 'fr' }] }
         ],
         Type: 'string',
       }));

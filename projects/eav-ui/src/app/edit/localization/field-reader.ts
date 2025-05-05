@@ -66,19 +66,19 @@ export class FieldReader<T = any> {
 
   ofLanguage(language: FormLanguage): EavFieldValue<T> | null {
     if (this.#noData) return null;
-    return this.#values.filter(val => new DimensionReader(val.Dimensions, language).hasCurrent)[0] ?? null;
+    return this.#values.filter(val => new DimensionReader(val.dimensions, language).hasCurrent)[0] ?? null;
   }
 
   /** Check if there is a value on the specified primary language or on the '*' dimension */
   get hasPrimary(): boolean {
     if (this.#noData) return false;
     const primary = this.#language.primary;
-    return this.#values.filter(val => val.Dimensions.find(d => d.Value === primary || d.Value === '*')).length > 0;
+    return this.#values.filter(val => val.dimensions.find(d => d.dimCode === primary || d.dimCode === '*')).length > 0;
   }
 
   get hasCurrentReadonly(): boolean {
     if (this.#noData) return false;
-    return this.#values.filter(val => new DimensionReader(val.Dimensions, this.#language).hasCurrentReadOnly).length > 0;
+    return this.#values.filter(val => new DimensionReader(val.dimensions, this.#language).hasCurrentReadOnly).length > 0;
   }
 
   /** A value in specified Language is editable, if assigned to current language or to '*' (but only when on default-language) */
@@ -94,7 +94,7 @@ export class FieldReader<T = any> {
 
   /** Number of editable translatable fields that have some content (not empty/null) */
   countEditableWithContents(): number {
-    return this.#valuesEditableOf().filter(v => v.Value != "" && v.Value != null)?.length;
+    return this.#valuesEditableOf().filter(v => v.value != "" && v.value != null)?.length;
   }
 
   /**
@@ -104,14 +104,14 @@ export class FieldReader<T = any> {
   #valuesEditableOf(language?: FormLanguage): EavFieldValue<T>[] {
     if (this.#noData) return [];
     language ??= this.#language;
-    return this.#values.filter(val => new DimensionReader(val.Dimensions, language).hasCurrentWrite);
+    return this.#values.filter(val => new DimensionReader(val.dimensions, language).hasCurrentWrite);
   }
 
   /** Value of current language which is editable. `null` if not found. */
   get currentEditable(): EavFieldValue<T> {
     if (this.#noData) return null;
     const dimension = this.#language.current;
-    return this.#values.find(v => v.Dimensions.find(x => x.Value === dimension)) ?? null;
+    return this.#values.find(v => v.dimensions.find(x => x.dimCode === dimension)) ?? null;
   }
 
   isEditableOrReadonlyTranslationExist(): boolean {

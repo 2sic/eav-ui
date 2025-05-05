@@ -12,7 +12,7 @@ describe('EavEntityAttribute.Convert', () => {
     }))
     .toEqual({
       Greeting: {
-        Values: [{ Value: 'hello', Dimensions: [{ Value: 'en' }] }],
+        Values: [{ value: 'hello', dimensions: [{ dimCode: 'en' }] }],
         Type: 'string',
       }
     }));
@@ -26,8 +26,8 @@ describe('EavEntityAttribute.Convert', () => {
     .toEqual({
       Greeting: {
         Values: [
-          { Value: 'hello', Dimensions: [{ Value: 'en' }] },
-          { Value: 'bonjour', Dimensions: [{ Value: 'fr' }] }
+          { value: 'hello', dimensions: [{ dimCode: 'en' }] },
+          { value: 'bonjour', dimensions: [{ dimCode: 'fr' }] }
         ],
         Type: 'string',
       }
@@ -43,15 +43,15 @@ describe('EavEntityAttribute.Convert', () => {
     .toEqual({
       Greeting: {
         Values: [
-          { Value: 'hello', Dimensions: [{ Value: 'en' }] },
-          { Value: 'bonjour', Dimensions: [{ Value: 'fr' }] }
+          { value: 'hello', dimensions: [{ dimCode: 'en' }] },
+          { value: 'bonjour', dimensions: [{ dimCode: 'fr' }] }
         ],
         Type: 'string',
       },
       FirstName: {
         Values: [
-          { Value: 'John', Dimensions: [{ Value: 'en' }] },
-          { Value: 'Jean', Dimensions: [{ Value: 'fr' }] }
+          { value: 'John', dimensions: [{ dimCode: 'en' }] },
+          { value: 'Jean', dimensions: [{ dimCode: 'fr' }] }
         ],
         Type: 'string',
       }

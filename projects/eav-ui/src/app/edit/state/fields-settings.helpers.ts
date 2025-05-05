@@ -33,7 +33,7 @@ export class ContentTypeSettingsHelpers {
       // xx ContentType is a historic bug and should be fixed when JSONs are rechecked
       const type = contentType.Metadata.find(metadata => metadata.Type.Name === 'ContentType' || metadata.Type.Name === 'xx ContentType');
       let label = (type)
-        ? new FieldReader(type.Attributes.Label, language).currentOrDefault?.Value
+        ? new FieldReader(type.Attributes.Label, language).currentOrDefault?.value
         : null;
       label = label || contentType.Name;
       return label;

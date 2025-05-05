@@ -2,15 +2,11 @@ import { EavDimension } from '.';
 import { EavValuesDto } from '../json-format-v1';
 
 export class EavFieldValue<T> {
-  Value: T;
-  Dimensions: EavDimension[];
+  value: T;
+  dimensions: EavDimension[];
 
   static create<T>(value: T, dimensions: EavDimension[]): EavFieldValue<T> {
-    const eavValue: EavFieldValue<T> = {
-      Value: value,
-      Dimensions: dimensions,
-    };
-    return eavValue;
+    return { value, dimensions } satisfies EavFieldValue<T>;
   }
 
   static convert<T>(valuesDto: EavValuesDto<T>): EavFieldValue<T>[] {

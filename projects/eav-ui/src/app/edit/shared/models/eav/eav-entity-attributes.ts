@@ -41,7 +41,7 @@ export class EavEntityAttributes {
       for (const [name, value] of Object.entries(item.Attributes)) {
         // do not overwrite previous settings if @All is empty
         const exists = merged[name] != null;
-        const emptyAll = value.Values[0].Value === '';
+        const emptyAll = value.Values[0].value === '';
         if (exists && emptyAll) 
           continue;
 

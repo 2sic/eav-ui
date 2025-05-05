@@ -65,12 +65,12 @@ export class FieldWriter {
           const newValues: EavField<any> = {
             ...allFields[attributeKey],
             Values: allFields[attributeKey].Values.map(val => {
-              const hasLanguage = new DimensionReader(val.Dimensions, language).hasCurrent;
+              const hasLanguage = new DimensionReader(val.dimensions, language).hasCurrent;
               const newValue: EavFieldValue<any> = hasLanguage
                 // Update value for languageKey
                 ? {
                     ...val,
-                    Value: newItemValue,
+                    value: newItemValue,
                   }
                   : val;
               return newValue;
@@ -109,20 +109,20 @@ export class FieldWriter {
 
     const attribute: EavField<any> = {
       ...allAttributes[attributeKey], Values: allAttributes[attributeKey].Values.map(val => {
-        const hasLanguage = new DimensionReader(val.Dimensions, language).hasCurrent;
+        const hasLanguage = new DimensionReader(val.dimensions, language).hasCurrent;
         const newValue: EavFieldValue<any> = hasLanguage
           // Update value and dimension
           ? {
             ...val,
             // update value
-            Value: updateValue,
+            value: updateValue,
             // update languageKey with newLanguageValue
-            Dimensions: val.Dimensions.map(d => {
-              const dimensionIsForLanguage = (d.Value === language.current
-                || d.Value === `~${language.current}`
-                || (language.current === language.primary && d.Value === '*'));
+            dimensions: val.dimensions.map(d => {
+              const dimensionIsForLanguage = (d.dimCode === language.current
+                || d.dimCode === `~${language.current}`
+                || (language.current === language.primary && d.dimCode === '*'));
               return dimensionIsForLanguage
-                ? { Value: newLanguageValue } satisfies EavDimension
+                ? { dimCode: newLanguageValue } satisfies EavDimension
                 : d;
             })
           }
@@ -177,13 +177,13 @@ export class FieldWriter {
 
     const attribute: EavField<any> = {
       ...allAttributes[attributeKey], Values: allAttributes[attributeKey].Values.map(eavValue => {
-        const newValue: EavFieldValue<any> = eavValue.Dimensions.find(d => d.Value === existingDimensionValue
-          || (existingDimensionValue === defaultLanguage && d.Value === '*'))
+        const newValue: EavFieldValue<any> = eavValue.dimensions.find(d => d.dimCode === existingDimensionValue
+          || (existingDimensionValue === defaultLanguage && d.dimCode === '*'))
           // Update dimension for current language
           ? {
             ...eavValue,
             // if languageKey already exist
-            Dimensions: eavValue.Dimensions.concat({ Value: newLanguageValue })
+            dimensions: eavValue.dimensions.concat({ dimCode: newLanguageValue })
           }
           : eavValue;
         return newValue;
@@ -199,7 +199,7 @@ export class FieldWriter {
     const validDimensions = [language, `~${language}`];
 
     const value = oldAttributes[attributeKey].Values.find(eavValue => {
-      const dimensionExists = eavValue.Dimensions.some(d => validDimensions.includes(d.Value));
+      const dimensionExists = eavValue.dimensions.some(d => validDimensions.includes(d.dimCode));
       return dimensionExists;
     });
 
@@ -210,26 +210,26 @@ export class FieldWriter {
     }
 
     let newAttribute: EavField<any>;
-    if (value.Dimensions.length > 1) {
+    if (value.dimensions.length > 1) {
       // if multiple dimensions exist delete only dimension
       newAttribute = {
         ...oldAttributes[attributeKey],
         Values: oldAttributes[attributeKey].Values.map(eavValue => {
-          const dimensionExists = eavValue.Dimensions.some(d => validDimensions.includes(d.Value));
+          const dimensionExists = eavValue.dimensions.some(d => validDimensions.includes(d.dimCode));
           return (!dimensionExists)
             ? eavValue
             : {
                 ...eavValue,
-                Dimensions: eavValue.Dimensions.filter(d => !validDimensions.includes(d.Value)),
+                dimensions: eavValue.dimensions.filter(d => !validDimensions.includes(d.dimCode)),
               } satisfies EavFieldValue<any>;
         })
       };
-    } else if (value.Dimensions.length === 1) {
+    } else if (value.dimensions.length === 1) {
       // if only one dimension exists delete value and dimension
       newAttribute = {
         ...oldAttributes[attributeKey],
         Values: oldAttributes[attributeKey].Values.filter(eavValue => {
-          const dimensionExists = eavValue.Dimensions.some(d => validDimensions.includes(d.Value));
+          const dimensionExists = eavValue.dimensions.some(d => validDimensions.includes(d.dimCode));
           return !dimensionExists;
         })
       };
