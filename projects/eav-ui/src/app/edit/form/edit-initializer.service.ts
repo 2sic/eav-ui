@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { transient } from '../../../../../core';
 import { FeaturesService } from '../../features/features.service';
 import { InputTypeHelpers } from '../../shared/fields/input-type-helpers';
-import { UpdateEnvVarsFromDialogSettings } from '../../shared/helpers/update-env-vars-from-dialog-settings.helper';
+import { Update$2sxcEnvFromContext } from '../../shared/helpers/update-env-vars-from-dialog-settings.helper';
 import { convertUrlToForm } from '../../shared/helpers/url-prep.helper';
 import { classLog } from '../../shared/logging';
 import { ItemAddIdentifier } from '../../shared/models/edit-form.model';
@@ -100,12 +100,18 @@ export class EditInitializerService {
         };
         l.a('fetchFormData - after remix', {formData: response});
 
-
-        // SDV: document what's happening here
+        // Load all the feature infos and also mark the ones which the response says are required
         this.featuresService.load(response.Context, response);
-        UpdateEnvVarsFromDialogSettings(response.Context.App);
+
+        // Transfer any relevant context data to the $2sxc env for future backend calls
+        Update$2sxcEnvFromContext(response.Context.App);
+
+        // Import the loaded data into the various services
         this.#importLoadedData(response);
+
+        // Remember initial values as the formulas sometimes need them
         this.#keepInitialValues();
+        
         this.#initMissingValues();
 
         this.loaded.set(true);
@@ -170,7 +176,8 @@ export class EditInitializerService {
     for (const item of items)
       for (const currentLang of allLangs) {
         const formValues = new EntityReader(currentLang, language.primary).currentValues(item.Entity.Attributes);
-        this.#initialFormValues[this.#initialValuesCacheKey(item.Entity.Guid, currentLang)] = formValues;
+        const cacheKey = this.#initialValuesCacheKey(item.Entity.Guid, currentLang);
+        this.#initialFormValues[cacheKey] = formValues;
       }
   }
 
