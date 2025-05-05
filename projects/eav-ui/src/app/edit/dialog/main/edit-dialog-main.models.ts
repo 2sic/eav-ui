@@ -39,8 +39,7 @@ export interface EavEditLoadDto extends EavPublishStatus {
 
 export interface EditSettings {
   Values: Record<string, unknown>;
-  // note: added by 2dm 2023-01-21 but not used yet
-  // will probably contain special wysiwyg-edit configs and similar...
+  /** SettingsEntities are important for more advanced settings such as WYSIWYG */
   Entities: EavEntity[];
   /**
    * ContentTypes which are additional settings.

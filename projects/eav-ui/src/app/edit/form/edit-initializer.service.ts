@@ -10,7 +10,7 @@ import { classLog } from '../../shared/logging';
 import { ItemAddIdentifier } from '../../shared/models/edit-form.model';
 import { UserLanguageService } from '../../shared/services/user-language.service';
 import { calculateIsParentDialog, sortLanguages } from '../dialog/main/edit-dialog-main.helpers';
-import { EavEditLoadDto } from '../dialog/main/edit-dialog-main.models';
+import { EavEditLoadDto, EditSettings } from '../dialog/main/edit-dialog-main.models';
 import { LanguageService } from '../localization/language.service';
 import { EditUrlParams } from '../routing/edit-url-params.model';
 import { AdamCacheService } from '../shared/adam/adam-cache.service';
@@ -106,41 +106,57 @@ export class EditInitializerService {
 
         // Remember initial values as the formulas sometimes need them
         this.initialValuesService.preserve();
-        // this.#keepInitialValues();
-        
+
+        // Initialize missing values in the form
         this.#initMissingValues();
 
+        // Set the form as loaded to trigger ready state in the UI
         this.loaded.set(true);
       });
   }
 
   #importLoadedData(loadDto: EavEditLoadDto): void {
     const l = this.log.fnIf('importLoadedData');
+
     const formId = Math.floor(Math.random() * 99999);
     const isParentDialog = calculateIsParentDialog(this.route);
-    const itemGuids = loadDto.Items.map(item => item.Entity.Guid);
 
+    // Load data into the ItemsService; will convert the data to the correct type
     this.itemService.loadItems(loadDto.Items);
-    // we assume that input type and content type data won't change between loading parent and child forms
+
+    // Load InputTypes, ContentTypes and any items which the ContentTypes depend on
+    // Note: we assume that input type and content type data won't change between loading parent and child forms
     this.inputTypeService.addMany(loadDto.InputTypes);
     this.contentTypeItemService.addContentTypeItems(loadDto.ContentTypeItems);
     this.contentTypeService.addContentTypes(loadDto.ContentTypes);
+
+    // Load prefetched data for Adam and Links
     this.adamCacheService.loadPrefetch(loadDto.Prefetch?.Adam);
     this.linkCacheService.addPrefetch(loadDto.Prefetch?.Links, loadDto.Prefetch?.Adam);
 
+    // Get the (converted) items and set the form config
+    const itemGuids = loadDto.Items.map(item => item.Entity.Guid);
     const items = this.itemService.getMany(itemGuids);
+
+    // Determine what edit-mode we are in, if we are copying an item, if we should enable history etc.
     const createMode = items[0].Entity.Id === 0;
     const isCopy = (items[0].Header as ItemAddIdentifier).DuplicateEntity != null;
     const enableHistory = !createMode && this.route.snapshot.data.history !== false;
-    const settingsAsEav = {
+
+    // Load the form config with the loaded settings
+    const settingsAsEav: EditSettings = {
       ...loadDto.Settings,
+      // Include / pre-convert settings entities for certain features which need detailed settings
       Entities: EavEntity.convertMany(loadDto.Settings.Entities),
+      // Include / pre-convert content types for certain features which need detailed settings
       ContentTypes: EavContentType.convertMany(loadDto.Settings.ContentTypes),
     };
     this.formConfig.initFormConfig(loadDto.Context, formId, isParentDialog, itemGuids, createMode, isCopy, enableHistory, settingsAsEav);
 
+    // Determine languages we should use and inform the language service about them
+    // also switch the UI / translate service to the current language
+    // Note: the TranslateService is a new instance for every form and language must be set for every one of them
     var langs = loadDto.Context.Language;
-    // WARNING! TranslateService is a new instance for every form and language must be set for every one of them
     const userLangCode = this.#userLanguageSvc.uiCode(langs.Current);
     this.translate.use(userLangCode);
 
@@ -151,7 +167,7 @@ export class EditInitializerService {
     }
     this.languageStore.addForm(formId, langs.Primary, langs.Current, false);
 
-    // First convert to publish mode, because then it will run checks if this is allowed
+    // Get proper publishMode and then run checks if this mode is allowed
     const publishMode = this.publishStatusService.toPublishMode(loadDto);
     this.publishStatusService.setPublishMode(publishMode, formId, this.formConfig);
   }
