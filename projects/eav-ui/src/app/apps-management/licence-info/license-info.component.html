@@ -1,11 +1,18 @@
 @if (viewModel$ | async; as vm) {
-  <!-- <pre>
-    Toast old: {{ vm | json }}
-    Toast new: {{ licensesSig()| json }}
-  </pre> -->
+
+  <!-- {{isDebug()}} -->
+  <pre>
+  Button to show a Test Formular 2dg in Debug Mode
+ 
+  <button mat-raised-button (click)="openProtoTypeDialog()">Open Dialog</button>
+
+   <strong>Result after Close:</strong>
+
+   {{dialogValueNr() | json}}
+ </pre>
 
   <mat-accordion multi>
-    @for (license of vm.licenses| licensesOrder; track trackLicenses($index, license)) {
+    @for (license of vm.licenses | licensesOrder; track trackLicenses($index, license)) {
       <mat-expansion-panel #panel>
         <mat-expansion-panel-header>
           <mat-panel-title>

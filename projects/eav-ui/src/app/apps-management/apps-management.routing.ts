@@ -5,6 +5,7 @@ import { addAppFromFolderDialog } from './add-app-from-folder/add-app-from-folde
 import { appsManagementDialog } from './apps-management-nav/apps-management-dialog.config';
 import { createAppDialog } from './create-app/create-app-dialog.config';
 import { createInheritedAppDialog } from './create-inherited-app/create-inherited-app-dialog.config';
+import { protoTypeAppDialog } from './licence-info/proto-type-form/prototype-app-dialog.config';
 
 export const appsManagementRoutes: Routes = [
   {
@@ -16,9 +17,10 @@ export const appsManagementRoutes: Routes = [
       {
         path: 'system',
         loadComponent: () => import('./system-info/system-info.component').then(m => m.SystemInfoComponent),
-        data: { title: 'System Info' , breadcrumb: 'System Info'},
+        data: { title: 'System Info', breadcrumb: 'System Info' },
       },
-      { path: 'registration',
+      {
+        path: 'registration',
         loadComponent: () => import('./sub-dialogs/registration/registration.component').then(m => m.RegistrationComponent),
         data: {
           title: 'Registration', breadcrumb: 'Register'
@@ -54,17 +56,24 @@ export const appsManagementRoutes: Routes = [
           //...EditRoutesRoot,
           ...EditRoutesUnderAppsList,
         ],
-        data: { title: 'Apps in this Zone' , breadcrumb: 'Apps' },
+        data: { title: 'Apps in this Zone', breadcrumb: 'Apps' },
       },
       {
         path: 'languages',
         loadComponent: () => import('./site-languages/site-languages.component').then(m => m.SiteLanguagesComponent),
-        data: { title: 'Zone Languages' , breadcrumb: 'Languages' }
+        data: { title: 'Zone Languages', breadcrumb: 'Languages' }
       },
       {
         path: 'license',
         loadComponent: () => import('./licence-info/license-info.component').then(m => m.LicenseInfoComponent),
-        data: { title: 'Extensions / Features' , breadcrumb: 'Extensions and Features' },
+        data: { title: 'Extensions / Features', breadcrumb: 'Extensions and Features' },
+        children: [
+          {
+            path: 'protoTypeAppDialog',
+            component: DialogEntryComponent,
+            data: { dialog: protoTypeAppDialog }
+          },
+        ],
       },
     ],
   },

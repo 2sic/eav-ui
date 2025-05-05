@@ -1,14 +1,14 @@
 import { AgGridAngular } from '@ag-grid-community/angular';
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
 import { GridOptions, ModuleRegistry } from '@ag-grid-community/core';
-import { AsyncPipe, NgClass } from '@angular/common';
-import { ChangeDetectorRef, Component, computed, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
+import { AsyncPipe, JsonPipe, NgClass } from '@angular/common';
+import { ChangeDetectorRef, Component, computed, inject, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogActions } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
-import { RouterOutlet } from '@angular/router';
-import { catchError, forkJoin, map, Observable, of, share, startWith, Subject, switchMap, tap, timer } from 'rxjs';
+import { NavigationStart, Router, RouterOutlet } from '@angular/router';
+import { catchError, filter, forkJoin, map, Observable, of, share, startWith, Subject, switchMap, tap, timer } from 'rxjs';
 import { transient } from '../../../../../core';
 import { ExpirationExtension } from '../../features/expiration-extension';
 import { FeatureState } from '../../features/models';
@@ -21,7 +21,9 @@ import { defaultGridOptions } from '../../shared/constants/default-grid-options.
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
+import { GlobalConfigService } from '../../shared/services/global-config.service';
 import { License } from '../models/license.model';
+import { ClosingDialogState, DialogRoutingState } from '../models/routeState.model';
 import { FeaturesConfigService } from '../services/features-config.service';
 import { ActiveFeaturesCountPipe } from './active-features-count.pipe';
 import { AgGridHeightDirective } from './ag-grid-height.directive';
@@ -32,25 +34,27 @@ import { FeaturesListEnabledComponent } from './features-list-enabled/features-l
 import { FeaturesStatusComponent } from './features-status/features-status.component';
 import { FeaturesStatusParams } from './features-status/features-status.models';
 import { LicensesOrderPipe } from './licenses-order.pipe';
+import { ProtoTypeFormResult } from './proto-type-form/proto-type-form.component';
 
 @Component({
-    selector: 'app-license-info',
-    templateUrl: './license-info.component.html',
-    styleUrls: ['./license-info.component.scss'],
-    imports: [
-        MatExpansionModule,
-        MatIconModule,
-        NgClass,
-        SxcGridModule,
-        AgGridHeightDirective,
-        MatDialogActions,
-        MatButtonModule,
-        RouterOutlet,
-        AsyncPipe,
-        LicensesOrderPipe,
-        ActiveFeaturesCountPipe,
-        TippyDirective,
-    ]
+  selector: 'app-license-info',
+  templateUrl: './license-info.component.html',
+  styleUrls: ['./license-info.component.scss'],
+  imports: [
+    MatExpansionModule,
+    MatIconModule,
+    NgClass,
+    SxcGridModule,
+    AgGridHeightDirective,
+    MatDialogActions,
+    MatButtonModule,
+    RouterOutlet,
+    AsyncPipe,
+    LicensesOrderPipe,
+    ActiveFeaturesCountPipe,
+    TippyDirective,
+    JsonPipe,
+  ],
 })
 export class LicenseInfoComponent implements OnInit {
   @ViewChild(AgGridAngular) private gridRef?: AgGridAngular;
@@ -61,6 +65,10 @@ export class LicenseInfoComponent implements OnInit {
 
   #featuresConfigSvc = transient(FeaturesConfigService);
   #dialogRouter = transient(DialogRoutingService);
+  isDebug = inject(GlobalConfigService).isDebug;
+  router = inject(Router);
+
+  dialogValueNr = signal<ProtoTypeFormResult>(null);
 
   constructor(
     private matDialog: MatDialog,
@@ -102,6 +110,17 @@ export class LicenseInfoComponent implements OnInit {
 
 
   ngOnInit(): void {
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationStart))
+      .subscribe(() => {
+        const navigation = this.router.getCurrentNavigation();
+        if (navigation?.extras.state && navigation.extras.state.dialogValue) {
+          const state = navigation?.extras.state as ClosingDialogState<ProtoTypeFormResult>;
+          this.dialogValueNr.set(state.dialogValue);
+        }
+      });
+
+    //
     this.#dialogRouter.doOnDialogClosed(() => {
       this.#refreshLicenses$.next()
       this.#refreshLicensesSig.set(this.#refreshLicensesSig() + 1);
@@ -260,6 +279,13 @@ export class LicenseInfoComponent implements OnInit {
       ],
     };
     return gridOptions;
+  }
+
+  openProtoTypeDialog(): void {
+    this.#dialogRouter.navRelative(
+      ['protoTypeAppDialog'],
+      { state: { returnValue: true } satisfies DialogRoutingState },
+    );
   }
 }
 
