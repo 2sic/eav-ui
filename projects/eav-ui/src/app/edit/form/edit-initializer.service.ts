@@ -82,32 +82,29 @@ export class EditInitializerService {
 
   fetchFormData(): void {
     const l = this.log.fnIf('fetchFormData');
-    const inbound = convertUrlToForm((this.route.snapshot.params as EditUrlParams).items);
+    const itemsRaw = (this.route.snapshot.params as EditUrlParams).items;
+    const items = convertUrlToForm(itemsRaw).items;
     
     // Reduce amount of data sent to backend by removing unneeded properties
-    const dataHelper = new ItemsRequestRestoreHelper(inbound.items);
-    const form = {
-      ...inbound,
-      items: dataHelper.itemsForRequest(),
-    }
-    l.a('fetchFormData', form);
+    const dataHelper = new ItemsRequestRestoreHelper(items);
+    const requestItems = dataHelper.itemsForRequest();
+    l.a('fetchFormData', { requestItems });
 
-    const editItems = JSON.stringify(form.items);
     this.#formDataService
-      .fetchFormData(editItems)
-      .subscribe(dataFromBackend => {
+      .fetchFormData(JSON.stringify(requestItems))
+      .subscribe((responseRaw: EavEditLoadDto) => {
         // Restore prefill and client-data from original
-        const formData: EavEditLoadDto = {
-          ...dataFromBackend,
-          Items: dataHelper.mergeResponse(dataFromBackend.Items),
+        const response: EavEditLoadDto = {
+          ...responseRaw,
+          Items: dataHelper.mergeResponse(responseRaw.Items),
         };
-        l.a('fetchFormData - after remix', {formData});
+        l.a('fetchFormData - after remix', {formData: response});
 
 
         // SDV: document what's happening here
-        this.featuresService.load(formData.Context, formData);
-        UpdateEnvVarsFromDialogSettings(formData.Context.App);
-        this.#importLoadedData(formData);
+        this.featuresService.load(response.Context, response);
+        UpdateEnvVarsFromDialogSettings(response.Context.App);
+        this.#importLoadedData(response);
         this.#keepInitialValues();
         this.#initMissingValues();
 

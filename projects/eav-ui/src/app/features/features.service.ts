@@ -1,7 +1,7 @@
 import { Injectable, Signal, signal } from '@angular/core';
 import { Of, transient } from '../../../../core';
 import { DialogConfigAppService } from '../app-administration/services/dialog-config-app.service';
-import { EavEditLoadDto } from '../edit/dialog/main/edit-dialog-main.models';
+import { EavEditLoadDto, RequiredFeatures } from '../edit/dialog/main/edit-dialog-main.models';
 import { classLog } from '../shared/logging';
 import { DialogContext } from '../shared/models/dialog-settings.model';
 import { ComputedCacheHelper } from '../shared/signals/computed-cache';
@@ -43,20 +43,20 @@ export class FeaturesService {
   load(dialogContext: DialogContext, formData?: EavEditLoadDto) {
     this.log.fnIf('load', { formData, dialogContext });
     this.#dialogContext.set(dialogContext);
-    this.#reqFeaturesForm.set(formData?.RequiredFeatures ?? {} as Record<Of<typeof FeatureNames>, string[]>);
+    this.#reqFeaturesForm.set(formData?.RequiredFeatures ?? {} as RequiredFeatures);
   }
 
   // Provide context information and ensure that previously added data is always available
   #dialogContext = signal<DialogContext>(null);
 
   /** Required features specified by the entire form */
-  #reqFeaturesForm = signalObj('reqFeaturesForm', {} as Record<Of<typeof FeatureNames>, string[]>);
+  #reqFeaturesForm = signalObj('reqFeaturesForm', {} as RequiredFeatures);
 
   /** Required features specified by specific fields */
-  #reqFeaturesFields = signalObj('reqFeaturesFields', {} as Record<Of<typeof FeatureNames>, string[]>);
+  #reqFeaturesFields = signalObj('reqFeaturesFields', {} as RequiredFeatures);
 
   /** All required features merged */
-  #reqFeatures = computedObj<Record<Of<typeof FeatureNames>, string[]>>('requiredFeatures', () => {
+  #reqFeatures = computedObj<RequiredFeatures>('requiredFeatures', () => {
     const req = this.#reqFeaturesForm();
     const fields = this.#reqFeaturesFields();
     return {...req, ...fields};

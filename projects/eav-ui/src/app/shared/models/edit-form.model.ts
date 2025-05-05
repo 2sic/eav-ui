@@ -87,7 +87,7 @@ export class EditPrep {
  * To add new item send newItem and to edit existing item send editItems
  */
 export interface EditForm {
-  items: (ItemIdentifier)[];
+  items: ItemIdentifier[];
 }
 
 export type ItemIdentifier = ItemAddIdentifier | ItemEditIdentifier | ItemInListIdentifier;

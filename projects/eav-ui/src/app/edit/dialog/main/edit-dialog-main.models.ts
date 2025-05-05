@@ -23,6 +23,8 @@ export const PublishModes = {
 } as const /* the as const ensures that the keys/values can be strictly checked */;
 
 
+export type RequiredFeatures = Record<Of<typeof FeatureNames>, string[]>;
+
 export interface EavEditLoadDto extends EavPublishStatus {
   ContentTypeItems: EavEntityDto[];
   ContentTypes: EavContentTypeDto[];
@@ -32,7 +34,7 @@ export interface EavEditLoadDto extends EavPublishStatus {
   Prefetch?: Prefetch;
   Settings: EditSettingsDto;
 
-  RequiredFeatures?: Record<Of<typeof FeatureNames>, string[]>;
+  RequiredFeatures?: RequiredFeatures;
 }
 
 export interface EditSettings {
