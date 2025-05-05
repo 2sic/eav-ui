@@ -25,12 +25,12 @@ import { InputTypeService } from '../shared/input-types/input-type.service';
 import { EavContentType } from '../shared/models/eav/eav-content-type';
 import { EavEntity } from '../shared/models/eav/eav-entity';
 import { FieldsSettingsHelpers } from '../state/field-settings.helper';
-import { ItemValuesOfLanguage } from '../state/item-values-of-language.model';
 import { ItemService } from '../state/item.service';
 import { FormConfigService } from './form-config.service';
 import { FormDataService } from './form-data.service';
 import { FormLanguageService } from './form-language.service';
 import { FormPublishingService } from './form-publishing.service';
+import { InitialValuesService } from './initial-values-service';
 import { ItemsRequestRestoreHelper } from './items-request-restore-helper';
 
 const logSpecs = {
@@ -38,7 +38,6 @@ const logSpecs = {
   constructor: true,
   fetchFormData: false,
   importLoadedData: false,
-  keepInitialValues: false,
   initMissingValues: false,
 };
 
@@ -59,8 +58,6 @@ export class EditInitializerService {
 
   #userLanguageSvc = transient(UserLanguageService);
 
-  #initialFormValues: Record<string, ItemValuesOfLanguage> = {};
-
   constructor(
     private route: ActivatedRoute,
     private formConfig: FormConfigService,
@@ -76,6 +73,7 @@ export class EditInitializerService {
     private adamCacheService: AdamCacheService,
     private linkCacheService: LinkCacheService,
     private featuresService: FeaturesService,
+    private initialValuesService: InitialValuesService,
   ) {
     this.log.aIf('constructor', null, "constructor");
   }
@@ -110,7 +108,8 @@ export class EditInitializerService {
         this.#importLoadedData(response);
 
         // Remember initial values as the formulas sometimes need them
-        this.#keepInitialValues();
+        this.initialValuesService.preserve();
+        // this.#keepInitialValues();
         
         this.#initMissingValues();
 
@@ -159,36 +158,6 @@ export class EditInitializerService {
     const publishMode = this.publishStatusService.toPublishMode(loadDto);
     this.publishStatusService.setPublishMode(publishMode, formId, this.formConfig);
   }
-
-  //#region Initial Values for Formulas to retrieve if needed
-
-  /**
-   * Preserve initial values for future use in formulas which may need to know the initial value
-   */
-  #keepInitialValues(): void {
-    const l = this.log.fnIf('keepInitialValues');
-    const items = this.itemService.getMany(this.formConfig.config.itemGuids);
-    const allLangs = this.languageService.getAll().map(language => language.NameId);
-    const language = this.formConfig.language();
-    if (!allLangs.includes(language.current)) allLangs.push(language.current);
-    if (!allLangs.includes(language.primary)) allLangs.push(language.primary);
-
-    for (const item of items)
-      for (const currentLang of allLangs) {
-        const formValues = new EntityReader(currentLang, language.primary).currentValues(item.Entity.Attributes);
-        const cacheKey = this.#initialValuesCacheKey(item.Entity.Guid, currentLang);
-        this.#initialFormValues[cacheKey] = formValues;
-      }
-  }
-
-  #initialValuesCacheKey(entityGuid: string, language: string): string {
-    return `entityGuid:${entityGuid}:language:${language}`;
-  }
-
-  getInitialValues(entityGuid: string, language: string): ItemValuesOfLanguage {
-    return this.#initialFormValues[this.#initialValuesCacheKey(entityGuid, language)];
-  }
-  //#endregion
 
   #initMissingValues(): void {
     const l = this.log.fnIf('initMissingValues');
