@@ -17,7 +17,7 @@
     "dev-all-watch": "npm run build-prepare && concurrently \"webpack --env parts=all --watch\" npm:dev-main npm:deploy-watch",
     "// RECOMMENDATION 1": "This is probably the most used command: dev-main",
     "dev-main": "ng build --configuration development --watch",
-    "dev-main-watch": "concurrently npm:dev-main npm:deploy-watch",
+    "dev-main-and-deploy": "concurrently npm:dev-main npm:deploy-watch",
     "dev-gps": "webpack --env parts=gps --watch",
     "dev-wysiwyg": "webpack --env parts=wysiwyg --watch",
     "deploy": "node ./build-helpers/copy-to-dnn",

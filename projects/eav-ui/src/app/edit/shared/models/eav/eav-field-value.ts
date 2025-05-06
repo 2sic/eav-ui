@@ -9,7 +9,7 @@ export class EavFieldValue<T> {
     return { value, dimensions } satisfies EavFieldValue<T>;
   }
 
-  static convert<T>(valuesDto: EavValuesDto<T>): EavFieldValue<T>[] {
+  static dtoToEav<T>(valuesDto: EavValuesDto<T>): EavFieldValue<T>[] {
     const values = Object.entries(valuesDto)
       .map(([langs, value]) => {
         const dimensions = langs.split(',').map(lang => EavDimension.create(lang));

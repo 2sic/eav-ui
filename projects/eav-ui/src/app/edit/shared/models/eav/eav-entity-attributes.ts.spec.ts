@@ -5,7 +5,7 @@ import { testAttributesDto, testAttributesInternal } from './eav-entity-attribut
 
 describe('EavEntityAttribute.Convert', () => {
   it('should convert a single greeting with one dimension',
-    () => expect(EavEntityAttributes.convert({
+    () => expect(EavEntityAttributes.dtoToEav({
       'string': {
         'Greeting': { 'en': 'hello' },
       }
@@ -18,7 +18,7 @@ describe('EavEntityAttribute.Convert', () => {
     }));
 
   it('should convert a single greeting with two dimensions',
-    () => expect(EavEntityAttributes.convert({
+    () => expect(EavEntityAttributes.dtoToEav({
       'string': {
         'Greeting': { 'en': 'hello', 'fr': 'bonjour' },
       }
@@ -34,7 +34,7 @@ describe('EavEntityAttribute.Convert', () => {
     }));
 
   it('should convert two strings with two dimension each',
-    () => expect(EavEntityAttributes.convert({
+    () => expect(EavEntityAttributes.dtoToEav({
       'string': {
         'Greeting': { 'en': 'hello', 'fr': 'bonjour' },
         'FirstName': { 'en': 'John', 'fr': 'Jean' },
@@ -58,7 +58,7 @@ describe('EavEntityAttribute.Convert', () => {
     }));
   
     it('should convert/flatten a string and a number',
-      () => expect(EavEntityAttributes.convert(testAttributesDto))
+      () => expect(EavEntityAttributes.dtoToEav(testAttributesDto))
       .toEqual(testAttributesInternal));
   
 });

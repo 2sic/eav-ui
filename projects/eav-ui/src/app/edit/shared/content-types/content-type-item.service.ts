@@ -20,7 +20,7 @@ export class ContentTypeItemService extends SignalStoreBase<string, EavEntity> {
   override getId = (item: EavEntity) => item.Guid;
 
   addContentTypeItems(contentTypeItems: EavEntityDto[]): void {
-    const converted = EavEntity.convertMany(contentTypeItems);
+    const converted = EavEntity.dtoToEavMany(contentTypeItems);
     this.addMany(converted);
   }
 

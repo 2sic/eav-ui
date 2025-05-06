@@ -11,9 +11,9 @@ export class EavEntity {
   For?: EavFor;
   Metadata?: EavEntity[];
 
-  static convertOne(entityDto: EavEntityDto): EavEntity {
-    const attributes = EavEntityAttributes.convert(entityDto.Attributes);
-    const metadata = this.convertMany(entityDto.Metadata);
+  static dtoToEav(entityDto: EavEntityDto): EavEntity {
+    const attributes = EavEntityAttributes.dtoToEav(entityDto.Attributes);
+    const metadata = this.dtoToEavMany(entityDto.Metadata);
 
     const entity: EavEntity = {
       Attributes: attributes,
@@ -28,11 +28,11 @@ export class EavEntity {
     return entity;
   }
 
-  static convertMany(entitiesDto: EavEntityDto[]): EavEntity[] {
+  static dtoToEavMany(entitiesDto: EavEntityDto[]): EavEntity[] {
     if (entitiesDto == null)
       return null;
 
-    const entities = entitiesDto.map(e => EavEntity.convertOne(e));
+    const entities = entitiesDto.map(e => EavEntity.dtoToEav(e));
     return entities;
   }
 }

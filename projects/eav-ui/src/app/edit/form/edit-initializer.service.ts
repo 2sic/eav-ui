@@ -156,9 +156,9 @@ export class EditInitializerService {
     const settingsAsEav: EditSettings = {
       ...loadDto.Settings,
       // Include / pre-convert settings entities for certain features which need detailed settings
-      Entities: EavEntity.convertMany(loadDto.Settings.Entities),
+      Entities: EavEntity.dtoToEavMany(loadDto.Settings.Entities),
       // Include / pre-convert content types for certain features which need detailed settings
-      ContentTypes: EavContentType.convertMany(loadDto.Settings.ContentTypes),
+      ContentTypes: EavContentType.dtoToEavMany(loadDto.Settings.ContentTypes),
     };
     this.formConfig.initFormConfig(loadDto.Context, formId, isParentDialog, itemGuids, createMode, isCopy, enableHistory, settingsAsEav);
 

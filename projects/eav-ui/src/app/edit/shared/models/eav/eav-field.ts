@@ -5,8 +5,8 @@ export class EavField<T> {
   Values: EavFieldValue<T>[];
   Type: string;
 
-  static convert<T>(valueDto: EavValuesDto<T>, type: string): EavField<T> {
-    const values = EavFieldValue.convert(valueDto);
+  static dtoToEav<T>(valueDto: EavValuesDto<T>, type: string): EavField<T> {
+    const values = EavFieldValue.dtoToEav(valueDto);
     return {
       Values: values,
       Type: type,

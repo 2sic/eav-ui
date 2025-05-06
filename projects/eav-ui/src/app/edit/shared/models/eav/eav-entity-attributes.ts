@@ -4,14 +4,14 @@ import { EavAttributesDto } from '../json-format-v1';
 export class EavEntityAttributes {
   [attributeName: string]: EavField<any>;
 
-  static convert(attributesDto: EavAttributesDto): EavEntityAttributes {
+  static dtoToEav(attributesDto: EavAttributesDto): EavEntityAttributes {
     const attributes: EavEntityAttributes = {};
 
     // loop attribute types - String, Boolean, ...
     for (const [typeName, attributeDto] of Object.entries(attributesDto)) {
       // loop attribute names - Description, Name, ...
       for (const [attributeName, valueDto] of Object.entries(attributeDto)) {
-        attributes[attributeName] = EavField.convert(valueDto, typeName);
+        attributes[attributeName] = EavField.dtoToEav(valueDto, typeName);
       }
     }
     return attributes;

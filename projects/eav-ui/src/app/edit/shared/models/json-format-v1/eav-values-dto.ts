@@ -8,7 +8,7 @@ import { EavField } from '../eav';
 export class EavValuesDto<T> {
   [languages: string]: T;
 
-  static valuesToDto<T>(eavValues: EavField<T>): EavValuesDto<T> {
+  static eavToDto<T>(eavValues: EavField<T>): EavValuesDto<T> {
     const dtoValue: EavValuesDto<T> = {};
     for (const value of eavValues.Values) {
       const dimensions = value.dimensions.map(dimension => dimension.dimCode).join();
