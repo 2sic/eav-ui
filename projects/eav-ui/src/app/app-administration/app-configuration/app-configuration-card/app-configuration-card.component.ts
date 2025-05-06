@@ -10,6 +10,7 @@ import { transient } from '../../../../../../core';
 import { DocsLinkHelperComponent } from '../../../admin-shared/docs-link-helper/docs-link-helper.component';
 import { ClosingDialogState, DialogRoutingState } from '../../../apps-management/models/routeState.model';
 import { ContentItemsService } from '../../../content-items/services/content-items.service';
+import { SaveEavFormData } from '../../../edit/dialog/main/edit-dialog-main.models';
 import { GoToMetadata } from '../../../metadata';
 import { eavConstants } from '../../../shared/constants/eav.constants';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
@@ -46,6 +47,8 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
   appConfigurationUrl = signal('');
   appConfigAvailable = signal(false);
 
+  tempDisplayName = signal(''); 
+
   constructor(
     private context: Context,
     private snackBar: MatSnackBar,
@@ -77,15 +80,17 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
 
 
     this.router.events
-    .pipe(filter(event => event instanceof NavigationStart))
-    .subscribe(() => {
-      const navigation = this.router.getCurrentNavigation();
-      if (navigation?.extras.state && navigation.extras.state.dialogValue) {
-        const state = navigation?.extras.state as ClosingDialogState<any>;
-        console.log("2dg Data after Close",state.dialogValue)
-        // this.dialogValueNr.set(state.dialogValue);
-      }
-    });
+      .pipe(filter(event => event instanceof NavigationStart))
+      .subscribe(() => {
+        const navigation = this.router.getCurrentNavigation();
+        if (navigation?.extras.state && navigation.extras.state.dialogValue) {
+          const state = navigation?.extras.state as ClosingDialogState<SaveEavFormData>;
+
+          console.log("2dg Data after Close", state.dialogValue)
+          const displayName = state.dialogValue?.Items?.[0]?.Entity?.Attributes?.String?.DisplayName?.["*"];
+          this.tempDisplayName.set(displayName ?? '');
+        }
+      });
 
   }
 
@@ -128,12 +133,31 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
     );
   }
 
-  openAppConfigurationClick(){
-      let url = this.appConfigurationUrl();
-      url = url.replace('#', '');
-      this.router.navigate([url], {
-        state: { returnValue: true } as DialogRoutingState
-      });
+  openAppConfigurationClick() {
+
+    const data = {
+      dialogValue: {
+        Items: [
+          {
+            Entity: {
+              Attributes: {
+                String: {
+                  DisplayName: {
+                    "*": "Image Compare"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    };
+
+    let url = this.appConfigurationUrl();
+    url = url.replace('#', '');
+    this.router.navigate([url], {
+      state: { returnValue: true, data: data  } as DialogRoutingState<any> // TODO: Type any
+    });
   }
 
   formatValue(value?: string): string {

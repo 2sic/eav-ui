@@ -15,6 +15,16 @@
           }}</span>
         </div>
       </div>
+
+      <div class="eav-info-row">
+        <div class="eav-info-row__label">Test Name: 2dg</div>
+        <div class="eav-info-row__value">
+          <span [tippy]="'Click to copy to clipboard'" (click)="clipboard.copyToClipboard(tempDisplayName())">
+            {{tempDisplayName()}}
+          </span>
+        </div>
+      </div>
+
       <div class="eav-info-row">
         <div class="eav-info-row__label">Folder:</div>
         <div class="eav-info-row__value">
@@ -60,7 +70,7 @@
         class="eav-button__with-icon"
         tippy="Edit app system resources"
       >
-      TT
+        Test 2dg
       </a>
 
       <a

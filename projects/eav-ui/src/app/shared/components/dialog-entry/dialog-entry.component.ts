@@ -62,9 +62,6 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
   }
 
   private openDialogComponent(dialogConfig: DialogConfig, component: Type<any>) {
-
-    console.log("dialogConfig", dialogConfig)
-
     this.log.a(`Open dialog(initContext: ${dialogConfig.initContext})`, { name: dialogConfig.name, 'Contextid:': this.context.log.svcId, 'Context:': this.context });
     if (dialogConfig.initContext)
       this.context.init(this.route);

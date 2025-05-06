@@ -130,13 +130,14 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
     private adamCacheService: AdamCacheService,
     private linkCacheService: LinkCacheService,
     private formulaDesignerService: FormulaDesignerService,
-    @Inject(MAT_DIALOG_DATA) dialogData: DialogRoutingState,
+    @Inject(MAT_DIALOG_DATA) dialogData: DialogRoutingState<any>, // TODO: Type
   ) {
     super();
     const l = this.log.fnIf('constructor');
     this.dialog.disableClose = true;
+    // Dialog Data 
     this.isReturnValueMode = dialogData?.returnValue;
-
+    console.log('DialogData', dialogData);
 
     // Initialize default user preferences for footer show/hide
     const pref = this.#prefManager;
@@ -235,20 +236,6 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
 
   /** Save all forms */
   saveAll(close: boolean): boolean {
-
-    // if (this.isReturnValueMode) {
-
-    //   const currentUrl = this.router.url;
-    //   const urlBeforeEdit = currentUrl.split('/edit')[0];
-
-    //   // this.#formConfig.config.
-    //   this.router.navigate([urlBeforeEdit], { state: { dialogValue: "1212" } satisfies ClosingDialogState<any> });
-    //   return
-    // }
-
-
-
-
     this.#entityFormStateService.isSaving.set(true);
 
     const l = this.log.fn('saveAll', { close });
@@ -285,13 +272,13 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
       l.a('SAVE FORM DATA:', { saveFormData });
 
       // 
-      // Get Data via route per state 
+      // Get Data via state in the route
       //
 
       if (this.isReturnValueMode) {
         const urlBeforeEdit = this.router.url.split('/edit')[0];
 
-        this.router.navigate([urlBeforeEdit], { state: { dialogValue: saveFormData } satisfies ClosingDialogState<any> });
+        this.router.navigate([urlBeforeEdit], { state: { dialogValue: saveFormData } satisfies ClosingDialogState<SaveEavFormData> }); 
         return
       }
 
