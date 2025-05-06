@@ -8,8 +8,8 @@ import { NavigationStart, Router } from '@angular/router';
 import { filter } from 'rxjs';
 import { transient } from '../../../../../../core';
 import { DocsLinkHelperComponent } from '../../../admin-shared/docs-link-helper/docs-link-helper.component';
-import { ClosingDialogState, DialogRoutingState } from '../../../apps-management/models/routeState.model';
 import { ContentItemsService } from '../../../content-items/services/content-items.service';
+import { ClosingDialogState, DialogRoutingState } from '../../../edit/dialog/dialogRouteState.model';
 import { SaveEavFormData } from '../../../edit/dialog/main/edit-dialog-main.models';
 import { GoToMetadata } from '../../../metadata';
 import { eavConstants } from '../../../shared/constants/eav.constants';
@@ -47,7 +47,7 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
   appConfigurationUrl = signal('');
   appConfigAvailable = signal(false);
 
-  tempDisplayName = signal(''); 
+  tempDisplayName = signal('');
 
   constructor(
     private context: Context,
@@ -135,28 +135,60 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
 
   openAppConfigurationClick() {
 
-    const data = {
-      dialogValue: {
-        Items: [
+    const overrideContents: Record<string, unknown>[] = [{
+      DebugLog: "Debug: Image comparison started",
+      Description: "Compares two images and highlights differences",
+      DisplayName: "Image Compare",
+    }];
+
+    const demoObj =
+    {
+      "DebugLog": {
+        "Values": [
           {
-            Entity: {
-              Attributes: {
-                String: {
-                  DisplayName: {
-                    "*": "Image Compare"
-                  }
-                }
+            "value": "Debug: Image comparison started",
+            "dimensions": [
+              {
+                "dimCode": "*"
               }
-            }
+            ]
           }
-        ]
+        ],
+        "Type": "String"
+      },
+      "Description": {
+        "Values": [
+          {
+            "value": "Compares two images and highlights differences",
+            "dimensions": [
+              {
+                "dimCode": "*"
+              }
+            ]
+          }
+        ],
+        "Type": "String"
+      },
+      "DisplayName": {
+        "Values": [
+          {
+            "value": "Image Compare",
+            "dimensions": [
+              {
+                "dimCode": "*"
+              }
+            ]
+          }
+        ],
+        "Type": "String"
       }
-    };
+
+    }
 
     let url = this.appConfigurationUrl();
     url = url.replace('#', '');
     this.router.navigate([url], {
-      state: { returnValue: true, data: data  } as DialogRoutingState<any> // TODO: Type any
+      state: { returnValue: true, overrideContents } satisfies DialogRoutingState
     });
   }
 

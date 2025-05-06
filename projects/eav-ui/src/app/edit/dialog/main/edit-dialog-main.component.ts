@@ -10,7 +10,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { delay, fromEvent, of, startWith } from 'rxjs';
 import { transient } from '../../../../../../core';
-import { ClosingDialogState, DialogRoutingState } from '../../../apps-management/models/routeState.model';
 import { BaseComponent } from '../../../shared/components/base.component';
 import { ToggleDebugDirective } from '../../../shared/directives/toggle-debug.directive';
 import { classLog } from '../../../shared/logging';
@@ -40,6 +39,7 @@ import { ValidationMsgHelper } from '../../shared/validation/validation-messages
 import { ItemService } from '../../state/item.service';
 import { MetadataDecorators } from '../../state/metadata-decorators.constants';
 import { SaveResult } from '../../state/save-result.model';
+import { ClosingDialogState, DialogRoutingState } from '../dialogRouteState.model';
 import { EditEntryComponent } from '../entry/edit-entry.component';
 import { EditDialogFooterComponent } from '../footer/edit-dialog-footer.component';
 import { footerPreferences } from '../footer/footer-preferences';
@@ -130,11 +130,12 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
     private adamCacheService: AdamCacheService,
     private linkCacheService: LinkCacheService,
     private formulaDesignerService: FormulaDesignerService,
-    @Inject(MAT_DIALOG_DATA) dialogData: DialogRoutingState<any>, // TODO: Type
+    @Inject(MAT_DIALOG_DATA) dialogData: DialogRoutingState, 
   ) {
     super();
     const l = this.log.fnIf('constructor');
     this.dialog.disableClose = true;
+
     // Dialog Data 
     this.isReturnValueMode = dialogData?.returnValue;
     console.log('DialogData', dialogData);

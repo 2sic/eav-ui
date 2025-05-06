@@ -10,6 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { NavigationStart, Router, RouterOutlet } from '@angular/router';
 import { catchError, filter, forkJoin, map, Observable, of, share, startWith, Subject, switchMap, tap, timer } from 'rxjs';
 import { transient } from '../../../../../core';
+import { ClosingDialogState, DialogRoutingState } from '../../edit/dialog/dialogRouteState.model';
 import { ExpirationExtension } from '../../features/expiration-extension';
 import { FeatureState } from '../../features/models';
 import { Feature } from '../../features/models/feature.model';
@@ -23,7 +24,6 @@ import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.mod
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { GlobalConfigService } from '../../shared/services/global-config.service';
 import { License } from '../models/license.model';
-import { ClosingDialogState, DialogRoutingState } from '../models/routeState.model';
 import { FeaturesConfigService } from '../services/features-config.service';
 import { ActiveFeaturesCountPipe } from './active-features-count.pipe';
 import { AgGridHeightDirective } from './ag-grid-height.directive';

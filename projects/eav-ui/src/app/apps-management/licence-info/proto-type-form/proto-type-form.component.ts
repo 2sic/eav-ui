@@ -7,8 +7,8 @@ import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute, Router } from '@angular/router';
 import { transient } from 'projects/core';
 import { ContentItemsService } from '../../../content-items/services/content-items.service';
+import { ClosingDialogState, DialogRoutingState } from '../../../edit/dialog/dialogRouteState.model';
 import { eavConstants } from '../../../shared/constants/eav.constants';
-import { ClosingDialogState, DialogRoutingState } from '../../models/routeState.model';
 
 export interface ProtoTypeFormResult {
   tempVersionNr: string;

@@ -1,14 +1,16 @@
-import { Injectable, signal } from '@angular/core';
+import { Inject, Injectable, signal } from '@angular/core';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { transient } from '../../../../../core';
 import { FeaturesService } from '../../features/features.service';
 import { Update$2sxcEnvFromContext } from '../../shared/helpers/update-env-vars-from-dialog-settings.helper';
 import { convertUrlToForm } from '../../shared/helpers/url-prep.helper';
-import { classLog } from '../../shared/logging';
+import { classLogEnabled } from '../../shared/logging';
 import { ItemAddIdentifier } from '../../shared/models/edit-form.model';
 import { UserLanguageService } from '../../shared/services/user-language.service';
+import { DialogRoutingState } from '../dialog/dialogRouteState.model';
 import { calculateIsParentDialog, sortLanguages } from '../dialog/main/edit-dialog-main.helpers';
 import { EavEditLoadDto, EditSettings } from '../dialog/main/edit-dialog-main.models';
 import { LanguageService } from '../localization/language.service';
@@ -31,8 +33,9 @@ import { ItemsRequestRestoreHelper } from './items-request-restore-helper';
 
 const logSpecs = {
   all: false,
-  constructor: true,
-  fetchFormData: false,
+  constructor: false,
+  fetchFormData: true,
+  dataFromDialog: true,
   importLoadedData: false,
   initMissingValues: false,
 };
@@ -45,8 +48,8 @@ const logSpecs = {
  */
 @Injectable()
 export class EditInitializerService {
-  
-  log = classLog({EditInitializerService}, logSpecs);
+
+  log = classLogEnabled({ EditInitializerService }, logSpecs);
 
   public loaded = signal(false);
 
@@ -55,8 +58,10 @@ export class EditInitializerService {
   #userLanguageSvc = transient(UserLanguageService);
   #initMissingValuesSvc = transient(InitializeMissingValuesServices);
 
+
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private formConfig: FormConfigService,
     private itemService: ItemService,
     private inputTypeService: InputTypeService,
@@ -71,8 +76,10 @@ export class EditInitializerService {
     private linkCacheService: LinkCacheService,
     private featuresService: FeaturesService,
     private initialValuesService: InitialValuesService,
+    @Inject (MAT_DIALOG_DATA) private dialogData: DialogRoutingState, 
   ) {
     this.log.aIf('constructor', null, "constructor");
+
   }
 
   /**
@@ -81,15 +88,20 @@ export class EditInitializerService {
    */
   fetchFormData(): void {
     const l = this.log.fnIf('fetchFormData');
+    const d = this.log.fnIf('dataFromDialog');
+
     const itemsRaw = (this.route.snapshot.params as EditUrlParams).items;
 
-    // TODO: @2dg - this is where the itemsRaw should have more data
+    d.a('state Data from Dialog', { stateData: this.dialogData });
 
     const items = convertUrlToForm(itemsRaw).items;
-    
+
     // Reduce amount of data sent to backend by removing unneeded properties
-    const dataHelper = new ItemsRequestRestoreHelper(items);
+    const dataHelper = new ItemsRequestRestoreHelper(items, this.dialogData?.overrideContents);
+
     const requestItems = dataHelper.itemsForRequest();
+    
+
     l.a('fetchFormData', { requestItems });
 
     this.#formDataService
@@ -100,7 +112,10 @@ export class EditInitializerService {
           ...responseRaw,
           Items: dataHelper.mergeResponse(responseRaw.Items),
         };
-        l.a('fetchFormData - after remix', {formData: response});
+
+        console.log('2dg response', response);
+
+        l.a('fetchFormData - after remix', { response });
 
         // Load all the feature infos and also mark the ones which the response says are required
         this.featuresService.load(response.Context, response);
@@ -133,7 +148,6 @@ export class EditInitializerService {
     const formId = Math.floor(Math.random() * 99999);
     const isParentDialog = calculateIsParentDialog(this.route);
 
-    // TODO: @2dg - this is where the data will be converted
     // Load data into the ItemsService; will convert the data to the correct type
     this.itemService.loadItems(loadDto.Items);
 

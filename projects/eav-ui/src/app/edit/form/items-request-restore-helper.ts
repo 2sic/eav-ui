@@ -8,9 +8,9 @@ import { EavEntityBundleDto } from '../shared/models/json-format-v1';
  */
 export class ItemsRequestRestoreHelper {
 
-  log = classLogEnabled({ItemsRequestRestoreHelper}, {all: false, mergeResponse: true});
-  
-  constructor(items: ItemIdentifier[]) {
+  log = classLogEnabled({ ItemsRequestRestoreHelper }, { all: false, mergeResponse: true });
+
+  constructor(items: ItemIdentifier[], private contentsOverride?: Record<string, unknown>[]) {
     // Add ClientId index number to request,
     // so it can be matched again when the response comes back
     this.itemsWithIndex = items.map((item, index) => ({
@@ -19,7 +19,7 @@ export class ItemsRequestRestoreHelper {
     }));
   }
 
-  private itemsWithIndex: (ItemIdentifier & { clientId: number})[];
+  private itemsWithIndex: (ItemIdentifier & { clientId: number })[];
 
   itemsForRequest() {
     const cleaned = this.itemsWithIndex.map((item) => {
@@ -30,22 +30,32 @@ export class ItemsRequestRestoreHelper {
     return cleaned;
   }
 
-  mergeResponse(result: EavEntityBundleDto[]) {
-    const l = this.log.fnIf('mergeResponse', {result, itemsWithIndex: this.itemsWithIndex});
+  mergeResponse(result: EavEntityBundleDto[]): EavEntityBundleDto[] {
+    const l = this.log.fnIf('mergeResponse', { result, itemsWithIndex: this.itemsWithIndex });
     // Merge the response with the original items
     const merged = result.map(item => {
       // try to find original item
       const original = this.itemsWithIndex.find(i => i.clientId === item.Header.clientId);
-      l.a('fetchFormData - remix', {item, original});
+      l.a('fetchFormData - remix', { item, original });
+
+
+      let contents: Record<string, unknown> = null;
+      if (this.contentsOverride)
+        contents = this.contentsOverride[item.Header.clientId];
+      else
+        contents = null
 
       return {
         ...item,
         Header: {
           ...item.Header,
           Prefill: original?.Prefill,
-          ClientData: original?.ClientData,
-        }
-      };
+          ClientData: {
+            ...original?.ClientData,
+            overrideContents: contents,
+          },
+        },
+      } satisfies EavEntityBundleDto;
     });
     return l.r(merged);
   }

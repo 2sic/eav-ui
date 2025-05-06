@@ -2,8 +2,8 @@ export interface ClosingDialogState<T> {
     dialogValue: T;
   }
   
-  export interface DialogRoutingState<T = unknown> {
+  export interface DialogRoutingState {
     returnValue?: boolean;
-    data?: T;
+    overrideContents?: Record<string, unknown>[];
   }
   
