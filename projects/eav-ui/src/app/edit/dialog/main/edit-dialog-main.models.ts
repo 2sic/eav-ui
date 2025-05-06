@@ -23,6 +23,8 @@ export const PublishModes = {
 } as const /* the as const ensures that the keys/values can be strictly checked */;
 
 
+export type RequiredFeatures = Record<Of<typeof FeatureNames>, string[]>;
+
 export interface EavEditLoadDto extends EavPublishStatus {
   ContentTypeItems: EavEntityDto[];
   ContentTypes: EavContentTypeDto[];
@@ -32,13 +34,12 @@ export interface EavEditLoadDto extends EavPublishStatus {
   Prefetch?: Prefetch;
   Settings: EditSettingsDto;
 
-  RequiredFeatures?: Record<Of<typeof FeatureNames>, string[]>;
+  RequiredFeatures?: RequiredFeatures;
 }
 
 export interface EditSettings {
   Values: Record<string, unknown>;
-  // note: added by 2dm 2023-01-21 but not used yet
-  // will probably contain special wysiwyg-edit configs and similar...
+  /** SettingsEntities are important for more advanced settings such as WYSIWYG */
   Entities: EavEntity[];
   /**
    * ContentTypes which are additional settings.

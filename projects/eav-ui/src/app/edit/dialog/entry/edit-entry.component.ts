@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { transient } from 'projects/core';
 import { FeaturesService } from '../../../features/features.service';
 import { classLog } from '../../../shared/logging';
 import { Context } from '../../../shared/services/context';
 import { EditInitializerService } from '../../form/edit-initializer.service';
 import { FormConfigService } from '../../form/form-config.service';
+import { InitialValuesService } from '../../form/initial-values-service';
 import { LoggingService } from '../../shared/services/logging.service';
 import { ScriptsLoaderService } from '../../shared/services/scripts-loader.service';
 import { EditDialogMainComponent } from '../main/edit-dialog-main.component';
@@ -28,17 +30,19 @@ import { EditDialogMainComponent } from '../main/edit-dialog-main.component';
     LoggingService,
     // Shared Services across the edit form
     FeaturesService, // for checking if features are enabled - this can change from dialog to dialog
-    EditInitializerService, // for loading the data and having it ready downstream
     Context, // Form context, such as what app etc. - the same for the entire form
     FormConfigService, // form configuration valid for this entire form; will be initialized by the EditInitializerService
     ScriptsLoaderService, // Loader for external scripts. Shared as it keeps track of what's been loaded. Maybe should be providedIn: 'root'?
+    InitialValuesService, // for preserving initial values for formulas.
   ]
 })
 export class EditEntryComponent implements OnInit {
 
   log = classLog({ EditEntryComponent });
 
-  constructor(protected editInitializerService: EditInitializerService, temp: FeaturesService) {
+  protected editInitializerService = transient(EditInitializerService);
+
+  constructor(temp: FeaturesService) {
     this.log.aIf('constructor');
   }
 

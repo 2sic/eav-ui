@@ -120,7 +120,7 @@ export class FieldsSettingsHelpers {
 
       if (hasEditable || hasReadonly) {
         const dimensions = fieldReader.current
-          .Dimensions.map(dimension => dimension.Value)
+          .dimensions.map(dimension => dimension.dimCode)
           .filter(dimension => !dimension.includes(language.current));
 
         const isShared = dimensions.length > 0;
@@ -165,18 +165,18 @@ export class FieldsSettingsHelpers {
 
     if (fieldReader.hasEditableValues) {
       const editableElements = fieldReader.current
-        .Dimensions.filter(d => d.Value !== language.current);
+        .dimensions.filter(d => d.dimCode !== language.current);
 
       return (editableElements.length > 0)
-        ? { language: editableElements[0].Value, linkType: TranslationLinks.LinkReadWrite }
+        ? { language: editableElements[0].dimCode, linkType: TranslationLinks.LinkReadWrite }
         : { language: '', linkType: TranslationLinks.Translate };
     }
 
     if (fieldReader.hasCurrentReadonly) {
       const readOnlyElements = fieldReader.current
-        .Dimensions.filter(d => d.Value !== language.current);
+        .dimensions.filter(d => d.dimCode !== language.current);
 
-      return { language: readOnlyElements[0].Value, linkType: TranslationLinks.LinkReadOnly, };
+      return { language: readOnlyElements[0].dimCode, linkType: TranslationLinks.LinkReadOnly, };
     }
 
     return { language: '', linkType: TranslationLinks.DontTranslate, };

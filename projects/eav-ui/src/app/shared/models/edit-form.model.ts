@@ -87,7 +87,7 @@ export class EditPrep {
  * To add new item send newItem and to edit existing item send editItems
  */
 export interface EditForm {
-  items: (ItemIdentifier)[];
+  items: ItemIdentifier[];
 }
 
 export type ItemIdentifier = ItemAddIdentifier | ItemEditIdentifier | ItemInListIdentifier;
@@ -137,6 +137,8 @@ export interface ItemIdentifierShared {
   ClientData?: {
     fields?: string;
     parameters?: Record<string, unknown>;
+    // TODO: @2dg - this is where the temporary contents are stored
+    overrideContents?: Record<string, unknown>;
     [key: string]: unknown;
   };
 

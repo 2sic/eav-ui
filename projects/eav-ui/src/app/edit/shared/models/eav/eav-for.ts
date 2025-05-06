@@ -1,3 +1,7 @@
+/**
+ * The EavFor seems to be the same for both Dto and in memory objects.
+ * Because of this, there is no conversion needed between the two.
+ */
 export interface EavFor {
   Target: string;
   TargetType: number;

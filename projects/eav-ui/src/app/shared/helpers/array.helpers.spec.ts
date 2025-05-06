@@ -1,11 +1,10 @@
 import { ArrayHelpers } from './array.helpers';
 
 describe('ArrayHelpers', () => {
-  it('should add an item if it is not in the array', () => {
-    const array = [1, 2, 3];
-    ArrayHelpers.toggleInArray(4, array);
-    expect(array).toEqual([1, 2, 3, 4]);
-  });
+  // Demo of a more compact test - less code to maintain
+  it('should add an item if it is not in the array',
+    () => expect(ArrayHelpers.toggleInArray(4, [1, 2, 3]))
+      .toEqual([1, 2, 3, 4]));
 
   it('should remove an item if it is in the array', () => {
     const array = [1, 2, 3];

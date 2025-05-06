@@ -11,8 +11,8 @@ export class EavContentTypeAttribute {
   Settings: EavEntityAttributes;
   Type: string;
 
-  private static convertOne(ctAttributeDto: EavContentTypeAttributesDto): EavContentTypeAttribute {
-    const metadata = EavEntity.convertMany(ctAttributeDto.Metadata);
+  private static dtoToEav(ctAttributeDto: EavContentTypeAttributesDto): EavContentTypeAttribute {
+    const metadata = EavEntity.dtoToEavMany(ctAttributeDto.Metadata);
     const settings = EavEntityAttributes.mergeSettings(metadata);
 
     const attribute: EavContentTypeAttribute = {
@@ -26,10 +26,11 @@ export class EavContentTypeAttribute {
     return attribute;
   }
 
-  static convertMany(ctAttributesDto: EavContentTypeAttributesDto[]): EavContentTypeAttribute[] {
-    if (ctAttributesDto == null) { return []; }
+  static dtoToEavMany(ctAttributesDto: EavContentTypeAttributesDto[]): EavContentTypeAttribute[] {
+    if (ctAttributesDto == null)
+      return [];
 
-    const attributes = ctAttributesDto.map(attribute1 => EavContentTypeAttribute.convertOne(attribute1));
+    const attributes = ctAttributesDto.map(a => EavContentTypeAttribute.dtoToEav(a));
     return attributes;
   }
 }
