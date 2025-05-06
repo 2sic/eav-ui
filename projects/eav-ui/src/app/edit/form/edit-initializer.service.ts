@@ -82,6 +82,9 @@ export class EditInitializerService {
   fetchFormData(): void {
     const l = this.log.fnIf('fetchFormData');
     const itemsRaw = (this.route.snapshot.params as EditUrlParams).items;
+
+    // TODO: @2dg - this is where the itemsRaw should have more data
+
     const items = convertUrlToForm(itemsRaw).items;
     
     // Reduce amount of data sent to backend by removing unneeded properties
@@ -130,6 +133,7 @@ export class EditInitializerService {
     const formId = Math.floor(Math.random() * 99999);
     const isParentDialog = calculateIsParentDialog(this.route);
 
+    // TODO: @2dg - this is where the data will be converted
     // Load data into the ItemsService; will convert the data to the correct type
     this.itemService.loadItems(loadDto.Items);
 

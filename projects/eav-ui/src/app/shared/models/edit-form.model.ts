@@ -137,6 +137,8 @@ export interface ItemIdentifierShared {
   ClientData?: {
     fields?: string;
     parameters?: Record<string, unknown>;
+    // TODO: @2dg - this is where the temporary contents are stored
+    overrideContents?: Record<string, unknown>;
     [key: string]: unknown;
   };
 

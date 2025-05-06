@@ -6,7 +6,14 @@ export class EavItem {
   Entity: EavEntity;
   Header: ItemIdentifierHeader;
 
-  static convert(entityBundleDto: EavEntityBundleDto): EavItem {
+  static anyToEav(entityBundleDto: EavEntityBundleDto): EavItem {
+    const override = entityBundleDto.Header.ClientData?.overrideContents;
+    return override
+      ? EavItem.objToEav(override)
+      : EavItem.dtoToEav(entityBundleDto);
+  }
+
+  static dtoToEav(entityBundleDto: EavEntityBundleDto): EavItem {
     const entity = EavEntity.dtoToEav(entityBundleDto.Entity);
 
     const item: EavItem = {
@@ -14,5 +21,10 @@ export class EavItem {
       Header: entityBundleDto.Header,
     };
     return item;
+  }
+
+  // TODO: @2dg - this is where the data will be converted
+  static objToEav(override: Record<string, unknown>): EavItem {
+    throw new Error('Not implemented yet! @2dg');
   }
 }
