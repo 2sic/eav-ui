@@ -1,13 +1,13 @@
 import { EavField } from './eav-field';
 
-interface EavFieldTestCreate {
+interface TestFieldCreate {
   title: string;
   dto: Record<string, string>;
   type: string;
   field: EavField<string>;
 }
 
-export const EavFieldTests: EavFieldTestCreate[] = [
+export const TestDataFieldCreate: TestFieldCreate[] = [
   {
     title: 'should convert a basic value with one dimension',
     dto: { 'en': 'hello' },

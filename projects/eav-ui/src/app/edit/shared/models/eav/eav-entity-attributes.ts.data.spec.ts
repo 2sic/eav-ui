@@ -1,6 +1,13 @@
 import { EavAttributesDto } from '../json-format-v1';
 import { EavEntityAttributes } from './eav-entity-attributes';
 
+interface TestAttributesCreate {
+  title: string;
+  eav: EavEntityAttributes;
+  dto: EavAttributesDto;
+}
+
+
 export const testAttributesDto: EavAttributesDto = {
   'string': {
     'Greeting': { 'en': 'hello', 'fr': 'bonjour' },
@@ -31,3 +38,11 @@ export const testAttributesInternal: EavEntityAttributes = {
     Type: 'number',
   }
 };
+
+export const TestDataAttributesCreate: TestAttributesCreate[] = [
+  {
+    title: 'should convert/flatten a string and a number',
+    eav: testAttributesInternal,
+    dto: testAttributesDto,
+  },
+];

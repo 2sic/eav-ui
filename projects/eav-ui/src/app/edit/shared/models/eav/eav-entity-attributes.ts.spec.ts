@@ -1,5 +1,5 @@
 import { EavEntityAttributes } from './eav-entity-attributes';
-import { testAttributesDto, testAttributesInternal } from './eav-entity-attributes.ts.data.spec';
+import { TestDataAttributesCreate } from './eav-entity-attributes.ts.data.spec';
 
 
 
@@ -56,9 +56,11 @@ describe('EavEntityAttribute.Convert', () => {
         Type: 'string',
       }
     }));
-  
-    it('should convert/flatten a string and a number',
-      () => expect(EavEntityAttributes.dtoToEav(testAttributesDto))
-      .toEqual(testAttributesInternal));
+
+
+    // Loop through TestDataAttributesCreate and test each one
+    TestDataAttributesCreate.forEach(({ eav, dto, title }) => {
+      it(title, () => expect(EavEntityAttributes.dtoToEav(dto)).toEqual(eav));
+    });
   
 });

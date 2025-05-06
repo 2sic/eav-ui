@@ -11,7 +11,7 @@ export const testEntityHeaderOnlyDto: EavEntityDto = {
   Version: 1,
 };
 
-export const testEntityHeaderOnlyInternal: EavEntity = {
+export const testEntityHeaderOnlyEav: EavEntity = {
   Attributes: {},
   Guid: 'd2f1f1e9-d747-4594-9a50-3e937af595e6',
   Id: 42,
@@ -31,7 +31,7 @@ export const testEntityHeaderOnly2Dto: EavEntityDto = {
   Version: 3,
 };
 
-export const testEntityHeaderOnly2Internal: EavEntity = {
+export const testEntityHeaderOnly2Eav: EavEntity = {
   Attributes: {},
   Guid: 'e632ca07-dacc-4ba7-9dcb-cf6219e3d2b0',
   Id: 47,

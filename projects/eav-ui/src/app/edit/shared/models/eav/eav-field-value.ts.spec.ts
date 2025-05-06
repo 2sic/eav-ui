@@ -1,14 +1,14 @@
 import { EavDimension } from './eav-dimension';
 import { EavFieldValue } from './eav-field-value';
 
-interface EavFieldValueTestCreate {
+interface TestFieldValueCreate {
   title: string;
   value: string;
   dimensions: EavDimension[];
   expected: EavFieldValue<string>;
 }
 
-const EavFieldValueCreateTests: EavFieldValueTestCreate[] = [
+const TestDataFieldValueCreate: TestFieldValueCreate[] = [
   {
     title: 'should create a basic value without dimensions',
     value: 'hello',
@@ -30,7 +30,7 @@ const EavFieldValueCreateTests: EavFieldValueTestCreate[] = [
 ];
 
 describe('EavValue.Create', () => {
-  EavFieldValueCreateTests.forEach(({ title, value, dimensions, expected }) => {
+  TestDataFieldValueCreate.forEach(({ title, value, dimensions, expected }) => {
     it(title, () => expect(EavFieldValue.create(value, dimensions)).toEqual(expected));
   });
 });
