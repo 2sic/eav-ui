@@ -1,15 +1,29 @@
+const fs = require('fs');
+const path = require('path');
 const pjson = require('../package.json');
 
-exports.default = {
-  config: function (cfg) {
-    /* change source map generation based on production mode */
-    const nodeEnv = (process.env.NODE_ENV || 'development').trim(); // trim is important because of an issue with package.json
-    const isProd = nodeEnv === 'production';
-    if (!isProd) { return cfg; }
+// Modify source maps after the build completes
+function modifySourceMaps() {
+  const buildDir = path.join(__dirname, '../dist/eav-ui');
+  
+  fs.readdirSync(buildDir).forEach(file => {
+    const filePath = path.join(buildDir, file);
 
-    const sourceMapsDevToolPlugin = cfg.plugins.find(plugin => plugin.hasOwnProperty('sourceMapFilename'));
-    sourceMapsDevToolPlugin.options.publicPath = 'https://sources.2sxc.org/' + pjson.version + '/dist/ng-edit/';
+    // Process only `.map` files
+    if (file.endsWith('.map')) {
+      console.log('Modifying source map:', filePath);
 
-    return cfg;
-  }
+      // Read and parse the source map file
+      const sourceMap = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+
+      // Modify the sourceRoot in the source map for production
+      sourceMap.sourceRoot = `https://sources.2sxc.org/${pjson.version}/dist/ng-edit/`;
+
+      // Write the updated source map back
+      fs.writeFileSync(filePath, JSON.stringify(sourceMap, null, 2), 'utf8');
+    }
+  });
 }
+
+// Run the source map modification
+modifySourceMaps();
