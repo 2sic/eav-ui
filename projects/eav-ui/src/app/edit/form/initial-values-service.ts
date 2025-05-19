@@ -43,11 +43,7 @@ export class InitialValuesService {
 
     for (const item of items)
       for (const currentLang of allLangs) {
-    
-        console.log('2dg InitialValuesService - item.Entity.Attributes', item.Entity.Attributes);
-
         const formValues = new EntityReader(currentLang, language.primary).currentValues(item.Entity.Attributes);
-        console.log('2dg InitialValuesService - formValues', formValues);
         const cacheKey = this.#cacheKey(item.Entity.Guid, currentLang);
         this.#cache[cacheKey] = formValues;
       }

@@ -69,6 +69,24 @@ export class EavItem {
     };
   }
 
+
+
+  static eavToObj(eavItem: EavItem): Record<string, unknown> {
+    const attributes = eavItem.Entity.Attributes;
+    const result: Record<string, unknown> = {};
+
+    for (const key in attributes) {
+      const attr = attributes[key];
+      if (!attr.Values || attr.Values.length === 0) continue;
+
+      // Wir nehmen den Wert aus dem ersten EavFieldValue (Standard)
+      result[key] = attr.Values[0].value;
+    }
+
+    return result;
+  }
+
+
   /**
    * Determines the EAV data type based on the JS type of the value.
    */
@@ -84,6 +102,8 @@ export class EavItem {
         return 'Unknown';
     }
   }
+
+
 
 
 

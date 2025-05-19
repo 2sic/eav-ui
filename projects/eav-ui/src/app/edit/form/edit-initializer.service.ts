@@ -112,6 +112,8 @@ export class EditInitializerService {
           Items: dataHelper.mergeResponse(responseRaw.Items),
         };
 
+        console.log('2dg fetchFormData - with isLocalSave', { response });
+
         l.a('fetchFormData - after remix', { response });
 
         // Load all the feature infos and also mark the ones which the response says are required
@@ -125,7 +127,7 @@ export class EditInitializerService {
 
         // Remember initial values as the formulas sometimes need them
         this.initialValuesService.preserve();
-        
+
 
         // After preserving original values, initialize missing values in the form
         this.#initMissingValues();

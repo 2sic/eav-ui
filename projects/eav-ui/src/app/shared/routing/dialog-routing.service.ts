@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, NavigationExtras, Router } from '@angular/router';
-import { filter, map, pairwise, startWith } from 'rxjs';
-import { classLog } from '../logging';
+import { filter, map, pairwise, startWith, tap } from 'rxjs';
+import { classLogEnabled } from '../logging';
 import { ServiceBase } from '../services/service-base';
 
 const logSpecs = {
@@ -16,7 +16,7 @@ const logSpecs = {
 @Injectable()
 export class DialogRoutingService extends ServiceBase {
 
-  log = classLog({ DialogRoutingService }, logSpecs);
+  log = classLogEnabled({ DialogRoutingService }, logSpecs);
 
   constructor(
     public router: Router,
@@ -59,12 +59,27 @@ export class DialogRoutingService extends ServiceBase {
    * Preferred way to register a callback, since the caller doesn't need to worry about subscriptions.
    */
   public doOnDialogClosed(callback: () => void) {
+    console.log('2dg doOnDialogClosed-OLD', { callback });
     const l = this.log.fnIf('doOnDialogClosed');
     this.subscriptions.add(
-      this.childDialogClosed$().subscribe(() => callback())
+      this.childDialogClosed$().subscribe((data: unknown) => {
+        l.a('Dialog closed', { data });
+        return callback();
+      })
     );
     l.end();
   }
+
+  // TODO: @2dg test, remove later
+  public doOnDialogClosedWithData(callback: (result: any) => void) {
+    console.log('2dg doOnDialogClosedWithData', { callback });
+    const l = this.log.fnIf('doOnDialogClosed');
+    this.subscriptions.add(
+      this.childDialogClosed$().subscribe(result => callback(result))
+    );
+    l.end();
+  }
+
 
   /**
    * Get the URL for a sub-route of the current route.
@@ -93,6 +108,15 @@ export class DialogRoutingService extends ServiceBase {
   childDialogClosed$() {
     return this.router.events.pipe(
       filter(event => event instanceof NavigationEnd),
+      tap(event => {
+        const l = this.log.fn("childDialogClosed$", {
+          event,
+          firstChild: this.route.snapshot.firstChild,
+          snapShot: this.route.snapshot,
+        });
+        l.a('NavigationEnd', { event });
+        l.end();
+      }),
       startWith(!!this.route.snapshot.firstChild),
       map(() => !!this.route.snapshot.firstChild),
       pairwise(),

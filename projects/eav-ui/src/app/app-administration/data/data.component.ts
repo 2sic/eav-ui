@@ -67,6 +67,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
   #contentExportSvc = transient(ContentExportService);
   #dialogConfigSvc = transient(DialogConfigAppService);
   #dialogRouter = transient(DialogRoutingService);
+  // #router = transient(Router);
 
   constructor() { super(); }
 
@@ -85,10 +86,33 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
     this.#refreshScopeOnRouteChange();
     this.#dialogRouter.doOnDialogClosed(() => this.#fetchContentTypes());
 
+    // TODO: @2dg test, remove later
+    // this.#dialogRouter.doOnDialogClosedWithData((itemsEavObj: Record<string, unknown>[]) => {
+    //   console.log('Dialog wurde geschlossen, erhaltene Objekte:', itemsEavObj);
+    // });
+
     this.#dialogConfigSvc.getCurrent$().subscribe(data => {
       this.enablePermissions = data.Context.Enable.AppPermissions;
     });
+
+
+    // TODO: @2dg get Data from State
+    // Buggy 
+    // this.#router.events.pipe(filter(event => event instanceof NavigationStart))
+    //   .subscribe(() => {
+    //     console.log('Navigation started');
+    //     const navigation = this.#router.getCurrentNavigation();
+    //     if (navigation?.extras.state && navigation.extras.state.dialogValue) {
+    //       const state = navigation?.extras.state as ClosingDialogState<Record<string, unknown>[]>;
+    //       console.log("2dg Data after Close", state.dialogValue)
+
+    //     }
+    //   });
+
+
   }
+
+
 
   filesDropped(files: File[]) {
     const importFile = files[0];

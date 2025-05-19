@@ -34,12 +34,13 @@ import { LinkCacheService } from '../../shared/adam/link-cache.service';
 import { ContentTypeItemService } from '../../shared/content-types/content-type-item.service';
 import { ContentTypeService } from '../../shared/content-types/content-type.service';
 import { InputTypeService } from '../../shared/input-types/input-type.service';
+import { EavItem } from '../../shared/models/eav';
 import { EavEntityBundleDto } from '../../shared/models/json-format-v1';
 import { ValidationMsgHelper } from '../../shared/validation/validation-messages.helpers';
 import { ItemService } from '../../state/item.service';
 import { MetadataDecorators } from '../../state/metadata-decorators.constants';
 import { SaveResult } from '../../state/save-result.model';
-import { ClosingDialogState, DialogRoutingState } from '../dialogRouteState.model';
+import { DialogRoutingState } from '../dialogRouteState.model';
 import { EditEntryComponent } from '../entry/edit-entry.component';
 import { EditDialogFooterComponent } from '../footer/edit-dialog-footer.component';
 import { footerPreferences } from '../footer/footer-preferences';
@@ -130,7 +131,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
     private adamCacheService: AdamCacheService,
     private linkCacheService: LinkCacheService,
     private formulaDesignerService: FormulaDesignerService,
-    @Inject(MAT_DIALOG_DATA) dialogData: DialogRoutingState, 
+    @Inject(MAT_DIALOG_DATA) dialogData: DialogRoutingState,
   ) {
     super();
     const l = this.log.fnIf('constructor');
@@ -138,7 +139,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
 
     // Dialog Data 
     this.isReturnValueMode = dialogData?.returnValue;
-    console.log('DialogData', dialogData);
+    console.log('2dg DialogData', this.isReturnValueMode);
 
     // Initialize default user preferences for footer show/hide
     const pref = this.#prefManager;
@@ -237,31 +238,16 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
 
   /** Save all forms */
   saveAll(close: boolean): boolean {
+
     this.#entityFormStateService.isSaving.set(true);
 
     const l = this.log.fn('saveAll', { close });
     if (this.formsStateService.formsAreValid()) {
       // #1 Case form is valid
 
-      const items = this.formBuilderRefs
-        .map(formBuilderRef => {
-          const eavItem = this.itemService.get(formBuilderRef.entityGuid());
-          const isValid = this.formsStateService.getFormValid(eavItem.Entity.Guid);
-          if (!isValid)
-            return null;
-
-          // do not try to save item which doesn't have any fields, nothing could have changed about it
-          // but enable saving if there is a special metadata
-          const hasAttributes = Object.keys(eavItem.Entity.Attributes).length > 0;
-          const contentType = this.contentTypeService.getContentTypeOfItem(eavItem);
-          const saveIfEmpty = contentType.Metadata.some(m => m.Type.Name === MetadataDecorators.SaveEmptyDecorator);
-          if (!hasAttributes && !saveIfEmpty)
-            return null;
-
-          const item = EavEntityBundleDto.bundleToDto(eavItem);
-          return item;
-        })
-        .filter(item => item != null);
+      const items = this.#getValidEavItems(eavItem =>
+        EavEntityBundleDto.bundleToDto(eavItem)
+      );
 
       const publishStatus = this.publishStatusService.get(this.#formConfig.config.formId);
 
@@ -272,17 +258,21 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
       };
       l.a('SAVE FORM DATA:', { saveFormData });
 
-      // 
-      // Get Data via state in the route
-      //
-
       if (this.isReturnValueMode) {
-        const urlBeforeEdit = this.router.url.split('/edit')[0];
 
-        this.router.navigate([urlBeforeEdit], { state: { dialogValue: saveFormData } satisfies ClosingDialogState<SaveEavFormData> }); 
+        const itemsEavObj: Record<string, unknown>[] = this.#getValidEavItems(eavItem =>
+          EavItem.eavToObj(eavItem)
+        );
+        console.log('2dg itemsEavObj', itemsEavObj);
+        this.dialog.close(itemsEavObj)
+        // Return the data to the caller via Route state
+        // const urlBefore = this.router.url.split('/edit')[0];
+        // console.log('2dg urlBeforeEdit', urlBefore);
+
+        // this.router.navigate([urlBefore], { state: { dialogValue: itemsEavObj } satisfies ClosingDialogState<Record<string, unknown>[]> });
         return
       }
-
+    
       // Saving 
       this.snackBar.open(this.translate.instant('Message.Saving'), null, { duration: 2000 });
 
@@ -338,6 +328,30 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
         duration: 5000,
       });
     }
+  }
+
+  #getValidEavItems<T>(
+    mapFn: (eavItem: EavItem) => T | null
+  ): T[] {
+    return this.formBuilderRefs
+      .map(ref => {
+        const eavItem = this.itemService.get(ref.entityGuid());
+        console.log('2dg eavItem', eavItem);
+
+        const isValid = this.formsStateService.getFormValid(eavItem.Entity.Guid);
+        if (!isValid) return null;
+
+        const hasAttributes = Object.keys(eavItem.Entity.Attributes).length > 0;
+        const contentType = this.contentTypeService.getContentTypeOfItem(eavItem);
+        const saveIfEmpty = contentType.Metadata.some(
+          m => m.Type.Name === MetadataDecorators.SaveEmptyDecorator
+        );
+
+        if (!hasAttributes && !saveIfEmpty) return null;
+
+        return mapFn(eavItem);
+      })
+      .filter((item): item is T => item != null);
   }
 
   #startSubscriptions() {

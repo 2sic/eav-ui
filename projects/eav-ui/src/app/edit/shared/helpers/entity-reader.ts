@@ -77,17 +77,11 @@ export class EntityReader implements FormLanguage {
   }
 
   currentValues(itemAttributes: EavEntityAttributes): ItemValuesOfLanguage {
-
-    console.log('2dg InitialValues - currentValues', itemAttributes);
-
     const formValues: ItemValuesOfLanguage = Object.entries(itemAttributes)
       .reduce((acc, [name, values]) => {
         acc[name] = this.getBestValue(values);
         return acc;
       }, {} as ItemValuesOfLanguage);
-
-       console.log('2dg InitialValues - currentValues formValues', formValues);
-
     return formValues;
   }
 
