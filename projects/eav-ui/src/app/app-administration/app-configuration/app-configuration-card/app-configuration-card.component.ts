@@ -1,16 +1,12 @@
-import { Component, computed, inject, input, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, computed, input, OnDestroy, OnInit, signal } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { NavigationStart, Router } from '@angular/router';
-import { filter } from 'rxjs';
 import { transient } from '../../../../../../core';
 import { DocsLinkHelperComponent } from '../../../admin-shared/docs-link-helper/docs-link-helper.component';
 import { ContentItemsService } from '../../../content-items/services/content-items.service';
-import { ClosingDialogState, DialogRoutingState } from '../../../edit/dialog/dialogRouteState.model';
-import { SaveEavFormData } from '../../../edit/dialog/main/edit-dialog-main.models';
 import { GoToMetadata } from '../../../metadata';
 import { eavConstants } from '../../../shared/constants/eav.constants';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
@@ -41,13 +37,10 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
   #appInternalsSvc = transient(AppInternalsService);
   #contentItemsSvc = transient(ContentItemsService);
   #dialogRouter = transient(DialogRoutingService);
-  router = inject(Router);
 
 
   appConfigurationUrl = signal('');
   appConfigAvailable = signal(false);
-
-  tempDisplayName = signal('');
 
   constructor(
     private context: Context,
@@ -77,21 +70,6 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
     this.#dialogRouter.doOnDialogClosed(() => {
       this.#refresh.update(v => ++v);
     });
-
-
-    this.router.events
-      .pipe(filter(event => event instanceof NavigationStart))
-      .subscribe(() => {
-        const navigation = this.router.getCurrentNavigation();
-        if (navigation?.extras.state && navigation.extras.state.dialogValue) {
-          const state = navigation?.extras.state as ClosingDialogState<SaveEavFormData>;
-
-          console.log("2dg Data after Close", state.dialogValue)
-          const displayName = state.dialogValue?.Items?.[0]?.Entity?.Attributes?.String?.DisplayName?.["*"];
-          this.tempDisplayName.set(displayName ?? '');
-        }
-      });
-
   }
 
   ngOnDestroy() {
@@ -132,65 +110,7 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
       )
     );
   }
-
-  openAppConfigurationClick() {
-
-    const overrideContents: Record<string, unknown>[] = [{
-      DebugLog: "Debug: Image comparison started",
-      Description: "Compares two images and highlights differences",
-      DisplayName: "Image Compare",
-    }];
-
-    const demoObj =
-    {
-      "DebugLog": {
-        "Values": [
-          {
-            "value": "Debug: Image comparison started",
-            "dimensions": [
-              {
-                "dimCode": "*"
-              }
-            ]
-          }
-        ],
-        "Type": "String"
-      },
-      "Description": {
-        "Values": [
-          {
-            "value": "Compares two images and highlights differences",
-            "dimensions": [
-              {
-                "dimCode": "*"
-              }
-            ]
-          }
-        ],
-        "Type": "String"
-      },
-      "DisplayName": {
-        "Values": [
-          {
-            "value": "Image Compare",
-            "dimensions": [
-              {
-                "dimCode": "*"
-              }
-            ]
-          }
-        ],
-        "Type": "String"
-      }
-
-    }
-
-    let url = this.appConfigurationUrl();
-    url = url.replace('#', '');
-    this.router.navigate([url], {
-      state: { returnValue: true, overrideContents } satisfies DialogRoutingState
-    });
-  }
+ 
 
   formatValue(value?: string): string {
     return value === "" ? "-" : value ?? "-";

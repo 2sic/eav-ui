@@ -15,16 +15,6 @@
           }}</span>
         </div>
       </div>
-
-      <div class="eav-info-row">
-        <div class="eav-info-row__label">Test Name: 2dg</div>
-        <div class="eav-info-row__value">
-          <span [tippy]="'Click to copy to clipboard'" (click)="clipboard.copyToClipboard(tempDisplayName())">
-            {{tempDisplayName()}}
-          </span>
-        </div>
-      </div>
-
       <div class="eav-info-row">
         <div class="eav-info-row__label">Folder:</div>
         <div class="eav-info-row__value">
@@ -63,16 +53,6 @@
     <div class="eav-card-space-div"></div>
     <mat-card-actions align="start">
       <app-docs-link-helper [link]="'https://docs.2sxc.org/basics/app/configuration.html'" [label]="" [icon]=""></app-docs-link-helper>
-      <a
-        (click)="openAppConfigurationClick()"
-        mat-button
-        [disabled]="!appConfigAvailable()"
-        class="eav-button__with-icon"
-        tippy="Edit app system resources"
-      >
-        Test 2dg
-      </a>
-
       <a
         [href]="appConfigurationUrl()"
         mat-button

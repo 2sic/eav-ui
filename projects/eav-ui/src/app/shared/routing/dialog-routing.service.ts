@@ -70,17 +70,6 @@ export class DialogRoutingService extends ServiceBase {
     l.end();
   }
 
-  // TODO: @2dg test, remove later
-  public doOnDialogClosedWithData(callback: (result: any) => void) {
-    console.log('2dg doOnDialogClosedWithData', { callback });
-    const l = this.log.fnIf('doOnDialogClosed');
-    this.subscriptions.add(
-      this.childDialogClosed$().subscribe(result => callback(result))
-    );
-    l.end();
-  }
-
-
   /**
    * Get the URL for a sub-route of the current route.
    */
