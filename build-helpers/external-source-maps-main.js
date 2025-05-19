@@ -2,28 +2,25 @@ const fs = require('fs');
 const path = require('path');
 const pjson = require('../package.json');
 
-// Modify source maps after the build completes
-function modifySourceMaps() {
-  const buildDir = path.join(__dirname, '../dist/eav-ui');
-  
-  fs.readdirSync(buildDir).forEach(file => {
-    const filePath = path.join(buildDir, file);
+const BUILD_DIR = path.join(__dirname, '../dist/eav-ui');
+// base URL for your source-map files
+const PUBLIC_PATH = `https://sources.2sxc.org/${pjson.version}/dist/ng-edit/`;
 
-    // Process only `.map` files
-    if (file.endsWith('.map')) {
-      console.log('Modifying source map:', filePath);
+fs.readdirSync(BUILD_DIR).forEach(file => {
+  if (!file.endsWith('.js'))
+      return;
 
-      // Read and parse the source map file
-      const sourceMap = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+  const full = path.join(BUILD_DIR, file);
+  let js = fs.readFileSync(full, 'utf8');
 
-      // Modify the sourceRoot in the source map for production
-      sourceMap.sourceRoot = `https://sources.2sxc.org/${pjson.version}/dist/ng-edit/`;
+  // replace only the final sourceMappingURL comment
+  js = js.replace(
+    /\/\/# sourceMappingURL=(.+)$/m,
+    (_, mapFile) => `//# sourceMappingURL=${PUBLIC_PATH}${mapFile}`
+  );
 
-      // Write the updated source map back
-      fs.writeFileSync(filePath, JSON.stringify(sourceMap, null, 2), 'utf8');
-    }
-  });
-}
+  fs.writeFileSync(full, js, 'utf8');
+  console.log(`patched ${file}`);
+});
 
-// Run the source map modification
-modifySourceMaps();
+
