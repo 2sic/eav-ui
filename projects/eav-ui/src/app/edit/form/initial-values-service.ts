@@ -15,10 +15,10 @@ const logSpecs = {
 
 @Injectable()
 export class InitialValuesService {
-  log = classLog({InitialValuesService}, logSpecs);
-  
+  log = classLog({ InitialValuesService }, logSpecs);
+
   #cache: Record<string, ItemValuesOfLanguage> = {};
-  
+
   constructor(
     private formConfig: FormConfigService,
     private itemService: ItemService,
@@ -33,6 +33,7 @@ export class InitialValuesService {
   preserve(): void {
     const l = this.log.fnIf('preserve');
     const items = this.itemService.getMany(this.formConfig.config.itemGuids);
+
     const allLangs = this.languageService.getAll().map(language => language.NameId);
     const language = this.formConfig.language();
     if (!allLangs.includes(language.current))
@@ -42,10 +43,15 @@ export class InitialValuesService {
 
     for (const item of items)
       for (const currentLang of allLangs) {
+    
+        console.log('2dg InitialValuesService - item.Entity.Attributes', item.Entity.Attributes);
+
         const formValues = new EntityReader(currentLang, language.primary).currentValues(item.Entity.Attributes);
+        console.log('2dg InitialValuesService - formValues', formValues);
         const cacheKey = this.#cacheKey(item.Entity.Guid, currentLang);
         this.#cache[cacheKey] = formValues;
       }
+
   }
 
   #cacheKey(entityGuid: string, language: string): string {

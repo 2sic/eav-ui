@@ -45,6 +45,8 @@ export class ItemsRequestRestoreHelper {
       else
         contents = null
 
+      
+
       return {
         ...item,
         Header: {

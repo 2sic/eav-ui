@@ -1,9 +1,13 @@
 import { EavField } from './eav-field';
 
 interface TestFieldCreate {
+  /** Test Name */
   title: string;
+  /** Dto representation */
   dto: Record<string, string>;
+  /** Type of the field */
   type: string;
+  /** EavField representation */
   field: EavField<string>;
 }
 

@@ -1,4 +1,4 @@
-import { EavDimension } from '.';
+import { EavDimension, EavTypeMap, EavTypeName } from '.';
 import { EavValuesDto } from '../json-format-v1';
 
 export class EavFieldValue<T> {
@@ -17,4 +17,17 @@ export class EavFieldValue<T> {
       });
     return values;
   }
+
+
+  static createEavFieldValue<K extends EavTypeName>(
+    value: EavTypeMap[K],
+  ): EavFieldValue<EavTypeMap[K]>[] {
+    return [
+      {
+        value,
+        dimensions: [{ dimCode: '*' }],
+      },
+    ];
+  }
+
 }

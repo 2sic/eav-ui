@@ -1,6 +1,16 @@
-import { EavEntity, EavEntityAttributes, EavFieldValue, EavType } from '.';
+import { EavEntity, EavEntityAttributes, EavFieldValue } from '.';
 import { ItemIdentifierHeader } from '../../../../shared/models/edit-form.model';
-import { EavEntityBundleDto } from '../json-format-v1';
+import { EavEntityBundleDto, EavEntityDto } from '../json-format-v1';
+
+export type EavTypeMap = {
+  String: string;
+  Number: number;
+  Boolean: boolean;
+  Object: Record<string, unknown>;
+  Unknown: unknown;
+};
+
+export type EavTypeName = keyof EavTypeMap;
 
 export class EavItem {
   Entity: EavEntity;
@@ -8,8 +18,9 @@ export class EavItem {
 
   static anyToEav(entityBundleDto: EavEntityBundleDto): EavItem {
     const override = entityBundleDto.Header.ClientData?.overrideContents;
+
     return override
-      ? EavItem.objToEav(override, entityBundleDto.Header)
+      ? EavItem.objToEav(override, entityBundleDto.Header, entityBundleDto.Entity)
       : EavItem.dtoToEav(entityBundleDto);
   }
 
@@ -21,73 +32,59 @@ export class EavItem {
       Header: entityBundleDto.Header,
     };
 
-    console.log('2dg to EAV dto ', item);
-
     return item;
   }
 
-  // TODO: @2dg - this is where the data will be converted
-  static objToEav(override: Record<string, unknown>, header: ItemIdentifierHeader ): EavItem /*EavItem*/ {
+  /**
+ * Converts a raw override object and DTOs into a complete EavItem.
+ */
+  static objToEav(
+    override: Record<string, unknown>,
+    header: ItemIdentifierHeader,
+    entityDto: EavEntityDto
+  ): EavItem {
     const attributes: EavEntityAttributes = {};
-    for (const key in override) {
-      // console.log('2dg key', key, 'value', override[key]);
 
-      const type = this.getType(override[key]);
+    // Build attributes by converting each override key-value pair
+    for (const key in override) {
+      const value = override[key];
+      const type = this.getType(value);
 
       attributes[key] = {
-        Values: this.createEavFieldValue(override[key], type),
+        Values: EavFieldValue.createEavFieldValue(
+          value as EavTypeMap[EavTypeName], // TS braucht Hilfe hier
+        ),
         Type: type,
       };
-
     }
 
-    console.log('2dg attributes', attributes);
+    // Convert DTO to entity and assign new attributes
+    const entity = EavEntity.dtoToEav(entityDto);
+    entity.Attributes = attributes;
 
-    const entity: EavEntity = {
-      Attributes: attributes,
-      Guid: 'generated-guid',
-      Id: 0,
-      Owner: 'system',
-      Type: this.getEavType('Default'), // ?? 
-      Version: 1,
-      Metadata: [],
-      For: null,
-    };
-
-    const item: EavItem = {
+    // Combine entity and header into EavItem
+    return {
       Entity: entity,
       Header: header,
     };
-
-    console.log('2dg to EAV obj', item);
-
-    return item;
   }
 
+  /**
+   * Determines the EAV data type based on the JS type of the value.
+   */
   static getType(value: unknown): string {
-    if (typeof value === 'string') return 'String';
-    if (typeof value === 'number') return 'Number';
-    if (typeof value === 'boolean') return 'Boolean';
-    return 'Unknown';
-  }
-
-  static createEavFieldValue(value: unknown, type: string): EavFieldValue<any>[] {
-    const eavFieldValue: EavFieldValue<any> = {
-      value: value,
-      dimensions: null,
-    };
-
-    return [eavFieldValue];
+    switch (typeof value) {
+      case 'string':
+        return 'String';
+      case 'number':
+        return 'Number';
+      case 'boolean':
+        return 'Boolean';
+      default:
+        return 'Unknown';
+    }
   }
 
 
-  static getEavType(name: string): EavType {
-    return {
-      Description: `${name} description`,
-      Id: `${name}-id`,
-      Name: name,
-      Title: `${name} title`,
-    };
-  }
 
 }

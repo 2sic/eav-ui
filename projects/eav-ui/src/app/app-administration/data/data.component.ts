@@ -41,22 +41,22 @@ import { DataFieldsComponent } from './data-fields/data-fields.component';
 import { DataItemsComponent } from './data-items/data-items.component';
 
 @Component({
-    selector: 'app-data',
-    templateUrl: './data.component.html',
-    styleUrls: ['./data.component.scss'],
-    imports: [
-        MatDialogActions,
-        MatFormFieldModule,
-        MatSelectModule,
-        FormsModule,
-        MatOptionModule,
-        MatButtonModule,
-        MatIconModule,
-        RouterOutlet,
-        SxcGridModule,
-        DragAndDropDirective,
-        TippyDirective,
-    ]
+  selector: 'app-data',
+  templateUrl: './data.component.html',
+  styleUrls: ['./data.component.scss'],
+  imports: [
+    MatDialogActions,
+    MatFormFieldModule,
+    MatSelectModule,
+    FormsModule,
+    MatOptionModule,
+    MatButtonModule,
+    MatIconModule,
+    RouterOutlet,
+    SxcGridModule,
+    DragAndDropDirective,
+    TippyDirective,
+  ]
 })
 export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
 
@@ -242,6 +242,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
           cellRenderer: DataItemsComponent,
           cellRendererParams: ({
             addItemUrl: (ct) => this.#urlTo(`edit/${this.#routeAddItem(ct)}`),
+            addItemUrlTest: (ct) => this.#urlTo(`edit/${this.#routeAddItem(ct)}`),
             itemsUrl: (ct) => this.#urlTo(`items/${ct.NameId}`),
           } satisfies DataItemsComponent["params"]),
         },
@@ -302,11 +303,13 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
     return '#' + this.#dialogRouter.urlSubRoute(url);
   }
 
+
   #routeAddItem(contentType: ContentType): string {
     return convertFormToUrl({
       items: [EditPrep.newFromType(contentType.NameId)],
     } satisfies EditForm);
   }
+
 
   urlToNewContentType(): string {
     return this.#urlTo('add');
