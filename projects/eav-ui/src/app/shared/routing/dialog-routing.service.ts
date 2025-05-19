@@ -63,8 +63,22 @@ export class DialogRoutingService extends ServiceBase {
     const l = this.log.fnIf('doOnDialogClosed');
     this.subscriptions.add(
       this.childDialogClosed$().subscribe((data: unknown) => {
+        console.log("2dg doOnDialogClosed-OLD data", { data });
         l.a('Dialog closed', { data });
         return callback();
+      })
+    );
+    l.end();
+  }
+
+  public doOnDialogClosedTest2dg(callback: (data: any) => void) {
+    console.log('2dg doOnDialogClosedTest2dg-NEW', { callback });
+    const l = this.log.fnIf('doOnDialogClosed');
+    this.subscriptions.add(
+      this.childDialogClosedTest2dg$().subscribe(({ state }) => {
+        console.log("2dg doOnDialogClosedTest2dg-New data", { state });
+        l.a('Dialog closed', { state });
+        callback(state);
       })
     );
     l.end();
@@ -97,19 +111,38 @@ export class DialogRoutingService extends ServiceBase {
   childDialogClosed$() {
     return this.router.events.pipe(
       filter(event => event instanceof NavigationEnd),
-      tap(event => {
-        const l = this.log.fn("childDialogClosed$", {
-          event,
-          firstChild: this.route.snapshot.firstChild,
-          snapShot: this.route.snapshot,
-        });
-        l.a('NavigationEnd', { event });
-        l.end();
-      }),
       startWith(!!this.route.snapshot.firstChild),
       map(() => !!this.route.snapshot.firstChild),
       pairwise(),
       filter(([hadChildBefore, hasChildNow]) => hadChildBefore && !hasChildNow),
     )
+  }
+
+  childDialogClosedTest2dg$() {
+    return this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd),
+      tap(event => {
+        const l = this.log.fn("childDialogClosed$", {
+          event,
+          firstChild: this.route.snapshot.firstChild,
+          snapShot: this.route.snapshot,
+          state: this.router.getCurrentNavigation()?.extras.state,
+        });
+        l.a('NavigationEnd', { event });
+        l.end();
+      }),
+      startWith(!!this.route.snapshot.firstChild),
+      map(() => ({
+        hasChildNow: !!this.route.snapshot.firstChild,
+        state: this.router.getCurrentNavigation()?.extras.state,
+      })),
+      pairwise(),
+      filter(([prev, curr]) => prev.hasChildNow && !curr.hasChildNow),
+      map(([prev, curr]) => ({
+        hadChildBefore: prev.hasChildNow,
+        hasChildNow: curr.hasChildNow,
+        state: curr.state
+      }))
+    );
   }
 }

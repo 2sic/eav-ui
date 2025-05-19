@@ -86,6 +86,13 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
     this.#refreshScopeOnRouteChange();
     this.#dialogRouter.doOnDialogClosed(() => this.#fetchContentTypes());
 
+    // TODO: @2dg Testing
+    this.#dialogRouter.doOnDialogClosedTest2dg((data) => {
+      console.log('Dialog returned this data:', data);
+    });
+
+
+
     this.#dialogConfigSvc.getCurrent$().subscribe(data => {
       this.enablePermissions = data.Context.Enable.AppPermissions;
     });

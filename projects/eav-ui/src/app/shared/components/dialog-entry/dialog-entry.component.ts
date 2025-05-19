@@ -18,9 +18,9 @@ declare const window: EavWindow;
   ]
 })
 export class DialogEntryComponent implements OnInit, OnDestroy {
-  
-  log = classLog({DialogEntryComponent});
-  
+
+  log = classLog({ DialogEntryComponent });
+
   #dialogData: Record<string, any>;
   #dialog: MatDialogRef<any>;
 
@@ -43,7 +43,7 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
     if (dialogConfig == null)
       throw new Error(`Could not find config for dialog. Did you forget to add DialogConfig to route data?`);
 
-    l.a('Open dialog: '+ dialogConfig.name, { id: this.context.id, context: this.context });
+    l.a('Open dialog: ' + dialogConfig.name, { id: this.context.id, context: this.context });
 
     dialogConfig.getComponent(this.injector).then(component => {
       // spm Workaround for "feature" where you can't open new dialog while last one is still opening
@@ -84,9 +84,15 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
     });
 
     this.#dialog.afterClosed().subscribe((data: any) => {
+
+      console.log("2dg data", data)
+
       this.log.a('Dialog was closed - name:' + dialogConfig.name, { data });
 
       const navRes = data as NavigateFormResult;
+
+      console.log("2dg navRes", navRes.navigateUrl)
+
       if (navRes?.navigateUrl != null) {
         this.router.navigate([navRes.navigateUrl]);
         return;
@@ -99,10 +105,12 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
         return;
       }
 
-      if (this.route.snapshot.url.length > 0)
+      if (this.route.snapshot.url.length > 0) {
         this.router.navigate(['./'], { relativeTo: this.route.parent, state: data });
-      else
+      }
+      else {
         this.router.navigate(['./'], { relativeTo: this.route.parent.parent, state: data });
+      }
     });
 
     this.changeDetectorRef.markForCheck();
