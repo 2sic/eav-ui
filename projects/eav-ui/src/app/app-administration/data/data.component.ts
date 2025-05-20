@@ -84,13 +84,19 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.#fetchScopes();
     this.#refreshScopeOnRouteChange();
-    this.#dialogRouter.doOnDialogClosed(() => this.#fetchContentTypes());
+    // this.#dialogRouter.doOnDialogClosedWithData(() => {
+    //   this.#fetchContentTypes()
+    // });
 
     // TODO: @2dg Testing
-    this.#dialogRouter.doOnDialogClosedTest2dg((data) => {
-      console.log('Dialog returned this data:', data);
+    this.#dialogRouter.doOnDialogClosedWithData((data) => {
+      // Local Save, data not refreshing from Server 
+      if (data.objData) {
+        console.log('2dg Dialog closed with data', { data });
+      } else { // Refresh from Server
+        this.#fetchContentTypes()
+      }
     });
-
 
 
     this.#dialogConfigSvc.getCurrent$().subscribe(data => {

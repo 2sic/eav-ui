@@ -258,21 +258,21 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
       };
       l.a('SAVE FORM DATA:', { saveFormData });
 
+      // If the Dialog is Local Save Mode 
       if (this.isReturnValueMode) {
-
         const itemsEavObj: Record<string, unknown>[] = this.#getValidEavItems(eavItem =>
           EavItem.eavToObj(eavItem)
         );
-        console.log('2dg itemsEavObj', itemsEavObj);
-        this.dialog.close(itemsEavObj)
-        // Return the data to the caller via Route state
-        // const urlBefore = this.router.url.split('/edit')[0];
-        // console.log('2dg urlBeforeEdit', urlBefore);
 
-        // this.router.navigate([urlBefore], { state: { dialogValue: itemsEavObj } satisfies ClosingDialogState<Record<string, unknown>[]> });
+        // Need to be clearly define for the route state (if objData in the state, data will be not refresh from the server) 
+        const wrappedData = {
+          objData: itemsEavObj
+        };
+
+        this.dialog.close(wrappedData)
         return
       }
-    
+
       // Saving 
       this.snackBar.open(this.translate.instant('Message.Saving'), null, { duration: 2000 });
 

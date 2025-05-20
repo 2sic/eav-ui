@@ -71,7 +71,7 @@ export class DialogRoutingService extends ServiceBase {
     l.end();
   }
 
-  public doOnDialogClosedTest2dg(callback: (data: any) => void) {
+  public doOnDialogClosedWithData(callback: (data: any) => void) {
     console.log('2dg doOnDialogClosedTest2dg-NEW', { callback });
     const l = this.log.fnIf('doOnDialogClosed');
     this.subscriptions.add(
