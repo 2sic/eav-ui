@@ -3,7 +3,9 @@
 
   @if (configurationContentType) {
     <a class="eav-grid-action-button default-link highlight" matRipple tippy="Open Settings" (click)="openSettings()">
-      <mat-icon>settings</mat-icon>
+      <mat-icon  matBadge="2" matBadgePosition="below after" matBadgeColor="accent" matBadgeSize="small">settings</mat-icon>
+
+      <!-- [matBadgeHidden]="!value" -->
     </a>
   }
 </div>

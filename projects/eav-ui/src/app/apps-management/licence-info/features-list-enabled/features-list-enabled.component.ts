@@ -1,15 +1,18 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component, inject } from '@angular/core';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 import { DialogRoutingState } from '../../../edit/dialog/dialogRouteState.model';
 import { Feature } from '../../../features/models';
+import { TippyDirective } from '../../../shared/directives/tippy.directive';
 
 @Component({
   selector: 'app-features-list-settings',
   templateUrl: './features-list-enabled.component.html',
-  imports: [MatIconModule]
+  imports: [MatIconModule, MatBadgeModule, MatRippleModule, TippyDirective]
 })
 export class FeaturesListEnabledComponent implements ICellRendererAngularComp {
   router = inject(Router);
@@ -37,9 +40,13 @@ export class FeaturesListEnabledComponent implements ICellRendererAngularComp {
 
   openSettings() {
 
+    console.log('openSettings', this.contentType);
+
     const overrideContents = this.params.overrideContents.map(item => ({
       ...item,
       guid: this.contentType.guid,
+      enabled: this.contentType.enabledInConfiguration,
+      // enabled: this.contentType.en
     }));
 
     // Raw URL string, e.g. '#/2/v2/381/...'

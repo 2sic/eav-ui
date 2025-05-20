@@ -11,7 +11,7 @@ import { Router, RouterOutlet } from '@angular/router';
 import { catchError, forkJoin, map, Observable, of, share, startWith, Subject, switchMap, tap, timer } from 'rxjs';
 import { transient } from '../../../../../core';
 import { ExpirationExtension } from '../../features/expiration-extension';
-import { FeatureConfig, FeatureState } from '../../features/models';
+import { FeatureState } from '../../features/models';
 import { Feature } from '../../features/models/feature.model';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
@@ -117,8 +117,9 @@ export class LicenseInfoComponent implements OnInit {
       // Local Save, data not refreshing from Server 
       // Save the Data in Json, same als Toggle 
       if (data.objData) {
-        const featuresConfig: FeatureConfig = {
+        const featuresConfig: FeatureState = {
           FeatureGuid: data.objData.guid,
+          Enabled: data.objData.enabled,
           Configuration: {
             LoadAppDetails: data.objData.LoadAppDetails,
             LoadAppSummary: data.objData.LoadAppSummary,
@@ -127,7 +128,15 @@ export class LicenseInfoComponent implements OnInit {
           }
         }
 
-        this.#featuresConfigSvc.saveConfigs([featuresConfig]).subscribe({});
+        this.#featuresConfigSvc.saveFeatures([featuresConfig]).subscribe(() => {
+
+          // Test, refresh Data from Server
+          setTimeout(() => {
+            this.#refreshLicenses$.next()
+            this.#refreshLicensesSig.set(this.#refreshLicensesSig() + 1);
+          }, 4000)
+
+        });
 
       } else { // Refresh from Server
         this.#refreshLicenses$.next()
@@ -260,7 +269,7 @@ export class LicenseInfoComponent implements OnInit {
 
           headerName: 'Enabled',
           field: 'isEnabled',
-          width: 80,
+          width: 90,
           cellClass: 'no-outline',
           headerClass: 'dense',
           sortable: true,
@@ -284,7 +293,7 @@ export class LicenseInfoComponent implements OnInit {
           headerName: 'Expiration',
           field: 'ExpMessage',
           sortable: false,
-          width: 120,
+          width: 110,
           tooltipValueGetter: (p) => (p.data as Feature & ExpirationExtension)?.expiration,
         },
         {
