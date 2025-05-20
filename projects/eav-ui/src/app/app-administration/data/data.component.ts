@@ -84,20 +84,9 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.#fetchScopes();
     this.#refreshScopeOnRouteChange();
-    // this.#dialogRouter.doOnDialogClosedWithData(() => {
-    //   this.#fetchContentTypes()
-    // });
-
-    // TODO: @2dg Testing
-    this.#dialogRouter.doOnDialogClosedWithData((data) => {
-      // Local Save, data not refreshing from Server 
-      if (data.objData) {
-        console.log('2dg Dialog closed with data', { data });
-      } else { // Refresh from Server
-        this.#fetchContentTypes()
-      }
+    this.#dialogRouter.doOnDialogClosedWithData(() => {
+      this.#fetchContentTypes()
     });
-
 
     this.#dialogConfigSvc.getCurrent$().subscribe(data => {
       this.enablePermissions = data.Context.Enable.AppPermissions;
@@ -257,7 +246,6 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
           cellRenderer: DataItemsComponent,
           cellRendererParams: ({
             addItemUrl: (ct) => this.#urlTo(`edit/${this.#routeAddItem(ct)}`),
-            addItemUrlTest: (ct) => this.#urlTo(`edit/${this.#routeAddItem(ct)}`),
             itemsUrl: (ct) => this.#urlTo(`items/${ct.NameId}`),
           } satisfies DataItemsComponent["params"]),
         },

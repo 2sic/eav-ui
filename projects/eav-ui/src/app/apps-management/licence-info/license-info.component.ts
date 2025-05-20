@@ -297,11 +297,9 @@ export class LicenseInfoComponent implements OnInit {
   }
 
   #urlTo(url: string) {
-    console.log("2dg urlTo", url);
     return '#' + this.#dialogRouter.urlSubRoute(url);
   }
 
-  // TODO: @2dg Type from 
   #routeAddItem(contentType: Feature): string {
     return convertFormToUrl({
       items: [EditPrep.newFromType(contentType.configurationContentType)],

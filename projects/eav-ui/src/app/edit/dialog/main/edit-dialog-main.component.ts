@@ -268,7 +268,6 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
         const wrappedData = {
           objData: itemsEavObj[0]
         };
-
         this.dialog.close(wrappedData)
         return
       }

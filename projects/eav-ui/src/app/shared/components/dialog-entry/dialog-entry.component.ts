@@ -84,15 +84,9 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
     });
 
     this.#dialog.afterClosed().subscribe((data: any) => {
-
-      console.log("2dg data", data)
-
       this.log.a('Dialog was closed - name:' + dialogConfig.name, { data });
 
       const navRes = data as NavigateFormResult;
-
-      console.log("2dg navRes", navRes.navigateUrl)
-
       if (navRes?.navigateUrl != null) {
         this.router.navigate([navRes.navigateUrl]);
         return;
@@ -105,12 +99,10 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
         return;
       }
 
-      if (this.route.snapshot.url.length > 0) {
+      if (this.route.snapshot.url.length > 0)
         this.router.navigate(['./'], { relativeTo: this.route.parent, state: data });
-      }
-      else {
+      else
         this.router.navigate(['./'], { relativeTo: this.route.parent.parent, state: data });
-      }
     });
 
     this.changeDetectorRef.markForCheck();

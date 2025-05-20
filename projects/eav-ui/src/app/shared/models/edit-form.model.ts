@@ -5,7 +5,6 @@ import { eavConstants, MetadataKeyDefinition, MetadataKeyTypes } from '../consta
 import { EditInfo } from './edit-info';
 
 // 2dm - new helper to reduce code when creating item identifiers
-// TODO: @2dg - try to replace as many direct object creations with this as possible
 export class EditPrep {
 
   static editId(id: number): ItemEditIdentifier {
@@ -32,7 +31,6 @@ export class EditPrep {
     }
   }
 
-  // TODO: @2dg - TO FIND where this should be used, look for "For:" in the code
   static newMetadata<T>(key: T, typeName: string, keyDef: MetadataKeyDefinition, singleton?: boolean): ItemAddIdentifier {
     return {
       ContentTypeName: typeName,
@@ -137,7 +135,6 @@ export interface ItemIdentifierShared {
   ClientData?: {
     fields?: string;
     parameters?: Record<string, unknown>;
-    // TODO: @2dg - this is where the temporary contents are stored
     overrideContents?: Record<string, unknown>;
     [key: string]: unknown;
   };

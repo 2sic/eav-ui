@@ -28,7 +28,6 @@ export class FeaturesListEnabledComponent implements ICellRendererAngularComp {
     this.value = params.value;
     this.configurationContentType = params.data.configurationContentType;
     this.contentType = params.data;
-    console.log("2dg params", params.data)
   }
 
   refresh(params?: any): boolean {
@@ -42,8 +41,6 @@ export class FeaturesListEnabledComponent implements ICellRendererAngularComp {
       ...item,
       guid: this.contentType.guid,
     }));
-
-    console.log("2dg overrideContents", overrideContents);
 
     // Raw URL string, e.g. '#/2/v2/381/...'
     const rawUrl = this.params.addItemUrlTest(this.contentType);
