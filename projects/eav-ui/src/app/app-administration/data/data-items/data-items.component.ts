@@ -37,6 +37,7 @@ export class DataItemsComponent implements ICellRendererAngularComp {
   agInit(params: ICellRendererParams & DataItemsComponent["params"]): void {
     this.params = params;
     this.contentType = params.data;
+    console.log("2dg params",params.data)
     this.value = params.value;
   }
 

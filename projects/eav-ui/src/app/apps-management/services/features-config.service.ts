@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { FeatureState } from '../../features/models';
+import { FeatureConfig, FeatureState } from '../../features/models';
 import { FileUploadMessageTypes, FileUploadResult } from '../../shared/components/file-upload-dialog';
 import { HttpServiceBase } from '../../shared/services/http-service-base';
 import { License, LicenseDownloadInfo, LicenseUploadInfo } from '../models/license.model';
@@ -15,6 +15,10 @@ export class FeaturesConfigService extends HttpServiceBase {
 
   saveFeatures(featuresStates: FeatureState[]): Observable<null> {
     return this.http.post<null>(this.apiUrl(webApiFeatSaveNew), featuresStates);
+  }
+
+  saveConfigs(featuresConfig: FeatureConfig[]): Observable<null> {
+    return this.http.post<null>(this.apiUrl(webApiFeatSaveNew), featuresConfig);
   }
 
   getLicenses(): Observable<License[]> { // Use new Signals

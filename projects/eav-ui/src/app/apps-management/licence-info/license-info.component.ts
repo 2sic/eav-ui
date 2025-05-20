@@ -11,7 +11,7 @@ import { Router, RouterOutlet } from '@angular/router';
 import { catchError, forkJoin, map, Observable, of, share, startWith, Subject, switchMap, tap, timer } from 'rxjs';
 import { transient } from '../../../../../core';
 import { ExpirationExtension } from '../../features/expiration-extension';
-import { FeatureState } from '../../features/models';
+import { FeatureConfig, FeatureState } from '../../features/models';
 import { Feature } from '../../features/models/feature.model';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
@@ -19,6 +19,8 @@ import { IdFieldComponent } from '../../shared/components/id-field/id-field.comp
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
+import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
+import { EditForm, EditPrep } from '../../shared/models/edit-form.model';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { GlobalConfigService } from '../../shared/services/global-config.service';
@@ -105,9 +107,32 @@ export class LicenseInfoComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.#dialogRouter.doOnDialogClosed(() => {
-      this.#refreshLicenses$.next()
-      this.#refreshLicensesSig.set(this.#refreshLicensesSig() + 1);
+    // @2dg - old
+    // this.#dialogRouter.doOnDialogClosed(() => {
+    //   this.#refreshLicenses$.next()
+    //   this.#refreshLicensesSig.set(this.#refreshLicensesSig() + 1);
+    // });
+
+    this.#dialogRouter.doOnDialogClosedWithData((data) => {
+      // Local Save, data not refreshing from Server 
+      // Save the Data in Json, same als Toggle 
+      if (data.objData) {
+        const featuresConfig: FeatureConfig = {
+          FeatureGuid: data.objData.guid,
+          Configuration: {
+            LoadAppDetails: data.objData.LoadAppDetails,
+            LoadAppSummary: data.objData.LoadAppSummary,
+            LoadSystemDataDetails: data.objData.LoadSystemDataDetails,
+            LoadSystemDataSummary: data.objData.LoadSystemDataSummary,
+          }
+        }
+
+        this.#featuresConfigSvc.saveConfigs([featuresConfig]).subscribe({});
+
+      } else { // Refresh from Server
+        this.#refreshLicenses$.next()
+        this.#refreshLicensesSig.set(this.#refreshLicensesSig() + 1);
+      }
     });
 
     this.viewModel$ =
@@ -231,6 +256,12 @@ export class LicenseInfoComponent implements OnInit {
           sortable: true,
           filter: BooleanFilterComponent,
           cellRenderer: FeaturesListEnabledComponent,
+          cellRendererParams: ({
+            addItemUrlTest: (ct) => this.#urlTo(`edit/${this.#routeAddItem(ct)}`),
+            overrideContents: [
+              { LoadAppDetails: true },
+            ],
+          } satisfies FeaturesListEnabledComponent["params"]),
         },
         {
           ...ColumnDefinitions.TextNarrow,
@@ -264,6 +295,20 @@ export class LicenseInfoComponent implements OnInit {
     };
     return gridOptions;
   }
+
+  #urlTo(url: string) {
+    console.log("2dg urlTo", url);
+    return '#' + this.#dialogRouter.urlSubRoute(url);
+  }
+
+  // TODO: @2dg Type from 
+  #routeAddItem(contentType: Feature): string {
+    return convertFormToUrl({
+      items: [EditPrep.newFromType(contentType.configurationContentType)],
+    } satisfies EditForm);
+  }
+
+
 }
 
 interface LicenseInfoViewModel {

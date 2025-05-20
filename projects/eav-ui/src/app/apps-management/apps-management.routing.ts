@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { EditRoutesUnderAppsList } from '../edit/edit.routing';
+import { EditRoutes, EditRoutesUnderAppsList } from '../edit/edit.routing';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
 import { addAppFromFolderDialog } from './add-app-from-folder/add-app-from-folder-dialog.config';
 import { appsManagementDialog } from './apps-management-nav/apps-management-dialog.config';
@@ -66,6 +66,9 @@ export const appsManagementRoutes: Routes = [
         path: 'license',
         loadComponent: () => import('./licence-info/license-info.component').then(m => m.LicenseInfoComponent),
         data: { title: 'Extensions / Features', breadcrumb: 'Extensions and Features' },
+        children: [
+          ...EditRoutes,
+        ]
       },
     ],
   },

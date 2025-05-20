@@ -7,7 +7,7 @@ import { transient } from '../../../../../core';
 import { FeaturesService } from '../../features/features.service';
 import { Update$2sxcEnvFromContext } from '../../shared/helpers/update-env-vars-from-dialog-settings.helper';
 import { convertUrlToForm } from '../../shared/helpers/url-prep.helper';
-import { classLogEnabled } from '../../shared/logging';
+import { classLog } from '../../shared/logging';
 import { ItemAddIdentifier } from '../../shared/models/edit-form.model';
 import { UserLanguageService } from '../../shared/services/user-language.service';
 import { DialogRoutingState } from '../dialog/dialogRouteState.model';
@@ -34,8 +34,8 @@ import { ItemsRequestRestoreHelper } from './items-request-restore-helper';
 const logSpecs = {
   all: false,
   constructor: false,
-  fetchFormData: true,
-  dataFromDialog: true,
+  fetchFormData: false,
+  dataFromDialog: false,
   importLoadedData: false,
   initMissingValues: false,
 };
@@ -49,7 +49,7 @@ const logSpecs = {
 @Injectable()
 export class EditInitializerService {
 
-  log = classLogEnabled({ EditInitializerService }, logSpecs);
+  log = classLog({ EditInitializerService }, logSpecs);
 
   public loaded = signal(false);
 
@@ -111,8 +111,6 @@ export class EditInitializerService {
           ...responseRaw,
           Items: dataHelper.mergeResponse(responseRaw.Items),
         };
-
-        console.log('2dg fetchFormData - with isLocalSave', { response });
 
         l.a('fetchFormData - after remix', { response });
 

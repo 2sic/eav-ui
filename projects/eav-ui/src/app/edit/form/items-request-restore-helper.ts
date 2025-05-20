@@ -1,4 +1,4 @@
-import { classLogEnabled } from '../../shared/logging';
+import { classLog } from '../../shared/logging';
 import { ItemIdentifier } from '../../shared/models/edit-form.model';
 import { EavEntityBundleDto } from '../shared/models/json-format-v1';
 
@@ -8,7 +8,7 @@ import { EavEntityBundleDto } from '../shared/models/json-format-v1';
  */
 export class ItemsRequestRestoreHelper {
 
-  log = classLogEnabled({ ItemsRequestRestoreHelper }, { all: false, mergeResponse: true });
+  log = classLog({ ItemsRequestRestoreHelper }, { all: false, mergeResponse: true });
 
   constructor(items: ItemIdentifier[], private contentsOverride?: Record<string, unknown>[]) {
     // Add ClientId index number to request,

@@ -139,7 +139,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
 
     // Dialog Data 
     this.isReturnValueMode = dialogData?.returnValue;
-    console.log('2dg DialogData', this.isReturnValueMode);
+    console.log('2dg DialogData', dialogData);
 
     // Initialize default user preferences for footer show/hide
     const pref = this.#prefManager;
@@ -266,7 +266,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
 
         // Need to be clearly define for the route state (if objData in the state, data will be not refresh from the server) 
         const wrappedData = {
-          objData: itemsEavObj
+          objData: itemsEavObj[0]
         };
 
         this.dialog.close(wrappedData)
