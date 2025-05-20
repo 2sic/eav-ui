@@ -5,7 +5,6 @@ import { addAppFromFolderDialog } from './add-app-from-folder/add-app-from-folde
 import { appsManagementDialog } from './apps-management-nav/apps-management-dialog.config';
 import { createAppDialog } from './create-app/create-app-dialog.config';
 import { createInheritedAppDialog } from './create-inherited-app/create-inherited-app-dialog.config';
-import { protoTypeAppDialog } from './licence-info/proto-type-form/prototype-app-dialog.config';
 
 export const appsManagementRoutes: Routes = [
   {
@@ -67,13 +66,6 @@ export const appsManagementRoutes: Routes = [
         path: 'license',
         loadComponent: () => import('./licence-info/license-info.component').then(m => m.LicenseInfoComponent),
         data: { title: 'Extensions / Features', breadcrumb: 'Extensions and Features' },
-        children: [
-          {
-            path: 'protoTypeAppDialog',
-            component: DialogEntryComponent,
-            data: { dialog: protoTypeAppDialog }
-          },
-        ],
       },
     ],
   },
