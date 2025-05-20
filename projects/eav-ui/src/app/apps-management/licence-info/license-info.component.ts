@@ -129,13 +129,11 @@ export class LicenseInfoComponent implements OnInit {
         }
 
         this.#featuresConfigSvc.saveFeatures([featuresConfig]).subscribe(() => {
-
           // Test, refresh Data from Server
           setTimeout(() => {
             this.#refreshLicenses$.next()
             this.#refreshLicensesSig.set(this.#refreshLicensesSig() + 1);
-          }, 4000)
-
+          }, 100)
         });
 
       } else { // Refresh from Server
@@ -277,9 +275,6 @@ export class LicenseInfoComponent implements OnInit {
           cellRenderer: FeaturesListEnabledComponent,
           cellRendererParams: ({
             addItemUrlTest: (ct) => this.#urlTo(`edit/${this.#routeAddItem(ct)}`),
-            overrideContents: [
-              { LoadAppDetails: true },
-            ],
           } satisfies FeaturesListEnabledComponent["params"]),
         },
         {

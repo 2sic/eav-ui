@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { DialogRoutingState } from '../../../edit/dialog/dialogRouteState.model';
 import { Feature } from '../../../features/models';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
+import { OverrideContentsLogData } from './feature-list.model';
 
 @Component({
   selector: 'app-features-list-settings',
@@ -18,10 +19,11 @@ export class FeaturesListEnabledComponent implements ICellRendererAngularComp {
   router = inject(Router);
   configurationContentType: string | undefined;
   contentType: Feature | undefined;
+  badgeValue: number
+  configurationData: OverrideContentsLogData; // TYPE
 
   public params: {
     addItemUrlTest(contentType: Feature): string;
-    overrideContents: Record<string, unknown>[];
   };
 
   value: boolean;
@@ -31,6 +33,10 @@ export class FeaturesListEnabledComponent implements ICellRendererAngularComp {
     this.value = params.value;
     this.configurationContentType = params.data.configurationContentType;
     this.contentType = params.data;
+
+    this.configurationData = params.data?.configuration;
+    this.badgeValue = this.configurationData && Object.keys(this.configurationData).length > 0 ? 1 : 0;
+
   }
 
   refresh(params?: any): boolean {
@@ -39,15 +45,16 @@ export class FeaturesListEnabledComponent implements ICellRendererAngularComp {
 
 
   openSettings() {
-
-    console.log('openSettings', this.contentType);
-
-    const overrideContents = this.params.overrideContents.map(item => ({
-      ...item,
-      guid: this.contentType.guid,
-      enabled: this.contentType.enabledInConfiguration,
-      // enabled: this.contentType.en
-    }));
+    const overrideContents: Record<string, unknown>[] = [
+      {
+        guid: this.contentType.guid,
+        enabled: this.contentType.enabledInConfiguration,
+        LoadAppDetails: this.configurationData.LoadAppDetails,
+        LoadAppSummary: this.configurationData.LoadAppSummary,
+        LoadSystemDataDetails: this.configurationData.LoadSystemDataDetails,
+        LoadSystemDataSummary: this.configurationData.LoadSystemDataSummary,
+      }
+    ];
 
     // Raw URL string, e.g. '#/2/v2/381/...'
     const rawUrl = this.params.addItemUrlTest(this.contentType);

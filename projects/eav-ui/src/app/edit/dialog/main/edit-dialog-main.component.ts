@@ -335,7 +335,6 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
     return this.formBuilderRefs
       .map(ref => {
         const eavItem = this.itemService.get(ref.entityGuid());
-        console.log('2dg eavItem', eavItem);
 
         const isValid = this.formsStateService.getFormValid(eavItem.Entity.Guid);
         if (!isValid) return null;
