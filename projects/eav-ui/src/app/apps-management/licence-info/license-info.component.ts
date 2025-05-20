@@ -292,7 +292,8 @@ export class LicenseInfoComponent implements OnInit {
           tooltipValueGetter: (p) => (p.data as Feature & ExpirationExtension)?.expiration,
         },
         {
-          ...ColumnDefinitions.ActionsPinnedRight7,
+          ...ColumnDefinitions.ActionsPinnedRight6,
+          cellClass: 'no-outline',
           headerName: '',
           field: 'enabledInConfiguration',
           cellRenderer: FeaturesStatusComponent,
