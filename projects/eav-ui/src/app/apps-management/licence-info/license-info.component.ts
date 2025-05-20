@@ -213,6 +213,16 @@ export class LicenseInfoComponent implements OnInit {
     });
   }
 
+  #urlTo(url: string) {
+    return '#' + this.#dialogRouter.urlSubRoute(url);
+  }
+
+  #routeAddItem(contentType: Feature): string {
+    return convertFormToUrl({
+      items: [EditPrep.newFromType(contentType.configurationContentType)],
+    } satisfies EditForm);
+  }
+
   // Note: @SDV
   // I think this should serve as a good example of how to use the grid
   // 1. eg. with cellDefaults and similar initial objects containing most commonly used options here
@@ -295,18 +305,6 @@ export class LicenseInfoComponent implements OnInit {
     };
     return gridOptions;
   }
-
-  #urlTo(url: string) {
-    return '#' + this.#dialogRouter.urlSubRoute(url);
-  }
-
-  #routeAddItem(contentType: Feature): string {
-    return convertFormToUrl({
-      items: [EditPrep.newFromType(contentType.configurationContentType)],
-    } satisfies EditForm);
-  }
-
-
 }
 
 interface LicenseInfoViewModel {
