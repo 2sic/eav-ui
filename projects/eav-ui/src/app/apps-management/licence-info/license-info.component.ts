@@ -241,7 +241,7 @@ export class LicenseInfoComponent implements OnInit {
       ...defaultGridOptions,
       columnDefs: [
         {
-          ...ColumnDefinitions.ItemsText,
+          ...ColumnDefinitions.TextWideMin100,
           headerName: 'ID',
           field: 'nameId',
           width: 200,
@@ -255,10 +255,10 @@ export class LicenseInfoComponent implements OnInit {
           })(),
         },
         {
-          ...ColumnDefinitions.TextWideFlex3,
+          ...ColumnDefinitions.TextWideMin100,
           headerName: 'Name',
           field: 'name',
-          cellClass: 'primary-action highlight'.split(' '),
+          cellClass: [...'primary-action highlight'.split(' '), 'no-outline'],
           onCellClicked: (params) => {
             this.#showFeatureDetails(params.data as Feature);
           },
@@ -267,7 +267,7 @@ export class LicenseInfoComponent implements OnInit {
 
           headerName: 'Enabled',
           field: 'isEnabled',
-          width: 90,
+          width: 82,
           cellClass: 'no-outline',
           headerClass: 'dense',
           sortable: true,
@@ -288,7 +288,7 @@ export class LicenseInfoComponent implements OnInit {
           headerName: 'Expiration',
           field: 'ExpMessage',
           sortable: false,
-          width: 110,
+          width: 80,
           tooltipValueGetter: (p) => (p.data as Feature & ExpirationExtension)?.expiration,
         },
         {

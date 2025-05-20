@@ -59,7 +59,6 @@ export class DialogRoutingService extends ServiceBase {
    * Preferred way to register a callback, since the caller doesn't need to worry about subscriptions.
    */
   public doOnDialogClosed(callback: () => void) {
-    console.log('2dg doOnDialogClosed-OLD', { callback });
     const l = this.log.fnIf('doOnDialogClosed');
     this.subscriptions.add(
       this.childDialogClosed$().subscribe((data: unknown) => {
@@ -71,7 +70,6 @@ export class DialogRoutingService extends ServiceBase {
   }
 
   public doOnDialogClosedWithData(callback: (data: any) => void) {
-    console.log('2dg doOnDialogClosedTest2dg-NEW', { callback });
     const l = this.log.fnIf('doOnDialogClosed');
     this.subscriptions.add(
       this.childDialogClosedTest2dg$().subscribe(({ state }) => {
