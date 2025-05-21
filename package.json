@@ -111,7 +111,7 @@
     "karma-jasmine-html-reporter": "^2.1.0",
     "monaco-editor": "^0.52.2",
     "papaparse": "^5.5.2",
-    "prettier": "3.3.3",
+    "prettier": "^3.5.3",
     "raw-loader": "^4.0.2",
     "rxjs-tslint": "^0.1.8",
     "source-map-explorer": "^2.5.3",
