@@ -209,7 +209,6 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
 
       // If the new title is different from the old title, update it
       if (newTitle !== oldTitle) {
-        console.log('newTitle', newTitle); // Log the new title
         this.#titleSvc.setTitle(newTitle);  // Set the new title in the title service
       }
     });
