@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterOutlet } from '@angular/router';
-import { BreadcrumbComponent } from 'xng-breadcrumb';
+import { BreadcrumbComponent, BreadcrumbItemDirective } from 'xng-breadcrumb';
 import { transient } from '../../../../../core';
 import { NavItemListComponent } from '../../shared/components/nav-item-list/nav-item-list.component';
 import { ToggleDebugDirective } from '../../shared/directives/toggle-debug.directive';
@@ -26,6 +26,7 @@ import { AppAdminMenu } from './app-admin-menu';
         MatToolbarModule,
         MatIconModule,
         BreadcrumbComponent,
+        BreadcrumbItemDirective,
         MatButtonModule,
         MatSidenavModule,
         RouterOutlet,
