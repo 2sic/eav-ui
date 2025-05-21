@@ -139,8 +139,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
 
     // Dialog Data 
     this.isReturnValueMode = dialogData?.returnValue;
-    console.log('2dg DialogData', dialogData);
-
+    
     // Initialize default user preferences for footer show/hide
     const pref = this.#prefManager;
     if (pref.data().pinned == null)
