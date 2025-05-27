@@ -2,7 +2,7 @@ import { classLogEnabled } from '../../shared/logging';
 import { DataSource, PipelineModel, StreamWire } from '../models';
 import { findDefByType, getEndpointLabel } from './datasource.helpers';
 import { EndpointDefinitionsService } from './endpoint-definitions';
-import { JsPlumbConnection, JsPlumbInstance } from './jsplumb.models';
+import { JsPlumbConnection, JsPlumbInstanceOld } from './jsplumb.models';
 import { guidOfDomId } from './plumber-constants';
 
 const logSpecs = {
@@ -16,7 +16,7 @@ export class ConnectionsManager {
   bulkDelete: boolean = false;
 
   constructor(
-    private instance: JsPlumbInstance, 
+    private instance: JsPlumbInstanceOld, 
     private pipelineModel: PipelineModel,
     private dataSources: DataSource[],
     private endpointsSvc: EndpointDefinitionsService,

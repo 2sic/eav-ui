@@ -51,7 +51,6 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
   #plumber: Plumber;
   #scriptLoaded$ = new BehaviorSubject(false);
 
-
   #queryDefinitionSvc = transient(QueryDefinitionService);
 
   showDataSourceDetails = computed(() => {

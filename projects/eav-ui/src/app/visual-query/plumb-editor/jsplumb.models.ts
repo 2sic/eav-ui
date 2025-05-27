@@ -41,7 +41,7 @@ export interface JsPlumbOverlay {
   // getStyle(): { [key: string]: string };
 }
 
-export interface JsPlumbInstance {
+export interface JsPlumbInstanceOld {
 
   reset(): void;
   unbindContainer(): void;

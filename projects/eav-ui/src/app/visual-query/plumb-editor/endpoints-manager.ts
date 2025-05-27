@@ -4,7 +4,7 @@ import { PipelineDataSource } from '../models';
 import { ConnectionsManager } from './connections-manager';
 import { findDefByType, getEndpointLabel } from './datasource.helpers';
 import { EndpointDefinitionsService } from './endpoint-definitions';
-import { JsPlumbEndpoint, JsPlumbInstance } from './jsplumb.models';
+import { JsPlumbEndpoint, JsPlumbInstanceOld } from './jsplumb.models';
 import { domIdOfGuid } from './plumber-constants';
 import { QueryDataManager } from './query-data-manager';
 
@@ -25,7 +25,7 @@ export class EndpointsManager {
   log = classLogEnabled({EndpointsManager}, logSpecs);
 
   constructor(
-    private instance: JsPlumbInstance, 
+    private instance: JsPlumbInstanceOld, 
     private endpointDefs: EndpointDefinitionsService,
     private connections: ConnectionsManager,
     private queryData: QueryDataManager,

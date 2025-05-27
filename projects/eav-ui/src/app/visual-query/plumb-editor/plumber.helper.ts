@@ -7,7 +7,7 @@ import { EndpointDefinitionsService } from './endpoint-definitions';
 import { EndpointLabelRenameParts } from './endpoint-label-rename.model';
 import { EndpointsManager } from './endpoints-manager';
 import { JsPlumbInstanceManager } from './jsplumb-instance-manager';
-import { JsPlumbEndpoint, JsPlumbInstance } from './jsplumb.models';
+import { JsPlumbEndpoint, JsPlumbInstanceOld } from './jsplumb.models';
 import { LinesDecorator } from './lines-decorator';
 import { domIdOfGuid, guidOfDomId } from './plumber-constants';
 import { QueryDataManager } from './query-data-manager';
@@ -26,7 +26,7 @@ export class Plumber {
 
   log = classLogEnabled({Plumber}, logSpecs);
 
-  #instance: JsPlumbInstance;
+  #instance: JsPlumbInstanceOld;
 
   lineColors = new ConnectionLineColors();
 
@@ -54,7 +54,7 @@ export class Plumber {
     this.queryData = new QueryDataManager(this.jsPlumbRoot, this.query, this.dataSources);
     this.#endpointDefs = new EndpointDefinitionsService(query, { ...renameDialogParts, onConnectionsChanged: () => this.#onConnectionsChanged() });
     this.#instanceManager = new JsPlumbInstanceManager(this.jsPlumbRoot, this.lineColors);
-    this.#instance = this.#instanceManager.instance;
+    this.#instance = this.#instanceManager.instanceOld;
     // requires instance, so must happen after that
     this.lineDecorator = new LinesDecorator(this.#instance, this.query, this.onDebugStream);
     this.connections = new ConnectionsManager(this.#instance, this.query, this.dataSources, this.#endpointDefs, () => this.#onConnectionsChanged());

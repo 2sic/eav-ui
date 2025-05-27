@@ -1,6 +1,6 @@
 import { classLogEnabled } from '../../shared/logging';
 import { DataSourceSet } from './data-source-set.model';
-import { JsPlumbInstance } from './jsplumb.models';
+import { JsPlumbInstanceOld } from './jsplumb.models';
 import { domIdOfGuid } from './plumber-constants';
 import { Plumber } from './plumber.helper';
 import { QueryDataManager } from './query-data-manager';
@@ -18,7 +18,7 @@ export class WiringsHelper {
 
   constructor(
     private plumber: Plumber,
-    private instance: JsPlumbInstance,
+    private instance: JsPlumbInstanceOld,
     private queryData: QueryDataManager,
   ) { }
 

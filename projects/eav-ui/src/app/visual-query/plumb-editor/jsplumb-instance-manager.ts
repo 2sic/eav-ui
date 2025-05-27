@@ -1,15 +1,41 @@
+import { BrowserJsPlumbInstance, newInstance } from '@jsplumb/browser-ui';
 import { WindowWithJsPlumb } from '../window';
 import { ConnectionLineColors } from './connection-line-colors';
-import { JsPlumbInstance } from './jsplumb.models';
+import { JsPlumbInstanceOld } from './jsplumb.models';
 
 declare const window: WindowWithJsPlumb;
 
 export class JsPlumbInstanceManager {
   constructor(private jsPlumbRoot: HTMLElement, private lineColors: ConnectionLineColors) {
-    this.instance = window.jsPlumb.getInstance(this.createInstanceDefaults(this.jsPlumbRoot));
+    // New
+    this.instance = newInstance(this.createBrowserJsPlumbDefaults(this.jsPlumbRoot));
+    console.log('New Instance created', this.instance);
+
+    // Old
+    this.instanceOld = window.jsPlumb.getInstance(this.createInstanceDefaults(this.jsPlumbRoot));
+    console.log('Old Instance  created', this.instanceOld);
   }
 
-  instance: JsPlumbInstance;
+  // New
+  instance: BrowserJsPlumbInstance;
+
+  createBrowserJsPlumbDefaults(container: HTMLElement) {
+    const defaults = {
+      container: container,
+      Connector: ['Bezier', { curviness: 70 }],
+      PaintStyle: this.lineColors.nextLinePaintStyle('dummy'),
+      HoverPaintStyle: {
+        stroke: '#216477',
+        strokeWidth: 4,
+        outlineStroke: 'white',
+        outlineWidth: 2,
+      },
+    };
+    return defaults;
+  }
+
+  // Old
+  instanceOld: JsPlumbInstanceOld;
 
   createInstanceDefaults(container: HTMLElement) {
     const defaults = {
@@ -27,8 +53,8 @@ export class JsPlumbInstanceManager {
   }
 
   destroy() {
-    this.instance.reset();
-    this.instance.unbindContainer();
-    this.instance = null;
+    this.instanceOld.reset();
+    this.instanceOld.unbindContainer();
+    this.instanceOld = null;
   }
 }
