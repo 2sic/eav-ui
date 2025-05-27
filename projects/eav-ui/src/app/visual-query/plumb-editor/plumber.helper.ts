@@ -1,3 +1,4 @@
+import { BrowserJsPlumbInstance } from '@jsplumb/browser-ui';
 import { classLogEnabled } from '../../shared/logging';
 import { DataSource, PipelineModel, PipelineResultStream, VisualDesignerData } from '../models';
 import { ConnectionLineColors } from './connection-line-colors';
@@ -26,7 +27,10 @@ export class Plumber {
 
   log = classLogEnabled({Plumber}, logSpecs);
 
-  #instance: JsPlumbInstanceOld;
+  // New
+  #instance: BrowserJsPlumbInstance;
+  // Old
+  #instanceOld: JsPlumbInstanceOld;
 
   lineColors = new ConnectionLineColors();
 
@@ -54,23 +58,28 @@ export class Plumber {
     this.queryData = new QueryDataManager(this.jsPlumbRoot, this.query, this.dataSources);
     this.#endpointDefs = new EndpointDefinitionsService(query, { ...renameDialogParts, onConnectionsChanged: () => this.#onConnectionsChanged() });
     this.#instanceManager = new JsPlumbInstanceManager(this.jsPlumbRoot, this.lineColors);
-    this.#instance = this.#instanceManager.instanceOld;
+    // New
+    this.#instance = this.#instanceManager.instance;
+    console.log("2pp instance", this.#instance);
+    // Old
+    this.#instanceOld = this.#instanceManager.instanceOld;
+    console.log("2pp instanceOld", this.#instanceOld);
     // requires instance, so must happen after that
-    this.lineDecorator = new LinesDecorator(this.#instance, this.query, this.onDebugStream);
-    this.connections = new ConnectionsManager(this.#instance, this.query, this.dataSources, this.#endpointDefs, () => this.#onConnectionsChanged());
-    this.endpoints = new EndpointsManager(this.#instance, this.#endpointDefs, this.connections, this.queryData);
+    this.lineDecorator = new LinesDecorator(this.#instanceOld, this.query, this.onDebugStream);
+    this.connections = new ConnectionsManager(this.#instanceOld, this.query, this.dataSources, this.#endpointDefs, () => this.#onConnectionsChanged());
+    this.endpoints = new EndpointsManager(this.#instanceOld, this.#endpointDefs, this.connections, this.queryData);
 
     // Suspend drawing while initializing
-    this.#instance.batch(() => {
+    this.#instanceOld.batch(() => {
       this.#initDomDataSources();
-      new WiringsHelper(this, this.#instance, this.queryData).initWirings();
+      new WiringsHelper(this, this.#instanceOld, this.queryData).initWirings();
       this.connections.setup();
       this.endpoints.updateAfterChanges();
     });
 
     // spm NOTE: repaint after initial paint fixes:
     // Error: <svg> attribute width: Expected length, "-Infinity".
-    this.#instance.repaintEverything();
+    this.#instanceOld.repaintEverything();
 
   }
   #onConnectionsChanged() {
@@ -87,15 +96,15 @@ export class Plumber {
   removeAllEndpoints(pipelineDataSourceGuid: string) {
     const elementId = domIdOfGuid(pipelineDataSourceGuid);
     this.connections.bulkDelete = true;
-    this.#instance.batch(() => {
-      this.#instance.selectEndpoints({ element: elementId }).delete();
+    this.#instanceOld.batch(() => {
+      this.#instanceOld.selectEndpoints({ element: elementId }).delete();
     });
     this.connections.bulkDelete = false;
   }
 
   getStreamsOut() {
     const streamsOut: string[] = [];
-    this.#instance
+    this.#instanceOld
       .selectEndpoints({ target: domIdOfGuid('Out') })
       .each((endpoint: JsPlumbEndpoint) => {
         streamsOut.push(getEndpointLabel(endpoint));
@@ -114,7 +123,7 @@ export class Plumber {
 
       if (this.query.Pipeline.AllowEdit) {
         // WARNING! Must happen before instance.makeSource()
-        this.#instance.draggable(domDs, {
+        this.#instanceOld.draggable(domDs, {
           grid: [20, 20],
           stop: (event: { el: HTMLElement, finalPos: number[] }) => {
             const element: HTMLElement = event.el;
@@ -138,7 +147,7 @@ export class Plumber {
       // Add dynamic Out-Endpoints (if .OutMode is not static)
       if (dataSource.OutMode != 'static') {
         const dynOut = this.#endpointDefs.buildSourceDef(queryDs.EntityGuid);
-        this.#instance.makeSource(domDs, dynOut, { filter: '.add-endpoint' });
+        this.#instanceOld.makeSource(domDs, dynOut, { filter: '.add-endpoint' });
       }
 
       // Add In-Endpoints from Definition
@@ -152,12 +161,10 @@ export class Plumber {
       if (dataSource.In) {
         const targetEndpointUnlimited = this.#endpointDefs.buildTargetDef(queryDs.EntityGuid);
         targetEndpointUnlimited.maxConnections = -1;
-        this.#instance.makeTarget(domDs, targetEndpointUnlimited);
+        this.#instanceOld.makeTarget(domDs, targetEndpointUnlimited);
       }
 
     }
     l.end();
   }
-
-
 }

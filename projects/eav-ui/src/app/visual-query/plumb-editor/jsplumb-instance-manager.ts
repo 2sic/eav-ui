@@ -9,16 +9,13 @@ export class JsPlumbInstanceManager {
   constructor(private jsPlumbRoot: HTMLElement, private lineColors: ConnectionLineColors) {
     // New
     this.instance = newInstance(this.createBrowserJsPlumbDefaults(this.jsPlumbRoot));
-    console.log('New Instance created', this.instance);
 
     // Old
     this.instanceOld = window.jsPlumb.getInstance(this.createInstanceDefaults(this.jsPlumbRoot));
-    console.log('Old Instance  created', this.instanceOld);
   }
 
   // New
   instance: BrowserJsPlumbInstance;
-
   createBrowserJsPlumbDefaults(container: HTMLElement) {
     const defaults = {
       container: container,
@@ -36,7 +33,6 @@ export class JsPlumbInstanceManager {
 
   // Old
   instanceOld: JsPlumbInstanceOld;
-
   createInstanceDefaults(container: HTMLElement) {
     const defaults = {
       Container: container,
@@ -53,6 +49,12 @@ export class JsPlumbInstanceManager {
   }
 
   destroy() {
+    // New
+    this.instance.reset();
+    this.instance.unbind();
+    this.instance = null;
+    
+    // Old
     this.instanceOld.reset();
     this.instanceOld.unbindContainer();
     this.instanceOld = null;
