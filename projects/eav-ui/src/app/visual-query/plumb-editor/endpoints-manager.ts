@@ -25,7 +25,7 @@ export class EndpointsManager {
   log = classLogEnabled({EndpointsManager}, logSpecs);
 
   constructor(
-    private instance: JsPlumbInstanceOld, 
+    private instanceOld: JsPlumbInstanceOld, 
     private endpointDefs: EndpointDefinitionsService,
     private connections: ConnectionsManager,
     private queryData: QueryDataManager,
@@ -65,7 +65,7 @@ export class EndpointsManager {
     };
 
     // Add endpoint and add label and css in case it must be angled
-    const endpoint = this.instance.addEndpoint(domDataSource, model, params);
+    const endpoint = this.instanceOld.addEndpoint(domDataSource, model, params);
     const overlay = endpoint.getOverlay('endpointLabel');
     overlay.setLabel(endpointInfo.name);
     l.end("end", {overlay});
@@ -100,7 +100,7 @@ export class EndpointsManager {
     this.#reOrientAllLabels();
 
     this.#isDoingUpdate = false;
-    this.instance.repaintEverything();
+    this.instanceOld.repaintEverything();
     l.end('done');
   }
 
@@ -138,7 +138,7 @@ export class EndpointsManager {
         if (p.point.canvas.classList.contains('mirror-in')) {
           const hasConnection = p.point.connections?.length;
           if (!hasConnection)
-            this.instance.deleteEndpoint(p.point);
+            this.instanceOld.deleteEndpoint(p.point);
         }
       });
     });  
@@ -148,7 +148,7 @@ export class EndpointsManager {
    * Ugly way to get the endpoints by type in/out. Not elegant, but don't know a better method ATM
    */
   #getEndpointsByType(guid: string) {
-    const endpoints = this.instance.selectEndpoints({ element: domIdOfGuid(guid) });
+    const endpoints = this.instanceOld.selectEndpoints({ element: domIdOfGuid(guid) });
     const inPoints: JsPlumbEndpoint[] = [];
     const outPoints: JsPlumbEndpoint[] = [];
     endpoints.each((ep: JsPlumbEndpoint) => (ep.isTarget ? inPoints : outPoints).push(ep));
@@ -185,8 +185,8 @@ export class EndpointsManager {
   removeAllEndpoints(dataSourceGuid: string) {
     const elementId = domIdOfGuid(dataSourceGuid);
     this.connections.bulkDelete = true;
-    this.instance.batch(() => {
-      this.instance.selectEndpoints({ element: elementId }).delete();
+    this.instanceOld.batch(() => {
+      this.instanceOld.selectEndpoints({ element: elementId }).delete();
     });
     this.connections.bulkDelete = false;
   }

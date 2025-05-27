@@ -1,3 +1,4 @@
+import { BrowserJsPlumbInstance } from '@jsplumb/browser-ui';
 import { classLogEnabled } from '../../shared/logging';
 import { PipelineModel, PipelineResult, PipelineResultStream } from '../models';
 import { JsPlumbEndpoint, JsPlumbInstanceOld } from './jsplumb.models';
@@ -12,7 +13,8 @@ export class LinesDecorator {
   log = classLogEnabled({LinesDecorator}, logSpecs);
 
   constructor(
-    private instance: JsPlumbInstanceOld, 
+    private instance: BrowserJsPlumbInstance,
+    private instanceOld: JsPlumbInstanceOld,
     private pipelineModel: PipelineModel,
     private onDebugStream: (stream: PipelineResultStream) => void,
   ) { }
@@ -33,7 +35,7 @@ export class LinesDecorator {
       const fromUuid = outDomId + '_out_' + stream.SourceOut;
       const toUuid = inDomId + '_in_' + stream.TargetIn;
 
-      const endpoint: JsPlumbEndpoint = this.instance.getEndpoint(fromUuid);
+      const endpoint: JsPlumbEndpoint = this.instanceOld.getEndpoint(fromUuid);
       endpoint?.connections
         ?.filter((connection) => connection.endpoints[1].getUuid() === toUuid)
         ?.forEach((connection) => {

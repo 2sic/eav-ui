@@ -27,9 +27,7 @@ export class Plumber {
 
   log = classLogEnabled({Plumber}, logSpecs);
 
-  // New
   #instance: BrowserJsPlumbInstance;
-  // Old
   #instanceOld: JsPlumbInstanceOld;
 
   lineColors = new ConnectionLineColors();
@@ -58,14 +56,10 @@ export class Plumber {
     this.queryData = new QueryDataManager(this.jsPlumbRoot, this.query, this.dataSources);
     this.#endpointDefs = new EndpointDefinitionsService(query, { ...renameDialogParts, onConnectionsChanged: () => this.#onConnectionsChanged() });
     this.#instanceManager = new JsPlumbInstanceManager(this.jsPlumbRoot, this.lineColors);
-    // New
     this.#instance = this.#instanceManager.instance;
-    console.log("2pp instance", this.#instance);
-    // Old
     this.#instanceOld = this.#instanceManager.instanceOld;
-    console.log("2pp instanceOld", this.#instanceOld);
     // requires instance, so must happen after that
-    this.lineDecorator = new LinesDecorator(this.#instanceOld, this.query, this.onDebugStream);
+    this.lineDecorator = new LinesDecorator(this.#instance, this.#instanceOld, this.query, this.onDebugStream);
     this.connections = new ConnectionsManager(this.#instanceOld, this.query, this.dataSources, this.#endpointDefs, () => this.#onConnectionsChanged());
     this.endpoints = new EndpointsManager(this.#instanceOld, this.#endpointDefs, this.connections, this.queryData);
 

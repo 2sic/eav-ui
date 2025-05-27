@@ -16,7 +16,7 @@ export class ConnectionsManager {
   bulkDelete: boolean = false;
 
   constructor(
-    private instance: JsPlumbInstanceOld, 
+    private instanceOld: JsPlumbInstanceOld, 
     private pipelineModel: PipelineModel,
     private dataSources: DataSource[],
     private endpointsSvc: EndpointDefinitionsService,
@@ -27,12 +27,12 @@ export class ConnectionsManager {
    * Handle attach/detach of connections
    */
   setup(): void{
-    this.instance.bind('connectionDetached', (info: JsPlumbConnection) => this.handleDetached(info));
-    this.instance.bind('connection', (info: JsPlumbConnection) => this.handleAttached(info));
+    this.instanceOld.bind('connectionDetached', (info: JsPlumbConnection) => this.handleDetached(info));
+    this.instanceOld.bind('connection', (info: JsPlumbConnection) => this.handleAttached(info));
   }
 
   getAll(): StreamWire[] {
-    const connectionInfos: StreamWire[] = this.instance.getAllConnections()
+    const connectionInfos: StreamWire[] = this.instanceOld.getAllConnections()
       .map((connection: JsPlumbConnection) => ({
         From: guidOfDomId(connection.sourceId),
         Out: getEndpointLabel(connection.endpoints[0]),
@@ -57,7 +57,7 @@ export class ConnectionsManager {
     const label = getEndpointLabel(info.targetEndpoint);
     const isDynamic = !dataSource.In.some(name => this.endpointsSvc.getInfo(name, false).name === label);
     if (isDynamic)
-      this.instance.deleteEndpoint(info.targetEndpoint);
+      this.instanceOld.deleteEndpoint(info.targetEndpoint);
     setTimeout(() => this.onConnectionsChanged());
     l.end('done');
   }
@@ -67,14 +67,14 @@ export class ConnectionsManager {
     // This seems to handle a special detach case, but ATM 2025-04-03 I can't see where it would ever hit
     if (info.sourceId === info.targetId) {
       setTimeout(() => {
-        this.instance.deleteConnection(info.connection, { fireEvent: false });
+        this.instanceOld.deleteConnection(info.connection, { fireEvent: false });
         setTimeout(() => this.onConnectionsChanged());
       });
       return l.end('self-connection, will delete and exit');
     }
     const targetEndpointOverlay = info.targetEndpoint.getOverlay('endpointLabel');
     const targetLabel = targetEndpointOverlay.getLabel();
-    const endpoints = this.instance.getEndpoints(info.target.id);
+    const endpoints = this.instanceOld.getEndpoints(info.target.id);
     const targetHasSameLabel = endpoints.some(ep => {
       const label = getEndpointLabel(ep);
       return label === targetLabel && info.targetEndpoint.id !== ep.id && ep.canvas.classList.contains('targetEndpoint');
