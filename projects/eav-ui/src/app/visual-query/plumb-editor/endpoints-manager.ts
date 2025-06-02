@@ -1,3 +1,4 @@
+import { BrowserJsPlumbInstance } from '@jsplumb/browser-ui';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { classLogEnabled } from '../../shared/logging';
 import { PipelineDataSource } from '../models';
@@ -22,16 +23,17 @@ const endPointsWhereWeRotate = 3;
 const maxLabelLengthToRotate = 30;
 
 export class EndpointsManager {
-  log = classLogEnabled({EndpointsManager}, logSpecs);
+  log = classLogEnabled({ EndpointsManager }, logSpecs);
 
   constructor(
-    private instanceOld: JsPlumbInstanceOld, 
+    private instance: BrowserJsPlumbInstance,
+    private instanceOld: JsPlumbInstanceOld,
     private endpointDefs: EndpointDefinitionsService,
     private connections: ConnectionsManager,
     private queryData: QueryDataManager,
   ) { }
 
-  
+
   addEndpoint(domDataSource: HTMLElement, endpointName: string, isIn: boolean, queryDs: PipelineDataSource, extraStyling?: string) {
     const l = this.log.fnIfInList('addEndpoint', 'fields', endpointName, { endpointName, isIn, queryDs });
     const dsDefinition = findDefByType(this.queryData.dataSources, queryDs.PartAssemblyAndType);
@@ -65,10 +67,18 @@ export class EndpointsManager {
     };
 
     // Add endpoint and add label and css in case it must be angled
-    const endpoint = this.instanceOld.addEndpoint(domDataSource, model, params);
+    const endpointOld = this.instanceOld.addEndpoint(domDataSource, model, params);
+    const endpoint = this.instance.addEndpoint(domDataSource, {
+      uuid: uuid,
+      parameters: params,
+    });
+    console.log("2pp - endpoint", endpoint, "endpointOld", endpointOld);
+    const overlayOld = endpointOld.getOverlay('endpointLabel');
     const overlay = endpoint.getOverlay('endpointLabel');
-    overlay.setLabel(endpointInfo.name);
-    l.end("end", {overlay});
+
+    console.log("2pp - overlay", overlay, "overlayOld", overlayOld);
+    overlayOld.setLabel(endpointInfo.name);
+    l.end("end", { overlayOld });
   }
 
   /**
@@ -79,8 +89,8 @@ export class EndpointsManager {
   #wireHasConnection(domDataSource: HTMLElement, name: string, isIn: boolean = true) {
     const l = this.log.fnIf('wireHasConnection', { domDataSource, name, isIn });
     const wireExists = this.queryData.query.Pipeline.StreamWiring?.some(wire => isIn
-        ? domIdOfGuid(wire.To) === domDataSource.id && wire.In === name
-        : domIdOfGuid(wire.From) === domDataSource.id && wire.Out === name
+      ? domIdOfGuid(wire.To) === domDataSource.id && wire.In === name
+      : domIdOfGuid(wire.From) === domDataSource.id && wire.Out === name
     );
     return l.r(wireExists, 'wireExists' + wireExists);
   }
@@ -108,18 +118,18 @@ export class EndpointsManager {
     const l = this.log.fnIf('mirrorEndpoints', { query: this.queryData.query });
     // Get all parts which have mirror-in mode
     const partsMirrorIn = this.queryData.query.DataSources
-    .map(ds => {
-      const def = findDefByType(this.queryData.dataSources, ds.PartAssemblyAndType);
-      return (def.OutMode === 'mirror-in') ? { def, guid: ds.EntityGuid } : null;
-    })
-    .filter(d => d !== null);
-    
+      .map(ds => {
+        const def = findDefByType(this.queryData.dataSources, ds.PartAssemblyAndType);
+        return (def.OutMode === 'mirror-in') ? { def, guid: ds.EntityGuid } : null;
+      })
+      .filter(d => d !== null);
+
     // Check if we need to mirror anything
     partsMirrorIn.forEach(ds => {
       const { inPoints, outPoints } = this.#getEndpointsByType(ds.guid);
 
-      const inLabels = inPoints.map(p => ({ point: p, label: getEndpointLabel(p)}));
-      const outLabels = outPoints.map(p => ({ point: p, label: getEndpointLabel(p)}));
+      const inLabels = inPoints.map(p => ({ point: p, label: getEndpointLabel(p) }));
+      const outLabels = outPoints.map(p => ({ point: p, label: getEndpointLabel(p) }));
 
       // Get mismatching lists of out and in
       const missingInOut = inLabels.filter(inP => !outLabels.some(outP => outP.label === inP.label));
@@ -141,7 +151,7 @@ export class EndpointsManager {
             this.instanceOld.deleteEndpoint(p.point);
         }
       });
-    });  
+    });
   }
 
   /**
@@ -163,7 +173,7 @@ export class EndpointsManager {
     const parts = this.queryData.query.DataSources.map(ds => ds.EntityGuid);
 
     parts.forEach(guid => {
-      const {inPoints, outPoints} = this.#getEndpointsByType(guid);
+      const { inPoints, outPoints } = this.#getEndpointsByType(guid);
       this.#reorientListOfEndpoints(inPoints);
       this.#reorientListOfEndpoints(outPoints);
     });
@@ -181,7 +191,6 @@ export class EndpointsManager {
       endpoints.forEach(element => element.removeClass('angled'));
   }
 
-
   removeAllEndpoints(dataSourceGuid: string) {
     const elementId = domIdOfGuid(dataSourceGuid);
     this.connections.bulkDelete = true;
@@ -190,6 +199,4 @@ export class EndpointsManager {
     });
     this.connections.bulkDelete = false;
   }
-
 }
-

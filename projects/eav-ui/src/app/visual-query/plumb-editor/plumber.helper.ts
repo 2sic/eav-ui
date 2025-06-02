@@ -61,7 +61,7 @@ export class Plumber {
     // requires instance, so must happen after that
     this.lineDecorator = new LinesDecorator(this.#instance, this.#instanceOld, this.query, this.onDebugStream);
     this.connections = new ConnectionsManager(this.#instanceOld, this.query, this.dataSources, this.#endpointDefs, () => this.#onConnectionsChanged());
-    this.endpoints = new EndpointsManager(this.#instanceOld, this.#endpointDefs, this.connections, this.queryData);
+    this.endpoints = new EndpointsManager(this.#instance, this.#instanceOld, this.#endpointDefs, this.connections, this.queryData);
 
     // Suspend drawing while initializing
     this.#instanceOld.batch(() => {
