@@ -1,4 +1,4 @@
-import { BrowserJsPlumbInstance } from '@jsplumb/browser-ui';
+import { BrowserJsPlumbInstance, LabelOverlay } from '@jsplumb/browser-ui';
 import { classLogEnabled } from '../../shared/logging';
 import { PipelineModel, PipelineResult, PipelineResultStream } from '../models';
 import { JsPlumbEndpoint, JsPlumbInstanceOld } from './jsplumb.models';
@@ -10,7 +10,7 @@ const logSpecs = {
 }
 
 export class LinesDecorator {
-  log = classLogEnabled({LinesDecorator}, logSpecs);
+  log = classLogEnabled({ LinesDecorator }, logSpecs);
 
   constructor(
     private instance: BrowserJsPlumbInstance,
@@ -18,7 +18,7 @@ export class LinesDecorator {
     private pipelineModel: PipelineModel,
     private onDebugStream: (stream: PipelineResultStream) => void,
   ) { }
-  
+
   /**
    * Updates the entity count on each connections based on the provided result.
    * @param result PipelineResult
@@ -35,8 +35,8 @@ export class LinesDecorator {
       const fromUuid = outDomId + '_out_' + stream.SourceOut;
       const toUuid = inDomId + '_in_' + stream.TargetIn;
 
-      const endpoint: JsPlumbEndpoint = this.instanceOld.getEndpoint(fromUuid);
-      endpoint?.connections
+      const oldEndpoint: JsPlumbEndpoint = this.instanceOld.getEndpoint(fromUuid);
+      oldEndpoint?.connections
         ?.filter((connection) => connection.endpoints[1].getUuid() === toUuid)
         ?.forEach((connection) => {
           const label = !stream.Error ? stream.Count.toString() : '';
@@ -52,6 +52,30 @@ export class LinesDecorator {
               },
             },
           });
+        });
+        
+      const endpoint = this.instance.getEndpoint(fromUuid);
+
+      endpoint?.connections
+        ?.filter((connection) => connection.endpoints[1].getUuid() === toUuid)
+        ?.forEach((connection) => {
+          const labelText = !stream.Error ? stream.Count.toString() : '';
+          const cssClass = 'streamEntitiesCount ' + (!stream.Error ? '' : 'streamEntitiesError');
+
+          connection.setLabel(new LabelOverlay(
+            this.instance,
+            connection,
+            {
+              label: labelText,
+              cssClass,
+              events: {
+                click: () => {
+                  if (!this.pipelineModel.Pipeline.AllowEdit) return;
+                  this.onDebugStream(stream);
+                },
+              },
+            }
+          ));
         });
     });
     l.end('done');

@@ -25,7 +25,7 @@ const logSpecs = {
 
 export class Plumber {
 
-  log = classLogEnabled({Plumber}, logSpecs);
+  log = classLogEnabled({ Plumber }, logSpecs);
 
   #instance: BrowserJsPlumbInstance;
   #instanceOld: JsPlumbInstanceOld;
@@ -66,7 +66,7 @@ export class Plumber {
     // Suspend drawing while initializing
     this.#instanceOld.batch(() => {
       this.#initDomDataSources();
-      new WiringsHelper(this, this.#instanceOld, this.queryData).initWirings();
+      new WiringsHelper(this, this.#instance, this.#instanceOld, this.queryData).initWirings();
       this.connections.setup();
       this.endpoints.updateAfterChanges();
     });
@@ -136,6 +136,11 @@ export class Plumber {
       l.a('dataSource.Out', { outCount, out: dataSource.Out });
       dataSource.Out?.forEach(name => {
         this.endpoints.addEndpoint(domDs, name, false, queryDs);
+        
+        this.#instance.addEndpoint(domDs, {
+          uuid: `${domDs.id}_out_${name}`,
+          parameters: { name, isIn: true, dataSource: queryDs },
+        });
       });
 
       // Add dynamic Out-Endpoints (if .OutMode is not static)
@@ -149,6 +154,11 @@ export class Plumber {
       l.a('dataSource.In', { inCount, in: dataSource.In });
       dataSource.In?.forEach(name => {
         this.endpoints.addEndpoint(domDs, name, true, queryDs);
+
+        this.#instance.addEndpoint(domDs, {
+          uuid: `${domDs.id}_in_${name}`,
+          parameters: { name, isIn: true, dataSource: queryDs },
+        });
       });
 
       // Make DataSource a Target for new Endpoints (if .In is an Array)
