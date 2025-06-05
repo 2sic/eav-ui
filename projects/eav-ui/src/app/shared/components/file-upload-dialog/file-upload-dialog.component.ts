@@ -164,6 +164,7 @@ This takes about 10 seconds per package. Don't reload the page while it's instal
         this.changeDetectorRef.detectChanges(); //without this spinner is not removed (though window reload will remove it anyway) so maybe unnecessary
         alert('Installation complete 👍');
         window.top.location.reload();
+        this.closeDialog(true);
       }),
       catchError(error => {
         console.error('Error: ', error);
