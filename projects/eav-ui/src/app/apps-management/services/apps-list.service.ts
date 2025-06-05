@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { HttpServiceBase } from '../../shared/services/http-service-base';
 import { App, PendingApp } from '../models/app.model';
 
@@ -39,6 +40,11 @@ export class AppsListService extends HttpServiceBase {
         ...(templateId != null && { templateId }),
       },
     });
+  }
+
+  createTemplate(url: string, newName:string) {
+    const encodedName = encodeURIComponent(newName);
+     return <Observable<any>>this.http.post(`sys/install/RemotePackage?packageUrl=${url}&newName=${encodedName}`, {});
   }
 
   installPendingApps(pendingApps: PendingApp[]) {

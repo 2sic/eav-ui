@@ -18,17 +18,17 @@ import { FileUploadDialogData, FileUploadMessageTypes, FileUploadResult, UploadT
 
 
 @Component({
-    selector: 'app-file-upload-dialog',
-    templateUrl: './file-upload-dialog.component.html',
-    styleUrls: ['./file-upload-dialog.component.scss'],
-    imports: [
-        NgClass,
-        MatDialogModule,
-        MatProgressSpinnerModule,
-        SafeHtmlPipe,
-        DragAndDropDirective,
-        MatButtonModule,
-    ]
+  selector: 'app-file-upload-dialog',
+  templateUrl: './file-upload-dialog.component.html',
+  styleUrls: ['./file-upload-dialog.component.scss'],
+  imports: [
+    NgClass,
+    MatDialogModule,
+    MatProgressSpinnerModule,
+    SafeHtmlPipe,
+    DragAndDropDirective,
+    MatButtonModule,
+  ]
 })
 export class FileUploadDialogComponent extends BaseComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
@@ -65,7 +65,7 @@ export class FileUploadDialogComponent extends BaseComponent implements OnInit, 
     super();
 
     // TODO: @2dg Check with Daniel subscriptions
-     // TODO: Old Code
+    // TODO: Old Code
     //  this.subscriptions.add(
     //   this.files$.subscribe(() => {
     //     console.log('files changed');
@@ -93,6 +93,7 @@ export class FileUploadDialogComponent extends BaseComponent implements OnInit, 
     filter((evt: MessageEvent) => evt.origin === "https://2sxc.org"),
     // Get data from event.
     map((evt: MessageEvent) => {
+      console.log('2dg message received install', evt.data);
       try {
         return JSON.parse(evt.data) as CrossWindowMessage;
       } catch (e) {
