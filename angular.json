@@ -2,7 +2,9 @@
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
   "cli": {
-    "schematicCollections": ["@angular-eslint/schematics"],
+    "schematicCollections": [
+      "@angular-eslint/schematics"
+    ],
     "cache": {
       "enabled": false
     },
@@ -30,14 +32,20 @@
             "polyfills": "projects/eav-ui/src/polyfills.ts",
             "tsConfig": "projects/eav-ui/tsconfig.app.json",
             "inlineStyleLanguage": "css",
-            "assets": ["projects/eav-ui/src/assets"],
-            "styles": ["projects/eav-ui/src/styles.scss"],
+            "assets": [
+              "projects/eav-ui/src/assets"
+            ],
+            "styles": [
+              "projects/eav-ui/src/styles.scss"
+            ],
             "scripts": [
               "projects/eav-ui/src/scripts/require.js",
               "projects/eav-ui/src/app/edit/assets/scripts/dropzone-dragging-helper.js",
               "projects/eav-ui/src/app/edit/assets/scripts/clipboard-paste/paste.js"
             ],
-            "allowedCommonJsDependencies": ["dayjs"]
+            "allowedCommonJsDependencies": [
+              "dayjs"
+            ]
           },
           "configurations": {
             "production": {
@@ -94,8 +102,12 @@
             "polyfills": "projects/eav-ui/src/polyfills.ts",
             "tsConfig": "projects/eav-ui/tsconfig.spec.json",
             "inlineStyleLanguage": "css",
-            "assets": ["projects/eav-ui/src/assets"],
-            "styles": ["projects/eav-ui/src/styles.scss"],
+            "assets": [
+              "projects/eav-ui/src/assets"
+            ],
+            "styles": [
+              "projects/eav-ui/src/styles.scss"
+            ],
             "scripts": [],
             "karmaConfig": "projects/eav-ui/karma.conf.js"
           }
@@ -103,7 +115,10 @@
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": ["projects/eav-ui/**/*.ts", "projects/eav-ui/**/*.html"]
+            "lintFilePatterns": [
+              "projects/eav-ui/**/*.ts",
+              "projects/eav-ui/**/*.html"
+            ]
           }
         }
       }

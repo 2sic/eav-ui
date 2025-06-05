@@ -4,8 +4,9 @@ import { MatDatepickerInputEvent, MatDatepickerModule } from '@angular/material/
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatTimepicker, MatTimepickerModule } from '@angular/material/timepicker';
-import { DateTimeAdapter, OwlDateTimeModule } from '@danielmoncada/angular-datetime-picker';
-import { OwlDayJsDateTimeModule } from '@danielmoncada/angular-datetime-picker-dayjs-adapter';
+// TODO: 2dg danielmoncada
+// import { DateTimeAdapter, OwlDateTimeModule } from '@danielmoncada/angular-datetime-picker';
+// import { OwlDayJsDateTimeModule } from '@danielmoncada/angular-datetime-picker-dayjs-adapter';
 import { TranslateService } from '@ngx-translate/core';
 import dayjs, { Dayjs } from 'dayjs';
 import utc from 'dayjs/plugin/utc'; // 'neutral' time for OwlDateTime picker
@@ -41,9 +42,10 @@ const logSpecs = {
     FormsModule,
     ReactiveFormsModule,
     MatInputModule,
-    OwlDateTimeModule,
+    // TODO: 2dg danielmoncada
+    // OwlDateTimeModule,
+    // OwlDayJsDateTimeModule,
     FieldHelperTextComponent,
-    OwlDayJsDateTimeModule,
     MatDayjsModule,
     TippyDirective,
     MatDatepickerModule,
@@ -108,7 +110,8 @@ export class DatetimeDefaultComponent implements AfterViewInit {
 
   constructor(
     private translate: TranslateService,
-    private owlDayjsDateAdapter: DateTimeAdapter<Dayjs>
+    // TODO: 2dg danielmoncada
+    // private owlDayjsDateAdapter: DateTimeAdapter<Dayjs>
   ) {
     // Set the Date/Time format to the browser's language (de-De, en.En, etc.)
     dayjs.extend(utc);
@@ -117,7 +120,8 @@ export class DatetimeDefaultComponent implements AfterViewInit {
     const currentLang = this.translate.currentLang;
     dayjs.locale(currentLang);
     this.matDayjsDateAdapter.setLocale(currentLang);
-    this.owlDayjsDateAdapter.setLocale(currentLang);
+    // TODO: 2dg danielmoncada
+    // this.owlDayjsDateAdapter.setLocale(currentLang);
     DateTimeDefaultLogic.importMe();
   }
 
@@ -155,7 +159,7 @@ export class DatetimeDefaultComponent implements AfterViewInit {
 
 
   updateTime(event: any): void {
-    this.log.aIf('updateTime', {event});
+    this.log.aIf('updateTime', { event });
     const time = dayjs(event.target.value, 'HH:mm');
 
     if (time == null) {
@@ -169,7 +173,7 @@ export class DatetimeDefaultComponent implements AfterViewInit {
 
   // Material Date Picker Event Handler
   updateDate(event: MatDatepickerInputEvent<Dayjs>) {
-    this.log.aIf('updateDate', {event});
+    this.log.aIf('updateDate', { event });
     const date = event.value;
 
     if (date == null) {
@@ -186,8 +190,8 @@ export class DatetimeDefaultComponent implements AfterViewInit {
 
   updateDateTime(event: MatDatepickerInputEvent<Dayjs>) {
     const dateTime = event.value;
-    this.log.aIf('updateDateTime', {event, dateTime});
-    
+    this.log.aIf('updateDateTime', { event, dateTime });
+
     if (dateTime == null) {
       this.ui().setIfChanged(null);
       return;
