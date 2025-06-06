@@ -64,7 +64,7 @@ export class PipelinesService extends HttpServiceBase {
   }
 
   // TODO: 2dg Idea, ask 2dm
-  // getAllLive(contentType: string, refresh: Signal<unknown>, initial: Query[] = []) {
+  // getAllLiveTest(contentType: string, refresh: Signal<unknown>, initial: Query[] = []) {
   //   return this.getAllDataLiveOrOnce<Query[]>(webApiEntityList, {
   //     params: { appId: this.appId, contentType: contentType },
   //     refresh: refresh,

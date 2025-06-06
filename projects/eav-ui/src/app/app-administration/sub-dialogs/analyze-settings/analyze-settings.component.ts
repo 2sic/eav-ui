@@ -51,7 +51,7 @@ export class AnalyzeSettingsComponent implements OnInit {
   }
 
   selectedView = signal<string>(undefined);
-  views = this.#viewsSvc.getAll();
+  views = this.#viewsSvc.getAllOnce().value;
 
   stack = computed(() =>
     this.#analyzeSettingsSvc.getStackSig(this.part, undefined, this.selectedView(), true)

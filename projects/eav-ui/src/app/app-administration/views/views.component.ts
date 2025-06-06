@@ -32,21 +32,21 @@ import { ViewsTypeComponent } from './views-type/views-type.component';
 import { calculateViewType } from './views.helpers';
 
 @Component({
-    selector: 'app-views',
-    templateUrl: './views.component.html',
-    styleUrls: ['./views.component.scss'],
-    imports: [
-        MatDialogActions,
-        MatButtonModule,
-        MatIconModule,
-        RouterOutlet,
-        SxcGridModule,
-        DragAndDropDirective,
-        TippyDirective,
-    ]
+  selector: 'app-views',
+  templateUrl: './views.component.html',
+  styleUrls: ['./views.component.scss'],
+  imports: [
+    MatDialogActions,
+    MatButtonModule,
+    MatIconModule,
+    RouterOutlet,
+    SxcGridModule,
+    DragAndDropDirective,
+    TippyDirective,
+  ]
 })
 export class ViewsComponent implements OnInit {
-  
+
   #dialogInNewWindowSvc = transient(DialogInNewWindowService);
   #viewsSvc = transient(ViewsService);
   #dialogConfigSvc = transient(DialogConfigAppService);
@@ -66,12 +66,12 @@ export class ViewsComponent implements OnInit {
     private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
-  ) { }
+  ) {
 
+  }
 
   #refresh = signal(1); // must start with 1 so it can be chained in computed as ...refresh() && ...
-
-  views = computed(() => this.#refresh() && this.#viewsSvc.getAll());
+  views = this.#viewsSvc.getAllLive(this.#refresh).value;
 
   #polymorphismLazy = computed(() => this.#refresh() && this.#viewsSvc.getPolymorphism());
 
@@ -273,7 +273,7 @@ export class ViewsComponent implements OnInit {
   }
 
   //#endregion
-  
+
   //#region Actions / Helpers for the Grid
 
   #urlToOpenEditView(view?: View) {
@@ -329,6 +329,17 @@ export class ViewsComponent implements OnInit {
   #deleteView(view: View) {
     if (!confirm(`Delete '${view.Name}' (${view.Id})?`)) return;
     this.snackBar.open('Deleting...');
+
+    // TODO: 2dg, ask 2dm delete with httpResource
+    // const deleteRes = this.#viewsSvc.deleteNew(view.Id).value;
+    // console.log("2dg", deleteRes());
+
+    // if (deleteRes()) {
+    //   this.snackBar.open('Deleted', null, { duration: 2000 });
+    //   this.#triggerRefresh();
+    // } else
+    //   return
+
     this.#viewsSvc.delete(view.Id).subscribe(() => {
       this.snackBar.open('Deleted', null, { duration: 2000 });
       this.#triggerRefresh();
