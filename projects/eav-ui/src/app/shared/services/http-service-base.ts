@@ -1,6 +1,6 @@
 import { Context as DnnContext } from '@2sic.com/sxc-angular';
-import { HttpClient } from '@angular/common/http';
-import { inject, Injectable, signal, Signal, WritableSignal } from '@angular/core';
+import { HttpClient, httpResource } from '@angular/common/http';
+import { inject, Injectable, Injector, signal, Signal, WritableSignal } from '@angular/core';
 import { Context } from '../../shared/services/context';
 
 /**
@@ -15,6 +15,12 @@ export class HttpServiceBase {
 
   protected http = inject(HttpClient);
   protected context = inject(Context);
+
+
+  // Retrieves the current Angular Injector instance from the DI system and stores it as a protected property.
+  // This allows you to create instances (e.g., services) later in this specific context.
+  protected injector = inject(Injector);
+
   #dnnContext = inject(DnnContext);
 
   constructor() { }
@@ -37,6 +43,20 @@ export class HttpServiceBase {
    * The current zone id
    */
   protected get zoneId() { return this.context.zoneId.toString(); }
+
+
+
+  /**
+ * NEW V20 Helper method to create an httpResource<T> with additional options such as a custom injector.
+ * Advantage: If the httpResource API changes in the future, you only need to update this method in one place.
+ * @param request - The request callback or object for httpResource<T>. 
+ *                  The signature is identical to the first parameter of httpResource<T>.
+ * @returns A new httpResource<T> signal with centrally configurable options.
+ */
+  protected newHttpResource<T>(request: Parameters<typeof httpResource>[0]) {
+    return httpResource<T>(request, { injector: this.injector });
+  }
+
 
   protected getHttpApiUrl<ResultType>(endpoint: string, options?: Parameters<typeof this.http.get>[1]) {
     const url = this.apiUrl(endpoint);

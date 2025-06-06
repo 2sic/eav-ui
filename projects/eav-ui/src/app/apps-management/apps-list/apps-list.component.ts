@@ -1,7 +1,7 @@
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
 import { GridOptions, ICellRendererParams, ModuleRegistry } from '@ag-grid-community/core';
 import { NgClass } from '@angular/common';
-import { ChangeDetectorRef, Component, computed, inject, OnInit, signal, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit, signal, ViewContainerRef } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogActions } from '@angular/material/dialog';
@@ -33,21 +33,21 @@ import { AppsListActionsComponent } from './apps-list-actions/apps-list-actions.
 import { AppsListActionsParams } from './apps-list-actions/apps-list-actions.models';
 
 @Component({
-    selector: 'app-apps-list',
-    templateUrl: './apps-list.component.html',
-    imports: [
-        SxcGridModule,
-        MatDialogActions,
-        EcoFabSpeedDialComponent,
-        NgClass,
-        EcoFabSpeedDialTriggerComponent,
-        MatButtonModule,
-        MatIconModule,
-        EcoFabSpeedDialActionsComponent,
-        MatBadgeModule,
-        RouterOutlet,
-        DragAndDropDirective,
-    ]
+  selector: 'app-apps-list',
+  templateUrl: './apps-list.component.html',
+  imports: [
+    SxcGridModule,
+    MatDialogActions,
+    EcoFabSpeedDialComponent,
+    NgClass,
+    EcoFabSpeedDialTriggerComponent,
+    MatButtonModule,
+    MatIconModule,
+    EcoFabSpeedDialActionsComponent,
+    MatBadgeModule,
+    RouterOutlet,
+    DragAndDropDirective,
+  ]
 })
 export class AppsListComponent implements OnInit {
 
@@ -76,10 +76,20 @@ export class AppsListComponent implements OnInit {
 
   #refresh = signal(0);
 
-  apps = computed(() => {
-    const refresh = this.#refresh();
-    return this.#appsListSvc.getAll();
-  });
+
+  // TODO: 2dg Only for example - remove later
+  //   apps = computed(() => {
+  //   const refresh = this.#refresh();
+  //   return this.#appsListSvc.getAllOld();
+  // });
+
+  // TODO: 2dg Only for example - remove later
+  // apps = computed(() => {
+  //   const refresh = this.#refresh();
+  //   return untracked(() => this.#appsListSvc.getAll().value) // Untracked to avoid re-running this when the refresh changes
+  // });
+
+  apps = this.#appsListSvc.getAllLive(this.#refresh).value;
 
 
   ngOnInit(): void {
@@ -174,9 +184,9 @@ export class AppsListComponent implements OnInit {
               <a class="default-link fill-cell" href="#${url}">
                 <div class="container">
                   ${app.Thumbnail
-                    ? `<img class="image logo" src="${app.Thumbnail}?w=40&h=40&mode=crop"></img>`
-                    : `<div class="image logo"><span class="material-symbols-outlined">star</span></div>`
-                  }
+                ? `<img class="image logo" src="${app.Thumbnail}?w=40&h=40&mode=crop"></img>`
+                : `<div class="image logo"><span class="material-symbols-outlined">star</span></div>`
+              }
                   ${p.value}
                 </div>
               </a>

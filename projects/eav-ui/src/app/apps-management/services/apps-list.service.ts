@@ -1,21 +1,44 @@
-import { Injectable } from '@angular/core';
+import { httpResource } from '@angular/common/http';
+import { Injectable, Signal } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpServiceBase } from '../../shared/services/http-service-base';
 import { App, PendingApp } from '../models/app.model';
 
- const webApiAppRootList = 'admin/app/list';
- const webApiAppRootInheritableApps = 'admin/app/InheritableApps';
- const webApiAppRootPendingApps = 'admin/app/GetPendingApps';
- const webApiAppRootApp = 'admin/app/app';
- const webApiAppRootInstallPendingApps = 'admin/app/InstallPendingApps';
- const webApiAppRootFlushcache = 'admin/app/flushcache';
+const webApiAppRootList = 'admin/app/list';
+const webApiAppRootInheritableApps = 'admin/app/InheritableApps';
+const webApiAppRootPendingApps = 'admin/app/GetPendingApps';
+const webApiAppRootApp = 'admin/app/app';
+const webApiAppRootInstallPendingApps = 'admin/app/InstallPendingApps';
+const webApiAppRootFlushcache = 'admin/app/flushcache';
 
 @Injectable()
 export class AppsListService extends HttpServiceBase {
 
-  getAll() {
-    return this.getSignal<App[]>(webApiAppRootList, {
-      params: { zoneId: this.zoneId }
+  // TODO: 2dg Only for example - remove later
+  // old 
+  // getAllOld() {
+  //   return this.getSignal<App[]>(webApiAppRootList, {
+  //     params: { zoneId: this.zoneId }
+  //   });
+  // }
+
+  // TODO: 2dg Only for example - remove later
+  // Method, create new every time if call 
+  // getAll() {
+  //   return this.newHttpResource<App[]>(() => ({
+  //     url: this.apiUrl(webApiAppRootList),
+  //     params: { zoneId: this.zoneId }
+  //   }));
+  // }
+
+  // clean way to create a new resource every time if refresh change
+  getAllLive(refresh: Signal<unknown>) {
+    return httpResource<App[]>(() => {
+      refresh();
+      return ({
+        url: this.apiUrl(webApiAppRootList),
+        params: { zoneId: this.zoneId }
+      });
     });
   }
 
@@ -42,9 +65,9 @@ export class AppsListService extends HttpServiceBase {
     });
   }
 
-  createTemplate(url: string, newName:string) {
+  createTemplate(url: string, newName: string) {
     const encodedName = encodeURIComponent(newName);
-     return <Observable<any>>this.http.post(`sys/install/RemotePackage?packageUrl=${url}&newName=${encodedName}`, {});
+    return <Observable<any>>this.http.post(`sys/install/RemotePackage?packageUrl=${url}&newName=${encodedName}`, {});
   }
 
   installPendingApps(pendingApps: PendingApp[]) {
