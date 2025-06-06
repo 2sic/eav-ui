@@ -1,3 +1,4 @@
+import { httpResource } from '@angular/common/http';
 import { computed, Injectable, Signal } from '@angular/core';
 import { map } from 'rxjs';
 import { FileUploadResult } from '../../shared/components/file-upload-dialog';
@@ -25,10 +26,18 @@ export class ContentTypesService extends HttpServiceBase {
     });
   }
 
-  getTypeSig(nameId: string, initial: ContentType): Signal<ContentType> {
-    return this.getSignal<ContentType>(webApiTypeGet, {
+  getType(nameId: string) {
+    return httpResource<ContentType>(() => ({
+      url: this.apiUrl(webApiTypeGet),
       params: { appId: this.appId, contentTypeId: nameId }
-    }, initial);
+    }));
+  }
+
+  getTypes(scope: Signal<string>) {
+    return httpResource<ContentType[]>(() => ({
+      url: this.apiUrl(webApiTypeGet),
+      params: { appId: this.appId, scope: scope() }
+    }));
   }
 
   retrieveContentTypes(scope: string) {
@@ -37,11 +46,6 @@ export class ContentTypesService extends HttpServiceBase {
     });
   }
 
-  getTypesSig(scope: string, initial: ContentType[]): Signal<ContentType[]> {
-    return this.getSignal<ContentType[]>(webApiTypes, {
-      params: { appId: this.appId, scope }
-    }, initial);
-  }
 
   // TODO: remove this method after upgrade to V2
   getScopes() {
