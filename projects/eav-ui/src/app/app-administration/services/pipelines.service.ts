@@ -1,5 +1,5 @@
 import { httpResource } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, Signal } from '@angular/core';
 import { from, map, switchMap } from 'rxjs';
 import { FileUploadResult } from '../../shared/components/file-upload-dialog';
 import { toBase64 } from '../../shared/helpers/file-to-base64.helper';
@@ -12,10 +12,11 @@ const logSpecs = {
   all: true,
   getAll: false,
   getAllSig: true,
+  getAllLive: false,
   getAllRes: true,
   importQuery: false,
   clonePipeline: false,
-  delete: false,  
+  delete: false,
   update: false,
 };
 
@@ -42,11 +43,44 @@ export class PipelinesService extends HttpServiceBase {
 
   getAllSig(contentType: string, initial?: Query[]) {
     const l = this.log.fnIf('getAllSig');
-    const sig =  this.getSignal<Query[]>(webApiEntityList, {
+    const sig = this.getSignal<Query[]>(webApiEntityList, {
       params: { appId: this.appId, contentType }
     }, initial);
     return l.r(sig);
   }
+
+  // Full Code, repated x times
+  getAllLive(contentType: string, refresh: Signal<unknown>, initial: Query[] = []) {
+    this.log.fnIf('getAllLive', { contentType, refresh });
+    return httpResource<Query[]>(() => {
+      refresh();
+      return ({
+        url: this.apiUrl(webApiEntityList),
+        params: { appId: this.appId, contentType: contentType }
+      });
+    }, {
+      defaultValue: initial
+    });
+  }
+
+  // TODO: 2dg Idea, ask 2dm
+  // getAllLive(contentType: string, refresh: Signal<unknown>, initial: Query[] = []) {
+  //   return this.getAllDataLiveOrOnce<Query[]>(webApiEntityList, {
+  //     params: { appId: this.appId, contentType: contentType },
+  //     refresh: refresh,
+  //     initial: initial
+  //   });
+  // }
+
+  // // Just Demo for 2md
+  // getAllOnce(contentType: string, initial: Query[] = []) {
+  //   return this.getAllDataLiveOrOnce<Query[]>(webApiEntityList, {
+  //     params: { appId: this.appId, contentType: contentType },
+  //     initial: initial
+  //   });
+  // }
+
+
 
   /** Experimental httpResource use! */
   getAllRes(contentType: string, initial?: Query[]) {

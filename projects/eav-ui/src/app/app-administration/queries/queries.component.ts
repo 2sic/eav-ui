@@ -1,5 +1,5 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogActions } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -69,11 +69,12 @@ export class QueriesComponent implements OnInit {
   public gridOptions = this.buildGridOptions();
 
   #refresh = signal(0);
+  // queries = computed(() => {
+  //   const refresh = this.#refresh();
+  //   return this.#pipelineSvc.getAllSig(eavConstants.contentTypes.query, undefined)
+  // });
 
-  queries = computed(() => {
-    const refresh = this.#refresh();
-    return this.#pipelineSvc.getAllSig(eavConstants.contentTypes.query, undefined)
-  });
+  queries = this.#pipelineSvc.getAllLive(eavConstants.contentTypes.query, undefined).value;
 
   ngOnInit() {
     // watch for return from dialog to reload queries
@@ -102,7 +103,7 @@ export class QueriesComponent implements OnInit {
   //#endregion
 
   #triggerRefresh() {
-    this.#refresh.update(v => ++v); 
+    this.#refresh.update(v => ++v);
   }
 
   #urlTo(url: string) {

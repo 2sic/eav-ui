@@ -16,7 +16,6 @@ export class HttpServiceBase {
   protected http = inject(HttpClient);
   protected context = inject(Context);
 
-
   // Retrieves the current Angular Injector instance from the DI system and stores it as a protected property.
   // This allows you to create instances (e.g., services) later in this specific context.
   protected injector = inject(Injector);
@@ -55,6 +54,28 @@ export class HttpServiceBase {
  */
   protected newHttpResource<T>(request: Parameters<typeof httpResource>[0]) {
     return httpResource<T>(request, { injector: this.injector });
+  }
+
+  // TODO 2dg Idea 
+  protected getAllDataLiveOrOnce<T>(
+    url: string,
+    options: {
+      params?: Record<string, any>;
+      refresh?: Signal<unknown>;
+      initial?: T;
+    } = {}
+  ) {
+    const { params, refresh, initial } = options;
+    return httpResource<T>(
+      () => {
+        refresh?.();
+        return {
+          url: this.apiUrl(url),
+          params: params
+        };
+      },
+      initial !== undefined ? { defaultValue: initial } : undefined
+    );
   }
 
 
