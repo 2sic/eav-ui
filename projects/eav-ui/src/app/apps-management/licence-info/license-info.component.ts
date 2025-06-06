@@ -2,7 +2,7 @@ import { AgGridAngular } from '@ag-grid-community/angular';
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
 import { GridOptions, ModuleRegistry } from '@ag-grid-community/core';
 import { AsyncPipe, NgClass } from '@angular/common';
-import { ChangeDetectorRef, Component, computed, inject, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogActions } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -76,14 +76,18 @@ export class LicenseInfoComponent implements OnInit {
   }
 
   disabled = signal(false);
+
   #refreshLicensesSig = signal(0);
 
-  licensesSig = computed(() => {
-    const refreshState = this.#refreshLicensesSig();
-    this.disabled.set(false);
-    return this.#featuresConfigSvc.getLicensesSig();
+  // licensesSig = computed(() => {
+  //   const refreshState = this.#refreshLicensesSig();
+  //   this.disabled.set(false);
+  //   return this.#featuresConfigSvc.getLicensesLive(this.#refreshLicensesSig).value;
+  // });
 
-  });
+  // TODO: 2dg not in use yet, fix later
+  licensesData = this.#featuresConfigSvc.getLicensesLive(this.#refreshLicensesSig).value
+
   // TODO: @2dg, ask 2dm licensesSig refresh is false
   // licensesSignal = this.#featuresConfigSvc.getLicensesSig(); // Holt das Signal, nicht den Wert
 
@@ -133,12 +137,14 @@ export class LicenseInfoComponent implements OnInit {
           setTimeout(() => {
             this.#refreshLicenses$.next()
             this.#refreshLicensesSig.set(this.#refreshLicensesSig() + 1);
+            this.disabled.set(false);
           }, 100)
         });
 
       } else { // Refresh from Server
         this.#refreshLicenses$.next()
         this.#refreshLicensesSig.set(this.#refreshLicensesSig() + 1);
+        this.disabled.set(false);
       }
     });
 
@@ -211,11 +217,14 @@ export class LicenseInfoComponent implements OnInit {
     forkJoin([this.#featuresConfigSvc.saveFeatures([state]), timer(100)]).subscribe({
       error: () => {
         this.#refreshLicensesSig.set(this.#refreshLicensesSig() + 1);
+        this.disabled.set(false);
         this.#refreshLicenses$.next();
       },
       next: () => {
         this.#refreshLicensesSig.set(this.#refreshLicensesSig() + 1);
         this.#refreshLicenses$.next();
+        this.disabled.set(false);
+
       },
     });
   }
