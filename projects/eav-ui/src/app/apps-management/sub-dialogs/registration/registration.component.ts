@@ -1,5 +1,5 @@
 import patronsLogo from '!raw-loader!./assets/2sxc-patrons.svg';
-import { Component, computed, HostBinding, signal, ViewContainerRef } from '@angular/core';
+import { Component, HostBinding, signal, ViewContainerRef } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
@@ -15,16 +15,16 @@ import { FeaturesConfigService } from '../../services/features-config.service';
 import { ZoneService } from '../../services/zone.service';
 
 @Component({
-    selector: 'app-registration',
-    templateUrl: './registration.component.html',
-    styleUrls: ['./registration.component.scss'],
-    imports: [
-        MatCardModule,
-        MatIconModule,
-        MatButtonModule,
-        TippyDirective,
-        SafeHtmlPipe,
-    ]
+  selector: 'app-registration',
+  templateUrl: './registration.component.html',
+  styleUrls: ['./registration.component.scss'],
+  imports: [
+    MatCardModule,
+    MatIconModule,
+    MatButtonModule,
+    TippyDirective,
+    SafeHtmlPipe,
+  ]
 })
 export class RegistrationComponent {
   @HostBinding('className') hostClass = 'dialog-component';
@@ -42,11 +42,10 @@ export class RegistrationComponent {
     private viewContainerRef: ViewContainerRef,
   ) { }
 
+  // TODO: 2dg Live
   #refresh = signal(0);
-  systemInfoSet = computed(() => {
-    const r = this.#refresh();
-    return this.#zoneSvc.getSystemInfo(undefined);
-  })
+
+  systemInfoSet = this.#zoneSvc.getSystemInfoLive(this.#refresh, undefined).value;
 
   openLicenseRegistration(systemInfoSet: SystemInfoSet): void {
     window.open(`https://patrons.2sxc.org/register?fingerprint=${systemInfoSet.System.Fingerprint}`, '_blank');

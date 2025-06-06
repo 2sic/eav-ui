@@ -1,5 +1,5 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { Component, computed, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogActions, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -40,16 +40,12 @@ export class LanguagePermissionsComponent implements OnInit {
 
   #refresh = signal(0);
 
-  languages = computed(() => {
-    const r = this.#refresh();
-    return this.#zoneSvc.getLanguagesPermissions(undefined);
-  })
+  languages = this.#zoneSvc.getLanguagesPermissionsLive(this.#refresh, undefined).value
 
   ngOnInit(): void {
     this.#dialogRouting.doOnDialogClosed(() => {
       this.#refresh.update(v => ++v)
     });
-
   }
 
   closeDialog(): void {

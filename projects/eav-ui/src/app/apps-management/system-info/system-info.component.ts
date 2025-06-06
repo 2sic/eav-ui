@@ -27,22 +27,22 @@ import { InfoTemplate } from './system-info.models';
 declare const window: EavWindow;
 
 @Component({
-    selector: 'app-system-info',
-    templateUrl: './system-info.component.html',
-    imports: [
-        MatCardModule,
-        MatIconModule,
-        RouterLink,
-        MatButtonModule,
-        FormsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        RouterOutlet,
-        FeatureTextInfoComponent,
-        FieldHintComponent,
-        TippyDirective,
-        DocsLinkHelperComponent,
-    ]
+  selector: 'app-system-info',
+  templateUrl: './system-info.component.html',
+  imports: [
+    MatCardModule,
+    MatIconModule,
+    RouterLink,
+    MatButtonModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    RouterOutlet,
+    FeatureTextInfoComponent,
+    FieldHintComponent,
+    TippyDirective,
+    DocsLinkHelperComponent,
+  ]
 })
 export class SystemInfoComponent implements OnInit {
 
@@ -60,18 +60,16 @@ export class SystemInfoComponent implements OnInit {
   loading = signal(false);
   #refresh = signal(0);
 
-  languages = computed(() => {
-    const r = this.#refresh();
-    return this.#zoneSvc.getLanguage(undefined);
-  })
+  // languages = computed(() => {
+  //   const r = this.#refresh();
+  //   return this.#zoneSvc.getLanguage(undefined);
+  // })
 
-  systemInfoSet = computed(() => {
-    const r = this.#refresh();
-    return this.#zoneSvc.getSystemInfo(undefined);
-  })
+  #languages = this.#zoneSvc.getLanguageLive(this.#refresh, undefined).value;
+  #systemInfoSet = this.#zoneSvc.getSystemInfoLive(this.#refresh, undefined).value;
 
   systemInfos = computed(() => {
-    const systemInfoSetValue = this.systemInfoSet()();
+    const systemInfoSetValue = this.#systemInfoSet();
     if (systemInfoSetValue == null) return;
     const url = this.#dialogRouter.router.url + '/' + "registration";
     const info: InfoTemplate[] = [
@@ -99,8 +97,8 @@ export class SystemInfoComponent implements OnInit {
   });
 
   siteInfos = computed(() => {
-    const systemInfoSetValue = this.systemInfoSet()();
-    const languagesValue = this.languages()();
+    const systemInfoSetValue = this.#systemInfoSet();
+    const languagesValue = this.#languages();
 
     if (systemInfoSetValue == null || languagesValue == null) return;
 
@@ -134,7 +132,7 @@ export class SystemInfoComponent implements OnInit {
   });
 
   warningIcon = computed(() => {
-    const systemInfoSetValue = this.systemInfoSet()();
+    const systemInfoSetValue = this.#systemInfoSet();
     if (systemInfoSetValue == null) return undefined;
     if (systemInfoSetValue.Messages.WarningsObsolete || systemInfoSetValue.Messages.WarningsOther) {
       return 'warning';
@@ -143,7 +141,7 @@ export class SystemInfoComponent implements OnInit {
   });
 
   warningInfos = computed(() => {
-    const systemInfoSetValue = this.systemInfoSet()();
+    const systemInfoSetValue = this.#systemInfoSet();
     if (systemInfoSetValue == null) return undefined;
 
     const info: InfoTemplate[] = [
