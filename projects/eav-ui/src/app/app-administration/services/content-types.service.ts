@@ -61,6 +61,37 @@ export class ContentTypesService extends HttpServiceBase {
     );
   }
 
+
+
+  // TODO: 2dg discuss with 2dm
+  // getScopesSig(): Signal<ScopeOption[]> {
+
+  //    // const scopesSignal = this.getSignal<{ old: Record<string, string>, scopes: ScopeDetailsDto[] }>(
+  //   //   webApiTypeScopes,
+  //   //   { params: { appId: this.appId } }, initial,
+  //   // );
+
+  //   const scopesSignal = httpResource<{ old: Record<string, string>, scopes: ScopeDetailsDto[] }>(() => ({
+  //     url: this.apiUrl(webApiTypeScopes),
+  //     params: { appId: this.appId }
+  //   })).value;
+
+  //   const scopeOptionsSignal = computed(() => {
+  //     const scopesData = scopesSignal();
+  //     if (!scopesData || !scopesData.old) {
+  //       return [];
+  //     }
+  //     const scopes = scopesData.old;
+  //     return Object.keys(scopes).map(key => ({
+  //       name: scopes[key],
+  //       value: key
+  //     }));
+  //   });
+
+  //   return scopeOptionsSignal;
+  // }
+
+
   // todo: switch to using the GetSignal with `map` parameter similar to the initial version above
   getScopesSig(initial: undefined): Signal<ScopeOption[]> {
     const scopesSignal = this.getSignal<{ old: Record<string, string>, scopes: ScopeDetailsDto[] }>(
