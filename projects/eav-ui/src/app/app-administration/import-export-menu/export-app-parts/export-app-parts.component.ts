@@ -18,23 +18,23 @@ import { ContentTypesService } from '../../services/content-types.service';
 import { ExportAppPartsService } from '../../services/export-app-parts.service';
 
 @Component({
-    selector: 'app-export-app-parts',
-    templateUrl: './export-app-parts.component.html',
-    styleUrls: ['./export-app-parts.component.scss'],
-    imports: [
-        MatFormFieldModule,
-        MatSelectModule,
-        FormsModule,
-        MatOptionModule,
-        MatButtonModule,
-        MatIconModule,
-        MatCheckboxModule,
-        MatDialogActions,
-        FieldHintComponent,
-        ClickStopPropagationDirective,
-        TippyDirective,
-        MatDialogModule,
-    ]
+  selector: 'app-export-app-parts',
+  templateUrl: './export-app-parts.component.html',
+  styleUrls: ['./export-app-parts.component.scss'],
+  imports: [
+    MatFormFieldModule,
+    MatSelectModule,
+    FormsModule,
+    MatOptionModule,
+    MatButtonModule,
+    MatIconModule,
+    MatCheckboxModule,
+    MatDialogActions,
+    FieldHintComponent,
+    ClickStopPropagationDirective,
+    TippyDirective,
+    MatDialogModule,
+  ]
 })
 export class ExportAppPartsComponent {
   @HostBinding('className') hostClass = 'dialog-component';
@@ -49,10 +49,7 @@ export class ExportAppPartsComponent {
   isExporting = signal(false);
   exportScope = signal(eavConstants.scopes.default.value);
 
-  contentInfo = computed(() => {
-    const exportScope = this.exportScope();
-    return this.#exportAppPartsSvc.getContentInfo(exportScope, null)
-  });
+  contentInfo = this.#exportAppPartsSvc.getContentInfoLiveParam(this.exportScope, null).value;
 
   scopeOptions = this.#contentTypesSvc.getScopesSig(null) as WritableSignal<ScopeOption[]>;
 
@@ -101,12 +98,12 @@ export class ExportAppPartsComponent {
   }
 
   #selectedContentTypes() {
-    return this.contentInfo()().ContentTypes.filter(contentType => contentType._export);
+    return this.contentInfo().ContentTypes.filter(contentType => contentType._export);
   }
 
   #selectedEntities() {
     let entities: ContentInfoEntity[] = [];
-    for (const contentType of this.contentInfo()().ContentTypes) {
+    for (const contentType of this.contentInfo().ContentTypes) {
       entities = entities.concat(contentType.Entities.filter(entity => entity._export));
     }
     return entities;
@@ -115,10 +112,10 @@ export class ExportAppPartsComponent {
   #selectedTemplates() {
     let templates: ContentInfoTemplate[] = [];
     // The ones with...
-    for (const contentType of this.contentInfo()().ContentTypes)
+    for (const contentType of this.contentInfo().ContentTypes)
       templates = templates.concat(contentType.Templates.filter(template => template._export));
     // ...and without content types
-    templates = templates.concat(this.contentInfo()().TemplatesWithoutContentTypes.filter(template => template._export));
+    templates = templates.concat(this.contentInfo().TemplatesWithoutContentTypes.filter(template => template._export));
     return templates;
   }
 }
