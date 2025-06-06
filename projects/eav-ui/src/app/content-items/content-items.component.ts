@@ -51,19 +51,19 @@ const logSpecs = {
 }
 
 @Component({
-    selector: 'app-content-items',
-    templateUrl: './content-items.component.html',
-    imports: [
-        MatButtonModule,
-        MatIconModule,
-        RouterOutlet,
-        MatDialogActions,
-        SafeHtmlPipe,
-        DragAndDropDirective,
-        ToggleDebugDirective,
-        SxcGridModule,
-        TippyDirective,
-    ]
+  selector: 'app-content-items',
+  templateUrl: './content-items.component.html',
+  imports: [
+    MatButtonModule,
+    MatIconModule,
+    RouterOutlet,
+    MatDialogActions,
+    SafeHtmlPipe,
+    DragAndDropDirective,
+    ToggleDebugDirective,
+    SxcGridModule,
+    TippyDirective,
+  ]
 })
 export class ContentItemsComponent implements OnInit {
 
@@ -101,14 +101,11 @@ export class ContentItemsComponent implements OnInit {
   #contentTypeStaticName = this.#dialogRouter.getParam('contentTypeStaticName');
   contentType = this.#contentTypesSvc.getTypeSig(this.#contentTypeStaticName,  /* initial: */ null);
 
-  #itemsRaw = computed(() => {
-    this.#refresh();  // watch for refresh
-    return this.#contentItemsSvc.getAllSig(this.#contentTypeStaticName, undefined);
-  });
+  #itemsRaw = this.#contentItemsSvc.getAllLive(this.#contentTypeStaticName, this.#refresh, undefined).value;
 
   items = computed(() => {
-    const data = this.#itemsRaw()();
-    this.log.aIf('items', {data});
+    const data = this.#itemsRaw();
+    this.log.aIf('items', { data });
     return data;
   });
 

@@ -61,7 +61,7 @@ export class DataBundlesComponent {
   constructor(private snackBar: MatSnackBar) {
 
     effect(() => {
-      const dataBundles = this.#dataBundles()();
+      const dataBundles = this.#dataBundles();
       if (!dataBundles) return;
     
       dataBundles.forEach(dataBundle => {
@@ -100,14 +100,15 @@ export class DataBundlesComponent {
     upload$: (files: File[]) => this.#dataBundlesService.import(files),
   };
 
-  #dataBundles = computed(() => {
-    this.#refresh(); // is use to trigger a refresh when new data or data are modified
-    return this.#contentItemsSvc.getAllSig(this.#defaultContentTypeId,  /* initial: */ null);
-  });
+   #dataBundles = this.#contentItemsSvc.getAllLive(
+    this.#defaultContentTypeId,
+    this.#refresh,
+    /* initial: */ null
+  ).value;
 
   // Data from QueryData for Table
   dataSourceData = computed(() => {
-    const dataBundles = this.#dataBundles()() || [];
+    const dataBundles = this.#dataBundles() || [];
     const queryResults = this.#queryResults();
 
     const countEntitiesAndContentTypes = (guid: string) => {

@@ -34,6 +34,7 @@ import { AppInternals } from '../../models/app-internals.model';
 export class AppConfigurationCardComponent implements OnDestroy {
   dialogSettings = input.required<DialogSettings>();
   appSettingsInternal = input.required<AppInternals>();
+  refresh = input.required<number>();
 
   #contentItemsSvc = transient(ContentItemsService);
   #dialogRouter = transient(DialogRoutingService);
@@ -54,10 +55,11 @@ export class AppConfigurationCardComponent implements OnDestroy {
     // });
   }
 
-  // TODO: @2pp - you recently changed this to customSettings which is wrong, unclear why you did it
-  // contentItem = this.#contentItemsSvc.getAllSig(eavConstants.contentTypes.customSettings, /* initial: */ null);
-  contentItem = this.#contentItemsSvc.getAllSig(eavConstants.contentTypes.appConfiguration, /* initial: */ null);
-
+  contentItem = this.#contentItemsSvc.getAllLive(
+    eavConstants.contentTypes.appConfiguration,
+    this.refresh,
+    /* initial: */ null
+  ).value;
 
   ngOnDestroy() {
     this.snackBar.dismiss();

@@ -1,3 +1,4 @@
+import { httpResource } from '@angular/common/http';
 import { Injectable, Signal } from '@angular/core';
 import { from, map, switchMap } from 'rxjs';
 import { FileUploadResult } from '../../shared/components/file-upload-dialog';
@@ -11,7 +12,9 @@ import { ContentItem } from '../models/content-item.model';
 
 const logSpecs = {
   getAll: true,
-  getAllSig: true,
+  getAllLive: true,
+  getAllOnce: true,
+
 }
 
 @Injectable()
@@ -26,12 +29,40 @@ export class ContentItemsService extends HttpServiceBase {
     });
   }
 
-  getAllSig(contentTypeStaticName: string, initial: undefined): Signal<ContentItem[]> {
-    this.log.fnIf('getAllSig', { contentTypeStaticName, initial });
-    return this.getSignal<ContentItem[]>(webApiEntityList, {
-      params: { appId: this.appId, contentType: contentTypeStaticName }
-    }, initial);
+  // TODO: 2dg remove later 
+  // getAllSig(contentTypeStaticName: string, initial: undefined): Signal<ContentItem[]> {
+  //   // this.log.fnIf('getAllSig', { contentTypeStaticName, initial });
+  //   return this.getSignal<ContentItem[]>(webApiEntityList, {
+  //     params: { appId: this.appId, contentType: contentTypeStaticName }
+  //   }, initial);
+  // }
+
+   getAllOnce(contentTypeStaticName: string, initial: ContentItem[] = []) {
+    this.log.fnIf('getAllOnce', { contentTypeStaticName });
+    return httpResource<ContentItem[]>(() => {
+      return ({
+        url: this.apiUrl(webApiEntityList),
+        params: { appId: this.appId, contentType: contentTypeStaticName }
+      });
+    }, {
+      defaultValue: initial
+    });
   }
+
+  getAllLive(contentTypeStaticName: string, refresh: Signal<unknown>, initial: ContentItem[] = []) {
+    this.log.fnIf('getAllLive', { contentTypeStaticName, refresh });
+    return httpResource<ContentItem[]>(() => {
+      refresh();
+      return ({
+        url: this.apiUrl(webApiEntityList),
+        params: { appId: this.appId, contentType: contentTypeStaticName }
+      });
+    }, {
+      defaultValue: initial
+    });
+  }
+
+
 
   getColumns(contentTypeStaticName: string) {
     return this.getHttpApiUrl<Field[]>(webApiFieldsAll, {

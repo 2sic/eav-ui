@@ -158,8 +158,8 @@ export class AppConfigurationComponent implements OnInit {
   protected cspEnabled = this.#featuresSvc.isEnabled[FeatureNames.ContentSecurityPolicy];
   protected langPermsEnabled = this.#featuresSvc.isEnabled[FeatureNames.PermissionsByLanguage];
 
-  #refresh = signal(0);
-  appSpecsLazy = this.#appInternalsService.getAppInternalsLive(this.#refresh, null).value;
+  refresh = signal(0);
+  appSpecsLazy = this.#appInternalsService.getAppInternalsLive(this.refresh, null).value;
 
   /** Statistics for the content-types and fields for later */
   #dataStatistics = computed(() => {
@@ -204,7 +204,7 @@ export class AppConfigurationComponent implements OnInit {
     // Update dialog router when child a dialog was closesd
     this.#dialogRouter.doOnDialogClosed(() => {
       console.log('2dg close parent');
-      this.#refresh.update(v => ++v)
+      this.refresh.update(v => ++v)
 
     });
   }
@@ -462,7 +462,7 @@ export class AppConfigurationComponent implements OnInit {
         this.#contentTypesSvc.save(newContentType).subscribe(success => {
           if (!success) return;
           // trigger refresh
-          this.#refresh.update(v => ++v);
+          this.refresh.update(v => ++v);
 
           // Inform user
           alert('Created a new Content Type. Please try again 👍🏼.');
