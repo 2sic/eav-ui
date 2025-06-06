@@ -1,6 +1,6 @@
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
 import { GridOptions, ModuleRegistry } from '@ag-grid-community/core';
-import { Component, computed, signal } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { MatDialogActions } from '@angular/material/dialog';
 import { transient } from '../../../../../core';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
@@ -31,11 +31,8 @@ export class SiteLanguagesComponent {
 
   #refreshLanguagesSig = signal(0);
 
-  languages = computed(() => {
-    const r = this.#refreshLanguagesSig();
-    return this.#zoneSvc.getLanguage(undefined);
-  })
 
+   languages = this.#zoneSvc.getLanguageLive(this.#refreshLanguagesSig, undefined).value;
 
   #toggleLanguage(language: SiteLanguage, enable: boolean): void {
     this.#zoneSvc.toggleLanguage(language.Code, enable).subscribe(d => { // wait until the language change

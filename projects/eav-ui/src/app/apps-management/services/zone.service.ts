@@ -12,10 +12,6 @@ const webApiAppRootRootlanguages = 'admin/app/languages';
 @Injectable()
 export class ZoneService extends HttpServiceBase {
 
-  getLanguage(initial: undefined) {
-    return this.getSignal<SiteLanguage[]>(webApiZoneRootGetLanguages, {}, initial);
-  }
-
   getLanguageLive(refresh: Signal<unknown>, initial: undefined = undefined) {
     return httpResource<SiteLanguage[]>(() => {
       refresh();
