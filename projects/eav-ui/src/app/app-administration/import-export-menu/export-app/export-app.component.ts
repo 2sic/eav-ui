@@ -29,7 +29,7 @@ export class ExportAppComponent {
 
   #exportAppService = transient(ExportAppService);
 
-  appInfo = this.#exportAppService.getAppInfo(undefined);
+  appInfo = this.#exportAppService.getAppInfo().value;
 
 
   protected features = inject(FeaturesService);

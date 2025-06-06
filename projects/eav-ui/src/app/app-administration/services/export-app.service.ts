@@ -1,19 +1,21 @@
+import { httpResource } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { webApiAppRoot } from '../../import-app/services/import-app.service';
 import { HttpServiceBase } from '../../shared/services/http-service-base';
 import { AppInfo } from '../models/app-info.model';
 
- const webApiAppRootStatistics = 'admin/app/Statistics';
- const webApiAppRootSaveData = 'admin/app/SaveData';
+const webApiAppRootStatistics = 'admin/app/Statistics';
+const webApiAppRootSaveData = 'admin/app/SaveData';
 
 
 @Injectable()
 export class ExportAppService extends HttpServiceBase {
 
-  getAppInfo(initial: AppInfo) {
-    return this.getSignal<AppInfo>(webApiAppRootStatistics, {
+  getAppInfo() {
+    return httpResource<AppInfo>(() => ({
+      url: this.apiUrl(webApiAppRootStatistics),
       params: { appid: this.appId, zoneId: this.zoneId },
-    }, initial);
+    }));
   }
 
   /** Generate the export app path. It can be extended with additional parameters */
