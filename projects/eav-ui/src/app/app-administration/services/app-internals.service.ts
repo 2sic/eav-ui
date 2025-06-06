@@ -1,3 +1,4 @@
+import { httpResource } from '@angular/common/http';
 import { Injectable, Signal } from '@angular/core';
 import { AppInternals } from '../../app-administration/models/app-internals.model';
 import { HttpServiceBase } from '../../shared/services/http-service-base';
@@ -15,10 +16,23 @@ export class AppInternalsService extends HttpServiceBase {
    * @param contentTypeName name of content type where permissions are stored. If blank, backend returns all metadata except permissions
    */
 
-  getAppInternals(internals: AppInternals): Signal<AppInternals> {
-    return this.getSignal<AppInternals>(webApiRoot, {
-      params: { appid: this.appId }
-    }, internals);
+  // TODO: 2dg remove later
+  // getAppInternals(internals: AppInternals): Signal<AppInternals> {
+  //   return this.getSignal<AppInternals>(webApiRoot, {
+  //     params: { appid: this.appId }
+  //   }, internals);
+  // }
+
+  getAppInternalsLive(refresh: Signal<unknown>, initial: AppInternals) {
+    return httpResource<AppInternals>(() => {
+      refresh();
+      return ({
+        url: this.apiUrl(webApiRoot),
+        params: { appid: this.appId }
+      });
+    }, {
+      defaultValue: initial
+    });
   }
 
 }

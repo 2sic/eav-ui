@@ -1,4 +1,4 @@
-import { Component, computed, input, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, input, OnDestroy, signal } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -16,7 +16,7 @@ import { EditPrep } from '../../../shared/models/edit-form.model';
 import { DialogRoutingService } from '../../../shared/routing/dialog-routing.service';
 import { ClipboardService } from '../../../shared/services/clipboard.service';
 import { Context } from '../../../shared/services/context';
-import { AppInternalsService } from '../../services/app-internals.service';
+import { AppInternals } from '../../models/app-internals.model';
 
 @Component({
   selector: 'app-app-configuration-card',
@@ -31,13 +31,12 @@ import { AppInternalsService } from '../../services/app-internals.service';
     DocsLinkHelperComponent,
   ]
 })
-export class AppConfigurationCardComponent implements OnInit, OnDestroy {
+export class AppConfigurationCardComponent implements OnDestroy {
   dialogSettings = input.required<DialogSettings>();
+  appSettingsInternal = input.required<AppInternals>();
 
-  #appInternalsSvc = transient(AppInternalsService);
   #contentItemsSvc = transient(ContentItemsService);
   #dialogRouter = transient(DialogRoutingService);
-
 
   appConfigurationUrl = signal('');
   appConfigAvailable = signal(false);
@@ -59,18 +58,6 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
   // contentItem = this.#contentItemsSvc.getAllSig(eavConstants.contentTypes.customSettings, /* initial: */ null);
   contentItem = this.#contentItemsSvc.getAllSig(eavConstants.contentTypes.appConfiguration, /* initial: */ null);
 
-  #refresh = signal(0);
-
-  appSettingsInternal = computed(() => {
-    const _ = this.#refresh();
-    return this.#appInternalsSvc.getAppInternals(undefined);
-  });
-
-  ngOnInit() {
-    this.#dialogRouter.doOnDialogClosed(() => {
-      this.#refresh.update(v => ++v);
-    });
-  }
 
   ngOnDestroy() {
     this.snackBar.dismiss();
@@ -110,7 +97,7 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
       )
     );
   }
- 
+
 
   formatValue(value?: string): string {
     return value === "" ? "-" : value ?? "-";

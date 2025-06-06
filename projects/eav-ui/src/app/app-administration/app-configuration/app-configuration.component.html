@@ -21,7 +21,7 @@
       <mat-card-content>
         <!-- DEBUG ⚠️ types: {{ customTypesExist() | json }} -->
         <p>
-          Settings are things like SQL-connection strings, default "items-to-show" numbers and similar. If necessary, settings like a link
+           Settings are things like SQL-connection strings, default "items-to-show" numbers and similar. If necessary, settings like a link
           to an RSS-Feed could be different in each language.
           <a href="https://go.2sxc.org/settings" target="_blank">docs</a>
         </p>
@@ -418,7 +418,7 @@
     </ng-template>
   </div>
   <div class="eav-cards-box">
-    <app-app-configuration-card [dialogSettings]="dialogSettings()"> </app-app-configuration-card>
+    <app-app-configuration-card [dialogSettings]="dialogSettings()" [appSettingsInternal]="appSpecsLazy()"> </app-app-configuration-card>
     <!-- LightSpeed -->
     <mat-card class="eav-card">
       <mat-card-header class="eav-card-header">

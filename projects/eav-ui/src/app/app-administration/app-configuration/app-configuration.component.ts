@@ -159,15 +159,11 @@ export class AppConfigurationComponent implements OnInit {
   protected langPermsEnabled = this.#featuresSvc.isEnabled[FeatureNames.PermissionsByLanguage];
 
   #refresh = signal(0);
-
-  #appSpecsLazy = computed(() => {
-    const _ = this.#refresh();
-    return this.#appInternalsService.getAppInternals(/* initial: */ null)
-  });
+  appSpecsLazy = this.#appInternalsService.getAppInternalsLive(this.#refresh, null).value;
 
   /** Statistics for the content-types and fields for later */
   #dataStatistics = computed(() => {
-    const appSpecs = this.#appSpecsLazy()();
+    const appSpecs = this.appSpecsLazy();
 
     if (!appSpecs)
       return null;
@@ -195,18 +191,22 @@ export class AppConfigurationComponent implements OnInit {
 
   /** Test if current types for settings/resources exist, otherwise they must be created before opening dialogs */
   #customTypesExist = computed(() => {
-    const appSpecs = this.#appSpecsLazy()();
+    const appSpecs = this.appSpecsLazy();
     return (!appSpecs)
       ? { settings: false, resources: false }
       : {
-          settings: appSpecs.FieldAll.AppSettings != null,
-          resources: appSpecs.FieldAll.AppResources != null,
-        }
+        settings: appSpecs.FieldAll.AppSettings != null,
+        resources: appSpecs.FieldAll.AppResources != null,
+      }
   });
 
   ngOnInit() {
     // Update dialog router when child a dialog was closesd
-    this.#dialogRouter.doOnDialogClosed(() => this.#refresh.update(v => ++v));
+    this.#dialogRouter.doOnDialogClosed(() => {
+      console.log('2dg close parent');
+      this.#refresh.update(v => ++v)
+
+    });
   }
 
   buttons = computed<Buttons>(() => {
@@ -440,7 +440,7 @@ export class AppConfigurationComponent implements OnInit {
             items: [EditPrep.newFromType(typeName)],
           })}`
         ));
-        if(url) {
+        if (url) {
           window.open(url, "_self");
           return
         }
