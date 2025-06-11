@@ -14,12 +14,12 @@ import { SiteLanguagesStatusComponent } from './site-languages-status/site-langu
 import { SiteLanguagesStatusParams } from './site-languages-status/site-languages-status.models';
 
 @Component({
-    selector: 'app-site-languages',
-    templateUrl: './site-languages.component.html',
-    imports: [
-        MatDialogActions,
-        SxcGridModule,
-    ]
+  selector: 'app-site-languages',
+  templateUrl: './site-languages.component.html',
+  imports: [
+    MatDialogActions,
+    SxcGridModule,
+  ]
 })
 export class SiteLanguagesComponent {
   gridOptions = this.#buildGridOptions();
@@ -27,18 +27,26 @@ export class SiteLanguagesComponent {
   #zoneSvc = transient(ZoneService);
   constructor() {
     ModuleRegistry.registerModules([ClientSideRowModelModule]);
+
+
   }
 
   #refreshLanguagesSig = signal(0);
 
 
-   languages = this.#zoneSvc.getLanguageLive(this.#refreshLanguagesSig).value;
+  languages = this.#zoneSvc.getLanguageLive(this.#refreshLanguagesSig).value;
 
-  #toggleLanguage(language: SiteLanguage, enable: boolean): void {
-    this.#zoneSvc.toggleLanguage(language.Code, enable).subscribe(d => { // wait until the language change
-      this.#refreshLanguagesSig.set(this.#refreshLanguagesSig() + 1);
-    })
-
+  async #toggleLanguage(language: SiteLanguage, enable: boolean) {
+    try {
+      // Wait for the API call to complete and get the status code
+      const status = await this.#zoneSvc.toggleLanguage(language.Code, enable);
+      if (status >= 200 && status < 300) {
+        this.#refreshLanguagesSig.set(this.#refreshLanguagesSig() + 1);
+      }
+      this.#zoneSvc.toggleLanguage(language.Code, enable)
+    } catch (error) {
+      console.error('Error toggling language:', error);
+    }
   }
 
   #buildGridOptions(): GridOptions {

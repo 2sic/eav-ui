@@ -1,6 +1,7 @@
 import { Context as DnnContext } from '@2sic.com/sxc-angular';
 import { HttpClient, httpResource } from '@angular/common/http';
 import { inject, Injectable, Injector } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
 import { Context } from '../../shared/services/context';
 
 /**
@@ -50,6 +51,38 @@ export class HttpServiceBaseSignal {
  */
   protected newHttpResource<T>(request: Parameters<typeof httpResource>[0]) {
     return httpResource<T>(request, { injector: this.injector });
+  }
+
+  /**
+   * Makes an HTTP GET request and returns a Promise with just the status code
+   * @param endpoint - The API endpoint path(will be combined with base URL)
+   * @param options - Angular HttpClient options(headers, params, etc.)
+   * @returns Promise that resolves to the HTTP status code(or error status code)
+  */
+  protected getStatusPromise(
+    endpoint: string,
+    options?: Parameters<typeof this.http.get>[1]
+  ): Promise<number> {
+    try {
+      // Ensure observe: 'response' is included in the options
+      const httpOptions = {
+        ...options,
+        observe: 'response' as const
+      };
+      // Convert the Observable returned by HttpClient to a Promise
+      return firstValueFrom(
+        this.http.get(this.apiUrl(endpoint), httpOptions)
+      )
+        .then(response => response.status)
+        .catch(error => {
+          console.error(`HTTP error in getStatusPromise:`, error);
+          return error?.status ?? 500;
+        });
+    } catch (e: any) {
+      // This catch handles any synchronous errors
+      console.error(`Error in getStatusPromise:`, e);
+      return Promise.resolve(500);
+    }
   }
 
 }

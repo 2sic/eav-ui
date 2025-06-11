@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { firstValueFrom } from 'rxjs';
 import { FileUploadResult } from '../../../shared/components/file-upload-dialog';
 import { HttpServiceBaseSignal } from '../../../shared/services/http-service-base-signal';
 
@@ -43,16 +42,9 @@ export class DataBundlesService extends HttpServiceBaseSignal {
   // }
 
   async saveDataBundlesFetch(guid: string): Promise<number> {
-    try {
-      return (await firstValueFrom(
-        this.http.get(this.apiUrl(webApiDataRootBundleSave), {
-          observe: 'response',
-          params: { appId: this.appId, exportConfiguration: guid, indentation: '1' },
-        })
-      )).status;
-    } catch (e: any) {
-      return e?.status ?? 500;
-    }
+    return this.getStatusPromise(webApiDataRootBundleSave, {
+      params: { appId: this.appId, exportConfiguration: guid, indentation: '1' },
+    });
   }
 
   restoreDataBundles(fileName: string) {

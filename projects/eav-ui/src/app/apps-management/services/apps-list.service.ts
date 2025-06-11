@@ -1,6 +1,6 @@
 import { httpResource } from '@angular/common/http';
 import { Injectable, Signal } from '@angular/core';
-import { firstValueFrom, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { HttpServiceBaseSignal } from '../../shared/services/http-service-base-signal';
 import { App, PendingApp } from '../models/app.model';
 
@@ -70,16 +70,9 @@ export class AppsListService extends HttpServiceBaseSignal {
   }
 
   async flushCache(appId: number): Promise<number> {
-    try {
-      return (await firstValueFrom(
-        this.http.get(this.apiUrl(webApiAppRootFlushcache), {
-          observe: 'response',
-          params: { zoneId: this.zoneId, appId: appId.toString() },
-        })
-      )).status;
-    } catch (e: any) {
-      return e?.status ?? 500;
-    }
+    return this.getStatusPromise(webApiAppRootFlushcache, {
+      params: { zoneId: this.zoneId, appId: appId.toString() },
+    });
   }
 
 }
