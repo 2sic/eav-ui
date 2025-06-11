@@ -66,6 +66,22 @@ export class RegistrationComponent {
     });
   }
 
+  //   retrieveLicense2(): void {
+  //   const retrieveLicense = this.#featuresConfigSvc.retrieveLicenseS().value
+
+  //   if(retrieveLicense === undefined) {
+  //     this.snackBar.open('Failed to retrieve license. Please check console for more information', undefined, { duration: 3000 });
+  //     return;
+  //   } else {
+  //     const message = `License ${retrieveLicense.Success ? 'Info' : 'Error'}: ${retrieveLicense.Message}`;
+  //     const duration = retrieveLicense.Success ? 3000 : 100000;
+  //     const panelClass = retrieveLicense.Success ? undefined : 'snackbar-error';
+  //     this.snackBar.open(message, undefined, { duration, panelClass });
+  //     this.#refreshSystemInfo();
+  //   }
+    
+  // }
+
   registerManually(): void {
     window.open(`https://patrons.2sxc.org/`, '_blank');
   }

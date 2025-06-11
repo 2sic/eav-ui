@@ -18,7 +18,6 @@ export class FeaturesConfigService extends HttpServiceBase {
     return this.http.post<null>(this.apiUrl(webApiFeatSaveNew), featuresStates);
   }
 
-
   getLicenses(): Observable<License[]> { // Use new Signals
     return this.getHttpApiUrl<License[]>(webApiLicSummary);
   }
@@ -50,4 +49,13 @@ export class FeaturesConfigService extends HttpServiceBase {
   retrieveLicense(): Observable<LicenseDownloadInfo> {
     return this.getHttpApiUrl<LicenseDownloadInfo>(webAPiLicenseRetrieve);
   }
+
+  // TODO: 2dg ask 2dm
+  // retrieveLicenseS() {
+  //   return httpResource<LicenseDownloadInfo>(() => ({
+  //     url: this.apiUrl(webAPiLicenseRetrieve),
+  //   }));
+  // }
+
+
 }

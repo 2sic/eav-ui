@@ -217,18 +217,24 @@ export class SystemInfoComponent implements OnInit {
     router.navigate([router.url.replace('system', '') + sideNavPath]);
   }
 
-  // TODO: 2dg new with Signals
-  activatePageLog(form: NgForm) {
+  async activatePageLog(form: NgForm) {
     this.loading.set(true);
     this.snackBar.open('Activating...');
-    this.#sxcInsightsService.activatePageLog(this.pageLogDuration).subscribe(res => {
-      this.loading.set(false);
-      this.snackBar.open(res, null, { duration: 4000 });
-    });
-    if (document.activeElement instanceof HTMLElement) {
-      document.activeElement.blur();
-    }
-    form.resetForm();
-  }
+    try {
+      const result = await this.#sxcInsightsService.activatePageLog(this.pageLogDuration);
 
+      this.snackBar.open(result, null, { duration: 4000 });
+
+      if (document.activeElement instanceof HTMLElement)
+        document.activeElement.blur();
+
+      form.resetForm();
+
+    } catch (error) {
+      console.error('Error activating page log:', error);
+      this.snackBar.open('Failed to activate page log', null, { duration: 4000 });
+    } finally {
+      this.loading.set(false);
+    }
+  }
 }
