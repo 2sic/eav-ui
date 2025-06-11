@@ -62,25 +62,6 @@ export class PipelinesService extends HttpServiceBase {
     });
   }
 
-  // TODO: 2dg Idea, ask 2dm
-  // getAllLiveTest(contentType: string, refresh: Signal<unknown>, initial: Query[] = []) {
-  //   return this.getAllDataLiveOrOnce<Query[]>(webApiEntityList, {
-  //     params: { appId: this.appId, contentType: contentType },
-  //     refresh: refresh,
-  //     initial: initial
-  //   });
-  // }
-
-  // // Just Demo for 2md
-  // getAllOnce(contentType: string, initial: Query[] = []) {
-  //   return this.getAllDataLiveOrOnce<Query[]>(webApiEntityList, {
-  //     params: { appId: this.appId, contentType: contentType },
-  //     initial: initial
-  //   });
-  // }
-
-
-
   /** Experimental httpResource use! */
   getAllRes(contentType: string, initial?: Query[]) {
     const l = this.log.fnIf('getAllRes');

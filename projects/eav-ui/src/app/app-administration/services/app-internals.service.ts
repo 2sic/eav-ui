@@ -1,12 +1,12 @@
 import { httpResource } from '@angular/common/http';
 import { Injectable, Signal } from '@angular/core';
 import { AppInternals } from '../../app-administration/models/app-internals.model';
-import { HttpServiceBase } from '../../shared/services/http-service-base';
+import { HttpServiceBaseSignal } from '../../shared/services/http-service-base-signal';
 
 const webApiRoot = 'admin/appinternals/get';
 
 @Injectable()
-export class AppInternalsService extends HttpServiceBase {
+export class AppInternalsService extends HttpServiceBaseSignal {
 
   /**
    * Fetches AppInternals for given key
@@ -15,13 +15,6 @@ export class AppInternalsService extends HttpServiceBase {
    * @param key key of target metadata item is for
    * @param contentTypeName name of content type where permissions are stored. If blank, backend returns all metadata except permissions
    */
-
-  // TODO: 2dg remove later
-  // getAppInternals(internals: AppInternals): Signal<AppInternals> {
-  //   return this.getSignal<AppInternals>(webApiRoot, {
-  //     params: { appid: this.appId }
-  //   }, internals);
-  // }
 
   getAppInternalsLive(refresh: Signal<unknown>) {
     return httpResource<AppInternals>(() => {
@@ -32,5 +25,4 @@ export class AppInternalsService extends HttpServiceBase {
       });
     });
   }
-
 }

@@ -29,6 +29,9 @@ export class AnalyzeSettingsService extends HttpServiceBase {
   }
 
 
+  
+
+
   getStack(part: Of<typeof AnalyzeParts>, key?: string, view?: string, stringifyValue = false): Observable<SettingsStackItem[]> {
 
     return this.getHttp<SettingsStackItem[]>(webApiAppRoot + 'GetStack', {

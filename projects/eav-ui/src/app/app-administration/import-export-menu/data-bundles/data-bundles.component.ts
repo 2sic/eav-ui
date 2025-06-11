@@ -63,10 +63,10 @@ export class DataBundlesComponent {
     effect(() => {
       const dataBundles = this.#dataBundles();
       if (!dataBundles) return;
-    
+
       dataBundles.forEach(dataBundle => {
         if (!dataBundle?.Guid) return;
-    
+
         this.#dataBundlesQueryService.fetchQuery(dataBundle.Guid).subscribe({
           next: (data) => {
             untracked(() => {
@@ -74,7 +74,7 @@ export class DataBundlesComponent {
                 Guid: dataBundle.Guid,
                 Result: data
               } satisfies BundleQuery;
-    
+
               this.#queryResults.update(results => [...results, bundleQuery]);
             });
           },
@@ -83,7 +83,7 @@ export class DataBundlesComponent {
       });
     });
 
-   }
+  }
 
   #defaultContentTypeId = "d7f2e4fa-5306-41bb-a3cd-d9529c838879";
   FileUploadMessageTypes = FileUploadMessageTypes;
@@ -100,7 +100,7 @@ export class DataBundlesComponent {
     upload$: (files: File[]) => this.#dataBundlesService.import(files),
   };
 
-   #dataBundles = this.#contentItemsSvc.getAllLive(
+  #dataBundles = this.#contentItemsSvc.getAllLive(
     this.#defaultContentTypeId,
     this.#refresh
   ).value;
@@ -133,9 +133,9 @@ export class DataBundlesComponent {
 
   heightStyle = computed(() => {
     const dataSourceData = this.dataSourceData();
-    if(dataSourceData.length === 0) 
+    if (dataSourceData.length === 0)
       return `height: 135px`;
-    
+
     return `height: ${dataSourceData.length * 46 + 90}px`;
   });
 
@@ -236,13 +236,29 @@ export class DataBundlesComponent {
     this.#dataBundlesService.exportDataBundle(item.Guid);
   }
 
-  // Save State
-  #saveState(item: ContentItem) {
+  // TODO: 2dg Remove later
+  // Old with Observable
+  // #saveState(item: ContentItem) {
+  //   this.snackBar.open('Save Bundle State...');
+  //   this.#dataBundlesService.saveDataBundles(item.Guid).subscribe({
+  //     next: _ => this.snackBar.open('Export completed into the \'App_Data\' folder.', null, { duration: 3000 }),
+  //     error: _ => this.snackBar.open('Export failed. Please check console for more information', null, { duration: 3000 }),
+  //   });
+  // }
+
+  // Save State wit Fetch
+  async #saveState(item: ContentItem) {
     this.snackBar.open('Save Bundle State...');
-    this.#dataBundlesService.saveDataBundles(item.Guid).subscribe({
-      next: _ => this.snackBar.open('Export completed into the \'App_Data\' folder.', null, { duration: 3000 }),
-      error: _ => this.snackBar.open('Export failed. Please check console for more information', null, { duration: 3000 }),
-    });
+    try {
+      const status = await this.#dataBundlesService.saveDataBundlesFetch(item.Guid);
+      // Check the status code
+      if (status >= 200 && status < 300) {
+        this.snackBar.open('Export completed into the \'App_Data\' folder.', null, { duration: 3000 });
+      }
+    } catch (statusCode) {
+      this.snackBar.open('Export failed. Please check console for more information', null, { duration: 3000 });
+      console.error('Export error:', statusCode);
+    }
   }
 
   // Restore State

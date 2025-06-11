@@ -13,14 +13,14 @@ import { AnalyzeSettingsValueComponent } from '../analyze-settings-value/analyze
 import { AnalyzeParts, SettingsStackItem } from '../analyze-settings.models';
 
 @Component({
-    selector: 'app-settings-item-details',
-    templateUrl: './settings-item-details.component.html',
-    styleUrls: ['./settings-item-details.component.scss'],
-    imports: [
-        MatButtonModule,
-        MatIconModule,
-        SxcGridModule,
-    ]
+  selector: 'app-settings-item-details',
+  templateUrl: './settings-item-details.component.html',
+  styleUrls: ['./settings-item-details.component.scss'],
+  imports: [
+    MatButtonModule,
+    MatIconModule,
+    SxcGridModule,
+  ]
 })
 export class SettingsItemDetailsComponent implements OnInit {
   part: Of<typeof AnalyzeParts>;
@@ -28,6 +28,9 @@ export class SettingsItemDetailsComponent implements OnInit {
   settingsItemKey: string;
 
   stack = signal<SettingsStackItem[]>(undefined);
+
+  stack2 = signal<SettingsStackItem[]>(undefined);
+
 
   gridOptions = this.buildGridOptions();
 
@@ -44,6 +47,8 @@ export class SettingsItemDetailsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // // TODO: 2dg
+    // this.stack2.set(this.analyzeSettingsService.getStackSig(this.part, this.settingsItemKey, this.selectedView, false)());
     this.analyzeSettingsService.getStack(this.part, this.settingsItemKey, this.selectedView, true).subscribe(stack => {
       this.stack.set(stack);
     });

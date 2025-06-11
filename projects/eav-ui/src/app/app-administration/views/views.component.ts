@@ -330,6 +330,8 @@ export class ViewsComponent implements OnInit {
     if (!confirm(`Delete '${view.Name}' (${view.Id})?`)) return;
     this.snackBar.open('Deleting...');
 
+    console.log("2dg delete");
+
     // TODO: 2dg, ask 2dm delete with httpResource
     // const deleteRes = this.#viewsSvc.deleteNew(view.Id).value;
     // console.log("2dg", deleteRes());
