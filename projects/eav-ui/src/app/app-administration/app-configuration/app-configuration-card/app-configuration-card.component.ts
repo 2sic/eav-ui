@@ -57,8 +57,7 @@ export class AppConfigurationCardComponent implements OnDestroy {
 
   contentItem = this.#contentItemsSvc.getAllLive(
     eavConstants.contentTypes.appConfiguration,
-    this.refresh,
-    /* initial: */ null
+    this.refresh
   ).value;
 
   ngOnDestroy() {

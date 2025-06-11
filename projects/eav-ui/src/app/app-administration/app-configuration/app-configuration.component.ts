@@ -159,7 +159,7 @@ export class AppConfigurationComponent implements OnInit {
   protected langPermsEnabled = this.#featuresSvc.isEnabled[FeatureNames.PermissionsByLanguage];
 
   refresh = signal(0);
-  appSpecsLazy = this.#appInternalsService.getAppInternalsLive(this.refresh, null).value;
+  appSpecsLazy = this.#appInternalsService.getAppInternalsLive(this.refresh).value;
 
   /** Statistics for the content-types and fields for later */
   #dataStatistics = computed(() => {

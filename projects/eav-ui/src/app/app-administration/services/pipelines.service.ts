@@ -50,7 +50,7 @@ export class PipelinesService extends HttpServiceBase {
   }
 
   // Full Code, repated x times
-  getAllLive(contentType: string, refresh: Signal<unknown>, initial: Query[] = []) {
+  getAllLive(contentType: string, refresh: Signal<unknown>) {
     this.log.fnIf('getAllLive', { contentType, refresh });
     return httpResource<Query[]>(() => {
       refresh();
@@ -58,8 +58,6 @@ export class PipelinesService extends HttpServiceBase {
         url: this.apiUrl(webApiEntityList),
         params: { appId: this.appId, contentType: contentType }
       });
-    }, {
-      defaultValue: initial
     });
   }
 

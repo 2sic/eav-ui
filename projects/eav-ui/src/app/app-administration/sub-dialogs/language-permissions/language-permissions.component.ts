@@ -40,7 +40,7 @@ export class LanguagePermissionsComponent implements OnInit {
 
   #refresh = signal(0);
 
-  languages = this.#zoneSvc.getLanguagesPermissionsLive(this.#refresh, undefined).value
+  languages = this.#zoneSvc.getLanguagesPermissionsLive(this.#refresh).value
 
   ngOnInit(): void {
     this.#dialogRouting.doOnDialogClosed(() => {

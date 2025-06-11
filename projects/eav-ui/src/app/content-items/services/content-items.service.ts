@@ -37,19 +37,17 @@ export class ContentItemsService extends HttpServiceBase {
   //   }, initial);
   // }
 
-   getAllOnce(contentTypeStaticName: string, initial: ContentItem[] = []) {
+  getAllOnce(contentTypeStaticName: string) {
     this.log.fnIf('getAllOnce', { contentTypeStaticName });
     return httpResource<ContentItem[]>(() => {
       return ({
         url: this.apiUrl(webApiEntityList),
         params: { appId: this.appId, contentType: contentTypeStaticName }
       });
-    }, {
-      defaultValue: initial
     });
   }
 
-  getAllLive(contentTypeStaticName: string, refresh: Signal<unknown>, initial: ContentItem[] = []) {
+  getAllLive(contentTypeStaticName: string, refresh: Signal<unknown>) {
     this.log.fnIf('getAllLive', { contentTypeStaticName, refresh });
     return httpResource<ContentItem[]>(() => {
       refresh();
@@ -57,8 +55,6 @@ export class ContentItemsService extends HttpServiceBase {
         url: this.apiUrl(webApiEntityList),
         params: { appId: this.appId, contentType: contentTypeStaticName }
       });
-    }, {
-      defaultValue: initial
     });
   }
 

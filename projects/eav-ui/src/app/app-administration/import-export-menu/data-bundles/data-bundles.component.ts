@@ -102,8 +102,7 @@ export class DataBundlesComponent {
 
    #dataBundles = this.#contentItemsSvc.getAllLive(
     this.#defaultContentTypeId,
-    this.#refresh,
-    /* initial: */ null
+    this.#refresh
   ).value;
 
   // Data from QueryData for Table

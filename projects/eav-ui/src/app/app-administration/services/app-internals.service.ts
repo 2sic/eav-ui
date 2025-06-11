@@ -23,15 +23,13 @@ export class AppInternalsService extends HttpServiceBase {
   //   }, internals);
   // }
 
-  getAppInternalsLive(refresh: Signal<unknown>, initial: AppInternals) {
+  getAppInternalsLive(refresh: Signal<unknown>) {
     return httpResource<AppInternals>(() => {
       refresh();
       return ({
         url: this.apiUrl(webApiRoot),
         params: { appid: this.appId }
       });
-    }, {
-      defaultValue: initial
     });
   }
 

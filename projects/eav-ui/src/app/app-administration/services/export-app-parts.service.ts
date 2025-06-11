@@ -8,7 +8,7 @@ const webApiAppPartsGet = 'admin/appParts/get';
 @Injectable()
 export class ExportAppPartsService extends HttpServiceBase {
 
-  getContentInfoLiveParam(scope: Signal<string>, initial: ContentInfo = undefined) {
+  getContentInfoLiveParam(scope: Signal<string>) {
     return httpResource<ContentInfo>(() => {
       return {
         url: this.apiUrl(webApiAppPartsGet),
@@ -18,8 +18,6 @@ export class ExportAppPartsService extends HttpServiceBase {
           scope: scope()
         }
       };
-    }, {
-      defaultValue: initial
     });
   }
 

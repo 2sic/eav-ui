@@ -7,20 +7,18 @@ import { SystemInfoSet } from '../models/system-info.model';
 const webApiZoneRootGetLanguages = 'admin/zone/GetLanguages';
 const webApiZoneRootSwitchLanguage = 'admin/zone/SwitchLanguage';
 const webApiZoneRootGetSystemInfo = 'admin/zone/GetSystemInfo';
-const webApiAppRootRootlanguages = 'admin/app/languages';
+const webApiAppRootLanguages = 'admin/app/languages';
 
 @Injectable()
 export class ZoneService extends HttpServiceBase {
 
-  getLanguageLive(refresh: Signal<unknown>, initial: undefined = undefined) {
+  getLanguageLive(refresh: Signal<unknown>) {
     return httpResource<SiteLanguage[]>(() => {
       refresh();
       return ({
         url: this.apiUrl(webApiZoneRootGetLanguages),
         params: { appId: this.appId }
       });
-    }, {
-      defaultValue: initial
     });
   }
 
@@ -36,27 +34,23 @@ export class ZoneService extends HttpServiceBase {
   //   });
   // }
 
-  getSystemInfoLive(refresh: Signal<unknown>, initial: undefined = undefined) {
+  getSystemInfoLive(refresh: Signal<unknown>) {
     return httpResource<SystemInfoSet>(() => {
       refresh();
       return ({
         url: this.apiUrl(webApiZoneRootGetSystemInfo),
       });
-    }, {
-      defaultValue: initial
     });
   }
 
-  getLanguagesPermissionsLive(refresh: Signal<unknown>, initial: undefined = undefined) {
+  getLanguagesPermissionsLive(refresh: Signal<unknown>) {
     return httpResource<SiteLanguagePermissions[]>(() => {
       refresh();
       return ({
-        url: this.apiUrl(webApiAppRootRootlanguages),
+        url: this.apiUrl(webApiAppRootLanguages),
         params: { appId: this.appId }
       });
-    }, {
-      defaultValue: initial
     });
   }
- 
+
 }

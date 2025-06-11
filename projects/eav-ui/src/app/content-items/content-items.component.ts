@@ -101,7 +101,7 @@ export class ContentItemsComponent implements OnInit {
   #contentTypeStaticName = this.#dialogRouter.getParam('contentTypeStaticName');
   contentType = this.#contentTypesSvc.getType(this.#contentTypeStaticName).value;
 
-  #itemsRaw = this.#contentItemsSvc.getAllLive(this.#contentTypeStaticName, this.#refresh, undefined).value;
+  #itemsRaw = this.#contentItemsSvc.getAllLive(this.#contentTypeStaticName, this.#refresh).value;
 
   items = computed(() => {
     const data = this.#itemsRaw();

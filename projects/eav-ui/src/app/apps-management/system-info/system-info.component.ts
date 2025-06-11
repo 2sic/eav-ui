@@ -65,8 +65,8 @@ export class SystemInfoComponent implements OnInit {
   //   return this.#zoneSvc.getLanguage(undefined);
   // })
 
-  #languages = this.#zoneSvc.getLanguageLive(this.#refresh, undefined).value;
-  #systemInfoSet = this.#zoneSvc.getSystemInfoLive(this.#refresh, undefined).value;
+  #languages = this.#zoneSvc.getLanguageLive(this.#refresh).value;
+  #systemInfoSet = this.#zoneSvc.getSystemInfoLive(this.#refresh).value;
 
   systemInfos = computed(() => {
     const systemInfoSetValue = this.#systemInfoSet();

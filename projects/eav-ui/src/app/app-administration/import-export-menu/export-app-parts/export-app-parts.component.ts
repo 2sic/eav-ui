@@ -49,7 +49,7 @@ export class ExportAppPartsComponent {
   isExporting = signal(false);
   exportScope = signal(eavConstants.scopes.default.value);
 
-  contentInfo = this.#exportAppPartsSvc.getContentInfoLiveParam(this.exportScope, null).value;
+  contentInfo = this.#exportAppPartsSvc.getContentInfoLiveParam(this.exportScope).value;
 
   scopeOptions = this.#contentTypesSvc.getScopesSig(null) as WritableSignal<ScopeOption[]>;
 
