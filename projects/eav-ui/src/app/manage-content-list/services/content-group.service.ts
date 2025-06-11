@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { httpResource } from '@angular/common/http';
+import { Injectable, Signal } from '@angular/core';
 import { ReplaceConfig } from '../../replace-content/replace-config.model';
 import { HttpServiceBase } from '../../shared/services/http-service-base';
 import { ContentGroup, ContentGroupAdd } from '../models/content-group.model';
@@ -40,10 +41,21 @@ export class ContentGroupService extends HttpServiceBase {
     });
   }
 
-  getHeader(contentGroup: ContentGroup, initial: GroupHeader) {
-    return this.getSignal<GroupHeader>(webApiContentGroup + 'header', {
-      params: { appId: this.appId, guid: contentGroup.guid }
-    }, initial);
+  // TODO: 2dg remove later
+  // getHeader(contentGroup: ContentGroup, initial: GroupHeader) {
+  //   return this.getSignal<GroupHeader>(webApiContentGroup + 'header', {
+  //     params: { appId: this.appId, guid: contentGroup.guid }
+  //   }, initial);
+  // }
+
+  getAllLive(contentGroup: ContentGroup, refresh: Signal<unknown>) {
+    return httpResource<GroupHeader>(() => {
+      refresh();
+      return ({
+        url: this.apiUrl(webApiContentGroup + 'header'),
+        params: { appId: this.appId, guid: contentGroup.guid }
+      });
+    });
   }
 
 }

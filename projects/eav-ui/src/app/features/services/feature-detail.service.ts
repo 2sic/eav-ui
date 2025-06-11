@@ -8,16 +8,24 @@ const webApiFeatureDetails = "admin/feature/details";
 @Injectable()
 export class FeatureDetailService extends HttpServiceBase {
 
-  getFeatureDetail(nameId: string): Signal<Feature> {
-    return this.getSignal<Feature>(webApiFeatureDetails, {
-      params: { nameId }
-    });
+  // TODO: 2dg remove later
+  // getFeatureDetail(nameId: string): Signal<Feature> {
+  //   return this.getSignal<Feature>(webApiFeatureDetails, {
+  //     params: { nameId }
+  //   });
+  // }
+
+  getFeatureDetail(nameId: Signal<string>) {
+    return this.newHttpResource<Feature>(() => ({
+      url: this.apiUrl(webApiFeatureDetails),
+      params: { nameId: nameId() },
+    }));
   }
 
   getFeatureDetails(nameIds: string[]): Signal<Feature[]> {
     const featureList = signal<Feature[]>([]);
     for (const nameId of nameIds) {
-      this.xx(nameId).subscribe(feature => {
+      this.temp(nameId).subscribe(feature => {
         featureList.update(prev => [...prev, feature]);
       });
     }
@@ -39,7 +47,7 @@ export class FeatureDetailService extends HttpServiceBase {
   // }
 
   // Remove later
-  xx(nameId: string): Observable<Feature> {
+  private temp(nameId: string): Observable<Feature> {
     return this.getHttpApiUrl<Feature>(webApiFeatureDetails, {
       params: { nameId }
     });

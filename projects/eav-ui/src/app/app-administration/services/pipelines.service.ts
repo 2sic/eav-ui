@@ -41,13 +41,14 @@ export class PipelinesService extends HttpServiceBase {
     }));
   }
 
-  getAllSig(contentType: string, initial?: Query[]) {
-    const l = this.log.fnIf('getAllSig');
-    const sig = this.getSignal<Query[]>(webApiEntityList, {
-      params: { appId: this.appId, contentType }
-    }, initial);
-    return l.r(sig);
-  }
+    // TODO: 2dg remove later
+  // getAllSig(contentType: string, initial?: Query[]) {
+  //   const l = this.log.fnIf('getAllSig');
+  //   const sig = this.getSignal<Query[]>(webApiEntityList, {
+  //     params: { appId: this.appId, contentType }
+  //   }, initial);
+  //   return l.r(sig);
+  // }
 
   // Full Code, repated x times
   getAllLive(contentType: string, refresh: Signal<unknown>) {

@@ -25,7 +25,7 @@ export class FeatureInfoDialogComponent implements OnInit {
 
   ngOnInit() {
     this.featureId.set(this.route.snapshot.data['featureId'] || this.dialogData || '');
-    this.featureDetails = this.#featureDetailSvc.getFeatureDetail(this.featureId());
+    this.featureDetails = this.#featureDetailSvc.getFeatureDetail(this.featureId).value;
   }
 
   protected featureDetails: any;
