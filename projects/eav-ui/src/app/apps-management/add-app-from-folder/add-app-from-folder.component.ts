@@ -43,7 +43,7 @@ export class AddAppFromFolderComponent  {
     private snackBar: MatSnackBar,
   ) {}
 
-  pendingApps = this.#appsListService.getPendingApps() as WritableSignal<PendingApp[]>;
+  pendingApps = this.#appsListService.getPendingApps().value as WritableSignal<PendingApp[]>;
 
   closeDialog(): void {
     this.dialog.close();

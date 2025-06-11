@@ -1,7 +1,7 @@
 import { httpResource } from '@angular/common/http';
 import { Injectable, Signal } from '@angular/core';
-import { Observable } from 'rxjs';
-import { HttpServiceBase } from '../../shared/services/http-service-base';
+import { firstValueFrom, Observable } from 'rxjs';
+import { HttpServiceBaseSignal } from '../../shared/services/http-service-base-signal';
 import { App, PendingApp } from '../models/app.model';
 
 const webApiAppRootList = 'admin/app/list';
@@ -12,24 +12,7 @@ const webApiAppRootInstallPendingApps = 'admin/app/InstallPendingApps';
 const webApiAppRootFlushcache = 'admin/app/flushcache';
 
 @Injectable()
-export class AppsListService extends HttpServiceBase {
-
-  // TODO: 2dg Only for example - remove later
-  // old 
-  // getAllOld() {
-  //   return this.getSignal<App[]>(webApiAppRootList, {
-  //     params: { zoneId: this.zoneId }
-  //   });
-  // }
-
-  // TODO: 2dg Only for example - remove later
-  // Method, create new every time if call 
-  // getAll() {
-  //   return this.newHttpResource<App[]>(() => ({
-  //     url: this.apiUrl(webApiAppRootList),
-  //     params: { zoneId: this.zoneId }
-  //   }));
-  // }
+export class AppsListService extends HttpServiceBaseSignal {
 
   // clean way to create a new resource every time if refresh change
   getAllLive(refresh: Signal<unknown>) {
@@ -43,15 +26,17 @@ export class AppsListService extends HttpServiceBase {
   }
 
   getInheritable() {
-    return this.getSignal<App[]>(webApiAppRootInheritableApps, {
+    return httpResource<App[]>(() => ({
+      url: this.apiUrl(webApiAppRootInheritableApps),
       params: { zoneId: this.zoneId }
-    });
+    }));
   }
 
   getPendingApps() {
-    return this.getSignal<PendingApp[]>(webApiAppRootPendingApps, {
+    return httpResource<PendingApp[]>(() => ({
+      url: this.apiUrl(webApiAppRootPendingApps),
       params: { zoneId: this.zoneId },
-    });
+    }));
   }
 
   create(name: string, inheritAppId?: number, templateId?: number) {
@@ -84,9 +69,17 @@ export class AppsListService extends HttpServiceBase {
     });
   }
 
-  flushCache(appId: number) {
-    return this.getHttpApiUrl<null>(webApiAppRootFlushcache, {
-      params: { zoneId: this.zoneId, appId: appId.toString() },
-    });
+  async flushCache(appId: number): Promise<number> {
+    try {
+      return (await firstValueFrom(
+        this.http.get(this.apiUrl(webApiAppRootFlushcache), {
+          observe: 'response',
+          params: { zoneId: this.zoneId, appId: appId.toString() },
+        })
+      )).status;
+    } catch (e: any) {
+      return e?.status ?? 500;
+    }
   }
+
 }

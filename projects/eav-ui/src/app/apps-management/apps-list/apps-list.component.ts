@@ -140,15 +140,22 @@ export class AppsListComponent implements OnInit {
     }
   }
 
-  #flushApp(app: App): void {
+  async #flushApp(app: App) {
     if (!confirm(`Flush the App Cache for ${app.Name} (${app.Id})?`))
       return;
     this.snackBar.open('Flushing cache...');
-    this.#appsListSvc.flushCache(app.Id).subscribe({
-      error: () => this.snackBar.open('Cache flush failed. Please check console.', undefined, { duration: 3000 }),
-      next: () => this.snackBar.open('Cache flushed', undefined, { duration: 2000 }),
-    });
+    try {
+      const status = await this.#appsListSvc.flushCache(app.Id);
+      // Check the status code
+      if (status >= 200 && status < 300) {
+        this.snackBar.open('Cache flushed', undefined, { duration: 2000 })
+      }
+    } catch (statusCode) {
+      this.snackBar.open('Cache flush failed. Please check console.', undefined, { duration: 3000 }),
+        console.error('Export error:', statusCode);
+    }
   }
+
 
   #getLightSpeedLink(app?: App): string {
     const formUrl = convertFormToUrl(AppAdminHelpers.getLightSpeedEditParams(app.Id));
