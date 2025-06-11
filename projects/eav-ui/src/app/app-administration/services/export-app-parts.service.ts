@@ -1,12 +1,12 @@
 import { httpResource } from '@angular/common/http';
 import { Injectable, Signal } from '@angular/core';
-import { HttpServiceBase } from '../../shared/services/http-service-base';
+import { HttpServiceBaseSignal } from '../../shared/services/http-service-base-signal';
 import { ContentInfo } from '../models/content-info.model';
 import { webApiAppPartsRoot } from './import-app-parts.service';
 
 const webApiAppPartsGet = 'admin/appParts/get';
 @Injectable()
-export class ExportAppPartsService extends HttpServiceBase {
+export class ExportAppPartsService extends HttpServiceBaseSignal {
 
   getContentInfoLiveParam(scope: Signal<string>) {
     return httpResource<ContentInfo>(() => {

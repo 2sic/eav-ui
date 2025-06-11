@@ -72,11 +72,10 @@ export class ViewsComponent implements OnInit {
 
   #refresh = signal(1); // must start with 1 so it can be chained in computed as ...refresh() && ...
   views = this.#viewsSvc.getAllLive(this.#refresh).value;
-
-  #polymorphismLazy = computed(() => this.#refresh() && this.#viewsSvc.getPolymorphism());
+  #polymorphismLazy = this.#viewsSvc.getPolymorphismLive(this.#refresh).value;
 
   polymorphStatus = computed(() => {
-    const polymorphism = this.#polymorphismLazy()();
+    const polymorphism = this.#polymorphismLazy();
     return polymorphism?.Id == null // polymorphism could be undefined, and id could be null
       ? 'not configured'
       : polymorphism.Resolver === null
@@ -130,7 +129,7 @@ export class ViewsComponent implements OnInit {
     const polymorphismSignal = this.#polymorphismLazy();
     if (!polymorphismSignal) return;
 
-    const polymorphism = polymorphismSignal();
+    const polymorphism = polymorphismSignal;
     if (!polymorphism) return;
 
     const itemsEntry = !polymorphism.Id
@@ -326,26 +325,19 @@ export class ViewsComponent implements OnInit {
     );
   }
 
-  #deleteView(view: View) {
+  async #deleteView(view: View) {
     if (!confirm(`Delete '${view.Name}' (${view.Id})?`)) return;
     this.snackBar.open('Deleting...');
-
-    console.log("2dg delete");
-
-    // TODO: 2dg, ask 2dm delete with httpResource
-    // const deleteRes = this.#viewsSvc.deleteNew(view.Id).value;
-    // console.log("2dg", deleteRes());
-
-    // if (deleteRes()) {
-    //   this.snackBar.open('Deleted', null, { duration: 2000 });
-    //   this.#triggerRefresh();
-    // } else
-    //   return
-
-    this.#viewsSvc.delete(view.Id).subscribe(() => {
-      this.snackBar.open('Deleted', null, { duration: 2000 });
-      this.#triggerRefresh();
-    });
+    try {
+      const status = await this.#viewsSvc.delete(view.Id);
+      if (status >= 200 && status < 300) {
+        this.snackBar.open('Deleted', null, { duration: 2000 });
+        this.#triggerRefresh();
+      }
+    } catch (error) {
+      console.error('Error deleting view:', error);
+      this.snackBar.open('Error deleting view', null, { duration: 2000 });
+    }
   }
 
   #getLightSpeedLink(view?: View): string {

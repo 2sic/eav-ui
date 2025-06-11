@@ -51,7 +51,7 @@ export class ExportAppPartsComponent {
 
   contentInfo = this.#exportAppPartsSvc.getContentInfoLiveParam(this.exportScope).value;
 
-  scopeOptions = this.#contentTypesSvc.getScopesSig(null) as WritableSignal<ScopeOption[]>;
+  scopeOptions = this.#contentTypesSvc.getScopesSig() as WritableSignal<ScopeOption[]>;
 
   loading = computed(() => {
     const contentInfo = this.contentInfo();

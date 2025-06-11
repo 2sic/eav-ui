@@ -40,7 +40,7 @@ export class ViewsUsageComponent {
 
   viewGuid = this.route.snapshot.paramMap.get('guid');
 
-  #usage = this.viewsService.getUsage(this.viewGuid);
+  #usage = this.viewsService.getUsage(this.viewGuid).value;
 
   view = computed(() => {
     const usage = this.#usage();

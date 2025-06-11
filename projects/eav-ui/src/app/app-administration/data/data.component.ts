@@ -67,9 +67,10 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
   #contentExportSvc = transient(ContentExportService);
   #dialogConfigSvc = transient(DialogConfigAppService);
   #dialogRouter = transient(DialogRoutingService);
-  // #router = transient(Router);
 
-  constructor() { super(); }
+  constructor() {
+    super();
+  }
 
   contentTypes = signal<ContentType[]>(undefined);
   scope = signal<string>(undefined);
@@ -80,6 +81,9 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
   gridOptions = this.#buildGridOptions();
   dropdownInsertValue = dropdownInsertValue;
   enablePermissions!: boolean;
+
+
+
 
   ngOnInit() {
     this.#fetchScopes();

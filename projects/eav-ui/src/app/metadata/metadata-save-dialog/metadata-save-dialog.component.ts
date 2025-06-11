@@ -54,7 +54,7 @@ export class MetadataSaveDialogComponent implements OnInit {
   ) { }
 
   scope = signal(eavConstants.scopes.default.value);
-  scopeOptions = this.#contentTypesService.getScopesSig(undefined) as WritableSignal<ScopeOption[]>;
+  scopeOptions = this.#contentTypesService.getScopesSig() as WritableSignal<ScopeOption[]>;
 
   contentTypes = this.#contentTypesService.getTypes(this.scope).value;
 
