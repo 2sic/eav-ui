@@ -32,13 +32,20 @@ export class AppStateComponent implements OnDestroy {
     this.snackBar.dismiss();
   }
 
-  exportAppXml(withFiles: boolean) {
-    this.snackBar.open('Exporting...');
-    this.#exportAppSvc.exportForVersionControl({ includeContentGroups: true, resetAppGuid: false, withFiles }).subscribe({
-      next: _ => this.snackBar.open('Export completed into the \'App_Data\' folder.', null, { duration: 3000 }),
-      error: _ => this.snackBar.open('Export failed. Please check console for more information', null, { duration: 3000 }),
-    });
-  }
+
+  async exportAppXml(withFiles: boolean) {
+     this.snackBar.open('Exporting...');
+      try {
+        // Wait for the API call to complete and get the status code
+        const status = await this.#exportAppSvc.exportForVersionControl({ includeContentGroups: true, resetAppGuid: false, withFiles });
+        if (status >= 200 && status < 300) {
+        this.snackBar.open('2Export completed into the \'App_Data\' folder.', null, { duration: 3000 })
+        }
+      } catch (error) {
+        console.error('Error toggling language:', error);
+        this.snackBar.open('Export failed. Please check console for more information', null, { duration: 3000 })
+      }
+    }
 
   resetApp(withFiles: boolean) {
     if (!confirm('Are you sure? All changes since last xml export will be lost'))
