@@ -11,6 +11,12 @@ import { SxcGridModule } from '../../../../shared/modules/sxc-grid-module/sxc-gr
 import { AnalyzeSettingsService } from '../../../services/analyze-settings.service';
 import { AnalyzeSettingsValueComponent } from '../analyze-settings-value/analyze-settings-value.component';
 import { AnalyzeParts, SettingsStackItem } from '../analyze-settings.models';
+  // TODO: 2dg not works
+// interface AnalyzeRouteParams {
+//   part: Of<typeof AnalyzeParts>;
+//   selectedView: string;
+//   settingsItemKey: string;
+// }
 
 @Component({
   selector: 'app-settings-item-details',
@@ -27,28 +33,46 @@ export class SettingsItemDetailsComponent implements OnInit {
   selectedView: string;
   settingsItemKey: string;
 
-  stack = signal<SettingsStackItem[]>(undefined);
-
-  stack2 = signal<SettingsStackItem[]>(undefined);
-
-
-  gridOptions = this.buildGridOptions();
 
   private analyzeSettingsService = transient(AnalyzeSettingsService);
+  stack = signal<SettingsStackItem[]>(undefined);
+
+  // TODO: 2dg not works
+  // #routeParams = signal<AnalyzeRouteParams | undefined>(undefined);
+
+  // stack2 = computed(() => {
+  //   const params = this.#routeParams();
+  //   if (!params) return []; // Return empty array or appropriate default
+  //   const { part, settingsItemKey, selectedView } = params;
+  //   // Assuming getStackSig returns a signal, we need to invoke it to get the value
+  //   const stackSignal = this.analyzeSettingsService.getStackSig(part, settingsItemKey, selectedView);
+  //   // console.log('stackSignal', stackSignal());
+  //   return stackSignal.value(); // Return the actual stack items
+  // });
+
+  gridOptions = this.buildGridOptions();
 
   constructor(
     private dialog: MatDialogRef<SettingsItemDetailsComponent>,
     private route: ActivatedRoute,
   ) {
+    // Capture route parameters
     this.part = this.route.snapshot.parent.paramMap.get('part') as Of<typeof AnalyzeParts>;
     const routeViewGuid = this.route.snapshot.paramMap.get('view');
     this.selectedView = ['undefined', 'null'].includes(routeViewGuid) ? undefined : routeViewGuid;
     this.settingsItemKey = this.route.snapshot.paramMap.get('settingsItemKey');
+  
+    // TODO: 2dg not works
+    // // Set route parameters
+    // this.#routeParams.set({
+    //   part: this.part,
+    //   selectedView: this.selectedView,
+    //   settingsItemKey: this.settingsItemKey,
+    // });
+
   }
 
   ngOnInit(): void {
-    // // TODO: 2dg
-    // this.stack2.set(this.analyzeSettingsService.getStackSig(this.part, this.settingsItemKey, this.selectedView, false)());
     this.analyzeSettingsService.getStack(this.part, this.settingsItemKey, this.selectedView, true).subscribe(stack => {
       this.stack.set(stack);
     });

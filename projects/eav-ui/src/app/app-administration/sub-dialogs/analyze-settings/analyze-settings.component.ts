@@ -22,19 +22,19 @@ import { AnalyzeSettingsValueComponent } from './analyze-settings-value/analyze-
 import { AnalyzeParts } from './analyze-settings.models';
 
 @Component({
-    selector: 'app-analyze-settings',
-    templateUrl: './analyze-settings.component.html',
-    styleUrls: ['./analyze-settings.component.scss'],
-    imports: [
-        MatButtonModule,
-        MatIconModule,
-        RouterOutlet,
-        MatFormFieldModule,
-        MatSelectModule,
-        FormsModule,
-        MatOptionModule,
-        SxcGridModule,
-    ]
+  selector: 'app-analyze-settings',
+  templateUrl: './analyze-settings.component.html',
+  styleUrls: ['./analyze-settings.component.scss'],
+  imports: [
+    MatButtonModule,
+    MatIconModule,
+    RouterOutlet,
+    MatFormFieldModule,
+    MatSelectModule,
+    FormsModule,
+    MatOptionModule,
+    SxcGridModule,
+  ]
 })
 export class AnalyzeSettingsComponent implements OnInit {
   part: Of<typeof AnalyzeParts>;
@@ -57,8 +57,19 @@ export class AnalyzeSettingsComponent implements OnInit {
     this.#analyzeSettingsSvc.getStackSig(this.part, undefined, this.selectedView(), true)
   );
 
+  // TODO: 2dg not works
+  //  stack = computed(() => {
+  //   const stackSignal = this.#analyzeSettingsSvc.getStackSig(this.part, undefined, this.selectedView());
+  //   const stackItems = stackSignal.value();
+  //   return stackItems.map(item => ({
+  //     ...item,
+  //     _value: JSON.stringify(item.Value)
+  //   }));
+  // });
+
   ngOnInit(): void {
     this.#getStack();
+
   }
 
   closeDialog(): void {
@@ -101,6 +112,7 @@ export class AnalyzeSettingsComponent implements OnInit {
           field: 'TotalResults',
           width: 72,
           cellClass: 'no-outline',
+
           cellRenderer: AnalyzeSettingsTotalResultsComponent,
           cellRendererParams: (() => {
             const params: AnalyzeSettingsTotalResultsParams = {
@@ -111,6 +123,7 @@ export class AnalyzeSettingsComponent implements OnInit {
             return params;
           })(),
         },
+
       ],
     };
     return gridOptions;

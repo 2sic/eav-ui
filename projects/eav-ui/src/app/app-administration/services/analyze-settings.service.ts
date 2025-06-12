@@ -9,6 +9,21 @@ import { AnalyzeParts, SettingsStackItem } from '../sub-dialogs/analyze-settings
 export class AnalyzeSettingsService extends HttpServiceBase {
 
 
+  // TODO: 2dg, not works
+  // getStackSigHttpResource(part: Of<typeof AnalyzeParts>, key?: string, view?: string) {
+  //   // const stackSignal = signal<SettingsStackItem[]>([]);
+  //   return this.newHttpResource<SettingsStackItem[]>(() => ({
+  //     url: this.apiUrl(webApiAppRoot + 'GetStack'),
+  //     params: {
+  //       appId: this.appId,
+  //       part,
+  //       ...(key && { key }),
+  //       ...(view && { view }),
+  //     },
+      
+  //   }));
+  // }
+
   // TEMP, not sure if this are correct
   getStackSig(part: Of<typeof AnalyzeParts>, key?: string, view?: string, stringifyValue = false): Signal<SettingsStackItem[]> {
     const stackSignal = signal<SettingsStackItem[]>([]);
@@ -27,10 +42,6 @@ export class AnalyzeSettingsService extends HttpServiceBase {
       : stackSignal()
     );
   }
-
-
-  
-
 
   getStack(part: Of<typeof AnalyzeParts>, key?: string, view?: string, stringifyValue = false): Observable<SettingsStackItem[]> {
 
