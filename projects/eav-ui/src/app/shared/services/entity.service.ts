@@ -3,7 +3,7 @@ import { filter, map, Observable, shareReplay, switchMap } from 'rxjs';
 import { transient } from '../../../../../core';
 import { EntityLightIdentifier } from '../../../../../edit-types/src/EntityLight';
 import { classLog } from '../logging';
-import { HttpServiceBase } from './http-service-base';
+import { HttpServiceBaseSignal } from './http-service-base-signal';
 import { QueryService } from './query.service';
 
 const logSpecs = {
@@ -17,7 +17,7 @@ export const webApiEntityRoot = 'admin/entity/';
 export const webApiEntityList = 'admin/entity/list';
 
 @Injectable()
-export class EntityService extends HttpServiceBase {
+export class EntityService extends HttpServiceBaseSignal {
 
   log = classLog({ EntityService }, logSpecs);
 
