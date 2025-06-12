@@ -146,7 +146,7 @@ export class SourceService extends HttpServiceBase {
     const webApisSignal = computed(() => {
       const files = apiFilesSignal()?.files;
 
-      if(!files)
+      if (!files)
         return [];
 
       // Ensure the default values for `isShared` and `isCompiled`

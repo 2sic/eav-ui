@@ -16,7 +16,7 @@ const logSpecs = {
   getAllOnce: true,
 
 }
-
+//TODO: 2dg change httpRe
 @Injectable()
 export class ContentItemsService extends HttpServiceBase {
 
@@ -28,14 +28,6 @@ export class ContentItemsService extends HttpServiceBase {
       params: { appId: this.appId, contentType: contentTypeStaticName }
     });
   }
-
-  // TODO: 2dg remove later 
-  // getAllSig(contentTypeStaticName: string, initial: undefined): Signal<ContentItem[]> {
-  //   // this.log.fnIf('getAllSig', { contentTypeStaticName, initial });
-  //   return this.getSignal<ContentItem[]>(webApiEntityList, {
-  //     params: { appId: this.appId, contentType: contentTypeStaticName }
-  //   }, initial);
-  // }
 
   getAllOnce(contentTypeStaticName: string) {
     this.log.fnIf('getAllOnce', { contentTypeStaticName });

@@ -7,6 +7,7 @@ import { HttpServiceBase } from '../../shared/services/http-service-base';
 
 const webApiRoot = 'admin/metadata/get';
 
+//TODO: 2dg change httpRe
 @Injectable()
 export class MetadataService extends HttpServiceBase {
   /**

@@ -5,7 +5,7 @@ import { FeatureState } from '../../features/models';
 import { FileUploadMessageTypes, FileUploadResult } from '../../shared/components/file-upload-dialog';
 import { HttpServiceBase } from '../../shared/services/http-service-base';
 import { License, LicenseDownloadInfo, LicenseUploadInfo } from '../models/license.model';
-
+//TODO: 2dg change httpRe
 const webAPiLicenseRetrieve = 'sys/license/Retrieve';
 const webApiFeatSaveNew = 'admin/feature/SaveNew';
 const webApiLicSummary = 'sys/license/Summary';

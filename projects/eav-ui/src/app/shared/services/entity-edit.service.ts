@@ -3,10 +3,10 @@ import { Observable } from 'rxjs';
 import { EavFor } from '../../edit/shared/models/eav';
 import { ItemInListIdentifier } from '../models/edit-form.model';
 import { webApiEntityRoot } from './entity.service';
-import { HttpServiceBase } from './http-service-base';
+import { HttpServiceBaseSignal } from './http-service-base-signal';
 
 @Injectable()
-export class EntityEditService extends HttpServiceBase {
+export class EntityEditService extends HttpServiceBaseSignal {
 
   create<T = QuickEntityResponse>(contentType: string, entity: QuickEntityRequest): Observable<T> {
     return this.http.post<T>(`app/auto/data/${contentType}`, entity, {

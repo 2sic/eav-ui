@@ -4,17 +4,9 @@ import { HttpServiceBase } from '../../shared/services/http-service-base';
 import { Feature } from '../models';
 
 const webApiFeatureDetails = "admin/feature/details";
-
+//TODO: 2dg change httpRe
 @Injectable()
 export class FeatureDetailService extends HttpServiceBase {
-
-  // TODO: 2dg remove later
-  // getFeatureDetail(nameId: string): Signal<Feature> {
-  //   return this.getSignal<Feature>(webApiFeatureDetails, {
-  //     params: { nameId }
-  //   });
-  // }
-
   getFeatureDetail(nameId: Signal<string>) {
     return this.newHttpResource<Feature>(() => ({
       url: this.apiUrl(webApiFeatureDetails),

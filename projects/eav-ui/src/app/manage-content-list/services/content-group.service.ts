@@ -5,6 +5,7 @@ import { HttpServiceBase } from '../../shared/services/http-service-base';
 import { ContentGroup, ContentGroupAdd } from '../models/content-group.model';
 import { GroupHeader } from '../models/group-header.model';
 
+//TODO: 2dg change httpRe
 const webApiContentGroup = 'cms/contentgroup/';
 
 @Injectable()

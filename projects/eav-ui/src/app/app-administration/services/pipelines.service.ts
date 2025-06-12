@@ -33,22 +33,13 @@ export const webApiQueryDataSources = 'admin/query/DataSources';
 export class PipelinesService extends HttpServiceBase {
 
   log = classLog({ PipelinesService }, logSpecs);
-
+//TODO: 2dg change httpRe
   getAll(contentType: string) {
     const l = this.log.fnIf('getAll');
     return l.r(this.getHttpApiUrl<Query[]>(webApiEntityList, {
       params: { appId: this.appId, contentType }
     }));
   }
-
-    // TODO: 2dg remove later
-  // getAllSig(contentType: string, initial?: Query[]) {
-  //   const l = this.log.fnIf('getAllSig');
-  //   const sig = this.getSignal<Query[]>(webApiEntityList, {
-  //     params: { appId: this.appId, contentType }
-  //   }, initial);
-  //   return l.r(sig);
-  // }
 
   // Full Code, repated x times
   getAllLive(contentType: string, refresh: Signal<unknown>) {
