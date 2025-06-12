@@ -41,48 +41,58 @@ export class ContentTypesFieldsService extends HttpServiceBase {
     };
   }
 
-
   /** Get list of data types available in the system, such as 'string', 'number' etc. */
   dataTypes() {
     const resourceRef = this.newHttpResource<string[]>(() => ({
       url: this.apiUrl(webApiDataTypes),
       params: this.paramsAppId().params,
     }));
-
+    // Transform raw string data into rich DataType objects
     const transformedData = computed(() => {
       const rawData = resourceRef.value();
-      if (!rawData) return []; 
+      if (!rawData) return [];
       return calculateDataTypes(rawData);
     });
-
+    // Return a resource object with the transformed data, loading state and error information
     return {
-      value: transformedData as Signal<DataType[]> ,
+      value: transformedData as Signal<DataType[]>,
       loading: resourceRef.isLoading,
       error: resourceRef.error,
     };
   }
 
-
+  // Returns a Signal-based resource with sorted and transformed FieldInputTypeOption objects
   getInputTypes() {
-    return this.getSignal<FieldInputTypeOption[], InputTypeMetadata[]>(
-      webApiInputTypes,
-      this.paramsAppId(),
-      [],
-      inputConfigs => inputConfigs
-        .map(config => ({
-          dataType: config.Type.substring(0, config.Type.indexOf('-')),
-          inputType: config.Type,
-          label: config.Label,
-          description: config.Description,
-          isDefault: config.IsDefault,
-          isObsolete: config.IsObsolete,
-          isRecommended: config.IsRecommended,
-          obsoleteMessage: config.ObsoleteMessage,
-          icon: config.IsDefault ? 'stars' : config.IsRecommended ? 'star' : null,
-          sort: (config.IsObsolete ? 'z' : config.IsDefault ? 'a' : config.IsRecommended ? 'b' : 'c') + config.Label,
-        } satisfies FieldInputTypeOption & { sort: string }))
-        .sort((a, b) => a.sort.localeCompare(b.sort)),
+    const resourceRef = this.newHttpResource<InputTypeMetadata[]>(() => ({
+      url: this.apiUrl(webApiInputTypes),
+      params: this.paramsAppId().params,
+    }));
+
+    // This extracts and formats relevant information from each input type configuration
+    const mapToFieldInputTypeOption = (config: InputTypeMetadata): FieldInputTypeOption & { sort: string } => ({
+      dataType: config.Type.substring(0, config.Type.indexOf('-')),
+      inputType: config.Type,
+      label: config.Label,
+      description: config.Description,
+      isDefault: config.IsDefault,
+      isObsolete: config.IsObsolete,
+      isRecommended: config.IsRecommended,
+      obsoleteMessage: config.ObsoleteMessage,
+      icon: config.IsDefault ? 'stars' : config.IsRecommended ? 'star' : null,
+      sort: (config.IsObsolete ? 'z' : config.IsDefault ? 'a' : config.IsRecommended ? 'b' : 'c') + config.Label,
+    });
+
+    // Create a computed signal that automatically transforms and sorts the data when it changes
+    const transformedData = computed(() =>
+      resourceRef.value()?.map(mapToFieldInputTypeOption)
+        .sort((a, b) => a.sort.localeCompare(b.sort)) || []
     );
+
+    return {
+      value: transformedData,
+      loading: resourceRef.isLoading,
+      error: resourceRef.error,
+    };
   }
 
   getReservedNames() {
@@ -90,7 +100,9 @@ export class ContentTypesFieldsService extends HttpServiceBase {
   }
 
   reservedNames() {
-    return this.getSignal<Record<string, string>>(webApiReservedNames, null, {});
+    return this.newHttpResource<Record<string, string>>(() => ({
+      url: this.apiUrl(webApiReservedNames),
+    }));
   }
 
   /** Get all fields for some content type */
@@ -113,6 +125,38 @@ export class ContentTypesFieldsService extends HttpServiceBase {
       );
   }
 
+  // getFieldsSig2(contentTypeStaticName: string) {
+  //   // Fetch raw field data from the API for the specified content type
+  //   const resourceRef = this.newHttpResource<Field[]>(() => ({
+  //     url: this.apiUrl(webApiFieldsAll),
+  //     params: this.paramsAppId({ staticName: contentTypeStaticName }).params,
+  //   }));
+
+  //   const transformedData = computed(() => {  // This combines metadata from All, Type-specific, and InputType-specific sources
+  //     const fields = resourceRef.value();
+  //     if (!fields) return [];
+
+  //     // Process each field's metadata to create a merged version
+  //     for (const fld of fields) {
+  //       if (!fld.Metadata) continue;
+  //       const md = fld.Metadata;
+  //       const allMd = md.All;
+  //       const typeMd = md[fld.Type];
+  //       const inputMd = md[fld.InputType];
+  //       // Create a merged metadata object combining all sources
+  //       md.merged = { ...allMd, ...typeMd, ...inputMd };
+  //     }
+  //     return fields;
+  //   });
+
+  //   // Return a resource object with the transformed data, loading state and error information
+  //   return {
+  //     value: transformedData,
+  //     loading: resourceRef.isLoading,
+  //     error: resourceRef.error,
+  //   };
+  // }
+
   getFieldsSig(contentTypeStaticName: string) {
     return this.getSignal<Field[]>(webApiFieldsAll, this.paramsAppId({ staticName: contentTypeStaticName }), [], fields => {
       if (fields) {
@@ -133,6 +177,15 @@ export class ContentTypesFieldsService extends HttpServiceBase {
   getShareableFields() {
     return this.getHttpApiUrl<Field[]>(webApiFieldsGetShared, this.paramsAppId());
   }
+
+  // TODO: 2dg, not working now
+  // getShareableFields2() {
+  //   return this.newHttpResource<Field[]>(() => ({
+  //     url: this.apiUrl(webApiFieldsGetShared),
+  //     params: this.paramsAppId().params,
+  //   }));
+  // }
+
 
   /**
    * Get sharable fields which are possible for this attribute.
