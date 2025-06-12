@@ -89,9 +89,11 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements Aft
   saving = signal(false);
 
   /** Data types such as string, number, ... */
-  dataTypes = this.#typesFieldsSvc.dataTypes();
+  // dataTypes = this.#typesFieldsSvc.dataTypes();
+  dataTypes = this.#typesFieldsSvc.dataTypes().value;
 
-  #inputTypeOptions = this.#typesFieldsSvc.getInputTypes();
+  #inputTypeOptions = this.#typesFieldsSvc.getInputTypes().value;
+
   #contentTypeSig = this.#typesSvc.getType(this.route.snapshot.paramMap.get('contentTypeStaticName')).value;
 
   // Existing fields - to setup reserved names and initialize the fields
@@ -123,7 +125,8 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements Aft
   })();
 
   // Figure out the reserved names which should not be used as field names
-  #reservedNamesSystem = this.#typesFieldsSvc.reservedNames();
+  #reservedNamesSystem = this.#typesFieldsSvc.reservedNames().value;
+
   reservedNames = computedObj('reservedNamesAll', () => {
     // setup watchers
     const fields = this.existingFieldsLazy()();
@@ -131,7 +134,7 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements Aft
     if (fields.length === 0)
       return reservedNames;
     const merged = ReservedNamesValidatorDirective.mergeReserved(reservedNames, fields);
-    
+
     // If we're about to rename, allow the current name to be reused
     if (this.editMode === 'name')
       delete merged[fields[0].StaticName];
@@ -181,6 +184,7 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements Aft
       ?? options[0].inputType;
     this.updateFieldPart(index, { InputType: inputName });
   }
+
 
   hints = computedObj('hints', () => {
     const fields = this.fields();

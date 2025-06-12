@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { computed, Injectable, Signal } from '@angular/core';
 import { map } from 'rxjs';
 import { Of } from '../../../../../core';
 import { ContentType } from '../../app-administration/models/content-type.model';
@@ -41,10 +41,27 @@ export class ContentTypesFieldsService extends HttpServiceBase {
     };
   }
 
+
   /** Get list of data types available in the system, such as 'string', 'number' etc. */
   dataTypes() {
-    return this.getSignal<DataType[], string[]>(webApiDataTypes, this.paramsAppId(), [], raw => calculateDataTypes(raw));
+    const resourceRef = this.newHttpResource<string[]>(() => ({
+      url: this.apiUrl(webApiDataTypes),
+      params: this.paramsAppId().params,
+    }));
+
+    const transformedData = computed(() => {
+      const rawData = resourceRef.value();
+      if (!rawData) return []; 
+      return calculateDataTypes(rawData);
+    });
+
+    return {
+      value: transformedData as Signal<DataType[]> ,
+      loading: resourceRef.isLoading,
+      error: resourceRef.error,
+    };
   }
+
 
   getInputTypes() {
     return this.getSignal<FieldInputTypeOption[], InputTypeMetadata[]>(
@@ -63,8 +80,8 @@ export class ContentTypesFieldsService extends HttpServiceBase {
           obsoleteMessage: config.ObsoleteMessage,
           icon: config.IsDefault ? 'stars' : config.IsRecommended ? 'star' : null,
           sort: (config.IsObsolete ? 'z' : config.IsDefault ? 'a' : config.IsRecommended ? 'b' : 'c') + config.Label,
-        } satisfies FieldInputTypeOption & { sort: string}))
-      .sort((a, b) => a.sort.localeCompare(b.sort)),
+        } satisfies FieldInputTypeOption & { sort: string }))
+        .sort((a, b) => a.sort.localeCompare(b.sort)),
     );
   }
 

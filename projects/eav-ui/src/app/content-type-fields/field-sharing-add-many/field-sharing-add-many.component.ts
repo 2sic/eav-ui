@@ -24,22 +24,22 @@ import { signalObj } from '../../shared/signals/signal.utilities';
 import { ReservedNamesValidatorDirective } from '../edit-content-type-fields/reserved-names.directive';
 
 @Component({
-    selector: 'app-field-sharing-add-many',
-    templateUrl: './field-sharing-add-many.component.html',
-    styleUrls: ['./field-sharing-add-many.component.scss'],
-    imports: [
-        MatCardModule,
-        MatTableModule,
-        MatButtonModule,
-        FormsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        ReservedNamesValidatorDirective,
-        MatDialogActions,
-        TranslateModule,
-        FeatureTextInfoComponent,
-        FieldHintComponent,
-    ]
+  selector: 'app-field-sharing-add-many',
+  templateUrl: './field-sharing-add-many.component.html',
+  styleUrls: ['./field-sharing-add-many.component.scss'],
+  imports: [
+    MatCardModule,
+    MatTableModule,
+    MatButtonModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    ReservedNamesValidatorDirective,
+    MatDialogActions,
+    TranslateModule,
+    FeatureTextInfoComponent,
+    FieldHintComponent,
+  ]
 })
 export class FieldSharingAddMany extends BaseComponent implements OnInit {
   @HostBinding('className') hostClass = 'dialog-component';
@@ -58,6 +58,10 @@ export class FieldSharingAddMany extends BaseComponent implements OnInit {
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
   ) {
+
+
+
+
     super();
     this.dialog.disableClose = true;
     this.subscriptions.add(
@@ -69,6 +73,16 @@ export class FieldSharingAddMany extends BaseComponent implements OnInit {
         this.dialog.close();
       })
     );
+
+
+    // TODO: 2dg Not Working > Custom Settings > Field > Button 
+    // effect(() => {
+    //   const value = this.#contentTypesFieldsSvc.getShareableFields2().value;
+    //   const fields = value()
+    //   if (fields) {
+    //     this.shareableFields.data = fields;
+    //   }
+    // });
   }
 
   optionsColumns: string[] = ['contentType', 'name', 'type', 'share'];
