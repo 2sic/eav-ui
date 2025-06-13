@@ -1,10 +1,25 @@
 import dayjs from 'dayjs';
-import { formatDateTimeFn, initializeDayjs, updateFormattedValueFn } from './datetime-fn';
+import {
+  formatDateTimeFn,
+  initializeDayjs,
+  updateDateFn,
+  updateFormattedValueFn
+} from './datetime-fn';
 
 describe('DateTime Functions', () => {
+  // Common variables used across multiple test suites
+  let setUiValue: jasmine.Spy;
+  let testDate: dayjs.Dayjs;
+  let standardCurrentValue: string;
+
   beforeEach(() => {
-    // Initialisiere dayjs für Tests
+    // Initialize dayjs with english locale
     initializeDayjs('en');
+
+    // Setup common spy and values used in multiple test suites
+    setUiValue = jasmine.createSpy('setUiValue');
+    testDate = dayjs('2025-06-13T10:45:14Z'); // Current timestamp
+    standardCurrentValue = '2025-06-13T10:45:14Z';
   });
 
   describe('formatDateTimeFn', () => {
@@ -13,59 +28,133 @@ describe('DateTime Functions', () => {
     });
 
     it('should format date correctly', () => {
-      const testDate = dayjs('2025-06-13T09:30:32Z');
       const formatted = formatDateTimeFn(testDate);
       expect(formatted.length).toBeGreaterThan(0);
-      // Je nach Lokalisierung wird das genaue Format unterschiedlich sein
+    });
+  });
+
+  describe('updateDateFn', () => {
+    // Variables specific to updateDateFn tests
+    let invalidDate: dayjs.Dayjs;
+    let christmasDate: dayjs.Dayjs;
+    let currentValueWithMilliseconds: string;
+    let currentValueWithPreciseTime: string;
+
+    beforeEach(() => {
+      // Initialize test date values specific to updateDateFn
+      christmasDate = dayjs('2025-12-25');
+      invalidDate = dayjs('not-a-date');
+
+      // Initialize current UI value strings with specific times
+      currentValueWithMilliseconds = '2023-03-15T08:30:45.789Z';
+      currentValueWithPreciseTime = '2023-03-15T14:27:36.123Z';
+    });
+
+    it('should set UI value to null if date is null', () => {
+      updateDateFn(null, standardCurrentValue, setUiValue);
+      expect(setUiValue).toHaveBeenCalledWith(null);
+    });
+
+    it('should not call setUiValue if date is invalid', () => {
+      updateDateFn(invalidDate, standardCurrentValue, setUiValue);
+      expect(setUiValue).not.toHaveBeenCalled();
+    });
+
+    it('should update only the date part and preserve time', () => {
+      updateDateFn(christmasDate, currentValueWithPreciseTime, setUiValue);
+      expect(setUiValue).toHaveBeenCalled();
+      const result = setUiValue.calls.first().args[0];
+      expect(result).toEqual('2025-12-25T14:27:36.123Z');
+    });
+
+    it('should handle empty currentUiValue by using default time', () => {
+      updateDateFn(christmasDate, '', setUiValue);
+      expect(setUiValue).toHaveBeenCalled();
+      const result = setUiValue.calls.first().args[0];
+      expect(result).toContain('2025-12-25');
+    });
+
+    it('should handle invalid currentUiValue gracefully', () => {
+      updateDateFn(christmasDate, 'not-a-date', setUiValue);
+      expect(setUiValue).toHaveBeenCalled();
+      const result = setUiValue.calls.first().args[0];
+      expect(result).toContain('2025-12-25');
+    });
+
+    it('should preserve milliseconds if present in currentUiValue', () => {
+      updateDateFn(christmasDate, currentValueWithMilliseconds, setUiValue);
+      expect(setUiValue).toHaveBeenCalled();
+      const result = setUiValue.calls.first().args[0];
+      expect(result).toEqual('2025-12-25T08:30:45.789Z');
+    });
+
+    it('should not call setUiValue if date is undefined', () => {
+      updateDateFn(undefined as any, standardCurrentValue, setUiValue);
+      expect(setUiValue).toHaveBeenCalledWith(null);
     });
   });
 
   describe('updateFormattedValueFn', () => {
+    // Variables specific to updateFormattedValueFn tests
+    let testTime: dayjs.Dayjs;
+    let currentValueWithMilliseconds: string;
+
+    beforeEach(() => {
+      // Common test values specific to updateFormattedValueFn
+      testTime = dayjs().hour(15).minute(45).second(0);
+      currentValueWithMilliseconds = '2025-01-01T12:45:11.123Z';
+    });
+
     it('should return null when no date and time are provided', () => {
-      const setUiValue = jasmine.createSpy('setUiValue');
       const result = updateFormattedValueFn(null, null, '', setUiValue);
       expect(result).toBeNull();
       expect(setUiValue).not.toHaveBeenCalled();
     });
 
     it('should update date parts correctly', () => {
-      const setUiValue = jasmine.createSpy('setUiValue');
-      const testDate = dayjs('2025-06-13');
-      const currentValue = '2025-01-01T12:00:00Z';
-      
-      updateFormattedValueFn(testDate, null, currentValue, setUiValue);
-      
+      updateFormattedValueFn(testDate, null, standardCurrentValue, setUiValue);
+
       expect(setUiValue).toHaveBeenCalled();
       const result = setUiValue.calls.first().args[0];
-      expect(result).toContain('2025-06-13');
-      expect(result).toContain('12:00:00');
+      expect(result).toEqual('2025-06-13T10:45:14.000Z');
     });
 
     it('should update time parts correctly', () => {
-      const setUiValue = jasmine.createSpy('setUiValue');
-      const testTime = dayjs().hour(15).minute(45);
-      const currentValue = '2025-06-13T12:00:00Z';
-      
-      updateFormattedValueFn(null, testTime, currentValue, setUiValue);
-      
+      const timeTestCurrentValue = '2025-06-13T12:37:43Z';
+
+      updateFormattedValueFn(null, testTime, timeTestCurrentValue, setUiValue);
+
       expect(setUiValue).toHaveBeenCalled();
       const result = setUiValue.calls.first().args[0];
-      expect(result).toContain('2025-06-13');
-      expect(result).toContain('15:45:00');
+      expect(result).toEqual('2025-06-13T15:45:00.000Z');
     });
 
     it('should set time to 00:00:00 when useTimePicker is false', () => {
-      const setUiValue = jasmine.createSpy('setUiValue');
-      const testDate = dayjs('2025-06-13T15:45:00Z');
-      
       updateFormattedValueFn(testDate, testDate, '', setUiValue, false);
-      
+
       expect(setUiValue).toHaveBeenCalled();
       const result = setUiValue.calls.first().args[0];
       expect(result).toContain('2025-06-13');
       expect(result).toContain('00:00:00');
     });
-  });
 
-  // Weitere Tests für andere Funktionen...
+    it('should handle invalid currentUiValue gracefully', () => {
+      const futureTestDate = dayjs('2026-01-01');
+      const invalidCurrentValue = 'not-a-date';
+
+      updateFormattedValueFn(futureTestDate, null, invalidCurrentValue, setUiValue);
+
+      expect(setUiValue).toHaveBeenCalled();
+      const result = setUiValue.calls.first().args[0];
+      expect(result).toContain('2026-01-01');
+    });
+
+    it('should preserve milliseconds from currentUiValue if time is not updated', () => {
+      updateFormattedValueFn(testDate, null, currentValueWithMilliseconds, setUiValue);
+
+      expect(setUiValue).toHaveBeenCalled();
+      const result = setUiValue.calls.first().args[0];
+      expect(result).toContain('.123Z');
+    });
+  });
 });
