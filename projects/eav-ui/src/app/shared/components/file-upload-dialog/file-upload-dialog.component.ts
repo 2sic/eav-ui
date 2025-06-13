@@ -2,6 +2,7 @@ import { NgClass } from '@angular/common';
 import { ChangeDetectorRef, Component, ElementRef, HostBinding, Inject, input, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -28,6 +29,7 @@ import { FileUploadDialogData, FileUploadMessageTypes, FileUploadResult, UploadT
     SafeHtmlPipe,
     DragAndDropDirective,
     MatButtonModule,
+    MatIconModule,
   ]
 })
 export class FileUploadDialogComponent extends BaseComponent implements OnInit, OnDestroy {
