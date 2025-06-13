@@ -5,7 +5,6 @@
   @if (useTimePicker()) {
     <input
       matInput
-      #dateTimeInput
       [disabled]="ui().disabled"
       [required]="basics().required"
       [value]="formatDateTime(dateTimeValue())"
