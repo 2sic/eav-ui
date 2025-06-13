@@ -17,14 +17,8 @@ import { FieldState } from '../../field-state';
 import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
 import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
 import {
-  formatDateTimeFn,
-  generateTimePickerOptionsFn,
-  getDateTimeValueFn,
-  handleDateTimeInputFn,
-  initializeDayjs,
-  updateDateFn,
-  updateFormattedValueFn,
-  updateTimeFn
+  DateTimeUtils,
+  initializeDayjs
 } from './datetime-fn';
 
 const logSpecs = {
@@ -72,10 +66,10 @@ export class DatetimeDefaultComponent implements AfterViewInit {
   protected useTimePicker = this.fieldState.settingExt('UseTimePicker');
 
   // Computed value for the current date-time from UI value
-  dateTimeValue = computed(() => getDateTimeValueFn(this.uiValue()));
+  dateTimeValue = computed(() => DateTimeUtils.getDateTimeValue(this.uiValue()));
 
   // Generates time picker options including the current time and common presets
-  timePickerOptions = computed(() => generateTimePickerOptionsFn(this.dateTimeValue()));
+  timePickerOptions = computed(() => DateTimeUtils.generateTimePickerOptions(this.dateTimeValue()));
 
   constructor(
     private translate: TranslateService,
@@ -103,7 +97,7 @@ export class DatetimeDefaultComponent implements AfterViewInit {
    * Format date for display in UI using localized format
    */
   formatDateTime(date: dayjs.Dayjs | Date | null): string {
-    return formatDateTimeFn(date);
+    return DateTimeUtils.formatDateTime(date);
   }
 
   /**
@@ -116,7 +110,7 @@ export class DatetimeDefaultComponent implements AfterViewInit {
 
     this.log.aIf('handleDateTimeInput', { value });
 
-    const isValid = handleDateTimeInputFn(
+    const isValid = DateTimeUtils.handleDateTimeInput(
       value,
       this.uiValue(),
       (value) => this.ui().setIfChanged(value)
@@ -124,7 +118,7 @@ export class DatetimeDefaultComponent implements AfterViewInit {
 
     // Restore previous value if input is invalid
     if (!isValid) {
-      input.value = formatDateTimeFn(this.dateTimeValue());
+      input.value = DateTimeUtils.formatDateTime(this.dateTimeValue());
       console.error(`Invalid date format: ${value}`);
     }
   }
@@ -134,7 +128,7 @@ export class DatetimeDefaultComponent implements AfterViewInit {
    */
   updateTime(event: any): void {
     this.log.aIf('updateTime', { event });
-    updateTimeFn(
+    DateTimeUtils.updateTime(
       event.target.value,
       this.uiValue(),
       (value) => this.ui().setIfChanged(value)
@@ -147,7 +141,7 @@ export class DatetimeDefaultComponent implements AfterViewInit {
   updateDate(event: MatDatepickerInputEvent<Dayjs>) {
     this.log.aIf('updateDate', { event });
 
-    updateDateFn(
+    DateTimeUtils.updateDate(
       event.value,
       this.uiValue(),
       (value) => this.ui().setIfChanged(value)
@@ -164,7 +158,7 @@ export class DatetimeDefaultComponent implements AfterViewInit {
    * Preserves unmodified components from the current value
    */
   updateFormattedValue(date?: Dayjs, time?: Dayjs) {
-    const updated = updateFormattedValueFn(
+    const updated = DateTimeUtils.updateFormattedValue(
       date || null,
       time || null,
       this.uiValue(),

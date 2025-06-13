@@ -207,4 +207,10 @@ export function updateFormattedValueFn(
 
 export class DateTimeUtils {
   static updateFormattedValue = updateFormattedValueFn;
+  static updateDate = updateDateFn;
+  static updateTime = updateTimeFn;
+  static handleDateTimeInput = handleDateTimeInputFn;
+  static formatDateTime = formatDateTimeFn;
+  static generateTimePickerOptions = generateTimePickerOptionsFn;
+  static getDateTimeValue = getDateTimeValueFn;
 }
