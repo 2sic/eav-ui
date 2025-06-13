@@ -164,12 +164,14 @@ export class DatetimeDefaultComponent implements AfterViewInit {
    * Preserves unmodified components from the current value
    */
   updateFormattedValue(date?: Dayjs, time?: Dayjs) {
-    return updateFormattedValueFn(
+    const updated = updateFormattedValueFn(
       date || null,
       time || null,
       this.uiValue(),
-      (value) => this.ui().setIfChanged(value),
+      (value) => {}, //this.ui().setIfChanged(value),
       this.useTimePicker()
     );
+    this.ui().setIfChanged(updated);
+    return updated;
   }
 }

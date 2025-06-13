@@ -1,9 +1,9 @@
 import dayjs from 'dayjs';
 import {
+  DateTimeUtils,
   formatDateTimeFn,
   initializeDayjs,
   updateDateFn,
-  updateFormattedValueFn
 } from './datetime-fn';
 
 describe('DateTime Functions', () => {
@@ -94,25 +94,25 @@ describe('DateTime Functions', () => {
     });
   });
 
-  describe('updateFormattedValueFn', () => {
-    // Variables specific to updateFormattedValueFn tests
+  describe('DateTimeUtils.updateFormattedValue', () => {
+    // Variables specific to DateTimeUtils.updateFormattedValue tests
     let testTime: dayjs.Dayjs;
     let currentValueWithMilliseconds: string;
 
     beforeEach(() => {
-      // Common test values specific to updateFormattedValueFn
+      // Common test values specific to DateTimeUtils.updateFormattedValue
       testTime = dayjs().hour(15).minute(45).second(0);
       currentValueWithMilliseconds = '2025-01-01T12:45:11.123Z';
     });
 
     it('should return null when no date and time are provided', () => {
-      const result = updateFormattedValueFn(null, null, '', setUiValue);
+      const result = DateTimeUtils.updateFormattedValue(null, null, '', setUiValue);
       expect(result).toBeNull();
       expect(setUiValue).not.toHaveBeenCalled();
     });
 
     it('should update date parts correctly', () => {
-      updateFormattedValueFn(testDate, null, standardCurrentValue, setUiValue);
+      DateTimeUtils.updateFormattedValue(testDate, null, standardCurrentValue, setUiValue);
 
       expect(setUiValue).toHaveBeenCalled();
       const result = setUiValue.calls.first().args[0];
@@ -122,7 +122,7 @@ describe('DateTime Functions', () => {
     it('should update time parts correctly', () => {
       const timeTestCurrentValue = '2025-06-13T12:37:43Z';
 
-      updateFormattedValueFn(null, testTime, timeTestCurrentValue, setUiValue);
+      DateTimeUtils.updateFormattedValue(null, testTime, timeTestCurrentValue, setUiValue);
 
       expect(setUiValue).toHaveBeenCalled();
       const result = setUiValue.calls.first().args[0];
@@ -130,7 +130,7 @@ describe('DateTime Functions', () => {
     });
 
     it('should set time to 00:00:00 when useTimePicker is false', () => {
-      updateFormattedValueFn(testDate, testDate, '', setUiValue, false);
+      DateTimeUtils.updateFormattedValue(testDate, testDate, '', setUiValue, false);
 
       expect(setUiValue).toHaveBeenCalled();
       const result = setUiValue.calls.first().args[0];
@@ -142,7 +142,7 @@ describe('DateTime Functions', () => {
       const futureTestDate = dayjs('2026-01-01');
       const invalidCurrentValue = 'not-a-date';
 
-      updateFormattedValueFn(futureTestDate, null, invalidCurrentValue, setUiValue);
+      DateTimeUtils.updateFormattedValue(futureTestDate, null, invalidCurrentValue, setUiValue);
 
       expect(setUiValue).toHaveBeenCalled();
       const result = setUiValue.calls.first().args[0];
@@ -150,7 +150,7 @@ describe('DateTime Functions', () => {
     });
 
     it('should preserve milliseconds from currentUiValue if time is not updated', () => {
-      updateFormattedValueFn(testDate, null, currentValueWithMilliseconds, setUiValue);
+      DateTimeUtils.updateFormattedValue(testDate, null, currentValueWithMilliseconds, setUiValue);
 
       expect(setUiValue).toHaveBeenCalled();
       const result = setUiValue.calls.first().args[0];
