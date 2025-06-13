@@ -17,7 +17,6 @@ import { FieldMetadata } from '../../field-metadata.decorator';
 import { FieldState } from '../../field-state';
 import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
 import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
-import { DateTimeDefaultLogic } from './datetime-default-logic';
 
 const logSpecs = {
   all: false,
@@ -105,7 +104,7 @@ export class DatetimeDefaultComponent implements AfterViewInit {
     // set date format based on the users browser language
     this.translate.currentLang = navigator.language;
     dayjs.locale(this.translate.currentLang);
-    DateTimeDefaultLogic.importMe();
+    // DateTimeDefaultLogic.importMe(); @2dg, comment out doesn't see any effect, 13.6.2025
   }
 
   // 2025-03-20 2pp - Workaround for a bug
