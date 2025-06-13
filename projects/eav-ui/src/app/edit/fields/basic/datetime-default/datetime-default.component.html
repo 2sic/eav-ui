@@ -1,21 +1,17 @@
 <mat-form-field color="accent" class="eav-mat-form-field">
   <mat-label>{{ basics().label }}</mat-label>
-  <!-- OwlNG DateTimePicker Input -->
   <!-- Visible Input-Field when both Date & Time Picker (no Picker) -->
   <!-- Also Responsible for formatting the dateTimeValue() -->
   @if (useTimePicker()) {
-    <!--  TODO: 2dg danielmoncada -->
-    <!-- <input
+    <input
       matInput
-      #owlDateTimeInput
+      #dateTimeInput
       [disabled]="ui().disabled"
-      [owlDateTime]="owlPicker"
       [required]="basics().required"
-      (dateTimeChange)="updateDateTime($event)"
-      [value]="dateTimeValue()"
-      [placeholder]="basics().placeholder"
+      [value]="formatDateTime(dateTimeValue())"
+      (change)="handleDateTimeInput($event)"
+      [placeholder]="basics().placeholder || 'YYYY-MM-DD HH:MM:SS'"
     />
-    <owl-date-time #owlPicker /> -->
   }
 
   <!-- Material DatePicker -->

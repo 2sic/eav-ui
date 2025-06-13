@@ -1,22 +1,18 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, computed, ElementRef, inject, viewChild, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, computed, inject, ViewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerInputEvent, MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatTimepicker, MatTimepickerModule } from '@angular/material/timepicker';
-// TODO: 2dg danielmoncada
-// import { DateTimeAdapter, OwlDateTimeModule } from '@danielmoncada/angular-datetime-picker';
-// import { OwlDayJsDateTimeModule } from '@danielmoncada/angular-datetime-picker-dayjs-adapter';
 import { TranslateService } from '@ngx-translate/core';
 import dayjs, { Dayjs } from 'dayjs';
 import utc from 'dayjs/plugin/utc'; // 'neutral' time for OwlDateTime picker
-import { transient } from 'projects/core';
 import { FieldSettingsDateTime } from 'projects/edit-types/src/FieldSettings-DateTime';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { classLogEnabled } from '../../../../shared/logging';
-import { MatDayjsDateAdapter, MatDayjsModule } from '../../../shared/date-adapters/date-adapter-api';
+import { MatDayjsModule } from '../../../shared/date-adapters/date-adapter-api';
 import { FieldMetadata } from '../../field-metadata.decorator';
 import { FieldState } from '../../field-state';
 import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
@@ -27,10 +23,9 @@ const logSpecs = {
   all: false,
   updateDate: false,
   updateTime: false,
-  updateDateTime: false,
-  disabledEffect: true,
+  handleDateTimeInput: false,
+  disabledEffect: false,
   ngAfterViewInit: true,
-  workaroundSetDisabledForOwlDateTimePicker: true,
 }
 
 @Component({
@@ -42,14 +37,11 @@ const logSpecs = {
     FormsModule,
     ReactiveFormsModule,
     MatInputModule,
-    // TODO: 2dg danielmoncada
-    // OwlDateTimeModule,
-    // OwlDayJsDateTimeModule,
     FieldHelperTextComponent,
     MatDayjsModule,
     TippyDirective,
     MatDatepickerModule,
-    MatTimepickerModule,
+    MatTimepickerModule
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -66,8 +58,6 @@ export class DatetimeDefaultComponent implements AfterViewInit {
   uiValue = this.fieldState.uiValue;
   protected basics = this.fieldState.basics;
   protected useTimePicker = this.fieldState.settingExt('UseTimePicker');
-
-  owlDateTimeInput = viewChild<ElementRef<HTMLInputElement>>('owlDateTimeInput');
 
   dateTimeValue = computed(() => dayjs.utc(this.uiValue()));
 
@@ -106,22 +96,15 @@ export class DatetimeDefaultComponent implements AfterViewInit {
     return allOptions;
   });
 
-  private matDayjsDateAdapter = transient(MatDayjsDateAdapter);
 
   constructor(
     private translate: TranslateService,
-    // TODO: 2dg danielmoncada
-    // private owlDayjsDateAdapter: DateTimeAdapter<Dayjs>
   ) {
     // Set the Date/Time format to the browser's language (de-De, en.En, etc.)
     dayjs.extend(utc);
     // set date format based on the users browser language
     this.translate.currentLang = navigator.language;
-    const currentLang = this.translate.currentLang;
-    dayjs.locale(currentLang);
-    this.matDayjsDateAdapter.setLocale(currentLang);
-    // TODO: 2dg danielmoncada
-    // this.owlDayjsDateAdapter.setLocale(currentLang);
+    dayjs.locale(this.translate.currentLang);
     DateTimeDefaultLogic.importMe();
   }
 
@@ -138,25 +121,40 @@ export class DatetimeDefaultComponent implements AfterViewInit {
           this.updateFormattedValue(null, timeData.value);
       });
     }
-
-    // 2025-03-20 2pp - Workaround for a bug
-    this.workaroundSetDisabledForOwlDateTimePicker();
     l.end();
   }
 
-  /**
-   * 2025-03-20 2pp - Workaround for a bug
-   * Owl-NG Picker has a problem with disabled inputs, so we have to disable it manually
-   * https://github.com/danielmoncada/date-time-picker/issues/215
-   */
-  workaroundSetDisabledForOwlDateTimePicker(): void {
-    const l = this.log.fnIf('workaroundSetDisabledForOwlDateTimePicker');
-    const owlDateTimeInput = this.owlDateTimeInput();
-    if (owlDateTimeInput?.nativeElement)
-      owlDateTimeInput.nativeElement.disabled = this.ui().disabled;
-    l.end(`Disabled: ${this.ui().disabled}`);
+  // Formats the date and time for display in the UI 
+  formatDateTime(date: dayjs.Dayjs | Date | null): string {
+    if (!date) return '';
+    return dayjs(date).format('L LT'); // L = localized date format, LT = localized time
   }
 
+  /**
+ * Handles user input in date-time field
+ */
+  handleDateTimeInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const value = input.value.trim();
+
+    this.log.aIf('handleDateTimeInput', { value });
+
+    if (!value) {
+      this.ui().setIfChanged(null);
+      return;
+    }
+
+    // Try parsing with localized format 
+    let parsedDate = dayjs(value, 'L LT');
+
+    if (parsedDate.isValid()) {
+      // Use your existing updateFormattedValue method to update both date and time
+      this.updateFormattedValue(parsedDate, parsedDate);
+    } else {
+      input.value = this.formatDateTime(this.dateTimeValue()); // Restore previous valid value
+      console.error(`Invalid date format: ${value}`); // Show error in console for debugging
+    }
+  }
 
   updateTime(event: any): void {
     this.log.aIf('updateTime', { event });
@@ -186,20 +184,6 @@ export class DatetimeDefaultComponent implements AfterViewInit {
     else {
       console.log('Invalid Date');
     }
-  }
-
-  updateDateTime(event: MatDatepickerInputEvent<Dayjs>) {
-    const dateTime = event.value;
-    this.log.aIf('updateDateTime', { event, dateTime });
-
-    if (dateTime == null) {
-      this.ui().setIfChanged(null);
-      return;
-    }
-
-    this.ui().setIfChanged(
-      dateTime != null ? dateTime.utc(true).toJSON() : null
-    );
   }
 
   // Combines the date and time values and updates the aUI
