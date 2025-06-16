@@ -1,7 +1,7 @@
 import { httpResource } from '@angular/common/http';
 import { Injectable, Signal } from '@angular/core';
 import { ReplaceConfig } from '../../replace-content/replace-config.model';
-import { HttpServiceBase } from '../../shared/services/http-service-base';
+import { HttpServiceBaseSignal } from '../../shared/services/http-service-base-signal';
 import { ContentGroup, ContentGroupAdd } from '../models/content-group.model';
 import { GroupHeader } from '../models/group-header.model';
 
@@ -12,7 +12,7 @@ const webApiContentGroupHeader = webApiContentGroup + 'header';
 const removeItem = 'cms/list/delete';
 
 @Injectable()
-export class ContentGroupService extends HttpServiceBase {
+export class ContentGroupService extends HttpServiceBaseSignal {
 
   getItemsPromise(item: ContentGroup): Promise<ReplaceConfig> {
     return this.fetchPromise<ReplaceConfig>(webApiContentGroupReplace, {
