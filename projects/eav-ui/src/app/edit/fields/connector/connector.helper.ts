@@ -182,7 +182,7 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
     const contentType = this.#config.contentTypeNameId;
     const entityGuid = this.#config.entityGuid;
     const field = this.#config.fieldName;
-    this.#adamService.getLinkInfo(value, contentType, entityGuid, field).subscribe(linkInfo => {
+    this.#adamService.getLinkInfoPromise(value, contentType, entityGuid, field).then(linkInfo => {
       if (!linkInfo) return;
       callback(linkInfo.Value);
     });
