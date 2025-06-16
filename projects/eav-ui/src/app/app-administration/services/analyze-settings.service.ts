@@ -9,7 +9,7 @@ import { AnalyzeParts, SettingsStackItem } from '../sub-dialogs/analyze-settings
 export class AnalyzeSettingsService extends HttpServiceBase {
 
 
-  // TODO: 2dg, not works, 2dm 
+  // TODO: 2dg, ask 2dm 
   // getStackSigHttpResource(part: Of<typeof AnalyzeParts>, key?: string, view?: string) {
   //   // const stackSignal = signal<SettingsStackItem[]>([]);
   //   return this.newHttpResource<SettingsStackItem[]>(() => ({

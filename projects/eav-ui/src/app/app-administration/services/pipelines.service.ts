@@ -33,7 +33,7 @@ export const webApiQueryDataSources = 'admin/query/DataSources';
 export class PipelinesService extends HttpServiceBase {
 
   log = classLog({ PipelinesService }, logSpecs);
-//TODO: 2dg change httpRe
+  // TODO: 2dg, ask 2dm 
   getAll(contentType: string) {
     const l = this.log.fnIf('getAll');
     return l.r(this.getHttpApiUrl<Query[]>(webApiEntityList, {

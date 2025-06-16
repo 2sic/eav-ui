@@ -139,7 +139,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
   }
 
   #fetchContentTypes() {
-    this.#contentTypeSvc.retrieveContentTypes(this.scope()).subscribe(contentTypes => {
+    this.#contentTypeSvc.retrieveContentTypesPromise(this.scope()).then(contentTypes => {
       for (const contentType of contentTypes) {
         contentType._compareLabel = contentType.Label.replace(/\p{Emoji}/gu, 'ž');
       }
@@ -152,7 +152,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
   }
 
   #fetchScopes() {
-    this.#contentTypeSvc.getScopesV2().subscribe(scopeList => {
+    this.#contentTypeSvc.getScopesV2Promise().then(scopeList => {
       // Merge the new scopes with the existing ones - in case there were manual scopes added
       // If old scope list had a manual scope which the server didn't send, re-add it here
       const manual = this.scopeOptions()

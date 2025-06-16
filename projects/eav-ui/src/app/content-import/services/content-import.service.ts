@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { from, map, switchMap } from 'rxjs';
 import { toBase64 } from '../../shared/helpers/file-to-base64.helper';
-import { ContentImport, EvaluateContentResult, ImportContentRequest, ImportContentResult } from '../models/content-import.model';
 import { webApiEntityRoot } from '../../shared/services/entity.service';
-import { HttpServiceBase } from '../../shared/services/http-service-base';
+import { HttpServiceBaseSignal } from '../../shared/services/http-service-base-signal';
+import { ContentImport, EvaluateContentResult, ImportContentRequest, ImportContentResult } from '../models/content-import.model';
 
 @Injectable()
-export class ContentImportService extends HttpServiceBase {
+export class ContentImportService extends HttpServiceBaseSignal {
 
   evaluateContent(formValues: ContentImport) {
     return from(toBase64(formValues.file)).pipe(

@@ -257,13 +257,13 @@ export class CreateMetadataDialogComponent extends BaseComponent implements OnIn
   }
 
   private fetchContentTypes(scope: string): void {
-    this.contentTypesService.retrieveContentTypes(scope).subscribe(contentTypes => {
+    this.contentTypesService.retrieveContentTypesPromise(scope).then(contentTypes => {
       this.contentTypes$.next(contentTypes);
     });
   }
 
   private fetchScopes(): void {
-    this.contentTypesService.getScopes().subscribe(scopes => {
+    this.contentTypesService.getScopesPromise().then(scopes => {
       this.scopeOptions$.next(scopes);
     });
   }

@@ -1,6 +1,5 @@
 import { httpResource } from '@angular/common/http';
 import { computed, Injectable, Signal } from '@angular/core';
-import { map } from 'rxjs';
 import { FileUploadResult } from '../../shared/components/file-upload-dialog';
 import { ScopeOption } from '../../shared/constants/eav.constants';
 import { HttpServiceBase } from '../../shared/services/http-service-base';
@@ -16,17 +15,16 @@ const webApiTypeSave = 'admin/type/save';
 const webApiTypeDelete = 'admin/type/delete';
 const webApiTypeImport = 'admin/type/import';
 const webApiTypeAddGhost = 'admin/type/addghost';
-//TODO: 2dg change httpRe
 @Injectable()
 export class ContentTypesService extends HttpServiceBase {
 
-  // TODO getHttpApiUrl
+  // TODO: 2dg, ask 2dm 
   retrieveContentType(nameId: string) {
     return this.getHttpApiUrl<ContentType>(webApiTypeGet, {
       params: { appId: this.appId, contentTypeId: nameId }
     });
   }
- 
+
   getType(nameId: string) {
     return httpResource<ContentType>(() => ({
       url: this.apiUrl(webApiTypeGet),
@@ -41,29 +39,24 @@ export class ContentTypesService extends HttpServiceBase {
     }));
   }
 
-  retrieveContentTypes(scope: string) {
-    // TODO getHttpApiUrl
-    return this.getHttpApiUrl<ContentType[]>(webApiTypes, {
+  retrieveContentTypesPromise(scope: string): Promise<ContentType[]> {
+    return this.fetchPromise<ContentType[]>(webApiTypes, {
       params: { appId: this.appId, scope }
     });
   }
 
-
-  // TODO: remove this method after upgrade to V2
-  getScopes() {
-    // TODO getHttpApiUrl
-    return this.getHttpApiUrl<{ old: Record<string, string>, scopes: ScopeDetailsDto[] }>(webApiTypeScopes, {
+  getScopesPromise(): Promise<ScopeOption[]> {
+    return this.fetchPromise<{ old: Record<string, string>, scopes: ScopeDetailsDto[] }>(webApiTypeScopes, {
       params: { appId: this.appId }
-    }).pipe(
-      map(scopesData => {
-        // wip during upgrade:
-        const scopes = scopesData.old;
-        const scopeOptions: ScopeOption[] = Object.keys(scopes).map(key => ({ name: scopes[key], value: key }));
-        return scopeOptions;
-      }),
-    );
+    }).then(scopesData => {
+      const scopes = scopesData.old;
+      const scopeOptions: ScopeOption[] = Object.keys(scopes).map(key => ({
+        name: scopes[key],
+        value: key,
+      }));
+      return scopeOptions;
+    });
   }
-
 
   getScopesSig() {
     const scopesSignal = httpResource<{ old: Record<string, string>, scopes: ScopeDetailsDto[] }>(() => ({
@@ -88,33 +81,10 @@ export class ContentTypesService extends HttpServiceBase {
     return scopeOptionsSignal;
   }
 
-  // TODO 2dg open to use, ask 2dm
-  getScopesV22() {
-    const dataSignal = this.newHttpResource<{ old: Record<string, string>, scopes: ScopeDetailsDto[] }>(() => ({
-      url: this.apiUrl(webApiTypeScopes),
-      params: { appId: this.appId },
-    }));
-
-    // Return a computed signal that extracts just the scopes property
-    return computed(() => {
-      // Call the signal as a function to get its current value
-      const value = dataSignal.value;
-      const data = value();
-      // Check if data exists before accessing properties
-      if (!data) return [];
-      // Now access the scopes property on the data
-      return data.scopes;
-    });
-  }
-
-
-  getScopesV2() {
-    // TODO
-    return this.getHttpApiUrl<{ old: Record<string, string>, scopes: ScopeDetailsDto[] }>(webApiTypeScopes, {
+  getScopesV2Promise(): Promise<ScopeDetailsDto[]> {
+    return this.fetchPromise<{ old: Record<string, string>, scopes: ScopeDetailsDto[] }>(webApiTypeScopes, {
       params: { appId: this.appId }
-    }).pipe(
-      map(scopesData => scopesData.scopes),
-    );
+    }).then(scopesData => scopesData.scopes);
   }
 
   save(contentType: ContentTypeEdit) {

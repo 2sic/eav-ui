@@ -4,7 +4,6 @@ import { HttpServiceBase } from '../../shared/services/http-service-base';
 import { Feature } from '../models';
 
 const webApiFeatureDetails = "admin/feature/details";
-//TODO: 2dg change httpRe
 @Injectable()
 export class FeatureDetailService extends HttpServiceBase {
   getFeatureDetail(nameId: Signal<string>) {
@@ -24,7 +23,7 @@ export class FeatureDetailService extends HttpServiceBase {
     return featureList;
   }
 
-  // TODO: Daniel fragen, getFeatureDetails(nameIds: string[]) ist nicht korrekt
+  // TODO: 2dg, ask 2dm 
   // getFeatureDetails(nameIds: string[]): Signal<Feature[]> {
   //   console.log('getFeatureDetails', nameIds);
   //   const featureList = signal<Feature[]>([]);

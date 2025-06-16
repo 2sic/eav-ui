@@ -15,7 +15,7 @@ const webApiSettings = 'admin/dialog/settings';
 @Injectable({ providedIn: 'root' })
 export class DialogConfigGlobalService extends HttpServiceBase {
 
-  log = classLog({DialogConfigGlobalService});
+  log = classLog({ DialogConfigGlobalService });
 
   constructor(
     private globalConfigService: GlobalConfigService,
@@ -25,7 +25,7 @@ export class DialogConfigGlobalService extends HttpServiceBase {
   }
 
   private dialogSettings$: Record<number, Observable<DialogSettings>> = {};
-
+  // TODO: 2dg, ask 2dm 
   getShared$(appId: number): Observable<DialogSettings> {
     this.log.a('getShared$ appId: ' + appId);
     this.dialogSettings$[appId] ??= this.getDialogSettings(appId, 'getShared$')
@@ -34,7 +34,7 @@ export class DialogConfigGlobalService extends HttpServiceBase {
   }
 
   private getDialogSettings(appId?: number, reqBy?: string): Observable<DialogSettings> {
-    this.log.a('getDialogSettings', {appId, reqBy});
+    this.log.a('getDialogSettings', { appId, reqBy });
     return this.getHttp<DialogSettings>(webApiSettings, {
       params: { appId: appId ?? this.appId },
     }).pipe(

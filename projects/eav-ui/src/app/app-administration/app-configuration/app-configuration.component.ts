@@ -431,7 +431,7 @@ export class AppConfigurationComponent implements OnInit {
     event.stopPropagation();
 
     // Check server if the content-type exists
-    this.#contentTypesSvc.retrieveContentTypes(eavConstants.scopes.configuration.value).subscribe(contentTypes => {
+    this.#contentTypesSvc.retrieveContentTypesPromise(eavConstants.scopes.configuration.value).then(contentTypes => {
       const contentTypeExists = contentTypes.some(ct => ct.Name === typeName);
       if (contentTypeExists) {
         // Open Edit dialog
