@@ -1,17 +1,14 @@
 import { Injectable } from '@angular/core';
-import { HttpServiceBase } from '../../shared/services/http-service-base';
+import { HttpServiceBaseSignal } from '../../shared/services/http-service-base-signal';
 import { ContentExport } from '../models/content-export.model';
 
 const webApiEntityRootDownload = 'admin/entity/Download';
 const webApiEntityRootJson = 'admin/entity/Json';
 const webApiTypeRootJson = 'admin/type/Json';
-const webApiTypeRootJsonBundleExport = 'admin/type/JsonBundleExport';
-const webApiTypeRootJsonBundleSave = 'admin/type/BundleSave';
-
 
 
 @Injectable()
-export class ContentExportService extends HttpServiceBase {
+export class ContentExportService extends HttpServiceBaseSignal {
 
   exportContent(values: ContentExport, selectedIds: number[]) {
     const selectedIdsString = selectedIds ? '&selectedids=' + selectedIds.join() : '';
