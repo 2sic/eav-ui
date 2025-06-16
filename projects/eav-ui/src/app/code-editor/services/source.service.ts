@@ -19,6 +19,7 @@ const appFilesPreview = 'admin/AppFiles/preview';
 @Injectable()
 export class SourceService extends HttpServiceBase {
 
+  // TODO: 2dg, ask 2dm 
   /** ViewKey is templateId or path */
   get(viewKey: string, global: boolean, urlItems: ViewOrFileIdentifier[]): Observable<SourceView> {
     return this.getHttpApiUrl<SourceView>(appFilesAsset, {
@@ -90,6 +91,21 @@ export class SourceService extends HttpServiceBase {
     });
   }
 
+  getAllPromise(mask?: string): Promise<FileAsset[]> {
+    return this.fetchPromise<{ Files: FileAsset[] }>(appFilesAll, {
+      params: {
+        appId: this.appId,
+        ...(mask && { mask }),
+      },
+    }).then(({ Files }) => {
+      Files.forEach(file => {
+        file.Shared ??= false;
+      });
+      return Files;
+    });
+  }
+
+  // TODO: 2dg, ask 2dm take 1, use getAllPromise
   getAll(mask?: string): Observable<FileAsset[]> {
     return this.getHttpApiUrl<{ Files: FileAsset[] }>(appFilesAll, {
       params: {
@@ -106,6 +122,7 @@ export class SourceService extends HttpServiceBase {
     );
   }
 
+   // TODO: 2dg, ask 2dm
   getWebApis(): Observable<WebApi[]> {
     return this.getHttpApiUrl<{ files: WebApi[] }>(apiExplorerAppApiFiles, {
       params: {
@@ -177,15 +194,15 @@ export class SourceService extends HttpServiceBase {
     return webApisSignal;
   }
 
-
+  // TODO: 2dg, ask 2dm 
   getWebApiDetails(apiPath: string): Observable<WebApiDetails> {
     return this.getHttpApiUrl<WebApiDetails>(apiExplorerInspect, {
       params: { appId: this.appId, zoneId: this.zoneId, path: apiPath },
     });
   }
 
-  getPredefinedTemplates(purpose?: 'Template' | 'Search' | 'Api', type?: 'Token' | 'Razor'): Observable<PredefinedTemplatesResponse> {
-    return this.getHttpApiUrl<PredefinedTemplatesResponse>(appFilesPredefinedTemplates, {
+  getPredefinedTemplates(purpose?: 'Template' | 'Search' | 'Api', type?: 'Token' | 'Razor'): Promise<PredefinedTemplatesResponse> {
+    return this.fetchPromise<PredefinedTemplatesResponse>(appFilesPredefinedTemplates, {
       params: {
         ...(purpose && { purpose }),
         ...(type && { type }),
@@ -193,6 +210,7 @@ export class SourceService extends HttpServiceBase {
     });
   }
 
+  // TODO: 2dg, ask 2dm 
   getPreview(path: string, global: boolean, templateKey: string): Observable<Preview> {
     return this.getHttpApiUrl<Preview>(appFilesPreview, {
       params: {

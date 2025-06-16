@@ -226,7 +226,7 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
     this.#attachListeners();
 
     // Load templates
-    this.#sourceSvc.getAll().subscribe(templates => {
+    this.#sourceSvc.getAllPromise().then(templates => {
       this.templates.set(templates);
     });
   }
@@ -275,7 +275,7 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
       if (!result) return;
 
       this.#sourceSvc.create(result.name, params.isShared, result.templateKey).subscribe(() => {
-        this.#sourceSvc.getAll().subscribe(files => {
+        this.#sourceSvc.getAllPromise().then(files => {
           this.templates.set(files);
         });
       });

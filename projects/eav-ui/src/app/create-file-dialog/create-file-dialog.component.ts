@@ -90,7 +90,7 @@ export class CreateFileDialogComponent extends BaseComponent implements OnInit, 
   }
 
   private fetchTemplates(): void {
-    this.sourceService.getPredefinedTemplates(this.dialogData.purpose, this.dialogData.type).subscribe(response => {
+    this.sourceService.getPredefinedTemplates(this.dialogData.purpose, this.dialogData.type).then(response => {
       if (this.controls.templateKey.value !== response.Default) {
         this.controls.templateKey.patchValue(response.Default);
       }

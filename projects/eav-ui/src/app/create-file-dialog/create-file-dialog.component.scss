@@ -1,4 +1,4 @@
-@import "../edit/assets/styles/_variables.scss";
+@import '../edit/assets/styles/_variables.scss';
 
 .eav-dialog-title-box {
   white-space: nowrap;
@@ -82,4 +82,8 @@ pre {
   border: 1px solid #ccc;
   border-radius: 4px;
   overflow-x: auto;
+}
+
+.max-h {
+  max-height: 55vh;
 }
