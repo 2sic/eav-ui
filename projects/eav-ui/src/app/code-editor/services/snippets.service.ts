@@ -17,10 +17,11 @@ export const inlineHelp = 'admin/Code/InlineHelp';
 @Injectable()
 export class SnippetsService extends HttpServiceBase {
 
-  constructor( private translate: TranslateService) {
+  constructor(private translate: TranslateService) {
     super();
   }
 
+  // TODO: 2dg, ask 2dm 
   getTooltips(language: string): Observable<Tooltip[]> {
     return this.getHttpApiUrl<Tooltip[]>(inlineHelp, {
       params: {
@@ -32,9 +33,9 @@ export class SnippetsService extends HttpServiceBase {
   getSnippets(view: SourceView): Observable<{ list: Snippet[]; sets: SnippetsSets; }> {
     return this.getHttp<{ snippets: Snippet[] }>('../ng-assets/snippets.json.js').pipe(
       map(res => {
-        const relevant = this.filterAwayNotNeededSnippetsList(res.snippets, view);
-        const standardAndInputSnips = this.extractInputTypeSnippets(relevant);
-        const sets = this.initSnippetsWithConfig(standardAndInputSnips.standardArray, view, standardAndInputSnips.inputTypeSnippets);
+        const relevant = this.#filterAwayNotNeededSnippetsList(res.snippets, view);
+        const standardAndInputSnips = this.#extractInputTypeSnippets(relevant);
+        const sets = this.#initSnippetsWithConfig(standardAndInputSnips.standardArray, view, standardAndInputSnips.inputTypeSnippets);
         const sorted: { list: Snippet[]; sets: SnippetsSets; } = {
           list: standardAndInputSnips.standardArray,
           sets
@@ -45,7 +46,7 @@ export class SnippetsService extends HttpServiceBase {
   }
 
   /** Scan the list for sets starting with @ or [ and filter if not needed right now */
-  private filterAwayNotNeededSnippetsList(list: Snippet[], view: SourceView): Snippet[] {
+  #filterAwayNotNeededSnippetsList(list: Snippet[], view: SourceView): Snippet[] {
     const keyPrefixes = ['@', '['];
     const keyPrefixIndex = (v: SourceView) => (v.Type.indexOf('Razor') > -1) ? 0 : 1;
 
@@ -63,7 +64,7 @@ export class SnippetsService extends HttpServiceBase {
     return newList;
   }
 
-  private extractInputTypeSnippets(list: Snippet[]): { standardArray: Snippet[]; inputTypeSnippets: Record<string, Snippet[]>; } {
+  #extractInputTypeSnippets(list: Snippet[]): { standardArray: Snippet[]; inputTypeSnippets: Record<string, Snippet[]>; } {
     const standardArray: Snippet[] = [];
     const inputTypeArray: Snippet[] = [];
 
@@ -76,7 +77,7 @@ export class SnippetsService extends HttpServiceBase {
         inputTypeArray.push(itm);
       }
     }
-    const inputTypeSnippets = this.catalogInputTypeSnippets(inputTypeArray);
+    const inputTypeSnippets = this.#catalogInputTypeSnippets(inputTypeArray);
     const extracted: { standardArray: Snippet[]; inputTypeSnippets: Record<string, Snippet[]>; } = {
       standardArray,
       inputTypeSnippets,
@@ -84,7 +85,7 @@ export class SnippetsService extends HttpServiceBase {
     return extracted;
   }
 
-  private catalogInputTypeSnippets(list: Snippet[]): Record<string, Snippet[]> {
+  #catalogInputTypeSnippets(list: Snippet[]): Record<string, Snippet[]> {
     const inputTypeList: Record<string, Snippet[]> = {};
     for (const itm of list) {
       if (inputTypeList[itm.subset] === undefined) {
@@ -95,17 +96,17 @@ export class SnippetsService extends HttpServiceBase {
     return inputTypeList;
   }
 
-  private initSnippetsWithConfig(
+  #initSnippetsWithConfig(
     standardArray: Snippet[],
     templateConfiguration: SourceView,
     inputTypeSnippets: Record<string, Snippet[]>,
   ): SnippetsSets {
-    const sets = this.makeTree(standardArray);
+    const sets = this.#makeTree(standardArray);
 
     // retrieve all relevant content-types and infos
     sets.Content = Object.assign({}, sets.Content, { Fields: {}, PresentationFields: {} });
     if (templateConfiguration.TypeContent) {
-      this.loadContentType(
+      this.#loadContentType(
         sets.Content.Fields as SnippetsSubSubSets,
         templateConfiguration.TypeContent,
         'Content',
@@ -114,7 +115,7 @@ export class SnippetsService extends HttpServiceBase {
       );
     }
     if (templateConfiguration.TypeContentPresentation) {
-      this.loadContentType(
+      this.#loadContentType(
         sets.Content.PresentationFields as SnippetsSubSubSets,
         templateConfiguration.TypeContentPresentation,
         'Content.Presentation',
@@ -126,7 +127,7 @@ export class SnippetsService extends HttpServiceBase {
     if (templateConfiguration.HasList) {
       sets.List = Object.assign({}, sets.List, { Fields: {}, PresentationFields: {} });
       if (templateConfiguration.TypeList) {
-        this.loadContentType(
+        this.#loadContentType(
           sets.List.Fields as SnippetsSubSubSets,
           templateConfiguration.TypeList,
           'Header',
@@ -135,7 +136,7 @@ export class SnippetsService extends HttpServiceBase {
         );
       }
       if (templateConfiguration.TypeListPresentation) {
-        this.loadContentType(
+        this.#loadContentType(
           sets.List.PresentationFields as SnippetsSubSubSets,
           templateConfiguration.TypeListPresentation,
           'Header.Presentation',
@@ -151,15 +152,15 @@ export class SnippetsService extends HttpServiceBase {
     if (templateConfiguration.HasApp) {
       sets.App.Resources = {};
       sets.App.Settings = {};
-      this.loadContentType(sets.App.Resources, 'App-Resources', 'App.Resources', templateConfiguration, inputTypeSnippets);
-      this.loadContentType(sets.App.Settings, 'App-Settings', 'App.Settings', templateConfiguration, inputTypeSnippets);
+      this.#loadContentType(sets.App.Resources, 'App-Resources', 'App.Resources', templateConfiguration, inputTypeSnippets);
+      this.#loadContentType(sets.App.Settings, 'App-Settings', 'App.Settings', templateConfiguration, inputTypeSnippets);
     }
 
     return sets;
   }
 
   /** Convert the list into a tree with set/subset/item */
-  private makeTree(list: Snippet[]): SnippetsSets {
+  #makeTree(list: Snippet[]): SnippetsSets {
     const tree: SnippetsSets = {};
     for (const o of list) {
       if (tree[o.set] === undefined) {
@@ -170,10 +171,10 @@ export class SnippetsService extends HttpServiceBase {
       }
       const reformatted: SetSnippet = {
         key: o.name,
-        label: this.label(o.set, o.subset, o.name),
+        label: this.#label(o.set, o.subset, o.name),
         snip: o.content,
-        help: o.help || this.help(o.set, o.subset, o.name),
-        links: this.linksList(o.links)
+        help: o.help || this.#help(o.set, o.subset, o.name),
+        links: this.#linksList(o.links)
       };
 
       (tree[o.set][o.subset] as SetSnippet[]).push(reformatted);
@@ -181,8 +182,8 @@ export class SnippetsService extends HttpServiceBase {
     return tree;
   }
 
-  private label(set: string, subset: string, snip: string): string {
-    const key = this.getHelpKey(set, subset, snip, '.Key');
+  #label(set: string, subset: string, snip: string): string {
+    const key = this.#getHelpKey(set, subset, snip, '.Key');
 
     let result: string = this.translate.instant(key);
     if (result === key) {
@@ -191,12 +192,12 @@ export class SnippetsService extends HttpServiceBase {
     return result;
   }
 
-  private getHelpKey(set: string, subset: string, snip: string, addition: string): string {
+  #getHelpKey(set: string, subset: string, snip: string, addition: string): string {
     return 'SourceEditorSnippets' + '.' + set + '.' + subset + '.' + snip + addition;
   }
 
-  private help(set: string, subset: string, snip: string): string {
-    const key = this.getHelpKey(set, subset, snip, '.Help');
+  #help(set: string, subset: string, snip: string): string {
+    const key = this.#getHelpKey(set, subset, snip, '.Help');
 
     let result: string = this.translate.instant(key);
     if (result === key) {
@@ -205,7 +206,7 @@ export class SnippetsService extends HttpServiceBase {
     return result;
   }
 
-  private linksList(linksString: string): SetSnippetLink[] {
+  #linksList(linksString: string): SetSnippetLink[] {
     if (!linksString) { return null; }
 
     const links: SetSnippetLink[] = [];
@@ -225,26 +226,26 @@ export class SnippetsService extends HttpServiceBase {
   }
 
   /** spm TODO: this happens after snippets are calculated for the first time. Needs to be fixed */
-  private loadContentType(
+  #loadContentType(
     target: SnippetsSubSubSets,
     type: string,
     prefix: string,
     templateConfiguration: SourceView,
     inputTypeSnippets: Record<string, Snippet[]>,
   ): void {
-    this.getFields(templateConfiguration.AppId, type).subscribe(fields => {
+    this.#getFields(templateConfiguration.AppId, type).then(fields => {
       // first add common items if the content-type actually exists
       for (const field of fields) {
         const fieldname = field.StaticName;
         target[fieldname] = {
           key: fieldname,
           label: fieldname,
-          snip: this.valuePlaceholder(prefix, fieldname, templateConfiguration),
+          snip: this.#valuePlaceholder(prefix, fieldname, templateConfiguration),
           help: field.Metadata.merged.Notes || ' (' + field.Type.toLowerCase() + ') '
         };
         // try to add generic snippets specific to this input-type
         const snipDefaults = cloneDeep(target[fieldname]); // must be a copy, because target[fieldname] will grow
-        this.attachSnippets(target, prefix, fieldname, field.InputType, snipDefaults, inputTypeSnippets);
+        this.#attachSnippets(target, prefix, fieldname, field.InputType, snipDefaults, inputTypeSnippets);
       }
 
       if (fields.length) {
@@ -254,7 +255,7 @@ export class SnippetsService extends HttpServiceBase {
           target[std[i]] = {
             key: std[i],
             label: std[i],
-            snip: this.valuePlaceholder(prefix, std[i], templateConfiguration),
+            snip: this.#valuePlaceholder(prefix, std[i], templateConfiguration),
             help: this.translate.instant('SourceEditorSnippets.StandardFields.' + std[i] + '.Help'),
           };
         }
@@ -262,32 +263,33 @@ export class SnippetsService extends HttpServiceBase {
     });
   }
 
-  private valuePlaceholder(obj: string, val: string, templateConfiguration: SourceView): string {
+  #valuePlaceholder(obj: string, val: string, templateConfiguration: SourceView): string {
     return (templateConfiguration.Type.indexOf('Razor') > -1)
       ? '@' + obj + '.' + val
       : '[' + obj.replace('.', ':') + ':' + val + ']';
   }
 
-  private getFields(appId: number, staticName: string): Observable<Field[]> {
-    return this.getHttpApiUrl<Field[]>(webApiFieldsAll, {
-      params: { appid: appId.toString(), staticName },
-    }).pipe(
-      map(fields => {
-        fields = fields.filter(field => field.Type !== DataTypeCatalog.Empty);
-        for (const fld of fields) {
-          if (!fld.Metadata) continue;
-          const md = fld.Metadata;
-          const allMd = md.All;
-          const typeMd = md[fld.Type];
-          const inputMd = md[fld.InputType];
-          md.merged = { ...allMd, ...typeMd, ...inputMd };
-        }
-        return fields;
-      }),
-    );
-  }
 
-  private attachSnippets(
+#getFields(appId: number, staticName: string): Promise<Field[]> {
+  return this.fetchPromise<Field[]>(webApiFieldsAll, {
+    params: { appid: appId.toString(), staticName },
+  }).then(fields => {
+    // Filtere leere Datentypen raus
+    fields = fields.filter(field => field.Type !== DataTypeCatalog.Empty);
+    // Merged-Metadata erzeugen wie vorher
+    for (const fld of fields) {
+      if (!fld.Metadata) continue;
+      const md = fld.Metadata;
+      const allMd = md.All;
+      const typeMd = md[fld.Type];
+      const inputMd = md[fld.InputType];
+      md.merged = { ...allMd, ...typeMd, ...inputMd };
+    }
+    return fields;
+  });
+}
+
+  #attachSnippets(
     target: SnippetsSubSubSets,
     prefix: string,
     fieldname: string,
@@ -317,14 +319,14 @@ export class SnippetsService extends HttpServiceBase {
         fieldSnips[fieldname + '-' + genericSnippet[g].name] = Object.assign({}, snipDefaults, {
           key: fieldname + ' - ' + genericSnippet[g].name,
           label: genericSnippet[g].name,
-          snip: this.localizeGenericSnippet(genericSnippet[g].content, prefix, fieldname),
+          snip: this.#localizeGenericSnippet(genericSnippet[g].content, prefix, fieldname),
           collapse: true,
         } as MoreSnippet);
       } finally { }
     }
   }
 
-  private localizeGenericSnippet(snip: string, objName: string, fieldName: string): string {
+  #localizeGenericSnippet(snip: string, objName: string, fieldName: string): string {
     snip = snip
       .replace(/(\$\{[0-9]+\:)var(\})/gi, '$1' + objName + '$2')
       .replace(/(\$\{[0-9]+\:)prop(\})/gi, '$1' + fieldName + '$2');
