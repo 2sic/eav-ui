@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { map, tap } from 'rxjs';
 import { classLog } from '../../shared/logging';
 import { GlobalConfigService } from '../../shared/services/global-config.service';
-import { HttpServiceBase } from '../../shared/services/http-service-base';
+import { HttpServiceBaseSignal } from '../../shared/services/http-service-base-signal';
 import { EavEditLoadDto, SaveEavFormData } from '../dialog/main/edit-dialog-main.models';
 import { SaveResult } from '../state/save-result.model';
 
@@ -17,7 +17,7 @@ const webApiLoad = 'cms/edit/load';
 const webApiSave = 'cms/edit/save';
 
 @Injectable()
-export class FormDataService extends HttpServiceBase {
+export class FormDataService extends HttpServiceBaseSignal {
 
   log = classLog({FormDataService}, logSpecs);
 
