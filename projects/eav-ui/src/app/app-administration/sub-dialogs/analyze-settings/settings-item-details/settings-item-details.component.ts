@@ -11,7 +11,7 @@ import { SxcGridModule } from '../../../../shared/modules/sxc-grid-module/sxc-gr
 import { AnalyzeSettingsService } from '../../../services/analyze-settings.service';
 import { AnalyzeSettingsValueComponent } from '../analyze-settings-value/analyze-settings-value.component';
 import { AnalyzeParts, SettingsStackItem } from '../analyze-settings.models';
-  // TODO: 2dg not works
+// TODO: 2dg not works
 // interface AnalyzeRouteParams {
 //   part: Of<typeof AnalyzeParts>;
 //   selectedView: string;
@@ -35,6 +35,9 @@ export class SettingsItemDetailsComponent implements OnInit {
 
 
   private analyzeSettingsService = transient(AnalyzeSettingsService);
+
+
+
   stack = signal<SettingsStackItem[]>(undefined);
 
   // TODO: 2dg not works
@@ -61,8 +64,8 @@ export class SettingsItemDetailsComponent implements OnInit {
     const routeViewGuid = this.route.snapshot.paramMap.get('view');
     this.selectedView = ['undefined', 'null'].includes(routeViewGuid) ? undefined : routeViewGuid;
     this.settingsItemKey = this.route.snapshot.paramMap.get('settingsItemKey');
-  
-    // TODO: 2dg not works
+
+    // TODO: 2dg, not works, 2dm 
     // // Set route parameters
     // this.#routeParams.set({
     //   part: this.part,

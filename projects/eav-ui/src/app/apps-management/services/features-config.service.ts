@@ -5,7 +5,7 @@ import { FeatureState } from '../../features/models';
 import { FileUploadMessageTypes, FileUploadResult } from '../../shared/components/file-upload-dialog';
 import { HttpServiceBase } from '../../shared/services/http-service-base';
 import { License, LicenseDownloadInfo, LicenseUploadInfo } from '../models/license.model';
-//TODO: 2dg change httpRe
+
 const webAPiLicenseRetrieve = 'sys/license/Retrieve';
 const webApiFeatSaveNew = 'admin/feature/SaveNew';
 const webApiLicSummary = 'sys/license/Summary';
@@ -18,6 +18,7 @@ export class FeaturesConfigService extends HttpServiceBase {
     return this.http.post<null>(this.apiUrl(webApiFeatSaveNew), featuresStates);
   }
 
+  // TODO: 2dg, ask 2dm 
   getLicenses(): Observable<License[]> { // Use new Signals
     return this.getHttpApiUrl<License[]>(webApiLicSummary);
   }
@@ -46,16 +47,8 @@ export class FeaturesConfigService extends HttpServiceBase {
       );
   }
 
-  retrieveLicense(): Observable<LicenseDownloadInfo> {
-    return this.getHttpApiUrl<LicenseDownloadInfo>(webAPiLicenseRetrieve);
+  retrieveLicensePromise(): Promise<LicenseDownloadInfo> {
+    return this.fetchPromise<LicenseDownloadInfo>(webAPiLicenseRetrieve, {
+    });
   }
-
-  // TODO: 2dg ask 2dm
-  // retrieveLicenseS() {
-  //   return httpResource<LicenseDownloadInfo>(() => ({
-  //     url: this.apiUrl(webAPiLicenseRetrieve),
-  //   }));
-  // }
-
-
 }

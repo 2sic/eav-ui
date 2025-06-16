@@ -51,36 +51,20 @@ export class RegistrationComponent {
     window.open(`https://patrons.2sxc.org/register?fingerprint=${systemInfoSet.System.Fingerprint}`, '_blank');
   }
 
+
   retrieveLicense(): void {
-    this.#featuresConfigSvc.retrieveLicense().subscribe({
-      error: () => {
-        this.snackBar.open('Failed to retrieve license. Please check console for more information', undefined, { duration: 3000 });
-      },
-      next: (info) => {
-        const message = `License ${info.Success ? 'Info' : 'Error'}: ${info.Message}`;
-        const duration = info.Success ? 3000 : 100000;
-        const panelClass = info.Success ? undefined : 'snackbar-error';
-        this.snackBar.open(message, undefined, { duration, panelClass });
-        this.#refreshSystemInfo();
-      },
+  this.#featuresConfigSvc.retrieveLicensePromise()
+    .then(info => {
+      const message = `License ${info.Success ? 'Info' : 'Error'}: ${info.Message}`;
+      const duration = info.Success ? 3000 : 100000;
+      const panelClass = info.Success ? undefined : 'snackbar-error';
+      this.snackBar.open(message, undefined, { duration, panelClass });
+      this.#refreshSystemInfo();
+    })
+    .catch(() => {
+      this.snackBar.open('Failed to retrieve license. Please check console for more information', undefined, { duration: 3000 });
     });
-  }
-
-  //   retrieveLicense2(): void {
-  //   const retrieveLicense = this.#featuresConfigSvc.retrieveLicenseS().value
-
-  //   if(retrieveLicense === undefined) {
-  //     this.snackBar.open('Failed to retrieve license. Please check console for more information', undefined, { duration: 3000 });
-  //     return;
-  //   } else {
-  //     const message = `License ${retrieveLicense.Success ? 'Info' : 'Error'}: ${retrieveLicense.Message}`;
-  //     const duration = retrieveLicense.Success ? 3000 : 100000;
-  //     const panelClass = retrieveLicense.Success ? undefined : 'snackbar-error';
-  //     this.snackBar.open(message, undefined, { duration, panelClass });
-  //     this.#refreshSystemInfo();
-  //   }
-    
-  // }
+}
 
   registerManually(): void {
     window.open(`https://patrons.2sxc.org/`, '_blank');
