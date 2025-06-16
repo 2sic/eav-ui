@@ -72,9 +72,9 @@ export class AppConfigurationCardComponent implements OnDestroy {
 
   urlToEdit() {
     let url = signal('');
-    this.#contentItemsSvc.getAll(
+    this.#contentItemsSvc.getAllPromise(
       eavConstants.contentTypes.appConfiguration
-    ).subscribe(contentItems => {
+    ).then(contentItems => {
 
       if (contentItems.length !== 1)
         return ''

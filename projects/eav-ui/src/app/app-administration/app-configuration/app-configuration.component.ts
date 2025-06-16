@@ -313,7 +313,7 @@ export class AppConfigurationComponent implements OnInit {
   // case eavConstants.contentTypes.systemResources:
   urlToEditSystem(staticName: string, systemSettingsScope?: Of<typeof SystemSettingsScopes>) {
     const url = signal('');
-    this.#contentItemsService.getAll(staticName).subscribe(contentItems => {
+    this.#contentItemsService.getAllPromise(staticName).then(contentItems => {
       const systemSettingsEntities = contentItems.filter(i =>
         systemSettingsScope === SystemSettingsScopes.App
           ? !i.SettingsEntityScope
@@ -346,7 +346,7 @@ export class AppConfigurationComponent implements OnInit {
   // case eavConstants.contentTypes.customResources:
   urlToEditCustom(staticName: string) {
     const url = signal('');
-    this.#contentItemsService.getAll(staticName).subscribe(contentItems => {
+    this.#contentItemsService.getAllPromise(staticName).then(contentItems => {
       if (contentItems.length > 1) {
         url.set(this.#urlTo('message/e', { error: 'AppAdmin.ErrorTooManyAppSettings' }, staticName));
       } else {
@@ -369,7 +369,7 @@ export class AppConfigurationComponent implements OnInit {
   // case default:
   urlToEditDefault(staticName: string) {
     const url = signal('');
-    this.#contentItemsService.getAll(staticName).subscribe(contentItems => {
+    this.#contentItemsService.getAllPromise(staticName).then(contentItems => {
       if (contentItems.length < 1) {
         url.set(this.#urlTo('message/e', { error: 'AppAdmin.ErrorNoAppSettings' }, staticName));
       } else if (contentItems.length > 1) {

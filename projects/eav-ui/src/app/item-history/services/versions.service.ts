@@ -8,6 +8,7 @@ const webApiVersionsRestore = 'cms/history/restore';
 @Injectable()
 export class VersionsService extends HttpServiceBase {
 
+  // TODO: 2dg, ask 2dm 
   fetchVersions(entityId: number, initial: Version[] = null) {
     return this.postSignal<Version[]>(
       webApiVersionsGet,

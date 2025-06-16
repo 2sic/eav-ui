@@ -7,7 +7,7 @@ import { Field } from '../../shared/fields/field.model';
 import { toBase64 } from '../../shared/helpers/file-to-base64.helper';
 import { classLog } from '../../shared/logging';
 import { webApiEntityList, webApiEntityRoot } from '../../shared/services/entity.service';
-import { HttpServiceBase } from '../../shared/services/http-service-base';
+import { HttpServiceBaseSignal } from '../../shared/services/http-service-base-signal';
 import { ContentItem } from '../models/content-item.model';
 
 const logSpecs = {
@@ -16,15 +16,14 @@ const logSpecs = {
   getAllOnce: true,
 
 }
-//TODO: 2dg change httpRe
 @Injectable()
-export class ContentItemsService extends HttpServiceBase {
+export class ContentItemsService extends HttpServiceBaseSignal {
 
   log = classLog({ ContentItemsService }, logSpecs);
-
-  getAll(contentTypeStaticName: string) {
+  
+  getAllPromise(contentTypeStaticName: string): Promise<ContentItem[]> {
     this.log.fnIf('getAll', { contentTypeStaticName });
-    return this.getHttpApiUrl<ContentItem[]>(webApiEntityList, {
+    return this.fetchPromise<ContentItem[]>(webApiEntityList, {
       params: { appId: this.appId, contentType: contentTypeStaticName }
     });
   }
@@ -50,10 +49,8 @@ export class ContentItemsService extends HttpServiceBase {
     });
   }
 
-
-
-  getColumns(contentTypeStaticName: string) {
-    return this.getHttpApiUrl<Field[]>(webApiFieldsAll, {
+  getColumnsPromise(contentTypeStaticName: string): Promise<Field[]> {
+    return this.fetchPromise<Field[]>(webApiFieldsAll, {
       params: { appId: this.appId, staticName: contentTypeStaticName }
     });
   }

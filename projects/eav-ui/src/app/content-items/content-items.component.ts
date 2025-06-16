@@ -129,7 +129,7 @@ export class ContentItemsComponent implements OnInit {
   }
 
   private fetchColumns() {
-    this.#contentItemsSvc.getColumns(this.#contentTypeStaticName).subscribe(columns => {
+    this.#contentItemsSvc.getColumnsPromise(this.#contentTypeStaticName).then(columns => {
       // filter out ephemeral columns as they don't have data to show
       const columnsWithoutEphemeral = columns.filter(column => !column.IsEphemeral);
       const columnDefs = this.#buildColumnDefs(columnsWithoutEphemeral);
