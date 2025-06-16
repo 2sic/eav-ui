@@ -150,7 +150,7 @@ export class ManageContentListComponent implements OnInit {
   }
 
   #fetchList(keepOrder = false) {
-    this.#contentGroupSvc.getList(this.#contentGroup).subscribe(items => {
+    this.#contentGroupSvc.getListPromise(this.#contentGroup).then(items => {
       if (this.reordered()) {
         const oldIds = this.items().map(item => item.Id);
         const idsChanged = this.items().length !== items.length || items.some(item => !oldIds.includes(item.Id));

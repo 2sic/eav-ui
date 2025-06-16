@@ -79,6 +79,7 @@ export class ReplaceContentComponent implements OnInit {
     this.#fetchConfig(false, null);
 
     this.#dialogRoutes.doOnDialogClosed(() => {
+      console.log("2dg Dialog Close")
       const navigation = this.#dialogRoutes.router.getCurrentNavigation();
       const editResult = navigation.extras?.state;
       const cloneId: number = editResult?.[Object.keys(editResult)[0]];
@@ -113,8 +114,10 @@ export class ReplaceContentComponent implements OnInit {
   }
 
   #fetchConfig(isRefresh: boolean, cloneId: number) {
+
+
     const contentGroup = this.#buildContentGroup();
-    this.#contentGroupSvc.getItems(contentGroup).subscribe(replaceConfig => {
+    this.#contentGroupSvc.getItemsPromise(contentGroup).then(replaceConfig => {
       const options = Object.entries(replaceConfig.Items)
         .map(([itemId, itemName]) => ({
           id: parseInt(itemId, 10),
