@@ -1,10 +1,9 @@
 import { computed, Injectable, Signal } from '@angular/core';
-import { map } from 'rxjs';
 import { Of } from '../../../../../core';
 import { ContentType } from '../../app-administration/models/content-type.model';
 import { webApiTypeRoot } from '../../app-administration/services';
 import { calculateDataTypes, DataType } from '../../content-type-fields/edit-content-type-fields/edit-content-type-fields.helpers';
-import { HttpServiceBase } from '../services/http-service-base';
+import { HttpServiceBaseSignal } from '../services/http-service-base-signal';
 import { Field, FieldInputTypeOption } from './field.model';
 import { InputTypeCatalog } from './input-type-catalog';
 import { InputTypeMetadata } from './input-type-metadata.model';
@@ -30,7 +29,7 @@ const webApiGetDescendants = 'admin/field/GetDescendants';
 
 
 @Injectable()
-export class ContentTypesFieldsService extends HttpServiceBase {
+export class ContentTypesFieldsService extends HttpServiceBaseSignal {
 
   protected paramsAppId(more: Record<string, string | number | boolean | ReadonlyArray<string | number | boolean>> = {}) {
     return {
@@ -96,69 +95,17 @@ export class ContentTypesFieldsService extends HttpServiceBase {
   }
 
   getReservedNames() {
-    return this.getHttpApiUrl<Record<string, string>>(webApiReservedNames);
-  }
-
-  reservedNames() {
     return this.newHttpResource<Record<string, string>>(() => ({
       url: this.apiUrl(webApiReservedNames),
     }));
   }
 
   /** Get all fields for some content type */
-  getFields(contentTypeStaticName: string) {
-    return this.getHttpApiUrl<Field[]>(webApiFieldsAll, this.paramsAppId({ staticName: contentTypeStaticName }))
-      .pipe(
-        map(fields => {
-          if (fields) {
-            for (const fld of fields) {
-              if (!fld.Metadata) continue;
-              const md = fld.Metadata;
-              const allMd = md.All;
-              const typeMd = md[fld.Type];
-              const inputMd = md[fld.InputType];
-              md.merged = { ...allMd, ...typeMd, ...inputMd };
-            }
-          }
-          return fields;
-        }),
-      );
-  }
-
-  // getFieldsSig2(contentTypeStaticName: string) {
-  //   // Fetch raw field data from the API for the specified content type
-  //   const resourceRef = this.newHttpResource<Field[]>(() => ({
-  //     url: this.apiUrl(webApiFieldsAll),
-  //     params: this.paramsAppId({ staticName: contentTypeStaticName }).params,
-  //   }));
-
-  //   const transformedData = computed(() => {  // This combines metadata from All, Type-specific, and InputType-specific sources
-  //     const fields = resourceRef.value();
-  //     if (!fields) return [];
-
-  //     // Process each field's metadata to create a merged version
-  //     for (const fld of fields) {
-  //       if (!fld.Metadata) continue;
-  //       const md = fld.Metadata;
-  //       const allMd = md.All;
-  //       const typeMd = md[fld.Type];
-  //       const inputMd = md[fld.InputType];
-  //       // Create a merged metadata object combining all sources
-  //       md.merged = { ...allMd, ...typeMd, ...inputMd };
-  //     }
-  //     return fields;
-  //   });
-
-  //   // Return a resource object with the transformed data, loading state and error information
-  //   return {
-  //     value: transformedData,
-  //     loading: resourceRef.isLoading,
-  //     error: resourceRef.error,
-  //   };
-  // }
-
-  getFieldsSig(contentTypeStaticName: string) {
-    return this.getSignal<Field[]>(webApiFieldsAll, this.paramsAppId({ staticName: contentTypeStaticName }), [], fields => {
+  getFieldsPromise(contentTypeStaticName: string): Promise<Field[]> {
+    return this.fetchPromise<Field[]>(
+      webApiFieldsAll,
+      this.paramsAppId({ staticName: contentTypeStaticName })
+    ).then(fields => {
       if (fields) {
         for (const fld of fields) {
           if (!fld.Metadata) continue;
@@ -174,18 +121,11 @@ export class ContentTypesFieldsService extends HttpServiceBase {
   }
 
   /** Get all possible sharable fields for a new sharing */
-  getShareableFields() {
-    return this.getHttpApiUrl<Field[]>(webApiFieldsGetShared, this.paramsAppId());
+  getShareableFieldsPromise(): Promise<Field[]> {
+    return this.fetchPromise<Field[]>(webApiFieldsGetShared, {
+      params: this.paramsAppId().params
+    });
   }
-
-  // TODO: 2dg, not working now
-  // getShareableFields2() {
-  //   return this.newHttpResource<Field[]>(() => ({
-  //     url: this.apiUrl(webApiFieldsGetShared),
-  //     params: this.paramsAppId().params,
-  //   }));
-  // }
-
 
   /**
    * Get sharable fields which are possible for this attribute.
@@ -193,21 +133,23 @@ export class ContentTypesFieldsService extends HttpServiceBase {
    * @param attributeId the existing attributeId which will receive the new metadata
    */
   getShareableFieldsFor(attributeId: number) {
-    return this.#getShareinfo(webApiFieldsGetShared, attributeId);
-    // return this.getHttp<Field[]>(this.apiUrl(webApiFieldsGetShared), this.paramsAppId({ attributeId }));
+    return this.#getShareinfoPromise(webApiFieldsGetShared, attributeId);
   }
 
   getAncestors(attributeId: number) {
-    return this.#getShareinfo(webApiGetAncestors, attributeId);
+    return this.#getShareinfoPromise(webApiGetAncestors, attributeId);
   }
 
   getDescendants(attributeId: number) {
-    return this.#getShareinfo(webApiGetDescendants, attributeId);
+    return this.#getShareinfoPromise(webApiGetDescendants, attributeId);
   }
 
-  #getShareinfo(endpoint: string, attributeId: number) {
-    return this.getHttpApiUrl<Field[]>(endpoint, this.paramsAppId({ attributeId }));
+  #getShareinfoPromise(endpoint: string, attributeId: number): Promise<Field[]> {
+    return this.fetchPromise<Field[]>(endpoint, {
+      params: this.paramsAppId({ attributeId }).params
+    });
   }
+
 
   addInheritedField(targetContentTypeId: number, sourceType: string, sourceFieldGuid: string /* guid */, name: string) {
     return this.http.post<number>(this.apiUrl(webApiAddInheritedField), null, this.paramsAppId({

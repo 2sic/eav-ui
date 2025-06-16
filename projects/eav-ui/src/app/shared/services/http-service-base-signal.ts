@@ -85,4 +85,37 @@ export class HttpServiceBaseSignal {
     }
   }
 
+  /**
+ * Makes an HTTP GET request and returns a Promise with the response body of type T
+ * @param endpoint - The API endpoint path (will be combined with base URL)
+ * @param options - Angular HttpClient options (headers, params, etc.)
+ * @returns Promise that resolves to the HTTP response body of type T (or rejects/returns null on error)
+ */
+  protected fetchPromise<T>(
+    endpoint: string,
+    options?: Parameters<typeof this.http.get>[1]
+  ): Promise<T> {
+    try {
+      // Ensure observe: 'body' is used (default for HttpClient.get)
+      const httpOptions = {
+        ...options,
+        observe: 'body' as const
+      };
+      // Convert the Observable returned by HttpClient to a Promise
+      return firstValueFrom(
+        this.http.get<T>(this.apiUrl(endpoint), httpOptions)
+      ).catch(error => {
+        console.error(`HTTP error in fetchPromise:`, error);
+        // You can throw, return null, or handle as you wish
+        throw error;
+      });
+    } catch (e: any) {
+      // Handles synchronous errors
+      console.error(`Error in fetchPromise:`, e);
+      return Promise.reject(e);
+    }
+  }
+
+
+
 }

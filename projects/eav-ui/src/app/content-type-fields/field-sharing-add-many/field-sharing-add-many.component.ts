@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, HostBinding, Inject, OnInit, ViewChild, ViewContainerRef, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, HostBinding, Inject, OnInit, ViewChild, ViewContainerRef, computed, inject } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -58,10 +58,6 @@ export class FieldSharingAddMany extends BaseComponent implements OnInit {
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
   ) {
-
-
-
-
     super();
     this.dialog.disableClose = true;
     this.subscriptions.add(
@@ -73,16 +69,6 @@ export class FieldSharingAddMany extends BaseComponent implements OnInit {
         this.dialog.close();
       })
     );
-
-
-    // TODO: 2dg Not Working > Custom Settings > Field > Button 
-    // effect(() => {
-    //   const value = this.#contentTypesFieldsSvc.getShareableFields2().value;
-    //   const fields = value()
-    //   if (fields) {
-    //     this.shareableFields.data = fields;
-    //   }
-    // });
   }
 
   optionsColumns: string[] = ['contentType', 'name', 'type', 'share'];
@@ -92,22 +78,24 @@ export class FieldSharingAddMany extends BaseComponent implements OnInit {
   protected selectedFields = new MatTableDataSource<NewNameField>([]);
   protected fieldNamePattern = fieldNamePattern;
   protected fieldNameError = fieldNameError;
-  protected reservedNames: Record<string, string> = {};
+
+  #reservedNamesSystem = this.#contentTypesFieldsSvc.getReservedNames().value;
+
+  reservedNames = computed(() => {
+    const reserved = this.#reservedNamesSystem();
+    return ReservedNamesValidatorDirective.mergeReserved(reserved, this.dialogData.existingFields);
+  });
 
   protected saving = signalObj('saving', false);
 
   #fieldShareConfigManagement = this.#features.isEnabled[FeatureNames.ContentTypeFieldsReuseDefinitions];
 
-
   ngOnInit() {
-    // TODO: @SDV Try to find a better way to do this
-    this.#contentTypesFieldsSvc.getShareableFields()
-      .subscribe(shareableFields => this.shareableFields.data = shareableFields);
 
-    this.#contentTypesFieldsSvc.getReservedNames()
-      .subscribe(names => {
-        this.reservedNames = ReservedNamesValidatorDirective.mergeReserved(names, this.dialogData.existingFields);
-      });
+    this.#contentTypesFieldsSvc.getShareableFieldsPromise().then(fields => {
+      this.shareableFields.data = fields;
+    });
+
   }
 
   selectField(field: Field) {

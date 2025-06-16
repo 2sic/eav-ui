@@ -57,7 +57,7 @@
                 <mat-form-field color="accent" class="eav-mat-form-field">
                   <mat-label>New Name</mat-label>
                   <input matInput [pattern]="fieldNamePattern" [(ngModel)]="item.newName" [name]="'StaticName' + i"
-                    #newName="ngModel" [appReservedNames]="reservedNames">
+                    #newName="ngModel" [appReservedNames]="reservedNames()">
                 </mat-form-field>
                 @if (newName.errors) {
                   @if (newName.errors.pattern) {

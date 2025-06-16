@@ -20,13 +20,13 @@ const webApiTypeAddGhost = 'admin/type/addghost';
 @Injectable()
 export class ContentTypesService extends HttpServiceBase {
 
+  // TODO getHttpApiUrl
   retrieveContentType(nameId: string) {
-    // TODO getHttpApiUrl
     return this.getHttpApiUrl<ContentType>(webApiTypeGet, {
       params: { appId: this.appId, contentTypeId: nameId }
     });
   }
-
+ 
   getType(nameId: string) {
     return httpResource<ContentType>(() => ({
       url: this.apiUrl(webApiTypeGet),
