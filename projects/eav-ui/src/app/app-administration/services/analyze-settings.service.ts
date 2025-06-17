@@ -1,5 +1,4 @@
 import { computed, Injectable, signal, Signal } from '@angular/core';
-import { map, Observable } from 'rxjs';
 import { Of } from '../../../../../core';
 import { webApiAppRoot } from '../../import-app/services/import-app.service';
 import { HttpServiceBase } from '../../shared/services/http-service-base';
@@ -43,25 +42,21 @@ export class AnalyzeSettingsService extends HttpServiceBase {
     );
   }
 
-  getStack(part: Of<typeof AnalyzeParts>, key?: string, view?: string, stringifyValue = false): Observable<SettingsStackItem[]> {
-
-    return this.getHttp<SettingsStackItem[]>(webApiAppRoot + 'GetStack', {
+  getStackPromise(part: Of<typeof AnalyzeParts>, key?: string, view?: string, stringifyValue = false): Promise<SettingsStackItem[]> {
+    return this.fetchPromise<SettingsStackItem[]>(webApiAppRoot + 'GetStack', {
       params: {
         appId: this.appId,
         part,
         ...(key && { key }),
         ...(view && { view }),
       },
-    }).pipe(
-      map(stack => {
-
+    }).then(stack => {
         if (!stringifyValue) { return stack; }
 
         for (const stackItem of stack) {
           stackItem._value = JSON.stringify(stackItem.Value);
         }
         return stack;
-      }),
-    );
+      })
   }
 }

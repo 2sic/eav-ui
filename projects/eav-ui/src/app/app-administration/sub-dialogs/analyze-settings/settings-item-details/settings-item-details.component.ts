@@ -76,7 +76,7 @@ export class SettingsItemDetailsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.analyzeSettingsService.getStack(this.part, this.settingsItemKey, this.selectedView, true).subscribe(stack => {
+    this.analyzeSettingsService.getStackPromise(this.part, this.settingsItemKey, this.selectedView, true).then(stack => {
       this.stack.set(stack);
     });
   }

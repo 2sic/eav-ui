@@ -57,6 +57,8 @@ export class AnalyzeSettingsComponent implements OnInit {
     this.#analyzeSettingsSvc.getStackSig(this.part, undefined, this.selectedView(), true)
   );
 
+
+
   // TODO: 2dg not works
   //  stack = computed(() => {
   //   const stackSignal = this.#analyzeSettingsSvc.getStackSig(this.part, undefined, this.selectedView());
