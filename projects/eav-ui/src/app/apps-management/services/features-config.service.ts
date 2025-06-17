@@ -19,16 +19,14 @@ export class FeaturesConfigService extends HttpServiceBase {
   }
 
   // TODO: 2dg, ask 2dm 
-  getLicenses(): Observable<License[]> { // Use new Signals
-    return this.getHttpApiUrl<License[]>(webApiLicSummary);
-  }
+  // getLicenses(): Observable<License[]> { // Use new Signals
+  //   return this.getHttpApiUrl<License[]>(webApiLicSummary);
+  // }
 
   getLicensesLive(refresh: Signal<unknown>) {
     return httpResource<License[]>(() => {
       refresh();
-      return ({
-        url: this.apiUrl(webApiLicSummary),
-      });
+      return this.apiUrl(webApiLicSummary);
     });
   }
 
