@@ -37,41 +37,33 @@ import { AnalyzeParts } from './analyze-settings.models';
   ]
 })
 export class AnalyzeSettingsComponent implements OnInit {
-  part: Of<typeof AnalyzeParts>;
   gridOptions = this.buildGridOptions();
 
   #viewsSvc = transient(ViewsService);
   #analyzeSettingsSvc = transient(AnalyzeSettingsService);
   #dialogRouter = transient(DialogRoutingService);
 
+  part: Of<typeof AnalyzeParts> = this.#dialogRouter.getParam('part') as Of<typeof AnalyzeParts>;
+
   constructor(
     private dialog: MatDialogRef<AnalyzeSettingsComponent>,
-  ) {
-    this.part = this.#dialogRouter.getParam('part') as Of<typeof AnalyzeParts>;
-  }
+  ) {}
 
   selectedView = signal<string>(undefined);
   views = this.#viewsSvc.getAllOnce().value;
 
-  stack = computed(() =>
-    this.#analyzeSettingsSvc.getStackSig(this.part, undefined, this.selectedView(), true)
-  );
+  #stackSignal = this.#analyzeSettingsSvc.getStack(this.part, undefined, this.selectedView()).value;
 
-
-
-  // TODO: 2dg not works
-  //  stack = computed(() => {
-  //   const stackSignal = this.#analyzeSettingsSvc.getStackSig(this.part, undefined, this.selectedView());
-  //   const stackItems = stackSignal.value();
-  //   return stackItems.map(item => ({
-  //     ...item,
-  //     _value: JSON.stringify(item.Value)
-  //   }));
-  // });
+  stack = computed(() => {
+    const stackItems = this.#stackSignal();
+    return stackItems?.map(item => ({
+      ...item,
+      _value: JSON.stringify(item.Value)
+    }));
+  });
 
   ngOnInit(): void {
     this.#getStack();
-
   }
 
   closeDialog(): void {

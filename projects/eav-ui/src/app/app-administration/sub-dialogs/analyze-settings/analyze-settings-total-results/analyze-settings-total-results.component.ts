@@ -32,7 +32,6 @@ export class AnalyzeSettingsTotalResultsComponent implements ICellRendererAngula
   }
 
   openDetails(): void {
-    console.log("2dgdgdg")
     this.params.openDetails(this.stackItem);
   }
 }
