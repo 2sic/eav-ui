@@ -6,8 +6,6 @@ import { MetadataKeyTypes } from '../../shared/constants/eav.constants';
 import { HttpServiceBase } from '../../shared/services/http-service-base';
 
 const webApiRoot = 'admin/metadata/get';
-
-//TODO: 2dg change httpRe
 @Injectable()
 export class MetadataService extends HttpServiceBase {
   /**
@@ -17,6 +15,7 @@ export class MetadataService extends HttpServiceBase {
    * @param key key of target metadata item is for
    * @param contentTypeName name of content type where permissions are stored. If blank, backend returns all metadata except permissions
    */
+  // TODO: 2dg, ask 2dm 
   getMetadata(targetType: number, keyType: Of<typeof MetadataKeyTypes>, key: string | number, contentTypeName?: string): Observable<MetadataDto> {
     return this.getHttp<MetadataDto>(webApiRoot, {
       params: {
@@ -28,4 +27,19 @@ export class MetadataService extends HttpServiceBase {
       },
     });
   }
+
+  // New method to return a promise
+  getMetadataPromise(targetType: number, keyType: Of<typeof MetadataKeyTypes>, key: string | number, contentTypeName?: string): Promise<MetadataDto> {
+    return this.fetchPromise<MetadataDto>(webApiRoot, {
+      params: {
+        appId: this.appId,
+        targetType: targetType.toString(),
+        keyType,
+        key: key.toString(),
+        ...(contentTypeName && { contentType: contentTypeName }),
+      },
+    });
+  }
+
+
 }

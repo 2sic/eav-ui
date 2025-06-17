@@ -195,7 +195,7 @@ export class VisualQueryStateService extends ServiceBase implements OnDestroy {
     const key = pipelineDataSource.EntityGuid;
 
     // query for existing Entity
-    this.#metadataSvc.getMetadata(targetType, keyType, key, contentTypeName).subscribe(metadata => {
+    this.#metadataSvc.getMetadataPromise(targetType, keyType, key, contentTypeName).then(metadata => {
       // edit existing Entity
       if (metadata.Items.length) {
         const form: EditForm = {
