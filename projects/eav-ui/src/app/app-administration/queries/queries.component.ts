@@ -74,7 +74,7 @@ export class QueriesComponent implements OnInit {
   //   return this.#pipelineSvc.getAllSig(eavConstants.contentTypes.query, undefined)
   // });
 
-  queries = this.#pipelineSvc.getAllLive(eavConstants.contentTypes.query, undefined).value;
+  queries = this.#pipelineSvc.getAllLive(eavConstants.contentTypes.query, this.#refresh).value;
 
   ngOnInit() {
     // watch for return from dialog to reload queries

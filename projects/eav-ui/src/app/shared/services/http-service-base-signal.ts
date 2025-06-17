@@ -1,6 +1,6 @@
 import { Context as DnnContext } from '@2sic.com/sxc-angular';
 import { HttpClient, httpResource } from '@angular/common/http';
-import { inject, Injectable, Injector } from '@angular/core';
+import { inject, Injectable, Injector, Signal, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { Context } from '../../shared/services/context';
 
@@ -52,6 +52,23 @@ export class HttpServiceBaseSignal {
   protected newHttpResource<T>(request: Parameters<typeof httpResource>[0]) {
     return httpResource<T>(request, { injector: this.injector });
   }
+
+
+  /**   
+   *  Makes an HTTP GET request and returns a Signal with the response body of type T
+   * @param endpoint - The API endpoint path (will be combined with base URL)
+   *  @param options - Angular HttpClient options (headers, params, etc.)
+   * @param initial - Initial value for the Signal before the HTTP call
+   * @returns Signal that resolves to the HTTP response body of type T
+  */
+  protected postSignal<ResultType>(endpoint: string, body: Parameters<typeof this.http.post>[1], options: Parameters<typeof this.http.post>[2], initial: ResultType): Signal<ResultType> {
+    const target = signal<ResultType>(initial);
+    this.http.post<ResultType>(this.apiUrl(endpoint), body, options).subscribe(d => {
+      target.set(d)
+    });
+    return target;
+  }
+
 
   /**
    * Makes an HTTP GET request and returns a Promise with just the status code
