@@ -39,6 +39,7 @@ export class FeaturesUsedButUnlicensedComponent {
   }
 
   protected features = this.#featureDetails.getFeatureDetails(this.#features.unlicensedFeatures());
+  
 
 }
 

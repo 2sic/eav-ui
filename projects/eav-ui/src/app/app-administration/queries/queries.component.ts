@@ -143,7 +143,7 @@ export class QueriesComponent implements OnInit {
   private cloneQuery(query: Query) {
     const l = this.log.fnIf('cloneQuery', { query });
     this.#snackBar.open('Copying...');
-    this.#pipelineSvc.clonePipeline(query.Id).subscribe(() => {
+    this.#pipelineSvc.clonePipelinePromise(query.Id).then(() => {
       this.#snackBar.open('Copied', null, { duration: 2000 });
       this.#triggerRefresh();
     });

@@ -83,9 +83,9 @@ export class PipelinesService extends HttpServiceBase {
     return l.r(obs);
   }
 
-  clonePipeline(id: number) {
+  clonePipelinePromise(id: number): Promise<null> {
     const l = this.log.fnIf('clonePipeline');
-    const obs = this.getHttpApiUrl<null>(webApiQueryClone, {
+    const obs = this.fetchPromise<null>(webApiQueryClone, {
       params: { Id: id.toString(), appId: this.appId }
     });
     return l.r(obs);
