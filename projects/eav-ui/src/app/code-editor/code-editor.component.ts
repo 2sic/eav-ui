@@ -37,31 +37,31 @@ import { SnippetsService } from './services/snippets.service';
 import { SourceService } from './services/source.service';
 
 @Component({
-    selector: 'app-code-editor',
-    templateUrl: './code-editor.component.html',
-    styleUrls: ['./code-editor.component.scss'],
-    imports: [
-        NgClass,
-        MatIconModule,
-        CodeTemplatesComponent,
-        CodeSnippetsComponent,
-        MatProgressSpinnerModule,
-        MonacoEditorComponent_1,
-        MatButtonModule,
-        ClickStopPropagationDirective,
-        TippyDirective,
-        ToggleDebugDirective,
-        HttpClientModule,
-        TranslateModule,
-    ],
-    providers: [
-        {
-            provide: TranslateLoader,
-            useFactory: translateLoaderFactoryCode,
-            deps: [HttpClient],
-        },
-        TranslateService,
-    ]
+  selector: 'app-code-editor',
+  templateUrl: './code-editor.component.html',
+  styleUrls: ['./code-editor.component.scss'],
+  imports: [
+    NgClass,
+    MatIconModule,
+    CodeTemplatesComponent,
+    CodeSnippetsComponent,
+    MatProgressSpinnerModule,
+    MonacoEditorComponent_1,
+    MatButtonModule,
+    ClickStopPropagationDirective,
+    TippyDirective,
+    ToggleDebugDirective,
+    HttpClientModule,
+    TranslateModule,
+  ],
+  providers: [
+    {
+      provide: TranslateLoader,
+      useFactory: translateLoaderFactoryCode,
+      deps: [HttpClient],
+    },
+    TranslateService,
+  ]
 })
 export class CodeEditorComponent extends BaseComponent implements OnInit, OnDestroy {
   @ViewChild(MonacoEditorComponent) private monacoEditorRef: MonacoEditorComponent;
@@ -148,6 +148,7 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
       if (notLoaded.length === 0) return;
 
       // Start data requests for the not yet loaded `openViews`
+      // forkJoin ensures that the requests for all required views are started in parallel and you only get the results when all sub-requests are completed.
       forkJoin(
         notLoaded.map(viewKey => {
           // Mark the `viewKey` in `viewInfos` to indicate that it is being loaded
