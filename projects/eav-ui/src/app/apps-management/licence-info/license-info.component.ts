@@ -1,14 +1,13 @@
-import { AgGridAngular } from '@ag-grid-community/angular';
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
 import { GridOptions, ModuleRegistry } from '@ag-grid-community/core';
-import { AsyncPipe, NgClass } from '@angular/common';
-import { ChangeDetectorRef, Component, computed, effect, inject, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
+import { NgClass } from '@angular/common';
+import { ChangeDetectorRef, Component, effect, inject, linkedSignal, OnInit, signal, ViewContainerRef } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogActions } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterOutlet } from '@angular/router';
-import { catchError, forkJoin, map, Observable, of, share, startWith, Subject, switchMap, tap, timer } from 'rxjs';
+import { forkJoin, Subject, timer } from 'rxjs';
 import { transient } from '../../../../../core';
 import { ExpirationExtension } from '../../features/expiration-extension';
 import { FeatureState } from '../../features/models';
@@ -49,18 +48,15 @@ import { LicensesOrderPipe } from './licenses-order.pipe';
     MatDialogActions,
     MatButtonModule,
     RouterOutlet,
-    AsyncPipe,
     LicensesOrderPipe,
     ActiveFeaturesCountPipe,
     TippyDirective,
   ],
 })
 export class LicenseInfoComponent implements OnInit {
-  @ViewChild(AgGridAngular) private gridRef?: AgGridAngular;
 
   gridOptions = this.#buildGridOptions();
   #refreshLicenses$ = new Subject<void>();
-  viewModel$: Observable<LicenseInfoViewModel>;
 
   #featuresConfigSvc = transient(FeaturesConfigService);
   #dialogRouter = transient(DialogRoutingService);
@@ -69,22 +65,28 @@ export class LicenseInfoComponent implements OnInit {
 
   #refreshLicensesSig = signal(0);
 
- // TODO: 2dg, ask 2dm 
+ // TODO: 2dg, ask 2dm, try to move to source
   #licensesSig = this.#featuresConfigSvc.getLicensesLive(this.#refreshLicensesSig).value;
 
-  licensesList = computed(() => {
-    const licenses = this.#licensesSig();
+  licensesList2 = linkedSignal<License[], License[]>({
+    source: this.#licensesSig,
+    computation: (licenses, previous) => {
 
-    if (!licenses) {
-      return { licenses: [] };
+      console.log('2dm - licenses', { licenses, previous });
+      if (!licenses) {
+        // TODO: don't use sub-property @2dg
+        console.log("2dm: LicenseInfoComponent: No licenses found, returning empty list");
+        return previous?.value ?? [];
+      }
+      // Map/expand wie bisher
+      const expanded = licenses
+        .map(l => ({
+          ...ExpirationExtension.expandLicense(l),
+          Features: l.Features.map(f => ExpirationExtension.expandFeature(f)),
+        }));
+
+      return expanded;
     }
-    // Map/expand wie bisher
-    const expanded = licenses.map(l => ({
-      ...ExpirationExtension.expandLicense(l),
-      Features: l.Features.map(f => ExpirationExtension.expandFeature(f)),
-    }));
-
-    return { licenses: expanded };
   });
 
   constructor(
@@ -125,40 +127,17 @@ export class LicenseInfoComponent implements OnInit {
           // Test, refresh Data from Server
           setTimeout(() => {
             this.#refreshLicenses$.next()
-            this.#refreshLicensesSig.set(this.#refreshLicensesSig() + 1);
+            this.#refreshLicensesSig.update(v => v++);
             this.disabled.set(false);
           }, 100)
         });
 
       } else { // Refresh from Server
         this.#refreshLicenses$.next()
-        this.#refreshLicensesSig.set(this.#refreshLicensesSig() + 1);
+        this.#refreshLicensesSig.update(v => v++);
         this.disabled.set(false);
       }
     });
-
-    this.viewModel$ =
-      this.#refreshLicenses$.pipe(
-        startWith(undefined),
-        switchMap(() => this.#featuresConfigSvc.getLicenses().pipe(catchError(() => of(undefined)))), // Use new http Signals
-        tap(() => {
-          this.disabled.set(false);
-        }),
-        // Expand the data to have pre-calculated texts/states
-        map(licenses => licenses.map(l => {
-          // const expandedFeatures = l.Features.map(f => ExpirationExtension.expandFeature(f));
-          return ({
-            ...ExpirationExtension.expandLicense(l),
-            Features: l.Features.map(f => ExpirationExtension.expandFeature(f)),
-          });
-        })),
-        // Share the resulting stream with all subscribers
-        share(),
-      )
-        //])
-        .pipe(
-          map((licenses) => ({ licenses })),
-        );
   }
 
   trackLicenses(index: number, license: License): string {

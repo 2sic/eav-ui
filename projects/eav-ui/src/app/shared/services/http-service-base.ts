@@ -1,4 +1,5 @@
 import { Injectable, signal, Signal, WritableSignal } from '@angular/core';
+import { Observable } from 'rxjs';
 import { HttpServiceBaseSignal } from './http-service-base-signal';
 
 /**
@@ -11,15 +12,16 @@ import { HttpServiceBaseSignal } from './http-service-base-signal';
 @Injectable()
 export class HttpServiceBase extends HttpServiceBaseSignal {
 
-  protected getHttpApiUrl<ResultType>(endpoint: string, options?: Parameters<typeof this.http.get>[1]) {
+  protected getHttpApiUrl<ResultType>(endpoint: string, options?: Parameters<typeof this.http.get>[1]): Observable<ResultType> {
     const url = this.apiUrl(endpoint);
     return this.http.get<ResultType>(url, options ?? undefined); // has a quick, null would fail, undefined is ok
   }
 
-  protected getHttp<ResultType>(endpoint: string, options?: Parameters<typeof this.http.get>[1]) {
+  protected getHttp<ResultType>(endpoint: string, options?: Parameters<typeof this.http.get>[1]): Observable<ResultType> {
     return this.http.get<ResultType>(endpoint, options);
   }
 
+  // TODO: @2dg try to get rid of this
   protected getAndWrite<ResultType>(endpoint: string, options: Parameters<typeof this.http.get>[1], target: WritableSignal<ResultType>): void {
     this.getHttp<ResultType>(endpoint, options).subscribe(d => {
       target.set(d);
