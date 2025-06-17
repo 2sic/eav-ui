@@ -1,6 +1,8 @@
 @if (viewModel$ | async; as vm) {
   <mat-accordion multi>
     @for (license of vm.licenses | licensesOrder; track trackLicenses($index, license)) {
+      <!-- TODO: 2dg, ask 2dm  -->
+      <!-- @for (license of licensesList().licenses | licensesOrder; track trackLicenses($index, license)) { -->
       <mat-expansion-panel #panel>
         <mat-expansion-panel-header>
           <mat-panel-title>

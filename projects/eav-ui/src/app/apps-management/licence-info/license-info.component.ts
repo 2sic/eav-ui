@@ -2,7 +2,7 @@ import { AgGridAngular } from '@ag-grid-community/angular';
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
 import { GridOptions, ModuleRegistry } from '@ag-grid-community/core';
 import { AsyncPipe, NgClass } from '@angular/common';
-import { ChangeDetectorRef, Component, inject, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, computed, effect, inject, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogActions } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -67,56 +67,45 @@ export class LicenseInfoComponent implements OnInit {
   isDebug = inject(GlobalConfigService).isDebug;
   router = inject(Router);
 
+  #refreshLicensesSig = signal(0);
+
+ // TODO: 2dg, ask 2dm 
+  #licensesSig = this.#featuresConfigSvc.getLicensesLive(this.#refreshLicensesSig).value;
+
+  licensesList = computed(() => {
+    const licenses = this.#licensesSig();
+
+    if (!licenses) {
+      return { licenses: [] };
+    }
+    // Map/expand wie bisher
+    const expanded = licenses.map(l => ({
+      ...ExpirationExtension.expandLicense(l),
+      Features: l.Features.map(f => ExpirationExtension.expandFeature(f)),
+    }));
+
+    return { licenses: expanded };
+  });
+
   constructor(
     private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
   ) {
     ModuleRegistry.registerModules([ClientSideRowModelModule]);
+
+
+    effect(() => {
+      const licenses = this.#licensesSig();
+      this.disabled.set(!licenses); 
+    });
+
   }
 
   disabled = signal(false);
 
-  #refreshLicensesSig = signal(0);
-
-  // licensesSig = computed(() => {
-  //   const refreshState = this.#refreshLicensesSig();
-  //   this.disabled.set(false);
-  //   return this.#featuresConfigSvc.getLicensesLive(this.#refreshLicensesSig).value;
-  // });
-
-  // TODO: 2dg not in use yet, fix later
-  licensesData = this.#featuresConfigSvc.getLicensesLive(this.#refreshLicensesSig).value
-
-  // TODO: @2dg, ask 2dm licensesSig refresh is false
-  // licensesSignal = this.#featuresConfigSvc.getLicensesSig(); // Holt das Signal, nicht den Wert
-
-  // licensesSig2 = computed(() => {
-  //   const refreshState = this.#refreshLicensesSig(); // Ein Refresh-Mechanismus
-  //   const licenses = this.licensesSignal(); // Holt die Liste der Lizenzen (License[]), nicht das Signal selbst
-
-  //   this.disabled.set(false);
-
-  //   // Überprüfen, ob Lizenzen vorhanden sind, bevor sie erweitert werden
-  //   if (licenses) {
-  //     return licenses.map(l => ({
-  //       ...ExpirationExtension.expandLicense(l), // Lizenz erweitern
-  //       Features: l.Features.map((f: Feature) => ExpirationExtension.expandFeature(f)), // Features erweitern
-  //     }));
-  //   }
-
-  //   // Fallback, falls keine Lizenzen vorhanden sind
-  //   return [];
-  // });
-
 
   ngOnInit(): void {
-    // @2dg - old
-    // this.#dialogRouter.doOnDialogClosed(() => {
-    //   this.#refreshLicenses$.next()
-    //   this.#refreshLicensesSig.set(this.#refreshLicensesSig() + 1);
-    // });
-
     this.#dialogRouter.doOnDialogClosedWithData((data) => {
       // Local Save, data not refreshing from Server 
       // Save the Data in Json, same als Toggle 
@@ -155,16 +144,6 @@ export class LicenseInfoComponent implements OnInit {
         tap(() => {
           this.disabled.set(false);
         }),
-
-        // Fiddle with the data for development tests
-        // 2023-11-16 2dm disabled - causes trouble in production
-        // @STV - do you still need this? or is this a forgotten debug code?
-        // map(licenses => {
-        //   var licTesting = licenses[licenses.length - 2];
-        //   licTesting.Features[licTesting.Features.length - 1].Expiration = "2023-08-25";
-        //   return licenses;
-        // }),
-
         // Expand the data to have pre-calculated texts/states
         map(licenses => licenses.map(l => {
           // const expandedFeatures = l.Features.map(f => ExpirationExtension.expandFeature(f));
@@ -173,7 +152,6 @@ export class LicenseInfoComponent implements OnInit {
             Features: l.Features.map(f => ExpirationExtension.expandFeature(f)),
           });
         })),
-
         // Share the resulting stream with all subscribers
         share(),
       )
@@ -186,7 +164,6 @@ export class LicenseInfoComponent implements OnInit {
   trackLicenses(index: number, license: License): string {
     return license.Guid;
   }
-
 
   openRegistration(): void {
     const router = this.#dialogRouter.router;
