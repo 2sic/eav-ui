@@ -1,5 +1,5 @@
 <mat-accordion multi>
-    @for (license of licensesList2() | licensesOrder; track trackLicenses($index, license)) {
+    @for (license of licenses() | licensesOrder; track trackLicenses($index, license)) {
     <mat-expansion-panel #panel>
       <mat-expansion-panel-header>
         <mat-panel-title>

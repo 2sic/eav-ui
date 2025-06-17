@@ -1,13 +1,13 @@
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
 import { GridOptions, ModuleRegistry } from '@ag-grid-community/core';
 import { NgClass } from '@angular/common';
-import { ChangeDetectorRef, Component, effect, inject, linkedSignal, OnInit, signal, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, linkedSignal, OnInit, signal, ViewContainerRef } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogActions } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterOutlet } from '@angular/router';
-import { forkJoin, Subject, timer } from 'rxjs';
+import { forkJoin, timer } from 'rxjs';
 import { transient } from '../../../../../core';
 import { ExpirationExtension } from '../../features/expiration-extension';
 import { FeatureState } from '../../features/models';
@@ -54,40 +54,33 @@ import { LicensesOrderPipe } from './licenses-order.pipe';
   ],
 })
 export class LicenseInfoComponent implements OnInit {
-
   gridOptions = this.#buildGridOptions();
-  #refreshLicenses$ = new Subject<void>();
 
   #featuresConfigSvc = transient(FeaturesConfigService);
   #dialogRouter = transient(DialogRoutingService);
   isDebug = inject(GlobalConfigService).isDebug;
   router = inject(Router);
 
+  #disabled = signal(false);
   #refreshLicensesSig = signal(0);
 
- // TODO: 2dg, ask 2dm, try to move to source
-  #licensesSig = this.#featuresConfigSvc.getLicensesLive(this.#refreshLicensesSig).value;
-
-  licensesList2 = linkedSignal<License[], License[]>({
-    source: this.#licensesSig,
+  licenses = linkedSignal<License[], License[]>({
+    source: this.#featuresConfigSvc.getLicensesLive(this.#refreshLicensesSig).value,
     computation: (licenses, previous) => {
 
-      console.log('2dm - licenses', { licenses, previous });
-      if (!licenses) {
-        // TODO: don't use sub-property @2dg
-        console.log("2dm: LicenseInfoComponent: No licenses found, returning empty list");
+      if (!licenses) 
         return previous?.value ?? [];
-      }
+
       // Map/expand wie bisher
       const expanded = licenses
         .map(l => ({
           ...ExpirationExtension.expandLicense(l),
           Features: l.Features.map(f => ExpirationExtension.expandFeature(f)),
         }));
-
       return expanded;
     }
   });
+  
 
   constructor(
     private matDialog: MatDialog,
@@ -95,16 +88,7 @@ export class LicenseInfoComponent implements OnInit {
     private changeDetectorRef: ChangeDetectorRef,
   ) {
     ModuleRegistry.registerModules([ClientSideRowModelModule]);
-
-
-    effect(() => {
-      const licenses = this.#licensesSig();
-      this.disabled.set(!licenses); 
-    });
-
   }
-
-  disabled = signal(false);
 
 
   ngOnInit(): void {
@@ -126,16 +110,14 @@ export class LicenseInfoComponent implements OnInit {
         this.#featuresConfigSvc.saveFeatures([featuresConfig]).subscribe(() => {
           // Test, refresh Data from Server
           setTimeout(() => {
-            this.#refreshLicenses$.next()
             this.#refreshLicensesSig.update(v => v++);
-            this.disabled.set(false);
+            this.#disabled.set(false);
           }, 100)
         });
 
       } else { // Refresh from Server
-        this.#refreshLicenses$.next()
         this.#refreshLicensesSig.update(v => v++);
-        this.disabled.set(false);
+        this.#disabled.set(false);
       }
     });
   }
@@ -165,22 +147,19 @@ export class LicenseInfoComponent implements OnInit {
   }
 
   #toggleFeature(feature: Feature, enabled: boolean): void {
-    this.disabled.set(true);
+    this.#disabled.set(true);
     const state: FeatureState = {
       FeatureGuid: feature.guid,
       Enabled: enabled,
     };
     forkJoin([this.#featuresConfigSvc.saveFeatures([state]), timer(100)]).subscribe({
       error: () => {
-        this.#refreshLicensesSig.set(this.#refreshLicensesSig() + 1);
-        this.disabled.set(false);
-        this.#refreshLicenses$.next();
+         this.#refreshLicensesSig.update(v => v++);
+        this.#disabled.set(false);
       },
       next: () => {
-        this.#refreshLicensesSig.set(this.#refreshLicensesSig() + 1);
-        this.#refreshLicenses$.next();
-        this.disabled.set(false);
-
+         this.#refreshLicensesSig.update(v => v++);
+        this.#disabled.set(false);
       },
     });
   }
@@ -264,7 +243,7 @@ export class LicenseInfoComponent implements OnInit {
           cellRenderer: FeaturesStatusComponent,
           cellRendererParams: (() => {
             const params: FeaturesStatusParams & IdFieldParams<Feature> = {
-              isDisabled: (feature) => !feature.isConfigurable || this.disabled(),
+              isDisabled: (feature) => !feature.isConfigurable || this.#disabled(),
               onToggle: (feature, enabled) => this.#toggleFeature(feature, enabled),
               tooltipGetter: (feature: Feature) => feature.isConfigurable ? "Toggle off | default | on" : "This feature can't be configured",
             };
@@ -276,9 +255,3 @@ export class LicenseInfoComponent implements OnInit {
     return gridOptions;
   }
 }
-
-interface LicenseInfoViewModel {
-  licenses: (License & ExpirationExtension)[];
-}
-
-
