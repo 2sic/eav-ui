@@ -7,7 +7,7 @@ import { MatDialog, MatDialogActions } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterOutlet } from '@angular/router';
-import { forkJoin, timer } from 'rxjs';
+import { forkJoin } from 'rxjs';
 import { transient } from '../../../../../core';
 import { ExpirationExtension } from '../../features/expiration-extension';
 import { FeatureState } from '../../features/models';
@@ -62,13 +62,13 @@ export class LicenseInfoComponent implements OnInit {
   router = inject(Router);
 
   #disabled = signal(false);
-  #refreshLicensesSig = signal(0);
+  #refresh = signal(0);
 
   licenses = linkedSignal<License[], License[]>({
-    source: this.#featuresConfigSvc.getLicensesLive(this.#refreshLicensesSig).value,
+    source: this.#featuresConfigSvc.getLicensesLive(this.#refresh).value,
     computation: (licenses, previous) => {
 
-      if (!licenses) 
+      if (!licenses)
         return previous?.value ?? [];
 
       // Map/expand wie bisher
@@ -80,7 +80,7 @@ export class LicenseInfoComponent implements OnInit {
       return expanded;
     }
   });
-  
+
 
   constructor(
     private matDialog: MatDialog,
@@ -108,19 +108,22 @@ export class LicenseInfoComponent implements OnInit {
         }
 
         this.#featuresConfigSvc.saveFeatures([featuresConfig]).subscribe(() => {
-          // Test, refresh Data from Server
-          setTimeout(() => {
-            this.#refreshLicensesSig.update(v => v++);
-            this.#disabled.set(false);
-          }, 100)
+          this.#refreshFn(100);    // Test, refresh Data from Server
         });
-
-      } else { // Refresh from Server
-        this.#refreshLicensesSig.update(v => v++);
-        this.#disabled.set(false);
-      }
+        //
+      } else  // Refresh from Server
+        this.#refreshFn(0);
     });
   }
+
+
+  #refreshFn(timer?: number): void {
+    setTimeout(() => {
+      this.#refresh.update(v => ++v);
+      this.#disabled.set(false);
+    }, timer);
+  }
+
 
   trackLicenses(index: number, license: License): string {
     return license.Guid;
@@ -152,15 +155,9 @@ export class LicenseInfoComponent implements OnInit {
       FeatureGuid: feature.guid,
       Enabled: enabled,
     };
-    forkJoin([this.#featuresConfigSvc.saveFeatures([state]), timer(100)]).subscribe({
-      error: () => {
-         this.#refreshLicensesSig.update(v => v++);
-        this.#disabled.set(false);
-      },
-      next: () => {
-         this.#refreshLicensesSig.update(v => v++);
-        this.#disabled.set(false);
-      },
+    forkJoin([this.#featuresConfigSvc.saveFeatures([state])]).subscribe({
+      next: () => this.#refreshFn(100),
+      error: () => this.#refreshFn(100)
     });
   }
 
