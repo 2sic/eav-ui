@@ -34,9 +34,9 @@ export class ContentTypesService extends HttpServiceBase {
 
   getTypes(scope: Signal<string>) {
     return httpResource<ContentType[]>(() => ({
-      url: this.apiUrl(webApiTypeGet),
+      url: this.apiUrl(webApiTypes),
       params: { appId: this.appId, scope: scope() }
-    }));
+    }), {defaultValue: []});
   }
 
   retrieveContentTypesPromise(scope: string): Promise<ContentType[]> {
