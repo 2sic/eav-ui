@@ -17,9 +17,7 @@ export class DialogConfigGlobalService extends HttpServiceBase {
 
   log = classLog({ DialogConfigGlobalService });
 
-  constructor(
-    private globalConfigService: GlobalConfigService,
-  ) {
+  constructor(private globalConfigService: GlobalConfigService,) {
     super();
     this.log.a(`using context #${this.context.log.svcId}`);
   }
@@ -28,12 +26,14 @@ export class DialogConfigGlobalService extends HttpServiceBase {
   // TODO: 2dg, ask 2dm 
   getShared$(appId: number): Observable<DialogSettings> {
     this.log.a('getShared$ appId: ' + appId);
-    this.dialogSettings$[appId] ??= this.getDialogSettings(appId, 'getShared$')
-      .pipe(shareReplay({ refCount: false }));
+    this.dialogSettings$[appId] ??= this.#getDialogSettings(appId, 'getShared$')
+      .pipe(
+        shareReplay({ refCount: false })
+      );
     return this.dialogSettings$[appId];
   }
 
-  private getDialogSettings(appId?: number, reqBy?: string): Observable<DialogSettings> {
+  #getDialogSettings(appId?: number, reqBy?: string): Observable<DialogSettings> {
     this.log.a('getDialogSettings', { appId, reqBy });
     return this.getHttpApiUrl<DialogSettings>(webApiSettings, {
       params: { appId: appId ?? this.appId },

@@ -106,23 +106,6 @@ export class SourceService extends HttpServiceBase {
     });
   }
 
-  // TODO: 2dg, ask 2dm take 1, use getAllPromise
-  getAll(mask?: string): Observable<FileAsset[]> {
-    return this.getHttpApiUrl<{ Files: FileAsset[] }>(appFilesAll, {
-      params: {
-        appId: this.appId,
-        ...(mask && { mask }),
-      },
-    }).pipe(
-      map(({ Files }) => {
-        Files.forEach(file => {
-          file.Shared ??= false;
-        });
-        return Files;
-      }),
-    );
-  }
-
   // TODO: 2dg, ask 2dm
   getWebApis(): Observable<WebApi[]> {
     return this.getHttpApiUrl<{ files: WebApi[] }>(apiExplorerAppApiFiles, {

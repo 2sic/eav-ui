@@ -19,6 +19,9 @@ const webApiTypeAddGhost = 'admin/type/addghost';
 export class ContentTypesService extends HttpServiceBase {
 
   // TODO: 2dg, ask 2dm 
+  // content-export.component.ts
+  // content-import.component.ts
+  // data.component.ts
   retrieveContentType(nameId: string) {
     return this.getHttpApiUrl<ContentType>(webApiTypeGet, {
       params: { appId: this.appId, contentTypeId: nameId }
