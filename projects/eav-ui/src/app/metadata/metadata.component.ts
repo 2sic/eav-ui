@@ -8,7 +8,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
 import { EcoFabSpeedDialActionsComponent, EcoFabSpeedDialComponent, EcoFabSpeedDialTriggerComponent } from '@ecodev/fab-speed-dial';
-import { map, take } from 'rxjs';
 import { convert, Of, transient } from '../../../../core';
 import { ContentItemsService } from '../content-items/services/content-items.service';
 import { EavForInAdminUi } from '../edit/shared/models/eav';
@@ -30,25 +29,25 @@ import { MetadataActionsComponent } from './metadata-actions/metadata-actions.co
 import { MetadataActionsParams } from './metadata-actions/metadata-actions.models';
 import { MetadataContentTypeComponent } from './metadata-content-type/metadata-content-type.component';
 import { MetadataSaveDialogComponent } from './metadata-save-dialog/metadata-save-dialog.component';
-import { MetadataDto, MetadataItem, MetadataRecommendation } from './models/metadata.model';
+import { MetadataItem, MetadataRecommendation } from './models/metadata.model';
 
 @Component({
-    selector: 'app-metadata',
-    templateUrl: './metadata.component.html',
-    styleUrls: ['./metadata.component.scss'],
-    imports: [
-        MatButtonModule,
-        MatIconModule,
-        RouterOutlet,
-        SxcGridModule,
-        MatDialogActions,
-        EcoFabSpeedDialComponent,
-        NgClass,
-        EcoFabSpeedDialTriggerComponent,
-        EcoFabSpeedDialActionsComponent,
-        MatBadgeModule,
-        SafeHtmlPipe,
-    ]
+  selector: 'app-metadata',
+  templateUrl: './metadata.component.html',
+  styleUrls: ['./metadata.component.scss'],
+  imports: [
+    MatButtonModule,
+    MatIconModule,
+    RouterOutlet,
+    SxcGridModule,
+    MatDialogActions,
+    EcoFabSpeedDialComponent,
+    NgClass,
+    EcoFabSpeedDialTriggerComponent,
+    EcoFabSpeedDialActionsComponent,
+    MatBadgeModule,
+    SafeHtmlPipe,
+  ]
 })
 export class MetadataComponent implements OnInit {
 
@@ -67,6 +66,7 @@ export class MetadataComponent implements OnInit {
     private changeDetectorRef: ChangeDetectorRef,
   ) { }
 
+
   gridOptions = this.#buildGridOptions();
 
   fabOpen = signal(false);
@@ -78,14 +78,6 @@ export class MetadataComponent implements OnInit {
     contentTypeStaticName: p.contentTypeStaticName,
   }));
 
-  // 2024-11-05 2dm: broken, must inform @2dg
-  // itemFor = computed<EavForInAdminUi | undefined>(() => {
-  //   const items = this.#contentItemSvc.getAllSig(this.#params.contentTypeStaticName, undefined)
-  //   const item = items()?.find(i => i.Guid === this.#params.key);
-  //   if (item?.For)
-  //     return item.For;
-  //   return undefined;
-  // });
 
   // Signal to get itemFor - must be _outside_ the computed property, otherwise it regenerates infinitely
   #itemsFromHttp = this.#contentItemSvc.getAllOnce(this.#params.contentTypeStaticName).value;
@@ -97,12 +89,31 @@ export class MetadataComponent implements OnInit {
       : undefined;
   });
 
-  metadataSet = signal<MetadataDto>({ Items: [], Recommendations: [] } as MetadataDto);
+  #refresh = signal<number>(0);
+  #metadataResource = this.#metadataSvc.getMetadataLive(this.#refresh, this.#params.targetType, this.#params.keyType, this.#params.key).value
+
+  metadataSet = computed(() => {
+    const metadata = this.#metadataResource();
+    if (!metadata) return undefined;
+
+    const clone = structuredClone(metadata);
+
+    clone.Recommendations.forEach(r => {
+      if (r.Icon?.startsWith('base64:')) {
+        let icon = r.Icon.replace('base64:', '');
+        icon = window.atob(icon);
+        icon = icon.replace('fill="#000000"', 'fill="#ffffff"');
+        r.Icon = icon;
+      }
+    });
+    return clone;
+  });
+
 
   recommendations = computed(() => {
     const metadata = this.metadataSet();
-    return metadata.Recommendations.filter(r =>
-      metadata.Items.filter(i => i._Type.Id === r.Id).length < r.Count
+    return metadata?.Recommendations.filter(r =>
+      metadata?.Items.filter(i => i._Type.Id === r.Id).length < r.Count
     );
   });
 
@@ -116,8 +127,7 @@ export class MetadataComponent implements OnInit {
   })();
 
   ngOnInit() {
-    this.#fetchMetadata();
-    this.#dialogRoutes.doOnDialogClosed(() => this.#fetchMetadata());
+    this.#dialogRoutes.doOnDialogClosed(() => this.#refresh.update(pre => pre + 1));
   }
 
   closeDialog() {
@@ -141,11 +151,11 @@ export class MetadataComponent implements OnInit {
         this.#entitiesSvc.create(recommendation.Id, { For: this.calculateItemFor('dummy').For }).subscribe({
           error: () => {
             this.snackBar.open(`Creating ${recommendation.Name} failed. Please check console for more info`, undefined, { duration: 3000 });
-            this.#fetchMetadata();
+            this.#refresh.update(pre => pre + 1)
           },
           next: () => {
             this.snackBar.open(`Created ${recommendation.Name}`, undefined, { duration: 3000 });
-            this.#fetchMetadata();
+            this.#refresh.update(pre => pre + 1)
           },
         });
       } else {
@@ -175,38 +185,10 @@ export class MetadataComponent implements OnInit {
   }
 
   private calculateItemFor(contentType: string): ItemAddIdentifier {
-    const x = EditPrep.constructMetadataInfo(this.#params.targetType, this.#params.keyType, this.#params.key);
-    return EditPrep.newMetadataFromInfo(contentType, x);
+    const temp = EditPrep.constructMetadataInfo(this.#params.targetType, this.#params.keyType, this.#params.key);
+    return EditPrep.newMetadataFromInfo(contentType, temp);
   }
 
-  #fetchMetadata() {
-    const logGetMetadata = this.log.rxTap('getMetadata');
-    this.#metadataSvc.getMetadata(this.#params.targetType, this.#params.keyType, this.#params.key)
-      .pipe(
-        logGetMetadata.pipe(),
-        take(1),
-        map(metadata => {
-          metadata.Recommendations.forEach(r => {
-            if (r.Icon?.startsWith('base64:')) {
-              r.Icon = r.Icon.replace('base64:', '');
-              r.Icon = window.atob(r.Icon);
-              // used for coloring black icons to white
-              r.Icon = r.Icon.replace('fill="#000000"', 'fill="#ffffff"');
-            }
-          });
-          return metadata;
-        }),
-        logGetMetadata.map(),
-      )
-      // 2024-05-30 2dm - this standard shorthand seems to fail
-      // for reasons unknown to me. I've replaced it with the longhand
-      // The problem occurs when the metadataSet$ is updated after the initial load.
-      // .subscribe(this.metadataSet$);
-      .subscribe(data => {
-        this.metadataSet.set(data);
-      }
-      );
-  }
 
   #editMetadata(metadata: MetadataItem) {
     const form: EditForm = {
@@ -240,7 +222,7 @@ export class MetadataComponent implements OnInit {
     this.#entitiesSvc.delete(metadata._Type.Id, metadata.Id, false).subscribe({
       next: () => {
         this.snackBar.open('Deleted', null, { duration: 2000 });
-        this.#fetchMetadata();
+        this.#refresh.update(pre => pre + 1);
       },
       error: () => {
         this.snackBar.open('Delete failed. Please check console for more information', null, { duration: 3000 });
