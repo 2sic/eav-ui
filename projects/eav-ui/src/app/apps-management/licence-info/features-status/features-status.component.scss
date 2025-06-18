@@ -11,11 +11,11 @@
 }
 
 ::ng-deep .toggle-false.mat-mdc-slide-toggle:not(.mat-mdc-slide-toggle-checked):not(.mat-disabled) .mdc-switch__track::before {
-  /* TODO-(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version. */
+  /*(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version. */
   background-color: orange !important;
 }
 
 ::ng-deep .toggle-null .mdc-switch__handle {
-  /* TODO-(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version. */
+  /*(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version. */
   margin-left: 8px;
 }

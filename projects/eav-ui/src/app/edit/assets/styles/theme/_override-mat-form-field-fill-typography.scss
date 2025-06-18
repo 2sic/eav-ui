@@ -1,54 +1,3 @@
-// @import '../variables.scss';
-
-// // standard appearance
-// .mat-form-field-appearance-fill {
-//   width: 100%;
-//   height: calc(86px - 1.4375em);
-//   /* TODO_(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
-//   .mat-mdc-text-field-wrapper, .mat-mdc-form-field-subscript-wrapper {
-//     padding-bottom: 0;
-//     background-color: white !important;
-//   }
-
-//   .mat-mdc-form-field-flex {
-//     padding-top: 12px;
-//   }
-
-//   /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
-//   // .mdc-line-ripple {
-//   //   bottom: 0;
-//   // }
-
-//   // .mat-mdc-form-field-subscript-wrapper {
-//   //   bottom: 0;
-//   // }
-
-//   /* TODO_(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
-//   /* TODO_(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
-//   .mat-mdc-form-field-text-suffix, .mat-mdc-form-field-icon-suffix {
-//     .mat-mdc-icon-button {
-//       top: 6px;
-//       width: 30px !important;
-//       height: 30px !important;
-//       line-height: 30px;
-//     }
-//   }
-//   /* TODO-(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
-//   /* TODO-(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
-//   .mat-mdc-select-arrow-wrapper {
-//     transform: translateX(-5px) !important;
-//     /* TODO-(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
-//     .mat-mdc-select-arrow {
-//       color: $editUI-foreground-color;
-//     }
-//   }
-// }
-
-// // boolean field
-// .mat-mdc-slide-toggle {
-//   padding-top: 12px;
-// }
-
 .eav-mat-form-field {
   width: 100%;
 
@@ -67,8 +16,6 @@
     padding: 0px 6px !important;
   }
 }
-
-
 
 .eav-selection-suffix {
   margin-left: 8px;
