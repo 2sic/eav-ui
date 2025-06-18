@@ -53,8 +53,8 @@ export class FileUploadDialogComponent extends BaseComponent implements OnInit, 
   ready = false;
   settings: InstallSettings;
 
-  private installerService = transient(InstallerService);
-  private installSettingsService = transient(AppInstallSettingsService);
+   #installerService = transient(InstallerService);
+   #installSettingsService = transient(AppInstallSettingsService);
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public dialogData: FileUploadDialogData,
@@ -66,19 +66,9 @@ export class FileUploadDialogComponent extends BaseComponent implements OnInit, 
   ) {
     super();
 
-    // TODO: @2dg Check with Daniel subscriptions
-    // TODO: Old Code
-    //  this.subscriptions.add(
-    //   this.files$.subscribe(() => {
-    //     console.log('files changed');
-    //     if (this.result() !== undefined)
-    //       this.result.set(undefined);
-    //   }),
-    // );
-
     // copied from 2sxc-ui app/installer
     this.subscriptions.add(
-      this.installSettingsService.settings$.subscribe(settings => {
+      this.#installSettingsService.settings$.subscribe(settings => {
         this.settings = settings;
         this.remoteInstallerUrl = <string>this.sanitizer.bypassSecurityTrustResourceUrl(settings.remoteUrl);
         this.ready = true;
@@ -86,12 +76,12 @@ export class FileUploadDialogComponent extends BaseComponent implements OnInit, 
     );
   }
 
-  private alreadyProcessing = false;
+  #alreadyProcessing = false;
   // copied from 2sxc-ui app/installer
   // Initial Observable to monitor messages
-  private messages$ = fromEvent(window, 'message').pipe(
+  #messages$ = fromEvent(window, 'message').pipe(
     // Ensure only one installation is processed.
-    filter(() => !this.alreadyProcessing),
+    filter(() => !this.#alreadyProcessing),
     filter((evt: MessageEvent) => evt.origin === "https://2sxc.org"),
     // Get data from event.
     map((evt: MessageEvent) => {
@@ -113,10 +103,10 @@ export class FileUploadDialogComponent extends BaseComponent implements OnInit, 
       this.filesDropped(this.dialogData.files);
 
     // copied from 2sxc-ui
-    this.installSettingsService.loadGettingStarted(false); // Passed as input from 2sxc-ui
+    this.#installSettingsService.loadGettingStarted(false); // Passed as input from 2sxc-ui
 
     // copied from 2sxc-ui app/installer
-    this.subscriptions.add(this.messages$.pipe(
+    this.subscriptions.add(this.#messages$.pipe(
       // Verify it's for this action
       filter(data => data.action === 'specs'),
       // Send message to iframe
@@ -139,7 +129,7 @@ export class FileUploadDialogComponent extends BaseComponent implements OnInit, 
 
     // copied from 2sxc-ui app/installer
     // Subscription to listen to 'install' messages
-    this.subscriptions.add(this.messages$.pipe(
+    this.subscriptions.add(this.#messages$.pipe(
       filter(data => data.action === 'install'),
       // Get packages from data.
       map(data => Object.values(data.packages)),
@@ -156,10 +146,10 @@ This takes about 10 seconds per package. Don't reload the page while it's instal
       }),
       // Install the packages one at a time
       switchMap(packages => {
-        this.alreadyProcessing = true;
+        this.#alreadyProcessing = true;
         this.showProgress = true;
         this.changeDetectorRef.detectChanges(); //without this spinner is not shown
-        return this.installerService.installPackages(packages, p => this.currentPackage = p);
+        return this.#installerService.installPackages(packages, p => this.currentPackage = p);
       }),
       tap(() => {
         this.showProgress = false;
@@ -171,7 +161,7 @@ This takes about 10 seconds per package. Don't reload the page while it's instal
       catchError(error => {
         console.error('Error: ', error);
         this.showProgress = false;
-        this.alreadyProcessing = false;
+        this.#alreadyProcessing = false;
         this.changeDetectorRef.detectChanges(); //without this spinner is not removed
         const errorMsg = `An error occurred: Package ${this.currentPackage.displayName}
 
@@ -196,14 +186,14 @@ Please try again later or check how to manually install content-templates: https
   }
 
   filesDropped(files: File[]): void {
-    this.setFiles(files);
+    this.#setFiles(files);
     this.upload();
   }
 
   filesChanged(event: Event): void {
     const fileList = (event.target as HTMLInputElement).files;
     const files = Array.from(fileList);
-    this.setFiles(files);
+    this.#setFiles(files);
   }
 
   upload(): void {
@@ -227,7 +217,7 @@ Please try again later or check how to manually install content-templates: https
     this.showAppCatalog.set(!this.showAppCatalog());
   }
 
-  private setFiles(files: File[]): void {
+  #setFiles(files: File[]): void {
     if (!this.dialogData.multiple) {
       files = files.slice(0, 1);
     }
