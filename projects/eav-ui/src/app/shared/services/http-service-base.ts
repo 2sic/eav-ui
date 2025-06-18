@@ -17,9 +17,10 @@ export class HttpServiceBase extends HttpServiceBaseSignal {
     return this.http.get<ResultType>(url, options ?? undefined); // has a quick, null would fail, undefined is ok
   }
 
-  protected getHttp<ResultType>(endpoint: string, options?: Parameters<typeof this.http.get>[1]): Observable<ResultType> {
-    return this.http.get<ResultType>(endpoint, options);
-  }
+  // 2dg 18.6.2025 commented out, not used anywhere
+  // protected getHttp<ResultType>(endpoint: string, options?: Parameters<typeof this.http.get>[1]): Observable<ResultType> {
+  //   return this.http.get<ResultType>(endpoint, options);
+  // }
 
   // // TODO: @2dg try to get rid of this
   // 2dg 18.6.2025 commented out, not used anywhere

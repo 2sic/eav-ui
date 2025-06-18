@@ -31,7 +31,7 @@ export class SnippetsService extends HttpServiceBase {
   }
 
   getSnippets(view: SourceView): Observable<{ list: Snippet[]; sets: SnippetsSets; }> {
-    return this.getHttp<{ snippets: Snippet[] }>('../ng-assets/snippets.json.js').pipe(
+    return this.getHttpApiUrl<{ snippets: Snippet[] }>('../ng-assets/snippets.json.js').pipe(
       map(res => {
         const relevant = this.#filterAwayNotNeededSnippetsList(res.snippets, view);
         const standardAndInputSnips = this.#extractInputTypeSnippets(relevant);

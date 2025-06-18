@@ -35,7 +35,7 @@ export class DialogConfigGlobalService extends HttpServiceBase {
 
   private getDialogSettings(appId?: number, reqBy?: string): Observable<DialogSettings> {
     this.log.a('getDialogSettings', { appId, reqBy });
-    return this.getHttp<DialogSettings>(webApiSettings, {
+    return this.getHttpApiUrl<DialogSettings>(webApiSettings, {
       params: { appId: appId ?? this.appId },
     }).pipe(
       map(dlgSettings => {

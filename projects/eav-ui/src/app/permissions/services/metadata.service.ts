@@ -17,7 +17,7 @@ export class MetadataService extends HttpServiceBase {
    */
   // TODO: 2dg, ask 2dm 
   getMetadata(targetType: number, keyType: Of<typeof MetadataKeyTypes>, key: string | number, contentTypeName?: string): Observable<MetadataDto> {
-    return this.getHttp<MetadataDto>(webApiRoot, {
+    return this.getHttpApiUrl<MetadataDto>(webApiRoot, {
       params: {
         appId: this.appId,
         targetType: targetType.toString(),
