@@ -1,3 +1,4 @@
+import { httpResource } from '@angular/common/http';
 import { computed, Injectable, Signal } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { WebApi, WebApiDetails } from '../../app-administration/models';
@@ -122,7 +123,7 @@ export class SourceService extends HttpServiceBase {
     );
   }
 
-   // TODO: 2dg, ask 2dm
+  // TODO: 2dg, ask 2dm
   getWebApis(): Observable<WebApi[]> {
     return this.getHttpApiUrl<{ files: WebApi[] }>(apiExplorerAppApiFiles, {
       params: {
@@ -151,34 +152,31 @@ export class SourceService extends HttpServiceBase {
     );
   }
 
+  // Create a resource signal to fetch the list of WebApi files from the API
+  #apiFilesResourceSignal = httpResource<{ files: WebApi[] }>(() => ({
+    url: this.apiUrl(apiExplorerAppApiFiles),
+    params: { appId: this.appId },
+  }));
+
   getWebApisSig(): Signal<WebApi[]> {
-    // Get the signal that retrieves the API files
-    const apiFilesSignal = this.getSignal<{ files: WebApi[] }>(apiExplorerAppApiFiles, {
-      params: {
-        appId: this.appId,
-      },
-    });
+    // Use a computed signal to transform and enrich the raw API data
+    return computed(() => {
+      // Retrieve the list of files from the resource signal
+      const files = this.#apiFilesResourceSignal.value()?.files;
+      if (!files) return [];
 
-    // Use a computed signal to transform the data
-    const webApisSignal = computed(() => {
-      const files = apiFilesSignal()?.files;
-
-      if (!files)
-        return [];
-
-      // Ensure the default values for `isShared` and `isCompiled`
+      // Set default values for isShared and isCompiled if they are undefined
       files.forEach(file => {
         file.isShared ??= false;
         file.isCompiled ??= false;
       });
 
-      // Map the files to the desired WebApi format
+      // Transform the raw files into the desired WebApi format, extracting folder and name
       return files.map(file => {
         const splitIndex = file.path.lastIndexOf('/');
         const fileExtIndex = file.path.lastIndexOf('.');
         const folder = file.path.substring(0, splitIndex);
         const name = file.path.substring(splitIndex + 1, fileExtIndex);
-
         return {
           path: file.path,
           folder,
@@ -190,8 +188,6 @@ export class SourceService extends HttpServiceBase {
         } as WebApi;
       });
     });
-
-    return webApisSignal;
   }
 
   // TODO: 2dg, ask 2dm 
