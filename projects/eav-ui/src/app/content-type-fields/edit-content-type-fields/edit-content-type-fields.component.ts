@@ -146,7 +146,7 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements Aft
 
   ngOnInit() {
 
-    this.#typesFieldsSvc.getFieldsPromise(this.#contentTypeRouteName().NameId).then(fields => {
+    this.#typesFieldsSvc.getFieldsPromise(this.#contentTypeRouteName()?.NameId).then(fields => {
       this.#existingFieldsLazy.set(fields);
     })
 

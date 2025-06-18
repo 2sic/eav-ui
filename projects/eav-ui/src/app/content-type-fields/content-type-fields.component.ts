@@ -181,7 +181,6 @@ export class ContentTypeFieldsComponent implements OnInit {
 
   #fetchFields(callback?: () => void) {
     this.#contentTypesFieldsSvc.getFieldsPromise(this.#contentTypeStaticName).then(fields => {
-      console.warn('2dm - fetched fields', fields);
        this.fields.set(fields);
        if (callback != null)
         callback();
