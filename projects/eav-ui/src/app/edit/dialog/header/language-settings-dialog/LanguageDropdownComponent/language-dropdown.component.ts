@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, Input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -19,9 +19,8 @@ import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.
     TippyDirective,
     MatFormFieldModule,
     MatSelectModule,
-    CommonModule,
-    TranslateModule,
-  ]
+    TranslateModule
+]
 })
 export class LanguageDropdownComponent {
   @Input() label: string;

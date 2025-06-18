@@ -29,26 +29,26 @@ import { MetadataDialogViewModel, MetadataFormValues, MetadataInfo, TargetTypeOp
 import { metadataKeyValidator } from './metadata-key.validator';
 
 @Component({
-    selector: 'app-create-metadata-dialog',
-    templateUrl: './create-metadata-dialog.component.html',
-    imports: [
-        FormsModule,
-        ReactiveFormsModule,
-        MatFormFieldModule,
-        MatSelectModule,
-        MatOptionModule,
-        MatInputModule,
-        NgTemplateOutlet,
-        MatButtonModule,
-        NgClass,
-        MatIconModule,
-        MatDialogActions,
-        MatSlideToggleModule,
-        AsyncPipe,
-        FieldHintComponent,
-        ClickStopPropagationDirective,
-        TippyDirective,
-    ]
+  selector: 'app-create-metadata-dialog',
+  templateUrl: './create-metadata-dialog.component.html',
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatInputModule,
+    NgTemplateOutlet,
+    MatButtonModule,
+    NgClass,
+    MatIconModule,
+    MatDialogActions,
+    MatSlideToggleModule,
+    AsyncPipe,
+    FieldHintComponent,
+    ClickStopPropagationDirective,
+    TippyDirective,
+  ]
 })
 export class CreateMetadataDialogComponent extends BaseComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
@@ -70,7 +70,7 @@ export class CreateMetadataDialogComponent extends BaseComponent implements OnIn
   private guidedKey$: BehaviorSubject<boolean>;
 
   private contentItemsService = transient(ContentItemsService);
-  
+
   private contentTypesService = transient(ContentTypesService);
   constructor(
     private dialog: MatDialogRef<CreateMetadataDialogComponent>,
@@ -156,7 +156,7 @@ export class CreateMetadataDialogComponent extends BaseComponent implements OnIn
           this.form.patchValue(updatedForm);
         }
 
-        this.contentItemsService.getAll(contentTypeStaticName).subscribe(items => {
+        this.contentItemsService.getAllPromise(contentTypeStaticName).then(items => {
           this.contentItems$.next(items);
         });
       })
@@ -257,13 +257,13 @@ export class CreateMetadataDialogComponent extends BaseComponent implements OnIn
   }
 
   private fetchContentTypes(scope: string): void {
-    this.contentTypesService.retrieveContentTypes(scope).subscribe(contentTypes => {
+    this.contentTypesService.retrieveContentTypesPromise(scope).then(contentTypes => {
       this.contentTypes$.next(contentTypes);
     });
   }
 
   private fetchScopes(): void {
-    this.contentTypesService.getScopes().subscribe(scopes => {
+    this.contentTypesService.getScopesPromise().then(scopes => {
       this.scopeOptions$.next(scopes);
     });
   }

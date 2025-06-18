@@ -7,11 +7,15 @@
       </button>
     </div>
   </div>
-  <p class="dialog-description">
-    Here you can see where <code>{{ settingsItemKey }}</code> is configured.
-  </p>
-  <div class="grid-wrapper">
+  <div class="padding-class">
+    <p class="dialog-description">
+      Here you can see where <code>{{ settingsItemKey }}</code> is configured.
+    </p>
+  </div>
+  <div class="grid-wrapper ">
     <ag-grid-angular class="ag-theme-material" [rowData]="stack()" [gridOptions]="gridOptions"> </ag-grid-angular>
     <div class="grid-more-actions-box"></div>
   </div>
 </div>
+
+<!-- TestUrl: http://2sxc-dnn9113.dnndev.me/desktopmodules/tosic_sexycontent/dist/ng-edit/?pageId=21&portalId=0#/2/v2/383/383/6/app/app/analyze/Settings/details/undefined/Settings.Title -->

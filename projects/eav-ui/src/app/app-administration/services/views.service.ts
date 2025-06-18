@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
+import { httpResource } from '@angular/common/http';
+import { Injectable, Signal } from '@angular/core';
 import { FileUploadResult } from '../../shared/components/file-upload-dialog';
-import { HttpServiceBase } from '../../shared/services/http-service-base';
+import { HttpServiceBaseSignal } from '../../shared/services/http-service-base-signal';
 import { Polymorphism } from '../models/polymorphism.model';
 import { ViewUsage } from '../models/view-usage.model';
 import { View } from '../models/view.model';
@@ -12,18 +13,30 @@ const webApiViewPolymorph = 'admin/view/polymorphism';
 const webApiViewUsage = 'admin/view/usage';
 const webApiJson = 'admin/view/json';
 
-
 @Injectable()
-export class ViewsService extends HttpServiceBase {
+export class ViewsService extends HttpServiceBaseSignal {
 
-  getAll() {
-    return this.getSignal<View[]>(webApiViews, {
-      params: { appId: this.appId }
+  getAllOnce() {
+    return httpResource<View[]>(() => {
+      return ({
+        url: this.apiUrl(webApiViews),
+        params: { appId: this.appId }
+      });
     });
   }
 
-  delete(id: number) {
-    return this.getHttpApiUrl<boolean>(webApiViewDelete, {
+  getAllLive(refresh: Signal<unknown>) {
+    return httpResource<View[]>(() => {
+      refresh();
+      return ({
+        url: this.apiUrl(webApiViews),
+        params: { appId: this.appId }
+      });
+    });
+  }
+
+  async delete(id: number): Promise<number> {
+    return this.getStatusPromise(webApiViewDelete, {
       params: { appId: this.appId, Id: id.toString() },
     });
   }
@@ -43,16 +56,19 @@ export class ViewsService extends HttpServiceBase {
     window.open(url, '_blank', '');
   }
 
-  getPolymorphism() {
-    return this.getSignal<Polymorphism>(webApiViewPolymorph, {
-      params: { appId: this.appId }
+  getPolymorphismLive(refresh: Signal<unknown>) {
+    return httpResource<Polymorphism>(() => {
+      refresh();
+      return ({
+        url: this.apiUrl(webApiViewPolymorph),
+        params: { appId: this.appId }
+      });
     });
   }
-
   getUsage(guid: string) {
-    return this.getSignal<ViewUsage[]>(webApiViewUsage, {
-      params: { appId: this.appId, guid }
-    });
+    return this.newHttpResource<ViewUsage[]>(() => ({
+      url: this.apiUrl(webApiViewUsage),
+      params: { appId: this.appId, guid: guid }
+    }));
   }
-
 }

@@ -1,5 +1,5 @@
+import { httpResource } from '@angular/common/http';
 import { computed, Injectable, Signal } from '@angular/core';
-import { map } from 'rxjs';
 import { FileUploadResult } from '../../shared/components/file-upload-dialog';
 import { ScopeOption } from '../../shared/constants/eav.constants';
 import { HttpServiceBase } from '../../shared/services/http-service-base';
@@ -15,57 +15,62 @@ const webApiTypeSave = 'admin/type/save';
 const webApiTypeDelete = 'admin/type/delete';
 const webApiTypeImport = 'admin/type/import';
 const webApiTypeAddGhost = 'admin/type/addghost';
-
 @Injectable()
 export class ContentTypesService extends HttpServiceBase {
 
+  // TODO: @2dg, ask 2dm 
+  // content-export.component.ts
+  // content-import.component.ts
+  // data.component.ts
   retrieveContentType(nameId: string) {
     return this.getHttpApiUrl<ContentType>(webApiTypeGet, {
       params: { appId: this.appId, contentTypeId: nameId }
     });
   }
 
-  getTypeSig(nameId: string, initial: ContentType): Signal<ContentType> {
-    return this.getSignal<ContentType>(webApiTypeGet, {
+  getType(nameId: string) {
+    return httpResource<ContentType>(() => ({
+      url: this.apiUrl(webApiTypeGet),
       params: { appId: this.appId, contentTypeId: nameId }
-    }, initial);
+    }));
   }
 
-  retrieveContentTypes(scope: string) {
-    return this.getHttpApiUrl<ContentType[]>(webApiTypes, {
+  getTypes(scope: Signal<string>) {
+    return httpResource<ContentType[]>(() => ({
+      url: this.apiUrl(webApiTypes),
+      params: { appId: this.appId, scope: scope() }
+    }), {defaultValue: []});
+  }
+
+  retrieveContentTypesPromise(scope: string): Promise<ContentType[]> {
+    return this.fetchPromise<ContentType[]>(webApiTypes, {
       params: { appId: this.appId, scope }
     });
   }
 
-  getTypesSig(scope: string, initial: ContentType[]): Signal<ContentType[]> {
-    return this.getSignal<ContentType[]>(webApiTypes, {
-      params: { appId: this.appId, scope }
-    }, initial);
-  }
-
-  // TODO: remove this method after upgrade to V2
-  getScopes() {
-    return this.getHttpApiUrl<{ old: Record<string, string>, scopes: ScopeDetailsDto[] }>(webApiTypeScopes, {
+  getScopesPromise(): Promise<ScopeOption[]> {
+    return this.fetchPromise<{ old: Record<string, string>, scopes: ScopeDetailsDto[] }>(webApiTypeScopes, {
       params: { appId: this.appId }
-    }).pipe(
-      map(scopesData => {
-        // wip during upgrade:
-        const scopes = scopesData.old;
-        const scopeOptions: ScopeOption[] = Object.keys(scopes).map(key => ({ name: scopes[key], value: key }));
-        return scopeOptions;
-      }),
-    );
+    }).then(scopesData => {
+      const scopes = scopesData.old;
+      const scopeOptions: ScopeOption[] = Object.keys(scopes).map(key => ({
+        name: scopes[key],
+        value: key,
+      }));
+      return scopeOptions;
+    });
   }
 
-  // todo: switch to using the GetSignal with `map` parameter similar to the initial version above
-  getScopesSig(initial: undefined): Signal<ScopeOption[]> {
-    const scopesSignal = this.getSignal<{ old: Record<string, string>, scopes: ScopeDetailsDto[] }>(
-      webApiTypeScopes,
-      { params: { appId: this.appId } }, initial,
-    );
+  getScopesSig() {
+    const scopesSignal = httpResource<{ old: Record<string, string>, scopes: ScopeDetailsDto[] }>(() => ({
+      url: this.apiUrl(webApiTypeScopes),
+      params: { appid: this.appId },
+    }));
 
     const scopeOptionsSignal = computed(() => {
-      const scopesData = scopesSignal();
+      // Access the value property directly without calling scopesSignal as a function
+      const value = scopesSignal.value;
+      const scopesData = value();
 
       // Add null/undefined check here
       if (!scopesData || !scopesData.old) {
@@ -79,12 +84,10 @@ export class ContentTypesService extends HttpServiceBase {
     return scopeOptionsSignal;
   }
 
-  getScopesV2() {
-    return this.getHttpApiUrl<{ old: Record<string, string>, scopes: ScopeDetailsDto[] }>(webApiTypeScopes, {
+  getScopesV2Promise(): Promise<ScopeDetailsDto[]> {
+    return this.fetchPromise<{ old: Record<string, string>, scopes: ScopeDetailsDto[] }>(webApiTypeScopes, {
       params: { appId: this.appId }
-    }).pipe(
-      map(scopesData => scopesData.scopes),
-    );
+    }).then(scopesData => scopesData.scopes);
   }
 
   save(contentType: ContentTypeEdit) {

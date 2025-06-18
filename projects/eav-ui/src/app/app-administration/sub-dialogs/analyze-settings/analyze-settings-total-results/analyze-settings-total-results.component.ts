@@ -1,10 +1,10 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
-import { SettingsStackItem } from '../analyze-settings.models';
-import { AnalyzeSettingsTotalResultsParams } from './analyze-settings-total-results.models';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
+import { SettingsStackItem } from '../analyze-settings.models';
+import { AnalyzeSettingsTotalResultsParams } from './analyze-settings-total-results.models';
 
 @Component({
     selector: 'app-analyze-settings-total-results',

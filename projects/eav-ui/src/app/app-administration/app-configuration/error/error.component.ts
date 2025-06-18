@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -9,11 +9,10 @@ import { ActivatedRoute } from '@angular/router';
     selector: 'app-error',
     templateUrl: './error.component.html',
     imports: [
-        CommonModule,
-        MatDialogModule,
-        MatButtonModule,
-        MatIconModule,
-    ]
+    MatDialogModule,
+    MatButtonModule,
+    MatIconModule
+]
 })
 export class ErrorComponent implements OnInit {
   errorMessage: string;

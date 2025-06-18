@@ -1,3 +1,4 @@
+import { httpResource } from '@angular/common/http';
 import { Injectable, Signal } from '@angular/core';
 import { from, map, switchMap } from 'rxjs';
 import { FileUploadResult } from '../../shared/components/file-upload-dialog';
@@ -6,35 +7,50 @@ import { Field } from '../../shared/fields/field.model';
 import { toBase64 } from '../../shared/helpers/file-to-base64.helper';
 import { classLog } from '../../shared/logging';
 import { webApiEntityList, webApiEntityRoot } from '../../shared/services/entity.service';
-import { HttpServiceBase } from '../../shared/services/http-service-base';
+import { HttpServiceBaseSignal } from '../../shared/services/http-service-base-signal';
 import { ContentItem } from '../models/content-item.model';
 
 const logSpecs = {
   getAll: true,
-  getAllSig: true,
-}
+  getAllLive: true,
+  getAllOnce: true,
 
+}
 @Injectable()
-export class ContentItemsService extends HttpServiceBase {
+export class ContentItemsService extends HttpServiceBaseSignal {
 
   log = classLog({ ContentItemsService }, logSpecs);
-
-  getAll(contentTypeStaticName: string) {
+  
+  getAllPromise(contentTypeStaticName: string): Promise<ContentItem[]> {
     this.log.fnIf('getAll', { contentTypeStaticName });
-    return this.getHttpApiUrl<ContentItem[]>(webApiEntityList, {
+    return this.fetchPromise<ContentItem[]>(webApiEntityList, {
       params: { appId: this.appId, contentType: contentTypeStaticName }
     });
   }
 
-  getAllSig(contentTypeStaticName: string, initial: undefined): Signal<ContentItem[]> {
-    this.log.fnIf('getAllSig', { contentTypeStaticName, initial });
-    return this.getSignal<ContentItem[]>(webApiEntityList, {
-      params: { appId: this.appId, contentType: contentTypeStaticName }
-    }, initial);
+  getAllOnce(contentTypeStaticName: string) {
+    this.log.fnIf('getAllOnce', { contentTypeStaticName });
+    return httpResource<ContentItem[]>(() => {
+      return ({
+        url: this.apiUrl(webApiEntityList),
+        params: { appId: this.appId, contentType: contentTypeStaticName }
+      });
+    });
   }
 
-  getColumns(contentTypeStaticName: string) {
-    return this.getHttpApiUrl<Field[]>(webApiFieldsAll, {
+  getAllLive(contentTypeStaticName: string, refresh: Signal<unknown>) {
+    this.log.fnIf('getAllLive', { contentTypeStaticName, refresh });
+    return httpResource<ContentItem[]>(() => {
+      refresh();
+      return ({
+        url: this.apiUrl(webApiEntityList),
+        params: { appId: this.appId, contentType: contentTypeStaticName }
+      });
+    });
+  }
+
+  getColumnsPromise(contentTypeStaticName: string): Promise<Field[]> {
+    return this.fetchPromise<Field[]>(webApiFieldsAll, {
       params: { appId: this.appId, staticName: contentTypeStaticName }
     });
   }

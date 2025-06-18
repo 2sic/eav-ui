@@ -1,3 +1,4 @@
+import { httpResource } from '@angular/common/http';
 import { computed, Injectable, Signal } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { WebApi, WebApiDetails } from '../../app-administration/models';
@@ -19,6 +20,7 @@ const appFilesPreview = 'admin/AppFiles/preview';
 @Injectable()
 export class SourceService extends HttpServiceBase {
 
+  // TODO: @2dg, ask 2dm 
   /** ViewKey is templateId or path */
   get(viewKey: string, global: boolean, urlItems: ViewOrFileIdentifier[]): Observable<SourceView> {
     return this.getHttpApiUrl<SourceView>(appFilesAsset, {
@@ -47,7 +49,7 @@ export class SourceService extends HttpServiceBase {
     );
   }
 
-  // TODO: For Code Editor,
+  // TODO: @2dg, ask 2dm 
   // getSig(viewKey: string, global: boolean, urlItems: ViewOrFileIdentifier[], initial: undefined): Signal<SourceView> {
   //   // Signal für die SourceView erstellen
   //   const temp = this.getSignal<SourceView>(appFilesAsset, {
@@ -90,22 +92,21 @@ export class SourceService extends HttpServiceBase {
     });
   }
 
-  getAll(mask?: string): Observable<FileAsset[]> {
-    return this.getHttpApiUrl<{ Files: FileAsset[] }>(appFilesAll, {
+  getAllPromise(mask?: string): Promise<FileAsset[]> {
+    return this.fetchPromise<{ Files: FileAsset[] }>(appFilesAll, {
       params: {
         appId: this.appId,
         ...(mask && { mask }),
       },
-    }).pipe(
-      map(({ Files }) => {
-        Files.forEach(file => {
-          file.Shared ??= false;
-        });
-        return Files;
-      }),
-    );
+    }).then(({ Files }) => {
+      Files.forEach(file => {
+        file.Shared ??= false;
+      });
+      return Files;
+    });
   }
 
+  // TODO: @2dg, ask 2dm
   getWebApis(): Observable<WebApi[]> {
     return this.getHttpApiUrl<{ files: WebApi[] }>(apiExplorerAppApiFiles, {
       params: {
@@ -134,34 +135,31 @@ export class SourceService extends HttpServiceBase {
     );
   }
 
+  // Create a resource signal to fetch the list of WebApi files from the API
+  #apiFilesResourceSignal = httpResource<{ files: WebApi[] }>(() => ({
+    url: this.apiUrl(apiExplorerAppApiFiles),
+    params: { appId: this.appId },
+  }));
+
   getWebApisSig(): Signal<WebApi[]> {
-    // Get the signal that retrieves the API files
-    const apiFilesSignal = this.getSignal<{ files: WebApi[] }>(apiExplorerAppApiFiles, {
-      params: {
-        appId: this.appId,
-      },
-    });
+    // Use a computed signal to transform and enrich the raw API data
+    return computed(() => {
+      // Retrieve the list of files from the resource signal
+      const files = this.#apiFilesResourceSignal.value()?.files;
+      if (!files) return [];
 
-    // Use a computed signal to transform the data
-    const webApisSignal = computed(() => {
-      const files = apiFilesSignal()?.files;
-
-      if(!files)
-        return [];
-
-      // Ensure the default values for `isShared` and `isCompiled`
+      // Set default values for isShared and isCompiled if they are undefined
       files.forEach(file => {
         file.isShared ??= false;
         file.isCompiled ??= false;
       });
 
-      // Map the files to the desired WebApi format
+      // Transform the raw files into the desired WebApi format, extracting folder and name
       return files.map(file => {
         const splitIndex = file.path.lastIndexOf('/');
         const fileExtIndex = file.path.lastIndexOf('.');
         const folder = file.path.substring(0, splitIndex);
         const name = file.path.substring(splitIndex + 1, fileExtIndex);
-
         return {
           path: file.path,
           folder,
@@ -173,19 +171,17 @@ export class SourceService extends HttpServiceBase {
         } as WebApi;
       });
     });
-
-    return webApisSignal;
   }
 
-
+  // TODO: @2dg, ask 2dm 
   getWebApiDetails(apiPath: string): Observable<WebApiDetails> {
     return this.getHttpApiUrl<WebApiDetails>(apiExplorerInspect, {
       params: { appId: this.appId, zoneId: this.zoneId, path: apiPath },
     });
   }
 
-  getPredefinedTemplates(purpose?: 'Template' | 'Search' | 'Api', type?: 'Token' | 'Razor'): Observable<PredefinedTemplatesResponse> {
-    return this.getHttpApiUrl<PredefinedTemplatesResponse>(appFilesPredefinedTemplates, {
+  getPredefinedTemplates(purpose?: 'Template' | 'Search' | 'Api', type?: 'Token' | 'Razor'): Promise<PredefinedTemplatesResponse> {
+    return this.fetchPromise<PredefinedTemplatesResponse>(appFilesPredefinedTemplates, {
       params: {
         ...(purpose && { purpose }),
         ...(type && { type }),
@@ -193,6 +189,7 @@ export class SourceService extends HttpServiceBase {
     });
   }
 
+  // TODO: @2dg, ask 2dm 
   getPreview(path: string, global: boolean, templateKey: string): Observable<Preview> {
     return this.getHttpApiUrl<Preview>(appFilesPreview, {
       params: {

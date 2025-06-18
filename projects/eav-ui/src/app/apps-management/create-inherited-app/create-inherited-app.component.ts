@@ -43,7 +43,7 @@ export class CreateInheritedAppComponent{
   }
 
   loading = signal<boolean>(false);
-  inheritableApps = this.appsListService.getInheritable();
+  inheritableApps = this.appsListService.getInheritable().value;
 
 
   closeDialog(): void {

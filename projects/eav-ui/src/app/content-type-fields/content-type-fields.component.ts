@@ -7,9 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { forkJoin, of } from 'rxjs';
 import { transient } from '../../../../core';
-import { ContentType } from '../app-administration/models/content-type.model';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { GoToMetadata } from '../metadata';
 import { GoToPermissions } from '../permissions/go-to-permissions';
@@ -36,18 +34,18 @@ import { FieldSharingAddMany } from './field-sharing-add-many/field-sharing-add-
 import { ShareOrInheritDialogComponent } from './field-sharing-configure/field-sharing-configure.component';
 
 @Component({
-    selector: 'app-content-type-fields',
-    templateUrl: './content-type-fields.component.html',
-    imports: [
-        MatButtonModule,
-        MatIconModule,
-        RouterOutlet,
-        NgClass,
-        MatDialogActions,
-        ToggleDebugDirective,
-        SxcGridModule,
-        TranslateModule,
-    ]
+  selector: 'app-content-type-fields',
+  templateUrl: './content-type-fields.component.html',
+  imports: [
+    MatButtonModule,
+    MatIconModule,
+    RouterOutlet,
+    NgClass,
+    MatDialogActions,
+    ToggleDebugDirective,
+    SxcGridModule,
+    TranslateModule,
+  ]
 })
 export class ContentTypeFieldsComponent implements OnInit {
 
@@ -61,7 +59,10 @@ export class ContentTypeFieldsComponent implements OnInit {
     private matDialog: MatDialog,
   ) { }
 
-  contentType = signal<ContentType>(undefined);
+  #contentTypeStaticName = this.#dialogRouter.getParam('contentTypeStaticName');
+
+  contentType = this.#contentTypesSvc.getType(this.#contentTypeStaticName).value;
+
   fields = signal<Field[]>(undefined);
 
   gridOptions = this.#buildGridOptions();
@@ -71,7 +72,6 @@ export class ContentTypeFieldsComponent implements OnInit {
   #gridApi: GridApi;
   #columnApi: ColumnApi;
   #rowDragSuppressed = false;
-  #contentTypeStaticName = this.#dialogRouter.getParam('contentTypeStaticName');
 
 
   ngOnInit() {
@@ -180,14 +180,10 @@ export class ContentTypeFieldsComponent implements OnInit {
   }
 
   #fetchFields(callback?: () => void) {
-    const contentTypeTemp = this.contentType() == null
-      ? this.#contentTypesSvc.retrieveContentType(this.#contentTypeStaticName)
-      : of(this.contentType());
-    const fieldsTemp = this.#contentTypesFieldsSvc.getFields(this.#contentTypeStaticName);
-    forkJoin([contentTypeTemp, fieldsTemp]).subscribe(([contentType, fields]) => {
-      this.contentType.set(contentType);
-      this.fields.set(fields);
-      if (callback != null)
+    this.#contentTypesFieldsSvc.getFieldsPromise(this.#contentTypeStaticName).then(fields => {
+      console.warn('2dm - fetched fields', fields);
+       this.fields.set(fields);
+       if (callback != null)
         callback();
     });
   }

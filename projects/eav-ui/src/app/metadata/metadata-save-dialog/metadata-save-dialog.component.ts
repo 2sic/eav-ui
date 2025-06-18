@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { Component, computed, HostBinding, OnInit, signal, WritableSignal } from '@angular/core';
+import { Component, HostBinding, OnInit, signal, WritableSignal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -54,13 +54,9 @@ export class MetadataSaveDialogComponent implements OnInit {
   ) { }
 
   scope = signal(eavConstants.scopes.default.value);
-  scopeOptions = this.#contentTypesService.getScopesSig(undefined) as WritableSignal<ScopeOption[]>;
+  scopeOptions = this.#contentTypesService.getScopesSig() as WritableSignal<ScopeOption[]>;
 
-  contentTypes = computed(() => {
-    const scope = this.scope();
-    return this.#contentTypesService.getTypesSig(scope, undefined);
-  });
-
+  contentTypes = this.#contentTypesService.getTypes(this.scope).value;
 
   ngOnInit(): void {
     this.buildForm();

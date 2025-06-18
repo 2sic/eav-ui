@@ -5,7 +5,7 @@ const eavItem: EavItem = {
     Entity: {
         Attributes: {
             StringTest: {
-                Values: [{ value: 'Test State Data 2dg', dimensions: [{ dimCode: '*' }] }],
+                Values: [{ value: 'Test State Data', dimensions: [{ dimCode: '*' }] }],
                 Type: 'String',
             },
             NumberTest: {
@@ -16,7 +16,7 @@ const eavItem: EavItem = {
         Guid: "e1703260-33c9-4171-b207-f19fcd048621",
         Id: 0,
         Owner: "",
-        Type: { Id: '77138e24-1d78-4dba-b4b1-4c672834e497', Name: 'Demo2dg' } as EavType,
+        Type: { Id: '77138e24-1d78-4dba-b4b1-4c672834e497', Name: 'DemoData' } as EavType,
         Version: 1
     },
     Header: {
@@ -47,7 +47,7 @@ describe('EavItem.eavToObj', () => {
 
         const result = EavItem.eavToObj(eavItem);
         expect(result).toEqual({
-            StringTest: 'Test State Data 2dg',
+            StringTest: 'Test State Data',
             NumberTest: 42,
         });
     });

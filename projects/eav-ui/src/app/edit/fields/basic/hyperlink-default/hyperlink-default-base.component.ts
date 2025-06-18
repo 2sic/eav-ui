@@ -129,8 +129,8 @@ export class HyperlinkDefaultBaseComponent implements OnInit {
     const contentType = this.config.contentTypeNameId;
     const entityGuid = this.config.entityGuid;
     const field = this.config.fieldName;
-    this.adamService.getLinkInfo(value, contentType, entityGuid, field)
-      .subscribe(linkInfo => {
+    this.adamService.getLinkInfoPromise(value, contentType, entityGuid, field)
+      .then(linkInfo => {
         if (!linkInfo) {
           this.setPreview(value, false);
           return;

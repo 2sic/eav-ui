@@ -51,19 +51,19 @@ const logSpecs = {
 }
 
 @Component({
-    selector: 'app-content-items',
-    templateUrl: './content-items.component.html',
-    imports: [
-        MatButtonModule,
-        MatIconModule,
-        RouterOutlet,
-        MatDialogActions,
-        SafeHtmlPipe,
-        DragAndDropDirective,
-        ToggleDebugDirective,
-        SxcGridModule,
-        TippyDirective,
-    ]
+  selector: 'app-content-items',
+  templateUrl: './content-items.component.html',
+  imports: [
+    MatButtonModule,
+    MatIconModule,
+    RouterOutlet,
+    MatDialogActions,
+    SafeHtmlPipe,
+    DragAndDropDirective,
+    ToggleDebugDirective,
+    SxcGridModule,
+    TippyDirective,
+  ]
 })
 export class ContentItemsComponent implements OnInit {
 
@@ -99,16 +99,13 @@ export class ContentItemsComponent implements OnInit {
   #gridApiSig: WritableSignal<GridApi<ContentItem>> = signal<GridApi<ContentItem>>(null);
 
   #contentTypeStaticName = this.#dialogRouter.getParam('contentTypeStaticName');
-  contentType = this.#contentTypesSvc.getTypeSig(this.#contentTypeStaticName,  /* initial: */ null);
+  contentType = this.#contentTypesSvc.getType(this.#contentTypeStaticName).value;
 
-  #itemsRaw = computed(() => {
-    this.#refresh();  // watch for refresh
-    return this.#contentItemsSvc.getAllSig(this.#contentTypeStaticName, undefined);
-  });
+  #itemsRaw = this.#contentItemsSvc.getAllLive(this.#contentTypeStaticName, this.#refresh).value;
 
   items = computed(() => {
-    const data = this.#itemsRaw()();
-    this.log.aIf('items', {data});
+    const data = this.#itemsRaw();
+    this.log.aIf('items', { data });
     return data;
   });
 
@@ -132,7 +129,7 @@ export class ContentItemsComponent implements OnInit {
   }
 
   private fetchColumns() {
-    this.#contentItemsSvc.getColumns(this.#contentTypeStaticName).subscribe(columns => {
+    this.#contentItemsSvc.getColumnsPromise(this.#contentTypeStaticName).then(columns => {
       // filter out ephemeral columns as they don't have data to show
       const columnsWithoutEphemeral = columns.filter(column => !column.IsEphemeral);
       const columnDefs = this.#buildColumnDefs(columnsWithoutEphemeral);

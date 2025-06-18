@@ -21,23 +21,23 @@ import { FieldHintComponent } from '../shared/components/field-hint/field-hint.c
 import { MatInputAutofocusDirective } from '../shared/directives/mat-input-autofocus.directive';
 
 @Component({
-    selector: 'app-create-file-dialog',
-    templateUrl: './create-file-dialog.component.html',
-    styleUrls: ['./create-file-dialog.component.scss'],
-    imports: [
-        FormsModule,
-        ReactiveFormsModule,
-        MatFormFieldModule,
-        MatSelectModule,
-        MatOptionModule,
-        MatInputModule,
-        MatProgressSpinnerModule,
-        MatButtonModule,
-        NgClass,
-        AsyncPipe,
-        FieldHintComponent,
-        MatInputAutofocusDirective,
-    ]
+  selector: 'app-create-file-dialog',
+  templateUrl: './create-file-dialog.component.html',
+  styleUrls: ['./create-file-dialog.component.scss'],
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatInputModule,
+    MatProgressSpinnerModule,
+    MatButtonModule,
+    NgClass,
+    AsyncPipe,
+    FieldHintComponent,
+    MatInputAutofocusDirective,
+  ]
 })
 export class CreateFileDialogComponent extends BaseComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
@@ -45,13 +45,11 @@ export class CreateFileDialogComponent extends BaseComponent implements OnInit, 
   form: UntypedFormGroup;
   controls: CreateFileFormControls;
   viewModel$: Observable<CreateFileViewModel>;
-  // TODO: 2dg ViewModel Offen > Views, Create Template
 
-  private all = 'All' as const;
-  private templates$: BehaviorSubject<PredefinedTemplate[]>;
-  private loadingPreview$: BehaviorSubject<boolean>;
-
-  private sourceService = transient(SourceService);
+  #all = 'All' as const;
+  #templates$: BehaviorSubject<PredefinedTemplate[]>;
+  #loadingPreview$: BehaviorSubject<boolean>;
+  #sourceService = transient(SourceService);
 
   constructor(
     @Inject(MAT_DIALOG_DATA) private dialogData: CreateFileDialogData,
@@ -61,17 +59,17 @@ export class CreateFileDialogComponent extends BaseComponent implements OnInit, 
   }
 
   ngOnInit(): void {
-    this.templates$ = new BehaviorSubject<PredefinedTemplate[]>([]);
-    this.loadingPreview$ = new BehaviorSubject(false);
+    this.#templates$ = new BehaviorSubject<PredefinedTemplate[]>([]);
+    this.#loadingPreview$ = new BehaviorSubject(false);
 
-    this.buildForm();
-    this.fetchTemplates();
-    this.buildViewModel();
+    this.#buildForm();
+    this.#fetchTemplates();
+    this.#buildViewModel();
   }
 
   ngOnDestroy(): void {
-    this.templates$.complete();
-    this.loadingPreview$.complete();
+    this.#templates$.complete();
+    this.#loadingPreview$.complete();
     super.ngOnDestroy();
   }
 
@@ -89,19 +87,19 @@ export class CreateFileDialogComponent extends BaseComponent implements OnInit, 
     this.closeDialog(result);
   }
 
-  private fetchTemplates(): void {
-    this.sourceService.getPredefinedTemplates(this.dialogData.purpose, this.dialogData.type).subscribe(response => {
+  #fetchTemplates(): void {
+    this.#sourceService.getPredefinedTemplates(this.dialogData.purpose, this.dialogData.type).then(response => {
       if (this.controls.templateKey.value !== response.Default) {
         this.controls.templateKey.patchValue(response.Default);
       }
-      this.templates$.next(response.Templates);
+      this.#templates$.next(response.Templates);
     });
   }
 
-  private buildForm(): void {
+  #buildForm(): void {
     this.form = new UntypedFormGroup({
-      platform: new UntypedFormControl(this.all),
-      purpose: new UntypedFormControl({ value: this.dialogData.purpose ?? this.all, disabled: this.dialogData.purpose != null }),
+      platform: new UntypedFormControl(this.#all),
+      purpose: new UntypedFormControl({ value: this.dialogData.purpose ?? this.#all, disabled: this.dialogData.purpose != null }),
       templateKey: new UntypedFormControl(null, Validators.required),
       name: new UntypedFormControl(this.dialogData.name ?? null, Validators.required),
       finalName: new UntypedFormControl({ value: null, disabled: true }),
@@ -112,7 +110,7 @@ export class CreateFileDialogComponent extends BaseComponent implements OnInit, 
 
     this.subscriptions.add(
       combineLatest([
-        this.templates$,
+        this.#templates$,
         this.controls.templateKey.valueChanges.pipe(
           startWith<string>(this.controls.templateKey.value),
           distinctUntilChanged(),
@@ -131,7 +129,7 @@ export class CreateFileDialogComponent extends BaseComponent implements OnInit, 
 
     this.subscriptions.add(
       combineLatest([
-        this.templates$,
+        this.#templates$,
         this.controls.templateKey.valueChanges.pipe(
           startWith<string>(this.controls.templateKey.value),
           distinctUntilChanged(),
@@ -162,11 +160,11 @@ export class CreateFileDialogComponent extends BaseComponent implements OnInit, 
     );
   }
 
-  private buildViewModel(): void {
-    const platforms$ = this.templates$.pipe(
+  #buildViewModel(): void {
+    const platforms$ = this.#templates$.pipe(
       map(templates => {
         const platformsMap: Record<string, string> = {
-          [this.all]: this.all,
+          [this.#all]: this.#all,
         };
         templates.forEach(template => {
           template.Platforms?.forEach(platform => {
@@ -176,10 +174,10 @@ export class CreateFileDialogComponent extends BaseComponent implements OnInit, 
         return Object.keys(platformsMap);
       }),
     );
-    const purposes$ = this.templates$.pipe(
+    const purposes$ = this.#templates$.pipe(
       map(templates => {
         const purposesMap: Record<string, string> = {
-          [this.all]: this.all,
+          [this.#all]: this.#all,
         };
         templates.forEach(template => {
           purposesMap[template.Purpose] = template.Purpose;
@@ -188,7 +186,7 @@ export class CreateFileDialogComponent extends BaseComponent implements OnInit, 
       }),
     );
     const templates$ = combineLatest([
-      this.templates$,
+      this.#templates$,
       this.controls.platform.valueChanges.pipe(
         startWith<string>(this.controls.platform.value),
         distinctUntilChanged(),
@@ -200,8 +198,8 @@ export class CreateFileDialogComponent extends BaseComponent implements OnInit, 
     ]).pipe(
       map(([templates, platform, purpose]) => {
         const filtered = templates.filter(template => {
-          const platformMatch = platform === this.all || (template.Platforms?.includes(platform) ?? false);
-          const purposeMatch = purpose === this.all || template.Purpose === purpose;
+          const platformMatch = platform === this.#all || (template.Platforms?.includes(platform) ?? false);
+          const purposeMatch = purpose === this.#all || template.Purpose === purpose;
           return platformMatch && purposeMatch;
         });
         return filtered;
@@ -227,21 +225,21 @@ export class CreateFileDialogComponent extends BaseComponent implements OnInit, 
     ]).pipe(
       throttleTime(100, asyncScheduler, { leading: true, trailing: true }),
       tap(() => {
-        this.loadingPreview$.next(true);
+        this.#loadingPreview$.next(true);
       }),
       switchMap(([finalName, templateKey]) => {
         return !finalName || !templateKey
           ? of<Preview | undefined>(undefined)
           : forkJoin([
-            this.sourceService.getPreview(finalName, this.dialogData.global, templateKey),
+            this.#sourceService.getPreview(finalName, this.dialogData.global, templateKey),
             timer(500),
           ]).pipe(map(([preview]) => preview));
       }),
       tap(() => {
-        this.loadingPreview$.next(false);
+        this.#loadingPreview$.next(false);
       }),
     );
-    this.viewModel$ = combineLatest([platforms$, purposes$, templates$, preview$, this.loadingPreview$]).pipe(
+    this.viewModel$ = combineLatest([platforms$, purposes$, templates$, preview$, this.#loadingPreview$]).pipe(
       map(([platforms, purposes, templates, preview, loadingPreview]) => {
         const viewModel: CreateFileViewModel = {
           platforms,

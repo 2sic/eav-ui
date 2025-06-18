@@ -1,34 +1,42 @@
-import { Injectable } from '@angular/core';
+import { httpResource } from '@angular/common/http';
+import { Injectable, Signal } from '@angular/core';
 import { Observable } from 'rxjs';
-import { HttpServiceBase } from '../../shared/services/http-service-base';
+import { HttpServiceBaseSignal } from '../../shared/services/http-service-base-signal';
 import { App, PendingApp } from '../models/app.model';
 
- const webApiAppRootList = 'admin/app/list';
- const webApiAppRootInheritableApps = 'admin/app/InheritableApps';
- const webApiAppRootPendingApps = 'admin/app/GetPendingApps';
- const webApiAppRootApp = 'admin/app/app';
- const webApiAppRootInstallPendingApps = 'admin/app/InstallPendingApps';
- const webApiAppRootFlushcache = 'admin/app/flushcache';
+const webApiAppRootList = 'admin/app/list';
+const webApiAppRootInheritableApps = 'admin/app/InheritableApps';
+const webApiAppRootPendingApps = 'admin/app/GetPendingApps';
+const webApiAppRootApp = 'admin/app/app';
+const webApiAppRootInstallPendingApps = 'admin/app/InstallPendingApps';
+const webApiAppRootFlushcache = 'admin/app/flushcache';
 
 @Injectable()
-export class AppsListService extends HttpServiceBase {
+export class AppsListService extends HttpServiceBaseSignal {
 
-  getAll() {
-    return this.getSignal<App[]>(webApiAppRootList, {
-      params: { zoneId: this.zoneId }
+  // clean way to create a new resource every time if refresh change
+  getAllLive(refresh: Signal<unknown>) {
+    return httpResource<App[]>(() => {
+      refresh();
+      return ({
+        url: this.apiUrl(webApiAppRootList),
+        params: { zoneId: this.zoneId }
+      });
     });
   }
 
   getInheritable() {
-    return this.getSignal<App[]>(webApiAppRootInheritableApps, {
+    return httpResource<App[]>(() => ({
+      url: this.apiUrl(webApiAppRootInheritableApps),
       params: { zoneId: this.zoneId }
-    });
+    }));
   }
 
   getPendingApps() {
-    return this.getSignal<PendingApp[]>(webApiAppRootPendingApps, {
+    return httpResource<PendingApp[]>(() => ({
+      url: this.apiUrl(webApiAppRootPendingApps),
       params: { zoneId: this.zoneId },
-    });
+    }));
   }
 
   create(name: string, inheritAppId?: number, templateId?: number) {
@@ -42,9 +50,9 @@ export class AppsListService extends HttpServiceBase {
     });
   }
 
-  createTemplate(url: string, newName:string) {
+  createTemplate(url: string, newName: string) {
     const encodedName = encodeURIComponent(newName);
-     return <Observable<any>>this.http.post(`sys/install/RemotePackage?packageUrl=${url}&newName=${encodedName}`, {});
+    return <Observable<any>>this.http.post(`sys/install/RemotePackage?packageUrl=${url}&newName=${encodedName}`, {});
   }
 
   installPendingApps(pendingApps: PendingApp[]) {
@@ -61,9 +69,10 @@ export class AppsListService extends HttpServiceBase {
     });
   }
 
-  flushCache(appId: number) {
-    return this.getHttpApiUrl<null>(webApiAppRootFlushcache, {
+  async flushCache(appId: number): Promise<number> {
+    return this.getStatusPromise(webApiAppRootFlushcache, {
       params: { zoneId: this.zoneId, appId: appId.toString() },
     });
   }
+
 }

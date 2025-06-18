@@ -141,7 +141,7 @@
       </div>
       <div class="card-content-separator"></div>
       <h4>Activate Page Level Logging</h4>
-      <form #activateLogForm="ngForm" class="activate-log-form" (ngSubmit)="activatePageLog(activateLogForm)">
+      <form #activateLogForm="ngForm" class="activate-log-form">
         <div>
           This will place insights-logs in the HTML of the user output for users with <code>?debug=true</code> in the url. It can only be
           activated for short periods of time.
@@ -169,7 +169,7 @@
     </mat-card-content>
     <div class="eav-card-space-div"></div>
     <mat-card-actions align="end">
-      <button mat-raised-button type="submit" color="accent" [disabled]="!activateLogForm.valid || loading()">Activate</button>
+      <button mat-raised-button  color="accent" [disabled]="!activateLogForm.valid" (click)="activatePageLog(activateLogForm)" >Activate</button>
     </mat-card-actions>
   </mat-card>
   <!-- Warnings -->

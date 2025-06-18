@@ -10,16 +10,16 @@ import { ExportAppService } from '../../services/export-app.service';
 import { ImportAppPartsService } from '../../services/import-app-parts.service';
 
 @Component({
-    selector: 'app-app-state',
-    templateUrl: './app-state.component.html',
-    styleUrls: ['./app-state.component.scss'],
-    imports: [
-        MatCardModule,
-        MatIconModule,
-        MatButtonModule,
-        FeatureTextInfoComponent,
-        MatDialogActions,
-    ]
+  selector: 'app-app-state',
+  templateUrl: './app-state.component.html',
+  styleUrls: ['./app-state.component.scss'],
+  imports: [
+    MatCardModule,
+    MatIconModule,
+    MatButtonModule,
+    FeatureTextInfoComponent,
+    MatDialogActions,
+  ]
 })
 export class AppStateComponent implements OnDestroy {
 
@@ -32,14 +32,22 @@ export class AppStateComponent implements OnDestroy {
     this.snackBar.dismiss();
   }
 
-  exportAppXml(withFiles: boolean) {
+
+  async exportAppXml(withFiles: boolean) {
     this.snackBar.open('Exporting...');
-    this.#exportAppSvc.exportForVersionControl({ includeContentGroups: true, resetAppGuid: false, withFiles }).subscribe({
-      next: _ => this.snackBar.open('Export completed into the \'App_Data\' folder.', null, { duration: 3000 }),
-      error: _ => this.snackBar.open('Export failed. Please check console for more information', null, { duration: 3000 }),
-    });
+    try {
+      // Wait for the API call to complete and get the status code
+      const status = await this.#exportAppSvc.exportForVersionControl({ includeContentGroups: true, resetAppGuid: false, withFiles });
+      if (status >= 200 && status < 300) {
+        this.snackBar.open('2Export completed into the \'App_Data\' folder.', null, { duration: 3000 })
+      }
+    } catch (error) {
+      console.error('Error toggling language:', error);
+      this.snackBar.open('Export failed. Please check console for more information', null, { duration: 3000 })
+    }
   }
 
+  // TODO: @2dg with Promise ?
   resetApp(withFiles: boolean) {
     if (!confirm('Are you sure? All changes since last xml export will be lost'))
       return;

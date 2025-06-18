@@ -158,16 +158,12 @@ export class AppConfigurationComponent implements OnInit {
   protected cspEnabled = this.#featuresSvc.isEnabled[FeatureNames.ContentSecurityPolicy];
   protected langPermsEnabled = this.#featuresSvc.isEnabled[FeatureNames.PermissionsByLanguage];
 
-  #refresh = signal(0);
-
-  #appSpecsLazy = computed(() => {
-    const _ = this.#refresh();
-    return this.#appInternalsService.getAppInternals(/* initial: */ null)
-  });
+  refresh = signal(0);
+  appSpecsLazy = this.#appInternalsService.getAppInternalsLive(this.refresh).value;
 
   /** Statistics for the content-types and fields for later */
   #dataStatistics = computed(() => {
-    const appSpecs = this.#appSpecsLazy()();
+    const appSpecs = this.appSpecsLazy();
 
     if (!appSpecs)
       return null;
@@ -195,18 +191,20 @@ export class AppConfigurationComponent implements OnInit {
 
   /** Test if current types for settings/resources exist, otherwise they must be created before opening dialogs */
   #customTypesExist = computed(() => {
-    const appSpecs = this.#appSpecsLazy()();
+    const appSpecs = this.appSpecsLazy();
     return (!appSpecs)
       ? { settings: false, resources: false }
       : {
-          settings: appSpecs.FieldAll.AppSettings != null,
-          resources: appSpecs.FieldAll.AppResources != null,
-        }
+        settings: appSpecs.FieldAll.AppSettings != null,
+        resources: appSpecs.FieldAll.AppResources != null,
+      }
   });
 
   ngOnInit() {
     // Update dialog router when child a dialog was closesd
-    this.#dialogRouter.doOnDialogClosed(() => this.#refresh.update(v => ++v));
+    this.#dialogRouter.doOnDialogClosed(() => {
+      this.refresh.update(v => ++v)
+    });
   }
 
   buttons = computed<Buttons>(() => {
@@ -313,7 +311,7 @@ export class AppConfigurationComponent implements OnInit {
   // case eavConstants.contentTypes.systemResources:
   urlToEditSystem(staticName: string, systemSettingsScope?: Of<typeof SystemSettingsScopes>) {
     const url = signal('');
-    this.#contentItemsService.getAll(staticName).subscribe(contentItems => {
+    this.#contentItemsService.getAllPromise(staticName).then(contentItems => {
       const systemSettingsEntities = contentItems.filter(i =>
         systemSettingsScope === SystemSettingsScopes.App
           ? !i.SettingsEntityScope
@@ -346,7 +344,7 @@ export class AppConfigurationComponent implements OnInit {
   // case eavConstants.contentTypes.customResources:
   urlToEditCustom(staticName: string) {
     const url = signal('');
-    this.#contentItemsService.getAll(staticName).subscribe(contentItems => {
+    this.#contentItemsService.getAllPromise(staticName).then(contentItems => {
       if (contentItems.length > 1) {
         url.set(this.#urlTo('message/e', { error: 'AppAdmin.ErrorTooManyAppSettings' }, staticName));
       } else {
@@ -369,7 +367,7 @@ export class AppConfigurationComponent implements OnInit {
   // case default:
   urlToEditDefault(staticName: string) {
     const url = signal('');
-    this.#contentItemsService.getAll(staticName).subscribe(contentItems => {
+    this.#contentItemsService.getAllPromise(staticName).then(contentItems => {
       if (contentItems.length < 1) {
         url.set(this.#urlTo('message/e', { error: 'AppAdmin.ErrorNoAppSettings' }, staticName));
       } else if (contentItems.length > 1) {
@@ -431,7 +429,7 @@ export class AppConfigurationComponent implements OnInit {
     event.stopPropagation();
 
     // Check server if the content-type exists
-    this.#contentTypesSvc.retrieveContentTypes(eavConstants.scopes.configuration.value).subscribe(contentTypes => {
+    this.#contentTypesSvc.retrieveContentTypesPromise(eavConstants.scopes.configuration.value).then(contentTypes => {
       const contentTypeExists = contentTypes.some(ct => ct.Name === typeName);
       if (contentTypeExists) {
         // Open Edit dialog
@@ -440,7 +438,7 @@ export class AppConfigurationComponent implements OnInit {
             items: [EditPrep.newFromType(typeName)],
           })}`
         ));
-        if(url) {
+        if (url) {
           window.open(url, "_self");
           return
         }
@@ -462,7 +460,7 @@ export class AppConfigurationComponent implements OnInit {
         this.#contentTypesSvc.save(newContentType).subscribe(success => {
           if (!success) return;
           // trigger refresh
-          this.#refresh.update(v => ++v);
+          this.refresh.update(v => ++v);
 
           // Inform user
           alert('Created a new Content Type. Please try again 👍🏼.');

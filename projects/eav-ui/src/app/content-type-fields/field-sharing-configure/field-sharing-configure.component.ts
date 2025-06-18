@@ -26,24 +26,24 @@ const logSpecs = {
 const noInheritGuid = '00000000-0000-0000-0000-000000000000';
 
 @Component({
-    selector: 'app-field-sharing-configure',
-    templateUrl: './field-sharing-configure.component.html',
-    styleUrls: ['./field-sharing-configure.component.scss'],
-    imports: [
-        MatButtonModule,
-        MatIconModule,
-        MatCardModule,
-        MatTableModule,
-        NgClass,
-        NgTemplateOutlet,
-        TranslateModule,
-        FeatureTextInfoComponent,
-        FeatureIconTextComponent,
-    ]
+  selector: 'app-field-sharing-configure',
+  templateUrl: './field-sharing-configure.component.html',
+  styleUrls: ['./field-sharing-configure.component.scss'],
+  imports: [
+    MatButtonModule,
+    MatIconModule,
+    MatCardModule,
+    MatTableModule,
+    NgClass,
+    NgTemplateOutlet,
+    TranslateModule,
+    FeatureTextInfoComponent,
+    FeatureIconTextComponent,
+  ]
 })
 export class ShareOrInheritDialogComponent {
 
-  log = classLog({ShareOrInheritDialogComponent}, logSpecs);
+  log = classLog({ ShareOrInheritDialogComponent }, logSpecs);
 
   #contentTypesFieldsSvc = transient(ContentTypesFieldsService);
 
@@ -52,16 +52,16 @@ export class ShareOrInheritDialogComponent {
     public features: FeaturesService,
     protected dialog: MatDialogRef<ShareOrInheritDialogComponent>,
   ) {
-    const l = this.log.fnIf('constructor', {dialogData});
+    const l = this.log.fnIf('constructor', { dialogData });
 
     const sysS = dialogData.SysSettings;
     if (sysS) {
       if (sysS.Share)
         this.#contentTypesFieldsSvc.getDescendants(dialogData.Id)
-          .subscribe(fields => this.details.set(fields));
+          .then(fields => this.details.set(fields));
       else if (sysS.InheritMetadataOf)
         this.#contentTypesFieldsSvc.getAncestors(dialogData.Id)
-          .subscribe(fields => this.details.set(fields));
+          .then(fields => this.details.set(fields));
     }
   }
 
@@ -120,9 +120,10 @@ export class ShareOrInheritDialogComponent {
   startInherit() {
     this.guid = null;
     this.state = SharingOrInheriting.Inheriting;
+
     // Load possible fields which match the current field type
     this.#contentTypesFieldsSvc.getShareableFieldsFor(this.dialogData.AttributeId)
-      .subscribe(fields => this.shareableFields.set(fields));
+      .then(fields => this.shareableFields.set(fields));
   }
 
   inheritField(field: Field) {

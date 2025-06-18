@@ -61,12 +61,12 @@ export class DataBundlesComponent {
   constructor(private snackBar: MatSnackBar) {
 
     effect(() => {
-      const dataBundles = this.#dataBundles()();
+      const dataBundles = this.#dataBundles();
       if (!dataBundles) return;
-    
+
       dataBundles.forEach(dataBundle => {
         if (!dataBundle?.Guid) return;
-    
+
         this.#dataBundlesQueryService.fetchQuery(dataBundle.Guid).subscribe({
           next: (data) => {
             untracked(() => {
@@ -74,7 +74,7 @@ export class DataBundlesComponent {
                 Guid: dataBundle.Guid,
                 Result: data
               } satisfies BundleQuery;
-    
+
               this.#queryResults.update(results => [...results, bundleQuery]);
             });
           },
@@ -83,7 +83,7 @@ export class DataBundlesComponent {
       });
     });
 
-   }
+  }
 
   #defaultContentTypeId = "d7f2e4fa-5306-41bb-a3cd-d9529c838879";
   FileUploadMessageTypes = FileUploadMessageTypes;
@@ -100,14 +100,14 @@ export class DataBundlesComponent {
     upload$: (files: File[]) => this.#dataBundlesService.import(files),
   };
 
-  #dataBundles = computed(() => {
-    this.#refresh(); // is use to trigger a refresh when new data or data are modified
-    return this.#contentItemsSvc.getAllSig(this.#defaultContentTypeId,  /* initial: */ null);
-  });
+  #dataBundles = this.#contentItemsSvc.getAllLive(
+    this.#defaultContentTypeId,
+    this.#refresh
+  ).value;
 
   // Data from QueryData for Table
   dataSourceData = computed(() => {
-    const dataBundles = this.#dataBundles()() || [];
+    const dataBundles = this.#dataBundles() || [];
     const queryResults = this.#queryResults();
 
     const countEntitiesAndContentTypes = (guid: string) => {
@@ -133,9 +133,9 @@ export class DataBundlesComponent {
 
   heightStyle = computed(() => {
     const dataSourceData = this.dataSourceData();
-    if(dataSourceData.length === 0) 
+    if (dataSourceData.length === 0)
       return `height: 135px`;
-    
+
     return `height: ${dataSourceData.length * 46 + 90}px`;
   });
 
@@ -236,13 +236,19 @@ export class DataBundlesComponent {
     this.#dataBundlesService.exportDataBundle(item.Guid);
   }
 
-  // Save State
-  #saveState(item: ContentItem) {
+  // Save State wit Fetch
+  async #saveState(item: ContentItem) {
     this.snackBar.open('Save Bundle State...');
-    this.#dataBundlesService.saveDataBundles(item.Guid).subscribe({
-      next: _ => this.snackBar.open('Export completed into the \'App_Data\' folder.', null, { duration: 3000 }),
-      error: _ => this.snackBar.open('Export failed. Please check console for more information', null, { duration: 3000 }),
-    });
+    try {
+      const status = await this.#dataBundlesService.saveDataBundlesFetch(item.Guid);
+      // Check the status code
+      if (status >= 200 && status < 300) {
+        this.snackBar.open('Export completed into the \'App_Data\' folder.', null, { duration: 3000 });
+      }
+    } catch (statusCode) {
+      this.snackBar.open('Export failed. Please check console for more information', null, { duration: 3000 });
+      console.error('Export error:', statusCode);
+    }
   }
 
   // Restore State

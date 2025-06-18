@@ -29,25 +29,25 @@ import { DevRestQueryModel } from './query-template-vars';
 
 const pathToQuery = 'app/{appname}/query/{queryname}';
 @Component({
-    selector: 'app-dev-rest-query',
-    templateUrl: './query.component.html',
-    imports: [
-        MatButtonModule,
-        TippyDirective,
-        MatIconModule,
-        RouterOutlet,
-        SelectorWithHelpComponent,
-        MatTabsModule,
-        DevRestQueryIntroductionComponent,
-        DevRestTabIntroductionComponent,
-        DevRestTabExamplesComponent,
-        MatFormFieldModule,
-        MatInputModule,
-        DevRestUrlsAndCodeComponent,
-        DevRestTabPermissionsComponent,
-        DevRestHttpHeadersComponent,
-        AsyncPipe,
-    ]
+  selector: 'app-dev-rest-query',
+  templateUrl: './query.component.html',
+  imports: [
+    MatButtonModule,
+    TippyDirective,
+    MatIconModule,
+    RouterOutlet,
+    SelectorWithHelpComponent,
+    MatTabsModule,
+    DevRestQueryIntroductionComponent,
+    DevRestTabIntroductionComponent,
+    DevRestTabExamplesComponent,
+    MatFormFieldModule,
+    MatInputModule,
+    DevRestUrlsAndCodeComponent,
+    DevRestTabPermissionsComponent,
+    DevRestHttpHeadersComponent,
+    AsyncPipe,
+  ]
 })
 export class DevRestQueryComponent extends DevRestBase<DevRestQueryModel> implements OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
@@ -61,9 +61,7 @@ export class DevRestQueryComponent extends DevRestBase<DevRestQueryModel> implem
   /** This is necessary, because the Query-Rest can still be opened from the Visual-Query as a dialog */
   isSideNavContent: boolean;
 
-  private pipelinesService = transient(PipelinesService);
-
-  // TODO: @2dg Offen ViewModel
+  #pipelinesService = transient(PipelinesService);
 
   constructor(
     /** Context for this dialog. Used for appId, zoneId, tabId, etc. */
@@ -82,7 +80,7 @@ export class DevRestQueryComponent extends DevRestBase<DevRestQueryModel> implem
     // build Query Stream
     const query$ = combineLatest([
       route.paramMap.pipe(map(pm => pm.get(GoToDevRest.paramQuery))),
-      this.pipelinesService.getAll(eavConstants.contentTypes.query).pipe(share()),
+      this.#pipelinesService.getAll(eavConstants.contentTypes.query).pipe(share()),
     ]).pipe(
       map(([queryGuid, all]) => all.find(q => q.Guid === queryGuid)),
       share()

@@ -1,19 +1,20 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { ICellRendererParams } from '@ag-grid-community/core';
+import { NgClass, NgTemplateOutlet } from '@angular/common';
 import { Component } from '@angular/core';
-import { AgBoolCellIconSetting, AgBoolCellIconSettings, AgBoolCellIconsDefault, AgBoolCellIconsParams } from './ag-bool-icon-params';
-import { TippyDirective } from '../../directives/tippy.directive';
 import { MatIconModule } from '@angular/material/icon';
-import { NgClass } from '@angular/common';
+import { TippyDirective } from '../../directives/tippy.directive';
+import { AgBoolCellIconSetting, AgBoolCellIconSettings, AgBoolCellIconsDefault, AgBoolCellIconsParams } from './ag-bool-icon-params';
 
 @Component({
-    selector: 'app-ag-bool-icon-renderer',
-    templateUrl: './ag-bool-icon-renderer.html',
-    imports: [
-        TippyDirective,
-        MatIconModule,
-        NgClass,
-    ]
+  selector: 'app-ag-bool-icon-renderer',
+  templateUrl: './ag-bool-icon-renderer.html',
+  imports: [
+    TippyDirective,
+    MatIconModule,
+    NgClass,
+    NgTemplateOutlet
+  ]
 })
 export class AgBoolIconRenderer implements ICellRendererAngularComp {
   value: boolean;

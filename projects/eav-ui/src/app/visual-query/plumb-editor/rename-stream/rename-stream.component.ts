@@ -107,7 +107,7 @@ export class RenameStreamComponent extends BaseComponent implements OnInit {
       })
     );
 
-    this.#contentTypesSvc.getScopes().subscribe(scopes => {
+    this.#contentTypesSvc.getScopesPromise().then(scopes => {
       const sourceOut = Object.values(this.visualQueryService.queryResult.Sources)
         .find(source => source.Guid === this.dialogData.pipelineDataSourceGuid).Out;
       const filtered = scopes.filter(s => sourceOut.some(o => o.Scope === s.value));

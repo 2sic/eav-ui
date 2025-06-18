@@ -1,4 +1,4 @@
-import { CommonModule } from "@angular/common";
+
 import { Component, inject, ViewChild, ViewContainerRef } from "@angular/core";
 import { MatCardModule } from "@angular/material/card";
 import { classLog } from '../../../../shared/logging';
@@ -15,11 +15,10 @@ import { WrappersCatalog } from "../wrappers.constants";
     styleUrls: ['./picker-expandable-wrapper.component.scss'],
     animations: [ContentExpandAnimation],
     imports: [
-        MatCardModule,
-        DialogPopupComponent,
-        DialogPopupComponent,
-        CommonModule,
-    ]
+    MatCardModule,
+    DialogPopupComponent,
+    DialogPopupComponent
+]
 })
 export class PickerExpandableWrapperComponent {
 

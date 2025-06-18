@@ -1,8 +1,9 @@
-import { Injectable } from '@angular/core';
+import { httpResource } from '@angular/common/http';
+import { Injectable, Signal } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { FeatureState } from '../../features/models';
 import { FileUploadMessageTypes, FileUploadResult } from '../../shared/components/file-upload-dialog';
-import { HttpServiceBase } from '../../shared/services/http-service-base';
+import { HttpServiceBaseSignal } from '../../shared/services/http-service-base-signal';
 import { License, LicenseDownloadInfo, LicenseUploadInfo } from '../models/license.model';
 
 const webAPiLicenseRetrieve = 'sys/license/Retrieve';
@@ -11,19 +12,17 @@ const webApiLicSummary = 'sys/license/Summary';
 const webApiUpload = 'sys/license/Upload';
 
 @Injectable()
-export class FeaturesConfigService extends HttpServiceBase {
+export class FeaturesConfigService extends HttpServiceBaseSignal {
 
   saveFeatures(featuresStates: FeatureState[]): Observable<null> {
     return this.http.post<null>(this.apiUrl(webApiFeatSaveNew), featuresStates);
   }
-  
 
-  getLicenses(): Observable<License[]> { // Use new Signals
-    return this.getHttpApiUrl<License[]>(webApiLicSummary);
-  }
-
-  getLicensesSig() { // Use new Signals
-    return this.getSignal<License[]>(webApiLicSummary);
+  getLicensesLive(refresh: Signal<unknown>) {
+    return httpResource<License[]>(() => {
+      refresh();
+      return this.apiUrl(webApiLicSummary);
+    });
   }
 
   uploadLicense(file: File): Observable<FileUploadResult> {
@@ -41,7 +40,8 @@ export class FeaturesConfigService extends HttpServiceBase {
       );
   }
 
-  retrieveLicense(): Observable<LicenseDownloadInfo> {
-    return this.getHttpApiUrl<LicenseDownloadInfo>(webAPiLicenseRetrieve);
+  retrieveLicensePromise(): Promise<LicenseDownloadInfo> {
+    return this.fetchPromise<LicenseDownloadInfo>(webAPiLicenseRetrieve, {
+    });
   }
 }

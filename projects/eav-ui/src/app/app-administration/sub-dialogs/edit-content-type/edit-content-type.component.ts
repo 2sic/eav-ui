@@ -98,11 +98,7 @@ export class EditContentTypeComponent implements AfterViewInit {
     NewNameId: '',
   } as ContentTypeEdit);
 
-  // TODO: @2dg this is a suggestion how to handle http requests in a more signal-like way
-  // @2dg note that doing this in the constructor would often be better, but I wanted to prove this way work.
-  // Scope Options Http will fire once when data arrives
-
-  #scopeOptionsHttp = this.#contentTypeSvc.getScopesSig(undefined);
+  #scopeOptionsHttp = this.#contentTypeSvc.getScopesSig();
   #scopeOptionsManual = signalObj<ScopeOption[]>('scopeOptionsManual', []);
   protected scopeOptions = computedObj<ScopeOption[]>('scopeOptions', () => {
     const fromHttp = this.#scopeOptionsHttp();

@@ -13,7 +13,7 @@
         <mat-option value="deactivated"> Deactivated </mat-option>
       </mat-select>
     </mat-form-field>
-    
+
     <button mat-icon-button tippy="Toggle All Logs in View" (click)="checkAll()">
       <mat-icon>check_box</mat-icon>
     </button>
@@ -27,37 +27,41 @@
       [disabled]="selectedConfig === null"
       (click)="exportConfig()"
       tippy="Export the selected configuration from the saved Configs"
-    >
+      >
       <mat-icon>ios_share</mat-icon>
     </button>
-    
+
     <mat-form-field color="accent">
       <mat-label>Configs</mat-label>
       <mat-select
         [(value)]="selectedConfig"
         (selectionChange)="onConfigSelected($event.value)"
-      >
-        <mat-option *ngFor="let config of configs" [value]="config">
-          {{ config }}
-        </mat-option>
+        >
+        @for (config of configs; track config) {
+          <mat-option [value]="config">
+            {{ config }}
+          </mat-option>
+        }
       </mat-select>
     </mat-form-field>
   </div>
-  <div *ngFor="let log of allLogs | keyvalue">
-    <label>
-      <input
-        type="checkbox"
-        [id]="log.key"
-        [name]="log.key"
-        [checked]="isChecked(log.key)"
-        (change)="toggleConfig(log.key)"
-      />
-      {{ log.key }}
-      @if (hasLogSpecs(log.key)) {
-        <button (click)="openLogSpecs(log.key)" tippy="Edit Log Specs">
-          <mat-icon class="specs-icon">data_object</mat-icon>
-        </button>
-      }
-    </label>
+  @for (log of allLogs | keyvalue; track log) {
+    <div>
+      <label>
+        <input
+          type="checkbox"
+          [id]="log.key"
+          [name]="log.key"
+          [checked]="isChecked(log.key)"
+          (change)="toggleConfig(log.key)"
+          />
+          {{ log.key }}
+          @if (hasLogSpecs(log.key)) {
+            <button (click)="openLogSpecs(log.key)" tippy="Edit Log Specs">
+              <mat-icon class="specs-icon">data_object</mat-icon>
+            </button>
+          }
+        </label>
+      </div>
+    }
   </div>
-</div>

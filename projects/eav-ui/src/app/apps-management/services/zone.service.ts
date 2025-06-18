@@ -1,39 +1,49 @@
-import { Injectable } from '@angular/core';
-import { HttpServiceBase } from '../../shared/services/http-service-base';
+import { httpResource } from '@angular/common/http';
+import { Injectable, Signal } from '@angular/core';
+import { HttpServiceBaseSignal } from '../../shared/services/http-service-base-signal';
 import { SiteLanguage, SiteLanguagePermissions } from '../models/site-language.model';
 import { SystemInfoSet } from '../models/system-info.model';
 
 const webApiZoneRootGetLanguages = 'admin/zone/GetLanguages';
 const webApiZoneRootSwitchLanguage = 'admin/zone/SwitchLanguage';
 const webApiZoneRootGetSystemInfo = 'admin/zone/GetSystemInfo';
-const webApiAppRootRootlanguages = 'admin/app/languages';
+const webApiAppRootLanguages = 'admin/app/languages';
 
 @Injectable()
-export class ZoneService extends HttpServiceBase {
+export class ZoneService extends HttpServiceBaseSignal {
 
-  getLanguage(initial: undefined) {
-    return this.getSignal<SiteLanguage[]>(webApiZoneRootGetLanguages, {}, initial);
+  getLanguageLive(refresh: Signal<unknown>) {
+    return httpResource<SiteLanguage[]>(() => {
+      refresh();
+      return ({
+        url: this.apiUrl(webApiZoneRootGetLanguages),
+        params: { appId: this.appId }
+      });
+    });
   }
 
-  toggleLanguage(code: string, enable: boolean) {
-    return this.getHttpApiUrl<null>(webApiZoneRootSwitchLanguage, {
+  async toggleLanguage(code: string, enable: boolean): Promise<number> {
+    return this.getStatusPromise(webApiZoneRootSwitchLanguage, {
       params: { cultureCode: code, enable: enable.toString() },
     });
   }
 
-  // toggleLanguageSig(code: string, enable: boolean)  {
-  //   return this.getSignal<null>(webApiZoneRootSwitchLanguage, {
-  //     params: { cultureCode: code, enable: enable.toString() },
-  //   });
-  // }
-
-  getSystemInfo(initial: undefined) {
-    return this.getSignal<SystemInfoSet>(webApiZoneRootGetSystemInfo, {}, initial);
+  getSystemInfoLive(refresh: Signal<unknown>) {
+    return httpResource<SystemInfoSet>(() => {
+      refresh();
+      return ({
+        url: this.apiUrl(webApiZoneRootGetSystemInfo),
+      });
+    });
   }
 
-  getLanguagesPermissions(initial: undefined) {
-    return this.getSignal<SiteLanguagePermissions[]>(webApiAppRootRootlanguages, {
-      params: { appId: this.appId },
-    }, initial);
-  };
+  getLanguagesPermissionsLive(refresh: Signal<unknown>) {
+    return httpResource<SiteLanguagePermissions[]>(() => {
+      refresh();
+      return ({
+        url: this.apiUrl(webApiAppRootLanguages),
+        params: { appId: this.appId }
+      });
+    });
+  }
 }

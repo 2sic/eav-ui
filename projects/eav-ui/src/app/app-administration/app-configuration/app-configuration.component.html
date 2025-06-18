@@ -86,8 +86,7 @@
             <!-- More Buttons -->
             @if (isSite()) {
               <ng-container *ngTemplateOutlet="goToGlobal"></ng-container>
-            }
-            @else if (isApp()) {
+            } @else if (isApp()) {
               <ng-container *ngTemplateOutlet="goToSite"></ng-container>
               <ng-container *ngTemplateOutlet="goToGlobal"></ng-container>
             }
@@ -278,8 +277,7 @@
             </tr>
             @if (isSite()) {
               <ng-container *ngTemplateOutlet="goToGlobal"></ng-container>
-            }
-            @else if (isApp()) {
+            } @else if (isApp()) {
               <ng-container *ngTemplateOutlet="goToSite"></ng-container>
               <ng-container *ngTemplateOutlet="goToGlobal"></ng-container>
             }
@@ -418,7 +416,8 @@
     </ng-template>
   </div>
   <div class="eav-cards-box">
-    <app-app-configuration-card [dialogSettings]="dialogSettings()"> </app-app-configuration-card>
+    <app-app-configuration-card [dialogSettings]="dialogSettings()" [appSettingsInternal]="appSpecsLazy()" [refresh]="refresh()">
+    </app-app-configuration-card>
     <!-- LightSpeed -->
     <mat-card class="eav-card">
       <mat-card-header class="eav-card-header">

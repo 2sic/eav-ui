@@ -1,6 +1,6 @@
 import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 import { CdkScrollable } from '@angular/cdk/scrolling';
-import { Component, computed, HostBinding, OnInit, signal } from '@angular/core';
+import { Component, HostBinding, OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogActions, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -20,22 +20,22 @@ import { GroupHeader } from './models/group-header.model';
 import { ContentGroupService } from './services/content-group.service';
 
 @Component({
-    selector: 'app-manage-content-list',
-    templateUrl: './manage-content-list.component.html',
-    styleUrls: ['./manage-content-list.component.scss'],
-    imports: [
-        RouterOutlet,
-        CdkScrollable,
-        MatButtonModule,
-        MatIconModule,
-        CdkDropList,
-        CdkDrag,
-        MatDialogActions,
-        TranslateModule,
-        MatDialogModule,
-        TippyDirective,
-        MousedownStopPropagationDirective,
-    ]
+  selector: 'app-manage-content-list',
+  templateUrl: './manage-content-list.component.html',
+  styleUrls: ['./manage-content-list.component.scss'],
+  imports: [
+    RouterOutlet,
+    CdkScrollable,
+    MatButtonModule,
+    MatIconModule,
+    CdkDropList,
+    CdkDrag,
+    MatDialogActions,
+    TranslateModule,
+    MatDialogModule,
+    TippyDirective,
+    MousedownStopPropagationDirective,
+  ]
 })
 export class ManageContentListComponent implements OnInit {
   @HostBinding('className') hostClass = 'dialog-component';
@@ -59,13 +59,8 @@ export class ManageContentListComponent implements OnInit {
     index: parseInt(p.index, 10),
   } satisfies ContentGroup));
 
-  refresh = signal(0);
-
-  header = computed(() => {
-    const r = this.refresh();
-    return this.#contentGroupSvc.getHeader(this.#contentGroup, undefined);
-  });
-
+  #refresh = signal(0);
+  header = this.#contentGroupSvc.getAllLive(this.#contentGroup, this.#refresh).value;
 
   protected reordered = signalObj('reordered', false);
 
@@ -109,8 +104,8 @@ export class ManageContentListComponent implements OnInit {
   protected editHeader() {
     const form: EditForm = {
       items: [
-        EditPrep.relationship(this.#contentGroup.guid, 'listcontent', 0, this.header()().Id === 0),
-        EditPrep.relationship(this.#contentGroup.guid, 'listpresentation', 0, this.header()().Id === 0),
+        EditPrep.relationship(this.#contentGroup.guid, 'listcontent', 0, this.header().Id === 0),
+        EditPrep.relationship(this.#contentGroup.guid, 'listpresentation', 0, this.header().Id === 0),
       ],
     };
     const formUrl = convertFormToUrl(form);
@@ -155,7 +150,7 @@ export class ManageContentListComponent implements OnInit {
   }
 
   #fetchList(keepOrder = false) {
-    this.#contentGroupSvc.getList(this.#contentGroup).subscribe(items => {
+    this.#contentGroupSvc.getListPromise(this.#contentGroup).then(items => {
       if (this.reordered()) {
         const oldIds = this.items().map(item => item.Id);
         const idsChanged = this.items().length !== items.length || items.some(item => !oldIds.includes(item.Id));
@@ -177,6 +172,6 @@ export class ManageContentListComponent implements OnInit {
   }
 
   #fetchHeader() {
-    this.refresh.set(this.refresh() + 1);
+    this.#refresh.set(this.#refresh() + 1);
   }
 }
