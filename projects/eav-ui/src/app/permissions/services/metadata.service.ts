@@ -1,4 +1,3 @@
-import { httpResource } from '@angular/common/http';
 import { Injectable, Signal } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Of } from '../../../../../core';
@@ -29,36 +28,21 @@ export class MetadataService extends HttpServiceBase {
     });
   }
 
-
   getMetadataLive(refresh: Signal<unknown>, targetType: number, keyType: Of<typeof MetadataKeyTypes>, key: string | number, contentTypeName?: string) {
-    return httpResource<MetadataDto>(() => {
-        refresh();
-        return ({
-          url: this.apiUrl(webApiRoot),
-          params: {
-            appId: this.appId,
-            targetType: targetType.toString(),
-            keyType,
-            key: key.toString(),
-            ...(contentTypeName && { contentType: contentTypeName }),
-          },
-        });
+    return this.newHttpResource<MetadataDto>(() => {
+      refresh();
+      return ({
+        url: this.apiUrl(webApiRoot),
+        params: {
+          appId: this.appId,
+          targetType: targetType.toString(),
+          keyType,
+          key: key.toString(),
+          ...(contentTypeName && { contentType: contentTypeName }),
+        },
       });
+    });
   }
-
-  getMetadataSig(targetType: number, keyType: Of<typeof MetadataKeyTypes>, key: string | number, contentTypeName?: string) {
-    return this.newHttpResource<MetadataDto>(() => ({
-      url: this.apiUrl(webApiRoot),
-      params: {
-        appId: this.appId,
-        targetType: targetType.toString(),
-        keyType,
-        key: key.toString(),
-        ...(contentTypeName && { contentType: contentTypeName }),
-      },
-    }));
-  }
-
 
   // New method to return a promise
   getMetadataPromise(targetType: number, keyType: Of<typeof MetadataKeyTypes>, key: string | number, contentTypeName?: string): Promise<MetadataDto> {

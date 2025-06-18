@@ -19,19 +19,18 @@ import { PermissionsActionsParams } from './permissions-actions/permissions-acti
 import { PermissionsService } from './services/permissions.service';
 
 @Component({
-    selector: 'app-permissions',
-    templateUrl: './permissions.component.html',
-    imports: [
-        MatButtonModule,
-        MatIconModule,
-        RouterOutlet,
-        MatDialogActions,
-        SxcGridModule,
-    ]
+  selector: 'app-permissions',
+  templateUrl: './permissions.component.html',
+  imports: [
+    MatButtonModule,
+    MatIconModule,
+    RouterOutlet,
+    MatDialogActions,
+    SxcGridModule,
+  ]
 })
 export class PermissionsComponent implements OnInit {
   gridOptions = this.buildGridOptions();
-  permissions = signal<Permission[]>([]);
   #permissionsService = transient(PermissionsService);
   #dialogRoutes = transient(DialogRoutingService);
 
@@ -40,6 +39,9 @@ export class PermissionsComponent implements OnInit {
     keyType: p.keyType as Of<typeof MetadataKeyTypes>,
     key: p.key,
   }));
+
+  #refresh = signal<number>(0);
+  permissions = this.#permissionsService.getAllLive(this.#params.targetType, this.#params.keyType, this.#params.key, this.#refresh);
 
   #prefills: Record<string, Record<string, string>> = {
     [eavConstants.metadata.language.targetType]: {
@@ -54,20 +56,13 @@ export class PermissionsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.#fetchPermissions();
-    this.#dialogRoutes.doOnDialogClosed(() => this.#fetchPermissions());
+    this.#dialogRoutes.doOnDialogClosed(() => this.#refresh.update(x => x + 1));
   }
 
   closeDialog() {
     this.dialog.close();
   }
 
-  #fetchPermissions() {
-    this.#permissionsService.getAll(this.#params.targetType, this.#params.keyType, this.#params.key)
-      .subscribe(permissions => {
-        this.permissions.set(permissions);
-      });
-  }
 
   editPermission(permission?: Permission) {
     let form: EditForm;
@@ -95,7 +90,7 @@ export class PermissionsComponent implements OnInit {
     this.snackBar.open('Deleting...');
     this.#permissionsService.delete(permission.Id).subscribe(() => {
       this.snackBar.open('Deleted', null, { duration: 2000 });
-      this.#fetchPermissions();
+      this.#refresh.update(x => x + 1);
     });
   }
 
