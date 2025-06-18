@@ -54,10 +54,9 @@ const pathToContent = 'app/{appname}/data/{typename}';
 export class DevRestDataComponent extends DevRestBase<DevRestDataModel> implements OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
-  private entityService = transient(EntityService);
-  private contentTypesService = transient(ContentTypesService);
+  #entityService = transient(EntityService);
+  #contentTypesService = transient(ContentTypesService);
 
-  // TODO: @2dg Offen ViewModel
   constructor(
     dialog: MatDialogRef<DevRestDataComponent>,
     router: Router,
@@ -73,7 +72,7 @@ export class DevRestDataComponent extends DevRestBase<DevRestDataModel> implemen
 
     const contentType$ = route.paramMap.pipe(
       map(pm => pm.get(GoToDevRest.paramTypeName)),
-      switchMap(ctName => this.contentTypesService.retrieveContentType(ctName)),
+      switchMap(ctName => this.#contentTypesService.retrieveContentType(ctName)),
       share()
     );
 
@@ -91,7 +90,7 @@ export class DevRestDataComponent extends DevRestBase<DevRestDataModel> implemen
 
     // Get an item of this type for building urls
     const noDataFound: EntityLightIdentifier = { Id: 0, Guid: '00000000-0000-0000-0000-000000000000', Title: 'no data found' };
-    const itemOfThisType$ = this.entityService.getEntities$(
+    const itemOfThisType$ = this.#entityService.getEntities$(
       contentType$.pipe(
         filter(ct => !!ct),
         map(ct => {

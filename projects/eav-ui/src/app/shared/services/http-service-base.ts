@@ -22,7 +22,6 @@ export class HttpServiceBase extends HttpServiceBaseSignal {
   //   return this.http.get<ResultType>(endpoint, options);
   // }
 
-  // // TODO: @2dg try to get rid of this
   // 2dg 18.6.2025 commented out, not used anywhere
   // protected getAndWrite<ResultType>(endpoint: string, options: Parameters<typeof this.http.get>[1], target: WritableSignal<ResultType>): void {
   //   this.getHttp<ResultType>(endpoint, options).subscribe(d => {
