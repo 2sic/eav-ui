@@ -17,19 +17,19 @@ export class HttpServiceBase extends HttpServiceBaseSignal {
     return this.http.get<ResultType>(url, options ?? undefined); // has a quick, null would fail, undefined is ok
   }
 
-  // 2dg 18.6.2025 commented out, not used anywhere
+  // @2dg 18.6.2025 commented out, not used anywhere
   // protected getHttp<ResultType>(endpoint: string, options?: Parameters<typeof this.http.get>[1]): Observable<ResultType> {
   //   return this.http.get<ResultType>(endpoint, options);
   // }
 
-  // 2dg 18.6.2025 commented out, not used anywhere
+  // @2dg 18.6.2025 commented out, not used anywhere
   // protected getAndWrite<ResultType>(endpoint: string, options: Parameters<typeof this.http.get>[1], target: WritableSignal<ResultType>): void {
   //   this.getHttp<ResultType>(endpoint, options).subscribe(d => {
   //     target.set(d);
   //   });
   // }
 
-  // 2dg 18.6.2025 commented out, not used anywhere
+  // @2dg 18.6.2025 commented out, not used anywhere
   // /**
   //  * @template ResultType Type of the final resulting data in the signal
   //  * @template HttpType Type of the data returned by the http call; will match ResultType if no map is provided
@@ -56,7 +56,7 @@ export class HttpServiceBase extends HttpServiceBaseSignal {
   //   return target;
   // }
 
-  // 2dg 18.6.2025 commented out, not used anywhere
+  // @2dg 18.6.2025 commented out, not used anywhere
   // protected postSignal<ResultType>(endpoint: string, body: Parameters<typeof this.http.post>[1], options: Parameters<typeof this.http.post>[2], initial: ResultType): Signal<ResultType> {
   //   const target = signal<ResultType>(initial);
   //   this.http.post<ResultType>(this.apiUrl(endpoint), body, options).subscribe(d => {

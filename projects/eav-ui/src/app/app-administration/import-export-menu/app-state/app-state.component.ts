@@ -47,7 +47,7 @@ export class AppStateComponent implements OnDestroy {
     }
   }
 
-  // TODO: 2dg with Promise ?
+  // TODO: @2dg with Promise ?
   resetApp(withFiles: boolean) {
     if (!confirm('Are you sure? All changes since last xml export will be lost'))
       return;

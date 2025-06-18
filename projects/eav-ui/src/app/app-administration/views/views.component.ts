@@ -62,7 +62,6 @@ export class ViewsComponent implements OnInit {
 
   constructor(
     private snackBar: MatSnackBar,
-    // For Lightspeed buttons - new 17.10 - may need to merge better w/code changes 2dg
     private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,

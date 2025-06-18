@@ -23,7 +23,7 @@ export class DialogConfigGlobalService extends HttpServiceBase {
   }
 
   private dialogSettings$: Record<number, Observable<DialogSettings>> = {};
-  // TODO: 2dg, ask 2dm 
+  // TODO: @2dg, ask 2dm 
   getShared$(appId: number): Observable<DialogSettings> {
     this.log.a('getShared$ appId: ' + appId);
     this.dialogSettings$[appId] ??= this.#getDialogSettings(appId, 'getShared$')

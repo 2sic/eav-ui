@@ -11,13 +11,6 @@ import { SxcGridModule } from '../../../../shared/modules/sxc-grid-module/sxc-gr
 import { AnalyzeSettingsService } from '../../../services/analyze-settings.service';
 import { AnalyzeSettingsValueComponent } from '../analyze-settings-value/analyze-settings-value.component';
 import { AnalyzeParts } from '../analyze-settings.models';
-// TODO: 2dg not works
-// interface AnalyzeRouteParams {
-//   part: Of<typeof AnalyzeParts>;
-//   selectedView: string;
-//   settingsItemKey: string;
-// }
-
 @Component({
   selector: 'app-settings-item-details',
   templateUrl: './settings-item-details.component.html',

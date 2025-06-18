@@ -21,7 +21,7 @@ export class SnippetsService extends HttpServiceBase {
     super();
   }
 
-  // TODO: 2dg, ask 2dm 
+  // TODO: @2dg, ask 2dm 
   getTooltips(language: string): Observable<Tooltip[]> {
     return this.getHttpApiUrl<Tooltip[]>(inlineHelp, {
       params: {

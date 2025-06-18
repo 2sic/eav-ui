@@ -30,17 +30,6 @@ export class DataBundlesService extends HttpServiceBaseSignal {
     window.open(url, '_blank', '');
   }
 
-  // TODO: 2dg Remove later
-  // saveDataBundles(Guid: string) {
-  //   return this.http.get(this.apiUrl(webApiDataRootBundleSave), {
-  //     params: {
-  //       appId: this.appId,
-  //       exportConfiguration: Guid,
-  //       indentation: '1',
-  //     },
-  //   });
-  // }
-
   async saveDataBundlesFetch(guid: string): Promise<number> {
     return this.getStatusPromise(webApiDataRootBundleSave, {
       params: { appId: this.appId, exportConfiguration: guid, indentation: '1' },

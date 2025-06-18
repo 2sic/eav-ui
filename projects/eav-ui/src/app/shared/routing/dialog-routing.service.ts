@@ -72,7 +72,7 @@ export class DialogRoutingService extends ServiceBase {
   public doOnDialogClosedWithData(callback: (data: any) => void) {
     const l = this.log.fnIf('doOnDialogClosed');
     this.subscriptions.add(
-      this.childDialogClosedTest2dg$().subscribe(({ state }) => {
+      this.#childDialogClosedWithData().subscribe(({ state }) => {
         l.a('Dialog closed', { state });
         callback(state);
       })
@@ -104,7 +104,7 @@ export class DialogRoutingService extends ServiceBase {
     return this.router.navigate(commands, { ...extras, relativeTo: this.route });
   }
 
-  childDialogClosed$() {
+  public childDialogClosed$() {
     return this.router.events.pipe(
       filter(event => event instanceof NavigationEnd),
       startWith(!!this.route.snapshot.firstChild),
@@ -114,7 +114,7 @@ export class DialogRoutingService extends ServiceBase {
     )
   }
 
-  childDialogClosedTest2dg$() {
+  #childDialogClosedWithData() {
     return this.router.events.pipe(
       filter(event => event instanceof NavigationEnd),
       tap(event => {

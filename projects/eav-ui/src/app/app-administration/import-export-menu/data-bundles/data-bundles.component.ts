@@ -236,16 +236,6 @@ export class DataBundlesComponent {
     this.#dataBundlesService.exportDataBundle(item.Guid);
   }
 
-  // TODO: 2dg Remove later
-  // Old with Observable
-  // #saveState(item: ContentItem) {
-  //   this.snackBar.open('Save Bundle State...');
-  //   this.#dataBundlesService.saveDataBundles(item.Guid).subscribe({
-  //     next: _ => this.snackBar.open('Export completed into the \'App_Data\' folder.', null, { duration: 3000 }),
-  //     error: _ => this.snackBar.open('Export failed. Please check console for more information', null, { duration: 3000 }),
-  //   });
-  // }
-
   // Save State wit Fetch
   async #saveState(item: ContentItem) {
     this.snackBar.open('Save Bundle State...');

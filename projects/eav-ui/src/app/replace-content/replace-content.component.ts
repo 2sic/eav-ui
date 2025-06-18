@@ -79,7 +79,6 @@ export class ReplaceContentComponent implements OnInit {
     this.#fetchConfig(false, null);
 
     this.#dialogRoutes.doOnDialogClosed(() => {
-      console.log("2dg Dialog Close")
       const navigation = this.#dialogRoutes.router.getCurrentNavigation();
       const editResult = navigation.extras?.state;
       const cloneId: number = editResult?.[Object.keys(editResult)[0]];

@@ -42,11 +42,8 @@ export class RegistrationComponent {
     private viewContainerRef: ViewContainerRef,
   ) { }
 
-  // TODO: 2dg Live
   #refresh = signal(0);
-
   systemInfoSet = this.#zoneSvc.getSystemInfoLive(this.#refresh).value;
-
   openLicenseRegistration(systemInfoSet: SystemInfoSet): void {
     window.open(`https://patrons.2sxc.org/register?fingerprint=${systemInfoSet.System.Fingerprint}`, '_blank');
   }

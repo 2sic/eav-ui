@@ -77,13 +77,13 @@ export class AppsListComponent implements OnInit {
   #refresh = signal(0);
 
 
-  // TODO: 2dg Only for example - remove later
+  // TODO: @2dg Only for example - remove later
   //   apps = computed(() => {
   //   const refresh = this.#refresh();
   //   return this.#appsListSvc.getAllOld();
   // });
 
-  // TODO: 2dg Only for example - remove later
+  // TODO: @2dg Only for example - remove later
   // apps = computed(() => {
   //   const refresh = this.#refresh();
   //   return untracked(() => this.#appsListSvc.getAll().value) // Untracked to avoid re-running this when the refresh changes

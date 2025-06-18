@@ -85,7 +85,6 @@ export class FileUploadDialogComponent extends BaseComponent implements OnInit, 
     filter((evt: MessageEvent) => evt.origin === "https://2sxc.org"),
     // Get data from event.
     map((evt: MessageEvent) => {
-      console.log('2dg message received install', evt.data);
       try {
         return JSON.parse(evt.data) as CrossWindowMessage;
       } catch (e) {

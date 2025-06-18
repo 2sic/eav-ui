@@ -18,7 +18,7 @@ const webApiTypeAddGhost = 'admin/type/addghost';
 @Injectable()
 export class ContentTypesService extends HttpServiceBase {
 
-  // TODO: 2dg, ask 2dm 
+  // TODO: @2dg, ask 2dm 
   // content-export.component.ts
   // content-import.component.ts
   // data.component.ts

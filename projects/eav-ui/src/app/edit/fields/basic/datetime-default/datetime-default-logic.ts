@@ -1,4 +1,4 @@
-// 2dg unused 16.6.2025, deleted later or ask 2dm 
+// unused 16.6.2025, deleted later or ask 2dm 
 
 // import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
 // import { FieldSettings } from './../../../../../../../edit-types/src/FieldSettings';
