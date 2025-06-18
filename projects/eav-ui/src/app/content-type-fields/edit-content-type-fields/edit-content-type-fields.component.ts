@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, HostBinding, linkedSignal, OnInit, QueryList, signal, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, computed, ElementRef, HostBinding, linkedSignal, QueryList, signal, untracked, ViewChild, ViewChildren } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
@@ -51,7 +51,7 @@ type FieldSubset = Pick<Field, 'Id' | 'Type' | 'InputType' | 'StaticName' | 'IsT
     FieldHintComponent,
   ]
 })
-export class EditContentTypeFieldsComponent extends BaseComponent implements AfterViewInit, OnInit {
+export class EditContentTypeFieldsComponent extends BaseComponent implements AfterViewInit {
   @HostBinding('className') hostClass = 'dialog-component';
   @ViewChild('ngForm', { read: NgForm }) private form: NgForm;
   @ViewChildren('autoFocusInputField') autoFocusInputField!: QueryList<ElementRef>;
@@ -96,12 +96,19 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements Aft
 
   #contentTypeRouteName = this.#typesSvc.getType(this.route.snapshot.paramMap.get('contentTypeStaticName')).value;
 
-  #existingFieldsLazy = signal([])
+  #existingFieldsLazy = computed(() => {
+    const contentTypeRouteName = this.#contentTypeRouteName();
+    const data = untracked(() => {
+      return this.#typesFieldsSvc.getFieldsLive(signal(0), contentTypeRouteName?.NameId);
+    })
+    return data;
+  });
+
 
   fields = (() => {
     // Get the fields once the data is ready
     const initial = computedObj('fields', () => {
-      const fields = this.#existingFieldsLazy();
+      const fields = this.#existingFieldsLazy()();
       if (this.editMode != null) {
         if (fields.length === 0) return [];
         const routeId = this.route.snapshot.paramMap.get('id');
@@ -123,7 +130,7 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements Aft
 
   reservedNames = computedObj('reservedNamesAll', () => {
     // setup watchers
-    const fields = this.#existingFieldsLazy();
+    const fields = this.#existingFieldsLazy()();
     const reservedNames = this.#reservedNamesSystem();
     if (fields.length === 0)
       return reservedNames;
@@ -134,7 +141,7 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements Aft
       delete merged[fields[0].StaticName];
     return merged;
   });
-  
+
 
   ngAfterViewInit(): void {
     // Wait for the inputFields to be available
@@ -144,13 +151,16 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements Aft
   }
 
 
-  ngOnInit() {
+  // ngOnInit() {
+  //   setTimeout(() => {
+  //     console.log(this.#contentTypeRouteName()?.NameId)
 
-    this.#typesFieldsSvc.getFieldsPromise(this.#contentTypeRouteName()?.NameId).then(fields => {
-      this.#existingFieldsLazy.set(fields);
-    })
-
-  }
+  //   }, 110); // Force change detection to ensure the view is ready
+  //   this.#typesFieldsSvc.getFieldsPromise(this.#contentTypeRouteName()?.NameId).then(fields => {
+  //     console.log('Fields loaded', fields);
+  //     this.#existingFieldsLazy.set(fields);
+  //   })
+  // }
 
   #generateNewList(existingFieldCount: number): FieldSubset[] {
     return [...Array(8).keys()].map(k => ({

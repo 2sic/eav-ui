@@ -1,8 +1,6 @@
 <div class="eav-dialog nav-component-wrapper" appToggleDebug>
   <div class="eav-dialog-header">
-    <div class="eav-dialog-header__title">
-      {{ contentType()?.Label || contentType()?.Name }} Fields
-    </div>
+    <div class="eav-dialog-header__title">{{ contentType()?.Label || contentType()?.Name }} Fields</div>
     <button mat-icon-button tippy="Close dialog" (click)="dialog.close()">
       <mat-icon>close</mat-icon>
     </button>
@@ -10,22 +8,36 @@
   <div class="eav-dialog-content nav-component-wrapper">
     <router-outlet></router-outlet>
     <div class="grid-wrapper">
-      <ag-grid-angular class="ag-theme-material" [rowData]="fields()" [gridOptions]="gridOptions"
-        (rowDragEnter)="onRowDragEnter($event)" (rowDragEnd)="onRowDragEnd($event)"
-        (rowDragMove)="onRowDragMove($event)" (gridReady)="onGridReady($event)" (sortChanged)="onSortChanged($event)"
-        (filterChanged)="onFilterChanged($event)" [ngClass]="{
+      <ag-grid-angular
+        class="ag-theme-material"
+        [rowData]="fields()"
+        [gridOptions]="gridOptions"
+        (rowDragEnter)="onRowDragEnter($event)"
+        (rowDragEnd)="onRowDragEnd($event)"
+        (rowDragMove)="onRowDragMove($event)"
+        (gridReady)="onGridReady($event)"
+        (sortChanged)="onSortChanged($event)"
+        (filterChanged)="onFilterChanged($event)"
+        [ngClass]="{
           'grid-sorted': sortApplied,
-          'grid-filtered': filterApplied
-          }">
+          'grid-filtered': filterApplied,
+        }"
+      >
       </ag-grid-angular>
     </div>
   </div>
   <mat-dialog-actions align="end">
     <!-- @if (isDebug()) { -->
-      <button mat-raised-button type="button" (click)="addSharedField()">{{ "SharingOrInheriting.AddSharedField" | translate }}</button>
+    <button mat-raised-button type="button" (click)="addSharedField()">{{ 'SharingOrInheriting.AddSharedField' | translate }}</button>
     <!-- } -->
-    <button mat-fab mat-elevation-z24 class="grid-fab" tippy="Add fields"
-      [disabled]="contentType() == null || contentType().EditInfo.ReadOnly" (click)="add()">
+    <button
+      mat-fab
+      mat-elevation-z24
+      class="grid-fab"
+      tippy="Add fields"
+      [disabled]="contentType() == null || contentType().EditInfo.ReadOnly"
+      (click)="add()"
+    >
       <mat-icon>add</mat-icon>
     </button>
   </mat-dialog-actions>

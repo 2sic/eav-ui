@@ -12,7 +12,7 @@
       }
     </div>
   </div>
-  @if (fields().length) {
+  @if (fields()?.length) {
     <form #ngForm="ngForm" (ngSubmit)="save()">
       <div class="eav-dialog-content">
         @for (field of fields(); track field.SortOrder; let i = $index) {

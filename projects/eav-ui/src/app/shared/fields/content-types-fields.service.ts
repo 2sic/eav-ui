@@ -100,6 +100,36 @@ export class ContentTypesFieldsService extends HttpServiceBaseSignal {
     }));
   }
 
+  getFieldsLive(refresh: Signal<unknown>, contentTypeStaticName: string): Signal<Field[]> {
+    // Create the HTTP resource that will fetch the fields
+    const fieldsResource = this.newHttpResource<Field[]>(() => {
+      // Reference the refresh signal to trigger refetching when it changes
+      refresh();
+      return {
+        url: this.apiUrl(webApiFieldsAll),
+        params: this.paramsAppId({ staticName: contentTypeStaticName }).params,
+      };
+    }).value;
+
+    // Create a computed signal that processes the fetched fields
+    return computed(() => {
+      // Get the current state of the fields resource
+      const state = fieldsResource();
+
+      // Process fields just like in the Promise version
+      const fields = state || [];
+      for (const fld of fields) {
+        if (!fld.Metadata) continue;
+        const md = fld.Metadata;
+        const allMd = md.All;
+        const typeMd = md[fld.Type];
+        const inputMd = md[fld.InputType];
+        md.merged = { ...allMd, ...typeMd, ...inputMd };
+      }
+      return fields;
+    });
+  }
+
   /** Get all fields for some content type */
   getFieldsPromise(contentTypeStaticName: string): Promise<Field[]> {
     return this.fetchPromise<Field[]>(
