@@ -49,6 +49,8 @@ export class FieldSharingAddMany extends BaseComponent implements OnInit {
 
   #contentTypesFieldsSvc = transient(ContentTypesFieldsService);
 
+  ContentTypeFieldsReuseDefinitions = FeatureNames.ContentTypeFieldsReuseDefinitions;
+
   constructor(
     @Inject(MAT_DIALOG_DATA) public dialogData: { contentType: ContentType, existingFields: Field[] },
     protected dialog: MatDialogRef<FieldSharingAddMany>,

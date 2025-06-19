@@ -87,7 +87,7 @@
       <mat-card-subtitle>Performance Enhancements and Caching</mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
-      <app-feature-text-info [featureNameId]="'LightSpeedOutputCache'" [asInfo]="true"></app-feature-text-info>
+      <app-feature-text-info [featureNameId]="LightSpeedOutputCache" [asInfo]="true"></app-feature-text-info>
       @if (lsEnabled()) {
         <div>LightSpeed is enabled. Configure it in each site/app as you need.</div>
       }
@@ -107,7 +107,7 @@
       <mat-card-subtitle>System Security Features</mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
-      <app-feature-text-info [featureNameId]="'ContentSecurityPolicy'" [asInfo]="true"></app-feature-text-info>
+      <app-feature-text-info [featureNameId]="ContentSecurityPolicy" [asInfo]="true"></app-feature-text-info>
       @if (cspEnabled()) {
         <div>ContentSecurityPolicy is enabled. Configure it in each site/app as you need.</div>
       }
@@ -169,7 +169,9 @@
     </mat-card-content>
     <div class="eav-card-space-div"></div>
     <mat-card-actions align="end">
-      <button mat-raised-button  color="accent" [disabled]="!activateLogForm.valid" (click)="activatePageLog(activateLogForm)" >Activate</button>
+      <button mat-raised-button color="accent" [disabled]="!activateLogForm.valid" (click)="activatePageLog(activateLogForm)">
+        Activate
+      </button>
     </mat-card-actions>
   </mat-card>
   <!-- Warnings -->

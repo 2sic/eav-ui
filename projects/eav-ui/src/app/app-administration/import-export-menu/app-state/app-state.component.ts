@@ -29,8 +29,9 @@ export class AppStateComponent implements OnDestroy {
   #exportAppSvc = transient(ExportAppService);
   #featuresSvc = transient(FeaturesService);
 
-  constructor(private snackBar: MatSnackBar) {
-  }
+  AppSyncWithSiteFiles = FeatureNames.AppExportAssetsAdvanced;
+
+  constructor(private snackBar: MatSnackBar) { }
 
   ngOnDestroy() {
     this.snackBar.dismiss();

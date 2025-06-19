@@ -67,6 +67,8 @@ export class AppConfigurationComponent implements OnInit {
   AnalyzeParts = AnalyzeParts;
   SystemSettingsScopes = SystemSettingsScopes;
   AppScopes = AppScopes;
+  LightSpeedOutputCache = FeatureNames.LightSpeed;
+  ContentSecurityPolicy = FeatureNames.ContentSecurityPolicy;
 
   // Settings for the current dialog
   dialogSettings = toSignal(this.#dialogConfigSvc.getCurrent$());

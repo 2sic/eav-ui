@@ -57,13 +57,11 @@ export class SystemInfoComponent implements OnInit {
   pageLogDuration: number;
   positiveWholeNumber = /^[1-9][0-9]*$/;
 
+  LightSpeedOutputCache = FeatureNames.LightSpeed;
+  ContentSecurityPolicy = FeatureNames.ContentSecurityPolicy;
+
   loading = signal(false);
   #refresh = signal(0);
-
-  // languages = computed(() => {
-  //   const r = this.#refresh();
-  //   return this.#zoneSvc.getLanguage(undefined);
-  // })
 
   #languages = this.#zoneSvc.getLanguageLive(this.#refresh).value;
   #systemInfoSet = this.#zoneSvc.getSystemInfoLive(this.#refresh).value;
