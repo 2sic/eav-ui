@@ -1,11 +1,13 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, ViewContainerRef } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialogActions, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogActions, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
 import { convert, Of, transient } from '../../../../core';
+import { ConfirmDeleteDialogComponent } from '../app-administration/sub-dialogs/confirm-delete-dialog/confirm-delete-dialog.component';
+import { ConfirmDeleteDialogData } from '../app-administration/sub-dialogs/confirm-delete-dialog/confirm-delete-dialog.models';
 import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
 import { eavConstants, MetadataKeyTypes } from '../shared/constants/eav.constants';
@@ -52,8 +54,9 @@ export class PermissionsComponent implements OnInit {
   constructor(
     private dialog: MatDialogRef<PermissionsComponent>,
     private snackBar: MatSnackBar,
-  ) {
-  }
+    private viewContainerRef: ViewContainerRef,
+    private matDialog: MatDialog,
+  ) { }
 
   ngOnInit() {
     this.#dialogRoutes.doOnDialogClosed(() => this.#refresh.update(x => x + 1));
@@ -85,13 +88,28 @@ export class PermissionsComponent implements OnInit {
     this.#dialogRoutes.navRelative([`edit/${formUrl}`]);
   }
 
-  private deletePermission(permission: Permission) {
-    if (!confirm(`Delete '${permission.Title}' (${permission.Id})?`)) return;
+  #deletePermission(permission: Permission) {
     this.snackBar.open('Deleting...');
-    this.#permissionsService.delete(permission.Id).subscribe(() => {
-      this.snackBar.open('Deleted', null, { duration: 2000 });
-      this.#refresh.update(x => x + 1);
+    const data: ConfirmDeleteDialogData = {
+      entityId: permission.Id,
+      entityTitle: permission.Title,
+      message: "Delete this permission?",
+    };
+    const confirmationDialogRef = this.matDialog.open(ConfirmDeleteDialogComponent, {
+      autoFocus: false,
+      data,
+      viewContainerRef: this.viewContainerRef,
+      width: '400px',
     });
+    confirmationDialogRef.afterClosed().subscribe((isConfirmed: boolean) => {
+      this.snackBar.dismiss();
+      if (isConfirmed)
+        this.#permissionsService.delete(permission.Id).subscribe(() => {
+          this.snackBar.open('Deleted', null, { duration: 2000 });
+          this.#refresh.update(x => x + 1);
+        })
+    });
+    return;
   }
 
   private buildGridOptions(): GridOptions {
@@ -129,7 +147,7 @@ export class PermissionsComponent implements OnInit {
           cellRenderer: PermissionsActionsComponent,
           cellRendererParams: (() => {
             const params: PermissionsActionsParams = {
-              onDelete: (permission) => this.deletePermission(permission),
+              onDelete: (permission) => this.#deletePermission(permission),
             };
             return params;
           })(),

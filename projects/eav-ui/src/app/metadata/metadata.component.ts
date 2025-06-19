@@ -9,6 +9,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
 import { EcoFabSpeedDialActionsComponent, EcoFabSpeedDialComponent, EcoFabSpeedDialTriggerComponent } from '@ecodev/fab-speed-dial';
 import { convert, Of, transient } from '../../../../core';
+import { ConfirmDeleteDialogComponent } from '../app-administration/sub-dialogs/confirm-delete-dialog/confirm-delete-dialog.component';
+import { ConfirmDeleteDialogData } from '../app-administration/sub-dialogs/confirm-delete-dialog/confirm-delete-dialog.models';
 import { ContentItemsService } from '../content-items/services/content-items.service';
 import { EavForInAdminUi } from '../edit/shared/models/eav';
 import { openFeatureDialog } from '../features/shared/base-feature.component';
@@ -23,8 +25,6 @@ import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module
 import { SafeHtmlPipe } from '../shared/pipes/safe-html.pipe';
 import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
 import { EntityEditService } from '../shared/services/entity-edit.service';
-import { ConfirmDeleteDialogComponent } from './confirm-delete-dialog/confirm-delete-dialog.component';
-import { ConfirmDeleteDialogData } from './confirm-delete-dialog/confirm-delete-dialog.models';
 import { MetadataActionsComponent } from './metadata-actions/metadata-actions.component';
 import { MetadataActionsParams } from './metadata-actions/metadata-actions.models';
 import { MetadataContentTypeComponent } from './metadata-content-type/metadata-content-type.component';
