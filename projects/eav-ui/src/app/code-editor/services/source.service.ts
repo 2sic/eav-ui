@@ -135,17 +135,21 @@ export class SourceService extends HttpServiceBase {
     );
   }
 
-  // Create a resource signal to fetch the list of WebApi files from the API
-  #apiFilesResourceSignal = httpResource<{ files: WebApi[] }>(() => ({
-    url: this.apiUrl(apiExplorerAppApiFiles),
-    params: { appId: this.appId },
-  }));
 
-  getWebApisSig(): Signal<WebApi[]> {
-    // Use a computed signal to transform and enrich the raw API data
+  getWebApisLive(refresh: Signal<unknown>) {
+    const apiResource = httpResource<{ files: WebApi[] }>(() => {
+      refresh();
+      return {
+        url: this.apiUrl(apiExplorerAppApiFiles),
+        params: { appId: this.appId },
+      };
+    });
+
+    // Return a computed signal that transforms the data
     return computed(() => {
-      // Retrieve the list of files from the resource signal
-      const files = this.#apiFilesResourceSignal.value()?.files;
+      const response = apiResource.value();
+      const files = response?.files;
+
       if (!files) return [];
 
       // Set default values for isShared and isCompiled if they are undefined
@@ -154,12 +158,13 @@ export class SourceService extends HttpServiceBase {
         file.isCompiled ??= false;
       });
 
-      // Transform the raw files into the desired WebApi format, extracting folder and name
+      // Transform the raw files into the desired WebApi format
       return files.map(file => {
         const splitIndex = file.path.lastIndexOf('/');
         const fileExtIndex = file.path.lastIndexOf('.');
         const folder = file.path.substring(0, splitIndex);
         const name = file.path.substring(splitIndex + 1, fileExtIndex);
+
         return {
           path: file.path,
           folder,
@@ -172,6 +177,7 @@ export class SourceService extends HttpServiceBase {
       });
     });
   }
+
 
   // TODO: @2dg, ask 2dm 
   getWebApiDetails(apiPath: string): Observable<WebApiDetails> {

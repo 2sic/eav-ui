@@ -1,5 +1,5 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { Component, computed, OnInit, signal, ViewContainerRef } from '@angular/core';
+import { Component, OnInit, signal, ViewContainerRef } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogActions } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -20,29 +20,25 @@ import { WebApiActionsComponent } from './web-api-actions/web-api-actions.compon
 import { WebApiActionsParams } from './web-api-actions/web-api-actions.models';
 
 @Component({
-    selector: 'app-web-api',
-    templateUrl: './web-api.component.html',
-    imports: [
-        SxcGridModule,
-        MatDialogActions,
-        MatButtonModule,
-        MatMenuModule,
-        MatIconModule,
-        RouterOutlet,
-    ]
+  selector: 'app-web-api',
+  templateUrl: './web-api.component.html',
+  imports: [
+    SxcGridModule,
+    MatDialogActions,
+    MatButtonModule,
+    MatMenuModule,
+    MatIconModule,
+    RouterOutlet,
+  ]
 })
 export class WebApiComponent implements OnInit {
 
   #dialogInNewWindowSvc = transient(DialogInNewWindowService);
-  #sourceService = transient(SourceService);
+  #sourceSvc = transient(SourceService);
 
   enableCode!: boolean;
   #refresh = signal(0);
-
-  webApis = computed(() => {
-    const r = this.#refresh();
-    return this.#sourceService.getWebApisSig();
-  })
+  webApis = this.#sourceSvc.getWebApisLive(this.#refresh)
 
   gridOptions = this.buildGridOptions();
 
@@ -55,8 +51,6 @@ export class WebApiComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.fetchWebApis();
-
     this.dialogConfigSvc.getCurrent$().subscribe(settings => {
       this.enableCode = settings.Context.Enable.CodeEditor;
     });
@@ -107,15 +101,11 @@ export class WebApiComponent implements OnInit {
       }
 
       this.snackBar.open('Saving...');
-      this.#sourceService.create(result.name, global, result.templateKey).subscribe(() => {
+      this.#sourceSvc.create(result.name, global, result.templateKey).subscribe(() => {
         this.snackBar.open('Saved', null, { duration: 2000 });
-        this.fetchWebApis();
+        this.#refresh.update(v => ++v);
       });
     });
-  }
-
-  private fetchWebApis() {
-    this.#refresh.update(v => ++v);
   }
 
   private enableCodeGetter() {
