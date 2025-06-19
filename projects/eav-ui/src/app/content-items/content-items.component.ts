@@ -8,6 +8,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
 import { transient } from '../../../../core';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
+import { ConfirmDeleteDialogComponent } from '../app-administration/sub-dialogs/confirm-delete-dialog/confirm-delete-dialog.component';
+import { ConfirmDeleteDialogData } from '../app-administration/sub-dialogs/confirm-delete-dialog/confirm-delete-dialog.models';
 import { ContentExportService } from '../content-export/services/content-export.service';
 import { GoToMetadata } from '../metadata';
 import { AgGridHelper } from '../shared/ag-grid/ag-grid-helper';
@@ -323,8 +325,8 @@ export class ContentItemsComponent implements OnInit {
             urlTo: (verb, item) => '#' + this.#urlToClone(item),
             do: (verb, item) => {
               switch (verb) {
-                case 'export': this.export(item); break;
-                case 'delete': this.delete(item); break;
+                case 'export': this.#export(item); break;
+                case 'delete': this.#delete(item); break;
               }
             }
           } satisfies ContentItemsActionsParams;
@@ -377,31 +379,74 @@ export class ContentItemsComponent implements OnInit {
     );
   }
 
-  private export(item: ContentItem) {
+  #export(item: ContentItem) {
     this.#contentExportSvc.exportEntity(item.Id, this.#contentTypeStaticName, true);
   }
 
-  private delete(item: ContentItem) {
-    if (!confirm(`Delete '${item._Title}' (${item._RepositoryId})?`)) return;
+
+  // Show initial delete confirmation
+  #delete(item: ContentItem) {
     this.snackBar.open('Deleting...');
-    this.#entitiesSvc.delete(this.#contentTypeStaticName, item._RepositoryId, false).subscribe({
-      next: () => {
-        this.snackBar.open('Deleted', null, { duration: 2000 });
-        this.fetchItems();
-      },
-      error: (err: HttpErrorResponse) => {
-        this.snackBar.dismiss();
-        if (!confirm(`${err.error.ExceptionMessage}\n\nDo you want to force delete '${item._Title}' (${item._RepositoryId})?`)) {
-          return;
-        }
-        this.snackBar.open('Deleting...');
-        this.#entitiesSvc.delete(this.#contentTypeStaticName, item._RepositoryId, true).subscribe(() => {
-          this.snackBar.open('Deleted', null, { duration: 2000 });
-          this.fetchItems();
+    this.#confirmAndExecuteDelete(
+      item,
+      "Delete Item?",
+      false
+    );
+  }
+
+  /**
+   * Shows a confirmation dialog and performs delete operation if confirmed
+   * @param item The item to delete
+   * @param message Confirmation message to display
+   * @param forceDelete Whether to force delete
+   * @param dialogTitle Optional dialog title
+   * @param confirmText Optional confirmation button text
+   */
+  #confirmAndExecuteDelete(item: ContentItem, message: string, forceDelete: boolean, dialogTitle?: string, confirmText?: string) {
+    
+    const dialogData: ConfirmDeleteDialogData = {
+      entityId: item._RepositoryId,
+      entityTitle: item._Title,
+      message: message,
+      title: dialogTitle,
+      confirmTranslateKey: confirmText
+    };
+
+    this.matDialog.open(ConfirmDeleteDialogComponent, {
+      autoFocus: false,
+      data: dialogData,
+      viewContainerRef: this.viewContainerRef,
+      width: '400px',
+    }).afterClosed().subscribe(isConfirmed => {
+      this.snackBar.dismiss();
+      if (!isConfirmed) return;
+
+      // Execute delete operation
+      this.snackBar.open('Deleting...');
+      this.#entitiesSvc.delete(this.#contentTypeStaticName, item._RepositoryId, forceDelete)
+        .subscribe({
+          next: () => {
+            this.snackBar.open('Deleted', null, { duration: 2000 });
+            this.fetchItems();
+          },
+          error: (err: HttpErrorResponse) => {
+            // Only show force delete option if this was a regular delete attempt
+            // Open Dialog to confirm force delete
+            if (!forceDelete) {
+              this.snackBar.dismiss();
+              this.#confirmAndExecuteDelete(
+                item,
+                `${err.error.ExceptionMessage} \n\nDo you want to force delete`,
+                true,
+                'Force Delete',
+                'Force'
+              );
+            }
+          }
         });
-      }
     });
   }
+
 
   private valueGetterEntityField(params: ValueGetterParams) {
     const rawValue: ContentItem[] = params.data[params.colDef.field];

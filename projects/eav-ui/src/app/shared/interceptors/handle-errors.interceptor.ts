@@ -1,6 +1,8 @@
-import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
+import { HttpContextToken, HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, Observable, throwError } from 'rxjs';
+
+export const IGNORED_STATUSES = new HttpContextToken<number[]>(() => []);
 
 @Injectable()
 export class HandleErrorsInterceptor implements HttpInterceptor {
@@ -12,8 +14,16 @@ export class HandleErrorsInterceptor implements HttpInterceptor {
   constructor() { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    const ignoredStatuses = req.context.get(IGNORED_STATUSES);
     return next.handle(req).pipe(
+
       catchError((error: HttpErrorResponse) => {
+
+        // If Status is in the ignored list, just use the error custom im component (example: content-items.component 400 Error Deleting Item)
+        if (ignoredStatuses?.includes(error.status)) {
+          return throwError(() => error);
+        }
+
         if (!this.checkIfExcluded(error.url)) {
           this.showDetailedHttpError(error);
         }
