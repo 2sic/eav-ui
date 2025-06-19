@@ -7,13 +7,12 @@
   </div>
 
   <div class="eav-dialog-content">
-    <p>
-      {{'LanguageSettings.Intro' | translate}}
-    </p>
+    <p>{{'LanguageSettings.Intro' | translate}}</p>
 
     <h3>{{'LanguageSettings.Subtitle' | translate}}</h3>
 
     <app-language-dropdown
+      style="margin-right: 24px"
       [label]="'LanguageSettings.LabelsAndTextsOptionLabel'"
       [tooltip]="'LanguageSettings.LabelsAndTextsTooltip'"
       [optionType]="'form'"

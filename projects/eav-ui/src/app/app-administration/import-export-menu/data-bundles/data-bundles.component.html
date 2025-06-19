@@ -6,7 +6,7 @@
     a partial sync of data and schema between environments.
   </p>
 
-  <app-feature-text-info [featureNameId]="'DataExportImportBundles'"></app-feature-text-info>
+  <app-feature-text-info [featureNameId]="DataExportImportBundles"></app-feature-text-info>
 
   <!-- Explanation about other places to export/import -->
   <div class="info-container">
@@ -41,7 +41,13 @@
   }
   <!--  Select Button -->
   <div>
-    <button class="select-btn" mat-raised-button tippy="Open file browser" [disabled]="uploading()" (click)="fileInput.click()">
+    <button
+      class="select-btn"
+      mat-raised-button
+      tippy="Open file browser"
+      [disabled]="uploading() || !dataExportImportBundles()"
+      (click)="fileInput.click()"
+    >
       @if (!files().length) {
         <div>Select or drop file</div>
       }
@@ -74,7 +80,7 @@
       }
     </div>
   }
-<!-- Upload Button -->
+  <!-- Upload Button -->
   @if (!result()?.Success) {
     <button
       style="margin-top: 16px"

@@ -11,7 +11,9 @@ import { EntityLightIdentifier } from 'projects/edit-types/src/EntityLight';
 import { take } from 'rxjs';
 import { ContentItem } from '../../../content-items/models/content-item.model';
 import { ContentItemsService } from '../../../content-items/services/content-items.service';
+import { FeatureNames } from '../../../features/feature-names';
 import { FeatureTextInfoComponent } from '../../../features/feature-text-info/feature-text-info.component';
+import { FeaturesService } from '../../../features/features.service';
 import { AgGridHelper } from '../../../shared/ag-grid/ag-grid-helper';
 import { ColumnDefinitions } from '../../../shared/ag-grid/column-definitions';
 import { FileUploadDialogData, FileUploadMessageTypes, FileUploadResult } from '../../../shared/components/file-upload-dialog';
@@ -54,9 +56,12 @@ export class DataBundlesComponent {
   #dialogRouter = transient(DialogRoutingService);
   #dataBundlesQueryService = transient(DataBundlesQueryService);
   #dataBundlesService = transient(DataBundlesService);
-
+  #featuresSvc = transient(FeaturesService);
 
   #queryResults = signal<BundleQuery[]>([]);
+
+  DataExportImportBundles = FeatureNames.DataExportImportBundles // Only for Html
+  protected dataExportImportBundles = this.#featuresSvc.isEnabled[FeatureNames.DataExportImportBundles];
 
   constructor(private snackBar: MatSnackBar) {
 

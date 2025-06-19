@@ -5,7 +5,9 @@ import { MatDialogActions } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { transient } from '../../../../../../core';
+import { FeatureNames } from '../../../features/feature-names';
 import { FeatureTextInfoComponent } from '../../../features/feature-text-info/feature-text-info.component';
+import { FeaturesService } from '../../../features/features.service';
 import { ExportAppService } from '../../services/export-app.service';
 import { ImportAppPartsService } from '../../services/import-app-parts.service';
 
@@ -25,13 +27,16 @@ export class AppStateComponent implements OnDestroy {
 
   #importAppPartsSvc = transient(ImportAppPartsService);
   #exportAppSvc = transient(ExportAppService);
+  #featuresSvc = transient(FeaturesService);
 
-  constructor(private snackBar: MatSnackBar) { }
+  constructor(private snackBar: MatSnackBar) {
+  }
 
   ngOnDestroy() {
     this.snackBar.dismiss();
   }
 
+  protected appExportAssetsAdvancedEnabled = this.#featuresSvc.isEnabled[FeatureNames.AppExportAssetsAdvanced];
 
   async exportAppXml(withFiles: boolean) {
     this.snackBar.open('Exporting...');
