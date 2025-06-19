@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { ChangeDetectorRef, Component, effect, ElementRef, HostBinding, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, HostBinding, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -78,13 +78,6 @@ export class ImportAppPartsComponent extends BaseComponent implements OnInit, On
     private changeDetectorRef: ChangeDetectorRef,
   ) {
     super();
-
-    effect(() => {
-      this.files();
-      if (this.result() != undefined) {
-        this.result.set(undefined);
-      }
-    });
 
     // copied from 2sxc-ui app/installer
     this.subscriptions.add(
@@ -211,17 +204,28 @@ Please try again later or check how to manually install content-templates: https
     this.#setFiles(files);
   }
 
+  refresh(): void {
+    this.files.set([]);
+    this.result.set(undefined);
+    this.uploading.set(false);
+    this.importData.files = undefined;
+  }
+
   upload(): void {
     this.uploading.set(true);
     this.subscriptions.add(
       this.importData.upload$(this.files()).pipe(take(1)).subscribe({
+
+
         next: (result) => {
-          this.uploading.set(false);
+          console.log('uploading files', result),
+            this.uploading.set(false);
           this.result.set(result);
         },
         error: () => {
+          console.log('uploading error', this.files()),
 
-          this.uploading.set(false);
+            this.uploading.set(false);
           this.result.set(undefined);
           this.snackBar.open('Upload failed. Please check console for more information', undefined, { duration: 3000 });
         },
