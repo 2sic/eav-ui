@@ -13,6 +13,7 @@ import { OverrideContentsLogData } from './feature-list.model';
 @Component({
   selector: 'app-features-list-settings',
   templateUrl: './features-list-enabled.component.html',
+  styleUrls: ['./features-list-enabled.component.scss'],
   imports: [MatIconModule, MatBadgeModule, MatRippleModule, TippyDirective]
 })
 export class FeaturesListEnabledComponent implements ICellRendererAngularComp {
@@ -49,10 +50,10 @@ export class FeaturesListEnabledComponent implements ICellRendererAngularComp {
       {
         guid: this.contentType.guid,
         enabled: this.contentType.enabledInConfiguration,
-        LoadAppDetails: this.configurationData.LoadAppDetails,
-        LoadAppSummary: this.configurationData.LoadAppSummary,
-        LoadSystemDataDetails: this.configurationData.LoadSystemDataDetails,
-        LoadSystemDataSummary: this.configurationData.LoadSystemDataSummary,
+        LoadAppDetails: this.configurationData?.LoadAppDetails ?? null,
+        LoadAppSummary: this.configurationData?.LoadAppSummary ?? null,
+        LoadSystemDataDetails: this.configurationData?.LoadSystemDataDetails ?? null,
+        LoadSystemDataSummary: this.configurationData?.LoadSystemDataSummary ?? null,
       }
     ];
 
