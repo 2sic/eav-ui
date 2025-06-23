@@ -23,6 +23,7 @@ import { InputTypeService } from '../shared/input-types/input-type.service';
 import { EavContentType } from '../shared/models/eav/eav-content-type';
 import { EavEntity } from '../shared/models/eav/eav-entity';
 import { ItemService } from '../state/item.service';
+import { correctAdamFolderBasePath, extractAdamPortalUrl } from './correctAdamUrl';
 import { FormConfigService } from './form-config.service';
 import { FormDataService } from './form-data.service';
 import { FormLanguageService } from './form-language.service';
@@ -58,6 +59,7 @@ export class EditInitializerService {
   #userLanguageSvc = transient(UserLanguageService);
   #initMissingValuesSvc = transient(InitializeMissingValuesServices);
 
+  adamPortalUrl = signal<string | null>(null);
 
   constructor(
     private route: ActivatedRoute,
@@ -75,7 +77,7 @@ export class EditInitializerService {
     private linkCacheService: LinkCacheService,
     private featuresService: FeaturesService,
     private initialValuesService: InitialValuesService,
-    @Inject (MAT_DIALOG_DATA) private dialogData: DialogRoutingState, 
+    @Inject(MAT_DIALOG_DATA) private dialogData: DialogRoutingState,
   ) {
     this.log.aIf('constructor', null, "constructor");
 
@@ -99,13 +101,17 @@ export class EditInitializerService {
     const dataHelper = new ItemsRequestRestoreHelper(items, this.dialogData?.overrideContents);
 
     const requestItems = dataHelper.itemsForRequest();
-    
 
     l.a('fetchFormData', { requestItems });
 
     this.#formDataService
       .fetchFormData(JSON.stringify(requestItems))
       .subscribe((responseRaw: EavEditLoadDto) => {
+
+        // Set Adam Portal URL to check with the WYSIWYG editor 
+        const fullUrl = Object.values(responseRaw.Prefetch.Links)[0].Value;
+        this.adamPortalUrl.set(extractAdamPortalUrl(fullUrl));
+
         // Restore prefill and client-data from original
         const response: EavEditLoadDto = {
           ...responseRaw,
@@ -120,12 +126,12 @@ export class EditInitializerService {
         // Transfer any relevant context data to the $2sxc env for future backend calls
         Update$2sxcEnvFromContext(response.Context.App);
 
+
         // Import the loaded data into the various services
         this.#importLoadedData(response);
 
         // Remember initial values as the formulas sometimes need them
         this.initialValuesService.preserve();
-
 
         // After preserving original values, initialize missing values in the form
         this.#initMissingValues();
@@ -145,6 +151,12 @@ export class EditInitializerService {
 
     const formId = Math.floor(Math.random() * 99999);
     const isParentDialog = calculateIsParentDialog(this.route);
+
+    // Check the Adam Portal URL and adjust the items if necessary (Export App / Import App)
+    if (this.adamPortalUrl()) {
+      loadDto.Items = correctAdamFolderBasePath(loadDto.Items, this.adamPortalUrl());
+      l.a('importLoadedData - checkAdamFolder', { items: loadDto.Items });
+    }
 
     // Load data into the ItemsService; will convert the data to the correct type
     this.itemService.loadItems(loadDto.Items);

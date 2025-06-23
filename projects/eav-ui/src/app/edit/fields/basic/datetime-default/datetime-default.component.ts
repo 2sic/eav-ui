@@ -27,7 +27,7 @@ const logSpecs = {
   updateTime: false,
   handleDateTimeInput: false,
   disabledEffect: false,
-  ngAfterViewInit: true,
+  ngAfterViewInit: false,
 }
 
 /**
