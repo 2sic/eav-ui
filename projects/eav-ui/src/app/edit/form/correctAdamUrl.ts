@@ -4,7 +4,7 @@ import { EavEntityBundleDto } from "../shared/models/json-format-v1";
  * Replaces the Adam portal URL in all <img> tags within the content fields with the given orgAdamPortalUrl (if it differs).
  * @param data Array of EavEntityBundleDto objects containing HTML content.
  * @param orgAdamPortalUrl The desired Adam portal URL to be used.
- * @returns The modified array.
+ * @returns The modified array with the correct Adam portal URLs.
  */
 export function correctAdamFolderBasePath(
     data: EavEntityBundleDto[],
