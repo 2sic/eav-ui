@@ -109,7 +109,7 @@ export class EditInitializerService {
       .subscribe((responseRaw: EavEditLoadDto) => {
 
         // Set Adam Portal URL to check with the WYSIWYG editor 
-        const fullUrl = Object.values(responseRaw.Prefetch.Links)[0].Value;
+        const fullUrl = Object.values(responseRaw?.Prefetch?.Links)[0].Value;
         this.adamPortalUrl.set(extractAdamPortalUrl(fullUrl));
 
         // Restore prefill and client-data from original
