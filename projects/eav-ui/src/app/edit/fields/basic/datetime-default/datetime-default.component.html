@@ -39,7 +39,7 @@
         matInput
         [disabled]="ui().disabled"
         [required]="basics().required"
-        [matTimepicker]="timepicker"
+        [myMatTimepicker]="timepicker"
         class="hidden-picker-input"
         [value]="dateTimeValue()"
         [placeholder]="basics().placeholder"
@@ -50,4 +50,7 @@
     </ng-container>
   }
 </mat-form-field>
+
+
+
 <app-field-helper-text></app-field-helper-text>

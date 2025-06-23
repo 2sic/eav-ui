@@ -20,6 +20,7 @@ import {
   DateTimeUtils,
   initializeDayjs
 } from './datetime-fn';
+import { MyMatTimepickerInput } from './mat-timer-picker';
 
 const logSpecs = {
   all: false,
@@ -47,7 +48,8 @@ const logSpecs = {
     MatDayjsModule,
     TippyDirective,
     MatDatepickerModule,
-    MatTimepickerModule
+    MatTimepickerModule,
+    MyMatTimepickerInput
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
