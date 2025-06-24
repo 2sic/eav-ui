@@ -17,8 +17,7 @@ import { FieldState } from '../../field-state';
 import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
 import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
 import {
-  DateTimeUtils,
-  initializeDayjs
+  DateTimeUtils
 } from './datetime-fn';
 import { MyMatTimepickerInput } from './mat-timer-picker';
 
@@ -77,7 +76,7 @@ export class DatetimeDefaultComponent implements AfterViewInit {
     private translate: TranslateService,
   ) {
     // Initialize dayjs with browser's language for proper localization
-    initializeDayjs(navigator.language);
+    DateTimeUtils.initializeDayjs(navigator.language);
     this.translate.currentLang = navigator.language;
   }
 

@@ -1,9 +1,6 @@
 import dayjs from 'dayjs';
 import {
-  DateTimeUtils,
-  formatDateTimeFn,
-  initializeDayjs,
-  updateDateFn,
+  DateTimeUtils
 } from './datetime-fn';
 
 describe('DateTime Functions', () => {
@@ -14,21 +11,21 @@ describe('DateTime Functions', () => {
 
   beforeEach(() => {
     // Initialize dayjs with english locale
-    initializeDayjs('en');
+    DateTimeUtils.initializeDayjs('en');
 
     // Setup common spy and values used in multiple test suites
     setUiValue = jasmine.createSpy('setUiValue');
-    testDate = dayjs('2025-06-13T10:45:14Z'); // Current timestamp
+    testDate = dayjs('2025-06-13T10:45:14Z');
     standardCurrentValue = '2025-06-13T10:45:14Z';
   });
 
-  describe('formatDateTimeFn', () => {
+  describe('formatDateTime', () => {
     it('should return empty string for null date', () => {
-      expect(formatDateTimeFn(null)).toBe('');
+      expect(DateTimeUtils.formatDateTime(null)).toBe('');
     });
 
     it('should format date correctly', () => {
-      const formatted = formatDateTimeFn(testDate);
+      const formatted = DateTimeUtils.formatDateTime(testDate);
       expect(formatted.length).toBeGreaterThan(0);
     });
   });
@@ -51,45 +48,45 @@ describe('DateTime Functions', () => {
     });
 
     it('should set UI value to null if date is null', () => {
-      updateDateFn(null, standardCurrentValue, setUiValue);
+      DateTimeUtils.updateDate(null, standardCurrentValue, setUiValue);
       expect(setUiValue).toHaveBeenCalledWith(null);
     });
 
     it('should not call setUiValue if date is invalid', () => {
-      updateDateFn(invalidDate, standardCurrentValue, setUiValue);
+      DateTimeUtils.updateDate(invalidDate, standardCurrentValue, setUiValue);
       expect(setUiValue).not.toHaveBeenCalled();
     });
 
     it('should update only the date part and preserve time', () => {
-      updateDateFn(christmasDate, currentValueWithPreciseTime, setUiValue);
+      DateTimeUtils.updateDate(christmasDate, currentValueWithPreciseTime, setUiValue);
       expect(setUiValue).toHaveBeenCalled();
       const result = setUiValue.calls.first().args[0];
       expect(result).toEqual('2025-12-25T14:27:36.123Z');
     });
 
     it('should handle empty currentUiValue by using default time', () => {
-      updateDateFn(christmasDate, '', setUiValue);
+      DateTimeUtils.updateDate(christmasDate, '', setUiValue);
       expect(setUiValue).toHaveBeenCalled();
       const result = setUiValue.calls.first().args[0];
       expect(result).toContain('2025-12-25');
     });
 
     it('should handle invalid currentUiValue gracefully', () => {
-      updateDateFn(christmasDate, 'not-a-date', setUiValue);
+      DateTimeUtils.updateDate(christmasDate, 'not-a-date', setUiValue);
       expect(setUiValue).toHaveBeenCalled();
       const result = setUiValue.calls.first().args[0];
       expect(result).toContain('2025-12-25');
     });
 
     it('should preserve milliseconds if present in currentUiValue', () => {
-      updateDateFn(christmasDate, currentValueWithMilliseconds, setUiValue);
+      DateTimeUtils.updateDate(christmasDate, currentValueWithMilliseconds, setUiValue);
       expect(setUiValue).toHaveBeenCalled();
       const result = setUiValue.calls.first().args[0];
       expect(result).toEqual('2025-12-25T08:30:45.789Z');
     });
 
     it('should not call setUiValue if date is undefined', () => {
-      updateDateFn(undefined as any, standardCurrentValue, setUiValue);
+      DateTimeUtils.updateDate(undefined as any, standardCurrentValue, setUiValue);
       expect(setUiValue).toHaveBeenCalledWith(null);
     });
   });

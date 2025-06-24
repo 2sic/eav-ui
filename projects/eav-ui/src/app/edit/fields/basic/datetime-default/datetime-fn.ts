@@ -206,6 +206,7 @@ export function updateFormattedValueFn(
 }
 
 export class DateTimeUtils {
+  static initializeDayjs = initializeDayjs;
   static updateFormattedValue = updateFormattedValueFn;
   static updateDate = updateDateFn;
   static updateTime = updateTimeFn;
