@@ -1,4 +1,7 @@
 import dayjs from 'dayjs';
+import localeData from 'dayjs/plugin/localeData';
+import localizedFormat from 'dayjs/plugin/localizedFormat';
+import utc from 'dayjs/plugin/utc';
 import {
   DateTimeUtils
 } from './datetime-fn';
@@ -12,7 +15,9 @@ describe('DateTime Functions', () => {
   beforeEach(() => {
     // Initialize dayjs with english locale
     DateTimeUtils.initializeDayjs('en');
-
+    dayjs.extend(utc);
+    dayjs.extend(localizedFormat);
+    dayjs.extend(localeData);
     // Setup common spy and values used in multiple test suites
     setUiValue = jasmine.createSpy('setUiValue');
     testDate = dayjs('2025-06-13T10:45:14Z');
@@ -24,9 +29,13 @@ describe('DateTime Functions', () => {
       expect(DateTimeUtils.formatDateTime(null)).toBe('');
     });
 
-    it('should format date correctly', () => {
-      const formatted = DateTimeUtils.formatDateTime(testDate);
-      expect(formatted.length).toBeGreaterThan(0);
+    it('should format different dates correctly', () => {
+      // Use explicit format strings for non-standard formats
+      const germanDate = dayjs('06.13.2025 10:45:14');
+      expect(DateTimeUtils.formatDateTime(germanDate)).toBe('06/13/2025 10:45 AM');
+
+      const usDate = dayjs('06/13/2025 10:45:14', 'MM/DD/YYYY HH:mm:ss');
+      expect(DateTimeUtils.formatDateTime(usDate)).toBe('06/13/2025 10:45 AM');
     });
   });
 

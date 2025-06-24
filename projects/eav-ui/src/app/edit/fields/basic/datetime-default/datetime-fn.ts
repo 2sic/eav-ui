@@ -7,7 +7,7 @@ import utc from 'dayjs/plugin/utc';
  * 
  * @param locale - The locale string (e.g., 'en', 'de', 'fr') to configure dayjs
  */
-export function initializeDayjs(locale: string): void {
+export function initializeDayjsFn(locale: string): void {
   dayjs.extend(utc);
   dayjs.locale(locale);
 }
@@ -206,7 +206,7 @@ export function updateFormattedValueFn(
 }
 
 export class DateTimeUtils {
-  static initializeDayjs = initializeDayjs;
+  static initializeDayjs = initializeDayjsFn;
   static updateFormattedValue = updateFormattedValueFn;
   static updateDate = updateDateFn;
   static updateTime = updateTimeFn;
