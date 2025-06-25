@@ -211,21 +211,10 @@ describe('DateTime Functions', () => {
         // February 29 in a non-leap year - implementation might auto-correct
         setUiValue.calls.reset();
         const result2 = DateTimeUtils.handleDateTimeInput('02/29/2025 10:30 AM', standardCurrentValue, setUiValue);
+        expect(result2).toBe(true);
 
         // If implementation auto-corrects to Feb 28 or Mar 1:
-        if (result2) {
-          console.log('Implementation auto-corrects non-leap year Feb 29');
-          expect(setUiValue).toHaveBeenCalled();
-
-          // Just log what it corrected to without assuming the correction algorithm
-          const nonLeapResult = setUiValue.calls.mostRecent().args[0];
-          const correctedDate = dayjs(nonLeapResult);
-          console.log(`Auto-corrected to: ${correctedDate.format('YYYY-MM-DD HH:mm:ss')}`);
-        }
-        // If it rejects invalid dates:
-        else {
-          expect(setUiValue).not.toHaveBeenCalled();
-        }
+        expect(setUiValue).toHaveBeenCalled();
       });
 
       it('should handle very old dates', () => {
