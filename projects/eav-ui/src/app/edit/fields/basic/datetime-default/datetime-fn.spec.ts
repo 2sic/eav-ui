@@ -2,7 +2,6 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/de';
 import 'dayjs/locale/en';
 import 'dayjs/locale/en-gb';
-import 'dayjs/locale/uk';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import localeData from 'dayjs/plugin/localeData';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
