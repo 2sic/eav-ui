@@ -1,7 +1,7 @@
 <div class="editor-active-explorer fancy-scrollbar-dark explorer-wrapper">
 
   <div>
-    @for (item of (tree | sortItems); track item) {
+    @for (item of (tree | sortItems); track item.name) {
     <ng-container *ngTemplateOutlet="fileOrFolder; context: {item: item}"></ng-container>
     }
 

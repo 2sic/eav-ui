@@ -1,11 +1,11 @@
-@if (vsSvc.pipelineModel()) {
+@if (visQuerySvc.pipelineModel()) {
   <div #domRoot id="pipeline-root">
     <!-- do not use trackBy, jsPlumb drag stops working properly after delete -->
     @if (!hardReset) {
-      @for (dataSource of vsSvc.pipelineModel().DataSources; track dataSource) {
+      @for (dataSource of visQuerySvc.pipelineModel().DataSources; track dataSource) {
         <div
           #domDataSource
-          [id]="dataSrcIdPrefix + dataSource.EntityGuid"
+          [id]="domIdOfGuid(dataSource.EntityGuid)"
           class="dataSource"
           [ngStyle]="{
             top: dataSource.VisualDesignerData.Top + 'px',
@@ -13,14 +13,14 @@
             'min-width': dataSource.VisualDesignerData.Width ? dataSource.VisualDesignerData.Width + 'px' : null,
           }"
           [ngClass]="{
-            'show-details': showDataSourceDetails() && vsSvc.dataSourceConfigs()[dataSource.EntityId]?.length,
+            'show-details': showDataSourceDetails() && visQuerySvc.dataSourceConfigs()[dataSource.EntityId]?.length,
           }"
         >
           <div class="actions left">
             <mat-icon class="type-info" [title]="typeInfos()[dataSource.EntityGuid].UiHint">
               {{ typeInfos()[dataSource.EntityGuid].Icon }}
             </mat-icon>
-            @if (vsSvc.pipelineModel().Pipeline.AllowEdit && typeInfos()[dataSource.EntityGuid].EnableConfig) {
+            @if (visQuerySvc.pipelineModel().Pipeline.AllowEdit && typeInfos()[dataSource.EntityGuid].EnableConfig) {
               <mat-icon
                 class="configure"
                 title="Configure data source"
@@ -42,7 +42,7 @@
             }
           </div>
           <div class="actions right">
-            @if (vsSvc.pipelineModel().Pipeline.AllowEdit && !isOutDataSource(dataSource)) {
+            @if (visQuerySvc.pipelineModel().Pipeline.AllowEdit && !isOutDataSource(dataSource)) {
               <mat-icon class="delete" title="Delete" appMousedownStopPropagation (click)="remove(dataSource)"> delete </mat-icon>
             }
           </div>
@@ -50,7 +50,7 @@
             class="name"
             title="Click to edit name"
             appMousedownStopPropagation
-            (click)="vsSvc.pipelineModel().Pipeline.AllowEdit && editName(dataSource)"
+            (click)="visQuerySvc.pipelineModel().Pipeline.AllowEdit && editName(dataSource)"
           >
             <span>{{ dataSource.Name || '(no name)' }}</span>
             <mat-icon class="show-hover-inline">edit</mat-icon>
@@ -60,16 +60,16 @@
             class="description"
             title="Click to edit description"
             appMousedownStopPropagation
-            (click)="vsSvc.pipelineModel().Pipeline.AllowEdit && editDescription(dataSource)"
+            (click)="visQuerySvc.pipelineModel().Pipeline.AllowEdit && editDescription(dataSource)"
           >
             <span>{{ dataSource.Description }}</span>
             <mat-icon class="show-hover-inline">edit</mat-icon>
           </div>
           <br />
-          @if (showDataSourceDetails() && vsSvc.dataSourceConfigs()[dataSource.EntityId]?.length) {
+          @if (showDataSourceDetails() && visQuerySvc.dataSourceConfigs()[dataSource.EntityId]?.length) {
             <hr style="margin: 0" />
             <table class="configs">
-              @for (config of vsSvc.dataSourceConfigs()[dataSource.EntityId]; track config) {
+              @for (config of visQuerySvc.dataSourceConfigs()[dataSource.EntityId]; track config) {
                 <tr class="config">
                   <td class="config-name" [title]="config.name">{{ config.name }}</td>
                   <td class="config-value" [title]="config.value">{{ config.value }}</td>
@@ -78,10 +78,10 @@
             </table>
           }
           <div class="typename" [title]="dataSource.PartAssemblyAndType">Type: {{ getTypeName(dataSource.PartAssemblyAndType) }}</div>
-          @if (vsSvc.pipelineModel().Pipeline.AllowEdit && typeInfos()[dataSource.EntityGuid].DynamicOut) {
+          @if (visQuerySvc.pipelineModel().Pipeline.AllowEdit && typeInfos()[dataSource.EntityGuid].DynamicOut) {
             <div class="add-endpoint sourceEndpoint dynamic" title="Drag a new Out-Connection"></div>
           }
-          @if (vsSvc.pipelineModel().Pipeline.AllowEdit && typeInfos()[dataSource.EntityGuid].DynamicIn) {
+          @if (visQuerySvc.pipelineModel().Pipeline.AllowEdit && typeInfos()[dataSource.EntityGuid].DynamicIn) {
             <div class="many-in targetEndpoint dynamic" title="This data source supports multiple In-Connections"></div>
           }
         </div>

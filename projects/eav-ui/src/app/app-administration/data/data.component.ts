@@ -1,9 +1,9 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnDestroy, OnInit, signal, ViewContainerRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
-import { MatDialogActions } from '@angular/material/dialog';
+import { MatDialog, MatDialogActions } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
@@ -36,39 +36,45 @@ import { ContentType } from '../models/content-type.model';
 import { ScopeDetailsDto } from '../models/scopedetails.dto';
 import { ContentTypesService } from '../services/content-types.service';
 import { DialogConfigAppService } from '../services/dialog-config-app.service';
+import { ConfirmDeleteDialogComponent } from '../sub-dialogs/confirm-delete-dialog/confirm-delete-dialog.component';
+import { ConfirmDeleteDialogData } from '../sub-dialogs/confirm-delete-dialog/confirm-delete-dialog.models';
 import { DataActionsComponent } from './data-actions/data-actions.component';
 import { DataFieldsComponent } from './data-fields/data-fields.component';
 import { DataItemsComponent } from './data-items/data-items.component';
 
 @Component({
-    selector: 'app-data',
-    templateUrl: './data.component.html',
-    styleUrls: ['./data.component.scss'],
-    imports: [
-        MatDialogActions,
-        MatFormFieldModule,
-        MatSelectModule,
-        FormsModule,
-        MatOptionModule,
-        MatButtonModule,
-        MatIconModule,
-        RouterOutlet,
-        SxcGridModule,
-        DragAndDropDirective,
-        TippyDirective,
-    ]
+  selector: 'app-data',
+  templateUrl: './data.component.html',
+  styleUrls: ['./data.component.scss'],
+  imports: [
+    MatDialogActions,
+    MatFormFieldModule,
+    MatSelectModule,
+    FormsModule,
+    MatOptionModule,
+    MatButtonModule,
+    MatIconModule,
+    RouterOutlet,
+    SxcGridModule,
+    DragAndDropDirective,
+    TippyDirective,
+  ]
 })
 export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
 
   isDebug = inject(GlobalConfigService).isDebug;
   #snackBar = inject(MatSnackBar);
+  #matDialog = inject(MatDialog);
+
 
   #contentTypeSvc = transient(ContentTypesService);
   #contentExportSvc = transient(ContentExportService);
   #dialogConfigSvc = transient(DialogConfigAppService);
   #dialogRouter = transient(DialogRoutingService);
 
-  constructor() { super(); }
+  constructor(private viewContainerRef: ViewContainerRef,) {
+    super();
+  }
 
   contentTypes = signal<ContentType[]>(undefined);
   scope = signal<string>(undefined);
@@ -80,15 +86,21 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
   dropdownInsertValue = dropdownInsertValue;
   enablePermissions!: boolean;
 
+
+
+
   ngOnInit() {
     this.#fetchScopes();
     this.#refreshScopeOnRouteChange();
-    this.#dialogRouter.doOnDialogClosed(() => this.#fetchContentTypes());
+    this.#dialogRouter.doOnDialogClosedWithData(() => {
+      this.#fetchContentTypes()
+    });
 
     this.#dialogConfigSvc.getCurrent$().subscribe(data => {
       this.enablePermissions = data.Context.Enable.AppPermissions;
     });
   }
+
 
   filesDropped(files: File[]) {
     const importFile = files[0];
@@ -131,7 +143,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
   }
 
   #fetchContentTypes() {
-    this.#contentTypeSvc.retrieveContentTypes(this.scope()).subscribe(contentTypes => {
+    this.#contentTypeSvc.retrieveContentTypesPromise(this.scope()).then(contentTypes => {
       for (const contentType of contentTypes) {
         contentType._compareLabel = contentType.Label.replace(/\p{Emoji}/gu, 'ž');
       }
@@ -144,7 +156,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
   }
 
   #fetchScopes() {
-    this.#contentTypeSvc.getScopesV2().subscribe(scopeList => {
+    this.#contentTypeSvc.getScopesV2Promise().then(scopeList => {
       // Merge the new scopes with the existing ones - in case there were manual scopes added
       // If old scope list had a manual scope which the server didn't send, re-add it here
       const manual = this.scopeOptions()
@@ -302,11 +314,13 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
     return '#' + this.#dialogRouter.urlSubRoute(url);
   }
 
+
   #routeAddItem(contentType: ContentType): string {
     return convertFormToUrl({
       items: [EditPrep.newFromType(contentType.NameId)],
     } satisfies EditForm);
   }
+
 
   urlToNewContentType(): string {
     return this.#urlTo('add');
@@ -359,14 +373,29 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
     this.#dialogRouter.navRelative([`${contentType.NameId}/import`], { state: { files } satisfies ContentImportDialogData });
   }
 
-  #deleteContentType(contentType: ContentType) {
-    if (!confirm(`Are you sure you want to delete '${contentType.Name}' (${contentType.Id})?`)) return;
-    this.#snackBar.open('Deleting...');
-    this.#contentTypeSvc.delete(contentType).subscribe(_ => {
-      this.#snackBar.open('Deleted', null, { duration: 2000 });
-      this.#fetchContentTypes();
-    });
-  }
 
+  #deleteContentType(contentType: ContentType) {
+    this.#snackBar.open('Deleting...');
+    const data: ConfirmDeleteDialogData = {
+      entityId: contentType.Id,
+      entityTitle: contentType.Name,
+      message: "Are you sure you want to delete?",
+    };
+    const confirmationDialogRef = this.#matDialog.open(ConfirmDeleteDialogComponent, {
+      autoFocus: false,
+      data,
+      viewContainerRef: this.viewContainerRef,
+      width: '400px',
+    });
+    confirmationDialogRef.afterClosed().subscribe((isConfirmed: boolean) => {
+      this.#snackBar.dismiss();
+      if (isConfirmed)
+        this.#contentTypeSvc.delete(contentType).subscribe(_ => {
+          this.#snackBar.open('Deleted', null, { duration: 2000 });
+          this.#fetchContentTypes();
+        })
+    });
+    return;
+  }
   //#endregion
 }

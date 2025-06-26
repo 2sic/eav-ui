@@ -55,7 +55,6 @@ export const AppAdminMenu: NavItem[] = [
     tippy: 'App Settings',
   },
   {
-    // TODO: 2dg Create new site
     name: 'Import/Export',
     path: 'import-export',
     icon: 'cloud_sync',
@@ -68,7 +67,6 @@ export const AppAdminMenu: NavItem[] = [
         tippy: 'Export this entire App'
       },
       {
-        // TODO: 2dg Create new site
         name: 'Data Bundles (beta)',
         path: 'data-bundles',
         icon: 'dataset',

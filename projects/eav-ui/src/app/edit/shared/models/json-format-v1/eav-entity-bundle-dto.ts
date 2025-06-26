@@ -1,6 +1,6 @@
 import { EavEntityDto } from '.';
-import { EavItem } from '../eav';
 import { ItemIdentifierHeader } from '../../../../shared/models/edit-form.model';
+import { EavItem } from '../eav';
 
 /**
  * A bundle/set for an Entity.
@@ -12,7 +12,7 @@ export class EavEntityBundleDto {
   Header: ItemIdentifierHeader;
 
   static bundleToDto(item: EavItem): EavEntityBundleDto {
-    const entity1 = EavEntityDto.entityToDto(item.Entity);
+    const entity1 = EavEntityDto.eavToDto(item.Entity);
 
     const bundleDto: EavEntityBundleDto = {
       Entity: entity1,

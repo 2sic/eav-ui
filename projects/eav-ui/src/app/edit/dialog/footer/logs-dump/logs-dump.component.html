@@ -31,8 +31,11 @@
   </div>
 
   <div class="log-button">
-    <button mat-icon-button tippy="Enable Logs UI" (click)="toggleDialog()">
+    <button mat-icon-button tippy="Show Logs Settings" (click)="showLogSettings(true)">
       <mat-icon>settings</mat-icon>
+    </button>
+    <button mat-icon-button tippy="Show Logs Output" (click)="showLogSettings(false)">
+      <mat-icon>contract</mat-icon>
     </button>
   </div>
 </div>

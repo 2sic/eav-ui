@@ -18,9 +18,9 @@ declare const window: EavWindow;
   ]
 })
 export class DialogEntryComponent implements OnInit, OnDestroy {
-  
-  log = classLog({DialogEntryComponent});
-  
+
+  log = classLog({ DialogEntryComponent });
+
   #dialogData: Record<string, any>;
   #dialog: MatDialogRef<any>;
 
@@ -43,7 +43,7 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
     if (dialogConfig == null)
       throw new Error(`Could not find config for dialog. Did you forget to add DialogConfig to route data?`);
 
-    l.a('Open dialog: '+ dialogConfig.name, { id: this.context.id, context: this.context });
+    l.a('Open dialog: ' + dialogConfig.name, { id: this.context.id, context: this.context });
 
     dialogConfig.getComponent(this.injector).then(component => {
       // spm Workaround for "feature" where you can't open new dialog while last one is still opening

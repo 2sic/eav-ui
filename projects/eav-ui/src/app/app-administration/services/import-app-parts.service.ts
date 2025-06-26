@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { webApiAppRoot } from '../../import-app/services/import-app.service';
 import { FileUploadResult } from '../../shared/components/file-upload-dialog';
-import { HttpServiceBase } from '../../shared/services/http-service-base';
+import { HttpServiceBaseSignal } from '../../shared/services/http-service-base-signal';
 
 export const webApiAppPartsRoot = 'admin/appParts/';
 
 @Injectable()
-export class ImportAppPartsService extends HttpServiceBase {
+export class ImportAppPartsService extends HttpServiceBaseSignal {
 
   importAppParts(file: File) {
     const formData = new FormData();

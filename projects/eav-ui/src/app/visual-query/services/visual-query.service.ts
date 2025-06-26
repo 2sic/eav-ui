@@ -18,6 +18,7 @@ import { JsonHelpers } from '../../shared/helpers/json.helpers';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { ServiceBase } from '../../shared/services/service-base';
 import { DataSource, DataSourceConfig, DataSourceConfigs, DebugStreamInfo, PipelineDataSource, PipelineModel, PipelineResult, PipelineResultStream, StreamWire, VisualDesignerData } from '../models';
+import { findDefByType } from '../plumb-editor/datasource.helpers';
 import { QueryResultComponent } from '../query-result/query-result.component';
 import { QueryResultDialogData } from '../query-result/query-result.models';
 import { StreamErrorResultComponent } from '../stream-error-result/stream-error-result.component';
@@ -164,12 +165,15 @@ export class VisualQueryStateService extends ServiceBase implements OnDestroy {
   #calculateDataSourceConfigs(dataSources: PipelineDataSource[]) {
     const dataSourceConfigs: DataSourceConfigs = {};
     dataSources.forEach(dataSource => {
-      if (dataSource.EntityId == null) return;
+      if (dataSource.EntityId == null)
+        return;
       dataSourceConfigs[dataSource.EntityId] = [];
       dataSource.Metadata?.forEach(metadataItem => {
         Object.entries(metadataItem).forEach(([attributeName, attributeValue]) => {
-          if (attributeValue == null || attributeValue === '') return;
-          if (['Created', 'Guid', 'Id', 'Modified', 'Title', '_Type'].includes(attributeName)) return;
+          if (attributeValue == null || attributeValue === '')
+            return;
+          if (['Created', 'Guid', 'Id', 'Modified', 'Title', '_Type'].includes(attributeName))
+            return;
           if (Array.isArray(attributeValue) && attributeValue[0]?.Title !== null && attributeValue[0]?.Id !== null) {
             attributeValue = `${attributeValue[0].Title} (${attributeValue[0].Id})`;
           }
@@ -185,13 +189,13 @@ export class VisualQueryStateService extends ServiceBase implements OnDestroy {
   }
 
   editDataSource(pipelineDataSource: PipelineDataSource) {
-    const dataSource = this.dataSources().find(ds => ds.PartAssemblyAndType === pipelineDataSource.PartAssemblyAndType);
+    const dataSource = findDefByType(this.dataSources(), pipelineDataSource.PartAssemblyAndType);
     const contentTypeName = dataSource.ContentType;
     const { targetType, keyType } = eavConstants.metadata.entity;
     const key = pipelineDataSource.EntityGuid;
 
     // query for existing Entity
-    this.#metadataSvc.getMetadata(targetType, keyType, key, contentTypeName).subscribe(metadata => {
+    this.#metadataSvc.getMetadataPromise(targetType, keyType, key, contentTypeName).then(metadata => {
       // edit existing Entity
       if (metadata.Items.length) {
         const form: EditForm = {
@@ -211,7 +215,7 @@ export class VisualQueryStateService extends ServiceBase implements OnDestroy {
             return;
           }
           const form: EditForm = {
-            items: [ EditPrep.newMetadata(key, contentTypeName, eavConstants.metadata.entity) ],
+            items: [EditPrep.newMetadata(key, contentTypeName, eavConstants.metadata.entity)],
           };
           const formUrl = convertFormToUrl(form);
           this.#dialogRoute.navRelative([`edit/${formUrl}`]);
@@ -241,21 +245,18 @@ export class VisualQueryStateService extends ServiceBase implements OnDestroy {
 
   runPipeline(top = 25) {
     this.snackBar.open('Running query...');
-    this.#queryDefSvc.runPipeline(this.pipelineModel().Pipeline.EntityId, top).subscribe({
-      next: pipelineResult => {
+    this.#queryDefSvc.runPipelinePromise(this.pipelineModel().Pipeline.EntityId, top)
+      .then(pipelineResult => {
         this.snackBar.open('Query worked', null, { duration: 2000 });
         this.queryResult = pipelineResult;
         this.#showQueryResult(pipelineResult, top);
         console.warn(pipelineResult);
-        // push cloned pipelineModel to reset jsPlumb
         this.pipelineModel.set(cloneDeep(this.pipelineModel()));
-
         setTimeout(() => { this.putEntityCountOnConnections$.next(pipelineResult); });
-      },
-      error: (error: HttpErrorResponse) => {
+      })
+      .catch((error: HttpErrorResponse) => {
         this.snackBar.open('Query failed', null, { duration: 2000 });
-      }
-    });
+      });
   }
 
   debugStream(stream: PipelineResultStream, top = 25): void {
@@ -267,37 +268,38 @@ export class VisualQueryStateService extends ServiceBase implements OnDestroy {
 
     this.snackBar.open('Running stream...');
     const pipelineId = this.pipelineModel().Pipeline.EntityId;
-    this.#queryDefSvc.debugStream(pipelineId, stream.Source, stream.SourceOut, top).subscribe({
-      next: streamResult => {
+
+    this.#queryDefSvc.debugStreamPromise(pipelineId, stream.Source, stream.SourceOut, top)
+      .then(streamResult => {
         this.snackBar.open('Stream worked', null, { duration: 2000 });
         const pipelineDataSource = this.pipelineModel().DataSources.find(ds => ds.EntityGuid === stream.Source);
         const debugStream: DebugStreamInfo = {
           name: stream.SourceOut,
           source: stream.Source,
-          sourceName: pipelineDataSource.Name,
+          sourceName: pipelineDataSource?.Name,
           original: stream,
         };
         this.#showQueryResult(streamResult, top, debugStream);
         console.warn(streamResult);
-      },
-      error: (_: HttpErrorResponse) => {
+      })
+      .catch((_error: HttpErrorResponse) => {
         this.snackBar.open('Stream failed', null, { duration: 2000 });
-      },
-    });
+      });
   }
+
 
   #fetchPipeline(refreshPipeline: boolean, refreshDataSourceConfigs: boolean, showSnackBar: boolean) {
     if (showSnackBar)
       this.snackBar.open('Reloading query, please wait...');
 
-    this.#queryDefSvc.fetchPipeline(this.#pipelineId, this.dataSources()).subscribe(pipelineModel => {
+    this.#queryDefSvc.fetchPipelinePromise(this.#pipelineId, this.dataSources()).then(pipelineModel => {
       if (showSnackBar)
         this.snackBar.open('Query reloaded', null, { duration: 2000 });
 
       this.#titleSvc.setTitle(`${pipelineModel.Pipeline.Name} - Visual Query`);
-      if (refreshPipeline)
-      this.pipelineModel.set(pipelineModel);
 
+      if (refreshPipeline)
+        this.pipelineModel.set(pipelineModel);
 
       if (refreshDataSourceConfigs)
         this.#calculateDataSourceConfigs(pipelineModel.DataSources);
@@ -343,7 +345,7 @@ export class VisualQueryStateService extends ServiceBase implements OnDestroy {
   }
 
   #fetchDataSources(callback?: () => void) {
-    this.#queryDefSvc.fetchDataSources().subscribe(dataSources => {
+    this.#queryDefSvc.fetchDataSourcesPromise().then(dataSources => {
       this.dataSources.set(dataSources);
       callback();
     });

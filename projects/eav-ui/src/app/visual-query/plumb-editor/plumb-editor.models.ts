@@ -1,19 +1,18 @@
 
-export type PlumbType = any;
-
-
 export interface TypeInfos {
   [guid: string]: TypeInfo;
 }
 
 export interface TypeInfo {
   EnableConfig?: boolean;
-  DynamicIn?: boolean;
-  DynamicOut?: boolean;
+  DynamicIn: boolean;
+  DynamicOut: boolean;
   HelpLink?: string;
   Icon: string;
   Name: string;
   UiHint: string;
+
+  outMode: string;
 }
 
 export interface GuiTypes {

@@ -1,15 +1,15 @@
 import { Injectable, Signal } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { eavConstants } from '../../shared/constants/eav.constants';
-import { EavEntity, EavFor, EavItem } from '../shared/models/eav';
-import { EavEntityBundleDto } from '../shared/models/json-format-v1';
+import { classLog } from '../../shared/logging';
 import { ItemIdentifierHeader } from '../../shared/models/edit-form.model';
 import { mapUntilChanged, mapUntilObjChanged } from '../../shared/rxJs/mapUntilChanged';
-import { ItemUpdateHelper } from './item-updater.helper';
 import { ComputedCacheHelper } from '../../shared/signals/computed-cache';
+import { EavEntity, EavFor, EavItem } from '../shared/models/eav';
 import { EavEntityAttributes } from '../shared/models/eav/eav-entity-attributes';
+import { EavEntityBundleDto } from '../shared/models/json-format-v1';
 import { SignalStoreObservableBase } from '../shared/store/signal-store-observable-base';
-import { classLog } from '../../shared/logging';
+import { ItemUpdateHelper } from './item-updater.helper';
 
 /**
  * This class provides access to the items / entities cache which are being edited in the UI.
@@ -30,7 +30,7 @@ export class ItemService extends SignalStoreObservableBase<string, EavItem> {
   //#region Loaders and Updaters
 
   loadItems(dtoItems: EavEntityBundleDto[]): void {
-    const items = dtoItems.map(item => EavItem.convert(item));
+    const items = dtoItems.map(item => EavItem.anyToEav(item));
     this.addMany(items);
   }
 

@@ -1,5 +1,5 @@
 import patronsLogo from '!raw-loader!./assets/2sxc-patrons.svg';
-import { Component, computed, HostBinding, signal, ViewContainerRef } from '@angular/core';
+import { Component, HostBinding, signal, ViewContainerRef } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
@@ -15,16 +15,16 @@ import { FeaturesConfigService } from '../../services/features-config.service';
 import { ZoneService } from '../../services/zone.service';
 
 @Component({
-    selector: 'app-registration',
-    templateUrl: './registration.component.html',
-    styleUrls: ['./registration.component.scss'],
-    imports: [
-        MatCardModule,
-        MatIconModule,
-        MatButtonModule,
-        TippyDirective,
-        SafeHtmlPipe,
-    ]
+  selector: 'app-registration',
+  templateUrl: './registration.component.html',
+  styleUrls: ['./registration.component.scss'],
+  imports: [
+    MatCardModule,
+    MatIconModule,
+    MatButtonModule,
+    TippyDirective,
+    SafeHtmlPipe,
+  ]
 })
 export class RegistrationComponent {
   @HostBinding('className') hostClass = 'dialog-component';
@@ -43,29 +43,25 @@ export class RegistrationComponent {
   ) { }
 
   #refresh = signal(0);
-  systemInfoSet = computed(() => {
-    const r = this.#refresh();
-    return this.#zoneSvc.getSystemInfo(undefined);
-  })
-
+  systemInfoSet = this.#zoneSvc.getSystemInfoLive(this.#refresh).value;
   openLicenseRegistration(systemInfoSet: SystemInfoSet): void {
     window.open(`https://patrons.2sxc.org/register?fingerprint=${systemInfoSet.System.Fingerprint}`, '_blank');
   }
 
+
   retrieveLicense(): void {
-    this.#featuresConfigSvc.retrieveLicense().subscribe({
-      error: () => {
-        this.snackBar.open('Failed to retrieve license. Please check console for more information', undefined, { duration: 3000 });
-      },
-      next: (info) => {
-        const message = `License ${info.Success ? 'Info' : 'Error'}: ${info.Message}`;
-        const duration = info.Success ? 3000 : 100000;
-        const panelClass = info.Success ? undefined : 'snackbar-error';
-        this.snackBar.open(message, undefined, { duration, panelClass });
-        this.#refreshSystemInfo();
-      },
+  this.#featuresConfigSvc.retrieveLicensePromise()
+    .then(info => {
+      const message = `License ${info.Success ? 'Info' : 'Error'}: ${info.Message}`;
+      const duration = info.Success ? 3000 : 100000;
+      const panelClass = info.Success ? undefined : 'snackbar-error';
+      this.snackBar.open(message, undefined, { duration, panelClass });
+      this.#refreshSystemInfo();
+    })
+    .catch(() => {
+      this.snackBar.open('Failed to retrieve license. Please check console for more information', undefined, { duration: 3000 });
     });
-  }
+}
 
   registerManually(): void {
     window.open(`https://patrons.2sxc.org/`, '_blank');
@@ -92,7 +88,7 @@ export class RegistrationComponent {
   }
 
   #refreshSystemInfo(): void {
-    this.#refresh.set(this.#refresh() + 1);
+    this.#refresh.update(v => ++v)
   }
 
 }

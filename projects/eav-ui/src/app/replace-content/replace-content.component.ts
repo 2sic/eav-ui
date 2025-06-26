@@ -113,8 +113,10 @@ export class ReplaceContentComponent implements OnInit {
   }
 
   #fetchConfig(isRefresh: boolean, cloneId: number) {
+
+
     const contentGroup = this.#buildContentGroup();
-    this.#contentGroupSvc.getItems(contentGroup).subscribe(replaceConfig => {
+    this.#contentGroupSvc.getItemsPromise(contentGroup).then(replaceConfig => {
       const options = Object.entries(replaceConfig.Items)
         .map(([itemId, itemName]) => ({
           id: parseInt(itemId, 10),

@@ -6,11 +6,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterOutlet } from '@angular/router';
-import { BreadcrumbModule } from 'xng-breadcrumb';
+import { BreadcrumbComponent, BreadcrumbItemDirective } from 'xng-breadcrumb';
 import { transient } from '../../../../../core';
 import { NavItemListComponent } from '../../shared/components/nav-item-list/nav-item-list.component';
 import { ToggleDebugDirective } from '../../shared/directives/toggle-debug.directive';
-import { UpdateEnvVarsFromDialogSettings } from '../../shared/helpers/update-env-vars-from-dialog-settings.helper';
+import { Update$2sxcEnvFromContext } from '../../shared/helpers/update-env-vars-from-dialog-settings.helper';
 import { classLog } from '../../shared/logging';
 import { AppScopes } from '../../shared/models/dialog-context.models';
 import { DialogSettings } from '../../shared/models/dialog-settings.model';
@@ -25,7 +25,8 @@ import { AppAdminMenu } from './app-admin-menu';
     imports: [
         MatToolbarModule,
         MatIconModule,
-        BreadcrumbModule,
+        BreadcrumbComponent,
+        BreadcrumbItemDirective,
         MatButtonModule,
         MatSidenavModule,
         RouterOutlet,
@@ -80,7 +81,7 @@ export class AppAdminMainComponent implements OnInit {
 
   private fetchDialogSettings() {
     this.#dialogConfigSvc.getCurrent$().subscribe(dialogSettings => {
-      UpdateEnvVarsFromDialogSettings(dialogSettings.Context.App);
+      Update$2sxcEnvFromContext(dialogSettings.Context.App);
       this.dialogSettings.set(dialogSettings);
 
       if (!dialogSettings.Context.Enable.Query)

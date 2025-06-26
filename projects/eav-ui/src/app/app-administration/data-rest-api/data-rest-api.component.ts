@@ -1,4 +1,4 @@
-import { Component, effect, inject } from '@angular/core';
+import { Component, effect, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -11,17 +11,17 @@ import { DialogRoutingService } from '../../shared/routing/dialog-routing.servic
 import { ContentTypesService } from '../services';
 
 @Component({
-    selector: 'app-data-rest-api',
-    imports: [
-        MatSelectModule,
-        MatButtonModule,
-        MatCardModule,
-        MatIconModule,
-        ReactiveFormsModule,
-        RouterOutlet,
-        SxcGridModule,
-    ],
-    templateUrl: './data-rest-api.component.html'
+  selector: 'app-data-rest-api',
+  imports: [
+    MatSelectModule,
+    MatButtonModule,
+    MatCardModule,
+    MatIconModule,
+    ReactiveFormsModule,
+    RouterOutlet,
+    SxcGridModule,
+  ],
+  templateUrl: './data-rest-api.component.html'
 })
 export class DataRestApiComponent {
   #contentTypesSvc = transient(ContentTypesService);
@@ -42,10 +42,10 @@ export class DataRestApiComponent {
       if (type)
         this.contentTypeForm.get('contentType').setValue(type.NameId);
     });
-
   }
 
-  contentTypes = this.#contentTypesSvc.getTypesSig("Default", []);
+  scope = signal('Default');
+  contentTypes = this.#contentTypesSvc.getTypes(this.scope).value;
 
   contentTypeForm: FormGroup = this.#formBuilder.group({
     contentType: ['']

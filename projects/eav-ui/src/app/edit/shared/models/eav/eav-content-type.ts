@@ -13,9 +13,9 @@ export class EavContentType {
   /** WIP v18.02 */
   Title: string;
 
-  static convertOne(contentTypeDto: EavContentTypeDto): EavContentType {
-    const attributes = EavContentTypeAttribute.convertMany(contentTypeDto.Attributes);
-    const metadata = EavEntity.convertMany(contentTypeDto.Metadata);
+  static dtoToEav(contentTypeDto: EavContentTypeDto): EavContentType {
+    const attributes = EavContentTypeAttribute.dtoToEavMany(contentTypeDto.Attributes);
+    const metadata = EavEntity.dtoToEavMany(contentTypeDto.Metadata);
     const settings = EavEntityAttributes.mergeSettings(metadata);
 
     const contentType: EavContentType = {
@@ -30,10 +30,11 @@ export class EavContentType {
     return contentType;
   }
 
-  static convertMany(contentTypesDto: EavContentTypeDto[]): EavContentType[] {
-    if (contentTypesDto == null) { return null; }
+  static dtoToEavMany(contentTypesDto: EavContentTypeDto[]): EavContentType[] {
+    if (contentTypesDto == null)
+      return null;
 
-    const contentTypes = contentTypesDto.map(contentTypeDto => EavContentType.convertOne(contentTypeDto));
-    return contentTypes;
+    const result = contentTypesDto.map(ct => EavContentType.dtoToEav(ct));
+    return result;
   }
 }

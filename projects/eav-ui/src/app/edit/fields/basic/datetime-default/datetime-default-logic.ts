@@ -1,15 +1,17 @@
-import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
-import { FieldSettings } from './../../../../../../../edit-types/src/FieldSettings';
+// unused 16.6.2025, deleted later or ask 2dm 
 
-export class DateTimeDefaultLogic extends FieldLogicBase {
+// import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
+// import { FieldSettings } from './../../../../../../../edit-types/src/FieldSettings';
 
-  constructor() { super({ DateTimeDefaultLogic }); }
+// export class DateTimeDefaultLogic extends FieldLogicBase {
 
-  update({ settings, tools }: FieldLogicUpdate<string[]>): FieldSettings {
-    const l = this.log.fn('update', { settings, tools });
-    const fixedSettings = settings;
-    return l.r(fixedSettings);
-  }
-}
+//   constructor() { super({ DateTimeDefaultLogic }); }
 
-FieldLogicBase.add(DateTimeDefaultLogic);
+//   update({ settings, tools }: FieldLogicUpdate<string[]>): FieldSettings {
+//     const l = this.log.fn('update', { settings, tools });
+//     const fixedSettings = settings;
+//     return l.r(fixedSettings);
+//   }
+// }
+
+// FieldLogicBase.add(DateTimeDefaultLogic);

@@ -1,12 +1,12 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { ICellRendererParams } from '@ag-grid-community/core';
-import { Component } from '@angular/core';
-import { Feature } from '../../../features/models/feature.model';
-import { FeaturesStatusParams } from './features-status.models';
-import { IdFieldParams } from '../../../shared/components/id-field/id-field.models';
 import { NgClass } from '@angular/common';
+import { Component } from '@angular/core';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { Feature } from '../../../features/models/feature.model';
+import { IdFieldParams } from '../../../shared/components/id-field/id-field.models';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
+import { FeaturesStatusParams } from './features-status.models';
 
 @Component({
     selector: 'app-features-status',

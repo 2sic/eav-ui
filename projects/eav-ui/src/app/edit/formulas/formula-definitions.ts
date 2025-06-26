@@ -1,7 +1,6 @@
 import { FieldValueOrResultRaw } from './results/formula-results.models';
 import { FormulaV1Context } from './run/formula-run-context.model';
 import { FormulaV1Data } from './run/formula-run-data.model';
-import { FormulaV1Experimental } from './run/formula-run-experimental.model';
 
 //#region Formula strings / parts to process and show templates
 
@@ -37,7 +36,12 @@ export type FormulaFunction = FormulaFunctionDefault | FormulaFunctionV1;
 
 export type FormulaFunctionDefault = () => FieldValueOrResultRaw;
 
-export type FormulaFunctionV1 = (data: FormulaV1Data, context: FormulaV1Context, experimental: FormulaV1Experimental) => FieldValueOrResultRaw;
+export type FormulaFunctionV1 = (
+  data: FormulaV1Data,
+  context: FormulaV1Context,
+  // 2025-04-22 #DropFormulaParamExperimental - remove this comment and warnings ca. 2026-Q2
+  // experimental: FormulaV1Experimental
+) => FieldValueOrResultRaw;
 
 //#endregion
 

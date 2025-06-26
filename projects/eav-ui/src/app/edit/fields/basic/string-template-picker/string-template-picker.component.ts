@@ -8,7 +8,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { TranslateModule } from '@ngx-translate/core';
 import { StringTemplatePicker } from 'projects/edit-types/src/FieldSettings-String';
-import { take } from 'rxjs';
 import { transient } from '../../../../../../../core/transient';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { SourceService } from '../../../../code-editor/services/source.service';
@@ -102,7 +101,7 @@ export class StringTemplatePickerComponent {
       return;
     this.#prevLocation = location;
 
-    this.#sourceService.getAll().pipe(take(1)).subscribe(files => {
+    this.#sourceService.getAllPromise().then(files => {
       this.#templates = files.filter(file => file.Shared === this.#global).map(file => file.Path);
       this.#resetIfNotFound = true;
       this.#setTemplateOptions();

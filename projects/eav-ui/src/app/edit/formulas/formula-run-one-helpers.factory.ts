@@ -1,17 +1,16 @@
 
-import { FormulaVersions } from './formula-definitions';
-import { FormulaDataObject } from './run/formula-run-data';
-import { FormulaExecutionSpecsWithRunParams } from './run/formula-objects-internal-data';
-import { FormulaContextObject } from './run/formula-run-context';
-import { FormulaExperimentalObject } from './run/formula-experimental-object';
-import { FormulaV1Data } from './run/formula-run-data.model';
-import { FormulaV1Context } from './run/formula-run-context.model';
-import { FormulaV1Experimental } from './run/formula-run-experimental.model';
-import { FormulaDesignerService } from './designer/formula-designer.service';
 import { TranslateService } from '@ngx-translate/core';
 import { LoggingService } from '../shared/services/logging.service';
+import { FormulaDesignerService } from './designer/formula-designer.service';
+import { FormulaVersions } from './formula-definitions';
 import { FormulaDeveloperHelper } from './formula-developer-helper';
 import { FormulaValueCorrections } from './results/formula-value-corrections.helper';
+import { FormulaExperimentalObject } from './run/formula-experimental-object';
+import { FormulaExecutionSpecsWithRunParams } from './run/formula-objects-internal-data';
+import { FormulaContextObject } from './run/formula-run-context';
+import { FormulaV1Context } from './run/formula-run-context.model';
+import { FormulaDataObject } from './run/formula-run-data';
+import { FormulaV1Data } from './run/formula-run-data.model';
 
 /**
  * Helper to run a single formula.
@@ -63,15 +62,13 @@ export class FormulaRunOneHelpersFactory {
         return {
           data,
           context,
-          experimental,
+          // 2025-04-22 #DropFormulaParamExperimental - remove this comment and warnings ca. 2026-Q2
+          // experimental,
         } satisfies FormulaPropsV1;
 
       default:
         // default should never happen, so don't return any data to use; will probably error if this happens
-        // 2024-09-10 2dm adding throw error here to see if it's anywhere
-        // TODO: REMOVE option default everywhere ca. 2024-Q3
-        throw new Error(`Formula version unknown not supported`);
-        // return;
+        throw new Error(`Formula version '${formula.version}' unknown not supported`);
     }
   }
 }
@@ -97,5 +94,6 @@ export class FormulaPropsParameters {
 export interface FormulaPropsV1 {
   data: FormulaV1Data;
   context: FormulaV1Context;
-  experimental: FormulaV1Experimental;
+  // 2025-04-22 #DropFormulaParamExperimental - remove this comment and warnings ca. 2026-Q2
+  // experimental: FormulaV1Experimental;
 }

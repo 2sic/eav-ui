@@ -18,7 +18,7 @@
   <div class="editor-group">
     @if (tabs().length > 0) {
     <div class="tabs-container fancy-scrollbar-dark">
-      @for (tab of tabs(); track tab) {
+      @for (tab of tabs(); track tab.viewKey) {
       <div class="tab" [ngClass]="{
               'active': tab.isActive,
               'modified': tab.isModified,

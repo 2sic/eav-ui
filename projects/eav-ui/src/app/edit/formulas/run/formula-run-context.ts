@@ -117,14 +117,18 @@ class FormulaContextForm implements FormulaV1CtxForm {
   }
 
   runFormulas(): void {
-    const formula = this.#specs.runParameters.formula;
-    if (formula.version === FormulaVersions.V1) {
-      console.error('form.runFormulas() is being deprecated and will stop working end of 2024. Use V2 formulas and return the promise. Formulas will auto-run when it completes.');
-      this.#specs.fieldsSettingsSvc.retriggerFormulas('form.runFormulas()');
-      return;
-    }
+    // Pre v20 (2025-04-22)
+    // const formula = this.#specs.runParameters.formula;
+    // if (formula.version === FormulaVersions.V1) {
+    //   console.error('form.runFormulas() is being deprecated and will stop working end of 2024. Use V2 formulas and return the promise. Formulas will auto-run when it completes.');
+    //   this.#specs.fieldsSettingsSvc.retriggerFormulas('form.runFormulas()');
+    //   return;
+    // }
     
-    console.error('form.runFormulas() is not supported in V2 formulas. Just return a promise.');
+    // console.error('form.runFormulas() is not supported in V2 formulas. Just return a promise.');
+
+    // New v20 - to be removed completely ca. EOY 2025
+    console.error('A formula uses form.runFormulas(). This is deprecated since v18.. It is now disabled. Change formula to V2 and return a promise to achieve the same effect.');
   }
 }
 

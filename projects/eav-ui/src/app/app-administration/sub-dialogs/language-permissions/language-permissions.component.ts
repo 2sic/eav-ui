@@ -1,5 +1,5 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { Component, computed, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogActions, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -17,15 +17,15 @@ import { LanguagesPermissionsActionsComponent } from './languages-permissions-ac
 import { LanguagesPermissionsActionsParams } from './languages-permissions-actions/languages-permissions-actions.models';
 
 @Component({
-    selector: 'app-language-permissions',
-    templateUrl: './language-permissions.component.html',
-    imports: [
-        MatButtonModule,
-        MatIconModule,
-        RouterOutlet,
-        MatDialogActions,
-        SxcGridModule,
-    ]
+  selector: 'app-language-permissions',
+  templateUrl: './language-permissions.component.html',
+  imports: [
+    MatButtonModule,
+    MatIconModule,
+    RouterOutlet,
+    MatDialogActions,
+    SxcGridModule,
+  ]
 })
 export class LanguagePermissionsComponent implements OnInit {
   gridOptions: GridOptions = this.#buildGridOptions();
@@ -40,16 +40,12 @@ export class LanguagePermissionsComponent implements OnInit {
 
   #refresh = signal(0);
 
-  languages = computed(() => {
-    const r = this.#refresh();
-    return this.#zoneSvc.getLanguagesPermissions(undefined);
-  })
+  languages = this.#zoneSvc.getLanguagesPermissionsLive(this.#refresh).value
 
   ngOnInit(): void {
     this.#dialogRouting.doOnDialogClosed(() => {
-      this.#refresh.set(this.#refresh() + 1);
+      this.#refresh.update(v => ++v)
     });
-
   }
 
   closeDialog(): void {

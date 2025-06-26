@@ -13,6 +13,7 @@ export interface Feature extends FeatureSummary {
   enabledByDefault: boolean;
   enabledInConfiguration: boolean | null;
   expiration: string;
+  configurationContentType?: string;
 
   // License: string;
   // LicenseEnabled: boolean;

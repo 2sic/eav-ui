@@ -1,7 +1,7 @@
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
 import { GridOptions, ICellRendererParams, ModuleRegistry } from '@ag-grid-community/core';
 import { NgClass } from '@angular/common';
-import { ChangeDetectorRef, Component, computed, inject, OnInit, signal, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit, signal, ViewContainerRef } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogActions } from '@angular/material/dialog';
@@ -33,21 +33,21 @@ import { AppsListActionsComponent } from './apps-list-actions/apps-list-actions.
 import { AppsListActionsParams } from './apps-list-actions/apps-list-actions.models';
 
 @Component({
-    selector: 'app-apps-list',
-    templateUrl: './apps-list.component.html',
-    imports: [
-        SxcGridModule,
-        MatDialogActions,
-        EcoFabSpeedDialComponent,
-        NgClass,
-        EcoFabSpeedDialTriggerComponent,
-        MatButtonModule,
-        MatIconModule,
-        EcoFabSpeedDialActionsComponent,
-        MatBadgeModule,
-        RouterOutlet,
-        DragAndDropDirective,
-    ]
+  selector: 'app-apps-list',
+  templateUrl: './apps-list.component.html',
+  imports: [
+    SxcGridModule,
+    MatDialogActions,
+    EcoFabSpeedDialComponent,
+    NgClass,
+    EcoFabSpeedDialTriggerComponent,
+    MatButtonModule,
+    MatIconModule,
+    EcoFabSpeedDialActionsComponent,
+    MatBadgeModule,
+    RouterOutlet,
+    DragAndDropDirective,
+  ]
 })
 export class AppsListComponent implements OnInit {
 
@@ -76,10 +76,20 @@ export class AppsListComponent implements OnInit {
 
   #refresh = signal(0);
 
-  apps = computed(() => {
-    const refresh = this.#refresh();
-    return this.#appsListSvc.getAll();
-  });
+
+  // TODO: @2dg Only for example - remove later
+  //   apps = computed(() => {
+  //   const refresh = this.#refresh();
+  //   return this.#appsListSvc.getAllOld();
+  // });
+
+  // TODO: @2dg Only for example - remove later
+  // apps = computed(() => {
+  //   const refresh = this.#refresh();
+  //   return untracked(() => this.#appsListSvc.getAll().value) // Untracked to avoid re-running this when the refresh changes
+  // });
+
+  apps = this.#appsListSvc.getAllLive(this.#refresh).value;
 
 
   ngOnInit(): void {
@@ -90,8 +100,6 @@ export class AppsListComponent implements OnInit {
     this.fabOpen.set(open);
   }
 
-  // TODO: @2dg - try to fix this so the link is directly in the HTML without a function call
-  // @2dg Window not exist in Html an a have other Styles
   browseCatalog(): void {
     window.open('https://2sxc.org/apps', '_blank');
   }
@@ -132,15 +140,22 @@ export class AppsListComponent implements OnInit {
     }
   }
 
-  #flushApp(app: App): void {
+  async #flushApp(app: App) {
     if (!confirm(`Flush the App Cache for ${app.Name} (${app.Id})?`))
       return;
     this.snackBar.open('Flushing cache...');
-    this.#appsListSvc.flushCache(app.Id).subscribe({
-      error: () => this.snackBar.open('Cache flush failed. Please check console.', undefined, { duration: 3000 }),
-      next: () => this.snackBar.open('Cache flushed', undefined, { duration: 2000 }),
-    });
+    try {
+      const status = await this.#appsListSvc.flushCache(app.Id);
+      // Check the status code
+      if (status >= 200 && status < 300) {
+        this.snackBar.open('Cache flushed', undefined, { duration: 2000 })
+      }
+    } catch (statusCode) {
+      this.snackBar.open('Cache flush failed. Please check console.', undefined, { duration: 3000 }),
+        console.error('Export error:', statusCode);
+    }
   }
+
 
   #getLightSpeedLink(app?: App): string {
     const formUrl = convertFormToUrl(AppAdminHelpers.getLightSpeedEditParams(app.Id));
@@ -176,9 +191,9 @@ export class AppsListComponent implements OnInit {
               <a class="default-link fill-cell" href="#${url}">
                 <div class="container">
                   ${app.Thumbnail
-                    ? `<img class="image logo" src="${app.Thumbnail}?w=40&h=40&mode=crop"></img>`
-                    : `<div class="image logo"><span class="material-symbols-outlined">star</span></div>`
-                  }
+                ? `<img class="image logo" src="${app.Thumbnail}?w=40&h=40&mode=crop"></img>`
+                : `<div class="image logo"><span class="material-symbols-outlined">star</span></div>`
+              }
                   ${p.value}
                 </div>
               </a>
@@ -226,7 +241,7 @@ export class AppsListComponent implements OnInit {
   }
 
   #loadApps(): void {
-    this.#refresh.update(v => v + 1);
+    this.#refresh.update(v => ++v);
   }
 
 }

@@ -1,20 +1,16 @@
 <mat-form-field color="accent" class="eav-mat-form-field">
   <mat-label>{{ basics().label }}</mat-label>
-  <!-- OwlNG DateTimePicker Input -->
   <!-- Visible Input-Field when both Date & Time Picker (no Picker) -->
   <!-- Also Responsible for formatting the dateTimeValue() -->
   @if (useTimePicker()) {
     <input
       matInput
-      #owlDateTimeInput
       [disabled]="ui().disabled"
-      [owlDateTime]="owlPicker"
       [required]="basics().required"
-      (dateTimeChange)="updateDateTime($event)"
-      [value]="dateTimeValue()"
-      [placeholder]="basics().placeholder"
+      [value]="formatDateTime(dateTimeValue())"
+      (change)="handleDateTimeInput($event)"
+      [placeholder]="basics().placeholder || 'YYYY-MM-DD HH:MM:SS'"
     />
-    <owl-date-time #owlPicker />
   }
 
   <!-- Material DatePicker -->
@@ -43,7 +39,7 @@
         matInput
         [disabled]="ui().disabled"
         [required]="basics().required"
-        [matTimepicker]="timepicker"
+        [myMatTimepicker]="timepicker"
         class="hidden-picker-input"
         [value]="dateTimeValue()"
         [placeholder]="basics().placeholder"
@@ -54,4 +50,5 @@
     </ng-container>
   }
 </mat-form-field>
+
 <app-field-helper-text></app-field-helper-text>

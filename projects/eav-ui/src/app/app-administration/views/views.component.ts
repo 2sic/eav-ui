@@ -32,21 +32,21 @@ import { ViewsTypeComponent } from './views-type/views-type.component';
 import { calculateViewType } from './views.helpers';
 
 @Component({
-    selector: 'app-views',
-    templateUrl: './views.component.html',
-    styleUrls: ['./views.component.scss'],
-    imports: [
-        MatDialogActions,
-        MatButtonModule,
-        MatIconModule,
-        RouterOutlet,
-        SxcGridModule,
-        DragAndDropDirective,
-        TippyDirective,
-    ]
+  selector: 'app-views',
+  templateUrl: './views.component.html',
+  styleUrls: ['./views.component.scss'],
+  imports: [
+    MatDialogActions,
+    MatButtonModule,
+    MatIconModule,
+    RouterOutlet,
+    SxcGridModule,
+    DragAndDropDirective,
+    TippyDirective,
+  ]
 })
 export class ViewsComponent implements OnInit {
-  
+
   #dialogInNewWindowSvc = transient(DialogInNewWindowService);
   #viewsSvc = transient(ViewsService);
   #dialogConfigSvc = transient(DialogConfigAppService);
@@ -62,21 +62,19 @@ export class ViewsComponent implements OnInit {
 
   constructor(
     private snackBar: MatSnackBar,
-    // For Lightspeed buttons - new 17.10 - may need to merge better w/code changes 2dg
     private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
-  ) { }
+  ) {
 
+  }
 
   #refresh = signal(1); // must start with 1 so it can be chained in computed as ...refresh() && ...
-
-  views = computed(() => this.#refresh() && this.#viewsSvc.getAll());
-
-  #polymorphismLazy = computed(() => this.#refresh() && this.#viewsSvc.getPolymorphism());
+  views = this.#viewsSvc.getAllLive(this.#refresh).value;
+  #polymorphismLazy = this.#viewsSvc.getPolymorphismLive(this.#refresh).value;
 
   polymorphStatus = computed(() => {
-    const polymorphism = this.#polymorphismLazy()();
+    const polymorphism = this.#polymorphismLazy();
     return polymorphism?.Id == null // polymorphism could be undefined, and id could be null
       ? 'not configured'
       : polymorphism.Resolver === null
@@ -113,7 +111,7 @@ export class ViewsComponent implements OnInit {
   }
 
   #triggerRefresh() {
-    this.#refresh.update(value => value + 1);
+    this.#refresh.update(v => ++v);
   }
 
   urlToNewView() {
@@ -130,7 +128,7 @@ export class ViewsComponent implements OnInit {
     const polymorphismSignal = this.#polymorphismLazy();
     if (!polymorphismSignal) return;
 
-    const polymorphism = polymorphismSignal();
+    const polymorphism = polymorphismSignal;
     if (!polymorphism) return;
 
     const itemsEntry = !polymorphism.Id
@@ -273,7 +271,7 @@ export class ViewsComponent implements OnInit {
   }
 
   //#endregion
-  
+
   //#region Actions / Helpers for the Grid
 
   #urlToOpenEditView(view?: View) {
@@ -326,13 +324,19 @@ export class ViewsComponent implements OnInit {
     );
   }
 
-  #deleteView(view: View) {
+  async #deleteView(view: View) {
     if (!confirm(`Delete '${view.Name}' (${view.Id})?`)) return;
     this.snackBar.open('Deleting...');
-    this.#viewsSvc.delete(view.Id).subscribe(() => {
-      this.snackBar.open('Deleted', null, { duration: 2000 });
-      this.#triggerRefresh();
-    });
+    try {
+      const status = await this.#viewsSvc.delete(view.Id);
+      if (status >= 200 && status < 300) {
+        this.snackBar.open('Deleted', null, { duration: 2000 });
+        this.#triggerRefresh();
+      }
+    } catch (error) {
+      console.error('Error deleting view:', error);
+      this.snackBar.open('Error deleting view', null, { duration: 2000 });
+    }
   }
 
   #getLightSpeedLink(view?: View): string {

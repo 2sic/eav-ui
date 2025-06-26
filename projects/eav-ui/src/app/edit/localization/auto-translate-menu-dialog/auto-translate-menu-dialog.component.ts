@@ -38,6 +38,7 @@ export class AutoTranslateMenuDialogComponent extends TranslateHelperComponent i
 
   public features = inject(FeaturesService);
   public isTranslateWithGoogleFeatureEnabled = this.features.isEnabled[FeatureNames.EditUiTranslateWithGoogle];
+  EditUiTranslateWithGoogle = FeatureNames.EditUiTranslateWithGoogle;
 
   protected languagesSig = computed(() => {
     const languages = this.languages();

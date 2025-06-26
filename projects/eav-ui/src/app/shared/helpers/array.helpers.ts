@@ -4,13 +4,14 @@ export class ArrayHelpers {
    * @param item The item to toggle
    * @param array The array to toggle the item in
    */
-  static toggleInArray<T>(item: T, array: T[]): void {
+  static toggleInArray<T>(item: T, array: T[]): T[] {
     const index = array.indexOf(item);
     if (index === -1) {
       array.push(item);
     } else {
       array.splice(index, 1);
     }
+    return array;
   }
 
   // probably better: Array.from(new Set(merged));
@@ -19,7 +20,6 @@ export class ArrayHelpers {
   // }
 
 }
-
 
 // function onlyUnique<T extends unknown>(value: T, index: number, array: T[]): boolean {
 //   return array.indexOf(value) === index;

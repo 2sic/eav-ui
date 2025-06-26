@@ -2,8 +2,8 @@ import { inject, Injectable } from '@angular/core';
 import { FeaturesService } from '../../features/features.service';
 import { ItemIdentifierShared } from '../../shared/models/edit-form.model';
 import { GlobalConfigService } from '../../shared/services/global-config.service';
-import { EditInitializerService } from '../form/edit-initializer.service';
 import { FormConfigService } from '../form/form-config.service';
+import { InitialValuesService } from '../form/initial-values-service';
 import { LanguageService } from '../localization/language.service';
 import { FieldsSettingsService } from '../state/fields-settings.service';
 import { ItemService } from '../state/item.service';
@@ -24,7 +24,7 @@ export class FormulaExecutionSpecsFactory {
     private itemService: ItemService,
     private languageSvc: LanguageService,
     private globalConfigSvc: GlobalConfigService,
-    private editInitializerSvc: EditInitializerService,
+    private initialValuesService: InitialValuesService,
   ) { }
 
   init(settingsSvc: FieldsSettingsService, entityGuid: string, clientData: Pick<ItemIdentifierShared, "ClientData">) {
@@ -49,7 +49,7 @@ export class FormulaExecutionSpecsFactory {
     const language = this.formConfig.language();
     const languages = this.languageSvc.getAll();
     const debugEnabled = this.globalConfigSvc.isDebug();
-    const initialFormValues = this.editInitializerSvc.getInitialValues(this.#entityGuid, language.current);
+    const initialFormValues = this.initialValuesService.get(this.#entityGuid, language.current);
 
     return {
       initialFormValues,

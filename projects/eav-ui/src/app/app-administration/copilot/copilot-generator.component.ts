@@ -13,15 +13,15 @@ import { Context } from '../../shared/services/context';
 import { CopilotService } from './copilot-service';
 
 @Component({
-    selector: 'app-copilot-generator',
-    templateUrl: './copilot-generator.component.html',
-    imports: [
-        MatSelectModule,
-        MatButtonModule,
-        MatCardModule,
-        MatIconModule,
-        CommonModule,
-    ]
+  selector: 'app-copilot-generator',
+  templateUrl: './copilot-generator.component.html',
+  imports: [
+    MatSelectModule,
+    MatButtonModule,
+    MatCardModule,
+    MatIconModule,
+    CommonModule,
+  ]
 })
 export class CopilotGeneratorComponent {
 
@@ -66,7 +66,6 @@ export class CopilotGeneratorComponent {
         generator: this.selectedGenerator,
       }
     }).subscribe(d => {
-      console.log(d);
       this.snackBar.open(d.message + `\n (this took ${d.timeTaken}ms)`, null, { duration: 5000, });
     });
   }

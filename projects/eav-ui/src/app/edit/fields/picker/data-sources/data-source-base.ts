@@ -89,9 +89,10 @@ export abstract class DataSourceBase extends ServiceBase {
   protected helpers = new DataSourceHelpers();
 
   triggerGetAll(): void {
-    this.log.fnIf('triggerGetAll');
+    const l = this.log.fnIf('triggerGetAll');
     this.getAll$.next(true);
     this.getAll.set(true);
+    l.end();
   }
 
   addToRefresh(additionalGuids: string[]): void {

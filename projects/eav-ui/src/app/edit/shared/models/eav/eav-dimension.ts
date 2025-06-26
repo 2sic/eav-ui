@@ -1,7 +1,10 @@
 export class EavDimension {
-  Value: string;
+  /** A dimension reference, such as `*` or `en-us`.
+   * Usually all in lower case.
+   */
+  dimCode: string;
 
-  static create(value: string): EavDimension {
-    return { Value: value, } satisfies EavDimension;
+  static create(dimCode: string): EavDimension {
+    return { dimCode } satisfies EavDimension;
   }
 }

@@ -42,37 +42,37 @@ const logSpecs = {
 }
 
 @Component({
-    // tslint:disable-next-line:component-selector
-    selector: 'adam-browser',
-    templateUrl: './adam-browser.component.html',
-    styleUrls: ['./adam-browser.component.scss'],
-    animations: [
-        trigger('adamShowAnimate', [
-            state('closed', style({
-                height: '0',
-                overflow: 'hidden',
-            })),
-            state('open', style({
-                height: '*',
-                overflow: 'hidden',
-            })),
-            transition('closed => open', [
-                animate('300ms cubic-bezier(0.4, 0.0, 0.2, 1)'),
-            ]),
-        ]),
-    ],
-    imports: [
-        NgClass,
-        MatIconModule,
-        PasteClipboardImageDirective,
-        MatBadgeModule,
-        TranslateModule,
-        ClickStopPropagationDirective,
-        TippyDirective,
-    ]
+  // tslint:disable-next-line:component-selector
+  selector: 'adam-browser',
+  templateUrl: './adam-browser.component.html',
+  styleUrls: ['./adam-browser.component.scss'],
+  animations: [
+    trigger('adamShowAnimate', [
+      state('closed', style({
+        height: '0',
+        overflow: 'hidden',
+      })),
+      state('open', style({
+        height: '*',
+        overflow: 'hidden',
+      })),
+      transition('closed => open', [
+        animate('300ms cubic-bezier(0.4, 0.0, 0.2, 1)'),
+      ]),
+    ]),
+  ],
+  imports: [
+    NgClass,
+    MatIconModule,
+    PasteClipboardImageDirective,
+    MatBadgeModule,
+    TranslateModule,
+    ClickStopPropagationDirective,
+    TippyDirective,
+  ]
 })
 export class AdamBrowserComponent implements OnInit {
-  
+
   openUpload = output<void>();
 
   log = classLog({ AdamBrowserComponent }, logSpecs);
@@ -150,12 +150,12 @@ export class AdamBrowserComponent implements OnInit {
     const ok = window.confirm('Are you sure you want to delete this item?'); // todo i18n
     if (!ok) return;
 
-    this.#adamService.deleteItem(item, this.#url, this.adamConfig())
-      .subscribe(() => this.fetchItems());
+    this.#adamService.deleteItemPromise(item, this.#url, this.adamConfig())
+      .then(() => this.fetchItems());
   }
 
   editItemMetadata(adamItem: AdamItem, contentTypeName: string, metadataId: number) {
-    const l = this.log.fnIf('editItemMetadata', {adamItem, contentTypeName, metadataId});
+    const l = this.log.fnIf('editItemMetadata', { adamItem, contentTypeName, metadataId });
     if (this.formsStateService.readOnly().isReadOnly || !contentTypeName)
       return l.end('readonly or no content type');
 
@@ -226,8 +226,8 @@ export class AdamBrowserComponent implements OnInit {
     const newName = window.prompt('Rename the file / folder to: ', item.Name); // todo i18n
     if (!newName) return;
 
-    this.#adamService.rename(item, newName, this.#url, this.adamConfig())
-      .subscribe(() => this.fetchItems());
+    this.#adamService.renamePromise(item, newName, this.#url, this.adamConfig())
+      .then(() => this.fetchItems());
   }
 
   select(item: AdamItem) {
@@ -255,8 +255,8 @@ export class AdamBrowserComponent implements OnInit {
       }
     }
 
-    this.#adamService.getAll(this.#url, adamConfig)
-      .subscribe(items => this.#processFetchedItems(items, adamConfig));
+    this.#adamService.getAllPromise(this.#url, adamConfig)
+      .then(items => this.#processFetchedItems(items, adamConfig));
   }
 
   openFeatureInfoDialog() {

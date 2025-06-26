@@ -1,4 +1,5 @@
 import { DataSource, PipelineDataSource } from '../models';
+import { findDefByType } from './datasource.helpers';
 import { GuiTypes, TypeInfo, TypeInfos } from './plumb-editor.models';
 
 export const guiTypes: GuiTypes = {
@@ -13,7 +14,7 @@ export const guiTypes: GuiTypes = {
   Source: { Name: 'Source', Icon: 'cloud_upload', UiHint: 'Source of new data - usually SQL, CSV or similar' },
   Target: { Name: 'Target', Icon: 'adjust', UiHint: 'Target - usually just a destination of data' },
   Unknown: { Name: 'Unknown', Icon: 'fiber_manual_record', UiHint: 'Unknown type' },
-  Debug: { Name: 'Debug', Icon: 'bug_report', UiHint: 'Debugging Tools'},
+  Debug: { Name: 'Debug', Icon: 'bug_report', UiHint: 'Debugging Tools' },
   System: { Name: 'System', Icon: 'military_tech', UiHint: 'System Data' },
 };
 
@@ -21,19 +22,31 @@ export function calculateTypeInfos(pipelineDataSources: PipelineDataSource[], da
   const typeInfos: TypeInfos = {};
 
   for (const pipelineDataSource of pipelineDataSources) {
-    let typeInfo: TypeInfo;
-    const ds = dataSources.find(ds => ds.PartAssemblyAndType === pipelineDataSource.PartAssemblyAndType);
-    if (ds) {
-      typeInfo = { ...(ds.PrimaryType ? guiTypes[ds.PrimaryType] : guiTypes.Unknown) };
-      if (ds.Icon != null) { typeInfo.Icon = ds.Icon; }
-      if (ds.DynamicIn != null) { typeInfo.DynamicIn = ds.DynamicIn; }
-      if (ds.DynamicOut != null) { typeInfo.DynamicOut = ds.DynamicOut; }
-      if (ds.HelpLink != null) { typeInfo.HelpLink = ds.HelpLink; }
-      if (ds.EnableConfig != null) { typeInfo.EnableConfig = ds.EnableConfig; }
-      if (ds.UiHint != null) { typeInfo.UiHint = ds.UiHint; }
-    }
-    if (!typeInfo)
-      typeInfo = { ...guiTypes.Unknown };
+    const ds = findDefByType(dataSources, pipelineDataSource.PartAssemblyAndType);
+    const typeInfo: TypeInfo = (ds)
+      ? {
+        ...(ds.PrimaryType ? guiTypes[ds.PrimaryType] : guiTypes.Unknown),
+
+        DynamicIn: ds.DynamicIn ?? false,
+        DynamicOut: ds.OutMode != 'static',
+        Icon: ds.Icon,
+        UiHint: ds.UiHint,
+        HelpLink: ds.HelpLink,
+        outMode: ds.OutMode,
+        // ...(ds.Icon ? { Icon: ds.Icon } : {}),
+        // ...(ds.UiHint ? { UiHint: ds.UiHint } : {}),
+        // ...(ds.OutMode != null ? { OutMode: ds.OutMode } : {}),
+        // ...(ds.HelpLink != null ? { HelpLink: ds.HelpLink } : {}),
+        ...(ds.EnableConfig != null ? { EnableConfig: ds.EnableConfig } : {}),
+      } satisfies TypeInfo
+      : {
+        ...guiTypes.Unknown,
+        DynamicOut: false,
+        DynamicIn: false,
+        outMode: 'static',
+      };
+      // console.log("2dm test", pipelineDataSource, ds, typeInfo);
+    
     typeInfos[pipelineDataSource.EntityGuid] = typeInfo;
   }
 

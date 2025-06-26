@@ -27,22 +27,22 @@ import { InfoTemplate } from './system-info.models';
 declare const window: EavWindow;
 
 @Component({
-    selector: 'app-system-info',
-    templateUrl: './system-info.component.html',
-    imports: [
-        MatCardModule,
-        MatIconModule,
-        RouterLink,
-        MatButtonModule,
-        FormsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        RouterOutlet,
-        FeatureTextInfoComponent,
-        FieldHintComponent,
-        TippyDirective,
-        DocsLinkHelperComponent,
-    ]
+  selector: 'app-system-info',
+  templateUrl: './system-info.component.html',
+  imports: [
+    MatCardModule,
+    MatIconModule,
+    RouterLink,
+    MatButtonModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    RouterOutlet,
+    FeatureTextInfoComponent,
+    FieldHintComponent,
+    TippyDirective,
+    DocsLinkHelperComponent,
+  ]
 })
 export class SystemInfoComponent implements OnInit {
 
@@ -57,21 +57,17 @@ export class SystemInfoComponent implements OnInit {
   pageLogDuration: number;
   positiveWholeNumber = /^[1-9][0-9]*$/;
 
+  LightSpeedOutputCache = FeatureNames.LightSpeed;
+  ContentSecurityPolicy = FeatureNames.ContentSecurityPolicy;
+
   loading = signal(false);
   #refresh = signal(0);
 
-  languages = computed(() => {
-    const r = this.#refresh();
-    return this.#zoneSvc.getLanguage(undefined);
-  })
-
-  systemInfoSet = computed(() => {
-    const r = this.#refresh();
-    return this.#zoneSvc.getSystemInfo(undefined);
-  })
+  #languages = this.#zoneSvc.getLanguageLive(this.#refresh).value;
+  #systemInfoSet = this.#zoneSvc.getSystemInfoLive(this.#refresh).value;
 
   systemInfos = computed(() => {
-    const systemInfoSetValue = this.systemInfoSet()();
+    const systemInfoSetValue = this.#systemInfoSet();
     if (systemInfoSetValue == null) return;
     const url = this.#dialogRouter.router.url + '/' + "registration";
     const info: InfoTemplate[] = [
@@ -99,8 +95,8 @@ export class SystemInfoComponent implements OnInit {
   });
 
   siteInfos = computed(() => {
-    const systemInfoSetValue = this.systemInfoSet()();
-    const languagesValue = this.languages()();
+    const systemInfoSetValue = this.#systemInfoSet();
+    const languagesValue = this.#languages();
 
     if (systemInfoSetValue == null || languagesValue == null) return;
 
@@ -134,7 +130,7 @@ export class SystemInfoComponent implements OnInit {
   });
 
   warningIcon = computed(() => {
-    const systemInfoSetValue = this.systemInfoSet()();
+    const systemInfoSetValue = this.#systemInfoSet();
     if (systemInfoSetValue == null) return undefined;
     if (systemInfoSetValue.Messages.WarningsObsolete || systemInfoSetValue.Messages.WarningsOther) {
       return 'warning';
@@ -143,7 +139,7 @@ export class SystemInfoComponent implements OnInit {
   });
 
   warningInfos = computed(() => {
-    const systemInfoSetValue = this.systemInfoSet()();
+    const systemInfoSetValue = this.#systemInfoSet();
     if (systemInfoSetValue == null) return undefined;
 
     const info: InfoTemplate[] = [
@@ -184,7 +180,7 @@ export class SystemInfoComponent implements OnInit {
 
   ngOnInit(): void {
     this.#dialogRouter.doOnDialogClosed(() => {
-      this.#refresh.set(this.#refresh() + 1);
+      this.#refresh.update(v => ++v)
     });
   }
 
@@ -219,18 +215,24 @@ export class SystemInfoComponent implements OnInit {
     router.navigate([router.url.replace('system', '') + sideNavPath]);
   }
 
-  // TODO: 2dg new with Signals
-  activatePageLog(form: NgForm) {
+  async activatePageLog(form: NgForm) {
     this.loading.set(true);
     this.snackBar.open('Activating...');
-    this.#sxcInsightsService.activatePageLog(this.pageLogDuration).subscribe(res => {
-      this.loading.set(false);
-      this.snackBar.open(res, null, { duration: 4000 });
-    });
-    if (document.activeElement instanceof HTMLElement) {
-      document.activeElement.blur();
-    }
-    form.resetForm();
-  }
+    try {
+      const result = await this.#sxcInsightsService.activatePageLog(this.pageLogDuration);
 
+      this.snackBar.open(result, null, { duration: 4000 });
+
+      if (document.activeElement instanceof HTMLElement)
+        document.activeElement.blur();
+
+      form.resetForm();
+
+    } catch (error) {
+      console.error('Error activating page log:', error);
+      this.snackBar.open('Failed to activate page log', null, { duration: 4000 });
+    } finally {
+      this.loading.set(false);
+    }
+  }
 }

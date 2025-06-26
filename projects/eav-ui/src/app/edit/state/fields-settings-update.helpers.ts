@@ -126,7 +126,7 @@ export class FieldSettingsUpdateHelper {
     // Disable translation if not allowed by the ContentType.
     // This is configured using a LanguagesDecorator in ContentType.
     const languagesDecorator = contentTypeMetadata.find(m => m.Type.Name === MetadataDecorators.LanguagesDecorator);
-    if (languagesDecorator?.Attributes.Enabled?.Values.some(v => v.Value === false))
+    if (languagesDecorator?.Attributes.Enabled?.Values.some(v => v.value === false))
       return true;
 
     // Disable translation if the input type says it can't be translated (e.g. Entity).
@@ -140,7 +140,7 @@ export class FieldSettingsUpdateHelper {
     // Disable translation if the Attribute Configuration says so.
     // DisableTranslation is true in any language in @All, @String, @string-default, etc...
     for (const attrMd of attributeMetadata ?? [])
-      if (attrMd.Attributes.DisableTranslation?.Values.some(v => v.Value === true))
+      if (attrMd.Attributes.DisableTranslation?.Values.some(v => v.value === true))
         return true;
 
     return false;

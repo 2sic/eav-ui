@@ -1,7 +1,7 @@
-import { FormLanguage } from '../form/form-languages.model';
-import { EavField, EavValue } from '../shared/models/eav';
-import { DimensionReader } from './dimension-reader';
 import { classLog } from '../../shared/logging';
+import { FormLanguage } from '../form/form-languages.model';
+import { EavField, EavFieldValue } from '../shared/models/eav';
+import { DimensionReader } from './dimension-reader';
 
 const logSpecs = {
   all: false,
@@ -26,10 +26,10 @@ export class FieldReader<T = any> {
 
   #field: EavField<T>;
   /** Values - never empty for read-safety */
-  #values: EavValue<T>[];
+  #values: EavFieldValue<T>[];
   #language: FormLanguage;
 
-  get current(): EavValue<T> | null {
+  get current(): EavFieldValue<T> | null {
     return this.ofLanguage(this.#language); // first match if any is the one we're looking for
   }
 
@@ -41,10 +41,10 @@ export class FieldReader<T = any> {
    * 3. value for default language
    *
    * @readonly
-   * @type {EavValue<T>}
+   * @type {EavFieldValue<T>}
    * @memberof FieldReader
    */
-  get currentOrDefault(): EavValue<T> {
+  get currentOrDefault(): EavFieldValue<T> {
     if (this.#noData) return null;
     return this.current
       // note that having both languages primary will also result in checking the '*' dimension
@@ -58,27 +58,27 @@ export class FieldReader<T = any> {
    * 3. value for default language
    * 4. first/any value in the system
    */
-  get currentOrDefaultOrAny(): EavValue<T> | null {
+  get currentOrDefaultOrAny(): EavFieldValue<T> | null {
     if (this.#noData) return null;
     return this.currentOrDefault ?? this.#values[0] ?? null;
   }
 
 
-  ofLanguage(language: FormLanguage): EavValue<T> | null {
+  ofLanguage(language: FormLanguage): EavFieldValue<T> | null {
     if (this.#noData) return null;
-    return this.#values.filter(val => new DimensionReader(val.Dimensions, language).hasCurrent)[0] ?? null;
+    return this.#values.filter(val => new DimensionReader(val.dimensions, language).hasCurrent)[0] ?? null;
   }
 
   /** Check if there is a value on the specified primary language or on the '*' dimension */
   get hasPrimary(): boolean {
     if (this.#noData) return false;
     const primary = this.#language.primary;
-    return this.#values.filter(val => val.Dimensions.find(d => d.Value === primary || d.Value === '*')).length > 0;
+    return this.#values.filter(val => val.dimensions.find(d => d.dimCode === primary || d.dimCode === '*')).length > 0;
   }
 
   get hasCurrentReadonly(): boolean {
     if (this.#noData) return false;
-    return this.#values.filter(val => new DimensionReader(val.Dimensions, this.#language).hasCurrentReadOnly).length > 0;
+    return this.#values.filter(val => new DimensionReader(val.dimensions, this.#language).hasCurrentReadOnly).length > 0;
   }
 
   /** A value in specified Language is editable, if assigned to current language or to '*' (but only when on default-language) */
@@ -94,24 +94,24 @@ export class FieldReader<T = any> {
 
   /** Number of editable translatable fields that have some content (not empty/null) */
   countEditableWithContents(): number {
-    return this.#valuesEditableOf().filter(v => v.Value != "" && v.Value != null)?.length;
+    return this.#valuesEditableOf().filter(v => v.value != "" && v.value != null)?.length;
   }
 
   /**
    * Values of a field are for the current language,
    * if they are assigned to the current language or to '*' (but only when the current-language is also the primary-language)
    */
-  #valuesEditableOf(language?: FormLanguage): EavValue<T>[] {
+  #valuesEditableOf(language?: FormLanguage): EavFieldValue<T>[] {
     if (this.#noData) return [];
     language ??= this.#language;
-    return this.#values.filter(val => new DimensionReader(val.Dimensions, language).hasCurrentWrite);
+    return this.#values.filter(val => new DimensionReader(val.dimensions, language).hasCurrentWrite);
   }
 
   /** Value of current language which is editable. `null` if not found. */
-  get currentEditable(): EavValue<T> {
+  get currentEditable(): EavFieldValue<T> {
     if (this.#noData) return null;
     const dimension = this.#language.current;
-    return this.#values.find(v => v.Dimensions.find(x => x.Value === dimension)) ?? null;
+    return this.#values.find(v => v.dimensions.find(x => x.dimCode === dimension)) ?? null;
   }
 
   isEditableOrReadonlyTranslationExist(): boolean {

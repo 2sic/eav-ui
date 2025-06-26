@@ -82,7 +82,7 @@
       <div class="eav-preview-label-box">
         <label class="eav-preview-label" [ngClass]="{ 'disabled': vm.loadingPreview }">Preview</label>
       </div>
-      <pre class="fancy-scrollbar-light" [ngClass]="{ 'disabled': vm.loadingPreview }">{{ vm.preview }}</pre>
+      <pre class="fancy-scrollbar-light max-h" [ngClass]="{ 'disabled': vm.loadingPreview }">{{ vm.preview }}</pre>
       }
       @if (!vm.loadingPreview && vm.previewError) {
       <div class="eav-preview-error">

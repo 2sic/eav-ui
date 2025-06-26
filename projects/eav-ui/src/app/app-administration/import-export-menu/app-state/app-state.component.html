@@ -4,11 +4,11 @@
   <!-- Content -->
   <p>
     You can save / restore the app with data and configuration in <code>App_Data/app.xml</code>.
-    <br>
+    <br />
     This file can then also be versioned using git to sync with another installation.
   </p>
   <!-- Button -->
-  <mat-dialog-actions class="eav-dialog-actions" style="height: 73px;">
+  <mat-dialog-actions class="eav-dialog-actions" style="height: 73px">
     <div class="eav-dialog-actions-div">
       <button mat-button class="eav-button__with-icon" (click)="exportAppXml(false)">
         <mat-icon class="eav-icon">more_time</mat-icon>
@@ -25,21 +25,21 @@
   <h3>App-State Versioning - Advanced</h3>
   <p>
     In Advanced mode you can sync all the site files (e.g. ADAM) used by this app <em>together with the data</em>.
-    <br>
+    <br />
     They will be placed in a folder inside <code>App_Data</code> and allow sync/restore with git or another server.
   </p>
-  <app-feature-text-info [featureNameId]="'AppSyncWithSiteFiles'"></app-feature-text-info>
-  <mat-dialog-actions class="eav-dialog-actions" style="height: 73px;">
-    <div class="eav-dialog-actions-div">
-      <button mat-button class="eav-button__with-icon" (click)="exportAppXml(true)">
-        <mat-icon class="eav-icon">more_time</mat-icon>
-        <span>Save with Assets</span>
-      </button>
-      <button mat-button class="eav-button__with-icon" (click)="resetApp(true)">
-        <mat-icon class="eav-icon">restore</mat-icon>
-        <span>Restore with Assets</span>
-      </button>
-    </div>
-  </mat-dialog-actions>
+  <app-feature-text-info [featureNameId]="AppSyncWithSiteFiles"></app-feature-text-info>
 
+    <mat-dialog-actions class="eav-dialog-actions" style="height: 73px">
+      <div class="eav-dialog-actions-div">
+        <button [disabled]="!appExportAssetsAdvancedEnabled()" mat-button class="eav-button__with-icon" (click)="exportAppXml(true)">
+          <mat-icon class="eav-icon">more_time</mat-icon>
+          <span>Save with Assets</span>
+        </button>
+        <button [disabled]="!appExportAssetsAdvancedEnabled()" mat-button class="eav-button__with-icon" (click)="resetApp(true)">
+          <mat-icon class="eav-icon">restore</mat-icon>
+          <span>Restore with Assets</span>
+        </button>
+      </div>
+    </mat-dialog-actions>
 </div>

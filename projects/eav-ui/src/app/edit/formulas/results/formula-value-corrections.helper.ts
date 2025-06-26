@@ -183,7 +183,7 @@ function hasDuplicateValues(options: PickerItem[]) {
   var ids = options.map(o => o.value);
   var uniqueIds = new Set(ids);
   if (ids.length !== uniqueIds.size) {
-    console.error('Duplicate values in options', options);
+    console.error('Duplicate values in options', options, ids, uniqueIds);
     return true;
   }
   return false;

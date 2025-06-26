@@ -18,17 +18,17 @@ import { CheckboxCellComponent } from './checkbox-cell/checkbox-cell.component';
 import { CheckboxCellParams } from './checkbox-cell/checkbox-cell.model';
 
 @Component({
-    selector: 'app-add-app-from-folder',
-    templateUrl: './add-app-from-folder.component.html',
-    styleUrls: ['./add-app-from-folder.component.scss'],
-    imports: [
-        MatDialogActions,
-        MatButtonModule,
-        FeatureTextInfoComponent,
-        SxcGridModule,
-    ]
+  selector: 'app-add-app-from-folder',
+  templateUrl: './add-app-from-folder.component.html',
+  styleUrls: ['./add-app-from-folder.component.scss'],
+  imports: [
+    MatDialogActions,
+    MatButtonModule,
+    FeatureTextInfoComponent,
+    SxcGridModule,
+  ]
 })
-export class AddAppFromFolderComponent  {
+export class AddAppFromFolderComponent {
   @HostBinding('className') hostClass = 'dialog-component';
 
   gridOptions = this.buildGridOptions();
@@ -38,12 +38,14 @@ export class AddAppFromFolderComponent  {
   #isAddFromFolderEnabled = this.features.isEnabled[FeatureNames.AppSyncWithSiteFiles];
   #appsListService = transient(AppsListService);
 
+  AppSyncWithSiteFiles = FeatureNames.AppSyncWithSiteFiles;
+
   constructor(
     private dialog: MatDialogRef<AddAppFromFolderComponent>,
     private snackBar: MatSnackBar,
-  ) {}
+  ) { }
 
-  pendingApps = this.#appsListService.getPendingApps() as WritableSignal<PendingApp[]>;
+  pendingApps = this.#appsListService.getPendingApps().value as WritableSignal<PendingApp[]>;
 
   closeDialog(): void {
     this.dialog.close();

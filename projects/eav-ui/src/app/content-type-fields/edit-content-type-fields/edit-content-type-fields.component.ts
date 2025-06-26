@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, HostBinding, linkedSignal, QueryList, Signal, signal, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, computed, ElementRef, HostBinding, linkedSignal, QueryList, signal, untracked, ViewChild, ViewChildren } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
@@ -89,23 +89,26 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements Aft
   saving = signal(false);
 
   /** Data types such as string, number, ... */
-  dataTypes = this.#typesFieldsSvc.dataTypes();
+  // dataTypes = this.#typesFieldsSvc.dataTypes();
+  dataTypes = this.#typesFieldsSvc.dataTypes().value;
 
-  #inputTypeOptions = this.#typesFieldsSvc.getInputTypes();
-  #contentTypeSig = this.#typesSvc.getTypeSig(this.route.snapshot.paramMap.get('contentTypeStaticName'), null);
+  #inputTypeOptions = this.#typesFieldsSvc.getInputTypes().value;
 
-  // Existing fields - to setup reserved names and initialize the fields
-  existingFieldsLazy = computedObj<Signal<Field[]>>('rawFields', () => {
-    const contentType = this.#contentTypeSig();
-    return contentType
-      ? this.#typesFieldsSvc.getFieldsSig(contentType.NameId)
-      : signal([]);
+  #contentTypeRouteName = this.#typesSvc.getType(this.route.snapshot.paramMap.get('contentTypeStaticName')).value;
+
+  #existingFieldsLazy = computed(() => {
+    const contentTypeRouteName = this.#contentTypeRouteName();
+    const data = untracked(() => {
+      return this.#typesFieldsSvc.getFieldsLive(signal(0), contentTypeRouteName?.NameId);
+    })
+    return data;
   });
+
 
   fields = (() => {
     // Get the fields once the data is ready
     const initial = computedObj('fields', () => {
-      const fields = this.existingFieldsLazy()();
+      const fields = this.#existingFieldsLazy()();
       if (this.editMode != null) {
         if (fields.length === 0) return [];
         const routeId = this.route.snapshot.paramMap.get('id');
@@ -123,20 +126,22 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements Aft
   })();
 
   // Figure out the reserved names which should not be used as field names
-  #reservedNamesSystem = this.#typesFieldsSvc.reservedNames();
+  #reservedNamesSystem = this.#typesFieldsSvc.getReservedNames().value;
+
   reservedNames = computedObj('reservedNamesAll', () => {
     // setup watchers
-    const fields = this.existingFieldsLazy()();
+    const fields = this.#existingFieldsLazy()();
     const reservedNames = this.#reservedNamesSystem();
     if (fields.length === 0)
       return reservedNames;
     const merged = ReservedNamesValidatorDirective.mergeReserved(reservedNames, fields);
-    
+
     // If we're about to rename, allow the current name to be reused
     if (this.editMode === 'name')
       delete merged[fields[0].StaticName];
     return merged;
   });
+
 
   ngAfterViewInit(): void {
     // Wait for the inputFields to be available
@@ -144,6 +149,18 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements Aft
     if (this.autoFocusInputField)
       setTimeout(() => this.autoFocusInputField.first?.nativeElement?.focus(), 250);
   }
+
+
+  // ngOnInit() {
+  //   setTimeout(() => {
+  //     console.log(this.#contentTypeRouteName()?.NameId)
+
+  //   }, 110); // Force change detection to ensure the view is ready
+  //   this.#typesFieldsSvc.getFieldsPromise(this.#contentTypeRouteName()?.NameId).then(fields => {
+  //     console.log('Fields loaded', fields);
+  //     this.#existingFieldsLazy.set(fields);
+  //   })
+  // }
 
   #generateNewList(existingFieldCount: number): FieldSubset[] {
     return [...Array(8).keys()].map(k => ({
@@ -182,6 +199,7 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements Aft
     this.updateFieldPart(index, { InputType: inputName });
   }
 
+
   hints = computedObj('hints', () => {
     const fields = this.fields();
     return fields.map((field, i) => {
@@ -215,7 +233,7 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements Aft
       const field = this.fields()[0];
       if (this.editMode === 'name') {
         this.#typesFieldsSvc
-          .rename(field.Id, this.#contentTypeSig().Id, field.StaticName)
+          .rename(field.Id, this.#contentTypeRouteName().Id, field.StaticName)
           .subscribe(() => doneAndClose());
       } else if (this.editMode === 'inputType') {
         this.#typesFieldsSvc
@@ -227,7 +245,7 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements Aft
         .pipe(
           filter(field => !!field.StaticName),
           concatMap(field =>
-            this.#typesFieldsSvc.add(field, this.#contentTypeSig().Id).pipe(catchError(_ => of(null)))
+            this.#typesFieldsSvc.add(field, this.#contentTypeRouteName().Id).pipe(catchError(_ => of(null)))
           ),
           toArray(),
         )

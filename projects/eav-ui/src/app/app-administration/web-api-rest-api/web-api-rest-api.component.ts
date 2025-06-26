@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -18,17 +18,17 @@ const logSpecs = {
 };
 
 @Component({
-    selector: 'app-web-api-rest-api',
-    imports: [
-        MatSelectModule,
-        MatButtonModule,
-        MatCardModule,
-        MatIconModule,
-        ReactiveFormsModule,
-        RouterOutlet,
-        SxcGridModule,
-    ],
-    templateUrl: './web-api-rest-api.component.html'
+  selector: 'app-web-api-rest-api',
+  imports: [
+    MatSelectModule,
+    MatButtonModule,
+    MatCardModule,
+    MatIconModule,
+    ReactiveFormsModule,
+    RouterOutlet,
+    SxcGridModule,
+  ],
+  templateUrl: './web-api-rest-api.component.html'
 })
 export class WebApiRestApiComponent {
   log = classLog({ WebApiRestApiComponent }, logSpecs);
@@ -56,7 +56,8 @@ export class WebApiRestApiComponent {
     });
   }
 
-  #getAllWebApis = this.#sourceSvc.getWebApisSig();
+  #refresh = signal(0);
+  #getAllWebApis = this.#sourceSvc.getWebApisLive(this.#refresh)
 
   webApisTypes = computed(() => {
     const webApis = this.#getAllWebApis();

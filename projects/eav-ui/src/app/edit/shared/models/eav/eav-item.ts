@@ -1,18 +1,110 @@
-import { EavEntity } from '.';
-import { EavEntityBundleDto } from '../json-format-v1';
+import { EavEntity, EavEntityAttributes, EavFieldValue } from '.';
 import { ItemIdentifierHeader } from '../../../../shared/models/edit-form.model';
+import { EavEntityBundleDto, EavEntityDto } from '../json-format-v1';
+
+export type EavTypeMap = {
+  String: string;
+  Number: number;
+  Boolean: boolean;
+  Object: Record<string, unknown>;
+  Unknown: unknown;
+};
+
+export type EavTypeName = keyof EavTypeMap;
 
 export class EavItem {
   Entity: EavEntity;
   Header: ItemIdentifierHeader;
 
-  static convert(entityBundleDto: EavEntityBundleDto): EavItem {
-    const entity = EavEntity.convertOne(entityBundleDto.Entity);
+  static anyToEav(entityBundleDto: EavEntityBundleDto): EavItem {
+    const override = entityBundleDto.Header.ClientData?.overrideContents;
+
+    return override
+      ? EavItem.objToEav(override, entityBundleDto.Header, entityBundleDto.Entity)
+      : EavItem.dtoToEav(entityBundleDto);
+  }
+
+  static dtoToEav(entityBundleDto: EavEntityBundleDto): EavItem {
+    const entity = EavEntity.dtoToEav(entityBundleDto.Entity);
 
     const item: EavItem = {
       Entity: entity,
       Header: entityBundleDto.Header,
     };
+
     return item;
   }
+
+  /**
+ * Converts a raw override object and DTOs into a complete EavItem.
+ */
+  static objToEav(
+    override: Record<string, unknown>,
+    header: ItemIdentifierHeader,
+    entityDto: EavEntityDto
+  ): EavItem {
+    const attributes: EavEntityAttributes = {};
+
+    // Build attributes by converting each override key-value pair
+    for (const key in override) {
+      const value = override[key];
+      const type = this.getType(value);
+
+      attributes[key] = {
+        Values: EavFieldValue.createEavFieldValue(
+          value as EavTypeMap[EavTypeName], // TS braucht Hilfe hier
+        ),
+        Type: type,
+      };
+    }
+
+    // Convert DTO to entity and assign new attributes
+    const entity = EavEntity.dtoToEav(entityDto);
+    entity.Attributes = attributes;
+
+    // Combine entity and header into EavItem
+    return {
+      Entity: entity,
+      Header: header,
+    };
+  }
+
+
+
+  static eavToObj(eavItem: EavItem): Record<string, unknown> {
+    const attributes = eavItem.Entity.Attributes;
+    const result: Record<string, unknown> = {};
+
+    for (const key in attributes) {
+      const attr = attributes[key];
+      if (!attr.Values || attr.Values.length === 0) continue;
+
+      // Wir nehmen den Wert aus dem ersten EavFieldValue (Standard)
+      result[key] = attr.Values[0].value;
+    }
+
+    return result;
+  }
+
+
+  /**
+   * Determines the EAV data type based on the JS type of the value.
+   */
+  static getType(value: unknown): string {
+    switch (typeof value) {
+      case 'string':
+        return 'String';
+      case 'number':
+        return 'Number';
+      case 'boolean':
+        return 'Boolean';
+      default:
+        return 'Unknown';
+    }
+  }
+
+
+
+
+
 }

@@ -2,7 +2,9 @@
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
   "cli": {
-    "schematicCollections": ["@angular-eslint/schematics"],
+    "schematicCollections": [
+      "@angular-eslint/schematics"
+    ],
     "cache": {
       "enabled": false
     },
@@ -22,7 +24,7 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "ngx-build-plus:browser",
+          "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "outputPath": "dist/eav-ui",
             "index": "projects/eav-ui/src/index-raw.html",
@@ -30,14 +32,20 @@
             "polyfills": "projects/eav-ui/src/polyfills.ts",
             "tsConfig": "projects/eav-ui/tsconfig.app.json",
             "inlineStyleLanguage": "css",
-            "assets": ["projects/eav-ui/src/assets"],
-            "styles": ["projects/eav-ui/src/styles.scss"],
+            "assets": [
+              "projects/eav-ui/src/assets"
+            ],
+            "styles": [
+              "projects/eav-ui/src/styles.scss"
+            ],
             "scripts": [
               "projects/eav-ui/src/scripts/require.js",
               "projects/eav-ui/src/app/edit/assets/scripts/dropzone-dragging-helper.js",
               "projects/eav-ui/src/app/edit/assets/scripts/clipboard-paste/paste.js"
             ],
-            "allowedCommonJsDependencies": ["dayjs"]
+            "allowedCommonJsDependencies": [
+              "dayjs"
+            ]
           },
           "configurations": {
             "production": {
@@ -67,47 +75,79 @@
           "defaultConfiguration": "development"
         },
         "serve": {
-          "builder": "ngx-build-plus:dev-server",
+          "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "eav-ui:build",
+            "buildTarget": "eav-ui:build",
             "publicHost": "http://localhost:4200"
           },
           "configurations": {
             "production": {
-              "browserTarget": "eav-ui:build:production"
+              "buildTarget": "eav-ui:build:production"
             },
             "development": {
-              "browserTarget": "eav-ui:build:development"
+              "buildTarget": "eav-ui:build:development"
             }
           },
           "defaultConfiguration": "development"
         },
         "extract-i18n": {
-          "builder": "@angular/build:extract-i18n",
+          "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
             "buildTarget": "eav-ui:build"
           }
         },
         "test": {
-          "builder": "ngx-build-plus:karma",
+          "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/eav-ui/src/test.ts",
             "polyfills": "projects/eav-ui/src/polyfills.ts",
             "tsConfig": "projects/eav-ui/tsconfig.spec.json",
-            "karmaConfig": "projects/eav-ui/karma.conf.js",
             "inlineStyleLanguage": "css",
-            "assets": ["projects/eav-ui/src/assets"],
-            "styles": ["projects/eav-ui/src/styles.scss"],
-            "scripts": []
+            "assets": [
+              "projects/eav-ui/src/assets"
+            ],
+            "styles": [
+              "projects/eav-ui/src/styles.scss"
+            ],
+            "scripts": [],
+            "karmaConfig": "projects/eav-ui/karma.conf.js"
           }
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": ["projects/eav-ui/**/*.ts", "projects/eav-ui/**/*.html"]
+            "lintFilePatterns": [
+              "projects/eav-ui/**/*.ts",
+              "projects/eav-ui/**/*.html"
+            ]
           }
         }
       }
+    }
+  },
+  "schematics": {
+    "@schematics/angular:component": {
+      "type": "component"
+    },
+    "@schematics/angular:directive": {
+      "type": "directive"
+    },
+    "@schematics/angular:service": {
+      "type": "service"
+    },
+    "@schematics/angular:guard": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:interceptor": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:module": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:pipe": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:resolver": {
+      "typeSeparator": "."
     }
   }
 }

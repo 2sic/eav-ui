@@ -251,7 +251,7 @@ export class EntityFormComponent implements OnInit, AfterViewChecked, OnDestroy 
           return l2.end(`Item ${entityGuid} not found in service, was probably flushed for reload`);
 
         // Parse and update the note metadata
-        const items = formData.Items.map(i => EavItem.convert(i));
+        const items = formData.Items.map(i => EavItem.dtoToEav(i));
         this.itemSvc.updater.updateItemMetadata(entityGuid, items[0].Entity.Metadata);
         this.#retriggerNoteProps.set(true);
         l2.end('updated note');

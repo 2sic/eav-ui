@@ -13,6 +13,7 @@ export const FeatureNames = {
   PermissionsByLanguage: 'PermissionsByLanguage',
   ContentTypeFieldsReuseDefinitions: 'ContentTypeFieldsReuseDefinitions',
   AppExportAssetsAdvanced: 'AppExportAssetsAdvanced',
+  DataExportImportBundles: 'DataExportImportBundles',
 
   // Picker features
   PickerUiCheckbox: 'PickerUiCheckbox',

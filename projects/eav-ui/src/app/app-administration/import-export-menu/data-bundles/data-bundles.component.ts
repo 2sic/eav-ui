@@ -1,16 +1,19 @@
 import { GridOptions } from '@ag-grid-community/core';
 import { NgClass } from '@angular/common';
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, effect, signal, untracked } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterModule } from '@angular/router';
 import { transient } from 'projects/core';
+import { EntityLightIdentifier } from 'projects/edit-types/src/EntityLight';
 import { take } from 'rxjs';
 import { ContentItem } from '../../../content-items/models/content-item.model';
 import { ContentItemsService } from '../../../content-items/services/content-items.service';
+import { FeatureNames } from '../../../features/feature-names';
 import { FeatureTextInfoComponent } from '../../../features/feature-text-info/feature-text-info.component';
+import { FeaturesService } from '../../../features/features.service';
 import { AgGridHelper } from '../../../shared/ag-grid/ag-grid-helper';
 import { ColumnDefinitions } from '../../../shared/ag-grid/column-definitions';
 import { FileUploadDialogData, FileUploadMessageTypes, FileUploadResult } from '../../../shared/components/file-upload-dialog';
@@ -25,6 +28,11 @@ import { DataBundleActionsComponent } from './data-bundles-actions/data-bundles-
 import { DataBundlesActionsParams } from './data-bundles-actions/data-bundles-actions.models';
 import { DataBundlesQueryService } from './data-bundles-query.service';
 import { DataBundlesService } from './data-bundles.service';
+
+interface BundleQuery {
+  Guid: string;
+  Result: ContentItem[] | EntityLightIdentifier[];
+}
 
 @Component({
   selector: 'app-data-bundles',
@@ -44,18 +52,47 @@ import { DataBundlesService } from './data-bundles.service';
 })
 export class DataBundlesComponent {
 
-
   #contentItemsSvc = transient(ContentItemsService);
   #dialogRouter = transient(DialogRoutingService);
   #dataBundlesQueryService = transient(DataBundlesQueryService);
   #dataBundlesService = transient(DataBundlesService);
+  #featuresSvc = transient(FeaturesService);
+
+  #queryResults = signal<BundleQuery[]>([]);
+
+  DataExportImportBundles = FeatureNames.DataExportImportBundles // Only for Html
+  protected dataExportImportBundles = this.#featuresSvc.isEnabled[FeatureNames.DataExportImportBundles];
+
+  constructor(private snackBar: MatSnackBar) {
+
+    effect(() => {
+      const dataBundles = this.#dataBundles();
+      if (!dataBundles) return;
+
+      dataBundles.forEach(dataBundle => {
+        if (!dataBundle?.Guid) return;
+
+        this.#dataBundlesQueryService.fetchQuery(dataBundle.Guid).subscribe({
+          next: (data) => {
+            untracked(() => {
+              const bundleQuery = {
+                Guid: dataBundle.Guid,
+                Result: data
+              } satisfies BundleQuery;
+
+              this.#queryResults.update(results => [...results, bundleQuery]);
+            });
+          },
+          error: (err) => console.error("Query error: ", err)
+        });
+      });
+    });
+
+  }
 
   #defaultContentTypeId = "d7f2e4fa-5306-41bb-a3cd-d9529c838879";
-  height = 'height: 135px';
   FileUploadMessageTypes = FileUploadMessageTypes;
   gridOptions = this.#buildGridOptions();
-
-  constructor(private snackBar: MatSnackBar) { }
 
   #refresh = signal(0);
   uploading = signal(false);
@@ -68,42 +105,18 @@ export class DataBundlesComponent {
     upload$: (files: File[]) => this.#dataBundlesService.import(files),
   };
 
-  dataBundles = computed(() => {
-    this.#refresh(); // is use to trigger a refresh when new data or data are modified
-    return this.#contentItemsSvc.getAllSig(this.#defaultContentTypeId,  /* initial: */ null);
-  });
-
-  // ContentItem
-  // TODO: @2dg - this 'any' is pretty bad, should be a proper type or better still, not used at all
-  #queryResults = signal<ContentItem[] | any>([]);
-
-  // Prepare Date from Query Service
-  #queryData = computed(() => {
-    const dataBundles = this.dataBundles()();
-    dataBundles?.forEach(dataBundle => {
-      if (dataBundle?.Guid) {
-        this.#dataBundlesQueryService.fetchQuery(dataBundle.Guid).subscribe({
-          next: (data) => {
-            const bundleQuery = {
-              Guid: dataBundle.Guid,
-              Result: data
-            };
-            this.#queryResults.set([...this.#queryResults(), bundleQuery]);
-          },
-          error: (err) => console.error("Query error: ", err)
-        });
-      }
-    });
-  });
+  #dataBundles = this.#contentItemsSvc.getAllLive(
+    this.#defaultContentTypeId,
+    this.#refresh
+  ).value;
 
   // Data from QueryData for Table
   dataSourceData = computed(() => {
-    const dataBundles = this.dataBundles()() || [];
-    this.#queryData(); // Get query data
+    const dataBundles = this.#dataBundles() || [];
     const queryResults = this.#queryResults();
 
     const countEntitiesAndContentTypes = (guid: string) => {
-      const result = queryResults.find((result: ContentItem) => result.Guid === guid)?.Result || [];
+      const result = queryResults.find((result: BundleQuery) => result.Guid === guid)?.Result || [];
       const entityCount = result.filter((item: ContentItem) => item.TypeName == "ContentType").length;
       const contentTypeCount = result.filter((item: ContentItem) => item.TypeName != "ContentType").length;
       return { entityCount, contentTypeCount };
@@ -117,14 +130,18 @@ export class DataBundlesComponent {
         Guid: bundle.Guid,
         Id: bundle.Id,
         Entities: entityCount,
-        ContentType: contentTypeCount
+        ContentType: contentTypeCount,
       };
     });
-    // TODO: @2dg - this is a side-effect in a computed, which is very bad.
-    // Should be a separate computed
-    this.height = `height: ${result.length * 46 + 90}px`;
-
     return result;
+  });
+
+  heightStyle = computed(() => {
+    const dataSourceData = this.dataSourceData();
+    if (dataSourceData.length === 0)
+      return `height: 135px`;
+
+    return `height: ${dataSourceData.length * 46 + 90}px`;
   });
 
 
@@ -138,7 +155,7 @@ export class DataBundlesComponent {
   }
 
   #fetchItems() {
-    this.#refresh.update(value => value + 1)
+    this.#refresh.update(v => ++v)
   }
 
   // Files Drop
@@ -224,13 +241,19 @@ export class DataBundlesComponent {
     this.#dataBundlesService.exportDataBundle(item.Guid);
   }
 
-  // Save State
-  #saveState(item: ContentItem) {
+  // Save State wit Fetch
+  async #saveState(item: ContentItem) {
     this.snackBar.open('Save Bundle State...');
-    this.#dataBundlesService.saveDataBundles(item.Guid).subscribe({
-      next: _ => this.snackBar.open('Export completed into the \'App_Data\' folder.', null, { duration: 3000 }),
-      error: _ => this.snackBar.open('Export failed. Please check console for more information', null, { duration: 3000 }),
-    });
+    try {
+      const status = await this.#dataBundlesService.saveDataBundlesFetch(item.Guid);
+      // Check the status code
+      if (status >= 200 && status < 300) {
+        this.snackBar.open('Export completed into the \'App_Data\' folder.', null, { duration: 3000 });
+      }
+    } catch (statusCode) {
+      this.snackBar.open('Export failed. Please check console for more information', null, { duration: 3000 });
+      console.error('Export error:', statusCode);
+    }
   }
 
   // Restore State

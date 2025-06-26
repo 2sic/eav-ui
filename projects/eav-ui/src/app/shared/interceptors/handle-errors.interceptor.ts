@@ -1,6 +1,8 @@
-import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
+import { HttpContextToken, HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, Observable, throwError } from 'rxjs';
+
+export const IGNORED_STATUSES = new HttpContextToken<number[]>(() => []);
 
 @Injectable()
 export class HandleErrorsInterceptor implements HttpInterceptor {
@@ -12,8 +14,16 @@ export class HandleErrorsInterceptor implements HttpInterceptor {
   constructor() { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    const ignoredStatuses = req.context.get(IGNORED_STATUSES);
     return next.handle(req).pipe(
+
       catchError((error: HttpErrorResponse) => {
+
+        // If Status is in the ignored list, just use the error custom im component (example: content-items.component 400 Error Deleting Item)
+        if (ignoredStatuses?.includes(error.status)) {
+          return throwError(() => error);
+        }
+
         if (!this.checkIfExcluded(error.url)) {
           this.showDetailedHttpError(error);
         }
@@ -36,16 +46,17 @@ export class HandleErrorsInterceptor implements HttpInterceptor {
     const srvResp = error.error;
     if (srvResp) {
       const msg = srvResp.Message;
-      if (msg) { infoText += '\nMessage: ' + msg; }
+      if (msg)
+        infoText += '\nMessage: ' + msg;
       const msgDet = srvResp.MessageDetail || srvResp.ExceptionMessage;
-      if (msgDet) { infoText += '\nDetail: ' + msgDet; }
+      if (msgDet)
+        infoText += '\nDetail: ' + msgDet;
 
       if (msgDet && msgDet.indexOf('No action was found') === 0) {
-        if (msgDet.indexOf('that matches the name') > 0) {
+        if (msgDet.indexOf('that matches the name') > 0)
           infoText += '\n\nTip from 2sxc: you probably got the action-name wrong in your JS.';
-        } else if (msgDet.indexOf('that matches the request.') > 0) {
+        else if (msgDet.indexOf('that matches the request.') > 0)
           infoText += '\n\nTip from 2sxc: Seems like the parameters are the wrong amount or type.';
-        }
       }
 
       if (msg && msg.indexOf('Controller') === 0 && msg.indexOf('not found') > 0) {

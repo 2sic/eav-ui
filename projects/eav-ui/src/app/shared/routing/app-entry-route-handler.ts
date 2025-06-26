@@ -148,10 +148,10 @@ export class AppEntryRouteHandler {
       case DialogTypeConstants.Replace:
         const repItem = (JSON.parse(items) as ItemInListIdentifier[])[0];
         const queryParams = repItem.Add ? { add: true } : {};
-        return go(`/${repItem.Parent}/${repItem.Parent}/${repItem.Index}/replace`, { queryParams });
+        return go(`/${repItem.Parent}/${repItem.Field}/${repItem.Index}/replace`, { queryParams });
       case DialogTypeConstants.InstanceList:
         const grpItem = (JSON.parse(items) as ItemInListIdentifier[])[0];
-        return go(`/${grpItem.Parent}/${grpItem.Parent}/${grpItem.Index}/reorder`);
+        return go(`/${grpItem.Parent}/${grpItem.Field}/${grpItem.Index}/reorder`);
       default:
         alert(`Cannot open unknown dialog "${dialog}"`);
         try {

@@ -21,19 +21,28 @@
         }
       }
       <br />
-
-      <mat-form-field color="accent" class="eav-mat-form-field">
-        <mat-label>Template</mat-label>
-        <mat-select required="true" [(value)]="appTemplateId">
-          <mat-option value="0"> Completely Naked / Raw App </mat-option>
-          <mat-option value="1"> App Template Empty with some instructions </mat-option>
-          <mat-option value="2"> App Template Basic with instructions and some data </mat-option>
-        </mat-select>
-      </mat-form-field>
+      <mat-radio-group formControlName="appTemplateId" required (change)="onTemplateChange($event)">
+        <mat-radio-button [value]="0">Complete Naked / Raw App</mat-radio-button>
+        <mat-radio-button [value]="1">Use Template</mat-radio-button>
+      </mat-radio-group>
     </form>
+
+    @if (showAppCatalog()) {
+      @if (ready()) {
+        <iframe #installerWindow class="eav-app-catalog-iframe" [src]="remoteInstallerUrl"></iframe>
+      }
+    }
   </div>
   <mat-dialog-actions align="end">
     <button type="button" mat-raised-button [disabled]="loading()" (click)="closeDialog()">Cancel</button>
-    <button type="button" mat-raised-button color="accent" [disabled]="loading() || !form.valid" (click)="create()">Create</button>
+    <button
+      type="button"
+      mat-raised-button
+      color="accent"
+      [disabled]="loading() || !canCreate()"
+      (click)="create()"
+    >
+      Create
+    </button>
   </mat-dialog-actions>
 </div>

@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Component, computed, effect, NgZone, OnDestroy, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
@@ -27,6 +27,7 @@ import { Context } from '../shared/services/context';
 import { CodeAndEditionWarningsComponent } from './code-and-edition-warnings/code-and-edition-warnings.component';
 import { CodeAndEditionWarningsSnackBarData } from './code-and-edition-warnings/code-and-edition-warnings.models';
 import { translateLoaderFactoryCode } from './code-editor-translate-loader-factory';
+import { CodeEditorHelper } from './code-editor.helper';
 import { Explorers, Tab, ViewInfo, ViewKey } from './code-editor.models';
 import { CodeSnippetsComponent } from './code-snippets/code-snippets.component';
 import { CodeTemplatesComponent } from './code-templates/code-templates.component';
@@ -37,31 +38,30 @@ import { SnippetsService } from './services/snippets.service';
 import { SourceService } from './services/source.service';
 
 @Component({
-    selector: 'app-code-editor',
-    templateUrl: './code-editor.component.html',
-    styleUrls: ['./code-editor.component.scss'],
-    imports: [
-        NgClass,
-        MatIconModule,
-        CodeTemplatesComponent,
-        CodeSnippetsComponent,
-        MatProgressSpinnerModule,
-        MonacoEditorComponent_1,
-        MatButtonModule,
-        ClickStopPropagationDirective,
-        TippyDirective,
-        ToggleDebugDirective,
-        HttpClientModule,
-        TranslateModule,
-    ],
-    providers: [
-        {
-            provide: TranslateLoader,
-            useFactory: translateLoaderFactoryCode,
-            deps: [HttpClient],
-        },
-        TranslateService,
-    ]
+  selector: 'app-code-editor',
+  templateUrl: './code-editor.component.html',
+  styleUrls: ['./code-editor.component.scss'],
+  imports: [
+    NgClass,
+    MatIconModule,
+    CodeTemplatesComponent,
+    CodeSnippetsComponent,
+    MatProgressSpinnerModule,
+    MonacoEditorComponent_1,
+    MatButtonModule,
+    ClickStopPropagationDirective,
+    TippyDirective,
+    ToggleDebugDirective,
+    TranslateModule,
+  ],
+  providers: [
+    {
+      provide: TranslateLoader,
+      useFactory: translateLoaderFactoryCode,
+      deps: [HttpClient],
+    },
+    TranslateService,
+  ]
 })
 export class CodeEditorComponent extends BaseComponent implements OnInit, OnDestroy {
   @ViewChild(MonacoEditorComponent) private monacoEditorRef: MonacoEditorComponent;
@@ -111,6 +111,50 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
 
   #urlItems: ViewOrFileIdentifier[];
 
+  /**
+ * Computed property for the current document title
+ */
+  #documentTitle = computed(() => {
+    const activeViewKey = this.activeView();
+    const viewInfos = this.#viewInfos() || [];
+    const activeViewInfo = viewInfos.find(v => RxHelpers.objectsEqual(v.viewKey, activeViewKey));
+
+    return activeViewInfo?.view?.FileName
+      ? `${activeViewInfo.view.FileName} - Code Editor`
+      : 'Code Editor';
+  });
+
+  /**
+   * Computed property that identifies views that need to be loaded.
+   * Returns an array of ViewKey objects that exist in openViews but are not yet loaded in viewInfos.
+   */
+  #notLoadedViews = computed(() => {
+    const openViews = this.#openViews();
+    const viewInfos = this.#viewInfos();
+
+    // Filter open views to find those not yet loaded in viewInfos
+    return openViews.filter(viewKey =>
+      !viewInfos.some(v => RxHelpers.objectsEqual(v.viewKey, viewKey))
+    );
+  });
+
+  /**
+   * Creates a set of observables for loading a view and its related data.
+   * @returns A forkJoin observable that emits the viewKey, view, snippets, and tooltips when all are loaded
+   */
+  #createViewObservables(viewKey: ViewKey) {
+    // Get the view content and share the observable
+    const view$ = this.#sourceSvc.get(viewKey.key, viewKey.shared, this.#urlItems).pipe(share());
+    // Create dependent observables for snippets and tooltips
+    const snippets$ = view$.pipe(switchMap(view => this.#snippetSvc.getSnippets(view)));
+    const tooltips$ = view$.pipe(switchMap(view =>
+      this.#snippetSvc.getTooltips(view.Extension.substring(1))
+    ));
+
+    // Combine all observables to emit results together
+    return forkJoin([of(viewKey), view$, snippets$, tooltips$]);
+  }
+
   constructor(
     private context: Context,
     private route: ActivatedRoute,
@@ -132,85 +176,49 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
     });
     this.#urlItems = codeItems;
 
-    // Update ViewInfo$ ongoing
+    /**
+ * Main effect responsible for loading views that are open but not yet loaded.
+ */
     effect(() => {
       const templates = this.templates();
-      const openViews = this.#openViews();
+      if (templates.length === 0) return; // Exit early if no templates are available
+      const notLoaded = this.#notLoadedViews();
+      if (notLoaded.length === 0) return; // Exit early if all views are already loaded
 
-      // If there are no templates, exit early
-      if (templates.length === 0) return;
+      // Mark all not-yet-loaded views as "loading" in viewInfos
+      let viewInfos = this.#viewInfos();
+      notLoaded.forEach(viewKey => {
+        viewInfos = CodeEditorHelper.updateSingleViewInfo(viewInfos, viewKey);
+      });
+      this.#viewInfos.set(viewInfos);
 
-      let viewInfos = this.#viewInfos();   // Retrieve the current viewInfos signal
-
-      // Find the `openViews` that are not yet loaded in `viewInfos`
-      const notLoaded = openViews.filter(viewKey => !viewInfos.some(v => RxHelpers.objectsEqual(v.viewKey, viewKey)));
-      // If all openViews are loaded, exit early
-      if (notLoaded.length === 0) return;
-
-      // Start data requests for the not yet loaded `openViews`
+      // Start data requests for all not-yet-loaded views in parallel
       forkJoin(
-        notLoaded.map(viewKey => {
-          // Mark the `viewKey` in `viewInfos` to indicate that it is being loaded
-          const newViewInfo: ViewInfo = {
-            viewKey,
-          };
-          viewInfos = [...viewInfos, newViewInfo];
-
-          // Create observables for the view, snippets, and tooltips based on the viewKey
-          const view$ = this.#sourceSvc.get(viewKey.key, viewKey.shared, this.#urlItems).pipe(share());
-          const snippets$ = view$.pipe(switchMap(view => this.#snippetSvc.getSnippets(view)));
-          const tooltips$ = view$.pipe(switchMap(view => this.#snippetSvc.getTooltips(view.Extension.substring(1))));
-          return forkJoin([of(viewKey), view$, snippets$, tooltips$]);
-        })
+        notLoaded.map(viewKey => this.#createViewObservables(viewKey))
       ).subscribe(results => {
-        let viewInfos1 = this.#viewInfos();   // Retrieve the current viewInfos signal again
+        let updatedViewInfos = this.#viewInfos();
 
+        // Process each result and update the viewInfos incrementally
         results.forEach(([viewKey, view, snippets, tooltips]) => {
-          // Find the index of the corresponding viewKey in the current viewInfos
-          const selectedIndex = viewInfos1.findIndex(v => RxHelpers.objectsEqual(v.viewKey, viewKey));
-          // If the viewKey is not found, exit early
-          if (selectedIndex < 0) return;
-
-          // Update `viewInfos` with new data for the corresponding `viewKey`
-          const newViewInfo: ViewInfo = {
-            viewKey,
-            view,
-            explorerSnipps: snippets.sets,
-            editorSnipps: snippets.list,
-            tooltips,
-            savedCode: view.Code,
-          };
-          viewInfos1 = [...viewInfos1.slice(0, selectedIndex), newViewInfo, ...viewInfos1.slice(selectedIndex + 1)];
-
-          // Show warnings or other logic based on the loaded views
-          this.#showCodeAndEditionWarnings(viewKey, view, templates);
+          updatedViewInfos = CodeEditorHelper.processLoadedView(
+            updatedViewInfos, viewKey, view, snippets, tooltips, this.#showCodeAndEditionWarnings.bind(this), templates
+          );
         });
 
-        this.#viewInfos.set(viewInfos1);  // Set the new `viewInfos` in the signal
+        this.#viewInfos.set(updatedViewInfos); // Update the viewInfos signal with all processed results
       });
 
-      this.#viewInfos.set(viewInfos);   // Set the initial `viewInfos` before loading the data
-    });
+      this.#viewInfos.set(viewInfos);  // Set the initial viewInfos with loading indicators before actual data is loaded
+    }); 
 
-    // Update title ongoing
+
+    /**
+    * Effect that updates the document title when it changes
+    */
     effect(() => {
-      const activeView = this.activeView();
-      const viewInfos = this.#viewInfos();
-
-      // Check if viewInfos exist; exit early if not
-      if (!viewInfos) return;
-
-      // Find the active view information from viewInfos based on activeView
-      const active = viewInfos.find(v => RxHelpers.objectsEqual(v.viewKey, activeView));
-      const defaultTitle = 'Code Editor'; // Default title to use if no active view is found
-      // Construct the new title based on the active view or use the default title
-      const newTitle = active == null ? defaultTitle : `${active.view?.FileName} - ${defaultTitle}`;
-      const oldTitle = this.#titleSvc.getTitle(); // Get the current title from the title service
-
-      // If the new title is different from the old title, update it
-      if (newTitle !== oldTitle) {
-        console.log('newTitle', newTitle); // Log the new title
-        this.#titleSvc.setTitle(newTitle);  // Set the new title in the title service
+      const newTitle = this.#documentTitle();
+      if (this.#titleSvc.getTitle() !== newTitle) {
+        this.#titleSvc.setTitle(newTitle);
       }
     });
   }
@@ -227,7 +235,7 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
     this.#attachListeners();
 
     // Load templates
-    this.#sourceSvc.getAll().subscribe(templates => {
+    this.#sourceSvc.getAllPromise().then(templates => {
       this.templates.set(templates);
     });
   }
@@ -276,7 +284,7 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
       if (!result) return;
 
       this.#sourceSvc.create(result.name, params.isShared, result.templateKey).subscribe(() => {
-        this.#sourceSvc.getAll().subscribe(files => {
+        this.#sourceSvc.getAllPromise().then(files => {
           this.templates.set(files);
         });
       });

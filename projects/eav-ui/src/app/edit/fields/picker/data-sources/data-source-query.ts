@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { TranslateService } from "@ngx-translate/core";
-import { Observable, map, of } from "rxjs";
+import { Observable, catchError, map, of } from "rxjs";
 import { classLog } from '../../../../shared/logging';
 import { QueryStreams } from '../../../../shared/models/query-stream.model';
 import { computedObj } from '../../../../shared/signals/signal.utilities';
@@ -71,7 +71,14 @@ export class DataSourceQuery extends DataSourceEntityBase {
       return this.querySvc
         .getFromQuery(queryUrl, params, this.fieldsToRetrieve(this.settings()), guids)
         .pipe(
+          // 2025-03-27 2dm
+          // Temp: show error; not sure if this is the best method
+          // since it may prevent a better error indicator in the UI
+          // but otherwise we end up throwing the exception again and again,
+          // because somehow it keeps on triggering changes which causes all fields to be recalculated - throwing the error again.
+          catchError(() => [] as unknown[]),
           map(data => ({ data, loading: false } as DataWithLoading<QueryStreams>)),
+          
         );
     })();
 

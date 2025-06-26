@@ -1,3 +1,13 @@
 <div class="icon-container">
   <mat-icon>{{ value ? 'check_box' : 'check_box_outline_blank' }}</mat-icon>
+
+  @if (configurationContentType) {
+    <a class="eav-grid-action-button default-link highlight" matRipple tippy="Open Settings" (click)="openSettings()">
+      @if (badgeValue > 0) {
+        <mat-icon [matBadge]="badgeValue" matBadgePosition="below after" matBadgeSize="small">settings</mat-icon>
+      } @else {
+        <mat-icon>settings</mat-icon>
+      }
+    </a>
+  }
 </div>

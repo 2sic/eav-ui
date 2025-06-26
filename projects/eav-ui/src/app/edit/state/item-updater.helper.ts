@@ -8,7 +8,7 @@ import { FieldReader } from '../localization/field-reader';
 import { FieldWriter } from '../localization/field-writer';
 import { EntityReader, FieldDefaults } from '../shared/helpers';
 import { FieldValueHelpers } from '../shared/helpers/field-value.helpers';
-import { EavContentTypeAttribute, EavDimension, EavEntity, EavItem, EavValue } from '../shared/models/eav';
+import { EavContentTypeAttribute, EavDimension, EavEntity, EavFieldValue, EavItem } from '../shared/models/eav';
 import { ItemValuesOfLanguage } from './item-values-of-language.model';
 import { ItemService } from './item.service';
 import { SaveResult } from './save-result.model';
@@ -85,7 +85,7 @@ export class ItemUpdateHelper {
   ): EavItem {
     const l = this.log.fnIf('addItemAttributeValue', { entityGuid, attributeKey, newValue, currentLanguage, isReadOnly, attributeType, isTransaction, transactionItem });
     const newValueDimension = isReadOnly ? `~${currentLanguage}` : currentLanguage;
-    const newEavValue = EavValue.create(newValue, [EavDimension.create(newValueDimension)]);
+    const newEavValue = EavFieldValue.create(newValue, [EavDimension.create(newValueDimension)]);
     const oldItem = transactionItem ?? this.itemSvc.get(entityGuid);
 
     const newItem: EavItem = {
@@ -143,7 +143,7 @@ export class ItemUpdateHelper {
     //   // defaultLanguage,
     //   BestValueModes.Strict,
     // );
-    const defaultLanguageValue = new FieldReader(item.Entity.Attributes[ctAttribute.Name], defaultLanguage).currentOrDefault?.Value;
+    const defaultLanguageValue = new FieldReader(item.Entity.Attributes[ctAttribute.Name], defaultLanguage).currentOrDefault?.value;
 
     // 2023-08-31 2dm simplified; leave comments in till EOY in case I broke something
     const languageCode = (languages.length === 0 || inputType?.DisableI18n) ? '*' : defaultLanguage;

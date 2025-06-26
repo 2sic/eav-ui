@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, HostBinding, Inject, OnInit, ViewChild, ViewContainerRef, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, HostBinding, Inject, OnInit, ViewChild, ViewContainerRef, computed, inject } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -24,22 +24,22 @@ import { signalObj } from '../../shared/signals/signal.utilities';
 import { ReservedNamesValidatorDirective } from '../edit-content-type-fields/reserved-names.directive';
 
 @Component({
-    selector: 'app-field-sharing-add-many',
-    templateUrl: './field-sharing-add-many.component.html',
-    styleUrls: ['./field-sharing-add-many.component.scss'],
-    imports: [
-        MatCardModule,
-        MatTableModule,
-        MatButtonModule,
-        FormsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        ReservedNamesValidatorDirective,
-        MatDialogActions,
-        TranslateModule,
-        FeatureTextInfoComponent,
-        FieldHintComponent,
-    ]
+  selector: 'app-field-sharing-add-many',
+  templateUrl: './field-sharing-add-many.component.html',
+  styleUrls: ['./field-sharing-add-many.component.scss'],
+  imports: [
+    MatCardModule,
+    MatTableModule,
+    MatButtonModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    ReservedNamesValidatorDirective,
+    MatDialogActions,
+    TranslateModule,
+    FeatureTextInfoComponent,
+    FieldHintComponent,
+  ]
 })
 export class FieldSharingAddMany extends BaseComponent implements OnInit {
   @HostBinding('className') hostClass = 'dialog-component';
@@ -48,6 +48,8 @@ export class FieldSharingAddMany extends BaseComponent implements OnInit {
   #features = inject(FeaturesService);
 
   #contentTypesFieldsSvc = transient(ContentTypesFieldsService);
+
+  ContentTypeFieldsReuseDefinitions = FeatureNames.ContentTypeFieldsReuseDefinitions;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public dialogData: { contentType: ContentType, existingFields: Field[] },
@@ -78,22 +80,24 @@ export class FieldSharingAddMany extends BaseComponent implements OnInit {
   protected selectedFields = new MatTableDataSource<NewNameField>([]);
   protected fieldNamePattern = fieldNamePattern;
   protected fieldNameError = fieldNameError;
-  protected reservedNames: Record<string, string> = {};
+
+  #reservedNamesSystem = this.#contentTypesFieldsSvc.getReservedNames().value;
+
+  reservedNames = computed(() => {
+    const reserved = this.#reservedNamesSystem();
+    return ReservedNamesValidatorDirective.mergeReserved(reserved, this.dialogData.existingFields);
+  });
 
   protected saving = signalObj('saving', false);
 
   #fieldShareConfigManagement = this.#features.isEnabled[FeatureNames.ContentTypeFieldsReuseDefinitions];
 
-
   ngOnInit() {
-    // TODO: @SDV Try to find a better way to do this
-    this.#contentTypesFieldsSvc.getShareableFields()
-      .subscribe(shareableFields => this.shareableFields.data = shareableFields);
 
-    this.#contentTypesFieldsSvc.getReservedNames()
-      .subscribe(names => {
-        this.reservedNames = ReservedNamesValidatorDirective.mergeReserved(names, this.dialogData.existingFields);
-      });
+    this.#contentTypesFieldsSvc.getShareableFieldsPromise().then(fields => {
+      this.shareableFields.data = fields;
+    });
+
   }
 
   selectField(field: Field) {

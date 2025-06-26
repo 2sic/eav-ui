@@ -22,40 +22,45 @@ import { AnalyzeSettingsValueComponent } from './analyze-settings-value/analyze-
 import { AnalyzeParts } from './analyze-settings.models';
 
 @Component({
-    selector: 'app-analyze-settings',
-    templateUrl: './analyze-settings.component.html',
-    styleUrls: ['./analyze-settings.component.scss'],
-    imports: [
-        MatButtonModule,
-        MatIconModule,
-        RouterOutlet,
-        MatFormFieldModule,
-        MatSelectModule,
-        FormsModule,
-        MatOptionModule,
-        SxcGridModule,
-    ]
+  selector: 'app-analyze-settings',
+  templateUrl: './analyze-settings.component.html',
+  styleUrls: ['./analyze-settings.component.scss'],
+  imports: [
+    MatButtonModule,
+    MatIconModule,
+    RouterOutlet,
+    MatFormFieldModule,
+    MatSelectModule,
+    FormsModule,
+    MatOptionModule,
+    SxcGridModule,
+  ]
 })
 export class AnalyzeSettingsComponent implements OnInit {
-  part: Of<typeof AnalyzeParts>;
   gridOptions = this.buildGridOptions();
 
   #viewsSvc = transient(ViewsService);
   #analyzeSettingsSvc = transient(AnalyzeSettingsService);
   #dialogRouter = transient(DialogRoutingService);
 
+  part: Of<typeof AnalyzeParts> = this.#dialogRouter.getParam('part') as Of<typeof AnalyzeParts>;
+
   constructor(
     private dialog: MatDialogRef<AnalyzeSettingsComponent>,
-  ) {
-    this.part = this.#dialogRouter.getParam('part') as Of<typeof AnalyzeParts>;
-  }
+  ) {}
 
   selectedView = signal<string>(undefined);
-  views = this.#viewsSvc.getAll();
+  views = this.#viewsSvc.getAllOnce().value;
 
-  stack = computed(() =>
-    this.#analyzeSettingsSvc.getStackSig(this.part, undefined, this.selectedView(), true)
-  );
+  #stackSignal = this.#analyzeSettingsSvc.getStack(this.part, undefined, this.selectedView()).value;
+
+  stack = computed(() => {
+    const stackItems = this.#stackSignal();
+    return stackItems?.map(item => ({
+      ...item,
+      _value: JSON.stringify(item.Value)
+    }));
+  });
 
   ngOnInit(): void {
     this.#getStack();
@@ -101,6 +106,7 @@ export class AnalyzeSettingsComponent implements OnInit {
           field: 'TotalResults',
           width: 72,
           cellClass: 'no-outline',
+
           cellRenderer: AnalyzeSettingsTotalResultsComponent,
           cellRendererParams: (() => {
             const params: AnalyzeSettingsTotalResultsParams = {
@@ -111,6 +117,7 @@ export class AnalyzeSettingsComponent implements OnInit {
             return params;
           })(),
         },
+
       ],
     };
     return gridOptions;

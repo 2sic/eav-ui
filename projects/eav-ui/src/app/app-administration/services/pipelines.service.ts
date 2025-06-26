@@ -1,5 +1,5 @@
 import { httpResource } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, Signal } from '@angular/core';
 import { from, map, switchMap } from 'rxjs';
 import { FileUploadResult } from '../../shared/components/file-upload-dialog';
 import { toBase64 } from '../../shared/helpers/file-to-base64.helper';
@@ -12,10 +12,11 @@ const logSpecs = {
   all: true,
   getAll: false,
   getAllSig: true,
+  getAllLive: false,
   getAllRes: true,
   importQuery: false,
   clonePipeline: false,
-  delete: false,  
+  delete: false,
   update: false,
 };
 
@@ -32,7 +33,7 @@ export const webApiQueryDataSources = 'admin/query/DataSources';
 export class PipelinesService extends HttpServiceBase {
 
   log = classLog({ PipelinesService }, logSpecs);
-
+  // TODO: @2dg, ask 2dm 
   getAll(contentType: string) {
     const l = this.log.fnIf('getAll');
     return l.r(this.getHttpApiUrl<Query[]>(webApiEntityList, {
@@ -40,12 +41,16 @@ export class PipelinesService extends HttpServiceBase {
     }));
   }
 
-  getAllSig(contentType: string, initial?: Query[]) {
-    const l = this.log.fnIf('getAllSig');
-    const sig =  this.getSignal<Query[]>(webApiEntityList, {
-      params: { appId: this.appId, contentType }
-    }, initial);
-    return l.r(sig);
+  // Full Code, repated x times
+  getAllLive(contentType: string, refresh: Signal<unknown>) {
+    this.log.fnIf('getAllLive', { contentType, refresh });
+    return httpResource<Query[]>(() => {
+      refresh();
+      return ({
+        url: this.apiUrl(webApiEntityList),
+        params: { appId: this.appId, contentType: contentType }
+      });
+    });
   }
 
   /** Experimental httpResource use! */
@@ -78,9 +83,9 @@ export class PipelinesService extends HttpServiceBase {
     return l.r(obs);
   }
 
-  clonePipeline(id: number) {
+  clonePipelinePromise(id: number): Promise<null> {
     const l = this.log.fnIf('clonePipeline');
-    const obs = this.getHttpApiUrl<null>(webApiQueryClone, {
+    const obs = this.fetchPromise<null>(webApiQueryClone, {
       params: { Id: id.toString(), appId: this.appId }
     });
     return l.r(obs);

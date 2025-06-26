@@ -20,7 +20,6 @@ export function computedObj<T>(name: string, computation: () => T): Signal<T> {
   return named(name, comp);
 }
 
-// TODO: 2dg use this for most http signals
 // Either in the place where it is called, or if the service is only used in one place, in the service itself to return a signal instead
 /**
  * Convert a single http get into a simple signal.

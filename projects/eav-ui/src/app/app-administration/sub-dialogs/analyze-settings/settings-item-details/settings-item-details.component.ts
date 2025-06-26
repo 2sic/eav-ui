@@ -1,5 +1,5 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, computed } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -10,44 +10,42 @@ import { defaultGridOptions } from '../../../../shared/constants/default-grid-op
 import { SxcGridModule } from '../../../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { AnalyzeSettingsService } from '../../../services/analyze-settings.service';
 import { AnalyzeSettingsValueComponent } from '../analyze-settings-value/analyze-settings-value.component';
-import { AnalyzeParts, SettingsStackItem } from '../analyze-settings.models';
-
+import { AnalyzeParts } from '../analyze-settings.models';
 @Component({
-    selector: 'app-settings-item-details',
-    templateUrl: './settings-item-details.component.html',
-    styleUrls: ['./settings-item-details.component.scss'],
-    imports: [
-        MatButtonModule,
-        MatIconModule,
-        SxcGridModule,
-    ]
+  selector: 'app-settings-item-details',
+  templateUrl: './settings-item-details.component.html',
+  styleUrls: ['./settings-item-details.component.scss'],
+  imports: [
+    MatButtonModule,
+    MatIconModule,
+    SxcGridModule,
+  ]
 })
-export class SettingsItemDetailsComponent implements OnInit {
-  part: Of<typeof AnalyzeParts>;
-  selectedView: string;
-  settingsItemKey: string;
+export class SettingsItemDetailsComponent {
 
-  stack = signal<SettingsStackItem[]>(undefined);
-
+  #analyzeSettingsSvc = transient(AnalyzeSettingsService);
   gridOptions = this.buildGridOptions();
 
-  private analyzeSettingsService = transient(AnalyzeSettingsService);
+  part: Of<typeof AnalyzeParts> = this.route.snapshot.parent.paramMap.get('part') as Of<typeof AnalyzeParts>;
+  routeViewGuid = this.route.snapshot.paramMap.get('view');
+  selectedView: string = ['undefined', 'null'].includes(this.routeViewGuid) ? undefined : this.routeViewGuid;;
+  settingsItemKey: string = this.route.snapshot.paramMap.get('settingsItemKey');;
+
 
   constructor(
     private dialog: MatDialogRef<SettingsItemDetailsComponent>,
     private route: ActivatedRoute,
-  ) {
-    this.part = this.route.snapshot.parent.paramMap.get('part') as Of<typeof AnalyzeParts>;
-    const routeViewGuid = this.route.snapshot.paramMap.get('view');
-    this.selectedView = ['undefined', 'null'].includes(routeViewGuid) ? undefined : routeViewGuid;
-    this.settingsItemKey = this.route.snapshot.paramMap.get('settingsItemKey');
-  }
+  ) { }
 
-  ngOnInit(): void {
-    this.analyzeSettingsService.getStack(this.part, this.settingsItemKey, this.selectedView, true).subscribe(stack => {
-      this.stack.set(stack);
-    });
-  }
+  #stackSignal = this.#analyzeSettingsSvc.getStack(this.part, undefined, this.selectedView).value;
+
+  stack = computed(() => {
+    const stackItems = this.#stackSignal();
+    return stackItems?.map(item => ({
+      ...item,
+      _value: JSON.stringify(item.Value)
+    }));
+  });
 
   closeDialog(): void {
     this.dialog.close();

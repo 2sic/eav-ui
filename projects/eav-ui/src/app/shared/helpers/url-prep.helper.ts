@@ -1,7 +1,7 @@
 import { EavFor } from '../../edit/shared/models/eav';
 import { eavConstants } from '../constants/eav.constants';
-import { EditForm, EditPrep, ItemAddIdentifier, ItemEditIdentifier, ItemIdentifierInbound, ItemIdentifierShared, ItemInListIdentifier } from '../models/edit-form.model';
 import { classLog } from '../logging';
+import { EditForm, EditPrep, ItemAddIdentifier, ItemEditIdentifier, ItemIdentifierInbound, ItemIdentifierShared, ItemInListIdentifier } from '../models/edit-form.model';
 
 const log = classLog("UrlPrepHelper")
 
@@ -77,7 +77,8 @@ export function convertFormToUrl(form: EditForm) {
       formUrl += fields2UrlParams(fields);
       formUrl += obj2UrlParams(parameters, PARAM_PREFIX);
 
-      if (addItem.DuplicateEntity) formUrl += `${VAL_SEPARATOR}copy:` + addItem.DuplicateEntity;
+      if (addItem.DuplicateEntity)
+        formUrl += `${VAL_SEPARATOR}copy:` + addItem.DuplicateEntity;
     }
   }
 

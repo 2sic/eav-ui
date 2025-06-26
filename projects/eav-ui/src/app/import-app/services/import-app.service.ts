@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Observable, of, switchMap } from 'rxjs';
 import { FileUploadMessageTypes, FileUploadResult } from '../../shared/components/file-upload-dialog';
-import { HttpServiceBase } from '../../shared/services/http-service-base';
+import { HttpServiceBaseSignal } from '../../shared/services/http-service-base-signal';
 
 export const webApiAppRoot = 'admin/app/';
 
 @Injectable()
-export class ImportAppService extends HttpServiceBase {
+export class ImportAppService extends HttpServiceBaseSignal {
 
   importApp(file: File, changedName: string, retryOnDuplicate = false): Observable<FileUploadResult> {
     const formData = new FormData();

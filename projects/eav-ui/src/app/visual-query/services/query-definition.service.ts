@@ -2,31 +2,30 @@ import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
 import { webApiQueryDataSources, webApiQueryDebugStream, webApiQueryGet, webApiQueryRun, webApiQuerySave } from '../../app-administration/services';
 import { eavConstants } from '../../shared/constants/eav.constants';
-import { HttpServiceBase } from '../../shared/services/http-service-base';
+import { HttpServiceBaseSignal } from '../../shared/services/http-service-base-signal';
 import { DataSource, PipelineDataSource, PipelineModel, PipelineResult } from '../models';
+import { findDefByType } from '../plumb-editor/datasource.helpers';
 
 @Injectable()
-export class QueryDefinitionService extends HttpServiceBase {
+export class QueryDefinitionService extends HttpServiceBaseSignal {
 
-  fetchPipeline(pipelineEntityId: number, dataSources: DataSource[]) {
-    return this.getHttp<PipelineModel>(webApiQueryGet, {
+  fetchPipelinePromise(pipelineEntityId: number, dataSources: DataSource[]): Promise<PipelineModel> {
+    return this.fetchPromise<PipelineModel>(webApiQueryGet, {
       params: { appId: this.appId, id: pipelineEntityId.toString() }
-    }).pipe(
-      map(pipelineModel => {
-        // if pipeline is new, populate it with default model
-        if (!pipelineModel.DataSources.length) {
-          this.buildDefaultModel(pipelineModel, dataSources);
-        }
-        this.fixPipelineDataSources(pipelineModel.DataSources);
-        return pipelineModel;
-      }),
-    );
+    }).then(pipelineModel => {
+      // if pipeline is new, populate it with default model
+      if (!pipelineModel.DataSources.length) {
+        this.#buildDefaultModel(pipelineModel, dataSources);
+      }
+      this.#fixPipelineDataSources(pipelineModel.DataSources);
+      return pipelineModel;
+    })
   }
 
-  private buildDefaultModel(pipelineModel: PipelineModel, dataSources: DataSource[]) {
+  #buildDefaultModel(pipelineModel: PipelineModel, dataSources: DataSource[]) {
     const templateDataSources = eavConstants.pipelineDesigner.defaultPipeline.dataSources;
     for (const templateDS of templateDataSources) {
-      const dataSource = dataSources.find(ds => ds.PartAssemblyAndType === templateDS.PartAssemblyAndType);
+      const dataSource = findDefByType(dataSources, templateDS.PartAssemblyAndType);
       const pipelineDataSource: PipelineDataSource = {
         Description: '',
         EntityGuid: templateDS.EntityGuid,
@@ -41,7 +40,7 @@ export class QueryDefinitionService extends HttpServiceBase {
     pipelineModel.Pipeline.StreamWiring = eavConstants.pipelineDesigner.defaultPipeline.streamWiring;
   }
 
-  private fixPipelineDataSources(pipelineDataSources: PipelineDataSource[]) {
+  #fixPipelineDataSources(pipelineDataSources: PipelineDataSource[]) {
     const outDataSourceExists = pipelineDataSources.some(
       pipelineDS => pipelineDS.EntityGuid === eavConstants.pipelineDesigner.outDataSource.EntityGuid
     );
@@ -63,36 +62,18 @@ export class QueryDefinitionService extends HttpServiceBase {
     }
   }
 
-  fetchDataSources() {
-    return this.getHttp<DataSource[]>(webApiQueryDataSources, {
+  fetchDataSourcesPromise(): Promise<DataSource[]> {
+    return this.fetchPromise<DataSource[]>(webApiQueryDataSources, {
       params: {
         appid: this.appId,
         zoneId: this.zoneId,
       },
-    }).pipe(
-      map(dataSources => {
-        const outDs = eavConstants.pipelineDesigner.outDataSource;
-        const outDsConst: DataSource = {
-          ContentType: undefined,
-          Difficulty: eavConstants.pipelineDesigner.dataSourceDifficulties.default,
-          DynamicIn: true,
-          DynamicOut: false,
-          EnableConfig: undefined,
-          HelpLink: undefined,
-          Icon: undefined,
-          In: outDs.In,
-          Name: outDs.Name,
-          Out: undefined,
-          PartAssemblyAndType: outDs.PartAssemblyAndType,
-          PrimaryType: outDs.PrimaryType,
-          TypeNameForUi: undefined,
-          UiHint: undefined,
-        };
-        dataSources.push(outDsConst);
-        return dataSources;
-      }),
-    );
-  }
+    }).then(dataSources => {
+      // Add the final target DataSource to the list of DataSources
+      dataSources.push(eavConstants.pipelineDesigner.outFinalTarget);
+      return dataSources;
+    })
+  };
 
   typeNameFilter(input: string, format: 'className' | 'classFullName') {
     const globalParts = input.split(', ');
@@ -121,23 +102,24 @@ export class QueryDefinitionService extends HttpServiceBase {
       { params: { appId: this.appId, Id: pipeline.EntityId.toString() } }
     ).pipe(
       map(newPipelineModel => {
-        this.fixPipelineDataSources(newPipelineModel.DataSources);
+        this.#fixPipelineDataSources(newPipelineModel.DataSources);
         return newPipelineModel;
       }),
     );
   }
 
   /** `top` - fetch first X items */
-  runPipeline(id: number, top: number) {
-    return this.getHttp<PipelineResult>(webApiQueryRun, {
+  runPipelinePromise(id: number, top: number): Promise<PipelineResult> {
+    return this.fetchPromise<PipelineResult>(webApiQueryRun, {
       params: { appId: this.appId, id: id.toString(), top: top.toString() }
     });
   }
 
   /** `top` - fetch first X items */
-  debugStream(id: number, source: string, sourceOut: string, top: number) {
-    return this.getHttp<PipelineResult>(webApiQueryDebugStream, {
+  debugStreamPromise(id: number, source: string, sourceOut: string, top: number): Promise<PipelineResult> {
+    return this.fetchPromise<PipelineResult>(webApiQueryDebugStream, {
       params: { appId: this.appId, id: id.toString(), from: source, out: sourceOut, top: top.toString() }
     });
   }
+
 }

@@ -6,14 +6,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterOutlet } from '@angular/router';
-import { BreadcrumbModule } from 'xng-breadcrumb';
+import { BreadcrumbComponent, BreadcrumbItemDirective } from 'xng-breadcrumb';
 import { transient } from '../../../../../core';
 import { DialogConfigGlobalService } from '../../app-administration/services';
 import { NavItemListComponent } from '../../shared/components/nav-item-list/nav-item-list.component';
 import { ToggleDebugDirective } from '../../shared/directives/toggle-debug.directive';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { Context } from '../../shared/services/context';
-import { AppsManagementNavItems } from './managment-nav-items';
+import { AppsManagementNavItems } from './management-nav-items';
 
 @Component({
     selector: 'app-apps-management-nav',
@@ -22,7 +22,8 @@ import { AppsManagementNavItems } from './managment-nav-items';
     imports: [
         MatToolbarModule,
         MatIconModule,
-        BreadcrumbModule,
+        BreadcrumbComponent,
+        BreadcrumbItemDirective,
         MatButtonModule,
         MatSidenavModule,
         RouterOutlet,
