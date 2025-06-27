@@ -1,13 +1,15 @@
-<div class="grid-wrapper mat-tab-grid-wrapper">
-  <ag-grid-angular
-    class="ag-theme-material"
-    [rowData]="queries()"
-    [gridOptions]="gridOptions"
-    appDragAndDrop
-    [allowedFileTypes]="'json'"
-    (filesDropped)="importQuery($event)"
-  >
-  </ag-grid-angular>
+<app-grid-with-help [helpText]="uxHelpText()" [refresh]="refresh()" [rowLength]="queries()?.length">
+  @if (queries()?.length) {
+    <ag-grid-angular
+      class="ag-theme-material grid-dynamic"
+      [rowData]="queries()"
+      [gridOptions]="gridOptions"
+      appDragAndDrop
+      [allowedFileTypes]="'json'"
+      (filesDropped)="importQuery($event)"
+    >
+    </ag-grid-angular>
+  }
   <mat-dialog-actions class="eav-dialog-actions">
     <a [href]="urlToImportQuery()" mat-button class="eav-button__with-icon" tippy="Import query" tippyPlacement="top">
       <mat-icon class="eav-icon">cloud_upload</mat-icon>
@@ -17,5 +19,5 @@
       <mat-icon>add</mat-icon>
     </a>
   </mat-dialog-actions>
-</div>
+</app-grid-with-help>
 <router-outlet></router-outlet>

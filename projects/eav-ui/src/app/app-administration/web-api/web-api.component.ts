@@ -14,6 +14,7 @@ import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogInNewWindowService } from '../../shared/routing/dialog-in-new-window.service';
+import { GridWithHelpComponent, HelpTextConst } from '../grid-with-help/grid-with-help.component';
 import { WebApi } from '../models/web-api.model';
 import { DialogConfigAppService } from '../services/dialog-config-app.service';
 import { WebApiActionsComponent } from './web-api-actions/web-api-actions.component';
@@ -29,6 +30,7 @@ import { WebApiActionsParams } from './web-api-actions/web-api-actions.models';
         MatMenuModule,
         MatIconModule,
         RouterOutlet,
+        GridWithHelpComponent,
     ]
 })
 export class WebApiComponent implements OnInit {
@@ -37,12 +39,26 @@ export class WebApiComponent implements OnInit {
     #sourceSvc = transient(SourceService);
 
     enableCode!: boolean;
-    #refresh = signal(0);
-    webApis = this.#sourceSvc.getWebApisLive(this.#refresh)
+    refresh = signal(0);
+    webApis = this.#sourceSvc.getWebApisLive(this.refresh)
 
     gridOptions = this.buildGridOptions();
 
     private dialogConfigSvc = transient(DialogConfigAppService);
+
+    // UI Help Text for the UX Help Info Card
+    #helpTextConst: HelpTextConst = {
+        empty: {
+            description: 'This section displays a list of all Web APIs',
+            hint: 'You haven’t added any Web API yet. Click the + button at the bottom right to add your first Web API.'
+        },
+        content: {
+            description: 'This section displays a list of all Web APIs',
+            hint: 'To add more Web APIs, click the + button in the bottom right corner. Click on any content item to modify it or show some other action on the right section.'
+        }
+    };
+
+    uxHelpText = signal(this.#helpTextConst.empty);
 
     constructor(
         private snackBar: MatSnackBar,
@@ -103,7 +119,12 @@ export class WebApiComponent implements OnInit {
             this.snackBar.open('Saving...');
             this.#sourceSvc.create(result.name, global, result.templateKey).subscribe(() => {
                 this.snackBar.open('Saved', null, { duration: 2000 });
-                this.#refresh.update(v => ++v);
+                this.refresh.update(v => ++v);
+                this.uxHelpText.set(
+                    this.webApis().length === 0
+                        ? this.#helpTextConst.empty
+                        : this.#helpTextConst.content
+                );
             });
         });
     }

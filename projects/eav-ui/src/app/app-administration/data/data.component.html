@@ -1,7 +1,6 @@
 <app-grid-with-help [helpText]="uxHelpText()" [refresh]="refresh()" [rowLength]="contentTypes()?.length">
   @if (contentTypes()?.length) {
     <ag-grid-angular
-      (gridReady)="onGridReady()"
       class="ag-theme-material grid-dynamic"
       [rowData]="contentTypes()"
       [gridOptions]="gridOptions"

@@ -114,10 +114,6 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
     });
   }
 
-  onGridReady() {
-    this.refresh.update(v => ++v);
-  }
-
   filesDropped(files: File[]) {
     const importFile = files[0];
     const ext = importFile.name.substring(importFile.name.lastIndexOf('.') + 1).toLocaleLowerCase();
