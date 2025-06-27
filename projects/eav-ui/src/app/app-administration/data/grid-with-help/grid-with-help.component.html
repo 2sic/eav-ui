@@ -1,0 +1,10 @@
+<div class="grid-wrapper-dynamic">
+  <ng-content select="ag-grid-angular"></ng-content>
+  <div class="help-info-card">
+    <div class="help-info-card-text">
+      <p>{{ helpText().description }}</p>
+      <p>{{ helpText().hint }}</p>
+    </div>
+  </div>
+  <ng-content select="mat-dialog-actions"></ng-content>
+</div>
