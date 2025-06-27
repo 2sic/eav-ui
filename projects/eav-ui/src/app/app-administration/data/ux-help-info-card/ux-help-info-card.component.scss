@@ -1,5 +1,14 @@
-mat-card {
-  max-width: 400px;
-  margin: 1.5rem auto;
-  border-radius: 12px;
+.centered-gray-text {
+  text-align: center;
+  color: gray;
+  width: 25vw;
+  max-width: 350px;
+  min-width: 180px;
+}
+
+::ng-deep {
+  .hidden-uxHelpCard {
+    visibility: hidden !important;
+    position: absolute !important;
+  }
 }

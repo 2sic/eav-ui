@@ -9,10 +9,6 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrl: './ux-help-info-card.component.scss'
 })
 export class UxHelpInfoCardComponent {
-
-  title = input.required<string>();
   description = input.required<string>();
   hint = input.required<string>();
-  icon = input.required<string>();
-
 }

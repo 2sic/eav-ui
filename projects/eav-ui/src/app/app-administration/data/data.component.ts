@@ -42,6 +42,7 @@ import { DataActionsComponent } from './data-actions/data-actions.component';
 import { DataFieldsComponent } from './data-fields/data-fields.component';
 import { DataItemsComponent } from './data-items/data-items.component';
 import { UxHelpInfoCardComponent } from './ux-help-info-card/ux-help-info-card.component';
+import { UxHelpService } from './ux-help-info-card/ux-help.service';
 
 @Component({
   selector: 'app-data',
@@ -63,8 +64,6 @@ import { UxHelpInfoCardComponent } from './ux-help-info-card/ux-help-info-card.c
   ]
 })
 export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
-
-
   isDebug = inject(GlobalConfigService).isDebug;
   #snackBar = inject(MatSnackBar);
   #matDialog = inject(MatDialog);
@@ -73,6 +72,22 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
   #contentExportSvc = transient(ContentExportService);
   #dialogConfigSvc = transient(DialogConfigAppService);
   #dialogRouter = transient(DialogRoutingService);
+  #uxHelpService = transient(UxHelpService);
+
+
+  // UI Help Text for the UX Help Info Card
+  #uxHelpTextConst = {
+    empty: {
+      description: 'This section displays a list of all content items that need to be managed. You can view, edit, copy, export, and add new content here.',
+      hint: 'You haven’t added any data yet. Click the + button at the bottom right to add your first content item.'
+    },
+    content: {
+      description: 'This section displays a list of all content items that need to be managed. You can view, edit, copy, export, and add new content here.',
+      hint: 'To add more content items, click the + button in the bottom right corner. You can also import data from XML or JSON files. Click on any content item to modify it.'
+    }
+  };
+
+  uxHelpText = signal(this.#uxHelpTextConst.empty);
 
   constructor(private viewContainerRef: ViewContainerRef,) {
     super();
@@ -88,44 +103,9 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
   dropdownInsertValue = dropdownInsertValue;
   enablePermissions!: boolean;
 
-  agGridHeigh = signal<number>(0);
+  #refresh = signal<number>(0);
 
-  checkHelpCardVisibilityO = computed(() => {
-    const agGridHeigh = this.agGridHeigh(); // TODO: agGrid
-
-
-    const rowElem = document.querySelector('.ag-row');
-    if (rowElem) {
-      console.log('2dg agGridHeigh', rowElem.clientHeight);
-    }
-
-
-    const helpCard = document.getElementById('ux-help-info-card');
-    const helpCardHeight = helpCard?.clientHeight;
-
-    // const gridHeight = document.querySelector('.ag-row')?.clientHeight;
-    // console.log('gridHeight', gridHeight);
-    const wrapperHeight = document.querySelector('.grid-wrapper-dynamic')?.clientHeight;
-
-    const dialogAction = document.getElementsByTagName('mat-dialog-actions')[0]?.clientHeight + 11;
-
-    // console.log('2dg agGridHeigh', agGridHeigh);
-
-
-    console.log('2dg sum', helpCardHeight + agGridHeigh + dialogAction);
-    console.log('2dg wrapperHeight', wrapperHeight);
-
-    console.log('2dg hidden?', helpCardHeight + agGridHeigh + dialogAction > wrapperHeight);
-
-    // console.log('2dg agGridHeigh', helpCardHeight && agGridHeigh && dialogAction);
-
-    // check, if the grid height is greater than the wrapper height
-    if (helpCardHeight + agGridHeigh + dialogAction > wrapperHeight)
-      helpCard?.classList.add('hidden');
-    else
-      helpCard?.classList.remove('hidden');
-
-  })
+  checkGetAgGridHeight = this.#uxHelpService.checkHelpCard(this.#refresh, this.contentTypes);
 
   ngOnInit() {
     this.#fetchScopes();
@@ -139,16 +119,9 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
     });
   }
 
-  onGridReady(params: any) {
-    const row = params.api.getDisplayedRowAtIndex(0)?.rowTop; // oder:
-    const rowElem = document.querySelector('.ag-row');
-    if (rowElem) {
-      const height = rowElem.clientHeight;
-      const x = 64 + (this.contentTypes()?.length * height);
-      this.agGridHeigh.set(x);
-    }
+  onGridReady() {
+    this.#refresh.update(v => ++v);
   }
-
 
   filesDropped(files: File[]) {
     const importFile = files[0];
@@ -197,12 +170,13 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
       }
       this.contentTypes.set(contentTypes);
 
-      // TODO: 2dg
-      var height = document.querySelector('.ag-row')?.clientHeight;
-      const x = 64 + (this.contentTypes()?.length * height);
-      console.log('fetchContentTypes gridHeightX', x);
-      this.agGridHeigh.set(x);
+      this.uxHelpText.set(
+        this.contentTypes().length === 0
+          ? this.#uxHelpTextConst.empty
+          : this.#uxHelpTextConst.content
+      );
 
+      this.#refresh.update(v => ++v)
 
       if (this.scope() !== eavConstants.scopes.default.value) {
         const message = 'Warning! You are in a special scope. Changing things here could easily break functionality';
