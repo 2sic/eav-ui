@@ -41,8 +41,7 @@ import { ConfirmDeleteDialogData } from '../sub-dialogs/confirm-delete-dialog/co
 import { DataActionsComponent } from './data-actions/data-actions.component';
 import { DataFieldsComponent } from './data-fields/data-fields.component';
 import { DataItemsComponent } from './data-items/data-items.component';
-import { UxHelpInfoCardComponent } from './ux-help-info-card/ux-help-info-card.component';
-import { UxHelpService } from './ux-help-info-card/ux-help.service';
+import { GridWithHelpComponent, HelpTextConst } from './grid-with-help/grid-with-help.component';
 
 @Component({
   selector: 'app-data',
@@ -60,7 +59,7 @@ import { UxHelpService } from './ux-help-info-card/ux-help.service';
     SxcGridModule,
     DragAndDropDirective,
     TippyDirective,
-    UxHelpInfoCardComponent,
+    GridWithHelpComponent
   ]
 })
 export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
@@ -72,12 +71,11 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
   #contentExportSvc = transient(ContentExportService);
   #dialogConfigSvc = transient(DialogConfigAppService);
   #dialogRouter = transient(DialogRoutingService);
-  #uxHelpService = transient(UxHelpService);
 
 
   // UI Help Text for the UX Help Info Card
-  #uxHelpTextConst = {
-    empty: {
+  #helpTextConst: HelpTextConst = {
+    empty:  {
       description: 'This section displays a list of all content items that need to be managed. You can view, edit, copy, export, and add new content here.',
       hint: 'You haven’t added any data yet. Click the + button at the bottom right to add your first content item.'
     },
@@ -87,7 +85,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
     }
   };
 
-  uxHelpText = signal(this.#uxHelpTextConst.empty);
+  uxHelpText = signal(this.#helpTextConst.empty);
 
   constructor(private viewContainerRef: ViewContainerRef,) {
     super();
@@ -103,9 +101,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
   dropdownInsertValue = dropdownInsertValue;
   enablePermissions!: boolean;
 
-  #refresh = signal<number>(0);
-
-  helpCardVisibilityHeight = this.#uxHelpService.helpCardVisibilityHeight(this.#refresh, this.contentTypes);
+  refresh = signal<number>(0);
 
   ngOnInit() {
     this.#fetchScopes();
@@ -120,7 +116,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
   }
 
   onGridReady() {
-    this.#refresh.update(v => ++v);
+    this.refresh.update(v => ++v);
   }
 
   filesDropped(files: File[]) {
@@ -172,11 +168,11 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
 
       this.uxHelpText.set(
         this.contentTypes().length === 0
-          ? this.#uxHelpTextConst.empty
-          : this.#uxHelpTextConst.content
+          ? this.#helpTextConst.empty
+          : this.#helpTextConst.content
       );
 
-      this.#refresh.update(v => ++v)
+      this.refresh.update(v => ++v)
 
       if (this.scope() !== eavConstants.scopes.default.value) {
         const message = 'Warning! You are in a special scope. Changing things here could easily break functionality';

@@ -1,5 +1,61 @@
+<app-grid-with-help [helpText]="uxHelpText()" [refresh]="refresh()" [rowLength]="contentTypes()?.length">
+    <!-- @if (contentTypes()?.length) { -->
+      <ag-grid-angular
+        (gridReady)="onGridReady()"
+        class="ag-theme-material grid-dynamic"
+        [rowData]="contentTypes()"
+        [gridOptions]="gridOptions"
+        appDragAndDrop
+        [allowedFileTypes]="'xml,json'"
+        (filesDropped)="filesDropped($event)"
+      >
+      </ag-grid-angular>
+    <!-- } -->
+  <mat-dialog-actions class="eav-dialog-actions">
+    <div class="eav-dialog-actions-div">
+      <mat-form-field color="accent" class="eav-mat-form-field eav-scope-dropdown">
+        <mat-select [ngModel]="scope()" name="Scope" (ngModelChange)="changeScope($event)" panelWidth="">
+          <mat-select-trigger>
+            <span>Scope: {{ scopeSelected()?.label }}</span>
+          </mat-select-trigger>
+          @for (scopeOption of scopeOptions(); track scopeOption) {
+            <mat-option [value]="scopeOption.name">
+              {{ scopeOption.label }}
+            </mat-option>
+          }
+          <mat-option [value]="dropdownInsertValue">Scope: Other...</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <a [href]="urlToImportType()">
+        <button mat-button class="eav-button__with-icon" tippy="Import content type" tippyPlacement="top">
+          <mat-icon class="eav-icon">cloud_upload</mat-icon>
+          <span>Content Type</span>
+        </button>
+      </a>
+      @if (isDebug()) {
+        <button
+          mat-button
+          class="eav-button__with-icon"
+          color="accent"
+          tippy="Create a ghost content type"
+          tippyPlacement="top"
+          (click)="createGhost()"
+        >
+          <mat-icon class="eav-icon">share</mat-icon>
+          <span>Ghost</span>
+        </button>
+      }
+    </div>
+    <a [href]="urlToNewContentType()">
+      <button mat-fab mat-elevation-z24 class="grid-fab" tippy="Create a new content type" tippyPlacement="top">
+        <mat-icon>add</mat-icon>
+      </button>
+    </a>
+  </mat-dialog-actions>
+</app-grid-with-help>
+
+<!-- 
 <div class="grid-wrapper-dynamic">
-  <!-- This is the table, you see in the Data Tab. The fields are defined inside the TS file -->
   @if (contentTypes()?.length) {
     <ag-grid-angular
       (gridReady)="onGridReady()"
@@ -20,7 +76,6 @@
     [description]="uxHelpText().description"
     [hint]="uxHelpText().hint"
   >
- 
   </app-ux-help-info-card>
 
   <mat-dialog-actions class="eav-dialog-actions">
@@ -64,5 +119,5 @@
       </button>
     </a>
   </mat-dialog-actions>
-</div>
+</div> -->
 <router-outlet></router-outlet>
