@@ -75,12 +75,12 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
   // UI Help Text for the UX Help Info Card
   #helpTextConst: HelpTextConst = {
     empty:  {
-      description: 'This section displays a list of all content items that need to be managed. You can view, edit, copy, export, and add new content here.',
-      hint: 'You haven’t added any data yet. Click the + button at the bottom right to add your first content item.'
+      description: '<p><b>This is where you manage data</b></p>',
+      hint: "<p>Click the (+) in the bottom right corner to create your first Content Type (think: table).</p>"
     },
     content: {
-      description: 'This section displays a list of all content items that need to be managed. You can view, edit, copy, export, and add new content here.',
-      hint: 'To add more content items, click the + button in the bottom right corner. You can also import data from XML or JSON files. Click on any content item to modify it.'
+      description: '<p><b>Each row shows a Content Type</b> <br> They define the fields, similar to a database table.</p>',
+      hint: '<p>Click on the title to list the Entities (think: records). <br>You can also create new Entities, configure the fields and export/import the schema or the data.</p>'
     }
   };
 

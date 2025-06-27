@@ -21,169 +21,169 @@ import { WebApiActionsComponent } from './web-api-actions/web-api-actions.compon
 import { WebApiActionsParams } from './web-api-actions/web-api-actions.models';
 
 @Component({
-    selector: 'app-web-api',
-    templateUrl: './web-api.component.html',
-    imports: [
-        SxcGridModule,
-        MatDialogActions,
-        MatButtonModule,
-        MatMenuModule,
-        MatIconModule,
-        RouterOutlet,
-        GridWithHelpComponent,
-    ]
+  selector: 'app-web-api',
+  templateUrl: './web-api.component.html',
+  imports: [
+    SxcGridModule,
+    MatDialogActions,
+    MatButtonModule,
+    MatMenuModule,
+    MatIconModule,
+    RouterOutlet,
+    GridWithHelpComponent,
+  ]
 })
 export class WebApiComponent implements OnInit {
 
-    #dialogInNewWindowSvc = transient(DialogInNewWindowService);
-    #sourceSvc = transient(SourceService);
+  #dialogInNewWindowSvc = transient(DialogInNewWindowService);
+  #sourceSvc = transient(SourceService);
 
-    enableCode!: boolean;
-    refresh = signal(0);
-    webApis = this.#sourceSvc.getWebApisLive(this.refresh)
+  enableCode!: boolean;
+  refresh = signal(0);
+  webApis = this.#sourceSvc.getWebApisLive(this.refresh)
 
-    gridOptions = this.buildGridOptions();
+  gridOptions = this.buildGridOptions();
 
-    private dialogConfigSvc = transient(DialogConfigAppService);
+  private dialogConfigSvc = transient(DialogConfigAppService);
 
-    // UI Help Text for the UX Help Info Card
-    #helpTextConst: HelpTextConst = {
-        empty: {
-            description: 'This section displays a list of all Web APIs',
-            hint: 'You haven’t added any Web API yet. Click the + button at the bottom right to add your first Web API.'
-        },
-        content: {
-            description: 'This section displays a list of all Web APIs',
-            hint: 'To add more Web APIs, click the + button in the bottom right corner. Click on any content item to modify it or show some other action on the right section.'
-        }
+  // UI Help Text for the UX Help Info Card
+  #helpTextConst: HelpTextConst = {
+    empty: {
+      description: '<p><b>This is where you manage Web APIs</b><br>They are custom C# code which do anything you want.</p>',
+      hint: "<p>WebApi Controllers are listed automatically. <br>Click the (+) in the bottom right corner to create your first Web API from a template file.</p>"
+    },
+    content: {
+      description: '<p><b>This is where you manage Web APIs</b><br>They are custom C# code which do anything you want.</p>',
+      hint: ''
+    }
+  };
+
+  uxHelpText = signal(this.#helpTextConst.empty);
+
+  constructor(
+    private snackBar: MatSnackBar,
+    private matDialog: MatDialog,
+    private viewContainerRef: ViewContainerRef,
+  ) { }
+
+  ngOnInit() {
+    this.dialogConfigSvc.getCurrent$().subscribe(settings => {
+      this.enableCode = settings.Context.Enable.CodeEditor;
+    });
+
+  }
+
+  createController(global?: boolean): void {
+    // This FileLocationDialogComponent dialog is currently never going to be opened because it has been replaced by mat-menu
+    // in the web-api.component.html template. If you want to use the dialog instead of the menu, you need to remove the
+    // mat-menu and replace it with a button that opens the dialog with empty parameters.
+    // Dialog has been replaced by menu because from update to Angular 16 CreateFileDialogComponent wasn't opening anymore if
+    // FileLocationDialogComponent dialog was used.
+    // if (global == null) {
+    //   const fileLocationDialogRef = this.dialog.open(FileLocationDialogComponent, {
+    //     autoFocus: false,
+    //     viewContainerRef: this.viewContainerRef,
+    //     width: '650px',
+    //   });
+    //   fileLocationDialogRef.afterClosed().subscribe((isShared?: boolean) => {
+    //     if (isShared == null) return;
+    //     this.createController(isShared);
+    //   });
+    //   return;
+    // }
+
+    const createFileDialogData: CreateFileDialogData = {
+      folder: 'api',
+      global,
+      purpose: 'Api',
     };
+    const createFileDialogRef = this.matDialog.open(CreateFileDialogComponent, {
+      autoFocus: false,
+      data: createFileDialogData,
+      viewContainerRef: this.viewContainerRef,
+      width: '650px',
+    });
 
-    uxHelpText = signal(this.#helpTextConst.empty);
+    createFileDialogRef.afterClosed().subscribe((result?: CreateFileDialogResult) => {
+      if (!result) return;
 
-    constructor(
-        private snackBar: MatSnackBar,
-        private matDialog: MatDialog,
-        private viewContainerRef: ViewContainerRef,
-    ) { }
+      if (result.name.endsWith('Controller.cs')) {
+        const fileName = result.name.substring(result.name.lastIndexOf('/') + 1);
+        if (!/^[A-Z][a-zA-Z0-9]*Controller\.cs$/g.test(fileName)) {
+          const message = `"${fileName}" is invalid controller name. Should be something like "MyController.cs"`;
+          this.snackBar.open(message, null, { duration: 5000 });
+          return;
+        }
+      }
 
-    ngOnInit() {
-        this.dialogConfigSvc.getCurrent$().subscribe(settings => {
-            this.enableCode = settings.Context.Enable.CodeEditor;
-        });
+      this.snackBar.open('Saving...');
+      this.#sourceSvc.create(result.name, global, result.templateKey).subscribe(() => {
+        this.snackBar.open('Saved', null, { duration: 2000 });
+        this.refresh.update(v => ++v);
+        this.uxHelpText.set(
+          this.webApis().length === 0
+            ? this.#helpTextConst.empty
+            : this.#helpTextConst.content
+        );
+      });
+    });
+  }
 
-    }
+  private enableCodeGetter() {
+    return this.enableCode;
+  }
 
-    createController(global?: boolean): void {
-        // This FileLocationDialogComponent dialog is currently never going to be opened because it has been replaced by mat-menu
-        // in the web-api.component.html template. If you want to use the dialog instead of the menu, you need to remove the
-        // mat-menu and replace it with a button that opens the dialog with empty parameters.
-        // Dialog has been replaced by menu because from update to Angular 16 CreateFileDialogComponent wasn't opening anymore if
-        // FileLocationDialogComponent dialog was used.
-        // if (global == null) {
-        //   const fileLocationDialogRef = this.dialog.open(FileLocationDialogComponent, {
-        //     autoFocus: false,
-        //     viewContainerRef: this.viewContainerRef,
-        //     width: '650px',
-        //   });
-        //   fileLocationDialogRef.afterClosed().subscribe((isShared?: boolean) => {
-        //     if (isShared == null) return;
-        //     this.createController(isShared);
-        //   });
-        //   return;
-        // }
+  private openCode(api: WebApi) {
+    this.#dialogInNewWindowSvc.openCodeFile(api.path, api.isShared);
+  }
 
-        const createFileDialogData: CreateFileDialogData = {
-            folder: 'api',
-            global,
-            purpose: 'Api',
-        };
-        const createFileDialogRef = this.matDialog.open(CreateFileDialogComponent, {
-            autoFocus: false,
-            data: createFileDialogData,
-            viewContainerRef: this.viewContainerRef,
-            width: '650px',
-        });
-
-        createFileDialogRef.afterClosed().subscribe((result?: CreateFileDialogResult) => {
-            if (!result) return;
-
-            if (result.name.endsWith('Controller.cs')) {
-                const fileName = result.name.substring(result.name.lastIndexOf('/') + 1);
-                if (!/^[A-Z][a-zA-Z0-9]*Controller\.cs$/g.test(fileName)) {
-                    const message = `"${fileName}" is invalid controller name. Should be something like "MyController.cs"`;
-                    this.snackBar.open(message, null, { duration: 5000 });
-                    return;
-                }
-            }
-
-            this.snackBar.open('Saving...');
-            this.#sourceSvc.create(result.name, global, result.templateKey).subscribe(() => {
-                this.snackBar.open('Saved', null, { duration: 2000 });
-                this.refresh.update(v => ++v);
-                this.uxHelpText.set(
-                    this.webApis().length === 0
-                        ? this.#helpTextConst.empty
-                        : this.#helpTextConst.content
-                );
-            });
-        });
-    }
-
-    private enableCodeGetter() {
-        return this.enableCode;
-    }
-
-    private openCode(api: WebApi) {
-        this.#dialogInNewWindowSvc.openCodeFile(api.path, api.isShared);
-    }
-
-    private buildGridOptions(): GridOptions {
-        const gridOptions: GridOptions = {
-            ...defaultGridOptions,
-            columnDefs: [
-                {
-                    ...ColumnDefinitions.ItemsText,
-                    headerName: 'Endpoint',
-                    field: 'endpointPath',
-                    flex: 2,
-                    minWidth: 250,
-                },
-                {
-                    ...ColumnDefinitions.TextWideMin100,
-                    headerName: 'Edition',
-                    field: 'edition',
-                    sort: 'asc',
-                },
-                {
-                    ...ColumnDefinitions.TextWideMin100,
-                    headerName: 'Forder2',
-                    field: 'folder',
-                    sort: 'asc',
-                },
-                {
-                    ...ColumnDefinitions.TextWide,
-                    headerName: 'Name',
-                    field: 'name',
-                },
-                {
-                    ...ColumnDefinitions.Boolean2,
-                    headerName: 'Compiled',
-                    field: 'isCompiled',
-                    cellRenderer: TrueFalseComponent,
-                },
-                {
-                    ...ColumnDefinitions.ActionsPinnedRight6,
-                    cellRenderer: WebApiActionsComponent,
-                    cellRendererParams: (() => {
-                        const params: WebApiActionsParams = {
-                            enableCodeGetter: () => this.enableCodeGetter(),
-                            onOpenCode: (api) => this.openCode(api),
-                        };
-                        return params;
-                    })(),
-                },
-            ],
-        };
-        return gridOptions;
-    }
+  private buildGridOptions(): GridOptions {
+    const gridOptions: GridOptions = {
+      ...defaultGridOptions,
+      columnDefs: [
+        {
+          ...ColumnDefinitions.ItemsText,
+          headerName: 'Endpoint',
+          field: 'endpointPath',
+          flex: 2,
+          minWidth: 250,
+        },
+        {
+          ...ColumnDefinitions.TextWideMin100,
+          headerName: 'Edition',
+          field: 'edition',
+          sort: 'asc',
+        },
+        {
+          ...ColumnDefinitions.TextWideMin100,
+          headerName: 'Forder2',
+          field: 'folder',
+          sort: 'asc',
+        },
+        {
+          ...ColumnDefinitions.TextWide,
+          headerName: 'Name',
+          field: 'name',
+        },
+        {
+          ...ColumnDefinitions.Boolean2,
+          headerName: 'Compiled',
+          field: 'isCompiled',
+          cellRenderer: TrueFalseComponent,
+        },
+        {
+          ...ColumnDefinitions.ActionsPinnedRight6,
+          cellRenderer: WebApiActionsComponent,
+          cellRendererParams: (() => {
+            const params: WebApiActionsParams = {
+              enableCodeGetter: () => this.enableCodeGetter(),
+              onOpenCode: (api) => this.openCode(api),
+            };
+            return params;
+          })(),
+        },
+      ],
+    };
+    return gridOptions;
+  }
 }

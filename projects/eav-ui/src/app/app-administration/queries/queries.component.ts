@@ -69,12 +69,12 @@ export class QueriesComponent implements OnInit {
   // UI Help Text for the UX Help Info Card
   #helpTextConst: HelpTextConst = {
     empty: {
-      description: 'This section displays a list of all Queries',
-      hint: 'You haven’t added any Querie yet. Click the + button at the bottom right to add your first Querie.'
+      description: '<p><b>This is where you manage Visual Queries</b><br>They help you select/sort/filter and publish data.</p>',
+      hint: "<p>Click the (+) in the bottom right corner to create your first Visual Query.</p>"
     },
     content: {
-      description: 'This section displays a list of all Queries',
-      hint: 'To add more Queries, click the + button in the bottom right corner. Click on any content item to modify it or show some other action on the right section.'
+      description: '<p><b>This is where you manage Visual Queries</b><br>They help you select/sort/filter and publish data.</p>',
+      hint: '<p>Click on the title to edit the Visual Query. <br>You can also configure permissions, or copy or export the queries.</p>'
     }
   };
 

@@ -86,12 +86,12 @@ export class ViewsComponent implements OnInit {
   // UI Help Text for the UX Help Info Card
   #helpTextConst: HelpTextConst = {
     empty: {
-      description: 'This section displays a list of all Views',
-      hint: 'You haven’t added any Views yet. Click the + button at the bottom right to add your first View.'
+      description: '<p><b>This is where you manage Views</b><br>They define how data is shown in the HTML output.</p>',
+      hint: "<p>Click the (+) in the bottom right corner to create your first View.</p>"
     },
     content: {
-      description: 'This section displays a list of all Views',
-      hint: 'To add more Views, click the + button in the bottom right corner. Click on any content item to modify it or show some other action on the right section.'
+      description: '<p><b>This is where you manage Views</b><br>They define how data is shown in the HTML output.</p>',
+      hint: '<p>Click on the title to edit the View. <br>You can also edit the source, configure permissions, optimize performance and more.</p>'
     }
   };
 
