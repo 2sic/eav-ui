@@ -2,3 +2,39 @@
   margin-top: -14px;
   width: 350px;
 }
+.eav-scope-dropdown {
+  margin-top: -14px;
+  width: 350px;
+}
+
+.grid-wrapper-dynamic {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .grid-dynamic {
+    max-height: calc(100% - 73px);
+  }
+
+  .ag-theme-material.grid-dynamic {
+    flex-shrink: 0;
+    flex-grow: 0;
+  }
+
+  app-ux-help-info-card {
+    flex-shrink: 0;
+    margin-top: 12px;
+  }
+
+  mat-dialog-actions {
+    flex-shrink: 0;
+    margin-top: auto;
+  }
+}
+
+.hidden {
+  // display: none !important;
+  visibility: hidden !important;
+  position: absolute !important;
+}
+

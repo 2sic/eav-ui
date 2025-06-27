@@ -41,6 +41,7 @@ import { ConfirmDeleteDialogData } from '../sub-dialogs/confirm-delete-dialog/co
 import { DataActionsComponent } from './data-actions/data-actions.component';
 import { DataFieldsComponent } from './data-fields/data-fields.component';
 import { DataItemsComponent } from './data-items/data-items.component';
+import { UxHelpInfoCardComponent } from './ux-help-info-card/ux-help-info-card.component';
 
 @Component({
   selector: 'app-data',
@@ -58,14 +59,15 @@ import { DataItemsComponent } from './data-items/data-items.component';
     SxcGridModule,
     DragAndDropDirective,
     TippyDirective,
+    UxHelpInfoCardComponent,
   ]
 })
 export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
 
+
   isDebug = inject(GlobalConfigService).isDebug;
   #snackBar = inject(MatSnackBar);
   #matDialog = inject(MatDialog);
-
 
   #contentTypeSvc = transient(ContentTypesService);
   #contentExportSvc = transient(ContentExportService);
@@ -86,8 +88,44 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
   dropdownInsertValue = dropdownInsertValue;
   enablePermissions!: boolean;
 
+  agGridHeigh = signal<number>(0);
+
+  checkHelpCardVisibilityO = computed(() => {
+    const agGridHeigh = this.agGridHeigh(); // TODO: agGrid
 
 
+    const rowElem = document.querySelector('.ag-row');
+    if (rowElem) {
+      console.log('2dg agGridHeigh', rowElem.clientHeight);
+    }
+
+
+    const helpCard = document.getElementById('ux-help-info-card');
+    const helpCardHeight = helpCard?.clientHeight;
+
+    // const gridHeight = document.querySelector('.ag-row')?.clientHeight;
+    // console.log('gridHeight', gridHeight);
+    const wrapperHeight = document.querySelector('.grid-wrapper-dynamic')?.clientHeight;
+
+    const dialogAction = document.getElementsByTagName('mat-dialog-actions')[0]?.clientHeight + 11;
+
+    // console.log('2dg agGridHeigh', agGridHeigh);
+
+
+    console.log('2dg sum', helpCardHeight + agGridHeigh + dialogAction);
+    console.log('2dg wrapperHeight', wrapperHeight);
+
+    console.log('2dg hidden?', helpCardHeight + agGridHeigh + dialogAction > wrapperHeight);
+
+    // console.log('2dg agGridHeigh', helpCardHeight && agGridHeigh && dialogAction);
+
+    // check, if the grid height is greater than the wrapper height
+    if (helpCardHeight + agGridHeigh + dialogAction > wrapperHeight)
+      helpCard?.classList.add('hidden');
+    else
+      helpCard?.classList.remove('hidden');
+
+  })
 
   ngOnInit() {
     this.#fetchScopes();
@@ -99,6 +137,16 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
     this.#dialogConfigSvc.getCurrent$().subscribe(data => {
       this.enablePermissions = data.Context.Enable.AppPermissions;
     });
+  }
+
+  onGridReady(params: any) {
+    const row = params.api.getDisplayedRowAtIndex(0)?.rowTop; // oder:
+    const rowElem = document.querySelector('.ag-row');
+    if (rowElem) {
+      const height = rowElem.clientHeight;
+      const x = 64 + (this.contentTypes()?.length * height);
+      this.agGridHeigh.set(x);
+    }
   }
 
 
@@ -148,6 +196,14 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
         contentType._compareLabel = contentType.Label.replace(/\p{Emoji}/gu, 'ž');
       }
       this.contentTypes.set(contentTypes);
+
+      // TODO: 2dg
+      var height = document.querySelector('.ag-row')?.clientHeight;
+      const x = 64 + (this.contentTypes()?.length * height);
+      console.log('fetchContentTypes gridHeightX', x);
+      this.agGridHeigh.set(x);
+
+
       if (this.scope() !== eavConstants.scopes.default.value) {
         const message = 'Warning! You are in a special scope. Changing things here could easily break functionality';
         this.#snackBar.open(message, null, { duration: 2000 });
@@ -397,5 +453,6 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
     });
     return;
   }
+
   //#endregion
 }
