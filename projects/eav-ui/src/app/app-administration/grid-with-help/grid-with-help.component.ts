@@ -34,16 +34,16 @@ export class GridWithHelpComponent {
       const refresh = this.refresh();
       const rowLength = this.rowLength();
 
-      if (this.agGrid() === undefined || this.dialogAction() === undefined)
-        return; // Ensure that the AG Grid and dialog action elements are available before proceeding
-
       // Get the height of a single AG-Grid row (default to 0 if not available)
-      const rowHeight = this.agGrid().nativeElement.querySelector('.ag-row')?.clientHeight ?? 47;
+      const rowHeight = this.agGrid()?.nativeElement.querySelector('.ag-row')?.clientHeight ?? 47;
 
       untracked(() => {
         const helpCard = document.querySelector('.help-info-card');
         // Set Center if there are now rows in the grid
         helpCard?.classList[rowLength === 0 ? 'add' : 'remove']('center-center');
+
+        if (this.agGrid() === undefined || this.dialogAction() === undefined)
+          return; // Ensure that the AG Grid and dialog action elements are available before proceeding
 
         if (rowHeight) {
           // Calculate the total height of the AG-Grid including header (64px) and set it on the element
