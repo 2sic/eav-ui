@@ -21,8 +21,6 @@ export class FeatureTextInfoComponent extends FeatureComponentBase {
 
   constructor() {
     super();
-
-    console.log("2dg", this.asInfo())
   }
 
   icon = computedObj('icon', () => this.asInfo() ? 'info' : 'warning');

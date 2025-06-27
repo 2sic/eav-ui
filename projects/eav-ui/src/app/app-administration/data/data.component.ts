@@ -32,6 +32,7 @@ import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.mod
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { mapUntilChanged } from '../../shared/rxJs/mapUntilChanged';
 import { GlobalConfigService } from '../../shared/services/global-config.service';
+import { GridWithHelpComponent, HelpTextConst } from '../grid-with-help/grid-with-help.component';
 import { ContentType } from '../models/content-type.model';
 import { ScopeDetailsDto } from '../models/scopedetails.dto';
 import { ContentTypesService } from '../services/content-types.service';
@@ -41,12 +42,10 @@ import { ConfirmDeleteDialogData } from '../sub-dialogs/confirm-delete-dialog/co
 import { DataActionsComponent } from './data-actions/data-actions.component';
 import { DataFieldsComponent } from './data-fields/data-fields.component';
 import { DataItemsComponent } from './data-items/data-items.component';
-import { GridWithHelpComponent, HelpTextConst } from './grid-with-help/grid-with-help.component';
 
 @Component({
   selector: 'app-data',
   templateUrl: './data.component.html',
-  styleUrls: ['./data.component.scss'],
   imports: [
     MatDialogActions,
     MatFormFieldModule,
