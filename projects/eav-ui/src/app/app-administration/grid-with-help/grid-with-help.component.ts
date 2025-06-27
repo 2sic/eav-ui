@@ -47,11 +47,16 @@ export class GridWithHelpComponent {
 
         const rowHeight = agGridEl.querySelector('.ag-row')?.clientHeight ?? 47;
         const agGridHeight = 64 + (rowLength * rowHeight);
-        const helpCardHeight = (helpCard?.clientHeight ?? 0) + 24;
+        const helpCardHeight = (helpCard.clientHeight ?? 0) + 24;
         const dialogActionHeight = (dialogActionEl.clientHeight ?? 0) + 11;
+
+        console.debug('helpCardHeight', helpCardHeight);
+
 
         // Set AG Grid height
         agGridEl.style.height = rowHeight ? `${agGridHeight}px` : `0px`;
+
+        (helpCard as HTMLElement).style.flex = "1 1 auto"
 
         // Hide help card if content exceeds wrapper
         const shouldHideHelp = helpCardHeight + agGridHeight + dialogActionHeight > wrapperHeight;
