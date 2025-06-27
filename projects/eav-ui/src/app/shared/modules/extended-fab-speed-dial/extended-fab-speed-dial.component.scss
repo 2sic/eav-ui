@@ -1,3 +1,5 @@
+@import '../../../../styles/variables.scss';
+
 $button-height: 44px;
 
 extended-fab-speed-dial {
@@ -51,7 +53,7 @@ extended-fab-speed-dial {
     color: white;
     font-size: 12px;
     white-space: nowrap;
-    background: #002753;
+    background: $sxc-gradient;
     cursor: pointer;
     box-shadow:
       0px 3px 5px -1px rgb(0 0 0 / 20%),
