@@ -20,50 +20,43 @@ export interface GridWithHelpInput {
 })
 
 export class GridWithHelpComponent {
-  // Reference to the AG Grid component element
   agGrid = contentChild(AgGridAngular, { read: ElementRef });
-  // Reference to the dialog action buttons
   dialogAction = contentChild(MatDialogActions, { read: ElementRef });
 
-  helpText = input.required<GridWithHelpInput>({}); // Help text content (required)
-  refresh = input.required<number>();  // triggering a refresh (required)
-  rowLength = input.required<number>(); // representing the number of rows in the grid (required)
+  helpText = input.required<GridWithHelpInput>({});
+  refresh = input.required<number>();
+  rowLength = input.required<number>();
 
   constructor() {
     effect(() => {
       const refresh = this.refresh();
       const rowLength = this.rowLength();
 
-      // Get the height of a single AG-Grid row (default to 0 if not available)
-      const rowHeight = this.agGrid()?.nativeElement.querySelector('.ag-row')?.clientHeight ?? 47;
-
       untracked(() => {
+
+        const agGridEl = this.agGrid()?.nativeElement;
+        const dialogActionEl = this.dialogAction()?.nativeElement;
         const helpCard = document.querySelector('.help-info-card');
-        // Set Center if there are now rows in the grid
-        helpCard?.classList[rowLength === 0 ? 'add' : 'remove']('center-center');
 
-        if (this.agGrid() === undefined || this.dialogAction() === undefined)
-          return; // Ensure that the AG Grid and dialog action elements are available before proceeding
+        // Center help card if no rows
+        helpCard?.classList.toggle('center-center', rowLength === 0);
 
-        if (rowHeight) {
-          // Calculate the total height of the AG-Grid including header (64px) and set it on the element
-          // Dynamically set the AG-Grid height based on row count and row height
-          const agGridHeight = 64 + ((rowLength ?? 0) * rowHeight);
+        const wrapperHeight = document.querySelector('.grid-wrapper-dynamic')?.clientHeight ?? 0;
 
-          this.agGrid().nativeElement.style.height = `${agGridHeight}px`;
+        if (!agGridEl || !dialogActionEl) return;
 
-          const helpCardHeight = (helpCard?.clientHeight ?? 0) + 24;
-          // Get the height of the Full Page
-          const wrapperHeight = document.querySelector('.grid-wrapper-dynamic')?.clientHeight ?? 0;
-          const dialogActionHeight = (this.dialogAction()?.nativeElement?.clientHeight ?? 0) + 11;
+        const rowHeight = agGridEl.querySelector('.ag-row')?.clientHeight ?? 47;
+        const agGridHeight = 64 + (rowLength * rowHeight);
+        const helpCardHeight = (helpCard?.clientHeight ?? 0) + 24;
+        const dialogActionHeight = (dialogActionEl.clientHeight ?? 0) + 11;
 
-          // Conditionally hide the help card if the combined heights exceed the wrapper height
-          helpCard?.classList[helpCardHeight + agGridHeight + dialogActionHeight > wrapperHeight ? 'add' : 'remove']('hidden-help-info-card');
-        } else {
-          this.agGrid().nativeElement.style.height = `0px`;
-        }
-      })
-    })
+        // Set AG Grid height
+        agGridEl.style.height = rowHeight ? `${agGridHeight}px` : `0px`;
+
+        // Hide help card if content exceeds wrapper
+        const shouldHideHelp = helpCardHeight + agGridHeight + dialogActionHeight > wrapperHeight;
+        helpCard?.classList.toggle('hidden-help-info-card', shouldHideHelp);
+      });
+    });
   }
-
 }
