@@ -3,7 +3,7 @@
   @if (contentTypes()?.length) {
     <ag-grid-angular
       (gridReady)="onGridReady()"
-      [style.height.px]="checkGetAgGridHeight()"
+      [style.height.px]="helpCardVisibilityHeight()"
       class="ag-theme-material grid-dynamic"
       [rowData]="contentTypes()"
       [gridOptions]="gridOptions"

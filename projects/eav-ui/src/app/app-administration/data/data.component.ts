@@ -105,7 +105,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
 
   #refresh = signal<number>(0);
 
-  checkGetAgGridHeight = this.#uxHelpService.checkHelpCard(this.#refresh, this.contentTypes);
+  helpCardVisibilityHeight = this.#uxHelpService.helpCardVisibilityHeight(this.#refresh, this.contentTypes);
 
   ngOnInit() {
     this.#fetchScopes();
