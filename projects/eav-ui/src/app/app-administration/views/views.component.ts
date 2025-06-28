@@ -23,6 +23,7 @@ import { EditForm, EditPrep } from '../../shared/models/edit-form.model';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogInNewWindowService } from '../../shared/routing/dialog-in-new-window.service';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
+import { GridWithHelpComponent, HelpTextConst } from '../grid-with-help/grid-with-help.component';
 import { View, ViewEntity } from '../models/view.model';
 import { DialogConfigAppService } from '../services/dialog-config-app.service';
 import { ViewsService } from '../services/views.service';
@@ -43,6 +44,7 @@ import { calculateViewType } from './views.helpers';
     SxcGridModule,
     DragAndDropDirective,
     TippyDirective,
+    GridWithHelpComponent
   ]
 })
 export class ViewsComponent implements OnInit {
@@ -65,13 +67,11 @@ export class ViewsComponent implements OnInit {
     private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
-  ) {
+  ) { }
 
-  }
-
-  #refresh = signal(1); // must start with 1 so it can be chained in computed as ...refresh() && ...
-  views = this.#viewsSvc.getAllLive(this.#refresh).value;
-  #polymorphismLazy = this.#viewsSvc.getPolymorphismLive(this.#refresh).value;
+  refresh = signal(1); // must start with 1 so it can be chained in computed as ...refresh() && ...
+  views = this.#viewsSvc.getAllLive(this.refresh).value;
+  #polymorphismLazy = this.#viewsSvc.getPolymorphismLive(this.refresh).value;
 
   polymorphStatus = computed(() => {
     const polymorphism = this.#polymorphismLazy();
@@ -81,6 +81,21 @@ export class ViewsComponent implements OnInit {
         ? 'disabled'
         : 'using ' + polymorphism.Resolver;
   });
+
+
+  // UI Help Text for the UX Help Info Card
+  #helpTextConst: HelpTextConst = {
+    empty: {
+      description: '<p><b>This is where you manage Views</b><br>They define how data is shown in the HTML output.</p>',
+      hint: "<p>Click the (+) in the bottom right corner to create your first View.</p>"
+    },
+    content: {
+      description: '<p><b>This is where you manage Views</b><br>They define how data is shown in the HTML output.</p>',
+      hint: '<p>Click on the title to edit the View. <br>You can also edit the source, configure permissions, optimize performance and more.</p>'
+    }
+  };
+
+  uxHelpText = signal(this.#helpTextConst.empty);
 
   ngOnInit() {
 
@@ -111,7 +126,14 @@ export class ViewsComponent implements OnInit {
   }
 
   #triggerRefresh() {
-    this.#refresh.update(v => ++v);
+    this.refresh.update(v => ++v);
+    this.uxHelpText.set(
+      this.views().length === 0
+        ? this.#helpTextConst.empty
+        : this.#helpTextConst.content
+    );
+
+
   }
 
   urlToNewView() {

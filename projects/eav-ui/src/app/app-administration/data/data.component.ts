@@ -32,6 +32,7 @@ import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.mod
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { mapUntilChanged } from '../../shared/rxJs/mapUntilChanged';
 import { GlobalConfigService } from '../../shared/services/global-config.service';
+import { GridWithHelpComponent, HelpTextConst } from '../grid-with-help/grid-with-help.component';
 import { ContentType } from '../models/content-type.model';
 import { ScopeDetailsDto } from '../models/scopedetails.dto';
 import { ContentTypesService } from '../services/content-types.service';
@@ -45,7 +46,6 @@ import { DataItemsComponent } from './data-items/data-items.component';
 @Component({
   selector: 'app-data',
   templateUrl: './data.component.html',
-  styleUrls: ['./data.component.scss'],
   imports: [
     MatDialogActions,
     MatFormFieldModule,
@@ -58,19 +58,33 @@ import { DataItemsComponent } from './data-items/data-items.component';
     SxcGridModule,
     DragAndDropDirective,
     TippyDirective,
+    GridWithHelpComponent
   ]
 })
 export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
-
   isDebug = inject(GlobalConfigService).isDebug;
   #snackBar = inject(MatSnackBar);
   #matDialog = inject(MatDialog);
-
 
   #contentTypeSvc = transient(ContentTypesService);
   #contentExportSvc = transient(ContentExportService);
   #dialogConfigSvc = transient(DialogConfigAppService);
   #dialogRouter = transient(DialogRoutingService);
+
+
+  // UI Help Text for the UX Help Info Card
+  #helpTextConst: HelpTextConst = {
+    empty:  {
+      description: '<p><b>This is where you manage data</b></p>',
+      hint: "<p>Click the (+) in the bottom right corner to create your first Content Type (think: table).</p>"
+    },
+    content: {
+      description: '<p><b>Each row shows a Content Type</b> <br> They define the fields, similar to a database table.</p>',
+      hint: '<p>Click on the title to list the Entities (think: records). <br>You can also create new Entities, configure the fields and export/import the schema or the data.</p>'
+    }
+  };
+
+  uxHelpText = signal(this.#helpTextConst.empty);
 
   constructor(private viewContainerRef: ViewContainerRef,) {
     super();
@@ -86,8 +100,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
   dropdownInsertValue = dropdownInsertValue;
   enablePermissions!: boolean;
 
-
-
+  refresh = signal<number>(0);
 
   ngOnInit() {
     this.#fetchScopes();
@@ -100,7 +113,6 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
       this.enablePermissions = data.Context.Enable.AppPermissions;
     });
   }
-
 
   filesDropped(files: File[]) {
     const importFile = files[0];
@@ -148,6 +160,15 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
         contentType._compareLabel = contentType.Label.replace(/\p{Emoji}/gu, 'ž');
       }
       this.contentTypes.set(contentTypes);
+
+      this.uxHelpText.set(
+        this.contentTypes().length === 0
+          ? this.#helpTextConst.empty
+          : this.#helpTextConst.content
+      );
+
+      this.refresh.update(v => ++v)
+
       if (this.scope() !== eavConstants.scopes.default.value) {
         const message = 'Warning! You are in a special scope. Changing things here could easily break functionality';
         this.#snackBar.open(message, null, { duration: 2000 });
@@ -397,5 +418,6 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
     });
     return;
   }
+
   //#endregion
 }

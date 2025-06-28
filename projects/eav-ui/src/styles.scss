@@ -80,3 +80,13 @@ a.fill-cell {
     100vh - var(--edit-dialog-header-height) - var(--edit-dialog-margins-vertical)
   );
 }
+
+// 2pp - Override Components with new v20 colors
+.grid-fab,
+.text-icon,
+.mat-badge-content,
+.eav-eco-fab-speed-dial-action-button {
+  background: $sxc-gradient !important;
+  color: white !important;
+}
+

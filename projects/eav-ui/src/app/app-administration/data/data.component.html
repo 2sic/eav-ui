@@ -1,23 +1,19 @@
-<div class="grid-wrapper mat-tab-grid-wrapper">
-  <!-- This is the table, you see in the Data Tab. The fields are defined inside the TS file -->
-  <ag-grid-angular
-    class="ag-theme-material"
-    [rowData]="contentTypes()"
-    [gridOptions]="gridOptions"
-    appDragAndDrop
-    [allowedFileTypes]="'xml,json'"
-    (filesDropped)="filesDropped($event)"
-  >
-  </ag-grid-angular>
+<app-grid-with-help [helpText]="uxHelpText()" [refresh]="refresh()" [rowLength]="contentTypes()?.length">
+  @if (contentTypes()?.length) {
+    <ag-grid-angular
+      class="ag-theme-material grid-dynamic"
+      [rowData]="contentTypes()"
+      [gridOptions]="gridOptions"
+      appDragAndDrop
+      [allowedFileTypes]="'xml,json'"
+      (filesDropped)="filesDropped($event)"
+    >
+    </ag-grid-angular>
+  }
   <mat-dialog-actions class="eav-dialog-actions">
     <div class="eav-dialog-actions-div">
       <mat-form-field color="accent" class="eav-mat-form-field eav-scope-dropdown">
-        <mat-select
-          [ngModel]="scope()"
-          name="Scope"
-          (ngModelChange)="changeScope($event)"
-          panelWidth=""
-        >
+        <mat-select [ngModel]="scope()" name="Scope" (ngModelChange)="changeScope($event)" panelWidth="">
           <mat-select-trigger>
             <span>Scope: {{ scopeSelected()?.label }}</span>
           </mat-select-trigger>
@@ -55,5 +51,5 @@
       </button>
     </a>
   </mat-dialog-actions>
-</div>
+</app-grid-with-help>
 <router-outlet></router-outlet>

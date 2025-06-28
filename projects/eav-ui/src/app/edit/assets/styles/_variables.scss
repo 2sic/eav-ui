@@ -1,3 +1,5 @@
+@import '../../../../styles/variables.scss';
+
 $primary-color: #ffffff;
 $accent-color: #002753;
 $blue-accent-color: #0087f4;
@@ -9,27 +11,24 @@ $edit-ui-dialog-max-width: 800px;
 // Main height - all moved to main styles.css so it's not added multiple times
 // Debug - all moved to main styles.css so it's not added multiple times
 
+$edit-ui-dialog-border-radius: 8px;
+$edit-ui-dialog-border-radius-mobile: 0px;
+$edit-ui-input-border-radius: 4px;
 
-
-
-$edit-ui-dialog-border-radius:8px;
-$edit-ui-dialog-border-radius-mobile:0px;
-$edit-ui-input-border-radius:4px;
-
-$save-button-height:48px;
-$save-button-height-mobile:42px;
-$save-button-width-compact:48px;
-$save-button-width-compact-mobile:42px;
-$save-button-width-extended:200px;
-$save-button-width-extended-mobile:170px;
+$save-button-height: 48px;
+$save-button-height-mobile: 42px;
+$save-button-width-compact: 48px;
+$save-button-width-compact-mobile: 42px;
+$save-button-width-extended: 200px;
+$save-button-width-extended-mobile: 170px;
 
 // The max-height should also be set in the expandable wrapper animations
 $expandable-wrapper-max-height: calc(var(--edit-content-max-height-default) + var(--edit-dialog-header-height));
 $expandable-wrapper-max-height-mobile: calc(var(--edit-ui-dialog-max-height-mobile) + var(--edit-dialog-header-height));
 
-$edit-ui-dialog-background-color: #EFF0F2;
+$edit-ui-dialog-background-color: #eff0f2;
 
-$editUI-foreground-color: #1D273D;
+$editUI-foreground-color: #1d273d;
 $editUI-disabled-background: rgba($editUI-foreground-color, 0.04);
 $editUI-label-disabled-color: rgba($editUI-foreground-color, 0.24);
 $editUI-field-disabled-color: rgba($editUI-foreground-color, 0.44);
@@ -40,10 +39,9 @@ $edit-ui-selected-option: rgba(#000000, 0.04);
 $field-border-color--initial: rgba(0, 0, 0, 0.2);
 $field-border-color--hover: rgba(0, 0, 0, 0.4);
 $field-border-color--focus: $accent-color;
-$field-border-color--disabled:rgba(0, 0, 0, 0.2);
+$field-border-color--disabled: rgba(0, 0, 0, 0.2);
 $field-border-color--invalid: $error-color;
 
 // Dropzone
 $dropzone-background: rgba($accent-color, 0.44);
 $dropzone-active-background: rgba($accent-color, 0.88);
-

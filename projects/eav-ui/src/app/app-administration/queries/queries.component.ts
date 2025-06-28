@@ -23,6 +23,7 @@ import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.mod
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { RouteLinkHelper } from '../../shared/routing/route-link-helper';
 import { Context } from '../../shared/services/context';
+import { GridWithHelpComponent, HelpTextConst } from '../grid-with-help/grid-with-help.component';
 import { Query } from '../models/query.model';
 import { DialogConfigAppService } from '../services/dialog-config-app.service';
 import { PipelinesService } from '../services/pipelines.service';
@@ -49,6 +50,7 @@ const logSpecs = {
     SxcGridModule,
     DragAndDropDirective,
     TippyDirective,
+    GridWithHelpComponent,
   ]
 })
 export class QueriesComponent implements OnInit {
@@ -63,18 +65,29 @@ export class QueriesComponent implements OnInit {
   #context = inject(Context);
   #snackBar = inject(MatSnackBar);
 
+
+  // UI Help Text for the UX Help Info Card
+  #helpTextConst: HelpTextConst = {
+    empty: {
+      description: '<p><b>This is where you manage Visual Queries</b><br>They help you select/sort/filter and publish data.</p>',
+      hint: "<p>Click the (+) in the bottom right corner to create your first Visual Query.</p>"
+    },
+    content: {
+      description: '<p><b>This is where you manage Visual Queries</b><br>They help you select/sort/filter and publish data.</p>',
+      hint: '<p>Click on the title to edit the Visual Query. <br>You can also configure permissions, or copy or export the queries.</p>'
+    }
+  };
+
+  uxHelpText = signal(this.#helpTextConst.empty);
+
   constructor() { }
 
   enablePermissions!: boolean;
   public gridOptions = this.buildGridOptions();
 
-  #refresh = signal(0);
-  // queries = computed(() => {
-  //   const refresh = this.#refresh();
-  //   return this.#pipelineSvc.getAllSig(eavConstants.contentTypes.query, undefined)
-  // });
+  refresh = signal(0);
 
-  queries = this.#pipelineSvc.getAllLive(eavConstants.contentTypes.query, this.#refresh).value;
+  queries = this.#pipelineSvc.getAllLive(eavConstants.contentTypes.query, this.refresh).value;
 
   ngOnInit() {
     // watch for return from dialog to reload queries
@@ -103,7 +116,12 @@ export class QueriesComponent implements OnInit {
   //#endregion
 
   #triggerRefresh() {
-    this.#refresh.update(v => ++v);
+    this.refresh.update(v => ++v);
+    this.uxHelpText.set(
+      this.queries().length === 0
+        ? this.#helpTextConst.empty
+        : this.#helpTextConst.content
+    );
   }
 
   #urlTo(url: string) {

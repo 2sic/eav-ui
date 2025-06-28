@@ -1,3 +1,5 @@
+@import '../../../../styles/variables.scss';
+
 $button-height: 44px;
 
 extended-fab-speed-dial {
@@ -51,7 +53,7 @@ extended-fab-speed-dial {
     color: white;
     font-size: 12px;
     white-space: nowrap;
-    background: #002753;
+    background: $sxc-gradient;
     cursor: pointer;
     box-shadow:
       0px 3px 5px -1px rgb(0 0 0 / 20%),
@@ -60,6 +62,7 @@ extended-fab-speed-dial {
     box-sizing: border-box;
 
     > mat-icon {
+      color: white;
       font-size: 20px;
       width: 20px;
       height: 20px;
@@ -67,6 +70,7 @@ extended-fab-speed-dial {
     }
 
     > span {
+      color: white;
       display: inline-block;
       white-space: nowrap;
       overflow: hidden;
