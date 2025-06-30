@@ -1,5 +1,5 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { Component, computed, inject, OnDestroy, OnInit, signal, ViewContainerRef } from '@angular/core';
+import { Component, computed, effect, inject, OnDestroy, OnInit, signal, untracked, ViewContainerRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
@@ -74,7 +74,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
 
   // UI Help Text for the UX Help Info Card
   #helpTextConst: HelpTextConst = {
-    empty:  {
+    empty: {
       description: '<p><b>This is where you manage data</b></p>',
       hint: "<p>Click the (+) in the bottom right corner to create your first Content Type (think: table).</p>"
     },
@@ -88,6 +88,18 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
 
   constructor(private viewContainerRef: ViewContainerRef,) {
     super();
+
+    effect(() => {
+      const contentTypes = this.contentTypes();
+      untracked(() => {
+        this.uxHelpText.set(
+          contentTypes?.length === 0
+            ? this.#helpTextConst.empty
+            : this.#helpTextConst.content
+        );
+      })
+    });
+
   }
 
   contentTypes = signal<ContentType[]>(undefined);
@@ -160,13 +172,6 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
         contentType._compareLabel = contentType.Label.replace(/\p{Emoji}/gu, 'ž');
       }
       this.contentTypes.set(contentTypes);
-
-      this.uxHelpText.set(
-        this.contentTypes().length === 0
-          ? this.#helpTextConst.empty
-          : this.#helpTextConst.content
-      );
-
       this.refresh.update(v => ++v)
 
       if (this.scope() !== eavConstants.scopes.default.value) {

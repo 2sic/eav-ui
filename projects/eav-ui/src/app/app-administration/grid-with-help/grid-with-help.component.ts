@@ -37,6 +37,7 @@ export class GridWithHelpComponent {
         const agGridEl = this.agGrid()?.nativeElement;
         const dialogActionEl = this.dialogAction()?.nativeElement;
         const helpCard = document.querySelector('.help-info-card');
+          (helpCard as HTMLElement).style.flex = ""; // Remove style flex
 
         // Center help card if no rows
         helpCard?.classList.toggle('center-center', rowLength === 0);
@@ -50,13 +51,10 @@ export class GridWithHelpComponent {
         const helpCardHeight = (helpCard.clientHeight ?? 0) + 24;
         const dialogActionHeight = (dialogActionEl.clientHeight ?? 0) + 11;
 
-        console.debug('helpCardHeight', helpCardHeight);
-
-
         // Set AG Grid height
         agGridEl.style.height = rowHeight ? `${agGridHeight}px` : `0px`;
 
-        (helpCard as HTMLElement).style.flex = "1 1 auto"
+        (helpCard as HTMLElement).style.flex = "1 1 auto"// Add flex style to help card
 
         // Hide help card if content exceeds wrapper
         const shouldHideHelp = helpCardHeight + agGridHeight + dialogActionHeight > wrapperHeight;

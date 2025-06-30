@@ -1,6 +1,6 @@
 import polymorphLogo from '!url-loader!./polymorph-logo.png';
 import { GridOptions } from '@ag-grid-community/core';
-import { ChangeDetectorRef, Component, computed, OnInit, signal, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, computed, effect, OnInit, signal, untracked, ViewContainerRef } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogActions } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -67,7 +67,18 @@ export class ViewsComponent implements OnInit {
     private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
-  ) { }
+  ) {
+    effect(() => {
+      const views = this.views();
+      untracked(() => {
+        this.uxHelpText.set(
+          views?.length === 0
+            ? this.#helpTextConst.empty
+            : this.#helpTextConst.content
+        );
+      })
+    });
+  }
 
   refresh = signal(1); // must start with 1 so it can be chained in computed as ...refresh() && ...
   views = this.#viewsSvc.getAllLive(this.refresh).value;
@@ -127,13 +138,6 @@ export class ViewsComponent implements OnInit {
 
   #triggerRefresh() {
     this.refresh.update(v => ++v);
-    this.uxHelpText.set(
-      this.views().length === 0
-        ? this.#helpTextConst.empty
-        : this.#helpTextConst.content
-    );
-
-
   }
 
   urlToNewView() {
