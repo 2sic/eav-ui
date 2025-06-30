@@ -1,5 +1,5 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { Component, computed, effect, inject, OnDestroy, OnInit, signal, untracked, ViewContainerRef } from '@angular/core';
+import { Component, computed, inject, OnDestroy, OnInit, signal, ViewContainerRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
@@ -84,22 +84,13 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
     }
   };
 
-  uxHelpText = signal(this.#helpTextConst.empty);
+  uxHelpText = computed(() => {
+    const data = this.contentTypes();
+    return data?.length === 0 ? this.#helpTextConst.empty : this.#helpTextConst.content;
+  })
 
   constructor(private viewContainerRef: ViewContainerRef,) {
     super();
-
-    effect(() => {
-      const contentTypes = this.contentTypes();
-      untracked(() => {
-        this.uxHelpText.set(
-          contentTypes?.length === 0
-            ? this.#helpTextConst.empty
-            : this.#helpTextConst.content
-        );
-      })
-    });
-
   }
 
   contentTypes = signal<ContentType[]>(undefined);

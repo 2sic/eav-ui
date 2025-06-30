@@ -1,5 +1,5 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { Component, effect, inject, OnInit, signal, untracked } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogActions } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -78,20 +78,10 @@ export class QueriesComponent implements OnInit {
     }
   };
 
-  uxHelpText = signal(this.#helpTextConst.empty);
-
-  constructor() {
-    effect(() => {
-      const queries = this.queries();
-      untracked(() => {
-        this.uxHelpText.set(
-          queries?.length === 0
-            ? this.#helpTextConst.empty
-            : this.#helpTextConst.content
-        );
-      })
-    });
-  }
+  uxHelpText = computed(() => {
+    const data = this.queries();
+    return data?.length === 0 ? this.#helpTextConst.empty : this.#helpTextConst.content;
+  })
 
   enablePermissions!: boolean;
   public gridOptions = this.buildGridOptions();
