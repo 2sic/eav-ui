@@ -1,5 +1,5 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { Component, effect, OnInit, signal, untracked, ViewContainerRef } from '@angular/core';
+import { Component, computed, OnInit, signal, ViewContainerRef } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogActions } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -58,24 +58,16 @@ export class WebApiComponent implements OnInit {
     }
   };
 
-  uxHelpText = signal(this.#helpTextConst.empty);
+  uxHelpText = computed(() => {
+    const data = this.webApis();
+    return data?.length === 0 ? this.#helpTextConst.empty : this.#helpTextConst.content;
+  })
 
   constructor(
     private snackBar: MatSnackBar,
     private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
-  ) {
-    effect(() => {
-      const webApis = this.webApis();
-      untracked(() => {
-        this.uxHelpText.set(
-          webApis?.length === 0
-            ? this.#helpTextConst.empty
-            : this.#helpTextConst.content
-        );
-      })
-    });
-  }
+  ) { }
 
   ngOnInit() {
     this.dialogConfigSvc.getCurrent$().subscribe(settings => {
