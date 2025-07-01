@@ -104,7 +104,7 @@ export class FormulaValueCorrections {
       // fix fields
       if (raw.fields)
         raw.fields = raw.fields?.map(f => {
-          f.value = this.#oneValue(f.value);
+          f.value = this.#oneValue(f.value, f.name);
           return f;
         });
 
@@ -143,9 +143,17 @@ export class FormulaValueCorrections {
    * @param inputType InputType is needed to check if the result is a date which needs to be corrected
    * @returns Corrected field value
    */
-  #oneValue(value: FieldValue | Date): FieldValue {
+  #oneValue(value: FieldValue | Date, otherFieldName: string = null): FieldValue {
+    const l = this.log.fnIf('oneValue', { fieldName: this.fieldName, otherFieldName, value, type: typeof value });
     if (value == null)
-      return value as FieldValue;
+      return l.r(value as FieldValue, 'null');
+
+    // WIP: If doing this for another field, we should not change for now
+    // better would be to lookup the definition of the other field and see if it is a date or not
+    if (otherFieldName) {
+      return l.r(value as FieldValue, `other field ${otherFieldName} value not changed`);
+    }
+
 
     const inputType = this.inputType.inputType;
     
@@ -157,14 +165,14 @@ export class FormulaValueCorrections {
         date.setTime(date.getTime() - date.getTimezoneOffset() * 60000);
 
       date.setMilliseconds(0);
-      return date.toJSON();
+      return l.r(date.toJSON(), 'date');
     }
     
     if (typeof (value) !== 'string' && (inputType?.startsWith(DataTypeCatalog.String.toLocaleLowerCase())
       || inputType?.startsWith(DataTypeCatalog.Hyperlink.toLocaleLowerCase()))) {
-      return value.toString();
+      return l.r(value.toString(), 'not string, but input is string or hyperlink');
     }
-    return value;
+    return l.r(value, 'unchanged');
   }
 
 
