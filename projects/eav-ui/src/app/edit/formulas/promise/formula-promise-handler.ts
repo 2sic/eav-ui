@@ -37,7 +37,9 @@ export class FormulaPromiseHandler {
 
   log = classLog({FormulaPromiseHandler}, logSpecs);
 
-  constructor(private itemService: ItemService) { }
+  // #contentTypeSvc = inject(ContentTypeService);
+
+  constructor(private itemSvc: ItemService) { }
 
   #updateValueQueue: Record<string, FormulaPromiseResult> = {};
   
@@ -140,7 +142,7 @@ export class FormulaPromiseHandler {
     const entityGuid = this.#entityGuid;
     const l = this.log.fnIfInList('promiseComplete', 'fields', formula.fieldName, { result, formula, entityGuid }, formula.target);
     const fieldName = formula.fieldName;
-    const raw = new FormulaValueCorrections(fieldName, formula.isValue, formula.inputType, false).v2(result);
+    const raw = new FormulaValueCorrections(this.#contentType(), entityGuid, fieldName, formula.isValue, formula.inputType, false).v2(result);
 
     // Make sure the cache contains this entry
     const queue = this.#updateValueQueue;
@@ -211,7 +213,7 @@ export class FormulaPromiseHandler {
     let newFieldProps: Record<string, FieldProps> = null;
     if (settings.length) {
       newFieldProps = { ...cycle.fieldProps };
-      const itemAttributes = this.itemService.getItemAttributes(this.#entityGuid);
+      const itemAttributes = this.itemSvc.getItemAttributes(this.#entityGuid);
       Object.values(settings).forEach(setting => {
         const fieldName = setting.fieldName;
         const settingsCurrent = cycle.fieldProps[fieldName]?.settings;

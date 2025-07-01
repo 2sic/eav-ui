@@ -6,6 +6,7 @@ import { DebugFields } from '../../edit-debug';
 import { StateUiMapperBase } from '../../fields/picker/adapters/state-ui-mapper-base';
 import { PickerItem } from '../../fields/picker/models/picker-item.model';
 import { InputTypeSpecs } from '../../shared/input-types/input-type-specs.model';
+import { EavContentType } from '../../shared/models/eav/eav-content-type';
 import { FieldFormulasResultRaw, FieldValueOrResultRaw } from "./formula-results.models";
 
 const logSpecs = {
@@ -25,6 +26,9 @@ export class FormulaValueCorrections {
   log = classLog({FormulaValueCorrections}, logSpecs);
 
   constructor(
+    private contentType: EavContentType,
+    // private contentTypeSvc: ContentTypeService,
+    private entityGuid: string,
     private fieldName: string,
     private isValue: boolean,
     private inputType: InputTypeSpecs,
@@ -148,15 +152,20 @@ export class FormulaValueCorrections {
     if (value == null)
       return l.r(value as FieldValue, 'null');
 
-    // WIP: If doing this for another field, we should not change for now
-    // better would be to lookup the definition of the other field and see if it is a date or not
+    let inputType = this.inputType.inputType;
+
+    // If doing this for another field, we must lookup the definition of the other field and handle it's expected input type
     if (otherFieldName) {
-      return l.r(value as FieldValue, `other field ${otherFieldName} value not changed`);
+      const otherAttribute = this.contentType.Attributes.find(a => a.Name === otherFieldName);
+      
+      if (!otherAttribute?.InputType)
+        return l.r(value as FieldValue, `other field ${otherFieldName}; value not changed as target field not found`);
+            
+      inputType = otherAttribute.InputType;
+      l.a(`other field ${otherFieldName} found, inputType: ${inputType}`);
     }
 
 
-    const inputType = this.inputType.inputType;
-    
     if (inputType === InputTypeCatalog.DateTimeDefault || value instanceof Date) {
       const date = new Date(value as string | number | Date);
 

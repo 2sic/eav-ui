@@ -25,7 +25,7 @@ export class InputTypeService extends SignalStoreBase<string, InputTypeMetadata>
   getAttributeInputTypes(attributes: EavContentTypeAttribute[]): AttributeInputType[] {
     const inputTypes = this.getAll();
     return attributes.map(attribute => {
-      const specs = this.getSpecsInternal(attribute, inputTypes);
+      const specs = this.#getSpecsInternal(attribute.InputType, inputTypes);
       return {
         name: attribute.Name,
         inputType: specs.inputType,
@@ -34,10 +34,29 @@ export class InputTypeService extends SignalStoreBase<string, InputTypeMetadata>
   }
 
   getSpecs(attribute: EavContentTypeAttribute): InputTypeSpecs {
-    return this.getSpecsInternal(attribute, this.getAll());
+    return this.#getSpecsInternal(attribute.InputType, this.getAll());
   }
 
-  private getSpecsInternal(attribute: EavContentTypeAttribute, inputTypes: InputTypeMetadata[]): InputTypeSpecs {
+  // getSpecsOfName(inputType: Of<typeof InputTypeCatalog>): InputTypeSpecs {
+  //   return this.#getSpecsInternal(inputType, this.getAll());
+  // }
+
+  #getSpecsInternal(inputType: Of<typeof InputTypeCatalog>, inputTypes: InputTypeMetadata[]): InputTypeSpecs {
+    const inputTypeMetadata = inputTypes.find(i => i.Type === inputType);
+    const name = inputType.toString();
+    const calculated: InputTypeSpecs = {
+      inputType,
+      isExternal: !!inputTypeMetadata?.AngularAssets,
+      mustUseGuid: !name.startsWith('string') && !name.startsWith('number'),
+      componentTagName: `field-${inputType}`,
+      componentTagDialogName: `field-${inputType}-dialog`,
+      metadata: inputTypeMetadata,
+      isNewPicker: InputTypeHelpers.isNewPicker(inputType),
+    };
+    return calculated;
+  }
+
+  #getSpecsInternalOld(attribute: EavContentTypeAttribute, inputTypes: InputTypeMetadata[]): InputTypeSpecs {
     const inputTypeMetadata = inputTypes.find(i => i.Type === attribute.InputType);
     const inputType = attribute.InputType as Of<typeof InputTypeCatalog>;
     const name = inputType.toString();
