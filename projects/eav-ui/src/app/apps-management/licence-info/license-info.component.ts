@@ -69,6 +69,7 @@ export class LicenseInfoComponent implements OnInit {
 
   #disabled = signal(false);
   #refresh = signal(0);
+  #currentFilter = signal('');
 
   licenses = linkedSignal<License[], License[]>({
     source: this.#featuresConfigSvc.getLicensesLive(this.#refresh).value,
@@ -88,7 +89,7 @@ export class LicenseInfoComponent implements OnInit {
   });
 
   // Initialize empty filteredLicenses - initial values will be set in cunstructor
-  filteredLicenses = signal<License[]>(null)
+  filteredLicenses = signal<License[]>(null);
 
   constructor(
     private matDialog: MatDialog,
@@ -99,10 +100,10 @@ export class LicenseInfoComponent implements OnInit {
     
     // Create an effect to update filteredLicenses whenever licenses changes
     effect(() => {
-      this.filteredLicenses.set(this.licenses());
+      // Apply the current filter to the updated licenses
+      this.applyFilter();
     });
   }
-
 
   ngOnInit(): void {
     this.#dialogRouter.doOnDialogClosedWithData((data) => {
@@ -177,13 +178,26 @@ export class LicenseInfoComponent implements OnInit {
   filterLicenses(event: Event): void {
     const input = event.target as HTMLInputElement;
     const filterValue = input.value.toLowerCase();
+    
+    // Update the current filter value
+    this.#currentFilter.set(filterValue);
+    
+    // Apply the filter
+    this.applyFilter();
+  }
 
+  
+  // Separate method to apply the filter
+  private applyFilter(): void {
+    const allLicenses = this.licenses();
+    const filterValue = this.#currentFilter();
+    
     if (!filterValue) {
-      this.filteredLicenses.set(this.licenses());
+      this.filteredLicenses.set(allLicenses);
       return;
     }
-
-    this.filteredLicenses.set(this.licenses().filter(license =>
+    
+    this.filteredLicenses.set(allLicenses.filter(license =>
       license.Name.toLowerCase().includes(filterValue) ||
       license.Features.some(feature =>
         feature.name.toLowerCase().includes(filterValue) ||
