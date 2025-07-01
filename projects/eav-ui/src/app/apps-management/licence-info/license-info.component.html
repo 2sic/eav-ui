@@ -1,5 +1,12 @@
+<form class="search-form">
+  <mat-form-field color="accent">
+    <mat-label>Search</mat-label>
+    <input matInput placeholder="Lightspeed" (input)="filterLicenses($event)" >
+  </mat-form-field>
+</form>
+
 <mat-accordion multi>
-    @for (license of licenses() | licensesOrder; track trackLicenses($index, license)) {
+    @for (license of filteredLicenses() | licensesOrder; track trackLicenses($index, license)) {
     <mat-expansion-panel #panel>
       <mat-expansion-panel-header>
         <mat-panel-title>
