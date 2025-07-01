@@ -21,6 +21,7 @@ import { BooleanFilterComponent } from '../../shared/components/boolean-filter/b
 import { FileUploadDialogData } from '../../shared/components/file-upload-dialog';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
+import { MatBadgeIconDirective } from '../../shared/directives/mat-badge-icon.directive';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { classLog } from '../../shared/logging';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
@@ -45,6 +46,7 @@ import { AppsListActionsParams } from './apps-list-actions/apps-list-actions.mod
     MatIconModule,
     EcoFabSpeedDialActionsComponent,
     MatBadgeModule,
+    MatBadgeIconDirective,
     RouterOutlet,
     DragAndDropDirective,
   ]

@@ -15,6 +15,7 @@ import { FeatureTextInfoComponent } from '../../features/feature-text-info/featu
 import { FeaturesService } from '../../features/features.service';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { SystemSettingsScopes, eavConstants } from '../../shared/constants/eav.constants';
+import { MatBadgeIconDirective } from '../../shared/directives/mat-badge-icon.directive';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { AppScopes } from '../../shared/models/dialog-context.models';
@@ -40,6 +41,7 @@ import { AppConfigurationCardComponent } from './app-configuration-card/app-conf
     MatIconModule,
     MatButtonModule,
     MatBadgeModule,
+    MatBadgeIconDirective,
     NgTemplateOutlet,
     AppConfigurationCardComponent,
     FeatureTextInfoComponent,
