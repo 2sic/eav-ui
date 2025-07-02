@@ -8,7 +8,7 @@ import { EavCustomInputField } from '../../../edit-types/src/EavCustomInputField
 import { FieldSettings } from '../../../edit-types/src/FieldSettings';
 import { IFieldMask } from '../../../edit-types/src/IFieldMask';
 import { CoordinatesDto } from '../preview/coordinates';
-import { buildTemplate, customGpsIcons, parseLatLng, stringifyLatLng } from '../shared/helpers';
+import { buildTemplate, customGpsIcons, parseLatLng } from '../shared/helpers';
 import * as template from './main.html';
 import * as styles from './main.scss';
 
@@ -188,7 +188,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
   }
 
   private updateForm(latLng: google.maps.LatLngLiteral): void {
-    this.connector.data.update(stringifyLatLng(latLng));
+    this.connector.data.update(JSON.stringify(latLng));
     if (this.latFieldName) {
       this.connector._experimental.updateField(this.latFieldName, latLng.lat);
     }
