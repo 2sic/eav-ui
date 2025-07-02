@@ -28,6 +28,7 @@ const logSpecs = {
   handleDateTimeInput: false,
   disabledEffect: false,
   ngAfterViewInit: false,
+  dateTimeValue: false,
 }
 
 /**
@@ -68,6 +69,7 @@ export class DatetimeDefaultComponent implements AfterViewInit {
 
   // Computed value for the current date-time from UI value
   dateTimeValue = computed(() => {
+    const l = this.log.fnIf('dateTimeValue', { uiValue: this.uiValue() });
     if (!this.uiValue()) return null;
     return DateTimeUtils.getDateTimeValue(this.uiValue())
   });
