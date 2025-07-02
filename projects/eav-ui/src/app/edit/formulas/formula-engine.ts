@@ -56,6 +56,7 @@ export class FormulaEngine {
   ) {
     this.#entityGuid = entityGuid;
     this.#promiseHandler = promiseHandler;
+    this.#contentType = contentType;
     this.#attributes = contentType.Attributes;
     this.#contentTypeTitle = ctTitle;
     this.#formulaExecSpecsFactory.init(settingsSvc, entityGuid, clientData);
@@ -65,6 +66,7 @@ export class FormulaEngine {
   #entityGuid: string;
   #contentTypeTitle: string;
   #promiseHandler: FormulaPromiseHandler;
+  #contentType: EavContentType;
   #attributes: EavContentTypeAttribute[];
 
   runAllFields(propsEngine: FieldsPropsEngine, cycle: FieldsPropsEngineCycle) {
@@ -91,7 +93,7 @@ export class FormulaEngine {
       const propsBefore = cycle.fieldProps[attr.Name] ?? {} as FieldProps;
 
       // run formulas
-      const runOneHelper = new FormulaRunOneHelpersFactory(this.designerSvc, this.translate, this.logSvc, this.#contentTypeTitle);
+      const runOneHelper = new FormulaRunOneHelpersFactory(this.designerSvc, this.translate, this.logSvc, this.#contentType, this.#entityGuid, this.#contentTypeTitle);
       const runOne = new FormulaRunField(this.#promiseHandler, this.designerSvc, this.#entityGuid, runOneHelper);
       const allResults = runOne.runOrInitSettings(
         cycle.values,

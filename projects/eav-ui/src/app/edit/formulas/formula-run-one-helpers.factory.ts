@@ -1,5 +1,6 @@
 
 import { TranslateService } from '@ngx-translate/core';
+import { EavContentType } from '../shared/models/eav';
 import { LoggingService } from '../shared/services/logging.service';
 import { FormulaDesignerService } from './designer/formula-designer.service';
 import { FormulaVersions } from './formula-definitions';
@@ -23,6 +24,8 @@ export class FormulaRunOneHelpersFactory {
     private designerSvc: FormulaDesignerService,
     private translate: TranslateService,
     private logSvc: LoggingService,
+    private contentType: EavContentType,
+    private entityGuid: string,
     public ctTitle: string,
   ) { }
 
@@ -30,6 +33,7 @@ export class FormulaRunOneHelpersFactory {
     const f = execSpecs.runParameters.formula;
     const params = this.#dataAndCtx(execSpecs);
     const devHelper = new FormulaDeveloperHelper(this.designerSvc, this.translate, this.logSvc, f, this.ctTitle, params);
+    const valueMapper = execSpecs.runParameters.pickerHelper.infos.mapper;
 
     return {
       formula: f,
@@ -37,7 +41,7 @@ export class FormulaRunOneHelpersFactory {
       params,
       title: this.ctTitle,
       devHelper,
-      valHelper: new FormulaValueCorrections(f.fieldName, f.isValue, f.inputType, devHelper.isOpen, execSpecs.runParameters.pickerHelper.infos.mapper),
+      valHelper: new FormulaValueCorrections(this.contentType, this.entityGuid, f.fieldName, f.isValue, f.inputType, devHelper.isOpen, valueMapper),
     };
   }
 

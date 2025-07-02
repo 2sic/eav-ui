@@ -1,11 +1,14 @@
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
 import { GridOptions, ModuleRegistry } from '@ag-grid-community/core';
 import { NgClass } from '@angular/common';
-import { ChangeDetectorRef, Component, inject, linkedSignal, OnInit, signal, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, effect, inject, linkedSignal, OnInit, signal, ViewContainerRef } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogActions } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { Router, RouterOutlet } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { transient } from '../../../../../core';
@@ -51,6 +54,9 @@ import { LicensesOrderPipe } from './licenses-order.pipe';
     LicensesOrderPipe,
     ActiveFeaturesCountPipe,
     TippyDirective,
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule
   ],
 })
 export class LicenseInfoComponent implements OnInit {
@@ -63,6 +69,7 @@ export class LicenseInfoComponent implements OnInit {
 
   #disabled = signal(false);
   #refresh = signal(0);
+  #currentFilter = signal('');
 
   licenses = linkedSignal<License[], License[]>({
     source: this.#featuresConfigSvc.getLicensesLive(this.#refresh).value,
@@ -81,6 +88,8 @@ export class LicenseInfoComponent implements OnInit {
     }
   });
 
+  // Initialize empty filteredLicenses - initial values will be set in cunstructor
+  filteredLicenses = signal<License[]>(null);
 
   constructor(
     private matDialog: MatDialog,
@@ -88,8 +97,13 @@ export class LicenseInfoComponent implements OnInit {
     private changeDetectorRef: ChangeDetectorRef,
   ) {
     ModuleRegistry.registerModules([ClientSideRowModelModule]);
+    
+    // Create an effect to update filteredLicenses whenever licenses changes
+    effect(() => {
+      // Apply the current filter to the updated licenses
+      this.applyFilter();
+    });
   }
-
 
   ngOnInit(): void {
     this.#dialogRouter.doOnDialogClosedWithData((data) => {
@@ -159,6 +173,37 @@ export class LicenseInfoComponent implements OnInit {
       next: () => this.#refreshFn(100),
       error: () => this.#refreshFn(100)
     });
+  }
+
+  filterLicenses(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const filterValue = input.value.toLowerCase();
+    
+    // Update the current filter value
+    this.#currentFilter.set(filterValue);
+    
+    // Apply the filter
+    this.applyFilter();
+  }
+
+  
+  // Separate method to apply the filter
+  private applyFilter(): void {
+    const allLicenses = this.licenses();
+    const filterValue = this.#currentFilter();
+    
+    if (!filterValue) {
+      this.filteredLicenses.set(allLicenses);
+      return;
+    }
+    
+    this.filteredLicenses.set(allLicenses.filter(license =>
+      license.Name.toLowerCase().includes(filterValue) ||
+      license.Features.some(feature =>
+        feature.name.toLowerCase().includes(filterValue) ||
+        feature.nameId.toLowerCase().includes(filterValue)
+      )
+    ));
   }
 
   #urlTo(url: string) {
