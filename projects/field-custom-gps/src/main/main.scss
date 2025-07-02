@@ -1,3 +1,5 @@
+$border-color: #8799ac;
+
 .custom-gps-container {
   display: flex;
   flex-direction: column;
@@ -22,7 +24,7 @@
     .input-component {
       overflow: hidden;
       max-width: 10rem;
-      border: #002753 1px solid;
+      border: $border-color 1px solid;
       border-radius: 5px;
       padding: 4px;
     }
@@ -48,17 +50,13 @@ input {
   display: block;
 }
 
-.hidden {
-  display: none;
-}
-
 .btn:hover {
   cursor: pointer;
 }
 
 .search-component {
   display: flex;
-  border: #002753 1px solid;
+  border: $border-color 1px solid;
   border-radius: 5px;
   padding: 4px;
 

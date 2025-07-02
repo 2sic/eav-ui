@@ -73,10 +73,8 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
     this.addressMask = expConnector.getFieldMask(addressMaskSetting, 'Gps');
 
     this.log.a(`${gpsDialogTag} addressMask:`, { addressMaskSetting });
-    if (addressMaskSetting) {
-      addressMaskContainer.classList.remove('hidden');
+    if (addressMaskSetting)
       formattedAddressContainer.value = this.addressMask.result();
-    }
 
     // TODO: TRY to refactor to use the new context.app.getSetting(...) in the formulas-data
     const defaultCoordinates = expConnector.getSettings("Settings.GoogleMaps.DefaultCoordinates") as CoordinatesDto;
@@ -226,6 +224,8 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
         };
         this.updateHtml(latLng);
         this.updateForm(latLng);
+      } else if (!address) {
+        alert(`Please enter an address to search for.`);
       } else {
         alert(`Could not locate address: ${address}`);
       }
