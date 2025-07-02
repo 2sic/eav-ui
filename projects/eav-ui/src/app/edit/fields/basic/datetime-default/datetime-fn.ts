@@ -29,7 +29,7 @@ export function getDateTimeValueFn(uiValue: string): Dayjs {
  * @param dateTimeValue - The current date/time value
  * @returns Array of time options with labels and values, sorted chronologically
  */
-export function generateTimePickerOptionsFn(dateTimeValue: Dayjs): { label: string; value: Dayjs }[] {
+export function generateTimePickerOptionsFn(dateTimeValue: Dayjs | null): { label: string; value: Dayjs }[] {
   const template = dayjs().utc().hour(0).minute(0).second(0);
 
   // Create predefined time options (common times throughout the day)
@@ -42,8 +42,12 @@ export function generateTimePickerOptionsFn(dateTimeValue: Dayjs): { label: stri
     { label: '06:00 PM', value: template.hour(18) },
   ];
 
-  // Create an option for the user's current selection
-  const userOption = {
+  // If dateTimeValue is null or invalid, return only predefined options
+  if (!dateTimeValue || !dateTimeValue.isValid()) {
+    return predefinedOptions;
+  }
+
+  let userOption = {
     label: dateTimeValue.format('HH:mm A'),
     value: dayjs()
       .utc()
@@ -64,6 +68,20 @@ export function generateTimePickerOptionsFn(dateTimeValue: Dayjs): { label: stri
   allOptions.sort((a, b) => a.value.valueOf() - b.value.valueOf());
 
   return allOptions;
+}
+
+// Additional help function for standard options
+export function generateDefaultTimePickerOptions(): { label: string; value: Dayjs }[] {
+  const template = dayjs().utc().hour(0).minute(0).second(0);
+
+  return [
+    { label: '00:00 AM', value: template.hour(0) },
+    { label: '06:00 AM', value: template.hour(6) },
+    { label: '08:00 AM', value: template.hour(8) },
+    { label: '10:00 AM', value: template.hour(10) },
+    { label: '12:00 PM', value: template.hour(12) },
+    { label: '06:00 PM', value: template.hour(18) },
+  ];
 }
 
 /**

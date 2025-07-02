@@ -67,10 +67,16 @@ export class DatetimeDefaultComponent implements AfterViewInit {
   protected useTimePicker = this.fieldState.settingExt('UseTimePicker');
 
   // Computed value for the current date-time from UI value
-  dateTimeValue = computed(() => DateTimeUtils.getDateTimeValue(this.uiValue()));
+  dateTimeValue = computed(() => {
+    console.log('dateTimeValue', { uiValue: this.uiValue() });
+    if (!this.uiValue()) return null;
+    return DateTimeUtils.getDateTimeValue(this.uiValue())
+  });
 
   // Generates time picker options including the current time and common presets
-  timePickerOptions = computed(() => DateTimeUtils.generateTimePickerOptions(this.dateTimeValue()));
+  timePickerOptions = computed(() => {
+    return DateTimeUtils.generateTimePickerOptions(this.dateTimeValue());
+  });
 
   constructor(
     private translate: TranslateService,
@@ -98,6 +104,7 @@ export class DatetimeDefaultComponent implements AfterViewInit {
    * Format date for display in UI using localized format
    */
   formatDateTime(date: dayjs.Dayjs | Date | null): string {
+    console.log('formatDateTime', { date });
     return DateTimeUtils.formatDateTime(date);
   }
 
@@ -163,7 +170,7 @@ export class DatetimeDefaultComponent implements AfterViewInit {
       date || null,
       time || null,
       this.uiValue(),
-      (value) => {}, //this.ui().setIfChanged(value),
+      (value) => { }, //this.ui().setIfChanged(value),
       this.useTimePicker()
     );
     this.ui().setIfChanged(updated);
