@@ -1,62 +1,65 @@
 <div appToggleDebug class="eav-dialog nav-component-wrapper">
-  <div class="eav-dialog-header">
-    <div class="eav-dialog-header__title">{{ contentType()?.Label || contentType()?.Name }} Data</div>
-    <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
-      <mat-icon>close</mat-icon>
-    </button>
-  </div>
-  <div class="eav-dialog-content nav-component-wrapper">
-    <router-outlet></router-outlet>
-    @if (contentType()?.Properties?.ListInstructions; as listInstructions) {
-      <div [innerHTML]="listInstructions | safeHtml"></div>
-    }
-    <div class="grid-wrapper">
-      <ag-grid-angular
-        class="ag-theme-material"
-        [rowData]="items()"
-        [gridOptions]="gridOptions"
-        (gridReady)="onGridReady($event)"
-        appDragAndDrop
-        [allowedFileTypes]="'xml,json'"
-        (filesDropped)="filesDropped($event)"
-      >
-      </ag-grid-angular>
-    </div>
-  </div>
-  <mat-dialog-actions class="eav-dialog-actions">
-    <div class="eav-dialog-actions-div">
-      <a [href]="urlToExportContent()" mat-button class="eav-button__with-icon" tippy="Export xml list" tippyPlacement="top">
-        <mat-icon class="eav-icon">cloud_download</mat-icon>
-        <span>Data</span>
-      </a>
-      <a [href]="urlToImportContent()" mat-button class="eav-button__with-icon" tippy="Import xml list" tippyPlacement="top">
-        <mat-icon class="eav-icon">cloud_upload</mat-icon>
-        <span>Data</span>
-      </a>
-      <a [href]="urlToImportItem()" mat-button class="eav-button__with-icon" tippy="Import single json item" tippyPlacement="top">
-        <mat-icon class="eav-icon">cloud_upload</mat-icon>
-        <span>Item</span>
-      </a>
-      <button mat-button class="eav-button__with-icon" tippy="Create metadata" tippyPlacement="top" (click)="createMetadata()">
-        <mat-icon class="eav-icon">local_offer</mat-icon>
-        <span>Create Metadata</span>
+  <app-grid-with-help style="height: 100%" [helpText]="uxHelpText()" [refresh]="refresh()" [rowLength]="items()?.length">
+    <div class="eav-dialog-header" eav-dialog-header>
+      <div class="eav-dialog-header__title">{{ contentType()?.Label || contentType()?.Name }} Data</div>
+      <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
+        <mat-icon>close</mat-icon>
       </button>
-      @if (isDebug()) {
-        <button
-          mat-button
-          class="eav-button__with-icon"
-          color="accent"
-          tippy="Print filter to console"
-          tippyPlacement="top"
-          (click)="debugFilter()"
-        >
-          <mat-icon class="eav-icon">filter_list</mat-icon>
-          <span>Filter</span>
-        </button>
+    </div>
+    <!-- Info Content -->
+    <div class="eav-dialog-content" eav-dialog-content>
+      @if (contentType()?.Properties?.ListInstructions; as listInstructions) {
+        <div [innerHTML]="listInstructions | safeHtml"></div>
       }
     </div>
-    <a [href]="urlToNewItem()" mat-fab mat-elevation-z24 class="grid-fab" tippy="Add item">
-      <mat-icon>add</mat-icon>
-    </a>
-  </mat-dialog-actions>
+
+    <ag-grid-angular
+      class="ag-theme-material eav-dialog-content"
+      [rowData]="items()"
+      [gridOptions]="gridOptions"
+      (gridReady)="onGridReady($event)"
+      appDragAndDrop
+      [allowedFileTypes]="'xml,json'"
+      (filesDropped)="filesDropped($event)"
+    >
+    </ag-grid-angular>
+
+    <mat-dialog-actions class="eav-dialog-actions">
+      <div class="eav-dialog-actions-div">
+        <a [href]="urlToExportContent()" mat-button class="eav-button__with-icon" tippy="Export xml list" tippyPlacement="top">
+          <mat-icon class="eav-icon">cloud_download</mat-icon>
+          <span>Data</span>
+        </a>
+        <a [href]="urlToImportContent()" mat-button class="eav-button__with-icon" tippy="Import xml list" tippyPlacement="top">
+          <mat-icon class="eav-icon">cloud_upload</mat-icon>
+          <span>Data</span>
+        </a>
+        <a [href]="urlToImportItem()" mat-button class="eav-button__with-icon" tippy="Import single json item" tippyPlacement="top">
+          <mat-icon class="eav-icon">cloud_upload</mat-icon>
+          <span>Item</span>
+        </a>
+        <button mat-button class="eav-button__with-icon" tippy="Create metadata" tippyPlacement="top" (click)="createMetadata()">
+          <mat-icon class="eav-icon">local_offer</mat-icon>
+          <span>Create Metadata</span>
+        </button>
+        @if (isDebug()) {
+          <button
+            mat-button
+            class="eav-button__with-icon"
+            color="accent"
+            tippy="Print filter to console"
+            tippyPlacement="top"
+            (click)="debugFilter()"
+          >
+            <mat-icon class="eav-icon">filter_list</mat-icon>
+            <span>Filter</span>
+          </button>
+        }
+      </div>
+      <a [href]="urlToNewItem()" mat-fab mat-elevation-z24 class="grid-fab" tippy="Add item">
+        <mat-icon>add</mat-icon>
+      </a>
+    </mat-dialog-actions>
+  </app-grid-with-help>
 </div>
+<router-outlet></router-outlet>

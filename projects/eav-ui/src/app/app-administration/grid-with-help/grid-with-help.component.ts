@@ -1,5 +1,5 @@
 import { AgGridAngular } from '@ag-grid-community/angular';
-import { Component, contentChild, effect, ElementRef, input, untracked } from '@angular/core';
+import { Component, contentChild, effect, ElementRef, input, untracked, viewChild } from '@angular/core';
 import { MatDialogActions } from '@angular/material/dialog';
 
 export interface HelpTextConst {
@@ -20,46 +20,89 @@ export interface GridWithHelpInput {
 })
 
 export class GridWithHelpComponent {
+  // ViewChild and ContentChild references - Access to DOM elements
+  gridWrapper = viewChild("gridWrapper", { read: ElementRef });
   agGrid = contentChild(AgGridAngular, { read: ElementRef });
   dialogAction = contentChild(MatDialogActions, { read: ElementRef });
 
-  helpText = input.required<GridWithHelpInput>({});
-  refresh = input.required<number>();
-  rowLength = input.required<number>();
+  // Input properties - Required data from parent component
+  readonly helpText = input.required<GridWithHelpInput>({});
+  readonly refresh = input.required<number>();
+  readonly rowLength = input.required<number>();
+
+  // Constants - Fixed values for layout calculations
+  readonly DEFAULT_ROW_HEIGHT = 47; // Default height for AG Grid rows in pixels
+  readonly GRID_HEADER_HEIGHT = 64; // Height of AG Grid header in pixels
+  readonly HELP_CARD_BUFFER = 12;   // Additional buffer space for help card in pixels
 
   constructor() {
+    // Effect that reacts to changes in refresh and rowLength signals
     effect(() => {
       const refresh = this.refresh();
       const rowLength = this.rowLength();
+      const gridWrapperEl = this.gridWrapper()?.nativeElement;
 
-      untracked(() => {
+      // Early return if grid wrapper element is not available
+      if (!gridWrapperEl) return;
 
-        const agGridEl = this.agGrid()?.nativeElement;
-        const dialogActionEl = this.dialogAction()?.nativeElement;
-        const helpCard = document.querySelector('.help-info-card');
-          (helpCard as HTMLElement).style.flex = ""; // Remove style flex
-
-        // Center help card if no rows
-        helpCard?.classList.toggle('center-center', rowLength === 0);
-
-        const wrapperHeight = document.querySelector('.grid-wrapper-dynamic')?.clientHeight ?? 0;
-
-        if (!agGridEl || !dialogActionEl) return;
-
-        const rowHeight = agGridEl.querySelector('.ag-row')?.clientHeight ?? 47;
-        const agGridHeight = 64 + (rowLength * rowHeight);
-        const helpCardHeight = (helpCard.clientHeight ?? 0) + 24;
-        const dialogActionHeight = (dialogActionEl.clientHeight ?? 0) + 11;
-
-        // Set AG Grid height
-        agGridEl.style.height = rowHeight ? `${agGridHeight}px` : `0px`;
-
-        (helpCard as HTMLElement).style.flex = "1 1 auto"// Add flex style to help card
-
-        // Hide help card if content exceeds wrapper
-        const shouldHideHelp = helpCardHeight + agGridHeight + dialogActionHeight > wrapperHeight;
-        helpCard?.classList.toggle('hidden-help-info-card', shouldHideHelp);
-      });
+      // Untracked execution to prevent unnecessary effect re-runs during layout updates
+      untracked(() => this.#updateLayout(gridWrapperEl, rowLength));
     });
+  }
+
+  /**
+   * Main layout update method - Handles the dynamic sizing and positioning of grid and help card
+   * @param gridWrapperEl - The main container element
+   * @param rowLength - Number of rows in the grid
+   */
+  #updateLayout(gridWrapperEl: HTMLElement, rowLength: number): void {
+    // Get references to essential DOM elements
+    const agGridEl = this.agGrid()?.nativeElement;
+    const dialogActionEl = this.dialogAction()?.nativeElement;
+    const helpCard = gridWrapperEl.querySelector('.help-info-card') as HTMLElement;
+
+    // Early return if critical elements are missing
+    if (!agGridEl || !dialogActionEl) return;
+
+    // Setup help card styling and centering behavior
+    this.#setupHelpCard(helpCard, rowLength);
+
+    // Calculate all necessary dimensions for layout
+    const dimensions = this.#calculateDimensions(gridWrapperEl, agGridEl, dialogActionEl, helpCard, rowLength);
+
+    // Set AG Grid height based on row count and maximum height to prevent overflow
+    agGridEl.style.height = dimensions.rowHeight ? `${dimensions.agGridHeight}px` : '0px';
+    agGridEl.style.maxHeight = `calc(100% - ${dimensions.dialogHeaderHeight + dimensions.dialogActionHeight}px)`;
+
+    // Determine if help card should be hidden when content exceeds available space
+    const shouldHideHelp = dimensions.helpCardHeight + dimensions.agGridHeight + dimensions.dialogActionHeight + dimensions.dialogHeaderHeight > dimensions.wrapperHeight;
+
+    // Remove Help card from layout if it should be hidden
+    helpCard?.classList.toggle('hidden-help-info-card', shouldHideHelp);
+  }
+
+  // Calculate dimensions for AG Grid and help card based on current layout
+  #calculateDimensions(gridWrapperEl: HTMLElement, agGridEl: HTMLElement, dialogActionEl: HTMLElement, helpCard: HTMLElement, rowLength: number) {
+    const rowHeight = agGridEl.querySelector('.ag-row')?.clientHeight ?? this.DEFAULT_ROW_HEIGHT;
+    const agGridHeight = this.GRID_HEADER_HEIGHT + (rowLength * rowHeight);
+    const helpCardHeight = helpCard.clientHeight + this.HELP_CARD_BUFFER;
+    const dialogActionHeight = dialogActionEl.offsetHeight;
+    const dialogHeaderHeight = gridWrapperEl.querySelector('.eav-dialog-header')?.clientHeight ?? 0;
+    // Get total available wrapper height
+    const wrapperHeight = gridWrapperEl.offsetHeight;
+    return {
+      rowHeight,
+      agGridHeight,
+      helpCardHeight,
+      dialogActionHeight,
+      dialogHeaderHeight,
+      wrapperHeight
+    };
+  }
+
+  #setupHelpCard(helpCard: HTMLElement, rowLength: number): void {
+    helpCard.style.flex = "";     // Reset flex styling to ensure clean state
+    helpCard.classList.toggle('center-center', rowLength === 0);    // Center help card when no data rows are present
+    helpCard.style.flex = "1 1 auto";  // Apply flexible layout styling to help card
   }
 }

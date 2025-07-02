@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
 import { transient } from '../../../../core';
+import { GridWithHelpComponent, HelpTextConst } from '../app-administration/grid-with-help/grid-with-help.component';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { ConfirmDeleteDialogComponent } from '../app-administration/sub-dialogs/confirm-delete-dialog/confirm-delete-dialog.component';
 import { ConfirmDeleteDialogData } from '../app-administration/sub-dialogs/confirm-delete-dialog/confirm-delete-dialog.models';
@@ -65,6 +66,7 @@ const logSpecs = {
     ToggleDebugDirective,
     SxcGridModule,
     TippyDirective,
+    GridWithHelpComponent
   ]
 })
 export class ContentItemsComponent implements OnInit {
@@ -96,14 +98,31 @@ export class ContentItemsComponent implements OnInit {
   #filterChanged = signal(0);
 
   /** Signal to trigger reloading of data */
-  #refresh = signal(0);
+  refresh = signal(0);
+
+  // UI Help Text for the UX Help Info Card
+  #helpTextConst: HelpTextConst = {
+    empty: {
+      description: '<p><b>This is where you manage data</b></p>',
+      hint: "<p>Click the (+) in the bottom right corner to create your first Content Type (think: table).</p>"
+    },
+    content: {
+      description: '<p><b>Each row shows a Content Type</b> <br> They define the fields, similar to a database table.</p>',
+      hint: '<p>Click on the title to list the Entities (think: records). <br>You can also create new Entities, configure the fields and export/import the schema or the data.</p>'
+    }
+  };
+
+  uxHelpText = computed(() => {
+    const data = this.items();
+    return data?.length === 0 ? this.#helpTextConst.empty : this.#helpTextConst.content;
+  })
 
   #gridApiSig: WritableSignal<GridApi<ContentItem>> = signal<GridApi<ContentItem>>(null);
 
   #contentTypeStaticName = this.#dialogRouter.getParam('contentTypeStaticName');
   contentType = this.#contentTypesSvc.getType(this.#contentTypeStaticName).value;
 
-  #itemsRaw = this.#contentItemsSvc.getAllLive(this.#contentTypeStaticName, this.#refresh).value;
+  #itemsRaw = this.#contentItemsSvc.getAllLive(this.#contentTypeStaticName, this.refresh).value;
 
   items = computed(() => {
     const data = this.#itemsRaw();
@@ -127,7 +146,7 @@ export class ContentItemsComponent implements OnInit {
   }
 
   private fetchItems() {
-    this.#refresh.update(v => ++v)
+    this.refresh.update(v => ++v)
   }
 
   private fetchColumns() {
@@ -403,7 +422,7 @@ export class ContentItemsComponent implements OnInit {
    * @param confirmText Optional confirmation button text
    */
   #confirmAndExecuteDelete(item: ContentItem, message: string, forceDelete: boolean, dialogTitle?: string, confirmText?: string) {
-    
+
     const dialogData: ConfirmDeleteDialogData = {
       entityId: item._RepositoryId,
       entityTitle: item._Title,

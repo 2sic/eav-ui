@@ -1,6 +1,6 @@
 <app-grid-with-help [helpText]="uxHelpText()" [refresh]="refresh()" [rowLength]="webApis()?.length">
   @if (webApis()?.length) {
-    <ag-grid-angular class="ag-theme-material grid-dynamic" [rowData]="webApis()" [gridOptions]="gridOptions"> </ag-grid-angular>
+    <ag-grid-angular class="ag-theme-material" [rowData]="webApis()" [gridOptions]="gridOptions"> </ag-grid-angular>
   }
   <mat-dialog-actions align="end">
     <button mat-fab mat-elevation-z24 [matMenuTriggerFor]="menu" class="grid-fab" tippy="Create a new controller" tippyPlacement="left">
