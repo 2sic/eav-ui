@@ -68,7 +68,6 @@ export class DatetimeDefaultComponent implements AfterViewInit {
 
   // Computed value for the current date-time from UI value
   dateTimeValue = computed(() => {
-    console.log('dateTimeValue', { uiValue: this.uiValue() });
     if (!this.uiValue()) return null;
     return DateTimeUtils.getDateTimeValue(this.uiValue())
   });
