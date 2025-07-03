@@ -5,11 +5,19 @@
   box-sizing: border-box;
   position: relative;
 }
-
-.search-form {
+.license-info-menu {
   display: flex;
-  justify-content: end;
+  justify-content: space-between;
+  align-items: center;
   padding: 8px;
+
+  button {
+    margin-right: 8px;
+  }
+
+  .search-form {
+    justify-content: end;
+  }
 }
 
 .mat-expansion-panel-header {

@@ -1,12 +1,26 @@
-<form class="search-form">
-  <mat-form-field color="accent">
-    <mat-label>Search</mat-label>
-    <input matInput placeholder="Lightspeed" (input)="filterLicenses($event)" >
-  </mat-form-field>
-</form>
+<div class="license-info-menu">
+  <div>
+    <button mat-button (click)="openAllPanels()" tippy="Open All Licenses">
+      Expand All
+      <mat-icon class="eav-icon">expand_all</mat-icon>
+    </button>
+
+    <button mat-button (click)="closeAllPanels()" tippy="Close All Licenses">
+      Collapse All
+      <mat-icon class="eav-icon">collapse_all</mat-icon>
+    </button>
+  </div>
+
+  <form class="search-form">
+    <mat-form-field color="accent">
+      <mat-label>Search</mat-label>
+      <input matInput placeholder="Lightspeed" (input)="filterLicenses($event)" />
+    </mat-form-field>
+  </form>
+</div>
 
 <mat-accordion multi>
-    @for (license of filteredLicenses() | licensesOrder; track trackLicenses($index, license)) {
+  @for (license of filteredLicenses() | licensesOrder; track trackLicenses($index, license)) {
     <mat-expansion-panel #panel>
       <mat-expansion-panel-header>
         <mat-panel-title>
@@ -28,10 +42,10 @@
       @if (panel.expanded) {
         <ag-grid-angular
           class="ag-theme-material"
-          [rowData]="license.Features"
+          [rowData]="license.filteredFeatures"
           [gridOptions]="gridOptions"
           appAgGridHeight
-          [itemsCount]="license.Features?.length"
+          [itemsCount]="license.filteredFeatures?.length"
         >
         </ag-grid-angular>
       }

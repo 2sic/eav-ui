@@ -76,7 +76,6 @@ export class LicenseInfoComponent implements OnInit {
   licenses = linkedSignal<License[], License[]>({
     source: this.#featuresConfigSvc.getLicensesLive(this.#refresh).value,
     computation: (licenses, previous) => {
-
       if (!licenses)
         return previous?.value ?? [];
 
@@ -85,12 +84,13 @@ export class LicenseInfoComponent implements OnInit {
         .map(l => ({
           ...ExpirationExtension.expandLicense(l),
           Features: l.Features.map(f => ExpirationExtension.expandFeature(f)),
+          filteredFeatures: l.Features.map(f => ExpirationExtension.expandFeature(f)) // Initialize filteredFeatures with all features
         }));
       return expanded;
     }
   });
 
-  // Initialize empty filteredLicenses - initial values will be set in cunstructor
+  // Initialize empty filteredLicenses - initial values will be set in constructor
   filteredLicenses = signal<License[]>(null);
 
   constructor(
@@ -99,7 +99,7 @@ export class LicenseInfoComponent implements OnInit {
     private changeDetectorRef: ChangeDetectorRef,
   ) {
     ModuleRegistry.registerModules([ClientSideRowModelModule]);
-    
+
     // Create an effect to update filteredLicenses whenever licenses changes
     effect(() => {
       // Apply the current filter to the updated licenses
@@ -132,14 +132,12 @@ export class LicenseInfoComponent implements OnInit {
     });
   }
 
-
   #refreshFn(timer?: number): void {
     setTimeout(() => {
       this.#refresh.update(v => ++v);
       this.#disabled.set(false);
     }, timer);
   }
-
 
   trackLicenses(index: number, license: License): string {
     return license.Guid;
@@ -180,34 +178,51 @@ export class LicenseInfoComponent implements OnInit {
   filterLicenses(event: Event): void {
     const input = event.target as HTMLInputElement;
     const filterValue = input.value.toLowerCase();
-    
+
     // Update the current filter value
     this.#currentFilter.set(filterValue);
-    
+
     // Apply the filter
     this.applyFilter();
   }
 
-  
   // Separate method to apply the filter
   private applyFilter(): void {
     const allLicenses = this.licenses();
     const filterValue = this.#currentFilter();
-    
+
     if (!filterValue) {
-      this.filteredLicenses.set(allLicenses);
-      this.closeAllPanels()
+      // When no filter, show all licenses with all features
+      const licensesWithAllFeatures = allLicenses.map(license => ({
+        ...license,
+        filteredFeatures: license.Features
+      }));
+      this.filteredLicenses.set(licensesWithAllFeatures);
+      this.closeAllPanels();
       return;
     }
-    
-    this.openAllPanels()
-    
-    this.filteredLicenses.set(allLicenses.filter(license =>
-      license.Name.toLowerCase().includes(filterValue) ||
-      license.Features.some(feature =>
+
+    this.openAllPanels();
+
+    // Filter licenses, but also filter features within each license
+    const filtered = allLicenses.map(license => {
+      // Filter features that match the search criteria
+      const filteredFeatures = license.Features.filter(feature =>
         feature.name.toLowerCase().includes(filterValue) ||
         feature.nameId.toLowerCase().includes(filterValue)
-      )
+      );
+
+      // Create a new license object with filtered features
+      return {
+        ...license,
+        filteredFeatures
+      };
+    });
+
+    // Only keep licenses that either match the filter themselves or have matching features
+    this.filteredLicenses.set(filtered.filter(license =>
+      license.Name.toLowerCase().includes(filterValue) ||
+      license.filteredFeatures.length > 0
     ));
   }
 
@@ -265,7 +280,6 @@ export class LicenseInfoComponent implements OnInit {
           },
         },
         {
-
           headerName: 'Enabled',
           field: 'isEnabled',
           width: 82,
