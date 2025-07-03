@@ -10,6 +10,9 @@ export class MatBadgeIconDirective extends MatBadge implements OnInit {
   constructor( private renderer: Renderer2 ) { super(); }
 
   ngOnInit(): void {
+    if(!this.matBadgeIcon)
+      return;
+
     // TypeScript hack to get access to private function
     const badgeElement = (this as any)['_createBadgeElement']();
 

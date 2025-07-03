@@ -61,10 +61,9 @@
                 <div
                   style="color: white; fill: white"
                   [innerHTML]="recommendation.Icon | safeHtml"
-                  [matBadgeHidden]="recommendation.Enabled"
                   matBadgeColor="accent"
                   matBadgeSize="small"
-                  matBadge="💎"
+                  [matBadgeIcon]="!recommendation.Enabled ? 'diamond' : null"
                   matBadgePosition="below after"
                   aria-hidden="false"
                 ></div>
