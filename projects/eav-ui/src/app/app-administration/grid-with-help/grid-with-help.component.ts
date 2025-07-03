@@ -61,22 +61,25 @@ export class GridWithHelpComponent {
     const dialogActionEl = this.dialogAction()?.nativeElement;
     const helpCard = gridWrapperEl.querySelector('.help-info-card') as HTMLElement;
 
+    helpCard.classList.toggle('center-center', rowLength === 0);
+
     // Early return if critical elements are missing
     if (!agGridEl || !dialogActionEl) return;
 
-    // Setup help card styling and centering behavior
-    this.#setupHelpCard(helpCard, rowLength);
+    helpCard.style.flex = "";
 
     // Calculate all necessary dimensions for layout
     const dimensions = this.#calculateDimensions(gridWrapperEl, agGridEl, dialogActionEl, helpCard, rowLength);
 
     // Set AG Grid height based on row count and maximum height to prevent overflow
     agGridEl.style.height = dimensions.rowHeight ? `${dimensions.agGridHeight}px` : '0px';
-    agGridEl.style.maxHeight = `calc(100% - ${dimensions.dialogHeaderHeight + dimensions.dialogActionHeight}px)`;
+    // TODO: 2dg, discus with 2ro, style not have a calc () fn
+    // agGridEl.style.maxHeight = `calc(100vh - ${dimensions.dialogHeaderHeight + dimensions.dialogActionHeight}px)`;
 
     // Determine if help card should be hidden when content exceeds available space
     const shouldHideHelp = dimensions.helpCardHeight + dimensions.agGridHeight + dimensions.dialogActionHeight + dimensions.dialogHeaderHeight > dimensions.wrapperHeight;
 
+    helpCard.style.flex = "1 1 auto";
     // Remove Help card from layout if it should be hidden
     helpCard?.classList.toggle('hidden-help-info-card', shouldHideHelp);
   }
@@ -100,9 +103,5 @@ export class GridWithHelpComponent {
     };
   }
 
-  #setupHelpCard(helpCard: HTMLElement, rowLength: number): void {
-    helpCard.style.flex = "";     // Reset flex styling to ensure clean state
-    helpCard.classList.toggle('center-center', rowLength === 0);    // Center help card when no data rows are present
-    helpCard.style.flex = "1 1 auto";  // Apply flexible layout styling to help card
-  }
+
 }
