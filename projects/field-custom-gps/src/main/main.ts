@@ -7,7 +7,7 @@ import { Connector } from '../../../edit-types/src/Connector';
 import { EavCustomInputField } from '../../../edit-types/src/EavCustomInputField';
 import { FieldSettings } from '../../../edit-types/src/FieldSettings';
 import { IFieldMask } from '../../../edit-types/src/IFieldMask';
-import { buildTemplate, customGpsIcons, getDefaultCoordinates, parseLatLng } from '../shared/helpers';
+import { buildTemplate, customGpsIcons, getDefaultCoordinates, isLatLngObject } from '../shared/helpers';
 import * as template from './main.html';
 import * as styles from './main.scss';
 
@@ -89,7 +89,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
     const { AdvancedMarkerElement } = await google.maps.importLibrary("marker") as google.maps.MarkerLibrary;
 
     this.map = new Map(this.mapContainer, {
-      zoom: 5, // 15,
+      zoom: 15,
       center: this.defaultCoordinates,
       gestureHandling: 'greedy',
       mapId: 'DEMO_MAP_ID',
@@ -114,7 +114,8 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
       this.updateHtml(this.defaultCoordinates);
     } else {
       try {
-        this.updateHtml(parseLatLng(this.connector.data.value));
+        if (isLatLngObject(this.connector.data.value))
+          this.updateHtml(JSON.parse(this.connector.data.value));
       } catch (e) {
         console.error('Invalid data.value:', this.connector.data.value);
         this.updateHtml(this.defaultCoordinates);

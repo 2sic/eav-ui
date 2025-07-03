@@ -2,7 +2,7 @@ import { ElementEventListener } from '../../../eav-ui/src/app/edit/shared/contro
 import { classLog } from '../../../eav-ui/src/app/shared/logging';
 import { Connector } from '../../../edit-types/src/Connector';
 import { EavCustomInputField } from '../../../edit-types/src/EavCustomInputField';
-import { buildTemplate, customGpsIcons, getDefaultCoordinates, parseLatLng } from '../shared/helpers';
+import { buildTemplate, customGpsIcons, getDefaultCoordinates, isLatLngObject } from '../shared/helpers';
 import * as template from './preview.html';
 import * as styles from './preview.scss';
 
@@ -44,8 +44,8 @@ class FieldCustomGps extends HTMLElement implements EavCustomInputField<string> 
     this.defaultCoordinates = getDefaultCoordinates(this.connector);
 
     // set initial value
-    if (this.connector.data.value) { // && isLatLngObject(this.connector.data.value)
-      this.updateHtml(parseLatLng(this.connector.data.value));
+    if (this.connector.data.value && isLatLngObject(this.connector.data.value)) {
+      this.updateHtml(JSON.parse(this.connector.data.value));
     } else {
       this.updateHtml(this.defaultCoordinates);
     }
@@ -53,8 +53,8 @@ class FieldCustomGps extends HTMLElement implements EavCustomInputField<string> 
 
     // update on value change
     this.connector.data.onValueChange(value => {
-      if (value) { //  && isLatLngObject(value)
-        this.updateHtml(parseLatLng(value));
+      if (value && isLatLngObject(value)) {
+        this.updateHtml(JSON.parse(value));
       } else {
         this.updateHtml(this.defaultCoordinates);
       }

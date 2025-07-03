@@ -24,15 +24,6 @@ export function buildTemplate(template: string, styles: string): string {
   return `${template}<style>\n${styles}\n</style>`;
 }
 
-export function parseLatLng(value: string): google.maps.LatLngLiteral {
-  if (value && value.trim().startsWith('{') && value.trim().endsWith('}')) {
-    const latLng: google.maps.LatLngLiteral = JSON.parse(value);
-    return latLng;
-  } else {
-    throw new Error('Invalid JSON string');
-  }
-}
-
 export function isLatLngObject(value: string) {
   try {
     const parsed = JSON.parse(value);
