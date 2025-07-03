@@ -182,13 +182,13 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
   }
 
   private updateForm(latLng: google.maps.LatLngLiteral): void {
-    this.connector.data.update(JSON.stringify(latLng));
     if (this.latFieldName) {
       this.connector._experimental.updateField(this.latFieldName, latLng.lat);
     }
     if (this.lngFieldName) {
       this.connector._experimental.updateField(this.lngFieldName, latLng.lng);
     }
+    this.connector.data.update(JSON.stringify(latLng));
   }
 
   private onLatLngInputChange(): void {
