@@ -2,17 +2,16 @@ import { ElementEventListener } from '../../../eav-ui/src/app/edit/shared/contro
 import { classLog } from '../../../eav-ui/src/app/shared/logging';
 import { Connector } from '../../../edit-types/src/Connector';
 import { EavCustomInputField } from '../../../edit-types/src/EavCustomInputField';
-import { buildTemplate, customGpsIcons, parseLatLng } from '../shared/helpers';
-import { CoordinatesDto } from './coordinates';
+import { buildTemplate, customGpsIcons, getDefaultCoordinates, parseLatLng } from '../shared/helpers';
 import * as template from './preview.html';
 import * as styles from './preview.scss';
 
 const gpsTag = 'field-custom-gps';
 
 class FieldCustomGps extends HTMLElement implements EavCustomInputField<string> {
-  
+
   log = classLog({ FieldCustomGps });
-  
+
   fieldInitialized: boolean;
   connector: Connector<string>;
 
@@ -42,27 +41,22 @@ class FieldCustomGps extends HTMLElement implements EavCustomInputField<string> 
     this.addEventListener('click', expand);
     this.eventListeners.push({ element: this, type: 'click', listener: expand });
 
-    // TODO: TRY to refactor to use the new context.app.getSetting(...) in the formulas-data
-    const defaultCoordinates = this.connector._experimental.getSettings("Settings.GoogleMaps.DefaultCoordinates") as CoordinatesDto;
-    this.defaultCoordinates = {
-      lat: defaultCoordinates.Latitude,
-      lng: defaultCoordinates.Longitude,
-    }
+    this.defaultCoordinates = getDefaultCoordinates(this.connector);
 
     // set initial value
-    if (!this.connector.data.value) {
-      this.updateHtml(this.defaultCoordinates);
-    } else {
+    if (this.connector.data.value) { // && isLatLngObject(this.connector.data.value)
       this.updateHtml(parseLatLng(this.connector.data.value));
+    } else {
+      this.updateHtml(this.defaultCoordinates);
     }
+
 
     // update on value change
     this.connector.data.onValueChange(value => {
-      if (!value) {
-        this.updateHtml(this.defaultCoordinates);
+      if (value) { //  && isLatLngObject(value)
+        this.updateHtml(parseLatLng(value));
       } else {
-        const latLng = parseLatLng(value);
-        this.updateHtml(latLng);
+        this.updateHtml(this.defaultCoordinates);
       }
     });
   }

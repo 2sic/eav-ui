@@ -7,8 +7,7 @@ import { Connector } from '../../../edit-types/src/Connector';
 import { EavCustomInputField } from '../../../edit-types/src/EavCustomInputField';
 import { FieldSettings } from '../../../edit-types/src/FieldSettings';
 import { IFieldMask } from '../../../edit-types/src/IFieldMask';
-import { CoordinatesDto } from '../preview/coordinates';
-import { buildTemplate, customGpsIcons, parseLatLng } from '../shared/helpers';
+import { buildTemplate, customGpsIcons, getDefaultCoordinates, parseLatLng } from '../shared/helpers';
 import * as template from './main.html';
 import * as styles from './main.scss';
 
@@ -51,7 +50,6 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
     this.innerHTML = buildTemplate(template.default, styles.default);
     this.latInput = this.querySelector<HTMLInputElement>('#lat');
     this.lngInput = this.querySelector<HTMLInputElement>('#lng');
-    const addressMaskContainer = this.querySelector<HTMLDivElement>('#address-mask-container');
     this.iconSearch = this.querySelector<HTMLAnchorElement>('#icon-search');
     this.iconSearch.insertAdjacentHTML('afterbegin', customGpsIcons.search);
     this.iconPin = this.querySelector<HTMLAnchorElement>('#icon-pin');
@@ -75,13 +73,8 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
     this.log.a(`${gpsDialogTag} addressMask:`, { addressMaskSetting });
     if (addressMaskSetting)
       formattedAddressContainer.value = this.addressMask.result();
-
-    // TODO: TRY to refactor to use the new context.app.getSetting(...) in the formulas-data
-    const defaultCoordinates = expConnector.getSettings("Settings.GoogleMaps.DefaultCoordinates") as CoordinatesDto;
-    this.defaultCoordinates = {
-      lat: defaultCoordinates.Latitude,
-      lng: defaultCoordinates.Longitude,
-    }
+    
+    this.defaultCoordinates = getDefaultCoordinates(this.connector);
 
     const googleMapsParams = (expConnector.getSettings(EditApiKeyPaths.GoogleMaps) as ApiKeySpecs).ApiKey;
     this.connector.loadScript('google', `https://maps.googleapis.com/maps/api/js?key=${googleMapsParams}&callback=Function.prototype`, () => { this.mapScriptLoaded(); });
@@ -96,7 +89,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
     const { AdvancedMarkerElement } = await google.maps.importLibrary("marker") as google.maps.MarkerLibrary;
 
     this.map = new Map(this.mapContainer, {
-      zoom: 15,
+      zoom: 5, // 15,
       center: this.defaultCoordinates,
       gestureHandling: 'greedy',
       mapId: 'DEMO_MAP_ID',
