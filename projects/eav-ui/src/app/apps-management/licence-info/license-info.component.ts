@@ -1,11 +1,11 @@
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
 import { GridOptions, ModuleRegistry } from '@ag-grid-community/core';
 import { NgClass } from '@angular/common';
-import { ChangeDetectorRef, Component, effect, inject, linkedSignal, OnInit, signal, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, effect, inject, linkedSignal, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogActions } from '@angular/material/dialog';
-import { MatExpansionModule } from '@angular/material/expansion';
+import { MatAccordion, MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -70,6 +70,8 @@ export class LicenseInfoComponent implements OnInit {
   #disabled = signal(false);
   #refresh = signal(0);
   #currentFilter = signal('');
+
+  @ViewChild(MatAccordion) accordion: MatAccordion;
 
   licenses = linkedSignal<License[], License[]>({
     source: this.#featuresConfigSvc.getLicensesLive(this.#refresh).value,
@@ -194,8 +196,11 @@ export class LicenseInfoComponent implements OnInit {
     
     if (!filterValue) {
       this.filteredLicenses.set(allLicenses);
+      this.closeAllPanels()
       return;
     }
+    
+    this.openAllPanels()
     
     this.filteredLicenses.set(allLicenses.filter(license =>
       license.Name.toLowerCase().includes(filterValue) ||
@@ -204,6 +209,16 @@ export class LicenseInfoComponent implements OnInit {
         feature.nameId.toLowerCase().includes(filterValue)
       )
     ));
+  }
+
+  openAllPanels() {
+    if (this.accordion)
+      this.accordion.openAll();
+  }
+
+  closeAllPanels() {
+    if (this.accordion)
+      this.accordion.closeAll();
   }
 
   #urlTo(url: string) {
