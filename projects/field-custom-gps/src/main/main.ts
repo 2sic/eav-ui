@@ -7,8 +7,7 @@ import { Connector } from '../../../edit-types/src/Connector';
 import { EavCustomInputField } from '../../../edit-types/src/EavCustomInputField';
 import { FieldSettings } from '../../../edit-types/src/FieldSettings';
 import { IFieldMask } from '../../../edit-types/src/IFieldMask';
-import { CoordinatesDto } from '../preview/coordinates';
-import { buildTemplate, customGpsIcons, parseLatLng, stringifyLatLng } from '../shared/helpers';
+import { buildTemplate, customGpsIcons, getDefaultCoordinates, isLatLngObject } from '../shared/helpers';
 import * as template from './main.html';
 import * as styles from './main.scss';
 
@@ -51,7 +50,6 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
     this.innerHTML = buildTemplate(template.default, styles.default);
     this.latInput = this.querySelector<HTMLInputElement>('#lat');
     this.lngInput = this.querySelector<HTMLInputElement>('#lng');
-    const addressMaskContainer = this.querySelector<HTMLDivElement>('#address-mask-container');
     this.iconSearch = this.querySelector<HTMLAnchorElement>('#icon-search');
     this.iconSearch.insertAdjacentHTML('afterbegin', customGpsIcons.search);
     this.iconPin = this.querySelector<HTMLAnchorElement>('#icon-pin');
@@ -73,17 +71,10 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
     this.addressMask = expConnector.getFieldMask(addressMaskSetting, 'Gps');
 
     this.log.a(`${gpsDialogTag} addressMask:`, { addressMaskSetting });
-    if (addressMaskSetting) {
-      addressMaskContainer.classList.remove('hidden');
+    if (addressMaskSetting)
       formattedAddressContainer.value = this.addressMask.result();
-    }
-
-    // TODO: TRY to refactor to use the new context.app.getSetting(...) in the formulas-data
-    const defaultCoordinates = expConnector.getSettings("Settings.GoogleMaps.DefaultCoordinates") as CoordinatesDto;
-    this.defaultCoordinates = {
-      lat: defaultCoordinates.Latitude,
-      lng: defaultCoordinates.Longitude,
-    }
+    
+    this.defaultCoordinates = getDefaultCoordinates(this.connector);
 
     const googleMapsParams = (expConnector.getSettings(EditApiKeyPaths.GoogleMaps) as ApiKeySpecs).ApiKey;
     this.connector.loadScript('google', `https://maps.googleapis.com/maps/api/js?key=${googleMapsParams}&callback=Function.prototype`, () => { this.mapScriptLoaded(); });
@@ -123,7 +114,8 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
       this.updateHtml(this.defaultCoordinates);
     } else {
       try {
-        this.updateHtml(parseLatLng(this.connector.data.value));
+        if (isLatLngObject(this.connector.data.value))
+          this.updateHtml(JSON.parse(this.connector.data.value));
       } catch (e) {
         console.error('Invalid data.value:', this.connector.data.value);
         this.updateHtml(this.defaultCoordinates);
@@ -190,13 +182,13 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
   }
 
   private updateForm(latLng: google.maps.LatLngLiteral): void {
-    this.connector.data.update(stringifyLatLng(latLng));
     if (this.latFieldName) {
       this.connector._experimental.updateField(this.latFieldName, latLng.lat);
     }
     if (this.lngFieldName) {
       this.connector._experimental.updateField(this.lngFieldName, latLng.lng);
     }
+    this.connector.data.update(JSON.stringify(latLng));
   }
 
   private onLatLngInputChange(): void {
@@ -226,6 +218,8 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
         };
         this.updateHtml(latLng);
         this.updateForm(latLng);
+      } else if (!address) {
+        alert(`Please enter an address to search for.`);
       } else {
         alert(`Could not locate address: ${address}`);
       }

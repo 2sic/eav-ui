@@ -1,10 +1,37 @@
+$border-color: #e5e5e5;
+
 :host {
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding-top: 20px;
   box-sizing: border-box;
   position: relative;
+}
+
+.license-info-menu {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  border-bottom: $border-color solid 1px;
+
+  button {
+    margin-right: 8px;
+  }
+
+  .search-form {
+    justify-content: end;
+  }
+}
+
+mat-accordion {
+  flex: 1;
+  overflow: auto;
+  width: 100%;
+}
+
+mat-dialog-actions {
+  border-top: $border-color solid 1px;
 }
 
 .mat-expansion-panel-header {
@@ -52,14 +79,6 @@
     max-height: 3em;
   }
 }
-
-// .actions-box {
-//   margin-top: 8px;
-
-//   button .mat-icon {
-//     margin-right: 4px;
-//   }
-// }
 
 .eav-button {
   &__with-icon {

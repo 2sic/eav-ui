@@ -13,7 +13,7 @@ export function correctAdamFolderBasePath(
     const imgTagRegex = /<img\b[^>]*?\bdata-cmsid=["'][^"']+["'][^>]*?>/gi;
 
     data.forEach(entityBundle => {
-        const content = entityBundle.Entity.Attributes.String.Content;
+        const content = entityBundle.Entity?.Attributes?.String?.Content;
         if (typeof content !== 'object') return;
 
         Object.entries(content).forEach(([lang, htmlValue]) => {

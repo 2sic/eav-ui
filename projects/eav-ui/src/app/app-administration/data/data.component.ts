@@ -74,7 +74,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
 
   // UI Help Text for the UX Help Info Card
   #helpTextConst: HelpTextConst = {
-    empty:  {
+    empty: {
       description: '<p><b>This is where you manage data</b></p>',
       hint: "<p>Click the (+) in the bottom right corner to create your first Content Type (think: table).</p>"
     },
@@ -84,7 +84,10 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
     }
   };
 
-  uxHelpText = signal(this.#helpTextConst.empty);
+  uxHelpText = computed(() => {
+    const data = this.contentTypes();
+    return data?.length === 0 ? this.#helpTextConst.empty : this.#helpTextConst.content;
+  })
 
   constructor(private viewContainerRef: ViewContainerRef,) {
     super();
@@ -160,13 +163,6 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
         contentType._compareLabel = contentType.Label.replace(/\p{Emoji}/gu, 'ž');
       }
       this.contentTypes.set(contentTypes);
-
-      this.uxHelpText.set(
-        this.contentTypes().length === 0
-          ? this.#helpTextConst.empty
-          : this.#helpTextConst.content
-      );
-
       this.refresh.update(v => ++v)
 
       if (this.scope() !== eavConstants.scopes.default.value) {

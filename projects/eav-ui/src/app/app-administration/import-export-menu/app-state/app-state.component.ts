@@ -45,7 +45,7 @@ export class AppStateComponent implements OnDestroy {
       // Wait for the API call to complete and get the status code
       const status = await this.#exportAppSvc.exportForVersionControl({ includeContentGroups: true, resetAppGuid: false, withFiles });
       if (status >= 200 && status < 300) {
-        this.snackBar.open('2Export completed into the \'App_Data\' folder.', null, { duration: 3000 })
+        this.snackBar.open('Export completed into the \'App_Data\' folder.', null, { duration: 3000 })
       }
     } catch (error) {
       console.error('Error toggling language:', error);

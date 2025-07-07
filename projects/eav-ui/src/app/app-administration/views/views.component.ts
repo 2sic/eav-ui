@@ -95,7 +95,10 @@ export class ViewsComponent implements OnInit {
     }
   };
 
-  uxHelpText = signal(this.#helpTextConst.empty);
+  uxHelpText = computed(() => {
+    const data = this.views();
+    return data?.length === 0 ? this.#helpTextConst.empty : this.#helpTextConst.content;
+  })
 
   ngOnInit() {
 
@@ -127,13 +130,6 @@ export class ViewsComponent implements OnInit {
 
   #triggerRefresh() {
     this.refresh.update(v => ++v);
-    this.uxHelpText.set(
-      this.views().length === 0
-        ? this.#helpTextConst.empty
-        : this.#helpTextConst.content
-    );
-
-
   }
 
   urlToNewView() {

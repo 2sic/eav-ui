@@ -1,5 +1,5 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { Component, OnInit, signal, ViewContainerRef } from '@angular/core';
+import { Component, computed, OnInit, signal, ViewContainerRef } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogActions } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -58,7 +58,10 @@ export class WebApiComponent implements OnInit {
     }
   };
 
-  uxHelpText = signal(this.#helpTextConst.empty);
+  uxHelpText = computed(() => {
+    const data = this.webApis();
+    return data?.length === 0 ? this.#helpTextConst.empty : this.#helpTextConst.content;
+  })
 
   constructor(
     private snackBar: MatSnackBar,
@@ -120,11 +123,6 @@ export class WebApiComponent implements OnInit {
       this.#sourceSvc.create(result.name, global, result.templateKey).subscribe(() => {
         this.snackBar.open('Saved', null, { duration: 2000 });
         this.refresh.update(v => ++v);
-        this.uxHelpText.set(
-          this.webApis().length === 0
-            ? this.#helpTextConst.empty
-            : this.#helpTextConst.content
-        );
       });
     });
   }
