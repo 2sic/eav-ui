@@ -73,7 +73,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
     this.log.a(`${gpsDialogTag} addressMask:`, { addressMaskSetting });
     if (addressMaskSetting)
       formattedAddressContainer.value = this.addressMask.result();
-    
+
     this.defaultCoordinates = getDefaultCoordinates(this.connector);
 
     const googleMapsParams = (expConnector.getSettings(EditApiKeyPaths.GoogleMaps) as ApiKeySpecs).ApiKey;
@@ -182,12 +182,25 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
   }
 
   private updateForm(latLng: google.maps.LatLngLiteral): void {
-    if (this.latFieldName) {
-      this.connector._experimental.updateField(this.latFieldName, latLng.lat);
-    }
-    if (this.lngFieldName) {
-      this.connector._experimental.updateField(this.lngFieldName, latLng.lng);
-    }
+    // Helper function to update a specific coordinate field
+    const updateCoordinateField = (fieldName: string, value: number) => {
+      if (!fieldName) return;
+
+      // Directly update the form control
+      const formGroup = this.connector._experimental.formGroup;
+      const control = formGroup?.get(fieldName);
+      if (control) {
+        control.setValue(value.toString());
+        control.markAsDirty();
+        control.updateValueAndValidity();
+      }
+    };
+
+    // Update lat and lng fields
+    updateCoordinateField(this.latFieldName, latLng.lat);
+    updateCoordinateField(this.lngFieldName, latLng.lng);
+
+    // Update the main GPS JSON value
     this.connector.data.update(JSON.stringify(latLng));
   }
 
