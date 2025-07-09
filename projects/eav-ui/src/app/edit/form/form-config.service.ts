@@ -83,7 +83,7 @@ export class FormConfigService {
         ? { mode: false }
         : { mode: true, path: saveValue };
 
-    console.log('2dm:save mode', save);
+    // console.log('2dm:save mode', save);
     this.config = {
       zoneId: this.context.zoneId,
       appId: this.context.appId,
