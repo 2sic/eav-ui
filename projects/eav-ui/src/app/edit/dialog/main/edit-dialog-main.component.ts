@@ -100,6 +100,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
   #globalConfigService = inject(GlobalConfigService);
   #formConfig = inject(FormConfigService);
 
+  enableSave = this.#formConfig.config.save.mode; // if false, then no save button is shown
 
   /** Signal to tell the UI if the footer should show and/or the footer needs more space (changes CSS) */
   #prefManager = inject(UserPreferences).part(footerPreferences)
