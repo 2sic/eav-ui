@@ -10,11 +10,11 @@
   >
     @if (appLightSpeedEnabled) {
       <a class="default-link" [href]="'#' + params().lightSpeedLink(lightSpeedOwner())">
-        <mat-icon matBadgeSize="small" matBadge="✅" matBadgePosition="below after" aria-hidden="false"> bolt </mat-icon>
+        <mat-icon matBadgeSize="small" matBadgeIcon="check" matBadgePosition="below after" aria-hidden="false"> bolt </mat-icon>
       </a>
     } @else {
       <a class="default-link" [href]="'#' + params().lightSpeedLink(lightSpeedOwner())">
-        <mat-icon matBadgeSize="small" matBadge="⛔" matBadgePosition="below after" aria-hidden="false"> bolt </mat-icon>
+        <mat-icon matBadgeSize="small" matBadgeIcon="block" matBadgePosition="below after" aria-hidden="false"> bolt </mat-icon>
       </a>
     }
   </div>
