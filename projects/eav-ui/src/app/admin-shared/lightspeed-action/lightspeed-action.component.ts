@@ -1,5 +1,4 @@
 import { Component, inject, input } from '@angular/core';
-import { MatBadgeModule } from '@angular/material/badge';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { LightSpeedInfo } from '../../apps-management/models/LightSpeedInfo';
@@ -21,7 +20,6 @@ import { LightSpeedActionsParams } from './lightspeed-actions.models';
     imports: [
         TippyDirective,
         MatIconModule,
-        MatBadgeModule,
         MatBadgeIconDirective,
         MatRippleModule,
     ]
