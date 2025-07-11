@@ -111,17 +111,15 @@ export class LicenseInfoComponent implements OnInit {
     this.#dialogRouter.doOnDialogClosedWithData((data) => {
       // Local Save, data not refreshing from Server 
       // Save the Data in Json, same als Toggle 
-      if (data.objData) {
+
+      if (data?.objData) {
+        const { guid, enabled, ...dynamicConfig } = data.objData;
+
         const featuresConfig: FeatureState = {
-          FeatureGuid: data.objData.guid,
-          Enabled: data.objData.enabled,
-          Configuration: {
-            LoadAppDetails: data.objData.LoadAppDetails,
-            LoadAppSummary: data.objData.LoadAppSummary,
-            LoadSystemDataDetails: data.objData.LoadSystemDataDetails,
-            LoadSystemDataSummary: data.objData.LoadSystemDataSummary,
-          }
-        }
+          FeatureGuid: guid,
+          Enabled: enabled,
+          Configuration: dynamicConfig
+        };
 
         this.#featuresConfigSvc.saveFeatures([featuresConfig]).subscribe(() => {
           this.#refreshFn(100);    // Test, refresh Data from Server
