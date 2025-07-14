@@ -125,8 +125,9 @@ export class LicenseInfoComponent implements OnInit {
           this.#refreshFn(100);    // Test, refresh Data from Server
         });
         //
-      } else  // Refresh from Server
+      } else { // Refresh from Server
         this.#refreshFn(0);
+      }
     });
   }
 
@@ -180,6 +181,9 @@ export class LicenseInfoComponent implements OnInit {
     // Update the current filter value
     this.#currentFilter.set(filterValue);
 
+    if(!filterValue)
+      this.closeAllPanels();
+    
     // Apply the filter
     this.applyFilter();
   }
@@ -196,7 +200,6 @@ export class LicenseInfoComponent implements OnInit {
         filteredFeatures: license.Features
       }));
       this.filteredLicenses.set(licensesWithAllFeatures);
-      this.closeAllPanels();
       return;
     }
 
