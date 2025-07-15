@@ -25,6 +25,6 @@ export class ImportAppComponent {
     For further help visit <a href="https://2sxc.org/en/help?tag=import-app" target="_blank">2sxc Help</a>.
     `;
     dialogData.allowedFileTypes ??= 'zip';
-    dialogData.upload$ ??= (files) => this.importAppService.importApp(files[0], undefined, true);
+    dialogData.upload$ ??= (files, name) => this.importAppService.importApp(files[0], name, true);
   }
 }

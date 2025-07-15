@@ -7,8 +7,15 @@ export interface FileUploadDialogData {
   allowedFileTypes?: string;
   files?: File[];
   multiple?: boolean;
-  upload$?(files: File[]): Observable<FileUploadResult>;
+  // upload$?(files: File[]): Observable<FileUploadResult>;
+  upload$?(files: File[], name?: string): Observable<FileUploadResult>;
 }
+
+export enum ImportModeValues {
+  importOriginal = 'importOriginal',
+  importAsTemplate = 'importAsTemplate',
+}
+
 
 export interface FileUploadResult {
   Messages: FileUploadResultMessage[];

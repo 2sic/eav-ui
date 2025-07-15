@@ -1,9 +1,12 @@
 import { NgClass } from '@angular/common';
-import { ChangeDetectorRef, Component, ElementRef, HostBinding, Inject, input, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, HostBinding, inject, Inject, input, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatRadioModule } from '@angular/material/radio';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DomSanitizer } from '@angular/platform-browser';
 import { catchError, filter, fromEvent, map, of, switchMap, take, tap } from 'rxjs';
@@ -15,7 +18,7 @@ import { Context } from '../../services/context';
 import { AppInstallSettingsService } from '../../services/getting-started.service';
 import { InstallerService } from '../../services/installer.service';
 import { BaseComponent } from '../base.component';
-import { FileUploadDialogData, FileUploadMessageTypes, FileUploadResult, UploadTypes } from './file-upload-dialog.models';
+import { FileUploadDialogData, FileUploadMessageTypes, FileUploadResult, ImportModeValues, UploadTypes } from './file-upload-dialog.models';
 
 
 @Component({
@@ -30,6 +33,9 @@ import { FileUploadDialogData, FileUploadMessageTypes, FileUploadResult, UploadT
     DragAndDropDirective,
     MatButtonModule,
     MatIconModule,
+    MatRadioModule,
+    MatInputModule,
+    ReactiveFormsModule
   ]
 })
 export class FileUploadDialogComponent extends BaseComponent implements OnInit, OnDestroy {
@@ -46,6 +52,7 @@ export class FileUploadDialogComponent extends BaseComponent implements OnInit, 
 
   FileUploadMessageTypes = FileUploadMessageTypes;
   UploadTypes = UploadTypes;
+  importModeValues = ImportModeValues;
 
   showProgress: boolean = false;
   currentPackage: InstallPackage;
@@ -53,8 +60,14 @@ export class FileUploadDialogComponent extends BaseComponent implements OnInit, 
   ready = false;
   settings: InstallSettings;
 
-   #installerService = transient(InstallerService);
-   #installSettingsService = transient(AppInstallSettingsService);
+  #installerService = transient(InstallerService);
+  #installSettingsService = transient(AppInstallSettingsService);
+  #fb = inject(FormBuilder);
+
+  importForm: FormGroup = this.#fb.group({
+    importMode: [this.importModeValues.importOriginal, Validators.required],
+    name: ['']
+  });
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public dialogData: FileUploadDialogData,
@@ -74,6 +87,8 @@ export class FileUploadDialogComponent extends BaseComponent implements OnInit, 
         this.ready = true;
       })
     );
+
+    this.#setupConditionalValidation();
   }
 
   #alreadyProcessing = false;
@@ -184,9 +199,18 @@ Please try again later or check how to manually install content-templates: https
     this.dialog.close(refresh);
   }
 
+  #setupConditionalValidation(): void {
+    const nameControl = this.importForm.get('name');
+    this.importForm.get('importMode')?.valueChanges.subscribe(mode => {
+      const isTemplate = mode === this.importModeValues.importAsTemplate;
+      nameControl?.setValidators(isTemplate ? [Validators.required] : null);
+      nameControl?.updateValueAndValidity();
+    });
+  }
+
+
   filesDropped(files: File[]): void {
     this.#setFiles(files);
-    this.upload();
   }
 
   filesChanged(event: Event): void {
@@ -197,8 +221,9 @@ Please try again later or check how to manually install content-templates: https
 
   upload(): void {
     this.uploading.set(true);
+    const name = this.importForm.get('name')?.value as string;
     this.subscriptions.add(
-      this.dialogData.upload$(this.files()).pipe(take(1)).subscribe({
+      this.dialogData.upload$(this.files(), name).pipe(take(1)).subscribe({
         next: (result) => {
           this.uploading.set(false);
           this.result.set(result);
@@ -217,9 +242,9 @@ Please try again later or check how to manually install content-templates: https
   }
 
   #setFiles(files: File[]): void {
-    if (!this.dialogData.multiple) {
+    if (!this.dialogData.multiple)
       files = files.slice(0, 1);
-    }
+
     this.files.set(files);
   }
 }
