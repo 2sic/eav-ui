@@ -57,6 +57,7 @@ export class FileUploadDialogComponent extends BaseComponent implements OnInit, 
   showProgress: boolean = false;
   currentPackage: InstallPackage;
   remoteInstallerUrl = '';
+  urlChangeImportMode = ""
   ready = false;
   settings: InstallSettings;
 
@@ -83,6 +84,7 @@ export class FileUploadDialogComponent extends BaseComponent implements OnInit, 
     this.subscriptions.add(
       this.#installSettingsService.settings$.subscribe(settings => {
         this.settings = settings;
+        this.urlChangeImportMode = settings.remoteUrl
         this.remoteInstallerUrl = <string>this.sanitizer.bypassSecurityTrustResourceUrl(settings.remoteUrl);
         this.ready = true;
       })
@@ -112,6 +114,15 @@ export class FileUploadDialogComponent extends BaseComponent implements OnInit, 
   );
 
   ngOnInit(): void {
+
+    // Update the remote installer URL based on the import mode
+    // Show multiple select or single select based on import mode
+    this.importForm.get('importMode')?.valueChanges.subscribe((mode) => {
+      const isTemplate = mode === this.importModeValues.importAsTemplate;
+      const url = this.urlChangeImportMode + (this.urlChangeImportMode.includes('?') ? '&' : '?') + `selectOnlyMode=${isTemplate}`;
+      this.remoteInstallerUrl = <string>this.sanitizer.bypassSecurityTrustResourceUrl(url);
+    });
+
 
     if (this.dialogData.files != null)
       this.filesDropped(this.dialogData.files);

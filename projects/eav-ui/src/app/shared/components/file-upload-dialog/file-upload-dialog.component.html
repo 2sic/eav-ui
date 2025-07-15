@@ -12,7 +12,7 @@
     }
     <p [innerHtml]="dialogData.description | safeHtml"></p>
 
-    <!--  -->
+
     @if (uploadType() == UploadTypes.App) {
       <form [formGroup]="importForm">
         <mat-radio-group formControlName="importMode" aria-label="Select import mode">
@@ -102,7 +102,7 @@
         }
       </div>
     }
-    @if (uploadType() == UploadTypes.App && showAppCatalog() && !files().length) {
+    @if (uploadType() == UploadTypes.App && showAppCatalog() && !files().length && importForm.valid) {
       @if (ready) {
         <iframe #installerWindow class="eav-app-catalog-iframe" [src]="remoteInstallerUrl"></iframe>
       }
