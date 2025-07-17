@@ -85,8 +85,10 @@ a.fill-cell {
 .grid-fab,
 .text-icon,
 .mat-badge-content,
-.eav-eco-fab-speed-dial-action-button {
+.eav-eco-fab-speed-dial-action-button,
+mat-spinner,
+.eav-action-button,
+.eav-card-action-button {
   background: $sxc-gradient !important;
   color: white !important;
 }
-
