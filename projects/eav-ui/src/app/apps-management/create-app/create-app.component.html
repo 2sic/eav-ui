@@ -1,7 +1,11 @@
 <div class="eav-dialog">
   <div class="eav-dialog-header">
     <div class="eav-dialog-header__title">Create App</div>
+    <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
+      <mat-icon>close</mat-icon>
+    </button>
   </div>
+
   <div class="eav-dialog-content">
     <router-outlet></router-outlet>
     <form [formGroup]="form">
@@ -35,13 +39,7 @@
   </div>
   <mat-dialog-actions align="end">
     <button type="button" mat-raised-button [disabled]="loading()" (click)="closeDialog()">Cancel</button>
-    <button
-      type="button"
-      mat-raised-button
-      class="eav-action-button"
-      [disabled]="loading() || !canCreate()"
-      (click)="create()"
-    >
+    <button type="button" mat-raised-button class="eav-action-button" [disabled]="loading() || !canCreate()" (click)="create()">
       Create
     </button>
   </mat-dialog-actions>
