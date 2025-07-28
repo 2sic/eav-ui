@@ -1,15 +1,16 @@
-import { Component, effect, ElementRef, HostBinding, signal, ViewChild } from '@angular/core';
+import { Component, effect, ElementRef, HostBinding, inject, signal, ViewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import { MatDialogActions, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DomSanitizer } from '@angular/platform-browser';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { filter, fromEvent, map, Observable } from 'rxjs';
 import { transient } from '../../../../../core';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
@@ -33,7 +34,9 @@ import { AppsListService } from '../services/apps-list.service';
     MatDialogActions,
     MatButtonModule,
     FieldHintComponent,
-    MatRadioModule
+    MatRadioModule,
+    MatIconModule,
+
   ]
 })
 export class CreateAppComponent {
@@ -61,6 +64,8 @@ export class CreateAppComponent {
   // App and settings service instances (using custom transient DI)
   private appsListService = transient(AppsListService);
   private installSettingsService = transient(AppInstallSettingsService);
+
+  private router = inject(Router);
 
   // Holds the URL of the package selected in the app catalog (reactive signal)
   private packageUrl = signal<string>(null);
@@ -141,7 +146,7 @@ export class CreateAppComponent {
     // Use the selected template if applicable, otherwise create a raw app
     if (appTemplateId === 1 && this.packageUrl() && this.packageUrl().length > 0) {
       createObservable = this.appsListService.createTemplate(this.packageUrl(), name);
-    } else {
+    } else if (appTemplateId === 0) {
       createObservable = this.appsListService.create(name, null, 0);
     }
 
@@ -223,4 +228,14 @@ export class CreateAppComponent {
 
     this.updateCanCreate();
   }
+
+  switchToImportApp(): void {
+    this.dialog.close();
+    const segments = this.router.url.split('/').filter(Boolean);
+    segments[segments.length - 1] = 'import';
+    this.router.navigate(segments);
+
+  }
+
+  get appTemplateIdValue() { return this.form.controls.appTemplateId.value; }
 }
