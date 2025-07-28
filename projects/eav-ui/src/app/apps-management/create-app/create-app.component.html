@@ -22,8 +22,8 @@
       }
       <br />
       <mat-radio-group formControlName="appTemplateId" required (change)="onTemplateChange($event)">
-        <mat-radio-button [value]="0">Complete Naked / Raw App</mat-radio-button>
         <mat-radio-button [value]="1">Use Template</mat-radio-button>
+        <mat-radio-button [value]="0">Completely new / empty App</mat-radio-button>
       </mat-radio-group>
     </form>
 
@@ -38,7 +38,7 @@
     <button
       type="button"
       mat-raised-button
-      color="accent"
+      class="eav-action-button"
       [disabled]="loading() || !canCreate()"
       (click)="create()"
     >
