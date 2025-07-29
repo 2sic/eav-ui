@@ -35,6 +35,7 @@
 @import './styles/tippy.styles.scss';
 @import './styles/mat-snackbar.styles.scss';
 @import './styles/eco-fab-speed-dial.styles.scss';
+@import './styles/2sxc-color-override.scss';
 
 html,
 body {
@@ -77,45 +78,4 @@ a.fill-cell {
   // TODO: this must be deprecated but still used in popup dialog
   --edit-ui-dialog-max-height-mobile: calc(100vh - var(--edit-dialog-header-height));
   --edit-content-max-height-default: calc(100vh - var(--edit-dialog-header-height) - var(--edit-dialog-margins-vertical));
-}
-
-// 2pp - Override Components with new v20 colors
-.grid-fab,
-.text-icon,
-.mat-badge-content,
-.eav-eco-fab-speed-dial-action-button,
-mat-spinner,
-.eav-action-button,
-.eav-card-action-button,
-.active-features-count {
-  background: $sxc-gradient !important;
-  color: white !important;
-}
-
-.eav-action-button:disabled {
-  color: grey !important;
-  opacity: 0.75;
-}
-
-.mat-mdc-radio-button.mat-accent {
-  @include mat.radio-overrides(( // Only works with solid colors
-    selected-hover-icon-color: $sxc-solid,
-    selected-pressed-icon-color: $sxc-solid,
-    selected-focus-icon-color: $sxc-solid,
-    selected-icon-color: $sxc-solid,
-    checked-ripple-color: $sxc-solid,
-    unselected-hover-icon-color: $sxc-solid,
-    unselected-icon-color: $sxc-solid,
-  ));
-}
-
-.mat-mdc-checkbox.mat-accent {
-  @include mat.checkbox-overrides(( // Only works with solid colors
-    selected-hover-icon-color: $sxc-solid,
-    selected-pressed-icon-color: $sxc-solid,
-    selected-focus-icon-color: $sxc-solid,
-    selected-icon-color: $sxc-solid,
-    unselected-hover-icon-color: $sxc-solid,
-    unselected-icon-color: $sxc-solid,
-  ));
 }
