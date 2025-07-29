@@ -104,5 +104,18 @@ mat-spinner,
     selected-focus-icon-color: $sxc-solid,
     selected-icon-color: $sxc-solid,
     checked-ripple-color: $sxc-solid,
+    unselected-hover-icon-color: $sxc-solid,
+    unselected-icon-color: $sxc-solid,
+  ));
+}
+
+.mat-mdc-checkbox.mat-accent {
+  @include mat.checkbox-overrides(( // Only works with solid colors
+    selected-hover-icon-color: $sxc-solid,
+    selected-pressed-icon-color: $sxc-solid,
+    selected-focus-icon-color: $sxc-solid,
+    selected-icon-color: $sxc-solid,
+    unselected-hover-icon-color: $sxc-solid,
+    unselected-icon-color: $sxc-solid,
   ));
 }

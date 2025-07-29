@@ -23,7 +23,7 @@
     <button type="button" mat-raised-button (click)="closeDialog()">
       Cancel
     </button>
-    <button type="button" mat-raised-button color="accent" [disabled]="pendingApps().length === 0 || installing"
+    <button type="button" mat-raised-button class="eav-action-button" [disabled]="pendingApps().length === 0 || installing"
       (click)="install()">
       Install
     </button>
