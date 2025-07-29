@@ -96,3 +96,13 @@ mat-spinner,
   color: grey !important;
   opacity: 0.75;
 }
+
+.mat-mdc-radio-button.mat-accent {
+  @include mat.radio-overrides(( // Only works with solid colors
+    selected-hover-icon-color: $sxc-solid,
+    selected-pressed-icon-color: $sxc-solid,
+    selected-focus-icon-color: $sxc-solid,
+    selected-icon-color: $sxc-solid,
+    checked-ripple-color: $sxc-solid,
+  ));
+}

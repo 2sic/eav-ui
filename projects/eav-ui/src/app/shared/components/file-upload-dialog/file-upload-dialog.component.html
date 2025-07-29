@@ -41,7 +41,7 @@
     }
 
     <div>
-      <button mat-raised-button tippy="Open file browser" class="eav-action-button" [disabled]="uploading() || importForm.invalid" (click)="fileInput.click()">
+      <button mat-raised-button tippy="Open file browser" [disabled]="uploading() || importForm.invalid" (click)="fileInput.click()">
         @if (!files().length) {
           <div>Select or drop file</div>
         }
