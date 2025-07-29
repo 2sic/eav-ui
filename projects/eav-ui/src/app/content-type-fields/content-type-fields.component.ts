@@ -281,6 +281,7 @@ export class ContentTypeFieldsComponent implements OnInit {
       autoFocus: false,
       width: '800px',
       data: field,
+      viewContainerRef: this.viewContainerRef, // for dependency injection in the dialog
     });
     shareOrInheritDialogRef.afterClosed().subscribe(() => this.#fetchFields());
   }
