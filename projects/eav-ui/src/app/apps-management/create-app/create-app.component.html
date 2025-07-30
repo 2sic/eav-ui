@@ -55,7 +55,7 @@
       type="button"
       mat-raised-button
       class="eav-action-button"
-      [disabled]="loading() || (!canCreate() && appTemplateIdValue == 2)"
+      [disabled]="loading() || (!canCreate())"
       (click)="create()"
     >
       Create

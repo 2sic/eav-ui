@@ -15,6 +15,7 @@ import { filter, fromEvent, map, Observable } from 'rxjs';
 import { transient } from '../../../../../core';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
 import { CrossWindowMessage, InstallSettings } from '../../shared/models/installer-models';
+import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { AppInstallSettingsService } from '../../shared/services/getting-started.service';
 import { appNameError, appNamePattern } from '../constants/app.patterns';
 import { AppsListService } from '../services/apps-list.service';
@@ -64,6 +65,7 @@ export class CreateAppComponent {
   // App and settings service instances (using custom transient DI)
   private appsListService = transient(AppsListService);
   private installSettingsService = transient(AppInstallSettingsService);
+  #dialogRouter = transient(DialogRoutingService);
 
   private router = inject(Router);
 
@@ -229,13 +231,12 @@ export class CreateAppComponent {
     this.updateCanCreate();
   }
 
-  switchToImportApp(): void {
-    this.dialog.close();
-    const segments = this.router.url.split('/').filter(Boolean);
-    segments[segments.length - 1] = 'import';
-    this.router.navigate(segments);
-
-  }
+switchToImportApp(): void {
+  const segments = this.router.url.split('/').filter(Boolean);
+  segments[segments.length - 1] = 'import';
+  const url = '/' + segments.join('/');
+  this.#dialogRouter.navPath(url);
+}
 
   get appTemplateIdValue() { return this.form.controls.appTemplateId.value; }
 }
