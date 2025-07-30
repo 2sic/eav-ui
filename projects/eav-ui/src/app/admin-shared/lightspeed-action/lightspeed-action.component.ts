@@ -1,10 +1,10 @@
 import { Component, inject, input } from '@angular/core';
-import { MatBadgeModule } from '@angular/material/badge';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { LightSpeedInfo } from '../../apps-management/models/LightSpeedInfo';
 import { FeatureNames } from '../../features/feature-names';
 import { FeaturesService } from '../../features/features.service';
+import { MatBadgeIconDirective } from '../../shared/directives/mat-badge-icon.directive';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { LightSpeedActionsParams } from './lightspeed-actions.models';
 
@@ -20,7 +20,7 @@ import { LightSpeedActionsParams } from './lightspeed-actions.models';
     imports: [
         TippyDirective,
         MatIconModule,
-        MatBadgeModule,
+        MatBadgeIconDirective,
         MatRippleModule,
     ]
 })

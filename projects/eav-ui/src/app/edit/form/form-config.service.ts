@@ -1,7 +1,7 @@
 import { Injectable, Signal, inject, signal } from '@angular/core';
 import { Observable } from 'rxjs';
 import { DialogContext } from '../../app-administration/models';
-import { keyPartOfPage, keyPublishing, partOfPageDefault } from '../../shared/constants/session.constants';
+import { keyPartOfPage, keyPublishing, keySettings, partOfPageDefault } from '../../shared/constants/session.constants';
 import { classLog } from '../../shared/logging';
 import { Context } from '../../shared/services/context';
 import { EditSettings } from '../dialog/main/edit-dialog-main.models';
@@ -70,6 +70,20 @@ export class FormConfigService {
       primary: dialogContext.Language.Primary,
       list: dialogContext.Language.List,
     };
+
+
+    const saveSettingsFromUrl = sessionStorage.getItem(keySettings);
+    const saveSettingsData = saveSettingsFromUrl ? JSON.parse(saveSettingsFromUrl) : null as {
+      save: string | boolean;
+    } | null;
+    const saveValue = saveSettingsData?.save;
+    const save = (saveValue == null)
+      ? { mode: true }
+      : (saveValue === 'false' || saveValue === false)
+        ? { mode: false }
+        : { mode: true, path: saveValue };
+
+    // console.log('2dm:save mode', save);
     this.config = {
       zoneId: this.context.zoneId,
       appId: this.context.appId,
@@ -94,6 +108,7 @@ export class FormConfigService {
       removeEditRestrictions: dialogContext.Enable.OverrideEditRestrictions ?? false,
       dialogContext,
       settings,
+      save,
     };
     this.configSignal.set(this.config);
     this.language = this.languageService.getSignal(this.config.formId);

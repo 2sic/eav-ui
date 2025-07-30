@@ -29,6 +29,12 @@ export interface FormConfiguration {
   removeEditRestrictions: boolean;
   dialogContext: DialogContext;
   settings: EditSettings;
+  save: FormSave;
+}
+
+interface FormSave {
+  mode: true | false | string;
+  path?: string;
 }
 
 

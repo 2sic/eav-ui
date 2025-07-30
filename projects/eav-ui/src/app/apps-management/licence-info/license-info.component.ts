@@ -1,11 +1,14 @@
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
 import { GridOptions, ModuleRegistry } from '@ag-grid-community/core';
 import { NgClass } from '@angular/common';
-import { ChangeDetectorRef, Component, inject, linkedSignal, OnInit, signal, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, effect, inject, linkedSignal, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogActions } from '@angular/material/dialog';
-import { MatExpansionModule } from '@angular/material/expansion';
+import { MatAccordion, MatExpansionModule } from '@angular/material/expansion';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { Router, RouterOutlet } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { transient } from '../../../../../core';
@@ -51,6 +54,9 @@ import { LicensesOrderPipe } from './licenses-order.pipe';
     LicensesOrderPipe,
     ActiveFeaturesCountPipe,
     TippyDirective,
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule
   ],
 })
 export class LicenseInfoComponent implements OnInit {
@@ -63,11 +69,13 @@ export class LicenseInfoComponent implements OnInit {
 
   #disabled = signal(false);
   #refresh = signal(0);
+  #currentFilter = signal('');
+
+  @ViewChild(MatAccordion) accordion: MatAccordion;
 
   licenses = linkedSignal<License[], License[]>({
     source: this.#featuresConfigSvc.getLicensesLive(this.#refresh).value,
     computation: (licenses, previous) => {
-
       if (!licenses)
         return previous?.value ?? [];
 
@@ -76,11 +84,14 @@ export class LicenseInfoComponent implements OnInit {
         .map(l => ({
           ...ExpirationExtension.expandLicense(l),
           Features: l.Features.map(f => ExpirationExtension.expandFeature(f)),
+          filteredFeatures: l.Features.map(f => ExpirationExtension.expandFeature(f)) // Initialize filteredFeatures with all features
         }));
       return expanded;
     }
   });
 
+  // Initialize empty filteredLicenses - initial values will be set in constructor
+  filteredLicenses = signal<License[]>(null);
 
   constructor(
     private matDialog: MatDialog,
@@ -88,34 +99,37 @@ export class LicenseInfoComponent implements OnInit {
     private changeDetectorRef: ChangeDetectorRef,
   ) {
     ModuleRegistry.registerModules([ClientSideRowModelModule]);
-  }
 
+    // Create an effect to update filteredLicenses whenever licenses changes
+    effect(() => {
+      // Apply the current filter to the updated licenses
+      this.applyFilter();
+    });
+  }
 
   ngOnInit(): void {
     this.#dialogRouter.doOnDialogClosedWithData((data) => {
       // Local Save, data not refreshing from Server 
       // Save the Data in Json, same als Toggle 
-      if (data.objData) {
+
+      if (data?.objData) {
+        const { guid, enabled, ...dynamicConfig } = data.objData;
+
         const featuresConfig: FeatureState = {
-          FeatureGuid: data.objData.guid,
-          Enabled: data.objData.enabled,
-          Configuration: {
-            LoadAppDetails: data.objData.LoadAppDetails,
-            LoadAppSummary: data.objData.LoadAppSummary,
-            LoadSystemDataDetails: data.objData.LoadSystemDataDetails,
-            LoadSystemDataSummary: data.objData.LoadSystemDataSummary,
-          }
-        }
+          FeatureGuid: guid,
+          Enabled: enabled,
+          Configuration: dynamicConfig
+        };
 
         this.#featuresConfigSvc.saveFeatures([featuresConfig]).subscribe(() => {
           this.#refreshFn(100);    // Test, refresh Data from Server
         });
         //
-      } else  // Refresh from Server
+      } else { // Refresh from Server
         this.#refreshFn(0);
+      }
     });
   }
-
 
   #refreshFn(timer?: number): void {
     setTimeout(() => {
@@ -123,7 +137,6 @@ export class LicenseInfoComponent implements OnInit {
       this.#disabled.set(false);
     }, timer);
   }
-
 
   trackLicenses(index: number, license: License): string {
     return license.Guid;
@@ -159,6 +172,69 @@ export class LicenseInfoComponent implements OnInit {
       next: () => this.#refreshFn(100),
       error: () => this.#refreshFn(100)
     });
+  }
+
+  filterLicenses(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const filterValue = input.value.toLowerCase();
+
+    // Update the current filter value
+    this.#currentFilter.set(filterValue);
+
+    if(!filterValue)
+      this.closeAllPanels();
+    
+    // Apply the filter
+    this.applyFilter();
+  }
+
+  // Separate method to apply the filter
+  private applyFilter(): void {
+    const allLicenses = this.licenses();
+    const filterValue = this.#currentFilter();
+
+    if (!filterValue) {
+      // When no filter, show all licenses with all features
+      const licensesWithAllFeatures = allLicenses.map(license => ({
+        ...license,
+        filteredFeatures: license.Features
+      }));
+      this.filteredLicenses.set(licensesWithAllFeatures);
+      return;
+    }
+
+    this.openAllPanels();
+
+    // Filter licenses, but also filter features within each license
+    const filtered = allLicenses.map(license => {
+      // Filter features that match the search criteria
+      const filteredFeatures = license.Features.filter(feature =>
+        feature.name.toLowerCase().includes(filterValue) ||
+        feature.nameId.toLowerCase().includes(filterValue)
+      );
+
+      // Create a new license object with filtered features
+      return {
+        ...license,
+        filteredFeatures
+      };
+    });
+
+    // Only keep licenses that either match the filter themselves or have matching features
+    this.filteredLicenses.set(filtered.filter(license =>
+      license.Name.toLowerCase().includes(filterValue) ||
+      license.filteredFeatures.length > 0
+    ));
+  }
+
+  openAllPanels() {
+    if (this.accordion)
+      this.accordion.openAll();
+  }
+
+  closeAllPanels() {
+    if (this.accordion)
+      this.accordion.closeAll();
   }
 
   #urlTo(url: string) {
@@ -205,7 +281,6 @@ export class LicenseInfoComponent implements OnInit {
           },
         },
         {
-
           headerName: 'Enabled',
           field: 'isEnabled',
           width: 82,

@@ -1,6 +1,6 @@
 import { ColumnApi, FilterChangedEvent, GridApi, GridOptions, GridReadyEvent, ICellRendererParams, RowClassParams, RowDragEvent, SortChangedEvent } from '@ag-grid-community/core';
 import { NgClass } from '@angular/common';
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, ViewContainerRef } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogActions, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -57,6 +57,7 @@ export class ContentTypeFieldsComponent implements OnInit {
     protected dialog: MatDialogRef<ContentTypeFieldsComponent>,
     private snackBar: MatSnackBar,
     private matDialog: MatDialog,
+    private viewContainerRef: ViewContainerRef, // for dependency injection in the dialog
   ) { }
 
   #contentTypeStaticName = this.#dialogRouter.getParam('contentTypeStaticName');
@@ -152,7 +153,8 @@ export class ContentTypeFieldsComponent implements OnInit {
     this.matDialog.open(FieldSharingAddMany, {
       autoFocus: false,
       width: '1600px',
-      data: { contentType: this.contentType(), existingFields: this.fields() }
+      data: { contentType: this.contentType(), existingFields: this.fields() },
+      viewContainerRef: this.viewContainerRef, // for dependency injection in the dialog
     }).afterClosed().subscribe(() => this.#fetchFields());
   }
 
@@ -279,6 +281,7 @@ export class ContentTypeFieldsComponent implements OnInit {
       autoFocus: false,
       width: '800px',
       data: field,
+      viewContainerRef: this.viewContainerRef, // for dependency injection in the dialog
     });
     shareOrInheritDialogRef.afterClosed().subscribe(() => this.#fetchFields());
   }

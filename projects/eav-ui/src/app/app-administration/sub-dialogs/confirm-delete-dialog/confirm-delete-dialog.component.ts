@@ -20,10 +20,7 @@ export class ConfirmDeleteDialogComponent {
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public dialogData: ConfirmDeleteDialogData,
-    private dialog: MatDialogRef<ConfirmDeleteDialogComponent>,
+    public dialog: MatDialogRef<ConfirmDeleteDialogComponent>,
   ) { }
 
-  closeDialog(confirm?: boolean) {
-    this.dialog.close(confirm);
-  }
 }

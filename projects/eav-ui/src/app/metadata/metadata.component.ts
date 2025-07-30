@@ -18,6 +18,7 @@ import { MetadataService } from '../permissions';
 import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
 import { MetadataKeyTypes } from '../shared/constants/eav.constants';
+import { MatBadgeIconDirective } from '../shared/directives/mat-badge-icon.directive';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { classLog } from '../shared/logging';
 import { EditForm, EditPrep, ItemAddIdentifier } from '../shared/models/edit-form.model';
@@ -46,6 +47,7 @@ import { MetadataItem, MetadataRecommendation } from './models/metadata.model';
     EcoFabSpeedDialTriggerComponent,
     EcoFabSpeedDialActionsComponent,
     MatBadgeModule,
+    MatBadgeIconDirective,
     SafeHtmlPipe,
   ]
 })

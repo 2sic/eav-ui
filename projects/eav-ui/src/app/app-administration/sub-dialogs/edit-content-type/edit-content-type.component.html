@@ -85,7 +85,7 @@
       </div>
       <mat-dialog-actions align="end">
         <button mat-raised-button type="button" (click)="closeDialog()">Cancel</button>
-        <button mat-raised-button type="submit" color="accent" [disabled]="!ngForm.form.valid || loading()">Save</button>
+        <button mat-raised-button type="submit" class="eav-action-button" [disabled]="!ngForm.form.valid || loading()">Save</button>
       </mat-dialog-actions>
     </form>
   }

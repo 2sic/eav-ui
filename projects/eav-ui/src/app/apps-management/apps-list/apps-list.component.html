@@ -11,7 +11,7 @@
   <mat-dialog-actions align="end">
     <eco-fab-speed-dial class="eav-eco-fab-speed-dial" [ngClass]="{ 'fab-opened': fabOpen() }" (openChange)="openChange($event)">
       <eco-fab-speed-dial-trigger [spin]="true">
-        <button mat-fab>
+        <button mat-fab class="grid-fab">
           <mat-icon class="spin180">{{ fabOpen() ? 'close' : 'add' }}</mat-icon>
         </button>
       </eco-fab-speed-dial-trigger>
@@ -27,7 +27,7 @@
             [matBadgeHidden]="isAddFromFolderEnabled()"
             matBadgeColor="accent"
             matBadgeSize="small"
-            matBadge="💎"
+            matBadgeIcon="diamond"
             matBadgePosition="below after"
             aria-hidden="false"
           >

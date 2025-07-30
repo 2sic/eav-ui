@@ -29,6 +29,8 @@ const logSpecs = {
   disabledEffect: false,
   ngAfterViewInit: false,
   dateTimeValue: false,
+  formatDateTime: false,
+  InvalidDate: false,
 }
 
 /**
@@ -105,7 +107,7 @@ export class DatetimeDefaultComponent implements AfterViewInit {
    * Format date for display in UI using localized format
    */
   formatDateTime(date: dayjs.Dayjs | Date | null): string {
-    console.log('formatDateTime', { date });
+    const l = this.log.fnIf('formatDateTime', { date: date });
     return DateTimeUtils.formatDateTime(date);
   }
 
@@ -157,8 +159,8 @@ export class DatetimeDefaultComponent implements AfterViewInit {
     );
 
     // Log invalid dates for debugging
-    if (event.value && !event.value.isValid()) {
-      console.log('Invalid Date');
+    if (event.value && !event.value.isValid()){
+      const l = this.log.fnIf('InvalidDate', { date: event.value });
     }
   }
 

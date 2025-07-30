@@ -48,6 +48,7 @@ export interface EditSettings {
   ContentTypes: EavContentType[];
 }
 
+/** Same interface, but with Dto property types on Entities and ContentTypes */
 export interface EditSettingsDto {
   Values: Record<string, unknown>;
   Entities: EavEntityDto[];

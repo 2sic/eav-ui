@@ -6,6 +6,7 @@ import { DebugFields } from '../../edit-debug';
 import { StateUiMapperBase } from '../../fields/picker/adapters/state-ui-mapper-base';
 import { PickerItem } from '../../fields/picker/models/picker-item.model';
 import { InputTypeSpecs } from '../../shared/input-types/input-type-specs.model';
+import { EavContentType } from '../../shared/models/eav/eav-content-type';
 import { FieldFormulasResultRaw, FieldValueOrResultRaw } from "./formula-results.models";
 
 const logSpecs = {
@@ -25,6 +26,9 @@ export class FormulaValueCorrections {
   log = classLog({FormulaValueCorrections}, logSpecs);
 
   constructor(
+    private contentType: EavContentType,
+    // private contentTypeSvc: ContentTypeService,
+    private entityGuid: string,
     private fieldName: string,
     private isValue: boolean,
     private inputType: InputTypeSpecs,
@@ -104,7 +108,7 @@ export class FormulaValueCorrections {
       // fix fields
       if (raw.fields)
         raw.fields = raw.fields?.map(f => {
-          f.value = this.#oneValue(f.value);
+          f.value = this.#oneValue(f.value, f.name);
           return f;
         });
 
@@ -143,12 +147,25 @@ export class FormulaValueCorrections {
    * @param inputType InputType is needed to check if the result is a date which needs to be corrected
    * @returns Corrected field value
    */
-  #oneValue(value: FieldValue | Date): FieldValue {
+  #oneValue(value: FieldValue | Date, otherFieldName: string = null): FieldValue {
+    const l = this.log.fnIf('oneValue', { fieldName: this.fieldName, otherFieldName, value, type: typeof value });
     if (value == null)
-      return value as FieldValue;
+      return l.r(value as FieldValue, 'null');
 
-    const inputType = this.inputType.inputType;
-    
+    let inputType = this.inputType.inputType;
+
+    // If doing this for another field, we must lookup the definition of the other field and handle it's expected input type
+    if (otherFieldName) {
+      const otherAttribute = this.contentType.Attributes.find(a => a.Name === otherFieldName);
+      
+      if (!otherAttribute?.InputType)
+        return l.r(value as FieldValue, `other field ${otherFieldName}; value not changed as target field not found`);
+            
+      inputType = otherAttribute.InputType;
+      l.a(`other field ${otherFieldName} found, inputType: ${inputType}`);
+    }
+
+
     if (inputType === InputTypeCatalog.DateTimeDefault || value instanceof Date) {
       const date = new Date(value as string | number | Date);
 
@@ -157,14 +174,14 @@ export class FormulaValueCorrections {
         date.setTime(date.getTime() - date.getTimezoneOffset() * 60000);
 
       date.setMilliseconds(0);
-      return date.toJSON();
+      return l.r(date.toJSON(), 'date');
     }
     
     if (typeof (value) !== 'string' && (inputType?.startsWith(DataTypeCatalog.String.toLocaleLowerCase())
       || inputType?.startsWith(DataTypeCatalog.Hyperlink.toLocaleLowerCase()))) {
-      return value.toString();
+      return l.r(value.toString(), 'not string, but input is string or hyperlink');
     }
-    return value;
+    return l.r(value, 'unchanged');
   }
 
 

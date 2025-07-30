@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { dialogSettings, DialogUiSettings } from '../constants/session.constants';
+import { DialogUiSettings, keySettings } from '../constants/session.constants';
 import { StateManagerLocal } from '../user/state-manager';
 
 const storeKey = 'user-language';
@@ -62,7 +62,7 @@ export class UserLanguageService {
   #dialogUiSettings(): DialogUiSettings {
     if (this.#uiSettingsCached)
       return this.#uiSettingsCached;
-    const storedMaybeString = sessionStorage.getItem(dialogSettings);
+    const storedMaybeString = sessionStorage.getItem(keySettings);
     return (!storedMaybeString)
       ? null
       : this.#uiSettingsCached = JSON.parse(storedMaybeString);

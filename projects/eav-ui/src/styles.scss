@@ -1,5 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
-@use "@angular/material" as mat;
+@use '@angular/material' as mat;
 // Include the common styles for Angular Material. Be sure that you only ever include this mixin once!
 // TODO(v15): As of v15 mat.legacy-core no longer includes default typography styles.
 //  The following line adds:
@@ -12,29 +12,30 @@
 // @include mat.all-component-typographies();
 @include mat.elevation-classes();
 @include mat.app-background();
-@import "@ag-grid-community/styles/ag-grid.css";
-@import "@ag-grid-community/styles/ag-theme-material.css";
+@import '@ag-grid-community/styles/ag-grid.css';
+@import '@ag-grid-community/styles/ag-theme-material.css';
 
-@import "./styles/variables.scss";
-@import "./styles/theme.scss";
-@import "./app/edit/assets/styles/app.scss";
-@import "./styles/helpers.scss";
-@import "./styles/mat-card.styles.scss";
-@import "./styles/mat-dialog.styles.scss";
-@import "./styles/mat-tooltip.styles.scss";
-@import "./styles/mat-tabs.styles.scss";
-@import "./styles/ag-grid.styles.scss";
-@import "./styles/ag-grid-components.styles.scss";
-@import "./styles/sxc-messages.styles.scss";
-@import "./styles/editor.styles.scss";
-@import "./styles/pipeline-designer.scss";
-@import "./styles/mat-radio.styles.scss";
-@import "./styles/mat-button.styles.scss";
-@import "./styles/drag-and-drop.styles.scss";
-@import "./styles/item-history.styles.scss";
-@import "./styles/tippy.styles.scss";
-@import "./styles/mat-snackbar.styles.scss";
-@import "./styles/eco-fab-speed-dial.styles.scss";
+@import './styles/variables.scss';
+@import './styles/theme.scss';
+@import './app/edit/assets/styles/app.scss';
+@import './styles/helpers.scss';
+@import './styles/mat-card.styles.scss';
+@import './styles/mat-dialog.styles.scss';
+@import './styles/mat-tooltip.styles.scss';
+@import './styles/mat-tabs.styles.scss';
+@import './styles/ag-grid.styles.scss';
+@import './styles/ag-grid-components.styles.scss';
+@import './styles/sxc-messages.styles.scss';
+@import './styles/editor.styles.scss';
+@import './styles/pipeline-designer.scss';
+@import './styles/mat-radio.styles.scss';
+@import './styles/mat-button.styles.scss';
+@import './styles/drag-and-drop.styles.scss';
+@import './styles/item-history.styles.scss';
+@import './styles/tippy.styles.scss';
+@import './styles/mat-snackbar.styles.scss';
+@import './styles/eco-fab-speed-dial.styles.scss';
+@import './styles/2sxc-color-override.scss';
 
 html,
 body {
@@ -44,7 +45,7 @@ body {
 body {
   margin: 0;
   background-color: transparent;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
   overflow: hidden;
 }
 
@@ -76,17 +77,5 @@ a.fill-cell {
 
   // TODO: this must be deprecated but still used in popup dialog
   --edit-ui-dialog-max-height-mobile: calc(100vh - var(--edit-dialog-header-height));
-  --edit-content-max-height-default: calc(
-    100vh - var(--edit-dialog-header-height) - var(--edit-dialog-margins-vertical)
-  );
+  --edit-content-max-height-default: calc(100vh - var(--edit-dialog-header-height) - var(--edit-dialog-margins-vertical));
 }
-
-// 2pp - Override Components with new v20 colors
-.grid-fab,
-.text-icon,
-.mat-badge-content,
-.eav-eco-fab-speed-dial-action-button {
-  background: $sxc-gradient !important;
-  color: white !important;
-}
-

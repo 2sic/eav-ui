@@ -46,14 +46,14 @@ export class FeaturesListEnabledComponent implements ICellRendererAngularComp {
 
 
   openSettings() {
+
+    const { ...configuration } = this.configurationData ?? {};
+
     const overrideContents: Record<string, unknown>[] = [
       {
         guid: this.contentType.guid,
         enabled: this.contentType.enabledInConfiguration,
-        LoadAppDetails: this.configurationData?.LoadAppDetails ?? null,
-        LoadAppSummary: this.configurationData?.LoadAppSummary ?? null,
-        LoadSystemDataDetails: this.configurationData?.LoadSystemDataDetails ?? null,
-        LoadSystemDataSummary: this.configurationData?.LoadSystemDataSummary ?? null,
+        ...configuration
       }
     ];
 

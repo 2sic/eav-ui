@@ -1,13 +1,23 @@
 <mat-card>
-  <mat-card-header>
-    <mat-card-title> {{ dialogData.title ?? 'Delete' }} {{ dialogData.entityTitle }} ({{ dialogData.entityId }})?</mat-card-title>
+  <mat-card-header style="margin-bottom: 12px">
+    <mat-card-title> {{ dialogData.title ?? 'Delete' }} {{ dialogData.entityTitle }} ({{ dialogData.entityId }})</mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
     @if (dialogData.message) {
       <mat-card-subtitle [innerHtml]="dialogData.message | safeHtml"></mat-card-subtitle>
     }
-  </mat-card-header>
+  </mat-card-content>
+
   <mat-card-actions align="end">
-    <button matButton class="eav-card-action-button" (click)="closeDialog()">Cancel</button>
-    <button mat-button cdkFocusInitial (click)="closeDialog(true)" [color]="dialogData.confirmColor ?? 'warn'">
+    <button mat-raised-button (click)="dialog.close()">Cancel</button>
+    <button
+      class="eav-card-action-button"
+      mat-raised-button
+      cdkFocusInitial
+      (click)="dialog.close(true)"
+      [color]="dialogData.confirmColor ?? 'warn'"
+    >
       @if (dialogData.confirmTranslateKey) {
         {{ dialogData.confirmTranslateKey }}
       } @else {
