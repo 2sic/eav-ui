@@ -1,0 +1,15 @@
+.rest-helper-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 64px;
+}
+
+.help-info-card-text {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  color: gray;
+  width: 30vw;
+  max-width: 400px;
+  min-width: 180px;
+}
