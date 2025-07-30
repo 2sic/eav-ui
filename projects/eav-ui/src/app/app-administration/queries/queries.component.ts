@@ -11,6 +11,7 @@ import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
 import { GoToMetadata } from '../../metadata';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
+import { GridWithHelpComponent, HelpTextConst } from '../../shared/ag-grid/grid-with-help/grid-with-help.component';
 import { FileUploadDialogData } from '../../shared/components/file-upload-dialog';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { eavConstants } from '../../shared/constants/eav.constants';
@@ -23,7 +24,6 @@ import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.mod
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { RouteLinkHelper } from '../../shared/routing/route-link-helper';
 import { Context } from '../../shared/services/context';
-import { GridWithHelpComponent, HelpTextConst } from '../grid-with-help/grid-with-help.component';
 import { Query } from '../models/query.model';
 import { DialogConfigAppService } from '../services/dialog-config-app.service';
 import { PipelinesService } from '../services/pipelines.service';

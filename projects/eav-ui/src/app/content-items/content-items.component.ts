@@ -7,7 +7,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
 import { transient } from '../../../../core';
-import { GridWithHelpComponent, HelpTextConst } from '../app-administration/grid-with-help/grid-with-help.component';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { ConfirmDeleteDialogComponent } from '../app-administration/sub-dialogs/confirm-delete-dialog/confirm-delete-dialog.component';
 import { ConfirmDeleteDialogData } from '../app-administration/sub-dialogs/confirm-delete-dialog/confirm-delete-dialog.models';
@@ -15,6 +14,7 @@ import { ContentExportService } from '../content-export/services/content-export.
 import { GoToMetadata } from '../metadata';
 import { AgGridHelper } from '../shared/ag-grid/ag-grid-helper';
 import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
+import { GridWithHelpComponent, HelpTextConst } from '../shared/ag-grid/grid-with-help/grid-with-help.component';
 import { BooleanFilterComponent } from '../shared/components/boolean-filter/boolean-filter.component';
 import { EntityFilterComponent } from '../shared/components/entity-filter/entity-filter.component';
 import { FileUploadDialogData } from '../shared/components/file-upload-dialog';
