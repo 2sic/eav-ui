@@ -71,11 +71,11 @@ export class ContentTypeFieldsComponent implements OnInit {
   #helpTextConst: HelpTextConst = {
     empty: {
       description: '<p><b>This is where you manage Fields</b></p>',
-      hint: "<p>Click the (+) in the bottom right corner to create your first Field (think: table).</p>"
+      hint: "<p>Click the (+) in the bottom right corner to create your first Field (think: column).</p>"
     },
     content: {
-      description: '<p><b>Each row shows a Field</b> <br> They define the fields, similar to a database table.</p>',
-      hint: '<p>Click on the title to list the Entities (think: records). <br>You can also create new Entities, configure the fields and export/import the schema or the data.</p>'
+      description: '<p><b>These are the Fields of this Content-Type</b> <br>They are similar to database columns.</p>',
+      hint: '<p>Click on the <em>Name</em> to configure it or on the <em>Input</em> to change the type. <br><br>You can also create new fields, share field definitions, manage field metadata/permissions or rename fields.</p>'
     }
   };
 

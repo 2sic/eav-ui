@@ -101,11 +101,11 @@ export class MetadataComponent implements OnInit {
   #helpTextConst: HelpTextConst = {
     empty: {
       description: '<p><b>This is where you manage Metadata</b></p>',
-      hint: "<p>Click the (+) in the bottom right corner to create your first Metadata Type.</p>"
+      hint: "<p>Click the (+) in the bottom right corner to create your first Metadata for the current item.</p>"
     },
     content: {
-      description: '<p><b>Each row shows a Metadata Type</b> <br> These define the fields for your Metadata, similar to a database table.</p>',
-      hint: '<p>Click on the title to see the Metadata Entities. <br>You can also create new Metadata Entities.</p>'
+      description: '<p><b>Each row shows Metadata for the current item</b> <br>Metadata describes/configures something, similar to labels you could attach to clothes.</p>',
+      hint: '<p>Click on the row to edit the Metadata. <br>You can also create new Metadata.</p>'
     }
   };
 

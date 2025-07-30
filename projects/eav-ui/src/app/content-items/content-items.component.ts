@@ -103,12 +103,12 @@ export class ContentItemsComponent implements OnInit {
   // UI Help Text for the UX Help Info Card
   #helpTextConst: HelpTextConst = {
     empty: {
-      description: '<p><b>This is where you Content data</b></p>',
-      hint: "<p>Click the (+) in the bottom right corner to create your first Content (think: table).</p>"
+      description: '<p><b>This is where you manage data items</b></p>',
+      hint: "<p>Click the (+) in the bottom right corner to create your first item (think: record / entity).</p>"
     },
     content: {
-      description: '<p><b>Each row shows a Content Type</b> <br> They define the fields, similar to a database table.</p>',
-      hint: '<p>Click on the title to list the Entities (think: records). <br>You can also create new Entities, configure the fields and export/import the schema or the data.</p>'
+      description: '<p><b>Each row shows a data item</b> <br>They contain the data, similar to a database row.</p>',
+      hint: '<p>Click on the title to edit. <br>You can also do much more - best hover over the row and icons to discover the possibilities. <br><br>You can also do data import/export (one or many), copy items, and do advanced stuff like assigning metadata.</p>'
     }
   };
 
