@@ -1,6 +1,6 @@
 import { ColumnApi, FilterChangedEvent, GridApi, GridOptions, GridReadyEvent, ICellRendererParams, RowClassParams, RowDragEvent, SortChangedEvent } from '@ag-grid-community/core';
 import { NgClass } from '@angular/common';
-import { Component, OnInit, signal, ViewContainerRef } from '@angular/core';
+import { Component, computed, OnInit, signal, ViewContainerRef } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogActions, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -8,6 +8,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { transient } from '../../../../core';
+import { GridWithHelpComponent, HelpTextConst } from '../app-administration/grid-with-help/grid-with-help.component';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { GoToMetadata } from '../metadata';
 import { GoToPermissions } from '../permissions/go-to-permissions';
@@ -45,6 +46,7 @@ import { ShareOrInheritDialogComponent } from './field-sharing-configure/field-s
     ToggleDebugDirective,
     SxcGridModule,
     TranslateModule,
+    GridWithHelpComponent,
   ]
 })
 export class ContentTypeFieldsComponent implements OnInit {
@@ -61,6 +63,26 @@ export class ContentTypeFieldsComponent implements OnInit {
   ) { }
 
   #contentTypeStaticName = this.#dialogRouter.getParam('contentTypeStaticName');
+
+  /** Signal to trigger reloading of data */
+  refresh = signal(0);
+
+  // UI Help Text for the UX Help Info Card
+  #helpTextConst: HelpTextConst = {
+    empty: {
+      description: '<p><b>This is where you manage Fields</b></p>',
+      hint: "<p>Click the (+) in the bottom right corner to create your first Field (think: table).</p>"
+    },
+    content: {
+      description: '<p><b>Each row shows a Field</b> <br> They define the fields, similar to a database table.</p>',
+      hint: '<p>Click on the title to list the Entities (think: records). <br>You can also create new Entities, configure the fields and export/import the schema or the data.</p>'
+    }
+  };
+
+  uxHelpText = computed(() => {
+    const data = this.fields();
+    return data?.length === 0 ? this.#helpTextConst.empty : this.#helpTextConst.content;
+  })
 
   contentType = this.#contentTypesSvc.getType(this.#contentTypeStaticName).value;
 
@@ -183,8 +205,8 @@ export class ContentTypeFieldsComponent implements OnInit {
 
   #fetchFields(callback?: () => void) {
     this.#contentTypesFieldsSvc.getFieldsPromise(this.#contentTypeStaticName).then(fields => {
-       this.fields.set(fields);
-       if (callback != null)
+      this.fields.set(fields);
+      if (callback != null)
         callback();
     });
   }

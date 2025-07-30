@@ -101,7 +101,7 @@
     <!-- Save buttons -->
     <mat-dialog-actions align="end">
       <button mat-raised-button type="button" (click)="dialog.close()">Cancel</button>
-      <button mat-raised-button type="submit" color="accent"
+      <button mat-raised-button type="submit" class="eav-action-button"
         [disabled]="!ngForm.form.valid || selectedFields.data.length == 0 || saving()" (click)="save()">
         Save
       </button>

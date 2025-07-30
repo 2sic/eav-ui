@@ -9,6 +9,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
 import { EcoFabSpeedDialActionsComponent, EcoFabSpeedDialComponent, EcoFabSpeedDialTriggerComponent } from '@ecodev/fab-speed-dial';
 import { convert, Of, transient } from '../../../../core';
+import { GridWithHelpComponent, HelpTextConst } from '../app-administration/grid-with-help/grid-with-help.component';
 import { ConfirmDeleteDialogComponent } from '../app-administration/sub-dialogs/confirm-delete-dialog/confirm-delete-dialog.component';
 import { ConfirmDeleteDialogData } from '../app-administration/sub-dialogs/confirm-delete-dialog/confirm-delete-dialog.models';
 import { ContentItemsService } from '../content-items/services/content-items.service';
@@ -49,6 +50,7 @@ import { MetadataItem, MetadataRecommendation } from './models/metadata.model';
     MatBadgeModule,
     MatBadgeIconDirective,
     SafeHtmlPipe,
+    GridWithHelpComponent,
   ]
 })
 export class MetadataComponent implements OnInit {
@@ -91,8 +93,27 @@ export class MetadataComponent implements OnInit {
       : undefined;
   });
 
-  #refresh = signal<number>(0);
-  #metadataResource = this.#metadataSvc.getMetadataLive(this.#refresh, this.#params.targetType, this.#params.keyType, this.#params.key).value
+  refresh = signal<number>(0);
+  #metadataResource = this.#metadataSvc.getMetadataLive(this.refresh, this.#params.targetType, this.#params.keyType, this.#params.key).value
+
+
+  // UI Help Text for the UX Help Info Card
+  #helpTextConst: HelpTextConst = {
+    empty: {
+      description: '<p><b>This is where you manage Metadata</b></p>',
+      hint: "<p>Click the (+) in the bottom right corner to create your first Metadata Type.</p>"
+    },
+    content: {
+      description: '<p><b>Each row shows a Metadata Type</b> <br> These define the fields for your Metadata, similar to a database table.</p>',
+      hint: '<p>Click on the title to see the Metadata Entities. <br>You can also create new Metadata Entities.</p>'
+    }
+  };
+
+  uxHelpText = computed(() => {
+    const data = this.metadataSet()?.Items;
+    return data?.length === 0 ? this.#helpTextConst.empty : this.#helpTextConst.content;
+  })
+
 
   metadataSet = computed(() => {
     const metadata = this.#metadataResource();
@@ -129,7 +150,7 @@ export class MetadataComponent implements OnInit {
   })();
 
   ngOnInit() {
-    this.#dialogRoutes.doOnDialogClosed(() => this.#refresh.update(pre => pre + 1));
+    this.#dialogRoutes.doOnDialogClosed(() => this.refresh.update(pre => pre + 1));
   }
 
   closeDialog() {
@@ -153,11 +174,11 @@ export class MetadataComponent implements OnInit {
         this.#entitiesSvc.create(recommendation.Id, { For: this.calculateItemFor('dummy').For }).subscribe({
           error: () => {
             this.snackBar.open(`Creating ${recommendation.Name} failed. Please check console for more info`, undefined, { duration: 3000 });
-            this.#refresh.update(pre => pre + 1)
+            this.refresh.update(pre => pre + 1)
           },
           next: () => {
             this.snackBar.open(`Created ${recommendation.Name}`, undefined, { duration: 3000 });
-            this.#refresh.update(pre => pre + 1)
+            this.refresh.update(pre => pre + 1)
           },
         });
       } else {
@@ -224,7 +245,7 @@ export class MetadataComponent implements OnInit {
     this.#entitiesSvc.delete(metadata._Type.Id, metadata.Id, false).subscribe({
       next: () => {
         this.snackBar.open('Deleted', null, { duration: 2000 });
-        this.#refresh.update(pre => pre + 1);
+        this.refresh.update(pre => pre + 1);
       },
       error: () => {
         this.snackBar.open('Delete failed. Please check console for more information', null, { duration: 3000 });

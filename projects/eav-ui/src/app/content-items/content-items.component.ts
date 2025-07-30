@@ -103,8 +103,8 @@ export class ContentItemsComponent implements OnInit {
   // UI Help Text for the UX Help Info Card
   #helpTextConst: HelpTextConst = {
     empty: {
-      description: '<p><b>This is where you manage data</b></p>',
-      hint: "<p>Click the (+) in the bottom right corner to create your first Content Type (think: table).</p>"
+      description: '<p><b>This is where you Content data</b></p>',
+      hint: "<p>Click the (+) in the bottom right corner to create your first Content (think: table).</p>"
     },
     content: {
       description: '<p><b>Each row shows a Content Type</b> <br> They define the fields, similar to a database table.</p>',
