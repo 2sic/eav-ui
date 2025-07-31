@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { InputTypeHelpers } from '../../shared/fields/input-type-helpers';
-import { classLogEnabled } from '../../shared/logging';
+import { classLog } from '../../shared/logging';
 import { FieldLogicManager } from '../fields/logic/field-logic-manager';
 import { FieldReader } from '../localization/field-reader';
 import { LanguageService } from '../localization/language.service';
@@ -26,7 +26,7 @@ const logSpecs = {
  */
 @Injectable()
 export class InitializeMissingValuesServices {
-  log = classLogEnabled({InitializeMissingValuesServices}, logSpecs);
+  log = classLog({InitializeMissingValuesServices}, logSpecs);
   
   // This is a helper class to initialize the missing values services
   // It is used in the EditInitializerService to initialize the missing values services

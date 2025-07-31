@@ -1,4 +1,4 @@
-import { classLogEnabled } from '../../shared/logging';
+import { classLog } from '../../shared/logging';
 import { DataSource, PipelineModel, StreamWire } from '../models';
 import { findDefByType, getEndpointLabel } from './datasource.helpers';
 import { EndpointDefinitionsService } from './endpoint-definitions';
@@ -12,7 +12,7 @@ const logSpecs = {
 }
 
 export class ConnectionsManager {
-  log = classLogEnabled({ConnectionsManager}, logSpecs);
+  log = classLog({ConnectionsManager}, logSpecs);
   bulkDelete: boolean = false;
 
   constructor(

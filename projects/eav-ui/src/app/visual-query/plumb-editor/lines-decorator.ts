@@ -1,4 +1,4 @@
-import { classLogEnabled } from '../../shared/logging';
+import { classLog } from '../../shared/logging';
 import { PipelineModel, PipelineResult, PipelineResultStream } from '../models';
 import { JsPlumbEndpoint, JsPlumbInstance } from './jsplumb.models';
 import { domIdOfGuid } from './plumber-constants';
@@ -9,7 +9,7 @@ const logSpecs = {
 }
 
 export class LinesDecorator {
-  log = classLogEnabled({LinesDecorator}, logSpecs);
+  log = classLog({LinesDecorator}, logSpecs);
 
   constructor(
     private instance: JsPlumbInstance, 
