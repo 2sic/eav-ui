@@ -56,6 +56,7 @@ import { UnsavedChangesSnackBarData } from './snack-bar-unsaved-changes/snack-ba
 const logSpecs = {
   all: false,
   constructor: true,
+  saveAll: true,
 }
 
 /**
@@ -241,7 +242,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
 
     this.#entityFormStateService.isSaving.set(true);
 
-    const l = this.log.fn('saveAll', { close });
+    const l = this.log.fnIf('saveAll', { close });
     // Case 1. form is valid
     if (this.formsStateService.formsAreValid()) {
 
@@ -262,6 +263,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
         const wrappedData = {
           objData: itemsEavObj[0]
         };
+        l.a('Returning wrapped data:', { wrappedData });
         this.dialog.close(wrappedData)
         return
       }
@@ -335,6 +337,11 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
     }
   }
 
+  /**
+   * Get valid EAV items by mapping them with the provided function.
+   * @param mapFn Function to map EavItem to a specific type T or null if invalid
+   * @returns Array of valid mapped items
+   */
   #getValidEavItems<T>(
     mapFn: (eavItem: EavItem) => T | null
   ): T[] {
