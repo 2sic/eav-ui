@@ -9,7 +9,6 @@
 .text-icon,
 .mat-badge-content,
 .eav-eco-fab-speed-dial-action-button,
-mat-spinner,
 .eav-action-button,
 .eav-card-action-button,
 .active-features-count {
@@ -20,6 +19,15 @@ mat-spinner,
 .eav-action-button:disabled {
   color: grey !important;
   opacity: 0.75;
+}
+
+
+.mat-mdc-progress-spinner {
+  @include mat.progress-spinner-overrides(
+    (
+      active-indicator-color: $sxc-solid,
+    )
+  );
 }
 
 .mat-mdc-radio-button.mat-accent {

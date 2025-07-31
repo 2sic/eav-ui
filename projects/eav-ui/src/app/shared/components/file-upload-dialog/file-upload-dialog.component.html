@@ -1,4 +1,4 @@
-<div class="eav-dialog" appDragAndDrop [allowedFileTypes]="dialogData.allowedFileTypes" (filesDropped)="filesDropped($event)">
+<div class="eav-dialog" style="margin-bottom: 12px;" appDragAndDrop [allowedFileTypes]="dialogData.allowedFileTypes" (filesDropped)="filesDropped($event)">
   <div class="eav-dialog-header">
     <div class="eav-dialog-header__title" [innerHtml]="dialogData.title | safeHtml"></div>
     <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
@@ -11,7 +11,6 @@
       <mat-spinner mode="indeterminate" diameter="20"></mat-spinner>
     }
     <p [innerHtml]="dialogData.description | safeHtml"></p>
-
 
     @if (uploadType() == UploadTypes.App) {
       <form [formGroup]="importForm">
