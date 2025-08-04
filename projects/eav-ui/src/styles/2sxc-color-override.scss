@@ -1,0 +1,54 @@
+/**
+ * 2sxc Color Override Styles
+ * This file contains styles for overriding angular components and setting colors in the 2sxc UI components.
+ * Added in v20 as part of the new design system.
+ * 29.07.2025 - Created by: Paul Pietzko
+ */
+
+.grid-fab,
+.text-icon,
+.mat-badge-content,
+.eav-eco-fab-speed-dial-action-button,
+.eav-action-button,
+.eav-card-action-button,
+.active-features-count {
+  background: $sxc-gradient !important;
+  color: white !important;
+}
+
+.eav-action-button:disabled {
+  color: grey !important;
+  opacity: 0.75;
+}
+
+
+.mat-mdc-progress-spinner {
+  @include mat.progress-spinner-overrides(
+    (
+      active-indicator-color: $sxc-solid,
+    )
+  );
+}
+
+.mat-mdc-radio-button.mat-accent {
+  @include mat.radio-overrides(( // Only works with solid colors
+    selected-hover-icon-color: $sxc-solid,
+    selected-pressed-icon-color: $sxc-solid,
+    selected-focus-icon-color: $sxc-solid,
+    selected-icon-color: $sxc-solid,
+    checked-ripple-color: $sxc-solid,
+    unselected-hover-icon-color: $sxc-solid,
+    unselected-icon-color: $sxc-solid,
+  ));
+}
+
+.mat-mdc-checkbox.mat-accent {
+  @include mat.checkbox-overrides(( // Only works with solid colors
+    selected-hover-icon-color: $sxc-solid,
+    selected-pressed-icon-color: $sxc-solid,
+    selected-focus-icon-color: $sxc-solid,
+    selected-icon-color: $sxc-solid,
+    unselected-hover-icon-color: $sxc-solid,
+    unselected-icon-color: $sxc-solid,
+  ));
+}

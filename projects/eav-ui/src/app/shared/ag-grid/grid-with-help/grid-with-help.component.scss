@@ -4,9 +4,9 @@
   height: 100%;
 
   ::ng-deep {
-    .grid-dynamic {
-      max-height: calc(100% - 73px);
-    }
+    // .grid-dynamic {
+    //   max-height: calc(100% - 73px - 84px);
+    // }
 
     .ag-theme-material.grid-dynamic {
       flex-shrink: 0;

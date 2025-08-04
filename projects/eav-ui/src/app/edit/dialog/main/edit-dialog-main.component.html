@@ -36,19 +36,21 @@
             (click)="saveAll(true)"
           >
             <mat-icon>done</mat-icon>
-            <span>{{ 'Form.Buttons.SaveAndClose' | translate }}</span>
+            <span>{{ ('Form.Buttons.' + (enableSave ? 'SaveAndClose' : 'Done')) | translate }}</span>
           </button>
         </ng-template>
-        <ng-template extendedFabSpeedDialActionsContent>
-          <button extended-fab-speed-dial-action
-            matRipple
-            [ngClass]="{ 'appear-disabled': saveDisabled() }"
-            (click)="saveAll(false)"
-          >
-            <span>{{ 'Form.Buttons.Save' | translate }}</span>
-            <mat-icon>save</mat-icon>
-          </button>
-        </ng-template>
+        @if (enableSave) {
+          <ng-template extendedFabSpeedDialActionsContent>
+            <button extended-fab-speed-dial-action
+              matRipple
+              [ngClass]="{ 'appear-disabled': saveDisabled() }"
+              (click)="saveAll(false)"
+            >
+              <span>{{ 'Form.Buttons.Save' | translate }}</span>
+              <mat-icon>save</mat-icon>
+            </button>
+          </ng-template>
+        }
       </extended-fab-speed-dial>
     }
   </div>

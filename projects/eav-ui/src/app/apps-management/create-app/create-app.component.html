@@ -1,7 +1,11 @@
 <div class="eav-dialog">
   <div class="eav-dialog-header">
     <div class="eav-dialog-header__title">Create App</div>
+    <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
+      <mat-icon>close</mat-icon>
+    </button>
   </div>
+
   <div class="eav-dialog-content">
     <router-outlet></router-outlet>
     <form [formGroup]="form">
@@ -22,10 +26,22 @@
       }
       <br />
       <mat-radio-group formControlName="appTemplateId" required (change)="onTemplateChange($event)">
-        <mat-radio-button [value]="0">Complete Naked / Raw App</mat-radio-button>
         <mat-radio-button [value]="1">Use Template</mat-radio-button>
+        <mat-radio-button [value]="0">Completely new / empty App</mat-radio-button>
+        <mat-radio-button [value]="2">Use existing App as Template</mat-radio-button>
       </mat-radio-group>
     </form>
+
+    @if (appTemplateIdValue == 2) {
+      <br />
+      <span>
+        To use an existing App as a template, please switch to the
+        <strong> Import App Dialog </strong>
+      </span>
+      <br />
+      <br />
+      <button mat-raised-button class="eav-action-button" (click)="switchToImportApp()">Switch to Import App</button>
+    }
 
     @if (showAppCatalog()) {
       @if (ready()) {
@@ -38,8 +54,8 @@
     <button
       type="button"
       mat-raised-button
-      color="accent"
-      [disabled]="loading() || !canCreate()"
+      class="eav-action-button"
+      [disabled]="loading() || (!canCreate())"
       (click)="create()"
     >
       Create

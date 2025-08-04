@@ -56,6 +56,7 @@ import { UnsavedChangesSnackBarData } from './snack-bar-unsaved-changes/snack-ba
 const logSpecs = {
   all: false,
   constructor: true,
+  saveAll: true,
 }
 
 /**
@@ -100,6 +101,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
   #globalConfigService = inject(GlobalConfigService);
   #formConfig = inject(FormConfigService);
 
+  enableSave = this.#formConfig.config.save.mode; // if false, then no save button is shown
 
   /** Signal to tell the UI if the footer should show and/or the footer needs more space (changes CSS) */
   #prefManager = inject(UserPreferences).part(footerPreferences)
@@ -240,10 +242,35 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
 
     this.#entityFormStateService.isSaving.set(true);
 
-    const l = this.log.fn('saveAll', { close });
+    const l = this.log.fnIf('saveAll', { close });
+    // Case 1. form is valid
     if (this.formsStateService.formsAreValid()) {
-      // #1 Case form is valid
 
+      // Case 1.1. New v20 - if no save mode, then just close the dialog
+      if (this.#formConfig.config.save.mode === false) {
+        l.a('No save mode, just closing dialog');
+        this.dialog.close();
+        return;
+      }
+
+      // Case 1.2. If the Dialog is Local return data mode, then return the data
+      if (this.isReturnValueMode) {
+        const itemsEavObj: Record<string, unknown>[] = this.#getValidEavItems(eavItem =>
+          EavItem.eavToObj(eavItem)
+        );
+
+        // Need to be clearly define for the route state (if objData in the state, data will be not refresh from the server) 
+        const wrappedData = {
+          objData: itemsEavObj[0]
+        };
+        l.a('Returning wrapped data:', { wrappedData });
+        this.dialog.close(wrappedData)
+        return
+      }
+
+      // Case 1.3. If the Dialog is in standard Save Mode, then just save the data
+
+      // Convert data to save format, get publishing state and prepare save data
       const items = this.#getValidEavItems(eavItem =>
         EavEntityBundleDto.bundleToDto(eavItem)
       );
@@ -257,21 +284,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
       };
       l.a('SAVE FORM DATA:', { saveFormData });
 
-      // If the Dialog is Local Save Mode 
-      if (this.isReturnValueMode) {
-        const itemsEavObj: Record<string, unknown>[] = this.#getValidEavItems(eavItem =>
-          EavItem.eavToObj(eavItem)
-        );
-
-        // Need to be clearly define for the route state (if objData in the state, data will be not refresh from the server) 
-        const wrappedData = {
-          objData: itemsEavObj[0]
-        };
-        this.dialog.close(wrappedData)
-        return
-      }
-
-      // Saving 
+      // Show saving message and start saving process
       this.snackBar.open(this.translate.instant('Message.Saving'), null, { duration: 2000 });
 
       this.#formDataService.saveFormData(saveFormData, this.#formConfig.config.partOfPage).subscribe({
@@ -284,11 +297,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
           if (close)
             this.closeDialog();
 
-          setTimeout(() =>
-            this.#entityFormStateService.isSaving.set(false)
-
-            , 500);
-
+          setTimeout(() => this.#entityFormStateService.isSaving.set(false), 500);
         },
         error: err => {
           l.a('SAVE FAILED:', err);
@@ -297,7 +306,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
         },
       });
     } else {
-      // #2 Case form is not valid
+      // Case 2. form is not valid
       // Quickly set saving to false, otherwise further saves will be blocked
       this.#entityFormStateService.isSaving.set(false);
 
@@ -328,6 +337,11 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
     }
   }
 
+  /**
+   * Get valid EAV items by mapping them with the provided function.
+   * @param mapFn Function to map EavItem to a specific type T or null if invalid
+   * @returns Array of valid mapped items
+   */
   #getValidEavItems<T>(
     mapFn: (eavItem: EavItem) => T | null
   ): T[] {
@@ -336,7 +350,8 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
         const eavItem = this.itemService.get(ref.entityGuid());
 
         const isValid = this.formsStateService.getFormValid(eavItem.Entity.Guid);
-        if (!isValid) return null;
+        if (!isValid)
+          return null;
 
         const hasAttributes = Object.keys(eavItem.Entity.Attributes).length > 0;
         const contentType = this.contentTypeService.getContentTypeOfItem(eavItem);
@@ -344,7 +359,8 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
           m => m.Type.Name === MetadataDecorators.SaveEmptyDecorator
         );
 
-        if (!hasAttributes && !saveIfEmpty) return null;
+        if (!hasAttributes && !saveIfEmpty)
+          return null;
 
         return mapFn(eavItem);
       })

@@ -16,6 +16,7 @@ import { EavForInAdminUi } from '../edit/shared/models/eav';
 import { openFeatureDialog } from '../features/shared/base-feature.component';
 import { MetadataService } from '../permissions';
 import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
+import { GridWithHelpComponent, HelpTextConst } from '../shared/ag-grid/grid-with-help/grid-with-help.component';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
 import { MetadataKeyTypes } from '../shared/constants/eav.constants';
 import { MatBadgeIconDirective } from '../shared/directives/mat-badge-icon.directive';
@@ -49,6 +50,7 @@ import { MetadataItem, MetadataRecommendation } from './models/metadata.model';
     MatBadgeModule,
     MatBadgeIconDirective,
     SafeHtmlPipe,
+    GridWithHelpComponent,
   ]
 })
 export class MetadataComponent implements OnInit {
@@ -91,8 +93,27 @@ export class MetadataComponent implements OnInit {
       : undefined;
   });
 
-  #refresh = signal<number>(0);
-  #metadataResource = this.#metadataSvc.getMetadataLive(this.#refresh, this.#params.targetType, this.#params.keyType, this.#params.key).value
+  refresh = signal<number>(0);
+  #metadataResource = this.#metadataSvc.getMetadataLive(this.refresh, this.#params.targetType, this.#params.keyType, this.#params.key).value
+
+
+  // UI Help Text for the UX Help Info Card
+  #helpTextConst: HelpTextConst = {
+    empty: {
+      description: '<p><b>This is where you manage Metadata</b></p>',
+      hint: "<p>Click the (+) in the bottom right corner to create your first Metadata for the current item.</p>"
+    },
+    content: {
+      description: '<p><b>Each row shows Metadata for the current item</b> <br>Metadata describes/configures something, similar to labels you could attach to clothes.</p>',
+      hint: '<p>Click on the row to edit the Metadata. <br>You can also create new Metadata.</p>'
+    }
+  };
+
+  uxHelpText = computed(() => {
+    const data = this.metadataSet()?.Items;
+    return data?.length === 0 ? this.#helpTextConst.empty : this.#helpTextConst.content;
+  })
+
 
   metadataSet = computed(() => {
     const metadata = this.#metadataResource();
@@ -129,7 +150,7 @@ export class MetadataComponent implements OnInit {
   })();
 
   ngOnInit() {
-    this.#dialogRoutes.doOnDialogClosed(() => this.#refresh.update(pre => pre + 1));
+    this.#dialogRoutes.doOnDialogClosed(() => this.refresh.update(pre => pre + 1));
   }
 
   closeDialog() {
@@ -153,11 +174,11 @@ export class MetadataComponent implements OnInit {
         this.#entitiesSvc.create(recommendation.Id, { For: this.calculateItemFor('dummy').For }).subscribe({
           error: () => {
             this.snackBar.open(`Creating ${recommendation.Name} failed. Please check console for more info`, undefined, { duration: 3000 });
-            this.#refresh.update(pre => pre + 1)
+            this.refresh.update(pre => pre + 1)
           },
           next: () => {
             this.snackBar.open(`Created ${recommendation.Name}`, undefined, { duration: 3000 });
-            this.#refresh.update(pre => pre + 1)
+            this.refresh.update(pre => pre + 1)
           },
         });
       } else {
@@ -224,7 +245,7 @@ export class MetadataComponent implements OnInit {
     this.#entitiesSvc.delete(metadata._Type.Id, metadata.Id, false).subscribe({
       next: () => {
         this.snackBar.open('Deleted', null, { duration: 2000 });
-        this.#refresh.update(pre => pre + 1);
+        this.refresh.update(pre => pre + 1);
       },
       error: () => {
         this.snackBar.open('Delete failed. Please check console for more information', null, { duration: 3000 });

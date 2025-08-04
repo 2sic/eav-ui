@@ -14,4 +14,8 @@
   </mat-form-field>
 </form>
 
+@if(!queryTypeForm.get('queryType')?.value) {
+  <app-rest-api-help-text [apiTitle]="'Query'"></app-rest-api-help-text>
+}
+
 <router-outlet></router-outlet>

@@ -33,7 +33,6 @@ export class SiteLanguagesComponent {
 
   #refreshLanguagesSig = signal(0);
 
-
   languages = this.#zoneSvc.getLanguageLive(this.#refreshLanguagesSig).value;
 
   async #toggleLanguage(language: SiteLanguage, enable: boolean) {
@@ -43,7 +42,6 @@ export class SiteLanguagesComponent {
       if (status >= 200 && status < 300) {
         this.#refreshLanguagesSig.set(this.#refreshLanguagesSig() + 1);
       }
-      this.#zoneSvc.toggleLanguage(language.Code, enable)
     } catch (error) {
       console.error('Error toggling language:', error);
     }

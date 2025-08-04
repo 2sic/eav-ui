@@ -102,8 +102,6 @@ export class AppEntryRouteHandler {
     const contentType = sS.getItem(keyContentType);
     const items = sS.getItem(keyItems);
 
-    // Before 2025-03-20, keep for a few days
-    // const getFull = () => `${sS.getItem(keyZoneId)}/v2/${sS.getItem(keyModuleId)}/${sS.getItem(keyContentBlockId)}/${sS.getItem(keyAppId)}`;
     // New 2025-03-20; centralize code to create full route
     const getFull = () => new RouteLinkHelper().routeRoot({
       zoneId: sS.getItem(keyZoneId),

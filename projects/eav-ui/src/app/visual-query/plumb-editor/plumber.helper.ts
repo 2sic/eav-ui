@@ -1,4 +1,4 @@
-import { classLogEnabled } from '../../shared/logging';
+import { classLog } from '../../shared/logging';
 import { DataSource, PipelineModel, PipelineResultStream, VisualDesignerData } from '../models';
 import { ConnectionLineColors } from './connection-line-colors';
 import { ConnectionsManager } from './connections-manager';
@@ -24,7 +24,7 @@ const logSpecs = {
 
 export class Plumber {
 
-  log = classLogEnabled({Plumber}, logSpecs);
+  log = classLog({Plumber}, logSpecs);
 
   #instance: JsPlumbInstance;
 

@@ -12,6 +12,7 @@ import { FeaturesService } from '../../../../features/features.service';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { ExtendedFabSpeedDialImports } from '../../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
 import { EntityFormStateService } from '../../../entity-form/entity-form-state.service';
+import { FormConfigService } from '../../../form/form-config.service';
 import { FormsStateService } from '../../../form/forms-state.service';
 import { EditRoutingService } from '../../../routing/edit-routing.service';
 import { FieldState } from '../../field-state';
@@ -41,16 +42,19 @@ export class DialogPopupComponent {
   @ViewChild('backdrop') private backdropRef: ElementRef;
   @ViewChild('dialog') private dialogRef: ElementRef;
 
-  protected fieldState = inject(FieldState);
+  applyEmptyClass = input<boolean>();
 
+  protected fieldState = inject(FieldState);
   public config = this.fieldState.config;
   public basics = this.fieldState.basics;
+
   #editRoutingService = inject(EditRoutingService);
   formsStateService = inject(FormsStateService);
   private featuresService = inject(FeaturesService);
 
-  applyEmptyClass = input<boolean>();
-
+  #formConfig = inject(FormConfigService);
+  enableSave = this.#formConfig.config.save.mode !== false; // if false, then no save button is shown
+  
   #dropzoneDraggingHelper: DropzoneDraggingHelper;
 
   #entityFormStateService = transient(EntityFormStateService);
