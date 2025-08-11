@@ -63,8 +63,8 @@ export class CreateAppComponent {
   private alreadyProcessing = false;
 
   // App and settings service instances (using custom transient DI)
-  private appsListService = transient(AppsListService);
-  private installSettingsService = transient(AppInstallSettingsService);
+  #appsListService = transient(AppsListService);
+  #installSettingsService = transient(AppInstallSettingsService);
   #dialogRouter = transient(DialogRoutingService);
 
   private router = inject(Router);
@@ -106,8 +106,8 @@ export class CreateAppComponent {
     this.form.valueChanges.subscribe(() => this.updateCanCreate());
 
     // Load installer settings and set up the iframe URL for the app catalog
-    this.installSettingsService.loadGettingStarted(false);
-    this.installSettingsService.settings$.subscribe(settings => {
+    this.#installSettingsService.loadGettingStarted(false);
+    this.#installSettingsService.settings$.subscribe(settings => {
       let url = settings.remoteUrl;
       // Add query param to ensure template mode in the installer
       url += (url.includes('?') ? '&' : '?') + 'isTemplate=true';
@@ -125,7 +125,7 @@ export class CreateAppComponent {
 
   ngOnInit(): void {
     // Ensure installer settings are loaded (redundant if already done in constructor)
-    this.installSettingsService.loadGettingStarted(false);
+    this.#installSettingsService.loadGettingStarted(false);
 
     // Listen for messages from the app catalog iframe (e.g., package selection)
     this.messages$.subscribe();
@@ -147,9 +147,9 @@ export class CreateAppComponent {
 
     // Use the selected template if applicable, otherwise create a raw app
     if (appTemplateId === 1 && this.packageUrl() && this.packageUrl().length > 0) {
-      createObservable = this.appsListService.createTemplate(this.packageUrl(), name);
+      createObservable = this.#appsListService.createTemplate(this.packageUrl(), name);
     } else if (appTemplateId === 0) {
-      createObservable = this.appsListService.create(name, null, 0);
+      createObservable = this.#appsListService.create(name, null, 0);
     }
 
     // Subscribe to creation result and show success/error feedback
@@ -231,12 +231,12 @@ export class CreateAppComponent {
     this.updateCanCreate();
   }
 
-switchToImportApp(): void {
-  const segments = this.router.url.split('/').filter(Boolean);
-  segments[segments.length - 1] = 'import';
-  const url = '/' + segments.join('/');
-  this.#dialogRouter.navPath(url);
-}
+  switchToImportApp(): void {
+    const segments = this.router.url.split('/').filter(Boolean);
+    segments[segments.length - 1] = 'import';
+    const url = '/' + segments.join('/');
+    this.#dialogRouter.navPath(url);
+  }
 
   get appTemplateIdValue() { return this.form.controls.appTemplateId.value; }
 }
