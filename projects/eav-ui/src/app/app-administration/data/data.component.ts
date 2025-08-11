@@ -18,6 +18,7 @@ import { GoToMetadata } from '../../metadata';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { AgGridHelper } from '../../shared/ag-grid/ag-grid-helper';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
+import { GridWithHelpComponent, HelpTextConst } from '../../shared/ag-grid/grid-with-help/grid-with-help.component';
 import { BaseComponent } from '../../shared/components/base.component';
 import { FileUploadDialogData } from '../../shared/components/file-upload-dialog';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
@@ -32,7 +33,6 @@ import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.mod
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { mapUntilChanged } from '../../shared/rxJs/mapUntilChanged';
 import { GlobalConfigService } from '../../shared/services/global-config.service';
-import { GridWithHelpComponent, HelpTextConst } from '../grid-with-help/grid-with-help.component';
 import { ContentType } from '../models/content-type.model';
 import { ScopeDetailsDto } from '../models/scopedetails.dto';
 import { ContentTypesService } from '../services/content-types.service';

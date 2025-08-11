@@ -1,4 +1,4 @@
-import { classLogEnabled } from '../../shared/logging';
+import { classLog } from '../../shared/logging';
 import { DataSource, PipelineModel } from '../models';
 import { DataSourceSet } from './data-source-set.model';
 import { findDefByType } from './datasource.helpers';
@@ -11,7 +11,7 @@ const logSpecs = {
 }
 
 export class QueryDataManager {
-  log = classLogEnabled({QueryDataManager}, logSpecs);
+  log = classLog({QueryDataManager}, logSpecs);
 
   constructor(
     private jsPlumbRoot: HTMLElement, 

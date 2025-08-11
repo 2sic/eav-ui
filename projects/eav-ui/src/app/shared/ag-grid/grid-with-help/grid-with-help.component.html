@@ -1,0 +1,12 @@
+<div class="grid-wrapper-dynamic" #gridWrapper>
+  <ng-content select="[eav-dialog-header]"></ng-content>
+  <ng-content select="[eav-dialog-content]"> </ng-content>
+  <ng-content select="ag-grid-angular"></ng-content>
+  <div class="help-info-card">
+    <div class="help-info-card-text">
+      <span [innerHTML]="helpText().description"></span>
+      <span [innerHTML]="helpText().hint"></span>
+    </div>
+  </div>
+  <ng-content select="mat-dialog-actions"></ng-content>
+</div>

@@ -13,4 +13,8 @@
   </mat-form-field>
 </form>
 
+@if(!webApiTypeForm.get('webApiType')?.value) {
+  <app-rest-api-help-text [apiTitle]="'Web Api'"></app-rest-api-help-text>
+}
+
 <router-outlet></router-outlet>

@@ -1,6 +1,6 @@
 import { ColumnApi, FilterChangedEvent, GridApi, GridOptions, GridReadyEvent, ICellRendererParams, RowClassParams, RowDragEvent, SortChangedEvent } from '@ag-grid-community/core';
 import { NgClass } from '@angular/common';
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, computed, OnInit, signal, ViewContainerRef } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogActions, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -12,6 +12,7 @@ import { ContentTypesService } from '../app-administration/services/content-type
 import { GoToMetadata } from '../metadata';
 import { GoToPermissions } from '../permissions/go-to-permissions';
 import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
+import { GridWithHelpComponent, HelpTextConst } from '../shared/ag-grid/grid-with-help/grid-with-help.component';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
 import { eavConstants } from '../shared/constants/eav.constants';
 import { ToggleDebugDirective } from '../shared/directives/toggle-debug.directive';
@@ -45,6 +46,7 @@ import { ShareOrInheritDialogComponent } from './field-sharing-configure/field-s
     ToggleDebugDirective,
     SxcGridModule,
     TranslateModule,
+    GridWithHelpComponent,
   ]
 })
 export class ContentTypeFieldsComponent implements OnInit {
@@ -57,9 +59,30 @@ export class ContentTypeFieldsComponent implements OnInit {
     protected dialog: MatDialogRef<ContentTypeFieldsComponent>,
     private snackBar: MatSnackBar,
     private matDialog: MatDialog,
+    private viewContainerRef: ViewContainerRef, // for dependency injection in the dialog
   ) { }
 
   #contentTypeStaticName = this.#dialogRouter.getParam('contentTypeStaticName');
+
+  /** Signal to trigger reloading of data */
+  refresh = signal(0);
+
+  // UI Help Text for the UX Help Info Card
+  #helpTextConst: HelpTextConst = {
+    empty: {
+      description: '<p><b>This is where you manage Fields</b></p>',
+      hint: "<p>Click the (+) in the bottom right corner to create your first Field (think: column).</p>"
+    },
+    content: {
+      description: '<p><b>These are the Fields of this Content-Type</b> <br>They are similar to database columns.</p>',
+      hint: '<p>Click on the <em>Name</em> to configure it or on the <em>Input</em> to change the type. <br><br>You can also create new fields, share field definitions, manage field metadata/permissions or rename fields.</p>'
+    }
+  };
+
+  uxHelpText = computed(() => {
+    const data = this.fields();
+    return data?.length === 0 ? this.#helpTextConst.empty : this.#helpTextConst.content;
+  })
 
   contentType = this.#contentTypesSvc.getType(this.#contentTypeStaticName).value;
 
@@ -152,7 +175,8 @@ export class ContentTypeFieldsComponent implements OnInit {
     this.matDialog.open(FieldSharingAddMany, {
       autoFocus: false,
       width: '1600px',
-      data: { contentType: this.contentType(), existingFields: this.fields() }
+      data: { contentType: this.contentType(), existingFields: this.fields() },
+      viewContainerRef: this.viewContainerRef, // for dependency injection in the dialog
     }).afterClosed().subscribe(() => this.#fetchFields());
   }
 
@@ -181,8 +205,8 @@ export class ContentTypeFieldsComponent implements OnInit {
 
   #fetchFields(callback?: () => void) {
     this.#contentTypesFieldsSvc.getFieldsPromise(this.#contentTypeStaticName).then(fields => {
-       this.fields.set(fields);
-       if (callback != null)
+      this.fields.set(fields);
+      if (callback != null)
         callback();
     });
   }
@@ -279,6 +303,7 @@ export class ContentTypeFieldsComponent implements OnInit {
       autoFocus: false,
       width: '800px',
       data: field,
+      viewContainerRef: this.viewContainerRef, // for dependency injection in the dialog
     });
     shareOrInheritDialogRef.afterClosed().subscribe(() => this.#fetchFields());
   }

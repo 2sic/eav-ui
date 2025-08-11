@@ -1,7 +1,7 @@
 <app-grid-with-help [helpText]="uxHelpText()" [refresh]="refresh()" [rowLength]="contentTypes()?.length">
   @if (contentTypes()?.length) {
     <ag-grid-angular
-      class="ag-theme-material grid-dynamic"
+      class="ag-theme-material "
       [rowData]="contentTypes()"
       [gridOptions]="gridOptions"
       appDragAndDrop

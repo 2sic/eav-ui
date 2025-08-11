@@ -77,9 +77,10 @@ export class EavItem {
 
     for (const key in attributes) {
       const attr = attributes[key];
-      if (!attr.Values || attr.Values.length === 0) continue;
+      if (!attr.Values || attr.Values.length === 0)
+        continue;
 
-      // Wir nehmen den Wert aus dem ersten EavFieldValue (Standard)
+      // to map to object, just take the first value
       result[key] = attr.Values[0].value;
     }
 

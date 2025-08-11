@@ -1,17 +1,33 @@
-<div class="eav-dialog" appDragAndDrop [allowedFileTypes]="dialogData.allowedFileTypes" (filesDropped)="filesDropped($event)">
-  <div class="eav-dialog-header">
-    <div class="eav-dialog-header__title" [innerHtml]="dialogData.title | safeHtml"></div>
-    <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
-      <mat-icon>close</mat-icon>
-    </button>
-  </div>
+<div
+  class="eav-dialog"
+  style="margin-bottom: 12px"
+  appDragAndDrop
+  [allowedFileTypes]="dialogData.allowedFileTypes"
+  (filesDropped)="filesDropped($event)"
+>
+  @if (uploadType() != UploadTypes.ImportParts) {
+    <div class="eav-dialog-header">
+      <div class="eav-dialog-header__title" [innerHtml]="dialogData.title | safeHtml"></div>
+      <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  }
 
-  <div class="eav-dialog-content">
+  <div
+    [ngClass]="{
+      'outer-container-app': uploadType() === UploadTypes.ImportParts,
+      'eav-dialog-content': uploadType() !== UploadTypes.ImportParts,
+    }"
+  >
+    @if (uploadType() == UploadTypes.ImportParts) {
+      <h3 [innerHtml]="dialogData.title | safeHtml"></h3>
+    }
+
     @if (uploading()) {
       <mat-spinner mode="indeterminate" diameter="20"></mat-spinner>
     }
     <p [innerHtml]="dialogData.description | safeHtml"></p>
-
 
     @if (uploadType() == UploadTypes.App) {
       <form [formGroup]="importForm">
@@ -79,13 +95,21 @@
         @if (result().Success) {
           <div class="sxc-message sxc-message-info">
             Upload succeeded. See the messages below for more information.
-            <a href="javascript:void(0)" (click)="closeDialog(true)">Close</a>
+            @if (uploadType() != UploadTypes.ImportParts) {
+              <a href="javascript:void(0)" (click)="closeDialog(true)">Close</a>
+            } @else {
+              <a href="javascript:void(0)" (click)="cleanUpload()">Clean</a>
+            }
           </div>
         }
         @if (!result().Success) {
           <div class="sxc-message sxc-message-error">
             Upload failed. See the messages below for more information.
-            <a href="javascript:void(0)" (click)="closeDialog(true)">Close</a>
+            @if (uploadType() != UploadTypes.ImportParts) {
+              <a href="javascript:void(0)" (click)="closeDialog(true)">Close</a>
+            } @else {
+              <a href="javascript:void(0)" (click)="cleanUpload()">Clean</a>
+            }
           </div>
         }
         @for (message of result().Messages; track message) {

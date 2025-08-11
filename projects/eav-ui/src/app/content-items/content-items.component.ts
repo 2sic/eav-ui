@@ -14,6 +14,7 @@ import { ContentExportService } from '../content-export/services/content-export.
 import { GoToMetadata } from '../metadata';
 import { AgGridHelper } from '../shared/ag-grid/ag-grid-helper';
 import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
+import { GridWithHelpComponent, HelpTextConst } from '../shared/ag-grid/grid-with-help/grid-with-help.component';
 import { BooleanFilterComponent } from '../shared/components/boolean-filter/boolean-filter.component';
 import { EntityFilterComponent } from '../shared/components/entity-filter/entity-filter.component';
 import { FileUploadDialogData } from '../shared/components/file-upload-dialog';
@@ -65,6 +66,7 @@ const logSpecs = {
     ToggleDebugDirective,
     SxcGridModule,
     TippyDirective,
+    GridWithHelpComponent
   ]
 })
 export class ContentItemsComponent implements OnInit {
@@ -96,14 +98,31 @@ export class ContentItemsComponent implements OnInit {
   #filterChanged = signal(0);
 
   /** Signal to trigger reloading of data */
-  #refresh = signal(0);
+  refresh = signal(0);
+
+  // UI Help Text for the UX Help Info Card
+  #helpTextConst: HelpTextConst = {
+    empty: {
+      description: '<p><b>This is where you manage data items</b></p>',
+      hint: "<p>Click the (+) in the bottom right corner to create your first item (think: record / entity).</p>"
+    },
+    content: {
+      description: '<p><b>Each row shows a data item</b> <br>They contain the data, similar to a database row.</p>',
+      hint: '<p>Click on the title to edit. <br>You can also do much more - best hover over the row and icons to discover the possibilities. <br><br>You can also do data import/export (one or many), copy items, and do advanced stuff like assigning metadata.</p>'
+    }
+  };
+
+  uxHelpText = computed(() => {
+    const data = this.items();
+    return data?.length === 0 ? this.#helpTextConst.empty : this.#helpTextConst.content;
+  })
 
   #gridApiSig: WritableSignal<GridApi<ContentItem>> = signal<GridApi<ContentItem>>(null);
 
   #contentTypeStaticName = this.#dialogRouter.getParam('contentTypeStaticName');
   contentType = this.#contentTypesSvc.getType(this.#contentTypeStaticName).value;
 
-  #itemsRaw = this.#contentItemsSvc.getAllLive(this.#contentTypeStaticName, this.#refresh).value;
+  #itemsRaw = this.#contentItemsSvc.getAllLive(this.#contentTypeStaticName, this.refresh).value;
 
   items = computed(() => {
     const data = this.#itemsRaw();
@@ -127,7 +146,7 @@ export class ContentItemsComponent implements OnInit {
   }
 
   private fetchItems() {
-    this.#refresh.update(v => ++v)
+    this.refresh.update(v => ++v)
   }
 
   private fetchColumns() {
@@ -403,7 +422,7 @@ export class ContentItemsComponent implements OnInit {
    * @param confirmText Optional confirmation button text
    */
   #confirmAndExecuteDelete(item: ContentItem, message: string, forceDelete: boolean, dialogTitle?: string, confirmText?: string) {
-    
+
     const dialogData: ConfirmDeleteDialogData = {
       entityId: item._RepositoryId,
       entityTitle: item._Title,
