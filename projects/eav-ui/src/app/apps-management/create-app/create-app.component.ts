@@ -233,9 +233,13 @@ export class CreateAppComponent {
 
   switchToImportApp(): void {
     const segments = this.router.url.split('/').filter(Boolean);
-    segments[segments.length - 1] = 'import';
-    const url = '/' + segments.join('/');
-    this.#dialogRouter.navPath(url);
+    segments.splice(-1, 1, 'import'); // Change the last segment to 'import'
+    this.dialog.close();
+    // Timeout to ensure dialog closes before navigation 
+    // This is necessary to avoid issues with Angular's navigation lifecycle
+    // when trying to open a new dialog immediately after closing the current one.
+    // This is a workaround for the issue where Angular tries to open a new dialog while the last one is still closing.
+    setTimeout(() => this.#dialogRouter.navPath('/' + segments.join('/')), 100); 
   }
 
   get appTemplateIdValue() { return this.form.controls.appTemplateId.value; }

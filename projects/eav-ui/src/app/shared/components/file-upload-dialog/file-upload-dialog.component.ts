@@ -118,7 +118,6 @@ export class FileUploadDialogComponent extends BaseComponent implements OnInit, 
   );
 
   ngOnInit(): void {
-
     // Update the remote installer URL based on the import mode
     // Show multiple select or single select based on import mode
     this.importForm.get('importMode')?.valueChanges.subscribe((mode) => {
