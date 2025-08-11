@@ -5,14 +5,25 @@
   [allowedFileTypes]="dialogData.allowedFileTypes"
   (filesDropped)="filesDropped($event)"
 >
-  <div class="eav-dialog-header">
-    <div class="eav-dialog-header__title" [innerHtml]="dialogData.title | safeHtml"></div>
-    <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
-      <mat-icon>close</mat-icon>
-    </button>
-  </div>
+  @if (uploadType() != UploadTypes.ImportParts) {
+    <div class="eav-dialog-header">
+      <div class="eav-dialog-header__title" [innerHtml]="dialogData.title | safeHtml"></div>
+      <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  }
 
-  <div class="eav-dialog-content">
+  <div
+    [ngClass]="{
+      'outer-container-app': uploadType() === UploadTypes.ImportParts,
+      'eav-dialog-content': uploadType() !== UploadTypes.ImportParts,
+    }"
+  >
+    @if (uploadType() == UploadTypes.ImportParts) {
+      <h3 [innerHtml]="dialogData.title | safeHtml"></h3>
+    }
+
     @if (uploading()) {
       <mat-spinner mode="indeterminate" diameter="20"></mat-spinner>
     }

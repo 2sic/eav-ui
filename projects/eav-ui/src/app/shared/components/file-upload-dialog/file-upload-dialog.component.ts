@@ -43,7 +43,7 @@ export class FileUploadDialogComponent extends BaseComponent implements OnInit, 
   @HostBinding('className') hostClass = 'dialog-component';
 
   uploadType = input<Of<typeof UploadTypes>>();
-
+  
   @ViewChild('installerWindow') installerWindow: ElementRef;
 
   uploading = signal(false);
@@ -71,6 +71,8 @@ export class FileUploadDialogComponent extends BaseComponent implements OnInit, 
     importMode: [this.importModeValues.importOriginal, Validators.required],
     name: ['']
   });
+
+  
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public dialogData: FileUploadDialogData,
@@ -224,7 +226,6 @@ Please try again later or check how to manually install content-templates: https
     this.uploading.set(false);
   }
 
-  
 
   #setupConditionalValidation(): void {
     const nameControl = this.importForm.get('name');
