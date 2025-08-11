@@ -218,6 +218,14 @@ Please try again later or check how to manually install content-templates: https
     this.dialog.close(refresh);
   }
 
+  cleanUpload(): void {
+    this.result.set(undefined);
+    this.files.set([]);
+    this.uploading.set(false);
+  }
+
+  
+
   #setupConditionalValidation(): void {
     const nameControl = this.importForm.get('name');
     this.importForm.get('importMode')?.valueChanges.subscribe(mode => {

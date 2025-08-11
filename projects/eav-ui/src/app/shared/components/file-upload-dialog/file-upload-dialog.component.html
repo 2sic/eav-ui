@@ -1,4 +1,10 @@
-<div class="eav-dialog" style="margin-bottom: 12px;" appDragAndDrop [allowedFileTypes]="dialogData.allowedFileTypes" (filesDropped)="filesDropped($event)">
+<div
+  class="eav-dialog"
+  style="margin-bottom: 12px"
+  appDragAndDrop
+  [allowedFileTypes]="dialogData.allowedFileTypes"
+  (filesDropped)="filesDropped($event)"
+>
   <div class="eav-dialog-header">
     <div class="eav-dialog-header__title" [innerHtml]="dialogData.title | safeHtml"></div>
     <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
@@ -78,13 +84,21 @@
         @if (result().Success) {
           <div class="sxc-message sxc-message-info">
             Upload succeeded. See the messages below for more information.
-            <a href="javascript:void(0)" (click)="closeDialog(true)">Close</a>
+            @if (uploadType() != UploadTypes.ImportParts) {
+              <a href="javascript:void(0)" (click)="closeDialog(true)">Close</a>
+            } @else {
+              <a href="javascript:void(0)" (click)="cleanUpload()">Clean</a>
+            }
           </div>
         }
         @if (!result().Success) {
           <div class="sxc-message sxc-message-error">
             Upload failed. See the messages below for more information.
-            <a href="javascript:void(0)" (click)="closeDialog(true)">Close</a>
+            @if (uploadType() != UploadTypes.ImportParts) {
+              <a href="javascript:void(0)" (click)="closeDialog(true)">Close</a>
+            } @else {
+              <a href="javascript:void(0)" (click)="cleanUpload()">Clean</a>
+            }
           </div>
         }
         @for (message of result().Messages; track message) {
