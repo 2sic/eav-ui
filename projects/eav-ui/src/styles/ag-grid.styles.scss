@@ -120,9 +120,10 @@ ag-grid-angular {
       text-decoration: underline;
     }
 
-    .mat-icon {
-      color: map_get($mat-eav-item-dialog-secondary, 500);
-    }
+    // 2pp: Prevent this to override ag-row-hover color effect
+    // .mat-icon {
+    //   color: map_get($mat-eav-item-dialog-secondary, 500);
+    // }
   }
 }
 
