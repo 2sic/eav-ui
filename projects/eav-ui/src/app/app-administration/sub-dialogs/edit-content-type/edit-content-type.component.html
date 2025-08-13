@@ -3,7 +3,7 @@
     <div class="eav-dialog-header__title">{{ modeIsEdit ? 'Edit Content Type' : 'New Content Type' }}</div>
   </div>
   @if (contentType()) {
-    <form #ngForm="ngForm" (ngSubmit)="save()">
+    <form #ngForm="ngForm" (ngSubmit)="saveAndClose()">
       <div class="eav-dialog-content">
         <div>
           <div class="eav-edit-input">

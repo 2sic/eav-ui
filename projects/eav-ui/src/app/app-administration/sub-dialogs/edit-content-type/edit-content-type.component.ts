@@ -1,5 +1,5 @@
-import { AfterViewInit, Component, HostBinding } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { AfterViewInit, Component, HostBinding, OnInit, ViewChild } from '@angular/core';
+import { FormsModule, NgForm } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import { MatDialogActions, MatDialogRef } from '@angular/material/dialog';
@@ -11,6 +11,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { transient } from '../../../../../../core';
+import { isCtrlEnter } from '../../../edit/dialog/main/keyboard-shortcuts';
 import { FieldHintComponent } from '../../../shared/components/field-hint/field-hint.component';
 import { dropdownInsertValue } from '../../../shared/constants/dropdown-insert-value.constant';
 import { eavConstants, ScopeOption } from '../../../shared/constants/eav.constants';
@@ -41,11 +42,12 @@ import { ContentTypesService } from '../../services/content-types.service';
         TippyDirective,
     ]
 })
-export class EditContentTypeComponent implements AfterViewInit {
+export class EditContentTypeComponent implements AfterViewInit, OnInit {
 
   log = classLog({ EditContentTypeComponent });
 
   @HostBinding('className') hostClass = 'dialog-component';
+  @ViewChild('ngForm', { static: false }) ngForm?: NgForm;
 
   #contentTypeSvc = transient(ContentTypesService);
 
@@ -60,6 +62,10 @@ export class EditContentTypeComponent implements AfterViewInit {
   ) {
     this.log.a('constructor');
     this.#loadContentTypeOnEdit();
+  }
+
+  ngOnInit() {
+    this.#watchKeyboardShortcuts();
   }
 
   #loadContentTypeOnEdit(): void {
@@ -156,7 +162,7 @@ export class EditContentTypeComponent implements AfterViewInit {
       this.contentType.set({ ...this.contentType(), Scope: this.#scope });
   }
 
-  save() {
+  saveAndClose() {
     this.loading.set(true);
     this.snackBar.open('Saving...');
     this.#contentTypeSvc.save(this.contentType()).subscribe(result => {
@@ -167,5 +173,16 @@ export class EditContentTypeComponent implements AfterViewInit {
     if (document.activeElement instanceof HTMLElement) {
       document.activeElement.blur();
     }
+  }
+
+  #watchKeyboardShortcuts(): void {
+    this.dialog.keydownEvents().subscribe(event => {
+      const canSave = !!this.ngForm?.form.valid && !this.loading();
+      
+      if (isCtrlEnter(event) && canSave) {
+        event.preventDefault();
+        this.saveAndClose();
+      }
+    });
   }
 }
