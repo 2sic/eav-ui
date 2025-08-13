@@ -47,7 +47,7 @@ import { footerPreferences } from '../footer/footer-preferences';
 import { EditDialogHeaderComponent } from '../header/edit-dialog-header.component';
 import { SaveEavFormData } from './edit-dialog-main.models';
 import { FormSlideDirective } from './form-slide.directive';
-import { isCtrlS, isEscape } from './keyboard-shortcuts';
+import { isCtrlEnter, isCtrlS, isEscape } from './keyboard-shortcuts';
 import { SnackBarSaveErrorsComponent } from './snack-bar-save-errors/snack-bar-save-errors.component';
 import { FieldErrorMessage, SaveErrorsSnackBarData } from './snack-bar-save-errors/snack-bar-save-errors.models';
 import { SnackBarUnsavedChangesComponent } from './snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
@@ -387,11 +387,18 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
     this.dialog.keydownEvents().subscribe(event => {
       if (isEscape(event))
         return this.closeDialog();
+      
+      const canSave = !this.formsStateService.readOnly().isReadOnly 
+              && !this.#entityFormStateService.isSaving();
 
-      if (isCtrlS(event)) {
+      if (isCtrlS(event) && canSave) {
         event.preventDefault();
-        if (!this.formsStateService.readOnly().isReadOnly && !this.#entityFormStateService.isSaving())
-          this.saveAll(event.altKey);
+        this.saveAll(event.altKey);
+      }
+
+      if (isCtrlEnter(event) && canSave) {
+        event.preventDefault();
+        this.saveAll(true);
       }
     });
   }
