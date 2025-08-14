@@ -14,6 +14,7 @@ import { BaseComponent } from '../../../shared/components/base.component';
 import { ToggleDebugDirective } from '../../../shared/directives/toggle-debug.directive';
 import { classLog } from '../../../shared/logging';
 import { ExtendedFabSpeedDialImports } from '../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
+import { SaveCloseButtonComponent } from '../../../shared/save-close-button/save-close-button.component';
 import { GlobalConfigService } from '../../../shared/services/global-config.service';
 import { computedWithPrev } from '../../../shared/signals/signal.utilities';
 import { UserPreferences } from '../../../shared/user/user-preferences.service';
@@ -82,6 +83,7 @@ const logSpecs = {
     TranslateModule,
     ...ExtendedFabSpeedDialImports,
     ToggleDebugDirective,
+    SaveCloseButtonComponent,
   ],
   providers: [
     EditRoutingService,
@@ -101,7 +103,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
   #globalConfigService = inject(GlobalConfigService);
   #formConfig = inject(FormConfigService);
 
-  enableSave = this.#formConfig.config.save.mode; // if false, then no save button is shown
+  canSave = this.#formConfig.config.save.mode; // if false, then no save button is shown
 
   /** Signal to tell the UI if the footer should show and/or the footer needs more space (changes CSS) */
   #prefManager = inject(UserPreferences).part(footerPreferences)
