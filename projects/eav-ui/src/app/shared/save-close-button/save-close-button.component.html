@@ -1,0 +1,8 @@
+<button extended-fab-speed-dial-trigger
+  matRipple
+  [ngClass]="{ 'appear-disabled': saveDisabled && saveDisabled() }"
+  (click)="saveAll.emit(true)"
+>
+  <mat-icon>done</mat-icon>
+  <span>{{ ('Form.Buttons.' + (canSave ? 'SaveAndClose' : 'Done')) | translate }}</span>
+</button>
