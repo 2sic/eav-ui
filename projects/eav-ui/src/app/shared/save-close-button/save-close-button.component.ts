@@ -18,7 +18,37 @@ import { ExtendedFabSpeedDialImports } from '../modules/extended-fab-speed-dial/
   styleUrl: './save-close-button.component.scss'
 })
 export class SaveCloseButtonComponent {
-  @Input() canSave: boolean | string = false;
-  @Input() saveDisabled!: () => boolean;
-  @Output() saveAll = new EventEmitter<boolean>();
+  /** Button label, can be a translation key or plain text */
+  @Input() label: string = 'Form.Buttons.SaveAndClose';
+
+  /** Material icon name to show */
+  @Input() icon: string = 'done';
+
+  /** Button type, e.g. 'button' or 'submit' */
+  @Input() type: 'button' | 'submit' = 'button';
+
+  /** Classes to apply to the button */
+  @Input() buttonClass: string | string[] | Record<string, boolean> = '';
+
+  /** If true, disables the button. Can also be a function returning boolean */
+  @Input() disabled: boolean | (() => boolean) = false;
+
+  /** If true, wraps the button as a floating action button */
+  @Input() wrapWithFab: boolean = false;
+
+  /** Emits when the button is clicked */
+  @Output() action = new EventEmitter<Event>();
+
+  /** Derived property for disabled state */
+  get isDisabled(): boolean {
+    return typeof this.disabled === 'function' ? this.disabled() : this.disabled;
+  }
+
+  onClick(event: Event) {
+    if (!this.isDisabled) {
+      this.action.emit(event);
+    }
+    // Optionally blur to prevent double submit
+    (event.target as HTMLElement).blur();
+  }
 }

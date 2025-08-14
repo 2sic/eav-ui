@@ -31,10 +31,11 @@
       <extended-fab-speed-dial>
         <ng-template extendedFabSpeedDialTriggerContent>
           <app-save-close-button
-            [canSave]="canSave"
-            [saveDisabled]="saveDisabled"
-            (saveAll)="saveAll($event)">
-          </app-save-close-button>
+            [label]="canSave ? 'Form.Buttons.SaveAndClose' : 'Form.Buttons.Done'"
+            [disabled]="saveDisabled"
+            [buttonClass]="{ 'appear-disabled': saveDisabled && saveDisabled() }"
+            (action)="saveAll(true)"
+          ></app-save-close-button>
         </ng-template>
         @if (canSave) {
           <p>2pp save button</p>
