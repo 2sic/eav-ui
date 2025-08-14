@@ -1,6 +1,10 @@
 <div class="eav-dialog">
   <div class="eav-dialog-header">
     <div class="eav-dialog-header__title">{{ modeIsEdit ? 'Edit Content Type' : 'New Content Type' }}</div>
+      <span class="toolbar-spacer"></span>
+      <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
+        <mat-icon>close</mat-icon>
+  </button>
   </div>
   @if (contentType()) {
     <form #ngForm="ngForm" (ngSubmit)="saveAndClose()">
@@ -84,8 +88,12 @@
         </div>
       </div>
       <mat-dialog-actions align="end">
-        <button mat-raised-button type="button" (click)="closeDialog()">Cancel</button>
-        <button mat-raised-button type="submit" class="eav-action-button" [disabled]="!ngForm.form.valid || loading()">Save</button>
+        <app-save-close-button
+          [wrapWithFab]="true"
+          [type]="'submit'"
+          [disabled]="!ngForm.form.valid || loading()"
+          (action)="saveAndClose()"
+        ></app-save-close-button>
       </mat-dialog-actions>
     </form>
   }

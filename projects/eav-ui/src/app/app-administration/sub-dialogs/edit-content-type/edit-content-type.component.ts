@@ -18,6 +18,7 @@ import { eavConstants, ScopeOption } from '../../../shared/constants/eav.constan
 import { ClickStopPropagationDirective } from '../../../shared/directives/click-stop-propagation.directive';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { classLog } from '../../../shared/logging';
+import { SaveCloseButtonComponent } from '../../../shared/save-close-button/save-close-button.component';
 import { computedObj, signalObj } from '../../../shared/signals/signal.utilities';
 import { contentTypeNameError, contentTypeNamePattern } from '../../constants/content-type.patterns';
 import { ContentTypeEdit } from '../../models/content-type.model';
@@ -40,6 +41,7 @@ import { ContentTypesService } from '../../services/content-types.service';
       FieldHintComponent,
       ClickStopPropagationDirective,
       TippyDirective,
+      SaveCloseButtonComponent,
     ]
 })
 export class EditContentTypeComponent implements AfterViewInit, OnInit {
@@ -94,6 +96,7 @@ export class EditContentTypeComponent implements AfterViewInit, OnInit {
   protected lockScope = signalObj<boolean>('lockScope', true);
   protected disableAnimation = signalObj<boolean>('disableAnimation', true);
   protected loading = signalObj<boolean>('loading', false);
+  protected canSave = !!this.ngForm?.form.valid && !this.loading();
   protected contentType = signalObj<ContentTypeEdit>('contentType', {
     StaticName: '',
     // TODO: @2pp - use NameId: '', instead of StaticName
@@ -177,9 +180,7 @@ export class EditContentTypeComponent implements AfterViewInit, OnInit {
 
   #watchKeyboardShortcuts(): void {
     this.dialog.keydownEvents().subscribe(event => {
-      const canSave = !!this.ngForm?.form.valid && !this.loading();
-      
-      if (isCtrlEnter(event) && canSave) {
+      if (isCtrlEnter(event) && this.canSave) {
         event.preventDefault();
         this.saveAndClose();
       }
