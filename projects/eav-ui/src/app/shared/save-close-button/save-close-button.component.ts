@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
@@ -19,29 +19,29 @@ import { ExtendedFabSpeedDialImports } from '../modules/extended-fab-speed-dial/
 })
 export class SaveCloseButtonComponent {
   /** Button label, can be a translation key or plain text */
-  @Input() label: string = 'Form.Buttons.SaveAndClose';
+  label = input<string>('Form.Buttons.SaveAndClose');
 
   /** Material icon name to show */
-  @Input() icon: string = 'done';
+  icon = input<string>('done');
 
   /** Button type, e.g. 'button' or 'submit' */
-  @Input() type: 'button' | 'submit' = 'button';
+  type = input<'button' | 'submit'>('button');
 
   /** Classes to apply to the button */
-  @Input() buttonClass: string | string[] | Record<string, boolean> = '';
+  buttonClass = input<string | string[] | Record<string, boolean>>('');
 
   /** If true, disables the button. Can also be a function returning boolean */
-  @Input() disabled: boolean | (() => boolean) = false;
+  disabled = input<boolean | (() => boolean)>(false);
 
   /** If true, wraps the button as a floating action button */
-  @Input() wrapWithFab: boolean = false;
+  wrapWithFab = input<boolean>(false);
 
   /** Emits when the button is clicked */
-  @Output() action = new EventEmitter<Event>();
+  action = output<Event>();
 
   /** Derived property for disabled state */
   get isDisabled(): boolean {
-    return typeof this.disabled === 'function' ? this.disabled() : this.disabled;
+    return typeof this.disabled === 'function' ? !!this.disabled() : !!this.disabled;
   }
 
   onClick(event: Event) {
