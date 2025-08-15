@@ -1,4 +1,4 @@
-import { Component, effect, ElementRef, HostBinding, inject, signal, ViewChild } from '@angular/core';
+import { Component, computed, effect, ElementRef, HostBinding, inject, signal, ViewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
@@ -15,6 +15,7 @@ import { filter, fromEvent, map, Observable } from 'rxjs';
 import { transient } from '../../../../../core';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
 import { CrossWindowMessage, InstallSettings } from '../../shared/models/installer-models';
+import { SaveCloseButtonFabComponent } from '../../shared/modules/save-close-button-fab/save-close-button-fab.component';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { AppInstallSettingsService } from '../../shared/services/getting-started.service';
 import { appNameError, appNamePattern } from '../constants/app.patterns';
@@ -37,7 +38,7 @@ import { AppsListService } from '../services/apps-list.service';
     FieldHintComponent,
     MatRadioModule,
     MatIconModule,
-
+    SaveCloseButtonFabComponent,
   ]
 })
 export class CreateAppComponent {
@@ -61,6 +62,7 @@ export class CreateAppComponent {
   showAppCatalog = signal(true);
   // Prevents double-processing of installations via window messages
   private alreadyProcessing = false;
+  protected canSave = computed(() => this.canCreate() && !this.loading());
 
   // App and settings service instances (using custom transient DI)
   #appsListService = transient(AppsListService);
@@ -135,7 +137,7 @@ export class CreateAppComponent {
    * Handles the app creation logic. Disables the form and shows feedback messages.
    * Decides whether to create a raw app or use a selected template.
    */
-  create(): void {
+  createAndClose(): void {
     if (!this.canCreate()) return;
     this.form.disable();
     this.loading.set(true);
