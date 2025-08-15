@@ -89,8 +89,8 @@
       </div>
       <mat-dialog-actions align="end">
         <app-save-close-button-fab
-          [ngClass]="!ngForm.form.valid || loading() ? 'disabled' : ''"
-          [disabled]="!ngForm.form.valid || loading()"
+          [ngClass]="!canSave() ? 'disabled' : ''"
+          [disabled]="!canSave()"
           (action)="saveAndClose()"
         ></app-save-close-button-fab>
       </mat-dialog-actions>
