@@ -74,7 +74,7 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements Aft
     this.dialog.disableClose = true;
     this.subscriptions.add(
       this.dialog.backdropClick().subscribe(_ => {
-        if (this.ngForm.dirty) {
+        if (this.ngForm?.dirty) {
           const confirmed = confirm('You have unsaved changes. Are you sure you want to close this dialog?');
           if (!confirmed) return;
         }
@@ -148,17 +148,23 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements Aft
     return merged;
   });
 
-
   ngAfterViewInit(): void {
-    this.ngForm?.form.statusChanges.subscribe(() => {
+    // Only run form logic if fields are loaded and form is rendered
+    if (this.fields().length && this.ngForm) {
       this.formValid.set(this.ngForm?.form.valid ?? false);
-    });
+      this.ngForm?.form.statusChanges.subscribe(() => {
+        this.formValid.set(this.ngForm?.form.valid ?? false);
+      });
+    } else {
+      // Retry after a short delay if not ready
+      setTimeout(() => this.ngAfterViewInit(), 250);
+      return;
+    }
     // Wait for the inputFields to be available
     // But delay execution to ensure the view is fully rendered
     if (this.autoFocusInputField)
       setTimeout(() => this.autoFocusInputField.first?.nativeElement?.focus(), 250);
   }
-
 
   ngOnInit() {
     this.#watchKeyboardShortcuts();
@@ -209,7 +215,6 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements Aft
       ?? options[0].inputType;
     this.updateFieldPart(index, { InputType: inputName });
   }
-
 
   hints = computedObj('hints', () => {
     const fields = this.fields();
