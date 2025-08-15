@@ -4,6 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogActions, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -20,6 +21,7 @@ import { BaseComponent } from '../../shared/components/base.component';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
 import { ContentTypesFieldsService } from '../../shared/fields/content-types-fields.service';
 import { Field } from '../../shared/fields/field.model';
+import { SaveCloseButtonFabComponent } from '../../shared/modules/save-close-button-fab/save-close-button-fab.component';
 import { signalObj } from '../../shared/signals/signal.utilities';
 import { ReservedNamesValidatorDirective } from '../edit-content-type-fields/reserved-names.directive';
 
@@ -39,11 +41,13 @@ import { ReservedNamesValidatorDirective } from '../edit-content-type-fields/res
     TranslateModule,
     FeatureTextInfoComponent,
     FieldHintComponent,
+    MatIconModule,
+    SaveCloseButtonFabComponent,
   ]
 })
 export class FieldSharingAddMany extends BaseComponent implements OnInit {
   @HostBinding('className') hostClass = 'dialog-component';
-  @ViewChild('ngForm', { read: NgForm }) private form: NgForm;
+  @ViewChild('ngForm', { read: NgForm }) private ngForm: NgForm;
 
   #features = inject(FeaturesService);
 
@@ -64,7 +68,7 @@ export class FieldSharingAddMany extends BaseComponent implements OnInit {
     this.dialog.disableClose = true;
     this.subscriptions.add(
       this.dialog.backdropClick().subscribe(() => {
-        if (this.form.dirty || this.selectedFields.data.length > 0) {
+        if (this.ngForm.dirty || this.selectedFields.data.length > 0) {
           const confirmed = confirm('You have unsaved changes. Are you sure you want to close this dialog?');
           if (!confirmed) return;
         }
@@ -80,7 +84,6 @@ export class FieldSharingAddMany extends BaseComponent implements OnInit {
   protected selectedFields = new MatTableDataSource<NewNameField>([]);
   protected fieldNamePattern = fieldNamePattern;
   protected fieldNameError = fieldNameError;
-
   #reservedNamesSystem = this.#contentTypesFieldsSvc.getReservedNames().value;
 
   reservedNames = computed(() => {
@@ -108,6 +111,10 @@ export class FieldSharingAddMany extends BaseComponent implements OnInit {
     const selectedFields = this.selectedFields.data;
     selectedFields.splice(selectedFields.indexOf(field), 1);
     this.selectedFields.data = [...selectedFields];
+  }
+
+  closeDialog() {
+    this.dialog.close();
   }
 
   // When API gets created we will need to send the selected fields to the API
