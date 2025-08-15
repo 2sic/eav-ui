@@ -3,7 +3,7 @@ import { Component, input, output } from '@angular/core';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
-import { ExtendedFabSpeedDialImports } from '../modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
+import { ExtendedFabSpeedDialImports } from '../extended-fab-speed-dial/extended-fab-speed-dial.imports';
 
 @Component({
   selector: 'app-save-close-button',
@@ -28,13 +28,10 @@ export class SaveCloseButtonComponent {
   type = input<'button' | 'submit'>('button');
 
   /** Classes to apply to the button */
-  buttonClass = input<string | string[] | Record<string, boolean>>('');
+  buttonClass = input<string>('');
 
   /** If true, disables the button. Can also be a function returning boolean */
   disabled = input<boolean | (() => boolean)>(false);
-
-  /** If true, wraps the button as a floating action button */
-  wrapWithFab = input<boolean>(false);
 
   /** Emits when the button is clicked */
   action = output<Event>();

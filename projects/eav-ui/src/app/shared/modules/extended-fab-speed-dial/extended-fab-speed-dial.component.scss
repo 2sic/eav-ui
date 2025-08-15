@@ -7,11 +7,12 @@ extended-fab-speed-dial {
 }
 
 .extended-fab-speed-dial {
-  .extended-fab-speed-dial-trigger {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-  }
+  // 2pp: Remove so save-close-button looks good
+  // .extended-fab-speed-dial-trigger {
+  //   position: absolute;
+  //   bottom: 0;
+  //   right: 0;
+  // }
 
   .extended-fab-speed-dial-actions {
     display: flex;

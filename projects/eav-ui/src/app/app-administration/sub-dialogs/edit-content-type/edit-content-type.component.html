@@ -88,12 +88,11 @@
         </div>
       </div>
       <mat-dialog-actions align="end">
-        <app-save-close-button
-          [wrapWithFab]="true"
+        <app-save-close-button-fab
           [type]="'submit'"
           [disabled]="!ngForm.form.valid || loading()"
           (action)="saveAndClose()"
-        ></app-save-close-button>
+        ></app-save-close-button-fab>
       </mat-dialog-actions>
     </form>
   }

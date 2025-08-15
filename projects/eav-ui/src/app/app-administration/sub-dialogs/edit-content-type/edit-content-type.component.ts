@@ -18,7 +18,7 @@ import { eavConstants, ScopeOption } from '../../../shared/constants/eav.constan
 import { ClickStopPropagationDirective } from '../../../shared/directives/click-stop-propagation.directive';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { classLog } from '../../../shared/logging';
-import { SaveCloseButtonComponent } from '../../../shared/save-close-button/save-close-button.component';
+import { SaveCloseButtonFabComponent } from '../../../shared/modules/save-close-button-fab/save-close-button-fab.component';
 import { computedObj, signalObj } from '../../../shared/signals/signal.utilities';
 import { contentTypeNameError, contentTypeNamePattern } from '../../constants/content-type.patterns';
 import { ContentTypeEdit } from '../../models/content-type.model';
@@ -41,7 +41,7 @@ import { ContentTypesService } from '../../services/content-types.service';
       FieldHintComponent,
       ClickStopPropagationDirective,
       TippyDirective,
-      SaveCloseButtonComponent,
+      SaveCloseButtonFabComponent,
     ]
 })
 export class EditContentTypeComponent implements AfterViewInit, OnInit {

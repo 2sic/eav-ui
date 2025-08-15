@@ -1,0 +1,11 @@
+<button
+  [type]="type()"
+  [ngClass]="buttonClass()"
+  [disabled]="isDisabled"
+  (click)="onClick($event)"
+  extended-fab-speed-dial-trigger
+  matRipple
+>
+  <mat-icon>{{ icon() }}</mat-icon>
+  <span>{{ label() | translate }}</span>
+</button>

@@ -14,7 +14,7 @@ import { BaseComponent } from '../../../shared/components/base.component';
 import { ToggleDebugDirective } from '../../../shared/directives/toggle-debug.directive';
 import { classLog } from '../../../shared/logging';
 import { ExtendedFabSpeedDialImports } from '../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
-import { SaveCloseButtonComponent } from '../../../shared/save-close-button/save-close-button.component';
+import { SaveCloseButtonComponent } from '../../../shared/modules/save-close-button/save-close-button.component';
 import { GlobalConfigService } from '../../../shared/services/global-config.service';
 import { computedWithPrev } from '../../../shared/signals/signal.utilities';
 import { UserPreferences } from '../../../shared/user/user-preferences.service';
