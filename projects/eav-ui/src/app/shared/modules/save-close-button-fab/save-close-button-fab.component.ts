@@ -15,6 +15,7 @@ import { ExtendedFabSpeedDialImports } from '../extended-fab-speed-dial/extended
     TranslateModule,
   ],
   templateUrl: './save-close-button-fab.component.html',
+  styleUrls: ['./save-close-button-fab.component.scss'],
 })
 export class SaveCloseButtonFabComponent {
   /** Button label, can be a translation key or plain text */
