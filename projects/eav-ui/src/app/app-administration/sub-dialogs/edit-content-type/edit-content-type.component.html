@@ -89,7 +89,6 @@
       </div>
       <mat-dialog-actions align="end">
         <app-save-close-button-fab
-          [type]="'submit'"
           [disabled]="!ngForm.form.valid || loading()"
           (action)="saveAndClose()"
         ></app-save-close-button-fab>

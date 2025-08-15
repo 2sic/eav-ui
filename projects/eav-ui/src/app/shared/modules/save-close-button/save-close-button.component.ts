@@ -15,7 +15,6 @@ import { ExtendedFabSpeedDialImports } from '../extended-fab-speed-dial/extended
     TranslateModule,
   ],
   templateUrl: './save-close-button.component.html',
-  styleUrl: './save-close-button.component.scss'
 })
 export class SaveCloseButtonComponent {
   /** Button label, can be a translation key or plain text */
@@ -24,11 +23,8 @@ export class SaveCloseButtonComponent {
   /** Material icon name to show */
   icon = input<string>('done');
 
-  /** Button type, e.g. 'button' or 'submit' */
-  type = input<'button' | 'submit'>('button');
-
   /** Classes to apply to the button */
-  buttonClass = input<string>('');
+  ngClass = input<string>('');
 
   /** If true, disables the button. Can also be a function returning boolean */
   disabled = input<boolean | (() => boolean)>(false);

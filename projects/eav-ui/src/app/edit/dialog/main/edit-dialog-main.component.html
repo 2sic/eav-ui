@@ -32,7 +32,6 @@
         <ng-template extendedFabSpeedDialTriggerContent>
           <app-save-close-button
             [label]="canSave ? 'Form.Buttons.SaveAndClose' : 'Form.Buttons.Done'"
-            [disabled]="saveDisabled"
             [ngClass]="saveDisabled() ? 'appear-disabled': ''"
             (action)="saveAll(true)"
           ></app-save-close-button>
