@@ -10,12 +10,13 @@
   }
 }
 
-.my-actions {
-  width: 100%;
-  display: flex;
-  justify-content: flex-end;
-  padding: 8px 0px;
-}
+// 2pp: made use of mat-dialog-actions so not needed anymore
+// .my-actions {
+//   width: 100%;
+//   display: flex;
+//   justify-content: flex-end;
+//   padding: 8px 0px;
+// }
 
 .eav-dialog-action-button {
   margin-right: 8px;
