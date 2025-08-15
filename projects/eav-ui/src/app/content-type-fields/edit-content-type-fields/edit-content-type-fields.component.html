@@ -11,9 +11,13 @@
         Edit Field
       }
     </div>
+    <span class="toolbar-spacer"></span>
+    <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
+      <mat-icon>close</mat-icon>
+    </button>
   </div>
   @if (fields()?.length) {
-    <form #ngForm="ngForm" (ngSubmit)="save()">
+    <form #ngForm="ngForm" (ngSubmit)="saveAndClose()">
       <div class="eav-dialog-content">
         @for (field of fields(); track field.SortOrder; let i = $index) {
           <div class="eav-row-container">
@@ -103,10 +107,12 @@
       </div>
 
       <!-- Save / cancel buttons -->
-      <mat-dialog-actions>
-        <div class="spacer"></div>
-        <button mat-raised-button type="button" (click)="dialog.close()">Cancel</button>
-        <button mat-raised-button type="submit" class="eav-action-button" [disabled]="!ngForm.form.valid || saving()">Save</button>
+      <mat-dialog-actions align="end">
+        <app-save-close-button-fab
+          [ngClass]="!canSave() ? 'disabled' : ''"
+          [disabled]="!canSave()"
+          (action)="saveAndClose()"
+        ></app-save-close-button-fab>
       </mat-dialog-actions>
     </form>
   }
