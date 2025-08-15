@@ -13,6 +13,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { Router, RouterOutlet } from '@angular/router';
 import { filter, fromEvent, map, Observable } from 'rxjs';
 import { transient } from '../../../../../core';
+import { isCtrlEnter } from '../../edit/dialog/main/keyboard-shortcuts';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
 import { CrossWindowMessage, InstallSettings } from '../../shared/models/installer-models';
 import { SaveCloseButtonFabComponent } from '../../shared/modules/save-close-button-fab/save-close-button-fab.component';
@@ -126,6 +127,8 @@ export class CreateAppComponent {
   }
 
   ngOnInit(): void {
+    this.#watchKeyboardShortcuts();
+
     // Ensure installer settings are loaded (redundant if already done in constructor)
     this.#installSettingsService.loadGettingStarted(false);
 
@@ -241,8 +244,17 @@ export class CreateAppComponent {
     // This is necessary to avoid issues with Angular's navigation lifecycle
     // when trying to open a new dialog immediately after closing the current one.
     // This is a workaround for the issue where Angular tries to open a new dialog while the last one is still closing.
-    setTimeout(() => this.#dialogRouter.navPath('/' + segments.join('/')), 100); 
+    setTimeout(() => this.#dialogRouter.navPath('/' + segments.join('/')), 100);
   }
 
   get appTemplateIdValue() { return this.form.controls.appTemplateId.value; }
+
+  #watchKeyboardShortcuts(): void {
+    this.dialog.keydownEvents().subscribe(event => {
+      if (isCtrlEnter(event) && this.canSave()) {
+        event.preventDefault();
+        this.createAndClose();
+      }
+    });
+  }
 }
