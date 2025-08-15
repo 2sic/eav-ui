@@ -1,7 +1,8 @@
-import { Component, HostBinding, Inject } from '@angular/core';
+import { Component, HostBinding, Inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { isCtrlEnter } from '../../../edit/dialog/main/keyboard-shortcuts';
 import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';
 import { ConfirmDeleteDialogData } from './confirm-delete-dialog.models';
 
@@ -15,7 +16,7 @@ import { ConfirmDeleteDialogData } from './confirm-delete-dialog.models';
     SafeHtmlPipe,
   ]
 })
-export class ConfirmDeleteDialogComponent {
+export class ConfirmDeleteDialogComponent implements OnInit {
   @HostBinding('className') hostClass = 'dialog-component';
 
   constructor(
@@ -23,4 +24,16 @@ export class ConfirmDeleteDialogComponent {
     public dialog: MatDialogRef<ConfirmDeleteDialogComponent>,
   ) { }
 
+  ngOnInit() {
+    this.#watchKeyboardShortcuts();
+  }
+
+  #watchKeyboardShortcuts(): void {
+    this.dialog.keydownEvents().subscribe(event => {
+      if (isCtrlEnter(event)) {
+        event.preventDefault();
+        this.dialog.close(true);
+      }
+    });
+  }
 }
