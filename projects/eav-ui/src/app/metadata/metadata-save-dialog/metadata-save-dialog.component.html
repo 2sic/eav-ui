@@ -1,17 +1,17 @@
-<mat-card class="eav-card">
-  <mat-card-header class="eav-card-header">
-    <div>
-      <mat-card-title>Create Metadata</mat-card-title>
-      <mat-card-subtitle>
-        This is a special operation to add an item which is metadata for another item,
-        see <a href="https://go.2sxc.org/metadata" target="_blank">docs</a>.
-      </mat-card-subtitle>
+<div class="eav-dialog">
+  <div class="eav-dialog-header">
+    <div class="eav-dialog-header__title">
+      Create Metadata
     </div>
     <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
       <mat-icon>close</mat-icon>
     </button>
-  </mat-card-header>
-  <mat-card-content>
+  </div>
+  <div class="eav-dialog-content">
+    <p>
+      This is a special operation to add an item which as metadata for another item,
+      see <a href="https://go.2sxc.org/metadata" target="_blank">docs</a>.
+    </p>
     <form [formGroup]="form">
       <!-- Scope -->
       @if (advancedMode && guidedContentType) {
@@ -70,12 +70,12 @@
       </mat-slide-toggle>
       
     </form>
-  </mat-card-content>
-  <mat-card-actions align="end">
+  </div>
+  <mat-dialog-actions align="end">
     <app-save-close-button-fab
       [ngClass]="!canSave() ? 'disabled' : ''"
       [disabled]="!canSave()"
       (action)="saveAndClose()"
     />
-  </mat-card-actions>
-</mat-card>
+  </mat-dialog-actions>
+</div>
