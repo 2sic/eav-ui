@@ -9,6 +9,7 @@ import { RouterOutlet } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { transient } from '../../../../core';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
+import { ConfirmDeleteDialogComponent } from '../app-administration/sub-dialogs/confirm-delete-dialog/confirm-delete-dialog.component';
 import { GoToMetadata } from '../metadata';
 import { GoToPermissions } from '../permissions/go-to-permissions';
 import { AgGridHelper } from '../shared/ag-grid/ag-grid-helper';
@@ -256,21 +257,32 @@ export class ContentTypeFieldsComponent implements OnInit {
     });
   }
 
-  #changeInputType(field: Field) {
-    this.#dialogRouter.navRelative([`update/${this.#contentTypeStaticName}/${field.Id}/inputType`]);
-  }
+  // #changeInputType(field: Field) {
+  //   this.#dialogRouter.navRelative([`update/${this.#contentTypeStaticName}/${field.Id}/inputType`]);
+  // }
 
   #rename(field: Field) {
     this.#dialogRouter.navRelative([`update/${this.#contentTypeStaticName}/${field.Id}/name`]);
   }
 
   #delete(field: Field) {
-    if (!confirm(`Are you sure you want to delete '${field.StaticName}' (${field.Id})?`)) return;
-    this.snackBar.open('Deleting...');
-    this.#contentTypesFieldsSvc.delete(field, this.contentType()).subscribe(() => {
-      this.snackBar.open('Deleted', null, { duration: 2000 });
-      this.#fetchFields();
-    });
+    this.matDialog.open(ConfirmDeleteDialogComponent, {
+      autoFocus: false,
+      data: {
+        entityId: field.Id,
+        entityTitle: field.StaticName,
+        message: "Delete Item?",
+        hasDeleteSnackbar: true
+      },
+      viewContainerRef: this.viewContainerRef,
+      width: '400px',
+    }).afterClosed().subscribe(isConfirmed => {
+      if (!isConfirmed) return;
+      this.#contentTypesFieldsSvc.delete(field, this.contentType()).subscribe(() => {
+        this.snackBar.open('Deleted', null, { duration: 2000 });
+        this.#fetchFields();
+      });
+    })
   }
 
   #openPermissions(field: Field) {

@@ -393,11 +393,11 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
 
 
   #deleteContentType(contentType: ContentType) {
-    this.#snackBar.open('Deleting...');
     const data: ConfirmDeleteDialogData = {
       entityId: contentType.Id,
       entityTitle: contentType.Name,
       message: "Are you sure you want to delete?",
+      hasDeleteSnackbar: true
     };
     const confirmationDialogRef = this.#matDialog.open(ConfirmDeleteDialogComponent, {
       autoFocus: false,
@@ -406,7 +406,6 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
       width: '400px',
     });
     confirmationDialogRef.afterClosed().subscribe((isConfirmed: boolean) => {
-      this.#snackBar.dismiss();
       if (isConfirmed)
         this.#contentTypeSvc.delete(contentType).subscribe(_ => {
           this.#snackBar.open('Deleted', null, { duration: 2000 });

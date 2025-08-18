@@ -227,6 +227,7 @@ export class MetadataComponent implements OnInit {
       const data: ConfirmDeleteDialogData = {
         entityId: metadata.Id,
         entityTitle: metadata.Title,
+        hasDeleteSnackbar: true,
         message: this.metadataSet().Recommendations.find(r => r.Id === metadata._Type.Id)?.DeleteWarning,
       };
       const confirmationDialogRef = this.matDialog.open(ConfirmDeleteDialogComponent, {
@@ -242,7 +243,6 @@ export class MetadataComponent implements OnInit {
       return;
     }
 
-    this.snackBar.open('Deleting...');
     this.#entitiesSvc.delete(metadata._Type.Id, metadata.Id, false).subscribe({
       next: () => {
         this.snackBar.open('Deleted', null, { duration: 2000 });
