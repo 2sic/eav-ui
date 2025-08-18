@@ -2,7 +2,6 @@ import { NgClass } from '@angular/common';
 import { Component, computed, HostBinding, OnInit, signal, WritableSignal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
 import { MatOptionModule } from '@angular/material/core';
 import { MatDialogActions, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -26,7 +25,6 @@ import { MetadataSaveFormValues } from './metadata-save-dialog.models';
     templateUrl: './metadata-save-dialog.component.html',
     styleUrls: ['./metadata-save-dialog.component.scss'],
     imports: [
-        MatCardModule,
         FormsModule,
         ReactiveFormsModule,
         MatFormFieldModule,

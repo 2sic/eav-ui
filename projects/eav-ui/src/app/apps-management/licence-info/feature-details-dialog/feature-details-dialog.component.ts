@@ -1,7 +1,6 @@
 import { Component, Inject, input, Optional } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogActions, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
 import { transient } from '../../../../../../core/transient';
@@ -14,11 +13,11 @@ import { FeatureDetailsDialogData } from './feature-details-dialog.models';
     selector: 'app-feature-details-dialog',
     templateUrl: './feature-details-dialog.component.html',
     imports: [
-        MatCardModule,
         MatButtonModule,
         MatIconModule,
         SafeHtmlPipe,
         TranslateModule,
+        MatDialogActions,
     ]
 })
 export class FeatureDetailsDialogComponent {
@@ -32,4 +31,8 @@ export class FeatureDetailsDialogComponent {
   protected mySpecs = computedObj('mySpecs', () =>  this.specs() ?? this.dialogSpecs );
   protected feature = computedObj('feature', () => this.mySpecs()?.feature);
   protected clipboard = transient(ClipboardService);
+  
+  closeDialog() {
+    this.dialog.close();
+  }
 }
