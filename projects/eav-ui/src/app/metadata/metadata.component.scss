@@ -4,3 +4,9 @@
     fill: white;
 }
 
+:host ::ng-deep .ag-row-hover .ag-cell a,
+:host ::ng-deep .ag-row-hover .ag-cell .id,
+:host ::ng-deep .ag-row-hover .ag-cell mat-icon,
+.eav-button__with-icon * {
+  color: #85283B !important;
+}

@@ -33,7 +33,10 @@
     </div>
 
     @if (metadataSet()?.Items.length > 0) {
-      <ag-grid-angular class="ag-theme-material eav-dialog-content" [rowData]="metadataSet()?.Items" [gridOptions]="gridOptions">
+      <ag-grid-angular
+        class="ag-theme-material eav-dialog-content"
+        [rowData]="metadataSet()?.Items"
+        [gridOptions]="gridOptions">
       </ag-grid-angular>
     }
 
