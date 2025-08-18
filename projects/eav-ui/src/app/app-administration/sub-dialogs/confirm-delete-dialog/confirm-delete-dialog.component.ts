@@ -1,9 +1,10 @@
 import { Component, HostBinding, inject, Inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogActions, MatDialogRef } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { isCtrlEnter } from '../../../edit/dialog/main/keyboard-shortcuts';
+import { SaveCloseButtonFabComponent } from '../../../shared/modules/save-close-button-fab/save-close-button-fab.component';
 import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';
 import { ConfirmDeleteDialogData } from './confirm-delete-dialog.models';
 
@@ -12,9 +13,11 @@ import { ConfirmDeleteDialogData } from './confirm-delete-dialog.models';
   templateUrl: './confirm-delete-dialog.component.html',
   styleUrls: ['./confirm-delete-dialog.component.scss'],
   imports: [
-    MatCardModule,
     MatButtonModule,
     SafeHtmlPipe,
+    MatIconModule,
+    MatDialogActions,
+    SaveCloseButtonFabComponent,
   ]
 })
 export class ConfirmDeleteDialogComponent implements OnInit {
@@ -43,9 +46,14 @@ export class ConfirmDeleteDialogComponent implements OnInit {
     });
   }
 
+  closeDialog(confirm?: boolean) {
+    confirm
+      ? this.dialog.close(confirm)
+      : this.dialog.close();
+  }
 
-  closeDialog(confirm: boolean) {
-    this.dialog.close(confirm);
+  saveAndClose(confirm: boolean) {
+    this.closeDialog(confirm);
     if (this.dialogData.hasDeleteSnackbar)
       this.#snackBar.dismiss();
   }
