@@ -1,10 +1,15 @@
-<mat-card>
-  <mat-card-header>
-    <mat-card-title>Create Metadata</mat-card-title>
-    <mat-card-subtitle>
-      This is a special operation to add an item which is metadata for another item,
-      see <a href="https://go.2sxc.org/metadata" target="_blank">docs</a>.
-    </mat-card-subtitle>
+<mat-card class="eav-card">
+  <mat-card-header class="eav-card-header">
+    <div>
+      <mat-card-title>Create Metadata</mat-card-title>
+      <mat-card-subtitle>
+        This is a special operation to add an item which is metadata for another item,
+        see <a href="https://go.2sxc.org/metadata" target="_blank">docs</a>.
+      </mat-card-subtitle>
+    </div>
+    <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
+      <mat-icon>close</mat-icon>
+    </button>
   </mat-card-header>
   <mat-card-content>
     <form [formGroup]="form">
@@ -26,6 +31,7 @@
         <a href="https://2sxc.org/help?tag=scope" target="_blank" appClickStopPropagation>see help</a>
       </app-field-hint>
       }
+
       <!-- Content Type of metadata item -->
       <mat-form-field color="accent" class="eav-mat-form-field">
         <mat-label>Content Type</mat-label>
@@ -58,18 +64,18 @@
         This field is required
       </app-field-hint>
       }
+
+      <mat-slide-toggle color="accent" [checked]="advancedMode" (change)="toggleAdvancedMode($event)">
+        {{ advancedMode ? 'Advanced' : 'Simple' }}
+      </mat-slide-toggle>
+      
     </form>
   </mat-card-content>
-  <mat-card-actions class="eav-card-actions">
-    <mat-slide-toggle color="accent" [checked]="advancedMode" (change)="toggleAdvancedMode($event)">
-      {{ advancedMode ? 'Advanced' : 'Simple' }}
-    </mat-slide-toggle>
-    <div>
-      <button mat-raised-button class="eav-card-action-button" (click)="closeDialog()">Cancel</button>
-      <button mat-raised-button color="accent" class="eav-card-action-button" [disabled]="!form.valid"
-        (click)="confirm()">
-        Confirm
-      </button>
-    </div>
+  <mat-card-actions align="end">
+    <app-save-close-button-fab
+      [ngClass]="!canSave() ? 'disabled' : ''"
+      [disabled]="!canSave()"
+      (action)="saveAndClose()"
+    />
   </mat-card-actions>
 </mat-card>

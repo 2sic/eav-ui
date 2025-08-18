@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { Component, HostBinding, OnInit, signal, WritableSignal } from '@angular/core';
+import { Component, computed, HostBinding, OnInit, signal, WritableSignal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -13,10 +13,12 @@ import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/sl
 import { distinctUntilChanged, startWith } from 'rxjs';
 import { transient } from '../../../../../core';
 import { ContentTypesService } from '../../app-administration/services';
+import { isCtrlEnter } from '../../edit/dialog/main/keyboard-shortcuts';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
 import { dropdownInsertValue } from '../../shared/constants/dropdown-insert-value.constant';
 import { eavConstants, ScopeOption } from '../../shared/constants/eav.constants';
 import { ClickStopPropagationDirective } from '../../shared/directives/click-stop-propagation.directive';
+import { SaveCloseButtonFabComponent } from '../../shared/modules/save-close-button-fab/save-close-button-fab.component';
 import { MetadataSaveFormValues } from './metadata-save-dialog.models';
 
 @Component({
@@ -37,12 +39,16 @@ import { MetadataSaveFormValues } from './metadata-save-dialog.models';
         MatSlideToggleModule,
         FieldHintComponent,
         ClickStopPropagationDirective,
+        SaveCloseButtonFabComponent,
     ]
 })
 export class MetadataSaveDialogComponent implements OnInit {
   @HostBinding('className') hostClass = 'dialog-component';
 
   form: UntypedFormGroup;
+  formValid = signal(false);
+  protected canSave = computed(() => this.formValid());
+
   dropdownInsertValue = dropdownInsertValue;
   guidedContentType = true;
   advancedMode = false;
@@ -60,6 +66,12 @@ export class MetadataSaveDialogComponent implements OnInit {
 
   ngOnInit(): void {
     this.buildForm();
+    this.#watchKeyboardShortcuts();
+
+    // Subscribe to form status changes to update signal
+    this.form.statusChanges.subscribe(() => {
+      this.formValid.set(this.form.valid);
+    });
   }
 
   closeDialog(contentType?: string): void {
@@ -74,9 +86,18 @@ export class MetadataSaveDialogComponent implements OnInit {
     this.advancedMode = event.checked;
   }
 
-  confirm(): void {
+  saveAndClose(): void {
     const formValues: MetadataSaveFormValues = this.form.getRawValue();
     this.closeDialog(formValues.contentType);
+  }
+  
+  #watchKeyboardShortcuts(): void {
+    this.dialog.keydownEvents().subscribe(event => {
+      if (isCtrlEnter(event) && this.canSave()) {
+        event.preventDefault();
+        this.saveAndClose();
+      }
+    });
   }
 
   private buildForm(): void {

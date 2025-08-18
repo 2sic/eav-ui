@@ -85,7 +85,6 @@ export class EditContentTypeComponent implements AfterViewInit, OnInit {
     });
   }
 
-
   /** RegEx property to use in HTML */
   protected contentTypeNamePattern = contentTypeNamePattern;
   protected contentTypeNameError = contentTypeNameError;
