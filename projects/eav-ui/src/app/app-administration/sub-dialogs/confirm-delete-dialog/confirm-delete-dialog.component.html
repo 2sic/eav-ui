@@ -10,12 +10,12 @@
   </mat-card-content>
 
   <mat-card-actions align="end">
-    <button mat-raised-button (click)="dialog.close()">Cancel</button>
+    <button mat-raised-button (click)="closeDialog(false)">Cancel</button>
     <button
       class="eav-card-action-button"
       mat-raised-button
       cdkFocusInitial
-      (click)="dialog.close(true)"
+      (click)="closeDialog(true)"
       [color]="dialogData.confirmColor ?? 'warn'"
     >
       @if (dialogData.confirmTranslateKey) {

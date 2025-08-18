@@ -1,7 +1,8 @@
-import { Component, HostBinding, Inject, OnInit } from '@angular/core';
+import { Component, HostBinding, inject, Inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { isCtrlEnter } from '../../../edit/dialog/main/keyboard-shortcuts';
 import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';
 import { ConfirmDeleteDialogData } from './confirm-delete-dialog.models';
@@ -19,12 +20,17 @@ import { ConfirmDeleteDialogData } from './confirm-delete-dialog.models';
 export class ConfirmDeleteDialogComponent implements OnInit {
   @HostBinding('className') hostClass = 'dialog-component';
 
+  #snackBar = inject(MatSnackBar);
+
   constructor(
     @Inject(MAT_DIALOG_DATA) public dialogData: ConfirmDeleteDialogData,
     public dialog: MatDialogRef<ConfirmDeleteDialogComponent>,
   ) { }
 
   ngOnInit() {
+    if (this.dialogData.hasDeleteSnackbar)
+      this.#snackBar.open('Deleting...');
+
     this.#watchKeyboardShortcuts();
   }
 
@@ -35,5 +41,12 @@ export class ConfirmDeleteDialogComponent implements OnInit {
         this.dialog.close(true);
       }
     });
+  }
+
+
+  closeDialog(confirm: boolean) {
+    this.dialog.close(confirm);
+    if (this.dialogData.hasDeleteSnackbar)
+      this.#snackBar.dismiss();
   }
 }

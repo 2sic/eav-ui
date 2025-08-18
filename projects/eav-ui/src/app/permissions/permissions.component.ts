@@ -89,11 +89,11 @@ export class PermissionsComponent implements OnInit {
   }
 
   #deletePermission(permission: Permission) {
-    this.snackBar.open('Deleting...');
     const data: ConfirmDeleteDialogData = {
       entityId: permission.Id,
       entityTitle: permission.Title,
       message: "Delete this permission?",
+      hasDeleteSnackbar: true
     };
     const confirmationDialogRef = this.matDialog.open(ConfirmDeleteDialogComponent, {
       autoFocus: false,
@@ -102,7 +102,6 @@ export class PermissionsComponent implements OnInit {
       width: '400px',
     });
     confirmationDialogRef.afterClosed().subscribe((isConfirmed: boolean) => {
-      this.snackBar.dismiss();
       if (isConfirmed)
         this.#permissionsService.delete(permission.Id).subscribe(() => {
           this.snackBar.open('Deleted', null, { duration: 2000 });

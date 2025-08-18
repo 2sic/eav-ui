@@ -27,6 +27,8 @@ import { DialogRoutingService } from '../../shared/routing/dialog-routing.servic
 import { View, ViewEntity } from '../models/view.model';
 import { DialogConfigAppService } from '../services/dialog-config-app.service';
 import { ViewsService } from '../services/views.service';
+import { ConfirmDeleteDialogComponent } from '../sub-dialogs/confirm-delete-dialog/confirm-delete-dialog.component';
+import { ConfirmDeleteDialogData } from '../sub-dialogs/confirm-delete-dialog/confirm-delete-dialog.models';
 import { ViewsActionsComponent } from './views-actions/views-actions.component';
 import { ViewsShowComponent } from './views-show/views-show.component';
 import { ViewsTypeComponent } from './views-type/views-type.component';
@@ -61,6 +63,7 @@ export class ViewsComponent implements OnInit {
 
   polymorphLogo = polymorphLogo;
   gridOptions = this.#buildGridOptions();
+
 
   constructor(
     private snackBar: MatSnackBar,
@@ -343,18 +346,29 @@ export class ViewsComponent implements OnInit {
   }
 
   async #deleteView(view: View) {
-    if (!confirm(`Delete '${view.Name}' (${view.Id})?`)) return;
-    this.snackBar.open('Deleting...');
-    try {
-      const status = await this.#viewsSvc.delete(view.Id);
-      if (status >= 200 && status < 300) {
-        this.snackBar.open('Deleted', null, { duration: 2000 });
-        this.#triggerRefresh();
-      }
-    } catch (error) {
-      console.error('Error deleting view:', error);
-      this.snackBar.open('Error deleting view', null, { duration: 2000 });
-    }
+    this.matDialog.open(ConfirmDeleteDialogComponent, {
+      autoFocus: false,
+      data: {
+        entityId: view.Id,
+        entityTitle: view.Name,
+        message: "Delete View?",
+        hasDeleteSnackbar: true
+      } as ConfirmDeleteDialogData,
+      viewContainerRef: this.viewContainerRef,
+      width: '400px',
+    }).afterClosed().subscribe(isConfirmed => {
+      if (!isConfirmed) return;
+
+      this.#viewsSvc.delete(view.Id).then(status => {
+        if (status >= 200 && status < 300) {
+          this.snackBar.open('Deleted', null, { duration: 2000 });
+          this.#triggerRefresh();
+        }
+      }).catch(error => {
+        console.error('Error deleting view:', error);
+        this.snackBar.open('Error deleting view', null, { duration: 2000 });
+      });
+    });
   }
 
   #getLightSpeedLink(view?: View): string {
