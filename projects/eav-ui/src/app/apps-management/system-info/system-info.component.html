@@ -169,7 +169,12 @@
     </mat-card-content>
     <div class="eav-card-space-div"></div>
     <mat-card-actions align="end">
-      <button mat-raised-button color="accent" [disabled]="!activateLogForm.valid" (click)="activatePageLog(activateLogForm)">
+      <button
+        mat-raised-button
+        class="eav-action-button"
+        [disabled]="!activateLogForm.valid"
+        (click)="activatePageLog(activateLogForm)"
+      >
         Activate
       </button>
     </mat-card-actions>
