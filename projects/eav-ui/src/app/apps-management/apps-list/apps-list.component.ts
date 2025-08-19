@@ -36,6 +36,7 @@ import { AppsListActionsParams } from './apps-list-actions/apps-list-actions.mod
 @Component({
   selector: 'app-apps-list',
   templateUrl: './apps-list.component.html',
+  styleUrls: ['./apps-list.component.scss'],
   imports: [
     SxcGridModule,
     MatDialogActions,
