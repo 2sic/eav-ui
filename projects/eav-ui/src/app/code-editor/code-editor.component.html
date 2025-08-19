@@ -17,44 +17,54 @@
   </app-code-snippets>
   <div class="editor-group">
     @if (tabs().length > 0) {
-    <div class="tabs-container fancy-scrollbar-dark">
-      @for (tab of tabs(); track tab.viewKey) {
-      <div class="tab" [ngClass]="{
-              'active': tab.isActive,
-              'modified': tab.isModified,
-              'loading': tab.isLoading
-              }" (click)="openView(tab.viewKey)">
-        <div class="tab-label-container" [tippy]="tab.label" tippyShowDelay="750">
-          @if (tab.viewKey.shared) {
-          <mat-icon class="icon-shared">share</mat-icon>
-          }
-          <span class="tab-label">{{ tab.label }}</span>
-        </div>
-        <div class="tab-actions-container">
-          @if (tab.isModified) {
-          <mat-icon class="tab-action icon-modified">circle</mat-icon>
-          }
-          @if (tab.isLoading) {
-          <mat-spinner class="spinner" mode="indeterminate" diameter="14" color="white">
-          </mat-spinner>
-          }
-          <mat-icon class="tab-action icon-close" tippy="Close" appClickStopPropagation
-            (click)="closeEditor(tab.viewKey)">close</mat-icon>
-        </div>
+      <div class="tabs-container fancy-scrollbar-dark">
+        @for (tab of tabs(); track tab.viewKey) {
+          <div class="tab" [ngClass]="{
+                  'active': tab.isActive,
+                  'modified': tab.isModified,
+                  'loading': tab.isLoading
+                  }" (click)="openView(tab.viewKey)">
+            <div class="tab-label-container" [tippy]="tab.label" tippyShowDelay="750">
+              @if (tab.viewKey.shared) {
+                <mat-icon class="icon-shared">share</mat-icon>
+              }
+              <span class="tab-label">{{ tab.label }}</span>
+            </div>
+            <div class="tab-actions-container">
+              @if (tab.isModified) {
+                <mat-icon class="tab-action icon-modified">circle</mat-icon>
+              }
+              @if (tab.isLoading) {
+                <mat-spinner
+                  class="spinner"
+                  mode="indeterminate"
+                  diameter="14"
+                  color="white"
+                ></mat-spinner>
+              }
+              <mat-icon class="tab-action icon-close" tippy="Close" appClickStopPropagation
+                (click)="closeEditor(tab.viewKey)">close</mat-icon>
+            </div>
+          </div>
+        }
       </div>
-      }
-    </div>
     }
     @if (active()?.view) {
-    <app-monaco-editor [filename]="active()?.view.FileName" [value]="active()?.view.Code"
-      (valueChanged)="codeChanged($event, active()?.viewKey)" [options]="monacoOptions"
-      [snippets]="active()?.editorSnipps" [tooltips]="active()?.tooltips" [autoFocus]="true">
-    </app-monaco-editor>
+      <app-monaco-editor [filename]="active()?.view.FileName" [value]="active()?.view.Code"
+        (valueChanged)="codeChanged($event, active()?.viewKey)" [options]="monacoOptions"
+        [snippets]="active()?.editorSnipps" [tooltips]="active()?.tooltips" [autoFocus]="true">
+      </app-monaco-editor>
     }
   </div>
   @if (activeView()) {
-  <button mat-fab mat-elevation-z24 tippy="Click to save or CTRL + S" (click)="save()">
-    <mat-icon>done</mat-icon>
-  </button>
+    <button
+      class="eav-action-button"
+      mat-fab
+      mat-elevation-z24
+      tippy="Click to save or CTRL + S"
+      (click)="save()"
+    >
+      <mat-icon>done</mat-icon>
+    </button>
   }
 </div>
