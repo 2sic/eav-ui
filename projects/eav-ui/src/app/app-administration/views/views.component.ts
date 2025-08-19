@@ -205,6 +205,7 @@ export class ViewsComponent implements OnInit {
         {
           ...ColumnDefinitions.Number,
           field: 'Used',
+          cellClass: 'primary-action highlight'.split(' '),
           cellRenderer: (p: { data: View, }) => AgGridHelper.cellLink(this.#urlToOpenUsage(p.data), p.data.Used.toString()),
         },
         {
