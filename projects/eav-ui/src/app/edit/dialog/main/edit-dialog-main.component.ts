@@ -196,14 +196,14 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
       startWith(true)
     ));
 
-
   ngOnInit() {
+    this.#watchKeyboardShortcuts();
+
     this.editRoutingService.init();
     this.#loadIconsService.load();
     this.formulaDesignerService.cache.init();
 
     this.#startSubscriptions();
-    this.#watchKeyboardShortcuts();
   }
 
   ngAfterViewInit() {
