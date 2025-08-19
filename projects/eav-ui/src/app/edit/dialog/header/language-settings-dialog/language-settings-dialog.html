@@ -1,7 +1,7 @@
 <div class="eav-dialog">
   <div class="eav-dialog-header">
     <div class="eav-dialog-header__title">{{'LanguageSettings.Title' | translate}}</div>
-    <button mat-icon-button tippy="Close dialog" (click)="dialog.close()">
+    <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
       <mat-icon>close</mat-icon>
     </button>
   </div>
@@ -28,4 +28,9 @@
       [userLanguageSvc]="userLanguageSvc"
     ></app-language-dropdown>
   </div>
+  <mat-dialog-actions align="end">
+    <app-save-close-button-fab
+      (action)="closeDialog()"
+    />
+  </mat-dialog-actions>
 </div>
