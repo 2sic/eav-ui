@@ -1,8 +1,10 @@
+@import "../../styles/variables.scss";
+
 :host ::ng-deep .ag-row-hover .ag-cell a,
 :host ::ng-deep .ag-row-hover .ag-cell .id-box *,
 :host ::ng-deep .ag-row-hover .ag-cell mat-icon,
 .eav-button__with-icon * {
-  color: #85283B !important;
+  color: $sxc-solid !important;
 }
 
 // this style is used for svg paths to be filled with white and override fill black on svg
