@@ -1,11 +1,11 @@
-import { Component, HostBinding, Inject, OnDestroy, OnInit } from '@angular/core';
-import { FormsModule, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-// tslint:disable-next-line:max-line-length
 import { AsyncPipe, NgClass } from '@angular/common';
+import { AfterViewInit, Component, computed, HostBinding, Inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { FormsModule, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
+import { MAT_DIALOG_DATA, MatDialogActions, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
@@ -19,6 +19,7 @@ import { SanitizeHelper } from '../edit/shared/helpers';
 import { BaseComponent } from '../shared/components/base.component';
 import { FieldHintComponent } from '../shared/components/field-hint/field-hint.component';
 import { MatInputAutofocusDirective } from '../shared/directives/mat-input-autofocus.directive';
+import { SaveCloseButtonFabComponent } from '../shared/modules/save-close-button-fab/save-close-button-fab.component';
 
 @Component({
   selector: 'app-create-file-dialog',
@@ -31,18 +32,21 @@ import { MatInputAutofocusDirective } from '../shared/directives/mat-input-autof
     MatSelectModule,
     MatOptionModule,
     MatInputModule,
+    MatIconModule,
+    MatDialogActions,
     MatProgressSpinnerModule,
     MatButtonModule,
     NgClass,
     AsyncPipe,
     FieldHintComponent,
     MatInputAutofocusDirective,
+    SaveCloseButtonFabComponent,
   ]
 })
-export class CreateFileDialogComponent extends BaseComponent implements OnInit, OnDestroy {
+export class CreateFileDialogComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
-  form: UntypedFormGroup;
+  ngForm: UntypedFormGroup;
   controls: CreateFileFormControls;
   viewModel$: Observable<CreateFileViewModel>;
 
@@ -50,6 +54,18 @@ export class CreateFileDialogComponent extends BaseComponent implements OnInit, 
   #templates$: BehaviorSubject<PredefinedTemplate[]>;
   #loadingPreview$: BehaviorSubject<boolean>;
   #sourceService = transient(SourceService);
+
+  protected formValid = signal(false);
+
+  // Signals for preview loading and validity
+  protected loadingPreview = signal(false);
+  protected previewValid = signal(false);
+
+  protected canSave = computed(() =>
+    this.formValid() &&
+    !this.loadingPreview() &&
+    this.previewValid()
+  );
 
   constructor(
     @Inject(MAT_DIALOG_DATA) private dialogData: CreateFileDialogData,
@@ -65,6 +81,17 @@ export class CreateFileDialogComponent extends BaseComponent implements OnInit, 
     this.#buildForm();
     this.#fetchTemplates();
     this.#buildViewModel();
+
+    // Subscribe signals to their sources
+    this.subscriptions.add(
+      this.#loadingPreview$.subscribe(value => this.loadingPreview.set(value))
+    );
+  }
+
+  ngAfterViewInit() {
+    this.ngForm?.statusChanges.subscribe(() => {
+      this.formValid.set(this.ngForm?.valid ?? false);
+    });
   }
 
   ngOnDestroy(): void {
@@ -77,8 +104,8 @@ export class CreateFileDialogComponent extends BaseComponent implements OnInit, 
     this.dialog.close(result);
   }
 
-  confirm(): void {
-    const formValues: CreateFileFormValues = this.form.getRawValue();
+  saveAndClose(): void {
+    const formValues: CreateFileFormValues = this.ngForm.getRawValue();
 
     const result: CreateFileDialogResult = {
       name: formValues.finalName,
@@ -97,7 +124,7 @@ export class CreateFileDialogComponent extends BaseComponent implements OnInit, 
   }
 
   #buildForm(): void {
-    this.form = new UntypedFormGroup({
+    this.ngForm = new UntypedFormGroup({
       platform: new UntypedFormControl(this.#all),
       purpose: new UntypedFormControl({ value: this.dialogData.purpose ?? this.#all, disabled: this.dialogData.purpose != null }),
       templateKey: new UntypedFormControl(null, Validators.required),
@@ -106,7 +133,7 @@ export class CreateFileDialogComponent extends BaseComponent implements OnInit, 
       folder: new UntypedFormControl({ value: this.dialogData.folder ?? '', disabled: true }),
     });
 
-    this.controls = this.form.controls as any;
+    this.controls = this.ngForm.controls as any;
 
     this.subscriptions.add(
       combineLatest([
@@ -239,6 +266,14 @@ export class CreateFileDialogComponent extends BaseComponent implements OnInit, 
         this.#loadingPreview$.next(false);
       }),
     );
+
+    // Subscribe preview validity signal
+    this.subscriptions.add(
+      preview$.subscribe(preview => {
+        this.previewValid.set(preview?.IsValid ?? false);
+      })
+    );
+
     this.viewModel$ = combineLatest([platforms$, purposes$, templates$, preview$, this.#loadingPreview$]).pipe(
       map(([platforms, purposes, templates, preview, loadingPreview]) => {
         const viewModel: CreateFileViewModel = {

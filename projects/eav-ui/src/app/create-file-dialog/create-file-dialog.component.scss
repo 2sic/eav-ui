@@ -4,69 +4,31 @@
   white-space: nowrap;
 
   .eav-file-name {
+    overflow-x: auto;
+    max-width: 450px;
     font-size: 20px;
     margin-left: 8px;
     background-color: lightgrey;
   }
 }
 
-.eav-field-container {
-  &:not(:first-of-type) {
-    margin-top: 8px;
-  }
-
-  &.eav-multiple {
-    display: flex;
-
-    .eav-multiple-field {
-      flex: 1;
-
-      &:not(:first-of-type) {
-        margin-left: 8px;
-      }
-    }
-  }
-}
-
-.dialog-form-content {
-  flex-shrink: 0;
-}
-
-.dialog-form-actions {
-  flex-shrink: 0;
-}
-
-pre {
-  flex-grow: 1;
-  flex-shrink: 1;
-  font-family: monospace;
-
-  &.disabled {
-    color: $editUI-label-disabled-color;
-  }
+.eav-preview-container {
+  margin: 8px 6px 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
 }
 
 .eav-preview-label-box {
-  position: relative;
-
+  margin-bottom: 4px;
   .eav-preview-label {
-    position: absolute;
-    top: -20px;
-    left: 0px;
     font-size: 12px;
     color: rgba(0, 0, 0, 0.6);
     pointer-events: none;
-
     &.disabled {
       color: $editUI-field-disabled-color;
     }
   }
-}
-
-.eav-preview-error {
-  margin-bottom: 10px;
-  font-size: 14px;
-  color: red;
 }
 
 pre {
@@ -82,8 +44,11 @@ pre {
   border: 1px solid #ccc;
   border-radius: 4px;
   overflow-x: auto;
+  max-height: 55vh;
 }
 
-.max-h {
-  max-height: 55vh;
+.eav-preview-error {
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: red;
 }
