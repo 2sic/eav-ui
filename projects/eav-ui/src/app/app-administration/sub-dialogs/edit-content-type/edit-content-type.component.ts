@@ -44,7 +44,7 @@ import { ContentTypesService } from '../../services/content-types.service';
     SaveCloseButtonFabComponent,
   ]
 })
-export class EditContentTypeComponent implements AfterViewInit, OnInit {
+export class EditContentTypeComponent implements OnInit, AfterViewInit {
 
   log = classLog({ EditContentTypeComponent });
 

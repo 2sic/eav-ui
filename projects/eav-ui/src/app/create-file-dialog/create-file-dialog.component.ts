@@ -15,6 +15,7 @@ import { transient } from '../../../../core';
 import { PredefinedTemplate } from '../code-editor/models/predefined-template.model';
 import { Preview } from '../code-editor/models/preview.models';
 import { SourceService } from '../code-editor/services/source.service';
+import { isCtrlEnter } from '../edit/dialog/main/keyboard-shortcuts';
 import { SanitizeHelper } from '../edit/shared/helpers';
 import { BaseComponent } from '../shared/components/base.component';
 import { FieldHintComponent } from '../shared/components/field-hint/field-hint.component';
@@ -75,6 +76,8 @@ export class CreateFileDialogComponent extends BaseComponent implements OnInit, 
   }
 
   ngOnInit(): void {
+    this.#watchKeyboardShortcuts();
+
     this.#templates$ = new BehaviorSubject<PredefinedTemplate[]>([]);
     this.#loadingPreview$ = new BehaviorSubject(false);
 
@@ -98,20 +101,6 @@ export class CreateFileDialogComponent extends BaseComponent implements OnInit, 
     this.#templates$.complete();
     this.#loadingPreview$.complete();
     super.ngOnDestroy();
-  }
-
-  closeDialog(result?: CreateFileDialogResult): void {
-    this.dialog.close(result);
-  }
-
-  saveAndClose(): void {
-    const formValues: CreateFileFormValues = this.ngForm.getRawValue();
-
-    const result: CreateFileDialogResult = {
-      name: formValues.finalName,
-      templateKey: formValues.templateKey,
-    };
-    this.closeDialog(result);
   }
 
   #fetchTemplates(): void {
@@ -288,5 +277,28 @@ export class CreateFileDialogComponent extends BaseComponent implements OnInit, 
         return viewModel;
       }),
     );
+  }
+
+  closeDialog(result?: CreateFileDialogResult): void {
+    this.dialog.close(result);
+  }
+
+  saveAndClose(): void {
+    const formValues: CreateFileFormValues = this.ngForm.getRawValue();
+
+    const result: CreateFileDialogResult = {
+      name: formValues.finalName,
+      templateKey: formValues.templateKey,
+    };
+    this.closeDialog(result);
+  }
+
+  #watchKeyboardShortcuts(): void {
+    this.dialog.keydownEvents().subscribe(event => {
+      if (isCtrlEnter(event) && this.canSave()) {
+        event.preventDefault();
+        this.saveAndClose();
+      }
+    });
   }
 }
