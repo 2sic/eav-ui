@@ -4,6 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import { MatDialogActions, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
@@ -12,26 +13,25 @@ import { FieldHintComponent } from '../../shared/components/field-hint/field-hin
 import { AppsListService } from '../services/apps-list.service';
 
 @Component({
-    selector: 'app-create-inherited-app',
-    templateUrl: './create-inherited-app.component.html',
-    imports: [
-        RouterOutlet,
-        FormsModule,
-        ReactiveFormsModule,
-        MatFormFieldModule,
-        MatSelectModule,
-        MatOptionModule,
-        MatDialogActions,
-        MatButtonModule,
-        FieldHintComponent
-    ]
+  selector: 'app-create-inherited-app',
+  templateUrl: './create-inherited-app.component.html',
+  imports: [
+    RouterOutlet,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatDialogActions,
+    MatButtonModule,
+    MatIconModule,
+    FieldHintComponent
+  ]
 })
-export class CreateInheritedAppComponent{
+export class CreateInheritedAppComponent {
   @HostBinding('className') hostClass = 'dialog-component';
 
   form: UntypedFormGroup;
-
-
 
   private appsListService = transient(AppsListService);
 
@@ -44,7 +44,6 @@ export class CreateInheritedAppComponent{
 
   loading = signal<boolean>(false);
   inheritableApps = this.appsListService.getInheritable().value;
-
 
   closeDialog(): void {
     this.dialog.close();
@@ -61,7 +60,7 @@ export class CreateInheritedAppComponent{
     this.appsListService.create(name, inheritId).subscribe({
       error: () => {
         this.form.enable();
-    this.loading.set(false);
+        this.loading.set(false);
 
         this.snackBar.open('Failed to create inherited app. Please check console for more information', undefined, { duration: 3000 });
       },

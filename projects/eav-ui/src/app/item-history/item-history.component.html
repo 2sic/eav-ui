@@ -77,7 +77,11 @@
                 }
                 <div class="eav-row-actions">
                   @if (!historyItem.isLastVersion) {
-                    <button mat-raised-button color="accent" (click)="restore(historyItem.changeSetId)">
+                    <button
+                      mat-raised-button
+                      class="eav-action-button"
+                      (click)="restore(historyItem.changeSetId)"
+                    >
                       Restore
                     </button>
                   }
