@@ -177,6 +177,8 @@ declare interface FormulaContext {
     isAnonymous: boolean;
     /** Check if the current user is a content admin */
     isContentAdmin: boolean;
+    /** Check if the current user is a content editor (but maybe not admin) */
+    isContentEditor: boolean;
     /** Check if the current user is a site admin */
     isSiteAdmin: boolean;
     /** Check if the current user is a system admin */
