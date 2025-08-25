@@ -1,5 +1,8 @@
 <button
   type="button"
+  [tippy]="(label() | translate) + ' (shortcut: ctrl + enter)'"
+  tippyShowDelay="500"
+  tippyPlacement="top"
   [ngClass]="ngClass()"
   [disabled]="isDisabled"
   (click)="onClick($event)"
@@ -8,4 +11,7 @@
 >
   <mat-icon>{{ icon() }}</mat-icon>
   <span>{{ label() | translate }}</span>
+  <span class="keybinding-hint">
+    <kbd>⌃</kbd><kbd>⏎</kbd>
+  </span>
 </button>

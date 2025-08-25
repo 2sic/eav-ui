@@ -2,8 +2,8 @@
   "Form": {
     "Buttons": {
       "Save": "Save (ctrl + s)",
-      "SaveAndClose": "Save and close (ctrl + enter)",
-      "CreateAndClose": "Create and close (ctrl + enter)",
+      "SaveAndClose": "Save and close",
+      "CreateAndClose": "Create and close",
       "Done": "Done",
       "Exit.Tip": "Exit - if something changed, you will be asked to save",
       "Return.Tip": "Return to previous dialog",

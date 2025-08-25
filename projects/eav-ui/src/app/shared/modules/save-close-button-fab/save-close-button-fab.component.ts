@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
+import { TippyDirective } from '../../directives/tippy.directive';
 import { ExtendedFabSpeedDialImports } from '../extended-fab-speed-dial/extended-fab-speed-dial.imports';
 import { SaveCloseButtonBase } from '../save-close-button/save-close-button-base.directive';
 
@@ -14,8 +15,9 @@ import { SaveCloseButtonBase } from '../save-close-button/save-close-button-base
     ...ExtendedFabSpeedDialImports,
     MatRippleModule,
     TranslateModule,
+    TippyDirective,
   ],
   templateUrl: './save-close-button-fab.component.html',
-  styleUrls: ['./save-close-button-fab.component.scss'],
+  styleUrls: ['../save-close-button/save-close-button.component.scss'],
 })
 export class SaveCloseButtonFabComponent extends SaveCloseButtonBase {}
