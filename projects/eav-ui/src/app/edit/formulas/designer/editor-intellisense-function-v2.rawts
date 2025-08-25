@@ -189,6 +189,8 @@ declare interface FormulaContext {
     name: string;
     /** The user name used for login */
     username: string;
+    /** The names of user roles of the current user is in - new v20.01 */
+    roles: string[];
   };
 }
 

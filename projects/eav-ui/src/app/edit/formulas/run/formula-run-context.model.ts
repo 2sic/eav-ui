@@ -78,4 +78,5 @@ export interface FormulaV1CtxUser {
   isContentAdmin: boolean;
   name: string;
   username: string;
+  roles: string[];
 }

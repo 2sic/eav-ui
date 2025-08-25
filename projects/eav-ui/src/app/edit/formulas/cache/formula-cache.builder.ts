@@ -192,6 +192,7 @@ export class FormulaCacheBuilder extends ServiceBase {
         isSystemAdmin: user.IsSystemAdmin,
         name: user.Name,
         username: user.Username,
+        roles: user.roles,
       } satisfies FormulaV1CtxUser,
       app: {
         appId: formConfig.appId,

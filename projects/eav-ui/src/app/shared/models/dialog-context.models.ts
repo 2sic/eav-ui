@@ -89,6 +89,7 @@ export interface DialogContextUser {
   IsSystemAdmin: boolean;
   Name: string;
   Username: string;
+  roles: string[];
 }
 
 // export interface DialogContextFeature {
