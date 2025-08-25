@@ -11,12 +11,20 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
 import { convert, transient } from '../../../../core';
+import { isCtrlEnter } from '../edit/dialog/main/keyboard-shortcuts';
 import { ContentGroupAdd } from '../manage-content-list/models/content-group.model';
 import { ContentGroupService } from '../manage-content-list/services/content-group.service';
+import { TippyDirective } from '../shared/directives/tippy.directive';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { EditForm, EditPrep } from '../shared/models/edit-form.model';
+import { SaveCloseButtonFabComponent } from '../shared/modules/save-close-button-fab/save-close-button-fab.component';
 import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
 import { computedObj, signalObj } from '../shared/signals/signal.utilities';
+
+interface ReplaceOption {
+  id: number;
+  label: string;
+}
 
 @Component({
     selector: 'app-replace-content',
@@ -35,6 +43,8 @@ import { computedObj, signalObj } from '../shared/signals/signal.utilities';
         MatButtonModule,
         MatIconModule,
         MatDialogActions,
+        TippyDirective,
+        SaveCloseButtonFabComponent,
     ]
 })
 export class ReplaceContentComponent implements OnInit {
@@ -73,9 +83,11 @@ export class ReplaceContentComponent implements OnInit {
   });
 
   /** The system has a selected item, when the text exactly matches the label of an option */
-  hasSelection = computedObj<boolean>('isMatch', () => this.options().map(o => o.label).includes(this.filterText()));
+  canSave = computedObj<boolean>('isMatch', () => this.options().map(o => o.label).includes(this.filterText()));
 
   ngOnInit() {
+    this.#watchKeyboardShortcuts();
+
     this.#fetchConfig(false, null);
 
     this.#dialogRoutes.doOnDialogClosed(() => {
@@ -103,18 +115,7 @@ export class ReplaceContentComponent implements OnInit {
     this.#dialogRoutes.navRelative([`edit/${formUrl}`]);
   }
 
-  save() {
-    this.snackBar.open('Saving...');
-    const contentGroup = this.#buildContentGroup();
-    this.#contentGroupSvc.saveItem(contentGroup).subscribe(() => {
-      this.snackBar.open('Saved', null, { duration: 2000 });
-      this.closeDialog();
-    });
-  }
-
   #fetchConfig(isRefresh: boolean, cloneId: number) {
-
-
     const contentGroup = this.#buildContentGroup();
     this.#contentGroupSvc.getItemsPromise(contentGroup).then(replaceConfig => {
       const options = Object.entries(replaceConfig.Items)
@@ -145,10 +146,23 @@ export class ReplaceContentComponent implements OnInit {
     };
     return contentGroup;
   }
+  
+  saveAndClose() {
+    this.snackBar.open('Saving...');
+    const contentGroup = this.#buildContentGroup();
+    this.#contentGroupSvc.saveItem(contentGroup).subscribe(() => {
+      this.snackBar.open('Saved', null, { duration: 2000 });
+      this.closeDialog();
+    });
+  }
+  
+  #watchKeyboardShortcuts(): void {
+    this.dialog.keydownEvents().subscribe(event => {
+      if (isCtrlEnter(event) && this.canSave()) {
+        event.preventDefault();
+        this.saveAndClose();
+      }
+    });
+  }
 }
 
-
-interface ReplaceOption {
-  id: number;
-  label: string;
-}

@@ -56,6 +56,7 @@ const logSpecs = {
 @Component({
   selector: 'app-content-items',
   templateUrl: './content-items.component.html',
+  styleUrls: ['./content-items.component.scss'],
   imports: [
     MatButtonModule,
     MatIconModule,
@@ -428,7 +429,8 @@ export class ContentItemsComponent implements OnInit {
       entityTitle: item._Title,
       message: message,
       title: dialogTitle,
-      confirmTranslateKey: confirmText
+      confirmTranslateKey: confirmText,
+      hasDeleteSnackbar: true 
     };
 
     this.matDialog.open(ConfirmDeleteDialogComponent, {
@@ -437,11 +439,9 @@ export class ContentItemsComponent implements OnInit {
       viewContainerRef: this.viewContainerRef,
       width: '400px',
     }).afterClosed().subscribe(isConfirmed => {
-      this.snackBar.dismiss();
       if (!isConfirmed) return;
 
       // Execute delete operation
-      this.snackBar.open('Deleting...');
       this.#entitiesSvc.delete(this.#contentTypeStaticName, item._RepositoryId, forceDelete)
         .subscribe({
           next: () => {

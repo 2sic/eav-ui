@@ -1,6 +1,14 @@
 <div class="eav-dialog">
   <div class="eav-dialog-header">
     <div class="eav-dialog-header__title">Create inherited App</div>
+    <button
+      mat-icon-button
+      tippy="Close dialog"
+      [disabled]="loading()"
+      (click)="closeDialog()"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
   </div>
   <div class="eav-dialog-content">
     <router-outlet></router-outlet>
@@ -30,10 +38,11 @@
     </form>
   </div>
   <mat-dialog-actions align="end">
-    <button type="button" mat-raised-button [disabled]="loading()" (click)="closeDialog()">
-      Cancel
-    </button>
-    <button type="button" mat-raised-button color="accent" [disabled]="loading() || !form.valid" (click)="create()">
+    <button type="button"
+      mat-raised-button
+      class="eav-action-button"
+      [disabled]="loading() || !form.valid" (click)="create()"
+    >
       Create
     </button>
   </mat-dialog-actions>

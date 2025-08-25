@@ -118,20 +118,19 @@
         </div>
       }
     }
+    
+    <app-feature-text-info [featureNameId]="requiredFeature" [asInfo]="true">
+      <em> Even if the feature is not licensed, it will always work but show warnings. </em>
+    </app-feature-text-info>
   </div>
 
-  <app-feature-text-info [featureNameId]="requiredFeature" [asInfo]="true">
-    <em> Even if the feature is not licensed, it will always work but show warnings. </em>
-  </app-feature-text-info>
-
-  <div class="my-actions">
-    @if (initialState == sharingOrInheriting.None) {
-      <button mat-raised-button type="button" class="eav-dialog-action-button" (click)="dialog.close()">Cancel</button>
-      <button mat-raised-button type="submit" color="accent" class="eav-dialog-action-button" (click)="save()">
-        <span>Save</span>
-      </button>
-    }
-  </div>
+  <mat-dialog-actions align="end">
+    <app-save-close-button-fab
+      [ngClass]="!(initialState == sharingOrInheriting.None) ? 'disabled' : ''"
+      [disabled]="!(initialState == sharingOrInheriting.None)"
+      (action)="save()"
+    />
+  </mat-dialog-actions>
 </div>
 
 <!-- Reusable part showing a list of ancestors or descendants - or showing a license warning to see more -->

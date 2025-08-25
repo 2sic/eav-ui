@@ -1,14 +1,19 @@
 @if (viewModel$ | async; as vm) {
   <div class="eav-dialog">
     <div class="eav-dialog-header">
-      <div class="eav-dialog-header__title">Create Metadata</div>
+      <div class="eav-dialog-header__title">
+        Create Metadata
+      </div>
+      <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
+        <mat-icon>close</mat-icon>
+      </button>
     </div>
     <div class="eav-dialog-content">
       <p>
         This is a special operation to add an item which is metadata for another item, see
         <a href="https://go.2sxc.org/metadata" target="_blank">docs</a>.
       </p>
-      <form [formGroup]="form">
+      <form [formGroup]="ngForm">
         <!-- Target Type -->
         <mat-form-field color="accent" style="width: 100%; margin-bottom: 8px">
           <mat-label>Target</mat-label>
@@ -30,7 +35,7 @@
             <input matInput type="number" min="0" formControlName="targetType" required />
           }
         </mat-form-field>
-        @if (form.controls['targetType'].touched && !form.controls['targetType'].invalid && vm.unknownTargetType) {
+        @if (ngForm.controls['targetType'].touched && !ngForm.controls['targetType'].invalid && vm.unknownTargetType) {
           <app-field-hint [isError]="false">
             Warning: you entered an unknown target type. This may work or may not. Please be sure you know what you're doing
           </app-field-hint>
@@ -38,10 +43,10 @@
         @if (vm.targetTypeHint) {
           <app-field-hint [isError]="false">{{ vm.targetTypeHint }}</app-field-hint>
         }
-        @if (form.controls['targetType'].touched && form.controls['targetType'].errors?.required) {
+        @if (ngForm.controls['targetType'].touched && ngForm.controls['targetType'].errors?.required) {
           <app-field-hint [isError]="true"> This field is required </app-field-hint>
         }
-        @if (form.controls['targetType'].touched && form.controls['targetType'].errors?.pattern) {
+        @if (ngForm.controls['targetType'].touched && ngForm.controls['targetType'].errors?.pattern) {
           <app-field-hint [isError]="true"> Must be a whole number </app-field-hint>
         }
         <!-- Key Type -->
@@ -55,9 +60,21 @@
             }
           </mat-select>
         </mat-form-field>
-        @if (form.controls['keyType'].touched && form.controls['keyType'].errors?.required) {
+        @if (ngForm.controls['keyType'].touched && ngForm.controls['keyType'].errors?.required) {
           <app-field-hint [isError]="true"> This field is required </app-field-hint>
         }
+        <mat-slide-toggle
+          color="accent"
+          [tippy]="
+            vm.guidedMode
+              ? 'Guided mode helps you select options that work'
+              : 'Manual mode is for advanced uses and allows you to insert any values'
+          "
+          [checked]="vm.guidedMode"
+          (change)="toggleGuidedMode($event)"
+        >
+          {{ vm.guidedMode ? 'Guided' : 'Manual' }}
+        </mat-slide-toggle>
         <!-- Content Type for Content Items -->
         @if (vm.guidedMode && vm.formValues.targetType === eavConstants.metadata.entity.targetType) {
           <mat-form-field color="accent" style="width: 100%; margin-bottom: 8px">
@@ -167,34 +184,23 @@
             </div>
           }
         </mat-form-field>
-        @if (form.controls['key'].touched && form.controls['key'].errors?.required) {
+        @if (ngForm.controls['key'].touched && ngForm.controls['key'].errors?.required) {
           <app-field-hint [isError]="true"> This field is required </app-field-hint>
         }
-        @if (form.controls['key'].touched && form.controls['key'].errors?.patternWholeNumber) {
+        @if (ngForm.controls['key'].touched && ngForm.controls['key'].errors?.patternWholeNumber) {
           <app-field-hint [isError]="true"> Must be a whole number </app-field-hint>
         }
-        @if (form.controls['key'].touched && form.controls['key'].errors?.patternGuid) {
+        @if (ngForm.controls['key'].touched && ngForm.controls['key'].errors?.patternGuid) {
           <app-field-hint [isError]="true"> Must be a valid GUID </app-field-hint>
         }
       </form>
     </div>
-    <mat-dialog-actions class="eav-dialog-actions">
-      <mat-slide-toggle
-        color="accent"
-        [tippy]="
-          vm.guidedMode
-            ? 'Guided mode helps you select options that work'
-            : 'Manual mode is for advanced uses and allows you to insert any values'
-        "
-        [checked]="vm.guidedMode"
-        (change)="toggleGuidedMode($event)"
-      >
-        {{ vm.guidedMode ? 'Guided' : 'Manual' }}
-      </mat-slide-toggle>
-      <div>
-        <button mat-raised-button type="button" (click)="closeDialog()">Cancel</button>
-        <button mat-raised-button type="button" color="accent" [disabled]="!form.valid" (click)="confirm()">Confirm</button>
-      </div>
+    <mat-dialog-actions align="end">
+      <app-save-close-button-fab
+        [ngClass]="!canSave() ? 'disabled' : ''"
+        [disabled]="!canSave()"
+        (action)="saveAndClose()"
+      />
     </mat-dialog-actions>
   </div>
 }

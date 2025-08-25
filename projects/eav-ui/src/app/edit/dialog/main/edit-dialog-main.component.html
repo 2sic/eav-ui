@@ -30,20 +30,17 @@
     @if (viewInitiated()) {
       <extended-fab-speed-dial>
         <ng-template extendedFabSpeedDialTriggerContent>
-          <button extended-fab-speed-dial-trigger
-            matRipple
-            [ngClass]="{ 'appear-disabled': saveDisabled() }"
-            (click)="saveAll(true)"
-          >
-            <mat-icon>done</mat-icon>
-            <span>{{ ('Form.Buttons.' + (enableSave ? 'SaveAndClose' : 'Done')) | translate }}</span>
-          </button>
+          <app-save-close-button
+            [label]="canSave ? 'Form.Buttons.SaveAndClose' : 'Form.Buttons.Done'"
+            [ngClass]="saveDisabled() ? 'appear-disabled': ''"
+            (action)="saveAll(true)"
+          ></app-save-close-button>
         </ng-template>
-        @if (enableSave) {
+        @if (canSave) {
           <ng-template extendedFabSpeedDialActionsContent>
             <button extended-fab-speed-dial-action
               matRipple
-              [ngClass]="{ 'appear-disabled': saveDisabled() }"
+              [ngClass]="saveDisabled() ? 'appear-disabled': ''"
               (click)="saveAll(false)"
             >
               <span>{{ 'Form.Buttons.Save' | translate }}</span>

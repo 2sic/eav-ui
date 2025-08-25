@@ -11,6 +11,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { DomSanitizer } from '@angular/platform-browser';
 import { catchError, filter, fromEvent, map, of, switchMap, take, tap } from 'rxjs';
 import { Of, transient } from '../../../../../../core';
+import { AppsListService } from '../../../apps-management/services/apps-list.service';
 import { DragAndDropDirective } from '../../directives/drag-and-drop.directive';
 import { CrossWindowMessage, InstallPackage, InstallSettings, SpecsForInstaller } from '../../models/installer-models';
 import { SafeHtmlPipe } from '../../pipes/safe-html.pipe';
@@ -42,7 +43,7 @@ export class FileUploadDialogComponent extends BaseComponent implements OnInit, 
   @HostBinding('className') hostClass = 'dialog-component';
 
   uploadType = input<Of<typeof UploadTypes>>();
-
+  
   @ViewChild('installerWindow') installerWindow: ElementRef;
 
   uploading = signal(false);
@@ -63,12 +64,15 @@ export class FileUploadDialogComponent extends BaseComponent implements OnInit, 
 
   #installerService = transient(InstallerService);
   #installSettingsService = transient(AppInstallSettingsService);
+  #appsListService = transient(AppsListService);
   #fb = inject(FormBuilder);
 
   importForm: FormGroup = this.#fb.group({
     importMode: [this.importModeValues.importOriginal, Validators.required],
     name: ['']
   });
+
+  
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public dialogData: FileUploadDialogData,
@@ -114,7 +118,6 @@ export class FileUploadDialogComponent extends BaseComponent implements OnInit, 
   );
 
   ngOnInit(): void {
-
     // Update the remote installer URL based on the import mode
     // Show multiple select or single select based on import mode
     this.importForm.get('importMode')?.valueChanges.subscribe((mode) => {
@@ -174,7 +177,13 @@ This takes about 10 seconds per package. Don't reload the page while it's instal
         this.#alreadyProcessing = true;
         this.showProgress = true;
         this.changeDetectorRef.detectChanges(); //without this spinner is not shown
-        return this.#installerService.installPackages(packages, p => this.currentPackage = p);
+        // If import mode is 'importAsTemplate', create a Install template with Url and new Name
+        if (this.importForm.get('importMode')?.value === this.importModeValues.importAsTemplate) {
+          return this.#appsListService.createTemplate(packages[0].url, this.importForm.get('name')?.value);
+        } else {
+          // Otherwise, install the packages normally
+          return this.#installerService.installPackages(packages, p => this.currentPackage = p);
+        }
       }),
       tap(() => {
         this.showProgress = false;
@@ -209,6 +218,13 @@ Please try again later or check how to manually install content-templates: https
   closeDialog(refresh?: boolean): void {
     this.dialog.close(refresh);
   }
+
+  cleanUpload(): void {
+    this.result.set(undefined);
+    this.files.set([]);
+    this.uploading.set(false);
+  }
+
 
   #setupConditionalValidation(): void {
     const nameControl = this.importForm.get('name');

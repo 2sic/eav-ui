@@ -5,4 +5,5 @@ export interface ConfirmDeleteDialogData {
   message: string;
   confirmColor?: string;
   confirmTranslateKey?: string;
+  hasDeleteSnackbar?: boolean;
 }

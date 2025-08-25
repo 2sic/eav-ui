@@ -1,6 +1,9 @@
 @if (languages(); as languages) {
   <div class="grid-wrapper mat-tab-grid-wrapper">
-    <ag-grid-angular class="ag-theme-material" [rowData]="languages" [gridOptions]="gridOptions"> </ag-grid-angular>
-    <mat-dialog-actions align="end"></mat-dialog-actions>
+    <ag-grid-angular
+      class="ag-theme-material"
+      [rowData]="languages"
+      [gridOptions]="gridOptions"
+    ></ag-grid-angular>
   </div>
 }

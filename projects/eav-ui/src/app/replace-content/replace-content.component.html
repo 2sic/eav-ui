@@ -1,6 +1,11 @@
 <div class="eav-dialog">
   <div class="eav-dialog-header">
-    <div class="eav-dialog-header__title">{{ isAddMode() ? 'Add Existing Item' : 'Replace Content Item' }}</div>
+    <div class="eav-dialog-header__title">
+      {{ isAddMode() ? 'Add Existing Item' : 'Replace Content Item' }}
+    </div>
+    <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
+      <mat-icon>close</mat-icon>
+    </button>
   </div>
   <div class="eav-dialog-content">
     <router-outlet></router-outlet>
@@ -24,14 +29,23 @@
         </mat-autocomplete>
       </mat-form-field>
       <!-- Copy Button -->
-      <button mat-icon-button tippy="Copy" [disabled]="!hasSelection()" (click)="copySelected()">
+      <button
+        mat-icon-button
+        tippy="Create a Copy"
+        tippyPlacement="top"
+        [disabled]="!canSave()"
+        (click)="copySelected()"
+      >
         <mat-icon>file_copy</mat-icon>
       </button>
     </div>
   </div>
   <!-- Close / Save -->
   <mat-dialog-actions align="end">
-    <button mat-raised-button (click)="closeDialog()">Cancel</button>
-    <button mat-raised-button color="accent" [disabled]="!hasSelection()" (click)="save()">Save</button>
+    <app-save-close-button-fab
+      [ngClass]="!canSave() ? 'disabled' : ''"
+      [disabled]="!canSave()"
+      (action)="saveAndClose()"
+    />
   </mat-dialog-actions>
 </div>

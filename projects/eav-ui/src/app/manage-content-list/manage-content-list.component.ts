@@ -9,10 +9,13 @@ import { RouterOutlet } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { convert, transient } from '../../../../core';
 import { DialogConfigAppService } from '../app-administration/services/dialog-config-app.service';
+import { isCtrlEnter, isCtrlS } from '../edit/dialog/main/keyboard-shortcuts';
 import { MousedownStopPropagationDirective } from '../shared/directives/mousedown-stop-propagation.directive';
 import { TippyDirective } from '../shared/directives/tippy.directive';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { EditForm, EditPrep } from '../shared/models/edit-form.model';
+import { ExtendedFabSpeedDialImports } from '../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
+import { SaveCloseButtonComponent } from '../shared/modules/save-close-button/save-close-button.component';
 import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
 import { signalObj } from '../shared/signals/signal.utilities';
 import { ContentGroup } from './models/content-group.model';
@@ -35,6 +38,8 @@ import { ContentGroupService } from './services/content-group.service';
     MatDialogModule,
     TippyDirective,
     MousedownStopPropagationDirective,
+    ...ExtendedFabSpeedDialImports,
+    SaveCloseButtonComponent,
   ]
 })
 export class ManageContentListComponent implements OnInit {
@@ -65,6 +70,8 @@ export class ManageContentListComponent implements OnInit {
   protected reordered = signalObj('reordered', false);
 
   ngOnInit() {
+    this.#watchKeyboardShortcuts();
+
     this.#fetchList();
     this.#fetchDialogSettings();
     this.#dialogRoutes.doOnDialogClosed(() => {
@@ -98,6 +105,21 @@ export class ManageContentListComponent implements OnInit {
     this.#contentGroupSvc.saveList(this.#contentGroup, this.items()).subscribe(() => {
       this.snackBar.open('Saved', null, { duration: 2000 });
       this.closeDialog();
+    });
+  }
+
+  #watchKeyboardShortcuts(): void {
+    this.dialog.keydownEvents().subscribe(event => {
+
+      if (isCtrlS(event)) {
+        event.preventDefault();
+        this.saveList();
+      }
+
+      if (isCtrlEnter(event)) {
+        event.preventDefault();
+        this.saveAndCloseList();
+      }
     });
   }
 

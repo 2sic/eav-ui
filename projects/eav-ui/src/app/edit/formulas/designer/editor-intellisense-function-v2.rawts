@@ -177,6 +177,8 @@ declare interface FormulaContext {
     isAnonymous: boolean;
     /** Check if the current user is a content admin */
     isContentAdmin: boolean;
+    /** Check if the current user is a content editor (but maybe not admin) - new v20.01 */
+    isContentEditor: boolean;
     /** Check if the current user is a site admin */
     isSiteAdmin: boolean;
     /** Check if the current user is a system admin */
@@ -189,6 +191,8 @@ declare interface FormulaContext {
     name: string;
     /** The user name used for login */
     username: string;
+    /** The names of user roles of the current user is in - new v20.01 */
+    roles: string[];
   };
 }
 

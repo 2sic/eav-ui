@@ -1,7 +1,6 @@
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
 import { GridOptions, ModuleRegistry } from '@ag-grid-community/core';
 import { Component, signal } from '@angular/core';
-import { MatDialogActions } from '@angular/material/dialog';
 import { transient } from '../../../../../core';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
@@ -16,8 +15,8 @@ import { SiteLanguagesStatusParams } from './site-languages-status/site-language
 @Component({
   selector: 'app-site-languages',
   templateUrl: './site-languages.component.html',
+  styleUrls: ['./site-languages.component.scss'],
   imports: [
-    MatDialogActions,
     SxcGridModule,
   ]
 })
@@ -27,8 +26,6 @@ export class SiteLanguagesComponent {
   #zoneSvc = transient(ZoneService);
   constructor() {
     ModuleRegistry.registerModules([ClientSideRowModelModule]);
-
-
   }
 
   #refreshLanguagesSig = signal(0);

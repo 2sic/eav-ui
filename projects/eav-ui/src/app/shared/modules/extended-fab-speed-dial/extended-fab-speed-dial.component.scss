@@ -7,11 +7,12 @@ extended-fab-speed-dial {
 }
 
 .extended-fab-speed-dial {
-  .extended-fab-speed-dial-trigger {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-  }
+  // 2pp: Remove so save-close-button looks good
+  // .extended-fab-speed-dial-trigger {
+  //   position: absolute;
+  //   bottom: 0;
+  //   right: 0;
+  // }
 
   .extended-fab-speed-dial-actions {
     display: flex;
@@ -75,7 +76,7 @@ extended-fab-speed-dial {
       white-space: nowrap;
       overflow: hidden;
       max-width: 0;
-      transition: max-width 0.3s ease-in-out;
+      transition: all 0.3s ease-in-out;
 
       &:before,
       &:after {
@@ -83,6 +84,11 @@ extended-fab-speed-dial {
         width: 8px;
         display: inline-block;
       }
+    }
+    
+    > .keybinding-hint {
+      padding: 2px 0 0;
+      margin: 0;
     }
 
     // 2024-12-17 2dm changed to use appear-disabled
@@ -98,6 +104,14 @@ extended-fab-speed-dial {
     &:hover {
       > span {
         max-width: 256px;
+      }
+
+      > .keybinding-hint {
+        margin: 0 8px 0 4px;
+        padding-top: 2px;
+        border-radius: 6px;
+        background: rgba(255, 255, 255, 0.1);
+        transition: all 0.3s ease-in-out;
       }
     }
   }

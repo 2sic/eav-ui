@@ -14,6 +14,7 @@ import { BaseComponent } from '../../../shared/components/base.component';
 import { ToggleDebugDirective } from '../../../shared/directives/toggle-debug.directive';
 import { classLog } from '../../../shared/logging';
 import { ExtendedFabSpeedDialImports } from '../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
+import { SaveCloseButtonComponent } from '../../../shared/modules/save-close-button/save-close-button.component';
 import { GlobalConfigService } from '../../../shared/services/global-config.service';
 import { computedWithPrev } from '../../../shared/signals/signal.utilities';
 import { UserPreferences } from '../../../shared/user/user-preferences.service';
@@ -47,7 +48,7 @@ import { footerPreferences } from '../footer/footer-preferences';
 import { EditDialogHeaderComponent } from '../header/edit-dialog-header.component';
 import { SaveEavFormData } from './edit-dialog-main.models';
 import { FormSlideDirective } from './form-slide.directive';
-import { isCtrlS, isEscape } from './keyboard-shortcuts';
+import { isCtrlEnter, isCtrlS, isEscape } from './keyboard-shortcuts';
 import { SnackBarSaveErrorsComponent } from './snack-bar-save-errors/snack-bar-save-errors.component';
 import { FieldErrorMessage, SaveErrorsSnackBarData } from './snack-bar-save-errors/snack-bar-save-errors.models';
 import { SnackBarUnsavedChangesComponent } from './snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
@@ -82,6 +83,7 @@ const logSpecs = {
     TranslateModule,
     ...ExtendedFabSpeedDialImports,
     ToggleDebugDirective,
+    SaveCloseButtonComponent,
   ],
   providers: [
     EditRoutingService,
@@ -101,7 +103,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
   #globalConfigService = inject(GlobalConfigService);
   #formConfig = inject(FormConfigService);
 
-  enableSave = this.#formConfig.config.save.mode; // if false, then no save button is shown
+  canSave = this.#formConfig.config.save.mode; // if false, then no save button is shown
 
   /** Signal to tell the UI if the footer should show and/or the footer needs more space (changes CSS) */
   #prefManager = inject(UserPreferences).part(footerPreferences)
@@ -194,14 +196,14 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
       startWith(true)
     ));
 
-
   ngOnInit() {
+    this.#watchKeyboardShortcuts();
+
     this.editRoutingService.init();
     this.#loadIconsService.load();
     this.formulaDesignerService.cache.init();
 
     this.#startSubscriptions();
-    this.#watchKeyboardShortcuts();
   }
 
   ngAfterViewInit() {
@@ -387,11 +389,18 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
     this.dialog.keydownEvents().subscribe(event => {
       if (isEscape(event))
         return this.closeDialog();
+      
+      const canSave = !this.formsStateService.readOnly().isReadOnly 
+              && !this.#entityFormStateService.isSaving();
 
-      if (isCtrlS(event)) {
+      if (isCtrlS(event) && canSave) {
         event.preventDefault();
-        if (!this.formsStateService.readOnly().isReadOnly && !this.#entityFormStateService.isSaving())
-          this.saveAll(event.altKey);
+        this.saveAll(event.altKey);
+      }
+
+      if (isCtrlEnter(event) && canSave) {
+        event.preventDefault();
+        this.saveAll(true);
       }
     });
   }

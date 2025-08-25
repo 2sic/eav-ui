@@ -2,6 +2,7 @@ import { Component, HostBinding, Inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogActions, MatDialogRef } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { MatRadioModule } from '@angular/material/radio';
 import { ActivatedRoute } from '@angular/router';
 import { forkJoin } from 'rxjs';
@@ -22,6 +23,7 @@ import { ContentImportService } from './services/content-import.service';
         FormsModule,
         MatButtonModule,
         MatRadioModule,
+        MatIconModule,
         MatDialogActions,
         DragAndDropDirective,
     ]

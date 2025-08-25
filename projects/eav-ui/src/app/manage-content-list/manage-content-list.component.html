@@ -1,7 +1,12 @@
 @if (header() && items()) {
   <div class="eav-dialog eav-no-scrollbar">
     <div class="eav-dialog-header">
-      <div class="eav-dialog-header__title">{{ 'ManageContentList.Title' | translate }}</div>
+      <div class="eav-dialog-header__title">
+        {{ 'ManageContentList.Title' | translate }}
+      </div>
+      <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
+        <mat-icon>close</mat-icon>
+      </button>
     </div>
     <div class="eav-dialog-content">
       <router-outlet></router-outlet>
@@ -84,11 +89,23 @@
       </div>
     </div>
     <mat-dialog-actions align="end">
-      <button mat-raised-button (click)="closeDialog()">{{ 'General.Buttons.Cancel' | translate }}</button>
-      <button mat-raised-button color="accent" (click)="saveList()">{{ 'General.Buttons.Save' | translate }}</button>
-      <button mat-raised-button color="accent" (click)="saveAndCloseList()" tippyTranslate="Form.Buttons.SaveAndClose">
-        <mat-icon class="eav-raised-button-icon">done</mat-icon>
-      </button>
+      <extended-fab-speed-dial>
+        <ng-template extendedFabSpeedDialTriggerContent>
+          <app-save-close-button
+            [label]="'Form.Buttons.SaveAndClose'"
+            (action)="saveAndCloseList()"
+          ></app-save-close-button>
+        </ng-template>
+        <ng-template extendedFabSpeedDialActionsContent>
+          <button extended-fab-speed-dial-action
+            matRipple
+            (click)="saveList()"
+          >
+            <span>{{ 'Form.Buttons.Save' | translate }}</span>
+            <mat-icon>save</mat-icon>
+          </button>
+        </ng-template>
+      </extended-fab-speed-dial>
     </mat-dialog-actions>
   </div>
 }

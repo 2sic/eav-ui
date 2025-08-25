@@ -44,6 +44,12 @@
   }
 }
 
+// 2pp: Ensure save button has correct placement (bit of a hack)
+extended-fab-speed-dial::ng-deep .extended-fab-speed-dial-actions {
+  right: 24px;
+  bottom: 54px;
+}
+
 .cdk-drag-preview {
   box-sizing: border-box;
   border-radius: 4px;

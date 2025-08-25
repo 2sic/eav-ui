@@ -1,6 +1,11 @@
 <div class="eav-dialog">
   <div class="eav-dialog-header">
-    <div class="eav-dialog-header__title">Export {{ (contentType$ | async)?.Name }}</div>
+    <div class="eav-dialog-header__title">
+      Export {{ (contentType$ | async)?.Name }}
+    </div>
+    <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
+      <mat-icon>close</mat-icon>
+    </button>
   </div>
   @if ((loading$ | async) === false) {
     <form #ngForm="ngForm">
@@ -59,8 +64,14 @@
         </div>
       </div>
       <mat-dialog-actions align="end">
-        <button mat-raised-button (click)="closeDialog()">Cancel</button>
-        <button mat-raised-button color="accent" [disabled]="!ngForm.form.valid" (click)="exportContent()">Export Data</button>
+        <button
+          mat-raised-button
+          class="eav-action-button"
+          [disabled]="!ngForm.form.valid"
+          (click)="exportContent()"
+        >
+          Export Data
+        </button>
       </mat-dialog-actions>
     </form>
   }

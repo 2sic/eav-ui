@@ -1,4 +1,4 @@
-import { GridOptions } from '@ag-grid-community/core';
+import { GridOptions, ICellRendererParams } from '@ag-grid-community/core';
 import { NgClass } from '@angular/common';
 import { ChangeDetectorRef, Component, computed, OnInit, signal, ViewContainerRef } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
@@ -15,6 +15,7 @@ import { ContentItemsService } from '../content-items/services/content-items.ser
 import { EavForInAdminUi } from '../edit/shared/models/eav';
 import { openFeatureDialog } from '../features/shared/base-feature.component';
 import { MetadataService } from '../permissions';
+import { AgGridHelper } from '../shared/ag-grid/ag-grid-helper';
 import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
 import { GridWithHelpComponent, HelpTextConst } from '../shared/ag-grid/grid-with-help/grid-with-help.component';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
@@ -226,6 +227,7 @@ export class MetadataComponent implements OnInit {
       const data: ConfirmDeleteDialogData = {
         entityId: metadata.Id,
         entityTitle: metadata.Title,
+        hasDeleteSnackbar: true,
         message: this.metadataSet().Recommendations.find(r => r.Id === metadata._Type.Id)?.DeleteWarning,
       };
       const confirmationDialogRef = this.matDialog.open(ConfirmDeleteDialogComponent, {
@@ -241,7 +243,6 @@ export class MetadataComponent implements OnInit {
       return;
     }
 
-    this.snackBar.open('Deleting...');
     this.#entitiesSvc.delete(metadata._Type.Id, metadata.Id, false).subscribe({
       next: () => {
         this.snackBar.open('Deleted', null, { duration: 2000 });
@@ -251,6 +252,15 @@ export class MetadataComponent implements OnInit {
         this.snackBar.open('Delete failed. Please check console for more information', null, { duration: 3000 });
       }
     });
+  }
+
+  #metadataEditUrl(metadata: MetadataItem): string {
+    const form: EditForm = {
+      items: [EditPrep.editId(metadata.Id)],
+    };
+    const formUrl = convertFormToUrl(form);
+    // Use your dialogRoutes service to generate the correct sub-route
+    return '#' + this.#dialogRoutes.urlSubRoute(`edit/${formUrl}`);
   }
 
   #buildGridOptions(): GridOptions {
@@ -264,6 +274,11 @@ export class MetadataComponent implements OnInit {
         {
           ...ColumnDefinitions.TextWide,
           field: 'Title',
+          cellRenderer: (params: ICellRendererParams & { data: MetadataItem }) =>
+            AgGridHelper.cellLink(
+              this.#metadataEditUrl(params.data),
+              params.value
+            ),
           onCellClicked: (p: { data: MetadataItem }) => this.#editMetadata(p.data),
         },
         {

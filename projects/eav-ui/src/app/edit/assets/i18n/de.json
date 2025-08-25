@@ -2,7 +2,9 @@
   "Form": {
     "Buttons": {
       "Save": "Speichern (ctrl + s)",
-      "SaveAndClose": "Speichern und schliessen (ctrl + alt + s)",
+      "SaveAndClose": "Speichern und schliessen",
+      "CreateAndClose": "Erstellen und schliessen",
+      "ActionAndCloseShortcut": "Tastenkürzel: ctrl + enter",
       "Exit.Tip": "Verlassen - bei Änderungen wird zum Speichern aufgefordert",
       "Return.Tip": "Zurück zum vorherigen Dialog",
       "History.Tip": "Änderungen / Vorversionen",

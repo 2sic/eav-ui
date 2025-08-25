@@ -74,8 +74,10 @@ export interface FormulaV1CtxUser {
   id: number;
   isAnonymous: boolean;
   isSiteAdmin: boolean;
+  isContentEditor: boolean;
   isSystemAdmin: boolean;
   isContentAdmin: boolean;
   name: string;
   username: string;
+  roles: string[];
 }

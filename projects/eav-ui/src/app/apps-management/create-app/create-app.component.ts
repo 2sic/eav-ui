@@ -1,4 +1,4 @@
-import { Component, effect, ElementRef, HostBinding, inject, signal, ViewChild } from '@angular/core';
+import { Component, computed, effect, ElementRef, HostBinding, inject, signal, ViewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
@@ -13,8 +13,10 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { Router, RouterOutlet } from '@angular/router';
 import { filter, fromEvent, map, Observable } from 'rxjs';
 import { transient } from '../../../../../core';
+import { isCtrlEnter } from '../../edit/dialog/main/keyboard-shortcuts';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
 import { CrossWindowMessage, InstallSettings } from '../../shared/models/installer-models';
+import { SaveCloseButtonFabComponent } from '../../shared/modules/save-close-button-fab/save-close-button-fab.component';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { AppInstallSettingsService } from '../../shared/services/getting-started.service';
 import { appNameError, appNamePattern } from '../constants/app.patterns';
@@ -37,7 +39,7 @@ import { AppsListService } from '../services/apps-list.service';
     FieldHintComponent,
     MatRadioModule,
     MatIconModule,
-
+    SaveCloseButtonFabComponent,
   ]
 })
 export class CreateAppComponent {
@@ -61,10 +63,11 @@ export class CreateAppComponent {
   showAppCatalog = signal(true);
   // Prevents double-processing of installations via window messages
   private alreadyProcessing = false;
+  protected canSave = computed(() => this.canCreate() && !this.loading());
 
   // App and settings service instances (using custom transient DI)
-  private appsListService = transient(AppsListService);
-  private installSettingsService = transient(AppInstallSettingsService);
+  #appsListService = transient(AppsListService);
+  #installSettingsService = transient(AppInstallSettingsService);
   #dialogRouter = transient(DialogRoutingService);
 
   private router = inject(Router);
@@ -106,8 +109,8 @@ export class CreateAppComponent {
     this.form.valueChanges.subscribe(() => this.updateCanCreate());
 
     // Load installer settings and set up the iframe URL for the app catalog
-    this.installSettingsService.loadGettingStarted(false);
-    this.installSettingsService.settings$.subscribe(settings => {
+    this.#installSettingsService.loadGettingStarted(false);
+    this.#installSettingsService.settings$.subscribe(settings => {
       let url = settings.remoteUrl;
       // Add query param to ensure template mode in the installer
       url += (url.includes('?') ? '&' : '?') + 'isTemplate=true';
@@ -124,8 +127,10 @@ export class CreateAppComponent {
   }
 
   ngOnInit(): void {
+    this.#watchKeyboardShortcuts();
+
     // Ensure installer settings are loaded (redundant if already done in constructor)
-    this.installSettingsService.loadGettingStarted(false);
+    this.#installSettingsService.loadGettingStarted(false);
 
     // Listen for messages from the app catalog iframe (e.g., package selection)
     this.messages$.subscribe();
@@ -135,7 +140,7 @@ export class CreateAppComponent {
    * Handles the app creation logic. Disables the form and shows feedback messages.
    * Decides whether to create a raw app or use a selected template.
    */
-  create(): void {
+  createAndClose(): void {
     if (!this.canCreate()) return;
     this.form.disable();
     this.loading.set(true);
@@ -147,9 +152,9 @@ export class CreateAppComponent {
 
     // Use the selected template if applicable, otherwise create a raw app
     if (appTemplateId === 1 && this.packageUrl() && this.packageUrl().length > 0) {
-      createObservable = this.appsListService.createTemplate(this.packageUrl(), name);
+      createObservable = this.#appsListService.createTemplate(this.packageUrl(), name);
     } else if (appTemplateId === 0) {
-      createObservable = this.appsListService.create(name, null, 0);
+      createObservable = this.#appsListService.create(name, null, 0);
     }
 
     // Subscribe to creation result and show success/error feedback
@@ -231,12 +236,25 @@ export class CreateAppComponent {
     this.updateCanCreate();
   }
 
-switchToImportApp(): void {
-  const segments = this.router.url.split('/').filter(Boolean);
-  segments[segments.length - 1] = 'import';
-  const url = '/' + segments.join('/');
-  this.#dialogRouter.navPath(url);
-}
+  switchToImportApp(): void {
+    const segments = this.router.url.split('/').filter(Boolean);
+    segments.splice(-1, 1, 'import'); // Change the last segment to 'import'
+    this.dialog.close();
+    // Timeout to ensure dialog closes before navigation 
+    // This is necessary to avoid issues with Angular's navigation lifecycle
+    // when trying to open a new dialog immediately after closing the current one.
+    // This is a workaround for the issue where Angular tries to open a new dialog while the last one is still closing.
+    setTimeout(() => this.#dialogRouter.navPath('/' + segments.join('/')), 100);
+  }
 
   get appTemplateIdValue() { return this.form.controls.appTemplateId.value; }
+
+  #watchKeyboardShortcuts(): void {
+    this.dialog.keydownEvents().subscribe(event => {
+      if (isCtrlEnter(event) && this.canSave()) {
+        event.preventDefault();
+        this.createAndClose();
+      }
+    });
+  }
 }

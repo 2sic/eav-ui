@@ -1,7 +1,7 @@
 <div class="eav-dialog">
   <div class="eav-dialog-header">
     <div class="eav-dialog-header__title">Create App</div>
-    <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
+    <button mat-icon-button [disabled]="loading()" tippy="Close dialog" (click)="closeDialog()">
       <mat-icon>close</mat-icon>
     </button>
   </div>
@@ -50,15 +50,11 @@
     }
   </div>
   <mat-dialog-actions align="end">
-    <button type="button" mat-raised-button [disabled]="loading()" (click)="closeDialog()">Cancel</button>
-    <button
-      type="button"
-      mat-raised-button
-      class="eav-action-button"
-      [disabled]="loading() || (!canCreate())"
-      (click)="create()"
-    >
-      Create
-    </button>
+    <app-save-close-button-fab
+      [ngClass]="!canSave() ? 'disabled' : ''"
+      [disabled]="!canSave()"
+      [label]="'Form.Buttons.CreateAndClose'"
+      (action)="createAndClose()"
+    ></app-save-close-button-fab>
   </mat-dialog-actions>
 </div>

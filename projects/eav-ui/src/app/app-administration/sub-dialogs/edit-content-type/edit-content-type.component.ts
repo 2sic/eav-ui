@@ -1,5 +1,5 @@
-import { AfterViewInit, Component, HostBinding } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { AfterViewInit, Component, computed, HostBinding, OnInit, signal, ViewChild } from '@angular/core';
+import { FormsModule, NgForm } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import { MatDialogActions, MatDialogRef } from '@angular/material/dialog';
@@ -11,41 +11,45 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { transient } from '../../../../../../core';
+import { isCtrlEnter } from '../../../edit/dialog/main/keyboard-shortcuts';
 import { FieldHintComponent } from '../../../shared/components/field-hint/field-hint.component';
 import { dropdownInsertValue } from '../../../shared/constants/dropdown-insert-value.constant';
 import { eavConstants, ScopeOption } from '../../../shared/constants/eav.constants';
 import { ClickStopPropagationDirective } from '../../../shared/directives/click-stop-propagation.directive';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { classLog } from '../../../shared/logging';
+import { SaveCloseButtonFabComponent } from '../../../shared/modules/save-close-button-fab/save-close-button-fab.component';
 import { computedObj, signalObj } from '../../../shared/signals/signal.utilities';
 import { contentTypeNameError, contentTypeNamePattern } from '../../constants/content-type.patterns';
 import { ContentTypeEdit } from '../../models/content-type.model';
 import { ContentTypesService } from '../../services/content-types.service';
 
 @Component({
-    selector: 'app-edit-content-type',
-    templateUrl: './edit-content-type.component.html',
-    styleUrls: ['./edit-content-type.component.scss'],
-    imports: [
-        FormsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatExpansionModule,
-        MatSelectModule,
-        MatOptionModule,
-        MatButtonModule,
-        MatIconModule,
-        MatDialogActions,
-        FieldHintComponent,
-        ClickStopPropagationDirective,
-        TippyDirective,
-    ]
+  selector: 'app-edit-content-type',
+  templateUrl: './edit-content-type.component.html',
+  styleUrls: ['./edit-content-type.component.scss'],
+  imports: [
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatExpansionModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatButtonModule,
+    MatIconModule,
+    MatDialogActions,
+    FieldHintComponent,
+    ClickStopPropagationDirective,
+    TippyDirective,
+    SaveCloseButtonFabComponent,
+  ]
 })
-export class EditContentTypeComponent implements AfterViewInit {
+export class EditContentTypeComponent implements OnInit, AfterViewInit {
 
   log = classLog({ EditContentTypeComponent });
 
   @HostBinding('className') hostClass = 'dialog-component';
+  @ViewChild('ngForm', { static: false }) ngForm?: NgForm;
 
   #contentTypeSvc = transient(ContentTypesService);
 
@@ -60,6 +64,10 @@ export class EditContentTypeComponent implements AfterViewInit {
   ) {
     this.log.a('constructor');
     this.#loadContentTypeOnEdit();
+  }
+
+  ngOnInit() {
+    this.#watchKeyboardShortcuts();
   }
 
   #loadContentTypeOnEdit(): void {
@@ -77,7 +85,6 @@ export class EditContentTypeComponent implements AfterViewInit {
     });
   }
 
-
   /** RegEx property to use in HTML */
   protected contentTypeNamePattern = contentTypeNamePattern;
   protected contentTypeNameError = contentTypeNameError;
@@ -88,6 +95,8 @@ export class EditContentTypeComponent implements AfterViewInit {
   protected lockScope = signalObj<boolean>('lockScope', true);
   protected disableAnimation = signalObj<boolean>('disableAnimation', true);
   protected loading = signalObj<boolean>('loading', false);
+  protected formValid = signal(false);
+  protected canSave = computed(() => this.formValid() && !this.loading());
   protected contentType = signalObj<ContentTypeEdit>('contentType', {
     StaticName: '',
     // TODO: @2pp - use NameId: '', instead of StaticName
@@ -122,6 +131,9 @@ export class EditContentTypeComponent implements AfterViewInit {
 
   // workaround for angular component issue #13870
   ngAfterViewInit() {
+    this.ngForm?.form.statusChanges.subscribe(() => {
+      this.formValid.set(this.ngForm?.form.valid ?? false);
+    });
     // timeout required to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => this.disableAnimation.set(false));
   }
@@ -156,7 +168,7 @@ export class EditContentTypeComponent implements AfterViewInit {
       this.contentType.set({ ...this.contentType(), Scope: this.#scope });
   }
 
-  save() {
+  saveAndClose() {
     this.loading.set(true);
     this.snackBar.open('Saving...');
     this.#contentTypeSvc.save(this.contentType()).subscribe(result => {
@@ -167,5 +179,14 @@ export class EditContentTypeComponent implements AfterViewInit {
     if (document.activeElement instanceof HTMLElement) {
       document.activeElement.blur();
     }
+  }
+
+  #watchKeyboardShortcuts(): void {
+    this.dialog.keydownEvents().subscribe(event => {
+      if (isCtrlEnter(event) && this.canSave()) {
+        event.preventDefault();
+        this.saveAndClose();
+      }
+    });
   }
 }

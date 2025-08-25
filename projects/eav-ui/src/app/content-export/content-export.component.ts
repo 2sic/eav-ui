@@ -5,6 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import { MatDialogActions, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { ActivatedRoute } from '@angular/router';
@@ -13,6 +14,7 @@ import { transient } from '../../../../core';
 import { ContentType } from '../app-administration/models/content-type.model';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { DialogConfigAppService } from '../app-administration/services/dialog-config-app.service';
+import { isCtrlEnter } from '../edit/dialog/main/keyboard-shortcuts';
 import { Language } from '../shared/models/language.model';
 import { ContentExport } from './models/content-export.model';
 import { ContentExportService } from './services/content-export.service';
@@ -24,6 +26,7 @@ import { ContentExportService } from './services/content-export.service';
     imports: [
         FormsModule,
         MatFormFieldModule,
+        MatIconModule,
         MatSelectModule,
         MatOptionModule,
         MatRadioModule,
@@ -60,6 +63,8 @@ export class ContentExportComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.#watchKeyboardShortcuts();
+    
     this.loading$.next(true);
     const contentType$ = this.contentTypesService.retrieveContentType(this.contentTypeStaticName);
     const dialogSettings$ = this.dialogConfigSvc.getCurrent$();
@@ -91,5 +96,14 @@ export class ContentExportComponent implements OnInit, OnDestroy {
   exportContent() {
     this.contentExportService.exportContent(this.formValues,
       this.hasIdList && this.formValues.recordExport === 'Selection' ? this.itemIds : null);
+  }
+  
+  #watchKeyboardShortcuts(): void {
+    this.dialog.keydownEvents().subscribe(event => {
+      if (isCtrlEnter(event)) {
+        event.preventDefault();
+        this.exportContent();
+      }
+    });
   }
 }

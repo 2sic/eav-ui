@@ -85,10 +85,12 @@ export interface DialogContextUser {
   Guid: string;
   IsAnonymous: boolean;
   IsSiteAdmin: boolean;
+  isContentEditor: boolean;
   IsContentAdmin: boolean;
   IsSystemAdmin: boolean;
   Name: string;
   Username: string;
+  roles: string[];
 }
 
 // export interface DialogContextFeature {

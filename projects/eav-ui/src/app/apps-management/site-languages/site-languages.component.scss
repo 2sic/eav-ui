@@ -1,0 +1,5 @@
+@import "../../../styles/variables.scss";
+
+:host ::ng-deep .ag-row-hover .ag-cell .id-box * {
+  color: $sxc-solid !important;
+}

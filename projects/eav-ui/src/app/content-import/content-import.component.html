@@ -1,6 +1,11 @@
 <div class="eav-dialog" appDragAndDrop [allowedFileTypes]="'xml'" (filesDropped)="filesDropped($event)">
   <div class="eav-dialog-header">
-    <div class="eav-dialog-header__title">{{ contentType()?.Name }} Import Data</div>
+    <div class="eav-dialog-header__title">
+      {{ contentType()?.Name }} Import Data
+    </div>
+    <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
+      <mat-icon>close</mat-icon>
+    </button>
   </div>
   <div class="eav-dialog-description">
     <p>
@@ -10,134 +15,148 @@
     </p>
   </div>
   @if (formValues != null) {
-  @switch (viewStateSelected()) {
-  <!-- FORM -->
-  @case (1) {
-  <form #ngForm="ngForm">
-    <div class="eav-dialog-content">
-      <div>
-        <button mat-raised-button tippy="Open file browser" (click)="fileInput.click()">
-          <span>{{ formValues.file ? formValues.file.name : 'Select or drop file' }}</span>
-        </button>
-        <input #fileInput type="file" (change)="fileChange($event)" class="hide" />
-      </div>
-      <div>
-        <p class="eav-radio-group-label">References to pages / files</p>
-        <mat-radio-group class="eav-radio-group" [(ngModel)]="formValues.resourcesReferences"
-          name="ResourcesReferences">
-          <mat-radio-button value="Keep">
-            Import links as written in the file (for example /Portals/...)
-          </mat-radio-button>
-          <mat-radio-button value="Resolve">
-            Try to resolve paths to references
-          </mat-radio-button>
-        </mat-radio-group>
-      </div>
-      <div>
-        <p class="eav-radio-group-label">Clear all other entities</p>
-        <mat-radio-group class="eav-radio-group" [(ngModel)]="formValues.clearEntities" name="ClearEntities">
-          <mat-radio-button value="None">
-            Keep all entities not found in import
-          </mat-radio-button>
-          <mat-radio-button value="All">
-            Remove all entities not found in import
-          </mat-radio-button>
-        </mat-radio-group>
-      </div>
-      <p class="eav-hint">Remember to backup your DNN first!</p>
-    </div>
-    <mat-dialog-actions align="end">
-      <button mat-raised-button (click)="closeDialog()">Cancel</button>
-      <button mat-raised-button color="accent" [disabled]="!formValues.file || !formValues.file.name"
-        (click)="evaluateContent()">
-        Preview Import
-      </button>
-    </mat-dialog-actions>
-  </form>
-  }
-  <!-- END FORM -->
-  <!-- WAITING -->
-  @case (0) {
-  <div class="eav-dialog-content">
-    <p>Please wait while processing...</p>
-  </div>
-  }
-  <!-- END WAITING -->
-  <!-- EVALUATION RESULT -->
-  @case (2) {
-  @if (evaluationResult()) {
-  <!-- DETAILS / STATISTICS -->
-  @if (evaluationResult().Success) {
-  <div class="eav-dialog-content">
-    <p class="eav-evaluation__title">Try to import file '{{ formValues.file.name }}'</p>
-    <p class="eav-evaluation__title">File contains:</p>
-    <ul class="eav-evaluation__content">
-      <li>{{ evaluationResult().Detail.DocumentElementsCount }} content-items (records/entities)</li>
-      <li>{{ evaluationResult().Detail.LanguagesInDocumentCount }} languages</li>
-      <li>{{ evaluationResult().Detail.AttributeNamesInDocument.length }} columns:
-        {{ evaluationResult().Detail.AttributeNamesInDocument.join(', ') }}</li>
-    </ul>
-    <p class="eav-evaluation__title">If you press Import, it will:</p>
-    <ul class="eav-evaluation__content">
-      <li>Create {{ evaluationResult().Detail.AmountOfEntitiesCreated }} content-items</li>
-      <li>Update {{ evaluationResult().Detail.AmountOfEntitiesUpdated }} content-items</li>
-      <li>Delete {{ evaluationResult().Detail.AmountOfEntitiesDeleted }} content-items</li>
-      <li>Ignore {{ evaluationResult().Detail.AttributeNamesNotImported.length }} columns:
-        {{ evaluationResult().Detail.AttributeNamesNotImported.join(', ') }}</li>
-    </ul>
-    <p class="eav-hint">Note: The import validates much data and may take several minutes.</p>
-  </div>
-  }
-  <!-- END DETAILS / STATISTICS -->
-  <!-- ERRORS -->
-  @if (!evaluationResult().Success) {
-  <div class="eav-dialog-content">
-    <p class="eav-evaluation__title">Try to import file '{{ formValues.file.name }}'</p>
-    <ul class="eav-evaluation__content">
-      @for (error of evaluationResult().Errors; track error) {
-      <li>
-        <div>{{ errors[error.ErrorCode] }}</div>
-        @if (error.ErrorDetail) {
-        <div><i>Details: {{ error.ErrorDetail }}</i></div>
-        }
-        @if (error.LineNumber) {
-        <div><i>Line-no: {{ error.LineNumber }}</i></div>
-        }
-        @if (error.LineDetail) {
-        <div><i>Line-details: {{ error.LineDetail }}</i></div>
-        }
-      </li>
+    @switch (viewStateSelected()) {
+      <!-- FORM -->
+      @case (1) {
+        <form #ngForm="ngForm">
+          <div class="eav-dialog-content">
+            <div>
+              <button mat-raised-button tippy="Open file browser" (click)="fileInput.click()">
+                <span>{{ formValues.file ? formValues.file.name : 'Select or drop file' }}</span>
+              </button>
+              <input #fileInput type="file" (change)="fileChange($event)" class="hide" />
+            </div>
+            <div>
+              <p class="eav-radio-group-label">References to pages / files</p>
+              <mat-radio-group class="eav-radio-group" [(ngModel)]="formValues.resourcesReferences"
+                name="ResourcesReferences">
+                <mat-radio-button value="Keep">
+                  Import links as written in the file (for example /Portals/...)
+                </mat-radio-button>
+                <mat-radio-button value="Resolve">
+                  Try to resolve paths to references
+                </mat-radio-button>
+              </mat-radio-group>
+            </div>
+            <div>
+              <p class="eav-radio-group-label">Clear all other entities</p>
+              <mat-radio-group class="eav-radio-group" [(ngModel)]="formValues.clearEntities" name="ClearEntities">
+                <mat-radio-button value="None">
+                  Keep all entities not found in import
+                </mat-radio-button>
+                <mat-radio-button value="All">
+                  Remove all entities not found in import
+                </mat-radio-button>
+              </mat-radio-group>
+            </div>
+            <p class="eav-hint">Remember to backup your DNN first!</p>
+          </div>
+          <mat-dialog-actions align="end">
+            <button
+              mat-raised-button
+              class="eav-action-button"
+              [disabled]="!formValues.file || !formValues.file.name"
+              (click)="evaluateContent()"
+            >
+              Preview Import
+            </button>
+          </mat-dialog-actions>
+        </form>
       }
-    </ul>
-  </div>
-  }
-  <!-- END ERRORS -->
-  <mat-dialog-actions align="end">
-    <button mat-raised-button (click)="back()">Back</button>
-    <button mat-raised-button color="accent" [disabled]="!evaluationResult().Success" (click)="importContent()">
-      Import
-    </button>
-  </mat-dialog-actions>
-  }
-  }
-  <!-- END EVALUATION RESULT -->
-  <!-- IMPORT RESULT -->
-  @case (3) {
-  @if (importResult()) {
-  <div class="eav-dialog-content">
-    @if (importResult().Success) {
-    <p>Import done.</p>
+      <!-- END FORM -->
+      <!-- WAITING -->
+      @case (0) {
+        <div class="eav-dialog-content">
+          <p>Please wait while processing...</p>
+        </div>
+      }
+      <!-- END WAITING -->
+      <!-- EVALUATION RESULT -->
+      @case (2) {
+        @if (evaluationResult()) {
+          <!-- DETAILS / STATISTICS -->
+          @if (evaluationResult().Success) {
+            <div class="eav-dialog-content">
+              <p class="eav-evaluation__title">Try to import file '{{ formValues.file.name }}'</p>
+              <p class="eav-evaluation__title">File contains:</p>
+              <ul class="eav-evaluation__content">
+                <li>{{ evaluationResult().Detail.DocumentElementsCount }} content-items (records/entities)</li>
+                <li>{{ evaluationResult().Detail.LanguagesInDocumentCount }} languages</li>
+                <li>{{ evaluationResult().Detail.AttributeNamesInDocument.length }} columns:
+                  {{ evaluationResult().Detail.AttributeNamesInDocument.join(', ') }}</li>
+              </ul>
+              <p class="eav-evaluation__title">If you press Import, it will:</p>
+              <ul class="eav-evaluation__content">
+                <li>Create {{ evaluationResult().Detail.AmountOfEntitiesCreated }} content-items</li>
+                <li>Update {{ evaluationResult().Detail.AmountOfEntitiesUpdated }} content-items</li>
+                <li>Delete {{ evaluationResult().Detail.AmountOfEntitiesDeleted }} content-items</li>
+                <li>Ignore {{ evaluationResult().Detail.AttributeNamesNotImported.length }} columns:
+                  {{ evaluationResult().Detail.AttributeNamesNotImported.join(', ') }}</li>
+              </ul>
+              <p class="eav-hint">Note: The import validates much data and may take several minutes.</p>
+            </div>
+          }
+          <!-- END DETAILS / STATISTICS -->
+          <!-- ERRORS -->
+          @if (!evaluationResult().Success) {
+            <div class="eav-dialog-content">
+              <p class="eav-evaluation__title">Try to import file '{{ formValues.file.name }}'</p>
+              <ul class="eav-evaluation__content">
+                @for (error of evaluationResult().Errors; track error) {
+                  <li>
+                    <div>{{ errors[error.ErrorCode] }}</div>
+                    @if (error.ErrorDetail) {
+                      <div><i>Details: {{ error.ErrorDetail }}</i></div>
+                    }
+                    @if (error.LineNumber) {
+                      <div><i>Line-no: {{ error.LineNumber }}</i></div>
+                    }
+                    @if (error.LineDetail) {
+                      <div><i>Line-details: {{ error.LineDetail }}</i></div>
+                    }
+                  </li>
+                }
+              </ul>
+            </div>
+          }
+          <!-- END ERRORS -->
+          <mat-dialog-actions align="end">
+            <button mat-raised-button (click)="back()">Back</button>
+            <button
+              mat-raised-button
+              class="eav-action-button"
+              [disabled]="!evaluationResult().Success"
+              (click)="importContent()"
+            >
+              Import
+            </button>
+          </mat-dialog-actions>
+        }
+      }
+      <!-- END EVALUATION RESULT -->
+      <!-- IMPORT RESULT -->
+      @case (3) {
+        @if (importResult()) {
+          <div class="eav-dialog-content">
+            @if (importResult().Success) {
+              <p>Import done.</p>
+            }
+            @if (!importResult().Success) {
+              <p>Import failed.</p>
+            }
+          </div>
+        }
+        <mat-dialog-actions align="end">
+          <button
+            mat-raised-button
+            class="eav-action-button"
+            (click)="closeDialog()"
+          >
+            Close
+          </button>
+        </mat-dialog-actions>
+      }
+      <!-- END IMPORT RESULT -->
     }
-    @if (!importResult().Success) {
-    <p>Import failed.</p>
-    }
-  </div>
-  }
-  <mat-dialog-actions align="end">
-    <button mat-raised-button color="accent" (click)="closeDialog()">Close</button>
-  </mat-dialog-actions>
-  }
-  <!-- END IMPORT RESULT -->
-  }
   }
 </div>

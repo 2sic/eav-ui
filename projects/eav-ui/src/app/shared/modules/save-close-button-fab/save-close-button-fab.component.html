@@ -1,0 +1,20 @@
+<extended-fab-speed-dial>
+  <ng-template extendedFabSpeedDialTriggerContent>
+    <button
+      type="button"
+      [tippy]="(label() | translate) + ' (' + ('Form.Buttons.ActionAndCloseShortcut' | translate) + ')'"
+      tippyShowDelay="500"
+      [ngClass]="ngClass()"
+      [disabled]="isDisabled"
+      (click)="onClick($event)"
+      extended-fab-speed-dial-trigger
+      matRipple
+    >
+      <span>{{ label() | translate }}</span>
+      <span class="keybinding-hint">
+        <kbd>⌃</kbd><kbd>⏎</kbd>
+      </span>
+      <mat-icon>{{ icon() }}</mat-icon>
+    </button>
+  </ng-template>
+</extended-fab-speed-dial>

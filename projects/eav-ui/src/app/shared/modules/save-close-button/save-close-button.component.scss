@@ -1,0 +1,16 @@
+.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.keybinding-hint {
+  // Also uses styles from "extended-fab-speed-dial.scss"
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+.keybinding-hint kbd + kbd {
+  margin-left: 3px;
+}

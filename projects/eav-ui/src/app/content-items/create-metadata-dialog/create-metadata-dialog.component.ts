@@ -1,5 +1,5 @@
 import { AsyncPipe, NgClass, NgTemplateOutlet } from '@angular/common';
-import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, computed, HostBinding, OnDestroy, OnInit, signal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
@@ -13,6 +13,7 @@ import { BehaviorSubject, combineLatest, distinctUntilChanged, map, merge, Obser
 import { Of, transient } from '../../../../../core';
 import { ContentType } from '../../app-administration/models';
 import { ContentTypesService } from '../../app-administration/services';
+import { isCtrlEnter } from '../../edit/dialog/main/keyboard-shortcuts';
 import { UiControl } from '../../edit/shared/controls/ui-control';
 import { BaseComponent } from '../../shared/components/base.component';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
@@ -20,6 +21,7 @@ import { dropdownInsertValue } from '../../shared/constants/dropdown-insert-valu
 import { eavConstants, MetadataKeyTypes, ScopeOption } from '../../shared/constants/eav.constants';
 import { ClickStopPropagationDirective } from '../../shared/directives/click-stop-propagation.directive';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
+import { SaveCloseButtonFabComponent } from '../../shared/modules/save-close-button-fab/save-close-button-fab.component';
 import { mapUntilObjChanged } from '../../shared/rxJs/mapUntilChanged';
 import { RxHelpers } from '../../shared/rxJs/rx.helpers';
 import { Context } from '../../shared/services/context';
@@ -31,6 +33,7 @@ import { metadataKeyValidator } from './metadata-key.validator';
 @Component({
   selector: 'app-create-metadata-dialog',
   templateUrl: './create-metadata-dialog.component.html',
+  styleUrls: ['./create-metadata-dialog.component.scss'],
   imports: [
     FormsModule,
     ReactiveFormsModule,
@@ -48,14 +51,15 @@ import { metadataKeyValidator } from './metadata-key.validator';
     FieldHintComponent,
     ClickStopPropagationDirective,
     TippyDirective,
+    SaveCloseButtonFabComponent,
   ]
 })
-export class CreateMetadataDialogComponent extends BaseComponent implements OnInit, OnDestroy {
+export class CreateMetadataDialogComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
   eavConstants = eavConstants;
   dropdownInsertValue = dropdownInsertValue;
-  form: UntypedFormGroup;
+  ngForm: UntypedFormGroup;
   viewModel$: Observable<MetadataDialogViewModel>;
   targetTypeOptions: TargetTypeOption[];
 
@@ -68,6 +72,9 @@ export class CreateMetadataDialogComponent extends BaseComponent implements OnIn
   private contentItems$: BehaviorSubject<ContentItem[]>;
   private contentTypes$: BehaviorSubject<ContentType[]>;
   private guidedKey$: BehaviorSubject<boolean>;
+  
+  protected formValid = signal(false);
+  protected canSave = computed(() => this.formValid());
 
   private contentItemsService = transient(ContentItemsService);
 
@@ -80,6 +87,8 @@ export class CreateMetadataDialogComponent extends BaseComponent implements OnIn
   }
 
   ngOnInit(): void {
+    this.#watchKeyboardShortcuts();
+
     this.targetTypeOptions = Object.values(eavConstants.metadata).map(option => ({ ...option }));
     this.keyTypeOptions = Object.values(eavConstants.keyTypes);
 
@@ -92,20 +101,20 @@ export class CreateMetadataDialogComponent extends BaseComponent implements OnIn
 
     this.fetchScopes();
 
-    this.form = new UntypedFormGroup({});
-    this.form.addControl('targetType', new UntypedFormControl(eavConstants.metadata.entity.targetType, [Validators.required, Validators.pattern(/^[0-9]+$/)]));
-    this.form.addControl('keyType', new UntypedFormControl(eavConstants.metadata.entity.keyType, [Validators.required]));
-    this.form.addControl('contentTypeForContentItems', new UntypedFormControl(null));
-    this.form.addControl('scopeForContentTypes', new UntypedFormControl(eavConstants.scopes.default.value));
-    this.form.addControl('key', new UntypedFormControl(null, [Validators.required, metadataKeyValidator(this.form)]));
+    this.ngForm = new UntypedFormGroup({});
+    this.ngForm.addControl('targetType', new UntypedFormControl(eavConstants.metadata.entity.targetType, [Validators.required, Validators.pattern(/^[0-9]+$/)]));
+    this.ngForm.addControl('keyType', new UntypedFormControl(eavConstants.metadata.entity.keyType, [Validators.required]));
+    this.ngForm.addControl('contentTypeForContentItems', new UntypedFormControl(null));
+    this.ngForm.addControl('scopeForContentTypes', new UntypedFormControl(eavConstants.scopes.default.value));
+    this.ngForm.addControl('key', new UntypedFormControl(null, [Validators.required, metadataKeyValidator(this.ngForm)]));
 
     this.subscriptions.add(
-      this.form.controls['scopeForContentTypes'].valueChanges.pipe(
-        startWith(this.form.controls['scopeForContentTypes'].value),
+      this.ngForm.controls['scopeForContentTypes'].valueChanges.pipe(
+        startWith(this.ngForm.controls['scopeForContentTypes'].value),
         distinctUntilChanged(),
       ).subscribe((newScope: string) => {
-        if (this.form.controls['contentTypeForContentItems'].value != null) {
-          this.form.controls['contentTypeForContentItems'].patchValue(null);
+        if (this.ngForm.controls['contentTypeForContentItems'].value != null) {
+          this.ngForm.controls['contentTypeForContentItems'].patchValue(null);
         }
 
         if (newScope === dropdownInsertValue) {
@@ -117,7 +126,7 @@ export class CreateMetadataDialogComponent extends BaseComponent implements OnIn
             };
             this.scopeOptions$.next([newScopeOption, ...this.scopeOptions$.value]);
           }
-          this.form.controls['scopeForContentTypes'].patchValue(newScope);
+          this.ngForm.controls['scopeForContentTypes'].patchValue(newScope);
         } else {
           this.fetchContentTypes(newScope);
         }
@@ -127,33 +136,33 @@ export class CreateMetadataDialogComponent extends BaseComponent implements OnIn
     // reset key if target or keyType changed
     this.subscriptions.add(
       merge(
-        this.form.controls['targetType'].valueChanges.pipe(distinctUntilChanged()),
-        this.form.controls['keyType'].valueChanges.pipe(distinctUntilChanged()),
+        this.ngForm.controls['targetType'].valueChanges.pipe(distinctUntilChanged()),
+        this.ngForm.controls['keyType'].valueChanges.pipe(distinctUntilChanged()),
       ).subscribe(() => {
         this.guidedKey$.next(true);
 
-        const formValues: MetadataFormValues = this.form.getRawValue();
+        const formValues: MetadataFormValues = this.ngForm.getRawValue();
         if (formValues.key != null) {
           const updatedForm: Partial<MetadataFormValues> = {
             key: null,
           };
-          this.form.patchValue(updatedForm);
+          this.ngForm.patchValue(updatedForm);
         }
       })
     );
 
     // reset key if contentTypeForContentItems changed
     this.subscriptions.add(
-      this.form.controls['contentTypeForContentItems'].valueChanges.pipe(
-        startWith(this.form.controls['contentTypeForContentItems'].value),
+      this.ngForm.controls['contentTypeForContentItems'].valueChanges.pipe(
+        startWith(this.ngForm.controls['contentTypeForContentItems'].value),
         distinctUntilChanged(),
       ).subscribe(contentTypeStaticName => {
-        const formValues: MetadataFormValues = this.form.getRawValue();
+        const formValues: MetadataFormValues = this.ngForm.getRawValue();
         if (formValues.targetType === eavConstants.metadata.entity.targetType && formValues.key != null) {
           const updatedForm: Partial<MetadataFormValues> = {
             key: null,
           };
-          this.form.patchValue(updatedForm);
+          this.ngForm.patchValue(updatedForm);
         }
 
         this.contentItemsService.getAllPromise(contentTypeStaticName).then(items => {
@@ -162,9 +171,9 @@ export class CreateMetadataDialogComponent extends BaseComponent implements OnIn
       })
     );
 
-    const formValues$ = this.form.valueChanges.pipe(
-      startWith(this.form.getRawValue() as MetadataFormValues),
-      map(() => this.form.getRawValue() as MetadataFormValues),
+    const formValues$ = this.ngForm.valueChanges.pipe(
+      startWith(this.ngForm.getRawValue() as MetadataFormValues),
+      map(() => this.ngForm.getRawValue() as MetadataFormValues),
       mapUntilObjChanged(m => m)
       // distinctUntilChanged(RxHelpers.objectsEqual),
     );
@@ -188,11 +197,11 @@ export class CreateMetadataDialogComponent extends BaseComponent implements OnIn
           updatedForm.key = this.context.appId;
 
         if (Object.keys(updatedForm).length)
-          this.form.patchValue(updatedForm);
+          this.ngForm.patchValue(updatedForm);
 
         const keyTypeDisabled = guidedMode && this.keyTypeOptions$.value.length <= 1;
-        UiControl.disable(this.form.controls['keyType'], keyTypeDisabled);
-        UiControl.disable(this.form.controls['key'], isAppMetadata);
+        UiControl.disable(this.ngForm.controls['keyType'], keyTypeDisabled);
+        UiControl.disable(this.ngForm.controls['key'], isAppMetadata);
       })
     );
 
@@ -222,6 +231,12 @@ export class CreateMetadataDialogComponent extends BaseComponent implements OnIn
     );
   }
 
+  ngAfterViewInit() {
+    this.ngForm?.statusChanges.subscribe(() => {
+      this.formValid.set(this.ngForm?.valid ?? false);
+    });
+  }
+
   ngOnDestroy(): void {
     this.guidedMode$.complete();
     this.keyTypeOptions$.complete();
@@ -243,8 +258,8 @@ export class CreateMetadataDialogComponent extends BaseComponent implements OnIn
     this.guidedMode$.next(event.checked);
   }
 
-  confirm(): void {
-    const formValues: MetadataFormValues = this.form.getRawValue();
+  saveAndClose(): void {
+    const formValues: MetadataFormValues = this.ngForm.getRawValue();
 
     const result: MetadataInfo = {
       target: this.targetTypeOptions.find(option => option.targetType === formValues.targetType)?.target,
@@ -254,6 +269,15 @@ export class CreateMetadataDialogComponent extends BaseComponent implements OnIn
       key: formValues.keyType === eavConstants.keyTypes.guid ? (formValues.key as string).replace(/{|}/g, '') : formValues.key.toString(),
     };
     this.closeDialog(result);
+  }
+
+  #watchKeyboardShortcuts(): void {
+    this.dialog.keydownEvents().subscribe(event => {
+      if (isCtrlEnter(event) && this.canSave()) {
+        event.preventDefault();
+        this.saveAndClose();
+      }
+    });
   }
 
   private fetchContentTypes(scope: string): void {

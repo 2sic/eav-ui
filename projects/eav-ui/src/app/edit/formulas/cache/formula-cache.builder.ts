@@ -188,10 +188,12 @@ export class FormulaCacheBuilder extends ServiceBase {
         id: user.Id,
         isAnonymous: user.IsAnonymous,
         isSiteAdmin: user.IsSiteAdmin,
+        isContentEditor: user.isContentEditor,
         isContentAdmin: user.IsContentAdmin,
         isSystemAdmin: user.IsSystemAdmin,
         name: user.Name,
         username: user.Username,
+        roles: user.roles,
       } satisfies FormulaV1CtxUser,
       app: {
         appId: formConfig.appId,

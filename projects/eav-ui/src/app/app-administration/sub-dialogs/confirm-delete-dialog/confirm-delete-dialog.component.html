@@ -1,28 +1,23 @@
-<mat-card>
-  <mat-card-header style="margin-bottom: 12px">
-    <mat-card-title> {{ dialogData.title ?? 'Delete' }} {{ dialogData.entityTitle }} ({{ dialogData.entityId }})</mat-card-title>
-  </mat-card-header>
-
-  <mat-card-content>
-    @if (dialogData.message) {
-      <mat-card-subtitle [innerHtml]="dialogData.message | safeHtml"></mat-card-subtitle>
-    }
-  </mat-card-content>
-
-  <mat-card-actions align="end">
-    <button mat-raised-button (click)="dialog.close()">Cancel</button>
-    <button
-      class="eav-card-action-button"
-      mat-raised-button
-      cdkFocusInitial
-      (click)="dialog.close(true)"
-      [color]="dialogData.confirmColor ?? 'warn'"
-    >
-      @if (dialogData.confirmTranslateKey) {
-        {{ dialogData.confirmTranslateKey }}
-      } @else {
-        Delete
-      }
+<div class="eav-dialog">
+  <div class="eav-dialog-header">
+    <div class="eav-dialog-header__title">
+      {{ dialogData.title ?? 'Delete' }} {{ dialogData.entityTitle }} ({{ dialogData.entityId }})
+    </div>
+    <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
+      <mat-icon>close</mat-icon>
     </button>
-  </mat-card-actions>
-</mat-card>
+  </div>
+
+  <div class="eav-dialog-content">
+    @if (dialogData.message) {
+      <p [innerHtml]="dialogData.message | safeHtml"></p>
+    }
+  </div>
+
+  <mat-dialog-actions align="end">
+    <app-save-close-button-fab
+      [label]="'Delete and close (ctrl + enter)'"
+      (action)="saveAndClose(true)"
+    />
+  </mat-dialog-actions>
+</div>

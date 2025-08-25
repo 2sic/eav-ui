@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { AfterViewInit, Component, computed, ElementRef, HostBinding, linkedSignal, QueryList, signal, untracked, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, computed, ElementRef, HostBinding, linkedSignal, OnInit, QueryList, signal, untracked, ViewChild, ViewChildren } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
@@ -15,12 +15,14 @@ import { catchError, concatMap, filter, of, toArray } from 'rxjs';
 import { transient } from '../../../../../core';
 import { fieldNameError, fieldNamePattern } from '../../app-administration/constants/field-name.patterns';
 import { ContentTypesService } from '../../app-administration/services/content-types.service';
+import { isCtrlEnter } from '../../edit/dialog/main/keyboard-shortcuts';
 import { BaseComponent } from '../../shared/components/base.component';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
 import { ContentTypesFieldsService } from '../../shared/fields/content-types-fields.service';
 import { DataTypeCatalog } from '../../shared/fields/data-type-catalog';
 import { Field, FieldInputTypeOption } from '../../shared/fields/field.model';
 import { InputTypeCatalog } from '../../shared/fields/input-type-catalog';
+import { SaveCloseButtonFabComponent } from '../../shared/modules/save-close-button-fab/save-close-button-fab.component';
 import { computedObj } from '../../shared/signals/signal.utilities';
 import { calculateTypeIcon, calculateTypeLabel } from '../content-type-fields.helpers';
 import { ReservedNamesValidatorDirective } from './reserved-names.directive';
@@ -49,12 +51,16 @@ type FieldSubset = Pick<Field, 'Id' | 'Type' | 'InputType' | 'StaticName' | 'IsT
     MatButtonModule,
     TranslateModule,
     FieldHintComponent,
+    SaveCloseButtonFabComponent
   ]
 })
-export class EditContentTypeFieldsComponent extends BaseComponent implements AfterViewInit {
+export class EditContentTypeFieldsComponent extends BaseComponent implements AfterViewInit, OnInit {
   @HostBinding('className') hostClass = 'dialog-component';
-  @ViewChild('ngForm', { read: NgForm }) private form: NgForm;
+  @ViewChild('ngForm', { read: NgForm }) private ngForm: NgForm;
   @ViewChildren('autoFocusInputField') autoFocusInputField!: QueryList<ElementRef>;
+  
+  protected formValid = signal(false);
+  protected canSave = computed(() => this.formValid() && !this.saving());
 
   #typesSvc = transient(ContentTypesService);
   #typesFieldsSvc = transient(ContentTypesFieldsService);
@@ -68,11 +74,11 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements Aft
     this.dialog.disableClose = true;
     this.subscriptions.add(
       this.dialog.backdropClick().subscribe(_ => {
-        if (this.form.dirty) {
+        if (this.ngForm?.dirty) {
           const confirmed = confirm('You have unsaved changes. Are you sure you want to close this dialog?');
           if (!confirmed) return;
         }
-        this.dialog.close();
+        this.closeDialog();
       })
     );
   }
@@ -142,16 +148,27 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements Aft
     return merged;
   });
 
-
   ngAfterViewInit(): void {
+    // Only run form logic if fields are loaded and form is rendered
+    if (this.fields().length && this.ngForm) {
+      this.formValid.set(this.ngForm?.form.valid ?? false);
+      this.ngForm?.form.statusChanges.subscribe(() => {
+        this.formValid.set(this.ngForm?.form.valid ?? false);
+      });
+    } else {
+      // Retry after a short delay if not ready
+      setTimeout(() => this.ngAfterViewInit(), 250);
+      return;
+    }
     // Wait for the inputFields to be available
     // But delay execution to ensure the view is fully rendered
     if (this.autoFocusInputField)
       setTimeout(() => this.autoFocusInputField.first?.nativeElement?.focus(), 250);
   }
 
+  ngOnInit() {
+    this.#watchKeyboardShortcuts();
 
-  // ngOnInit() {
   //   setTimeout(() => {
   //     console.log(this.#contentTypeRouteName()?.NameId)
 
@@ -160,7 +177,7 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements Aft
   //     console.log('Fields loaded', fields);
   //     this.#existingFieldsLazy.set(fields);
   //   })
-  // }
+  }
 
   #generateNewList(existingFieldCount: number): FieldSubset[] {
     return [...Array(8).keys()].map(k => ({
@@ -199,7 +216,6 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements Aft
     this.updateFieldPart(index, { InputType: inputName });
   }
 
-
   hints = computedObj('hints', () => {
     const fields = this.fields();
     return fields.map((field, i) => {
@@ -218,7 +234,11 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements Aft
     return this.#inputTypeOptions().find(option => option.inputType === inputName);
   }
 
-  save() {
+  closeDialog() {
+    this.dialog.close();
+  }
+
+  saveAndClose() {
     this.saving.set(true);
     this.snackBar.open('Saving...');
 
@@ -226,7 +246,7 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements Aft
     const doneAndClose = () => {
       this.saving.set(false);
       this.snackBar.open('Saved', null, { duration: 2000 });
-      this.dialog.close();
+      this.closeDialog();
     }
 
     if (this.editMode != null) {
@@ -251,5 +271,14 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements Aft
         )
         .subscribe(() => doneAndClose());
     }
+  }
+
+  #watchKeyboardShortcuts(): void {
+    this.dialog.keydownEvents().subscribe(event => {
+      if (isCtrlEnter(event) && this.canSave()) {
+        event.preventDefault();
+        this.saveAndClose();
+      }
+    });
   }
 }

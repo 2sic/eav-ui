@@ -73,8 +73,14 @@ export class GridWithHelpComponent {
 
     // Set AG Grid height based on row count and maximum height to prevent overflow
     agGridEl.style.flex = dimensions.rowHeight ? `0 0 ${dimensions.agGridHeight}px` : '0px';
-    // TODO: 2dg, discus with 2ro, style not have a calc () fn
-    const maxHeight = document.querySelector('.mat-sidenav-content').clientHeight - dimensions.dialogHeaderHeight - dimensions.dialogActionHeight;
+
+    // Outer Container for max Size
+    const sideNavEl = document.querySelector<HTMLElement>('.mat-sidenav-content'); // with SideNav (settings)
+    const dialogEl = document.querySelector<HTMLElement>('.mat-mdc-dialog-container'); // only Dialog (Content)
+
+    const outerContainer = sideNavEl ?? dialogEl;
+    const maxHeight = outerContainer.clientHeight - dimensions.dialogHeaderHeight - dimensions.dialogActionHeight;
+
     agGridEl.style.maxHeight = `${maxHeight}px`;
 
     // Determine if help card should be hidden when content exceeds available space

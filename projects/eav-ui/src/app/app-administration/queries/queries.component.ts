@@ -1,7 +1,7 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal, ViewContainerRef } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialogActions } from '@angular/material/dialog';
+import { MatDialog, MatDialogActions } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
@@ -27,6 +27,8 @@ import { Context } from '../../shared/services/context';
 import { Query } from '../models/query.model';
 import { DialogConfigAppService } from '../services/dialog-config-app.service';
 import { PipelinesService } from '../services/pipelines.service';
+import { ConfirmDeleteDialogComponent } from '../sub-dialogs/confirm-delete-dialog/confirm-delete-dialog.component';
+import { ConfirmDeleteDialogData } from '../sub-dialogs/confirm-delete-dialog/confirm-delete-dialog.models';
 import { QueriesActionsParams, QueryActions } from './queries-actions/queries-actions';
 import { QueriesActionsComponent } from './queries-actions/queries-actions.component';
 
@@ -64,8 +66,8 @@ export class QueriesComponent implements OnInit {
 
   #context = inject(Context);
   #snackBar = inject(MatSnackBar);
-
-
+  #matDialog = inject(MatDialog);
+  #viewContainerRef = inject(ViewContainerRef);
   // UI Help Text for the UX Help Info Card
   #helpTextConst: HelpTextConst = {
     empty: {
@@ -89,6 +91,8 @@ export class QueriesComponent implements OnInit {
   refresh = signal(0);
 
   queries = this.#pipelineSvc.getAllLive(eavConstants.contentTypes.query, this.refresh).value;
+
+
 
   ngOnInit() {
     // watch for return from dialog to reload queries
@@ -172,13 +176,24 @@ export class QueriesComponent implements OnInit {
 
   private deleteQuery(query: Query) {
     const l = this.log.fnIf('deleteQuery', { query });
-    if (!confirm(`Delete Pipeline '${query.Name}' (${query.Id})?`))
-      return;
-    this.#snackBar.open('Deleting...');
-    this.#pipelineSvc.delete(query.Id).subscribe(res => {
-      this.#snackBar.open('Deleted', null, { duration: 2000 });
-      this.#triggerRefresh();
-    });
+
+    this.#matDialog.open(ConfirmDeleteDialogComponent, {
+      autoFocus: false,
+      data: {
+        entityId: query.Id,
+        entityTitle: query.Name,
+        message: "Delete Query?",
+        hasDeleteSnackbar: true
+      } as ConfirmDeleteDialogData,
+      viewContainerRef: this.#viewContainerRef,
+      width: '400px',
+    }).afterClosed().subscribe(isConfirmed => {
+      if (!isConfirmed) return;
+      this.#pipelineSvc.delete(query.Id).subscribe(res => {
+        this.#snackBar.open('Deleted', null, { duration: 2000 });
+        this.#triggerRefresh();
+      });
+    })
     l.end();
   }
 

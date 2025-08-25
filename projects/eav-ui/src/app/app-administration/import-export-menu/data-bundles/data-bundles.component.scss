@@ -1,3 +1,10 @@
+@import "../../../../styles/variables.scss";
+
+:host ::ng-deep .ag-row-hover .ag-cell a,
+:host ::ng-deep .ag-row-hover .ag-cell .eav-grid-action-button {
+  color: $sxc-solid !important;
+}
+
 .grid-height {
   max-height: calc(100vh - 560px);
   min-height: 135px;

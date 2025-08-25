@@ -1,9 +1,14 @@
 @if (feature()) {
-  <mat-card>
-    <mat-card-header>
-      <mat-card-title>{{ feature().name }}</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
+  <div class="eav-dialog">
+    <div class="eav-dialog-header">
+      <div class="eav-dialog-header__title">
+        {{ feature().name }}
+      </div>
+      <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    <div class="eav-dialog-content">
       <p [innerHtml]="feature().description | safeHtml"></p>
       <!-- Name ID -->
       <div class="eav-info-row">
@@ -37,15 +42,12 @@
           <span>{{ feature().security.Impact + ': ' + feature().security.Message }}</span>
         </div>
       </div>
-    </mat-card-content>
-    <mat-card-actions align="end">
-      <a [href]="feature().link" target="_blank" mat-raised-button class="eav-card-action-button">
+    </div>
+    <mat-dialog-actions align="end">
+      <a [href]="feature().link" target="_blank" mat-raised-button>
         <mat-icon>open_in_new</mat-icon>
         Find out more
       </a>
-      @if (mySpecs().showClose != false) {
-        <button mat-raised-button class="eav-card-action-button" (click)="dialog.close()">Close</button>
-      }
-    </mat-card-actions>
-  </mat-card>
+    </mat-dialog-actions>
+  </div>
 }

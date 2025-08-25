@@ -46,6 +46,7 @@ import { DataItemsComponent } from './data-items/data-items.component';
 @Component({
   selector: 'app-data',
   templateUrl: './data.component.html',
+  styleUrl: './data.component.scss',
   imports: [
     MatDialogActions,
     MatFormFieldModule,
@@ -286,8 +287,8 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
           ...ColumnDefinitions.TextWideMin100,
           field: 'Name',
           cellClass: (p) => `${p.data.EditInfo.DisableEdit ? 'no-outline' : 'primary-action highlight'}`.split(' '),
-          valueGetter: (p: { data: ContentType }) => p.data?.Name,
-          onCellClicked: (p) => this.editContentType(p.data),
+          cellRenderer: (p: { data: ContentType }) =>
+            AgGridHelper.cellLink(this.#urlTo(`${p.data.NameId}/edit`), p.data?.Name),
         },
         {
           ...ColumnDefinitions.TextWideFlex3,
@@ -392,11 +393,11 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
 
 
   #deleteContentType(contentType: ContentType) {
-    this.#snackBar.open('Deleting...');
     const data: ConfirmDeleteDialogData = {
       entityId: contentType.Id,
       entityTitle: contentType.Name,
       message: "Are you sure you want to delete?",
+      hasDeleteSnackbar: true
     };
     const confirmationDialogRef = this.#matDialog.open(ConfirmDeleteDialogComponent, {
       autoFocus: false,
@@ -405,7 +406,6 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
       width: '400px',
     });
     confirmationDialogRef.afterClosed().subscribe((isConfirmed: boolean) => {
-      this.#snackBar.dismiss();
       if (isConfirmed)
         this.#contentTypeSvc.delete(contentType).subscribe(_ => {
           this.#snackBar.open('Deleted', null, { duration: 2000 });

@@ -9,8 +9,10 @@ import { RouterOutlet } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { transient } from '../../../../core';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
+import { ConfirmDeleteDialogComponent } from '../app-administration/sub-dialogs/confirm-delete-dialog/confirm-delete-dialog.component';
 import { GoToMetadata } from '../metadata';
 import { GoToPermissions } from '../permissions/go-to-permissions';
+import { AgGridHelper } from '../shared/ag-grid/ag-grid-helper';
 import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
 import { GridWithHelpComponent, HelpTextConst } from '../shared/ag-grid/grid-with-help/grid-with-help.component';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
@@ -25,8 +27,6 @@ import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module
 import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
 import { ContentTypeFieldsActionsComponent } from './content-type-fields-actions/content-type-fields-actions.component';
 import { ContentTypeFieldsActionsParams } from './content-type-fields-actions/content-type-fields-actions.models';
-import { ContentTypeFieldsInputTypeComponent } from './content-type-fields-input-type/content-type-fields-input-type.component';
-import { ContentTypeFieldsInputTypeParams } from './content-type-fields-input-type/content-type-fields-input-type.models';
 import { ContentTypeFieldsSpecialComponent } from './content-type-fields-special/content-type-fields-special.component';
 import { ContentTypeFieldsTitleComponent } from './content-type-fields-title/content-type-fields-title.component';
 import { ContentTypeFieldsTitleParams } from './content-type-fields-title/content-type-fields-title.models';
@@ -37,6 +37,7 @@ import { ShareOrInheritDialogComponent } from './field-sharing-configure/field-s
 @Component({
   selector: 'app-content-type-fields',
   templateUrl: './content-type-fields.component.html',
+  styleUrls: ['./content-type-fields.component.scss'],
   imports: [
     MatButtonModule,
     MatIconModule,
@@ -95,7 +96,6 @@ export class ContentTypeFieldsComponent implements OnInit {
   #gridApi: GridApi;
   #columnApi: ColumnApi;
   #rowDragSuppressed = false;
-
 
   ngOnInit() {
     this.#fetchFields();
@@ -211,27 +211,28 @@ export class ContentTypeFieldsComponent implements OnInit {
     });
   }
 
-  #editFieldMetadata(field: Field) {
-    // If this field is inherited and therefor has no own metadata, show a snackbar and exit
-    if (field.SysSettings?.InheritMetadataOf) {
-      if (!Object.keys(field.ConfigTypes).length) {
-        this.snackBar.open('This field inherits all configuration so there is nothing to edit.', null, { duration: 3000 });
-        return;
-      }
-      this.snackBar.open('This field inherits some configuration. Edit will only show configuration which is not inherited.', null, { duration: 5000 });
-    }
+  // 2pp: made "Name" a link with urlTo - so not in use anymore
+  // #editFieldMetadata(field: Field) {
+  //   // If this field is inherited and therefor has no own metadata, show a snackbar and exit
+  //   if (field.SysSettings?.InheritMetadataOf) {
+  //     if (!Object.keys(field.ConfigTypes).length) {
+  //       this.snackBar.open('This field inherits all configuration so there is nothing to edit.', null, { duration: 3000 });
+  //       return;
+  //     }
+  //     this.snackBar.open('This field inherits some configuration. Edit will only show configuration which is not inherited.', null, { duration: 5000 });
+  //   }
 
-    // if this field is shared/can-be-inherited, show warning so the user is aware of it
-    if (field.SysSettings?.Share)
-      this.snackBar.open('This field is shared, so changing it will affect all other fields inheriting it.', null, { duration: 5000 });
+  //   // if this field is shared/can-be-inherited, show warning so the user is aware of it
+  //   if (field.SysSettings?.Share)
+  //     this.snackBar.open('This field is shared, so changing it will affect all other fields inheriting it.', null, { duration: 5000 });
 
-    const form: EditForm = {
-      items: Object.keys(field.ConfigTypes).map((t) => this.#createItemDefinition(field, t))
-    };
-    // console.warn('2dm - editFieldMetadata', field.ConfigTypes, form);
-    const formUrl = convertFormToUrl(form);
-    this.#dialogRouter.navRelative([`edit/${formUrl}`]);
-  }
+  //   const form: EditForm = {
+  //     items: Object.keys(field.ConfigTypes).map((t) => this.#createItemDefinition(field, t))
+  //   };
+  //   // console.warn('2dm - editFieldMetadata', field.ConfigTypes, form);
+  //   const formUrl = convertFormToUrl(form);
+  //   this.#dialogRouter.navRelative([`edit/${formUrl}`]);
+  // }
 
   #createItemDefinition(field: Field, metadataType: string): ItemAddIdentifier | ItemEditIdentifier {
     // The keys could start with an @ but may not, and in some cases we need it, others we don't
@@ -248,7 +249,6 @@ export class ContentTypeFieldsComponent implements OnInit {
       };
   }
 
-
   #setTitle(field: Field) {
     this.snackBar.open('Setting title...');
     this.#contentTypesFieldsSvc.setTitle(field, this.contentType()).subscribe(() => {
@@ -257,21 +257,32 @@ export class ContentTypeFieldsComponent implements OnInit {
     });
   }
 
-  #changeInputType(field: Field) {
-    this.#dialogRouter.navRelative([`update/${this.#contentTypeStaticName}/${field.Id}/inputType`]);
-  }
+  // #changeInputType(field: Field) {
+  //   this.#dialogRouter.navRelative([`update/${this.#contentTypeStaticName}/${field.Id}/inputType`]);
+  // }
 
   #rename(field: Field) {
     this.#dialogRouter.navRelative([`update/${this.#contentTypeStaticName}/${field.Id}/name`]);
   }
 
   #delete(field: Field) {
-    if (!confirm(`Are you sure you want to delete '${field.StaticName}' (${field.Id})?`)) return;
-    this.snackBar.open('Deleting...');
-    this.#contentTypesFieldsSvc.delete(field, this.contentType()).subscribe(() => {
-      this.snackBar.open('Deleted', null, { duration: 2000 });
-      this.#fetchFields();
-    });
+    this.matDialog.open(ConfirmDeleteDialogComponent, {
+      autoFocus: false,
+      data: {
+        entityId: field.Id,
+        entityTitle: field.StaticName,
+        message: "Delete Item?",
+        hasDeleteSnackbar: true
+      },
+      viewContainerRef: this.viewContainerRef,
+      width: '400px',
+    }).afterClosed().subscribe(isConfirmed => {
+      if (!isConfirmed) return;
+      this.#contentTypesFieldsSvc.delete(field, this.contentType()).subscribe(() => {
+        this.snackBar.open('Deleted', null, { duration: 2000 });
+        this.#fetchFields();
+      });
+    })
   }
 
   #openPermissions(field: Field) {
@@ -296,6 +307,19 @@ export class ContentTypeFieldsComponent implements OnInit {
       `Metadata for Field: ${field.StaticName} (${field.Id})`,
     );
     this.#dialogRouter.navRelative([url]);
+  }
+
+  // Add this method - required for the Name column to generate the edit URL for a field
+  #fieldEditUrl(field: Field): string {
+    const form: EditForm = {
+      items: Object.keys(field.ConfigTypes).map((t) => this.#createItemDefinition(field, t))
+    };
+    const formUrl = convertFormToUrl(form);
+    return '#' + this.#dialogRouter.urlSubRoute(`edit/${formUrl}`);
+  }
+
+  #inputTypeEditUrl(field: Field): string {
+    return '#' + this.#dialogRouter.urlSubRoute(`update/${this.#contentTypeStaticName}/${field.Id}/inputType`);
   }
 
   #shareOrInherit(field: Field) {
@@ -341,8 +365,12 @@ export class ContentTypeFieldsComponent implements OnInit {
           ...ColumnDefinitions.TextWidePrimary,
           headerName: 'Name',
           field: 'StaticName',
-          onCellClicked: (p: { data: Field }) => this.#editFieldMetadata(p.data),
-          cellRenderer: (params: ICellRendererParams) => this.#nameCellRenderer(params),
+          cellClass: (p: { data: Field }) => `${p.data.EditInfo.DisableEdit ? 'no-outline' : 'primary-action highlight'}`.split(' '),
+          cellRenderer: (params: ICellRendererParams & { data: Field }) =>
+            AgGridHelper.cellLink(
+              this.#fieldEditUrl(params.data),
+              params.value
+            ),
         },
         {
           ...ColumnDefinitions.ItemsText,
@@ -356,12 +384,13 @@ export class ContentTypeFieldsComponent implements OnInit {
           headerName: 'Input',
           field: 'InputType',
           width: 160,
-          cellClass: (p: { data: Field }) => `${p.data.EditInfo.DisableEdit ? 'no-outline no-padding' : 'secondary-action no-padding'}`.split(' '),
+          cellClass: (p: { data: Field }) => `${p.data.EditInfo.DisableEdit ? 'no-outline' : 'primary-action highlight'}`.split(' '),
           valueGetter: (p: { data: Field }) => p.data.InputType.substring(p.data.InputType.indexOf('-') + 1),
-          cellRenderer: ContentTypeFieldsInputTypeComponent,
-          cellRendererParams: (() => ({
-            onChangeInputType: (field) => this.#changeInputType(field),
-          } satisfies ContentTypeFieldsInputTypeParams))(),
+          cellRenderer: (params: ICellRendererParams & { data: Field }) =>
+            AgGridHelper.cellLink(
+              this.#inputTypeEditUrl(params.data),
+              params.value
+            ),
         },
         {
           field: 'Label',

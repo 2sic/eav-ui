@@ -1,0 +1,8 @@
+@import "../../../styles/variables.scss";
+
+:host ::ng-deep .ag-row-hover .ag-cell a,
+:host ::ng-deep .ag-row-hover .ag-cell .id-box *,
+:host ::ng-deep .ag-row-hover .ag-cell mat-icon,
+.eav-button__with-icon * {
+  color: $sxc-solid !important;
+}
