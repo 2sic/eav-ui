@@ -76,14 +76,19 @@ extended-fab-speed-dial {
       white-space: nowrap;
       overflow: hidden;
       max-width: 0;
-      transition: max-width 0.3s ease-in-out, padding 0.3s ease-in-out;
+      transition: all 0.3s ease-in-out;
 
-      &:before,
-      &:after {
-        content: "";
-        width: 8px;
-        display: inline-block;
-      }
+      // &:before,
+      // &:after {
+      //   content: "";
+      //   width: 8px;
+      //   display: inline-block;
+      // }
+    }
+    
+    > .keybinding-hint {
+      padding: 2px 0 0;
+      margin: 0;
     }
 
     // 2024-12-17 2dm changed to use appear-disabled
@@ -99,6 +104,14 @@ extended-fab-speed-dial {
     &:hover {
       > span {
         max-width: 256px;
+      }
+
+      > .keybinding-hint {
+        margin-left: 4px;
+        padding: 2px 4px 0px;
+        border-radius: 6px;
+        background: rgba(255, 255, 255, 0.1);
+        transition: all 0.3s ease-in-out;
       }
     }
   }

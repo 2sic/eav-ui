@@ -3,15 +3,14 @@
   opacity: 0.5;
 }
 
-button:hover .keybinding-hint {
-  padding: 2px 4px !important;
+.keybinding-hint {
+  // Also uses styles from "extended-fab-speed-dial.scss"
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.75rem;
+  line-height: 1.5;
 }
 
-.keybinding-hint {
-  border-radius: 5px;
-  background: rgba(256, 256, 256, 0.2);
-  
-  kbd + kbd {
-    margin-left: 4px;
-  }
+.keybinding-hint kbd + kbd {
+  margin-left: 3px;
 }
