@@ -10,4 +10,8 @@ button:hover .keybinding-hint {
 .keybinding-hint {
   border-radius: 5px;
   background: rgba(256, 256, 256, 0.2);
+  
+  kbd + kbd {
+    margin-left: 4px;
+  }
 }
