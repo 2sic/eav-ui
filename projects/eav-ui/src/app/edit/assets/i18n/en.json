@@ -4,6 +4,7 @@
       "Save": "Save (ctrl + s)",
       "SaveAndClose": "Save and close",
       "CreateAndClose": "Create and close",
+      "ActionAndCloseShortcut": "Shortcut: ctrl + enter",
       "Done": "Done",
       "Exit.Tip": "Exit - if something changed, you will be asked to save",
       "Return.Tip": "Return to previous dialog",

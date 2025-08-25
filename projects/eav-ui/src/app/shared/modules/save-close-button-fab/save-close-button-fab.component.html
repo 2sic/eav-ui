@@ -2,9 +2,8 @@
   <ng-template extendedFabSpeedDialTriggerContent>
     <button
       type="button"
-      [tippy]="(label() | translate) + ' (shortcut: ctrl + enter)'"
+      [tippy]="(label() | translate) + ' (' + ('Form.Buttons.ActionAndCloseShortcut' | translate) + ')'"
       tippyShowDelay="500"
-      tippyPlacement="top"
       [ngClass]="ngClass()"
       [disabled]="isDisabled"
       (click)="onClick($event)"
