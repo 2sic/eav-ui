@@ -1,5 +1,5 @@
 <button
-  type="button"
+  [type]="triggerOnFormSubmit() ? 'submit' : 'button'"
   [tippy]="(label() | translate) + ' (' + ('Form.Buttons.ActionAndCloseShortcut' | translate) + ')'"
   tippyShowDelay="500"
   [ngClass]="ngClass()"

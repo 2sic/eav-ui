@@ -90,6 +90,7 @@
       </div>
       <mat-dialog-actions align="end">
         <app-save-close-button-fab
+          [triggerOnFormSubmit]="true"
           [ngClass]="!canSave() ? 'disabled' : ''"
           [disabled]="!canSave()"
           (action)="saveAndClose()"
