@@ -1,3 +1,15 @@
+@import '../../../styles/variables.scss';
+
+a mat-icon,
+button mat-icon,
+.eav-button__with-icon * {
+  color: $sxc-solid !important;
+}
+
+a.mat-mdc-button.mat-mdc-button-disabled * {
+  color: $text-disabled !important;
+}
+
 .eav-settings-and-resources-table {
   width: 100%;
 
