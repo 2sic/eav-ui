@@ -1,0 +1,11 @@
+<a
+  class="eav-button__with-icon"
+  [href]="link()"
+  target="_blank"
+  tippy="online documentation"
+>
+  <mat-icon mat-icon class="eav-icon">
+    {{ icon() ?? 'menu_book' }}
+  </mat-icon>
+  <span>{{ label() }}</span>
+</a>
