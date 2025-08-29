@@ -27,6 +27,7 @@
     @if (uploading()) {
       <mat-spinner mode="indeterminate" diameter="20"></mat-spinner>
     }
+
     <p [innerHtml]="dialogData.description | safeHtml"></p>
 
     @if (uploadType() == UploadTypes.App) {

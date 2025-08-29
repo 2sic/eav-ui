@@ -1,3 +1,9 @@
+@import '../../../../styles/variables.scss';
+
+:host ::ng-deep .eav-dialog a {
+  color: $external-link !important;
+}
+
 .eav-result-container {
   margin-top: 16px;
 }
