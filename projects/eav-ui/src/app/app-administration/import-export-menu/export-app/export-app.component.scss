@@ -1,3 +1,14 @@
+@import '../../../../styles/variables.scss';
+
+a {
+  color: $external-link !important;
+  text-decoration: none;
+}
+
+.eav-button__with-icon {
+  color: $sxc-solid !important;
+}
+
 .eav-app-info {
   &__title {
     font-size: 18px;
