@@ -1,4 +1,7 @@
+@import '../../../../styles/variables.scss';
+
+button,
 a {
-  color: black;
+  color: $sxc-solid !important;
   text-decoration: none;
 }
