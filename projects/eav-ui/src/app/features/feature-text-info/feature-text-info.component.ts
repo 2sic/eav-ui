@@ -18,7 +18,6 @@ import { FeatureComponentBase } from '../shared/base-feature.component';
 export class FeatureTextInfoComponent extends FeatureComponentBase {
   asInfo = input<boolean>(false);
 
-
   constructor() {
     super();
   }
