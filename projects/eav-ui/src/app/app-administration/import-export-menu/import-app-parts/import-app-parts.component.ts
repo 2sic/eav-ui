@@ -28,6 +28,3 @@ export class ImportAppPartsComponent {
     dialogData.upload$ ??= (files: File[]) => this.#importAppPartsService.importAppParts(files[0]);
   }
 }
-
-
-
