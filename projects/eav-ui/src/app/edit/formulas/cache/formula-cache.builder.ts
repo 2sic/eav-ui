@@ -177,6 +177,9 @@ export class FormulaCacheBuilder extends ServiceBase {
         number: mdFor?.Number,
         string: mdFor?.String,
       },
+      // new v20
+      isNew: entity.Id === 0,
+      isCopy: this.formConfig.config.isCopy,
     };
     const formConfig = this.formConfig.config;
     const user = formConfig.dialogContext.User ?? {} as Partial<DialogContextUser>;

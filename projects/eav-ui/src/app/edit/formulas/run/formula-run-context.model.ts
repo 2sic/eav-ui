@@ -54,6 +54,11 @@ export interface FormulaV1CtxTargetEntity {
    * New 15.04 - metadata for information
    */
   for: FormulaV1CtxMetadataFor;
+
+  /** New v20.01 - is new information */
+  isNew: boolean;
+  /** New v20.01 - is copy information */
+  isCopy: boolean;
 }
 
 export interface FormulaV1CtxMetadataFor {

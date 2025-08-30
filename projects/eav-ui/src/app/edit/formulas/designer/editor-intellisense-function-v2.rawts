@@ -161,7 +161,11 @@ declare interface FormulaContext {
         string?: string;
         /** The GUID-key if it uses GUIDs, otherwise null */
         guid?: string;
-      }
+      },
+      /** this is a new entity */
+      isNew: boolean;
+      /** this is a copy, note that isNew will also be true */
+      isCopy: boolean;
     };
     name: string;
     /** The entity type name */
