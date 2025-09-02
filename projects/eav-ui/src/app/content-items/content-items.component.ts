@@ -323,9 +323,7 @@ export class ContentItemsComponent implements OnInit {
         headerName: 'Item (Entity)',
         field: '_Title',
         flex: 2,
-        cellRenderer: (p: { data: ContentItem, }) => p.data.Id > 0 || this.isDebug()
-          ? AgGridHelper.cellLink(this.#urlToOpenEditView(p.data), p.data._Title)
-          : p.data._Title + ' <em>shared view</em>' + this.isDebug(),
+        cellRenderer: (p: { data: ContentItem, }) => AgGridHelper.cellLink(this.#urlToOpenEditView(p.data), p.data._Title),
       },
       {
         headerName: 'Stats',

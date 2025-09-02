@@ -194,9 +194,7 @@ export class ViewsComponent implements OnInit {
           field: 'Name',
           cellClass: 'primary-action highlight'.split(' '),
           sort: 'asc',
-          cellRenderer: (p: { data: View, }) => p.data.Id > 0 || this.#isDebug()
-            ? AgGridHelper.cellLink(this.#urlToOpenEditView(p.data), p.data.Name)
-            : p.data.Name + ' <em>shared view</em>',
+          cellRenderer: (p: { data: View, }) => AgGridHelper.cellLink(this.#urlToOpenEditView(p.data), p.data.Name),
         },
         {
           ...ColumnDefinitions.ItemsText,

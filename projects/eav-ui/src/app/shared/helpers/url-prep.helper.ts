@@ -171,7 +171,7 @@ function fields2UrlParams(fields: string) {
 
 function isNumber(maybeNumber: string): boolean {
   // The regex must be re-created for each test
-  return /^[0-9]*$/g.test(maybeNumber);
+  return /^-?[0-9]*$/g.test(maybeNumber);
 }
 
 export function convertUrlToForm(formUrl: string) {
