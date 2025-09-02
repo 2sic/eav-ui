@@ -154,7 +154,7 @@ export class WebApiComponent implements OnInit {
         },
         {
           ...ColumnDefinitions.TextWideMin100,
-          headerName: 'Forder2',
+          headerName: 'Folder',
           field: 'folder',
           sort: 'asc',
         },
