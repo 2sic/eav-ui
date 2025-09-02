@@ -1,6 +1,6 @@
 import polymorphLogo from '!url-loader!./polymorph-logo.png';
 import { GridOptions } from '@ag-grid-community/core';
-import { ChangeDetectorRef, Component, computed, OnInit, signal, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, computed, inject, OnInit, signal, ViewContainerRef } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogActions } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -24,6 +24,7 @@ import { EditForm, EditPrep } from '../../shared/models/edit-form.model';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogInNewWindowService } from '../../shared/routing/dialog-in-new-window.service';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
+import { GlobalConfigService } from '../../shared/services/global-config.service';
 import { View, ViewEntity } from '../models/view.model';
 import { DialogConfigAppService } from '../services/dialog-config-app.service';
 import { ViewsService } from '../services/views.service';
@@ -51,6 +52,12 @@ import { calculateViewType } from './views.helpers';
 })
 export class ViewsComponent implements OnInit {
 
+  #isDebug = inject(GlobalConfigService).isDebug;
+  #snackBar = inject(MatSnackBar);
+  #matDialog = inject(MatDialog);
+  #viewContainerRef = inject(ViewContainerRef);
+  #changeDetectorRef = inject(ChangeDetectorRef);
+
   #dialogInNewWindowSvc = transient(DialogInNewWindowService);
   #viewsSvc = transient(ViewsService);
   #dialogConfigSvc = transient(DialogConfigAppService);
@@ -64,13 +71,7 @@ export class ViewsComponent implements OnInit {
   polymorphLogo = polymorphLogo;
   gridOptions = this.#buildGridOptions();
 
-
-  constructor(
-    private snackBar: MatSnackBar,
-    private matDialog: MatDialog,
-    private viewContainerRef: ViewContainerRef,
-    private changeDetectorRef: ChangeDetectorRef,
-  ) { }
+  constructor() { }
 
   refresh = signal(1); // must start with 1 so it can be chained in computed as ...refresh() && ...
   views = this.#viewsSvc.getAllLive(this.refresh).value;
@@ -173,7 +174,7 @@ export class ViewsComponent implements OnInit {
 
     // Helper function for actions in the table below
     const openLightSpeedFeatInfo = () =>
-      openFeatureDialog(this.matDialog, FeatureNames.LightSpeed, this.viewContainerRef, this.changeDetectorRef);
+      openFeatureDialog(this.#matDialog, FeatureNames.LightSpeed, this.#viewContainerRef, this.#changeDetectorRef);
 
     const gridOptions: GridOptions = {
       ...defaultGridOptions,
@@ -193,7 +194,7 @@ export class ViewsComponent implements OnInit {
           field: 'Name',
           cellClass: 'primary-action highlight'.split(' '),
           sort: 'asc',
-          cellRenderer: (p: { data: View, }) => p.data.Id > 0
+          cellRenderer: (p: { data: View, }) => p.data.Id > 0 || this.#isDebug()
             ? AgGridHelper.cellLink(this.#urlToOpenEditView(p.data), p.data.Name)
             : p.data.Name + ' <em>shared view</em>',
         },
@@ -349,7 +350,7 @@ export class ViewsComponent implements OnInit {
   }
 
   async #deleteView(view: View) {
-    this.matDialog.open(ConfirmDeleteDialogComponent, {
+    this.#matDialog.open(ConfirmDeleteDialogComponent, {
       autoFocus: false,
       data: {
         entityId: view.Id,
@@ -357,19 +358,19 @@ export class ViewsComponent implements OnInit {
         message: "Delete View?",
         hasDeleteSnackbar: true
       } as ConfirmDeleteDialogData,
-      viewContainerRef: this.viewContainerRef,
+      viewContainerRef: this.#viewContainerRef,
       width: '400px',
     }).afterClosed().subscribe(isConfirmed => {
       if (!isConfirmed) return;
 
       this.#viewsSvc.delete(view.Id).then(status => {
         if (status >= 200 && status < 300) {
-          this.snackBar.open('Deleted', null, { duration: 2000 });
+          this.#snackBar.open('Deleted', null, { duration: 2000 });
           this.#triggerRefresh();
         }
       }).catch(error => {
         console.error('Error deleting view:', error);
-        this.snackBar.open('Error deleting view', null, { duration: 2000 });
+        this.#snackBar.open('Error deleting view', null, { duration: 2000 });
       });
     });
   }
