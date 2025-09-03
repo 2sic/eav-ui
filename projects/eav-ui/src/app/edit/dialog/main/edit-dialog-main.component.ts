@@ -143,7 +143,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
 
     // Dialog Data 
     this.isReturnValueMode = dialogData?.returnValue;
-    
+
     // Initialize default user preferences for footer show/hide
     const pref = this.#prefManager;
     if (pref.data().pinned == null)
@@ -389,9 +389,9 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
     this.dialog.keydownEvents().subscribe(event => {
       if (isEscape(event))
         return this.closeDialog();
-      
-      const canSave = !this.formsStateService.readOnly().isReadOnly 
-              && !this.#entityFormStateService.isSaving();
+
+      const canSave = !this.formsStateService.readOnly().isReadOnly
+        && !this.#entityFormStateService.isSaving();
 
       if (isCtrlS(event) && canSave) {
         event.preventDefault();
