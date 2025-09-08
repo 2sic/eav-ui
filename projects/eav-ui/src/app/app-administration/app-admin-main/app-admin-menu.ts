@@ -79,7 +79,7 @@ export const AppAdminMenu: NavItem[] = [
         tippy: 'Export parts of this App'
       },
       {
-        name: 'Imports Parts',
+        name: 'Import Parts',
         path: 'import-parts',
         icon: 'cloud_upload',
         tippy: 'Import parts of this App'

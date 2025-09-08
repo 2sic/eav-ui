@@ -117,8 +117,8 @@ export class DataBundlesComponent {
 
     const countEntitiesAndContentTypes = (guid: string) => {
       const result = queryResults.find((result: BundleQuery) => result.Guid === guid)?.Result || [];
-      const entityCount = result.filter((item: ContentItem) => item.TypeName == "ContentType").length;
-      const contentTypeCount = result.filter((item: ContentItem) => item.TypeName != "ContentType").length;
+      const contentTypeCount = result.filter((item: ContentItem) => item.TypeName == "ContentType").length;
+      const entityCount = result.filter((item: ContentItem) => item.TypeName != "ContentType").length;
       return { entityCount, contentTypeCount };
     };
 

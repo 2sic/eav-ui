@@ -54,6 +54,8 @@ const logSpecs = {
 /**
  * Class which is an HTML element containing the WYSIWYG editor.
  * It is registered as a custom-element in the browser (below)
+ * Start dev-wysiwyg
+ * connectedCallback call by FieldStringWysiwyg
  */
 export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomInputField<string> {
 
@@ -93,6 +95,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   }
 
   /** This will be called by the system once the data is ready */
+  // connectedCallback call by FieldStringWysiwyg
   connectedCallback(): void {
     if (this.fieldInitialized)
       return;
@@ -143,10 +146,17 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
 
   /** This will initialized an instance of an editor. Everything else is kind of global. */
   #tinyMceSetup(editor: Editor, rawEditorOptions: RawEditorOptionsExtended): void {
+
+    // Capture Ctrl + Enter to prevent inserting a line break in the WYSIWYG editor 
+    editor.on('keydown', (event: KeyboardEvent) => {
+      if (event.ctrlKey && event.key === "Enter")
+        event.preventDefault();
+    });
+
     const pasteImage = this.connector._experimental.isFeatureEnabled['PasteImageFromClipboard'];
     this.#editor = editor;
     editor.on('init', _event => {
-      const l = this.log.fnIf('TinyMceInitialized', {editor});
+      const l = this.log.fnIf('TinyMceInitialized', { editor });
       this.reconfigure?.editorOnInit?.(editor);
 
       new AddEverythingToRegistry({

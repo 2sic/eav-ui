@@ -1,0 +1,6 @@
+@import '../../../../styles/variables.scss';
+
+a,
+a mat-icon {
+  color: $external-link !important;
+}

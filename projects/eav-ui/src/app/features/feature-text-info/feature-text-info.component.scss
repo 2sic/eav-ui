@@ -1,3 +1,9 @@
+@import '../../../styles/variables.scss';
+
+* {
+  color: $sxc-solid !important;
+}
+
 .feature-text-info {
   display: flex;
   flex-direction: row;

@@ -1,6 +1,9 @@
-// .title-slider {
-//   display: flex;
-//   align-items: center;
-//   gap: 10px;
-// }
+@import '../../../../styles/variables.scss';
 
+button {
+  color: $sxc-solid !important;
+}
+
+button:disabled {
+  color: $text-disabled !important;
+}

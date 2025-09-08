@@ -75,6 +75,11 @@ export class ContentItemsComponent implements OnInit {
   log = classLog({ ContentItemsComponent }, logSpecs);
 
   isDebug = inject(GlobalConfigService).isDebug;
+  #snackBar = inject(MatSnackBar);
+  #matDialog = inject(MatDialog);
+  #viewContainerRef = inject(ViewContainerRef);
+  #changeDetectorRef = inject(ChangeDetectorRef);
+  #dialog = inject(MatDialogRef<ContentItemsComponent>);
 
   #entitiesSvc = transient(EntityEditService);
   #contentExportSvc = transient(ContentExportService);
@@ -82,13 +87,7 @@ export class ContentItemsComponent implements OnInit {
   #contentTypesSvc = transient(ContentTypesService);
   #dialogRouter = transient(DialogRoutingService);
 
-  constructor(
-    private dialog: MatDialogRef<ContentItemsComponent>,
-    private snackBar: MatSnackBar,
-    private matDialog: MatDialog,
-    private viewContainerRef: ViewContainerRef,
-    private changeDetectorRef: ChangeDetectorRef,
-  ) { }
+  constructor() { }
 
   gridOptions: GridOptions = {
     ...defaultGridOptions,
@@ -137,7 +136,7 @@ export class ContentItemsComponent implements OnInit {
   }
 
   closeDialog() {
-    this.dialog.close();
+    this.#dialog.close();
   }
 
   onGridReady(params: GridReadyEvent) {
@@ -270,9 +269,9 @@ export class ContentItemsComponent implements OnInit {
   }
 
   createMetadata() {
-    const metadataDialogRef = this.matDialog.open(CreateMetadataDialogComponent, {
+    const metadataDialogRef = this.#matDialog.open(CreateMetadataDialogComponent, {
       autoFocus: false,
-      viewContainerRef: this.viewContainerRef,
+      viewContainerRef: this.#viewContainerRef,
       width: '650px',
     });
     metadataDialogRef.afterClosed().subscribe((itemFor: MetadataInfo) => {
@@ -283,13 +282,13 @@ export class ContentItemsComponent implements OnInit {
       };
       const formUrl = convertFormToUrl(form);
       this.#dialogRouter.navRelative([`edit/${formUrl}`]);
-      this.changeDetectorRef.markForCheck();
+      this.#changeDetectorRef.markForCheck();
     });
   }
 
   debugFilter() {
     console.warn('Current filter:', this.#gridApiSig().getFilterModel());
-    this.snackBar.open('Check console for filter information', undefined, { duration: 3000 });
+    this.#snackBar.open('Check console for filter information', undefined, { duration: 3000 });
   }
 
   #buildColumnDefs(columns: Field[]) {
@@ -406,7 +405,7 @@ export class ContentItemsComponent implements OnInit {
 
   // Show initial delete confirmation
   #delete(item: ContentItem) {
-    this.snackBar.open('Deleting...');
+    this.#snackBar.open('Deleting...');
     this.#confirmAndExecuteDelete(
       item,
       "Delete Item?",
@@ -433,10 +432,10 @@ export class ContentItemsComponent implements OnInit {
       hasDeleteSnackbar: true 
     };
 
-    this.matDialog.open(ConfirmDeleteDialogComponent, {
+    this.#matDialog.open(ConfirmDeleteDialogComponent, {
       autoFocus: false,
       data: dialogData,
-      viewContainerRef: this.viewContainerRef,
+      viewContainerRef: this.#viewContainerRef,
       width: '400px',
     }).afterClosed().subscribe(isConfirmed => {
       if (!isConfirmed) return;
@@ -445,14 +444,14 @@ export class ContentItemsComponent implements OnInit {
       this.#entitiesSvc.delete(this.#contentTypeStaticName, item._RepositoryId, forceDelete)
         .subscribe({
           next: () => {
-            this.snackBar.open('Deleted', null, { duration: 2000 });
+            this.#snackBar.open('Deleted', null, { duration: 2000 });
             this.fetchItems();
           },
           error: (err: HttpErrorResponse) => {
             // Only show force delete option if this was a regular delete attempt
             // Open Dialog to confirm force delete
             if (!forceDelete) {
-              this.snackBar.dismiss();
+              this.#snackBar.dismiss();
               this.#confirmAndExecuteDelete(
                 item,
                 `${err.error.ExceptionMessage} \n\nDo you want to force delete`,

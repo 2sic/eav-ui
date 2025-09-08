@@ -10,15 +10,16 @@ import { computedObj } from '../../../shared/signals/signal.utilities';
 import { FeatureDetailsDialogData } from './feature-details-dialog.models';
 
 @Component({
-    selector: 'app-feature-details-dialog',
-    templateUrl: './feature-details-dialog.component.html',
-    imports: [
-        MatButtonModule,
-        MatIconModule,
-        SafeHtmlPipe,
-        TranslateModule,
-        MatDialogActions,
-    ]
+  selector: 'app-feature-details-dialog',
+  templateUrl: './feature-details-dialog.component.html',
+  styleUrls: ['./feature-details-dialog.component.scss'],
+  imports: [
+    MatButtonModule,
+    MatIconModule,
+    SafeHtmlPipe,
+    TranslateModule,
+    MatDialogActions,
+  ]
 })
 export class FeatureDetailsDialogComponent {
   specs = input<FeatureDetailsDialogData>();
@@ -28,10 +29,10 @@ export class FeatureDetailsDialogComponent {
     protected dialog: MatDialogRef<FeatureDetailsDialogComponent>,
   ) { }
 
-  protected mySpecs = computedObj('mySpecs', () =>  this.specs() ?? this.dialogSpecs );
+  protected mySpecs = computedObj('mySpecs', () => this.specs() ?? this.dialogSpecs);
   protected feature = computedObj('feature', () => this.mySpecs()?.feature);
   protected clipboard = transient(ClipboardService);
-  
+
   closeDialog() {
     this.dialog.close();
   }

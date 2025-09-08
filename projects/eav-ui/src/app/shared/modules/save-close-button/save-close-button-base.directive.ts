@@ -6,6 +6,8 @@ export abstract class SaveCloseButtonBase {
   /** Button label, can be a translation key or plain text */
   label = input<string>('Form.Buttons.SaveAndClose');
 
+  triggerOnFormSubmit = input<boolean>(false);
+
   /** Material icon name to show */
   icon = input<string>('done');
 
