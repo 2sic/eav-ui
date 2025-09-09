@@ -23,9 +23,9 @@ import { FieldState } from '../../field-state';
 export class PickerTextToggleComponent {
   csDisabled = input<boolean>();
   allowText = input<boolean>();
-  isTextMode = input(false);
+  isTextMode = input<boolean>(false);
 
-  showBoth = input(true);
+  showBoth = input<boolean>(true);
 
   pickerData = inject(FieldState).pickerData;
 
