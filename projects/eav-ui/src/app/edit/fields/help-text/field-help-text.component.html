@@ -1,7 +1,7 @@
 @if (show()) {
   <div class="my-main" [ngClass]="{
       'my-last-field': fieldState.config.isLastInGroup,
-      'my-hyperlink-wrapper-fix': hyperlinkDefaultWrapperFix && !fieldState.config.isLastInGroup,
+      'my-hyperlink-wrapper-fix': hyperlinkDefaultWrapperFix() && !fieldState.config.isLastInGroup,
       'small-gap': smallGap(),
     }"
   >

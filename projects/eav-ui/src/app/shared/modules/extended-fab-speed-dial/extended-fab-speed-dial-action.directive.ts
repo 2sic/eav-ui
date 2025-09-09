@@ -5,13 +5,13 @@ import { Directive, ElementRef, input, OnChanges, SimpleChanges } from '@angular
   selector: '[extended-fab-speed-dial-action]',
 })
 export class ExtendedFabSpeedDialActionDirective implements OnChanges {
-  disabled = input<boolean>(false);
+  _disabled = input<boolean>(false);
 
   constructor(private elementRef: ElementRef<HTMLElement>) { }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.disabled != null) {
-      this.elementRef.nativeElement.toggleAttribute('disabled', this.disabled());
+      this.elementRef.nativeElement.toggleAttribute('disabled', this._disabled());
     }
   }
 }
