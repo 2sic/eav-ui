@@ -43,4 +43,6 @@
         "source.fixAll.eslint": "explicit"
       }
     },
+    "window.border": "#6E2231",
+    "workbench.editor.highlightModifiedTabs": false,
 }
