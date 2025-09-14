@@ -1,7 +1,7 @@
 <div appToggleDebug class="eav-dialog nav-component-wrapper">
   <app-grid-with-help style="height: 100%" [helpText]="uxHelpText()" [refresh]="refresh()" [rowLength]="fields()?.length">
     <div class="eav-dialog-header" eav-dialog-header>
-      <div class="eav-dialog-header__title">{{ contentType()?.Label || contentType()?.Name }} Data</div>
+      <div class="eav-dialog-header__title">{{ contentType()?.Label || contentType()?.Name }} Fields</div>
       <button mat-icon-button tippy="Close dialog" (click)="dialog.close()">
         <mat-icon>close</mat-icon>
       </button>
