@@ -15,7 +15,7 @@
       style="margin-right: 24px"
       [label]="'LanguageSettings.LabelsAndTextsOptionLabel'"
       [tooltip]="'LanguageSettings.LabelsAndTextsTooltip'"
-      [optionType]="'form'"
+      [optionType]="LanguagePart.Form"
       [options]="options"
       [userLanguageSvc]="userLanguageSvc"
     ></app-language-dropdown>
@@ -23,7 +23,7 @@
     <app-language-dropdown
       [label]="'LanguageSettings.ButtonsAndControlsOptionLabel'"
       [tooltip]="'LanguageSettings.ButtonsAndControlsTooltip'"
-      [optionType]="'ui'"
+      [optionType]="LanguagePart.UI"
       [options]="options"
       [userLanguageSvc]="userLanguageSvc"
     ></app-language-dropdown>
@@ -31,7 +31,7 @@
     <app-language-dropdown
       [label]="'LanguageSettings.TranslatePrimaryOptionLabel'"
       [tooltip]="'LanguageSettings.TranslatePrimaryTooltip'"
-      [optionType]="'primaryTranslatable'"
+      [optionType]="LanguagePart.PrimaryTranslatable"
       [options]="options"
       [userLanguageSvc]="userLanguageSvc"
     ></app-language-dropdown>

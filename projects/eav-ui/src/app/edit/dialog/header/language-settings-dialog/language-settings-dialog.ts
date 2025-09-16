@@ -13,6 +13,7 @@ import { LanguageService } from '../../../localization/language.service';
 import { isCtrlEnter } from "../../main/keyboard-shortcuts";
 import { getLanguageOptions } from '../language-switcher/language-switcher.helpers';
 import { LanguageDropdownComponent } from "./LanguageDropdownComponent/language-dropdown.component";
+import { LanguagePart } from "./LanguageDropdownComponent/language-part.enum";
 
 @Component({
   selector: 'app-separate-languages-header',
@@ -33,6 +34,8 @@ import { LanguageDropdownComponent } from "./LanguageDropdownComponent/language-
 export class LanguageSettingsDialogComponent {
   /** Language SVC - to get list of all possible languages */
   #languageSvc = inject(LanguageService);
+
+  LanguagePart = LanguagePart;
 
   /** User language service - to get/set the current language */
   protected userLanguageSvc = transient(UserLanguageService);
