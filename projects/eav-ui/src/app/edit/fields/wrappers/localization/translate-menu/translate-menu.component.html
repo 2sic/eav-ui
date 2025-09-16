@@ -1,7 +1,6 @@
 <!-- DBG: {{ language().current }} | {{ disabled() }} -->
 
-@if (language().current !== language().primary)
-{
+@if (language().current !== language().primary || translatePrimaryLanguage()) {
   <div class="my-flex-main">
     <div class="my-flex-inside eav-shared-languages-container" [ngClass]="translationStateClass()">
       <div class="eav-shared-languages mat-caption" [ngClass]="{ 'eav-shared-languages--disabled': disabled() }">
@@ -26,10 +25,12 @@
           {{ 'LangMenu.AutoTranslate' | translate }}
           <app-feature-icon-indicator [featureNameId]="'EditUiTranslateWithGoogle'"></app-feature-icon-indicator>
         </button>
-        <button mat-menu-item (click)="dontTranslate()"
-          [ngClass]="{ 'eav-menu-item-selected':translationState().linkType === TranslationLinks.DontTranslate }">
-          {{ 'LangMenu.NoTranslate' | translate }}
-        </button>
+        @if(language().current !== language().primary) {
+          <button mat-menu-item (click)="dontTranslate()"
+            [ngClass]="{ 'eav-menu-item-selected':translationState().linkType === TranslationLinks.DontTranslate }">
+            {{ 'LangMenu.NoTranslate' | translate }}
+          </button>
+        }
         <button mat-menu-item (click)="openTranslateMenuDialog(translationState())"
           [ngClass]="{ 'eav-menu-item-selected':translationState().language !== '' }">
           {{ 'LangMenu.Link' | translate }}

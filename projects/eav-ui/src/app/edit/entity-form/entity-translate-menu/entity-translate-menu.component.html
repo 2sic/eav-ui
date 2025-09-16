@@ -14,7 +14,9 @@
           {{ 'LangMenu.AutoTranslateAll' | translate }}
           <app-feature-icon-indicator [featureNameId]="'EditUiTranslateWithGoogle'"></app-feature-icon-indicator>
         </button>
-        <button mat-menu-item (click)="lockAll()">{{ 'LangMenu.NoTranslateAll' | translate }}</button>
+        @if(language().current !== language().primary) {
+          <button mat-menu-item (click)="lockAll()">{{ 'LangMenu.NoTranslateAll' | translate }}</button>
+        }
       </ng-template>
     </mat-menu>
   </div>
