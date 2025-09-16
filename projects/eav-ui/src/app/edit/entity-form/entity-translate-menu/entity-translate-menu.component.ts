@@ -1,5 +1,5 @@
 import { UpperCasePipe } from '@angular/common';
-import { Component, computed, inject, input, ViewContainerRef } from '@angular/core';
+import { Component, computed, inject, input, signal, ViewContainerRef } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -17,17 +17,17 @@ import { FieldsTranslateService } from '../../state/fields-translate.service';
 import { ItemService } from '../../state/item.service';
 
 @Component({
-    selector: 'app-entity-translate-menu',
-    templateUrl: './entity-translate-menu.component.html',
-    styleUrls: ['./entity-translate-menu.component.scss'],
-    imports: [
-        MatButtonModule,
-        MatMenuModule,
-        MatIconModule,
-        FeatureIconIndicatorComponent,
-        UpperCasePipe,
-        TranslateModule,
-    ]
+  selector: 'app-entity-translate-menu',
+  templateUrl: './entity-translate-menu.component.html',
+  styleUrls: ['./entity-translate-menu.component.scss'],
+  imports: [
+    MatButtonModule,
+    MatMenuModule,
+    MatIconModule,
+    FeatureIconIndicatorComponent,
+    UpperCasePipe,
+    TranslateModule,
+  ]
 })
 export class EntityTranslateMenuComponent {
   entityGuid = input<string>();
@@ -60,6 +60,7 @@ export class EntityTranslateMenuComponent {
   }, SignalEquals.bool);
 
   language = this.eavService.language;
+  translatePrimaryLanguage = signal<boolean>(false);
 
   unlockAll() {
     this.fieldTranslateSvc.toggleUnlockOnAll(true);
@@ -105,5 +106,4 @@ export class EntityTranslateMenuComponent {
       });
     }
   }
-
 }

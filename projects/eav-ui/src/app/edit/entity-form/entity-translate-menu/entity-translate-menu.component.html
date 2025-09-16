@@ -1,5 +1,4 @@
-@if (language().current !== language().primary)
-{
+@if (language().current !== language().primary || translatePrimaryLanguage()) {
   <div>
     <button mat-button [disabled]="readOnly().isReadOnly || slotIsEmpty()" [matMenuTriggerFor]="menu">
       <span class="my-flex-inside">

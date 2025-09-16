@@ -140,6 +140,4 @@ export class FormulaEngine {
     }
     return { fieldsProps, valueUpdates, fieldUpdates };
   }
-
 }
-
