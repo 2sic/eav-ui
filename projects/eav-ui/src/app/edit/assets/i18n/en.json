@@ -317,6 +317,8 @@
     "LabelsAndTextsOptionLabel": "Form Labels and Help Texts",
     "LabelsAndTextsTooltip": "Preferred language for texts and labels in the form",
     "TranslatePrimaryOptionLabel": "Show Language Menus in Primary Language",
-    "TranslatePrimaryTooltip": "Shows the Language Menus also in the Primary Language"
+    "TranslatePrimaryTooltip": "Shows the Language Menus also in the Primary Language",
+    "ActivatedOption": "Activated",
+    "DeactivatedOption": "Deactivated"
   }
 }

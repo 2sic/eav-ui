@@ -263,6 +263,8 @@
     "LabelsAndTextsOptionLabel": "Formularbeschriftungen und Hilfetexte",
     "LabelsAndTextsTooltip": "Bevorzugte Sprache für Texte und Beschriftungen in Formularen",
     "TranslatePrimaryOptionLabel": "Sprachmenus in Hauptsprache anzeigen",
-    "TranslatePrimaryTooltip": "Zeigt die Sprachmenüs auch in der Hauptsprache an"
+    "TranslatePrimaryTooltip": "Zeigt die Sprachmenüs auch in der Hauptsprache an",
+    "ActivatedOption": "Aktiviert",
+    "DeactivatedOption": "Deaktiviert"
   }
 }

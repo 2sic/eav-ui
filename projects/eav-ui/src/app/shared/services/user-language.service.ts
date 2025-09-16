@@ -5,7 +5,8 @@ import { StateManagerLocal } from '../user/state-manager';
 
 const storeKey = 'user-language';
 
-@Injectable()
+
+@Injectable({ providedIn: 'root' })
 export class UserLanguageService {
 
   constructor() { }
@@ -43,8 +44,26 @@ export class UserLanguageService {
     return this.#config(LanguagePart.UI, fallback)?.language?.toLocaleLowerCase().split('-')[0];
   }
 
-  primaryTranslatableCode(): boolean {
-    return false;
+  /**
+   * Return true/false for the PrimaryTranslatable option.
+   * If nothing stored, returns false.
+   */
+  primaryTranslatableEnabled(): boolean {
+    const stored = this.stored(LanguagePart.PrimaryTranslatable);
+    if (stored === null || stored === undefined) return false;
+    // stored might already be boolean serialized as string 'true'/'false'
+    if (typeof stored === 'string') {
+      return stored.toLowerCase() === 'true';
+    }
+    return !!stored;
+  }
+
+  /**
+   * Save the PrimaryTranslatable boolean flag.
+   * Stored as string 'true' or 'false' to keep compatibility with existing StateManagerLocal.
+   */
+  savePrimaryTranslatable(enabled: boolean) {
+    this.save(LanguagePart.PrimaryTranslatable, enabled ? 'true' : 'false');
   }
 
   isForced(part: LanguagePart): boolean {

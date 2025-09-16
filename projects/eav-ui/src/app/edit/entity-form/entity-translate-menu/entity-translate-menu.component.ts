@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { TranslateModule } from '@ngx-translate/core';
 import { FeatureIconIndicatorComponent } from '../../../features/feature-icon-indicator/feature-icon-indicator.component';
+import { UserLanguageService } from '../../../shared/services/user-language.service';
 import { SignalEquals } from '../../../shared/signals/signal-equals';
 import { TranslateMenuDialogConfig, TranslateMenuDialogData } from '../../fields/wrappers/localization/translate-menu-dialog/translate-menu-dialog.models';
 import { FormConfigService } from '../../form/form-config.service';
@@ -35,6 +36,11 @@ export class EntityTranslateMenuComponent {
   private formsStateService = inject(FormsStateService);
   protected readOnly = this.formsStateService.readOnly;
 
+  private userLanguageSvc = inject(UserLanguageService);
+
+  language = this.eavService.language;
+  translatePrimaryLanguage = signal<boolean>(false);
+
   constructor(
     private matDialog: MatDialog,
     private itemService: ItemService,
@@ -43,24 +49,22 @@ export class EntityTranslateMenuComponent {
     private viewContainerRef: ViewContainerRef,
     private fieldSettingsSvc: FieldsSettingsService,
   ) {
-    // debug...
-    // effect(() => {
-    //   console.log(`2dm ${this.entityGuid()} slotIsEmpty:` + this.slotIsEmpty());
-    //   console.log(`2dm autoTranslatableFields:` + this.#autoTranslatableFields());
-    // });
+    // initialize translatePrimaryLanguage from persisted value
+    this.translatePrimaryLanguage.set(this.userLanguageSvc.primaryTranslatableEnabled());
+  }
+
+  setTranslatePrimary(enabled: boolean) {
+    this.translatePrimaryLanguage.set(!!enabled);
+    this.userLanguageSvc.savePrimaryTranslatable(!!enabled);
   }
 
   #autoTranslatableFields = computed(() => {
-    // console.log(`2dm #AutoTrans:`, val, (this.fieldsTranslateService as any).entityGuid);
     return this.fieldTranslateSvc.findAutoTranslatableFields();
   });
 
   protected slotIsEmpty = computed(() => {
     return this.itemService.slotIsEmpty(this.entityGuid())();
   }, SignalEquals.bool);
-
-  language = this.eavService.language;
-  translatePrimaryLanguage = signal<boolean>(false);
 
   unlockAll() {
     this.fieldTranslateSvc.toggleUnlockOnAll(true);

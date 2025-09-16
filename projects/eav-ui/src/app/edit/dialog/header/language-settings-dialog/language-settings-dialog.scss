@@ -1,3 +1,11 @@
 mat-form-field {
+  width: 50%;
+}
+
+.language-dropdowns {
+  display: flex;
+  flex-direction: row;
   width: 100%;
+  gap: 1rem;
+  margin-bottom: 1rem;
 }

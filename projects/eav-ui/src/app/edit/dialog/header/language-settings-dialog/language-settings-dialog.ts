@@ -51,6 +51,14 @@ export class LanguageSettingsDialogComponent {
     this.#watchKeyboardShortcuts();
   }
 
+  get selectedValue(): boolean {
+    return !!this.userLanguageSvc.primaryTranslatableEnabled();
+  }
+
+  onSelectionChange(event: any) {
+    this.userLanguageSvc.savePrimaryTranslatable(!!event.value);
+  }
+
   closeDialog() {
     this.dialog.close();
   }
