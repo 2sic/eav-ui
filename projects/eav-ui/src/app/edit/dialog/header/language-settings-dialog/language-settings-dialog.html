@@ -27,6 +27,14 @@
       [options]="options"
       [userLanguageSvc]="userLanguageSvc"
     ></app-language-dropdown>
+    
+    <app-language-dropdown
+      [label]="'LanguageSettings.TranslatePrimaryOptionLabel'"
+      [tooltip]="'LanguageSettings.TranslatePrimaryTooltip'"
+      [optionType]="'primaryTranslatable'"
+      [options]="options"
+      [userLanguageSvc]="userLanguageSvc"
+    ></app-language-dropdown>
   </div>
   <mat-dialog-actions align="end">
     <app-save-close-button-fab

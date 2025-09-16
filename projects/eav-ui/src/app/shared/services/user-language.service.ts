@@ -4,10 +4,9 @@ import { StateManagerLocal } from '../user/state-manager';
 
 const storeKey = 'user-language';
 
-const uiKey = 'ui';
-const formKey = 'form';
+const uiKey = 'ui', formKey = 'form', primaryTranslatableKey = 'primaryTranslatable';
 
-type possibleKeys = typeof uiKey | typeof formKey;
+type possibleKeys = typeof uiKey | typeof formKey | typeof primaryTranslatableKey;
 
 @Injectable()
 export class UserLanguageService {

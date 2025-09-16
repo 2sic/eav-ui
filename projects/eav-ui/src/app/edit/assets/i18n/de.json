@@ -261,6 +261,8 @@
     "ButtonsAndControlsOptionLabel": "Schaltflächen und Steuerelemente",
     "ButtonsAndControlsTooltip": "Bevorzugte Sprache für Schaltflächen und Steuerelemente",
     "LabelsAndTextsOptionLabel": "Formularbeschriftungen und Hilfetexte",
-    "LabelsAndTextsTooltip": "Bevorzugte Sprache für Texte und Beschriftungen in Formularen"
+    "LabelsAndTextsTooltip": "Bevorzugte Sprache für Texte und Beschriftungen in Formularen",
+    "TranslatePrimaryOptionLabel": "Sprachmenus in Hauptsprache anzeigen",
+    "TranslatePrimaryTooltip": "Zeigt die Sprachmenüs auch in der Hauptsprache an"
   }
 }

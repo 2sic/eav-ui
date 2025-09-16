@@ -7,6 +7,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { TranslateModule } from '@ngx-translate/core';
 import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
+import { UserLanguageService } from 'projects/eav-ui/src/app/shared/services/user-language.service';
+import { LanguageOption } from '../../language-switcher/language-switcher.helpers';
 
 @Component({
   selector: 'app-language-dropdown',
@@ -20,20 +22,20 @@ import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.
     MatFormFieldModule,
     MatSelectModule,
     TranslateModule
-]
+  ]
 })
 export class LanguageDropdownComponent {
   @Input() label: string;
   @Input() tooltip: string;
-  @Input() optionType: string;
-  @Input() options: any[];
-  @Input() userLanguageSvc: any;
+  @Input() optionType: 'form' | 'ui' | 'primaryTranslatable';
+  @Input() options: LanguageOption[];
+  @Input() userLanguageSvc: UserLanguageService;
 
   constructor() { }
 
   get selectedValue() {
-    return this.userLanguageSvc.isForced(this.optionType) 
-      ? this.userLanguageSvc.value(this.optionType) 
+    return this.userLanguageSvc.isForced(this.optionType)
+      ? this.userLanguageSvc.value(this.optionType)
       : this.userLanguageSvc.stored(this.optionType);
   }
 
