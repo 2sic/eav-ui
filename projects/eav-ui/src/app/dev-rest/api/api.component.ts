@@ -8,6 +8,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
@@ -34,34 +35,35 @@ const pathToApi = 'app/{appname}/{endpointPath}/{action}';
 
 
 @Component({
-    selector: 'app-dev-rest-api',
-    templateUrl: './api.component.html',
-    styleUrls: ['../dev-rest-all.scss', '../header-selector.scss'],
-    imports: [
-        MatButtonModule,
-        TippyDirective,
-        MatIconModule,
-        RouterOutlet,
-        SelectorWithHelpComponent,
-        MatFormFieldModule,
-        MatSelectModule,
-        MatOptionModule,
-        MatTabsModule,
-        DevRestApiIntroductionComponent,
-        DevRestTabIntroductionComponent,
-        DevRestTabExamplesComponent,
-        DevRestApiActionParamsComponent,
-        MatExpansionModule,
-        MatInputModule,
-        DevRestUrlsAndCodeComponent,
-        DevRestApiPermissionsComponent,
-        DevRestHttpHeadersComponent,
-        AsyncPipe,
-    ]
+  selector: 'app-dev-rest-api',
+  templateUrl: './api.component.html',
+  styleUrls: ['../dev-rest-all.scss', '../header-selector.scss', './api.component.scss'],
+  imports: [
+    MatButtonModule,
+    TippyDirective,
+    MatIconModule,
+    RouterOutlet,
+    SelectorWithHelpComponent,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatTabsModule,
+    MatProgressSpinnerModule,
+    DevRestApiIntroductionComponent,
+    DevRestTabIntroductionComponent,
+    DevRestTabExamplesComponent,
+    DevRestApiActionParamsComponent,
+    MatExpansionModule,
+    MatInputModule,
+    DevRestUrlsAndCodeComponent,
+    DevRestApiPermissionsComponent,
+    DevRestHttpHeadersComponent,
+    AsyncPipe,
+  ]
 })
 export class DevRestApiComponent extends DevRestBase<DevRestApiModel> implements OnDestroy {
 
-  log = classLog({DevRestApiComponent});
+  log = classLog({ DevRestApiComponent });
 
   @HostBinding('className') hostClass = 'dialog-component';
 
