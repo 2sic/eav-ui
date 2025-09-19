@@ -1,15 +1,13 @@
 <app-grid-with-help [helpText]="uxHelpText()" [refresh]="refresh()" [rowLength]="views()?.length">
-  @if (views()?.length) {
-    <ag-grid-angular
-      class="ag-theme-material"
-      [rowData]="views()"
-      [gridOptions]="gridOptions"
-      appDragAndDrop
-      [allowedFileTypes]="'json'"
-      (filesDropped)="importView($event)"
-    >
-    </ag-grid-angular>
-  }
+  <ag-grid-angular
+    class="ag-theme-material"
+    [rowData]="views()"
+    [gridOptions]="gridOptions"
+    appDragAndDrop
+    [allowedFileTypes]="'json'"
+    (filesDropped)="importView($event)"
+  >
+  </ag-grid-angular>
   <mat-dialog-actions class="eav-dialog-actions">
     <div class="eav-dialog-actions-div">
       <a [href]="urlToEditPolymorphisms()">

@@ -1,15 +1,13 @@
 <app-grid-with-help [helpText]="uxHelpText()" [refresh]="refresh()" [rowLength]="contentTypes()?.length">
-  @if (contentTypes()?.length) {
-    <ag-grid-angular
-      class="ag-theme-material "
-      [rowData]="contentTypes()"
-      [gridOptions]="gridOptions"
-      appDragAndDrop
-      [allowedFileTypes]="'xml,json'"
-      (filesDropped)="filesDropped($event)"
-    >
-    </ag-grid-angular>
-  }
+  <ag-grid-angular
+    class="ag-theme-material"
+    [rowData]="contentTypes()"
+    [gridOptions]="gridOptions"
+    appDragAndDrop
+    [allowedFileTypes]="'xml,json'"
+    (filesDropped)="filesDropped($event)"
+  >
+  </ag-grid-angular>
   <mat-dialog-actions class="eav-dialog-actions">
     <div class="eav-dialog-actions-div">
       <mat-form-field color="accent" class="eav-mat-form-field eav-scope-dropdown">
