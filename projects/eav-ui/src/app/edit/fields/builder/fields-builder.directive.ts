@@ -145,7 +145,6 @@ export class EditControlsBuilderDirective implements OnInit, OnDestroy {
     // this.log.a('createComponent - add component', { componentType });
     const componentRef = this.#generateAndAttachField(componentType, wrapperInfo.contentsRef, wrapperInfo.injectors);
 
-
     // generate the picker preview component if it exists
     const pickerPreviewContainerRef = (wrapperInfo.wrapperRef?.instance as PickerExpandableWrapperComponent)?.previewComponent;
     if (pickerPreviewContainerRef != null) {
@@ -173,7 +172,17 @@ export class EditControlsBuilderDirective implements OnInit, OnDestroy {
   }
 
   #generateAndAttachField(componentType: Type<any>, container: ViewContainerRef, injectors: InjectorBundle): ComponentRef<any> {
-    return container.createComponent(componentType, injectors); // Return the ComponentRef
+    const componentRef = container.createComponent(componentType, injectors);
+
+    // Prevent 'e' | 'E' (science notation) in <input type="number"> for "number-default"
+    if (componentType === InputComponents['number-default']) {
+      const inputEl = componentRef.location.nativeElement.querySelector('input[type="number"]');
+      inputEl?.addEventListener('keydown', (e: KeyboardEvent) => {
+        if (e.key?.toLowerCase() === 'e') e.preventDefault();
+      });
+    }
+
+    return componentRef;
   }
 
   #createWrappers(outerWrapper: DynamicControlInfo, wrappers: string[]): DynamicControlInfo {
@@ -200,7 +209,6 @@ export class EditControlsBuilderDirective implements OnInit, OnDestroy {
   }
 
 }
-
 
 class DynamicControlInfo {
   constructor(

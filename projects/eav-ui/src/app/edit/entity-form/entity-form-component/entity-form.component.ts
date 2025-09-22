@@ -42,28 +42,28 @@ const logSpecs = {
  * This wraps a single entity in the multi-entities-form.
  */
 @Component({
-    selector: 'app-edit-entity-form',
-    templateUrl: './entity-form.component.html',
-    styleUrls: ['./entity-form.component.scss'],
-    imports: [
-        MatCardModule,
-        MatIconModule,
-        MatButtonModule,
-        CdkDrag,
-        CdkDragHandle,
-        MatSlideToggleModule,
-        EntityTranslateMenuComponent,
-        ChangeAnchorTargetDirective,
-        EditControlsBuilderDirective,
-        TranslateModule,
-        TippyDirective,
-        SafeHtmlPipe,
-        MousedownStopPropagationDirective,
-    ]
+  selector: 'app-edit-entity-form',
+  templateUrl: './entity-form.component.html',
+  styleUrls: ['./entity-form.component.scss'],
+  imports: [
+    MatCardModule,
+    MatIconModule,
+    MatButtonModule,
+    CdkDrag,
+    CdkDragHandle,
+    MatSlideToggleModule,
+    EntityTranslateMenuComponent,
+    ChangeAnchorTargetDirective,
+    EditControlsBuilderDirective,
+    TranslateModule,
+    TippyDirective,
+    SafeHtmlPipe,
+    MousedownStopPropagationDirective,
+  ]
 })
 export class EntityFormComponent implements OnInit, AfterViewChecked, OnDestroy {
 
-  log = classLog({EntityFormComponent}, logSpecs);
+  log = classLog({ EntityFormComponent }, logSpecs);
 
   @ViewChild('noteTrigger', { read: ElementRef }) private noteTriggerRef?: ElementRef<HTMLButtonElement>;
   @ViewChild('noteTemplate') private noteTemplateRef?: TemplateRef<undefined>;
