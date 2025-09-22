@@ -32,8 +32,8 @@
               <mat-expansion-panel-header>
                 <mat-panel-title>Version {{ historyItem.versionNumber }}</mat-panel-title>
                 
-                <mat-panel-description [tippy]="historyItem.timeStamp | date:'yyyy-MM-dd hh:mm UTC':'UTC'">
-                  {{ getLocalDate(historyItem.timeStamp) | date:'yyyy-MM-dd hh:mm':'UTC' }}
+                <mat-panel-description [tippy]="getLocalDate(historyItem.timeStamp) | date:'yyyy-MM-dd HH:mm'">
+                  {{ getLocalDate(historyItem.timeStamp) | date:'yyyy-MM-dd HH:mm' }}
                 </mat-panel-description>
               </mat-expansion-panel-header>
               @if (expandedPanels[historyItem.versionNumber]) {
