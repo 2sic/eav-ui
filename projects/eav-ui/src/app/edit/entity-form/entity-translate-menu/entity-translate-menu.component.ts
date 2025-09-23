@@ -95,7 +95,7 @@ export class EntityTranslateMenuComponent {
     if (autoTransFields.length > 0) {
       const config: TranslateMenuDialogConfig = {
         entityGuid: this.entityGuid(),
-        fieldName: autoTransFields[0],
+        // intentionally no fieldName for "many" mode
       }
       const dialogData: TranslateMenuDialogData = {
         config,
@@ -139,12 +139,12 @@ export class EntityTranslateMenuComponent {
       return this.fieldTranslateSvc.showMessageNoTranslatableFields(true);
     }
 
-    // pick a representative field to provide default language/linkType for the dialog
+    // pick a representative field state to provide default language/linkType for the dialog
     const translationStateAny = this.fieldSettingsSvc.translationState[translatableFields[0]]();
 
+    // only pass the entity GUID in config for multi-field mode (no fieldName supplied)
     const config: TranslateMenuDialogConfig = {
       entityGuid: this.entityGuid(),
-      fieldName: translatableFields[0], // first field as representative
     };
 
     this.#openDialog(config, translationStateAny, translatableFields);

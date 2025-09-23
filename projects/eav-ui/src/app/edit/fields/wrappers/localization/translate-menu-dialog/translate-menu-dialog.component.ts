@@ -36,7 +36,11 @@ export class TranslateMenuDialogComponent extends TranslateHelperComponent {
     const attributes = this.itemAttributes();
     const translationState = this.translationStateSignal();
 
-    return getTemplateLanguages(this.dialogData.config, language, languages, attributes, translationState.linkType);
+    const fieldName = this.dialogData.isTranslateMany
+      ? this.dialogData.translatableFields?.[0] ?? ''
+      : this.dialogData.config.fieldName ?? '';
+
+    return getTemplateLanguages({ fieldName }, language, languages, attributes, translationState.linkType);
   });
 
   constructor(
@@ -100,7 +104,7 @@ export class TranslateMenuDialogComponent extends TranslateHelperComponent {
       }
     } else {
       // single-field behavior (existing)
-      applyToField(this.dialogData.config.fieldName);
+      applyToField(this.dialogData.config.fieldName!);
     }
 
     this.closeDialog();
