@@ -1,7 +1,7 @@
   <mat-card class="translate-menu-dialog-card u-hide-scrollbar">
     <mat-card-header>
       <mat-card-title>
-        {{ 'LangMenu.Dialog.Title' | translate: { name: dialogData.config.fieldName } }}
+        {{ 'LangMenu.Dialog.Title' | translate: { name: dialogData.config.fieldName || 'LangMenu.AllFields' | translate } }}
       </mat-card-title>
       <mat-card-subtitle>
         {{ 'LangMenu.Dialog.Intro' | translate }}
