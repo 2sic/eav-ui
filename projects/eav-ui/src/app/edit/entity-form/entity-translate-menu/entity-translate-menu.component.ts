@@ -8,11 +8,13 @@ import { TranslateModule } from '@ngx-translate/core';
 import { FeatureIconIndicatorComponent } from '../../../features/feature-icon-indicator/feature-icon-indicator.component';
 import { UserLanguageService } from '../../../shared/services/user-language.service';
 import { SignalEquals } from '../../../shared/signals/signal-equals';
+import { TranslateMenuDialogComponent } from '../../fields/wrappers/localization/translate-menu-dialog/translate-menu-dialog.component';
 import { TranslateMenuDialogConfig, TranslateMenuDialogData } from '../../fields/wrappers/localization/translate-menu-dialog/translate-menu-dialog.models';
 import { FormConfigService } from '../../form/form-config.service';
 import { FormsStateService } from '../../form/forms-state.service';
 import { AutoTranslateDisabledWarningDialog } from '../../localization/auto-translate-disabled-warning-dialog/auto-translate-disabled-warning-dialog.component';
 import { AutoTranslateMenuDialogComponent } from '../../localization/auto-translate-menu-dialog/auto-translate-menu-dialog.component';
+import { TranslationState } from '../../localization/translate-state.model';
 import { FieldsSettingsService } from '../../state/fields-settings.service';
 import { FieldsTranslateService } from '../../state/fields-translate.service';
 import { ItemService } from '../../state/item.service';
@@ -76,7 +78,7 @@ export class EntityTranslateMenuComponent {
 
   autoTranslateMany(): void {
     const autoTransFields = this.#autoTranslatableFields();
-    if (autoTransFields.length === 0) 
+    if (autoTransFields.length === 0)
       return this.fieldTranslateSvc.showMessageNoTranslatableFields(true);
 
     // Translation state of any field, to detect the languages
@@ -109,5 +111,26 @@ export class EntityTranslateMenuComponent {
         width: '400px',
       });
     }
+  }
+
+  openTranslateMenuDialog(translationState: TranslationState): void {
+    this.#openDialog(translationState, TranslateMenuDialogComponent);
+  }
+
+
+  #openDialog(translationState: TranslationState, component: any): void {
+    const dialogData: TranslateMenuDialogData = {
+      config: null,
+      translationState: {
+        language: translationState.language,
+        linkType: translationState.linkType,
+      },
+    };
+    this.matDialog.open(component, {
+      autoFocus: false,
+      data: dialogData,
+      viewContainerRef: this.viewContainerRef,
+      width: '400px',
+    });
   }
 }
