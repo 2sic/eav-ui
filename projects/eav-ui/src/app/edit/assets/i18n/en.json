@@ -308,7 +308,7 @@
     "ErrorNoAppResources": "Found no resources for {{ errComponent }}."
   },
   "LanguageSettings": {
-    "Title": "Language Settings (BETA)",
+    "Title": "Language Settings",
     "Intro": "By default, buttons and labels will use the current language. Here you can choose a different behavior.",
     "Subtitle": "Your Language Preferences",
     "UseCurrentLanguage": "Use current language (default)",
