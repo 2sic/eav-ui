@@ -36,7 +36,7 @@ export const AppAdminMenu: NavItem[] = [
   },
   {
     name: 'App Extensions (beta)',
-    path: 'app-extensions',
+    path: 'extensions',
     icon: 'extension',
     tippy: 'App Extensions (beta)',
   },

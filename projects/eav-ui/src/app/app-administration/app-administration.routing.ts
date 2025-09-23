@@ -177,7 +177,7 @@ export const appAdministrationRoutes: Routes = [
       },
       
       {
-        path: 'app-extensions',
+        path: 'extensions',
         loadComponent: () => import('./app-extensions/app-extensions.component').then(mod => mod.AppExtensionsComponent),
         data: { title: 'App Extensions', breadcrumb: "App Extensions" },
       },
