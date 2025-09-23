@@ -175,6 +175,12 @@ export const appAdministrationRoutes: Routes = [
         loadComponent: () => import('./copilot/page/copilot-page.component').then(mod => mod.CopilotPageComponent),
         data: CopilotSpecs.views,
       },
+      
+      {
+        path: 'app-extensions',
+        loadComponent: () => import('./app-extensions/app-extensions.component').then(mod => mod.AppExtensionsComponent),
+        data: { title: 'App Extensions', breadcrumb: "App Extensions" },
+      },
       {
         path: 'web-api',
         loadComponent: () => import('./web-api/web-api.component').then(mod => mod.WebApiComponent),

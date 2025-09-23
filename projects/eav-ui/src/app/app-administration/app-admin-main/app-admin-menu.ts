@@ -36,6 +36,12 @@ export const AppAdminMenu: NavItem[] = [
     ]
   },
   {
+    name: 'App Extensions',
+    path: 'app-extensions',
+    icon: 'extension',
+    tippy: 'App Extensions',
+  },
+  {
     name: 'Web API', path: 'web-api', icon: 'offline_bolt', tippy: 'WebApi',
     child: [
       {

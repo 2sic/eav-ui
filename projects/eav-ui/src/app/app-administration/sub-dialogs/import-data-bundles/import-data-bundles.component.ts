@@ -4,16 +4,14 @@ import { transient } from '../../../../../../core';
 import { FileUploadDialogComponent, FileUploadDialogData, UploadTypes } from '../../../shared/components/file-upload-dialog';
 import { DataBundlesService } from '../../import-export-menu/data-bundles/data-bundles.service';
 @Component({
-    selector: 'app-import-data-bundles',
-    templateUrl: './import-data-bundles.component.html',
-    imports: [
-        FileUploadDialogComponent,
-    ]
+  selector: 'app-import-data-bundles',
+  templateUrl: './import-data-bundles.component.html',
+  imports: [
+    FileUploadDialogComponent,
+  ]
 })
 export class ImportDataBundlesComponent {
-
   private dataBundlesService = transient(DataBundlesService);
-
 
   uploadType = UploadTypes.ContentType;
 
@@ -24,5 +22,4 @@ export class ImportDataBundlesComponent {
     dialogData.multiple ??= true;
     dialogData.upload$ ??= (files) => this.dataBundlesService.import(files);
   }
-
 }
