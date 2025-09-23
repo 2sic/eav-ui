@@ -1,11 +1,12 @@
 import { UpperCasePipe } from '@angular/common';
-import { Component, computed, inject, input, ViewContainerRef } from '@angular/core';
+import { Component, computed, inject, input, signal, ViewContainerRef } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { TranslateModule } from '@ngx-translate/core';
 import { FeatureIconIndicatorComponent } from '../../../features/feature-icon-indicator/feature-icon-indicator.component';
+import { UserLanguageService } from '../../../shared/services/user-language.service';
 import { SignalEquals } from '../../../shared/signals/signal-equals';
 import { TranslateMenuDialogConfig, TranslateMenuDialogData } from '../../fields/wrappers/localization/translate-menu-dialog/translate-menu-dialog.models';
 import { FormConfigService } from '../../form/form-config.service';
@@ -17,23 +18,28 @@ import { FieldsTranslateService } from '../../state/fields-translate.service';
 import { ItemService } from '../../state/item.service';
 
 @Component({
-    selector: 'app-entity-translate-menu',
-    templateUrl: './entity-translate-menu.component.html',
-    styleUrls: ['./entity-translate-menu.component.scss'],
-    imports: [
-        MatButtonModule,
-        MatMenuModule,
-        MatIconModule,
-        FeatureIconIndicatorComponent,
-        UpperCasePipe,
-        TranslateModule,
-    ]
+  selector: 'app-entity-translate-menu',
+  templateUrl: './entity-translate-menu.component.html',
+  styleUrls: ['./entity-translate-menu.component.scss'],
+  imports: [
+    MatButtonModule,
+    MatMenuModule,
+    MatIconModule,
+    FeatureIconIndicatorComponent,
+    UpperCasePipe,
+    TranslateModule,
+  ]
 })
 export class EntityTranslateMenuComponent {
   entityGuid = input<string>();
 
   private formsStateService = inject(FormsStateService);
   protected readOnly = this.formsStateService.readOnly;
+
+  private userLanguageSvc = inject(UserLanguageService);
+
+  language = this.eavService.language;
+  translatePrimaryLanguage = signal<boolean>(false);
 
   constructor(
     private matDialog: MatDialog,
@@ -43,23 +49,22 @@ export class EntityTranslateMenuComponent {
     private viewContainerRef: ViewContainerRef,
     private fieldSettingsSvc: FieldsSettingsService,
   ) {
-    // debug...
-    // effect(() => {
-    //   console.log(`2dm ${this.entityGuid()} slotIsEmpty:` + this.slotIsEmpty());
-    //   console.log(`2dm autoTranslatableFields:` + this.#autoTranslatableFields());
-    // });
+    // initialize translatePrimaryLanguage from persisted value
+    this.translatePrimaryLanguage.set(this.userLanguageSvc.primaryTranslatableEnabled());
+  }
+
+  setTranslatePrimary(enabled: boolean) {
+    this.translatePrimaryLanguage.set(!!enabled);
+    this.userLanguageSvc.savePrimaryTranslatable(!!enabled);
   }
 
   #autoTranslatableFields = computed(() => {
-    // console.log(`2dm #AutoTrans:`, val, (this.fieldsTranslateService as any).entityGuid);
     return this.fieldTranslateSvc.findAutoTranslatableFields();
   });
 
   protected slotIsEmpty = computed(() => {
     return this.itemService.slotIsEmpty(this.entityGuid())();
   }, SignalEquals.bool);
-
-  language = this.eavService.language;
 
   unlockAll() {
     this.fieldTranslateSvc.toggleUnlockOnAll(true);
@@ -105,5 +110,4 @@ export class EntityTranslateMenuComponent {
       });
     }
   }
-
 }

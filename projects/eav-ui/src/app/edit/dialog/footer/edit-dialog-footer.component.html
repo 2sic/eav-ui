@@ -13,12 +13,16 @@
       <mat-icon>speed</mat-icon>
       <span>Logs</span>
     </button>
+    
     <div class="spacer"></div>
 
-    <!-- Special expand button when working with formulas, to get more space -->
+    <!-- Special expand button when footer is open -->
     @if (preferences().tab != null)
     {
-      <button mat-icon-button tippy="expand/shrink" (click)="toggleSize()">
+      <button mat-icon-button tippy="close" (click)="closeDialog()">
+        <mat-icon>close</mat-icon>
+      </button>
+      <button mat-icon-button [tippy]="preferences().expanded ? 'shrink' : 'expand'" (click)="toggleSize()">
         <mat-icon>{{ preferences().expanded ? 'unfold_less' : 'expand' }}</mat-icon>
       </button>
     }

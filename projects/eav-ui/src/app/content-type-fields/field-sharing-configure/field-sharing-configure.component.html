@@ -53,8 +53,11 @@
           <button
             mat-raised-button
             type="button"
-            class="eav-dialog-action-button"
-            [color]="state == sharingOrInheriting.Sharing ? 'accent' : ''"
+            [class]="
+              'eav-dialog-action-button'
+              + (state == sharingOrInheriting.Sharing
+                ? ' eav-action-button'
+                : '')"
             (click)="setShare()"
           >
             Share
@@ -63,8 +66,11 @@
           <button
             mat-raised-button
             type="button"
-            class="eav-dialog-action-button"
-            [color]="state == sharingOrInheriting.Inheriting ? 'accent' : ''"
+            [class]="
+              'eav-dialog-action-button'
+              + (state == sharingOrInheriting.Inheriting
+                ? ' eav-action-button'
+                : '')"
             (click)="startInherit()"
           >
             Inherit
@@ -118,7 +124,7 @@
         </div>
       }
     }
-    
+
     <app-feature-text-info [featureNameId]="requiredFeature" [asInfo]="true">
       <em> Even if the feature is not licensed, it will always work but show warnings. </em>
     </app-feature-text-info>

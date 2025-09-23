@@ -51,6 +51,13 @@ export class EditDialogFooterComponent {
     this.prefManager.setMany({ tab, expanded, size });
   }
 
+  closeDialog(): void {
+    const tab: Of<typeof DebugTypes> = null;
+    const expanded = false;
+    const size = 0;
+    this.prefManager.setMany({ tab, expanded, size });
+  }
+
   toggleSize(): void {
     const expanded = !this.preferences().expanded;
     const size = expanded ? 2 : 1;

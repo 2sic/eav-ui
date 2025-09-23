@@ -6,6 +6,7 @@ import { UserLanguageService } from '../../shared/services/user-language.service
 import { ComputedAnalyzer } from '../../shared/signals/computed-analyzer';
 import { ComputedCacheHelper } from '../../shared/signals/computed-cache';
 import { computedObj, signalObj } from '../../shared/signals/signal.utilities';
+import { LanguagePart } from '../dialog/header/language-settings-dialog/LanguageDropdownComponent/language-part.enum';
 import { PickerData } from '../fields/picker/picker-data';
 import { FormConfigService } from '../form/form-config.service';
 import { FormLanguageService } from '../form/form-language.service';
@@ -101,7 +102,7 @@ export class FieldsSettingsService {
     const reader = this.#reader();
 
     // Now first check if the user has a language set, and if so, use that.
-    const lblLang = this.#usrLangSvc.value('form');
+    const lblLang = this.#usrLangSvc.value(LanguagePart.Form);
     if (!lblLang)
       return reader;
     

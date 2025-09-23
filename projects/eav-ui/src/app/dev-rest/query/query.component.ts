@@ -6,6 +6,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, combineLatest, map, share } from 'rxjs';
@@ -31,12 +32,14 @@ const pathToQuery = 'app/{appname}/query/{queryname}';
 @Component({
   selector: 'app-dev-rest-query',
   templateUrl: './query.component.html',
+  styleUrls: ['./query.component.scss'],
   imports: [
     MatButtonModule,
     TippyDirective,
     MatIconModule,
     RouterOutlet,
     SelectorWithHelpComponent,
+    MatProgressSpinnerModule,
     MatTabsModule,
     DevRestQueryIntroductionComponent,
     DevRestTabIntroductionComponent,

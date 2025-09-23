@@ -79,7 +79,8 @@ export class GridWithHelpComponent {
     const dialogEl = document.querySelector<HTMLElement>('.mat-mdc-dialog-container'); // only Dialog (Content)
 
     const outerContainer = sideNavEl ?? dialogEl;
-    const maxHeight = outerContainer.clientHeight - dimensions.dialogHeaderHeight - dimensions.dialogActionHeight;
+    const sideNavPuffer = 74;
+    const maxHeight = outerContainer.clientHeight - dimensions.dialogHeaderHeight - dimensions.dialogActionHeight + (sideNavEl ? sideNavPuffer : 0);
 
     agGridEl.style.maxHeight = `${maxHeight}px`;
 

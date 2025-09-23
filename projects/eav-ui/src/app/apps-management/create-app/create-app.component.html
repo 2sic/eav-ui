@@ -25,7 +25,7 @@
         }
       }
       <br />
-      <mat-radio-group formControlName="appTemplateId" required (change)="onTemplateChange($event)">
+      <mat-radio-group formControlName="appTemplateId" required (change)="onTemplateChange($event.value)">
         <mat-radio-button [value]="1">Use Template</mat-radio-button>
         <mat-radio-button [value]="0">Completely new / empty App</mat-radio-button>
         <mat-radio-button [value]="2">Use existing App as Template</mat-radio-button>
@@ -45,7 +45,7 @@
 
     @if (showAppCatalog()) {
       @if (ready()) {
-        <iframe #installerWindow class="eav-app-catalog-iframe" [src]="remoteInstallerUrl"></iframe>
+        <iframe class="eav-app-catalog-iframe" [src]="remoteInstallerUrl"></iframe>
       }
     }
   </div>

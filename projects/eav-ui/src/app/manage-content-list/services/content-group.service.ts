@@ -54,5 +54,4 @@ export class ContentGroupService extends HttpServiceBaseSignal {
       });
     });
   }
-
 }

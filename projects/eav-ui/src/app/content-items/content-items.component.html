@@ -12,20 +12,16 @@
         <div [innerHTML]="listInstructions | safeHtml"></div>
       }
     </div>
-
-    @if (items()?.length > 0) {
-      <ag-grid-angular
-        class="ag-theme-material eav-dialog-content"
-        [rowData]="items()"
-        [gridOptions]="gridOptions"
-        (gridReady)="onGridReady($event)"
-        appDragAndDrop
-        [allowedFileTypes]="'xml,json'"
-        (filesDropped)="filesDropped($event)"
-      >
-      </ag-grid-angular>
-    }
-
+    <ag-grid-angular
+      class="ag-theme-material eav-dialog-content"
+      [rowData]="items()"
+      [gridOptions]="gridOptions"
+      (gridReady)="onGridReady($event)"
+      appDragAndDrop
+      [allowedFileTypes]="'xml,json'"
+      (filesDropped)="filesDropped($event)"
+    >
+    </ag-grid-angular>
     <mat-dialog-actions class="eav-dialog-actions">
       <div class="eav-dialog-actions-div">
         <a [href]="urlToExportContent()" mat-button class="eav-button__with-icon" tippy="Export xml list" tippyPlacement="top">

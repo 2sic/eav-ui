@@ -2,7 +2,7 @@ import { ElementEventListener } from '../../../eav-ui/src/app/edit/shared/contro
 import { classLog } from '../../../eav-ui/src/app/shared/logging';
 import { Connector } from '../../../edit-types/src/Connector';
 import { EavCustomInputField } from '../../../edit-types/src/EavCustomInputField';
-import { buildTemplate, customGpsIcons, getDefaultCoordinates, isLatLngObject } from '../shared/helpers';
+import { buildTemplate, customGpsIcons, getDefaultCoordinates, isLatLngObject, parseLatLng } from '../shared/helpers';
 import * as template from './preview.html';
 import * as styles from './preview.scss';
 
@@ -18,7 +18,7 @@ class FieldCustomGps extends HTMLElement implements EavCustomInputField<string> 
   private latContainer: HTMLSpanElement;
   private lngContainer: HTMLSpanElement;
   private eventListeners: ElementEventListener[];
-  private defaultCoordinates: google.maps.LatLngLiteral;
+  private defaultCoordinates: google.maps.LatLngLiteral | null;
 
   constructor() {
     super();
@@ -43,25 +43,31 @@ class FieldCustomGps extends HTMLElement implements EavCustomInputField<string> 
 
     this.defaultCoordinates = getDefaultCoordinates(this.connector);
 
-    // set initial value
+    // set initial value (normalize with parseLatLng)
     if (this.connector.data.value && isLatLngObject(this.connector.data.value)) {
-      this.updateHtml(JSON.parse(this.connector.data.value));
+      const latLng = parseLatLng(this.connector.data.value);
+      this.updateHtml(latLng);
     } else {
       this.updateHtml(this.defaultCoordinates);
     }
 
-
-    // update on value change
+    // update on value change (normalize with parseLatLng)
     this.connector.data.onValueChange(value => {
       if (value && isLatLngObject(value)) {
-        this.updateHtml(JSON.parse(value));
+        const latLng = parseLatLng(value);
+        this.updateHtml(latLng);
       } else {
         this.updateHtml(this.defaultCoordinates);
       }
     });
   }
 
-  private updateHtml(latLng: google.maps.LatLngLiteral): void {
+  private updateHtml(latLng: google.maps.LatLngLiteral | null): void {
+    if (!latLng) {
+      this.latContainer.innerText = '';
+      this.lngContainer.innerText = '';
+      return;
+    }
     this.latContainer.innerText = latLng.lat?.toString() ?? '';
     this.lngContainer.innerText = latLng.lng?.toString() ?? '';
   }

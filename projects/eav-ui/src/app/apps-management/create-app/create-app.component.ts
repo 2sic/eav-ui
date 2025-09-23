@@ -1,4 +1,4 @@
-import { Component, computed, effect, ElementRef, HostBinding, inject, signal, ViewChild } from '@angular/core';
+import { Component, computed, effect, HostBinding, inject, signal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
@@ -11,7 +11,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Router, RouterOutlet } from '@angular/router';
-import { filter, fromEvent, map, Observable } from 'rxjs';
+import { filter, fromEvent, map, Observable, take } from 'rxjs';
 import { transient } from '../../../../../core';
 import { isCtrlEnter } from '../../edit/dialog/main/keyboard-shortcuts';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
@@ -46,7 +46,7 @@ export class CreateAppComponent {
   // Add a CSS class to the host element for consistent dialog styling
   @HostBinding('className') hostClass = 'dialog-component';
   // Reference to the installer iframe element (for cross-window messaging)
-  @ViewChild('installerWindow') installerWindow: ElementRef;
+  // @ViewChild('installerWindow') installerWindow: ElementRef;
 
   // Reactive form group for app creation fields
   form: UntypedFormGroup;
@@ -110,14 +110,16 @@ export class CreateAppComponent {
 
     // Load installer settings and set up the iframe URL for the app catalog
     this.#installSettingsService.loadGettingStarted(false);
-    this.#installSettingsService.settings$.subscribe(settings => {
-      let url = settings.remoteUrl;
-      // Add query param to ensure template mode in the installer
-      url += (url.includes('?') ? '&' : '?') + 'isTemplate=true';
+    this.#installSettingsService.settings$
+      .pipe(take(1))
+      .subscribe(settings => {
+        let url = settings.remoteUrl;
+        // Add query param to ensure template mode in the installer
+        url += (url.includes('?') ? '&' : '?') + 'isTemplate=true';
 
-      this.remoteInstallerUrl = <string>this.sanitizer.bypassSecurityTrustResourceUrl(url);
-      this.ready.set(true);
-    });
+        this.remoteInstallerUrl = <string>this.sanitizer.bypassSecurityTrustResourceUrl(url);
+        this.ready.set(true);
+      });
 
     // React to changes in packageUrl and update Create button accordingly
     effect(() => {
@@ -227,12 +229,8 @@ export class CreateAppComponent {
    * Handles changes to the template selection radio group.
    * Shows or hides the app catalog iframe and updates Create button state.
    */
-  onTemplateChange(event: any) {
-    if (event.value == 1)
-      this.showAppCatalog.set(true);
-    else
-      this.showAppCatalog.set(false);
-
+  onTemplateChange(appTemplateId: number) {
+    this.showAppCatalog.set(appTemplateId === 1);
     this.updateCanCreate();
   }
 
@@ -257,4 +255,5 @@ export class CreateAppComponent {
       }
     });
   }
+
 }

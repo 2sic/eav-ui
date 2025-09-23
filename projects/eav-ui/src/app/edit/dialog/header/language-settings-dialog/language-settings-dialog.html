@@ -11,22 +11,40 @@
 
     <h3>{{'LanguageSettings.Subtitle' | translate}}</h3>
 
-    <app-language-dropdown
-      style="margin-right: 24px"
-      [label]="'LanguageSettings.LabelsAndTextsOptionLabel'"
-      [tooltip]="'LanguageSettings.LabelsAndTextsTooltip'"
-      [optionType]="'form'"
-      [options]="options"
-      [userLanguageSvc]="userLanguageSvc"
-    ></app-language-dropdown>
+    <div class="language-dropdowns">
+      <app-language-dropdown
+        [label]="'LanguageSettings.LabelsAndTextsOptionLabel'"
+        [tooltip]="'LanguageSettings.LabelsAndTextsTooltip'"
+        [optionType]="LanguagePart.Form"
+        [options]="options"
+        [userLanguageSvc]="userLanguageSvc"
+      ></app-language-dropdown>
 
-    <app-language-dropdown
-      [label]="'LanguageSettings.ButtonsAndControlsOptionLabel'"
-      [tooltip]="'LanguageSettings.ButtonsAndControlsTooltip'"
-      [optionType]="'ui'"
-      [options]="options"
-      [userLanguageSvc]="userLanguageSvc"
-    ></app-language-dropdown>
+      <app-language-dropdown
+        [label]="'LanguageSettings.ButtonsAndControlsOptionLabel'"
+        [tooltip]="'LanguageSettings.ButtonsAndControlsTooltip'"
+        [optionType]="LanguagePart.UI"
+        [options]="options"
+        [userLanguageSvc]="userLanguageSvc"
+      ></app-language-dropdown>
+    </div>
+    
+    <mat-form-field [tippy]="'LanguageSettings.TranslatePrimaryTooltip' | translate" appearance="fill" color="accent">
+      <mat-label>
+        {{ "LanguageSettings.TranslatePrimaryOptionLabel" | translate }}
+      </mat-label>
+      <mat-select
+        [value]="selectedValue"
+        (selectionChange)="onSelectionChange($event)"
+      >
+        <mat-option [value]="false">
+          {{'LanguageSettings.DeactivatedOption' | translate}}
+        </mat-option>
+        <mat-option [value]="true">
+          {{'LanguageSettings.ActivatedOption' | translate}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
   </div>
   <mat-dialog-actions align="end">
     <app-save-close-button-fab

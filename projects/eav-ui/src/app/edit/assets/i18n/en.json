@@ -315,6 +315,10 @@
     "ButtonsAndControlsOptionLabel": "Buttons and Controls",
     "ButtonsAndControlsTooltip": "Preferred language for buttons and controls",
     "LabelsAndTextsOptionLabel": "Form Labels and Help Texts",
-    "LabelsAndTextsTooltip": "Preferred language for texts and labels in the form"
+    "LabelsAndTextsTooltip": "Preferred language for texts and labels in the form",
+    "TranslatePrimaryOptionLabel": "Show Language Menus in Primary Language",
+    "TranslatePrimaryTooltip": "Shows the Language Menus also in the Primary Language",
+    "ActivatedOption": "Activated",
+    "DeactivatedOption": "Deactivated"
   }
 }

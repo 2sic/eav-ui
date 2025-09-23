@@ -7,7 +7,7 @@ import { Connector } from '../../../edit-types/src/Connector';
 import { EavCustomInputField } from '../../../edit-types/src/EavCustomInputField';
 import { FieldSettings } from '../../../edit-types/src/FieldSettings';
 import { IFieldMask } from '../../../edit-types/src/IFieldMask';
-import { buildTemplate, customGpsIcons, getDefaultCoordinates, isLatLngObject } from '../shared/helpers';
+import { buildTemplate, customGpsIcons, getDefaultCoordinates, isLatLngObject, parseLatLng, stringifyLatLng } from '../shared/helpers';
 import * as template from './main.html';
 import * as styles from './main.scss';
 
@@ -109,13 +109,17 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
 
     this.geocoder = new google.maps.Geocoder();
 
-    // set initial values
+    // set initial values - read stored JSON (either shape) and normalize for the map (lat/lng)
     if (!this.connector.data.value) {
       this.updateHtml(this.defaultCoordinates);
     } else {
       try {
-        if (isLatLngObject(this.connector.data.value))
-          this.updateHtml(JSON.parse(this.connector.data.value));
+        if (isLatLngObject(this.connector.data.value)) {
+          const normalized = parseLatLng(this.connector.data.value); // returns {lat,lng}
+          this.updateHtml(normalized);
+        } else {
+          this.updateHtml(this.defaultCoordinates);
+        }
       } catch (e) {
         console.error('Invalid data.value:', this.connector.data.value);
         this.updateHtml(this.defaultCoordinates);
@@ -149,11 +153,13 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
       formattedAddressContainer.value = 'Locating...';
       navigator.geolocation.getCurrentPosition(
         (position) => {
+          // google maps uses lat/lng for map interactions
           const latLng: google.maps.LatLngLiteral = {
             lat: position.coords.latitude,
             lng: position.coords.longitude,
           };
           this.updateHtml(latLng);
+          // write backend/internal shape (latitude/longitude)
           this.updateForm(latLng);
 
           // Use the Google Maps Geocoding API to get address
@@ -174,6 +180,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
     }
   }
 
+  // now accepts google.maps.LatLngLiteral (lat,lng) for map compatibility
   private updateHtml(latLng: google.maps.LatLngLiteral): void {
     this.latInput.value = latLng.lat?.toString() ?? '';
     this.lngInput.value = latLng.lng?.toString() ?? '';
@@ -181,35 +188,35 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
     this.marker.position = latLng;
   }
 
+  // receives google.maps.LatLngLiteral, updates form controls and writes internal JSON with latitude/longitude
   private updateForm(latLng: google.maps.LatLngLiteral): void {
-    // Helper function to update a specific coordinate field
+    const { lat, lng } = latLng;
+
+    // Helper function to update a specific coordinate field control (string)
     const updateCoordinateField = (fieldName: string, value: number) => {
       if (!fieldName) return;
-
-      // Directly update the form control
       const formGroup = this.connector._experimental.formGroup;
       const control = formGroup?.get(fieldName);
       if (control) {
-        control.setValue(value.toString());
+        control.setValue(value != null ? value.toString() : '');
         control.markAsDirty();
         control.updateValueAndValidity();
       }
     };
 
-    // Update lat and lng fields
-    updateCoordinateField(this.latFieldName, latLng.lat);
-    updateCoordinateField(this.lngFieldName, latLng.lng);
+    // Update lat and lng fields (these are the separate numeric fields, if configured)
+    updateCoordinateField(this.latFieldName, lat);
+    updateCoordinateField(this.lngFieldName, lng);
 
-    // Update the main GPS JSON value
-    this.connector.data.update(JSON.stringify(latLng));
+    // Save main GPS JSON in the internal backend shape { latitude, longitude }
+    this.connector.data.update(stringifyLatLng(latLng));
   }
 
   private onLatLngInputChange(): void {
     this.log.a(`${gpsDialogTag} input changed`);
-    const latLng: google.maps.LatLngLiteral = {
-      lat: this.latInput.value.length > 0 ? parseFloat(this.latInput.value) : null,
-      lng: this.lngInput.value.length > 0 ? parseFloat(this.lngInput.value) : null,
-    };
+    const lat: number = this.latInput.value.length > 0 ? parseFloat(this.latInput.value) : null;
+    const lng: number = this.lngInput.value.length > 0 ? parseFloat(this.lngInput.value) : null;
+    const latLng: google.maps.LatLngLiteral = { lat, lng };
     this.updateHtml(latLng);
     this.updateForm(latLng);
   }
