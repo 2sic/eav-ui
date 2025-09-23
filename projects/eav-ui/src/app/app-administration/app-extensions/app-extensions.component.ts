@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, Signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -7,6 +7,11 @@ import { map } from 'rxjs';
 import { transient } from '../../../../../core';
 import { DialogConfigAppService } from '../services/dialog-config-app.service';
 import { AppExtensionsService } from './app-extensions.service';
+
+interface Extension {
+  folder: string;
+  configuration: string;
+}
 
 @Component({
   selector: 'app-extensions',
@@ -27,5 +32,13 @@ export class AppExtensionsComponent {
   ));
 
   // raw JSON from API
-  extensions = toSignal(this.extensionsSvc.getExtensions$(), { initialValue: null });
+  extensions: Signal<Extension[]> = toSignal(
+    this.extensionsSvc.getExtensions$().pipe(
+      map(result => result.extensions.map((ext: Extension) => ({
+        folder: ext.folder,
+        configuration: JSON.stringify(ext.configuration)
+      })))
+    ),
+    { initialValue: [] }
+  );
 }

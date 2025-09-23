@@ -2,16 +2,27 @@
   <h1>App Extensions (beta)</h1>
   <p>Apps can use standardized extensions, which can be installed on the fly and add more functionality or input fields</p>
 </div>
+
 <div class="eav-cards-box">
   <mat-card class="eav-card">
-    <mat-card-header class="eav-card-header">
-      <mat-card-title>Extensions</mat-card-title>
-      <mat-icon>extension</mat-icon>
-    </mat-card-header>
     <mat-card-content>
-      <pre>{{ extensions() | json }}</pre>
+      <table class="extensions-table" role="table" aria-label="App extensions">
+        <thead>
+          <tr>
+            <th>Folder</th>
+            <th>Configuration</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (ext of extensions(); track ext.folder) {
+            <tr>
+              <td>{{ ext.folder }}</td>
+              <td>{{ ext.configuration }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
     </mat-card-content>
-    <div class="eav-card-space-div"></div>
-    <mat-card-actions align="end"> </mat-card-actions>
+    <mat-card-actions align="end"></mat-card-actions>
   </mat-card>
 </div>
