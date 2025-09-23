@@ -90,7 +90,6 @@ export class TranslateMenuComponent {
     } else {
       this.#openDialog(translationState, AutoTranslateMenuDialogComponent);
     }
-
   }
 
   #openDialog(translationState: TranslationState, component: any): void {

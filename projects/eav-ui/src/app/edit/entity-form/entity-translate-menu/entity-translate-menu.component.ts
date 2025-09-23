@@ -15,6 +15,7 @@ import { FormsStateService } from '../../form/forms-state.service';
 import { AutoTranslateDisabledWarningDialog } from '../../localization/auto-translate-disabled-warning-dialog/auto-translate-disabled-warning-dialog.component';
 import { AutoTranslateMenuDialogComponent } from '../../localization/auto-translate-menu-dialog/auto-translate-menu-dialog.component';
 import { TranslationState } from '../../localization/translate-state.model';
+import { TranslationLinks } from '../../localization/translation-link.constants';
 import { FieldsSettingsService } from '../../state/fields-settings.service';
 import { FieldsTranslateService } from '../../state/fields-translate.service';
 import { ItemService } from '../../state/item.service';
@@ -39,6 +40,14 @@ export class EntityTranslateMenuComponent {
   protected readOnly = this.formsStateService.readOnly;
 
   private userLanguageSvc = inject(UserLanguageService);
+
+  // Initialize with a proper TranslationState so the signal satisfies the type
+  translationState = signal<TranslationState>({
+    infoLabel: '',
+    infoMessage: '',
+    linkType: TranslationLinks.Translate, // use an existing member from TranslationLinks
+    language: '',
+  });
 
   language = this.eavService.language;
   translatePrimaryLanguage = signal<boolean>(false);
@@ -113,20 +122,50 @@ export class EntityTranslateMenuComponent {
     }
   }
 
-  openTranslateMenuDialog(translationState: TranslationState): void {
-    this.#openDialog(translationState, TranslateMenuDialogComponent);
+  /**
+   * Open the translate dialog to "Link" many fields at once.
+   * Gathers translatable fields from FieldsSettingsService and passes them as translatableFields.
+   */
+  openTranslateMenuDialogMany(): void {
+    // gather fields we can operate on
+    const allFieldKeys = Object.keys(this.fieldSettingsSvc.translationState);
+    const translatableFields = allFieldKeys.filter(fn => {
+      // fieldSettingsSvc.translationState[fn] is a Signal<TranslationState>
+      const ts = this.fieldSettingsSvc.translationState[fn]?.();
+      return !!ts; // include only fields that have a translationState object
+    });
+
+    if (translatableFields.length === 0) {
+      return this.fieldTranslateSvc.showMessageNoTranslatableFields(true);
+    }
+
+    // pick a representative field to provide default language/linkType for the dialog
+    const translationStateAny = this.fieldSettingsSvc.translationState[translatableFields[0]]();
+
+    const config: TranslateMenuDialogConfig = {
+      entityGuid: this.entityGuid(),
+      fieldName: translatableFields[0], // first field as representative
+    };
+
+    this.#openDialog(config, translationStateAny, translatableFields);
   }
 
-
-  #openDialog(translationState: TranslationState, component: any): void {
+  #openDialog(
+    config: TranslateMenuDialogConfig,
+    translationState: TranslationState,
+    translatableFields: string[]
+  ): void {
     const dialogData: TranslateMenuDialogData = {
-      config: null,
+      config,
       translationState: {
         language: translationState.language,
         linkType: translationState.linkType,
       },
+      isTranslateMany: true,
+      translatableFields,
     };
-    this.matDialog.open(component, {
+
+    this.matDialog.open(TranslateMenuDialogComponent, {
       autoFocus: false,
       data: dialogData,
       viewContainerRef: this.viewContainerRef,

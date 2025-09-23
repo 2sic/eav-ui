@@ -5,7 +5,6 @@ export interface TranslateMenuDialogConfig {
   entityGuid: string;
   fieldName: string;
 }
-
 export interface TranslateMenuDialogData {
   config: TranslateMenuDialogConfig;
   translationState: TranslationStateCore;
@@ -19,5 +18,3 @@ export interface TranslateMenuDialogTemplateLanguage {
   noTranslatableFields?: number;
   noTranslatableFieldsThatHaveContent?: number;
 }
-
-//

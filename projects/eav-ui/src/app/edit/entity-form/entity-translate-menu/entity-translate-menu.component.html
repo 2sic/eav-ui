@@ -17,7 +17,7 @@
         @if (language().current !== language().primary) {
           <button mat-menu-item (click)="lockAll()">{{ 'LangMenu.NoTranslateAll' | translate }}</button>
         }
-        <button mat-menu-item>
+        <button mat-menu-item (click)="openTranslateMenuDialogMany()">
           {{ 'LangMenu.Link' | translate }}
         </button>
       </ng-template>
