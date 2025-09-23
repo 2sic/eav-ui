@@ -53,7 +53,6 @@ export class DataRestApiComponent {
     contentType: ['']
   });
 
-
   openRestApi(event: string): void {
     if (!event) return;
     this.#dialogRouter.navRelative([`${event}`]);

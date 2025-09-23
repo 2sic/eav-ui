@@ -1,16 +1,16 @@
 <div class="outer-container">
-  <h1>App Extensions</h1>
-  <p>
-    TODO
-  </p>
+  <h1>App Extensions (beta)</h1>
+  <p>Apps can use standardized extensions, which can be installed on the fly and add more functionality or input fields</p>
 </div>
 <div class="eav-cards-box">
   <mat-card class="eav-card">
     <mat-card-header class="eav-card-header">
-      <mat-card-title>App Extensions</mat-card-title>
+      <mat-card-title>Extensions</mat-card-title>
       <mat-icon>extension</mat-icon>
     </mat-card-header>
-    <mat-card-content> </mat-card-content>
+    <mat-card-content>
+      <pre>{{ extensions() | json }}</pre>
+    </mat-card-content>
     <div class="eav-card-space-div"></div>
     <mat-card-actions align="end"> </mat-card-actions>
   </mat-card>
