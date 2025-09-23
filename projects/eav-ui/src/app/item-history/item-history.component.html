@@ -27,20 +27,25 @@
       @if (historyItems()?.length > 0) {
         <mat-accordion multi class="eav-history-tables">
           @for (historyItem of historyItems(); track historyItem) {
-            <mat-expansion-panel [expanded]="expandedPanels[historyItem.versionNumber]"
-              (expandedChange)="panelExpandedChange($event, historyItem.versionNumber)">
+            <mat-expansion-panel
+              [expanded]="expandedPanels[historyItem.versionNumber]"
+              (expandedChange)="panelExpandedChange($event, historyItem.versionNumber)"
+            >
               <mat-expansion-panel-header>
                 <mat-panel-title>Version {{ historyItem.versionNumber }}</mat-panel-title>
-                
-                <mat-panel-description [tippy]="getLocalDate(historyItem.timeStamp) | date:'yyyy-MM-dd HH:mm'">
-                  {{ getLocalDate(historyItem.timeStamp) | date:'yyyy-MM-dd HH:mm' }}
+
+                <mat-panel-description>
+                  {{ getLocalDate(historyItem.timeStamp) | date: 'yyyy-MM-dd HH:mm' }} &nbsp;
+                  <small>({{ getLocalDate(historyItem.timeStamp) | date: 'yyyy-MM-dd HH:mm' : 'UTC' }} UTC)</small>
                 </mat-panel-description>
               </mat-expansion-panel-header>
               @if (expandedPanels[historyItem.versionNumber]) {
                 @for (attribute of historyItem.attributes; track attribute) {
                   <div class="eav-table-row">
-                    <div class="eav-table-row__main eav-row-main"
-                      (click)="attributeExpandedToggle(historyItem.versionNumber, attribute.name)">
+                    <div
+                      class="eav-table-row__main eav-row-main"
+                      (click)="attributeExpandedToggle(historyItem.versionNumber, attribute.name)"
+                    >
                       <div class="eav-row-main__label eav-history-{{ attribute.change }}">
                         {{ attribute.name }}
                       </div>
@@ -93,8 +98,14 @@
       }
     </div>
     @if (historyItems()?.length > 0) {
-      <mat-paginator color="accent" showFirstLastButtons="true" [length]="version().length" [pageSize]="pageSize()"
-        [pageSizeOptions]="pageSizeOptions" (page)="pageChange($event)">
+      <mat-paginator
+        color="accent"
+        showFirstLastButtons="true"
+        [length]="version().length"
+        [pageSize]="pageSize()"
+        [pageSizeOptions]="pageSizeOptions"
+        (page)="pageChange($event)"
+      >
       </mat-paginator>
     }
   </div>
