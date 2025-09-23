@@ -1,27 +1,31 @@
 <div class="outer-container">
   <h1>App Extensions (beta)</h1>
-  <p>Apps can use standardized extensions, which can be installed on the fly and add more functionality or input fields</p>
+  <p>Apps can use standardized extensions, which can be installed on the fly and add more functionality or input fields.</p>
 </div>
 
 <div class="eav-cards-box">
   <mat-card class="eav-card">
     <mat-card-content>
-      <table class="extensions-table" role="table" aria-label="App extensions">
-        <thead>
-          <tr>
-            <th>Folder</th>
-            <th>Configuration</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (ext of extensions(); track ext.folder) {
+      @if (extensions().length === 0) {
+        <p>Create an extension by placing an <code>extension.json</code> file in the <code>app/extensions</code> folder.</p>
+      } @else {
+        <table class="extensions-table" role="table" aria-label="App extensions">
+          <thead>
             <tr>
-              <td>{{ ext.folder }}</td>
-              <td>{{ ext.configuration }}</td>
+              <th>Folder</th>
+              <th>Configuration</th>
             </tr>
-          }
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            @for (ext of extensions(); track ext.folder) {
+              <tr>
+                <td>{{ ext.folder }}</td>
+                <td>{{ ext.configuration }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
     </mat-card-content>
     <mat-card-actions align="end"></mat-card-actions>
   </mat-card>
