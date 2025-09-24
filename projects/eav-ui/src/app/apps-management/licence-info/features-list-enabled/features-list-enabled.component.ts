@@ -37,16 +37,13 @@ export class FeaturesListEnabledComponent implements ICellRendererAngularComp {
 
     this.configurationData = params.data?.configuration;
     this.badgeValue = this.configurationData && Object.keys(this.configurationData).length > 0 ? 1 : 0;
-
   }
 
   refresh(params?: any): boolean {
     return true;
   }
 
-
   openSettings() {
-
     const { ...configuration } = this.configurationData ?? {};
 
     const overrideContents: Record<string, unknown>[] = [
@@ -76,5 +73,4 @@ export class FeaturesListEnabledComponent implements ICellRendererAngularComp {
       } satisfies DialogRoutingState,
     });
   }
-
 }

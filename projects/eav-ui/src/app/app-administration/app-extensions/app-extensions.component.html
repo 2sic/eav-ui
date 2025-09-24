@@ -14,6 +14,7 @@
             <tr>
               <th>Folder</th>
               <th>Configuration</th>
+              <th>Edit</th>
             </tr>
           </thead>
           <tbody>
@@ -21,6 +22,16 @@
               <tr>
                 <td>{{ ext.folder }}</td>
                 <td>{{ ext.configuration }}</td>
+                <td>
+                  <a
+                    class="eav-grid-action-button default-link highlight"
+                    matRipple
+                    tippy="Edit"
+                    (click)="openSettings()"
+                  >
+                    <mat-icon>edit</mat-icon>
+                  </a>
+                </td>
               </tr>
             }
           </tbody>
@@ -30,3 +41,4 @@
     <mat-card-actions align="end"></mat-card-actions>
   </mat-card>
 </div>
+<router-outlet></router-outlet>

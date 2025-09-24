@@ -13,7 +13,7 @@ import { DialogConfigGlobalService } from './dialog-config-global.service';
 @Injectable()
 export class DialogConfigAppService {
 
-  log = classLog({DialogConfigAppService});
+  log = classLog({ DialogConfigAppService });
 
   constructor(private contextSvcShared: DialogConfigGlobalService, private context: Context) { }
 

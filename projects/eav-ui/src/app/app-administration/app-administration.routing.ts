@@ -175,11 +175,13 @@ export const appAdministrationRoutes: Routes = [
         loadComponent: () => import('./copilot/page/copilot-page.component').then(mod => mod.CopilotPageComponent),
         data: CopilotSpecs.views,
       },
-      
       {
         path: 'extensions',
         loadComponent: () => import('./app-extensions/app-extensions.component').then(mod => mod.AppExtensionsComponent),
         data: { title: 'App Extensions', breadcrumb: "App Extensions" },
+        children: [
+          ...EditRoutes,
+        ]
       },
       {
         path: 'web-api',
@@ -305,7 +307,6 @@ export const appAdministrationRoutes: Routes = [
         component: AppStateComponent,
         data: { breadcrumb: 'App-State Versioning' },
       },
-
     ]
   },
 ];

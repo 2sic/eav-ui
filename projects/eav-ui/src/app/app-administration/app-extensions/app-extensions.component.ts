@@ -1,10 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, Signal } from '@angular/core';
+import { Component, computed, inject, Signal } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
-import { map } from 'rxjs';
+import { Router, RouterOutlet } from '@angular/router';
 import { transient } from '../../../../../core';
-import { DialogConfigAppService } from '../services/dialog-config-app.service';
+import { DialogRoutingState } from '../../edit/dialog/dialogRouteState.model';
+import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
+import { EditForm, EditPrep } from '../../shared/models/edit-form.model';
+import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { AppExtensionsService } from './app-extensions.service';
 
 export interface Extension {
@@ -19,16 +22,14 @@ export interface Extension {
   imports: [
     CommonModule,
     MatCardModule,
-    MatIconModule
+    MatIconModule,
+    RouterOutlet,
   ]
 })
 export class AppExtensionsComponent {
-  private dialogConfigSvc = transient(DialogConfigAppService);
+  router = inject(Router);
+  #dialogRouter = transient(DialogRoutingService);
   private extensionsSvc = transient(AppExtensionsService);
-
-  gettingStartedUrl$ = this.dialogConfigSvc.getCurrent$().pipe(map(
-    dialogSettings => dialogSettings.Context.App.GettingStartedUrl
-  ));
 
   // raw JSON from API
   extensions: Signal<Extension[]> = computed(() => {
@@ -38,4 +39,37 @@ export class AppExtensionsComponent {
       configuration: JSON.stringify(ext.configuration)
     })) ?? [];
   });
+
+  openSettings() {
+    const configurationContentType = 'a0f44af0-6750-40c9-9ad9-4a07b6eda8b3';
+
+    const overrideContents = [{ guid: configurationContentType }];
+
+    // Only pass the relative "new:GUID" subroute
+    const subRoute = this.#routeAddItem(configurationContentType);
+    const rawUrl = this.#urlTo(`edit/${subRoute}`);
+
+    // normalize leading '#' or '#/' or '/'
+    const normalized = rawUrl.replace(/^#\/?/, '').replace(/^\//, '');
+    const routeSegments = normalized.split('/').filter(Boolean);
+
+    this.router.navigate(routeSegments, {
+      state: {
+        returnValue: true,
+        overrideContents,
+      } satisfies DialogRoutingState,
+    });
+  }
+
+  #urlTo(subRoute: string): string {
+    // Let DialogRoutingService handle the edit subroute
+    return `#${this.#dialogRouter.urlSubRoute(subRoute)}`;
+  }
+
+  #routeAddItem(configurationContentType: string): string {
+    // Only produce "new:GUID" without "edit/"
+    return convertFormToUrl({
+      items: [EditPrep.newFromType(configurationContentType)],
+    } satisfies EditForm);
+  }
 }
