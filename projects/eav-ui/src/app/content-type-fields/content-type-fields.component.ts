@@ -395,7 +395,7 @@ export class ContentTypeFieldsComponent implements OnInit {
         {
           field: 'Label',
           flex: 2,
-          minWidth: 250,
+          minWidth: 200,
           cellClass: 'no-outline',
           sortable: true,
           filter: 'agTextColumnFilter',
@@ -403,7 +403,7 @@ export class ContentTypeFieldsComponent implements OnInit {
         },
         {
           field: 'Special',
-          width: 66,
+          width: 22 * 6, // 6 icons, 22px each
           headerClass: 'dense',
           cellClass: 'no-outline',
           cellRenderer: ContentTypeFieldsSpecialComponent,

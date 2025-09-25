@@ -1,8 +1,43 @@
 <div class="icon-container">
+  @if (isHidden) {
+    <mat-icon tippy="Hidden Field">visibility_off</mat-icon>
+  }
+  @else {
+    <mat-icon></mat-icon>
+  }
+
+  @if (disabled) {
+    <mat-icon tippy="Disabled">edit_off</mat-icon>
+  }
+  @else {
+    <mat-icon></mat-icon>
+  }
+
+  @if (required) {
+    <mat-icon tippy="Required Field">asterisk</mat-icon>
+  }
+  @else {
+    <mat-icon></mat-icon>
+  }
+
   @if (hasFormulas) {
     <mat-icon tippy="Has Formulas">functions</mat-icon>
   }
+  @else {
+    <mat-icon></mat-icon>
+  }
+  
   @if (isEphemeral) {
     <mat-icon tippy="Ephemeral / Temporary, won't save">mobiledata_off</mat-icon>
+  }
+  @else {
+    <mat-icon></mat-icon>
+  }
+
+  @if (disableTranslation) {
+    <mat-icon tippy="No Translation">public_off</mat-icon>
+  }
+  @else {
+    <mat-icon></mat-icon>
   }
 </div>
