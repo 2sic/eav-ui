@@ -51,6 +51,7 @@ export class EntityTranslateMenuComponent {
 
   language = this.eavService.language;
   translatePrimaryLanguage = signal<boolean>(false);
+  public isPrimaryLang = computed(() => this.language().current === this.language().primary);
 
   constructor(
     private matDialog: MatDialog,

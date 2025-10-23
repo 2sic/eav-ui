@@ -42,6 +42,8 @@ export class TranslateMenuDialogComponent extends TranslateHelperComponent {
 
     return getTemplateLanguages({ fieldName }, language, languages, attributes, translationState.linkType);
   });
+  
+  public isPrimaryLang = computed(() => this.language().current === this.language().primary);
 
   constructor(
     private dialog: MatDialogRef<TranslateMenuDialogComponent>,
