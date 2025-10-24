@@ -48,6 +48,12 @@
   </mat-sidenav>
 
   <mat-sidenav-content>
-    <router-outlet></router-outlet>
+    @if (isLoading()) {
+      <div class="lading-indicator">
+        <mat-spinner></mat-spinner>
+      </div>
+    } @else {
+      <router-outlet></router-outlet>
+    }
   </mat-sidenav-content>
 </mat-sidenav-container>

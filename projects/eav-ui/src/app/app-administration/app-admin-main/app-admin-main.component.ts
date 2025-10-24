@@ -3,6 +3,7 @@ import { Component, OnInit, signal, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterOutlet } from '@angular/router';
@@ -19,24 +20,27 @@ import { DialogConfigAppService } from '../services/dialog-config-app.service';
 import { AppAdminMenu } from './app-admin-menu';
 
 @Component({
-    selector: 'app-app-admin-main',
-    templateUrl: './app-admin-main.component.html',
-    styleUrls: ['./app-admin-main.component.scss'],
-    imports: [
-        MatToolbarModule,
-        MatIconModule,
-        BreadcrumbComponent,
-        BreadcrumbItemDirective,
-        MatButtonModule,
-        MatSidenavModule,
-        RouterOutlet,
-        NavItemListComponent,
-        ToggleDebugDirective,
-    ]
+  selector: 'app-app-admin-main',
+  templateUrl: './app-admin-main.component.html',
+  styleUrls: ['./app-admin-main.component.scss'],
+  imports: [
+    MatToolbarModule,
+    MatIconModule,
+    BreadcrumbComponent,
+    BreadcrumbItemDirective,
+    MatButtonModule,
+    MatSidenavModule,
+    RouterOutlet,
+    NavItemListComponent,
+    ToggleDebugDirective,
+    MatProgressSpinnerModule
+  ]
 })
 export class AppAdminMainComponent implements OnInit {
 
   log = classLog({ AppAdminMainComponent });
+
+  isLoading = signal(true);
 
   #dialogConfigSvc = transient(DialogConfigAppService);
   #dialogRouter = transient(DialogRoutingService);
@@ -80,14 +84,23 @@ export class AppAdminMainComponent implements OnInit {
   }
 
   private fetchDialogSettings() {
-    this.#dialogConfigSvc.getCurrent$().subscribe(dialogSettings => {
-      Update$2sxcEnvFromContext(dialogSettings.Context.App);
-      this.dialogSettings.set(dialogSettings);
+    this.isLoading.set(true);
+    this.#dialogConfigSvc.getCurrent$().subscribe({
+      next: dialogSettings => {
+        Update$2sxcEnvFromContext(dialogSettings.Context.App);
+        this.dialogSettings.set(dialogSettings);
 
-      if (!dialogSettings.Context.Enable.Query)
-        this.navItems = this.navItems.filter(
-          (item) => item.name !== 'Queries' && item.name !== 'Web API'
-        );
+        if (!dialogSettings.Context.Enable.Query)
+          this.navItems = this.navItems.filter(
+            (item) => item.name !== 'Queries' && item.name !== 'Web API'
+          );
+
+        this.isLoading.set(false);
+      },
+      error: (err) => {
+        console.error('fetchDialogSettings error', err);
+        this.isLoading.set(false);
+      }
     });
   }
 }
