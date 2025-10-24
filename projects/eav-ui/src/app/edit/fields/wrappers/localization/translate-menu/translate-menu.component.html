@@ -1,6 +1,4 @@
-<!-- DBG: {{ language().current }} | {{ disabled() }} -->
-
-@if (language().current !== language().primary || translatePrimaryLanguage()) {
+@if (canTranslate()) {
   <div class="my-flex-main">
     <div class="my-flex-inside eav-shared-languages-container" [ngClass]="translationStateClass()">
       <div class="eav-shared-languages mat-caption" [ngClass]="{ 'eav-shared-languages--disabled': disabled() }">

@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { Component, inject, input, signal, ViewContainerRef } from '@angular/core';
+import { Component, computed, inject, input, signal, ViewContainerRef } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -43,7 +43,7 @@ export class TranslateMenuComponent {
 
   TranslationLinks = TranslationLinks;
 
-  protected translationState = this.#fieldState.translationState; // this.fieldSettings.translationState[this.#fieldState.name];
+  protected translationState = this.#fieldState.translationState;
   protected language = this.formConfig.language;
 
   protected disabled = computedObj('disabled', () => this.#fieldState.ui().disabled);
@@ -56,6 +56,14 @@ export class TranslateMenuComponent {
   
   private userLanguageSvc = inject(UserLanguageService);
   translatePrimaryLanguage = signal<boolean>(false);
+
+  hasMultipleLanguages = computed(() => {
+    return this.formConfig.languages.list.length > 1;
+  });
+
+  canTranslate = computed(() => {
+    return this.hasMultipleLanguages() && (this.language().current !== this.language().primary || this.translatePrimaryLanguage());
+  });
 
   constructor(
     private matDialog: MatDialog,
