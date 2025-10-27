@@ -14,7 +14,7 @@
             <tr>
               <th>Folder</th>
               <th>Configuration</th>
-              <th>Edit</th>
+              <th></th> <!-- Empty for edit -->
             </tr>
           </thead>
           <tbody>
@@ -23,8 +23,8 @@
                 <td>{{ ext.folder }}</td>
                 <td>{{ ext.configuration }}</td>
                 <td>
-                  <a
-                    class="eav-grid-action-button default-link highlight"
+                  <a mat-mini-fab
+                    class="eav-action-button"
                     matRipple
                     tippy="Edit"
                     (click)="openSettings()"

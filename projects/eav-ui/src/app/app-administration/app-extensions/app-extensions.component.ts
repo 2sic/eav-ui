@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject, Signal } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterOutlet } from '@angular/router';
@@ -24,6 +25,7 @@ export interface Extension {
     MatCardModule,
     MatIconModule,
     RouterOutlet,
+    MatButtonModule,
   ]
 })
 export class AppExtensionsComponent {
