@@ -201,11 +201,11 @@ export class EditControlsBuilderDirective implements OnInit, OnDestroy {
 
   #readComponentType(selector: string): Type<any> {
     const componentType = InputComponents[selector];
-    if (componentType == null) {
-      console.error(`Missing component class for: ${selector}`);
-      return CustomDefaultComponent;
-    }
-    return componentType;
+    if (componentType != null)
+      return componentType;
+
+    console.error(`Missing component class for: ${selector}. This indicates that the field is not registered correctly, so the JS won't run. It could also mean that the JS runs, but doesn't correctly create the custom tag. Will show an info-error instead.`);
+    return CustomDefaultComponent;
   }
 
 }
