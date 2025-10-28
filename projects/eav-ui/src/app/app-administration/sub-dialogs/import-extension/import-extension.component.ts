@@ -19,8 +19,8 @@ export class ImportExtensionComponent {
 
   constructor(@Inject(MAT_DIALOG_DATA) dialogData: FileUploadDialogData) {
     dialogData.title ??= `Import Extension`;
-    dialogData.description ??= `Select Extension definition file (zip) from your computer to import.`;
-    dialogData.allowedFileTypes ??= 'zip'; // Does not seem to work
+    dialogData.description ??= `Select Extension folder from your computer to import.`;
+    dialogData.allowedFileTypes ??= '';
     dialogData.multiple ??= true;
     dialogData.upload$ ??= (files) => this.ExtensionsService.uploadExtensions(files);
   }
