@@ -22,6 +22,7 @@ export interface Extension {
 @Component({
   selector: 'app-extensions',
   templateUrl: './app-extensions.component.html',
+  styleUrls: ['./app-extensions.component.scss'],
   imports: [
     CommonModule,
     MatIconModule,
