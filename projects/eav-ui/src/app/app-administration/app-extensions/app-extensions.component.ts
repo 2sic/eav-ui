@@ -1,15 +1,16 @@
+import { ColDef, GridOptions } from '@ag-grid-community/core';
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject, Signal } from '@angular/core';
+import { Component, computed, Signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
-import { Router, RouterOutlet } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
 import { transient } from '../../../../../core';
-import { DialogRoutingState } from '../../edit/dialog/dialogRouteState.model';
-import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
-import { EditForm, EditPrep } from '../../shared/models/edit-form.model';
-import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
+import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
+import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
+import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { AppExtensionsService } from './app-extensions.service';
+import { ExtensionActionsComponent } from './extension-actions/extension-actions.component';
 
 export interface Extension {
   folder: string;
@@ -26,11 +27,11 @@ export interface Extension {
     MatIconModule,
     RouterOutlet,
     MatButtonModule,
+    SxcGridModule,
+    DragAndDropDirective,
   ]
 })
 export class AppExtensionsComponent {
-  router = inject(Router);
-  #dialogRouter = transient(DialogRoutingService);
   private extensionsSvc = transient(AppExtensionsService);
 
   // raw JSON from API
@@ -42,36 +43,39 @@ export class AppExtensionsComponent {
     })) ?? [];
   });
 
-  openSettings() {
-    const configurationContentType = 'a0f44af0-6750-40c9-9ad9-4a07b6eda8b3';
+  gridOptions: GridOptions = {
+    ...defaultGridOptions,
+    columnDefs: this.#buildColumnDefs(),
+  };
 
-    const overrideContents = [{ guid: configurationContentType }];
-
-    // Only pass the relative "new:GUID" subroute
-    const subRoute = this.#routeAddItem(configurationContentType);
-    const rawUrl = this.#urlTo(`edit/${subRoute}`);
-
-    // normalize leading '#' or '#/' or '/'
-    const normalized = rawUrl.replace(/^#\/?/, '').replace(/^\//, '');
-    const routeSegments = normalized.split('/').filter(Boolean);
-
-    this.router.navigate(routeSegments, {
-      state: {
-        returnValue: true,
-        overrideContents,
-      } satisfies DialogRoutingState,
-    });
+  #buildColumnDefs(): ColDef[] {
+    return [
+      {
+        headerName: 'Folder',
+        field: 'folder',
+        flex: 1,
+        sortable: true,
+        filter: 'agTextColumnFilter',
+      },
+      {
+        headerName: 'Configuration',
+        field: 'configuration',
+        flex: 2,
+        sortable: true,
+        filter: 'agTextColumnFilter',
+        autoHeight: true,
+        wrapText: true,
+      },
+      {
+        headerName: '',
+        width: 50,
+        pinned: 'right',
+        cellRenderer: ExtensionActionsComponent,
+      },
+    ];
   }
 
-  #urlTo(subRoute: string): string {
-    // Let DialogRoutingService handle the edit subroute
-    return `#${this.#dialogRouter.urlSubRoute(subRoute)}`;
-  }
-
-  #routeAddItem(configurationContentType: string): string {
-    // Only produce "new:GUID" without "edit/"
-    return convertFormToUrl({
-      items: [EditPrep.newFromType(configurationContentType)],
-    } satisfies EditForm);
+  filesDropped(files: File[]) {
+    this.extensionsSvc.uploadExtensions(files);
   }
 }

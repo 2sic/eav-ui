@@ -9,33 +9,16 @@
       @if (extensions().length === 0) {
         <p>Create an extension by placing an <code>extension.json</code> file in the <code>app/extensions</code> folder.</p>
       } @else {
-        <table class="extensions-table" role="table" aria-label="App extensions">
-          <thead>
-            <tr>
-              <th>Folder</th>
-              <th>Configuration</th>
-              <th></th> <!-- Empty for edit -->
-            </tr>
-          </thead>
-          <tbody>
-            @for (ext of extensions(); track ext.folder) {
-              <tr>
-                <td>{{ ext.folder }}</td>
-                <td>{{ ext.configuration }}</td>
-                <td>
-                  <a mat-mini-fab
-                    class="eav-action-button"
-                    matRipple
-                    tippy="Edit"
-                    (click)="openSettings()"
-                  >
-                    <mat-icon>edit</mat-icon>
-                  </a>
-                </td>
-              </tr>
-            }
-          </tbody>
-        </table>
+        <ag-grid-angular
+          style="width: 100%; height: 500px"
+          class="ag-theme-material"
+          [rowData]="extensions()"
+          [gridOptions]="gridOptions"
+          appDragAndDrop
+          [allowedFileTypes]="'zip'"
+          (filesDropped)="filesDropped($event)"
+        >
+        </ag-grid-angular>
       }
     </mat-card-content>
     <mat-card-actions align="end"></mat-card-actions>

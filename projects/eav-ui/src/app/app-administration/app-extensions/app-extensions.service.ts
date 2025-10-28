@@ -15,4 +15,10 @@ export class AppExtensionsService {
     method: 'GET',
     credentials: 'include',
   }));
+
+  uploadExtensions(files: File[]) {
+    const formData = new FormData();
+    files.forEach(file => formData.append('files', file));
+    console.log('Uploading files:', formData);
+  }
 }
