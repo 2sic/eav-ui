@@ -181,6 +181,11 @@ export const appAdministrationRoutes: Routes = [
         data: { title: 'App Extensions', breadcrumb: "App Extensions" },
         children: [
           ...EditRoutes,
+          {
+            path: 'import',
+            loadComponent: () => import('./sub-dialogs/import-extension/import-extension.component').then(m => m.ImportExtensionComponent),
+            data: { title: 'Import Extension' },
+          },
         ]
       },
       {

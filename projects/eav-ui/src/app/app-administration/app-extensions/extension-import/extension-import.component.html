@@ -1,0 +1,15 @@
+<div class="eav-dialog" appDragAndDrop [allowedFileTypes]="'zip'" (filesDropped)="filesDropped($event)">
+  <div class="eav-dialog-header">
+    <div class="eav-dialog-header__title">Import Data</div>
+    <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <div class="eav-dialog-description">
+    <p>
+      This will import extensions into this 2sxc app. It requires that you already defined the extension before you try importing, and that
+      you created the import-file using the template provided by the Export. Please visit
+      <a href="https://2sxc.org/help" target="_blank">https://2sxc.org/help</a> for more instructions.
+    </p>
+  </div>
+</div>

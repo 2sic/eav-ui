@@ -41,4 +41,5 @@ export const UploadTypes = {
   Query: 4,
   View: 5,
   ImportParts: 6,
+  Extension: 7,
 } as const /* the as const ensures that the keys/values can be strictly checked */;

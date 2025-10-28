@@ -21,7 +21,16 @@
         </ag-grid-angular>
       }
     </mat-card-content>
-    <mat-card-actions align="end"></mat-card-actions>
   </mat-card>
 </div>
+
+<div class="footer-actions">
+  <a [href]="urlToUploadExtension()">
+    <button mat-button class="eav-button__with-icon" tippy="Upload Extension ZIP" tippyPlacement="top">
+      <mat-icon class="eav-icon">upload</mat-icon>
+      <span>Upload</span>
+    </button>
+  </a>
+</div>
+
 <router-outlet></router-outlet>
