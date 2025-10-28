@@ -24,7 +24,7 @@ export class AppExtensionsService {
     files.forEach(file => formData.append('files', file));
     console.log('Uploading files:', files);
 
-    const url = `/api/2sxc/admin/app/Extensions?appId=${this.context.appId}`;
+    const url = `/api/2sxc/admin/app/installextension?appId=${this.context.appId}`;
     // Adjust the generic type if your backend returns a different shape
     return this.http.post<FileUploadResult>(url, formData, { withCredentials: true });
   }

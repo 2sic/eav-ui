@@ -18,7 +18,6 @@ export interface GridWithHelpInput {
   templateUrl: './grid-with-help.component.html',
   styleUrl: './grid-with-help.component.scss'
 })
-
 export class GridWithHelpComponent {
   // ViewChild and ContentChild references - Access to DOM elements
   gridWrapper = viewChild("gridWrapper", { read: ElementRef });
@@ -81,7 +80,7 @@ export class GridWithHelpComponent {
     const hasNavComponentWrapper = !!document.querySelector<HTMLElement>('.nav-component-wrapper'); // Check, if sideNav Dialog or Single Dialog 
     const outerContainer = hasNavComponentWrapper ? dialogEl : sideNavEl;
 
-    const maxHeight = outerContainer.clientHeight - dimensions.dialogHeaderHeight - dimensions.dialogActionHeight -2;
+    const maxHeight = outerContainer.clientHeight - dimensions.dialogHeaderHeight - dimensions.dialogActionHeight - 2;
 
     agGridEl.style.maxHeight = `${maxHeight}px`;
 
@@ -111,6 +110,4 @@ export class GridWithHelpComponent {
       wrapperHeight
     };
   }
-
-
 }

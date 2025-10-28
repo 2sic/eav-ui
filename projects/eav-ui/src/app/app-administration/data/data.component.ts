@@ -72,7 +72,6 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
   #dialogConfigSvc = transient(DialogConfigAppService);
   #dialogRouter = transient(DialogRoutingService);
 
-
   // UI Help Text for the UX Help Info Card
   #helpTextConst: HelpTextConst = {
     empty: {
@@ -332,13 +331,11 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
     return '#' + this.#dialogRouter.urlSubRoute(url);
   }
 
-
   #routeAddItem(contentType: ContentType): string {
     return convertFormToUrl({
       items: [EditPrep.newFromType(contentType.NameId)],
     } satisfies EditForm);
   }
-
 
   urlToNewContentType(): string {
     return this.#urlTo('add');
@@ -360,27 +357,6 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
     };
     return convertFormToUrl(form);
   }
-
-  // 2pp | not in use?
-  // #createOrEditMetadata(contentType: ContentType) {
-  //   this.#dialogRouter.navParentFirstChild([`edit/${this.#routeCreateOrEditMetadata(contentType)}`]);
-  // }
-
-  // #openPermissions(contentType: ContentType) {
-  //   this.#dialogRouter.navParentFirstChild([GoToPermissions.getUrlContentType(contentType.NameId)]);
-  // }
-
-  // #routeMetadata(ct: ContentType) {
-  //   return GoToMetadata.getUrlContentType(ct.NameId, `Metadata for Content Type: ${ct.Name} (${ct.Id})`);
-  // }
-
-  // #openMetadata(contentType: ContentType) {
-  //   this.#dialogRouter.navParentFirstChild([this.#routeMetadata(contentType)]);
-  // }
-
-  // #openRestApi(contentType: ContentType) {
-  //   this.#dialogRouter.navParentFirstChild([GoToDevRest.getUrlData(contentType)]);
-  // }
 
   #exportType(contentType: ContentType) {
     this.#contentExportSvc.exportJson(contentType.NameId);
