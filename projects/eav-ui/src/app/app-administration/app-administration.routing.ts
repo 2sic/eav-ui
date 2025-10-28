@@ -22,6 +22,7 @@ import { settingsItemDetailsDialog } from './sub-dialogs/analyze-settings/settin
 import { editContentTypeDialog } from './sub-dialogs/edit-content-type/edit-content-type-dialog.config';
 import { importContentTypeDialog } from './sub-dialogs/import-content-type/import-content-type-dialog.config';
 import { importDataBundlesDialog } from './sub-dialogs/import-data-bundles/import-data-bundles-dialog.config';
+import { importExtensionDialog } from './sub-dialogs/import-extension/import-extension-dialog.config';
 import { importQueryDialog } from './sub-dialogs/import-query/import-query-dialog.config';
 import { importViewDialog } from './sub-dialogs/import-view/import-view-dialog.config';
 import { languagePermissionsDialog } from './sub-dialogs/language-permissions/language-permissions-dialog.config';
@@ -183,8 +184,8 @@ export const appAdministrationRoutes: Routes = [
           ...EditRoutes,
           {
             path: 'import',
-            loadComponent: () => import('./sub-dialogs/import-extension/import-extension.component').then(m => m.ImportExtensionComponent),
-            data: { title: 'Import Extension' },
+            component: DialogEntryComponent,
+            data: { dialog: importExtensionDialog, title: 'Import Extension' },
           },
         ]
       },
