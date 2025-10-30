@@ -231,8 +231,8 @@ export class AppConfigurationComponent implements OnInit {
     }
 
     // From the current settings computed booleans containing the scope state
-    const isGlobal = !!this.isGlobal();
-    const isSite = !!this.isSite();
+    // const isGlobal = !!this.isGlobal();
+    // const isSite = !!this.isSite();
     const isApp = !!this.isApp();
 
     // The name of the top row, to use in the row label and tooltips
@@ -322,7 +322,7 @@ export class AppConfigurationComponent implements OnInit {
           : i.SettingsEntityScope === SystemSettingsScopes.Site
       );
       if (systemSettingsEntities.length > 1) {
-        url.set(this.#urlTo('message/e', { error: 'AppAdmin.ErrorTooManyAppSettings' }, staticName));
+        url.set(this.#urlTo('message/e', { error: 'AppAdmin.ErrorTooManyAppSettings', openUrl:"/data/System.App" }, staticName));
       } else {
         const systemSettingsEntity = systemSettingsEntities[0];
         url.set(this.#urlTo(
@@ -350,7 +350,7 @@ export class AppConfigurationComponent implements OnInit {
     const url = signal('');
     this.#contentItemsService.getAllPromise(staticName).then(contentItems => {
       if (contentItems.length > 1) {
-        url.set(this.#urlTo('message/e', { error: 'AppAdmin.ErrorTooManyAppSettings' }, staticName));
+        url.set(this.#urlTo('message/e', { error: 'AppAdmin.ErrorTooManyAppSettings', openUrl: "/data/System.App" }, staticName));
       } else {
         const customSettingsEntity = contentItems[0];
         url.set(this.#urlTo(
@@ -373,9 +373,9 @@ export class AppConfigurationComponent implements OnInit {
     const url = signal('');
     this.#contentItemsService.getAllPromise(staticName).then(contentItems => {
       if (contentItems.length < 1) {
-        url.set(this.#urlTo('message/e', { error: 'AppAdmin.ErrorNoAppSettings' }, staticName));
+        url.set(this.#urlTo('message/e', { error: 'AppAdmin.ErrorNoAppSettings', openUrl: "/data/System.App" }, staticName));
       } else if (contentItems.length > 1) {
-        url.set(this.#urlTo('message/e', { error: 'AppAdmin.ErrorTooManyAppSettings' }, staticName));
+        url.set(this.#urlTo('message/e', { error: 'AppAdmin.ErrorTooManyAppSettings', openUrl: "/data/System.App" }, staticName));
       } else {
         url.set(this.#urlTo(
           `edit/${convertFormToUrl({
