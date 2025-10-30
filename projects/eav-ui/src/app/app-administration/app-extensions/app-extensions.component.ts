@@ -1,6 +1,6 @@
 import { ColDef, GridOptions } from '@ag-grid-community/core';
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject, signal, Signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogActions } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -36,31 +36,23 @@ export interface Extension {
 })
 export class AppExtensionsComponent {
   private extensionsSvc = transient(AppExtensionsService);
-  
   router = inject(Router);
   #dialogRouter = transient(DialogRoutingService);
 
-  // raw JSON from API
-  extensions: Signal<Extension[]> = computed(() => {
-    const result = this.extensionsSvc.extensionsResource.value();
-    return result?.extensions?.map((ext: Extension) => ({
-      folder: ext.folder,
-      configuration: JSON.stringify(ext.configuration)
-    })) ?? [];
-  });
+  // reactive data from httpResource
+  extensions = computed(() => this.extensionsSvc.extensions());
 
   refresh = signal<number>(0);
-  
+
   filesDropped(files: File[]) {
-    this.extensionsSvc.uploadExtensions(files);
+    this.extensionsSvc.uploadExtensions(files).subscribe(() => this.refresh.update(v => v + 1));
   }
 
   urlToUploadExtension() {
     return this.#urlTo('import');
   }
-  
+
   #urlTo(subRoute: string): string {
-    // Let DialogRoutingService handle the edit subroute
     return `#${this.#dialogRouter.urlSubRoute(subRoute)}`;
   }
 
@@ -69,7 +61,6 @@ export class AppExtensionsComponent {
     columnDefs: this.#buildColumnDefs(),
   };
 
-  // UI Help Text for the UX Help Info Card
   #helpTextConst: HelpTextConst = {
     empty: {
       description: '<p><b>App Extensions</b><br>Install extensions to add extra functionality or input types to apps.</p>',
@@ -84,7 +75,7 @@ export class AppExtensionsComponent {
   uxHelpText = computed(() => {
     const data = this.extensions();
     return data?.length === 0 ? this.#helpTextConst.empty : this.#helpTextConst.content;
-  })
+  });
 
   #buildColumnDefs(): ColDef[] {
     return [
@@ -99,10 +90,10 @@ export class AppExtensionsComponent {
         headerName: 'Configuration',
         field: 'configuration',
         flex: 2,
-        sortable: true,
-        filter: 'agTextColumnFilter',
         autoHeight: true,
         wrapText: true,
+        valueGetter: (params) =>
+          JSON.stringify(params.data.configuration, null, 2)
       },
       {
         headerName: '',

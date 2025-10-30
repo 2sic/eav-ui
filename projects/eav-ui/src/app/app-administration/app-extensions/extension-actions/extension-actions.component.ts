@@ -10,6 +10,7 @@ import { convertFormToUrl } from '../../../shared/helpers/url-prep.helper';
 import { EditForm, EditPrep } from '../../../shared/models/edit-form.model';
 import { DialogRoutingService } from '../../../shared/routing/dialog-routing.service';
 import { Extension } from '../app-extensions.component';
+import { AppExtensionsService } from '../app-extensions.service';
 
 @Component({
   selector: 'app-extension-actions',
@@ -22,6 +23,7 @@ export class ExtensionActionsComponent {
 
   router = inject(Router);
   #dialogRouter = transient(DialogRoutingService);
+  private extensionsSvc = transient(AppExtensionsService);
 
   // ag-grid Angular adapter expects agInit to initialize the renderer
   agInit(params: ICellRendererParams): void {
@@ -45,6 +47,16 @@ export class ExtensionActionsComponent {
         returnValue: true,
         overrideContents,
       } satisfies DialogRoutingState,
+    });
+  }
+
+  updateConfig(ext: Extension) {
+    const newConfig = JSON.stringify(ext.configuration ?? {});
+    console.log('Updating config for extension:', ext, newConfig);
+
+    this.extensionsSvc.updateExtension(newConfig).subscribe({
+      next: () => console.log('Config updated successfully'),
+      error: (err) => console.error('Error updating config', err),
     });
   }
 
