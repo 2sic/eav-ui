@@ -13,27 +13,36 @@ export class AppExtensionsService extends HttpServiceBase {
     url: this.apiUrl('admin/app/Extensions'),
     params: { appId: this.appId },
     method: 'GET',
-    credentials: 'include',
   }));
 
   // Computed signal for value access
   extensions = computed(() => this.extensionsResource.value()?.extensions ?? []);
 
   // Update config (mutations still best done via HttpClient per Angular docs)
-  updateExtension(config: string) {
-    return this.http.put<void>(this.apiUrl('admin/app/Extensions'), { config }, {
-      params: { appId: this.appId },
-      withCredentials: true
+  updateExtension(name: string, config: string) {
+    // Parse the config to JsonElement format that the API expects
+    const configJson = JSON.parse(config);
+
+    return this.http.post<boolean>(this.apiUrl('admin/app/Extensions'), configJson, {
+      params: {
+        zoneId: this.zoneId,
+        appId: this.appId,
+        name
+      },
     });
   }
 
   // Uploads extension files
-  uploadExtensions(files: File[]) {
+  uploadExtensions(name: string, files: File[]) {
     const formData = new FormData();
     files.forEach(file => formData.append('files', file));
 
     return this.http.post<FileUploadResult>(this.apiUrl('admin/app/installextension'), formData, {
-      params: { appId: this.appId },
+      params: {
+        appId: this.appId,
+        zoneId: this.zoneId,
+        name
+      },
       withCredentials: true
     });
   }

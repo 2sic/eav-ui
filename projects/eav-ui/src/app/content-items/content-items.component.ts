@@ -402,7 +402,6 @@ export class ContentItemsComponent implements OnInit {
     this.#contentExportSvc.exportEntity(item.Id, this.#contentTypeStaticName, true);
   }
 
-
   // Show initial delete confirmation
   #delete(item: ContentItem) {
     this.#confirmAndExecuteDelete(
@@ -428,7 +427,7 @@ export class ContentItemsComponent implements OnInit {
       message: message,
       title: dialogTitle,
       confirmTranslateKey: confirmText,
-      hasDeleteSnackbar: true 
+      hasDeleteSnackbar: true
     };
 
     this.#matDialog.open(ConfirmDeleteDialogComponent, {
@@ -463,7 +462,6 @@ export class ContentItemsComponent implements OnInit {
         });
     });
   }
-
 
   private valueGetterEntityField(params: ValueGetterParams) {
     const rawValue: ContentItem[] = params.data[params.colDef.field];

@@ -6,13 +6,17 @@ import { MatDialogActions } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterOutlet } from '@angular/router';
 import { transient } from '../../../../../core';
+import { DialogRoutingState } from '../../edit/dialog/dialogRouteState.model';
 import { GridWithHelpComponent, HelpTextConst } from '../../shared/ag-grid/grid-with-help/grid-with-help.component';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
+import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
+import { EditForm, EditPrep } from '../../shared/models/edit-form.model';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { AppExtensionsService } from '../services/app-extensions.service';
 import { ExtensionActionsComponent } from './extension-actions/extension-actions.component';
+import { ExtensionActionsParams } from './extension-actions/extension-actions.model';
 
 export interface Extension {
   folder: string;
@@ -44,10 +48,28 @@ export class AppExtensionsComponent {
 
   refresh = signal<number>(0);
 
-  ngOnInit() {
+  #openSettings(ext?: Extension) {
+    const configurationContentType = 'a0f44af0-6750-40c9-9ad9-4a07b6eda8b3';
+    const overrideContents = [{ guid: configurationContentType }];
+
+    // Only pass the relative "new:GUID" subroute
+    const subRoute = this.#routeAddItem(configurationContentType);
+    const rawUrl = this.#urlTo(`edit/${subRoute}`);
+
+    // normalize leading '#' or '#/' or '/'
+    const normalized = rawUrl.replace(/^#\/?/, '').replace(/^\//, '');
+    const routeSegments = normalized.split('/').filter(Boolean);
+
+    this.router.navigate(routeSegments, {
+      state: {
+        returnValue: true,
+        overrideContents,
+      } satisfies DialogRoutingState,
+    });
+
     this.#dialogRouter.doOnDialogClosedWithData((data) => {
       if (data?.objData) {
-        this.extensionsSvc.updateExtension(JSON.stringify(data.objData)).subscribe(() => {
+        this.extensionsSvc.updateExtension(ext.folder, JSON.stringify(data.objData)).subscribe(() => {
           this.refresh.update(v => v + 1);
         });
       }
@@ -55,7 +77,7 @@ export class AppExtensionsComponent {
   }
 
   filesDropped(files: File[]) {
-    this.extensionsSvc.uploadExtensions(files).subscribe(() => this.refresh.update(v => v + 1));
+    this.extensionsSvc.uploadExtensions(files[0].name, files).subscribe(() => this.refresh.update(v => v + 1));
   }
 
   urlToUploadExtension() {
@@ -64,6 +86,13 @@ export class AppExtensionsComponent {
 
   #urlTo(subRoute: string): string {
     return `#${this.#dialogRouter.urlSubRoute(subRoute)}`;
+  }
+
+  #routeAddItem(configurationContentType: string): string {
+    // Only produce "new:GUID" without "edit/"
+    return convertFormToUrl({
+      items: [EditPrep.newFromType(configurationContentType)],
+    } satisfies EditForm);
   }
 
   gridOptions: GridOptions = {
@@ -110,6 +139,17 @@ export class AppExtensionsComponent {
         width: 50,
         pinned: 'right',
         cellRenderer: ExtensionActionsComponent,
+        cellRendererParams: (() => {
+          const params: ExtensionActionsParams = {
+            urlTo: (verb, ext) => '#' + this.#urlTo(ext.folder),
+            do: (verb, ext) => {
+              switch (verb) {
+                case 'edit': this.#openSettings(ext); break;
+              }
+            }
+          } satisfies ExtensionActionsParams;
+          return params;
+        })(),
       },
     ];
   }
