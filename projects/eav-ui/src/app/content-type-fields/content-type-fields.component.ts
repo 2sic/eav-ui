@@ -275,7 +275,7 @@ export class ContentTypeFieldsComponent implements OnInit {
         hasDeleteSnackbar: true
       },
       viewContainerRef: this.viewContainerRef,
-      width: '400px',
+      width: '600px',
     }).afterClosed().subscribe(isConfirmed => {
       if (!isConfirmed) return;
       this.#contentTypesFieldsSvc.delete(field, this.contentType()).subscribe(() => {

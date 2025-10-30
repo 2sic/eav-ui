@@ -405,7 +405,6 @@ export class ContentItemsComponent implements OnInit {
 
   // Show initial delete confirmation
   #delete(item: ContentItem) {
-    this.#snackBar.open('Deleting...');
     this.#confirmAndExecuteDelete(
       item,
       "Delete Item?",
