@@ -66,8 +66,15 @@ export class AppConfigurationCardComponent implements OnDestroy {
 
   protected clipboard = transient(ClipboardService);
 
-  #urlTo(url: string) {
-    return '#' + this.#dialogRouter.urlSubRoute(url);
+  #urlTo(url: string, queryParams?: { [key: string]: string }, errComponent?: string) {
+    let newUrl = '#' + this.#dialogRouter.urlSubRoute(url);
+
+    if (queryParams)
+      newUrl += `?${new URLSearchParams(queryParams).toString()}`;
+    if (errComponent)
+      newUrl += `&errComponent=${errComponent}`;
+
+    return newUrl;
   }
 
   urlToEdit() {
@@ -76,17 +83,19 @@ export class AppConfigurationCardComponent implements OnDestroy {
       eavConstants.contentTypes.appConfiguration
     ).then(contentItems => {
 
-      if (contentItems.length !== 1)
-        return ''
+      if (contentItems.length !== 1) {
+        url.set(this.#urlTo('message/e', { error: 'AppAdmin.ErrorTooManyAppSettings', errComponent: 'App-Specifications', openUrl:"/data/System.App" }));
+        return url;
+      }
 
       this.appConfigAvailable.set(true);
+
       url.set(this.#urlTo(
         `edit/${convertFormToUrl({
           items: [EditPrep.editId(contentItems[0].Id)],
         })}`
       ));
     });
-
     return url;
   }
 
@@ -98,7 +107,6 @@ export class AppConfigurationCardComponent implements OnDestroy {
       )
     );
   }
-
 
   formatValue(value?: string): string {
     return value === "" ? "-" : value ?? "-";

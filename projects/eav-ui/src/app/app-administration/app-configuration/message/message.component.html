@@ -6,6 +6,11 @@
     </button>
   </div>
   <div class="eav-dialog-content">
-    <p>{{ message }}</p>
+    <p>
+      {{ message }}
+      @if (openFixUrl().length > 0) {
+        <button mat-button (click)="routeToFixIssue()">Click to fix</button>
+      }
+    </p>
   </div>
 </div>

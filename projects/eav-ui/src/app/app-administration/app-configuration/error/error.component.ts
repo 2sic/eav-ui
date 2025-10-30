@@ -6,13 +6,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
-    selector: 'app-error',
-    templateUrl: './error.component.html',
-    imports: [
+  selector: 'app-error',
+  templateUrl: './error.component.html',
+  imports: [
     MatDialogModule,
     MatButtonModule,
     MatIconModule
-]
+  ]
 })
 export class ErrorComponent implements OnInit {
   errorMessage: string;
@@ -20,7 +20,7 @@ export class ErrorComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     public dialogRef: MatDialogRef<ErrorComponent>
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
