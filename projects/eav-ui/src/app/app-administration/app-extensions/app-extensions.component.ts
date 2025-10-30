@@ -1,6 +1,6 @@
 import { ColDef, GridOptions } from '@ag-grid-community/core';
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogActions } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -34,7 +34,7 @@ export interface Extension {
     GridWithHelpComponent,
   ]
 })
-export class AppExtensionsComponent {
+export class AppExtensionsComponent implements OnInit {
   private extensionsSvc = transient(AppExtensionsService);
   router = inject(Router);
   #dialogRouter = transient(DialogRoutingService);
@@ -47,7 +47,12 @@ export class AppExtensionsComponent {
   ngOnInit() {
     this.#dialogRouter.doOnDialogClosedWithData((data) => {
       if (data?.objData) {
-        this.extensionsSvc.updateExtension(JSON.stringify(data.objData)).subscribe(() => {
+        console.log('Received updated extension data from dialog:', data);
+
+        const config = JSON.stringify(data.objData);
+        const path = "2ro"
+
+        this.extensionsSvc.updateExtension(path, config).subscribe(() => { // TODO: get extension.folder instead of stringliteral "test"
           this.refresh.update(v => v + 1);
         });
       }
@@ -55,7 +60,7 @@ export class AppExtensionsComponent {
   }
 
   filesDropped(files: File[]) {
-    this.extensionsSvc.uploadExtensions(files).subscribe(() => this.refresh.update(v => v + 1));
+    this.extensionsSvc.uploadExtensions(files[0].name, files).subscribe(() => this.refresh.update(v => v + 1));
   }
 
   urlToUploadExtension() {

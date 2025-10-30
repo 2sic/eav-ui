@@ -50,16 +50,6 @@ export class ExtensionActionsComponent {
     });
   }
 
-  updateConfig(ext: Extension) {
-    const newConfig = JSON.stringify(ext.configuration ?? {});
-    console.log('Updating config for extension:', ext, newConfig);
-
-    this.extensionsSvc.updateExtension(newConfig).subscribe({
-      next: () => console.log('Config updated successfully'),
-      error: (err) => console.error('Error updating config', err),
-    });
-  }
-
   #urlTo(subRoute: string): string {
     // Let DialogRoutingService handle the edit subroute
     return `#${this.#dialogRouter.urlSubRoute(subRoute)}`;

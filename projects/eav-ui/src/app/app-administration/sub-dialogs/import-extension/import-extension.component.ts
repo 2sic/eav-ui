@@ -22,6 +22,6 @@ export class ImportExtensionComponent {
     dialogData.description ??= `Select Extension folder from your computer to import.`;
     dialogData.allowedFileTypes ??= '';
     dialogData.multiple ??= true;
-    dialogData.upload$ ??= (files) => this.ExtensionsService.uploadExtensions(files);
+    dialogData.upload$ ??= (files) => this.ExtensionsService.uploadExtensions(files[0].name, files);
   }
 }
