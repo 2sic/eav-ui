@@ -13,7 +13,6 @@ export class AppExtensionsService extends HttpServiceBase {
     url: this.apiUrl('admin/app/Extensions'),
     params: { appId: this.appId },
     method: 'GET',
-    credentials: 'include',
   }));
 
   // Computed signal for value access
@@ -24,13 +23,12 @@ export class AppExtensionsService extends HttpServiceBase {
     // Parse the config to JsonElement format that the API expects
     const configJson = JSON.parse(config);
 
-    return this.http.put<boolean>(this.apiUrl('admin/app/Extensions'), configJson, {
+    return this.http.post<boolean>(this.apiUrl('admin/app/Extensions'), configJson, {
       params: {
         zoneId: this.zoneId,
         appId: this.appId,
         name
       },
-      withCredentials: true
     });
   }
 
