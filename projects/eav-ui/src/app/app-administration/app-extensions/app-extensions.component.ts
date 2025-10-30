@@ -11,7 +11,7 @@ import { defaultGridOptions } from '../../shared/constants/default-grid-options.
 import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
-import { AppExtensionsService } from './app-extensions.service';
+import { AppExtensionsService } from '../services/app-extensions.service';
 import { ExtensionActionsComponent } from './extension-actions/extension-actions.component';
 
 export interface Extension {
@@ -43,6 +43,16 @@ export class AppExtensionsComponent {
   extensions = computed(() => this.extensionsSvc.extensions());
 
   refresh = signal<number>(0);
+
+  ngOnInit() {
+    this.#dialogRouter.doOnDialogClosedWithData((data) => {
+      if (data?.objData) {
+        this.extensionsSvc.updateExtension(JSON.stringify(data.objData)).subscribe(() => {
+          this.refresh.update(v => v + 1);
+        });
+      }
+    });
+  }
 
   filesDropped(files: File[]) {
     this.extensionsSvc.uploadExtensions(files).subscribe(() => this.refresh.update(v => v + 1));

@@ -9,8 +9,8 @@ import { DialogRoutingState } from '../../../edit/dialog/dialogRouteState.model'
 import { convertFormToUrl } from '../../../shared/helpers/url-prep.helper';
 import { EditForm, EditPrep } from '../../../shared/models/edit-form.model';
 import { DialogRoutingService } from '../../../shared/routing/dialog-routing.service';
+import { AppExtensionsService } from '../../services/app-extensions.service';
 import { Extension } from '../app-extensions.component';
-import { AppExtensionsService } from '../app-extensions.service';
 
 @Component({
   selector: 'app-extension-actions',

@@ -2,7 +2,7 @@ import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { transient } from 'projects/core';
 import { FileUploadDialogComponent, FileUploadDialogData, UploadTypes } from '../../../shared/components/file-upload-dialog';
-import { AppExtensionsService } from '../../app-extensions/app-extensions.service';
+import { AppExtensionsService } from '../../services/app-extensions.service';
 
 @Component({
   selector: 'app-import-data-bundles',
