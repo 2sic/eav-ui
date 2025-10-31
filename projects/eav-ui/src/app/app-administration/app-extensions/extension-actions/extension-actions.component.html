@@ -1,10 +1,20 @@
 <div class="actions-component">
-  <a
+  <a 
     (click)="do('edit')"
     class="eav-grid-action-button default-link highlight"
     matRipple
     tippy="Description and more"
   >
-    <mat-icon>edit</mat-icon>
+    @if (ext.configuration.nameId) {
+      <mat-icon
+        [matBadge]="1"
+        matBadgePosition="below after"
+        matBadgeSize="small"
+      >
+        edit
+      </mat-icon>
+    } @else {
+      <mat-icon>edit</mat-icon>
+    }
   </a>
 </div>

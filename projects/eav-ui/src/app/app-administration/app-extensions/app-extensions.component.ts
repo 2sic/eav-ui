@@ -160,7 +160,7 @@ export class AppExtensionsComponent implements OnInit {
       },
       {
         headerName: '',
-        width: 50,
+        width: 57, // Ensure matBadge has enough space
         pinned: 'right',
         cellRenderer: ExtensionActionsComponent,
         cellRendererParams: (() => {
