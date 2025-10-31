@@ -1,22 +1,26 @@
-import { computed, Injectable } from '@angular/core';
+import { Injectable, Signal } from '@angular/core';
 import { FileUploadResult } from '../../shared/components/file-upload-dialog/file-upload-dialog.models';
 import { classLog } from '../../shared/logging';
 import { HttpServiceBase } from '../../shared/services/http-service-base';
-import { Extension } from '../app-extensions/app-extensions.component';
+import { Extension } from '../models/extension.model';
 
 @Injectable()
 export class AppExtensionsService extends HttpServiceBase {
   log = classLog({ AppExtensionsService });
 
-  // Reactive resource for loading extensions
-  extensionsResource = this.newHttpResource<{ extensions: Extension[] }>(() => ({
-    url: this.apiUrl('admin/app/Extensions'),
-    params: { appId: this.appId },
-    method: 'GET',
-  }));
-
-  // Computed signal for value access
-  extensions = computed(() => this.extensionsResource.value()?.extensions ?? []);
+  // Get all extensions with live refresh capability
+  getAllLive(refresh: Signal<unknown>) {
+    return this.newHttpResource<{ extensions: Extension[] }>(() => {
+      // Watch the refresh signal to trigger reloads
+      refresh();
+      
+      return {
+        url: this.apiUrl('admin/app/Extensions'),
+        params: { appId: this.appId },
+        method: 'GET',
+      };
+    });
+  }
 
   // Update config (mutations still best done via HttpClient per Angular docs)
   updateExtension(name: string, config: string) {
@@ -33,15 +37,14 @@ export class AppExtensionsService extends HttpServiceBase {
   }
 
   // Uploads extension files
-  uploadExtensions(name: string, files: File[]) {
+  uploadExtensions(files: File[]) {
     const formData = new FormData();
     files.forEach(file => formData.append('files', file));
 
     return this.http.post<FileUploadResult>(this.apiUrl('admin/app/installextension'), formData, {
       params: {
         appId: this.appId,
-        zoneId: this.zoneId,
-        name
+        zoneId: this.zoneId
       },
       withCredentials: true
     });

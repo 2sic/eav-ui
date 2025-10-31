@@ -1,4 +1,4 @@
-import { Extension } from "../app-extensions.component";
+import { Extension } from "../../models/extension.model";
 
 export type ExtensionItemType = 'edit';
 

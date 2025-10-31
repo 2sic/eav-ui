@@ -14,14 +14,10 @@ import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm, EditPrep } from '../../shared/models/edit-form.model';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
+import { Extension } from '../models/extension.model';
 import { AppExtensionsService } from '../services/app-extensions.service';
 import { ExtensionActionsComponent } from './extension-actions/extension-actions.component';
 import { ExtensionActionsParams } from './extension-actions/extension-actions.model';
-
-export interface Extension {
-  folder: string;
-  configuration: string;
-}
 
 @Component({
   selector: 'app-extensions',
@@ -43,17 +39,29 @@ export class AppExtensionsComponent {
   router = inject(Router);
   #dialogRouter = transient(DialogRoutingService);
 
-  // reactive data from httpResource
-  extensions = computed(() => this.extensionsSvc.extensions());
+  /** Signal to trigger reloading of data */
+  refresh = signal(0);
 
-  refresh = signal<number>(0);
+  // Following the exact pattern from content-items
+  #extensionsRaw = this.extensionsSvc.getAllLive(this.refresh).value;
+
+  extensions = computed(() => {
+    const data = this.#extensionsRaw();
+    return data?.extensions ?? [];
+  });
 
   #openSettings(ext?: Extension) {
     const configurationContentType = 'a0f44af0-6750-40c9-9ad9-4a07b6eda8b3';
     const overrideContents = [{ guid: configurationContentType }];
 
-    // Only pass the relative "new:GUID" subroute
-    const subRoute = this.#routeAddItem(configurationContentType);
+    let subRoute: string;
+
+    // Check if extension has existing configuration
+    if (ext?.configuration && ext.configuration.nameId)
+      subRoute = ext.configuration.nameId.toString();
+    else
+      subRoute = this.#routeAddItem(configurationContentType);
+
     const rawUrl = this.#urlTo(`edit/${subRoute}`);
 
     // normalize leading '#' or '#/' or '/'
@@ -70,14 +78,18 @@ export class AppExtensionsComponent {
     this.#dialogRouter.doOnDialogClosedWithData((data) => {
       if (data?.objData) {
         this.extensionsSvc.updateExtension(ext.folder, JSON.stringify(data.objData)).subscribe(() => {
-          this.refresh.update(v => v + 1);
+          this.fetchExtensions();
         });
       }
     });
   }
 
   filesDropped(files: File[]) {
-    this.extensionsSvc.uploadExtensions(files[0].name, files).subscribe(() => this.refresh.update(v => v + 1));
+    this.extensionsSvc.uploadExtensions(files).subscribe(() => this.fetchExtensions());
+  }
+
+  private fetchExtensions() {
+    this.refresh.update(v => ++v);
   }
 
   urlToUploadExtension() {

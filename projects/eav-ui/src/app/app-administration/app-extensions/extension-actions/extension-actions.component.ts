@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { Extension } from '../app-extensions.component';
+import { Extension } from '../../models/extension.model';
 import { ExtensionActionsParams, ExtensionItemType } from './extension-actions.model';
 
 type GoToUrls = 'edit'
