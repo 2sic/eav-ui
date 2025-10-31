@@ -58,33 +58,32 @@ export class AppExtensionsComponent implements OnInit {
 
   #openSettings(ext?: Extension) {
     const configurationContentType = 'a0f44af0-6750-40c9-9ad9-4a07b6eda8b3';
-    const overrideContents = [{ guid: configurationContentType }];
-
     let subRoute: string;
-    let form: EditForm;
 
-    // Check if extension has existing configuration
-    if (ext?.configuration && ext.configuration.nameId) {
-      // For existing configurations, we need to edit by the nameId (GUID)
-      // Since configurations might not be regular entities, we create them as new items
-      // but prefilled with the existing configuration data
-      form = {
-        items: [EditPrep.newFromType(configurationContentType, ext.configuration as unknown as Record<string, unknown>)],
-      };
-      subRoute = convertFormToUrl(form);
-    } else
+    // Build overrideContents for existing configuration or new
+    const overrideContents: Record<string, unknown>[] = ext?.configuration?.nameId
+      ? [{
+        guid: ext.configuration.nameId,           // Use GUID as identifier
+        ...ext.configuration                     // spread existing configuration data
+      }]
+      : [{ guid: configurationContentType }];      // fallback for new configuration
+
+    // Determine route
+    if (ext?.configuration?.nameId) {
+      // No prefill hack needed; just route with empty form
       subRoute = this.#routeAddItem(configurationContentType);
+    } else {
+      subRoute = this.#routeAddItem(configurationContentType);
+    }
 
     const rawUrl = this.#urlTo(`edit/${subRoute}`);
-
-    // normalize leading '#' or '#/' or '/'
     const normalized = rawUrl.replace(/^#\/?/, '').replace(/^\//, '');
     const routeSegments = normalized.split('/').filter(Boolean);
 
     this.router.navigate(routeSegments, {
       state: {
         returnValue: true,
-        overrideContents,
+        overrideContents
       } satisfies DialogRoutingState,
     });
 
