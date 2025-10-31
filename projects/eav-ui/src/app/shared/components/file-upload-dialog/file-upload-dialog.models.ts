@@ -16,7 +16,6 @@ export enum ImportModeValues {
   importAsTemplate = 'importAsTemplate',
 }
 
-
 export interface FileUploadResult {
   Messages: FileUploadResultMessage[];
   Success: boolean;

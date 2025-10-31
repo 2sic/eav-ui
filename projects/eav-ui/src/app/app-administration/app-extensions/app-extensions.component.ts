@@ -1,6 +1,6 @@
 import { ColDef, GridOptions } from '@ag-grid-community/core';
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogActions } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -34,7 +34,7 @@ import { ExtensionActionsParams } from './extension-actions/extension-actions.mo
     GridWithHelpComponent,
   ]
 })
-export class AppExtensionsComponent {
+export class AppExtensionsComponent implements OnInit {
   private extensionsSvc = transient(AppExtensionsService);
   router = inject(Router);
   #dialogRouter = transient(DialogRoutingService);
@@ -50,16 +50,29 @@ export class AppExtensionsComponent {
     return data?.extensions ?? [];
   });
 
+  ngOnInit() {
+    // Listen for dialog close events and refresh the grid
+    // This will trigger when any dialog (including import) closes
+    this.#dialogRouter.doOnDialogClosed(() => this.fetchExtensions());
+  }
+
   #openSettings(ext?: Extension) {
     const configurationContentType = 'a0f44af0-6750-40c9-9ad9-4a07b6eda8b3';
     const overrideContents = [{ guid: configurationContentType }];
 
     let subRoute: string;
+    let form: EditForm;
 
     // Check if extension has existing configuration
-    if (ext?.configuration && ext.configuration.nameId)
-      subRoute = ext.configuration.nameId.toString();
-    else
+    if (ext?.configuration && ext.configuration.nameId) {
+      // For existing configurations, we need to edit by the nameId (GUID)
+      // Since configurations might not be regular entities, we create them as new items
+      // but prefilled with the existing configuration data
+      form = {
+        items: [EditPrep.newFromType(configurationContentType, ext.configuration as unknown as Record<string, unknown>)],
+      };
+      subRoute = convertFormToUrl(form);
+    } else
       subRoute = this.#routeAddItem(configurationContentType);
 
     const rawUrl = this.#urlTo(`edit/${subRoute}`);

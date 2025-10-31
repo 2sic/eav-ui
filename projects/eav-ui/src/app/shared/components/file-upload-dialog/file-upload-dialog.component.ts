@@ -21,7 +21,6 @@ import { InstallerService } from '../../services/installer.service';
 import { BaseComponent } from '../base.component';
 import { FileUploadDialogData, FileUploadMessageTypes, FileUploadResult, ImportModeValues, UploadTypes } from './file-upload-dialog.models';
 
-
 @Component({
   selector: 'app-file-upload-dialog',
   templateUrl: './file-upload-dialog.component.html',
@@ -43,7 +42,7 @@ export class FileUploadDialogComponent extends BaseComponent implements OnInit, 
   @HostBinding('className') hostClass = 'dialog-component';
 
   uploadType = input<Of<typeof UploadTypes>>();
-  
+
   @ViewChild('installerWindow') installerWindow: ElementRef;
 
   uploading = signal(false);
@@ -71,8 +70,6 @@ export class FileUploadDialogComponent extends BaseComponent implements OnInit, 
     importMode: [this.importModeValues.importOriginal, Validators.required],
     name: ['']
   });
-
-  
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public dialogData: FileUploadDialogData,
@@ -125,7 +122,6 @@ export class FileUploadDialogComponent extends BaseComponent implements OnInit, 
       const url = this.urlChangeImportMode + (this.urlChangeImportMode.includes('?') ? '&' : '?') + `selectOnlyMode=${isTemplate}`;
       this.remoteInstallerUrl = <string>this.sanitizer.bypassSecurityTrustResourceUrl(url);
     });
-
 
     if (this.dialogData.files != null)
       this.filesDropped(this.dialogData.files);
@@ -208,7 +204,6 @@ Please try again later or check how to manually install content-templates: https
         return of(error);
       }),
     ).subscribe());
-
   }
 
   ngOnDestroy(): void {
@@ -225,7 +220,6 @@ Please try again later or check how to manually install content-templates: https
     this.uploading.set(false);
   }
 
-
   #setupConditionalValidation(): void {
     const nameControl = this.importForm.get('name');
     this.importForm.get('importMode')?.valueChanges.subscribe(mode => {
@@ -234,7 +228,6 @@ Please try again later or check how to manually install content-templates: https
       nameControl?.updateValueAndValidity();
     });
   }
-
 
   filesDropped(files: File[]): void {
     this.#setFiles(files);

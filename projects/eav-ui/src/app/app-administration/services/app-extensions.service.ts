@@ -1,4 +1,5 @@
 import { Injectable, Signal } from '@angular/core';
+import { map } from 'rxjs';
 import { FileUploadResult } from '../../shared/components/file-upload-dialog/file-upload-dialog.models';
 import { classLog } from '../../shared/logging';
 import { HttpServiceBase } from '../../shared/services/http-service-base';
@@ -13,7 +14,7 @@ export class AppExtensionsService extends HttpServiceBase {
     return this.newHttpResource<{ extensions: Extension[] }>(() => {
       // Watch the refresh signal to trigger reloads
       refresh();
-      
+
       return {
         url: this.apiUrl('admin/app/Extensions'),
         params: { appId: this.appId },
@@ -41,12 +42,19 @@ export class AppExtensionsService extends HttpServiceBase {
     const formData = new FormData();
     files.forEach(file => formData.append('files', file));
 
-    return this.http.post<FileUploadResult>(this.apiUrl('admin/app/installextension'), formData, {
+    return this.http.post<boolean>(this.apiUrl('admin/app/installextension'), formData, {
       params: {
         appId: this.appId,
         zoneId: this.zoneId
       },
       withCredentials: true
-    });
+    }).pipe(
+      map((success: boolean): FileUploadResult => ({
+        Success: success,
+        Messages: success 
+          ? [{ MessageType: 1, Text: 'Extension uploaded successfully' }] // Success message
+          : [{ MessageType: 2, Text: 'Extension upload failed' }] // Error message
+      }))
+    );
   }
 }
