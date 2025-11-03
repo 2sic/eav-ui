@@ -10,7 +10,9 @@ export class DefaultPaste {
   static formattedText: RawEditorOptions = (() => {
     const log = classLog({DefaultPaste});
     return {
-      paste_as_text: true, // stripps pasted formattings by default
+      // strips pasted formatting by default
+      // experimentally turned on, but it seems that off seems to be the better choice.
+      paste_as_text: false,
       // paste_enable_default_filters: true,
       paste_create_paragraphs: true,
       paste_create_linebreaks: false,
