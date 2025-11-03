@@ -10,7 +10,7 @@ export class DefaultPaste {
   static formattedText: RawEditorOptions = (() => {
     const log = classLog({DefaultPaste});
     return {
-      paste_as_text: false,
+      paste_as_text: true, // stripps pasted formattings by default
       // paste_enable_default_filters: true,
       paste_create_paragraphs: true,
       paste_create_linebreaks: false,
