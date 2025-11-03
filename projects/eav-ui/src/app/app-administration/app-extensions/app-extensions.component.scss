@@ -1,5 +1,9 @@
-@import "../../../styles/variables.scss";
+@import '../../../styles/variables.scss';
 
 :host ::ng-deep .ag-row-hover .ag-cell a {
   color: $sxc-solid !important;
+}
+
+.container {
+  height: 100%;
 }
