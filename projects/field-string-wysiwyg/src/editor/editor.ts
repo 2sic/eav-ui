@@ -257,6 +257,11 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     // on change, undo and redo, save/push the value
     ['change', 'undo', 'redo', 'input'].forEach(name => editor.on(name, () => this.#saveValue()));
 
+    editor.on('ExecCommand', (e) => {
+      if (e.command === 'mceTogglePlainTextPaste')
+        return this.connector._experimental.showSnackBar("Plain Text Paste mode toggled.");
+    });
+
     // if the system has a reconfigure object, run it's code now
     this.reconfigure?.configureEditor?.(editor);
   }
