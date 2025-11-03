@@ -37,6 +37,11 @@ export class AppExtensionsService extends HttpServiceBase {
     });
   }
 
+  downloadExtension(folder: string) {
+    // TODO: @2pp - Implement when API-Endpoint exists
+    console.log("Downloading extension:", folder);
+  }
+
   // Uploads extension files
   uploadExtensions(files: File[]) {
     const formData = new FormData();

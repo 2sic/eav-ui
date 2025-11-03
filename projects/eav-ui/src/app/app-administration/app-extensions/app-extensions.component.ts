@@ -16,6 +16,7 @@ import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.mod
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { Extension } from '../models/extension.model';
 import { AppExtensionsService } from '../services/app-extensions.service';
+import { AppExtensionsLinkCellComponent } from './app-extensions-link-cell.component';
 import { ExtensionActionsComponent } from './extension-actions/extension-actions.component';
 import { ExtensionActionsParams } from './extension-actions/extension-actions.model';
 
@@ -96,6 +97,10 @@ export class AppExtensionsComponent implements OnInit {
     });
   }
 
+  #downloadExtension(ext: Extension) {
+    this.extensionsSvc.downloadExtension(ext.folder);
+  }
+
   filesDropped(files: File[]) {
     this.extensionsSvc.uploadExtensions(files).subscribe(() => this.fetchExtensions());
   }
@@ -121,6 +126,7 @@ export class AppExtensionsComponent implements OnInit {
 
   gridOptions: GridOptions = {
     ...defaultGridOptions,
+    rowHeight: 80,
     columnDefs: this.#buildColumnDefs(),
   };
 
@@ -140,14 +146,66 @@ export class AppExtensionsComponent implements OnInit {
     return data?.length === 0 ? this.#helpTextConst.empty : this.#helpTextConst.content;
   });
 
+  cellTextRenderer(text: string, subText?: string, width?: string): string {
+    return `
+      <div style="display: flex; flex-direction: column;">
+        <span title="${text}" style="font-weight:bold; white-space: nowrap; width: ${width ?? '100%'}; overflow: hidden; text-overflow: ellipsis;">${text}</span>
+        <span title="${subText}" style="margin-top: -15px; white-space: nowrap; width: ${width ?? '100%'}; overflow: hidden; text-overflow: ellipsis;">
+          ${subText ?? ''}
+        </span>
+      </div>
+    `;
+  }
+
   #buildColumnDefs(): ColDef[] {
     return [
       {
-        headerName: 'Folder',
+        headerName: 'Extension',
         field: 'folder',
         flex: 1,
         sortable: true,
         filter: 'agTextColumnFilter',
+        cellRenderer: (params: any) => {
+          const folder = params.data?.folder ?? '';
+          const guid = params.data?.configuration?.nameId ?? '';
+          return this.cellTextRenderer(folder, guid);
+        },
+      },
+      {
+        headerName: 'Name',
+        field: 'name',
+        flex: 1,
+        sortable: true,
+        filter: 'agTextColumnFilter',
+        cellRenderer: (params: any) => {
+          const name = params.data?.configuration?.name ?? '';
+          const teaser = params.data?.configuration?.teaser ?? '';
+          return this.cellTextRenderer(name, teaser);
+        },
+      },
+      {
+        headerName: 'Creator',
+        field: 'creator',
+        width: 175,
+        sortable: true,
+        filter: 'agTextColumnFilter',
+        cellRenderer: (params: any) => {
+          const creator = params.data?.configuration?.createdBy ?? '';
+          const copyright = params.data?.configuration?.copyright ?? '';
+          return this.cellTextRenderer(creator, copyright, '150px');
+        },
+      },
+      {
+        headerName: 'Link',
+        field: 'link',
+        width: 125,
+        cellRenderer: AppExtensionsLinkCellComponent,
+        cellRendererParams: (params: any) => ({
+          mainLink: "test",
+          docsLink: "test",
+          demosLink: "test",
+          sourceCodeLink: "test",
+        }),
       },
       {
         headerName: 'Configuration',
@@ -160,7 +218,7 @@ export class AppExtensionsComponent implements OnInit {
       },
       {
         headerName: '',
-        width: 57, // Ensure matBadge has enough space
+        width: 100,
         pinned: 'right',
         cellRenderer: ExtensionActionsComponent,
         cellRendererParams: (() => {
@@ -169,6 +227,7 @@ export class AppExtensionsComponent implements OnInit {
             do: (verb, ext) => {
               switch (verb) {
                 case 'edit': this.#openSettings(ext); break;
+                case 'download': this.#downloadExtension(ext); break;
               }
             }
           } satisfies ExtensionActionsParams;

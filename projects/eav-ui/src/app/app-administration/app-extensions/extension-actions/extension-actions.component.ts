@@ -7,7 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { Extension } from '../../models/extension.model';
 import { ExtensionActionsParams, ExtensionItemType } from './extension-actions.model';
 
-type GoToUrls = 'edit'
+type GoToUrls = 'edit' | 'download';
 
 @Component({
   selector: 'app-extension-actions',
