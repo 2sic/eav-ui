@@ -5,7 +5,6 @@ import { AdamItem } from '../../../../edit-types/src/AdamItem';
 import { Dropzone } from '../../../../edit-types/src/Dropzone';
 
 export class DefaultPaste {
-  
 
   /** Paste formatted text, e.g. text copied from MS Word */
   static formattedText: RawEditorOptions = (() => {

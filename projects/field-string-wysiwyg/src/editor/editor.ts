@@ -4,6 +4,7 @@ import 'tinymce/tinymce';
 // Keep at least one empty line after this, to ensure order of imports!
 
 // Import all the plugins and themes to ensure it's in the bundle
+import '@pangaeatech/tinymce-paste-from-word-plugin';
 import 'tinymce/icons/default';
 import 'tinymce/models/dom';
 import 'tinymce/plugins/anchor';

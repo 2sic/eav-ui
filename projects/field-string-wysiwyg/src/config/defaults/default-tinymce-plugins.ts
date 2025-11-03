@@ -5,7 +5,8 @@ export const DefaultPlugins = [
   // 'tabfocus', // get in an out of the editor with tab
   'image', // image button and image-settings
   'link', // link button + ctrl+k to add link
-  // 'paste', // enables paste as text from word etc. https://www.tinymce.com/docs/plugins/paste/
+  'paste_from_word', // forked from paste-from-word: https://github.com/pixelsock/tinymce-paste-from-word-plugin
+  // 'paste', // Depricated: https://www.tinymce.com/docs/plugins/paste/
   'anchor', // allows users to set an anchor inside the text
   'charmap', // character map https://www.tinymce.com/docs/plugins/visualchars/
   // 'hr', // hr
