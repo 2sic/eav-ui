@@ -198,15 +198,15 @@ export class AppExtensionsComponent implements OnInit {
           sourceCodeLink: params.data?.configuration?.linkSource ?? undefined,
         }),
       },
-      {
-        headerName: 'Configuration',
-        field: 'configuration',
-        flex: 2,
-        autoHeight: true,
-        wrapText: true,
-        valueGetter: (params) =>
-          JSON.stringify(params.data.configuration, null, 2)
-      },
+      // {
+      //   headerName: 'Configuration',
+      //   field: 'configuration',
+      //   flex: 2,
+      //   autoHeight: true,
+      //   wrapText: true,
+      //   valueGetter: (params) =>
+      //     JSON.stringify(params.data.configuration, null, 2)
+      // },
       {
         headerName: '',
         width: 100,
