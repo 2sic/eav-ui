@@ -1,4 +1,3 @@
-
 <mat-toolbar appToggleDebug>
   <div class="toolbar-container">
     <!-- Mat Icon Menu -->
@@ -10,8 +9,7 @@
     <!-- Breadcrum in the Toolbar after show Img and Aoo Name -->
     <xng-breadcrumb [separator]="emptyTemplate">
       <ng-container *xngBreadcrumbItem="let breadcrumb; let info = info; let last = last">
-        @if (last)
-        {
+        @if (last) {
           <mat-icon class="breadcrumb-icon">chevron_right</mat-icon>
           {{ breadcrumb }}
         }
@@ -26,8 +24,7 @@
 </mat-toolbar>
 <mat-sidenav-container appToggleDebug>
   <mat-sidenav #sidenav [mode]="smallScreen.matches ? 'over' : 'side'" [opened]="sideNavOpened">
-    @for (navItem of navItems; track navItem.path)
-    {
+    @for (navItem of navItems; track navItem.path) {
       <app-nav-item-list [navItem]="navItem"></app-nav-item-list>
     }
 
