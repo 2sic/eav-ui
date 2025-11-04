@@ -187,7 +187,7 @@ export class AppExtensionsComponent implements OnInit {
         },
       },
       {
-        headerName: 'Link',
+        headerName: 'Links',
         field: 'link',
         width: 125,
         cellRenderer: AppExtensionsLinkCellComponent,
@@ -198,17 +198,17 @@ export class AppExtensionsComponent implements OnInit {
           sourceCodeLink: params.data?.configuration?.linkSource ?? undefined,
         }),
       },
+      // {
+      //   headerName: 'Configuration',
+      //   field: 'configuration',
+      //   flex: 2,
+      //   autoHeight: true,
+      //   wrapText: true,
+      //   valueGetter: (params) =>
+      //     JSON.stringify(params.data.configuration, null, 2)
+      // },
       {
-        headerName: 'Configuration',
-        field: 'configuration',
-        flex: 2,
-        autoHeight: true,
-        wrapText: true,
-        valueGetter: (params) =>
-          JSON.stringify(params.data.configuration, null, 2)
-      },
-      {
-        headerName: '',
+        headerName: 'Actions',
         width: 100,
         pinned: 'right',
         cellRenderer: ExtensionActionsComponent,
