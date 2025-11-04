@@ -187,7 +187,7 @@ export class AppExtensionsComponent implements OnInit {
         },
       },
       {
-        headerName: 'Link',
+        headerName: 'Links',
         field: 'link',
         width: 125,
         cellRenderer: AppExtensionsLinkCellComponent,
@@ -208,7 +208,7 @@ export class AppExtensionsComponent implements OnInit {
       //     JSON.stringify(params.data.configuration, null, 2)
       // },
       {
-        headerName: '',
+        headerName: 'Actions',
         width: 100,
         pinned: 'right',
         cellRenderer: ExtensionActionsComponent,
