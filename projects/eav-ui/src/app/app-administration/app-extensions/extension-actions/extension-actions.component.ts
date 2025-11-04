@@ -1,6 +1,6 @@
 import { ICellRendererParams } from '@ag-grid-community/core';
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -18,9 +18,11 @@ type GoToUrls = 'edit' | 'download';
     MatBadgeModule
   ],
   templateUrl: './extension-actions.component.html',
+  styleUrls: ['./extension-actions.component.scss'],
 })
 export class ExtensionActionsComponent {
   protected ext: Extension;
+  canEditExtension = signal<boolean>(false);
 
   public params: ExtensionActionsParams & {
     urlTo(verb: GoToUrls, extension: Extension): string;
@@ -29,6 +31,7 @@ export class ExtensionActionsComponent {
   agInit(params: ICellRendererParams & ExtensionActionsComponent['params']): void {
     this.params = params;
     this.ext = params.data;
+    this.canEditExtension.set(this.ext.configuration.isInstalled);
   }
 
   refresh(params?: any): boolean {

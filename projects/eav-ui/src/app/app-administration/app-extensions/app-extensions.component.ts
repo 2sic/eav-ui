@@ -156,10 +156,10 @@ export class AppExtensionsComponent implements OnInit {
         flex: 1,
         sortable: true,
         filter: 'agTextColumnFilter',
-        cellRenderer: (params: any) => {
+        cellRenderer: (params: { data: Extension }) => {
           const folder = params.data?.folder ?? '';
           const guid = params.data?.configuration?.nameId ?? '';
-          return this.cellTextRenderer(folder, guid);
+          return this.cellTextRenderer(folder, guid.toString());
         },
       },
       {
@@ -168,7 +168,7 @@ export class AppExtensionsComponent implements OnInit {
         flex: 1,
         sortable: true,
         filter: 'agTextColumnFilter',
-        cellRenderer: (params: any) => {
+        cellRenderer: (params: { data: Extension }) => {
           const name = params.data?.configuration?.name ?? '';
           const teaser = params.data?.configuration?.teaser ?? '';
           return this.cellTextRenderer(name, teaser);
@@ -180,7 +180,7 @@ export class AppExtensionsComponent implements OnInit {
         maxWidth: 175,
         sortable: true,
         filter: 'agTextColumnFilter',
-        cellRenderer: (params: any) => {
+        cellRenderer: (params: { data: Extension }) => {
           const creator = params.data?.configuration?.createdBy ?? '';
           const copyright = params.data?.configuration?.copyright ?? '';
           return this.cellTextRenderer(creator, copyright, '150px');
@@ -191,22 +191,13 @@ export class AppExtensionsComponent implements OnInit {
         field: 'link',
         width: 125,
         cellRenderer: AppExtensionsLinkCellComponent,
-        cellRendererParams: (params: any) => ({
+        cellRendererParams: (params: { data: Extension }) => ({
           mainLink: params.data?.configuration?.linkMain ?? undefined,
           docsLink: params.data?.configuration?.linkDocs ?? undefined,
           demosLink: params.data?.configuration?.linkDemo ?? undefined,
           sourceCodeLink: params.data?.configuration?.linkSource ?? undefined,
         }),
       },
-      // {
-      //   headerName: 'Configuration',
-      //   field: 'configuration',
-      //   flex: 2,
-      //   autoHeight: true,
-      //   wrapText: true,
-      //   valueGetter: (params) =>
-      //     JSON.stringify(params.data.configuration, null, 2)
-      // },
       {
         headerName: 'Actions',
         width: 100,

@@ -1,12 +1,20 @@
 <div class="actions-component">
-  <a (click)="do('edit')" class="eav-grid-action-button default-link highlight" matRipple tippy="Edit Extension configuration">
-    @if (ext.configuration.nameId) {
-      <mat-icon [matBadge]="1" matBadgePosition="below after" matBadgeSize="small"> edit </mat-icon>
-    } @else {
-      <mat-icon>edit</mat-icon>
-    }
+  <a
+    (click)="do('edit')"
+    [class.disabled]="!canEditExtension()"
+    class="eav-grid-action-button default-link highlight"
+    matRipple
+    tippy="Edit Extension configuration"
+  >
+    <mat-icon>edit</mat-icon>
   </a>
-  <a (click)="do('download')" class="eav-grid-action-button default-link highlight" matRipple tippy="Download Extension ZIP">
+  <a
+    (click)="do('download')"
+    [class.disabled]="!canEditExtension()"
+    class="eav-grid-action-button default-link highlight"
+    matRipple
+    tippy="Download Extension ZIP"
+  >
     <mat-icon>cloud_download</mat-icon>
   </a>
 </div>
