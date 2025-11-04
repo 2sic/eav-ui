@@ -43,24 +43,27 @@ export class AppExtensionsComponent implements OnInit {
   /** Signal to trigger reloading of data */
   refresh = signal(0);
 
-  // Following the exact pattern from content-items
   #extensionsRaw = this.extensionsSvc.getAllLive(this.refresh).value;
+  extensions = computed(() => this.#extensionsRaw()?.extensions ?? []);
 
-  extensions = computed(() => {
-    const data = this.#extensionsRaw();
-    return data?.extensions ?? [];
-  });
+  // minimal state like license-info: hold the pending folder so the single handler can operate
+  #pendingFolder: string | null = null;
 
-  ngOnInit() {
-    // Listen for dialog close events and refresh the grid
-    // This will trigger when any dialog (including import) closes
-    this.#dialogRouter.doOnDialogClosed(() => this.fetchExtensions());
+  ngOnInit(): void {
+    // register once
+    this.#dialogRouter.doOnDialogClosedWithData((data) => {
+      if (data?.objData && this.#pendingFolder) {
+        const folder = this.#pendingFolder;
+        this.#pendingFolder = null;
+        this.extensionsSvc.updateExtension(folder, JSON.stringify(data.objData)).subscribe(() => {
+          this.fetchExtensions();
+        });
+      }
+    });
   }
 
   #openSettings(ext?: Extension) {
     const configurationContentType = 'a0f44af0-6750-40c9-9ad9-4a07b6eda8b3';
-    let subRoute: string;
-
     // Build overrideContents for existing configuration or new
     const overrideContents: Record<string, unknown>[] = ext?.configuration?.nameId
       ? [{
@@ -69,31 +72,19 @@ export class AppExtensionsComponent implements OnInit {
       }]
       : [{ guid: configurationContentType }];      // fallback for new configuration
 
-    // Determine route
-    if (ext?.configuration?.nameId) {
-      // No prefill hack needed; just route with empty form
-      subRoute = this.#routeAddItem(configurationContentType);
-    } else {
-      subRoute = this.#routeAddItem(configurationContentType);
-    }
-
+    const subRoute = this.#routeAddItem(configurationContentType);
     const rawUrl = this.#urlTo(`edit/${subRoute}`);
     const normalized = rawUrl.replace(/^#\/?/, '').replace(/^\//, '');
     const routeSegments = normalized.split('/').filter(Boolean);
+
+    // set token before navigation
+    this.#pendingFolder = ext?.folder ?? null;
 
     this.router.navigate(routeSegments, {
       state: {
         returnValue: true,
         overrideContents
       } satisfies DialogRoutingState,
-    });
-
-    this.#dialogRouter.doOnDialogClosedWithData((data) => {
-      if (data?.objData) {
-        this.extensionsSvc.updateExtension(ext.folder, JSON.stringify(data.objData)).subscribe(() => {
-          this.fetchExtensions();
-        });
-      }
     });
   }
 
