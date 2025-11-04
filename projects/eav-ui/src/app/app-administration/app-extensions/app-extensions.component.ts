@@ -186,7 +186,7 @@ export class AppExtensionsComponent implements OnInit {
       {
         headerName: 'Creator',
         field: 'creator',
-        width: 175,
+        maxWidth: 175,
         sortable: true,
         filter: 'agTextColumnFilter',
         cellRenderer: (params: any) => {
@@ -201,10 +201,10 @@ export class AppExtensionsComponent implements OnInit {
         width: 125,
         cellRenderer: AppExtensionsLinkCellComponent,
         cellRendererParams: (params: any) => ({
-          mainLink: "test",
-          docsLink: "test",
-          demosLink: "test",
-          sourceCodeLink: "test",
+          mainLink: params.data?.configuration?.linkMain ?? undefined,
+          docsLink: params.data?.configuration?.linkDocs ?? undefined,
+          demosLink: params.data?.configuration?.linkDemo ?? undefined,
+          sourceCodeLink: params.data?.configuration?.linkSource ?? undefined,
         }),
       },
       {

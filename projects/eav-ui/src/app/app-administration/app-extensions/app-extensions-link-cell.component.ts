@@ -9,18 +9,34 @@ import { MatIconModule } from '@angular/material/icon';
   imports: [MatIconModule, MatButtonModule],
   template: `
     <div class="grid-container">
-      <a mat-icon-button [href]="mainLink || '#'" target="_blank" rel="noopener" [hidden]="!mainLink" class="small-icon-button">
-        <mat-icon>extension</mat-icon>
-      </a>
-      <a mat-icon-button [href]="docsLink || '#'" target="_blank" rel="noopener" [hidden]="!docsLink" class="small-icon-button">
-        <mat-icon>description</mat-icon>
-      </a>
-      <a mat-icon-button [href]="demosLink || '#'" target="_blank" rel="noopener" [hidden]="!demosLink" class="small-icon-button">
-        <mat-icon>smart_display</mat-icon>
-      </a>
-      <a mat-icon-button [href]="sourceCodeLink || '#'" target="_blank" rel="noopener" [hidden]="!sourceCodeLink" class="small-icon-button">
-        <mat-icon>code</mat-icon>
-      </a>
+      @if (mainLink) {
+        <a mat-icon-button [href]="mainLink || '#'" target="_blank" rel="noopener" class="small-icon-button">
+          <mat-icon>extension</mat-icon>
+        </a>
+      } @else {
+        <div></div>
+      }
+      @if (docsLink) {
+        <a mat-icon-button [href]="docsLink || '#'" target="_blank" rel="noopener" class="small-icon-button">
+          <mat-icon>description</mat-icon>
+        </a>
+      } @else {
+        <div></div>
+      }
+      @if (demosLink) {
+        <a mat-icon-button [href]="demosLink || '#'" target="_blank" rel="noopener" class="small-icon-button">
+          <mat-icon>smart_display</mat-icon>
+        </a>
+      } @else {
+        <div></div>
+      }
+      @if (sourceCodeLink) {
+        <a mat-icon-button [href]="sourceCodeLink || '#'" target="_blank" rel="noopener" class="small-icon-button">
+          <mat-icon>code</mat-icon>
+        </a>
+      } @else {
+        <div></div>
+      }
     </div>
   `,
   styles: [`
@@ -43,6 +59,7 @@ import { MatIconModule } from '@angular/material/icon';
     }
 
     .grid-container {
+      margin-top: 15px;
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       grid-template-rows: repeat(2, 1fr);
@@ -51,10 +68,10 @@ import { MatIconModule } from '@angular/material/icon';
   `]
 })
 export class AppExtensionsLinkCellComponent implements ICellRendererAngularComp {
-  mainLink?: string;
-  docsLink?: string;
-  demosLink?: string;
-  sourceCodeLink?: string;
+  mainLink?: string | undefined;
+  docsLink?: string | undefined;
+  demosLink?: string | undefined;
+  sourceCodeLink?: string | undefined;
 
   agInit(params: any): void {
     this.mainLink = params.mainLink;
