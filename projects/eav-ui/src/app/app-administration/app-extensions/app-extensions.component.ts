@@ -49,7 +49,7 @@ export class AppExtensionsComponent implements OnInit {
   // minimal state like license-info: hold the pending folder so the single handler can operate
   #pendingFolder: string | null = null;
 
-  ngOnInit(): void {
+  ngOnInit() {
     // register once
     this.#dialogRouter.doOnDialogClosedWithData((data) => {
       if (data?.objData && this.#pendingFolder) {
