@@ -88,9 +88,9 @@ export class AppExtensionsComponent implements OnInit {
     });
   }
 
-  #downloadExtension(ext: Extension) {
-    this.extensionsSvc.downloadExtension(ext.folder);
-  }
+  // #downloadExtension(ext: Extension) {
+  //   this.extensionsSvc.downloadExtension(ext.folder);
+  // }
 
   filesDropped(files: File[]) {
     this.extensionsSvc.uploadExtensions(files).subscribe(() => this.fetchExtensions());
@@ -209,7 +209,7 @@ export class AppExtensionsComponent implements OnInit {
             do: (verb, ext) => {
               switch (verb) {
                 case 'edit': this.#openSettings(ext); break;
-                case 'download': this.#downloadExtension(ext); break;
+                case 'download': this.extensionsSvc.downloadExtension(ext.folder); break;
               }
             }
           } satisfies ExtensionActionsParams;

@@ -40,6 +40,15 @@ export class AppExtensionsService extends HttpServiceBase {
   downloadExtension(folder: string) {
     // TODO: @2pp - Implement when API-Endpoint exists
     console.log("Downloading extension:", folder);
+    
+    const params = new URLSearchParams({
+      appId: this.appId,
+      zoneId: this.zoneId,
+      name: folder,
+    });
+    const url = `${this.apiUrl('admin/app/download')}?${params.toString()}`;
+    window.open(url, '_blank', '');
+
   }
 
   // Uploads extension files

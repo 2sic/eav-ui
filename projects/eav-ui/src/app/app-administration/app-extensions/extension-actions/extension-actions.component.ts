@@ -31,7 +31,8 @@ export class ExtensionActionsComponent {
   agInit(params: ICellRendererParams & ExtensionActionsComponent['params']): void {
     this.params = params;
     this.ext = params.data;
-    this.canEditExtension.set(this.ext.configuration.isInstalled);
+    this.canEditExtension.set(!this.ext.configuration.isInstalled);
+    console.log('2dm');
   }
 
   refresh(params?: any): boolean {
