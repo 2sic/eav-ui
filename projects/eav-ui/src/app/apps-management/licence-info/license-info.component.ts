@@ -290,7 +290,7 @@ export class LicenseInfoComponent implements OnInit {
           filter: BooleanFilterComponent,
           cellRenderer: FeaturesListEnabledComponent,
           cellRendererParams: ({
-            addItemUrlTest: (ct) => this.#urlTo(`edit/${this.#routeAddItem(ct)}`),
+            getSettingsUrl: (ct) => this.#urlTo(`edit/${this.#routeAddItem(ct)}`),
           } satisfies FeaturesListEnabledComponent["params"]),
         },
         {
