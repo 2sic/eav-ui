@@ -22,18 +22,18 @@ import { TranslateMenuDialogData } from '../translate-menu-dialog/translate-menu
 import { TranslateMenuHelpers } from './translate-menu.helpers';
 
 @Component({
-    selector: 'app-translate-menu',
-    templateUrl: './translate-menu.component.html',
-    styleUrls: ['./translate-menu.component.scss'],
-    imports: [
-        NgClass,
-        MatButtonModule,
-        MatMenuModule,
-        MatIconModule,
-        FeatureIconIndicatorComponent,
-        TranslateModule,
-        TippyDirective,
-    ]
+  selector: 'app-translate-menu',
+  templateUrl: './translate-menu.component.html',
+  styleUrls: ['./translate-menu.component.scss'],
+  imports: [
+    NgClass,
+    MatButtonModule,
+    MatMenuModule,
+    MatIconModule,
+    FeatureIconIndicatorComponent,
+    TranslateModule,
+    TippyDirective,
+  ]
 })
 export class TranslateMenuComponent {
   hideTranslateButton = input<boolean>();
@@ -53,7 +53,7 @@ export class TranslateMenuComponent {
   disableTranslateButtonSignal = computedObj('disableTranslateButtonSignal',
     () => this.#formsStateService.readOnly().isReadOnly || this.#fieldState.settings().DisableTranslation
   );
-  
+
   private userLanguageSvc = inject(UserLanguageService);
   translatePrimaryLanguage = signal<boolean>(false);
 

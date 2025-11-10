@@ -47,7 +47,6 @@ export class EditControlsBuilderDirective implements OnInit, OnDestroy {
   /** Service to get all settings for each field */
   #fieldsSettingsSvc = inject(FieldsSettingsService);
 
-
   constructor(private formConfigService: EntityFormStateService, private el: ElementRef) {
     effect(() => {
       const onInitReady = this.onInitReady();
@@ -207,7 +206,6 @@ export class EditControlsBuilderDirective implements OnInit, OnDestroy {
     console.error(`Missing component class for: ${selector}. This indicates that the field is not registered correctly, so the JS won't run. It could also mean that the JS runs, but doesn't correctly create the custom tag. Will show an info-error instead.`);
     return CustomDefaultComponent;
   }
-
 }
 
 class DynamicControlInfo {
