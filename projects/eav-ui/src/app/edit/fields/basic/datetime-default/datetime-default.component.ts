@@ -84,9 +84,9 @@ export class DatetimeDefaultComponent implements AfterViewInit {
   constructor(
     private translate: TranslateService,
   ) {
-    // Initialize dayjs with browser's language for proper localization
-    DateTimeUtils.initializeDayjs(navigator.language);
-    this.translate.currentLang = navigator.language;
+    const locale = navigator.language.substring(0, 2); // e.g. 'de-De' to 'de'
+    DateTimeUtils.initializeDayjs(locale);
+    this.translate.currentLang = locale;
   }
 
   /**
