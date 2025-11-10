@@ -65,12 +65,7 @@ export class AppExtensionsComponent implements OnInit {
   #openSettings(ext?: Extension) {
     const configurationContentType = 'a0f44af0-6750-40c9-9ad9-4a07b6eda8b3';
     // Build overrideContents for existing configuration or new
-    const overrideContents: Record<string, unknown>[] = ext?.configuration?.nameId
-      ? [{
-        guid: ext.configuration.nameId,           // Use GUID as identifier
-        ...ext.configuration                     // spread existing configuration data
-      }]
-      : [{ guid: configurationContentType }];      // fallback for new configuration
+    const overrideContents: Record<string, unknown>[] = [{ ...(ext?.configuration ?? {}) }];
 
     const subRoute = this.#routeAddItem(configurationContentType);
     const rawUrl = this.#urlTo(`edit/${subRoute}`);
