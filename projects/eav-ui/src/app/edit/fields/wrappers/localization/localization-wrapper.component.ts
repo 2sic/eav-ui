@@ -1,5 +1,6 @@
 import { NgClass } from '@angular/common';
-import { Component, inject, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, computed, inject, signal, ViewChild, ViewContainerRef } from '@angular/core';
+import { UserLanguageService } from 'projects/eav-ui/src/app/shared/services/user-language.service';
 import { TranslateMenuComponent } from '../../../fields/wrappers/localization/translate-menu/translate-menu.component';
 import { FormConfigService } from '../../../form/form-config.service';
 import { FormsStateService } from '../../../form/forms-state.service';
@@ -23,13 +24,27 @@ export class LocalizationWrapperComponent {
   #formConfig = inject(FormConfigService);
   #fieldState = inject(FieldState);
 
-  language = this.#formConfig.language;
+  protected language = this.#formConfig.language;
+
+  private userLanguageSvc = inject(UserLanguageService);
+  translatePrimaryLanguage = signal<boolean>(false);
+
+  hasMultipleLanguages = computed(() => {
+    return this.#formConfig.languages.list.length > 1;
+  });
+
+  canTranslate = computed(() => {
+    return this.hasMultipleLanguages() && (this.language().current !== this.language().primary || this.translatePrimaryLanguage());
+  });
+
   hideTranslateButton: boolean = true;
 
   constructor(
     private editRoutingService: EditRoutingService,
     private formsStateService: FormsStateService,
-  ) { }
+  ) {
+    this.translatePrimaryLanguage.set(this.userLanguageSvc.primaryTranslatableEnabled());
+  }
 
   translate() {
     if (this.formsStateService.readOnly().isReadOnly) return;

@@ -6,7 +6,7 @@
 >
   <div
     class="language-wrap__field"
-    [ngClass]="{ 'language-wrap__field-short': language()?.current !== language()?.primary }"
+    [ngClass]="{ 'language-wrap__field-short': canTranslate() }"
     (dblclick)="translate()"
   >
     <!-- <pre>Wrapper.Localization - Field Start</pre> -->
@@ -17,7 +17,8 @@
   <app-translate-menu
     class="language-wrap__translate"
     [hideTranslateButton]="hideTranslateButton"
-    [ngClass]="{ 'language-wrap__translate--hidden': language()?.current === language()?.primary }"
+    [canTranslate]="canTranslate()"
+    [ngClass]="{ 'language-wrap__translate--hidden': !canTranslate() }"
   >
   </app-translate-menu>
 </div>
