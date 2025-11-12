@@ -90,6 +90,17 @@ export class DatetimeDefaultComponent implements AfterViewInit {
   }
 
   /**
+   * Localized placeholder depending on locale and whether time picker is active.
+   * Uses dayjs.localeData().longDateFormat('L') for the date part and 'HH:mm:ss' for time.
+   * If dayjs doesn't provide a format, fall back to 'YYYY-MM-DD' (date-only) and 'YYYY-MM-DD HH:mm:ss' (date+time).
+   */
+  get placeholder(): string {
+    const dateFmt = DateTimeUtils.getLocaleDateFormat();
+    const timeFmt = 'HH:mm:ss';
+    return this.useTimePicker() ? `${dateFmt} ${timeFmt}` : dateFmt;
+  }
+
+  /**
    * Set up time picker event subscription after view initialization
    */
   ngAfterViewInit(): void {
@@ -124,7 +135,8 @@ export class DatetimeDefaultComponent implements AfterViewInit {
     const isValid = DateTimeUtils.handleDateTimeInput(
       value,
       this.uiValue(),
-      (value) => this.ui().setIfChanged(value)
+      (value) => this.ui().setIfChanged(value),
+      this.useTimePicker()
     );
 
     // Restore previous value if input is invalid
@@ -159,7 +171,7 @@ export class DatetimeDefaultComponent implements AfterViewInit {
     );
 
     // Log invalid dates for debugging
-    if (event.value && !event.value.isValid()){
+    if (event.value && !event.value.isValid()) {
       const l = this.log.fnIf('InvalidDate', { date: event.value });
     }
   }
