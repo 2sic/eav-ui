@@ -16,7 +16,7 @@ export class AppExtensionsService extends HttpServiceBase {
       refresh();
 
       return {
-        url: this.apiUrl('admin/app/Extensions'),
+        url: this.apiUrl('admin/appExtensions/extensions'),
         params: { appId: this.appId },
         method: 'GET',
       };
@@ -28,7 +28,7 @@ export class AppExtensionsService extends HttpServiceBase {
     // Parse the config to JsonElement format that the API expects
     const configJson = JSON.parse(config);
 
-    return this.http.post<boolean>(this.apiUrl('admin/app/Extensions'), configJson, {
+    return this.http.post<boolean>(this.apiUrl('admin/appExtensions/extensions'), configJson, {
       params: {
         zoneId: this.zoneId,
         appId: this.appId,
@@ -46,7 +46,7 @@ export class AppExtensionsService extends HttpServiceBase {
       zoneId: this.zoneId,
       name: folder,
     });
-    const url = `${this.apiUrl('admin/app/download')}?${params.toString()}`;
+    const url = `${this.apiUrl('admin/appExtensions/download')}?${params.toString()}`;
     window.open(url, '_blank', '');
 
   }
@@ -56,7 +56,7 @@ export class AppExtensionsService extends HttpServiceBase {
     const formData = new FormData();
     files.forEach(file => formData.append('files', file));
 
-    return this.http.post<boolean>(this.apiUrl('admin/app/installextension'), formData, {
+    return this.http.post<boolean>(this.apiUrl('admin/appExtensions/installExtension'), formData, {
       params: {
         appId: this.appId,
         zoneId: this.zoneId
