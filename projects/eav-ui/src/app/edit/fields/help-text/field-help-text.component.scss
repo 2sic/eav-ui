@@ -1,5 +1,6 @@
-@import "../../assets/styles/variables.scss";
-@import "../../assets/styles/theme/material-colors.scss";
+@use "sass:map";
+@use "../../assets/styles/variables.scss";
+@use "../../assets/styles/theme/material-colors.scss";
 
 // helper text
 // Note: 2024-09-24 2dm
@@ -31,7 +32,7 @@ $helper-text-padding--last: 0.5em 0 5px 0;
     padding: 6px 12px 11px 12px;
     border: 2px;
     border-bottom-style: solid;
-    border-color: map_get($mat-eav-item-dialog-error, 500);
+    border-color: map.get(material-colors.$mat-eav-item-dialog-error, 500);
   }
 }
 
@@ -41,13 +42,13 @@ $helper-text-padding--last: 0.5em 0 5px 0;
 
 
 .my-notes {
-  color: rgba($editUI-foreground-color, 0.50);
+  color: rgba(variables.$editUI-foreground-color, 0.50);
   // not sure why this is necessary, but as we removed the flex-helper
   // the space above became too large
   display: flex;
 
   &.disabled .expandable p {
-    color: rgba($editUI-foreground-color, 0.25);
+    color: rgba(variables.$editUI-foreground-color, 0.25);
   }
 
   p:first-child {

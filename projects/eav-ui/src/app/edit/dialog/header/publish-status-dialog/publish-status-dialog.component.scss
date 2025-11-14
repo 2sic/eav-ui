@@ -1,4 +1,4 @@
-@import "../../../assets/styles/variables.scss";
+@use "../../../assets/styles/variables.scss";
 
 .eav-card-content__no-padding {
   padding: 0px;
@@ -8,6 +8,6 @@
   }
 
   .eav-list-item__focus {
-    background: $edit-ui-selected-option;
+    background: variables.$edit-ui-selected-option;
   }
 }

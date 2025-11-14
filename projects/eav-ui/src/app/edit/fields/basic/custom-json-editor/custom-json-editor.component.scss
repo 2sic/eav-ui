@@ -1,4 +1,4 @@
-@import "../../../assets/styles/variables";
+@use "../../../assets/styles/variables";
 
 $paddingBottom: 11px;
 
@@ -55,11 +55,11 @@ $paddingBottom: 11px;
   }
 
   &.error {
-    border-bottom: 2px solid $error-color;
+    border-bottom: 2px solid variables.$error-color;
     padding-bottom: $paddingBottom;
 
     .label {
-      color: $error-color;
+      color: variables.$error-color;
     }
   }
 

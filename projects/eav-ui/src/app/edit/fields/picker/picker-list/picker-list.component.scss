@@ -1,13 +1,13 @@
-@import "../../../assets/styles/variables.scss";
+@use "../../../assets/styles/variables.scss";
 
 %field-border {
   padding: 0 0 1px 0;
-  border-bottom: 1px solid $field-border-color--initial;
+  border-bottom: 1px solid variables.$field-border-color--initial;
 }
 
 %field-border--hover {
   padding: 0;
-  border-bottom: 2px solid $field-border-color--hover;
+  border-bottom: 2px solid variables.$field-border-color--hover;
   transition: none;
 }
 
@@ -15,7 +15,7 @@
   border: none;
   cursor: default;
   padding: 0 0 2px 0;
-  background-image: linear-gradient(to right, $field-border-color--disabled 0%, $field-border-color--disabled 33%, transparent 0%);
+  background-image: linear-gradient(to right, variables.$field-border-color--disabled 0%, variables.$field-border-color--disabled 33%, transparent 0%);
   background-position: bottom;
   background-size: 4px 1px;
   background-repeat: repeat-x;
@@ -28,10 +28,10 @@
   line-height: 14px;
   padding-top: 12px;
   padding-bottom: 4px;
-  color: rgba($editUI-foreground-color, 0.44);
+  color: rgba(variables.$editUI-foreground-color, 0.44);
 
   &.disabled {
-    color: $editUI-label-disabled-color;
+    color: variables.$editUI-label-disabled-color;
   }
 }
 
@@ -113,11 +113,11 @@
 
   &.disabled {
     .item-title__icon {
-      color: $editUI-label-disabled-color;
+      color: variables.$editUI-label-disabled-color;
     }
 
     .item-title__text {
-      color: $editUI-label-disabled-color;
+      color: variables.$editUI-label-disabled-color;
       cursor: default;
     }
   }

@@ -1,4 +1,4 @@
-@import "../../assets/styles/variables.scss";
+@use "../../assets/styles/variables.scss";
 
 @keyframes move-next {
   0% {
@@ -7,14 +7,14 @@
   }
 
   49% {
-    -webkit-transform: translateX(-$edit-ui-dialog-max-width);
-    transform: translateX(-$edit-ui-dialog-max-width);
+    -webkit-transform: translateX(-(variables.$edit-ui-dialog-max-width));
+    transform: translateX(-(variables.$edit-ui-dialog-max-width));
     animation-timing-function: step-end;
   }
 
   50% {
-    -webkit-transform: translateX($edit-ui-dialog-max-width);
-    transform: translate($edit-ui-dialog-max-width);
+    -webkit-transform: translateX(variables.$edit-ui-dialog-max-width);
+    transform: translate(variables.$edit-ui-dialog-max-width);
     animation-timing-function: ease-out;
   }
 
@@ -31,14 +31,14 @@
   }
 
   49% {
-    -webkit-transform: translateX($edit-ui-dialog-max-width);
-    transform: translateX($edit-ui-dialog-max-width);
+    -webkit-transform: translateX(variables.$edit-ui-dialog-max-width);
+    transform: translateX(variables.$edit-ui-dialog-max-width);
     animation-timing-function: step-end;
   }
 
   50% {
-    -webkit-transform: translateX(-$edit-ui-dialog-max-width);
-    transform: translate(-$edit-ui-dialog-max-width);
+    -webkit-transform: translateX(-(variables.$edit-ui-dialog-max-width));
+    transform: translate(-(variables.$edit-ui-dialog-max-width));
     animation-timing-function: ease-out;
   }
 

@@ -1,4 +1,4 @@
-@import "../../../assets/styles/_variables";
+@use "../../../assets/styles/_variables";
 
 :host {
   display: flex;
@@ -58,7 +58,7 @@
 
     &.disabled .snippet {
       pointer-events: none;
-      color: rgba($editUI-foreground-color, 0.44);
+      color: rgba(variables.$editUI-foreground-color, 0.44);
     }
 
     .snippet {
@@ -80,7 +80,7 @@
     .separator {
       margin-top: 0.5em;
       margin-bottom: 0.5em;
-      border-bottom: 1px solid rgba($editUI-foreground-color, 0.44);
+      border-bottom: 1px solid rgba(variables.$editUI-foreground-color, 0.44);
     }
   }
 }
@@ -181,11 +181,11 @@ $paddingBottom: 11px;
   }
 
   &.error {
-    border-bottom: 2px solid $error-color;
+    border-bottom: 2px solid variables.$error-color;
     padding-bottom: $paddingBottom;
 
     .label {
-      color: $error-color;
+      color: variables.$error-color;
     }
   }
 

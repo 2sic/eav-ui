@@ -1,4 +1,6 @@
-@import "../../../assets/styles/variables.scss";
+@use "../../../assets/styles/variables.scss" as variables2;
+@use "../../../../../styles/variables";
+
 
 .scrollable__overlay {
   position: relative;
@@ -51,8 +53,8 @@
     background-color: white !important;
 
     &.mat-accent {
-      color: $sxc-solid;
-      border-bottom: 2px solid $sxc-solid;
+      color: variables.$sxc-solid;
+      border-bottom: 2px solid variables.$sxc-solid;
       background-color: inherit;
     }
   }

@@ -1,4 +1,4 @@
-@import "../../assets/styles/_variables.scss";
+@use "../../assets/styles/_variables.scss";
 
 .auto-translate-menu-dialog-card {
   max-height: 99vh;
@@ -12,16 +12,16 @@
     }
 
     .eav-list-item__focus {
-      background: $edit-ui-selected-option;
+      background: variables.$edit-ui-selected-option;
     }
 
     .list-item__disabled {
       cursor: default;
-      color: $editUI-label-disabled-color;
-      background: $primary-color;
+      color: variables.$editUI-label-disabled-color;
+      background: variables.$primary-color;
 
       .list-item-icon__disabled {
-        color: $editUI-label-disabled-color;
+        color: variables.$editUI-label-disabled-color;
       }
     }
   }

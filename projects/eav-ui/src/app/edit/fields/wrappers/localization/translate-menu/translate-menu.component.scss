@@ -1,8 +1,8 @@
-@import "../../../../assets/styles/variables.scss";
-@import "../../../../assets/styles/theme/material-colors.scss";
+@use "../../../../assets/styles/variables.scss";
+@use "../../../../assets/styles/theme/material-colors.scss";
 
 .eav-menu-item-selected {
-  background: $edit-ui-selected-option;
+  background: variables.$edit-ui-selected-option;
 }
 
 .localization-lock-open {
@@ -37,10 +37,10 @@
   text-overflow: ellipsis;
   max-height: 16px;
   cursor: default;
-  color: rgba($editUI-foreground-color, 0.44);
+  color: rgba(variables.$editUI-foreground-color, 0.44);
 
   &--disabled {
-    color: rgba($editUI-foreground-color, 0.24);
+    color: rgba(variables.$editUI-foreground-color, 0.24);
   }
 
   font-size: 12px;

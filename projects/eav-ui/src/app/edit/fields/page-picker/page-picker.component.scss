@@ -1,4 +1,5 @@
-@import "../../assets/styles/theme/material-colors";
+@use "sass:map";
+@use "../../assets/styles/theme/material-colors";
 
 $icon-size: 20px;
 
@@ -85,7 +86,7 @@ $icon-size: 20px;
   }
 
   .page-path {
-    color: map_get($mat-eav-item-dialog-background, 200);
+    color: map.get(material-colors.$mat-eav-item-dialog-background, 200);
     text-overflow: ellipsis;
     max-width: 270px;
     white-space: nowrap;
@@ -101,20 +102,20 @@ $icon-size: 20px;
   }
 
   &:hover {
-    background-color: map_get($mat-eav-item-dialog-secondary, 300);
+    background-color: map.get(material-colors.$mat-eav-item-dialog-secondary, 300);
     color: #fff;
 
     .page-path {
-      color: map_get($mat-eav-item-dialog-background, 100);
+      color: map.get(material-colors.$mat-eav-item-dialog-background, 100);
     }
   }
 
   &.selected {
-    background-color: map_get($mat-eav-item-dialog-secondary, 500);
+    background-color: map.get(material-colors.$mat-eav-item-dialog-secondary, 500);
     color: #fff;
 
     .page-path {
-      color: map_get($mat-eav-item-dialog-background, 100);
+      color: map.get(material-colors.$mat-eav-item-dialog-background, 100);
     }
   }
 }
