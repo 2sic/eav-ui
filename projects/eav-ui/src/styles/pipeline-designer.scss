@@ -1,5 +1,5 @@
-@import "./material-icon.styles.scss";
-@import "../app/edit/assets/styles/variables";
+@use "material-icon.styles.scss";
+@use "../app/edit/assets/styles/variables";
 
 $data-source-color: #eeeeef;
 $data-source-padding: 0.5em;
@@ -182,7 +182,7 @@ $icon-size: 22px;
 
   .dataSource .configure {
     display: none;
-    color: $accent-color;
+    color: variables.$accent-color;
   }
 
   .dataSource .help {
@@ -237,7 +237,7 @@ $icon-size: 22px;
     }
 
     &::after {
-      @include materialIcon("arrow_drop_up", 32px);
+      @include material-icon.materialIcon("arrow_drop_up", 32px);
     }
   }
 
@@ -311,7 +311,7 @@ $icon-size: 22px;
     opacity: 1;
 
     &::after {
-      @include materialIcon("edit", 11px);
+      @include material-icon.materialIcon("edit", 11px);
       margin-left: 2px;
     }
   }
@@ -330,14 +330,14 @@ $icon-size: 22px;
     justify-content: center;
 
     &:not(.streamEntitiesError):hover::after {
-      @include materialIcon("find_in_page", 18px);
+      @include material-icon.materialIcon("find_in_page", 18px);
     }
 
     &.streamEntitiesError {
       width: 32px;
 
       &::after {
-        @include materialIcon("warning", 18px);
+        @include material-icon.materialIcon("warning", 18px);
       }
     }
   }

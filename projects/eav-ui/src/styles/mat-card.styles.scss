@@ -1,13 +1,13 @@
-@import "variables.scss";
+@use "variables.scss";
 
 .eav-cards-box {
   display: flex;
   flex-wrap: wrap;
 
   .eav-card {
-    width: $eav-card-width;
-    margin: $eav-margin;
-    padding-top: $eav-padding;
+    width: variables.$eav-card-width;
+    margin: variables.$eav-margin;
+    padding-top: variables.$eav-padding;
 
     .eav-card-header {
       display: flex;
@@ -15,9 +15,9 @@
     }
 
     .eav-card-header-avatar-icon {
-      font-size: $eav-avatar-font-size;
-      height: $eav-avatar-height;
-      width: $eav-avatar-width;
+      font-size: variables.$eav-avatar-font-size;
+      height: variables.$eav-avatar-height;
+      width: variables.$eav-avatar-width;
     }
 
     .eav-card-space-div {
@@ -25,9 +25,9 @@
     }
 
     .eav-button__with-icon .eav-icon {
-      font-size: $eav-button-icon-font-size;
-      height: $eav-button-icon-height;
-      width: $eav-button-icon-width;
+      font-size: variables.$eav-button-icon-font-size;
+      height: variables.$eav-button-icon-height;
+      width: variables.$eav-button-icon-width;
     }
   }
 }
@@ -82,7 +82,7 @@
 }
 
 .eav-info-row__link {
-  margin-left: $eav-margin-space;
+  margin-left: variables.$eav-margin-space;
 }
 
 

@@ -1,3 +1,4 @@
+@use "sass:map";
 $grid-color-disabled: rgba(29, 39, 61, 0.26);
 
 // fixes bug in Chrome where overflow-x scrollbar is visible while there is no overflow at all
@@ -10,11 +11,11 @@ $grid-color-disabled: rgba(29, 39, 61, 0.26);
 }
 
 .group-start-row {
-  background-color: rgba(map_get($mat-eav-item-dialog-background, 500), 0.16) !important;
+  background-color: rgba(map.get($mat-eav-item-dialog-background, 500), 0.16) !important;
 }
 
 .group-end-row {
-  background-color: rgba(map_get($mat-eav-item-dialog-background, 500), 0.08) !important;
+  background-color: rgba(map.get($mat-eav-item-dialog-background, 500), 0.08) !important;
 }
 
 ag-grid-angular:not(.grid-sorted):not(.grid-filtered) .is-in-group {
@@ -76,7 +77,7 @@ ag-grid-angular {
   }
 
   .ag-has-focus .ag-cell-focus:not(.ag-cell-range-selected) {
-    border-color: map_get($mat-eav-item-dialog-secondary, 500) !important;
+    border-color: map.get($mat-eav-item-dialog-secondary, 500) !important;
 
     &.no-outline {
       border-color: transparent !important;
@@ -87,14 +88,14 @@ ag-grid-angular {
 .ag-row-hover {
   .id-action {
     cursor: pointer;
-    color: map_get($mat-eav-item-dialog-secondary, 500);
+    color: map.get($mat-eav-item-dialog-secondary, 500);
   }
 
   .apps-list-primary-action {
     cursor: pointer;
 
     .text {
-      color: map_get($mat-eav-item-dialog-secondary, 500);
+      color: map.get($mat-eav-item-dialog-secondary, 500);
     }
 
     &:hover .text {
@@ -104,7 +105,7 @@ ag-grid-angular {
 
   .primary-action {
     cursor: pointer;
-    color: map_get($mat-eav-item-dialog-secondary, 500);
+    color: map.get($mat-eav-item-dialog-secondary, 500);
 
     &:hover {
       text-decoration: underline;
@@ -113,7 +114,7 @@ ag-grid-angular {
 
   .secondary-action {
     .text:not(.disabled) {
-      color: map_get($mat-eav-item-dialog-secondary, 500);
+      color: map.get($mat-eav-item-dialog-secondary, 500);
     }
 
     &:hover .text:not(.disabled) {
