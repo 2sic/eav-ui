@@ -28,7 +28,7 @@ export class AppExtensionsService extends HttpServiceBase {
     // Parse the config to JsonElement format that the API expects
     const configJson = JSON.parse(config);
 
-    return this.http.post<boolean>(this.apiUrl('admin/appExtensions/extensions'), configJson, {
+    return this.http.post<boolean>(this.apiUrl('admin/appExtensions/extension'), configJson, {
       params: {
         zoneId: this.zoneId,
         appId: this.appId,
@@ -56,7 +56,7 @@ export class AppExtensionsService extends HttpServiceBase {
     const formData = new FormData();
     files.forEach(file => formData.append('files', file));
 
-    return this.http.post<boolean>(this.apiUrl('admin/appExtensions/installExtension'), formData, {
+    return this.http.post<boolean>(this.apiUrl('admin/appExtensions/install'), formData, {
       params: {
         appId: this.appId,
         zoneId: this.zoneId
