@@ -1,7 +1,7 @@
-@import '../../../../styles/variables.scss';
+@use '../../../../styles/variables.scss';
 
 button,
 a {
-  color: $sxc-solid !important;
+  color: variables.$sxc-solid !important;
   text-decoration: none;
 }

@@ -1,6 +1,6 @@
-@import '../../../../styles/variables.scss';
+@use '../../../../styles/variables.scss';
 
 a,
 a mat-icon {
-  color: $external-link !important;
+  color: variables.$external-link !important;
 }

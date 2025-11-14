@@ -1,9 +1,9 @@
-@import '../../../../styles/variables.scss';
+@use '../../../../styles/variables.scss';
 
 button {
-  color: $sxc-solid !important;
+  color: variables.$sxc-solid !important;
 }
 
 button:disabled {
-  color: $text-disabled !important;
+  color: variables.$text-disabled !important;
 }

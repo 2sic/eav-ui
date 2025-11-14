@@ -1,9 +1,9 @@
-@import '../../../../styles/variables.scss';
+@use '../../../../styles/variables.scss';
 
 .eav-card-space-div {
   min-height: 30px;
 }
 
 .eav-button__with-icon * {
-  color: $sxc-solid !important;
+  color: variables.$sxc-solid !important;
 }

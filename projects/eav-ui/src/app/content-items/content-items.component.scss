@@ -1,8 +1,8 @@
-@import "../../styles/variables.scss";
+@use "../../styles/variables.scss";
 
 :host ::ng-deep .ag-row-hover .ag-cell a,
 :host ::ng-deep .ag-row-hover .ag-cell .id-box *,
 :host ::ng-deep .ag-row-hover .ag-cell .eav-grid-action-button,
 .eav-button__with-icon * {
-  color: $sxc-solid !important;
+  color: variables.$sxc-solid !important;
 }

@@ -1,4 +1,4 @@
-@import '../../../../styles/variables.scss';
+@use '../../../../styles/variables.scss';
 
 .eav-registration-cards {
   display: flex;
@@ -16,9 +16,9 @@
   }
 
   .eav-card-header-avatar-icon {
-    font-size: $eav-avatar-font-size;
-    height: $eav-avatar-height;
-    width: $eav-avatar-width;
+    font-size: variables.$eav-avatar-font-size;
+    height: variables.$eav-avatar-height;
+    width: variables.$eav-avatar-width;
   }
 
   .eav-card-space-div {
@@ -28,9 +28,9 @@
   .eav-button {
     &__with-icon {
       .eav-icon {
-        font-size: $eav-button-icon-font-size;
-        height: $eav-button-icon-height;
-        width: $eav-button-icon-width;
+        font-size: variables.$eav-button-icon-font-size;
+        height: variables.$eav-button-icon-height;
+        width: variables.$eav-button-icon-width;
       }
     }
   }

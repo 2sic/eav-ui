@@ -1,20 +1,20 @@
-@import '../../../styles/variables.scss';
+@use '../../../styles/variables.scss';
 
 /* 2sxc Color-Override: External Links */
 a {
-  color: $external-link !important;
+  color: variables.$external-link !important;
 }
 
 /* 2sxc Color-Override: Actions */
 a mat-icon,
 button mat-icon,
 .eav-button__with-icon * {
-  color: $sxc-solid !important;
+  color: variables.$sxc-solid !important;
 }
 
 /* 2sxc Color-Override: Actions Disabled */
 a.mat-mdc-button.mat-mdc-button-disabled * {
-  color: $text-disabled !important;
+  color: variables.$text-disabled !important;
 }
 
 .eav-settings-and-resources-table {
