@@ -1,7 +1,7 @@
-@import "variables.scss";
-@import "components/dialogs/main-dialog.scss";
-@import "components/hyperlink-default.scss";
-@import "components/translations.scss";
-@import "components/dropzone.scss";
-@import "utilities/helpers.scss";
-@import "theme/shadows.scss";
+@use "variables.scss";
+@use "components/dialogs/main-dialog.scss";
+@use "components/hyperlink-default.scss";
+@use "components/translations.scss";
+@use "components/dropzone.scss";
+@use "utilities/helpers.scss";
+@use "theme/shadows.scss";

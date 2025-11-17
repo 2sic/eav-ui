@@ -1,11 +1,14 @@
+@use "../app/edit/assets/styles/theme/material-colors";
+@use "../app/edit/assets/styles/variables";
+
 @use "sass:map";
 .eav-history-tables {
   .eav-table-row {
-    border-bottom: 1px solid rgba($editUI-foreground-color, 0.12);
+    border-bottom: 1px solid rgba(variables.$editUI-foreground-color, 0.12);
   }
 
   .eav-row-main__type {
-    color: rgba($editUI-foreground-color, 0.4);
+    color: rgba(variables.$editUI-foreground-color, 0.4);
   }
 
   .eav-history-new {
@@ -13,7 +16,7 @@
   }
 
   .eav-history-deleted {
-    color: map.get($mat-eav-item-dialog-error, 300);
+    color: map.get(material-colors.$mat-eav-item-dialog-error, 300);
 
     &__value {
       font-size: 12px;
@@ -22,6 +25,6 @@
   }
 
   .eav-history-changed {
-    color: map.get($mat-eav-item-dialog-secondary, 500);
+    color: map.get(material-colors.$mat-eav-item-dialog-secondary, 500);
   }
 }

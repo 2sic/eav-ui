@@ -1,3 +1,5 @@
+@use "../variables";
+
 .eav-mat-form-field {
   width: 100%;
 
@@ -27,12 +29,12 @@
   }
 
   .active {
-    background-color: $accent-color;
+    background-color: variables.$accent-color;
     color: white;
 
     //TODO @SDV check if this or equivalent class exists
     &.mat-private-button-disabled {
-      background-color: $editUI-label-disabled-color;
+      background-color: variables.$editUI-label-disabled-color;
     }
   }
 }
