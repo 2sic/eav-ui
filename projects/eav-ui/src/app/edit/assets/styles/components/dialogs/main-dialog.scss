@@ -3,14 +3,13 @@
 // EditUI dialog
 .c-multi-item-dialog .mat-mdc-dialog-container {
   padding: 0;
+  bottom: 10px;
   background-color: variables.$edit-ui-dialog-background-color;
   border-radius: variables.$edit-ui-dialog-border-radius;
 
   @media (max-width: 600px) {
     border-radius: 0;
   }
-
-  bottom: 10px;
 }
 
 .c-multi-item-dialog {

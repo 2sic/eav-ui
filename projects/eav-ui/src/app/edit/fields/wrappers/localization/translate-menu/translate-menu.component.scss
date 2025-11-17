@@ -33,6 +33,7 @@
   top: -12px;
   padding: 0px 4px 0 6px;
   white-space: nowrap;
+  font-size: 12px;
   overflow: hidden;
   text-overflow: ellipsis;
   max-height: 16px;
@@ -42,8 +43,6 @@
   &--disabled {
     color: rgba(variables.$editUI-foreground-color, 0.24);
   }
-
-  font-size: 12px;
 }
 
 .eav-translate-icon-button {

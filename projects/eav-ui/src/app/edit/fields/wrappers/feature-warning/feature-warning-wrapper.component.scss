@@ -1,4 +1,3 @@
-
 @use "sass:math";
 
 .feature-warning {
@@ -14,12 +13,10 @@
 
   --s: 2px; /* the size on the corner */
   mask:
-    conic-gradient(at var(--s) var(--s),#0000 75%,#000 0)
-    0 math.div(0, calc(100% - var(--s))) calc(100% - var(--s)),
+    conic-gradient(at var(--s) var(--s), #0000 75%, #000 0)
+    0 0/ calc(100% - var(--s)) calc(100% - var(--s)),
     linear-gradient(#000 0 0) content-box;
 }
-
-
 
 // Trying something like https://stackoverflow.com/questions/20964278/css-dots-in-corners-of-div
 // but not quite working - WIP

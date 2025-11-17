@@ -41,14 +41,14 @@
   margin-top: 24px;
   min-height: variables.$expandable-wrapper-max-height;
   max-height: variables.$expandable-wrapper-max-height;
+ 
+  padding: 0;
 
   @media (max-width: 600px) {
     margin-top: 0;
     min-height: variables.$expandable-wrapper-max-height-mobile;
     max-height: variables.$expandable-wrapper-max-height-mobile;
   }
-
-  padding: 0;
 
   .mat-mdc-dialog-actions {
     padding: 16px;

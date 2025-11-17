@@ -5,17 +5,17 @@
   margin: 0;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
-
-  @media (max-width: 600px) {
-    border-radius: 0;
-  }
-
+  
   height: var(--edit-footer-bar-height);
   z-index: 1;
   width: 100%;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+
+  @media (max-width: 600px) {
+    border-radius: 0;
+  }
 }
 
 .mat-mdc-card.debug-enabled {
