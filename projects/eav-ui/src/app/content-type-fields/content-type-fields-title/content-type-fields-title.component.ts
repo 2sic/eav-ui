@@ -9,21 +9,18 @@ import { InputTypeHelpers } from '../../shared/fields/input-type-helpers';
 import { ContentTypeFieldsTitleParams } from './content-type-fields-title.models';
 
 @Component({
-    selector: 'app-content-type-fields-title',
-    templateUrl: './content-type-fields-title.component.html',
-    styleUrls: ['./content-type-fields-title.component.scss'],
-    imports: [
-        MatRippleModule,
-        MatIconModule,
-        TippyDirective,
-    ]
+  selector: 'app-content-type-fields-title',
+  templateUrl: './content-type-fields-title.component.html',
+  styleUrls: ['./content-type-fields-title.component.scss'],
+  imports: [
+    MatRippleModule,
+    MatIconModule,
+    TippyDirective,
+  ]
 })
 export class ContentTypeFieldsTitleComponent implements ICellRendererAngularComp {
-
   isTitle: boolean;
-
   field: Field;
-
   suitableForTitle = true;
 
   private params: ICellRendererParams & ContentTypeFieldsTitleParams;
