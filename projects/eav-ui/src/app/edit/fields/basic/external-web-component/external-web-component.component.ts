@@ -37,7 +37,7 @@ export class ExternalWebComponentComponent {
   }
 
   private loadAssets() {
-    const assets = this.config.inputTypeSpecs.metadata.AngularAssets.split('\n');
+    const assets = this.config.inputTypeSpecs.metadata.UiAssets?.default?.split('\n') ?? [];
     if (assets.length === 0)
       return;
     this.scriptsLoaderService.load(assets, this.assetsLoaded.bind(this));

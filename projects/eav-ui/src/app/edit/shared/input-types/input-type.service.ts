@@ -42,7 +42,7 @@ export class InputTypeService extends SignalStoreBase<string, InputTypeMetadata>
     const name = inputType.toString();
     const calculated: InputTypeSpecs = {
       inputType,
-      isExternal: !!inputTypeMetadata?.AngularAssets,
+      isExternal: !!inputTypeMetadata?.UiAssets?.default,
       mustUseGuid: !name.startsWith('string') && !name.startsWith('number'),
       componentTagName: `field-${inputType}`,
       componentTagDialogName: `field-${inputType}-dialog`,

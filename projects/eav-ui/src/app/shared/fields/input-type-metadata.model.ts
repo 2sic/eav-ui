@@ -2,7 +2,7 @@ import { Of } from '../../../../../core';
 import { InputTypeCatalog } from './input-type-catalog';
 
 export interface InputTypeMetadata {
-  AngularAssets?: string;
+  UiAssets: Record<'default' | string, string>;
   Description: string;
   DisableI18n: boolean;
   IsDefault?: boolean;
