@@ -3,7 +3,6 @@ import { InputTypeCatalog } from './input-type-catalog';
 
 export interface InputTypeMetadata {
   AngularAssets?: string;
-  Assets?: string;
   Description: string;
   DisableI18n: boolean;
   IsDefault?: boolean;

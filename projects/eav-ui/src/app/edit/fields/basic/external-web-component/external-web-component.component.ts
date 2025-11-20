@@ -9,12 +9,12 @@ import { CustomGpsLogic } from './custom-gps-logic';
 import { StringWysiwygLogic } from './string-wysiwyg-logic';
 
 @Component({
-    selector: InputTypeCatalog.ExternalWebComponent,
-    templateUrl: './external-web-component.component.html',
-    imports: [
-        MatProgressSpinnerModule,
-        ConnectorComponent,
-    ]
+  selector: InputTypeCatalog.ExternalWebComponent,
+  templateUrl: './external-web-component.component.html',
+  imports: [
+    MatProgressSpinnerModule,
+    ConnectorComponent,
+  ]
 })
 export class ExternalWebComponentComponent {
 
@@ -38,7 +38,8 @@ export class ExternalWebComponentComponent {
 
   private loadAssets() {
     const assets = this.config.inputTypeSpecs.metadata.AngularAssets.split('\n');
-    if (assets.length === 0) return;
+    if (assets.length === 0)
+      return;
     this.scriptsLoaderService.load(assets, this.assetsLoaded.bind(this));
   }
 
