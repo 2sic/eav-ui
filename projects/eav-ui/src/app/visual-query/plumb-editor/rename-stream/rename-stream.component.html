@@ -122,6 +122,7 @@
       [label]="'Rename and close (ctrl + enter)'"
       (action)="saveAndClose()"
       [disabled]="!form.valid"
+      [ngClass]="!form.valid ? 'disabled' : ''"
     />
   </mat-dialog-actions>
 </div>
