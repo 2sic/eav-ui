@@ -2,6 +2,14 @@ import { EavFor } from '../../edit/shared/models/eav';
 import { eavConstants } from '../constants/eav.constants';
 import { classLog } from '../logging';
 import { EditForm, EditPrep, ItemAddIdentifier, ItemEditIdentifier, ItemIdentifierInbound, ItemIdentifierShared, ItemInListIdentifier } from '../models/edit-form.model';
+import { ParamEncoder } from './param-encoder';
+
+// Note: everything in here is a bit magical - and probably not ideal
+// It basically prepares a very compact url representation of an EditForm
+// so it can be passed in urls
+// The format is not documented anywhere - so changing it will likely break things
+// so be careful!
+// In some cases, order matters, in others there are prefixes to identify parts
 
 const log = classLog("UrlPrepHelper")
 
@@ -12,6 +20,7 @@ const PARAM_PREFIX = 'parameters:';
 const ITEM_SEPARATOR = ',';
 const VAL_SEPARATOR = '&';
 const LIST_SEPARATOR = ':';
+const METADATA_SEPARATOR = '~';
 
 function toOrderedParams(values: unknown[]): string {
   return values.join(LIST_SEPARATOR);
@@ -84,7 +93,6 @@ export function convertFormToUrl(form: EditForm) {
       );
     }
   }
-console.log('2dm debug formUrl', formUrl);
   return l.r(formUrl);
 }
 
@@ -117,7 +125,7 @@ function getParamForMetadata(addItem: ItemAddIdentifier) {
 
   const forSuffix = buildForSuffix(addItem.For);
   if (addItem.For?.String)
-    return l.r(`${VAL_SEPARATOR}for:s~` + paramEncode(addItem.For.String) + forSuffix, "for string");
+    return l.r(`${VAL_SEPARATOR}for:s~` + ParamEncoder.encode(addItem.For.String) + forSuffix, "for string");
   if (addItem.For?.Number)
     return l.r(`${VAL_SEPARATOR}for:n~` + addItem.For.Number + forSuffix, "for number");
   if (addItem.For?.Guid)
@@ -143,8 +151,8 @@ function getParamForOldMetadata(addItem: ItemAddIdentifier) {
   }
   const target = Object.values(eavConstants.metadata)
     .find(m => m.targetType === addItem.Metadata.targetType)?.target;
-  const result = `${VAL_SEPARATOR}for:` + keyType + '~' + toOrderedParams([
-    paramEncode(addItem.Metadata.key),
+  const result = `${VAL_SEPARATOR}for:` + keyType + METADATA_SEPARATOR + toOrderedParams([
+    ParamEncoder.encode(addItem.Metadata.key),
     target,
     addItem.Metadata.targetType
   ]);
@@ -160,7 +168,7 @@ function obj2UrlParams(obj: Record<string, unknown>, prefix: string) {
   if (!obj) return result;
   for (const [key, value] of Object.entries(obj)) {
     if (value == null) continue;
-    result += `${VAL_SEPARATOR}${prefix}${key}~${paramEncode(value.toString())}`;
+    result += `${VAL_SEPARATOR}${prefix}${key}~${ParamEncoder.encode(value.toString())}`;
   }
   return result;
 }
@@ -169,24 +177,14 @@ function prefillFromUrlParams(url: string, addTo: Record<string, unknown>): Reco
   const result = addTo ?? {} as Record<string, string>;
   if (url == null) return result;
   const prefillParams = url.split(LIST_SEPARATOR);
-  const key = prefillParams[1].split('~')[0];
-  const value = paramDecode(prefillParams[1].split('~')[1]);
-  result[key] = value;
+  const [key, value] = prefillParams[1].split(METADATA_SEPARATOR);
+  const decodedValue = ParamEncoder.decode(value);
+  result[key] = decodedValue;
   return result;
 }
 
-// function objFromUrlParams(url: string, addTo: Record<string, string>, prefix: string): Record<string, string> {
-//   const result = addTo ?? {} as Record<string, string>;
-//   if (url == null) return result;
-//   const prefillParams = url.split(LIST_SEPARATOR);
-//   const key = prefillParams[1].split('~')[0];
-//   const value = paramDecode(prefillParams[1].split('~')[1]);
-//   result[key] = value;
-//   return result;
-// }
-
 function fields2UrlParams(fields: string) {
-  return fields ? `${VAL_SEPARATOR}${FIELDS_PREFIX}${paramEncode(fields)}` : '';
+  return fields ? `${VAL_SEPARATOR}${FIELDS_PREFIX}${ParamEncoder.encode(fields)}` : '';
 }
 
 function isNumber(maybeNumber: string): boolean {
@@ -257,17 +255,16 @@ export function convertUrlToForm(formUrl: string) {
         } else if (option.startsWith('for:')) {
           // Add Item For
           const forParams = option.split(LIST_SEPARATOR);
-          const forKeyType = forParams[1].split('~')[0];
-          const forKey = forParams[1].split('~')[1];
-          const forTarget = forParams[2];
-          const forTargetType = parseInt(forParams[3], 10);
+          const [forKeyType, forKey] = forParams[1].split(METADATA_SEPARATOR);
+          // const forTarget = forParams[2];
+          // const forTargetType = parseInt(forParams[3], 10);
           const forSingleton = forParams[4] != null ? forParams[4] === 'true' : undefined;
           addItem.For = {
-            Target: forTarget,
-            TargetType: forTargetType,
+            Target: forParams[2],
+            TargetType: parseInt(forParams[3], 10),
             ...(forKeyType === 'g' && { Guid: forKey }),
             ...(forKeyType === 'n' && { Number: parseInt(forKey, 10) }),
-            ...(forKeyType === 's' && { String: paramDecode(forKey) }),
+            ...(forKeyType === 's' && { String: ParamEncoder.decode(forKey) }),
             ...(forSingleton != null && { Singleton: forSingleton }),
           };
         } else if (option.startsWith('copy:')) {
@@ -292,7 +289,7 @@ export function convertUrlToForm(formUrl: string) {
 function addParamToItemIdentifier<T extends ItemIdentifierShared>(item: T, part: string): T {
   const l = log.fn("addParamToItemIdentifier", {item, part});
   if (part.startsWith(FIELDS_PREFIX)) {
-    const fields = paramDecode(part.split(':')[1]);
+    const fields = ParamEncoder.decode(part.split(LIST_SEPARATOR)[1]);
     // temp hacky workaround - put it prefill so it's still there after round-trip
     // should later be on the re-added after the round-trip on the Fields property
     item.Prefill = prefillFromUrlParams(part, { fields });
@@ -313,22 +310,3 @@ function addParamToItemIdentifier<T extends ItemIdentifierShared>(item: T, part:
   return l.rSilent(item, 'no match');
 }
 
-/** Encodes characters in URL parameter to not mess up routing. Don't forget to decode it! :) */
-function paramEncode(text: string) {
-  return (text ?? '')
-    .replace(/\//g, '%2F')
-    .replace(/\:/g, '%3A')
-    .replace(/\&/g, '%26')
-    .replace(/\~/g, '%7E')
-    .replace(/\,/g, '%2C');
-}
-
-/** Decodes characters in URL parameter */
-function paramDecode(text: string) {
-  return (text ?? '')
-    .replace(/%2F/g, '/')
-    .replace(/%3A/g, ':')
-    .replace(/%26/g, '&')
-    .replace(/%7E/g, '~')
-    .replace(/%2C/g, ',');
-}
