@@ -55,10 +55,6 @@ export function convertFormToUrl(form: EditForm) {
       formUrl += addTypicalUrlGroups(asGroup, fields, parameters,
         { prefill: true, fields: true, params: true, duplicate: true }
       );
-      //
-      // formUrl += prefill2UrlParams(asGroup.Prefill);
-      // formUrl += fields2UrlParams(fields);
-      // formUrl += obj2UrlParams(parameters, PARAM_PREFIX);
 
     } else if (asItem.EntityId) {
       l.a("asItem having entity id", {asItem});
@@ -69,8 +65,6 @@ export function convertFormToUrl(form: EditForm) {
       formUrl += addTypicalUrlGroups(asItem, fields, parameters,
         { fields: true, params: true }
       );
-      // formUrl += fields2UrlParams(fields);
-      // formUrl += obj2UrlParams(parameters, PARAM_PREFIX);
 
       // 2023-05-11 in edit-id mode, prefill isn't supported, but we want the fields
       // I actually think that prefill should be supported, because it can also transport more parameters
@@ -82,7 +76,10 @@ export function convertFormToUrl(form: EditForm) {
       // so this could be an unexpected breaking change...
       // formUrl += prefill2UrlParams(asItem.Prefill);
 
-    } else if ((item as ItemAddIdentifier).ContentTypeName) {
+    
+    }
+    // Add item, optionally with For-Metadata
+    else if ((item as ItemAddIdentifier).ContentTypeName) {
       l.a("asItem having content type name", {item});
       // Add Item
       const addItem = item as ItemAddIdentifier;
@@ -123,13 +120,16 @@ function getParamForMetadata(addItem: ItemAddIdentifier) {
     (itemFor.Singleton ? itemFor.Singleton.toString() : '')
   ]);
 
-  const forSuffix = buildForSuffix(addItem.For);
-  if (addItem.For?.String)
-    return l.r(`${VAL_SEPARATOR}for:s~` + ParamEncoder.encode(addItem.For.String) + forSuffix, "for string");
-  if (addItem.For?.Number)
-    return l.r(`${VAL_SEPARATOR}for:n~` + addItem.For.Number + forSuffix, "for number");
-  if (addItem.For?.Guid)
-    return l.r(`${VAL_SEPARATOR}for:g~` + addItem.For.Guid + forSuffix, "for guid");
+  if (addItem.For != null) {
+    const prefix = `${VAL_SEPARATOR}for:`;
+    const forSuffix = buildForSuffix(addItem.For);
+    if (addItem.For?.String)
+      return l.r(`${prefix}s~${ParamEncoder.encode(addItem.For.String)}${forSuffix}`, "for string");
+    if (addItem.For?.Number)
+      return l.r(`${prefix}n~${addItem.For.Number}${forSuffix}`, "for number");
+    if (addItem.For?.Guid)
+      return l.r(`${prefix}g~${addItem.For.Guid}${forSuffix}`, "for guid");
+  }
   if (addItem.Metadata)
     return l.r(getParamForOldMetadata(addItem), "metadata");
   return l.r('', "other");
