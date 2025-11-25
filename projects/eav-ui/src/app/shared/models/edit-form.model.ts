@@ -169,6 +169,9 @@ export interface ItemInListIdentifier extends ItemIdentifierShared {
   Field: string;
 
   EntityId?: number;
+
+  /** Prefill form with data from another entity - WIP 20.09 */
+  DuplicateEntity?: number;
 }
 
 export interface ViewOrFileIdentifier {

@@ -43,9 +43,13 @@ export function convertFormToUrl(form: EditForm) {
         asGroup.Add,
         asGroup.EntityId
       ]);
-      formUrl += prefill2UrlParams(asGroup.Prefill);
-      formUrl += fields2UrlParams(fields);
-      formUrl += obj2UrlParams(parameters, PARAM_PREFIX);
+      formUrl += addTypicalUrlGroups(asGroup, fields, parameters,
+        { prefill: true, fields: true, params: true, duplicate: true }
+      );
+      //
+      // formUrl += prefill2UrlParams(asGroup.Prefill);
+      // formUrl += fields2UrlParams(fields);
+      // formUrl += obj2UrlParams(parameters, PARAM_PREFIX);
 
     } else if (asItem.EntityId) {
       l.a("asItem having entity id", {asItem});
@@ -53,8 +57,11 @@ export function convertFormToUrl(form: EditForm) {
       formUrl += asItem.EntityId;
 
       // New: fields
-      formUrl += fields2UrlParams(fields);
-      formUrl += obj2UrlParams(parameters, PARAM_PREFIX);
+      formUrl += addTypicalUrlGroups(asItem, fields, parameters,
+        { fields: true, params: true }
+      );
+      // formUrl += fields2UrlParams(fields);
+      // formUrl += obj2UrlParams(parameters, PARAM_PREFIX);
 
       // 2023-05-11 in edit-id mode, prefill isn't supported, but we want the fields
       // I actually think that prefill should be supported, because it can also transport more parameters
@@ -72,17 +79,29 @@ export function convertFormToUrl(form: EditForm) {
       const addItem = item as ItemAddIdentifier;
       formUrl += 'new:' + addItem.ContentTypeName;
 
-      formUrl += getParamForMetadata(addItem);
-      formUrl += prefill2UrlParams(addItem.Prefill);
-      formUrl += fields2UrlParams(fields);
-      formUrl += obj2UrlParams(parameters, PARAM_PREFIX);
-
-      if (addItem.DuplicateEntity)
-        formUrl += `${VAL_SEPARATOR}copy:` + addItem.DuplicateEntity;
+      formUrl += addTypicalUrlGroups(addItem, fields, parameters,
+        { metadata: true, prefill: true, fields: true, params: true, duplicate: true }
+      );
     }
   }
-
+console.log('2dm debug formUrl', formUrl);
   return l.r(formUrl);
+}
+
+function addTypicalUrlGroups(
+  item: ItemAddIdentifier | ItemEditIdentifier | ItemInListIdentifier,
+  fields: string | undefined,
+  parameters: Record<string, unknown> | undefined,
+  parts: { metadata?: boolean, prefill?: boolean, fields?: boolean, params?: boolean, duplicate?: boolean }
+): string {
+  const addItem = item as ItemAddIdentifier;
+  const result = ''
+    + (parts.metadata ? getParamForMetadata(addItem) : '')
+    + (parts.prefill ? prefill2UrlParams(item.Prefill) : '')
+    + (parts.fields ? fields2UrlParams(fields) : '')
+    + (parts.params ? obj2UrlParams(parameters, PARAM_PREFIX) : '')
+    + (parts.duplicate && addItem.DuplicateEntity ? `${VAL_SEPARATOR}copy:` + addItem.DuplicateEntity : '');
+  return result;
 }
 
 function getParamForMetadata(addItem: ItemAddIdentifier) {
@@ -96,12 +115,13 @@ function getParamForMetadata(addItem: ItemAddIdentifier) {
     (itemFor.Singleton ? itemFor.Singleton.toString() : '')
   ]);
 
+  const forSuffix = buildForSuffix(addItem.For);
   if (addItem.For?.String)
-    return l.r(`${VAL_SEPARATOR}for:s~` + paramEncode(addItem.For.String) + buildForSuffix(addItem.For), "for string");
+    return l.r(`${VAL_SEPARATOR}for:s~` + paramEncode(addItem.For.String) + forSuffix, "for string");
   if (addItem.For?.Number)
-    return l.r(`${VAL_SEPARATOR}for:n~` + addItem.For.Number + buildForSuffix(addItem.For), "for number");
+    return l.r(`${VAL_SEPARATOR}for:n~` + addItem.For.Number + forSuffix, "for number");
   if (addItem.For?.Guid)
-    return l.r(`${VAL_SEPARATOR}for:g~` + addItem.For.Guid + buildForSuffix(addItem.For), "for guid");
+    return l.r(`${VAL_SEPARATOR}for:g~` + addItem.For.Guid + forSuffix, "for guid");
   if (addItem.Metadata)
     return l.r(getParamForOldMetadata(addItem), "metadata");
   return l.r('', "other");
@@ -181,34 +201,52 @@ export function convertUrlToForm(formUrl: string) {
 
   for (const item of items) {
     l.a("item", {item});
+    // Handle group:
     if (item.startsWith(GROUP_PREFIX)) {
       // Inner Item / Group Item
-      const innerItem = {} as ItemInListIdentifier;
+      let innerItem = {} as ItemInListIdentifier;
       const options = item.split(VAL_SEPARATOR);
 
       for (const option of options) {
         if (option.startsWith(GROUP_PREFIX)) {
-          const parms = option.split(LIST_SEPARATOR);
-          innerItem.Parent = parms[1];
-          innerItem.Field = parms[2];
-          innerItem.Index = parseInt(parms[3], 10);
-          innerItem.Add = parms[4] === 'true';
-          if (parms.length > 4 && parms[5] && isNumber(parms[5]))
-            innerItem.EntityId = parseInt(parms[5], 10);
-        } else
-          addParamToItemIdentifier(innerItem, option);
+          const params = option.split(LIST_SEPARATOR);
+          const hasParam5Id = params.length > 4 && params[5] && isNumber(params[5]);
+          innerItem = {
+            ...innerItem,
+            Parent: params[1],
+            Field: params[2],
+            Index: parseInt(params[3], 10),
+            Add: params[4] === 'true',
+            ...(hasParam5Id && { EntityId: parseInt(params[5], 10) })
+          }
+          // innerItem.Parent = params[1];
+          // innerItem.Field = params[2];
+          // innerItem.Index = parseInt(params[3], 10);
+          // innerItem.Add = params[4] === 'true';
+          // if (hasParam5Id)
+          //   innerItem.EntityId = parseInt(params[5], 10);
+        } else if (option.startsWith('copy:')) {
+          // Add Item Copy
+          innerItem = {
+            ...innerItem,
+            DuplicateEntity: parseInt(option.split(LIST_SEPARATOR)[1], 10)
+          };
+          // innerItem.DuplicateEntity = parseInt(copyParams[1], 10);
+        } else {
+          innerItem = addParamToItemIdentifier(innerItem, option);
+        }
       }
       form.items.push(innerItem);
     } else if (isNumber((item ?? '').split(VAL_SEPARATOR)[0])) {
       // Edit Item
       const parts = item.split(VAL_SEPARATOR);
-      const editItem: ItemEditIdentifier = EditPrep.editId(parseInt(parts[0], 10));
+      let editItem: ItemEditIdentifier = EditPrep.editId(parseInt(parts[0], 10));
       for (const part of parts)
-        addParamToItemIdentifier(editItem, part);
+        editItem = addParamToItemIdentifier(editItem, part);
       form.items.push(editItem);
     } else if (item.startsWith('new:')) {
       // Add Item
-      const addItem = {} as ItemAddIdentifier;
+      let addItem = {} as ItemAddIdentifier;
       const options = item.split(VAL_SEPARATOR);
 
       for (const option of options) {
@@ -234,10 +272,15 @@ export function convertUrlToForm(formUrl: string) {
           };
         } else if (option.startsWith('copy:')) {
           // Add Item Copy
-          const copyParams = option.split(LIST_SEPARATOR);
-          addItem.DuplicateEntity = parseInt(copyParams[1], 10);
+          // const copyParams = option.split(LIST_SEPARATOR);
+          // addItem.DuplicateEntity = parseInt(copyParams[1], 10);
+          addItem = {
+            ...addItem,
+            DuplicateEntity: parseInt(option.split(LIST_SEPARATOR)[1], 10)
+          };
+
         } else
-          addParamToItemIdentifier(addItem, option);
+          addItem = addParamToItemIdentifier(addItem, option);
       }
       form.items.push(addItem);
     }
@@ -246,7 +289,7 @@ export function convertUrlToForm(formUrl: string) {
 }
 
 /** add prefill and filter to url parameters */
-function addParamToItemIdentifier(item: ItemIdentifierShared, part: string): void {
+function addParamToItemIdentifier<T extends ItemIdentifierShared>(item: T, part: string): T {
   const l = log.fn("addParamToItemIdentifier", {item, part});
   if (part.startsWith(FIELDS_PREFIX)) {
     const fields = paramDecode(part.split(':')[1]);
@@ -254,20 +297,20 @@ function addParamToItemIdentifier(item: ItemIdentifierShared, part: string): voi
     // should later be on the re-added after the round-trip on the Fields property
     item.Prefill = prefillFromUrlParams(part, { fields });
     item.ClientData = { ...item.ClientData, fields };
-    return l.end();
+    return l.rSilent(item);
   }
   // Add Item Prefill
   if (part.startsWith(PREFILL_PREFIX)) {
     item.Prefill = prefillFromUrlParams(part, item.Prefill);
-    return l.end();
+    return l.rSilent(item);
   }
   // Add Item Form
   if (part.startsWith(PARAM_PREFIX)) {
     const formParams = prefillFromUrlParams(part, item.ClientData?.parameters);
     item.ClientData = { ...item.ClientData, parameters: formParams };
-    return l.end();
+    return l.rSilent(item);
   }
-  l.end('no match');
+  return l.rSilent(item, 'no match');
 }
 
 /** Encodes characters in URL parameter to not mess up routing. Don't forget to decode it! :) */
