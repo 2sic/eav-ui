@@ -139,7 +139,12 @@ export interface ItemIdentifierShared {
     [key: string]: unknown;
   };
 
-  /** Experimental 17.10+ */
+  /**
+   * An ID for this specific configuration. 
+   * Purpose is to keep the configurations but be able to match them back to the data returned by the server.
+   * So the server will return the clientId and the UI can match it back to the original request.
+   * Added v17.10+
+   */
   clientId?: number;
 }
 

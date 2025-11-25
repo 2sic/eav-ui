@@ -15,7 +15,7 @@ const log = classLog("UrlPrepHelper")
 
 const PREFILL_PREFIX = 'prefill:';
 const GROUP_PREFIX = 'group:';
-const FIELDS_PREFIX = 'uifields:';
+const UIFIELDS_PREFIX = 'uifields:';
 const PARAM_PREFIX = 'parameters:';
 const ITEM_SEPARATOR = ',';
 const VAL_SEPARATOR = '&';
@@ -184,7 +184,7 @@ function prefillFromUrlParams(url: string, addTo: Record<string, unknown>): Reco
 }
 
 function fields2UrlParams(fields: string) {
-  return fields ? `${VAL_SEPARATOR}${FIELDS_PREFIX}${ParamEncoder.encode(fields)}` : '';
+  return fields ? `${VAL_SEPARATOR}${UIFIELDS_PREFIX}${ParamEncoder.encode(fields)}` : '';
 }
 
 function isNumber(maybeNumber: string): boolean {
@@ -288,11 +288,8 @@ export function convertUrlToForm(formUrl: string) {
 /** add prefill and filter to url parameters */
 function addParamToItemIdentifier<T extends ItemIdentifierShared>(item: T, part: string): T {
   const l = log.fn("addParamToItemIdentifier", {item, part});
-  if (part.startsWith(FIELDS_PREFIX)) {
+  if (part.startsWith(UIFIELDS_PREFIX)) {
     const fields = ParamEncoder.decode(part.split(LIST_SEPARATOR)[1]);
-    // temp hacky workaround - put it prefill so it's still there after round-trip
-    // should later be on the re-added after the round-trip on the Fields property
-    item.Prefill = prefillFromUrlParams(part, { fields });
     item.ClientData = { ...item.ClientData, fields };
     return l.rSilent(item);
   }
