@@ -14,6 +14,7 @@ const outputPaths = [...buildConfig.JsTargets, ...buildConfig.Sources].map(t => 
 const excludeDirs = [
   'out-tsc',
   'system',
+  'extensions',
 ];
 
 let watchEnabled = false;
