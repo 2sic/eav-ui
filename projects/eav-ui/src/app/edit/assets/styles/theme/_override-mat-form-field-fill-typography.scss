@@ -1,4 +1,5 @@
-@use "../variables";
+@use "../variables" as _variables;
+@use "../../../../../styles/variables" as variables;
 
 .eav-mat-form-field {
   width: 100%;
@@ -29,12 +30,12 @@
   }
 
   .active {
-    background-color: variables.$accent-color;
+    background-color: variables.$sxc-solid;
     color: white;
 
     //TODO @SDV check if this or equivalent class exists
     &.mat-private-button-disabled {
-      background-color: variables.$editUI-label-disabled-color;
+      background-color: _variables.$editUI-label-disabled-color;
     }
   }
 }

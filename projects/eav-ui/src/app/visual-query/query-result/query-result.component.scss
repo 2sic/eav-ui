@@ -9,6 +9,7 @@
 .eav-tab-content {
   height: calc(100vh - 268px);
   overflow-y: auto;
+  margin-top: 1rem;
 }
 
 .eav-tab-description {
@@ -16,22 +17,16 @@
   justify-content: space-between;
   align-items: baseline;
   margin-right: 1rem;
-  padding: 1rem;
+  padding: 0 1rem 1rem;
   font-size: 16px;
   line-height: 1.5;
-}
-
-.eav-pre-scroll {
-  height: calc(100vh - 268px - 80px);
-  overflow-y: auto;
-
 }
 
 pre {
   display: block;
   padding: 9.5px;
-  margin: 0 10px 0 0;
   font-size: 13px;
+  margin: 0 10px 0 0;
   line-height: 1.42857143;
   color: #333;
   word-break: break-all;
@@ -39,7 +34,12 @@ pre {
   background-color: #f5f5f5;
   border: 1px solid #ccc;
   border-radius: 4px;
-  overflow-x: auto;
+  overflow: auto;
+}
+
+.query-result {
+  margin: 0;
+  height: calc(100vh - 268px - 95px); // Same height as Tab-Container minus description area and some for bottom "margin"
 }
 
 th {

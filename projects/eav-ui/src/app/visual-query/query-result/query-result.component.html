@@ -25,30 +25,32 @@
         <div *matTabLabel class="mat-tab-label-box" tippy="Results">
           <span>Results</span>
         </div>
-        <div class="eav-tab-description">
-          <div>
-            @if (top === 0) {
-              Showing All results
-            }
-            @if (top !== 0) {
-              Showing top {{ top }} results
-            }
+        <div class="eav-tab-content">
+          <div class="eav-tab-description">
+            <div>
+              @if (top === 0) {
+                Showing All results
+              }
+              @if (top !== 0) {
+                Showing top {{ top }} results
+              }
+            </div>
+            <div>
+              @for (option of optionsForTop; track option) {
+                <button mat-button (click)="show(option)">
+                  Show
+                  @if (option === 0) {
+                    All
+                  }
+                  @if (option !== 0) {
+                    {{ option }}
+                  }
+                </button>
+              }
+            </div>
           </div>
-          <div>
-            @for (option of optionsForTop; track option) {
-              <button mat-button (click)="show(option)">
-                Show
-                @if (option === 0) {
-                  All
-                }
-                @if (option !== 0) {
-                  {{ option }}
-                }
-              </button>
-            }
-          </div>
+          <pre class="query-result">{{ result | json }}</pre>
         </div>
-        <pre class="eav-pre-scroll">{{ result | json }}</pre>
       </mat-tab>
 
       @if (parameters?.length) {
