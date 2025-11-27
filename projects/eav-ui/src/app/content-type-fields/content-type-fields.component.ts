@@ -1,4 +1,4 @@
-import { ColumnApi, FilterChangedEvent, GridApi, GridOptions, GridReadyEvent, ICellRendererParams, RowClassParams, RowDragEvent, SortChangedEvent } from '@ag-grid-community/core';
+import { FilterChangedEvent, GridApi, GridOptions, GridReadyEvent, ICellRendererParams, RowClassParams, RowDragEvent, SortChangedEvent } from '@ag-grid-community/core';
 import { NgClass } from '@angular/common';
 import { Component, computed, OnInit, signal, ViewContainerRef } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -98,7 +98,6 @@ export class ContentTypeFieldsComponent implements OnInit {
   filterApplied = false;
 
   #gridApi: GridApi;
-  #columnApi: ColumnApi;
   #rowDragSuppressed = false;
 
   ngOnInit() {
@@ -108,21 +107,21 @@ export class ContentTypeFieldsComponent implements OnInit {
 
   onGridReady(params: GridReadyEvent) {
     this.#gridApi = params.api;
-    this.#columnApi = params.columnApi;
   }
 
   onRowDragEnter(_: RowDragEvent) {
-    this.#gridApi.setEnableCellTextSelection(false);
+    this.#gridApi.setGridOption("enableCellTextSelection", false);
   }
 
   onRowDragEnd(_: RowDragEvent) {
-    this.#gridApi.setSuppressRowDrag(true);
+    this.#gridApi.setGridOption("suppressRowDrag", true);
     this.isReordering.set(true);
+
     const idArray = this.fields().map(field => field.Id);
     this.#contentTypesFieldsSvc.reOrder(idArray, this.contentType()).subscribe(() => {
       this.#fetchFields(() => {
-        this.#gridApi.setEnableCellTextSelection(true);
-        this.#gridApi.setSuppressRowDrag(false);
+        this.#gridApi.setGridOption("enableCellTextSelection", true);
+        this.#gridApi.setGridOption("suppressRowDrag", false);
         this.isReordering.set(false);
       });
     });
@@ -150,7 +149,7 @@ export class ContentTypeFieldsComponent implements OnInit {
   }
 
   onSortChanged(_: SortChangedEvent) {
-    const columnStates = this.#columnApi.getColumnState();
+    const columnStates = this.#gridApi.getColumnState();
     this.sortApplied = columnStates.some(state => state.sort != null);
     this.#suppressRowDrag();
   }
@@ -164,12 +163,13 @@ export class ContentTypeFieldsComponent implements OnInit {
 
   #suppressRowDrag() {
     const shouldSuppress = this.sortApplied || this.filterApplied;
+
     if (shouldSuppress && !this.#rowDragSuppressed) {
       this.#rowDragSuppressed = true;
-      this.#gridApi.setSuppressRowDrag(true);
+      this.#gridApi.setGridOption("suppressRowDrag", true);
     } else if (!shouldSuppress && this.#rowDragSuppressed) {
       this.#rowDragSuppressed = false;
-      this.#gridApi.setSuppressRowDrag(false);
+      this.#gridApi.setGridOption("suppressRowDrag", false);
     }
   }
 
