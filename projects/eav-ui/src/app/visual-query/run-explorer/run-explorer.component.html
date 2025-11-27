@@ -2,9 +2,28 @@
   <div class="editor-active-explorer fancy-scrollbar-dark">
     <div class="wrapper">
       <div class="actions">
-        <button mat-raised-button class="eav-action-button action" style="border: 1px #fff solid" (click)="saveAndRunQuery(true, true)">Save and run</button>
-        <button mat-raised-button class="action" (click)="saveAndRunQuery(false, true)">Run</button>
-        <button mat-raised-button class="action" (click)="saveAndRunQuery(true, false)">Save</button>
+        <button
+          mat-raised-button
+          class="eav-action-button action"
+          style="border: 1px #adadad solid"
+          (click)="saveAndRunQuery(true, true)"
+          >
+            Save and run
+          </button>
+        <button
+          mat-raised-button
+          class="action"
+          (click)="saveAndRunQuery(false, true)"
+        >
+            Run
+        </button>
+        <button
+          mat-raised-button
+          class="action"
+          (click)="saveAndRunQuery(true, false)"
+        >
+        Save
+        </button>
       </div>
       <div class="parameters">
         <div class="title">
@@ -20,7 +39,10 @@
         </div>
         @if (vsSvc.pipelineModel().Pipeline.Params?.length) {
           <ul class="values">
-            @for (param of vsSvc.pipelineModel().Pipeline.Params?.split('\n'); track param) {
+            @for (
+              param of vsSvc.pipelineModel().Pipeline.Params?.split('\n');
+              track param;
+            ) {
               <li>
                 {{ param }}
               </li>
@@ -32,7 +54,10 @@
         <div class="title">Test Parameters</div>
         @if (vsSvc.pipelineModel().Pipeline.TestParameters?.length) {
           <ul class="values">
-            @for (param of vsSvc.pipelineModel().Pipeline.TestParameters?.split('\n'); track param) {
+            @for (
+              param of vsSvc.pipelineModel().Pipeline.TestParameters?.split('\n');
+              track param;
+            ) {
               <li>
                 {{ param }}
               </li>
