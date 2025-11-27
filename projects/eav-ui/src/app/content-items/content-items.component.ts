@@ -161,7 +161,7 @@ export class ContentItemsComponent implements OnInit {
   }
 
   private setColumnDefs(columnDefs: ColDef[], filterModel: AgGridFilterModel) {
-    this.#gridApiSig().setColumnDefs(columnDefs);
+    this.#gridApiSig().setGridOption("columnDefs", columnDefs);
     if (filterModel) {
       this.log.a('Will try to apply filter:', filterModel);
       this.#gridApiSig().setFilterModel(filterModel);

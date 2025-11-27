@@ -1,9 +1,9 @@
 import { IFilterAngularComp } from '@ag-grid-community/angular';
 import { IAfterGuiAttachedParams, IDoesFilterPassParams, IFilterParams, ValueGetterParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
-import { BooleanFilterModel } from './boolean-filter.model';
 import { FormsModule } from '@angular/forms';
 import { MatRadioModule } from '@angular/material/radio';
+import { BooleanFilterModel } from './boolean-filter.model';
 
 @Component({
     selector: 'app-boolean-filter',
@@ -32,7 +32,6 @@ export class BooleanFilterComponent implements IFilterAngularComp {
       api: this.filterParams.api,
       colDef: this.filterParams.colDef,
       column: this.filterParams.column,
-      columnApi: this.filterParams.columnApi,
       context: this.filterParams.context,
       data: params.node.data,
       getValue: (field) => params.node.data[field],

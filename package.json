@@ -40,9 +40,9 @@
   },
   "dependencies": {
     "@2sic.com/sxc-angular": "^18.0.0",
-    "@ag-grid-community/angular": "^29.3.5",
-    "@ag-grid-community/client-side-row-model": "^29.3.5",
-    "@ag-grid-community/styles": "^29.3.5",
+    "@ag-grid-community/angular": "^32.3.9",
+    "@ag-grid-community/client-side-row-model": "^32.3.9",
+    "@ag-grid-community/styles": "^32.3.9",
     "@angular-devkit/build-angular": "^20.0.1",
     "@angular/animations": "^20.0.1",
     "@angular/cdk": "^20.0.2",

@@ -1,11 +1,11 @@
 import { IFilterAngularComp } from '@ag-grid-community/angular';
 import { IAfterGuiAttachedParams, IDoesFilterPassParams, IFilterParams, ValueGetterParams } from '@ag-grid-community/core';
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { EntityFilterModel } from './entity-filter.model';
 import { FormsModule } from '@angular/forms';
-import { MatRadioModule } from '@angular/material/radio';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatRadioModule } from '@angular/material/radio';
+import { EntityFilterModel } from './entity-filter.model';
 
 @Component({
     selector: 'app-entity-filter',
@@ -41,7 +41,6 @@ export class EntityFilterComponent implements IFilterAngularComp {
         api: this.filterParams.api,
         colDef: this.filterParams.colDef,
         column: this.filterParams.column,
-        columnApi: this.filterParams.columnApi,
         context: this.filterParams.context,
         data: params.node.data,
         getValue: (field) => params.node.data[field],
