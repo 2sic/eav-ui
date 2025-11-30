@@ -21,8 +21,8 @@ import { AppAdminMenu } from './app-admin-menu';
 
 @Component({
   selector: 'app-app-admin-main',
-  templateUrl: './app-admin-main.component.html',
-  styleUrls: ['./app-admin-main.component.scss'],
+  templateUrl: './app-admin-main.html',
+  styleUrls: ['./app-admin-main.scss'],
   imports: [
     MatToolbarModule,
     MatIconModule,
@@ -36,9 +36,9 @@ import { AppAdminMenu } from './app-admin-menu';
     MatProgressSpinnerModule
   ]
 })
-export class AppAdminMainComponent implements OnInit {
+export class AppAdminMain implements OnInit {
 
-  log = classLog({ AppAdminMainComponent });
+  log = classLog({ AppAdminMain: AppAdminMain });
 
   isLoading = signal(true);
 
@@ -46,7 +46,7 @@ export class AppAdminMainComponent implements OnInit {
   #dialogRouter = transient(DialogRoutingService);
 
   constructor(
-    private dialog: MatDialogRef<AppAdminMainComponent>,
+    private dialog: MatDialogRef<AppAdminMain>,
     private media: MediaMatcher
   ) {
     this.log.a('constructor');

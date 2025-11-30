@@ -6,7 +6,11 @@ import { FeatureNames } from '../../features/feature-names';
 import { FeaturesService } from '../../features/features.service';
 import { MatBadgeIconDirective } from '../../shared/directives/mat-badge-icon.directive';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
-import { LightSpeedActionsParams } from './lightspeed-actions.models';
+
+export interface LightSpeedActionsParams {
+  openLightspeedFeatureInfo(): void;
+  lightSpeedLink?: (app: unknown) => string;
+}
 
 /**
  * LightSpeedActionsComponent
@@ -15,16 +19,16 @@ import { LightSpeedActionsParams } from './lightspeed-actions.models';
  *
  */
 @Component({
-    selector: 'app-lightspeed-action',
-    templateUrl: './lightspeed-action.component.html',
-    imports: [
-        TippyDirective,
-        MatIconModule,
-        MatBadgeIconDirective,
-        MatRippleModule,
-    ]
+  selector: 'app-lightspeed-action',
+  templateUrl: './lightspeed-action.html',
+  imports: [
+    TippyDirective,
+    MatIconModule,
+    MatBadgeIconDirective,
+    MatRippleModule,
+  ]
 })
-export class LightSpeedActionsComponent {
+export class LightSpeedActions {
   /** App needed for lightspeed checks */
   lightSpeedOwner = input.required<unknown>();
 

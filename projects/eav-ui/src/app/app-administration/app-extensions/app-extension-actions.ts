@@ -4,8 +4,7 @@ import { Component, signal } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { Extension } from '../../models/extension.model';
-import { ExtensionActionsParams, ExtensionItemType } from './extension-actions.model';
+import { Extension } from '../models/extension.model';
 
 type GoToUrls = 'edit' | 'download';
 
@@ -17,18 +16,19 @@ type GoToUrls = 'edit' | 'download';
     MatButtonModule,
     MatBadgeModule
   ],
-  templateUrl: './extension-actions.component.html',
-  styleUrls: ['./extension-actions.component.scss'],
+  templateUrl: './app-extension-actions.html',
+  styleUrls: ['./app-extension-actions.scss'],
 })
-export class ExtensionActionsComponent {
+export class AppExtensionActions {
   protected ext: Extension;
   canEditExtension = signal<boolean>(false);
 
-  public params: ExtensionActionsParams & {
+  public params: {
+    do(verb: GoToUrls, extension: Extension): void;
     urlTo(verb: GoToUrls, extension: Extension): string;
-  };
+  }
 
-  agInit(params: ICellRendererParams & ExtensionActionsComponent['params']): void {
+  agInit(params: ICellRendererParams & AppExtensionActions['params']): void {
     this.params = params;
     this.ext = params.data;
     this.canEditExtension.set(!this.ext.configuration.isInstalled);
@@ -39,7 +39,7 @@ export class ExtensionActionsComponent {
     return true;
   }
 
-  do(verb: ExtensionItemType): void {
+  do(verb: GoToUrls): void {
     this.params.do(verb, this.ext);
   }
 }

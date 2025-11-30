@@ -30,8 +30,7 @@ import { Context } from '../../shared/services/context';
 import { App } from '../models/app.model';
 import { AppsListService } from '../services/apps-list.service';
 import { AppListCodeErrorIcons, AppListShowIcons } from './app-list-grid-config';
-import { AppsListActionsComponent } from './apps-list-actions/apps-list-actions.component';
-import { AppsListActionsParams } from './apps-list-actions/apps-list-actions.models';
+import { AppsListActions } from './apps-list-actions/apps-list-actions.component';
 
 @Component({
   selector: 'app-apps-list',
@@ -226,7 +225,7 @@ export class AppsListComponent implements OnInit {
         },
         {
           ...ColumnDefinitions.ActionsPinnedRight3,
-          cellRenderer: AppsListActionsComponent,
+          cellRenderer: AppsListActions,
           cellRendererParams: {
             lightSpeedLink: (app: App) => this.#getLightSpeedLink(app),
             openLightspeedFeatureInfo: () => this.openLightSpeedFeatInfo(),
@@ -236,7 +235,7 @@ export class AppsListComponent implements OnInit {
                 case 'flushCache': this.#flushApp(app); break;
               }
             }
-          } satisfies AppsListActionsParams,
+          } satisfies AppsListActions['params'],
         },
       ],
     };

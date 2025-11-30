@@ -6,11 +6,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { transient } from 'projects/core';
-import { DialogRoutingService } from '../../../shared/routing/dialog-routing.service';
 
 @Component({
   selector: 'app-message',
-  templateUrl: './message.component.html',
+  templateUrl: './basic-message.html',
   imports: [
     CommonModule,
     MatDialogModule,
@@ -18,18 +17,16 @@ import { DialogRoutingService } from '../../../shared/routing/dialog-routing.ser
     MatIconModule,
   ]
 })
-export class MessageComponent implements OnInit {
+export class BasicMessage implements OnInit {
   message: string;
   errComponent: string;
   isError: boolean;
   openFixUrl = signal('');
   router = transient(Router);
 
-  #dialogRouter = transient(DialogRoutingService);
-
   constructor(
     private route: ActivatedRoute,
-    public dialog: MatDialogRef<MessageComponent>,
+    public dialog: MatDialogRef<BasicMessage>,
     private translate: TranslateService
   ) { }
 

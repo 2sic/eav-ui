@@ -8,7 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { RouterOutlet } from '@angular/router';
 import { Subject } from 'rxjs';
 import { Of, transient } from '../../../../../core';
-import { DocsLinkHelperComponent } from '../../admin-shared/docs-link-helper/docs-link-helper.component';
+import { DocsLinkHelper } from '../../admin-shared/docs-link-helper/docs-link-helper';
 import { ContentItemsService } from '../../content-items/services/content-items.service';
 import { FeatureNames } from '../../features/feature-names';
 import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
@@ -30,12 +30,12 @@ import { AppInternalsService } from '../services/app-internals.service';
 import { ContentTypesService } from '../services/content-types.service';
 import { DialogConfigAppService } from '../services/dialog-config-app.service';
 import { AnalyzeParts } from '../sub-dialogs/analyze-settings/analyze-settings.models';
-import { AppConfigurationCardComponent } from './app-configuration-card/app-configuration-card.component';
+import { AppConfigurationCard } from './app-configuration-card/app-configuration-card';
 
 @Component({
   selector: 'app-app-configuration',
-  templateUrl: './app-configuration.component.html',
-  styleUrls: ['./app-configuration.component.scss'],
+  templateUrl: './app-configuration.html',
+  styleUrls: ['./app-configuration.scss'],
   imports: [
     MatCardModule,
     MatIconModule,
@@ -43,14 +43,14 @@ import { AppConfigurationCardComponent } from './app-configuration-card/app-conf
     MatBadgeModule,
     MatBadgeIconDirective,
     NgTemplateOutlet,
-    AppConfigurationCardComponent,
+    AppConfigurationCard,
     FeatureTextInfoComponent,
     RouterOutlet,
     TippyDirective,
-    DocsLinkHelperComponent,
+    DocsLinkHelper,
   ]
 })
-export class AppConfigurationComponent implements OnInit {
+export class AppConfiguration implements OnInit {
 
   #featuresSvc = inject(FeaturesService);
 

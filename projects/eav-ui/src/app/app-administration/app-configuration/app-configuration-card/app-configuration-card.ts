@@ -5,7 +5,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { transient } from '../../../../../../core';
-import { DocsLinkHelperComponent } from '../../../admin-shared/docs-link-helper/docs-link-helper.component';
+import { DocsLinkHelper } from '../../../admin-shared/docs-link-helper/docs-link-helper';
 import { ContentItemsService } from '../../../content-items/services/content-items.service';
 import { GoToMetadata } from '../../../metadata';
 import { eavConstants } from '../../../shared/constants/eav.constants';
@@ -20,18 +20,18 @@ import { AppInternals } from '../../models/app-internals.model';
 
 @Component({
   selector: 'app-app-configuration-card',
-  templateUrl: './app-configuration-card.component.html',
-  styleUrls: ['./app-configuration-card.component.scss'],
+  templateUrl: './app-configuration-card.html',
+  styleUrls: ['./app-configuration-card.scss'],
   imports: [
     MatCardModule,
     MatIconModule,
     MatButtonModule,
     MatBadgeModule,
     TippyDirective,
-    DocsLinkHelperComponent,
+    DocsLinkHelper,
   ]
 })
-export class AppConfigurationCardComponent implements OnDestroy {
+export class AppConfigurationCard implements OnDestroy {
   dialogSettings = input.required<DialogSettings>();
   appSettingsInternal = input.required<AppInternals>();
   refresh = input.required<number>();

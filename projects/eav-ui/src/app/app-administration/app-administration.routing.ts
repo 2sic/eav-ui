@@ -6,8 +6,8 @@ import { FeatureNames } from '../features/feature-names';
 import { GoToMetadata } from '../metadata';
 import { GoToPermissions } from '../permissions/go-to-permissions';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
-import { appAdministrationDialog } from './app-admin-main/app-admin-main.dialog-config';
-import { messageDialog } from './app-configuration/message/message-dialog.config';
+import { appAdminDialog } from './app-admin-main/app-admin-dialog';
+import { basicMessageDialog } from './app-configuration/message/basic-message-dialog';
 import { CopilotSpecs } from './copilot/copilot-specs';
 import { GoToCopilot } from './copilot/go-to-copilot';
 import { AppStateComponent } from './import-export-menu/app-state/app-state.component';
@@ -34,7 +34,7 @@ export const appAdministrationRoutes: Routes = [
     // experimental 2dm
     // ...DialogEntryComponent.routeFor(appAdministrationDialog),
     component: DialogEntryComponent,
-    data: { dialog: appAdministrationDialog },
+    data: { dialog: appAdminDialog },
     children: [
       {
         path: '', redirectTo: 'home', pathMatch: 'full'
@@ -178,7 +178,7 @@ export const appAdministrationRoutes: Routes = [
       },
       {
         path: 'extensions',
-        loadComponent: () => import('./app-extensions/app-extensions.component').then(mod => mod.AppExtensionsComponent),
+        loadComponent: () => import('./app-extensions/app-extensions').then(mod => mod.AppExtensions),
         data: { title: 'App Extensions', breadcrumb: "App Extensions" },
         children: [
           ...EditRoutes,
@@ -224,7 +224,7 @@ export const appAdministrationRoutes: Routes = [
       },
       {
         path: 'app',
-        loadComponent: () => import('./app-configuration/app-configuration.component').then(mod => mod.AppConfigurationComponent),
+        loadComponent: () => import('./app-configuration/app-configuration').then(mod => mod.AppConfiguration),
         data: { title: 'Manage App', breadcrumb: "Manage App" },
         children: [
           ...GoToMetadata.getRoutes(),
@@ -266,7 +266,7 @@ export const appAdministrationRoutes: Routes = [
           {
             path: 'message/:type',
             component: DialogEntryComponent,
-            data: { dialog: messageDialog, i18n: 'An unexpected error happened.', errComponent: 'not found' },
+            data: { dialog: basicMessageDialog, i18n: 'An unexpected error happened.', errComponent: 'not found' },
           },
         ],
       },

@@ -7,19 +7,19 @@ import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-error',
-  templateUrl: './error.component.html',
+  templateUrl: './error-message.html',
   imports: [
     MatDialogModule,
     MatButtonModule,
     MatIconModule
   ]
 })
-export class ErrorComponent implements OnInit {
+export class ErrorMessage implements OnInit {
   errorMessage: string;
 
   constructor(
     private route: ActivatedRoute,
-    public dialogRef: MatDialogRef<ErrorComponent>
+    public dialogRef: MatDialogRef<ErrorMessage>
   ) { }
 
   ngOnInit() {

@@ -5,24 +5,23 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { LightSpeedActionsComponent } from "../../../admin-shared/lightspeed-action/lightspeed-action.component";
-import { LightSpeedActionsParams } from '../../../admin-shared/lightspeed-action/lightspeed-actions.models';
+import { LightSpeedActions, LightSpeedActionsParams } from "../../../admin-shared/lightspeed-action/lightspeed-action";
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { View } from '../../models/view.model';
 import { AgActionsAlwaysRefresh } from '../../queries/ag-actions/ag-actions-component';
 
 @Component({
-    selector: 'app-views-actions',
-    templateUrl: './views-actions.component.html',
-    imports: [
-        MatRippleModule,
-        MatIconModule,
-        MatBadgeModule,
-        MatMenuModule,
-        TippyDirective,
-        LightSpeedActionsComponent,
-        CommonModule
-    ]
+  selector: 'app-views-actions',
+  templateUrl: './views-actions.component.html',
+  imports: [
+    MatRippleModule,
+    MatIconModule,
+    MatBadgeModule,
+    MatMenuModule,
+    TippyDirective,
+    LightSpeedActions,
+    CommonModule
+  ]
 })
 export class ViewsActionsComponent extends AgActionsAlwaysRefresh {
   protected view: View;

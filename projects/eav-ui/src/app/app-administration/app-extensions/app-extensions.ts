@@ -16,14 +16,13 @@ import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.mod
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { Extension } from '../models/extension.model';
 import { AppExtensionsService } from '../services/app-extensions.service';
+import { AppExtensionActions } from './app-extension-actions';
 import { AppExtensionsLinkCellComponent } from './app-extensions-link-cell.component';
-import { ExtensionActionsComponent } from './extension-actions/extension-actions.component';
-import { ExtensionActionsParams } from './extension-actions/extension-actions.model';
 
 @Component({
   selector: 'app-extensions',
-  templateUrl: './app-extensions.component.html',
-  styleUrls: ['./app-extensions.component.scss'],
+  templateUrl: './app-extensions.html',
+  styleUrls: ['./app-extensions.scss'],
   imports: [
     CommonModule,
     MatIconModule,
@@ -35,7 +34,7 @@ import { ExtensionActionsParams } from './extension-actions/extension-actions.mo
     GridWithHelpComponent,
   ]
 })
-export class AppExtensionsComponent implements OnInit {
+export class AppExtensions implements OnInit {
   private extensionsSvc = transient(AppExtensionsService);
   router = inject(Router);
   #dialogRouter = transient(DialogRoutingService);
@@ -197,9 +196,9 @@ export class AppExtensionsComponent implements OnInit {
         headerName: 'Actions',
         width: 100,
         pinned: 'right',
-        cellRenderer: ExtensionActionsComponent,
+        cellRenderer: AppExtensionActions,
         cellRendererParams: (() => {
-          const params: ExtensionActionsParams = {
+          const params: AppExtensionActions['params'] = {
             urlTo: (verb, ext) => '#' + this.#urlTo(ext.folder),
             do: (verb, ext) => {
               switch (verb) {
@@ -207,7 +206,7 @@ export class AppExtensionsComponent implements OnInit {
                 case 'download': this.extensionsSvc.downloadExtension(ext.folder); break;
               }
             }
-          } satisfies ExtensionActionsParams;
+          } satisfies AppExtensionActions['params'];
           return params;
         })(),
       },
