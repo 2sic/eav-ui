@@ -5,8 +5,9 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { LightSpeedActions, LightSpeedActionsParams } from '../../../admin-shared/lightspeed-action/lightspeed-action';
+import { LightSpeedActions } from '../../../admin-shared/lightspeed-action/lightspeed-action';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
+import { typeofSignal } from '../../../shared/signals/typeof-signal';
 import { App } from '../../models/app.model';
 
 @Component({
@@ -24,7 +25,7 @@ import { App } from '../../models/app.model';
 export class AppsListActions implements ICellRendererAngularComp {
   app: App;
 
-  public params: LightSpeedActionsParams & {
+  public params: typeofSignal<LightSpeedActions['params']> & {
     do(verb: 'deleteApp' | 'flushCache', app: App): void;
   }
 

@@ -21,7 +21,7 @@ type GoToUrls = 'edit' | 'download';
 })
 export class AppExtensionActions {
   protected ext: Extension;
-  canEditExtension = signal<boolean>(false);
+  canEditExtension = signal(false);
 
   public params: {
     do(verb: GoToUrls, extension: Extension): void;

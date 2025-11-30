@@ -7,11 +7,6 @@ import { FeaturesService } from '../../features/features.service';
 import { MatBadgeIconDirective } from '../../shared/directives/mat-badge-icon.directive';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 
-export interface LightSpeedActionsParams {
-  openLightspeedFeatureInfo(): void;
-  lightSpeedLink?: (app: unknown) => string;
-}
-
 /**
  * LightSpeedActionsComponent
  *
@@ -29,18 +24,25 @@ export interface LightSpeedActionsParams {
   ]
 })
 export class LightSpeedActions {
-  /** App needed for lightspeed checks */
+  /**
+   * App or view which owns this lightspeed.
+   * Needed for lightspeed checks, will be passed back to the action handlers.
+   */
   lightSpeedOwner = input.required<unknown>();
 
-  params = input.required<LightSpeedActionsParams>();
+  params = input.required<{
+    openLightspeedFeatureInfo(): void;
+    lightSpeedLink?: (app: unknown) => string;
+  }>();
 
   lightSpeed = input.required<LightSpeedInfo | null>();
 
-  public features = inject(FeaturesService);
+  #featuresSvc = inject(FeaturesService);
+
+  protected lightSpeedEnabled = this.#featuresSvc.isEnabled[FeatureNames.LightSpeed]
 
   constructor() { }
 
-  protected lightSpeedEnabled = this.features.isEnabled[FeatureNames.LightSpeed]
 
   public get appHasLightSpeed(): boolean {
     return this.lightSpeed()?.Id != null;
