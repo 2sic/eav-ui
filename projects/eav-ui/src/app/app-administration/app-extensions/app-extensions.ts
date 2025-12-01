@@ -54,10 +54,10 @@ export class AppExtensions implements OnInit {
       if (data?.objData && this.#pendingFolder) {
         const folder = this.#pendingFolder;
         this.#pendingFolder = null;
-        this.extensionsSvc.updateExtension(folder, JSON.stringify(data.objData)).subscribe(() => {
-          this.fetchExtensions();
-        });
+        this.extensionsSvc.updateExtension(folder, JSON.stringify(data.objData))
       }
+      
+      this.fetchExtensions();
     });
   }
 
@@ -82,12 +82,9 @@ export class AppExtensions implements OnInit {
     });
   }
 
-  // #deleteExtension() {
-  //   this.extensionsSvc.deleteExtension(this.#pendingFolder!).subscribe(() => {
-  //     this.fetchExtensions();
-  //   });
-  // TODO: @2pp - Add Dialog with Actions
-  // }
+  #deleteExtension() {
+    return this.#urlTo('import');
+  }
 
   filesDropped(files: File[]) {
     this.extensionsSvc.uploadExtensions(files).subscribe(() => this.fetchExtensions());

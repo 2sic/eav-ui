@@ -69,15 +69,13 @@ export class AppExtensionsService extends HttpServiceBase {
   }
 
   deleteExtension(name: string, edition?: string, force = false, withData = false) {
-    console.log(`Deleting extension: ${name}, edition: ${edition}, force: ${force}, withData: ${withData}`);
-
     return this.http.delete<boolean>(
       this.apiUrl('admin/appExtensions/delete'),
       {
         params: {
           appId: this.appId,
           name,
-          edition,
+          edition: edition ?? '',
           force,
           withData
         }
