@@ -149,6 +149,7 @@ export class AppExtensions implements OnInit {
         field: 'folder',
         flex: 1,
         sortable: true,
+        sort: 'asc',
         filter: 'agTextColumnFilter',
         cellRenderer: (params: { data: Extension }) => {
           const folder = params.data?.folder ?? '';
@@ -158,10 +159,10 @@ export class AppExtensions implements OnInit {
       },
       {
         headerName: 'Name',
-        field: 'name',
-        flex: 1,
+        field: 'configuration.name',
         sortable: true,
         filter: 'agTextColumnFilter',
+        flex: 1,
         cellRenderer: (params: { data: Extension }) => {
           const name = params.data?.configuration?.name ?? '';
           const teaser = params.data?.configuration?.teaser ?? '';
@@ -170,7 +171,7 @@ export class AppExtensions implements OnInit {
       },
       {
         headerName: 'Creator',
-        field: 'creator',
+        field: 'configuration.createdBy',
         maxWidth: 175,
         sortable: true,
         filter: 'agTextColumnFilter',
@@ -182,7 +183,8 @@ export class AppExtensions implements OnInit {
       },
       {
         headerName: 'Links',
-        field: 'link',
+        sortable: false,
+        field: 'configuration.link',
         width: 125,
         cellRenderer: AppExtensionsLinkCellComponent,
         cellRendererParams: (params: { data: Extension }) => ({
