@@ -189,7 +189,7 @@ export const appAdministrationRoutes: Routes = [
             data: { dialog: importExtensionDialog, title: 'Import Extension' },
           },
           {
-            path: 'delete',
+            path: 'delete/:extension',
             component: DialogEntryComponent,
             data: { dialog: deleteExtensionDialog, title: 'Delete Extension' },
           },

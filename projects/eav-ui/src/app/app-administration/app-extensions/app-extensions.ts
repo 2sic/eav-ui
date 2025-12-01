@@ -56,7 +56,7 @@ export class AppExtensions implements OnInit {
         this.#pendingFolder = null;
         this.extensionsSvc.updateExtension(folder, JSON.stringify(data.objData))
       }
-      
+
       this.fetchExtensions();
     });
   }
@@ -82,8 +82,16 @@ export class AppExtensions implements OnInit {
     });
   }
 
-  #deleteExtension() {
-    return this.#urlTo('import');
+  #deleteExtension(ext?: Extension) {
+    const url = this.#urlTo('delete/' + (ext?.folder ?? ''));
+    const normalized = url.replace(/^#\/?/, '').replace(/^\//, '');
+    const routeSegments = normalized.split('/').filter(Boolean);
+
+    this.router.navigate(routeSegments, {
+      state: {
+        returnValue: true
+      } satisfies DialogRoutingState,
+    });
   }
 
   filesDropped(files: File[]) {
@@ -206,10 +214,7 @@ export class AppExtensions implements OnInit {
               switch (verb) {
                 case 'edit': this.#openSettings(ext); break;
                 case 'download': this.extensionsSvc.downloadExtension(ext.folder); break;
-                case 'delete': this.extensionsSvc.deleteExtension(ext.folder)
-                  .subscribe(() =>
-                    this.fetchExtensions()
-                  ); break;
+                case 'delete': this.#deleteExtension(ext); break;
               }
             }
           } satisfies AppExtensionActions['params'];

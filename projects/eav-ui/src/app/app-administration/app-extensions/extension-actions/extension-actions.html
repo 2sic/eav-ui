@@ -8,7 +8,6 @@
   >
     <mat-icon>edit</mat-icon>
   </a>
-  <!-- TODO: @2pp - only show download when config is there -->
   <a
     (click)="do('download')"
     [class.disabled]="!canEditExtension() || !extHasConfig()"

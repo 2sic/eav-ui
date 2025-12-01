@@ -46,6 +46,4 @@ export class BasicMessage implements OnInit {
     const finalUrl = splitUrl[0] + "app" + this.openFixUrl();
     window.open(finalUrl, '_blank');
   }
-
-
 }
