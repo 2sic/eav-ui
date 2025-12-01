@@ -4,9 +4,9 @@ import { Component, signal } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { Extension } from '../models/extension.model';
+import { Extension } from '../../models/extension.model';
 
-type GoToUrls = 'edit' | 'download';
+type GoToUrls = 'edit' | 'download' | 'delete';
 
 @Component({
   selector: 'app-extension-actions',
@@ -16,8 +16,8 @@ type GoToUrls = 'edit' | 'download';
     MatButtonModule,
     MatBadgeModule
   ],
-  templateUrl: './app-extension-actions.html',
-  styleUrls: ['./app-extension-actions.scss'],
+  templateUrl: './extension-actions.html',
+  styleUrls: ['./extension-actions.scss'],
 })
 export class AppExtensionActions {
   protected ext: Extension;

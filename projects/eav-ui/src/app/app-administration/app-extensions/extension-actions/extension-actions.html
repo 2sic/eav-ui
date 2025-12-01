@@ -20,7 +20,7 @@
   </a>
   <a
     (click)="do('delete')"
-    [class.disabled]="!canEditExtension()"
+    [class.disabled]="canEditExtension()"
     class="eav-grid-action-button default-link highlight"
     matRipple
     tippy="Delete Extension"

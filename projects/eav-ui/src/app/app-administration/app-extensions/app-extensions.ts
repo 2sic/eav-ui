@@ -16,8 +16,8 @@ import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.mod
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { Extension } from '../models/extension.model';
 import { AppExtensionsService } from '../services/app-extensions.service';
-import { AppExtensionActions } from './app-extension-actions';
 import { AppExtensionsLinkCellComponent } from './app-extensions-link-cell.component';
+import { AppExtensionActions } from './extension-actions/extension-actions';
 
 @Component({
   selector: 'app-extensions',
