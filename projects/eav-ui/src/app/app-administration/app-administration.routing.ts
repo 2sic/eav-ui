@@ -19,6 +19,7 @@ import { ImportAppPartsComponent } from './import-export-menu/import-app-parts/i
 import { ImportExportComponent } from './import-export-menu/import-export/import-export.component';
 import { analyzeSettingsDialog } from './sub-dialogs/analyze-settings/analyze-settings-dialog.config';
 import { settingsItemDetailsDialog } from './sub-dialogs/analyze-settings/settings-item-details/settings-item-details.config';
+import { deleteExtensionDialog } from './sub-dialogs/delete-extension/delete-extension-dialog.config';
 import { editContentTypeDialog } from './sub-dialogs/edit-content-type/edit-content-type-dialog.config';
 import { importContentTypeDialog } from './sub-dialogs/import-content-type/import-content-type-dialog.config';
 import { importDataBundlesDialog } from './sub-dialogs/import-data-bundles/import-data-bundles-dialog.config';
@@ -186,6 +187,11 @@ export const appAdministrationRoutes: Routes = [
             path: 'import',
             component: DialogEntryComponent,
             data: { dialog: importExtensionDialog, title: 'Import Extension' },
+          },
+          {
+            path: 'delete',
+            component: DialogEntryComponent,
+            data: { dialog: deleteExtensionDialog, title: 'Delete Extension' },
           },
         ]
       },

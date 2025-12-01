@@ -5,7 +5,7 @@ import { FileUploadDialogComponent, FileUploadDialogData, UploadTypes } from '..
 import { ContentTypesService } from '../../services/content-types.service';
 
 @Component({
-  selector: 'app-import-data-bundles',
+  selector: 'app-import-content-type',
   templateUrl: './import-content-type.component.html',
   imports: [
     FileUploadDialogComponent,

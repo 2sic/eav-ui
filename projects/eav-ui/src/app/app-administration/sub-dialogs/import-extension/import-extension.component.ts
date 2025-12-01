@@ -5,7 +5,7 @@ import { FileUploadDialogComponent, FileUploadDialogData, UploadTypes } from '..
 import { AppExtensionsService } from '../../services/app-extensions.service';
 
 @Component({
-  selector: 'app-import-data-bundles',
+  selector: 'app-import-extension',
   templateUrl: './import-extension.component.html',
   imports: [
     FileUploadDialogComponent,

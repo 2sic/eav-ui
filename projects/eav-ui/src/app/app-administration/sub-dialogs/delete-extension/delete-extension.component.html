@@ -1,0 +1,24 @@
+<div class="eav-dialog">
+  <div class="eav-dialog-header">
+    <!-- TODO: @2pp - pass Ext. Config -->
+    <div class="eav-dialog-header__title">
+      {{ dialogData.title ?? 'Delete' }} ({{ dialogData.entityId }})
+    </div>
+    <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <div class="eav-dialog-content">
+    Are you Sure you want to delete this Extension?
+
+    <p><mat-slide-toggle>Also delete data in the App which the extension created?</mat-slide-toggle></p>
+  </div>
+
+  <mat-dialog-actions align="end">
+    <app-save-close-button-fab
+      [label]="'Delete and close (ctrl + enter)'"
+      (action)="saveAndClose(true)"
+    />
+  </mat-dialog-actions>
+</div>
