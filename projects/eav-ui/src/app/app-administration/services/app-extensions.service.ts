@@ -28,7 +28,7 @@ export class AppExtensionsService extends HttpServiceBase {
     // Parse the config to JsonElement format that the API expects
     const configJson = JSON.parse(config);
 
-    return this.http.post<boolean>(this.apiUrl('admin/appExtensions/extension'), configJson, {
+    return this.http.post<boolean>(this.apiUrl('admin/appExtensions/configuration'), configJson, {
       params: {
         zoneId: this.zoneId,
         appId: this.appId,
