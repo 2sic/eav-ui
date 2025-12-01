@@ -11,7 +11,7 @@
   <!-- TODO: @2pp - only show download when config is there -->
   <a
     (click)="do('download')"
-    [class.disabled]="!canEditExtension()"
+    [class.disabled]="!canEditExtension() || !extHasConfig()"
     class="eav-grid-action-button default-link highlight"
     matRipple
     tippy="Download Extension ZIP"

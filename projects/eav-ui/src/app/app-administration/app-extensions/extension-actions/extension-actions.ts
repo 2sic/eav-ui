@@ -22,6 +22,7 @@ type GoToUrls = 'edit' | 'download' | 'delete';
 export class AppExtensionActions {
   protected ext: Extension;
   canEditExtension = signal(false);
+  extHasConfig = signal(false);
 
   public params: {
     do(verb: GoToUrls, extension: Extension): void;
@@ -32,7 +33,7 @@ export class AppExtensionActions {
     this.params = params;
     this.ext = params.data;
     this.canEditExtension.set(!this.ext.configuration.isInstalled);
-    console.log('2dm');
+    this.extHasConfig.set(!!this.ext.configuration);
   }
 
   refresh(params?: any): boolean {
