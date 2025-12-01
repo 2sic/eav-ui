@@ -38,9 +38,6 @@ export class AppExtensionsService extends HttpServiceBase {
   }
 
   downloadExtension(folder: string) {
-    // TODO: @2pp - Implement when API-Endpoint exists
-    console.log("Downloading extension:", folder);
-    
     const params = new URLSearchParams({
       appId: this.appId,
       zoneId: this.zoneId,
@@ -48,7 +45,6 @@ export class AppExtensionsService extends HttpServiceBase {
     });
     const url = `${this.apiUrl('admin/appExtensions/download')}?${params.toString()}`;
     window.open(url, '_blank', '');
-
   }
 
   // Uploads extension files
@@ -65,10 +61,27 @@ export class AppExtensionsService extends HttpServiceBase {
     }).pipe(
       map((success: boolean): FileUploadResult => ({
         Success: success,
-        Messages: success 
+        Messages: success
           ? [{ MessageType: 1, Text: 'Extension uploaded successfully' }] // Success message
           : [{ MessageType: 2, Text: 'Extension upload failed' }] // Error message
       }))
+    );
+  }
+
+  deleteExtension(name: string, edition?: string, force = true, withData = false) {
+    console.log(`Deleting extension: ${name}, edition: ${edition}, force: ${force}, withData: ${withData}`);
+
+    return this.http.delete<boolean>(
+      this.apiUrl('admin/appExtensions/delete'),
+      {
+        params: {
+          appId: this.appId,
+          name,
+          edition,
+          force,
+          withData
+        }
+      }
     );
   }
 }

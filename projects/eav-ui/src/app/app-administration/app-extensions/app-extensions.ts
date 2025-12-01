@@ -82,8 +82,11 @@ export class AppExtensions implements OnInit {
     });
   }
 
-  // #downloadExtension(ext: Extension) {
-  //   this.extensionsSvc.downloadExtension(ext.folder);
+  // #deleteExtension() {
+  //   this.extensionsSvc.deleteExtension(this.#pendingFolder!).subscribe(() => {
+  //     this.fetchExtensions();
+  //   });
+  // TODO: @2pp - Add Dialog with Actions
   // }
 
   filesDropped(files: File[]) {
@@ -196,7 +199,7 @@ export class AppExtensions implements OnInit {
       },
       {
         headerName: 'Actions',
-        width: 100,
+        width: 120,
         pinned: 'right',
         cellRenderer: AppExtensionActions,
         cellRendererParams: (() => {
@@ -206,6 +209,10 @@ export class AppExtensions implements OnInit {
               switch (verb) {
                 case 'edit': this.#openSettings(ext); break;
                 case 'download': this.extensionsSvc.downloadExtension(ext.folder); break;
+                case 'delete': this.extensionsSvc.deleteExtension(ext.folder)
+                  .subscribe(() =>
+                    this.fetchExtensions()
+                  ); break;
               }
             }
           } satisfies AppExtensionActions['params'];

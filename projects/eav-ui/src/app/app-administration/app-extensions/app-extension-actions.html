@@ -8,6 +8,7 @@
   >
     <mat-icon>edit</mat-icon>
   </a>
+  <!-- TODO: @2pp - only show download when config is there -->
   <a
     (click)="do('download')"
     [class.disabled]="!canEditExtension()"
@@ -16,5 +17,14 @@
     tippy="Download Extension ZIP"
   >
     <mat-icon>cloud_download</mat-icon>
+  </a>
+  <a
+    (click)="do('delete')"
+    [class.disabled]="!canEditExtension()"
+    class="eav-grid-action-button default-link highlight"
+    matRipple
+    tippy="Delete Extension"
+  >
+    <mat-icon>delete</mat-icon>
   </a>
 </div>
