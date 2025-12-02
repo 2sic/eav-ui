@@ -5,6 +5,7 @@ import { MAT_DIALOG_DATA, MatDialogActions, MatDialogRef } from '@angular/materi
 import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ActivatedRoute } from '@angular/router';
 import { transient } from 'projects/core';
 import { SaveCloseButtonFabComponent } from '../../../shared/modules/save-close-button-fab/save-close-button-fab.component';
 import { AppExtensionsService } from '../../services/app-extensions.service';
@@ -22,22 +23,18 @@ import { ConfirmDeleteDialogData } from '../confirm-delete-dialog/confirm-delete
     FormsModule,
   ]
 })
-export class DeleteExtensionComponent { // implements OnInit {
+export class DeleteExtensionComponent {
   #snackBar = inject(MatSnackBar);
   #extensionsSvc = transient(AppExtensionsService);
 
-  extensionName = "radmin"; // TODO: @2pp - get extension from route data
+  extensionFolder = this.route.snapshot.paramMap.get('extension') as 'extension';
   withData = false;
 
   constructor(
+    private route: ActivatedRoute,
     @Inject(MAT_DIALOG_DATA) public dialogData: ConfirmDeleteDialogData,
-    public dialog: MatDialogRef<ConfirmDeleteDialogComponent>
+    public dialog: MatDialogRef<ConfirmDeleteDialogComponent>,
   ) { }
-
-  
-  // ngOnInit(params: string): void {
-  //   this.extensionName = this.params.extension;
-  // }
 
   closeDialog(confirm?: boolean) {
     this.#snackBar.dismiss();
@@ -48,7 +45,13 @@ export class DeleteExtensionComponent { // implements OnInit {
 
   saveAndClose(confirm: boolean) {
     if (confirm) {
-      this.#extensionsSvc.deleteExtension(this.extensionName, '', false, this.withData)
+      this.#extensionsSvc
+        .deleteExtension(
+          this.extensionFolder, // Extension folder
+          '',                 // Edition
+          false,              // Force delete
+          this.withData       // Delete with data 
+        )
         .subscribe(() => {
           this.dialog.close(true);
         });

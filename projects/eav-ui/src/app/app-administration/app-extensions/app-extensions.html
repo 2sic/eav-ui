@@ -1,13 +1,33 @@
-<div class="container" appDragAndDrop [allowedFileTypes]="'zip'" (filesDropped)="filesDropped($event)">
-  <app-grid-with-help [helpText]="uxHelpText()" [refresh]="refresh()" [rowLength]="extensions()?.length">
+<div
+  class="container"
+  appDragAndDrop
+  [allowedFileTypes]="'zip'"
+  (filesDropped)="filesDropped($event)"
+>
+  <app-grid-with-help
+    [helpText]="uxHelpText()"
+    [refresh]="refresh()"
+    [rowLength]="extensions()?.length"
+  >
     @if (extensions().length === 0) {
-      <p>Create an extension by placing an <code>extension.json</code> file in the <code>app/extensions</code> folder.</p>
+      <p>
+        Create an extension by placing an <code>extension.json</code> file in the <code>app/extensions</code> folder.
+      </p>
     } @else {
-      <ag-grid-angular class="ag-theme-material" [rowData]="extensions()" [gridOptions]="gridOptions" />
+      <ag-grid-angular
+        class="ag-theme-material"
+        [rowData]="extensions()"
+        [gridOptions]="gridOptions"
+      />
     }
     <mat-dialog-actions class="eav-dialog-actions">
       <a [href]="urlToUploadExtension()">
-        <button mat-button class="eav-button__with-icon" tippy="Upload Extension ZIP" tippyPlacement="top">
+        <button
+          mat-button
+          class="eav-button__with-icon"
+          tippy="Upload Extension ZIP"
+          tippyPlacement="top"
+        >
           <mat-icon class="eav-icon">upload</mat-icon>
           <span>Upload</span>
         </button>
