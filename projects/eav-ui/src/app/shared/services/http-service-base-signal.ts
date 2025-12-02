@@ -53,7 +53,6 @@ export class HttpServiceBaseSignal {
     return httpResource<T>(request, { injector: this.injector });
   }
 
-
   /**   
    *  Makes an HTTP GET request and returns a Signal with the response body of type T
    * @param endpoint - The API endpoint path (will be combined with base URL)
@@ -68,7 +67,6 @@ export class HttpServiceBaseSignal {
     });
     return target;
   }
-
 
   /**
    * Makes an HTTP GET request and returns a Promise with just the status code
@@ -103,11 +101,11 @@ export class HttpServiceBaseSignal {
   }
 
   /**
- * Makes an HTTP GET request and returns a Promise with the response body of type T
- * @param endpoint - The API endpoint path (will be combined with base URL)
- * @param options - Angular HttpClient options (headers, params, etc.)
- * @returns Promise that resolves to the HTTP response body of type T (or rejects/returns null on error)
- */
+   * Makes an HTTP GET request and returns a Promise with the response body of type T
+   * @param endpoint - The API endpoint path (will be combined with base URL)
+   * @param options - Angular HttpClient options (headers, params, etc.)
+   * @returns Promise that resolves to the HTTP response body of type T (or rejects/returns null on error)
+   */
   protected fetchPromise<T>(
     endpoint: string,
     options?: Parameters<typeof this.http.get>[1]
@@ -132,7 +130,4 @@ export class HttpServiceBaseSignal {
       return Promise.reject(e);
     }
   }
-
-
-
 }

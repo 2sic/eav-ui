@@ -32,6 +32,8 @@ export class DeleteExtensionComponent {
   withData = false;
   withForceAllowed = false;
 
+  preflightResult = this.#extensionsSvc.preflightExtension(this.extensionFolder, '').value;
+
   constructor(
     private route: ActivatedRoute,
     @Inject(MAT_DIALOG_DATA) public dialogData: ConfirmDeleteDialogData,
@@ -51,15 +53,7 @@ export class DeleteExtensionComponent {
       return;
     }
 
-    this.performPreflight();
-  }
-
-  private performPreflight() {
-    this.#extensionsSvc.preflightExtension(this.extensionFolder, '')
-      .subscribe({
-        next: inspect => this.evaluatePreflight(inspect),
-        error: () => this.showError('Preflight check failed.')
-      });
+    this.evaluatePreflight(this.preflightResult());
   }
 
   private evaluatePreflight(inspect: ExtensionInspectResult) {

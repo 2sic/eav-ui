@@ -81,10 +81,11 @@ export class AppExtensionsService extends HttpServiceBase {
     };
     if (edition) params.edition = edition;
 
-    return this.http.get<ExtensionInspectResult>(
-      this.apiUrl('admin/appExtensions/inspect'),
-      { params }
-    );
+    return this.newHttpResource<ExtensionInspectResult>(() => ({
+      url: this.apiUrl('admin/appExtensions/inspect'),
+      params,
+      method: 'GET',
+    }));
   }
 
   deleteExtension(name: string, edition?: string, force = false, withData = false) {
