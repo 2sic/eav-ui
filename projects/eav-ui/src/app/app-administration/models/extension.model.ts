@@ -37,3 +37,19 @@ export interface ExtensionConfiguration {
   oqtSupported: boolean;
   oqtVersionMin: string;
 }
+
+export interface ExtensionInspectResult {
+  foundLock: boolean;
+  files: { path: string; status: FileStatus }[];
+  summary: {
+    total: number;
+    changed: number;
+    added: number;
+    missing: number;
+  };
+  data: {
+    contentTypes: any[];
+  };
+}
+
+export type FileStatus = 'unchanged' | 'added' | 'missing' | 'changed';

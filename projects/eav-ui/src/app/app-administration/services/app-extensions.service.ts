@@ -3,7 +3,7 @@ import { map } from 'rxjs';
 import { FileUploadResult } from '../../shared/components/file-upload-dialog/file-upload-dialog.models';
 import { classLog } from '../../shared/logging';
 import { HttpServiceBase } from '../../shared/services/http-service-base';
-import { Extension } from '../models/extension.model';
+import { Extension, ExtensionInspectResult } from '../models/extension.model';
 
 @Injectable()
 export class AppExtensionsService extends HttpServiceBase {
@@ -68,18 +68,31 @@ export class AppExtensionsService extends HttpServiceBase {
     );
   }
 
+  inspectExtension(name: string, edition?: string) {
+    const params: { appId: string, name: string, edition?: string } = {
+      appId: this.appId,
+      name,
+    };
+    if (edition) params.edition = edition;
+
+    return this.http.get<ExtensionInspectResult>(
+      this.apiUrl('admin/appExtensions/inspect'),
+      { params }
+    );
+  }
+
   deleteExtension(name: string, edition?: string, force = false, withData = false) {
+    const params: { appId: string, name: string, force: boolean, withData: boolean, edition?: string } = {
+      appId: this.appId,
+      name,
+      force,
+      withData
+    };
+    if (edition) params.edition = edition;
+
     return this.http.delete<boolean>(
       this.apiUrl('admin/appExtensions/delete'),
-      {
-        params: {
-          appId: this.appId,
-          name,
-          edition: edition ?? '',
-          force,
-          withData
-        }
-      }
+      { params }
     );
   }
 }
