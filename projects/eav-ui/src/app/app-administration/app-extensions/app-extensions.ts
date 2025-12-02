@@ -54,12 +54,29 @@ export class AppExtensions implements OnInit {
       if (data?.objData && this.#pendingFolder) {
         const folder = this.#pendingFolder;
         this.#pendingFolder = null;
-        this.extensionsSvc.updateExtension(folder, JSON.stringify(data.objData))
+        this.extensionsSvc.updateExtension(folder, JSON.stringify(data.objData)).subscribe(() => {
+          this.fetchExtensions();
+        });
+      } else {
+        this.fetchExtensions();
       }
-
-      this.fetchExtensions();
     });
   }
+
+  // TODO: @2pp FYI - this broke the change-settings dialog - best discuss
+  // 
+  // ngOnInit() {
+  //   // register once
+  //   this.#dialogRouter.doOnDialogClosedWithData((data) => {
+  //     if (data?.objData && this.#pendingFolder) {
+  //       const folder = this.#pendingFolder;
+  //       this.#pendingFolder = null;
+  //       this.extensionsSvc.updateExtension(folder, JSON.stringify(data.objData))
+  //     }
+
+  //     this.fetchExtensions();
+  //   });
+  // }
 
   #openSettings(ext?: Extension) {
     const configurationContentType = 'a0f44af0-6750-40c9-9ad9-4a07b6eda8b3';
