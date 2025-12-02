@@ -55,7 +55,7 @@ export class DeleteExtensionComponent {
   }
 
   private performPreflight() {
-    this.#extensionsSvc.inspectExtension(this.extensionFolder, '')
+    this.#extensionsSvc.preflightExtension(this.extensionFolder, '')
       .subscribe({
         next: inspect => this.evaluatePreflight(inspect),
         error: () => this.showError('Preflight check failed.')

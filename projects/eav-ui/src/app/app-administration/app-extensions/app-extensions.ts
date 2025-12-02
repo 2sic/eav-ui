@@ -204,7 +204,7 @@ export class AppExtensions implements OnInit {
       },
       {
         headerName: 'Actions',
-        width: 120,
+        width: 150,
         pinned: 'right',
         cellRenderer: AppExtensionActions,
         cellRendererParams: (() => {
@@ -215,6 +215,7 @@ export class AppExtensions implements OnInit {
                 case 'edit': this.#openSettings(ext); break;
                 case 'download': this.extensionsSvc.downloadExtension(ext.folder); break;
                 case 'delete': this.#deleteExtension(ext); break;
+                case 'inspect': this.extensionsSvc.inspectExtension(ext.folder); break;
               }
             }
           } satisfies AppExtensionActions['params'];

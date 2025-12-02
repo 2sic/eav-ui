@@ -69,6 +69,12 @@ export class AppExtensionsService extends HttpServiceBase {
   }
 
   inspectExtension(name: string, edition?: string) {
+    const result = this.preflightExtension(name, edition);
+
+    // Open Dialog with result
+  }
+
+  preflightExtension(name: string, edition?: string) {
     const params: { appId: string, name: string, edition?: string } = {
       appId: this.appId,
       name,

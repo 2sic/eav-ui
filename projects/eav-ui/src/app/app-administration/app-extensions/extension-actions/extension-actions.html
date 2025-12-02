@@ -26,4 +26,13 @@
   >
     <mat-icon>delete</mat-icon>
   </a>
+  <a
+    (click)="do('inspect')"
+    [class.disabled]="canEditExtension()"
+    class="eav-grid-action-button default-link highlight"
+    matRipple
+    tippy="Insepct Extension"
+  >
+    <mat-icon>frame_inspect</mat-icon>
+  </a>
 </div>
