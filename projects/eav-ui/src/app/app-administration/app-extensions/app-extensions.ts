@@ -82,8 +82,20 @@ export class AppExtensions implements OnInit {
     });
   }
 
-  #deleteExtension(ext?: Extension) {
-    const url = this.#urlTo('delete/' + (ext?.folder ?? ''));
+  #openInspection(extensionFolder: string) {
+    const url = this.#urlTo('inspect/' + extensionFolder);
+    const normalized = url.replace(/^#\/?/, '').replace(/^\//, '');
+    const routeSegments = normalized.split('/').filter(Boolean);
+
+    this.router.navigate(routeSegments, {
+      state: {
+        returnValue: true
+      } satisfies DialogRoutingState,
+    });
+  }
+
+  #deleteExtension(extensionFolder: string) {
+    const url = this.#urlTo('delete/' + extensionFolder);
     const normalized = url.replace(/^#\/?/, '').replace(/^\//, '');
     const routeSegments = normalized.split('/').filter(Boolean);
 
@@ -214,8 +226,8 @@ export class AppExtensions implements OnInit {
               switch (verb) {
                 case 'edit': this.#openSettings(ext); break;
                 case 'download': this.extensionsSvc.downloadExtension(ext.folder); break;
-                case 'delete': this.#deleteExtension(ext); break;
-                case 'inspect': this.extensionsSvc.inspectExtension(ext.folder); break;
+                case 'delete': this.#deleteExtension(ext.folder); break;
+                case 'inspect': this.#openInspection(ext.folder); break;
               }
             }
           } satisfies AppExtensionActions['params'];

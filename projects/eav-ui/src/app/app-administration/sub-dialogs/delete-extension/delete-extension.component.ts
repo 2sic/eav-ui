@@ -12,6 +12,7 @@ import { ExtensionInspectResult } from '../../models/extension.model';
 import { AppExtensionsService } from '../../services/app-extensions.service';
 import { ConfirmDeleteDialogComponent } from '../confirm-delete-dialog/confirm-delete-dialog.component';
 import { ConfirmDeleteDialogData } from '../confirm-delete-dialog/confirm-delete-dialog.models';
+
 @Component({
   selector: 'app-delete-extension',
   templateUrl: './delete-extension.component.html',

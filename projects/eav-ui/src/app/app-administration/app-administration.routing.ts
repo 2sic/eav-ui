@@ -26,6 +26,7 @@ import { importDataBundlesDialog } from './sub-dialogs/import-data-bundles/impor
 import { importExtensionDialog } from './sub-dialogs/import-extension/import-extension-dialog.config';
 import { importQueryDialog } from './sub-dialogs/import-query/import-query-dialog.config';
 import { importViewDialog } from './sub-dialogs/import-view/import-view-dialog.config';
+import { inspectExtensionDialog } from './sub-dialogs/inspect-extension/inspect-extension-dialog.config';
 import { languagePermissionsDialog } from './sub-dialogs/language-permissions/language-permissions-dialog.config';
 import { viewsUsageDialog } from './sub-dialogs/views-usage/views-usage-dialog.config';
 
@@ -191,7 +192,12 @@ export const appAdministrationRoutes: Routes = [
           {
             path: 'delete/:extension',
             component: DialogEntryComponent,
-            data: { dialog: deleteExtensionDialog, title: 'Delete Extension' },
+            data: { dialog: deleteExtensionDialog },
+          },
+          {
+            path: 'inspect/:extension',
+            component: DialogEntryComponent,
+            data: { dialog: inspectExtensionDialog },
           },
         ]
       },

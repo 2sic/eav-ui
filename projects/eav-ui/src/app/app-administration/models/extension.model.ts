@@ -48,7 +48,11 @@ export interface ExtensionInspectResult {
     missing: number;
   };
   data: {
-    contentTypes: any[];
+    contentTypes: {
+      name: string;
+      guid: Guid;
+      localEntities: number;
+    }[];
   };
 }
 
