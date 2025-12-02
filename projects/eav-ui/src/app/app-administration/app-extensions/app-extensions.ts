@@ -17,7 +17,7 @@ import { DialogRoutingService } from '../../shared/routing/dialog-routing.servic
 import { Extension } from '../models/extension.model';
 import { AppExtensionsService } from '../services/app-extensions.service';
 import { AppExtensionActions } from './extension-actions/extension-actions';
-import { AppExtensionsLinkCellComponent } from './extensions-link/extensions-link.component';
+import { AppExtensionsLinkCell } from './extensions-link/extensions-link';
 
 @Component({
   selector: 'app-extensions',
@@ -194,7 +194,7 @@ export class AppExtensions implements OnInit {
         sortable: false,
         field: 'configuration.link',
         width: 125,
-        cellRenderer: AppExtensionsLinkCellComponent,
+        cellRenderer: AppExtensionsLinkCell,
         cellRendererParams: (params: { data: Extension }) => ({
           mainLink: params.data?.configuration?.linkMain ?? undefined,
           docsLink: params.data?.configuration?.linkDocs ?? undefined,
