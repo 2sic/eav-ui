@@ -9,7 +9,7 @@ import { Extension, ExtensionInspectResult } from '../models/extension.model';
 export class AppExtensionsService extends HttpServiceBase {
   log = classLog({ AppExtensionsService });
 
-  // Get all extensions with live refresh capability
+  /** Get all extensions with live refresh capability */
   getAllLive(refresh: Signal<unknown>) {
     return this.newHttpResource<{ extensions: Extension[] }>(() => {
       // Watch the refresh signal to trigger reloads
@@ -23,8 +23,8 @@ export class AppExtensionsService extends HttpServiceBase {
     });
   }
 
-  // Update config (mutations still best done via HttpClient per Angular docs)
-  updateExtension(name: string, config: string) {
+  /** Update config (mutations still best done via HttpClient per Angular docs) */
+  updateConfiguration(name: string, config: string) {
     // Parse the config to JsonElement format that the API expects
     const configJson = JSON.parse(config);
 
@@ -37,6 +37,7 @@ export class AppExtensionsService extends HttpServiceBase {
     });
   }
 
+  /** Open download link for an extension */
   downloadExtension(folder: string) {
     const params = new URLSearchParams({
       appId: this.appId,
@@ -47,7 +48,7 @@ export class AppExtensionsService extends HttpServiceBase {
     window.open(url, '_blank', '');
   }
 
-  // Uploads extension files
+  /** Uploads extension files */
   uploadExtensions(files: File[]) {
     const formData = new FormData();
     files.forEach(file => formData.append('files', file));
@@ -57,6 +58,7 @@ export class AppExtensionsService extends HttpServiceBase {
         appId: this.appId,
         zoneId: this.zoneId
       },
+      // TODO: @2pp - this looks a bit fishy, are you sure it's needed?
       withCredentials: true
     }).pipe(
       map((success: boolean): FileUploadResult => ({
@@ -89,13 +91,16 @@ export class AppExtensionsService extends HttpServiceBase {
   }
 
   deleteExtension(name: string, edition?: string, force = false, withData = false) {
-    const params: { appId: string, name: string, force: boolean, withData: boolean, edition?: string } = {
+    const params /*: { appId: string, name: string, force: boolean, withData: boolean, edition?: string } */ = {
       appId: this.appId,
       name,
       force,
-      withData
+      withData,
+      // TODO: @2pp - this is the more elegant way for an optional param
+      // also doesn't need the complex typing above
+      ...(edition ? { edition: edition } : {})
     };
-    if (edition) params.edition = edition;
+    // if (edition) params.edition = edition;
 
     return this.http.delete<boolean>(
       this.apiUrl('admin/appExtensions/delete'),

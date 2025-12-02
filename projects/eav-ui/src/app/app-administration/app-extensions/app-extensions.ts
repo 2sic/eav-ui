@@ -54,7 +54,7 @@ export class AppExtensions implements OnInit {
       if (data?.objData && this.#pendingFolder) {
         const folder = this.#pendingFolder;
         this.#pendingFolder = null;
-        this.extensionsSvc.updateExtension(folder, JSON.stringify(data.objData)).subscribe(() => {
+        this.extensionsSvc.updateConfiguration(folder, JSON.stringify(data.objData)).subscribe(() => {
           this.fetchExtensions();
         });
       } else {
