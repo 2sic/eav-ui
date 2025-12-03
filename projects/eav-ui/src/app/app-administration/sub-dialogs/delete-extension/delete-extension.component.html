@@ -7,6 +7,16 @@
   </div>
 
   <div class="eav-dialog-content">
+    <mat-accordion>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>Extension Details</mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="content">
+          <app-inspect-extension-content [data]="preflightResult()"></app-inspect-extension-content>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
     <p>Are you Sure you want to delete this Extension?</p>
     <p>
       <mat-slide-toggle [(ngModel)]="withData">

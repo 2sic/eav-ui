@@ -1,0 +1,62 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Data</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <div>
+      Content Types: {{ data().data.contentTypes.length }}
+      <br />
+
+      @for (ct of data().data.contentTypes; track ct) {
+        <div class="content-type-chip">
+          {{ ct.name }} ({{ ct.localEntities }})
+        </div>
+      }
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Lock File</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="status" [class.ok]="data().foundLock" [class.error]="!data().foundLock">
+      {{ data().foundLock ? 'Found' : 'Missing' }}
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<mat-accordion>
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>Files</mat-panel-title>
+      <mat-panel-description>
+        Total: {{ data().summary.total }} | Changed: {{ data().summary.changed }} | Added: {{
+        data().summary.added }} | Missing: {{ data().summary.missing }}
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <div class="content">
+      <table class="file-table">
+        <tr>
+          <th>Path</th>
+          <th>Status</th>
+        </tr>
+
+        @for (f of data().files; track f.path) {
+        <tr>
+          <td>{{ f.path }}</td>
+          <td
+            [class.ok]="f.status === 'unchanged'"
+            [class.changed]="f.status === 'changed'"
+            [class.added]="f.status === 'added'"
+            [class.missing]="f.status === 'missing'"
+          >
+            {{ f.status }}
+          </td>
+        </tr>
+        }
+      </table>
+    </div>
+  </mat-expansion-panel>
+</mat-accordion>

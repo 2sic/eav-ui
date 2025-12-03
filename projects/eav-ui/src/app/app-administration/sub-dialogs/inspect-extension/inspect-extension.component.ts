@@ -10,6 +10,7 @@ import { ActivatedRoute } from '@angular/router';
 import { transient } from 'projects/core';
 import { AppExtensionsService } from '../../services/app-extensions.service';
 import { ConfirmDeleteDialogData } from '../confirm-delete-dialog/confirm-delete-dialog.models';
+import { InspectExtensionContentComponent } from './inspect-extension-content/inspect-extension-content.component';
 
 @Component({
   selector: 'app-inspect-extension',
@@ -22,6 +23,7 @@ import { ConfirmDeleteDialogData } from '../confirm-delete-dialog/confirm-delete
     FormsModule,
     MatCardModule,
     MatExpansionModule,
+    InspectExtensionContentComponent,
   ]
 })
 export class InspectExtensionComponent {

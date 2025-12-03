@@ -2,6 +2,7 @@ import { Component, inject, Inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogActions, MatDialogRef } from '@angular/material/dialog';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -12,6 +13,7 @@ import { ExtensionInspectResult } from '../../models/extension.model';
 import { AppExtensionsService } from '../../services/app-extensions.service';
 import { ConfirmDeleteDialogComponent } from '../confirm-delete-dialog/confirm-delete-dialog.component';
 import { ConfirmDeleteDialogData } from '../confirm-delete-dialog/confirm-delete-dialog.models';
+import { InspectExtensionContentComponent } from '../inspect-extension/inspect-extension-content/inspect-extension-content.component';
 
 @Component({
   selector: 'app-delete-extension',
@@ -23,6 +25,8 @@ import { ConfirmDeleteDialogData } from '../confirm-delete-dialog/confirm-delete
     SaveCloseButtonFabComponent,
     MatSlideToggleModule,
     FormsModule,
+    MatExpansionModule,
+    InspectExtensionContentComponent,
   ]
 })
 export class DeleteExtensionComponent {

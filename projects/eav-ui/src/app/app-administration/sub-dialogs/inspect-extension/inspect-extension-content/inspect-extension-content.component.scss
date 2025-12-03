@@ -1,0 +1,71 @@
+
+mat-panel-title {
+  font-size: 20px;
+  font-weight: 575;
+}
+
+/* Space between cards */
+mat-card {
+  margin-bottom: 8px;
+}
+
+/* Status coloring */
+.status.ok {
+  color: #2e7d32;
+}
+
+.status.error {
+  color: #c62828;
+}
+
+/* Content type chips */
+.content-type-chip {
+  display: inline-block;
+  background: #e0e0e0;
+  padding: 2px 8px;
+  border-radius: 12px;
+  margin-right: 6px;
+  margin-top: 4px;
+  font-size: 12px;
+}
+
+/* Files table */
+.content {
+  max-height: 550px;
+  overflow-y: auto;
+}
+
+.file-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+}
+
+.file-table th {
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 6px;
+  font-size: 14px;
+}
+
+.file-table td {
+  padding: 6px 0;
+  font-size: 13px;
+}
+
+/* Status colors */
+td.ok {
+  color: #2e7d32;
+}
+
+td.changed {
+  color: #f9a825;
+}
+
+td.added {
+  color: #1565c0;
+}
+
+td.missing {
+  color: #c62828;
+}

@@ -7,67 +7,6 @@
   </div>
 
   <div class="eav-dialog-content">
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title>Data</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <div>
-          Content Types:
-          {{ preflightResult().data.contentTypes.length }}
-          
-          <br>
-
-          @for (ct of preflightResult().data.contentTypes; track ct) {
-            <div class="content-type-chip">{{ ct.name }} ({{ ct.localEntities }})</div>
-          }
-        </div>
-      </mat-card-content>
-    </mat-card>
-
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title>Lock File</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <div class="status" [class.ok]="preflightResult().foundLock" [class.error]="!preflightResult().foundLock">
-          {{ preflightResult().foundLock ? 'Found' : 'Missing' }}
-        </div>
-      </mat-card-content>
-    </mat-card>
-
-    <mat-accordion>
-      <mat-expansion-panel>
-        <mat-expansion-panel-header>
-          <mat-panel-title>Files</mat-panel-title>
-          <mat-panel-description>
-            Total: {{ preflightResult().summary.total }} | Changed: {{ preflightResult().summary.changed }} | Added:
-            {{ preflightResult().summary.added }} | Missing: {{ preflightResult().summary.missing }}
-          </mat-panel-description>
-        </mat-expansion-panel-header>
-        <div class="content">
-          <table class="file-table">
-            <tr>
-              <th>Path</th>
-              <th>Status</th>
-            </tr>
-
-            @for (f of preflightResult().files; track f.path) {
-              <tr>
-                <td>{{ f.path }}</td>
-                <td
-                  [class.ok]="f.status === 'unchanged'"
-                  [class.changed]="f.status === 'changed'"
-                  [class.added]="f.status === 'added'"
-                  [class.missing]="f.status === 'missing'"
-                >
-                  {{ f.status }}
-                </td>
-              </tr>
-            }
-          </table>
-        </div>
-      </mat-expansion-panel>
-    </mat-accordion>
+    <app-inspect-extension-content [data]="preflightResult()"></app-inspect-extension-content>
   </div>
 </div>
