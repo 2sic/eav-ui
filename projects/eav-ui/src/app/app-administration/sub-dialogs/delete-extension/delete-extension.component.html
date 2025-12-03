@@ -8,7 +8,7 @@
 
   <div class="eav-dialog-content">
     <mat-accordion>
-      <mat-expansion-panel>
+      <mat-expansion-panel [expanded]="true">
         <mat-expansion-panel-header>
           <mat-panel-title>Extension Details</mat-panel-title>
         </mat-expansion-panel-header>
@@ -26,9 +26,10 @@
   </div>
 
   <mat-dialog-actions align="end">
+    <button mat-button (click)="forceDeleteAndClose(true)">Force Delete</button>
     <app-save-close-button-fab
       [label]="'Delete and close (ctrl + enter)'"
-      (action)="saveAndClose(true)"
+      (action)="deleteAndClose(true)"
     />
   </mat-dialog-actions>
 </div>

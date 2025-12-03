@@ -18,6 +18,7 @@ import { InspectExtensionContentComponent } from '../inspect-extension/inspect-e
 @Component({
   selector: 'app-delete-extension',
   templateUrl: './delete-extension.component.html',
+  styleUrls: ['./delete-extension.component.scss'],
   imports: [
     MatButtonModule,
     MatIconModule,
@@ -52,7 +53,16 @@ export class DeleteExtensionComponent {
       : this.dialog.close();
   }
 
-  saveAndClose(confirm: boolean) {
+  forceDeleteAndClose(confirm: boolean) {
+    if (!confirm) {
+      this.dialog.close(false);
+      return;
+    }
+
+    this.executeDelete(true);
+  }
+
+  deleteAndClose(confirm: boolean) {
     if (!confirm) {
       this.dialog.close(false);
       return;
@@ -100,17 +110,14 @@ export class DeleteExtensionComponent {
     this.executeDelete(false);
   }
 
-
   private askForce(message: string) {
     const snack = this.#snackBar.open(
-      message + ' Force delete?',
+      `${message} Force delete?`,
       'Force',
       { duration: 10000 }
     );
 
-    snack.onAction().subscribe(() =>
-      this.executeDelete(true)
-    );
+    snack.onAction().subscribe(() => this.executeDelete(true));
   }
 
   private executeDelete(force: boolean) {
