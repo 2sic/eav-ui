@@ -58,8 +58,6 @@ export class AppExtensionsService extends HttpServiceBase {
         appId: this.appId,
         zoneId: this.zoneId
       },
-      // TODO: @2pp - this looks a bit fishy, are you sure it's needed?
-      withCredentials: true
     }).pipe(
       map((success: boolean): FileUploadResult => ({
         Success: success,
@@ -70,10 +68,20 @@ export class AppExtensionsService extends HttpServiceBase {
     );
   }
 
-  inspectExtension(name: string, edition?: string) {
-    const result = this.preflightExtension(name, edition);
-
-    // Open Dialog with result
+  installPreflightExtension(files: File[]) {
+    const formData = new FormData();
+    files.forEach(file => formData.append('files', file));
+    // POST to InstallPreflight; expect PreflightResultDto
+    return this.http.post<ExtensionInspectResult>(
+      this.apiUrl('admin/appExtensions/installPreflight'),
+      formData,
+      {
+        params: {
+          appId: this.appId,
+          zoneId: this.zoneId
+        },
+      }
+    );
   }
 
   preflightExtension(name: string, edition?: string) {
@@ -91,16 +99,13 @@ export class AppExtensionsService extends HttpServiceBase {
   }
 
   deleteExtension(name: string, edition?: string, force = false, withData = false) {
-    const params /*: { appId: string, name: string, force: boolean, withData: boolean, edition?: string } */ = {
+    const params = {
       appId: this.appId,
       name,
       force,
       withData,
-      // TODO: @2pp - this is the more elegant way for an optional param
-      // also doesn't need the complex typing above
       ...(edition ? { edition: edition } : {})
     };
-    // if (edition) params.edition = edition;
 
     return this.http.delete<boolean>(
       this.apiUrl('admin/appExtensions/delete'),
