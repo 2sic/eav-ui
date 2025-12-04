@@ -3,7 +3,7 @@
     <div class="eav-dialog-header__title">{{ dialogData.title }}</div>
   </div>
   <div class="eav-dialog-content">
-    @if (!files()?.length) {
+    @if (!file()) {
       <div class="file-drop-zone" appDragAndDrop (filesDropped)="filesDropped($event)">
         <p>{{ dialogData.description }}</p>
         <p>Drag and drop files here or click to select</p>
@@ -35,7 +35,7 @@
     }
 
     @if (preflightData() && !isLoadingPreflight()) {
-      File: {{ files()[0].name }}
+      File: {{ file().name }}
 
       <div class="preflight-preview">
         @for (ext of preflightData().extensions; track ext.name) {
@@ -112,7 +112,7 @@
   <mat-dialog-actions align="end">
     <button mat-button (click)="cancel()" [disabled]="isInstalling()">Cancel</button>
 
-    @if (files()?.length && !preflightError()) {
+    @if (file() && !preflightError()) {
       <button
         mat-raised-button
         class="eav-action-button"

@@ -129,12 +129,12 @@ export class AppExtensions implements OnInit {
   filesDropped(files: File[]) {
     const dialogRef = this.dialog.open(ImportExtensionComponent, {
       data: {
-        files,
+        file: files[0],
         allowedFileTypes: 'zip',
         multiple: true,
         title: 'Import Extension',
         description: 'Select Extension folder from your computer to import.',
-        upload$: (selectedFiles: File[]) => this.extensionsSvc.uploadExtensions(selectedFiles)
+        upload$: (selectedFile: File) => this.extensionsSvc.uploadExtensions(selectedFile)
       },
     });
 

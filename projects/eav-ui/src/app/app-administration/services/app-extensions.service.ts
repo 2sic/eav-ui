@@ -49,9 +49,9 @@ export class AppExtensionsService extends HttpServiceBase {
   }
 
   /** Uploads extension files */
-  uploadExtensions(files: File[]) {
+  uploadExtensions(file: File) {
     const formData = new FormData();
-    files.forEach(file => formData.append('files', file));
+    formData.append('files', file);
 
     return this.http.post<boolean>(this.apiUrl('admin/appExtensions/install'), formData, {
       params: {
