@@ -5,6 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogActions } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterOutlet } from '@angular/router';
+import { take } from 'rxjs';
 import { transient } from '../../../../../core';
 import { DialogRoutingState } from '../../edit/dialog/dialogRouteState.model';
 import { GridWithHelpComponent, HelpTextConst } from '../../shared/ag-grid/grid-with-help/grid-with-help.component';
@@ -126,7 +127,7 @@ export class AppExtensions implements OnInit {
   }
 
   filesDropped(files: File[]) {
-    this.dialog.open(ImportExtensionComponent, {
+    const dialogRef = this.dialog.open(ImportExtensionComponent, {
       data: {
         files,
         allowedFileTypes: 'zip',
@@ -135,6 +136,13 @@ export class AppExtensions implements OnInit {
         description: 'Select Extension folder from your computer to import.',
         upload$: (selectedFiles: File[]) => this.extensionsSvc.uploadExtensions(selectedFiles)
       },
+    });
+
+    // Refresh extensions list after dialog closes if installation was successful
+    dialogRef.afterClosed().pipe(take(1)).subscribe((refresh) => {
+      if (refresh) {
+        this.fetchExtensions();
+      }
     });
   }
 

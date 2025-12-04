@@ -1,1 +1,126 @@
-<app-file-upload-dialog [uploadType]="uploadType"></app-file-upload-dialog>
+<div class="eav-dialog">
+  <div class="eav-dialog-header">
+    <div class="eav-dialog-header__title">{{ dialogData.title }}</div>
+  </div>
+  <div class="eav-dialog-content">
+    @if (!files()?.length) {
+      <div class="file-drop-zone" appDragAndDrop (filesDropped)="filesDropped($event)">
+        <p>{{ dialogData.description }}</p>
+        <p>Drag and drop files here or click to select</p>
+        <input
+          type="file"
+          [accept]="dialogData.allowedFileTypes"
+          [multiple]="dialogData.multiple"
+          (change)="filesChanged($event)"
+          style="display: none"
+          #fileInput
+        />
+        <button mat-raised-button color="primary" (click)="fileInput.click()">Select Files</button>
+      </div>
+    }
+
+    @if (isLoadingPreflight()) {
+      <div class="preflight-loading">
+        <mat-spinner diameter="40"></mat-spinner>
+        <p>Running preflight check...</p>
+      </div>
+    }
+
+    @if (preflightError()) {
+      <div class="preflight-error">
+        <h3>Error</h3>
+        <p>{{ preflightError() }}</p>
+        <button mat-button (click)="cancel()">Close</button>
+      </div>
+    }
+
+    @if (preflightData() && !isLoadingPreflight()) {
+      File: {{ files()[0].name }}
+
+      <div class="preflight-preview">
+        @for (ext of preflightData().extensions; track ext.name) {
+          <mat-card class="ext-card">
+            <mat-card-header>
+              <mat-card-title>{{ ext.name }} Details</mat-card-title>
+              <mat-card-subtitle>Version {{ ext.version }}</mat-card-subtitle>
+            </mat-card-header>
+
+            <br />
+
+            <mat-card-content>
+              <div class="ext-info">
+                <div class="info-row">
+                  <span class="label">File Count:</span>
+                  <span class="value">{{ ext.fileCount }}</span>
+                </div>
+
+                <div class="info-row">
+                  <span class="label">Supports Editions:</span>
+                  <span class="value">
+                    {{ ext.editionsSupported ? 'Yes' : 'No' }}
+                  </span>
+                </div>
+              </div>
+
+              <div class="ext-features">
+                <h4>Features</h4>
+
+                <mat-chip-set>
+                  @for (feature of ext.features | keyvalue; track feature.key) {
+                    <mat-chip [class.enabled]="feature.value" [class.disabled]="!feature.value">
+                      {{ feature.key }}
+                    </mat-chip>
+                  }
+                </mat-chip-set>
+              </div>
+
+              @if (ext.editions?.length) {
+                <div class="ext-editions">
+                  <h4>Editions</h4>
+
+                  <div class="edition-grid">
+                    @for (ed of ext.editions; track ed.edition) {
+                      <mat-card class="edition-card">
+                        <div class="edition-header">{{ ed.edition }}</div>
+
+                        <div class="edition-detail">
+                          <div><strong>Installed:</strong> {{ ed.isInstalled }}</div>
+                          <div><strong>Version:</strong> {{ ed.currentVersion || '-' }}</div>
+                          <div><strong>Data:</strong> {{ ed.dataInside }}</div>
+                          <div><strong>Changes:</strong> {{ ed.hasFileChanges }}</div>
+                          <div><strong>Breaking:</strong> {{ ed.breakingChanges }}</div>
+                        </div>
+                      </mat-card>
+                    }
+                  </div>
+                </div>
+              }
+            </mat-card-content>
+          </mat-card>
+        }
+      </div>
+    }
+
+    @if (isInstalling()) {
+      <div class="installing">
+        <mat-spinner diameter="40"></mat-spinner>
+        <p>Installing extension...</p>
+      </div>
+    }
+  </div>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="cancel()" [disabled]="isInstalling()">Cancel</button>
+
+    @if (files()?.length && !preflightError()) {
+      <button
+        mat-raised-button
+        class="eav-action-button"
+        (click)="install()"
+        [disabled]="!preflightData() || isInstalling() || isLoadingPreflight()"
+      >
+        Install
+      </button>
+    }
+  </mat-dialog-actions>
+</div>

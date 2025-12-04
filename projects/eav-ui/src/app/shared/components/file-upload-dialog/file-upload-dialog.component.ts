@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, inject, Inject, input, OnDestroy, OnInit, Output, signal, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, HostBinding, inject, Inject, input, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -65,8 +65,6 @@ export class FileUploadDialogComponent extends BaseComponent implements OnInit, 
   #installSettingsService = transient(AppInstallSettingsService);
   #appsListService = transient(AppsListService);
   #fb = inject(FormBuilder);
-
-  @Output() filesSelected = new EventEmitter<File[]>();
 
   importForm: FormGroup = this.#fb.group({
     importMode: [this.importModeValues.importOriginal, Validators.required],
@@ -232,7 +230,6 @@ Please try again later or check how to manually install content-templates: https
   }
 
   filesDropped(files: File[]): void {
-    this.filesSelected.emit(files);
     this.#setFiles(files);
   }
 
