@@ -2,7 +2,7 @@ import { ColDef, GridOptions } from '@ag-grid-community/core';
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialogActions } from '@angular/material/dialog';
+import { MatDialog, MatDialogActions } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterOutlet } from '@angular/router';
 import { transient } from '../../../../../core';
@@ -16,6 +16,7 @@ import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.mod
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { Extension } from '../models/extension.model';
 import { AppExtensionsService } from '../services/app-extensions.service';
+import { ImportExtensionComponent } from '../sub-dialogs/import-extension/import-extension.component';
 import { AppExtensionActions } from './extension-actions/extension-actions';
 import { AppExtensionsLinkCell } from './extensions-link/extensions-link';
 
@@ -38,6 +39,7 @@ export class AppExtensions implements OnInit {
   private extensionsSvc = transient(AppExtensionsService);
   router = inject(Router);
   #dialogRouter = transient(DialogRoutingService);
+  dialog = transient(MatDialog);
 
   /** Signal to trigger reloading of data */
   refresh = signal(0);
@@ -124,7 +126,16 @@ export class AppExtensions implements OnInit {
   }
 
   filesDropped(files: File[]) {
-    this.extensionsSvc.uploadExtensions(files).subscribe(() => this.fetchExtensions());
+    this.dialog.open(ImportExtensionComponent, {
+      data: {
+        files,
+        allowedFileTypes: 'zip',
+        multiple: true,
+        title: 'Import Extension',
+        description: 'Select Extension folder from your computer to import.',
+        upload$: (selectedFiles: File[]) => this.extensionsSvc.uploadExtensions(selectedFiles)
+      },
+    });
   }
 
   private fetchExtensions() {

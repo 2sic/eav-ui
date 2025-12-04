@@ -9,8 +9,8 @@ import { ExtensionInspectResult } from '../../../models/extension.model';
 
 @Component({
   selector: 'app-inspect-extension-content',
-  templateUrl: './inspect-content.component.html',
-  styleUrls: ['./inspect-content.component.scss'],
+  templateUrl: './inspect-extension-content.component.html',
+  styleUrls: ['./inspect-extension-content.component.scss'],
   imports: [
     MatButtonModule,
     MatIconModule,
