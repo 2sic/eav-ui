@@ -17,7 +17,6 @@ export class ImportExtensionComponent {
   private extensionSvc = transient(AppExtensionsService);
 
   uploadType = UploadTypes.Extension;
-  preflightResult = this.extensionSvc.installPreflightExtension(files);
   
   constructor(@Inject(MAT_DIALOG_DATA) dialogData: FileUploadDialogData) {
     dialogData.title ??= `Import Extension`;

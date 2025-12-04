@@ -3,7 +3,7 @@ import { map } from 'rxjs';
 import { FileUploadResult } from '../../shared/components/file-upload-dialog/file-upload-dialog.models';
 import { classLog } from '../../shared/logging';
 import { HttpServiceBase } from '../../shared/services/http-service-base';
-import { Extension, ExtensionInspectResult } from '../models/extension.model';
+import { Extension, ExtensionInspectResult, ExtensionInstallPreflightResult } from '../models/extension.model';
 
 @Injectable()
 export class AppExtensionsService extends HttpServiceBase {
@@ -71,8 +71,8 @@ export class AppExtensionsService extends HttpServiceBase {
   installPreflightExtension(files: File[]) {
     const formData = new FormData();
     files.forEach(file => formData.append('files', file));
-    // POST to InstallPreflight; expect PreflightResultDto
-    return this.http.post<ExtensionInspectResult>(
+    
+    return this.http.post<ExtensionInstallPreflightResult>(
       this.apiUrl('admin/appExtensions/installPreflight'),
       formData,
       {

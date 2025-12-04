@@ -56,4 +56,33 @@ export interface ExtensionInspectResult {
   };
 }
 
+export interface ExtensionInstallPreflightResult {
+  Name: string;
+  Version?: string;
+  EditionsSupported: boolean;
+  FileCount: number;
+  Features: ExtensionFeaturesDto;
+  Editions: ExtensionEditionDto[];
+}
+
+export interface ExtensionEditionDto {
+  edition: string;
+  isInstalled?: boolean | null;
+  currentVersion?: string | null;
+  hasFileChanges?: boolean | null;
+  dataInside?: boolean | null;
+  breakingChanges?: boolean | null;
+}
+
+export interface ExtensionFeaturesDto {
+  inputFieldInside: boolean;
+  razorInside: boolean;
+  appCodeInside: boolean;
+  webApiInside: boolean;
+  contentTypesInside: boolean;
+  queriesInside: boolean;
+  viewsInside: boolean;
+  dataInside: boolean;
+}
+
 export type FileStatus = 'unchanged' | 'added' | 'missing' | 'changed';
