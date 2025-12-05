@@ -3,7 +3,7 @@ import { map } from 'rxjs';
 import { FileUploadResult } from '../../shared/components/file-upload-dialog/file-upload-dialog.models';
 import { classLog } from '../../shared/logging';
 import { HttpServiceBase } from '../../shared/services/http-service-base';
-import { Extension, ExtensionInspectResult, ExtensionInstallPreflightResult } from '../models/extension.model';
+import { Extension, ExtensionInspectResult, ExtensionPreflightItem } from '../models/extension.model';
 
 @Injectable()
 export class AppExtensionsService extends HttpServiceBase {
@@ -49,7 +49,7 @@ export class AppExtensionsService extends HttpServiceBase {
   }
 
   /** Uploads extension files */
-  uploadExtensions(file: File) {
+  uploadExtensions(file: File, edition?: string[]) {
     const formData = new FormData();
     formData.append('files', file);
 
@@ -72,7 +72,7 @@ export class AppExtensionsService extends HttpServiceBase {
     const formData = new FormData();
     files.forEach(file => formData.append('files', file));
     
-    return this.http.post<ExtensionInstallPreflightResult>(
+    return this.http.post<{ extensions: ExtensionPreflightItem[] }>(
       this.apiUrl('admin/appExtensions/installPreflight'),
       formData,
       {

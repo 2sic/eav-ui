@@ -56,16 +56,16 @@ export interface ExtensionInspectResult {
   };
 }
 
-export interface ExtensionInstallPreflightResult {
-  Name: string;
-  Version?: string;
-  EditionsSupported: boolean;
-  FileCount: number;
-  Features: ExtensionFeaturesDto;
-  Editions: ExtensionEditionDto[];
+export interface ExtensionPreflightItem {
+  name: string;
+  version: string;
+  editionsSupported: boolean;
+  fileCount: number;
+  features: ExtensionFeatures;
+  editions: ExtensionEdition[];
 }
 
-export interface ExtensionEditionDto {
+export interface ExtensionEdition {
   edition: string;
   isInstalled?: boolean | null;
   currentVersion?: string | null;
@@ -74,7 +74,7 @@ export interface ExtensionEditionDto {
   breakingChanges?: boolean | null;
 }
 
-export interface ExtensionFeaturesDto {
+export interface ExtensionFeatures {
   inputFieldInside: boolean;
   razorInside: boolean;
   appCodeInside: boolean;
