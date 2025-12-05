@@ -1,0 +1,16 @@
+mat-card-actions {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.eav-cards-box-expanded {
+  min-height: 200px;
+  transition: min-height 0.2s;
+}
+
+.configuration-select {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}

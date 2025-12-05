@@ -98,6 +98,9 @@ export const appAdministrationRoutes: Routes = [
         path: `data-${GoToCopilot.route}`,
         loadComponent: () => import('./copilot/page/copilot-page.component').then(mod => mod.CopilotPageComponent),
         data: CopilotSpecs.data,
+        children: [
+          ...EditRoutes,
+        ]
       },
       {
         path: GoToDevRest.routeData,
@@ -177,6 +180,9 @@ export const appAdministrationRoutes: Routes = [
         path: `views-${GoToCopilot.route}`,
         loadComponent: () => import('./copilot/page/copilot-page.component').then(mod => mod.CopilotPageComponent),
         data: CopilotSpecs.views,
+        children: [
+          ...EditRoutes,
+        ]
       },
       {
         path: 'extensions',
@@ -213,6 +219,9 @@ export const appAdministrationRoutes: Routes = [
         path: `web-api-${GoToCopilot.route}`,
         loadComponent: () => import('./copilot/page/copilot-page.component').then(mod => mod.CopilotPageComponent),
         data: CopilotSpecs.webApi,
+        children: [
+          ...EditRoutes,
+        ]
       },
       {
         path: GoToDevRest.routeWebApi,
