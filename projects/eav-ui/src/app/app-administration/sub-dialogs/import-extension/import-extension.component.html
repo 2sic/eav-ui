@@ -78,15 +78,15 @@
                 <h4>Editions</h4>
                 <div class="edition-selector">
                   <mat-form-field color="accent" class="eav-mat-form-field">
-                    <mat-label>Select Edition to Install</mat-label>
-                    <mat-select [(value)]="selectedEdition" required>
+                    <mat-label>Select Editions to Install</mat-label>
+                    <mat-select [(value)]="selectedEditions" multiple>
                       @for (edition of editions(); track edition.edition) {
                         <mat-option [value]="edition.edition">
                           {{ edition.edition }}
                         </mat-option>
                       }
                     </mat-select>
-                    <mat-hint>Choose which edition to install</mat-hint>
+                    <mat-hint>Select one or multiple editions</mat-hint>
                   </mat-form-field>
                 </div>
               </div>

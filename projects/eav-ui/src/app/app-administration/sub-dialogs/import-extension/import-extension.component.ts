@@ -48,7 +48,7 @@ export class ImportExtensionComponent {
   uploadType = UploadTypes.Extension;
 
   // TODO: @2pp - Replace debugging vars when backend is ready
-  private readonly fallbackEditions = ["Staging", "Live"];
+  private readonly fallbackEditions = ["staging", "live"];
   debugEditionsSupported = true;
 
 
@@ -60,8 +60,8 @@ export class ImportExtensionComponent {
   preflightError = signal<string | null>(null);
   editions = signal<ExtensionEdition[]>([]);
 
-  // Selected edition for installation
-  selectedEdition: string | null = null;
+  // Selected editions for installation
+  selectedEditions: string[] = [];
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public dialogData: FileUploadDialogData,
@@ -111,7 +111,7 @@ export class ImportExtensionComponent {
             );
           }
 
-          this.selectedEdition = this.editions()[0]?.edition ?? null;
+          this.selectedEditions = this.editions().map(e => e.edition);
         },
         error: (error) => {
           this.isLoadingPreflight.set(false);
@@ -134,7 +134,7 @@ export class ImportExtensionComponent {
       (this.extension().editionsSupported || this.debugEditionsSupported) &&
       this.editions()?.length > 0;
 
-    if (requiresEdition && !this.selectedEdition) return false;
+    if (requiresEdition && this.selectedEditions.length === 0) return false;
 
     return true;
   }
@@ -146,7 +146,7 @@ export class ImportExtensionComponent {
     this.isInstalling.set(true);
 
     // Pass selected edition as an array parameter if available
-    const editions = this.selectedEdition ? [this.selectedEdition] : undefined;
+    const editions = this.selectedEditions?.length ? this.selectedEditions : undefined;
 
     this.extensionSvc.uploadExtensions(this.file(), editions).pipe(take(1)).subscribe({
       next: (result) => {

@@ -49,21 +49,25 @@ export class AppExtensionsService extends HttpServiceBase {
   }
 
   /** Uploads extension files */
-  uploadExtensions(file: File, edition?: string[]) {
+  uploadExtensions(file: File, editions?: string[]) {
     const formData = new FormData();
     formData.append('files', file);
 
+    const params = {
+      appId: this.appId,
+      zoneId: this.zoneId,
+      // TODO: @2pp - When backend is ready ...(editions ? { editions } : {})
+    };
+    console.log('Uploading extension with editions:', params);
+
     return this.http.post<boolean>(this.apiUrl('admin/appExtensions/install'), formData, {
-      params: {
-        appId: this.appId,
-        zoneId: this.zoneId
-      },
+      params,
     }).pipe(
       map((success: boolean): FileUploadResult => ({
         Success: success,
         Messages: success
-          ? [{ MessageType: 1, Text: 'Extension uploaded successfully' }] // Success message
-          : [{ MessageType: 2, Text: 'Extension upload failed' }] // Error message
+          ? [{ MessageType: 1, Text: 'Extension uploaded successfully' }]
+          : [{ MessageType: 2, Text: 'Extension upload failed' }]
       }))
     );
   }
@@ -71,7 +75,7 @@ export class AppExtensionsService extends HttpServiceBase {
   installPreflightExtension(files: File[]) {
     const formData = new FormData();
     files.forEach(file => formData.append('files', file));
-    
+
     return this.http.post<{ extensions: ExtensionPreflightItem[] }>(
       this.apiUrl('admin/appExtensions/installPreflight'),
       formData,
