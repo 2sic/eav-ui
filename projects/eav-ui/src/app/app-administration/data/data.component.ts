@@ -362,11 +362,9 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
     this.#contentExportSvc.exportJson(contentType.NameId);
   }
 
-
   #openDataImport(contentType: ContentType, files?: File[]) {
     this.#dialogRouter.navRelative([`${contentType.NameId}/import`], { state: { files } satisfies ContentImportDialogData });
   }
-
 
   #deleteContentType(contentType: ContentType) {
     const data: ConfirmDeleteDialogData = {

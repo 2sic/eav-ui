@@ -10,8 +10,8 @@ const logSpecs = {
 };
 
 export class EntityReader implements FormLanguage {
-  
-  log = classLog({EntityReader}, logSpecs);
+
+  log = classLog({ EntityReader }, logSpecs);
 
   /** @inheritdoc */
   public current: string;
@@ -84,5 +84,4 @@ export class EntityReader implements FormLanguage {
       }, {} as ItemValuesOfLanguage);
     return formValues;
   }
-
 }
