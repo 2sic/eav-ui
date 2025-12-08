@@ -12,14 +12,12 @@ import { EntityLightIdentifier } from 'projects/edit-types/src/EntityLight';
 import { Guid } from 'projects/field-string-wysiwyg/src/shared/guid';
 import { map, Observable, of, take } from 'rxjs';
 import { transient } from '../../../../../core';
-import { DialogRoutingState } from '../../edit/dialog/dialogRouteState.model';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm, EditPrep } from '../../shared/models/edit-form.model';
 import { RichResult } from '../../shared/models/rich-result';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { Context } from '../../shared/services/context';
 import { EntityService } from '../../shared/services/entity.service';
-import { ContentTypesService } from '../services';
 import { ConfirmDeleteDialogComponent } from '../sub-dialogs/confirm-delete-dialog/confirm-delete-dialog.component';
 import { ConfirmDeleteDialogData } from '../sub-dialogs/confirm-delete-dialog/confirm-delete-dialog.models';
 import { CopilotService } from './copilot-service';
@@ -50,15 +48,15 @@ export class CopilotGeneratorComponent {
   private copilotSvc = transient(CopilotService);
   private entitySvc = transient(EntityService);
   #dialogRouter = transient(DialogRoutingService);
-  #router = transient(Router);
+  // #router = transient(Router);
   #matDialog = transient(MatDialog);
   #viewContainerRef = inject(ViewContainerRef);
-  #contentTypeSvc = transient(ContentTypesService);
+  // #contentTypeSvc = transient(ContentTypesService);
   #snackBar = transient(MatSnackBar);
   #context = transient(Context);
   #http = transient(HttpClient);
 
-  private readonly copilotConfigurationGuid = 'b08dcd23-2eb0-4a5e-a3d0-3178d2aae451';
+  readonly #copilotConfigurationGuid = 'b08dcd23-2eb0-4a5e-a3d0-3178d2aae451';
 
   webApiGeneratedCode: string = 'admin/code/generateDataModels';
   editions$ = this.copilotSvc.getEditions();
@@ -92,37 +90,60 @@ export class CopilotGeneratorComponent {
   }
 
   fetchEntities() {
-    this.entities$ = this.entitySvc.getEntities$(of({ contentTypeName: this.copilotConfigurationGuid }));
+    this.entities$ = this.entitySvc.getEntities$(of({ contentTypeName: this.#copilotConfigurationGuid }));
   }
 
   editConfiguration(config: DataCopilotConfiguration) {
-    const form: EditForm = {
-      items: [EditPrep.editId(config.Id)]
-    };
+    this.#showConfig(config);
 
-    const subRoute = this.#dialogRouter.urlSubRoute(`edit/${convertFormToUrl(form)}`);
-    const routeSegments = subRoute.split('/').filter(Boolean);
+    // const form: EditForm = {
+    //   items: [EditPrep.editId(config.Id)]
+    // };
 
-    this.#router.navigate(routeSegments, {
-      state: {
-        returnValue: true,
-      } satisfies DialogRoutingState,
-    });
+    // const subRoute = this.#dialogRouter.urlSubRoute(`edit/${convertFormToUrl(form)}`);
+    // const routeSegments = subRoute.split('/').filter(Boolean);
+
+    // this.#router.navigate(routeSegments, {
+    //   state: {
+    //     returnValue: true,
+    //   } satisfies DialogRoutingState,
+    // });
   }
 
   addConfiguration() {
+    this.#showConfig(null);
+    // const form: EditForm = {
+    //   items: [EditPrep.newFromType(this.copilotConfigurationGuid)]
+    // };
+
+    // const url = convertFormToUrl(form);
+    // const subRoute = this.#dialogRouter.urlSubRoute(`edit/${url}`);
+    // const routeSegments = subRoute.split('/').filter(Boolean);
+
+    // this.#dialogRouter.navRelative([`edit/${url}`]); //
+    // , {
+    //   state: {
+    //     returnValue: true,
+    //   } satisfies DialogRoutingState,
+    // });
+
+    // this.#router.navigate(routeSegments, {
+    //   state: {
+    //     returnValue: true,
+    //   } satisfies DialogRoutingState,
+    // });
+  }
+
+  #showConfig(config?: DataCopilotConfiguration) {
     const form: EditForm = {
-      items: [EditPrep.newFromType(this.copilotConfigurationGuid)]
+      items: [config
+        ? EditPrep.editId(config.Id)
+        : EditPrep.newFromType(this.#copilotConfigurationGuid)
+      ]
     };
 
-    const subRoute = this.#dialogRouter.urlSubRoute(`edit/${convertFormToUrl(form)}`);
-    const routeSegments = subRoute.split('/').filter(Boolean);
-
-    this.#router.navigate(routeSegments, {
-      state: {
-        returnValue: true,
-      } satisfies DialogRoutingState,
-    });
+    const url = convertFormToUrl(form);
+    this.#dialogRouter.navRelative([`edit/${url}`]); //
   }
 
   deleteConfiguration(config: DataCopilotConfiguration) {
@@ -144,7 +165,7 @@ export class CopilotGeneratorComponent {
       if (isConfirmed) {
         this.entitySvc.delete(
           this.#context.appId,           // appId: number
-          this.copilotConfigurationGuid, // contentType: string
+          this.#copilotConfigurationGuid,// contentType: string
           config.Id,                     // entityId: number
           false                          // force: boolean
         ).subscribe({
