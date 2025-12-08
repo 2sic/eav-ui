@@ -125,11 +125,11 @@ export class CopilotGeneratorComponent {
     });
   }
 
-  deleteConfiguration(contentType: DataCopilotConfiguration) {
+  deleteConfiguration(config: DataCopilotConfiguration) {
     const data: ConfirmDeleteDialogData = {
-      entityId: contentType.Id,
-      entityTitle: contentType.Title,
-      message: "Are you sure you want to delete? ",
+      entityId: config.Id,
+      entityTitle: config.Title,
+      message: "Are you sure you want to delete?  ",
       hasDeleteSnackbar: true
     };
 
@@ -142,9 +142,20 @@ export class CopilotGeneratorComponent {
 
     confirmationDialogRef.afterClosed().subscribe((isConfirmed: boolean) => {
       if (isConfirmed) {
-        this.#contentTypeSvc.delete(contentType as any).subscribe(_ => {
-          this.#snackBar.open('Deleted', null, { duration: 2000 });
-          this.fetchEntities();
+        this.entitySvc.delete(
+          this.#context.appId,           // appId: number
+          this.copilotConfigurationGuid, // contentType: string
+          config.Id,                     // entityId: number
+          false                          // force: boolean
+        ).subscribe({
+          next: () => {
+            this.#snackBar.open('Deleted', null, { duration: 2000 });
+            this.fetchEntities();
+          },
+          error: (error) => {
+            console.error('Error deleting configuration:', error);
+            this.#snackBar.open('Error deleting configuration', null, { duration: 3000 });
+          }
         });
       }
     });
