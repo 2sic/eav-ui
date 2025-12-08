@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
+import { EditRoutes } from '../edit/edit.routing';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
 import { manageContentListDialog } from './manage-content-list-dialog.config';
-import { EditRoutes } from '../edit/edit.routing';
 
 export const manageContentRoutes: Routes = [
   {
@@ -12,7 +12,8 @@ export const manageContentRoutes: Routes = [
       ...EditRoutes,
       {
         path: ':guid/:part/:index/replace',
-        loadChildren: () => import('../replace-content/replace-content.routing').then(m => m.replaceContentRoutes)
+        loadChildren: () => import('../replace-content/replace-content.routing')
+          .then(m => m.replaceContentRoutes)
       },
     ]
   },

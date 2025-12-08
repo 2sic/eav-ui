@@ -1,9 +1,9 @@
 import { Routes } from '@angular/router';
+import { EditRoutes } from '../edit/edit.routing';
 import { GoToMetadata } from '../metadata';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
-import { importContentItemDialog } from './import-content-item/import-content-item-dialog.config';
 import { contentItemsDialog } from './content-items-dialog.config';
-import { EditRoutes } from '../edit/edit.routing';
+import { importContentItemDialog } from './import-content-item/import-content-item-dialog.config';
 
 export const contentItemsRoutes: Routes = [
   {
@@ -14,11 +14,13 @@ export const contentItemsRoutes: Routes = [
       ...GoToMetadata.getRoutes(),
       {
         path: 'export/:contentTypeStaticName',
-        loadChildren: () => import('../content-export/content-export.routing').then(m => m.ContentExportRoutes)
+        loadChildren: () => import('../content-export/content-export.routing')
+          .then(m => m.ContentExportRoutes)
       },
       {
         path: 'export/:contentTypeStaticName/:selectedIds',
-        loadChildren: () => import('../content-export/content-export.routing').then(m => m.ContentExportRoutes)
+        loadChildren: () => import('../content-export/content-export.routing')
+          .then(m => m.ContentExportRoutes)
       },
       {
         path: 'import',
@@ -27,7 +29,8 @@ export const contentItemsRoutes: Routes = [
       },
       {
         path: ':contentTypeStaticName/import',
-        loadChildren: () => import('../content-import/content-import.routing').then(m => m.contentImportRoutes),
+        loadChildren: () => import('../content-import/content-import.routing')
+          .then(m => m.contentImportRoutes),
         data: { title: 'Import Items' },
       },
       ...EditRoutes,
