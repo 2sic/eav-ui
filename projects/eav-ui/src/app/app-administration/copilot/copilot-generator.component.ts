@@ -7,7 +7,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router } from '@angular/router';
 import { EntityLightIdentifier } from 'projects/edit-types/src/EntityLight';
 import { Guid } from 'projects/field-string-wysiwyg/src/shared/guid';
 import { map, Observable, of, take } from 'rxjs';
@@ -48,10 +47,8 @@ export class CopilotGeneratorComponent {
   private copilotSvc = transient(CopilotService);
   private entitySvc = transient(EntityService);
   #dialogRouter = transient(DialogRoutingService);
-  // #router = transient(Router);
   #matDialog = transient(MatDialog);
   #viewContainerRef = inject(ViewContainerRef);
-  // #contentTypeSvc = transient(ContentTypesService);
   #snackBar = transient(MatSnackBar);
   #context = transient(Context);
   #http = transient(HttpClient);
@@ -93,48 +90,8 @@ export class CopilotGeneratorComponent {
     this.entities$ = this.entitySvc.getEntities$(of({ contentTypeName: this.#copilotConfigurationGuid }));
   }
 
-  editConfiguration(config: DataCopilotConfiguration) {
-    this.#showConfig(config);
 
-    // const form: EditForm = {
-    //   items: [EditPrep.editId(config.Id)]
-    // };
-
-    // const subRoute = this.#dialogRouter.urlSubRoute(`edit/${convertFormToUrl(form)}`);
-    // const routeSegments = subRoute.split('/').filter(Boolean);
-
-    // this.#router.navigate(routeSegments, {
-    //   state: {
-    //     returnValue: true,
-    //   } satisfies DialogRoutingState,
-    // });
-  }
-
-  addConfiguration() {
-    this.#showConfig(null);
-    // const form: EditForm = {
-    //   items: [EditPrep.newFromType(this.copilotConfigurationGuid)]
-    // };
-
-    // const url = convertFormToUrl(form);
-    // const subRoute = this.#dialogRouter.urlSubRoute(`edit/${url}`);
-    // const routeSegments = subRoute.split('/').filter(Boolean);
-
-    // this.#dialogRouter.navRelative([`edit/${url}`]); //
-    // , {
-    //   state: {
-    //     returnValue: true,
-    //   } satisfies DialogRoutingState,
-    // });
-
-    // this.#router.navigate(routeSegments, {
-    //   state: {
-    //     returnValue: true,
-    //   } satisfies DialogRoutingState,
-    // });
-  }
-
-  #showConfig(config?: DataCopilotConfiguration) {
+  editConfig(config?: DataCopilotConfiguration) {
     const form: EditForm = {
       items: [config
         ? EditPrep.editId(config.Id)
