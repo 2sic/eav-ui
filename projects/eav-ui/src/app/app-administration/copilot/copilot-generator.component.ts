@@ -91,10 +91,10 @@ export class CopilotGeneratorComponent {
   }
 
 
-  editConfig(config?: DataCopilotConfiguration) {
+  editConfig() {
     const form: EditForm = {
-      items: [config
-        ? EditPrep.editId(config.Id)
+      items: [this.selectedEntity
+        ? EditPrep.editId(this.selectedEntity.Id)
         : EditPrep.newFromType(this.#copilotConfigurationGuid)
       ]
     };
@@ -103,10 +103,11 @@ export class CopilotGeneratorComponent {
     this.#dialogRouter.navRelative([`edit/${url}`]); //
   }
 
-  deleteConfiguration(config: DataCopilotConfiguration) {
+  deleteConfiguration() {
+    const selected = this.selectedEntity;
     const data: ConfirmDeleteDialogData = {
-      entityId: config.Id,
-      entityTitle: config.Title,
+      entityId: selected.Id,
+      entityTitle: selected.Title,
       message: "Are you sure you want to delete?  ",
       hasDeleteSnackbar: true
     };
@@ -123,7 +124,7 @@ export class CopilotGeneratorComponent {
         this.entitySvc.delete(
           this.#context.appId,           // appId: number
           this.#copilotConfigurationGuid,// contentType: string
-          config.Id,                     // entityId: number
+          selected.Id,                     // entityId: number
           false                          // force: boolean
         ).subscribe({
           next: () => {
