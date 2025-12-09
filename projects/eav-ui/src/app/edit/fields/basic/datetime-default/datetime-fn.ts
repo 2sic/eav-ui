@@ -141,18 +141,18 @@ export function handleDateTimeInputFn(
 
   // Try multiple parsing formats in order of specificity
   const formats = [
-    'L LT',           // Localized date + time (e.g., "31.12.2025 14:30")
+    'YYYY-MM-DD',     // ISO date - PRIORITIZED
+    'YYYY-MM-DD HH:mm: ss', // ISO datetime with seconds - PRIORITIZED
+    'YYYY-MM-DD HH:mm',    // ISO datetime without seconds - PRIORITIZED
+    'YYYY/MM/DD',     // Alternative slash format
+    'YYYY/MM/DD HH: mm:ss',
+    'YYYY/MM/DD HH: mm',
+    'L LT',           // Localized date + time (e.g., "31. 12.2025 14:30")
     'L LTS',          // Localized date + time with seconds (e.g., "31.12.2025 14:30:45")
     'L',              // Localized date only (e.g., "31.12.2025")
     dateFormat,       // Raw locale format (e.g., "DD.MM.YYYY")
     `${dateFormat} HH:mm:ss`, // Raw locale format + time with seconds
     `${dateFormat} HH:mm`,    // Raw locale format + time without seconds
-    'YYYY-MM-DD',     // ISO date fallback
-    'YYYY-MM-DD HH:mm:ss', // ISO datetime fallback
-    'YYYY-MM-DD HH:mm',    // ISO datetime without seconds
-    'YYYY/MM/DD',     // Alternative slash format
-    'YYYY/MM/DD HH:mm:ss',
-    'YYYY/MM/DD HH:mm',
   ];
 
   for (const format of formats) {
