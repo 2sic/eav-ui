@@ -19,5 +19,5 @@ import { ExtensionInspectResult } from '../../../models/extension.model';
   ]
 })
 export class InspectExtensionContentComponent {
-  data = input.required<ExtensionInspectResult>();
+  data = input.required<ExtensionInspectResult | undefined>();
 }

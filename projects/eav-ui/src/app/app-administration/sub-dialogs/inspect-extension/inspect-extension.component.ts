@@ -37,7 +37,7 @@ export class InspectExtensionComponent {
     private route: ActivatedRoute,
     @Inject(MAT_DIALOG_DATA) public dialogData: ConfirmDeleteDialogData,
     public dialog: MatDialogRef<{}>,
-  ) {console.log(this.preflightResult()); }
+  ) { }
 
   closeDialog(confirm?: boolean) {
     confirm

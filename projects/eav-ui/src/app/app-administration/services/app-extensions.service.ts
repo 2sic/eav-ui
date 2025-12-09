@@ -58,7 +58,6 @@ export class AppExtensionsService extends HttpServiceBase {
       zoneId: this.zoneId,
       // TODO: @2pp - When backend is ready ...(editions ? { editions } : {})
     };
-    console.log('Uploading extension with editions:', params);
 
     return this.http.post<boolean>(this.apiUrl('admin/appExtensions/install'), formData, {
       params,
