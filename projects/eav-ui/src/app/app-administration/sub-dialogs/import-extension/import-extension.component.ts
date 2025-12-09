@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { Component, Inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -35,7 +34,6 @@ export interface FileUploadDialogData {
     MatProgressSpinnerModule,
     MatDialogModule,
     MatChipsModule,
-    MatCardModule,
     MatFormFieldModule,
     MatSelectModule,
     FormsModule,
@@ -50,7 +48,6 @@ export class ImportExtensionComponent {
   // TODO: @2pp - Replace debugging vars when backend is ready
   private readonly fallbackEditions = ["staging", "live"];
   debugEditionsSupported = true;
-
 
   // State signals
   file = signal<File | null>(null);
