@@ -19,7 +19,7 @@ import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
 import {
   DateTimeUtils
 } from './datetime-fn';
-import { MyMatTimepickerInput } from './mat-timer-picker';
+import { MyMatTimepickerInput } from './mat-time-picker';
 
 const logSpecs = {
   all: false,
