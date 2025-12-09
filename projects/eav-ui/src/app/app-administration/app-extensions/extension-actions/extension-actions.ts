@@ -23,6 +23,8 @@ export class AppExtensionActions {
   protected ext: Extension;
   canEditExtension = signal(false);
   extHasConfig = signal(false);
+  hasSettings = signal(false);
+  hasResources = signal(false);
 
   public params: {
     do(verb: GoToUrls, extension: Extension): void;
@@ -34,6 +36,8 @@ export class AppExtensionActions {
     this.ext = params.data;
     this.canEditExtension.set(!this.ext.configuration.isInstalled);
     this.extHasConfig.set(!!this.ext.configuration);
+    this.hasSettings.set(!!this.ext.configuration?.settingsContentType);
+    this.hasResources.set(!!this.ext.configuration?.resourcesContentType);
   }
 
   refresh(params?: any): boolean {

@@ -36,6 +36,8 @@ export interface ExtensionConfiguration {
   dnnVersionMin: string;
   oqtSupported: boolean;
   oqtVersionMin: string;
+  resourcesContentType: string;
+  settingsContentType: string;
 }
 
 export interface ExtensionInspectResult {
