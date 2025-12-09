@@ -7,58 +7,6 @@
     <mat-card-content>
       <br />
       <!-- Generator select -->
-      @if (showConfigurationDropdown()) {
-        <div class="configuration-select">
-          <mat-form-field color="accent" class="eav-mat-form-field">
-            <mat-label>Select a Configuration Entity</mat-label>
-            <mat-select [(value)]="selectedEntity">
-              <mat-option [value]="undefined">
-                Empty (press + to create new)
-              </mat-option>
-              @if (entities$ | async; as entities) {
-                @for (entity of entities; track entity) {
-                  <mat-option [value]="entity">
-                    {{ entity.Title }}
-                  </mat-option>
-                }
-              }
-            </mat-select>
-            <mat-hint>
-              Entities of type <code>b08dcd23-2eb0-4a5e-a3d0-3178d2aae451</code>.
-            </mat-hint>
-          </mat-form-field>
-          @if(selectedEntity) {
-            <button
-              mat-icon-button
-              class="eav-icon"
-              aria-label="Edit"
-              (click)="editConfiguration(selectedEntity)"
-            >
-              <mat-icon>edit</mat-icon>
-            </button>
-            <button
-              mat-icon-button
-              class="eav-icon"
-              aria-label="Delete"
-              (click)="deleteConfiguration(selectedEntity)"
-            >
-              <mat-icon>delete</mat-icon>
-            </button>
-          } @else {
-            <button
-              mat-icon-button
-              class="eav-icon"
-              aria-label="Create"
-              (click)="addConfiguration()"
-            >
-              <mat-icon>add</mat-icon>
-            </button>
-          }
-        </div>
-        <br />
-      }
-
-      <!-- Generator select -->
       @if (generators$ | async; as generators) {
         <mat-form-field color="accent" class="eav-mat-form-field">
           <mat-label>Generator</mat-label>
@@ -99,6 +47,60 @@
           </mat-hint>
         </mat-form-field>
       }
+
+      <br />
+      <!-- Configurations select -->
+      @if (showConfigurationDropdown()) {
+        <br />
+
+        <div class="configuration-select">
+          <mat-form-field color="accent" class="eav-mat-form-field">
+            <mat-label>Select a Configuration</mat-label>
+            <mat-select [(value)]="selectedEntity">
+              <mat-option [value]="undefined">
+                Empty (press + to create new)
+              </mat-option>
+              @if (entities$ | async; as entities)
+              {
+                @for (entity of entities; track entity.Id)
+                {
+                  <mat-option [value]="entity">
+                    {{ entity.Title }}
+                  </mat-option>
+                }
+              }
+            </mat-select>
+            <mat-hint>
+              Reusable configuration for the Data Copilot generator.
+            </mat-hint>
+          </mat-form-field>
+
+          <!-- Add / edit button -->
+          <button
+            mat-icon-button
+            class="eav-icon"
+            aria-label="Create"
+            (click)="editConfig()"
+          >
+            <mat-icon>{{ selectedEntity ? "edit" : "add" }}</mat-icon>
+          </button>
+          
+          <!-- Delete button -->
+          @if (selectedEntity)
+          {
+            <button
+              mat-icon-button
+              class="eav-icon"
+              aria-label="Delete"
+              (click)="deleteConfiguration()"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          }
+
+        </div>
+      }
+
     </mat-card-content>
     <div class="eav-card-space-div"></div>
     <mat-card-actions align="end">

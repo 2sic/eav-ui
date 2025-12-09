@@ -43,12 +43,14 @@ export const appAdministrationRoutes: Routes = [
       },
       {
         path: 'home',
-        loadComponent: () => import('./getting-started/getting-started.component').then(mod => mod.GettingStartedComponent),
+        loadComponent: () => import('./getting-started/getting-started.component')
+          .then(mod => mod.GettingStartedComponent),
         data: { title: 'App Home', breadcrumb: 'Info', }
       },
       {
         path: 'data/:scope',
-        loadComponent: () => import('./data/data.component').then(mod => mod.DataComponent),
+        loadComponent: () => import('./data/data.component')
+          .then(mod => mod.DataComponent),
         children: [
           {
             path: 'import',
@@ -59,7 +61,8 @@ export const appAdministrationRoutes: Routes = [
           },
           {
             path: 'items/:contentTypeStaticName',
-            loadChildren: () => import('../content-items/content-items.routing').then(m => m.contentItemsRoutes)
+            loadChildren: () => import('../content-items/content-items.routing')
+              .then(m => m.contentItemsRoutes)
           },
           ...EditRoutes,
           {
@@ -77,17 +80,20 @@ export const appAdministrationRoutes: Routes = [
           {
             path: 'fields/:contentTypeStaticName',
             // May change how things are injected, so be careful when evaluating
-            loadChildren: () => import('../content-type-fields/content-type-fields.routing').then(m => m.contentTypeFieldsRoutes),
+            loadChildren: () => import('../content-type-fields/content-type-fields.routing')
+              .then(m => m.contentTypeFieldsRoutes),
             data: { title: 'Content Type Fields' },
           },
           {
             path: 'export/:contentTypeStaticName',
-            loadChildren: () => import('../content-export/content-export.routing').then(m => m.ContentExportRoutes),
+            loadChildren: () => import('../content-export/content-export.routing')
+              .then(m => m.ContentExportRoutes),
             data: { title: 'Export Items' },
           },
           {
             path: ':contentTypeStaticName/import',
-            loadChildren: () => import('../content-import/content-import.routing').then(m => m.contentImportRoutes),
+            loadChildren: () => import('../content-import/content-import.routing')
+              .then(m => m.contentImportRoutes),
             data: { title: 'Import Items' },
           },
           GoToPermissions.route,
@@ -95,8 +101,10 @@ export const appAdministrationRoutes: Routes = [
         data: { title: 'App Data', breadcrumb: "Data" },
       },
       {
+        // Data Copilot
         path: `data-${GoToCopilot.route}`,
-        loadComponent: () => import('./copilot/page/copilot-page.component').then(mod => mod.CopilotPageComponent),
+        loadComponent: () => import('./copilot/page/copilot-page.component')
+          .then(mod => mod.CopilotPageComponent),
         data: CopilotSpecs.data,
         children: [
           ...EditRoutes,
@@ -104,7 +112,8 @@ export const appAdministrationRoutes: Routes = [
       },
       {
         path: GoToDevRest.routeData,
-        loadComponent: () => import('./data-rest-api/data-rest-api.component').then(mod => mod.DataRestApiComponent),
+        loadComponent: () => import('./data-rest-api/data-rest-api.component')
+          .then(mod => mod.DataRestApiComponent),
         data: {
           title: 'Rest-Api Data',
           breadcrumb: 'Rest-Api Data'
@@ -112,7 +121,8 @@ export const appAdministrationRoutes: Routes = [
         children: [
           {
             path: `:${GoToDevRest.paramTypeName}`,
-            loadComponent: () => import('../dev-rest/data/data.component').then(mod => mod.DevRestDataComponent),
+            loadComponent: () => import('../dev-rest/data/data.component')
+              .then(mod => mod.DevRestDataComponent),
             data: {
               breadcrumb: 'Rest-Api Data'
             },
@@ -124,7 +134,8 @@ export const appAdministrationRoutes: Routes = [
       },
       {
         path: 'queries',
-        loadComponent: () => import('./queries/queries.component').then(mod => mod.QueriesComponent),
+        loadComponent: () => import('./queries/queries.component')
+          .then(mod => mod.QueriesComponent),
         children: [
           {
             path: 'import',
@@ -143,12 +154,14 @@ export const appAdministrationRoutes: Routes = [
       },
       {
         path: GoToDevRest.routeQuery,
-        loadComponent: () => import('./queries-rest-api/queries-rest-api.component').then(mod => mod.QueriesRestApiComponent),
+        loadComponent: () => import('./queries-rest-api/queries-rest-api.component')
+          .then(mod => mod.QueriesRestApiComponent),
         data: { title: 'Rest-Api Queries', breadcrumb: 'Rest-Api Queries' },
         children: [
           {
             path: `:${GoToDevRest.paramQuery}`,
-            loadComponent: () => import('../dev-rest/query/query.component').then(mod => mod.DevRestQueryComponent),
+            loadComponent: () => import('../dev-rest/query/query.component')
+              .then(mod => mod.DevRestQueryComponent),
             data: { breadcrumb: 'Rest-Api Queries', },
             children: [
               GoToPermissions.route,
@@ -158,7 +171,8 @@ export const appAdministrationRoutes: Routes = [
       },
       {
         path: 'views',
-        loadComponent: () => import('./views/views.component').then(mod => mod.ViewsComponent),
+        loadComponent: () => import('./views/views.component')
+          .then(mod => mod.ViewsComponent),
         children: [
           {
             path: 'import',
@@ -171,14 +185,18 @@ export const appAdministrationRoutes: Routes = [
             data: { dialog: viewsUsageDialog }
           },
           ...EditRoutes,
-          { ...GoToPermissions.route, data: { title: 'View Permissions' } },
+          {
+            ...GoToPermissions.route, data: { title: 'View Permissions' }
+          },
           ...GoToMetadata.getRoutes(),
         ],
         data: { title: 'App Views', breadcrumb: "Views" },
       },
       {
+        // Views Copilot
         path: `views-${GoToCopilot.route}`,
-        loadComponent: () => import('./copilot/page/copilot-page.component').then(mod => mod.CopilotPageComponent),
+        loadComponent: () => import('./copilot/page/copilot-page.component')
+          .then(mod => mod.CopilotPageComponent),
         data: CopilotSpecs.views,
         children: [
           ...EditRoutes,
@@ -186,7 +204,8 @@ export const appAdministrationRoutes: Routes = [
       },
       {
         path: 'extensions',
-        loadComponent: () => import('./app-extensions/app-extensions').then(mod => mod.AppExtensions),
+        loadComponent: () => import('./app-extensions/app-extensions')
+          .then(mod => mod.AppExtensions),
         data: { title: 'App Extensions', breadcrumb: "App Extensions" },
         children: [
           ...EditRoutes,
@@ -209,15 +228,18 @@ export const appAdministrationRoutes: Routes = [
       },
       {
         path: 'web-api',
-        loadComponent: () => import('./web-api/web-api.component').then(mod => mod.WebApiComponent),
+        loadComponent: () => import('./web-api/web-api.component')
+          .then(mod => mod.WebApiComponent),
         data: { title: 'App WebApi', breadcrumb: "WebApi" },
         children: [
           GoToDevRest.route,
         ],
       },
       {
+        // WebAPI Copilot
         path: `web-api-${GoToCopilot.route}`,
-        loadComponent: () => import('./copilot/page/copilot-page.component').then(mod => mod.CopilotPageComponent),
+        loadComponent: () => import('./copilot/page/copilot-page.component')
+          .then(mod => mod.CopilotPageComponent),
         data: CopilotSpecs.webApi,
         children: [
           ...EditRoutes,
@@ -225,7 +247,8 @@ export const appAdministrationRoutes: Routes = [
       },
       {
         path: GoToDevRest.routeWebApi,
-        loadComponent: () => import('./web-api-rest-api/web-api-rest-api.component').then(mod => mod.WebApiRestApiComponent),
+        loadComponent: () => import('./web-api-rest-api/web-api-rest-api.component')
+          .then(mod => mod.WebApiRestApiComponent),
         data: {
           title: 'Rest-Api Web Api',
           breadcrumb: 'Rest-Api Web Api'
@@ -233,7 +256,8 @@ export const appAdministrationRoutes: Routes = [
         children: [
           {
             path: `:${GoToDevRest.paramApiPath}`,
-            loadComponent: () => import('../dev-rest/api/api.component').then(mod => mod.DevRestApiComponent),
+            loadComponent: () => import('../dev-rest/api/api.component')
+              .then(mod => mod.DevRestApiComponent),
             data: {
               breadcrumb: 'Rest-Api Web Api'
             },
@@ -245,7 +269,8 @@ export const appAdministrationRoutes: Routes = [
       },
       {
         path: 'app',
-        loadComponent: () => import('./app-configuration/app-configuration').then(mod => mod.AppConfiguration),
+        loadComponent: () => import('./app-configuration/app-configuration')
+          .then(mod => mod.AppConfiguration),
         data: { title: 'Manage App', breadcrumb: "Manage App" },
         children: [
           ...GoToMetadata.getRoutes(),
@@ -253,7 +278,8 @@ export const appAdministrationRoutes: Routes = [
           ...EditRoutes,
           {
             path: 'fields/:contentTypeStaticName',
-            loadChildren: () => import('../content-type-fields/content-type-fields.routing').then(m => m.contentTypeFieldsRoutes),
+            loadChildren: () => import('../content-type-fields/content-type-fields.routing')
+              .then(m => m.contentTypeFieldsRoutes),
             data: { title: 'Edit Fields of App Settings & Resources' },
           },
           {
