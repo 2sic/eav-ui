@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject, signal } from '@angular/core';
+import { Component, Inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
@@ -10,6 +10,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { transient } from 'projects/core';
 import { Observable, take } from 'rxjs';
+import { isCtrlEnter } from '../../../edit/dialog/main/keyboard-shortcuts';
 import { FileUploadResult, UploadTypes } from '../../../shared/components/file-upload-dialog';
 import { DragAndDropDirective } from '../../../shared/directives/drag-and-drop.directive';
 import { ExtensionEdition, ExtensionPreflightItem } from '../../models/extension.model';
@@ -42,7 +43,7 @@ export interface FileUploadDialogData {
     MatIconModule,
   ],
 })
-export class ImportExtensionComponent {
+export class ImportExtensionComponent implements OnInit{
   private extensionSvc = transient(AppExtensionsService);
 
   uploadType = UploadTypes.Extension;
@@ -75,6 +76,19 @@ export class ImportExtensionComponent {
       this.file.set(dialogData.file);
       this.runPreflight(dialogData.file);
     }
+  }
+
+  ngOnInit() {
+    this.#watchKeyboardShortcuts();
+  }
+
+  #watchKeyboardShortcuts(): void {
+    this.dialogRef.keydownEvents().subscribe(event => {
+      if (isCtrlEnter(event)) {
+        event.preventDefault();
+        this.install();
+      }
+    });
   }
 
   filesDropped(droppedFiles: File[]): void {
@@ -126,7 +140,6 @@ export class ImportExtensionComponent {
 
     return true;
   }
-
 
   install(): void {
     if (!this.file()) return;
