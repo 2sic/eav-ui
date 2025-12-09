@@ -6,7 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Extension } from '../../models/extension.model';
 
-type GoToUrls = 'edit' | 'download' | 'delete' | 'inspect';
+type GoToUrls = 'edit' | 'download' | 'delete' | 'inspect' | 'openSettings' | 'openResources';
 
 @Component({
   selector: 'app-extension-actions',

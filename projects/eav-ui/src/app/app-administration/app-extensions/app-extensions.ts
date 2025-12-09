@@ -66,21 +66,6 @@ export class AppExtensions implements OnInit {
     });
   }
 
-  // TODO: @2pp FYI - this broke the change-settings dialog - best discuss
-  // 
-  // ngOnInit() {
-  //   // register once
-  //   this.#dialogRouter.doOnDialogClosedWithData((data) => {
-  //     if (data?.objData && this.#pendingFolder) {
-  //       const folder = this.#pendingFolder;
-  //       this.#pendingFolder = null;
-  //       this.extensionsSvc.updateExtension(folder, JSON.stringify(data.objData))
-  //     }
-
-  //     this.fetchExtensions();
-  //   });
-  // }
-
   #openSettings(ext?: Extension) {
     const configurationContentType = 'a0f44af0-6750-40c9-9ad9-4a07b6eda8b3';
     // Build overrideContents for existing configuration or new
@@ -100,6 +85,20 @@ export class AppExtensions implements OnInit {
         overrideContents
       } satisfies DialogRoutingState,
     });
+  }
+
+  #openExtensionSettings(ext: Extension) {
+    const contentType = ext.configuration?.settingsContentType;
+    if (!contentType) return;
+
+    console.log("Opening settings for content type:", contentType);
+  }
+
+  #openExtensionResources(ext: Extension) {
+    const contentType = ext.configuration?.resourcesContentType;
+    if (!contentType) return;
+    
+    console.log("Opening resources for content type:", contentType);
   }
 
   #openInspection(extensionFolder: string) {
@@ -264,6 +263,8 @@ export class AppExtensions implements OnInit {
                 case 'download': this.extensionsSvc.downloadExtension(ext.folder); break;
                 case 'delete': this.#deleteExtension(ext.folder); break;
                 case 'inspect': this.#openInspection(ext.folder); break;
+                case 'openSettings': this.#openExtensionSettings(ext); break;
+                case 'openResources': this.#openExtensionResources(ext); break;
               }
             }
           } satisfies AppExtensionActions['params'];

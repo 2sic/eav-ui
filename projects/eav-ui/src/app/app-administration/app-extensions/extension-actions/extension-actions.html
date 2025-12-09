@@ -30,7 +30,7 @@
   </div>
   <div class="actions-row">
     <a
-      (click)="do('edit')"
+      (click)="do('openSettings')"
       [class.disabled]="!hasSettings()"
       class="eav-grid-action-button default-link highlight"
       matRipple
@@ -39,7 +39,7 @@
       <mat-icon>settings</mat-icon>
     </a>
     <a
-      (click)="do('edit')"
+      (click)="do('openResources')"
       [class.disabled]="!hasResources()"
       class="eav-grid-action-button default-link highlight"
       matRipple
@@ -52,7 +52,7 @@
       [class.disabled]="canEditExtension()"
       class="eav-grid-action-button default-link highlight"
       matRipple
-      tippy="Insepct Extension"
+      tippy="Inspect Extension"
     >
       <mat-icon>frame_inspect</mat-icon>
     </a>
