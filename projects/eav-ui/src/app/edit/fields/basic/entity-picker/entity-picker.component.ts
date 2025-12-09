@@ -19,5 +19,4 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
     this.constructorEnd();
     EntityPickerLogic.importMe();
   }
-
 }
