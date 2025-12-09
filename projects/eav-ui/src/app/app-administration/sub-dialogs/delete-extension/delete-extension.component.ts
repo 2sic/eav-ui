@@ -1,4 +1,4 @@
-import { Component, inject, Inject } from '@angular/core';
+import { Component, inject, Inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogActions, MatDialogRef } from '@angular/material/dialog';
@@ -8,8 +8,8 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { transient } from 'projects/core';
+import { isCtrlEnter } from '../../../edit/dialog/main/keyboard-shortcuts';
 import { SaveCloseButtonFabComponent } from '../../../shared/modules/save-close-button-fab/save-close-button-fab.component';
-import { ExtensionInspectResult } from '../../models/extension.model';
 import { AppExtensionsService } from '../../services/app-extensions.service';
 import { ConfirmDeleteDialogComponent } from '../confirm-delete-dialog/confirm-delete-dialog.component';
 import { ConfirmDeleteDialogData } from '../confirm-delete-dialog/confirm-delete-dialog.models';
@@ -30,7 +30,7 @@ import { InspectExtensionContentComponent } from '../inspect-extension/inspect-e
     InspectExtensionContentComponent,
   ]
 })
-export class DeleteExtensionComponent {
+export class DeleteExtensionComponent implements OnInit {
   #snackBar = inject(MatSnackBar);
   #extensionsSvc = transient(AppExtensionsService);
 
@@ -45,6 +45,19 @@ export class DeleteExtensionComponent {
     @Inject(MAT_DIALOG_DATA) public dialogData: ConfirmDeleteDialogData,
     public dialog: MatDialogRef<ConfirmDeleteDialogComponent>,
   ) { }
+  
+  ngOnInit() {
+    this.#watchKeyboardShortcuts();
+  }
+
+  #watchKeyboardShortcuts(): void {
+    this.dialog.keydownEvents().subscribe(event => {
+      if (isCtrlEnter(event)) {
+        event.preventDefault();
+        this.deleteAndClose();
+      }
+    });
+  }
 
   closeDialog(confirm?: boolean) {
     this.#snackBar.dismiss();
@@ -62,16 +75,12 @@ export class DeleteExtensionComponent {
     this.executeDelete(true);
   }
 
-  deleteAndClose(confirm: boolean) {
-    if (!confirm) {
-      this.dialog.close(false);
-      return;
-    }
-
-    this.evaluatePreflight(this.preflightResult());
+  deleteAndClose() {
+    this.evaluatePreflight();
   }
 
-  private evaluatePreflight(inspect: ExtensionInspectResult) {
+  private evaluatePreflight() {
+    const inspect = this.preflightResult()
 
     const fileSummary = inspect.summary;
     const filesChanged = fileSummary.changed + fileSummary.added + fileSummary.missing;
