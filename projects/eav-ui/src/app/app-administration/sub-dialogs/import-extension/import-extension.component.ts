@@ -40,7 +40,7 @@ export interface FileUploadDialogData {
     FormsModule,
     DragAndDropDirective,
     MatIconModule,
-  ]
+  ],
 })
 export class ImportExtensionComponent {
   private extensionSvc = transient(AppExtensionsService);
@@ -48,8 +48,7 @@ export class ImportExtensionComponent {
   uploadType = UploadTypes.Extension;
 
   // TODO: @2pp - Replace debugging vars when backend is ready
-  private readonly fallbackEditions = ["staging", "live"];
-  debugEditionsSupported = true;
+  private readonly fallbackEditions = ['staging', 'live'];
 
   // State signals
   file = signal<File | null>(null);
@@ -60,7 +59,7 @@ export class ImportExtensionComponent {
   editions = signal<ExtensionEdition[]>([]);
 
   // Selected editions for installation
-  selectedEditions: string[] = [];
+  selectedEditions: string = '';
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public dialogData: FileUploadDialogData,
@@ -89,16 +88,15 @@ export class ImportExtensionComponent {
     this.runPreflight(file);
   }
 
-  private runPreflight(files: File): void {
+  private runPreflight(file: File): void {
     this.isLoadingPreflight.set(true);
 
-    this.extensionSvc.installPreflightExtension([this.file()])
+    this.extensionSvc.installPreflightExtension([file])
       .pipe(take(1))
       .subscribe({
         next: (result) => {
           this.isLoadingPreflight.set(false);
           const ext = result.extensions[0];
-
           this.extension.set(ext);
 
 
@@ -110,7 +108,7 @@ export class ImportExtensionComponent {
             );
           }
 
-          this.selectedEditions = this.editions().map(e => e.edition);
+          this.selectedEditions = this.editions().map(e => e.edition).join(',');
         },
         error: (error) => {
           this.isLoadingPreflight.set(false);
@@ -120,20 +118,11 @@ export class ImportExtensionComponent {
   }
 
   canSave(): boolean {
-    // basic checks
     if (!this.file()) return false;
     if (this.preflightError()) return false;
     if (this.isInstalling()) return false;
     if (this.isLoadingPreflight()) return false;
     if (!this.extension()) return false;
-
-
-    // edition required?
-    const requiresEdition =
-      (this.extension().editionsSupported || this.debugEditionsSupported) &&
-      this.editions()?.length > 0;
-
-    if (requiresEdition && this.selectedEditions.length === 0) return false;
 
     return true;
   }

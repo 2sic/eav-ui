@@ -49,14 +49,14 @@ export class AppExtensionsService extends HttpServiceBase {
   }
 
   /** Uploads extension files */
-  uploadExtensions(file: File, editions?: string[]) {
+  uploadExtensions(file: File, editions?: string) {
     const formData = new FormData();
     formData.append('files', file);
 
     const params = {
       appId: this.appId,
       zoneId: this.zoneId,
-      // TODO: @2pp - When backend is ready ...(editions ? { editions } : {})
+      ...(editions ? { editions } : {})
     };
 
     return this.http.post<boolean>(this.apiUrl('admin/appExtensions/install'), formData, {
