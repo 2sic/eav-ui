@@ -1,6 +1,9 @@
 <div class="eav-dialog">
   <div class="eav-dialog-header">
     <div class="eav-dialog-header__title">{{ dialogData.title }}</div>
+    <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
+      <mat-icon>close</mat-icon>
+    </button>
   </div>
   <div class="eav-dialog-content">
     @if (!file()) {
@@ -30,7 +33,9 @@
       <div class="preflight-error">
         <h3>Error</h3>
         <p>{{ preflightError() }}</p>
-        <button mat-button (click)="cancel()">Close</button>
+        <button mat-button (click)="closeDialog()">
+          Close
+        </button>
       </div>
     }
 
@@ -96,14 +101,6 @@
   </div>
 
   <mat-dialog-actions align="end">
-    <button
-      mat-button
-      (click)="cancel()"
-      [disabled]="isInstalling()"
-    >
-      Cancel
-    </button>
-
     @if (file() && !preflightError()) {
       <button
         mat-raised-button

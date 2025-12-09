@@ -5,6 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { transient } from 'projects/core';
@@ -38,6 +39,7 @@ export interface FileUploadDialogData {
     MatSelectModule,
     FormsModule,
     DragAndDropDirective,
+    MatIconModule,
   ]
 })
 export class ImportExtensionComponent {
@@ -158,7 +160,7 @@ export class ImportExtensionComponent {
     });
   }
 
-  cancel(): void {
+  closeDialog(): void {
     this.dialogRef.close(false);
   }
 }

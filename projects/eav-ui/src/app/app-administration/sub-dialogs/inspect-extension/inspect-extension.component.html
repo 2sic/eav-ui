@@ -7,6 +7,12 @@
   </div>
 
   <div class="eav-dialog-content">
-    <app-inspect-extension-content [data]="preflightResult()"></app-inspect-extension-content>
+    @if(preflightResult().foundLock) {
+      <app-inspect-extension-content [data]="preflightResult()"></app-inspect-extension-content>
+    } @else {
+      <div class="no-data">
+        <p>No data available.</p>
+      </div>
+    }
   </div>
 </div>
