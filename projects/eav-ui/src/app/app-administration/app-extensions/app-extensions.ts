@@ -5,16 +5,18 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogActions } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterOutlet } from '@angular/router';
-import { take } from 'rxjs';
+import { of, take } from 'rxjs';
 import { transient } from '../../../../../core';
 import { DialogRoutingState } from '../../edit/dialog/dialogRouteState.model';
 import { GridWithHelpComponent, HelpTextConst } from '../../shared/ag-grid/grid-with-help/grid-with-help.component';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
+import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm, EditPrep } from '../../shared/models/edit-form.model';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
+import { EntityService } from '../../shared/services/entity.service';
 import { Extension } from '../models/extension.model';
 import { AppExtensionsService } from '../services/app-extensions.service';
 import { ImportExtensionComponent } from '../sub-dialogs/import-extension/import-extension.component';
@@ -34,13 +36,15 @@ import { AppExtensionsLinkCell } from './extensions-link/extensions-link';
     SxcGridModule,
     DragAndDropDirective,
     GridWithHelpComponent,
+    TippyDirective,
   ]
 })
 export class AppExtensions implements OnInit {
   private extensionsSvc = transient(AppExtensionsService);
-  router = inject(Router);
+  private router = inject(Router);
   #dialogRouter = transient(DialogRoutingService);
-  dialog = transient(MatDialog);
+  private dialog = transient(MatDialog);
+  private entitySvc = transient(EntityService);
 
   /** Signal to trigger reloading of data */
   refresh = signal(0);
@@ -87,18 +91,21 @@ export class AppExtensions implements OnInit {
     });
   }
 
-  #openExtensionSettings(ext: Extension) {
-    const contentType = ext.configuration?.settingsContentType;
+  #openEditContentType(contentType: string) {
     if (!contentType) return;
 
-    console.log("Opening settings for content type:", contentType);
-  }
-
-  #openExtensionResources(ext: Extension) {
-    const contentType = ext.configuration?.resourcesContentType;
-    if (!contentType) return;
-    
-    console.log("Opening resources for content type:", contentType);
+    this.entitySvc.getEntities$(of({ contentTypeName: contentType })).subscribe(entities => {
+      const subRoute = entities ? entities[0].Id : this.#routeAddItem(contentType) // edit first or create new
+      const rawUrl = this.#urlTo(`edit/${subRoute}`)
+      const normalized = rawUrl.replace(/^#\/?/, '').replace(/^\//, '')
+      const routeSegments = normalized.split('/').filter(Boolean)
+      this.router.navigate(routeSegments, {
+        state: {
+          returnValue: true,
+        // overrideContents
+        } satisfies DialogRoutingState,
+      });
+    });
   }
 
   #openInspection(extensionFolder: string) {
@@ -263,8 +270,12 @@ export class AppExtensions implements OnInit {
                 case 'download': this.extensionsSvc.downloadExtension(ext.folder); break;
                 case 'delete': this.#deleteExtension(ext.folder); break;
                 case 'inspect': this.#openInspection(ext.folder); break;
-                case 'openSettings': this.#openExtensionSettings(ext); break;
-                case 'openResources': this.#openExtensionResources(ext); break;
+                case 'openSettings': this.#openEditContentType(
+                  ext.configuration?.settingsContentType
+                ); break;
+                case 'openResources': this.#openEditContentType(
+                  ext.configuration?.resourcesContentType
+                ); break;
               }
             }
           } satisfies AppExtensionActions['params'];
