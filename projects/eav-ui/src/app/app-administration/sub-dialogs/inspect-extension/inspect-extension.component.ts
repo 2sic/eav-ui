@@ -8,6 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ActivatedRoute } from '@angular/router';
 import { transient } from 'projects/core';
+import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { AppExtensionsService } from '../../services/app-extensions.service';
 import { ConfirmDeleteDialogData } from '../confirm-delete-dialog/confirm-delete-dialog.models';
 import { InspectExtensionContentComponent } from './inspect-extension-content/inspect-extension-content.component';
@@ -24,6 +25,7 @@ import { InspectExtensionContentComponent } from './inspect-extension-content/in
     MatCardModule,
     MatExpansionModule,
     InspectExtensionContentComponent,
+    TippyDirective,
   ]
 })
 export class InspectExtensionComponent {

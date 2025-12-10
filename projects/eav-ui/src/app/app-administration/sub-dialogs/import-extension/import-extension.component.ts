@@ -13,6 +13,7 @@ import { Observable, take } from 'rxjs';
 import { isCtrlEnter } from '../../../edit/dialog/main/keyboard-shortcuts';
 import { FileUploadResult, UploadTypes } from '../../../shared/components/file-upload-dialog';
 import { DragAndDropDirective } from '../../../shared/directives/drag-and-drop.directive';
+import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { ExtensionEdition, ExtensionPreflightItem } from '../../models/extension.model';
 import { AppExtensionsService } from '../../services/app-extensions.service';
 
@@ -41,6 +42,7 @@ export interface FileUploadDialogData {
     FormsModule,
     DragAndDropDirective,
     MatIconModule,
+    TippyDirective,
   ],
 })
 export class ImportExtensionComponent implements OnInit{

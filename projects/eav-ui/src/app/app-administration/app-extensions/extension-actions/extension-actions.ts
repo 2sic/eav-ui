@@ -4,6 +4,7 @@ import { Component, signal } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { Extension } from '../../models/extension.model';
 
 type GoToUrls = 'edit' | 'download' | 'delete' | 'inspect' | 'openSettings' | 'openResources';
@@ -14,7 +15,8 @@ type GoToUrls = 'edit' | 'download' | 'delete' | 'inspect' | 'openSettings' | 'o
     CommonModule,
     MatIconModule,
     MatButtonModule,
-    MatBadgeModule
+    MatBadgeModule,
+    TippyDirective,
   ],
   templateUrl: './extension-actions.html',
   styleUrls: ['./extension-actions.scss'],
