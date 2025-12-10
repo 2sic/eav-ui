@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { classLog } from '../../shared/logging';
 import { DialogSettings } from '../../shared/models/dialog-settings.model';
 import { Context } from '../../shared/services/context';
 import { DialogConfigGlobalService } from './dialog-config-global.service';
-import { classLog } from '../../shared/logging';
 
 /**
  * Context aware dialog configuration service.
@@ -13,7 +13,7 @@ import { classLog } from '../../shared/logging';
 @Injectable()
 export class DialogConfigAppService {
 
-  log = classLog({DialogConfigAppService});
+  log = classLog({ DialogConfigAppService });
 
   constructor(private contextSvcShared: DialogConfigGlobalService, private context: Context) { }
 

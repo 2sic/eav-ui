@@ -32,8 +32,7 @@ export class ConfirmDeleteDialogComponent implements OnInit {
 
   ngOnInit() {
     if (this.dialogData.hasDeleteSnackbar)
-      this.#snackBar.open('Deleting...');
-
+    this.#snackBar.open('Deleting...', undefined, { duration: 5000 });
     this.#watchKeyboardShortcuts();
   }
 
@@ -47,6 +46,7 @@ export class ConfirmDeleteDialogComponent implements OnInit {
   }
 
   closeDialog(confirm?: boolean) {
+    this.#snackBar.dismiss();
     confirm
       ? this.dialog.close(confirm)
       : this.dialog.close();

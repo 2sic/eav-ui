@@ -12,31 +12,34 @@ import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/sl
 import { distinctUntilChanged, startWith } from 'rxjs';
 import { transient } from '../../../../../../core';
 import { ContentTypesService } from '../../../app-administration/services';
+import { isCtrlEnter } from '../../../edit/dialog/main/keyboard-shortcuts';
 import { BaseComponent } from '../../../shared/components/base.component';
 import { FieldHintComponent } from '../../../shared/components/field-hint/field-hint.component';
 import { eavConstants, ScopeOption } from '../../../shared/constants/eav.constants';
 import { ClickStopPropagationDirective } from '../../../shared/directives/click-stop-propagation.directive';
+import { SaveCloseButtonFabComponent } from '../../../shared/modules/save-close-button-fab/save-close-button-fab.component';
 import { VisualQueryStateService } from '../../services/visual-query.service';
 import { RenameStreamDialogControls, RenameStreamDialogData, RenameStreamDialogFormValue } from './rename-stream.models';
 
 @Component({
-    selector: 'app-rename-stream',
-    templateUrl: './rename-stream.component.html',
-    imports: [
-        MatButtonModule,
-        MatIconModule,
-        FormsModule,
-        ReactiveFormsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatSelectModule,
-        MatOptionModule,
-        NgClass,
-        MatDialogActions,
-        MatSlideToggleModule,
-        FieldHintComponent,
-        ClickStopPropagationDirective,
-    ]
+  selector: 'app-rename-stream',
+  templateUrl: './rename-stream.component.html',
+  imports: [
+    MatButtonModule,
+    MatIconModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatOptionModule,
+    NgClass,
+    MatDialogActions,
+    MatSlideToggleModule,
+    FieldHintComponent,
+    ClickStopPropagationDirective,
+    SaveCloseButtonFabComponent,
+  ]
 })
 export class RenameStreamComponent extends BaseComponent implements OnInit {
   @HostBinding('className') hostClass = 'dialog-component';
@@ -51,7 +54,7 @@ export class RenameStreamComponent extends BaseComponent implements OnInit {
   advancedMode = false;
 
   #contentTypesSvc = transient(ContentTypesService);
-  
+
   constructor(
     @Inject(MAT_DIALOG_DATA) private dialogData: RenameStreamDialogData,
     private dialog: MatDialogRef<RenameStreamComponent>,
@@ -63,6 +66,7 @@ export class RenameStreamComponent extends BaseComponent implements OnInit {
 
   ngOnInit(): void {
     this.#buildForm();
+    this.#watchKeyboardShortcuts();
   }
 
   closeDialog(label?: string): void {
@@ -77,7 +81,7 @@ export class RenameStreamComponent extends BaseComponent implements OnInit {
     this.advancedMode = event.checked;
   }
 
-  rename(): void {
+  saveAndClose(): void {
     const formValue: RenameStreamDialogFormValue = this.form.getRawValue();
     this.closeDialog(formValue.label);
   }
@@ -113,6 +117,15 @@ export class RenameStreamComponent extends BaseComponent implements OnInit {
       const filtered = scopes.filter(s => sourceOut.some(o => o.Scope === s.value));
       this.scopeOptions = filtered;
       this.changeDetectorRef.markForCheck();
+    });
+  }
+  
+  #watchKeyboardShortcuts(): void {
+    this.dialog.keydownEvents().subscribe(event => {
+      if (isCtrlEnter(event) && this.form.valid) {
+        event.preventDefault();
+        this.saveAndClose();
+      }
     });
   }
 }

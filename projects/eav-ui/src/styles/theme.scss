@@ -4,21 +4,21 @@
 
 // Styles from the Edit UI, which must be global
 // exact reasons not fully known, history...
-@import '../app/edit/assets/styles/variables.scss';
-@import '../app/edit/assets/styles/theme/material-colors.scss';
-@import '../app/edit/assets/styles/theme/override-mat-form-field-fill-typography.scss';
+@use '../app/edit/assets/styles/variables.scss';
+@use '../app/edit/assets/styles/theme/material-colors.scss';
+@use '../app/edit/assets/styles/theme/override-mat-form-field-fill-typography.scss';
 
 // Edit Picker styles which affect Material components and must go "deep"
-@import '../app/edit/fields/picker/picker-global.scss';
+@use '../app/edit/fields/picker/picker-global.scss';
 
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // For each palette, you can optionally specify a default, lighter, and darker hue.
 // Available color palettes: https://material.io/design/color/
-$eav-ui-primary: mat.m2-define-palette($mat-eav-item-dialog-primary);
-$eav-ui-accent: mat.m2-define-palette($mat-eav-item-dialog-secondary);
+$eav-ui-primary: mat.m2-define-palette(material-colors.$mat-eav-item-dialog-primary);
+$eav-ui-accent: mat.m2-define-palette(material-colors.$mat-eav-item-dialog-secondary);
 
 // The warn palette is optional (defaults to red).
-$eav-ui-warn: mat.m2-define-palette($mat-eav-item-dialog-error);
+$eav-ui-warn: mat.m2-define-palette(material-colors.$mat-eav-item-dialog-error);
 
 $eav-ui-typography: mat.m2-define-typography-config(
   $font-family: '"Roboto", sans-serif',

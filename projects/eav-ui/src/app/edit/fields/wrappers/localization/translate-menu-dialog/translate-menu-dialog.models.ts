@@ -3,9 +3,8 @@ import { TranslationStateCore } from '../../../../localization/translate-state.m
 /** Reduced config set / info about a field */
 export interface TranslateMenuDialogConfig {
   entityGuid: string;
-  fieldName: string;
+  fieldName?: string;
 }
-
 export interface TranslateMenuDialogData {
   config: TranslateMenuDialogConfig;
   translationState: TranslationStateCore;
@@ -19,5 +18,3 @@ export interface TranslateMenuDialogTemplateLanguage {
   noTranslatableFields?: number;
   noTranslatableFieldsThatHaveContent?: number;
 }
-
-//

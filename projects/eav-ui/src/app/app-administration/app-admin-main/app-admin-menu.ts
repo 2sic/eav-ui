@@ -5,7 +5,6 @@ import { CopilotSpecs } from '../copilot/copilot-specs';
 import { GoToCopilot } from '../copilot/go-to-copilot';
 
 export const AppAdminMenu: NavItem[] = [
-
   { name: 'App Info', path: 'home', icon: 'info', tippy: 'App Info' },
   {
     name: 'Data', path: `data/${eavConstants.scopes.default.value}`, icon: 'menu', tippy: 'Data / Content',
@@ -34,6 +33,12 @@ export const AppAdminMenu: NavItem[] = [
         tippy: 'Autogenerate Razor Views'
       },
     ]
+  },
+  {
+    name: 'App Extensions (beta)',
+    path: 'extensions',
+    icon: 'extension',
+    tippy: 'App Extensions (beta)',
   },
   {
     name: 'Web API', path: 'web-api', icon: 'offline_bolt', tippy: 'WebApi',

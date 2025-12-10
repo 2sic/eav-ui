@@ -1,26 +1,29 @@
-@import "../theme/_material-colors.scss";
+@use "../variables";
+
+@use "sass:map";
+@use "../theme/_material-colors.scss";
 
 .eav-dragging .dropzone:not(.dropzone-disabled) {
   .c-ew__preview {
-    background-color: $dropzone-background !important;
+    background-color: variables.$dropzone-background !important;
   }
 
   .c-ew__preview-suffix-text {
-    color: map_get($mat-eav-item-dialog-secondary, 500);
+    color: map.get(material-colors.$mat-eav-item-dialog-secondary, 500);
   }
 
   .c-ew__dialog {
-    box-shadow: 0 0 5px 5px $dropzone-active-background !important;
+    box-shadow: 0 0 5px 5px variables.$dropzone-active-background !important;
   }
 }
 
 .eav-dragging.dropzone:not(.dropzone-disabled) {
   .c-ew__preview {
-    background-color: $dropzone-active-background !important;
+    background-color: variables.$dropzone-active-background !important;
   }
 
   .c-ew__preview-suffix-text {
-    color: map_get($mat-eav-item-dialog-secondary, 500);
+    color: map.get(material-colors.$mat-eav-item-dialog-secondary, 500);
   }
 }
 

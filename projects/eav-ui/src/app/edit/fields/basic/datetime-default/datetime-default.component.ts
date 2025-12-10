@@ -19,7 +19,7 @@ import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
 import {
   DateTimeUtils
 } from './datetime-fn';
-import { MyMatTimepickerInput } from './mat-timer-picker';
+import { MyMatTimepickerInput } from './mat-time-picker';
 
 const logSpecs = {
   all: false,
@@ -84,9 +84,20 @@ export class DatetimeDefaultComponent implements AfterViewInit {
   constructor(
     private translate: TranslateService,
   ) {
-    // Initialize dayjs with browser's language for proper localization
-    DateTimeUtils.initializeDayjs(navigator.language);
-    this.translate.currentLang = navigator.language;
+    const locale = navigator.language.substring(0, 2); // e.g. 'de-De' to 'de'
+    DateTimeUtils.initializeDayjs(locale);
+    this.translate.currentLang = locale;
+  }
+
+  /**
+   * Localized placeholder depending on locale and whether time picker is active.
+   * Uses dayjs.localeData().longDateFormat('L') for the date part and 'HH:mm:ss' for time.
+   * If dayjs doesn't provide a format, fall back to 'YYYY-MM-DD' (date-only) and 'YYYY-MM-DD HH:mm:ss' (date+time).
+   */
+  get placeholder(): string {
+    const dateFmt = DateTimeUtils.getLocaleDateFormat();
+    const timeFmt = 'HH:mm:ss';
+    return this.useTimePicker() ? `${dateFmt} ${timeFmt}` : dateFmt;
   }
 
   /**
@@ -124,7 +135,8 @@ export class DatetimeDefaultComponent implements AfterViewInit {
     const isValid = DateTimeUtils.handleDateTimeInput(
       value,
       this.uiValue(),
-      (value) => this.ui().setIfChanged(value)
+      (value) => this.ui().setIfChanged(value),
+      this.useTimePicker()
     );
 
     // Restore previous value if input is invalid
@@ -159,7 +171,7 @@ export class DatetimeDefaultComponent implements AfterViewInit {
     );
 
     // Log invalid dates for debugging
-    if (event.value && !event.value.isValid()){
+    if (event.value && !event.value.isValid()) {
       const l = this.log.fnIf('InvalidDate', { date: event.value });
     }
   }

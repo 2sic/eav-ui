@@ -1,4 +1,4 @@
-@if (language().current !== language().primary || translatePrimaryLanguage()) {
+@if (!isPrimaryLang() || translatePrimaryLanguage()) {
   <div>
     <button mat-button [disabled]="readOnly().isReadOnly || slotIsEmpty()" [matMenuTriggerFor]="menu">
       <span class="my-flex-inside">
@@ -9,14 +9,19 @@
     </button>
     <mat-menu #menu="matMenu">
       <ng-template matMenuContent>
-        <button mat-menu-item (click)="unlockAll()">{{ 'LangMenu.TranslateAll' | translate }}</button>
+        @if (!isPrimaryLang()) {
+          <button mat-menu-item (click)="unlockAll()">{{ 'LangMenu.TranslateAll' | translate }}</button>
+        }
         <button mat-menu-item (click)="autoTranslateMany()">
           {{ 'LangMenu.AutoTranslateAll' | translate }}
           <app-feature-icon-indicator [featureNameId]="'EditUiTranslateWithGoogle'"></app-feature-icon-indicator>
         </button>
-        @if(language().current !== language().primary) {
+        @if (!isPrimaryLang()) {
           <button mat-menu-item (click)="lockAll()">{{ 'LangMenu.NoTranslateAll' | translate }}</button>
         }
+        <button mat-menu-item (click)="openTranslateMenuDialogMany()">
+          {{ 'LangMenu.Link' | translate }}
+        </button>
       </ng-template>
     </mat-menu>
   </div>

@@ -18,7 +18,6 @@ export interface GridWithHelpInput {
   templateUrl: './grid-with-help.component.html',
   styleUrl: './grid-with-help.component.scss'
 })
-
 export class GridWithHelpComponent {
   // ViewChild and ContentChild references - Access to DOM elements
   gridWrapper = viewChild("gridWrapper", { read: ElementRef });
@@ -34,6 +33,9 @@ export class GridWithHelpComponent {
   readonly DEFAULT_ROW_HEIGHT = 47; // Default height for AG Grid rows in pixels
   readonly GRID_HEADER_HEIGHT = 64; // Height of AG Grid header in pixels
   readonly HELP_CARD_BUFFER = 12;   // Additional buffer space for help card in pixels
+
+
+  // ag-row-even
 
   constructor() {
     // Effect that reacts to changes in refresh and rowLength signals
@@ -61,35 +63,39 @@ export class GridWithHelpComponent {
     const dialogActionEl = this.dialogAction()?.nativeElement;
     const helpCard = gridWrapperEl.querySelector('.help-info-card') as HTMLElement;
 
-    helpCard.classList.toggle('center-center', rowLength === 0);
+    setTimeout(() => {
+      helpCard.classList.toggle('center-center', rowLength === 0);
 
-    // Early return if critical elements are missing
-    if (!agGridEl || !dialogActionEl) return;
+      // Early return if critical elements are missing
+      if (!agGridEl || !dialogActionEl) return;
 
-    helpCard.style.flex = "";
+      helpCard.style.flex = "";
 
-    // Calculate all necessary dimensions for layout
-    const dimensions = this.#calculateDimensions(gridWrapperEl, agGridEl, dialogActionEl, helpCard, rowLength);
+      // Calculate all necessary dimensions for layout
+      const dimensions = this.#calculateDimensions(gridWrapperEl, agGridEl, dialogActionEl, helpCard, rowLength);
 
-    // Set AG Grid height based on row count and maximum height to prevent overflow
-    agGridEl.style.flex = dimensions.rowHeight ? `0 0 ${dimensions.agGridHeight}px` : '0px';
+      // Set AG Grid height based on row count and maximum height to prevent overflow
+      agGridEl.style.flex = dimensions.rowHeight ? `0 0 ${dimensions.agGridHeight}px` : '0px';
 
-    // Outer Container for max Size
-    const sideNavEl = document.querySelector<HTMLElement>('.mat-sidenav-content'); // with SideNav (settings)
-    const dialogEl = document.querySelector<HTMLElement>('.mat-mdc-dialog-container'); // only Dialog (Content)
+      // Outer Container for max Size
+      const sideNavEl = document.querySelector<HTMLElement>('.mat-sidenav-content'); // with SideNav (settings)
+      const dialogEl = document.querySelector<HTMLElement>('.mat-mdc-dialog-container'); // only Dialog (Content)
 
-    const outerContainer = sideNavEl ?? dialogEl;
-    const sideNavPuffer = 74;
-    const maxHeight = outerContainer.clientHeight - dimensions.dialogHeaderHeight - dimensions.dialogActionHeight + (sideNavEl ? sideNavPuffer : 0);
+      const hasNavComponentWrapper = !!document.querySelector<HTMLElement>('.nav-component-wrapper'); // Check, if sideNav Dialog or Single Dialog 
+      const outerContainer = hasNavComponentWrapper ? dialogEl : sideNavEl;
 
-    agGridEl.style.maxHeight = `${maxHeight}px`;
+      const maxHeight = outerContainer.clientHeight - dimensions.dialogHeaderHeight - dimensions.dialogActionHeight - 2;
 
-    // Determine if help card should be hidden when content exceeds available space
-    const shouldHideHelp = dimensions.helpCardHeight + dimensions.agGridHeight + dimensions.dialogActionHeight + dimensions.dialogHeaderHeight > dimensions.wrapperHeight;
+      agGridEl.style.maxHeight = `${maxHeight}px`;
 
-    helpCard.style.flex = "1 1 auto";
-    // Remove Help card from layout if it should be hidden
-    helpCard?.classList.toggle('hidden-help-info-card', shouldHideHelp);
+      // Determine if help card should be hidden when content exceeds available space
+      const shouldHideHelp = dimensions.helpCardHeight + dimensions.agGridHeight + dimensions.dialogActionHeight + dimensions.dialogHeaderHeight > dimensions.wrapperHeight;
+
+      helpCard.style.flex = "1 1 auto";
+      // Remove Help card from layout if it should be hidden
+      helpCard?.classList.toggle('hidden-help-info-card', shouldHideHelp);
+    }, 0);
+
   }
 
   // Calculate dimensions for AG Grid and help card based on current layout
@@ -110,6 +116,4 @@ export class GridWithHelpComponent {
       wrapperHeight
     };
   }
-
-
 }

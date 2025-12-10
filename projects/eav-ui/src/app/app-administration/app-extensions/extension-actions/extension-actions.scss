@@ -1,0 +1,17 @@
+.actions-component {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+}
+
+.actions-row {
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+}
+
+.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}

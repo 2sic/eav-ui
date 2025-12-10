@@ -1,8 +1,13 @@
 <div class="outer-container">
-  <h1>{{data.heading}}</h1>
+  <h1>{{ data.heading }}</h1>
   <p>
-    {{data.intro}}
+    {{ data.intro }}
   </p>
 </div>
 
-<app-copilot-generator [outputType]="data.outputType" [title]="data.title"></app-copilot-generator>
+<app-copilot-generator
+  [outputType]="data.outputType"
+  [title]="data.title"
+></app-copilot-generator>
+
+<router-outlet></router-outlet>

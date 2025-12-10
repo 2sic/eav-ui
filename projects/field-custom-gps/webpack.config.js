@@ -4,7 +4,7 @@ const webpack = require('webpack');
 const setExternalSourceMaps = require('../../build-helpers/external-source-maps-elements');
 const multiOutput = require('../../build-helpers/multi-output');
 const buildConfig = require('@2sic.com/2sxc-load-build-config').BuildConfig;
-const distPath = path.resolve(__dirname, '../../dist/system/field-custom-gps');
+const distPath = path.resolve(__dirname, '../../dist/extensions/field-custom-gps');
 
 /** Checks webpack configuration to remove console.log, not node process.env.NODE_ENV used for external source maps */
 let isProduction = false;
@@ -24,7 +24,7 @@ const configuration = {
     new webpack.DefinePlugin({
       '__PRODUCTION__': JSON.stringify(isProduction),
     }),
-    multiOutput.createCopyAfterBuildPlugin(distPath, [...buildConfig.Sources, ...buildConfig.JsTargets], '/system/field-custom-gps'),
+    multiOutput.createCopyAfterBuildPlugin(distPath, [...buildConfig.Sources, ...buildConfig.JsTargets], '/extensions/field-custom-gps'),
   ].filter(item => item !== null),
   devtool: 'source-map',
   module: {
@@ -73,6 +73,6 @@ const configuration = {
 };
 
 /* change source map generation based on production mode */
-setExternalSourceMaps(configuration, '/system/field-custom-gps/');
+setExternalSourceMaps(configuration, '/extensions/field-custom-gps/');
 
 module.exports = configuration;

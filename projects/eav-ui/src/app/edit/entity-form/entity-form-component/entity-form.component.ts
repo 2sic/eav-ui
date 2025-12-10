@@ -133,8 +133,7 @@ export class EntityFormComponent implements OnInit, AfterViewChecked, OnDestroy 
     private editRoutingSvc: EditRoutingService,
     private matDialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
-  ) {
-  }
+  ) { }
 
   ngAfterViewChecked() {
     // change detection inside note template seems to be independent of this component and without forcing checks

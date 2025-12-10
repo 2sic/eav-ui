@@ -9,7 +9,7 @@
       [required]="basics().required"
       [value]="formatDateTime(dateTimeValue())"
       (change)="handleDateTimeInput($event)"
-      [placeholder]="basics().placeholder || 'YYYY-MM-DD HH:MM:SS'"
+      [placeholder]="basics().placeholder || placeholder"
     />
   }
 
@@ -23,8 +23,9 @@
     [required]="basics().required"
     [matDatepicker]="datepicker"
     [value]="dateTimeValue()"
-    [placeholder]="basics().placeholder"
+    [placeholder]="basics().placeholder || placeholder"
     (dateChange)="updateDate($event)"
+    (change)="handleDateTimeInput($event)"
   />
   <mat-datepicker #datepicker xPosition="end" />
   <mat-datepicker-toggle [for]="datepicker" matSuffix tippyTranslate="Fields.DateTime.OpenCalender" />
@@ -42,7 +43,7 @@
         [myMatTimepicker]="timepicker"
         class="hidden-picker-input"
         [value]="dateTimeValue()"
-        [placeholder]="basics().placeholder"
+        [placeholder]="basics().placeholder || placeholder"
         (input)="updateTime($event)"
       />
       <mat-timepicker #timepicker [options]="timePickerOptions()" />

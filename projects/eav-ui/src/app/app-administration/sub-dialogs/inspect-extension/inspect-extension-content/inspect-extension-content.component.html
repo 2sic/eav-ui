@@ -1,0 +1,58 @@
+@if (data()?.foundLock) {
+  <h4>Data</h4>
+  <div>
+    Content Types: {{ data().data.contentTypes.length }}
+    <br />
+
+    @for (ct of data().data.contentTypes; track ct) {
+      <div class="content-type-chip">
+        {{ ct.name }} ({{ ct.localEntities }})
+      </div>
+    }
+  </div>
+
+  <h4>Lock File</h4>
+  <div class="status" [class.ok]="data().foundLock" [class.error]="!data().foundLock">
+    {{ data().foundLock ? 'Found' : 'Missing' }}
+  </div>
+
+  <h4>Files</h4>
+  <mat-accordion>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-description>
+          Total: {{ data().summary.total }} |
+          Changed: {{ data().summary.changed }} |
+          Added: {{ data().summary.added }} |
+          Missing: {{ data().summary.missing }}
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <div class="content">
+        <table class="file-table">
+          <tr>
+            <th>Path</th>
+            <th>Status</th>
+          </tr>
+
+          @for (f of data().files; track f.path) {
+            <tr>
+              <td>{{ f.path }}</td>
+              <td
+                [class.ok]="f.status === 'unchanged'"
+                [class.changed]="f.status === 'changed'"
+                [class.added]="f.status === 'added'"
+                [class.missing]="f.status === 'missing'"
+              >
+                {{ f.status }}
+              </td>
+            </tr>
+          }
+        </table>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+} @else{
+  <div class="no-data">
+    <p>No data available.</p>
+  </div>
+} 

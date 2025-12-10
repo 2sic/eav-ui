@@ -1,5 +1,6 @@
-@import "../../../assets/styles/variables.scss";
-@import "../../../assets/styles/theme/material-colors";
+@use "sass:map";
+@use "../../../assets/styles/variables.scss";
+@use "../../../assets/styles/theme/material-colors";
 
 :host {
   height: 100%;
@@ -59,7 +60,7 @@
 
 .log-entry-show {
   flex: 0 0 auto;
-  color: map_get($mat-eav-item-dialog-secondary, 300);
+  color: map.get(material-colors.$mat-eav-item-dialog-secondary, 300);
   font-size: 12px;
   text-decoration: underline;
   cursor: pointer;

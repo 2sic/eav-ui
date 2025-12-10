@@ -36,7 +36,8 @@
       "pastetext",
       "removeformat",
       "sitewide",
-      "tinymce"
+      "tinymce",
+      "uifields"
     ],
     "[html][typescript]": {
       "editor.codeActionsOnSave": {

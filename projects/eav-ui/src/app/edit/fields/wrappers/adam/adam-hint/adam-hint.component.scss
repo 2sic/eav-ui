@@ -1,9 +1,9 @@
-@import "../../../../assets/styles/variables.scss";
+@use "../../../../assets/styles/variables.scss";
 
 .hint-box {
   padding: 2px 24px;
   background-color: white;
-  color: rgba($editUI-foreground-color, 0.44);
+  color: rgba(variables.$editUI-foreground-color, 0.44);
   display: flex;
 
   &__hint {

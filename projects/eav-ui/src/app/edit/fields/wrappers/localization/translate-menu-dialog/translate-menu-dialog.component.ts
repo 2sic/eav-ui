@@ -36,8 +36,14 @@ export class TranslateMenuDialogComponent extends TranslateHelperComponent {
     const attributes = this.itemAttributes();
     const translationState = this.translationStateSignal();
 
-    return getTemplateLanguages(this.dialogData.config, language, languages, attributes, translationState.linkType);
+    const fieldName = this.dialogData.isTranslateMany
+      ? this.dialogData.translatableFields?.[0] ?? ''
+      : this.dialogData.config.fieldName ?? '';
+
+    return getTemplateLanguages({ fieldName }, language, languages, attributes, translationState.linkType);
   });
+  
+  public isPrimaryLang = computed(() => this.language().current === this.language().primary);
 
   constructor(
     private dialog: MatDialogRef<TranslateMenuDialogComponent>,
@@ -72,25 +78,37 @@ export class TranslateMenuDialogComponent extends TranslateHelperComponent {
     if (noChange)
       return this.closeDialog();
 
-    switch (newState.linkType) {
-      case TranslationLinks.Translate:
-        this.fieldsTranslateService.unlock(this.dialogData.config.fieldName);
-        break;
-      case TranslationLinks.DontTranslate:
-        this.fieldsTranslateService.lock(this.dialogData.config.fieldName);
-        break;
-      case TranslationLinks.LinkReadOnly:
-        this.fieldsTranslateService.linkReadOnly(this.dialogData.config.fieldName, newState.language);
-        break;
-      case TranslationLinks.LinkReadWrite:
-        this.fieldsTranslateService.linkReadWrite(this.dialogData.config.fieldName, newState.language);
-        break;
-      case TranslationLinks.LinkCopyFrom:
-        this.fieldsTranslateService.copyFrom(this.dialogData.config.fieldName, newState.language);
-        break;
-      default:
-        break;
+    const applyToField = (fieldName: string) => {
+      switch (newState.linkType) {
+        case TranslationLinks.Translate:
+          this.fieldsTranslateService.unlock(fieldName);
+          break;
+        case TranslationLinks.DontTranslate:
+          this.fieldsTranslateService.lock(fieldName);
+          break;
+        case TranslationLinks.LinkReadOnly:
+          this.fieldsTranslateService.linkReadOnly(fieldName, newState.language);
+          break;
+        case TranslationLinks.LinkReadWrite:
+          this.fieldsTranslateService.linkReadWrite(fieldName, newState.language);
+          break;
+        case TranslationLinks.LinkCopyFrom:
+          this.fieldsTranslateService.copyFrom(fieldName, newState.language);
+          break;
+        default:
+          break;
+      }
+    };
+
+    if (this.dialogData.isTranslateMany && this.dialogData.translatableFields?.length) {
+      for (const fieldName of this.dialogData.translatableFields) {
+        applyToField(fieldName);
+      }
+    } else {
+      // single-field behavior (existing)
+      applyToField(this.dialogData.config.fieldName!);
     }
+
     this.closeDialog();
   }
 

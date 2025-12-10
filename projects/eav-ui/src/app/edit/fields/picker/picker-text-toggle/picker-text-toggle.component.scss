@@ -1,4 +1,4 @@
-@import '../../../assets/styles/variables';
+@use '../../../assets/styles/variables';
 
 .eav-suffix-button {
   scale: calc(4/5);
@@ -16,11 +16,11 @@
   }
 
   .active {
-    background-color: $accent-color;
+    background-color: variables.$accent-color;
     color: white;
 
     &.mat-mdc-icon-button:disabled {
-      background-color: $editUI-label-disabled-color;
+      background-color: variables.$editUI-label-disabled-color;
       color: white;
     }
   }

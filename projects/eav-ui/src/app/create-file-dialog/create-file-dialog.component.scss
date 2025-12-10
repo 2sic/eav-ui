@@ -1,4 +1,4 @@
-@import '../edit/assets/styles/_variables.scss';
+@use '../edit/assets/styles/_variables.scss';
 
 .eav-dialog-title-box {
   white-space: nowrap;
@@ -26,7 +26,7 @@
     color: rgba(0, 0, 0, 0.6);
     pointer-events: none;
     &.disabled {
-      color: $editUI-field-disabled-color;
+      color: variables.$editUI-field-disabled-color;
     }
   }
 }

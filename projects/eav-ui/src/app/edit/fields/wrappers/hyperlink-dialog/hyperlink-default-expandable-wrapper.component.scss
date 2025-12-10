@@ -1,10 +1,11 @@
-@import '../../../assets/styles/variables.scss';
-@import '../../../assets/styles/theme/material-colors.scss';
+@use "sass:map";
+@use '../../../assets/styles/variables.scss';
+@use '../../../assets/styles/theme/material-colors.scss';
 
 $hyperlink-default-height: 78px;
 
 .metadata-exists {
-  color: $blue-accent-color;
+  color: variables.$blue-accent-color;
 }
 
 // Ensures correct layout
@@ -17,11 +18,11 @@ $hyperlink-default-height: 78px;
 
 .c-ew__preview {
   .thumbnail-before-input {
-    background-color: rgba($editUI-foreground-color, 0.08);
+    background-color: rgba(variables.$editUI-foreground-color, 0.08);
     width: $hyperlink-default-height;
     height: $hyperlink-default-height;
-    border-radius: $edit-ui-input-border-radius;
-    border: 1px solid $field-border-color--disabled;
+    border-radius: variables.$edit-ui-input-border-radius;
+    border: 1px solid variables.$field-border-color--disabled;
     cursor: pointer;
     background-repeat: no-repeat;
     background-position: center;
@@ -36,7 +37,7 @@ $hyperlink-default-height: 78px;
         height: 56px;
         font-size: 56px;
         line-height: 56px;
-        color: rgba($editUI-foreground-color, 0.44);
+        color: rgba(variables.$editUI-foreground-color, 0.44);
       }
     }
   }
@@ -45,7 +46,7 @@ $hyperlink-default-height: 78px;
     cursor: default;
 
     .c-ew__preview-field-hint {
-      color: $editUI-label-disabled-color;
+      color: variables.$editUI-label-disabled-color;
     }
   }
 }
@@ -60,13 +61,13 @@ $hyperlink-default-height: 78px;
 }
 
 .c-ew__preview-field-hint {
-  color: rgba($editUI-foreground-color, 0.44);
+  color: rgba(variables.$editUI-foreground-color, 0.44);
   font-size: 12px;
 }
 
 .c-ew__preview--disabled {
   .c-ew__preview-field-hint {
-    color: $editUI-label-disabled-color;
+    color: variables.$editUI-label-disabled-color;
   }
 }
 
@@ -79,13 +80,13 @@ $hyperlink-default-height: 78px;
 .c-ew__preview-suffix-text {
   font-size: 12px;
   line-height: 14px;
-  color: map_get($mat-eav-item-dialog-secondary, 300);
+  color: map.get(material-colors.$mat-eav-item-dialog-secondary, 300);
   user-select: none;
   cursor: text;
 }
 
 .c-ew__preview-suffix-text--disabled {
-  color: $editUI-label-disabled-color;
+  color: variables.$editUI-label-disabled-color;
 }
 
 @media (min-width: 601px) {

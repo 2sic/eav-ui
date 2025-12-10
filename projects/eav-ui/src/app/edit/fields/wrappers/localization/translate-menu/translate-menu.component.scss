@@ -1,8 +1,8 @@
-@import "../../../../assets/styles/variables.scss";
-@import "../../../../assets/styles/theme/material-colors.scss";
+@use "../../../../assets/styles/variables.scss";
+@use "../../../../assets/styles/theme/material-colors.scss";
 
 .eav-menu-item-selected {
-  background: $edit-ui-selected-option;
+  background: variables.$edit-ui-selected-option;
 }
 
 .localization-lock-open {
@@ -33,17 +33,16 @@
   top: -12px;
   padding: 0px 4px 0 6px;
   white-space: nowrap;
+  font-size: 12px;
   overflow: hidden;
   text-overflow: ellipsis;
   max-height: 16px;
   cursor: default;
-  color: rgba($editUI-foreground-color, 0.44);
+  color: rgba(variables.$editUI-foreground-color, 0.44);
 
   &--disabled {
-    color: rgba($editUI-foreground-color, 0.24);
+    color: rgba(variables.$editUI-foreground-color, 0.24);
   }
-
-  font-size: 12px;
 }
 
 .eav-translate-icon-button {

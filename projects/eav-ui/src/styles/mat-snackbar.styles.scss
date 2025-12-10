@@ -1,11 +1,11 @@
-@import "../app/edit/assets/styles/variables";
+@use "../app/edit/assets/styles/variables";
 
 .mat-mdc-snack-bar-action {
-  color: $primary-color;
+  color: variables.$primary-color;
 }
 
 .snackbar-error {
-  background: $error-color;
+  background: variables.$error-color;
 
   .mat-mdc-snack-bar-label {
     color: white;

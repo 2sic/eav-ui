@@ -5,15 +5,15 @@ import { Router, RouterModule } from '@angular/router';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 
 @Component({
-    selector: 'app-import-export',
-    imports: [
-        RouterModule,
-        MatIconModule,
-        MatButtonModule,
-        TippyDirective
-    ],
-    templateUrl: './import-export.component.html',
-    styleUrl: './import-export.component.scss'
+  selector: 'app-import-export',
+  imports: [
+    RouterModule,
+    MatIconModule,
+    MatButtonModule,
+    TippyDirective
+  ],
+  templateUrl: './import-export.component.html',
+  styleUrl: './import-export.component.scss'
 })
 export class ImportExportComponent {
 
@@ -23,5 +23,4 @@ export class ImportExportComponent {
     const currentPath = this.router.url.replace('/import-export', '');
     return `${currentPath}/${link}`;
   }
-
 }

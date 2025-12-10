@@ -1,6 +1,6 @@
 import { ColDef, GridApi, GridOptions, GridReadyEvent, ValueGetterParams } from '@ag-grid-community/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectorRef, Component, computed, inject, OnInit, signal, ViewContainerRef, WritableSignal } from '@angular/core';
+import { ChangeDetectorRef, Component, computed, effect, inject, OnInit, signal, ViewContainerRef, WritableSignal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogActions, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -87,7 +87,13 @@ export class ContentItemsComponent implements OnInit {
   #contentTypesSvc = transient(ContentTypesService);
   #dialogRouter = transient(DialogRoutingService);
 
-  constructor() { }
+  constructor() {
+    effect(() => {
+      const data = this.items(); // re-runs when items are refreshed
+      if (data)
+        this.#gridApiSig().setGridOption("loading", false);
+    });
+  }
 
   gridOptions: GridOptions = {
     ...defaultGridOptions,
@@ -146,7 +152,9 @@ export class ContentItemsComponent implements OnInit {
   }
 
   private fetchItems() {
-    this.refresh.update(v => ++v)
+    // Show the AG Grid loading overlay
+    this.#gridApiSig().setGridOption("loading", true);
+    this.refresh.update(v => ++v);
   }
 
   private fetchColumns() {
@@ -161,7 +169,7 @@ export class ContentItemsComponent implements OnInit {
   }
 
   private setColumnDefs(columnDefs: ColDef[], filterModel: AgGridFilterModel) {
-    this.#gridApiSig().setColumnDefs(columnDefs);
+    this.#gridApiSig().setGridOption("columnDefs", columnDefs);
     if (filterModel) {
       this.log.a('Will try to apply filter:', filterModel);
       this.#gridApiSig().setFilterModel(filterModel);
@@ -402,10 +410,8 @@ export class ContentItemsComponent implements OnInit {
     this.#contentExportSvc.exportEntity(item.Id, this.#contentTypeStaticName, true);
   }
 
-
   // Show initial delete confirmation
   #delete(item: ContentItem) {
-    this.#snackBar.open('Deleting...');
     this.#confirmAndExecuteDelete(
       item,
       "Delete Item?",
@@ -429,7 +435,7 @@ export class ContentItemsComponent implements OnInit {
       message: message,
       title: dialogTitle,
       confirmTranslateKey: confirmText,
-      hasDeleteSnackbar: true 
+      hasDeleteSnackbar: true
     };
 
     this.#matDialog.open(ConfirmDeleteDialogComponent, {
@@ -464,7 +470,6 @@ export class ContentItemsComponent implements OnInit {
         });
     });
   }
-
 
   private valueGetterEntityField(params: ValueGetterParams) {
     const rawValue: ContentItem[] = params.data[params.colDef.field];

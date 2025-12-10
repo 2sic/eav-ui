@@ -24,7 +24,8 @@ export class FeaturesListEnabledComponent implements ICellRendererAngularComp {
   configurationData: OverrideContentsLogData; // TYPE
 
   public params: {
-    addItemUrlTest(contentType: Feature): string;
+    /** Parent helper to build URL to the settings dialog */
+    getSettingsUrl(contentType: Feature): string;
   };
 
   value: boolean;
@@ -37,28 +38,28 @@ export class FeaturesListEnabledComponent implements ICellRendererAngularComp {
 
     this.configurationData = params.data?.configuration;
     this.badgeValue = this.configurationData && Object.keys(this.configurationData).length > 0 ? 1 : 0;
-
   }
 
   refresh(params?: any): boolean {
     return true;
   }
 
-
   openSettings() {
-
     const { ...configuration } = this.configurationData ?? {};
 
     const overrideContents: Record<string, unknown>[] = [
       {
+        // The guid, just for the round-trip so we know what to update after dialog close
         guid: this.contentType.guid,
+        // Default / fallback, in case no configuration is set
         enabled: this.contentType.enabledInConfiguration,
+        // The actual configuration values to show in the UI
         ...configuration
       }
     ];
 
     // Raw URL string, e.g. '#/2/v2/381/...'
-    const rawUrl = this.params.addItemUrlTest(this.contentType);
+    const rawUrl = this.params.getSettingsUrl(this.contentType);
 
     // Remove leading '#' or '/' to clean the URL string
     const normalizedUrl = rawUrl.startsWith('#') || rawUrl.startsWith('/')
@@ -76,5 +77,4 @@ export class FeaturesListEnabledComponent implements ICellRendererAngularComp {
       } satisfies DialogRoutingState,
     });
   }
-
 }

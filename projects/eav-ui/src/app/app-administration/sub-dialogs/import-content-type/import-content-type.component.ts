@@ -3,12 +3,13 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { transient } from '../../../../../../core';
 import { FileUploadDialogComponent, FileUploadDialogData, UploadTypes } from '../../../shared/components/file-upload-dialog';
 import { ContentTypesService } from '../../services/content-types.service';
+
 @Component({
-    selector: 'app-import-data-bundles',
-    templateUrl: './import-content-type.component.html',
-    imports: [
-        FileUploadDialogComponent,
-    ]
+  selector: 'app-import-content-type',
+  templateUrl: './import-content-type.component.html',
+  imports: [
+    FileUploadDialogComponent,
+  ]
 })
 export class ImportContentTypeComponent {
 
@@ -23,5 +24,4 @@ export class ImportContentTypeComponent {
     dialogData.multiple ??= true;
     dialogData.upload$ ??= (files) => this.contentTypesService.import(files);
   }
-
 }

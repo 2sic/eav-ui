@@ -1,3 +1,6 @@
+@use '@angular/material' as mat;
+@use "variables";
+
 /**
  * 2sxc Color Override Styles
  * This file contains styles for overriding angular components and setting colors in the 2sxc UI components.
@@ -12,7 +15,7 @@
 .eav-action-button,
 .eav-card-action-button,
 .active-features-count {
-  background: $sxc-gradient !important;
+  background: variables.$sxc-gradient !important;
   color: white !important;
 }
 
@@ -25,30 +28,30 @@
 .mat-mdc-progress-spinner {
   @include mat.progress-spinner-overrides(
     (
-      active-indicator-color: $sxc-solid,
+      active-indicator-color: variables.$sxc-solid,
     )
   );
 }
 
 .mat-mdc-radio-button.mat-accent {
   @include mat.radio-overrides(( // Only works with solid colors
-    selected-hover-icon-color: $sxc-solid,
-    selected-pressed-icon-color: $sxc-solid,
-    selected-focus-icon-color: $sxc-solid,
-    selected-icon-color: $sxc-solid,
-    checked-ripple-color: $sxc-solid,
-    unselected-hover-icon-color: $sxc-solid,
-    unselected-icon-color: $sxc-solid,
+    selected-hover-icon-color: variables.$sxc-solid,
+    selected-pressed-icon-color: variables.$sxc-solid,
+    selected-focus-icon-color: variables.$sxc-solid,
+    selected-icon-color: variables.$sxc-solid,
+    checked-ripple-color: variables.$sxc-solid,
+    unselected-hover-icon-color: variables.$sxc-solid,
+    unselected-icon-color: variables.$sxc-solid,
   ));
 }
 
 .mat-mdc-checkbox.mat-accent {
   @include mat.checkbox-overrides(( // Only works with solid colors
-    selected-hover-icon-color: $sxc-solid,
-    selected-pressed-icon-color: $sxc-solid,
-    selected-focus-icon-color: $sxc-solid,
-    selected-icon-color: $sxc-solid,
-    unselected-hover-icon-color: $sxc-solid,
-    unselected-icon-color: $sxc-solid,
+    selected-hover-icon-color: variables.$sxc-solid,
+    selected-pressed-icon-color: variables.$sxc-solid,
+    selected-focus-icon-color: variables.$sxc-solid,
+    selected-icon-color: variables.$sxc-solid,
+    unselected-hover-icon-color: variables.$sxc-solid,
+    unselected-icon-color: variables.$sxc-solid,
   ));
 }

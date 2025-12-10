@@ -1,7 +1,11 @@
 <div class="eav-dialog">
   <div class="eav-dialog-header">
     <div class="eav-dialog-header__title">Rename stream</div>
-    <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
+    <button
+      mat-icon-button
+      tippy="Close dialog"
+      (click)="closeDialog()"
+    >
       <mat-icon>close</mat-icon>
     </button>
   </div>
@@ -32,7 +36,12 @@
         @if (advancedMode && guidedLabel) {
           <mat-form-field color="accent" class="eav-mat-form-field">
             <mat-label>Scope</mat-label>
-            <mat-select formControlName="scope" [placeholder]="!scopeOptions.length ? 'No items found' : ''">
+            <mat-select
+              formControlName="scope"
+              [placeholder]="!scopeOptions.length
+                ? 'No items found'
+                : ''"
+            >
               @for (scopeOption of scopeOptions; track scopeOption) {
                 <mat-option [value]="scopeOption.value">
                   {{ scopeOption.name }}
@@ -62,13 +71,29 @@
             <input matInput type="text" formControlName="label" required>
           }
           <div matTextSuffix class="eav-selection-suffix">
-            <button mat-icon-button class="eav-selection-suffix-button" type="button" [ngClass]="{ 'active': guidedLabel }" tippy="Pick existing value"
-              (click)="toggleGuidedLabel(true)">
-              <mat-icon class="eav-icon">search</mat-icon>
+            <button
+              mat-icon-button
+              class="eav-selection-suffix-button"
+              type="button"
+              [ngClass]="{ 'active': guidedLabel }"
+              tippy="Pick existing value"
+              (click)="toggleGuidedLabel(true)"
+            >
+              <mat-icon class="eav-icon">
+                search
+              </mat-icon>
             </button>
-            <button mat-icon-button class="eav-selection-suffix-button" type="button" [ngClass]="{ 'active': !guidedLabel }" tippy="Manual entry"
-              (click)="toggleGuidedLabel(false)">
-              <mat-icon class="eav-icon">text_fields</mat-icon>
+            <button
+              mat-icon-button
+              class="eav-selection-suffix-button"
+              type="button"
+              [ngClass]="{ 'active': !guidedLabel }"
+              tippy="Manual entry"
+              (click)="toggleGuidedLabel(false)"
+              >
+                <mat-icon class="eav-icon">
+                  text_fields
+                </mat-icon>
             </button>
           </div>
         </mat-form-field>
@@ -84,16 +109,20 @@
     <!-- Extra button for rich form -->
     <div>
       @if (isSource && pipelineResultExists) {
-        <mat-slide-toggle color="accent" [checked]="advancedMode" (change)="toggleAdvancedMode($event)">
+        <mat-slide-toggle
+          color="accent"
+          [checked]="advancedMode"
+          (change)="toggleAdvancedMode($event)"
+        >
           {{ advancedMode ? 'Advanced' : 'Simple' }}
         </mat-slide-toggle>
       }
     </div>
-    <div>
-      <button mat-raised-button type="button" (click)="closeDialog()">Cancel</button>
-      <button mat-raised-button type="button" color="accent" [disabled]="!form.valid" (click)="rename()">
-        Rename
-      </button>
-    </div>
+    <app-save-close-button-fab
+      [label]="'Rename and close (ctrl + enter)'"
+      (action)="saveAndClose()"
+      [disabled]="!form.valid"
+      [ngClass]="!form.valid ? 'disabled' : ''"
+    />
   </mat-dialog-actions>
 </div>

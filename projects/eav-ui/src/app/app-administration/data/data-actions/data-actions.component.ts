@@ -9,17 +9,16 @@ import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { ContentType } from '../../models/content-type.model';
 import { AgActionsAlwaysRefresh } from '../../queries/ag-actions/ag-actions-component';
 
-
 @Component({
-    selector: 'app-data-actions',
-    templateUrl: './data-actions.component.html',
-    imports: [
-        MatRippleModule,
-        MatIconModule,
-        MatBadgeModule,
-        MatMenuModule,
-        TippyDirective,
-    ]
+  selector: 'app-data-actions',
+  templateUrl: './data-actions.component.html',
+  imports: [
+    MatRippleModule,
+    MatIconModule,
+    MatBadgeModule,
+    MatMenuModule,
+    TippyDirective,
+  ]
 })
 export class DataActionsComponent extends AgActionsAlwaysRefresh {
   contentType: ContentType;

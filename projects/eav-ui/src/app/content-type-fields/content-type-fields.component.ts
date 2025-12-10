@@ -1,4 +1,4 @@
-import { ColumnApi, FilterChangedEvent, GridApi, GridOptions, GridReadyEvent, ICellRendererParams, RowClassParams, RowDragEvent, SortChangedEvent } from '@ag-grid-community/core';
+import { FilterChangedEvent, GridApi, GridOptions, GridReadyEvent, ICellRendererParams, RowClassParams, RowDragEvent, SortChangedEvent } from '@ag-grid-community/core';
 import { NgClass } from '@angular/common';
 import { Component, computed, OnInit, signal, ViewContainerRef } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -27,6 +27,7 @@ import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module
 import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
 import { ContentTypeFieldsActionsComponent } from './content-type-fields-actions/content-type-fields-actions.component';
 import { ContentTypeFieldsActionsParams } from './content-type-fields-actions/content-type-fields-actions.models';
+import { ContentTypeFieldsDragComponent, ContentTypeFieldsDragParams } from './content-type-fields-drag/content-type-fields-drag.component';
 import { ContentTypeFieldsSpecialComponent } from './content-type-fields-special/content-type-fields-special.component';
 import { ContentTypeFieldsTitleComponent } from './content-type-fields-title/content-type-fields-title.component';
 import { ContentTypeFieldsTitleParams } from './content-type-fields-title/content-type-fields-title.models';
@@ -68,6 +69,9 @@ export class ContentTypeFieldsComponent implements OnInit {
   /** Signal to trigger reloading of data */
   refresh = signal(0);
 
+  /** Signal to track if reordering is in progress */
+  isReordering = signal(false);
+
   // UI Help Text for the UX Help Info Card
   #helpTextConst: HelpTextConst = {
     empty: {
@@ -94,7 +98,6 @@ export class ContentTypeFieldsComponent implements OnInit {
   filterApplied = false;
 
   #gridApi: GridApi;
-  #columnApi: ColumnApi;
   #rowDragSuppressed = false;
 
   ngOnInit() {
@@ -104,20 +107,22 @@ export class ContentTypeFieldsComponent implements OnInit {
 
   onGridReady(params: GridReadyEvent) {
     this.#gridApi = params.api;
-    this.#columnApi = params.columnApi;
   }
 
   onRowDragEnter(_: RowDragEvent) {
-    this.#gridApi.setEnableCellTextSelection(false);
+    this.#gridApi.setGridOption("enableCellTextSelection", false);
   }
 
   onRowDragEnd(_: RowDragEvent) {
-    this.#gridApi.setSuppressRowDrag(true);
+    this.#gridApi.setGridOption("suppressRowDrag", true);
+    this.isReordering.set(true);
+
     const idArray = this.fields().map(field => field.Id);
     this.#contentTypesFieldsSvc.reOrder(idArray, this.contentType()).subscribe(() => {
       this.#fetchFields(() => {
-        this.#gridApi.setEnableCellTextSelection(true);
-        this.#gridApi.setSuppressRowDrag(false);
+        this.#gridApi.setGridOption("enableCellTextSelection", true);
+        this.#gridApi.setGridOption("suppressRowDrag", false);
+        this.isReordering.set(false);
       });
     });
   }
@@ -144,7 +149,7 @@ export class ContentTypeFieldsComponent implements OnInit {
   }
 
   onSortChanged(_: SortChangedEvent) {
-    const columnStates = this.#columnApi.getColumnState();
+    const columnStates = this.#gridApi.getColumnState();
     this.sortApplied = columnStates.some(state => state.sort != null);
     this.#suppressRowDrag();
   }
@@ -158,12 +163,13 @@ export class ContentTypeFieldsComponent implements OnInit {
 
   #suppressRowDrag() {
     const shouldSuppress = this.sortApplied || this.filterApplied;
+
     if (shouldSuppress && !this.#rowDragSuppressed) {
       this.#rowDragSuppressed = true;
-      this.#gridApi.setSuppressRowDrag(true);
+      this.#gridApi.setGridOption("suppressRowDrag", true);
     } else if (!shouldSuppress && this.#rowDragSuppressed) {
       this.#rowDragSuppressed = false;
-      this.#gridApi.setSuppressRowDrag(false);
+      this.#gridApi.setGridOption("suppressRowDrag", false);
     }
   }
 
@@ -211,29 +217,6 @@ export class ContentTypeFieldsComponent implements OnInit {
     });
   }
 
-  // 2pp: made "Name" a link with urlTo - so not in use anymore
-  // #editFieldMetadata(field: Field) {
-  //   // If this field is inherited and therefor has no own metadata, show a snackbar and exit
-  //   if (field.SysSettings?.InheritMetadataOf) {
-  //     if (!Object.keys(field.ConfigTypes).length) {
-  //       this.snackBar.open('This field inherits all configuration so there is nothing to edit.', null, { duration: 3000 });
-  //       return;
-  //     }
-  //     this.snackBar.open('This field inherits some configuration. Edit will only show configuration which is not inherited.', null, { duration: 5000 });
-  //   }
-
-  //   // if this field is shared/can-be-inherited, show warning so the user is aware of it
-  //   if (field.SysSettings?.Share)
-  //     this.snackBar.open('This field is shared, so changing it will affect all other fields inheriting it.', null, { duration: 5000 });
-
-  //   const form: EditForm = {
-  //     items: Object.keys(field.ConfigTypes).map((t) => this.#createItemDefinition(field, t))
-  //   };
-  //   // console.warn('2dm - editFieldMetadata', field.ConfigTypes, form);
-  //   const formUrl = convertFormToUrl(form);
-  //   this.#dialogRouter.navRelative([`edit/${formUrl}`]);
-  // }
-
   #createItemDefinition(field: Field, metadataType: string): ItemAddIdentifier | ItemEditIdentifier {
     // The keys could start with an @ but may not, and in some cases we need it, others we don't
     const keyForMdLookup = metadataType.replace('@', '');
@@ -257,10 +240,6 @@ export class ContentTypeFieldsComponent implements OnInit {
     });
   }
 
-  // #changeInputType(field: Field) {
-  //   this.#dialogRouter.navRelative([`update/${this.#contentTypeStaticName}/${field.Id}/inputType`]);
-  // }
-
   #rename(field: Field) {
     this.#dialogRouter.navRelative([`update/${this.#contentTypeStaticName}/${field.Id}/name`]);
   }
@@ -275,7 +254,7 @@ export class ContentTypeFieldsComponent implements OnInit {
         hasDeleteSnackbar: true
       },
       viewContainerRef: this.viewContainerRef,
-      width: '400px',
+      width: '600px',
     }).afterClosed().subscribe(isConfirmed => {
       if (!isConfirmed) return;
       this.#contentTypesFieldsSvc.delete(field, this.contentType()).subscribe(() => {
@@ -350,6 +329,10 @@ export class ContentTypeFieldsComponent implements OnInit {
           rowDrag: true,
           width: 18,
           cellClass: 'no-select no-padding no-outline'.split(' '),
+          cellRenderer: ContentTypeFieldsDragComponent,
+          cellRendererParams: (() => ({
+            isReordering: () => this.isReordering(),
+          } satisfies ContentTypeFieldsDragParams))(),
         },
         {
           field: 'Title',
@@ -395,7 +378,7 @@ export class ContentTypeFieldsComponent implements OnInit {
         {
           field: 'Label',
           flex: 2,
-          minWidth: 250,
+          minWidth: 200,
           cellClass: 'no-outline',
           sortable: true,
           filter: 'agTextColumnFilter',
@@ -403,7 +386,7 @@ export class ContentTypeFieldsComponent implements OnInit {
         },
         {
           field: 'Special',
-          width: 66,
+          width: 22 * 6, // 6 icons, 22px each
           headerClass: 'dense',
           cellClass: 'no-outline',
           cellRenderer: ContentTypeFieldsSpecialComponent,

@@ -120,36 +120,48 @@ export class AppEntryRouteHandler {
       case DialogTypeConstants.Zone:
         const extrasZone: ExtrasParam = JSON.parse(sS.getItem(keyExtras));
         return go(`/apps${extrasZone?.tab ? `/${extrasZone.tab}` : ''}`);
+
       case DialogTypeConstants.Apps:
         return go(`/apps/list`);
+
       case DialogTypeConstants.AppImport:
         return go(`/import`);
+
       case DialogTypeConstants.App:
         const extrasApp: ExtrasParam = JSON.parse(sS.getItem(keyExtras));
         return go(`/app${extrasApp?.tab ? `/${extrasApp.tab}` : ''}${extrasApp?.scope ? `/${extrasApp.scope}` : ''}`);
+
       case DialogTypeConstants.ContentType:
         return go(`/fields/${contentType}`);
+
       case DialogTypeConstants.ContentItems:
         return go(`/items/${contentType}`);
+
       case DialogTypeConstants.Edit:
         const editItems: ItemEditIdentifier[] = JSON.parse(items);
         const formUrl = convertFormToUrl({ items: editItems } satisfies EditForm);
         return go(`/edit/${formUrl}`);
+
       case DialogTypeConstants.ItemHistory:
         const historyItems: ItemEditIdentifier[] = JSON.parse(items);
         return go(`/versions/${historyItems[0].EntityId}`);
+
       case DialogTypeConstants.Develop:
         return go(`/code`);
+
       case DialogTypeConstants.PipelineDesigner:
         const pipelineId = sS.getItem(keyPipelineId);
         return go(`/query/${pipelineId}`);
+
       case DialogTypeConstants.Replace:
         const repItem = (JSON.parse(items) as ItemInListIdentifier[])[0];
         const queryParams = repItem.Add ? { add: true } : {};
         return go(`/${repItem.Parent}/${repItem.Field}/${repItem.Index}/replace`, { queryParams });
+
       case DialogTypeConstants.InstanceList:
         const grpItem = (JSON.parse(items) as ItemInListIdentifier[])[0];
         return go(`/${grpItem.Parent}/${grpItem.Field}/${grpItem.Index}/reorder`);
+        
       default:
         alert(`Cannot open unknown dialog "${dialog}"`);
         try {

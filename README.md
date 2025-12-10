@@ -2,7 +2,7 @@
 
 This is part of [2sxc](https://2sxc.org) - an awesome extension for DNN :)
 
-It's built using Angular 14 (Angular 16 WIP).
+It's built using Angular 20+.
 
 ## Projects
 

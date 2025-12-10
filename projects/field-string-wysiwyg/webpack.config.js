@@ -5,7 +5,7 @@ const webpack = require('webpack');
 const setExternalSourceMaps = require('../../build-helpers/external-source-maps-elements');
 const multiOutput = require('../../build-helpers/multi-output');
 const buildConfig = require('@2sic.com/2sxc-load-build-config').BuildConfig;
-const distWysiwyg = path.resolve(__dirname, '../../dist/system/field-string-wysiwyg');
+const distWysiwyg = path.resolve(__dirname, '../../dist/extensions/field-string-wysiwyg');
 
 /** Checks webpack configuration to remove console.log, not node process.env.NODE_ENV used for external source maps */
 let isProduction = false;
@@ -41,7 +41,7 @@ const configuration = {
         },
       ],
     }),
-    multiOutput.createCopyAfterBuildPlugin(distWysiwyg, [...buildConfig.Sources, ...buildConfig.JsTargets], './system/field-string-wysiwyg'),
+    multiOutput.createCopyAfterBuildPlugin(distWysiwyg, [...buildConfig.Sources, ...buildConfig.JsTargets], './extensions/field-string-wysiwyg'),
   ].filter(item => item !== null),
   devtool: 'source-map',
   module: {
@@ -94,6 +94,6 @@ const configuration = {
 };
 
 /* change source map generation based on production mode */
-setExternalSourceMaps(configuration, '/system/field-string-wysiwyg/');
+setExternalSourceMaps(configuration, '/extensions/field-string-wysiwyg/');
 
 module.exports = configuration;

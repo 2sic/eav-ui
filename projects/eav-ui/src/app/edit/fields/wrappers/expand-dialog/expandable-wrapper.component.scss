@@ -1,5 +1,6 @@
-@import "../../../assets/styles/variables.scss";
-@import "../../../assets/styles/theme/material-colors.scss";
+@use "sass:map";
+@use "../../../assets/styles/variables.scss";
+@use "../../../assets/styles/theme/material-colors.scss";
 
 $min-height: 36px;
 $max-height: 50vh;
@@ -7,24 +8,24 @@ $label-top: 14px;
 
 %field-border {
   margin-bottom: 1px;
-  border-bottom: 1px solid $field-border-color--initial;
+  border-bottom: 1px solid variables.$field-border-color--initial;
 }
 
 %field-border--hover {
   margin-bottom: 0;
-  border-bottom: 2px solid $field-border-color--hover;
+  border-bottom: 2px solid variables.$field-border-color--hover;
   transition: none;
 }
 
 %field-border--focused {
   margin-bottom: 0;
-  border-bottom: 2px solid $field-border-color--focus !important;
+  border-bottom: 2px solid variables.$field-border-color--focus !important;
   transition: none;
 }
 
 %field-border--invalid {
   margin-bottom: 0;
-  border-bottom: 2px solid $field-border-color--invalid;
+  border-bottom: 2px solid variables.$field-border-color--invalid;
   transition: none;
 }
 
@@ -33,7 +34,7 @@ $label-top: 14px;
   cursor: default;
   padding: 0 0 2px 0;
   margin-bottom: 0;
-  background-image: linear-gradient(to right, $field-border-color--disabled 0%, $field-border-color--disabled 33%, transparent 0%);
+  background-image: linear-gradient(to right, variables.$field-border-color--disabled 0%, variables.$field-border-color--disabled 33%, transparent 0%);
   background-position: bottom;
   background-size: 4px 1px;
   background-repeat: repeat-x;
@@ -52,15 +53,15 @@ $label-top: 14px;
   }
 
   .color__accent {
-    color: map_get($mat-eav-item-dialog-secondary, 500);
+    color: map.get(material-colors.$mat-eav-item-dialog-secondary, 500);
   }
 
   .color__primary {
-    color: rgba($editUI-foreground-color, 0.44);
+    color: rgba(variables.$editUI-foreground-color, 0.44);
   }
 
   .my-label-disabled {
-    color: $editUI-label-disabled-color;
+    color: variables.$editUI-label-disabled-color;
   }
 
   mat-empty {
@@ -83,12 +84,12 @@ $label-top: 14px;
   line-height: 14px;
 
   &:not(.mat-mdc-form-field-error) {
-    color: rgba($editUI-foreground-color, 0.44);
+    color: rgba(variables.$editUI-foreground-color, 0.44);
   }
 }
 
 .c-ew__preview-label--focused:not(.mat-mdc-form-field-error) {
-  color: map_get($mat-eav-item-dialog-secondary, 500) !important;
+  color: map.get(material-colors.$mat-eav-item-dialog-secondary, 500) !important;
 }
 
 .c-ew__preview-container {
@@ -107,7 +108,7 @@ $label-top: 14px;
 
 .c-ew__preview-content--disabled {
   pointer-events: none;
-  color: $editUI-field-disabled-color;
+  color: variables.$editUI-field-disabled-color;
 }
 
 .c-ew__preview--focused:not(.c-ew__preview--invalid) {

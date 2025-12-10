@@ -1,4 +1,5 @@
 import dayjs, { Dayjs } from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
 import utc from 'dayjs/plugin/utc';
 
 /**
@@ -9,6 +10,7 @@ import utc from 'dayjs/plugin/utc';
  */
 export function initializeDayjsFn(locale: string): void {
   dayjs.extend(utc);
+  dayjs.extend(customParseFormat);
   dayjs.locale(locale);
 }
 
@@ -97,30 +99,79 @@ export function formatDateTimeFn(date: dayjs.Dayjs | Date | null): string {
 }
 
 /**
+ * Get the current locale's date format
+ * 
+ * @returns The localized date format string (e.g., 'DD.MM.YYYY', 'MM/DD/YYYY')
+ */
+export function getLocaleDateFormatFn(): string {
+  try {
+    const localized = dayjs().localeData().longDateFormat('L');
+    if (localized && typeof localized === 'string') {
+      return localized;
+    }
+  } catch (e) {
+    // keep fallback
+  }
+  return 'YYYY-MM-DD';
+}
+
+/**
  * Handles user input in the date-time field
- * Attempts to parse the input with the localized format
+ * Attempts to parse the input with multiple localized formats
  * 
  * @param value - The string value entered by the user
  * @param currentUiValue - The current UI value
  * @param setUiValue - Callback function to update the UI value
+ * @param useTimePicker - Whether time picker is enabled
  * @returns Boolean indicating if the input was valid and processed
  */
 export function handleDateTimeInputFn(
   value: string,
   currentUiValue: string,
-  setUiValue: (value: string | null) => void
+  setUiValue: (value: string | null) => void,
+  useTimePicker: boolean = true
 ): boolean {
   if (!value) {
     setUiValue(null);
     return true;
   }
 
-  // Try to parse with localized format
-  let parsedDate = dayjs(value, 'L LT');
-  if (parsedDate.isValid()) {
-    updateFormattedValueFn(parsedDate, parsedDate, currentUiValue, setUiValue);
+  const dateFormat = getLocaleDateFormatFn();
+  let parsedDate: Dayjs | null = null;
+
+  // Try multiple parsing formats in order of specificity
+  const formats = [
+    'YYYY-MM-DD',     // ISO date - PRIORITIZED
+    'YYYY-MM-DD HH:mm: ss', // ISO datetime with seconds - PRIORITIZED
+    'YYYY-MM-DD HH:mm',    // ISO datetime without seconds - PRIORITIZED
+    'YYYY/MM/DD',     // Alternative slash format
+    'YYYY/MM/DD HH: mm:ss',
+    'YYYY/MM/DD HH: mm',
+    'L LT',           // Localized date + time (e.g., "31. 12.2025 14:30")
+    'L LTS',          // Localized date + time with seconds (e.g., "31.12.2025 14:30:45")
+    'L',              // Localized date only (e.g., "31.12.2025")
+    dateFormat,       // Raw locale format (e.g., "DD.MM.YYYY")
+    `${dateFormat} HH:mm:ss`, // Raw locale format + time with seconds
+    `${dateFormat} HH:mm`,    // Raw locale format + time without seconds
+  ];
+
+  for (const format of formats) {
+    parsedDate = dayjs(value, format, true); // strict parsing
+    if (parsedDate.isValid()) {
+      break;
+    }
+  }
+
+  // If all strict parsing fails, try lenient parsing
+  if (!parsedDate || !parsedDate.isValid()) {
+    parsedDate = dayjs(value);
+  }
+
+  if (parsedDate && parsedDate.isValid()) {
+    updateFormattedValueFn(parsedDate, parsedDate, currentUiValue, setUiValue, useTimePicker);
     return true;
   }
+
   return false; // Invalid format
 }
 
@@ -232,4 +283,5 @@ export class DateTimeUtils {
   static formatDateTime = formatDateTimeFn;
   static generateTimePickerOptions = generateTimePickerOptionsFn;
   static getDateTimeValue = getDateTimeValueFn;
+  static getLocaleDateFormat = getLocaleDateFormatFn;
 }

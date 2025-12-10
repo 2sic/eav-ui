@@ -2,16 +2,25 @@ import { EavFor } from '../../edit/shared/models/eav';
 import { eavConstants } from '../constants/eav.constants';
 import { classLog } from '../logging';
 import { EditForm, EditPrep, ItemAddIdentifier, ItemEditIdentifier, ItemIdentifierInbound, ItemIdentifierShared, ItemInListIdentifier } from '../models/edit-form.model';
+import { ParamEncoder } from './param-encoder';
+
+// Note: everything in here is a bit magical - and probably not ideal
+// It basically prepares a very compact url representation of an EditForm
+// so it can be passed in urls
+// The format is not documented anywhere - so changing it will likely break things
+// so be careful!
+// In some cases, order matters, in others there are prefixes to identify parts
 
 const log = classLog("UrlPrepHelper")
 
 const PREFILL_PREFIX = 'prefill:';
 const GROUP_PREFIX = 'group:';
-const FIELDS_PREFIX = 'uifields:';
+const UIFIELDS_PREFIX = 'uifields:';
 const PARAM_PREFIX = 'parameters:';
 const ITEM_SEPARATOR = ',';
 const VAL_SEPARATOR = '&';
 const LIST_SEPARATOR = ':';
+const METADATA_SEPARATOR = '~';
 
 function toOrderedParams(values: unknown[]): string {
   return values.join(LIST_SEPARATOR);
@@ -43,9 +52,9 @@ export function convertFormToUrl(form: EditForm) {
         asGroup.Add,
         asGroup.EntityId
       ]);
-      formUrl += prefill2UrlParams(asGroup.Prefill);
-      formUrl += fields2UrlParams(fields);
-      formUrl += obj2UrlParams(parameters, PARAM_PREFIX);
+      formUrl += addTypicalUrlGroups(asGroup, fields, parameters,
+        { prefill: true, fields: true, params: true, duplicate: true }
+      );
 
     } else if (asItem.EntityId) {
       l.a("asItem having entity id", {asItem});
@@ -53,8 +62,9 @@ export function convertFormToUrl(form: EditForm) {
       formUrl += asItem.EntityId;
 
       // New: fields
-      formUrl += fields2UrlParams(fields);
-      formUrl += obj2UrlParams(parameters, PARAM_PREFIX);
+      formUrl += addTypicalUrlGroups(asItem, fields, parameters,
+        { fields: true, params: true }
+      );
 
       // 2023-05-11 in edit-id mode, prefill isn't supported, but we want the fields
       // I actually think that prefill should be supported, because it can also transport more parameters
@@ -66,23 +76,37 @@ export function convertFormToUrl(form: EditForm) {
       // so this could be an unexpected breaking change...
       // formUrl += prefill2UrlParams(asItem.Prefill);
 
-    } else if ((item as ItemAddIdentifier).ContentTypeName) {
+    
+    }
+    // Add item, optionally with For-Metadata
+    else if ((item as ItemAddIdentifier).ContentTypeName) {
       l.a("asItem having content type name", {item});
       // Add Item
       const addItem = item as ItemAddIdentifier;
       formUrl += 'new:' + addItem.ContentTypeName;
 
-      formUrl += getParamForMetadata(addItem);
-      formUrl += prefill2UrlParams(addItem.Prefill);
-      formUrl += fields2UrlParams(fields);
-      formUrl += obj2UrlParams(parameters, PARAM_PREFIX);
-
-      if (addItem.DuplicateEntity)
-        formUrl += `${VAL_SEPARATOR}copy:` + addItem.DuplicateEntity;
+      formUrl += addTypicalUrlGroups(addItem, fields, parameters,
+        { metadata: true, prefill: true, fields: true, params: true, duplicate: true }
+      );
     }
   }
-
   return l.r(formUrl);
+}
+
+function addTypicalUrlGroups(
+  item: ItemAddIdentifier | ItemEditIdentifier | ItemInListIdentifier,
+  fields: string | undefined,
+  parameters: Record<string, unknown> | undefined,
+  parts: { metadata?: boolean, prefill?: boolean, fields?: boolean, params?: boolean, duplicate?: boolean }
+): string {
+  const addItem = item as ItemAddIdentifier;
+  const result = ''
+    + (parts.metadata ? getParamForMetadata(addItem) : '')
+    + (parts.prefill ? prefill2UrlParams(item.Prefill) : '')
+    + (parts.fields ? fields2UrlParams(fields) : '')
+    + (parts.params ? obj2UrlParams(parameters, PARAM_PREFIX) : '')
+    + (parts.duplicate && addItem.DuplicateEntity ? `${VAL_SEPARATOR}copy:` + addItem.DuplicateEntity : '');
+  return result;
 }
 
 function getParamForMetadata(addItem: ItemAddIdentifier) {
@@ -96,12 +120,16 @@ function getParamForMetadata(addItem: ItemAddIdentifier) {
     (itemFor.Singleton ? itemFor.Singleton.toString() : '')
   ]);
 
-  if (addItem.For?.String)
-    return l.r(`${VAL_SEPARATOR}for:s~` + paramEncode(addItem.For.String) + buildForSuffix(addItem.For), "for string");
-  if (addItem.For?.Number)
-    return l.r(`${VAL_SEPARATOR}for:n~` + addItem.For.Number + buildForSuffix(addItem.For), "for number");
-  if (addItem.For?.Guid)
-    return l.r(`${VAL_SEPARATOR}for:g~` + addItem.For.Guid + buildForSuffix(addItem.For), "for guid");
+  if (addItem.For != null) {
+    const prefix = `${VAL_SEPARATOR}for:`;
+    const forSuffix = buildForSuffix(addItem.For);
+    if (addItem.For?.String)
+      return l.r(`${prefix}s~${ParamEncoder.encode(addItem.For.String)}${forSuffix}`, "for string");
+    if (addItem.For?.Number)
+      return l.r(`${prefix}n~${addItem.For.Number}${forSuffix}`, "for number");
+    if (addItem.For?.Guid)
+      return l.r(`${prefix}g~${addItem.For.Guid}${forSuffix}`, "for guid");
+  }
   if (addItem.Metadata)
     return l.r(getParamForOldMetadata(addItem), "metadata");
   return l.r('', "other");
@@ -123,8 +151,8 @@ function getParamForOldMetadata(addItem: ItemAddIdentifier) {
   }
   const target = Object.values(eavConstants.metadata)
     .find(m => m.targetType === addItem.Metadata.targetType)?.target;
-  const result = `${VAL_SEPARATOR}for:` + keyType + '~' + toOrderedParams([
-    paramEncode(addItem.Metadata.key),
+  const result = `${VAL_SEPARATOR}for:` + keyType + METADATA_SEPARATOR + toOrderedParams([
+    ParamEncoder.encode(addItem.Metadata.key),
     target,
     addItem.Metadata.targetType
   ]);
@@ -140,7 +168,7 @@ function obj2UrlParams(obj: Record<string, unknown>, prefix: string) {
   if (!obj) return result;
   for (const [key, value] of Object.entries(obj)) {
     if (value == null) continue;
-    result += `${VAL_SEPARATOR}${prefix}${key}~${paramEncode(value.toString())}`;
+    result += `${VAL_SEPARATOR}${prefix}${key}~${ParamEncoder.encode(value.toString())}`;
   }
   return result;
 }
@@ -149,24 +177,14 @@ function prefillFromUrlParams(url: string, addTo: Record<string, unknown>): Reco
   const result = addTo ?? {} as Record<string, string>;
   if (url == null) return result;
   const prefillParams = url.split(LIST_SEPARATOR);
-  const key = prefillParams[1].split('~')[0];
-  const value = paramDecode(prefillParams[1].split('~')[1]);
-  result[key] = value;
+  const [key, value] = prefillParams[1].split(METADATA_SEPARATOR);
+  const decodedValue = ParamEncoder.decode(value);
+  result[key] = decodedValue;
   return result;
 }
 
-// function objFromUrlParams(url: string, addTo: Record<string, string>, prefix: string): Record<string, string> {
-//   const result = addTo ?? {} as Record<string, string>;
-//   if (url == null) return result;
-//   const prefillParams = url.split(LIST_SEPARATOR);
-//   const key = prefillParams[1].split('~')[0];
-//   const value = paramDecode(prefillParams[1].split('~')[1]);
-//   result[key] = value;
-//   return result;
-// }
-
 function fields2UrlParams(fields: string) {
-  return fields ? `${VAL_SEPARATOR}${FIELDS_PREFIX}${paramEncode(fields)}` : '';
+  return fields ? `${VAL_SEPARATOR}${UIFIELDS_PREFIX}${ParamEncoder.encode(fields)}` : '';
 }
 
 function isNumber(maybeNumber: string): boolean {
@@ -181,34 +199,52 @@ export function convertUrlToForm(formUrl: string) {
 
   for (const item of items) {
     l.a("item", {item});
+    // Handle group:
     if (item.startsWith(GROUP_PREFIX)) {
       // Inner Item / Group Item
-      const innerItem = {} as ItemInListIdentifier;
+      let innerItem = {} as ItemInListIdentifier;
       const options = item.split(VAL_SEPARATOR);
 
       for (const option of options) {
         if (option.startsWith(GROUP_PREFIX)) {
-          const parms = option.split(LIST_SEPARATOR);
-          innerItem.Parent = parms[1];
-          innerItem.Field = parms[2];
-          innerItem.Index = parseInt(parms[3], 10);
-          innerItem.Add = parms[4] === 'true';
-          if (parms.length > 4 && parms[5] && isNumber(parms[5]))
-            innerItem.EntityId = parseInt(parms[5], 10);
-        } else
-          addParamToItemIdentifier(innerItem, option);
+          const params = option.split(LIST_SEPARATOR);
+          const hasParam5Id = params.length > 4 && params[5] && isNumber(params[5]);
+          innerItem = {
+            ...innerItem,
+            Parent: params[1],
+            Field: params[2],
+            Index: parseInt(params[3], 10),
+            Add: params[4] === 'true',
+            ...(hasParam5Id && { EntityId: parseInt(params[5], 10) })
+          }
+          // innerItem.Parent = params[1];
+          // innerItem.Field = params[2];
+          // innerItem.Index = parseInt(params[3], 10);
+          // innerItem.Add = params[4] === 'true';
+          // if (hasParam5Id)
+          //   innerItem.EntityId = parseInt(params[5], 10);
+        } else if (option.startsWith('copy:')) {
+          // Add Item Copy
+          innerItem = {
+            ...innerItem,
+            DuplicateEntity: parseInt(option.split(LIST_SEPARATOR)[1], 10)
+          };
+          // innerItem.DuplicateEntity = parseInt(copyParams[1], 10);
+        } else {
+          innerItem = addParamToItemIdentifier(innerItem, option);
+        }
       }
       form.items.push(innerItem);
     } else if (isNumber((item ?? '').split(VAL_SEPARATOR)[0])) {
       // Edit Item
       const parts = item.split(VAL_SEPARATOR);
-      const editItem: ItemEditIdentifier = EditPrep.editId(parseInt(parts[0], 10));
+      let editItem: ItemEditIdentifier = EditPrep.editId(parseInt(parts[0], 10));
       for (const part of parts)
-        addParamToItemIdentifier(editItem, part);
+        editItem = addParamToItemIdentifier(editItem, part);
       form.items.push(editItem);
     } else if (item.startsWith('new:')) {
       // Add Item
-      const addItem = {} as ItemAddIdentifier;
+      let addItem = {} as ItemAddIdentifier;
       const options = item.split(VAL_SEPARATOR);
 
       for (const option of options) {
@@ -219,25 +255,29 @@ export function convertUrlToForm(formUrl: string) {
         } else if (option.startsWith('for:')) {
           // Add Item For
           const forParams = option.split(LIST_SEPARATOR);
-          const forKeyType = forParams[1].split('~')[0];
-          const forKey = forParams[1].split('~')[1];
-          const forTarget = forParams[2];
-          const forTargetType = parseInt(forParams[3], 10);
+          const [forKeyType, forKey] = forParams[1].split(METADATA_SEPARATOR);
+          // const forTarget = forParams[2];
+          // const forTargetType = parseInt(forParams[3], 10);
           const forSingleton = forParams[4] != null ? forParams[4] === 'true' : undefined;
           addItem.For = {
-            Target: forTarget,
-            TargetType: forTargetType,
+            Target: forParams[2],
+            TargetType: parseInt(forParams[3], 10),
             ...(forKeyType === 'g' && { Guid: forKey }),
             ...(forKeyType === 'n' && { Number: parseInt(forKey, 10) }),
-            ...(forKeyType === 's' && { String: paramDecode(forKey) }),
+            ...(forKeyType === 's' && { String: ParamEncoder.decode(forKey) }),
             ...(forSingleton != null && { Singleton: forSingleton }),
           };
         } else if (option.startsWith('copy:')) {
           // Add Item Copy
-          const copyParams = option.split(LIST_SEPARATOR);
-          addItem.DuplicateEntity = parseInt(copyParams[1], 10);
+          // const copyParams = option.split(LIST_SEPARATOR);
+          // addItem.DuplicateEntity = parseInt(copyParams[1], 10);
+          addItem = {
+            ...addItem,
+            DuplicateEntity: parseInt(option.split(LIST_SEPARATOR)[1], 10)
+          };
+
         } else
-          addParamToItemIdentifier(addItem, option);
+          addItem = addParamToItemIdentifier(addItem, option);
       }
       form.items.push(addItem);
     }
@@ -246,46 +286,24 @@ export function convertUrlToForm(formUrl: string) {
 }
 
 /** add prefill and filter to url parameters */
-function addParamToItemIdentifier(item: ItemIdentifierShared, part: string): void {
+function addParamToItemIdentifier<T extends ItemIdentifierShared>(item: T, part: string): T {
   const l = log.fn("addParamToItemIdentifier", {item, part});
-  if (part.startsWith(FIELDS_PREFIX)) {
-    const fields = paramDecode(part.split(':')[1]);
-    // temp hacky workaround - put it prefill so it's still there after round-trip
-    // should later be on the re-added after the round-trip on the Fields property
-    item.Prefill = prefillFromUrlParams(part, { fields });
+  if (part.startsWith(UIFIELDS_PREFIX)) {
+    const fields = ParamEncoder.decode(part.split(LIST_SEPARATOR)[1]);
     item.ClientData = { ...item.ClientData, fields };
-    return l.end();
+    return l.rSilent(item);
   }
   // Add Item Prefill
   if (part.startsWith(PREFILL_PREFIX)) {
     item.Prefill = prefillFromUrlParams(part, item.Prefill);
-    return l.end();
+    return l.rSilent(item);
   }
   // Add Item Form
   if (part.startsWith(PARAM_PREFIX)) {
     const formParams = prefillFromUrlParams(part, item.ClientData?.parameters);
     item.ClientData = { ...item.ClientData, parameters: formParams };
-    return l.end();
+    return l.rSilent(item);
   }
-  l.end('no match');
+  return l.rSilent(item, 'no match');
 }
 
-/** Encodes characters in URL parameter to not mess up routing. Don't forget to decode it! :) */
-function paramEncode(text: string) {
-  return (text ?? '')
-    .replace(/\//g, '%2F')
-    .replace(/\:/g, '%3A')
-    .replace(/\&/g, '%26')
-    .replace(/\~/g, '%7E')
-    .replace(/\,/g, '%2C');
-}
-
-/** Decodes characters in URL parameter */
-function paramDecode(text: string) {
-  return (text ?? '')
-    .replace(/%2F/g, '/')
-    .replace(/%3A/g, ':')
-    .replace(/%26/g, '&')
-    .replace(/%7E/g, '~')
-    .replace(/%2C/g, ',');
-}

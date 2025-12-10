@@ -286,7 +286,7 @@ export class ViewsComponent implements OnInit {
                 case 'deleteView': this.#deleteView(view); break;
               }
             },
-          } satisfies ViewsActionsComponent["params"],
+          } satisfies ViewsActionsComponent['params'],
         },
       ],
     };

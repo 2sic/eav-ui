@@ -1,4 +1,5 @@
-@import "variables.scss";
+@use "variables.scss";
+@use "helpers.scss";
 
 $dialog-margin-top: 24px;
 $dialog-margin-bottom: 24px;
@@ -108,7 +109,7 @@ $max-height: calc(100vh - #{$dialog-margin-top} - #{$dialog-margin-bottom});
   ul,
   li,
   ol {
-    font-size: $default-font-size;
+    font-size: variables.$default-font-size;
   }
 }
 
@@ -211,15 +212,15 @@ $max-height: calc(100vh - #{$dialog-margin-top} - #{$dialog-margin-bottom});
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: $eav-dialog-padding $eav-dialog-padding $eav-header-padding-bottom $eav-dialog-padding;
+    padding: variables.$eav-dialog-padding variables.$eav-dialog-padding variables.$eav-header-padding-bottom variables.$eav-dialog-padding;
 
     &__title {
       display: flex;
       justify-content: flex-start;
       align-items: center;
-      font-size: $eav-dialog-title-font-size;
-      line-height: $eav-dialog-title-line-height;
-      font-weight: $eav-dialog-title-font-weight;
+      font-size: variables.$eav-dialog-title-font-size;
+      line-height: variables.$eav-dialog-title-line-height;
+      font-weight: variables.$eav-dialog-title-font-weight;
 
       &__image {
         width: 40px;
@@ -236,19 +237,19 @@ $max-height: calc(100vh - #{$dialog-margin-top} - #{$dialog-margin-bottom});
     }
 
     &__subtitle {
-      font-size: $eav-dialog-subtitle-font-size;
-      line-height: $eav-dialog-subtitle-line-height;
-      font-weight: $eav-dialog-subtitle-font-weight;
+      font-size: variables.$eav-dialog-subtitle-font-size;
+      line-height: variables.$eav-dialog-subtitle-line-height;
+      font-weight: variables.$eav-dialog-subtitle-font-weight;
     }
   }
 
   .eav-dialog-description,
   .eav-dialog-tab-content {
-    padding: 0px $eav-dialog-padding;
+    padding: 0px variables.$eav-dialog-padding;
   }
 
   .eav-dialog-content {
-    padding: 0 $eav-dialog-padding;
+    padding: 0 variables.$eav-dialog-padding;
     // padding: 0px $eav-dialog-padding $eav-dialog-padding $eav-dialog-padding; // TODO: 2dg
   }
 
@@ -257,7 +258,7 @@ $max-height: calc(100vh - #{$dialog-margin-top} - #{$dialog-margin-bottom});
   }
 
   mat-dialog-actions {
-    padding: $eav-header-padding-bottom $eav-dialog-padding;
+    padding: variables.$eav-header-padding-bottom variables.$eav-dialog-padding;
   }
 }
 

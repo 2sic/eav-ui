@@ -37,16 +37,12 @@ export class InputTypeService extends SignalStoreBase<string, InputTypeMetadata>
     return this.#getSpecsInternal(attribute.InputType, this.getAll());
   }
 
-  // getSpecsOfName(inputType: Of<typeof InputTypeCatalog>): InputTypeSpecs {
-  //   return this.#getSpecsInternal(inputType, this.getAll());
-  // }
-
   #getSpecsInternal(inputType: Of<typeof InputTypeCatalog>, inputTypes: InputTypeMetadata[]): InputTypeSpecs {
     const inputTypeMetadata = inputTypes.find(i => i.Type === inputType);
     const name = inputType.toString();
     const calculated: InputTypeSpecs = {
       inputType,
-      isExternal: !!inputTypeMetadata?.AngularAssets,
+      isExternal: !!inputTypeMetadata?.UiAssets?.default,
       mustUseGuid: !name.startsWith('string') && !name.startsWith('number'),
       componentTagName: `field-${inputType}`,
       componentTagDialogName: `field-${inputType}-dialog`,
@@ -55,22 +51,5 @@ export class InputTypeService extends SignalStoreBase<string, InputTypeMetadata>
     };
     return calculated;
   }
-
-  #getSpecsInternalOld(attribute: EavContentTypeAttribute, inputTypes: InputTypeMetadata[]): InputTypeSpecs {
-    const inputTypeMetadata = inputTypes.find(i => i.Type === attribute.InputType);
-    const inputType = attribute.InputType as Of<typeof InputTypeCatalog>;
-    const name = inputType.toString();
-    const calculated: InputTypeSpecs = {
-      inputType,
-      isExternal: !!inputTypeMetadata?.AngularAssets,
-      mustUseGuid: !name.startsWith('string') && !name.startsWith('number'),
-      componentTagName: `field-${inputType}`,
-      componentTagDialogName: `field-${inputType}-dialog`,
-      metadata: inputTypeMetadata,
-      isNewPicker: InputTypeHelpers.isNewPicker(inputType),
-    };
-    return calculated;
-  }
-
 
 }

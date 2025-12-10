@@ -1,4 +1,4 @@
-@import "../../assets/styles/variables.scss";
+@use "../../assets/styles/variables.scss";
 
 .eav-header {
   display: flex;
@@ -7,14 +7,14 @@
   padding: 0 16px;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
+  
+  height: var(--edit-dialog-header-height);
+  z-index: 1;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.26);
 
   @media (max-width: 600px) {
     border-radius: 0;
   }
-
-  height: var(--edit-dialog-header-height);
-  z-index: 1;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.26);
 
   .eav-exit-button {
     .eav-icon {

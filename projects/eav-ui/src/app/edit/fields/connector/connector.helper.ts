@@ -39,9 +39,9 @@ const logSpecs = {
 
 @Injectable()
 export class ConnectorHelper extends ServiceBase implements OnDestroy {
-  
-  log = classLog({ConnectorHelper}, logSpecs);
-  
+
+  log = classLog({ ConnectorHelper }, logSpecs);
+
   #injector = inject(Injector);
   #fieldState = inject(FieldState);
   #formConfig = inject(FormConfigService);
@@ -53,7 +53,6 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
   #dialog = inject(MatDialog);
   #snackBar = inject(MatSnackBar);
   #zone = inject(NgZone);
-  
   #adamService = transient(AdamService);
 
   constructor() {
@@ -98,7 +97,7 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
     const fieldConfigSignal = computed(() => {
       const settings = this.#fieldState.settings();
       return toFieldConfig(this.#config, settings);
-    }, { equal: isEqual});
+    }, { equal: isEqual });
     const connector = new ConnectorInstance(connectorHost, this.#value$, fieldConfigSignal, experimental, this.#formConfig.config);
 
     effect(() => {
@@ -170,6 +169,22 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
       },
 
       injector: this.#injector,
+
+      // expose a showSnackBar helper so editor can display messages directly
+      showSnackBar: (message: string) => {
+        try {
+          this.#zone.run(() => {
+            // Use translation if available
+            const translated = this.#translateService?.instant ? this.#translateService.instant(message) : message;
+            // If message is a translation key and translation exists, instant will return a translated string,
+            // otherwise it returns the key - we prefer raw message as-is in that case.
+            this.#snackBar.open(translated ?? message, undefined, { duration: 3000 });
+          });
+        } catch (err) {
+          // keep silent on errors here, fallback will be handled by caller
+          console.warn('[ConnectorHelper] showSnackBar failed', err);
+        }
+      },
     };
 
     return experimentalProps;
@@ -194,7 +209,7 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
     this.#fieldState.ui().setIfChanged(value);
   }
 
-  #openFeatureDisabledWarning(featureNameId: string) { 
+  #openFeatureDisabledWarning(featureNameId: string) {
     if (featureNameId === FeatureNames.PasteImageFromClipboard) {
       this.#snackBar.open(this.#translateService.instant('Message.PastingFilesIsNotEnabled'), this.#translateService.instant('Message.FindOutMore'), { duration: 3000 })
         .onAction()

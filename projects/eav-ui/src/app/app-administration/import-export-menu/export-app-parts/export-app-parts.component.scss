@@ -1,12 +1,12 @@
-@import '../../../../styles/variables.scss';
+@use '../../../../styles/variables.scss';
 
 a {
-  color: $external-link !important;
+  color: variables.$external-link !important;
 }
 
 .eav-button__with-icon,
 .enable {
-  color: $sxc-solid !important;
+  color: variables.$sxc-solid !important;
 }
 
 .eav-edit-input {

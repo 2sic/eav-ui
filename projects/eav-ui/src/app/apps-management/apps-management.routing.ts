@@ -15,23 +15,27 @@ export const appsManagementRoutes: Routes = [
       { path: '', redirectTo: 'system', pathMatch: 'full' },
       {
         path: 'system',
-        loadComponent: () => import('./system-info/system-info.component').then(m => m.SystemInfoComponent),
+        loadComponent: () => import('./system-info/system-info.component')
+          .then(m => m.SystemInfoComponent),
         data: { title: 'System Info', breadcrumb: 'System Info' },
       },
       {
         path: 'registration',
-        loadComponent: () => import('./sub-dialogs/registration/registration.component').then(m => m.RegistrationComponent),
+        loadComponent: () => import('./sub-dialogs/registration/registration.component')
+          .then(m => m.RegistrationComponent),
         data: {
           title: 'Registration', breadcrumb: 'Register'
         }
       },
       {
         path: 'list',
-        loadComponent: () => import('./apps-list/apps-list.component').then(m => m.AppsListComponent),
+        loadComponent: () => import('./apps-list/apps-list.component')
+          .then(m => m.AppsListComponent),
         children: [
           {
             path: 'import',
-            loadChildren: () => import('../import-app/import-app.routing').then(m => m.importRoutes)
+            loadChildren: () => import('../import-app/import-app.routing')
+              .then(m => m.importRoutes)
           },
           {
             path: 'create',
@@ -50,7 +54,8 @@ export const appsManagementRoutes: Routes = [
           },
           {
             path: ':appId',
-            loadChildren: () => import('../app-administration/app-administration.routing').then(m => m.appAdministrationRoutes)
+            loadChildren: () => import('../app-administration/app-administration.routing')
+              .then(m => m.appAdministrationRoutes)
           },
           //...EditRoutesRoot,
           ...EditRoutesUnderAppsList,
@@ -59,12 +64,14 @@ export const appsManagementRoutes: Routes = [
       },
       {
         path: 'languages',
-        loadComponent: () => import('./site-languages/site-languages.component').then(m => m.SiteLanguagesComponent),
+        loadComponent: () => import('./site-languages/site-languages.component')
+          .then(m => m.SiteLanguagesComponent),
         data: { title: 'Zone Languages', breadcrumb: 'Languages' }
       },
       {
         path: 'license',
-        loadComponent: () => import('./licence-info/license-info.component').then(m => m.LicenseInfoComponent),
+        loadComponent: () => import('./licence-info/license-info.component')
+          .then(m => m.LicenseInfoComponent),
         data: { title: 'Extensions / Features', breadcrumb: 'Extensions and Features' },
         children: [
           ...EditRoutes,

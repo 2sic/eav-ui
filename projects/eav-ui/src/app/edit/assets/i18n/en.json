@@ -56,6 +56,7 @@
   "LangMenu": {
     "Translate": "Translate",
     "TranslateAll": "Translate all",
+    "AllFields": "all fields",
     "AutoTranslateAll": "Auto-Translate all",
     "AutoTranslate": "Auto-Translate",
     "NoTranslate": "Don't translate",
@@ -308,7 +309,7 @@
     "ErrorNoAppResources": "Found no resources for {{ errComponent }}."
   },
   "LanguageSettings": {
-    "Title": "Language Settings (BETA)",
+    "Title": "Language Settings",
     "Intro": "By default, buttons and labels will use the current language. Here you can choose a different behavior.",
     "Subtitle": "Your Language Preferences",
     "UseCurrentLanguage": "Use current language (default)",

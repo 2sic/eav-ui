@@ -2,6 +2,9 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/de';
 import 'dayjs/locale/en';
 import 'dayjs/locale/en-gb';
+import 'dayjs/locale/es';
+import 'dayjs/locale/fr';
+import 'dayjs/locale/ja';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import localeData from 'dayjs/plugin/localeData';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
@@ -10,375 +13,639 @@ import utc from 'dayjs/plugin/utc';
 import { DateTimeUtils } from './datetime-fn';
 
 describe('DateTime Functions', () => {
-  // Common variables used across multiple test suites
   let setUiValue: jasmine.Spy;
   let testDate: dayjs.Dayjs;
   let standardCurrentValue: string;
 
-  // Common test dates and times
   const commonISODate = '2025-06-25T';
 
-  // Helper function to validate a date test result
-  function validateDateResult(result: boolean, expectedDate: dayjs.Dayjs) {
-    expect(result).toBe(true);
-    expect(setUiValue).toHaveBeenCalled();
+  function validateDateResult(result: boolean, expectedDate: dayjs.Dayjs, message?: string) {
+    expect(result).withContext(message || 'Result should be true').toBe(true);
+    expect(setUiValue).withContext(message || 'setUiValue should have been called').toHaveBeenCalled();
 
     const updatedValue = setUiValue.calls.mostRecent().args[0];
     const resultDate = dayjs(updatedValue);
 
-    expect(resultDate.isSame(expectedDate, 'second')).toBe(true);
+    expect(resultDate.isSame(expectedDate, 'second'))
+      .withContext(`Expected ${expectedDate.format()} but got ${resultDate.format()}. ${message || ''}`)
+      .toBe(true);
   }
 
   beforeEach(() => {
-    // Initialize plugins
     dayjs.extend(utc);
     dayjs.extend(localizedFormat);
     dayjs.extend(localeData);
     dayjs.extend(timezone);
     dayjs.extend(customParseFormat);
 
-    // Initialize dayjs with english locale
     DateTimeUtils.initializeDayjs('en');
 
-    // Setup common spy and values
     setUiValue = jasmine.createSpy('setUiValue');
     testDate = dayjs('2025-06-13T10:45:14Z');
     standardCurrentValue = '2025-06-13T10:45:14Z';
   });
 
-  describe('handleDateTimeInput', () => {
+  describe('getLocaleDateFormat', () => {
+    it('should return MM/DD/YYYY for US English locale', () => {
+      DateTimeUtils.initializeDayjs('en');
+      const format = DateTimeUtils.getLocaleDateFormat();
+      expect(format).toBe('MM/DD/YYYY');
+    });
+
+    it('should return DD.MM.YYYY for German locale', () => {
+      DateTimeUtils.initializeDayjs('de');
+      const format = DateTimeUtils.getLocaleDateFormat();
+      expect(format).toBe('DD.MM.YYYY');
+    });
+
+    it('should return DD/MM/YYYY for UK English locale', () => {
+      DateTimeUtils.initializeDayjs('en-gb');
+      const format = DateTimeUtils.getLocaleDateFormat();
+      expect(format).toBe('DD/MM/YYYY');
+    });
+
+    it('should return DD/MM/YYYY for French locale', () => {
+      DateTimeUtils.initializeDayjs('fr');
+      const format = DateTimeUtils.getLocaleDateFormat();
+      expect(format).toBe('DD/MM/YYYY');
+    });
+
+    it('should return fallback format when locale data is unavailable', () => {
+      // This test just verifies the function doesn't crash and returns a valid format
+      const format = DateTimeUtils.getLocaleDateFormat();
+      expect(format).toBeTruthy();
+      expect(typeof format).toBe('string');
+    });
+  });
+
+  describe('handleDateTimeInput - ISO Format Support', () => {
+    describe('ISO dates with time (useTimePicker = true)', () => {
+      it('should accept ISO 8601 format with time YYYY-MM-DD HH:mm:ss', () => {
+        const expectedDate = dayjs.utc('2025-12-31T23:59:00Z');
+        const result = DateTimeUtils.handleDateTimeInput('2025-12-31 23:59:00', standardCurrentValue, setUiValue, true);
+        validateDateResult(result, expectedDate, 'ISO format with seconds');
+      });
+
+      it('should accept ISO 8601 format with time YYYY-MM-DD HH:mm', () => {
+        const expectedDate = dayjs.utc('2025-12-31T14:30:00Z');
+        const result = DateTimeUtils.handleDateTimeInput('2025-12-31 14:30', standardCurrentValue, setUiValue, true);
+        validateDateResult(result, expectedDate, 'ISO format without seconds');
+      });
+
+      it('should accept ISO 8601 format with T separator', () => {
+        const expectedDate = dayjs.utc('2025-12-31T14:30:00Z');
+        const result = DateTimeUtils.handleDateTimeInput('2025-12-31T14:30:00', standardCurrentValue, setUiValue, true);
+        validateDateResult(result, expectedDate, 'ISO format with T separator');
+      });
+
+      it('should accept ISO format with slash separators YYYY/MM/DD HH:mm:ss', () => {
+        const expectedDate = dayjs.utc('2025-12-31T23:59:00Z');
+        const result = DateTimeUtils.handleDateTimeInput('2025/12/31 23:59:00', standardCurrentValue, setUiValue, true);
+        validateDateResult(result, expectedDate, 'ISO slash format with time');
+      });
+
+      it('should accept ISO format with slash separators YYYY/MM/DD HH:mm', () => {
+        const expectedDate = dayjs.utc('2025-12-31T14:30:00Z');
+        const result = DateTimeUtils.handleDateTimeInput('2025/12/31 14:30', standardCurrentValue, setUiValue, true);
+        validateDateResult(result, expectedDate, 'ISO slash format without seconds');
+      });
+    });
+
+    describe('ISO dates without time (useTimePicker = true)', () => {
+      it('should accept ISO date YYYY-MM-DD and set time to midnight', () => {
+        const expectedDate = dayjs.utc('2025-12-31T00:00:00Z');
+        const result = DateTimeUtils.handleDateTimeInput('2025-12-31', standardCurrentValue, setUiValue, true);
+        validateDateResult(result, expectedDate, 'ISO date only should default to midnight');
+      });
+
+      it('should accept ISO date with slashes YYYY/MM/DD and set time to midnight', () => {
+        const expectedDate = dayjs.utc('2025-12-31T00:00:00Z');
+        const result = DateTimeUtils.handleDateTimeInput('2025/12/31', standardCurrentValue, setUiValue, true);
+        validateDateResult(result, expectedDate, 'ISO slash date only should default to midnight');
+      });
+    });
+
+    describe('ISO dates with time when useTimePicker = false', () => {
+      it('should accept ISO date with time but ignore time component', () => {
+        const expectedDate = dayjs.utc('2025-12-31T00:00:00Z');
+        const result = DateTimeUtils.handleDateTimeInput('2025-12-31 23:59:59', standardCurrentValue, setUiValue, false);
+        validateDateResult(result, expectedDate, 'Should ignore time when useTimePicker is false');
+      });
+
+      it('should accept ISO slash date with time but ignore time component', () => {
+        const expectedDate = dayjs.utc('2025-12-31T00:00:00Z');
+        const result = DateTimeUtils.handleDateTimeInput('2025/12/31 14:30', standardCurrentValue, setUiValue, false);
+        validateDateResult(result, expectedDate, 'Should ignore time for slash format when useTimePicker is false');
+      });
+    });
+  });
+
+  describe('handleDateTimeInput - Locale-Specific Formats', () => {
+    describe('US English (en) - MM/DD/YYYY', () => {
+      beforeEach(() => {
+        DateTimeUtils.initializeDayjs('en');
+      });
+
+      it('should accept US format with time MM/DD/YYYY HH:mm AM/PM', () => {
+        const expectedDate = dayjs.utc('2025-12-31T14:30:00Z');
+        const result = DateTimeUtils.handleDateTimeInput('12/31/2025 2:30 PM', standardCurrentValue, setUiValue, true);
+        validateDateResult(result, expectedDate, 'US format with 12-hour time');
+      });
+
+      it('should accept US format without time and set to midnight', () => {
+        const expectedDate = dayjs.utc('2025-12-31T00:00:00Z');
+        const result = DateTimeUtils.handleDateTimeInput('12/31/2025', standardCurrentValue, setUiValue, true);
+        validateDateResult(result, expectedDate, 'US format date only');
+      });
+
+      it('should accept US format with time when useTimePicker is false', () => {
+        const expectedDate = dayjs.utc('2025-12-31T00:00:00Z');
+        const result = DateTimeUtils.handleDateTimeInput('12/31/2025 11:30 PM', standardCurrentValue, setUiValue, false);
+        validateDateResult(result, expectedDate, 'Should ignore time in US format when useTimePicker is false');
+      });
+
+      it('should handle midnight (12:00 AM) correctly', () => {
+        const expectedDate = dayjs.utc('2025-12-31T00:00:00Z');
+        const result = DateTimeUtils.handleDateTimeInput('12/31/2025 12:00 AM', standardCurrentValue, setUiValue, true);
+        validateDateResult(result, expectedDate, 'Midnight in 12-hour format');
+      });
+
+      it('should handle noon (12:00 PM) correctly', () => {
+        const expectedDate = dayjs.utc('2025-12-31T12:00:00Z');
+        const result = DateTimeUtils.handleDateTimeInput('12/31/2025 12:00 PM', standardCurrentValue, setUiValue, true);
+        validateDateResult(result, expectedDate, 'Noon in 12-hour format');
+      });
+    });
+
+    describe('German (de) - DD.MM.YYYY', () => {
+      beforeEach(() => {
+        DateTimeUtils.initializeDayjs('de');
+      });
+
+      it('should accept German format with 24-hour time DD.MM.YYYY HH:mm', () => {
+        const expectedDate = dayjs.utc('2025-12-31T23:45:00Z');
+        const result = DateTimeUtils.handleDateTimeInput('31.12.2025 23:45', standardCurrentValue, setUiValue, true);
+        validateDateResult(result, expectedDate, 'German format with 24-hour time');
+      });
+
+      it('should accept German format without time and set to midnight', () => {
+        const expectedDate = dayjs.utc('2025-12-31T00:00:00Z');
+        const result = DateTimeUtils.handleDateTimeInput('31.12.2025', standardCurrentValue, setUiValue, true);
+        validateDateResult(result, expectedDate, 'German format date only');
+      });
+
+      it('should accept German format with time when useTimePicker is false', () => {
+        const expectedDate = dayjs.utc('2025-12-31T00:00:00Z');
+        const result = DateTimeUtils.handleDateTimeInput('31.12.2025 23:45', standardCurrentValue, setUiValue, false);
+        validateDateResult(result, expectedDate, 'Should ignore time in German format when useTimePicker is false');
+      });
+
+      it('should handle early morning time (00:00)', () => {
+        const expectedDate = dayjs.utc('2025-12-31T00:00:00Z');
+        const result = DateTimeUtils.handleDateTimeInput('31.12.2025 00:00', standardCurrentValue, setUiValue, true);
+        validateDateResult(result, expectedDate, 'Early morning in German format');
+      });
+
+      it('should handle end of day time (23:59)', () => {
+        const expectedDate = dayjs.utc('2025-12-31T23:59:00Z');
+        const result = DateTimeUtils.handleDateTimeInput('31.12.2025 23:59', standardCurrentValue, setUiValue, true);
+        validateDateResult(result, expectedDate, 'End of day in German format');
+      });
+    });
+
+    describe('UK English (en-gb) - DD/MM/YYYY', () => {
+      beforeEach(() => {
+        DateTimeUtils.initializeDayjs('en-gb');
+      });
+
+      it('should accept UK format with 24-hour time DD/MM/YYYY HH:mm', () => {
+        const expectedDate = dayjs.utc('2025-12-31T14:30:00Z');
+        const result = DateTimeUtils.handleDateTimeInput('31/12/2025 14:30', standardCurrentValue, setUiValue, true);
+        validateDateResult(result, expectedDate, 'UK format with 24-hour time');
+      });
+
+      it('should accept UK format without time and set to midnight', () => {
+        const expectedDate = dayjs.utc('2025-12-31T00:00:00Z');
+        const result = DateTimeUtils.handleDateTimeInput('31/12/2025', standardCurrentValue, setUiValue, true);
+        validateDateResult(result, expectedDate, 'UK format date only');
+      });
+
+      it('should accept UK format with time when useTimePicker is false', () => {
+        const expectedDate = dayjs.utc('2025-12-31T00:00:00Z');
+        const result = DateTimeUtils.handleDateTimeInput('31/12/2025 14:30', standardCurrentValue, setUiValue, false);
+        validateDateResult(result, expectedDate, 'Should ignore time in UK format when useTimePicker is false');
+      });
+    });
+
+    describe('French (fr) - DD/MM/YYYY', () => {
+      beforeEach(() => {
+        DateTimeUtils.initializeDayjs('fr');
+      });
+
+      it('should accept French format with time DD/MM/YYYY HH:mm', () => {
+        const expectedDate = dayjs.utc('2025-12-31T18:45:00Z');
+        const result = DateTimeUtils.handleDateTimeInput('31/12/2025 18:45', standardCurrentValue, setUiValue, true);
+        validateDateResult(result, expectedDate, 'French format with 24-hour time');
+      });
+
+      it('should accept French format without time', () => {
+        const expectedDate = dayjs.utc('2025-12-31T00:00:00Z');
+        const result = DateTimeUtils.handleDateTimeInput('31/12/2025', standardCurrentValue, setUiValue, true);
+        validateDateResult(result, expectedDate, 'French format date only');
+      });
+    });
+  });
+
+  describe('handleDateTimeInput - Edge Cases', () => {
     it('should handle empty input by setting UI value to null', () => {
-      const result = DateTimeUtils.handleDateTimeInput('', standardCurrentValue, setUiValue);
+      const result = DateTimeUtils.handleDateTimeInput('', standardCurrentValue, setUiValue, true);
       expect(result).toBe(true);
       expect(setUiValue).toHaveBeenCalledWith(null);
     });
 
-    describe('Valid user inputs in different formats', () => {
-      describe('Basic date format parsing', () => {
-        it('should correctly parse US date format MM/DD/YYYY', () => {
-          const expectedDate = dayjs.utc(`${commonISODate}05:20:00Z`);
-          const result = DateTimeUtils.handleDateTimeInput(`06/25/2025 05:20 AM`, standardCurrentValue, setUiValue);
-          validateDateResult(result, expectedDate);
-        });
+    it('should reject whitespace-only input', () => {
+      // Pure whitespace doesn't parse as a valid date
+      const result = DateTimeUtils.handleDateTimeInput('   ', standardCurrentValue, setUiValue, true);
+      // Lenient parsing will fail on pure whitespace
+      expect(result).toBe(false);
+      expect(setUiValue).not.toHaveBeenCalled();
+    });
 
-        it('should correctly parse 12-hour time format with AM/PM', () => {
-          // AM time
-          const expectedAMDate = dayjs.utc(`${commonISODate}05:20:00Z`);
-          let result = DateTimeUtils.handleDateTimeInput(`06/25/2025 05:20 AM`, standardCurrentValue, setUiValue);
-          validateDateResult(result, expectedAMDate);
+    it('should reject completely invalid date format', () => {
+      const result = DateTimeUtils.handleDateTimeInput('not a date at all', standardCurrentValue, setUiValue, true);
+      expect(result).toBe(false);
+      expect(setUiValue).not.toHaveBeenCalled();
+    });
 
-          // PM time
-          const expectedPMDate = dayjs.utc(`${commonISODate}17:20:00Z`);
-          setUiValue.calls.reset();
-          result = DateTimeUtils.handleDateTimeInput(`06/25/2025 05:20 PM`, standardCurrentValue, setUiValue);
-          validateDateResult(result, expectedPMDate);
-        });
+    it('should reject date with random text appended', () => {
+      const result = DateTimeUtils.handleDateTimeInput('31.12.2025 some random text', standardCurrentValue, setUiValue, true);
+      expect(result).toBe(false);
+      expect(setUiValue).not.toHaveBeenCalled();
+    });
+
+    describe('Leap year handling', () => {
+      it('should accept February 29 in a leap year', () => {
+        const expectedDate = dayjs.utc('2024-02-29T10:30:00Z');
+        const result = DateTimeUtils.handleDateTimeInput('02/29/2024 10:30 AM', standardCurrentValue, setUiValue, true);
+        validateDateResult(result, expectedDate, 'Leap year Feb 29');
       });
 
-      describe('Locale-specific formats', () => {
-        let originalLocale: string;
-
-        beforeEach(() => {
-          // Save original locale
-          originalLocale = dayjs.locale();
-        });
-
-        afterEach(() => {
-          // Restore original locale
-          dayjs.locale(originalLocale);
-          DateTimeUtils.initializeDayjs(originalLocale);
-        });
-
-        it('should handle European date format DD.MM.YYYY based on locale', () => {
-          dayjs.locale('de');
-          DateTimeUtils.initializeDayjs('de');
-
-          const expectedDate = dayjs.utc(`${commonISODate}14:30:00Z`);
-          const result = DateTimeUtils.handleDateTimeInput('25.06.2025 14:30', standardCurrentValue, setUiValue);
-          validateDateResult(result, expectedDate);
-        });
-
-        it('should handle European date format with minimal time (DD.MM.YYYY HH:mm)', () => {
-          dayjs.locale('de');
-          DateTimeUtils.initializeDayjs('de');
-
-          const expectedDate = dayjs.utc(`${commonISODate}00:00:00Z`);
-          const result = DateTimeUtils.handleDateTimeInput('25.06.2025 00:00', standardCurrentValue, setUiValue);
-          validateDateResult(result, expectedDate);
-        });
-
-        it('should handle 24-hour time format (DD.MM.YYYY HH:mm)', () => {
-          dayjs.locale('de');
-          DateTimeUtils.initializeDayjs('de');
-
-          const expectedDate = dayjs.utc(`${commonISODate}16:00:00Z`);
-          const result = DateTimeUtils.handleDateTimeInput('25.06.2025 16:00', standardCurrentValue, setUiValue);
-          validateDateResult(result, expectedDate);
-        });
-      });
-
-      // Ambiguous date format tests with time component to ensure proper parsing
-      describe('Ambiguous date format interpretation', () => {
-        let originalLocale: string;
-
-        beforeEach(() => {
-          // Save original locale
-          originalLocale = dayjs.locale();
-        });
-
-        afterEach(() => {
-          // Restore original locale
-          dayjs.locale(originalLocale);
-          DateTimeUtils.initializeDayjs(originalLocale);
-        });
-
-        it('should interpret MM/DD/YYYY format in US locale', () => {
-          DateTimeUtils.initializeDayjs('en');
-
-          const expectedDate = dayjs.utc('2025-12-25T12:00:00Z');
-          const result = DateTimeUtils.handleDateTimeInput('12/25/2025 12:00 PM', standardCurrentValue, setUiValue);
-          validateDateResult(result, expectedDate);
-        });
-
-        it('should interpret DD/MM/YYYY format in UK locale', () => {
-          dayjs.locale('en-gb');
-          DateTimeUtils.initializeDayjs('en-gb');
-
-          const expectedDate = dayjs.utc('2025-12-25T12:00:00Z');
-          const result = DateTimeUtils.handleDateTimeInput('25/12/2025 12:00 PM', standardCurrentValue, setUiValue);
-          validateDateResult(result, expectedDate);
-        });
-      });
-
-      // Modified tests for dates with minimal time to include AM/PM designators
-      describe('Date formats with minimal time component', () => {
-        it('should handle US date format with minimal time (MM/DD/YYYY hh:mm AM)', () => {
-          const expectedDate = dayjs.utc(`${commonISODate}00:00:00Z`);
-          const result = DateTimeUtils.handleDateTimeInput(`06/25/2025 12:00 AM`, standardCurrentValue, setUiValue);
-          validateDateResult(result, expectedDate);
-        });
-
-        // Modified to use a format that is known to work with the implementation
-        it('should handle additional date formats with time', () => {
-          const expectedDate = dayjs.utc(`${commonISODate}00:00:00Z`);
-          const result = DateTimeUtils.handleDateTimeInput(`06/25/2025 12:00 AM`, standardCurrentValue, setUiValue);
-          validateDateResult(result, expectedDate);
-        });
-      });
-
-      // Modified tests for dates with time components - adjusted to actual implementation behavior
-      describe('Date formats with time components', () => {
-        it('should handle US date format with time (MM/DD/YYYY hh:mm A)', () => {
-          const expectedDate = dayjs.utc(`${commonISODate}07:24:00Z`);
-          const result = DateTimeUtils.handleDateTimeInput(`06/25/2025 07:24 AM`, standardCurrentValue, setUiValue);
-          validateDateResult(result, expectedDate);
-        });
+      it('should auto-correct February 29 in a non-leap year', () => {
+        const result = DateTimeUtils.handleDateTimeInput('02/29/2025 10:30 AM', standardCurrentValue, setUiValue, true);
+        expect(result).toBe(true);
+        expect(setUiValue).toHaveBeenCalled();
+        // Dayjs will auto-correct to March 1
+        const updatedValue = setUiValue.calls.mostRecent().args[0];
+        const resultDate = dayjs(updatedValue);
+        expect(resultDate.month()).toBe(2); // March (0-indexed)
+        expect(resultDate.date()).toBe(1);
       });
     });
 
-    describe('Invalid input handling', () => {
-      it('should reject completely invalid date format', () => {
-        const result = DateTimeUtils.handleDateTimeInput('this is not a date', standardCurrentValue, setUiValue);
+    describe('Historical and future dates', () => {
+      it('should handle very old dates (pre-1900)', () => {
+        const expectedDate = dayjs.utc('1876-07-04T12:00:00Z');
+        const result = DateTimeUtils.handleDateTimeInput('07/04/1876 12:00 PM', standardCurrentValue, setUiValue, true);
+        validateDateResult(result, expectedDate, 'Historical date');
+      });
+
+      it('should handle far future dates', () => {
+        const expectedDate = dayjs.utc('9999-12-31T23:59:00Z');
+        const result = DateTimeUtils.handleDateTimeInput('12/31/9999 11:59 PM', standardCurrentValue, setUiValue, true);
+        validateDateResult(result, expectedDate, 'Far future date');
+      });
+    });
+
+    describe('Date overflow/underflow behavior', () => {
+      it('should reject overflow month that strict parsing cannot handle', () => {
+        // '13/25/2025 10:30 AM' doesn't match any strict format and fails lenient parsing
+        const result = DateTimeUtils.handleDateTimeInput('13/25/2025 10:30 AM', standardCurrentValue, setUiValue, true);
         expect(result).toBe(false);
         expect(setUiValue).not.toHaveBeenCalled();
       });
 
-      describe('Auto-correction of invalid inputs', () => {
-        it('should auto-correct date with invalid month (>12)', () => {
-          const expectedCorrectedDate = dayjs.utc('2026-01-25T10:30:00.000Z');
-          const result = DateTimeUtils.handleDateTimeInput('13/25/2025 10:30 AM', standardCurrentValue, setUiValue);
-          validateDateResult(result, expectedCorrectedDate);
-        });
-
-        it('should auto-correct date with technically invalid day', () => {
-          const expectedCorrectedDate = dayjs.utc('2025-07-02T10:30:00.000Z');
-          const result = DateTimeUtils.handleDateTimeInput('06/32/2025 10:30 AM', standardCurrentValue, setUiValue);
-          validateDateResult(result, expectedCorrectedDate);
-        });
-
-        it('should auto-correct time with invalid hour (>24) to next day', () => {
-          const expectedCorrectedDate = dayjs.utc('2025-06-26T01:30:00.000Z');
-          const result = DateTimeUtils.handleDateTimeInput('06/25/2025 25:30 AM', standardCurrentValue, setUiValue);
-          validateDateResult(result, expectedCorrectedDate);
-        });
-
-        it('should auto-correct time with technically invalid minute to next hour', () => {
-          const expectedCorrectedDate = dayjs.utc('2025-06-25T11:00:00.000Z');
-          const result = DateTimeUtils.handleDateTimeInput('06/25/2025 10:60 AM', standardCurrentValue, setUiValue);
-          validateDateResult(result, expectedCorrectedDate);
-        });
-      });
-
-      it('should reject date with text appended', () => {
-        const result = DateTimeUtils.handleDateTimeInput('18.12.2004 uuu', standardCurrentValue, setUiValue);
+      it('should reject overflow day that strict parsing cannot handle', () => {
+        // '06/32/2025 10:30 AM' doesn't match strict formats and fails lenient parsing
+        const result = DateTimeUtils.handleDateTimeInput('06/32/2025 10:30 AM', standardCurrentValue, setUiValue, true);
         expect(result).toBe(false);
         expect(setUiValue).not.toHaveBeenCalled();
       });
-    });
 
-    describe('Edge cases', () => {
-      describe('Special dates', () => {
-        it('should handle leap year dates based on implementation behavior', () => {
-          // February 29 in a leap year
-          const expectedLeapDate = dayjs.utc('2024-02-29T10:30:00Z');
-          const result1 = DateTimeUtils.handleDateTimeInput('02/29/2024 10:30 AM', standardCurrentValue, setUiValue);
-          validateDateResult(result1, expectedLeapDate);
-
-          // February 29 in a non-leap year - implementation might auto-correct
-          setUiValue.calls.reset();
-          const result2 = DateTimeUtils.handleDateTimeInput('02/29/2025 10:30 AM', standardCurrentValue, setUiValue);
-          expect(result2).toBe(true);
-          expect(setUiValue).toHaveBeenCalled();
-        });
-
-        it('should handle very old dates', () => {
-          const expectedOldDate = dayjs.utc('1876-07-04T12:00:00Z');
-          const result = DateTimeUtils.handleDateTimeInput('07/04/1876 12:00 PM', standardCurrentValue, setUiValue);
-          validateDateResult(result, expectedOldDate);
-        });
-
-        it('should handle far future dates', () => {
-          const expectedFutureDate = dayjs.utc('9999-12-31T23:59:00Z');
-          const result = DateTimeUtils.handleDateTimeInput('12/31/9999 11:59 PM', standardCurrentValue, setUiValue);
-          validateDateResult(result, expectedFutureDate);
-        });
+      it('should reject invalid hour format in strict mode', () => {
+        // Format '06/25/2025 25:30' doesn't match any strict format pattern
+        const result = DateTimeUtils.handleDateTimeInput('06/25/2025 25:30', standardCurrentValue, setUiValue, true);
+        // This will be rejected because it doesn't match strict formats and lenient parsing also fails
+        expect(result).toBe(false);
       });
 
-      it('should handle specific format patterns that the implementation supports', () => {
-        const expectedDate = dayjs.utc(`${commonISODate}07:24:00Z`);
-        const result = DateTimeUtils.handleDateTimeInput(`06/25/2025 07:24 AM`, standardCurrentValue, setUiValue);
-        validateDateResult(result, expectedDate);
+      it('should reject invalid minute format in strict mode', () => {
+        // Format '06/25/2025 10:60' doesn't match strict patterns properly
+        const result = DateTimeUtils.handleDateTimeInput('06/25/2025 10:60', standardCurrentValue, setUiValue, true);
+        // This will be rejected
+        expect(result).toBe(false);
       });
     });
   });
 
   describe('updateTime', () => {
-    it('should correctly update time from time picker', () => {
+    it('should update time while preserving date', () => {
       const expectedTime = dayjs.utc('2025-06-13T14:30:00Z');
       DateTimeUtils.updateTime('14:30', standardCurrentValue, setUiValue);
 
       expect(setUiValue).toHaveBeenCalled();
-      const updatedValue = setUiValue.calls.first().args[0];
+      const updatedValue = setUiValue.calls.mostRecent().args[0];
       const resultDate = dayjs(updatedValue);
       expect(resultDate.isSame(expectedTime, 'second')).toBe(true);
     });
 
-    it('should handle time updates appropriately', () => {
-      const expectedTime = dayjs.utc('2025-06-13T16:00:00Z');
-      DateTimeUtils.updateTime('16:00', standardCurrentValue, setUiValue);
+    it('should handle midnight time (00:00)', () => {
+      const expectedTime = dayjs.utc('2025-06-13T00:00:00Z');
+      DateTimeUtils.updateTime('00:00', standardCurrentValue, setUiValue);
 
       expect(setUiValue).toHaveBeenCalled();
-      const updatedValue = setUiValue.calls.first().args[0];
+      const updatedValue = setUiValue.calls.mostRecent().args[0];
       const resultDate = dayjs(updatedValue);
       expect(resultDate.isSame(expectedTime, 'second')).toBe(true);
+    });
+
+    it('should handle end of day time (23:59)', () => {
+      const expectedTime = dayjs.utc('2025-06-13T23:59:00Z');
+      DateTimeUtils.updateTime('23:59', standardCurrentValue, setUiValue);
+
+      expect(setUiValue).toHaveBeenCalled();
+      const updatedValue = setUiValue.calls.mostRecent().args[0];
+      const resultDate = dayjs(updatedValue);
+      expect(resultDate.isSame(expectedTime, 'second')).toBe(true);
+    });
+
+    it('should handle null time value', () => {
+      // updateTimeFn checks if time == null and sets to null
+      // But the check is `time == null` after parsing with dayjs
+      // When passed null, dayjs will create an invalid date
+      DateTimeUtils.updateTime(null as any, standardCurrentValue, setUiValue);
+      // updateTimeFn doesn't call setUiValue for invalid times
+      expect(setUiValue).not.toHaveBeenCalled();
     });
   });
 
-  describe('Working directly with dayjs objects', () => {
-    describe('updateFormattedValue with dayjs objects', () => {
-      it('should correctly update date using dayjs object', () => {
-        const expectedDate = dayjs.utc('2025-08-15T10:45:14Z');
-        const dateObj = dayjs('2025-08-15');
+  describe('updateDate', () => {
+    it('should update date while preserving time', () => {
+      const newDate = dayjs('2025-12-25');
+      const expectedDateTime = dayjs.utc('2025-12-25T10:45:14Z');
 
-        const result = DateTimeUtils.updateFormattedValue(dateObj, null, standardCurrentValue, setUiValue);
+      DateTimeUtils.updateDate(newDate, standardCurrentValue, setUiValue);
+
+      expect(setUiValue).toHaveBeenCalled();
+      const updatedValue = setUiValue.calls.mostRecent().args[0];
+      const resultDate = dayjs(updatedValue);
+      expect(resultDate.isSame(expectedDateTime, 'second')).toBe(true);
+    });
+
+    it('should set UI value to null when date is null', () => {
+      DateTimeUtils.updateDate(null, standardCurrentValue, setUiValue);
+      expect(setUiValue).toHaveBeenCalledWith(null);
+    });
+
+    it('should not update if date is invalid', () => {
+      const invalidDate = dayjs('invalid');
+      DateTimeUtils.updateDate(invalidDate, standardCurrentValue, setUiValue);
+      expect(setUiValue).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('updateFormattedValue', () => {
+    describe('With useTimePicker = true', () => {
+      it('should update only date, preserving existing time', () => {
+        const newDate = dayjs('2025-12-25');
+        const expectedDateTime = dayjs.utc('2025-12-25T10:45:14Z');
+
+        const result = DateTimeUtils.updateFormattedValue(newDate, null, standardCurrentValue, setUiValue, true);
+
         expect(setUiValue).toHaveBeenCalled();
-
         const resultDate = dayjs(result);
-        expect(resultDate.isSame(expectedDate, 'second')).toBe(true);
+        expect(resultDate.isSame(expectedDateTime, 'second')).toBe(true);
       });
 
-      it('should correctly update time using dayjs object', () => {
-        const expectedDate = dayjs.utc('2025-06-13T20:15:00Z');
-        const timeObj = dayjs().hour(20).minute(15).second(0);
+      it('should update only time, preserving existing date', () => {
+        const newTime = dayjs().hour(18).minute(30).second(0);
+        const expectedDateTime = dayjs.utc('2025-06-13T18:30:00Z');
 
-        const result = DateTimeUtils.updateFormattedValue(null, timeObj, standardCurrentValue, setUiValue);
+        const result = DateTimeUtils.updateFormattedValue(null, newTime, standardCurrentValue, setUiValue, true);
+
         expect(setUiValue).toHaveBeenCalled();
-
         const resultDate = dayjs(result);
-        expect(resultDate.isSame(expectedDate, 'second')).toBe(true);
+        expect(resultDate.isSame(expectedDateTime, 'second')).toBe(true);
       });
 
-      it('should correctly update both date and time using dayjs objects', () => {
-        const expectedDate = dayjs.utc('2025-12-31T23:59:00Z');
-        const dateObj = dayjs('2025-12-31');
-        const timeObj = dayjs().hour(23).minute(59).second(0);
+      it('should update both date and time', () => {
+        const newDate = dayjs('2025-12-25');
+        const newTime = dayjs().hour(18).minute(30).second(0);
+        const expectedDateTime = dayjs.utc('2025-12-25T18:30:00Z');
 
-        const result = DateTimeUtils.updateFormattedValue(dateObj, timeObj, standardCurrentValue, setUiValue);
+        const result = DateTimeUtils.updateFormattedValue(newDate, newTime, standardCurrentValue, setUiValue, true);
+
         expect(setUiValue).toHaveBeenCalled();
-
         const resultDate = dayjs(result);
-        expect(resultDate.isSame(expectedDate, 'second')).toBe(true);
+        expect(resultDate.isSame(expectedDateTime, 'second')).toBe(true);
       });
 
-      it('should throw error with invalid dayjs date object', () => {
-        const invalidDate = dayjs('invalid-date');
-        expect(invalidDate.isValid()).toBe(false);
+      it('should always set seconds to 0', () => {
+        const newTime = dayjs().hour(14).minute(30).second(45); // Note: seconds = 45
 
-        expect(() => {
-          DateTimeUtils.updateFormattedValue(invalidDate, null, standardCurrentValue, setUiValue);
-        }).toThrow();
+        const result = DateTimeUtils.updateFormattedValue(null, newTime, standardCurrentValue, setUiValue, true);
+
+        const resultDate = dayjs(result);
+        expect(resultDate.second()).toBe(0);
+      });
+    });
+
+    describe('With useTimePicker = false', () => {
+      it('should set time to 00:00:00 when updating date', () => {
+        const newDate = dayjs('2025-12-25');
+        const expectedDateTime = dayjs.utc('2025-12-25T00:00:00Z');
+
+        const result = DateTimeUtils.updateFormattedValue(newDate, null, standardCurrentValue, setUiValue, false);
+
+        expect(setUiValue).toHaveBeenCalled();
+        const resultDate = dayjs(result);
+        expect(resultDate.isSame(expectedDateTime, 'second')).toBe(true);
       });
 
-      it('should handle timezone differences in dayjs objects', () => {
-        const nycDate = dayjs.tz('2025-06-25T14:30:00', 'America/New_York');
-        const expectedDate = dayjs.utc('2025-06-25T14:30:00Z');
+      it('should ignore time component and set to 00:00:00', () => {
+        const newDate = dayjs('2025-12-25');
+        const newTime = dayjs().hour(18).minute(30).second(0);
+        const expectedDateTime = dayjs.utc('2025-12-25T00:00:00Z');
 
-        const result = DateTimeUtils.updateFormattedValue(nycDate, null, standardCurrentValue, setUiValue);
+        const result = DateTimeUtils.updateFormattedValue(newDate, newTime, standardCurrentValue, setUiValue, false);
+
+        expect(setUiValue).toHaveBeenCalled();
         const resultDate = dayjs(result);
+        expect(resultDate.isSame(expectedDateTime, 'second')).toBe(true);
+      });
+    });
 
+    describe('Edge cases', () => {
+      it('should return null when both date and time are null', () => {
+        const result = DateTimeUtils.updateFormattedValue(null, null, standardCurrentValue, setUiValue, true);
+        expect(result).toBeNull();
+        expect(setUiValue).not.toHaveBeenCalled();
+      });
+
+      it('should use today as base date when current UI value is invalid', () => {
+        // Create a specific UTC time object
+        const specificTime = dayjs().utc().hour(14).minute(30).second(0);
+
+        const result = DateTimeUtils.updateFormattedValue(null, specificTime, 'invalid-date', setUiValue, true);
+
+        expect(setUiValue).toHaveBeenCalled();
+        const resultDate = dayjs.utc(result); // Parse result as UTC
         expect(resultDate.isValid()).toBe(true);
-        expect(resultDate.year()).toBe(expectedDate.year());
-        expect(resultDate.month()).toBe(expectedDate.month());
-        expect(resultDate.date()).toBe(expectedDate.date());
+
+        // Check that the time components match what we set
+        expect(resultDate.hour()).toBe(14);
+        expect(resultDate.minute()).toBe(30);
+        expect(resultDate.second()).toBe(0);
+
+        // Verify it used today's date (or close to it)
+        const today = dayjs.utc();
+        expect(resultDate.year()).toBe(today.year());
+        expect(resultDate.month()).toBe(today.month());
+        // Date might differ by 1 if test runs at midnight, so check it's within 1 day
+        expect(Math.abs(resultDate.date() - today.date())).toBeLessThanOrEqual(1);
+      });
+
+      it('should handle timezone differences correctly', () => {
+        const nycDate = dayjs.tz('2025-06-25T14:30:00', 'America/New_York');
+
+        const result = DateTimeUtils.updateFormattedValue(nycDate, null, standardCurrentValue, setUiValue, true);
+
+        const resultDate = dayjs(result);
+        expect(resultDate.isValid()).toBe(true);
+        expect(resultDate.year()).toBe(2025);
+        expect(resultDate.month()).toBe(5); // June (0-indexed)
+        expect(resultDate.date()).toBe(25);
       });
     });
+  });
 
-    describe('getDateTimeValue with various inputs', () => {
-      it('should convert valid ISO string to dayjs object', () => {
-        const expectedDate = dayjs.utc('2025-06-25T05:25:07Z');
-        const result = DateTimeUtils.getDateTimeValue('2025-06-25T05:25:07Z');
+  describe('getDateTimeValue', () => {
+    it('should convert valid ISO string to dayjs UTC object', () => {
+      const isoString = '2025-06-25T14:30:00Z';
+      const result = DateTimeUtils.getDateTimeValue(isoString);
 
-        expect(result.isValid()).toBe(true);
-        expect(result.isSame(expectedDate)).toBe(true);
-      });
-
-      describe('Invalid inputs', () => {
-        it('should return invalid dayjs object for empty input', () => {
-          const emptyResult = DateTimeUtils.getDateTimeValue('');
-          expect(emptyResult.isValid()).toBe(false);
-        });
-
-        it('should return invalid dayjs object for invalid date string', () => {
-          const invalidResult = DateTimeUtils.getDateTimeValue('not-a-date');
-          expect(invalidResult.isValid()).toBe(false);
-        });
-      });
+      expect(result.isValid()).toBe(true);
+      expect(result.format()).toBe(dayjs.utc(isoString).format());
     });
 
-    // Modified tests for specific date-time formats to match implementation behavior
-    describe('Handling specific date-time formats', () => {
-      it('should handle formatted dates using the component\'s format', () => {
-        const knownWorkingFormat = '06/13/2025 10:45 AM';
-        const expectedDate = dayjs.utc('2025-06-13T10:45:00Z');
+    it('should return invalid dayjs object for empty string', () => {
+      const result = DateTimeUtils.getDateTimeValue('');
+      expect(result.isValid()).toBe(false);
+    });
 
-        const result = DateTimeUtils.handleDateTimeInput(knownWorkingFormat, standardCurrentValue, setUiValue);
-        validateDateResult(result, expectedDate);
-      });
+    it('should return invalid dayjs object for invalid string', () => {
+      const result = DateTimeUtils.getDateTimeValue('not a date');
+      expect(result.isValid()).toBe(false);
+    });
 
-      it('should correctly handle the specific format "MM/DD/YYYY h:mm A"', () => {
-        const expectedDate = dayjs.utc('2025-06-25T05:27:00Z');
-        const dateString = '06/25/2025 5:27 AM';
+    it('should handle ISO string without timezone indicator', () => {
+      const isoString = '2025-06-25T14:30:00';
+      const result = DateTimeUtils.getDateTimeValue(isoString);
 
-        const result = DateTimeUtils.handleDateTimeInput(dateString, standardCurrentValue, setUiValue);
-        validateDateResult(result, expectedDate);
-      });
+      expect(result.isValid()).toBe(true);
+    });
+  });
 
-      it('should handle common date formats based on locale', () => {
-        const usDateString = '06/18/2004 10:00 AM';
-        const expectedUsDate = dayjs.utc('2004-06-18T10:00:00Z');
+  describe('formatDateTime', () => {
+    it('should format dayjs object using localized format', () => {
+      DateTimeUtils.initializeDayjs('en');
+      const date = dayjs('2025-12-31T14:30:00');
+      const formatted = DateTimeUtils.formatDateTime(date);
 
-        const result = DateTimeUtils.handleDateTimeInput(usDateString, standardCurrentValue, setUiValue);
-        validateDateResult(result, expectedUsDate);
+      expect(formatted).toContain('12/31/2025');
+      expect(formatted).toContain('2:30');
+    });
+
+    it('should format Date object using localized format', () => {
+      DateTimeUtils.initializeDayjs('en');
+      const date = new Date('2025-12-31T14:30:00Z');
+      const formatted = DateTimeUtils.formatDateTime(date);
+
+      expect(formatted).toBeTruthy();
+      expect(formatted).not.toBe('');
+    });
+
+    it('should return empty string for null input', () => {
+      const formatted = DateTimeUtils.formatDateTime(null);
+      expect(formatted).toBe('');
+    });
+
+    it('should use German format when locale is de', () => {
+      DateTimeUtils.initializeDayjs('de');
+      const date = dayjs('2025-12-31T14:30:00');
+      const formatted = DateTimeUtils.formatDateTime(date);
+
+      expect(formatted).toContain('31.12.2025');
+    });
+  });
+
+  describe('generateTimePickerOptions', () => {
+    it('should return predefined options when dateTimeValue is null', () => {
+      const options = DateTimeUtils.generateTimePickerOptions(null);
+
+      expect(options.length).toBe(6);
+      expect(options[0].label).toBe('00:00 AM');
+      expect(options[options.length - 1].label).toBe('06:00 PM');
+    });
+
+    it('should return predefined options when dateTimeValue is invalid', () => {
+      const invalidDate = dayjs('invalid');
+      const options = DateTimeUtils.generateTimePickerOptions(invalidDate);
+
+      expect(options.length).toBe(6);
+    });
+
+    it('should include user time if not in predefined options', () => {
+      const userTime = dayjs.utc().hour(15).minute(45);
+      const options = DateTimeUtils.generateTimePickerOptions(userTime);
+
+      expect(options.length).toBe(7); // 6 predefined + 1 user time
+      expect(options.some(opt => opt.value.hour() === 15 && opt.value.minute() === 45)).toBe(true);
+    });
+
+    it('should not duplicate user time if already in predefined options', () => {
+      const userTime = dayjs.utc().hour(6).minute(0); // Matches predefined '06:00 AM'
+      const options = DateTimeUtils.generateTimePickerOptions(userTime);
+
+      expect(options.length).toBe(6); // Should not add duplicate
+    });
+
+    it('should sort options chronologically', () => {
+      const userTime = dayjs.utc().hour(9).minute(30); // Between 08:00 and 10:00
+      const options = DateTimeUtils.generateTimePickerOptions(userTime);
+
+      for (let i = 0; i < options.length - 1; i++) {
+        expect(options[i].value.valueOf()).toBeLessThan(options[i + 1].value.valueOf());
+      }
+    });
+  });
+
+  describe('Cross-locale format compatibility', () => {
+    const testCases = [
+      { locale: 'en', date: '12/31/2025', time: '11:59 PM', expectedISO: '2025-12-31T23:59:00' },
+      { locale: 'de', date: '31.12.2025', time: '23:59', expectedISO: '2025-12-31T23:59:00' },
+      { locale: 'en-gb', date: '31/12/2025', time: '23:59', expectedISO: '2025-12-31T23:59:00' },
+      { locale: 'fr', date: '31/12/2025', time: '23:59', expectedISO: '2025-12-31T23:59:00' },
+    ];
+
+    testCases.forEach(({ locale, date, time, expectedISO }) => {
+      it(`should handle ${locale} locale format: ${date} ${time}`, () => {
+        DateTimeUtils.initializeDayjs(locale);
+
+        const input = `${date} ${time}`;
+        const expectedDate = dayjs.utc(expectedISO + 'Z');
+        const result = DateTimeUtils.handleDateTimeInput(input, standardCurrentValue, setUiValue, true);
+
+        validateDateResult(result, expectedDate, `Locale: ${locale}`);
       });
     });
   });

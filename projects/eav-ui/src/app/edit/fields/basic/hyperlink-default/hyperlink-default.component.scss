@@ -1,11 +1,11 @@
-@import "../../../assets/styles/variables.scss";
+@use "../../../assets/styles/variables.scss";
 
 .eav-card {
   padding: 16px;
 }
 
 .metadata-exists {
-  color: $blue-accent-color;
+  color: variables.$blue-accent-color;
 }
 
 .fabs-box {
@@ -14,7 +14,7 @@
   margin-top: 8px;
   z-index: 11;
   position: fixed;
-  width: $edit-ui-dialog-max-width;
+  width: variables.$edit-ui-dialog-max-width;
   pointer-events: none;
 
   button {
@@ -33,7 +33,7 @@
 }
 
 .hyperlink-card {
-  border-radius: $edit-ui-dialog-border-radius;
+  border-radius: variables.$edit-ui-dialog-border-radius;
 }
 
 .preview-wrapper {
@@ -65,13 +65,13 @@
   justify-content: center;
   width: 80px;
   height: 80px;
-  background-color: rgba($editUI-foreground-color, 0.08);
+  background-color: rgba(variables.$editUI-foreground-color, 0.08);
 
   .mat-icon {
     font-size: 56px;
     width: 56px;
     height: 56px;
     line-height: 56px;
-    color: rgba($editUI-foreground-color, 0.44);
+    color: rgba(variables.$editUI-foreground-color, 0.44);
   }
 }

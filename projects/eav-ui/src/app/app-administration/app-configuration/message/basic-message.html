@@ -1,0 +1,16 @@
+<div class="eav-dialog">
+  <div class="eav-dialog-header">
+    <h1 class="eav-dialog-header__title" [ngStyle]="{ color: isError ? 'red' : 'inherit' }">{{ isError ? 'Error' : 'Messages' }}</h1>
+    <button mat-icon-button mat-dialog-close tippy="Close dialog">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <div class="eav-dialog-content">
+    <p>
+      {{ message }}
+      @if (openFixUrl().length > 0) {
+        <button mat-button (click)="routeToFixIssue()">Click to fix</button>
+      }
+    </p>
+  </div>
+</div>

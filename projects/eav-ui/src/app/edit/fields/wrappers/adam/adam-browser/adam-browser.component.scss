@@ -1,4 +1,4 @@
-@import "../../../../assets/styles/variables.scss";
+@use "../../../../assets/styles/variables.scss";
 
 .adam-browse-background-icon {
   padding-left: 5px;
@@ -106,12 +106,12 @@
 .image-configuration-button,
 .adam-tag {
   &.metadata-exists {
-    color: $blue-accent-color;
+    color: variables.$blue-accent-color;
   }
 }
 
 .adam-button-disabled {
-  color: $editUI-label-disabled-color;
+  color: variables.$editUI-label-disabled-color;
   cursor: default;
 }
 

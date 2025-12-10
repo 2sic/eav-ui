@@ -1,13 +1,13 @@
-@import "../../../../styles/variables.scss";
+@use "../../../../styles/variables.scss";
 
 :host ::ng-deep .ag-row-hover .ag-cell a,
 :host ::ng-deep .ag-row-hover .ag-cell .eav-grid-action-button,
 .eav-button__with-icon {
-  color: $sxc-solid !important;
+  color: variables.$sxc-solid !important;
 }
 
 .eav-button__with-icon:disabled {
-  color: $text-disabled !important;
+  color: variables.$text-disabled !important;
 }
 
 .grid-height {

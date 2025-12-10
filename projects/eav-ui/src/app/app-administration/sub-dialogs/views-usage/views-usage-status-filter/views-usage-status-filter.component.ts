@@ -1,10 +1,10 @@
 import { IFilterAngularComp } from '@ag-grid-community/angular';
 import { IAfterGuiAttachedParams, IDoesFilterPassParams, IFilterParams, ValueGetterParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
-import { ViewUsageDataStatus } from '../../../models/view-usage-data.model';
-import { ViewsUsageStatusFilterModel } from './views-usage-status-filter.model';
 import { FormsModule } from '@angular/forms';
 import { MatRadioModule } from '@angular/material/radio';
+import { ViewUsageDataStatus } from '../../../models/view-usage-data.model';
+import { ViewsUsageStatusFilterModel } from './views-usage-status-filter.model';
 
 @Component({
     selector: 'app-views-usage-status-filter',
@@ -34,7 +34,6 @@ export class ViewsUsageStatusFilterComponent implements IFilterAngularComp {
       api: this.filterParams.api,
       colDef: this.filterParams.colDef,
       column: this.filterParams.column,
-      columnApi: this.filterParams.columnApi,
       context: this.filterParams.context,
       data: params.node.data,
       getValue: (field) => params.node.data[field],

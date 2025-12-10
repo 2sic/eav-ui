@@ -1,4 +1,4 @@
-@import '../../../assets/styles/variables.scss';
+@use '../../../assets/styles/variables.scss';
 
 .my-title-bar {
   display: flex;
@@ -8,5 +8,5 @@
 }
 
 .my-label-disabled {
-  color: $editUI-label-disabled-color;
+  color: variables.$editUI-label-disabled-color;
 }

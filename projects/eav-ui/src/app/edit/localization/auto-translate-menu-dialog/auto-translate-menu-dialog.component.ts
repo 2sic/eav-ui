@@ -48,7 +48,7 @@ export class AutoTranslateMenuDialogComponent extends TranslateHelperComponent i
 
     return this.dialogData.isTranslateMany
       ? getTemplateLanguagesWithContent(language, languages, attributes, translationState.linkType, this.dialogData.translatableFields)
-      : getTemplateLanguages(this.dialogData.config, language, languages, attributes, translationState.linkType);
+      : getTemplateLanguages({ fieldName: this.dialogData.config.fieldName ?? '' }, language, languages, attributes, translationState.linkType);
   });
 
   constructor(

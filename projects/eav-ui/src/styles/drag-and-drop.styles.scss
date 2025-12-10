@@ -1,27 +1,29 @@
+@use "../app/edit/assets/styles/variables";
+
 .eav-dragging .eav-droparea {
   &.eav-droparea-fill {
-    background-color: $dropzone-background !important;
+    background-color: variables.$dropzone-background !important;
   }
 
   &.eav-droparea-shadow {
-    box-shadow: 0 0 5px 5px $dropzone-background !important;
+    box-shadow: 0 0 5px 5px variables.$dropzone-background !important;
   }
 
   &.eav-droparea-outline {
-    outline: 2px dashed $dropzone-background !important;
+    outline: 2px dashed variables.$dropzone-background !important;
   }
 }
 
 .eav-droparea.eav-dragover {
   &.eav-droparea-fill {
-    background-color: $dropzone-active-background !important;
+    background-color: variables.$dropzone-active-background !important;
   }
 
   &.eav-droparea-shadow {
-    box-shadow: 0 0 5px 5px $dropzone-active-background !important;
+    box-shadow: 0 0 5px 5px variables.$dropzone-active-background !important;
   }
 
   &.eav-droparea-outline {
-    outline: 2px dashed $dropzone-active-background !important;
+    outline: 2px dashed variables.$dropzone-active-background !important;
   }
 }

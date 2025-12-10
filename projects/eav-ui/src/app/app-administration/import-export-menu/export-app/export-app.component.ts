@@ -5,7 +5,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogActions } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { transient } from '../../../../../../core';
-import { DocsLinkHelperComponent } from '../../../admin-shared/docs-link-helper/docs-link-helper.component';
+import { DocsLinkHelper } from '../../../admin-shared/docs-link-helper/docs-link-helper';
 import { FeatureIconComponent } from '../../../features/feature-icon/feature-icon.component';
 import { FeatureNames } from '../../../features/feature-names';
 import { FeaturesService } from '../../../features/features.service';
@@ -22,7 +22,7 @@ import { ExportAppService } from '../../services/export-app.service';
         MatButtonModule,
         MatIconModule,
         FeatureIconComponent,
-        DocsLinkHelperComponent,
+        DocsLinkHelper,
     ]
 })
 export class ExportAppComponent {

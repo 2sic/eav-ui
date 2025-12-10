@@ -1,6 +1,11 @@
 <div class="actions-component">
   @if (!contentType.EditInfo.DisableEdit || contentType.Properties) {
-    <a [href]="params.urlTo('createUpdateMetaData', contentType)" class="eav-grid-action-button default-link highlight" matRipple tippy="Description and more">
+    <a
+      [href]="params.urlTo('createUpdateMetaData', contentType)"
+      class="eav-grid-action-button default-link highlight"
+      matRipple
+      tippy="Description and more"
+    >
       <mat-icon>edit</mat-icon>
     </a>
   } @else {
@@ -10,7 +15,12 @@
   }
 
   @if (!contentType.EditInfo.DisableMetadata) {
-    <a [href]="params.urlTo('openMetadata', contentType)" class="eav-grid-action-button default-link highlight" matRipple tippy="Metadata">
+    <a
+      [href]="params.urlTo('openMetadata', contentType)"
+      class="eav-grid-action-button default-link highlight"
+      matRipple
+      tippy="Metadata"
+    >
       <mat-icon
         [matBadge]="contentType.Metadata.length"
         matBadgePosition="below after"
@@ -37,7 +47,12 @@
   }
 
   @if (!contentType.EditInfo.DisableEdit && enablePermissions) {
-    <a [href]="params.urlTo('openPermissions', contentType)" class="eav-grid-action-button default-link highlight" matRipple tippy="Permissions">
+    <a
+      [href]="params.urlTo('openPermissions', contentType)"
+      class="eav-grid-action-button default-link highlight"
+      matRipple
+      tippy="Permissions"
+    >
       <mat-icon
         [matBadge]="contentType.Permissions.Count"
         matBadgePosition="below after"
@@ -63,14 +78,22 @@
     </div>
   }
 
-  <div class="eav-grid-action-button highlight" matRipple tippy="More" [matMenuTriggerFor]="menu">
+  <div
+    class="eav-grid-action-button highlight"
+    matRipple tippy="More"
+    [matMenuTriggerFor]="menu"
+  >
     <mat-icon>more_horiz</mat-icon>
   </div>
 </div>
 
 <mat-menu #menu="matMenu" class="grid-more-menu">
   <ng-template matMenuContent>
-    <a [href]="params.urlTo('editContentType', contentType)" mat-menu-item [disabled]="contentType.EditInfo.DisableRename">
+    <a
+      [href]="params.urlTo('editContentType', contentType)"
+      mat-menu-item
+      [disabled]="contentType.EditInfo.DisableRename"
+    >
       <mat-icon>settings</mat-icon>
       <span>Rename</span>
     </a>
@@ -90,7 +113,11 @@
       <mat-icon>cloud_upload</mat-icon>
       <span>Import data</span>
     </a>
-    <button mat-menu-item [disabled]="contentType.EditInfo.DisableDelete" (click)="params.do('deleteContentType', contentType)">
+    <button
+      mat-menu-item
+      [disabled]="contentType.EditInfo.DisableDelete"
+      (click)="params.do('deleteContentType', contentType)"
+    >
       <mat-icon>delete</mat-icon>
       <span>Delete</span>
     </button>
