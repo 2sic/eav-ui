@@ -5,13 +5,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogActions } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterOutlet } from '@angular/router';
+import { EcoFabSpeedDialActionsComponent, EcoFabSpeedDialComponent, EcoFabSpeedDialTriggerComponent } from '@ecodev/fab-speed-dial';
 import { of, take } from 'rxjs';
 import { transient } from '../../../../../core';
 import { DialogRoutingState } from '../../edit/dialog/dialogRouteState.model';
 import { GridWithHelpComponent, HelpTextConst } from '../../shared/ag-grid/grid-with-help/grid-with-help.component';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
-import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm, EditPrep } from '../../shared/models/edit-form.model';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
@@ -36,7 +36,9 @@ import { AppExtensionsLinkCell } from './extensions-link/extensions-link';
     SxcGridModule,
     DragAndDropDirective,
     GridWithHelpComponent,
-    TippyDirective,
+    EcoFabSpeedDialComponent,
+    EcoFabSpeedDialTriggerComponent,
+    EcoFabSpeedDialActionsComponent,
   ]
 })
 export class AppExtensions implements OnInit {
@@ -45,6 +47,8 @@ export class AppExtensions implements OnInit {
   #dialogRouter = transient(DialogRoutingService);
   private dialog = transient(MatDialog);
   private entitySvc = transient(EntityService);
+
+  fabOpen = signal(false);
 
   /** Signal to trigger reloading of data */
   refresh = signal(0);
@@ -67,6 +71,26 @@ export class AppExtensions implements OnInit {
       } else {
         this.fetchExtensions();
       }
+    });
+  }
+
+  openChange(open: boolean): void {
+    this.fabOpen.set(open);
+  }
+
+  browseCatalog(): void {
+    window.open('https://2sxc.org/apps', '_blank');
+  }
+
+  importExtension(files?: File[]): void {
+    const rawUrl = this.#urlTo('import')
+    const normalized = rawUrl.replace(/^#\/?/, '').replace(/^\//, '')
+    const routeSegments = normalized.split('/').filter(Boolean)
+
+    this.router.navigate(routeSegments, {
+      state: {
+        returnValue: true,
+      } satisfies DialogRoutingState,
     });
   }
 
@@ -154,10 +178,6 @@ export class AppExtensions implements OnInit {
 
   private fetchExtensions() {
     this.refresh.update(v => ++v);
-  }
-
-  urlToUploadExtension() {
-    return this.#urlTo('import');
   }
 
   #urlTo(subRoute: string): string {

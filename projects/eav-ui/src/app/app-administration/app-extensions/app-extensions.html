@@ -20,20 +20,43 @@
         [gridOptions]="gridOptions"
       />
     }
-    <mat-dialog-actions class="eav-dialog-actions">
-      <a [href]="urlToUploadExtension()">
-        <button
-          mat-button
-          class="eav-button__with-icon"
-          tippy="Upload Extension ZIP"
-          tippyPlacement="top"
-        >
-          <mat-icon class="eav-icon">upload</mat-icon>
-          <span>Upload</span>
+    <mat-dialog-actions
+      class="eav-dialog-actions"
+      align="end"
+    >
+      <eco-fab-speed-dial
+      class="eav-eco-fab-speed-dial"
+      [ngClass]="{ 'fab-opened': fabOpen() }"
+      (openChange)="openChange($event)"
+    >
+      <eco-fab-speed-dial-trigger [spin]="true">
+        <button mat-fab class="grid-fab">
+          <mat-icon class="spin180">
+            {{ fabOpen() ? 'close' : 'add' }}
+          </mat-icon>
         </button>
-      </a>
+      </eco-fab-speed-dial-trigger>
+      <eco-fab-speed-dial-actions class="eav-eco-fab-speed-dial-actions">
+        <button
+          mat-mini-fab
+          class="eav-eco-fab-speed-dial-action-button"
+          label="Find more extensions"
+          (click)="browseCatalog()"
+        >
+          <mat-icon>search</mat-icon>
+        </button>
+        <button
+          mat-mini-fab
+          class="eav-eco-fab-speed-dial-action-button"
+          label="Import extension"
+          (click)="importExtension()"
+        >
+          <mat-icon>cloud_upload</mat-icon>
+        </button>
+      </eco-fab-speed-dial-actions>
+    </eco-fab-speed-dial>
     </mat-dialog-actions>
   </app-grid-with-help>
-
-  <router-outlet></router-outlet>
 </div>
+
+<router-outlet></router-outlet>

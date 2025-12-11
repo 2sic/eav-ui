@@ -123,13 +123,19 @@ export class AppsListComponent implements OnInit {
   }
 
   #deleteApp(app: App): void {
-    const result = prompt(`This cannot be undone. To really delete this app, type 'yes!' or type/paste the app-name here. Are you sure want to delete '${app.Name}' (${app.Id})?`);
+    const result = prompt(
+      `This cannot be undone. To really delete this app, type 'yes!' or type/paste the app-name here. Are you sure want to delete '${app.Name}' (${app.Id})?`
+    );
     if (result === null) return;
     if (result === app.Name || result === 'yes!') {
       this.snackBar.open('Deleting...');
       this.#appsListSvc.delete(app.Id).subscribe({
         error: () => {
-          this.snackBar.open('Delete failed. Please check console for more information', undefined, { duration: 3000 });
+          this.snackBar.open(
+            'Delete failed. Please check console for more information',
+            undefined,
+            { duration: 3000 }
+          );
           this.#loadApps();
         },
         next: () => {
@@ -166,7 +172,12 @@ export class AppsListComponent implements OnInit {
   }
 
   openLightSpeedFeatInfo() {
-    openFeatureDialog(this.matDialog, FeatureNames.LightSpeed, this.viewContainerRef, this.changeDetectorRef);
+    openFeatureDialog(
+      this.matDialog,
+      FeatureNames.LightSpeed,
+      this.viewContainerRef,
+      this.changeDetectorRef
+    );
   }
 
   #buildGridOptions(): GridOptions {
@@ -221,7 +232,9 @@ export class AppsListComponent implements OnInit {
           headerName: 'Code',
           filter: BooleanFilterComponent,
           cellRenderer: AgBoolIconRenderer,
-          cellRendererParams: (() => ({ settings: () => AppListCodeErrorIcons } as AgBoolCellIconsParams<App>))(),
+          cellRendererParams: (() => (
+            { settings: () => AppListCodeErrorIcons } as AgBoolCellIconsParams<App>
+          ))(),
         },
         {
           ...ColumnDefinitions.ActionsPinnedRight3,
@@ -245,6 +258,4 @@ export class AppsListComponent implements OnInit {
   #loadApps(): void {
     this.#refresh.update(v => ++v);
   }
-
 }
-
