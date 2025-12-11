@@ -7,7 +7,11 @@
   </div>
   <div class="eav-dialog-content">
     @if (!file()) {
-      <div class="file-drop-zone" appDragAndDrop (filesDropped)="filesDropped($event)">
+      <div
+        class="file-drop-zone"
+        appDragAndDrop
+        (filesDropped)="filesDropped($event)"
+      >
         <p>{{ dialogData.description }}</p>
         <p>Drag and drop files here or click to select</p>
         <input
@@ -53,7 +57,9 @@
       <div class="ext-info">
         <div class="info-row">
           <span class="label">File Count:</span>
-          <span class="value">{{ extension().fileCount }}</span>
+          <span class="value">
+            {{ extension().fileCount }}
+          </span>
         </div>
         <div class="info-row">
           <span class="label">Supports Editions:</span>
@@ -66,7 +72,10 @@
       <div class="ext-features">
         <h4>Features</h4>
         <mat-chip-set>
-          @for (feature of extension().features | keyvalue; track feature.key) {
+          @for (
+            feature of extension().features | keyvalue;
+            track feature.key
+          ) {
             <mat-chip [class.disabled]="!feature.value">
               {{ feature.key.split('Inside').join('') }}
             </mat-chip>

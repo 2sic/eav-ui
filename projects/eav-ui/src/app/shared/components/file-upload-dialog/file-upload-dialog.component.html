@@ -7,7 +7,10 @@
 >
   @if (uploadType() != UploadTypes.ImportParts) {
     <div class="eav-dialog-header">
-      <div class="eav-dialog-header__title" [innerHtml]="dialogData.title | safeHtml"></div>
+      <div
+        class="eav-dialog-header__title"
+        [innerHtml]="dialogData.title | safeHtml"
+      ></div>
       <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
         <mat-icon>close</mat-icon>
       </button>
@@ -33,24 +36,44 @@
     @if (uploadType() == UploadTypes.App) {
       <form [formGroup]="importForm">
         <mat-radio-group formControlName="importMode" aria-label="Select import mode">
-          <mat-radio-button [value]="importModeValues.importOriginal">Import App(s)</mat-radio-button>
-          <mat-radio-button [value]="importModeValues.importAsTemplate">Import and Rename / Reset</mat-radio-button>
+          <mat-radio-button [value]="importModeValues.importOriginal">
+            Import App(s)
+          </mat-radio-button>
+          <mat-radio-button [value]="importModeValues.importAsTemplate">
+            Import and Rename / Reset
+          </mat-radio-button>
         </mat-radio-group>
         <br />
 
         @if (importForm.get('importMode')?.value === importModeValues.importOriginal) {
-          <span>The app will be imported as is, using the original name and folder.</span>
-          <span>If you already have the same app installed, it will prevent you from overwriting it.</span>
-        } @else if (importForm.get('importMode')?.value === importModeValues.importAsTemplate) {
-          <span>The app will be imported using a new name / folder.</span>
+          <span>
+            The app will be imported as is, using the original name and folder.
+          </span>
+          <span>
+            If you already have the same app installed, it will prevent you from overwriting it.
+          </span>
+        } @else if (
+          importForm.get('importMode')?.value === importModeValues.importAsTemplate
+        ) {
+          <span>
+            The app will be imported using a new name / folder.
+          </span>
           <span>
             This allows you to create multiple isolated copies of the same app or to create something very different using this app as a
             template.
           </span>
           <br />
-          <mat-form-field color="accent" class="eav-mat-form-field" style="max-width: 300px">
+          <mat-form-field
+            color="accent"
+            class="eav-mat-form-field"
+            style="max-width: 300px"
+          >
             <mat-label>Name</mat-label>
-            <input matInput type="text" formControlName="name" />
+            <input
+              matInput
+              type="text"
+              formControlName="name"
+            />
           </mat-form-field>
         }
       </form>
@@ -58,7 +81,12 @@
     }
 
     <div>
-      <button mat-raised-button tippy="Open file browser" [disabled]="uploading() || importForm.invalid" (click)="fileInput.click()">
+      <button
+        mat-raised-button
+        tippy="Open file browser"
+        [disabled]="uploading() || importForm.invalid"
+        (click)="fileInput.click()"
+      >
         @if (!files().length) {
           <div>Select or drop file</div>
         }
@@ -66,7 +94,15 @@
           <div>{{ file.name }}</div>
         }
       </button>
-      <input #fileInput type="file" multiple (change)="filesChanged($event)" class="hide" />
+
+      <input
+        #fileInput
+        type="file"
+        multiple
+        (change)="filesChanged($event)"
+        class="hide"
+      />
+
       @if (uploadType() == UploadTypes.App && !files().length) {
         <button
           mat-raised-button
@@ -84,7 +120,11 @@
           class="eav-action-button"
           style="margin-left: 12px"
           mat-raised-button
-          [disabled]="!files().length || uploading() || !!result() || importForm.invalid"
+          [disabled]="
+            !files().length ||
+            uploading() ||
+            !!result() ||
+            importForm.invalid"
           (click)="upload()"
         >
           Upload
@@ -127,14 +167,26 @@
         }
       </div>
     }
-    @if (uploadType() == UploadTypes.App && showAppCatalog() && !files().length && importForm.valid) {
+    @if (
+      uploadType() == UploadTypes.App
+        && showAppCatalog()
+        && !files().length
+        && importForm.valid
+      ) {
       @if (ready) {
-        <iframe #installerWindow class="eav-app-catalog-iframe" [src]="remoteInstallerUrl"></iframe>
+        <iframe
+          #installerWindow
+          class="eav-app-catalog-iframe"
+          [src]="remoteInstallerUrl"
+        ></iframe>
       }
       @if (showProgress) {
         <div class="eav-progress">
-          <mat-progress-spinner [mode]="'indeterminate'"></mat-progress-spinner>
-          <span>Installing {{ currentPackage?.displayName }}..</span>
+          <mat-progress-spinner [mode]="'indeterminate'"
+          ></mat-progress-spinner>
+          <span>
+            Installing {{ currentPackage?.displayName }}..
+          </span>
         </div>
       }
     }
