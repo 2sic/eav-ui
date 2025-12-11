@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject, OnInit, signal } from '@angular/core';
+import { Component, inject, Inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
@@ -8,6 +8,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
+import { DomSanitizer } from '@angular/platform-browser';
 import { transient } from 'projects/core';
 import { Observable, take } from 'rxjs';
 import { isCtrlEnter } from '../../../edit/dialog/main/keyboard-shortcuts';
@@ -49,6 +50,7 @@ export class ImportExtensionComponent implements OnInit{
   private extensionSvc = transient(AppExtensionsService);
 
   uploadType = UploadTypes.Extension;
+  remoteInstallerUrl = '';
 
   // TODO: @2pp - Replace debugging vars when backend is ready
   private readonly fallbackEditions = ['staging', 'live'];
@@ -60,6 +62,8 @@ export class ImportExtensionComponent implements OnInit{
   isInstalling = signal(false);
   preflightError = signal<string | null>(null);
   editions = signal<ExtensionEdition[]>([]);
+  showExtensionCatalog = signal(false);
+    private sanitizer = inject(DomSanitizer);
 
   // Selected editions for installation
   selectedEditions: string = '';
@@ -78,6 +82,8 @@ export class ImportExtensionComponent implements OnInit{
       this.file.set(dialogData.file);
       this.runPreflight(dialogData.file);
     }
+    
+    this.remoteInstallerUrl = <string>this.sanitizer.bypassSecurityTrustResourceUrl('') // (settings.remoteUrl);
   }
 
   ngOnInit() {
@@ -102,6 +108,10 @@ export class ImportExtensionComponent implements OnInit{
     const file = (event.target as HTMLInputElement).files[0];
     this.file.set(file);
     this.runPreflight(file);
+  }
+
+  toggleShowExtensionCatalog(): void {
+    this.showExtensionCatalog.set(!this.showExtensionCatalog());
   }
 
   private runPreflight(file: File): void {
