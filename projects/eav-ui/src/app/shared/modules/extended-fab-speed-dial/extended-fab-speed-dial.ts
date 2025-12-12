@@ -16,8 +16,8 @@ import { ExtendedFabSpeedDialTriggerContentDirective } from './extended-fab-spee
 @Component({
     // tslint:disable-next-line:component-selector
     selector: 'extended-fab-speed-dial',
-    templateUrl: './extended-fab-speed-dial.component.html',
-    styleUrls: ['./extended-fab-speed-dial.component.scss'],
+    templateUrl: './extended-fab-speed-dial.html',
+    styleUrls: ['./extended-fab-speed-dial.scss'],
     encapsulation: ViewEncapsulation.None,
     imports: [
         NgTemplateOutlet

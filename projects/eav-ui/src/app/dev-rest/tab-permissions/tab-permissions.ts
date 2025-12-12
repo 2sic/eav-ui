@@ -14,7 +14,7 @@ import { DialogRoutingService } from '../../shared/routing/dialog-routing.servic
 
 @Component({
     selector: 'app-dev-rest-tab-permissions',
-    templateUrl: './tab-permissions.component.html',
+    templateUrl: './tab-permissions.html',
     imports: [
         MatButtonModule,
         TippyDirective,

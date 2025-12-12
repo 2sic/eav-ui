@@ -17,22 +17,22 @@ import { PermissionsService } from '../../permissions';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { Context } from '../../shared/services/context';
-import { DevRestBase } from '../dev-rest-base.component';
-import { DevRestUrlsAndCodeComponent } from '../dev-rest-urls-and-code/dev-rest-urls-and-code.component';
-import { SelectorWithHelpComponent } from '../selector-with-help/selector-with-help.component';
-import { DevRestTabExamplesComponent } from '../tab-examples/tab-examples.component';
-import { DevRestHttpHeadersComponent } from '../tab-headers/tab-headers.component';
-import { DevRestTabIntroductionComponent } from '../tab-introduction/tab-introduction.component';
-import { DevRestTabPermissionsComponent } from '../tab-permissions/tab-permissions.component';
-import { DevRestQueryIntroductionComponent } from './introduction/introduction.component';
+import { DevRestBase } from '../dev-rest-base';
+import { DevRestUrlsAndCodeComponent } from '../dev-rest-urls-and-code/dev-rest-urls-and-code';
+import { SelectorWithHelpComponent } from '../selector-with-help/selector-with-help';
+import { DevRestTabExamplesComponent } from '../tab-examples/tab-examples';
+import { DevRestHttpHeadersComponent } from '../tab-headers/tab-headers';
+import { DevRestTabIntroductionComponent } from '../tab-introduction/tab-introduction';
+import { DevRestTabPermissionsComponent } from '../tab-permissions/tab-permissions';
+import { DevRestQueryIntroductionComponent } from './introduction/introduction';
 import { generateQueryCalls } from './query-samples';
 import { DevRestQueryModel } from './query-template-vars';
 
 const pathToQuery = 'app/{appname}/query/{queryname}';
 @Component({
   selector: 'app-dev-rest-query',
-  templateUrl: './query.component.html',
-  styleUrls: ['./query.component.scss'],
+  templateUrl: './query.html',
+  styleUrls: ['./query.scss'],
   imports: [
     MatButtonModule,
     TippyDirective,

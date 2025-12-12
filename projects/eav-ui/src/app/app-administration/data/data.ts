@@ -39,7 +39,7 @@ import { ContentTypesService } from '../services/content-types.service';
 import { DialogConfigAppService } from '../services/dialog-config-app.service';
 import { ConfirmDeleteDialogComponent } from '../sub-dialogs/confirm-delete-dialog/confirm-delete-dialog';
 import { ConfirmDeleteDialogData } from '../sub-dialogs/confirm-delete-dialog/confirm-delete-dialog.models';
-import { DataActionsComponent } from './data-actions/data-actions.component';
+import { DataActionsComponent } from './data-actions/data-actions';
 import { DataFieldsComponent } from './data-fields/data-fields';
 import { DataItemsComponent } from './data-items/data-items';
 

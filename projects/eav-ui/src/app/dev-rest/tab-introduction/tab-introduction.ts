@@ -4,7 +4,7 @@ import { DevRestBaseModel } from '../base-template-vars';
 
 @Component({
   selector: 'app-dev-rest-tab-introduction',
-  templateUrl: './tab-introduction.component.html',
+  templateUrl: './tab-introduction.html',
 })
 export class DevRestTabIntroductionComponent implements OnInit {
   data = input<DevRestBaseModel>();

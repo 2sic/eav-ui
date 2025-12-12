@@ -29,8 +29,8 @@ type DataCopilotConfiguration = {
 
 @Component({
   selector: 'app-copilot-generator',
-  templateUrl: './copilot-generator.component.html',
-  styleUrls: ['./copilot-generator.component.scss'],
+  templateUrl: './copilot-generator.html',
+  styleUrls: ['./copilot-generator.scss'],
   imports: [
     MatSelectModule,
     MatButtonModule,

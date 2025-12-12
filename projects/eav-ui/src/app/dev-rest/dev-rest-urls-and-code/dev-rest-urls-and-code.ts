@@ -8,12 +8,12 @@ import { DevRestBaseModel } from '..';
 import { transient } from '../../../../../core/transient';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { ClipboardService } from '../../shared/services/clipboard.service';
-import { InfoBoxComponent } from '../info-box/info-box.component';
+import { InfoBoxComponent } from '../info-box/info-box';
 
 @Component({
     selector: 'app-dev-rest-urls-and-code',
-    templateUrl: './dev-rest-urls-and-code.component.html',
-    styleUrls: ['./dev-rest-urls-and-code.component.scss'],
+    templateUrl: './dev-rest-urls-and-code.html',
+    styleUrls: ['./dev-rest-urls-and-code.scss'],
     imports: [
         MatExpansionModule,
         MatButtonModule,

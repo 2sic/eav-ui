@@ -4,7 +4,7 @@ import { DevRestDataModel } from '../data-template-vars';
 
 @Component({
   selector: 'app-dev-data-introduction',
-  templateUrl: './introduction.component.html',
+  templateUrl: './introduction.html',
 })
 export class DevRestDataIntroductionComponent implements OnInit {
   data = input<DevRestDataModel>();

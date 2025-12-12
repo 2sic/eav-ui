@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, RouterOutlet } from '@angular/router';
-import { CopilotGeneratorComponent } from '../copilot-generator.component';
+import { CopilotGeneratorComponent } from '../copilot-generator';
 import { CopilotSpec } from '../copilot-specs';
 
 @Component({
   selector: 'app-data-copilot',
-  templateUrl: './copilot-page.component.html',
-  styleUrl: './copilot-page.component.scss',
+  templateUrl: './copilot-page.html',
+  styleUrl: './copilot-page.scss',
   imports: [
     CopilotGeneratorComponent,
     RouterOutlet,

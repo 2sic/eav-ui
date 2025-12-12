@@ -31,7 +31,7 @@ import { EntityEditService } from '../shared/services/entity-edit.service';
 import { MetadataActionsComponent } from './metadata-actions/metadata-actions';
 import { MetadataActionsParams } from './metadata-actions/metadata-actions.models';
 import { MetadataContentTypeComponent } from './metadata-content-type/metadata-content-type';
-import { MetadataSaveDialogComponent } from './metadata-save-dialog/metadata-save-dialog.component';
+import { MetadataSaveDialogComponent } from './metadata-save-dialog/metadata-save-dialog';
 import { MetadataItem, MetadataRecommendation } from './models/metadata.model';
 
 @Component({

@@ -3,7 +3,7 @@ import { RouterOutlet } from '@angular/router';
 
 @Component({
     selector: 'app-dev-rest-entry',
-    templateUrl: './entry.component.html',
+    templateUrl: './entry.html',
     imports: [RouterOutlet]
 })
 export class DevRestEntryComponent {

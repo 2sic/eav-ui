@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldMetadata } from '../../field-metadata.decorator';
+import { PickerComponent } from '../../picker/picker';
 import { PickerImports } from '../../picker/picker-providers.constant';
-import { PickerComponent } from '../../picker/picker.component';
 import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
 import { NumberDropdownLogic } from './number-dropdown-logic';
 

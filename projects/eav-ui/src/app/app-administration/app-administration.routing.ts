@@ -103,7 +103,7 @@ export const appAdministrationRoutes: Routes = [
       {
         // Data Copilot
         path: `data-${GoToCopilot.route}`,
-        loadComponent: () => import('./copilot/page/copilot-page.component')
+        loadComponent: () => import('./copilot/page/copilot-page')
           .then(mod => mod.CopilotPageComponent),
         data: CopilotSpecs.data,
         children: [
@@ -160,7 +160,7 @@ export const appAdministrationRoutes: Routes = [
         children: [
           {
             path: `:${GoToDevRest.paramQuery}`,
-            loadComponent: () => import('../dev-rest/query/query.component')
+            loadComponent: () => import('../dev-rest/query/query')
               .then(mod => mod.DevRestQueryComponent),
             data: { breadcrumb: 'Rest-Api Queries', },
             children: [
@@ -195,7 +195,7 @@ export const appAdministrationRoutes: Routes = [
       {
         // Views Copilot
         path: `views-${GoToCopilot.route}`,
-        loadComponent: () => import('./copilot/page/copilot-page.component')
+        loadComponent: () => import('./copilot/page/copilot-page')
           .then(mod => mod.CopilotPageComponent),
         data: CopilotSpecs.views,
         children: [
@@ -238,7 +238,7 @@ export const appAdministrationRoutes: Routes = [
       {
         // WebAPI Copilot
         path: `web-api-${GoToCopilot.route}`,
-        loadComponent: () => import('./copilot/page/copilot-page.component')
+        loadComponent: () => import('./copilot/page/copilot-page')
           .then(mod => mod.CopilotPageComponent),
         data: CopilotSpecs.webApi,
         children: [

@@ -14,12 +14,12 @@ import { SaveCloseButtonFabComponent } from '../../../shared/modules/save-close-
 import { AppExtensionsService } from '../../services/app-extensions.service';
 import { ConfirmDeleteDialogComponent } from '../confirm-delete-dialog/confirm-delete-dialog';
 import { ConfirmDeleteDialogData } from '../confirm-delete-dialog/confirm-delete-dialog.models';
-import { InspectExtensionContentComponent } from '../inspect-extension/inspect-extension-content/inspect-extension-content.component';
+import { InspectExtensionContentComponent } from '../inspect-extension/inspect-extension-content/inspect-extension-content';
 
 @Component({
   selector: 'app-delete-extension',
-  templateUrl: './delete-extension.component.html',
-  styleUrls: ['./delete-extension.component.scss'],
+  templateUrl: './delete-extension.html',
+  styleUrls: ['./delete-extension.scss'],
   imports: [
     MatButtonModule,
     MatIconModule,

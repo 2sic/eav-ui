@@ -4,8 +4,8 @@ import { FieldSettingsWithPickerSource } from '../../../../../../edit-types/src/
 import { BaseComponent } from '../../../shared/components/base';
 import { classLog, ClassLogger } from '../../../shared/logging';
 import { computedObj } from '../../../shared/signals/signal.utilities';
-import { FieldState } from '../../fields/field-state';
 import { EditRoutingService } from '../../routing/edit-routing.service';
+import { FieldState } from '../field-state';
 import { PickerDataSetup } from './picker-data-setup';
 import { PickerImports } from './picker-providers.constant';
 import { PickerSearchComponent } from './picker-search/picker-search';

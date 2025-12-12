@@ -22,8 +22,8 @@ import { MetadataSaveFormValues } from './metadata-save-dialog.models';
 
 @Component({
     selector: 'app-metadata-save-dialog',
-    templateUrl: './metadata-save-dialog.component.html',
-    styleUrls: ['./metadata-save-dialog.component.scss'],
+    templateUrl: './metadata-save-dialog.html',
+    styleUrls: ['./metadata-save-dialog.scss'],
     imports: [
         FormsModule,
         ReactiveFormsModule,

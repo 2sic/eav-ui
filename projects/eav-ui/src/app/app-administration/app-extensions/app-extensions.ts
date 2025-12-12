@@ -19,7 +19,7 @@ import { DialogRoutingService } from '../../shared/routing/dialog-routing.servic
 import { EntityService } from '../../shared/services/entity.service';
 import { Extension } from '../models/extension.model';
 import { AppExtensionsService } from '../services/app-extensions.service';
-import { ImportExtensionComponent } from '../sub-dialogs/import-extension/import-extension.component';
+import { ImportExtensionComponent } from '../sub-dialogs/import-extension/import-extension';
 import { AppExtensionActions } from './extension-actions/extension-actions';
 import { AppExtensionsLinkCell } from './extensions-link/extensions-link';
 

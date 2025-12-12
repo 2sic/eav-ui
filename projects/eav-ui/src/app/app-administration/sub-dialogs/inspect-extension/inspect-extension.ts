@@ -11,12 +11,12 @@ import { transient } from 'projects/core';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { AppExtensionsService } from '../../services/app-extensions.service';
 import { ConfirmDeleteDialogData } from '../confirm-delete-dialog/confirm-delete-dialog.models';
-import { InspectExtensionContentComponent } from './inspect-extension-content/inspect-extension-content.component';
+import { InspectExtensionContentComponent } from './inspect-extension-content/inspect-extension-content';
 
 @Component({
   selector: 'app-inspect-extension',
-  templateUrl: './inspect-extension.component.html',
-  styleUrls: ['./inspect-extension.component.scss'],
+  templateUrl: './inspect-extension.html',
+  styleUrls: ['./inspect-extension.scss'],
   imports: [
     MatButtonModule,
     MatIconModule,

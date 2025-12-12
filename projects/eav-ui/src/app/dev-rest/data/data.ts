@@ -16,16 +16,16 @@ import { PermissionsService } from '../../permissions';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { Context } from '../../shared/services/context';
 import { EntityService } from '../../shared/services/entity.service';
-import { DevRestBase } from '../dev-rest-base.component';
-import { DevRestUrlsAndCodeComponent } from '../dev-rest-urls-and-code/dev-rest-urls-and-code.component';
+import { DevRestBase } from '../dev-rest-base';
+import { DevRestUrlsAndCodeComponent } from '../dev-rest-urls-and-code/dev-rest-urls-and-code';
 import { GoToDevRest } from '../go-to-dev-rest';
-import { SelectorWithHelpComponent } from '../selector-with-help/selector-with-help.component';
-import { DevRestTabExamplesComponent } from '../tab-examples/tab-examples.component';
-import { DevRestHttpHeadersComponent } from '../tab-headers/tab-headers.component';
-import { DevRestTabIntroductionComponent } from '../tab-introduction/tab-introduction.component';
-import { DevRestTabPermissionsComponent } from '../tab-permissions/tab-permissions.component';
+import { SelectorWithHelpComponent } from '../selector-with-help/selector-with-help';
+import { DevRestTabExamplesComponent } from '../tab-examples/tab-examples';
+import { DevRestHttpHeadersComponent } from '../tab-headers/tab-headers';
+import { DevRestTabIntroductionComponent } from '../tab-introduction/tab-introduction';
+import { DevRestTabPermissionsComponent } from '../tab-permissions/tab-permissions';
 import { DevRestDataModel } from './data-template-vars';
-import { DevRestDataIntroductionComponent } from './introduction/introduction.component';
+import { DevRestDataIntroductionComponent } from './introduction/introduction';
 
 
 const pathToContent = 'app/{appname}/data/{typename}';

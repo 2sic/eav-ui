@@ -12,7 +12,7 @@ import { Scenario } from '../scenarios';
 
 @Component({
     selector: 'app-selector-with-help',
-    templateUrl: './selector-with-help.component.html',
+    templateUrl: './selector-with-help.html',
     styleUrls: ['../header-selector.scss'],
     imports: [
         MatFormFieldModule,

@@ -12,7 +12,7 @@ const log = classLog('Routes');
 const reloadRoutes: Routes = [
   {
     path: '',
-    loadComponent: () => import('./routing/edit-reload.component').then(m => m.EditReloadComponent),
+    loadComponent: () => import('./routing/edit-reload').then(m => m.EditReloadComponent),
     data: { title: 'Reloading Edit Dialog' }
   },
 ];

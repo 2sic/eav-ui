@@ -4,8 +4,8 @@ import { infoBoxIconMap, InfoBoxType } from './hint';
 
 @Component({
     selector: 'app-info-box',
-    templateUrl: './info-box.component.html',
-    styleUrls: ['./info-box.component.scss'],
+    templateUrl: './info-box.html',
+    styleUrls: ['./info-box.scss'],
     imports: [MatIconModule]
 })
 export class InfoBoxComponent {

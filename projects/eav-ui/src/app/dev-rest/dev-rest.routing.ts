@@ -16,7 +16,7 @@ export const devRestRoutes: Routes = [
       /* This route is used in Visual Query to open REST as Dialog */
       {
         path: `query/:${GoToDevRest.paramQuery}`,
-        loadComponent: () => import('./query/query.component').then(m => m.DevRestQueryComponent),
+        loadComponent: () => import('./query/query').then(m => m.DevRestQueryComponent),
         children: [
           GoToPermissions.route,
         ]

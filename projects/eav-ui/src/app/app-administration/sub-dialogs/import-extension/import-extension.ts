@@ -30,8 +30,8 @@ export interface FileUploadDialogData {
 
 @Component({
   selector: 'app-import-extension',
-  templateUrl: './import-extension.component.html',
-  styleUrls: ['./import-extension.component.scss'],
+  templateUrl: './import-extension.html',
+  styleUrls: ['./import-extension.scss'],
   imports: [
     CommonModule,
     MatButtonModule,

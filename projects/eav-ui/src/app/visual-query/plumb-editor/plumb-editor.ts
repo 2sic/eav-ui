@@ -28,7 +28,7 @@ const jsPlumbUrl = 'https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.14.5/js/jsp
 
 @Component({
     selector: 'app-plumb-editor',
-    templateUrl: './plumb-editor.component.html',
+    templateUrl: './plumb-editor.html',
     styles: [':host { display: block; width: 100%; height: 100%; }'],
     imports: [
         NgStyle,

@@ -7,7 +7,7 @@ import { HelpPopupData } from './help-popup.models';
 
 @Component({
     selector: 'app-help-popup',
-    templateUrl: './help-popup.component.html',
+    templateUrl: './help-popup.html',
     imports: [
         MatButtonModule,
         TippyDirective,
