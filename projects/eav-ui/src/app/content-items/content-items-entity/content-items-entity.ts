@@ -1,13 +1,13 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
-import { ExtendedColDef } from '../models/extended-col-def.model';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
+import { ExtendedColDef } from '../models/extended-col-def.model';
 
 @Component({
     selector: 'app-content-items-entity',
-    templateUrl: './content-items-entity.component.html',
-    styleUrls: ['./content-items-entity.component.scss'],
+    templateUrl: './content-items-entity.html',
+    styleUrls: ['./content-items-entity.scss'],
     imports: [TippyDirective,]
 })
 export class ContentItemsEntityComponent implements ICellRendererAngularComp {

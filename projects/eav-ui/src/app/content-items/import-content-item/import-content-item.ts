@@ -6,7 +6,7 @@ import { ContentItemsService } from '../services/content-items.service';
 
 @Component({
     selector: 'app-import-content-item',
-    templateUrl: './import-content-item.component.html',
+    templateUrl: './import-content-item.html',
     imports: [FileUploadDialogComponent,]
 })
 export class ImportContentItemComponent {

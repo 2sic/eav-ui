@@ -12,7 +12,7 @@ type GoToUrls = 'clone'
 
 @Component({
   selector: 'app-data-bundle-actions',
-  templateUrl: './content-items-actions.component.html',
+  templateUrl: './content-items-actions.html',
   imports: [
     MatRippleModule,
     MatIconModule,

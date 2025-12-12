@@ -32,8 +32,8 @@ import { metadataKeyValidator } from './metadata-key.validator';
 
 @Component({
   selector: 'app-create-metadata-dialog',
-  templateUrl: './create-metadata-dialog.component.html',
-  styleUrls: ['./create-metadata-dialog.component.scss'],
+  templateUrl: './create-metadata-dialog.html',
+  styleUrls: ['./create-metadata-dialog.scss'],
   imports: [
     FormsModule,
     ReactiveFormsModule,

@@ -17,8 +17,8 @@ import { ContentImportService } from './services/content-import.service';
 
 @Component({
   selector: 'app-content-import',
-  templateUrl: './content-import.component.html',
-  styleUrls: ['./content-import.component.scss'],
+  templateUrl: './content-import.html',
+  styleUrls: ['./content-import.scss'],
   imports: [
     FormsModule,
     MatButtonModule,

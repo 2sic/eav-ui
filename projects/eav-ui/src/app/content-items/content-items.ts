@@ -34,17 +34,17 @@ import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
 import { EntityEditService } from '../shared/services/entity-edit.service';
 import { GlobalConfigService } from '../shared/services/global-config.service';
 import { computedObj } from '../shared/signals/signal.utilities';
-import { ContentItemsActionsComponent } from './content-items-actions/content-items-actions.component';
+import { ContentItemsActionsComponent } from './content-items-actions/content-items-actions';
 import { ContentItemsActionsParams } from './content-items-actions/content-items-actions.models';
-import { ContentItemsEntityComponent } from './content-items-entity/content-items-entity.component';
-import { ContentItemsStatusComponent } from './content-items-status/content-items-status.component';
+import { ContentItemsEntityComponent } from './content-items-entity/content-items-entity';
+import { ContentItemsStatusComponent } from './content-items-status/content-items-status';
 import { buildFilterModel } from './content-items.helpers';
-import { CreateMetadataDialogComponent } from './create-metadata-dialog/create-metadata-dialog.component';
+import { CreateMetadataDialogComponent } from './create-metadata-dialog/create-metadata-dialog';
 import { MetadataInfo } from './create-metadata-dialog/create-metadata-dialog.models';
 import { AgGridFilterModel } from './models/ag-grid-filter.model';
 import { ContentItem } from './models/content-item.model';
 import { ExtendedColDef } from './models/extended-col-def.model';
-import { PubMetaFilterComponent } from './pub-meta-filter/pub-meta-filter.component';
+import { PubMetaFilterComponent } from './pub-meta-filter/pub-meta-filter';
 import { PubMeta } from './pub-meta-filter/pub-meta-filter.model';
 import { ContentItemsService } from './services/content-items.service';
 
@@ -55,8 +55,8 @@ const logSpecs = {
 
 @Component({
   selector: 'app-content-items',
-  templateUrl: './content-items.component.html',
-  styleUrls: ['./content-items.component.scss'],
+  templateUrl: './content-items.html',
+  styleUrls: ['./content-items.scss'],
   imports: [
     MatButtonModule,
     MatIconModule,

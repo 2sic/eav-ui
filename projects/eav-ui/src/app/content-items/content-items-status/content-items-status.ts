@@ -14,8 +14,8 @@ type GoToUrls = 'openMetadata'
 
 @Component({
     selector: 'app-content-items-status',
-    templateUrl: './content-items-status.component.html',
-    styleUrls: ['./content-items-status.component.scss'],
+    templateUrl: './content-items-status.html',
+    styleUrls: ['./content-items-status.scss'],
     imports: [
         MatIconModule,
         MatRippleModule,

@@ -21,8 +21,8 @@ import { ContentExportService } from './services/content-export.service';
 
 @Component({
     selector: 'app-content-export',
-    templateUrl: './content-export.component.html',
-    styleUrls: ['./content-export.component.scss'],
+    templateUrl: './content-export.html',
+    styleUrls: ['./content-export.scss'],
     imports: [
         FormsModule,
         MatFormFieldModule,

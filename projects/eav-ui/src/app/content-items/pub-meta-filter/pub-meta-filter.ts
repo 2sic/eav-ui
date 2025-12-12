@@ -7,8 +7,8 @@ import { PubMeta, PubMetaFilterModel } from './pub-meta-filter.model';
 
 @Component({
     selector: 'app-pub-meta-filter',
-    templateUrl: './pub-meta-filter.component.html',
-    styleUrls: ['./pub-meta-filter.component.scss'],
+    templateUrl: './pub-meta-filter.html',
+    styleUrls: ['./pub-meta-filter.scss'],
     imports: [
         MatRadioModule,
         FormsModule,
