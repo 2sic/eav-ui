@@ -1,12 +1,12 @@
 import { Component, Inject } from '@angular/core';
-import { MatSnackBarRef, MAT_SNACK_BAR_DATA } from '@angular/material/snack-bar';
-import { CodeAndEditionWarningsSnackBarData } from './code-and-edition-warnings.models';
 import { MatButtonModule } from '@angular/material/button';
+import { MAT_SNACK_BAR_DATA, MatSnackBarRef } from '@angular/material/snack-bar';
+import { CodeAndEditionWarningsSnackBarData } from './code-and-edition-warnings.models';
 
 @Component({
     selector: 'app-code-and-edition-warnings',
-    templateUrl: './code-and-edition-warnings.component.html',
-    styleUrls: ['./code-and-edition-warnings.component.scss'],
+    templateUrl: './code-and-edition-warnings.html',
+    styleUrls: ['./code-and-edition-warnings.scss'],
     imports: [MatButtonModule]
 })
 export class CodeAndEditionWarningsComponent {

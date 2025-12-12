@@ -12,8 +12,8 @@ import { ObjectToArrayPipe } from './object-to-array.pipe';
 
 @Component({
     selector: 'app-code-snippets',
-    templateUrl: './code-snippets.component.html',
-    styleUrls: ['./code-snippets.component.scss'],
+    templateUrl: './code-snippets.html',
+    styleUrls: ['./code-snippets.scss'],
     imports: [
         MatIconModule,
         MatRippleModule,

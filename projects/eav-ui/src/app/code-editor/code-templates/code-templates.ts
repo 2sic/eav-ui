@@ -17,8 +17,8 @@ import { SortItemsPipe } from './order-items.pipe';
 
 @Component({
     selector: 'app-code-templates',
-    templateUrl: './code-templates.component.html',
-    styleUrls: ['./code-templates.component.scss'],
+    templateUrl: './code-templates.html',
+    styleUrls: ['./code-templates.scss'],
     imports: [
         NgTemplateOutlet,
         NgClass,

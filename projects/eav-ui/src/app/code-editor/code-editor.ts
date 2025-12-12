@@ -24,13 +24,13 @@ import { ToggleDebugDirective } from '../shared/directives/toggle-debug.directiv
 import { ViewOrFileIdentifier } from '../shared/models/edit-form.model';
 import { RxHelpers } from '../shared/rxJs/rx.helpers';
 import { Context } from '../shared/services/context';
-import { CodeAndEditionWarningsComponent } from './code-and-edition-warnings/code-and-edition-warnings.component';
+import { CodeAndEditionWarningsComponent } from './code-and-edition-warnings/code-and-edition-warnings';
 import { CodeAndEditionWarningsSnackBarData } from './code-and-edition-warnings/code-and-edition-warnings.models';
 import { translateLoaderFactoryCode } from './code-editor-translate-loader-factory';
 import { CodeEditorHelper } from './code-editor.helper';
 import { Explorers, Tab, ViewInfo, ViewKey } from './code-editor.models';
-import { CodeSnippetsComponent } from './code-snippets/code-snippets.component';
-import { CodeTemplatesComponent } from './code-templates/code-templates.component';
+import { CodeSnippetsComponent } from './code-snippets/code-snippets';
+import { CodeTemplatesComponent } from './code-templates/code-templates';
 import { CreateTemplateParams } from './code-templates/code-templates.models';
 import { FileAsset } from './models/file-asset.model';
 import { SourceView } from './models/source-view.model';
@@ -39,8 +39,8 @@ import { SourceService } from './services/source.service';
 
 @Component({
   selector: 'app-code-editor',
-  templateUrl: './code-editor.component.html',
-  styleUrls: ['./code-editor.component.scss'],
+  templateUrl: './code-editor.html',
+  styleUrls: ['./code-editor.scss'],
   imports: [
     NgClass,
     MatIconModule,
