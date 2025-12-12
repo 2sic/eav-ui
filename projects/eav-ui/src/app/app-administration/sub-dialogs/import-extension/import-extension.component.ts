@@ -90,7 +90,7 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
     super();
 
     dialogData.title ??= `Import Extension`;
-    dialogData.description ??= `Select Extension folder from your computer to import.  `;
+    dialogData.description ??= `Select Extension folder from your computer to import.`;
     dialogData.allowedFileTypes ??= 'zip';
     dialogData.multiple ??= true;
 
@@ -103,8 +103,11 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
     this.subscriptions.add(
       this.#installSettingsService.settings$.subscribe(settings => {
         this.settings = settings;
-        this.urlChangeImportMode = settings.remoteUrl
-        this.remoteInstallerUrl = <string>this.sanitizer.bypassSecurityTrustResourceUrl(settings.remoteUrl);
+        this.urlChangeImportMode = settings.remoteUrl;
+
+        this.remoteInstallerUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
+          this.buildRemoteUrl(this.urlChangeImportMode, { selectOnlyMode: 'true' })
+        );
         this.ready = true;
       })
     );
@@ -112,14 +115,25 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
 
   ngOnInit() {
     this.#watchKeyboardShortcuts();
-
     this.#installSettingsService.loadGettingStarted(false);
 
-    this.importForm.get('importMode')?.valueChanges.subscribe((mode) => {
-      const isTemplate = mode === this.importModeValues.importAsTemplate;
-      const url = this.urlChangeImportMode + (this.urlChangeImportMode.includes('?') ? '&' : '?') + `selectOnlyMode=${isTemplate}`;
-      this.remoteInstallerUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+    this.importForm.get('importMode')?.valueChanges.subscribe(() => {
+      this.remoteInstallerUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
+        this.buildRemoteUrl(this.urlChangeImportMode, { selectOnlyMode: 'true' })
+      );
     });
+  }
+
+  /**
+   * Builds a remote URL with the given base URL and query parameters.
+   */
+  private buildRemoteUrl(baseUrl: string, params: Record<string, string> = {}): string {
+    const [urlBase, queryString] = baseUrl.split('?');
+    const query = new URLSearchParams(queryString || '');
+    for (const key in params) {
+      query.set(key, params[key]);
+    }
+    return `${urlBase}?${query.toString()}`;
   }
 
   #watchKeyboardShortcuts(): void {
