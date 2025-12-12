@@ -6,13 +6,13 @@ import { InputTypeHelpers } from '../../../shared/fields/input-type-helpers';
 import { classLog } from '../../../shared/logging';
 import { EntityFormStateService } from '../../entity-form/entity-form-state.service';
 import { InputComponents } from '../../fields/input-components.constant';
-import { PickerExpandableWrapperComponent } from '../../fields/wrappers/picker-dialog/picker-expandable-wrapper.component';
 import { FieldProps } from '../../state/fields-configs.model';
 import { FieldsSettingsService } from '../../state/fields-settings.service';
-import { CustomDefaultComponent } from '../basic/custom-default/custom-default.component';
+import { CustomDefaultComponent } from '../basic/custom-default/custom-default';
 import { FieldConfigSet } from '../field-config-set.model';
 import { FieldMetadataKey, FieldMetadataModel } from '../field-metadata.decorator';
 import { AdamConnector } from '../wrappers/adam/adam-browser/adam-connector';
+import { PickerExpandableWrapperComponent } from '../wrappers/picker-dialog/picker-expandable-wrapper';
 import { FieldStateInjectorFactory } from './field-injector.service';
 import { InjectorBundle } from './injector-bundle.model';
 

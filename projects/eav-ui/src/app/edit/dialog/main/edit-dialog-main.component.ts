@@ -19,7 +19,7 @@ import { GlobalConfigService } from '../../../shared/services/global-config.serv
 import { computedWithPrev } from '../../../shared/signals/signal.utilities';
 import { UserPreferences } from '../../../shared/user/user-preferences.service';
 import { LoadIconsService } from '../../assets/icons/load-icons.service';
-import { EntityFormBuilderComponent } from '../../entity-form/entity-form-builder/form-builder.component';
+import { EntityFormBuilderComponent } from '../../entity-form/entity-form-builder/form-builder';
 import { EntityFormStateService } from '../../entity-form/entity-form-state.service';
 import { PickerTreeDataHelper } from '../../fields/picker/picker-tree/picker-tree-data-helper';
 import { FormConfigService } from '../../form/form-config.service';
@@ -42,16 +42,16 @@ import { ItemService } from '../../state/item.service';
 import { MetadataDecorators } from '../../state/metadata-decorators.constants';
 import { SaveResult } from '../../state/save-result.model';
 import { DialogRoutingState } from '../dialogRouteState.model';
-import { EditEntryComponent } from '../entry/edit-entry.component';
-import { EditDialogFooterComponent } from '../footer/edit-dialog-footer.component';
+import { EditEntryComponent } from '../entry/edit-entry';
+import { EditDialogFooterComponent } from '../footer/edit-dialog-footer';
 import { footerPreferences } from '../footer/footer-preferences';
-import { EditDialogHeaderComponent } from '../header/edit-dialog-header.component';
+import { EditDialogHeaderComponent } from '../header/edit-dialog-header';
 import { SaveEavFormData } from './edit-dialog-main.models';
 import { FormSlideDirective } from './form-slide.directive';
 import { isCtrlEnter, isCtrlS, isEscape } from './keyboard-shortcuts';
-import { SnackBarSaveErrorsComponent } from './snack-bar-save-errors/snack-bar-save-errors.component';
+import { SnackBarSaveErrorsComponent } from './snack-bar-save-errors/snack-bar-save-errors';
 import { FieldErrorMessage, SaveErrorsSnackBarData } from './snack-bar-save-errors/snack-bar-save-errors.models';
-import { SnackBarUnsavedChangesComponent } from './snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
+import { SnackBarUnsavedChangesComponent } from './snack-bar-unsaved-changes/snack-bar-unsaved-changes';
 import { UnsavedChangesSnackBarData } from './snack-bar-unsaved-changes/snack-bar-unsaved-changes.models';
 
 const logSpecs = {

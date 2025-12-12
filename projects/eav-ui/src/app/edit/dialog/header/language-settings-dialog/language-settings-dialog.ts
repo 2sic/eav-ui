@@ -12,8 +12,8 @@ import { TippyDirective } from "../../../../shared/directives/tippy.directive";
 import { LanguageService } from '../../../localization/language.service';
 import { isCtrlEnter } from "../../main/keyboard-shortcuts";
 import { getLanguageOptions } from '../language-switcher/language-switcher.helpers';
-import { LanguageDropdownComponent } from "./LanguageDropdownComponent/language-dropdown.component";
-import { LanguagePart } from "./LanguageDropdownComponent/language-part.enum";
+import { LanguageDropdownComponent } from "./LanguageDropdown/language-dropdown";
+import { LanguagePart } from "./LanguageDropdown/language-part.enum";
 
 @Component({
   selector: 'app-separate-languages-header',

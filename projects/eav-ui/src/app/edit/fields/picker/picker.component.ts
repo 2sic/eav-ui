@@ -8,11 +8,11 @@ import { FieldState } from '../../fields/field-state';
 import { EditRoutingService } from '../../routing/edit-routing.service';
 import { PickerDataSetup } from './picker-data-setup';
 import { PickerImports } from './picker-providers.constant';
-import { PickerSearchComponent } from './picker-search/picker-search.component';
+import { PickerSearchComponent } from './picker-search/picker-search';
 
 @Component({
     // selector: none since it's a base class
-    templateUrl: './picker.component.html',
+    templateUrl: './picker.html',
     imports: PickerImports
 })
 export abstract class PickerComponent extends BaseComponent implements OnInit, OnDestroy {
