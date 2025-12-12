@@ -14,7 +14,7 @@ import { AgActionsAlwaysRefresh } from '../../queries/ag-actions/ag-actions';
 
 @Component({
   selector: 'app-views-actions',
-  templateUrl: './views-actions.component.html',
+  templateUrl: './views-actions.html',
   imports: [
     MatRippleModule,
     MatIconModule,

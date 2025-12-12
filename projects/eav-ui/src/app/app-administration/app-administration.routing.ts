@@ -171,7 +171,7 @@ export const appAdministrationRoutes: Routes = [
       },
       {
         path: 'views',
-        loadComponent: () => import('./views/views.component')
+        loadComponent: () => import('./views/views')
           .then(mod => mod.ViewsComponent),
         children: [
           {
@@ -228,7 +228,7 @@ export const appAdministrationRoutes: Routes = [
       },
       {
         path: 'web-api',
-        loadComponent: () => import('./web-api/web-api.component')
+        loadComponent: () => import('./web-api/web-api')
           .then(mod => mod.WebApiComponent),
         data: { title: 'App WebApi', breadcrumb: "WebApi" },
         children: [
@@ -247,7 +247,7 @@ export const appAdministrationRoutes: Routes = [
       },
       {
         path: GoToDevRest.routeWebApi,
-        loadComponent: () => import('./web-api-rest-api/web-api-rest-api.component')
+        loadComponent: () => import('./web-api-rest-api/web-api-rest-api')
           .then(mod => mod.WebApiRestApiComponent),
         data: {
           title: 'Rest-Api Web Api',

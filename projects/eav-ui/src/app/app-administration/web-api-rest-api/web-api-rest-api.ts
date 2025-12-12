@@ -30,7 +30,7 @@ const logSpecs = {
     SxcGridModule,
     RestApiHelpTextComponent
   ],
-  templateUrl: './web-api-rest-api.component.html'
+  templateUrl: './web-api-rest-api.html'
 })
 export class WebApiRestApiComponent {
   log = classLog({ WebApiRestApiComponent }, logSpecs);

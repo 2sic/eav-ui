@@ -12,7 +12,7 @@ import { WebApiActionsParams } from './web-api-actions.models';
 
 @Component({
     selector: 'app-web-api-actions',
-    templateUrl: './web-api-actions.component.html',
+    templateUrl: './web-api-actions.html',
     imports: [
         MatRippleModule,
         MatIconModule,

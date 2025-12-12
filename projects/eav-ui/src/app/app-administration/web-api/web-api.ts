@@ -17,12 +17,12 @@ import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.mod
 import { DialogInNewWindowService } from '../../shared/routing/dialog-in-new-window.service';
 import { WebApi } from '../models/web-api.model';
 import { DialogConfigAppService } from '../services/dialog-config-app.service';
-import { WebApiActionsComponent } from './web-api-actions/web-api-actions.component';
+import { WebApiActionsComponent } from './web-api-actions/web-api-actions';
 import { WebApiActionsParams } from './web-api-actions/web-api-actions.models';
 
 @Component({
   selector: 'app-web-api',
-  templateUrl: './web-api.component.html',
+  templateUrl: './web-api.html',
   imports: [
     SxcGridModule,
     MatDialogActions,

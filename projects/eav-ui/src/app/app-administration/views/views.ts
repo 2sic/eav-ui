@@ -30,15 +30,15 @@ import { DialogConfigAppService } from '../services/dialog-config-app.service';
 import { ViewsService } from '../services/views.service';
 import { ConfirmDeleteDialogComponent } from '../sub-dialogs/confirm-delete-dialog/confirm-delete-dialog';
 import { ConfirmDeleteDialogData } from '../sub-dialogs/confirm-delete-dialog/confirm-delete-dialog.models';
-import { ViewsActionsComponent } from './views-actions/views-actions.component';
-import { ViewsShowComponent } from './views-show/views-show.component';
-import { ViewsTypeComponent } from './views-type/views-type.component';
+import { ViewsActionsComponent } from './views-actions/views-actions';
+import { ViewsShowComponent } from './views-show/views-show';
+import { ViewsTypeComponent } from './views-type/views-type';
 import { calculateViewType } from './views.helpers';
 
 @Component({
   selector: 'app-views',
-  templateUrl: './views.component.html',
-  styleUrls: ['./views.component.scss'],
+  templateUrl: './views.html',
+  styleUrls: ['./views.scss'],
   imports: [
     MatDialogActions,
     MatButtonModule,

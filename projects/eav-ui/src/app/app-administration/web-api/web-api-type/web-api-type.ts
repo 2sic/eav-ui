@@ -4,11 +4,11 @@ import { Component } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
-    selector: 'app-views-show',
-    templateUrl: './views-show.component.html',
+    selector: 'app-web-api-type',
+    templateUrl: './web-api-type.html',
     imports: [MatIconModule]
 })
-export class ViewsShowComponent implements ICellRendererAngularComp {
+export class WebApiTypeComponent implements ICellRendererAngularComp {
   value: boolean;
 
   agInit(params: ICellRendererParams) {
