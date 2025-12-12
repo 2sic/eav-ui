@@ -13,14 +13,14 @@ import { defaultGridOptions } from "../../shared/constants/default-grid-options.
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { PendingApp } from "../models/app.model";
 import { AppsListService } from "../services/apps-list.service";
-import { AppNameShowComponent } from './app-name-show/app-name-show.component';
-import { CheckboxCellComponent } from './checkbox-cell/checkbox-cell.component';
+import { AppNameShowComponent } from './app-name-show/app-name-show';
+import { CheckboxCellComponent } from './checkbox-cell/checkbox-cell';
 import { CheckboxCellParams } from './checkbox-cell/checkbox-cell.model';
 
 @Component({
   selector: 'app-add-app-from-folder',
-  templateUrl: './add-app-from-folder.component.html',
-  styleUrls: ['./add-app-from-folder.component.scss'],
+  templateUrl: './add-app-from-folder.html',
+  styleUrls: ['./add-app-from-folder.scss'],
   imports: [
     MatDialogActions,
     MatButtonModule,

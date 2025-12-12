@@ -6,7 +6,7 @@ import { TippyDirective } from '../../../shared/directives/tippy.directive';
 
 @Component({
     selector: 'app-features-list-enabled-reason',
-    templateUrl: './features-list-enabled-reason.component.html',
+    templateUrl: './features-list-enabled-reason.html',
     imports: [TippyDirective]
 })
 export class FeaturesListEnabledReasonComponent implements ICellRendererAngularComp {

@@ -9,13 +9,13 @@ import { defaultGridOptions } from '../../shared/constants/default-grid-options.
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { SiteLanguage } from '../models/site-language.model';
 import { ZoneService } from '../services/zone.service';
-import { SiteLanguagesStatusComponent } from './site-languages-status/site-languages-status.component';
+import { SiteLanguagesStatusComponent } from './site-languages-status/site-languages-status';
 import { SiteLanguagesStatusParams } from './site-languages-status/site-languages-status.models';
 
 @Component({
   selector: 'app-site-languages',
-  templateUrl: './site-languages.component.html',
-  styleUrls: ['./site-languages.component.scss'],
+  templateUrl: './site-languages.html',
+  styleUrls: ['./site-languages.scss'],
   imports: [
     SxcGridModule,
   ]

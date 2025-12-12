@@ -7,8 +7,8 @@ import { SiteLanguagesStatusParams } from './site-languages-status.models';
 
 @Component({
     selector: 'app-site-languages-status',
-    templateUrl: './site-languages-status.component.html',
-    styleUrls: ['./site-languages-status.component.scss'],
+    templateUrl: './site-languages-status.html',
+    styleUrls: ['./site-languages-status.scss'],
     imports: [MatSlideToggleModule]
 })
 export class SiteLanguagesStatusComponent implements ICellRendererAngularComp {

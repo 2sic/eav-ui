@@ -30,12 +30,12 @@ import { Context } from '../../shared/services/context';
 import { App } from '../models/app.model';
 import { AppsListService } from '../services/apps-list.service';
 import { AppListCodeErrorIcons, AppListShowIcons } from './app-list-grid-config';
-import { AppsListActions } from './apps-list-actions/apps-list-actions.component';
+import { AppsListActions } from './apps-list-actions/apps-list-actions';
 
 @Component({
   selector: 'app-apps-list',
-  templateUrl: './apps-list.component.html',
-  styleUrls: ['./apps-list.component.scss'],
+  templateUrl: './apps-list.html',
+  styleUrls: ['./apps-list.scss'],
   imports: [
     SxcGridModule,
     MatDialogActions,

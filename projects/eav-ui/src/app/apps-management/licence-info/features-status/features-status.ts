@@ -10,8 +10,8 @@ import { FeaturesStatusParams } from './features-status.models';
 
 @Component({
     selector: 'app-features-status',
-    templateUrl: './features-status.component.html',
-    styleUrls: ['./features-status.component.scss'],
+    templateUrl: './features-status.html',
+    styleUrls: ['./features-status.scss'],
     imports: [
         MatSlideToggleModule,
         NgClass,

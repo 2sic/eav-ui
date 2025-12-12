@@ -11,8 +11,8 @@ import { FeatureDetailsDialogData } from './feature-details-dialog.models';
 
 @Component({
   selector: 'app-feature-details-dialog',
-  templateUrl: './feature-details-dialog.component.html',
-  styleUrls: ['./feature-details-dialog.component.scss'],
+  templateUrl: './feature-details-dialog.html',
+  styleUrls: ['./feature-details-dialog.scss'],
   imports: [
     MatButtonModule,
     MatIconModule,

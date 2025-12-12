@@ -14,7 +14,7 @@ import { AppsListService } from '../services/apps-list.service';
 
 @Component({
   selector: 'app-create-inherited-app',
-  templateUrl: './create-inherited-app.component.html',
+  templateUrl: './create-inherited-app.html',
   imports: [
     RouterOutlet,
     FormsModule,

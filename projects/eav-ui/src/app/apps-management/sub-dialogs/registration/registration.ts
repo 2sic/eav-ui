@@ -16,8 +16,8 @@ import { ZoneService } from '../../services/zone.service';
 
 @Component({
   selector: 'app-registration',
-  templateUrl: './registration.component.html',
-  styleUrls: ['./registration.component.scss'],
+  templateUrl: './registration.html',
+  styleUrls: ['./registration.scss'],
   imports: [
     MatCardModule,
     MatIconModule,

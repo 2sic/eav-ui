@@ -12,8 +12,8 @@ import { OverrideContentsLogData } from './feature-list.model';
 
 @Component({
   selector: 'app-features-list-settings',
-  templateUrl: './features-list-enabled.component.html',
-  styleUrls: ['./features-list-enabled.component.scss'],
+  templateUrl: './features-list-enabled.html',
+  styleUrls: ['./features-list-enabled.scss'],
   imports: [MatIconModule, MatBadgeModule, MatRippleModule, TippyDirective]
 })
 export class FeaturesListEnabledComponent implements ICellRendererAngularComp {

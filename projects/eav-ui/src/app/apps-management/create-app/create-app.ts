@@ -24,8 +24,8 @@ import { AppsListService } from '../services/apps-list.service';
 
 @Component({
   selector: 'app-create-app',
-  templateUrl: './create-app.component.html',
-  styleUrls: ['./create-app.component.scss'],
+  templateUrl: './create-app.html',
+  styleUrls: ['./create-app.scss'],
   imports: [
     RouterOutlet,
     FormsModule,

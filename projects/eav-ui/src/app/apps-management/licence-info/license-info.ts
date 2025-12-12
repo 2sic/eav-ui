@@ -30,18 +30,18 @@ import { License } from '../models/license.model';
 import { FeaturesConfigService } from '../services/features-config.service';
 import { ActiveFeaturesCountPipe } from './active-features-count.pipe';
 import { AgGridHeightDirective } from './ag-grid-height.directive';
-import { FeatureDetailsDialogComponent } from './feature-details-dialog/feature-details-dialog.component';
+import { FeatureDetailsDialogComponent } from './feature-details-dialog/feature-details-dialog';
 import { FeatureDetailsDialogData } from './feature-details-dialog/feature-details-dialog.models';
-import { FeaturesListEnabledReasonComponent } from './features-list-enabled-reason/features-list-enabled-reason.component';
-import { FeaturesListEnabledComponent } from './features-list-enabled/features-list-enabled.component';
-import { FeaturesStatusComponent } from './features-status/features-status.component';
+import { FeaturesListEnabledReasonComponent } from './features-list-enabled-reason/features-list-enabled-reason';
+import { FeaturesListEnabledComponent } from './features-list-enabled/features-list-enabled';
+import { FeaturesStatusComponent } from './features-status/features-status';
 import { FeaturesStatusParams } from './features-status/features-status.models';
 import { LicensesOrderPipe } from './licenses-order.pipe';
 
 @Component({
   selector: 'app-license-info',
-  templateUrl: './license-info.component.html',
-  styleUrls: ['./license-info.component.scss'],
+  templateUrl: './license-info.html',
+  styleUrls: ['./license-info.scss'],
   imports: [
     MatExpansionModule,
     MatIconModule,

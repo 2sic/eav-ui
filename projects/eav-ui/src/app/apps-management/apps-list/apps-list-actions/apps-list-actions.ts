@@ -12,7 +12,7 @@ import { App } from '../../models/app.model';
 
 @Component({
   selector: 'app-apps-list-actions',
-  templateUrl: './apps-list-actions.component.html',
+  templateUrl: './apps-list-actions.html',
   imports: [
     TippyDirective,
     MatIconModule,

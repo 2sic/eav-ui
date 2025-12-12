@@ -7,7 +7,7 @@ export const appsManagementDialog: DialogConfig = {
   panelClass: null,
 
   async getComponent() {
-    const { AppsManagementNavComponent } = await import('./apps-management-nav.component');
+    const { AppsManagementNavComponent } = await import('./apps-management-nav');
     return AppsManagementNavComponent;
   }
 };

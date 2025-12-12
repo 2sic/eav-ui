@@ -28,7 +28,7 @@ declare const window: EavWindow;
 
 @Component({
   selector: 'app-system-info',
-  templateUrl: './system-info.component.html',
+  templateUrl: './system-info.html',
   imports: [
     MatCardModule,
     MatIconModule,

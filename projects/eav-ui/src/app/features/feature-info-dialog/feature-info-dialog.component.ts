@@ -2,7 +2,7 @@ import { Component, Inject, OnInit, signal } from "@angular/core";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { ActivatedRoute } from "@angular/router";
 import { transient } from "projects/core";
-import { FeatureDetailsDialogComponent } from "../../apps-management/licence-info/feature-details-dialog/feature-details-dialog.component";
+import { FeatureDetailsDialogComponent } from "../../apps-management/licence-info/feature-details-dialog/feature-details-dialog";
 import { ClipboardService } from "../../shared/services/clipboard.service";
 import { FeatureDetailService } from "../services/feature-detail.service";
 

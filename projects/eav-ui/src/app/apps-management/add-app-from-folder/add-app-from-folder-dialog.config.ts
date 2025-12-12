@@ -7,7 +7,7 @@ export const addAppFromFolderDialog: DialogConfig = {
   panelClass: null,
 
   async getComponent() {
-    const { AddAppFromFolderComponent } = await import('./add-app-from-folder.component');
+    const { AddAppFromFolderComponent } = await import('./add-app-from-folder');
     return AddAppFromFolderComponent;
   }
 };

@@ -17,8 +17,8 @@ import { AppsManagementNavItems } from './management-nav-items';
 
 @Component({
   selector: 'app-apps-management-nav',
-  templateUrl: './apps-management-nav.component.html',
-  styleUrls: ['./apps-management-nav.component.scss'],
+  templateUrl: './apps-management-nav.html',
+  styleUrls: ['./apps-management-nav.scss'],
   imports: [
     MatToolbarModule,
     MatIconModule,
