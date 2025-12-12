@@ -14,14 +14,14 @@ import { transient } from '../../../../../core';
 import { fieldNameError, fieldNamePattern } from '../../app-administration/constants/field-name.patterns';
 import { ContentType } from '../../app-administration/models';
 import { FeatureNames } from '../../features/feature-names';
-import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
+import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info';
 import { FeaturesService } from '../../features/features.service';
-import { openFeatureDialog } from '../../features/shared/base-feature.component';
+import { openFeatureDialog } from '../../features/shared/base-feature';
 import { BaseComponent } from '../../shared/components/base';
-import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
+import { FieldHintComponent } from '../../shared/components/field-hint/field-hint';
 import { ContentTypesFieldsService } from '../../shared/fields/content-types-fields.service';
 import { Field } from '../../shared/fields/field.model';
-import { SaveCloseButtonFabComponent } from '../../shared/modules/save-close-button-fab/save-close-button-fab.component';
+import { SaveCloseButtonFabComponent } from '../../shared/modules/save-close-button-fab/save-close-button-fab';
 import { signalObj } from '../../shared/signals/signal.utilities';
 import { ReservedNamesValidatorDirective } from '../edit-content-type-fields/reserved-names.directive';
 

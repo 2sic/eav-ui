@@ -8,14 +8,14 @@ import { MatTableModule } from '@angular/material/table';
 import { TranslateModule } from '@ngx-translate/core';
 import groupBy from 'lodash-es/groupBy';
 import { transient } from '../../../../../core/transient';
-import { FeatureIconTextComponent } from '../../features/feature-icon-text/feature-icon-text.component';
+import { FeatureIconTextComponent } from '../../features/feature-icon-text/feature-icon-text';
 import { FeatureNames } from '../../features/feature-names';
-import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
+import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info';
 import { FeaturesService } from '../../features/features.service';
 import { ContentTypesFieldsService } from '../../shared/fields/content-types-fields.service';
 import { Field } from '../../shared/fields/field.model';
 import { classLog } from '../../shared/logging';
-import { SaveCloseButtonFabComponent } from '../../shared/modules/save-close-button-fab/save-close-button-fab.component';
+import { SaveCloseButtonFabComponent } from '../../shared/modules/save-close-button-fab/save-close-button-fab';
 import { computedObj, signalObj } from '../../shared/signals/signal.utilities';
 import { SharingOrInheriting } from './field-sharing-configure.enums';
 

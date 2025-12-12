@@ -7,7 +7,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateModule } from '@ngx-translate/core';
 import { FeatureNames } from '../../../features/feature-names';
-import { FeatureTextInfoComponent } from '../../../features/feature-text-info/feature-text-info.component';
+import { FeatureTextInfoComponent } from '../../../features/feature-text-info/feature-text-info';
 import { FeaturesService } from '../../../features/features.service';
 import { TranslateHelperComponent } from '../../../shared/components/translate-helper';
 import { EditApiKeyPaths } from '../../../shared/constants/eav.constants';

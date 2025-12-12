@@ -17,12 +17,12 @@ import { fieldNameError, fieldNamePattern } from '../../app-administration/const
 import { ContentTypesService } from '../../app-administration/services/content-types.service';
 import { isCtrlEnter } from '../../edit/dialog/main/keyboard-shortcuts';
 import { BaseComponent } from '../../shared/components/base';
-import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
+import { FieldHintComponent } from '../../shared/components/field-hint/field-hint';
 import { ContentTypesFieldsService } from '../../shared/fields/content-types-fields.service';
 import { DataTypeCatalog } from '../../shared/fields/data-type-catalog';
 import { Field, FieldInputTypeOption } from '../../shared/fields/field.model';
 import { InputTypeCatalog } from '../../shared/fields/input-type-catalog';
-import { SaveCloseButtonFabComponent } from '../../shared/modules/save-close-button-fab/save-close-button-fab.component';
+import { SaveCloseButtonFabComponent } from '../../shared/modules/save-close-button-fab/save-close-button-fab';
 import { computedObj } from '../../shared/signals/signal.utilities';
 import { calculateTypeIcon, calculateTypeLabel } from '../content-type-fields.helpers';
 import { ReservedNamesValidatorDirective } from './reserved-names.directive';

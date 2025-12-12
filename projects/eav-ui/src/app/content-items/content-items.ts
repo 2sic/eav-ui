@@ -14,9 +14,9 @@ import { ContentExportService } from '../content-export/services/content-export.
 import { GoToMetadata } from '../metadata';
 import { AgGridHelper } from '../shared/ag-grid/ag-grid-helper';
 import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
-import { GridWithHelpComponent, HelpTextConst } from '../shared/ag-grid/grid-with-help/grid-with-help.component';
-import { BooleanFilterComponent } from '../shared/components/boolean-filter/boolean-filter.component';
-import { EntityFilterComponent } from '../shared/components/entity-filter/entity-filter.component';
+import { GridWithHelpComponent, HelpTextConst } from '../shared/ag-grid/grid-with-help/grid-with-help';
+import { BooleanFilterComponent } from '../shared/components/boolean-filter/boolean-filter';
+import { EntityFilterComponent } from '../shared/components/entity-filter/entity-filter';
 import { FileUploadDialogData } from '../shared/components/file-upload-dialog';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
 import { keyFilters } from '../shared/constants/session.constants';

@@ -7,7 +7,7 @@ export const replaceContentDialog: DialogConfig = {
   panelClass: null,
 
   async getComponent() {
-    const { ReplaceContentComponent } = await import('./replace-content.component');
+    const { ReplaceContentComponent } = await import('./replace-content');
     return ReplaceContentComponent;
   }
 };

@@ -4,7 +4,7 @@ import { MatRippleModule } from "@angular/material/core";
 import { MatIconModule } from "@angular/material/icon";
 import { TranslateModule } from "@ngx-translate/core";
 import { AdamItem } from '../../../../../../../edit-types/src/AdamItem';
-import { FeatureIconTextComponent } from "../../../../features/feature-icon-text/feature-icon-text.component";
+import { FeatureIconTextComponent } from "../../../../features/feature-icon-text/feature-icon-text";
 import { FeatureNames } from '../../../../features/feature-names';
 import { FeaturesService } from '../../../../features/features.service';
 import { SignalEquals } from '../../../../shared/signals/signal-equals';

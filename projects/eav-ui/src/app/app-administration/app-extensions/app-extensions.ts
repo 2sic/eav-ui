@@ -9,7 +9,7 @@ import { EcoFabSpeedDialActionsComponent, EcoFabSpeedDialComponent, EcoFabSpeedD
 import { of, take } from 'rxjs';
 import { transient } from '../../../../../core';
 import { DialogRoutingState } from '../../edit/dialog/dialogRouteState.model';
-import { GridWithHelpComponent, HelpTextConst } from '../../shared/ag-grid/grid-with-help/grid-with-help.component';
+import { GridWithHelpComponent, HelpTextConst } from '../../shared/ag-grid/grid-with-help/grid-with-help';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';

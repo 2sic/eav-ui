@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
-import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
-import { permissionsDialog } from './permissions-dialog.config';
 import { EditRoutes } from '../edit/edit.routing';
+import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry';
+import { permissionsDialog } from './permissions-dialog.config';
 
 export const permissionRoutes: Routes = [
   {

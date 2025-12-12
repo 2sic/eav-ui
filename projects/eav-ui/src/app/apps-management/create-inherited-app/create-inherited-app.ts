@@ -9,7 +9,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
 import { transient } from '../../../../../core';
-import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
+import { FieldHintComponent } from '../../shared/components/field-hint/field-hint';
 import { AppsListService } from '../services/apps-list.service';
 
 @Component({

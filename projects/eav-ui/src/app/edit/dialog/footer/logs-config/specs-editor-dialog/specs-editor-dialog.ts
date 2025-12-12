@@ -9,7 +9,7 @@ import {
   MatDialogRef
 } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { MonacoEditorComponent } from '../../../../../monaco-editor/monaco-editor.component';
+import { MonacoEditorComponent } from '../../../../../monaco-editor/monaco-editor';
 import { TippyDirective } from '../../../../../shared/directives/tippy.directive';
 @Component({
     imports: [

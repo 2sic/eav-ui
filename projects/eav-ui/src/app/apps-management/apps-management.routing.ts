@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { EditRoutes, EditRoutesUnderAppsList } from '../edit/edit.routing';
-import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
+import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry';
 import { addAppFromFolderDialog } from './add-app-from-folder/add-app-from-folder-dialog.config';
 import { appsManagementDialog } from './apps-management-nav/apps-management-dialog.config';
 import { createAppDialog } from './create-app/create-app-dialog.config';

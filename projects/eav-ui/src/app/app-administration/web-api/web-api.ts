@@ -11,7 +11,7 @@ import { SourceService } from '../../code-editor/services/source.service';
 import { CreateFileDialogComponent, CreateFileDialogData, CreateFileDialogResult } from '../../create-file-dialog';
 import { TrueFalseComponent } from '../../dev-rest/api/true-false/true-false';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
-import { GridWithHelpComponent, HelpTextConst } from '../../shared/ag-grid/grid-with-help/grid-with-help.component';
+import { GridWithHelpComponent, HelpTextConst } from '../../shared/ag-grid/grid-with-help/grid-with-help';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogInNewWindowService } from '../../shared/routing/dialog-in-new-window.service';

@@ -4,7 +4,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import type * as Monaco from 'monaco-editor';
 import { CustomJsonEditor } from 'projects/edit-types/src/FieldSettings-CustomJsonEditor';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
-import { MonacoEditorComponent } from '../../../../monaco-editor/monaco-editor.component';
+import { MonacoEditorComponent } from '../../../../monaco-editor/monaco-editor';
 import { JsonSchema } from '../../../../monaco-editor/monaco-editor.models';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FormConfigService } from '../../../form/form-config.service';

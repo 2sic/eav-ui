@@ -6,7 +6,7 @@ import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
 import { TranslateModule } from "@ngx-translate/core";
-import { FeatureIconTextComponent } from '../../../../features/feature-icon-text/feature-icon-text.component';
+import { FeatureIconTextComponent } from '../../../../features/feature-icon-text/feature-icon-text';
 import { FeatureNames } from '../../../../features/feature-names';
 import { FeaturesService } from '../../../../features/features.service';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';

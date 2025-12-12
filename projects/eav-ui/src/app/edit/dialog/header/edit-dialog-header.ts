@@ -5,7 +5,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
-import { openFeaturesUsedButUnlicensedDialog } from '../../../features/features-used-but-missing-dialog/features-used-but-unlicensed-dialog.component';
+import { openFeaturesUsedButUnlicensedDialog } from '../../../features/features-used-but-missing-dialog/features-used-but-unlicensed-dialog';
 import { FeaturesService } from '../../../features/features.service';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { FormConfigService } from '../../form/form-config.service';
@@ -13,7 +13,7 @@ import { FormPublishingService } from '../../form/form-publishing.service';
 import { FormsStateService } from '../../form/forms-state.service';
 import { LanguageService } from '../../localization/language.service';
 import { LanguageSwitcherComponent } from './language-switcher/language-switcher';
-import { PublishStatusDialogComponent } from './publish-status-dialog/publish-status-dialog.component';
+import { PublishStatusDialogComponent } from './publish-status-dialog/publish-status-dialog';
 
 @Component({
     selector: 'app-edit-dialog-header',

@@ -10,7 +10,7 @@ import { ActivatedRoute } from '@angular/router';
 import { transient } from 'projects/core';
 import { isCtrlEnter } from '../../../edit/dialog/main/keyboard-shortcuts';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
-import { SaveCloseButtonFabComponent } from '../../../shared/modules/save-close-button-fab/save-close-button-fab.component';
+import { SaveCloseButtonFabComponent } from '../../../shared/modules/save-close-button-fab/save-close-button-fab';
 import { AppExtensionsService } from '../../services/app-extensions.service';
 import { ConfirmDeleteDialogComponent } from '../confirm-delete-dialog/confirm-delete-dialog';
 import { ConfirmDeleteDialogData } from '../confirm-delete-dialog/confirm-delete-dialog.models';

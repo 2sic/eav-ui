@@ -14,7 +14,7 @@ import { TranslateService } from '@ngx-translate/core';
 import type * as Monaco from 'monaco-editor';
 import { Of } from '../../../../../../../core';
 import { transient } from '../../../../../../../core/transient';
-import { MonacoEditorComponent } from '../../../../monaco-editor/monaco-editor.component';
+import { MonacoEditorComponent } from '../../../../monaco-editor/monaco-editor';
 import { eavConstants } from '../../../../shared/constants/eav.constants';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { classLog } from '../../../../shared/logging';

@@ -4,7 +4,7 @@ import { MAT_DIALOG_DATA, MatDialogActions, MatDialogRef } from '@angular/materi
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { isCtrlEnter } from '../../../edit/dialog/main/keyboard-shortcuts';
-import { SaveCloseButtonFabComponent } from '../../../shared/modules/save-close-button-fab/save-close-button-fab.component';
+import { SaveCloseButtonFabComponent } from '../../../shared/modules/save-close-button-fab/save-close-button-fab';
 import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';
 import { ConfirmDeleteDialogData } from './confirm-delete-dialog.models';
 

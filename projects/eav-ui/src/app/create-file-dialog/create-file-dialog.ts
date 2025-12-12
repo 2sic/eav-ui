@@ -18,9 +18,9 @@ import { SourceService } from '../code-editor/services/source.service';
 import { isCtrlEnter } from '../edit/dialog/main/keyboard-shortcuts';
 import { SanitizeHelper } from '../edit/shared/helpers';
 import { BaseComponent } from '../shared/components/base';
-import { FieldHintComponent } from '../shared/components/field-hint/field-hint.component';
+import { FieldHintComponent } from '../shared/components/field-hint/field-hint';
 import { MatInputAutofocusDirective } from '../shared/directives/mat-input-autofocus.directive';
-import { SaveCloseButtonFabComponent } from '../shared/modules/save-close-button-fab/save-close-button-fab.component';
+import { SaveCloseButtonFabComponent } from '../shared/modules/save-close-button-fab/save-close-button-fab';
 
 @Component({
   selector: 'app-create-file-dialog',

@@ -11,7 +11,7 @@ import {
 import { MatIconModule } from '@angular/material/icon';
 import { transient } from '../../../../../../../../core/transient';
 import { ClipboardService } from '../../../../..//shared/services/clipboard.service';
-import { MonacoEditorComponent } from '../../../../../monaco-editor/monaco-editor.component';
+import { MonacoEditorComponent } from '../../../../../monaco-editor/monaco-editor';
 import { TippyDirective } from '../../../../../shared/directives/tippy.directive';
 @Component({
     imports: [

@@ -1,6 +1,6 @@
 import { NgClass } from '@angular/common';
 import { Component, inject, ViewChild, ViewContainerRef } from '@angular/core';
-import { FeatureIconComponent } from '../../../../features/feature-icon/feature-icon.component';
+import { FeatureIconComponent } from '../../../../features/feature-icon/feature-icon';
 import { FeaturesService } from '../../../../features/features.service';
 import { computedObj } from '../../../../shared/signals/signal.utilities';
 import { FieldState } from '../../field-state';

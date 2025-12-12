@@ -7,7 +7,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { FileLocationFormValues } from '..';
-import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
+import { FieldHintComponent } from '../../shared/components/field-hint/field-hint';
 
 @Component({
   selector: 'app-file-location-dialog',

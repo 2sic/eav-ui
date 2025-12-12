@@ -8,7 +8,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { transient } from '../../../../../../core';
-import { FieldHintComponent } from '../../../shared/components/field-hint/field-hint.component';
+import { FieldHintComponent } from '../../../shared/components/field-hint/field-hint';
 import { dropdownInsertValue } from '../../../shared/constants/dropdown-insert-value.constant';
 import { eavConstants, ScopeOption } from '../../../shared/constants/eav.constants';
 import { ClickStopPropagationDirective } from '../../../shared/directives/click-stop-propagation.directive';

@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { GoToPermissions } from '../permissions/go-to-permissions';
-import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
+import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry';
 import { devRestDialog } from './dev-rest-dialog.config';
 import { GoToDevRest } from './go-to-dev-rest';
 

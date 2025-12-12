@@ -5,7 +5,7 @@ import { featureInfoDialog } from '../features/feature-info-dialog/feature-info-
 import { FeatureNames } from '../features/feature-names';
 import { GoToMetadata } from '../metadata';
 import { GoToPermissions } from '../permissions/go-to-permissions';
-import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
+import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry';
 import { appAdminDialog } from './app-admin-main/app-admin-dialog';
 import { basicMessageDialog } from './app-configuration/message/basic-message-dialog';
 import { CopilotSpecs } from './copilot/copilot-specs';

@@ -7,7 +7,7 @@ export const permissionsDialog: DialogConfig = {
   panelClass: null,
 
   async getComponent() {
-    const { PermissionsComponent } = await import('./permissions.component');
+    const { PermissionsComponent } = await import('./permissions');
     return PermissionsComponent;
   }
 };

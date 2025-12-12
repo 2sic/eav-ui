@@ -7,7 +7,7 @@ export const featureInfoDialog: DialogConfig = {
   panelClass: null,
 
   async getComponent() {
-    const { FeatureInfoDialogComponent } = await import('./feature-info-dialog.component');
+    const { FeatureInfoDialogComponent } = await import('./feature-info-dialog');
     return FeatureInfoDialogComponent;
   }
 };

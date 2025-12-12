@@ -1,0 +1,63 @@
+import { IFilterAngularComp } from '@ag-grid-community/angular';
+import { IAfterGuiAttachedParams, IDoesFilterPassParams, IFilterParams, ValueGetterParams } from '@ag-grid-community/core';
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatRadioModule } from '@angular/material/radio';
+import { BooleanFilterModel } from './boolean-filter.model';
+
+@Component({
+    selector: 'app-boolean-filter',
+    templateUrl: './boolean-filter.html',
+    styleUrls: ['./boolean-filter.scss'],
+    imports: [
+        FormsModule,
+        MatRadioModule,
+    ]
+})
+export class BooleanFilterComponent implements IFilterAngularComp {
+  filter = '';
+
+  private filterParams: IFilterParams;
+
+  agInit(params: IFilterParams) {
+    this.filterParams = params;
+  }
+
+  isFilterActive(): boolean {
+    return this.filter !== '';
+  }
+
+  doesFilterPass(params: IDoesFilterPassParams): boolean {
+    const valueGetterParams: ValueGetterParams = {
+      api: this.filterParams.api,
+      colDef: this.filterParams.colDef,
+      column: this.filterParams.column,
+      context: this.filterParams.context,
+      data: params.node.data,
+      getValue: (field) => params.node.data[field],
+      node: params.node,
+    };
+    const value: boolean = this.filterParams.valueGetter(valueGetterParams);
+    if (value == null) { return false; }
+    return value.toString() === this.filter;
+  }
+
+  getModel(): BooleanFilterModel {
+    if (!this.isFilterActive()) return;
+    return {
+      filterType: 'boolean',
+      filter: this.filter,
+    };
+  }
+
+  setModel(model: BooleanFilterModel) {
+    this.filter = model ? model.filter : '';
+  }
+
+  afterGuiAttached(params: IAfterGuiAttachedParams) {
+  }
+
+  filterChanged() {
+    this.filterParams.filterChangedCallback();
+  }
+}

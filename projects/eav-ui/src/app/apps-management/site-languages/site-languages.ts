@@ -3,7 +3,7 @@ import { GridOptions, ModuleRegistry } from '@ag-grid-community/core';
 import { Component, signal } from '@angular/core';
 import { transient } from '../../../../../core';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
-import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
+import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';

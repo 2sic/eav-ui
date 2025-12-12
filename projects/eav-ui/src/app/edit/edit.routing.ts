@@ -29,7 +29,7 @@ const reloadRoutes: Routes = [
 const editRoutesDialogAndChildren: Routes = [
   {
     path: '',
-    loadComponent: () => import('../shared/components/dialog-entry/dialog-entry.component').then(m => m.DialogEntryComponent),
+    loadComponent: () => import('../shared/components/dialog-entry/dialog-entry').then(m => m.DialogEntryComponent),
     data: { dialog: editDialog },
     loadChildren: () => [
       ...EditRoutes,

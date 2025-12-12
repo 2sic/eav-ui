@@ -5,7 +5,7 @@ import { MatDialogActions, MatDialogRef } from "@angular/material/dialog";
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { transient } from '../../../../../core';
 import { FeatureNames } from '../../features/feature-names';
-import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
+import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info';
 import { FeaturesService } from '../../features/features.service';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';

@@ -9,7 +9,7 @@ import { FormConfigService } from '../../form/form-config.service';
 import { InitialValuesService } from '../../form/initial-values-service';
 import { LoggingService } from '../../shared/services/logging.service';
 import { ScriptsLoaderService } from '../../shared/services/scripts-loader.service';
-import { EditDialogMainComponent } from '../main/edit-dialog-main.component';
+import { EditDialogMainComponent } from '../main/edit-dialog-main';
 
 /**
  * This component is the entry point for every edit dialog.

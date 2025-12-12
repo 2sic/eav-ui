@@ -13,11 +13,11 @@ import { distinctUntilChanged, startWith } from 'rxjs';
 import { transient } from '../../../../../core';
 import { ContentTypesService } from '../../app-administration/services';
 import { isCtrlEnter } from '../../edit/dialog/main/keyboard-shortcuts';
-import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
+import { FieldHintComponent } from '../../shared/components/field-hint/field-hint';
 import { dropdownInsertValue } from '../../shared/constants/dropdown-insert-value.constant';
 import { eavConstants, ScopeOption } from '../../shared/constants/eav.constants';
 import { ClickStopPropagationDirective } from '../../shared/directives/click-stop-propagation.directive';
-import { SaveCloseButtonFabComponent } from '../../shared/modules/save-close-button-fab/save-close-button-fab.component';
+import { SaveCloseButtonFabComponent } from '../../shared/modules/save-close-button-fab/save-close-button-fab';
 import { MetadataSaveFormValues } from './metadata-save-dialog.models';
 
 @Component({

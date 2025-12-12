@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { transient } from '../../../../../../core';
 import { FeatureNames } from '../../../features/feature-names';
-import { FeatureTextInfoComponent } from '../../../features/feature-text-info/feature-text-info.component';
+import { FeatureTextInfoComponent } from '../../../features/feature-text-info/feature-text-info';
 import { FeaturesService } from '../../../features/features.service';
 import { ExportAppService } from '../../services/export-app.service';
 import { ImportAppPartsService } from '../../services/import-app-parts.service';

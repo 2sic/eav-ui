@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { TranslateModule } from '@ngx-translate/core';
-import { FeatureIconIndicatorComponent } from '../../../../../features/feature-icon-indicator/feature-icon-indicator.component';
+import { FeatureIconIndicatorComponent } from '../../../../../features/feature-icon-indicator/feature-icon-indicator';
 import { TippyDirective } from '../../../../../shared/directives/tippy.directive';
 import { computedObj } from '../../../../../shared/signals/signal.utilities';
 import { FormConfigService } from '../../../../form/form-config.service';

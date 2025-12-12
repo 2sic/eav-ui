@@ -1,10 +1,10 @@
 import { ColDef, NumberFilterModel, TextFilterModel } from '@ag-grid-community/core';
 import { BooleanFilterModel } from '../shared/components/boolean-filter/boolean-filter.model';
-import { EntityFilterComponent } from '../shared/components/entity-filter/entity-filter.component';
+import { EntityFilterComponent } from '../shared/components/entity-filter/entity-filter';
 import { EntityFilterModel } from '../shared/components/entity-filter/entity-filter.model';
+import { JsonHelpers } from '../shared/helpers/json.helpers';
 import { AgGridFilterModel } from './models/ag-grid-filter.model';
 import { PubMetaFilterModel } from './pub-meta-filter/pub-meta-filter.model';
-import { JsonHelpers } from '../shared/helpers/json.helpers';
 
 export function buildFilterModel(urlFilters: string, columnDefs: ColDef[]) {
   if (!urlFilters) return;

@@ -6,7 +6,7 @@ import { MatDialogActions } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { transient } from '../../../../../../core';
 import { DocsLinkHelper } from '../../../admin-shared/docs-link-helper/docs-link-helper';
-import { FeatureIconComponent } from '../../../features/feature-icon/feature-icon.component';
+import { FeatureIconComponent } from '../../../features/feature-icon/feature-icon';
 import { FeatureNames } from '../../../features/feature-names';
 import { FeaturesService } from '../../../features/features.service';
 import { ExportAppService } from '../../services/export-app.service';
