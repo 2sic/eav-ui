@@ -27,8 +27,8 @@ import { ReservedNamesValidatorDirective } from '../edit-content-type-fields/res
 
 @Component({
   selector: 'app-field-sharing-add-many',
-  templateUrl: './field-sharing-add-many.component.html',
-  styleUrls: ['./field-sharing-add-many.component.scss'],
+  templateUrl: './field-sharing-add-many.html',
+  styleUrls: ['./field-sharing-add-many.scss'],
   imports: [
     MatCardModule,
     MatTableModule,

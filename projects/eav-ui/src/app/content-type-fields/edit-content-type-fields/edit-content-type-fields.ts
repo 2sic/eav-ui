@@ -36,8 +36,8 @@ type FieldSubset = Pick<Field, 'Id' | 'Type' | 'InputType' | 'StaticName' | 'IsT
 
 @Component({
   selector: 'app-edit-content-type-fields',
-  templateUrl: './edit-content-type-fields.component.html',
-  styleUrls: ['./edit-content-type-fields.component.scss'],
+  templateUrl: './edit-content-type-fields.html',
+  styleUrls: ['./edit-content-type-fields.scss'],
   imports: [
     FormsModule,
     MatFormFieldModule,

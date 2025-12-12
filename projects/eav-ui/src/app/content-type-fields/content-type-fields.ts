@@ -25,20 +25,20 @@ import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { EditForm, EditPrep, ItemAddIdentifier, ItemEditIdentifier, ItemIdentifier } from '../shared/models/edit-form.model';
 import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
-import { ContentTypeFieldsActionsComponent } from './content-type-fields-actions/content-type-fields-actions.component';
+import { ContentTypeFieldsActionsComponent } from './content-type-fields-actions/content-type-fields-actions';
 import { ContentTypeFieldsActionsParams } from './content-type-fields-actions/content-type-fields-actions.models';
-import { ContentTypeFieldsDragComponent, ContentTypeFieldsDragParams } from './content-type-fields-drag/content-type-fields-drag.component';
-import { ContentTypeFieldsSpecialComponent } from './content-type-fields-special/content-type-fields-special.component';
-import { ContentTypeFieldsTitleComponent } from './content-type-fields-title/content-type-fields-title.component';
+import { ContentTypeFieldsDragComponent, ContentTypeFieldsDragParams } from './content-type-fields-drag/content-type-fields-drag';
+import { ContentTypeFieldsSpecialComponent } from './content-type-fields-special/content-type-fields-special';
+import { ContentTypeFieldsTitleComponent } from './content-type-fields-title/content-type-fields-title';
 import { ContentTypeFieldsTitleParams } from './content-type-fields-title/content-type-fields-title.models';
-import { ContentTypeFieldsTypeComponent } from './content-type-fields-type/content-type-fields-type.component';
-import { FieldSharingAddMany } from './field-sharing-add-many/field-sharing-add-many.component';
-import { ShareOrInheritDialogComponent } from './field-sharing-configure/field-sharing-configure.component';
+import { ContentTypeFieldsTypeComponent } from './content-type-fields-type/content-type-fields-type';
+import { FieldSharingAddMany } from './field-sharing-add-many/field-sharing-add-many';
+import { ShareOrInheritDialogComponent } from './field-sharing-configure/field-sharing-configure';
 
 @Component({
   selector: 'app-content-type-fields',
-  templateUrl: './content-type-fields.component.html',
-  styleUrls: ['./content-type-fields.component.scss'],
+  templateUrl: './content-type-fields.html',
+  styleUrls: ['./content-type-fields.scss'],
   imports: [
     MatButtonModule,
     MatIconModule,

@@ -10,8 +10,8 @@ import { ContentTypeFieldsTitleParams } from './content-type-fields-title.models
 
 @Component({
   selector: 'app-content-type-fields-title',
-  templateUrl: './content-type-fields-title.component.html',
-  styleUrls: ['./content-type-fields-title.component.scss'],
+  templateUrl: './content-type-fields-title.html',
+  styleUrls: ['./content-type-fields-title.scss'],
   imports: [
     MatRippleModule,
     MatIconModule,

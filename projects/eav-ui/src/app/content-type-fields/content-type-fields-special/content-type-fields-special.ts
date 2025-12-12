@@ -7,8 +7,8 @@ import { Field } from '../../shared/fields/field.model';
 
 @Component({
   selector: 'app-content-type-fields-special',
-  templateUrl: './content-type-fields-special.component.html',
-  styleUrls: ['./content-type-fields-special.component.scss'],
+  templateUrl: './content-type-fields-special.html',
+  styleUrls: ['./content-type-fields-special.scss'],
   imports: [
     MatIconModule,
     TippyDirective,

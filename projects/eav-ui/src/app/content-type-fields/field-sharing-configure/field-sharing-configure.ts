@@ -28,8 +28,8 @@ const noInheritGuid = '00000000-0000-0000-0000-000000000000';
 
 @Component({
   selector: 'app-field-sharing-configure',
-  templateUrl: './field-sharing-configure.component.html',
-  styleUrls: ['./field-sharing-configure.component.scss'],
+  templateUrl: './field-sharing-configure.html',
+  styleUrls: ['./field-sharing-configure.scss'],
   imports: [
     MatButtonModule,
     MatIconModule,

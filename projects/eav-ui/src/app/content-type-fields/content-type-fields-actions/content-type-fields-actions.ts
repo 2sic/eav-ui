@@ -1,20 +1,20 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
-import { DataTypeCatalog } from '../../shared/fields/data-type-catalog';
-import { InputTypeCatalog } from '../../shared/fields/input-type-catalog';
-import { Field } from '../../shared/fields/field.model';
-import { ContentTypeFieldsActions, ContentTypeFieldsActionsParams } from './content-type-fields-actions.models';
-import { MatMenuModule } from '@angular/material/menu';
 import { MatBadgeModule } from '@angular/material/badge';
-import { MatIconModule } from '@angular/material/icon';
 import { MatRippleModule } from '@angular/material/core';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
+import { DataTypeCatalog } from '../../shared/fields/data-type-catalog';
+import { Field } from '../../shared/fields/field.model';
+import { InputTypeCatalog } from '../../shared/fields/input-type-catalog';
+import { ContentTypeFieldsActions, ContentTypeFieldsActionsParams } from './content-type-fields-actions.models';
 
 @Component({
     selector: 'app-content-type-fields-actions',
-    templateUrl: './content-type-fields-actions.component.html',
-    styleUrls: ['./content-type-fields-actions.component.scss'],
+    templateUrl: './content-type-fields-actions.html',
+    styleUrls: ['./content-type-fields-actions.scss'],
     imports: [
         MatRippleModule,
         MatIconModule,
