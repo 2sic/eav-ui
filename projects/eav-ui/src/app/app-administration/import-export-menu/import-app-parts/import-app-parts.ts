@@ -6,7 +6,7 @@ import { ImportAppPartsService } from '../../services/import-app-parts.service';
 
 @Component({
   selector: 'app-import-app-parts',
-  templateUrl: './import-app-parts.component.html',
+  templateUrl: './import-app-parts.html',
   imports: [
     FileUploadDialogComponent
   ]

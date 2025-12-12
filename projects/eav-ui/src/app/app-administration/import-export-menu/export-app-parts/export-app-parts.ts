@@ -19,8 +19,8 @@ import { ExportAppPartsService } from '../../services/export-app-parts.service';
 
 @Component({
   selector: 'app-export-app-parts',
-  templateUrl: './export-app-parts.component.html',
-  styleUrls: ['./export-app-parts.component.scss'],
+  templateUrl: './export-app-parts.html',
+  styleUrls: ['./export-app-parts.scss'],
   imports: [
     MatFormFieldModule,
     MatSelectModule,

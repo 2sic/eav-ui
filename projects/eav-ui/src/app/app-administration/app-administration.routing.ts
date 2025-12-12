@@ -10,13 +10,13 @@ import { appAdminDialog } from './app-admin-main/app-admin-dialog';
 import { basicMessageDialog } from './app-configuration/message/basic-message-dialog';
 import { CopilotSpecs } from './copilot/copilot-specs';
 import { GoToCopilot } from './copilot/go-to-copilot';
-import { AppStateComponent } from './import-export-menu/app-state/app-state.component';
+import { AppStateComponent } from './import-export-menu/app-state/app-state';
+import { DataBundlesComponent } from './import-export-menu/data-bundles/data-bundles';
 import { dataBundlesDialog } from './import-export-menu/data-bundles/data-bundles-detail/data-bundles-dialog.config';
-import { DataBundlesComponent } from './import-export-menu/data-bundles/data-bundles.component';
-import { ExportAppPartsComponent } from './import-export-menu/export-app-parts/export-app-parts.component';
-import { ExportAppComponent } from './import-export-menu/export-app/export-app.component';
-import { ImportAppPartsComponent } from './import-export-menu/import-app-parts/import-app-parts.component';
-import { ImportExportComponent } from './import-export-menu/import-export/import-export.component';
+import { ExportAppPartsComponent } from './import-export-menu/export-app-parts/export-app-parts';
+import { ExportAppComponent } from './import-export-menu/export-app/export-app';
+import { ImportAppPartsComponent } from './import-export-menu/import-app-parts/import-app-parts';
+import { ImportExportComponent } from './import-export-menu/import-export/import-export';
 import { analyzeSettingsDialog } from './sub-dialogs/analyze-settings/analyze-settings-dialog.config';
 import { settingsItemDetailsDialog } from './sub-dialogs/analyze-settings/settings-item-details/settings-item-details.config';
 import { deleteExtensionDialog } from './sub-dialogs/delete-extension/delete-extension-dialog.config';
@@ -43,13 +43,13 @@ export const appAdministrationRoutes: Routes = [
       },
       {
         path: 'home',
-        loadComponent: () => import('./getting-started/getting-started.component')
+        loadComponent: () => import('./getting-started/getting-started')
           .then(mod => mod.GettingStartedComponent),
         data: { title: 'App Home', breadcrumb: 'Info', }
       },
       {
         path: 'data/:scope',
-        loadComponent: () => import('./data/data.component')
+        loadComponent: () => import('./data/data')
           .then(mod => mod.DataComponent),
         children: [
           {
@@ -112,7 +112,7 @@ export const appAdministrationRoutes: Routes = [
       },
       {
         path: GoToDevRest.routeData,
-        loadComponent: () => import('./data-rest-api/data-rest-api.component')
+        loadComponent: () => import('./data-rest-api/data-rest-api')
           .then(mod => mod.DataRestApiComponent),
         data: {
           title: 'Rest-Api Data',

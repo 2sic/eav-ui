@@ -24,7 +24,7 @@ import { convertFormToUrl } from '../../../shared/helpers/url-prep.helper';
 import { EditForm, EditPrep } from '../../../shared/models/edit-form.model';
 import { SxcGridModule } from '../../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../../../shared/routing/dialog-routing.service';
-import { DataBundleActionsComponent } from './data-bundles-actions/data-bundles-actions.component';
+import { DataBundleActionsComponent } from './data-bundles-actions/data-bundles-actions';
 import { DataBundlesActionsParams } from './data-bundles-actions/data-bundles-actions.models';
 import { DataBundlesQueryService } from './data-bundles-query.service';
 import { DataBundlesService } from './data-bundles.service';
@@ -47,8 +47,8 @@ interface BundleQuery {
     MatProgressSpinnerModule,
     TippyDirective,
   ],
-  templateUrl: './data-bundles.component.html',
-  styleUrl: './data-bundles.component.scss'
+  templateUrl: './data-bundles.html',
+  styleUrl: './data-bundles.scss'
 })
 export class DataBundlesComponent {
 

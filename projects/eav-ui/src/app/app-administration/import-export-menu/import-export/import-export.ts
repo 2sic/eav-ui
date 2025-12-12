@@ -12,8 +12,8 @@ import { TippyDirective } from '../../../shared/directives/tippy.directive';
     MatButtonModule,
     TippyDirective
   ],
-  templateUrl: './import-export.component.html',
-  styleUrl: './import-export.component.scss'
+  templateUrl: './import-export.html',
+  styleUrl: './import-export.scss'
 })
 export class ImportExportComponent {
 

@@ -23,7 +23,7 @@ import { ContentTypesService } from '../services';
     SxcGridModule,
     RestApiHelpTextComponent,
   ],
-  templateUrl: './data-rest-api.component.html'
+  templateUrl: './data-rest-api.html'
 })
 export class DataRestApiComponent {
   #contentTypesSvc = transient(ContentTypesService);

@@ -10,7 +10,7 @@ import { DataBundlesDetailActionsParams, DataBundlesType } from './data-bundles-
 
 @Component({
     selector: 'app-data-bundle-actions',
-    templateUrl: './data-bundles-detail-actions.component.html',
+    templateUrl: './data-bundles-detail-actions.html',
     imports: [
         MatRippleModule,
         MatIconModule,

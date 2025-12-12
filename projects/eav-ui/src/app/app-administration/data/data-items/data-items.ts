@@ -9,8 +9,8 @@ import { ContentType } from '../../models';
 
 @Component({
   selector: 'app-data-items',
-  templateUrl: './data-items.component.html',
-  styleUrls: ['./data-items.component.scss'],
+  templateUrl: './data-items.html',
+  styleUrls: ['./data-items.scss'],
   imports: [
     MatRippleModule,
     MatIconModule,

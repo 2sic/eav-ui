@@ -9,7 +9,7 @@ import { ContentType } from '../../models/content-type.model';
 
 @Component({
     selector: 'app-data-fields',
-    templateUrl: './data-fields.component.html',
+    templateUrl: './data-fields.html',
     imports: [
         MatRippleModule,
         MatIconModule,

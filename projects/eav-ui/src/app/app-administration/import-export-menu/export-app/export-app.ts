@@ -13,8 +13,8 @@ import { ExportAppService } from '../../services/export-app.service';
 
 @Component({
     selector: 'app-export-app',
-    templateUrl: './export-app.component.html',
-    styleUrls: ['./export-app.component.scss'],
+    templateUrl: './export-app.html',
+    styleUrls: ['./export-app.scss'],
     imports: [
         MatCheckboxModule,
         FormsModule,

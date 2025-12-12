@@ -7,8 +7,8 @@ import { DialogConfigAppService } from '../services/dialog-config-app.service';
 
 @Component({
     selector: 'app-getting-started',
-    templateUrl: './getting-started.component.html',
-    styleUrls: ['./getting-started.component.scss'],
+    templateUrl: './getting-started.html',
+    styleUrls: ['./getting-started.scss'],
     imports: [
         AsyncPipe,
         SafeResourceUrlPipe,

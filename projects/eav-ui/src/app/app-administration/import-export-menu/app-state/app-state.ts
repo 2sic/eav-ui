@@ -13,8 +13,8 @@ import { ImportAppPartsService } from '../../services/import-app-parts.service';
 
 @Component({
   selector: 'app-app-state',
-  templateUrl: './app-state.component.html',
-  styleUrls: ['./app-state.component.scss'],
+  templateUrl: './app-state.html',
+  styleUrls: ['./app-state.scss'],
   imports: [
     MatCardModule,
     MatIconModule,

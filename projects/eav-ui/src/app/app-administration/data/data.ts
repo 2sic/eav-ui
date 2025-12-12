@@ -40,13 +40,13 @@ import { DialogConfigAppService } from '../services/dialog-config-app.service';
 import { ConfirmDeleteDialogComponent } from '../sub-dialogs/confirm-delete-dialog/confirm-delete-dialog.component';
 import { ConfirmDeleteDialogData } from '../sub-dialogs/confirm-delete-dialog/confirm-delete-dialog.models';
 import { DataActionsComponent } from './data-actions/data-actions.component';
-import { DataFieldsComponent } from './data-fields/data-fields.component';
-import { DataItemsComponent } from './data-items/data-items.component';
+import { DataFieldsComponent } from './data-fields/data-fields';
+import { DataItemsComponent } from './data-items/data-items';
 
 @Component({
   selector: 'app-data',
-  templateUrl: './data.component.html',
-  styleUrl: './data.component.scss',
+  templateUrl: './data.html',
+  styleUrl: './data.scss',
   imports: [
     MatDialogActions,
     MatFormFieldModule,

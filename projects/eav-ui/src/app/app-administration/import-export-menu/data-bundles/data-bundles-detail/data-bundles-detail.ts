@@ -12,7 +12,7 @@ import { defaultGridOptions } from 'projects/eav-ui/src/app/shared/constants/def
 import { SxcGridModule } from 'projects/eav-ui/src/app/shared/modules/sxc-grid-module/sxc-grid.module';
 import { switchMap, tap } from 'rxjs';
 import { DataBundlesQueryService } from '../data-bundles-query.service';
-import { DataBundlesDetailActionsComponent } from './data-bundles-detail-actions/data-bundles-detail-actions.component';
+import { DataBundlesDetailActionsComponent } from './data-bundles-detail-actions/data-bundles-detail-actions';
 import { DataBundlesDetailActionsParams } from './data-bundles-detail-actions/data-bundles-detail-actions.models';
 
 @Component({
@@ -23,8 +23,8 @@ import { DataBundlesDetailActionsParams } from './data-bundles-detail-actions/da
         SxcGridModule,
         TranslateModule,
     ],
-    templateUrl: './data-bundles-detail.component.html',
-    styleUrl: './data-bundles-detail.component.scss'
+    templateUrl: './data-bundles-detail.html',
+    styleUrl: './data-bundles-detail.scss'
 })
 export class DataBundlesDetailComponent {
 

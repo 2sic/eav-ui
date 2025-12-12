@@ -14,7 +14,7 @@ import { DataBundlesActionsParams, DataBundlesType } from './data-bundles-action
 
 @Component({
   selector: 'app-data-bundle-actions',
-  templateUrl: './data-bundles-actions.component.html',
+  templateUrl: './data-bundles-actions.html',
   imports: [
     MatRippleModule,
     MatIconModule,
