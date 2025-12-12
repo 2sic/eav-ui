@@ -16,7 +16,7 @@ import { transient } from '../../../../../core';
 import { fieldNameError, fieldNamePattern } from '../../app-administration/constants/field-name.patterns';
 import { ContentTypesService } from '../../app-administration/services/content-types.service';
 import { isCtrlEnter } from '../../edit/dialog/main/keyboard-shortcuts';
-import { BaseComponent } from '../../shared/components/base.component';
+import { BaseComponent } from '../../shared/components/base';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
 import { ContentTypesFieldsService } from '../../shared/fields/content-types-fields.service';
 import { DataTypeCatalog } from '../../shared/fields/data-type-catalog';

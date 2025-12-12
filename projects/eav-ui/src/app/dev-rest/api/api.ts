@@ -36,8 +36,8 @@ const pathToApi = 'app/{appname}/{endpointPath}/{action}';
 
 @Component({
   selector: 'app-dev-rest-api',
-  templateUrl: './api.component.html',
-  styleUrls: ['../dev-rest-all.scss', '../header-selector.scss', './api.component.scss'],
+  templateUrl: './api.html',
+  styleUrls: ['../dev-rest-all.scss', '../header-selector.scss', './api.scss'],
   imports: [
     MatButtonModule,
     TippyDirective,

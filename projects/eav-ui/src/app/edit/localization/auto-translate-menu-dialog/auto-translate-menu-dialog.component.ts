@@ -9,7 +9,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { FeatureNames } from '../../../features/feature-names';
 import { FeatureTextInfoComponent } from '../../../features/feature-text-info/feature-text-info.component';
 import { FeaturesService } from '../../../features/features.service';
-import { TranslateHelperComponent } from '../../../shared/components/translate-helper.component';
+import { TranslateHelperComponent } from '../../../shared/components/translate-helper';
 import { EditApiKeyPaths } from '../../../shared/constants/eav.constants';
 import { ApiKeySpecs } from '../../../shared/models/dialog-context.models';
 import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';

@@ -32,8 +32,8 @@ const pathToContent = 'app/{appname}/data/{typename}';
 
 @Component({
   selector: 'app-dev-rest-data',
-  templateUrl: './data.component.html',
-  styleUrls: ['../dev-rest-all.scss', './data.component.scss'],
+  templateUrl: './data.html',
+  styleUrls: ['../dev-rest-all.scss', './data.scss'],
   // we need preserve whitespace - otherwise spaces are missing in some conditional HTML
   preserveWhitespaces: true,
   imports: [

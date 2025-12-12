@@ -1,7 +1,7 @@
 import { Component, inject, Injector, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
 import { FieldSettingsWithPickerSource } from '../../../../../../edit-types/src/PickerSources';
-import { BaseComponent } from '../../../shared/components/base.component';
+import { BaseComponent } from '../../../shared/components/base';
 import { classLog, ClassLogger } from '../../../shared/logging';
 import { computedObj } from '../../../shared/signals/signal.utilities';
 import { FieldState } from '../../fields/field-state';

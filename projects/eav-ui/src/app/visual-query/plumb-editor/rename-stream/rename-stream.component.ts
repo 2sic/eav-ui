@@ -13,7 +13,7 @@ import { distinctUntilChanged, startWith } from 'rxjs';
 import { transient } from '../../../../../../core';
 import { ContentTypesService } from '../../../app-administration/services';
 import { isCtrlEnter } from '../../../edit/dialog/main/keyboard-shortcuts';
-import { BaseComponent } from '../../../shared/components/base.component';
+import { BaseComponent } from '../../../shared/components/base';
 import { FieldHintComponent } from '../../../shared/components/field-hint/field-hint.component';
 import { eavConstants, ScopeOption } from '../../../shared/constants/eav.constants';
 import { ClickStopPropagationDirective } from '../../../shared/directives/click-stop-propagation.directive';

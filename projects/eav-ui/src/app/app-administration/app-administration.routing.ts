@@ -121,7 +121,7 @@ export const appAdministrationRoutes: Routes = [
         children: [
           {
             path: `:${GoToDevRest.paramTypeName}`,
-            loadComponent: () => import('../dev-rest/data/data.component')
+            loadComponent: () => import('../dev-rest/data/data')
               .then(mod => mod.DevRestDataComponent),
             data: {
               breadcrumb: 'Rest-Api Data'
@@ -256,7 +256,7 @@ export const appAdministrationRoutes: Routes = [
         children: [
           {
             path: `:${GoToDevRest.paramApiPath}`,
-            loadComponent: () => import('../dev-rest/api/api.component')
+            loadComponent: () => import('../dev-rest/api/api')
               .then(mod => mod.DevRestApiComponent),
             data: {
               breadcrumb: 'Rest-Api Web Api'

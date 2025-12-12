@@ -18,7 +18,7 @@ interface TranslationInfo {
 }
 
 @Component({
-  selector: 'app-translate-helper-component-base',
+  selector: 'app-translate-helper-base',
   template: '',
 })
 export abstract class TranslateHelperComponent {

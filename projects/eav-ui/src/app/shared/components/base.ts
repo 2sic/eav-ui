@@ -9,7 +9,7 @@ import { Subscription } from 'rxjs';
  * Note that as with time, we wish to get away from these, as we don't want to use many observables any more.
  */
 @Component({
-  selector: 'app-base-component',
+  selector: 'app-base',
   template: '',
 })
 // tslint:disable-next-line:directive-class-suffix

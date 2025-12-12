@@ -17,7 +17,7 @@ import { FeatureNames } from '../../features/feature-names';
 import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
 import { FeaturesService } from '../../features/features.service';
 import { openFeatureDialog } from '../../features/shared/base-feature.component';
-import { BaseComponent } from '../../shared/components/base.component';
+import { BaseComponent } from '../../shared/components/base';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
 import { ContentTypesFieldsService } from '../../shared/fields/content-types-fields.service';
 import { Field } from '../../shared/fields/field.model';

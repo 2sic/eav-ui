@@ -17,7 +17,7 @@ import { Preview } from '../code-editor/models/preview.models';
 import { SourceService } from '../code-editor/services/source.service';
 import { isCtrlEnter } from '../edit/dialog/main/keyboard-shortcuts';
 import { SanitizeHelper } from '../edit/shared/helpers';
-import { BaseComponent } from '../shared/components/base.component';
+import { BaseComponent } from '../shared/components/base';
 import { FieldHintComponent } from '../shared/components/field-hint/field-hint.component';
 import { MatInputAutofocusDirective } from '../shared/directives/mat-input-autofocus.directive';
 import { SaveCloseButtonFabComponent } from '../shared/modules/save-close-button-fab/save-close-button-fab.component';

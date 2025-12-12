@@ -15,7 +15,7 @@ import { ContentType } from '../../app-administration/models';
 import { ContentTypesService } from '../../app-administration/services';
 import { isCtrlEnter } from '../../edit/dialog/main/keyboard-shortcuts';
 import { UiControl } from '../../edit/shared/controls/ui-control';
-import { BaseComponent } from '../../shared/components/base.component';
+import { BaseComponent } from '../../shared/components/base';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
 import { dropdownInsertValue } from '../../shared/constants/dropdown-insert-value.constant';
 import { eavConstants, MetadataKeyTypes, ScopeOption } from '../../shared/constants/eav.constants';

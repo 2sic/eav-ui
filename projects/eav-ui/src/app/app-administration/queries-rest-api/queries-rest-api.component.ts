@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { RouterOutlet } from '@angular/router';
 import { transient } from '../../../../../core';
-import { RestApiHelpTextComponent } from '../../shared/components/rest-api-help-text/rest-api-help-text.component';
+import { RestApiHelpTextComponent } from '../../shared/components/rest-api-help-text/rest-api-help-text';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { classLog } from '../../shared/logging';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';

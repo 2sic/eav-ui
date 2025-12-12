@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { BehaviorSubject, combineLatest, map } from 'rxjs';
 import { transient } from '../../../../../core';
-import { BaseComponent } from '../../shared/components/base.component';
+import { BaseComponent } from '../../shared/components/base';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { MousedownStopPropagationDirective } from '../../shared/directives/mousedown-stop-propagation.directive';
 import { JsonHelpers } from '../../shared/helpers/json.helpers';

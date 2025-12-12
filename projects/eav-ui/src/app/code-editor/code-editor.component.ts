@@ -16,7 +16,7 @@ import { CreateFileDialogComponent, CreateFileDialogData, CreateFileDialogResult
 import { isCtrlS } from '../edit/dialog/main/keyboard-shortcuts';
 import { MonacoEditorComponent } from '../monaco-editor';
 import { MonacoEditorComponent as MonacoEditorComponent_1 } from '../monaco-editor/monaco-editor.component';
-import { BaseComponent } from '../shared/components/base.component';
+import { BaseComponent } from '../shared/components/base';
 import { keyIsShared, keyItems } from '../shared/constants/session.constants';
 import { ClickStopPropagationDirective } from '../shared/directives/click-stop-propagation.directive';
 import { TippyDirective } from '../shared/directives/tippy.directive';

@@ -2,7 +2,7 @@
 import { NgTemplateOutlet } from '@angular/common';
 import { AfterContentInit, Component, ContentChild, ContentChildren, ElementRef, input, OnDestroy, QueryList, ViewEncapsulation } from '@angular/core';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, startWith } from 'rxjs';
-import { BaseComponent } from '../../components/base.component';
+import { BaseComponent } from '../../components/base';
 import { ExtendedFabSpeedDialActionDirective } from './extended-fab-speed-dial-action.directive';
 import { ExtendedFabSpeedDialActionsContentDirective } from './extended-fab-speed-dial-actions-content.directive';
 import { ExtendedFabSpeedDialTriggerContentDirective } from './extended-fab-speed-dial-trigger-content.directive';

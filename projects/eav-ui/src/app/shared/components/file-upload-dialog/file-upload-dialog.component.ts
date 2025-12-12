@@ -18,7 +18,7 @@ import { SafeHtmlPipe } from '../../pipes/safe-html.pipe';
 import { Context } from '../../services/context';
 import { AppInstallSettingsService } from '../../services/getting-started.service';
 import { InstallerService } from '../../services/installer.service';
-import { BaseComponent } from '../base.component';
+import { BaseComponent } from '../base';
 import { FileUploadDialogData, FileUploadMessageTypes, FileUploadResult, ImportModeValues, UploadTypes } from './file-upload-dialog.models';
 
 @Component({

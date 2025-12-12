@@ -11,8 +11,8 @@ import { Context } from './shared/services/context';
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
+  templateUrl: './app.html',
+  styleUrls: ['./app.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     RouterModule,

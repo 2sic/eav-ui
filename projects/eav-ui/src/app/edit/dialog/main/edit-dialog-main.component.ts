@@ -10,7 +10,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { delay, fromEvent, of, startWith } from 'rxjs';
 import { transient } from '../../../../../../core';
-import { BaseComponent } from '../../../shared/components/base.component';
+import { BaseComponent } from '../../../shared/components/base';
 import { ToggleDebugDirective } from '../../../shared/directives/toggle-debug.directive';
 import { classLog } from '../../../shared/logging';
 import { ExtendedFabSpeedDialImports } from '../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
