@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, Inject, OnInit, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, Inject, OnInit, signal } from '@angular/core';
+import { FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -8,13 +8,16 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
-import { DomSanitizer } from '@angular/platform-browser';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { transient } from 'projects/core';
 import { Observable, take } from 'rxjs';
 import { isCtrlEnter } from '../../../edit/dialog/main/keyboard-shortcuts';
-import { FileUploadResult, UploadTypes } from '../../../shared/components/file-upload-dialog';
+import { BaseComponent } from '../../../shared/components/base.component';
+import { FileUploadResult, ImportModeValues, UploadTypes } from '../../../shared/components/file-upload-dialog';
 import { DragAndDropDirective } from '../../../shared/directives/drag-and-drop.directive';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
+import { InstallSettings } from '../../../shared/models/installer-models';
+import { AppInstallSettingsService } from '../../../shared/services/getting-started.service';
 import { ExtensionEdition, ExtensionPreflightItem } from '../../models/extension.model';
 import { AppExtensionsService } from '../../services/app-extensions.service';
 
@@ -46,11 +49,15 @@ export interface FileUploadDialogData {
     TippyDirective,
   ],
 })
-export class ImportExtensionComponent implements OnInit{
+export class ImportExtensionComponent extends BaseComponent implements OnInit {
   private extensionSvc = transient(AppExtensionsService);
+  #installSettingsService = transient(AppInstallSettingsService);
+  #fb = transient(FormBuilder);
 
   uploadType = UploadTypes.Extension;
-  remoteInstallerUrl = '';
+  remoteInstallerUrl: SafeResourceUrl;
+
+  importModeValues = ImportModeValues;
 
   // TODO: @2pp - Replace debugging vars when backend is ready
   private readonly fallbackEditions = ['staging', 'live'];
@@ -63,15 +70,25 @@ export class ImportExtensionComponent implements OnInit{
   preflightError = signal<string | null>(null);
   editions = signal<ExtensionEdition[]>([]);
   showExtensionCatalog = signal(false);
-    private sanitizer = inject(DomSanitizer);
 
   // Selected editions for installation
   selectedEditions: string = '';
+  urlChangeImportMode = ""
+  ready = false;
+  settings: InstallSettings;
+
+  importForm: FormGroup = this.#fb.group({
+    importMode: [this.importModeValues.importOriginal, Validators.required],
+    name: ['']
+  });
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public dialogData: FileUploadDialogData,
-    private dialogRef: MatDialogRef<ImportExtensionComponent>
+    private dialogRef: MatDialogRef<ImportExtensionComponent>,
+    private sanitizer: DomSanitizer,
   ) {
+    super();
+
     dialogData.title ??= `Import Extension`;
     dialogData.description ??= `Select Extension folder from your computer to import.  `;
     dialogData.allowedFileTypes ??= 'zip';
@@ -82,12 +99,27 @@ export class ImportExtensionComponent implements OnInit{
       this.file.set(dialogData.file);
       this.runPreflight(dialogData.file);
     }
-    
-    this.remoteInstallerUrl = <string>this.sanitizer.bypassSecurityTrustResourceUrl('') // (settings.remoteUrl);
+
+    this.subscriptions.add(
+      this.#installSettingsService.settings$.subscribe(settings => {
+        this.settings = settings;
+        this.urlChangeImportMode = settings.remoteUrl
+        this.remoteInstallerUrl = <string>this.sanitizer.bypassSecurityTrustResourceUrl(settings.remoteUrl);
+        this.ready = true;
+      })
+    );
   }
 
   ngOnInit() {
     this.#watchKeyboardShortcuts();
+
+    this.#installSettingsService.loadGettingStarted(false);
+
+    this.importForm.get('importMode')?.valueChanges.subscribe((mode) => {
+      const isTemplate = mode === this.importModeValues.importAsTemplate;
+      const url = this.urlChangeImportMode + (this.urlChangeImportMode.includes('?') ? '&' : '?') + `selectOnlyMode=${isTemplate}`;
+      this.remoteInstallerUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+    });
   }
 
   #watchKeyboardShortcuts(): void {
