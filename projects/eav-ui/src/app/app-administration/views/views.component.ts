@@ -28,7 +28,7 @@ import { GlobalConfigService } from '../../shared/services/global-config.service
 import { View, ViewEntity } from '../models/view.model';
 import { DialogConfigAppService } from '../services/dialog-config-app.service';
 import { ViewsService } from '../services/views.service';
-import { ConfirmDeleteDialogComponent } from '../sub-dialogs/confirm-delete-dialog/confirm-delete-dialog.component';
+import { ConfirmDeleteDialogComponent } from '../sub-dialogs/confirm-delete-dialog/confirm-delete-dialog';
 import { ConfirmDeleteDialogData } from '../sub-dialogs/confirm-delete-dialog/confirm-delete-dialog.models';
 import { ViewsActionsComponent } from './views-actions/views-actions.component';
 import { ViewsShowComponent } from './views-show/views-show.component';

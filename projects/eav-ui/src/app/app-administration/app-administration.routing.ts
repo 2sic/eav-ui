@@ -134,7 +134,7 @@ export const appAdministrationRoutes: Routes = [
       },
       {
         path: 'queries',
-        loadComponent: () => import('./queries/queries.component')
+        loadComponent: () => import('./queries/queries')
           .then(mod => mod.QueriesComponent),
         children: [
           {
@@ -154,7 +154,7 @@ export const appAdministrationRoutes: Routes = [
       },
       {
         path: GoToDevRest.routeQuery,
-        loadComponent: () => import('./queries-rest-api/queries-rest-api.component')
+        loadComponent: () => import('./queries-rest-api/queries-rest-api')
           .then(mod => mod.QueriesRestApiComponent),
         data: { title: 'Rest-Api Queries', breadcrumb: 'Rest-Api Queries' },
         children: [

@@ -10,7 +10,7 @@ import { LanguagesPermissionsActionsParams } from './languages-permissions-actio
 
 @Component({
     selector: 'app-languages-permissions-actions',
-    templateUrl: './languages-permissions-actions.component.html',
+    templateUrl: './languages-permissions-actions.html',
     imports: [
         MatRippleModule,
         MatIconModule,

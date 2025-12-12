@@ -10,8 +10,8 @@ import { ConfirmDeleteDialogData } from './confirm-delete-dialog.models';
 
 @Component({
   selector: 'app-confirm-delete-dialog',
-  templateUrl: './confirm-delete-dialog.component.html',
-  styleUrls: ['./confirm-delete-dialog.component.scss'],
+  templateUrl: './confirm-delete-dialog.html',
+  styleUrls: ['./confirm-delete-dialog.scss'],
   imports: [
     MatButtonModule,
     SafeHtmlPipe,

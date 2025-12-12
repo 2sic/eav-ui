@@ -12,13 +12,13 @@ import { ColumnDefinitions } from '../../../shared/ag-grid/column-definitions';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { SxcGridModule } from '../../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { blockIdValueGetter, moduleIdClassGetter, moduleIdValueGetter, nameClassGetter, onNameClicked, pageIdClassGetter, pageIdValueGetter, statusCellRenderer } from './views-usage-grid.helpers';
-import { ViewsUsageIdComponent } from './views-usage-id/views-usage-id.component';
-import { ViewsUsageStatusFilterComponent } from './views-usage-status-filter/views-usage-status-filter.component';
+import { ViewsUsageIdComponent } from './views-usage-id/views-usage-id';
+import { ViewsUsageStatusFilterComponent } from './views-usage-status-filter/views-usage-status-filter';
 import { buildData } from './views-usage.helpers';
 
 @Component({
     selector: 'app-views-usage',
-    templateUrl: './views-usage.component.html',
+    templateUrl: './views-usage.html',
     imports: [
         MatButtonModule,
         MatIconModule,

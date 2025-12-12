@@ -7,7 +7,7 @@ export const viewsUsageDialog: DialogConfig = {
   panelClass: null,
 
   async getComponent() {
-    const { ViewsUsageComponent } = await import('./views-usage.component');
+    const { ViewsUsageComponent } = await import('./views-usage');
     return ViewsUsageComponent;
   }
 };

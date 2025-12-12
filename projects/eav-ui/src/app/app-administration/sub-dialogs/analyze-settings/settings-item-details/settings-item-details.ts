@@ -9,12 +9,12 @@ import { ColumnDefinitions } from '../../../../shared/ag-grid/column-definitions
 import { defaultGridOptions } from '../../../../shared/constants/default-grid-options.constants';
 import { SxcGridModule } from '../../../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { AnalyzeSettingsService } from '../../../services/analyze-settings.service';
-import { AnalyzeSettingsValueComponent } from '../analyze-settings-value/analyze-settings-value.component';
+import { AnalyzeSettingsValueComponent } from '../analyze-settings-value/analyze-settings-value';
 import { AnalyzeParts } from '../analyze-settings.models';
 @Component({
   selector: 'app-settings-item-details',
-  templateUrl: './settings-item-details.component.html',
-  styleUrls: ['./settings-item-details.component.scss'],
+  templateUrl: './settings-item-details.html',
+  styleUrls: ['./settings-item-details.scss'],
   imports: [
     MatButtonModule,
     MatIconModule,

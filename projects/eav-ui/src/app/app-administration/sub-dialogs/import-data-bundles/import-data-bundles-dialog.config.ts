@@ -7,7 +7,7 @@ export const importDataBundlesDialog: DialogConfig = {
   panelClass: null,
 
   async getComponent() {
-    const { ImportDataBundlesComponent } = await import('./import-data-bundles.component');
+    const { ImportDataBundlesComponent } = await import('./import-data-bundles');
     return ImportDataBundlesComponent;
   }
 };

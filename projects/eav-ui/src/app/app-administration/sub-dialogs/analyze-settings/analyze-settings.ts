@@ -15,16 +15,16 @@ import { SxcGridModule } from '../../../shared/modules/sxc-grid-module/sxc-grid.
 import { DialogRoutingService } from '../../../shared/routing/dialog-routing.service';
 import { ViewsService } from '../../services';
 import { AnalyzeSettingsService } from '../../services/analyze-settings.service';
-import { AnalyzeSettingsKeyComponent } from './analyze-settings-key/analyze-settings-key.component';
-import { AnalyzeSettingsTotalResultsComponent } from './analyze-settings-total-results/analyze-settings-total-results.component';
+import { AnalyzeSettingsKeyComponent } from './analyze-settings-key/analyze-settings-key';
+import { AnalyzeSettingsTotalResultsComponent } from './analyze-settings-total-results/analyze-settings-total-results';
 import { AnalyzeSettingsTotalResultsParams } from './analyze-settings-total-results/analyze-settings-total-results.models';
-import { AnalyzeSettingsValueComponent } from './analyze-settings-value/analyze-settings-value.component';
+import { AnalyzeSettingsValueComponent } from './analyze-settings-value/analyze-settings-value';
 import { AnalyzeParts } from './analyze-settings.models';
 
 @Component({
   selector: 'app-analyze-settings',
-  templateUrl: './analyze-settings.component.html',
-  styleUrls: ['./analyze-settings.component.scss'],
+  templateUrl: './analyze-settings.html',
+  styleUrls: ['./analyze-settings.scss'],
   imports: [
     MatButtonModule,
     MatIconModule,

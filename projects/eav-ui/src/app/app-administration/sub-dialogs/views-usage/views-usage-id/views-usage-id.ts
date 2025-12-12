@@ -2,37 +2,37 @@ import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
 import { MatRippleModule } from '@angular/material/core';
+import { MatIconModule } from '@angular/material/icon';
 import { transient } from '../../../../../../../core/transient';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
-import { JsonHelpers } from '../../../../shared/helpers/json.helpers';
 import { ClipboardService } from '../../../../shared/services/clipboard.service';
 
 @Component({
-    selector: 'app-analyze-settings-value',
-    templateUrl: './analyze-settings-value.component.html',
-    styleUrls: ['./analyze-settings-value.component.scss'],
+    selector: 'app-views-usage-id',
+    templateUrl: './views-usage-id.html',
+    styleUrls: ['./views-usage-id.scss'],
     imports: [
         MatRippleModule,
+        MatIconModule,
         TippyDirective,
     ]
 })
-export class AnalyzeSettingsValueComponent implements ICellRendererAngularComp {
-  value: string;
+export class ViewsUsageIdComponent implements ICellRendererAngularComp {
+  tooltip: string;
+  id: string;
 
   constructor() { }
 
   protected clipboard = transient(ClipboardService);
 
   agInit(params: ICellRendererParams) {
-    this.value = params.value;
+    this.tooltip = params.value;
+    if (this.tooltip == null) return;
+    const idPart = this.tooltip.split('\n')[0];
+    this.id = idPart.split(' ')[1];
   }
 
   refresh(params?: any): boolean {
     return true;
-  }
-  
-  copy(value: string) {
-    value = JsonHelpers.tryParse(value) ?? value;
-    this.clipboard.copyToClipboard(value);
   }
 }

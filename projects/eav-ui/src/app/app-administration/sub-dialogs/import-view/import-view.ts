@@ -6,7 +6,7 @@ import { ViewsService } from '../../services/views.service';
 
 @Component({
   selector: 'app-import-view',
-  templateUrl: './import-view.component.html',
+  templateUrl: './import-view.html',
   imports: [
     FileUploadDialogComponent,
   ]

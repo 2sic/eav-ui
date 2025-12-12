@@ -26,8 +26,8 @@ import { ContentTypesService } from '../../services/content-types.service';
 
 @Component({
   selector: 'app-edit-content-type',
-  templateUrl: './edit-content-type.component.html',
-  styleUrls: ['./edit-content-type.component.scss'],
+  templateUrl: './edit-content-type.html',
+  styleUrls: ['./edit-content-type.scss'],
   imports: [
     FormsModule,
     MatFormFieldModule,

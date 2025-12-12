@@ -7,7 +7,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { guidRegex } from '../../../shared/constants/guid.constants';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { ContentType } from '../../models/content-type.model';
-import { AgActionsAlwaysRefresh } from '../../queries/ag-actions/ag-actions-component';
+import { AgActionsAlwaysRefresh } from '../../queries/ag-actions/ag-actions';
 
 @Component({
   selector: 'app-data-actions',

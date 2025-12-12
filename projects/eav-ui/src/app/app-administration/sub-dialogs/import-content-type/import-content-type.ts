@@ -6,7 +6,7 @@ import { ContentTypesService } from '../../services/content-types.service';
 
 @Component({
   selector: 'app-import-content-type',
-  templateUrl: './import-content-type.component.html',
+  templateUrl: './import-content-type.html',
   imports: [
     FileUploadDialogComponent,
   ]

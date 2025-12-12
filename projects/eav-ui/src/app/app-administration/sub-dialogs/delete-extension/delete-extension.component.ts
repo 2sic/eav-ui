@@ -12,7 +12,7 @@ import { isCtrlEnter } from '../../../edit/dialog/main/keyboard-shortcuts';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { SaveCloseButtonFabComponent } from '../../../shared/modules/save-close-button-fab/save-close-button-fab.component';
 import { AppExtensionsService } from '../../services/app-extensions.service';
-import { ConfirmDeleteDialogComponent } from '../confirm-delete-dialog/confirm-delete-dialog.component';
+import { ConfirmDeleteDialogComponent } from '../confirm-delete-dialog/confirm-delete-dialog';
 import { ConfirmDeleteDialogData } from '../confirm-delete-dialog/confirm-delete-dialog.models';
 import { InspectExtensionContentComponent } from '../inspect-extension/inspect-extension-content/inspect-extension-content.component';
 

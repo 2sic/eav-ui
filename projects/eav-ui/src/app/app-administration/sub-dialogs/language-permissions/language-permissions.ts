@@ -13,12 +13,12 @@ import { IdFieldParams } from '../../../shared/components/id-field/id-field.mode
 import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';
 import { SxcGridModule } from '../../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../../../shared/routing/dialog-routing.service';
-import { LanguagesPermissionsActionsComponent } from './languages-permissions-actions/languages-permissions-actions.component';
+import { LanguagesPermissionsActionsComponent } from './languages-permissions-actions/languages-permissions-actions';
 import { LanguagesPermissionsActionsParams } from './languages-permissions-actions/languages-permissions-actions.models';
 
 @Component({
   selector: 'app-language-permissions',
-  templateUrl: './language-permissions.component.html',
+  templateUrl: './language-permissions.html',
   imports: [
     MatButtonModule,
     MatIconModule,

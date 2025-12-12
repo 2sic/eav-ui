@@ -1,21 +1,38 @@
+import { ICellRendererAngularComp } from '@ag-grid-community/angular';
+import { ICellRendererParams } from '@ag-grid-community/core';
+import { Component } from '@angular/core';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatRippleModule } from '@angular/material/core';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { Query } from '../../models/query.model';
+import { QueriesActionsParams, QueryActions } from './queries-actions-models';
 
-// Test @2dm 2020-11-20 - I believe the current model has way too much ceremony
-// I need to change ca. 10 places just to get one more action to work
-// that's not great
-export enum QueryActions {
-  Edit,
-  Metadata,
-  Rest,
-  Clone,
-  Permissions,
-  Export,
-  Delete,
-}
+@Component({
+    selector: 'app-queries-actions',
+    templateUrl: './queries-actions.html',
+    imports: [
+        MatRippleModule,
+        MatIconModule,
+        MatBadgeModule,
+        MatMenuModule,
+        TippyDirective,
+    ]
+})
+export class QueriesActionsComponent implements ICellRendererAngularComp {
+  item: Query;
+  params: ICellRendererParams & QueriesActionsParams;
+  enablePermissions: boolean;
+  actions = QueryActions;
 
-export interface QueriesActionsParams {
-  getEnablePermissions(): boolean;
-  
-  urlTo(action: QueryActions, query: Query): void;
-  do(action: QueryActions, query: Query): void;
+  agInit(params: ICellRendererParams & QueriesActionsParams): void {
+    this.params = params;
+    this.item = this.params.data;
+    this.enablePermissions = this.params.getEnablePermissions();
+  }
+
+  refresh(params?: any): boolean {
+    return true;
+  }
 }

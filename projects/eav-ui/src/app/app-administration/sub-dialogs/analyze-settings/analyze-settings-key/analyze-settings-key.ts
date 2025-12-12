@@ -8,8 +8,8 @@ import { ClipboardService } from '../../../../shared/services/clipboard.service'
 
 @Component({
     selector: 'app-analyze-settings-key',
-    templateUrl: './analyze-settings-key.component.html',
-    styleUrls: ['./analyze-settings-key.component.scss'],
+    templateUrl: './analyze-settings-key.html',
+    styleUrls: ['./analyze-settings-key.scss'],
     imports: [
         MatRippleModule,
         TippyDirective,

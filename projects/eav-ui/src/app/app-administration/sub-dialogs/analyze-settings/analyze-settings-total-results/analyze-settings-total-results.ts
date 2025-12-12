@@ -8,8 +8,8 @@ import { AnalyzeSettingsTotalResultsParams } from './analyze-settings-total-resu
 
 @Component({
     selector: 'app-analyze-settings-total-results',
-    templateUrl: './analyze-settings-total-results.component.html',
-    styleUrls: ['./analyze-settings-total-results.component.scss'],
+    templateUrl: './analyze-settings-total-results.html',
+    styleUrls: ['./analyze-settings-total-results.scss'],
     imports: [
         MatIconModule,
         MatRippleModule,

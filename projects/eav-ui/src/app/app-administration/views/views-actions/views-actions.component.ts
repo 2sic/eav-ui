@@ -9,7 +9,7 @@ import { LightSpeedActions } from "../../../admin-shared/lightspeed-action/light
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { typeofSignal } from '../../../shared/signals/typeof-signal';
 import { View } from '../../models/view.model';
-import { AgActionsAlwaysRefresh } from '../../queries/ag-actions/ag-actions-component';
+import { AgActionsAlwaysRefresh } from '../../queries/ag-actions/ag-actions';
 
 
 @Component({

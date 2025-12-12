@@ -37,7 +37,7 @@ import { ContentType } from '../models/content-type.model';
 import { ScopeDetailsDto } from '../models/scopedetails.dto';
 import { ContentTypesService } from '../services/content-types.service';
 import { DialogConfigAppService } from '../services/dialog-config-app.service';
-import { ConfirmDeleteDialogComponent } from '../sub-dialogs/confirm-delete-dialog/confirm-delete-dialog.component';
+import { ConfirmDeleteDialogComponent } from '../sub-dialogs/confirm-delete-dialog/confirm-delete-dialog';
 import { ConfirmDeleteDialogData } from '../sub-dialogs/confirm-delete-dialog/confirm-delete-dialog.models';
 import { DataActionsComponent } from './data-actions/data-actions.component';
 import { DataFieldsComponent } from './data-fields/data-fields';

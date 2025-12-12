@@ -8,8 +8,8 @@ import { ViewsUsageStatusFilterModel } from './views-usage-status-filter.model';
 
 @Component({
     selector: 'app-views-usage-status-filter',
-    templateUrl: './views-usage-status-filter.component.html',
-    styleUrls: ['./views-usage-status-filter.component.scss'],
+    templateUrl: './views-usage-status-filter.html',
+    styleUrls: ['./views-usage-status-filter.scss'],
     imports: [MatRadioModule, FormsModule]
 })
 export class ViewsUsageStatusFilterComponent implements IFilterAngularComp {

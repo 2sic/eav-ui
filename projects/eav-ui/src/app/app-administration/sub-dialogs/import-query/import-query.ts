@@ -6,7 +6,7 @@ import { PipelinesService } from '../../services/pipelines.service';
 
 @Component({
     selector: 'app-import-query',
-    templateUrl: './import-query.component.html',
+    templateUrl: './import-query.html',
     imports: [FileUploadDialogComponent,]
 })
 export class ImportQueryComponent {

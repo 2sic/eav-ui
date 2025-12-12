@@ -31,7 +31,7 @@ const logSpecs = {
         SxcGridModule,
         RestApiHelpTextComponent,
     ],
-    templateUrl: './queries-rest-api.component.html'
+    templateUrl: './queries-rest-api.html'
 })
 export class QueriesRestApiComponent {
   log = classLog({ QueriesRestApiComponent }, logSpecs);

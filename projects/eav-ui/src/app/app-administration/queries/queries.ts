@@ -27,10 +27,10 @@ import { Context } from '../../shared/services/context';
 import { Query } from '../models/query.model';
 import { DialogConfigAppService } from '../services/dialog-config-app.service';
 import { PipelinesService } from '../services/pipelines.service';
-import { ConfirmDeleteDialogComponent } from '../sub-dialogs/confirm-delete-dialog/confirm-delete-dialog.component';
+import { ConfirmDeleteDialogComponent } from '../sub-dialogs/confirm-delete-dialog/confirm-delete-dialog';
 import { ConfirmDeleteDialogData } from '../sub-dialogs/confirm-delete-dialog/confirm-delete-dialog.models';
-import { QueriesActionsParams, QueryActions } from './queries-actions/queries-actions';
-import { QueriesActionsComponent } from './queries-actions/queries-actions.component';
+import { QueriesActionsComponent } from './queries-actions/queries-actions';
+import { QueriesActionsParams, QueryActions } from './queries-actions/queries-actions-models';
 
 const logSpecs = {
   all: false,
@@ -43,7 +43,7 @@ const logSpecs = {
 
 @Component({
   selector: 'app-queries',
-  templateUrl: './queries.component.html',
+  templateUrl: './queries.html',
   imports: [
     MatDialogActions,
     MatButtonModule,
