@@ -11,8 +11,8 @@ import { FieldHintComponent } from '../../shared/components/field-hint/field-hin
 
 @Component({
   selector: 'app-file-location-dialog',
-  templateUrl: './file-location-dialog.component.html',
-  styleUrls: ['./file-location-dialog.component.scss'],
+  templateUrl: './file-location-dialog.html',
+  styleUrls: ['./file-location-dialog.scss'],
   imports: [
     MatCardModule,
     FormsModule,

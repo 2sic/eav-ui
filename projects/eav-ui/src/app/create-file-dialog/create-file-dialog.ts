@@ -24,8 +24,8 @@ import { SaveCloseButtonFabComponent } from '../shared/modules/save-close-button
 
 @Component({
   selector: 'app-create-file-dialog',
-  templateUrl: './create-file-dialog.component.html',
-  styleUrls: ['./create-file-dialog.component.scss'],
+  templateUrl: './create-file-dialog.html',
+  styleUrls: ['./create-file-dialog.scss'],
   imports: [
     FormsModule,
     ReactiveFormsModule,

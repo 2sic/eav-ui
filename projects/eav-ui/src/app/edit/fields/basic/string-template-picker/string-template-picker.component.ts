@@ -11,7 +11,7 @@ import { StringTemplatePicker } from 'projects/edit-types/src/FieldSettings-Stri
 import { transient } from '../../../../../../../core/transient';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { SourceService } from '../../../../code-editor/services/source.service';
-import { CreateFileDialogComponent } from '../../../../create-file-dialog/create-file-dialog.component';
+import { CreateFileDialogComponent } from '../../../../create-file-dialog/create-file-dialog';
 import { CreateFileDialogData, CreateFileDialogResult } from '../../../../create-file-dialog/create-file-dialog.models';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';

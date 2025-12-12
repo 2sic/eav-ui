@@ -20,8 +20,8 @@ import { VersionsService } from './services/versions.service';
 
 @Component({
   selector: 'app-item-history',
-  templateUrl: './item-history.component.html',
-  styleUrls: ['./item-history.component.scss'],
+  templateUrl: './item-history.html',
+  styleUrls: ['./item-history.scss'],
   imports: [
     MatButtonModule,
     MatIconModule,

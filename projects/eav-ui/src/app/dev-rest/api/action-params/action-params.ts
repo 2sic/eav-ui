@@ -5,12 +5,12 @@ import { WebApiAction, WebApiActionParameters } from '../../../app-administratio
 import { ColumnDefinitions } from '../../../shared/ag-grid/column-definitions';
 import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';
 import { SxcGridModule } from '../../../shared/modules/sxc-grid-module/sxc-grid.module';
-import { TrueFalseComponent } from '../true-false/true-false.component';
+import { TrueFalseComponent } from '../true-false/true-false';
 import { TrueFalseParams } from '../true-false/true-false.models';
 
 @Component({
     selector: 'app-dev-rest-api-action-params',
-    templateUrl: './action-params.component.html',
+    templateUrl: './action-params.html',
     imports: [
         MatIconModule,
         SxcGridModule,

@@ -25,11 +25,11 @@ import { SelectorWithHelpComponent } from '../selector-with-help/selector-with-h
 import { DevRestTabExamplesComponent } from '../tab-examples/tab-examples.component';
 import { DevRestHttpHeadersComponent } from '../tab-headers/tab-headers.component';
 import { DevRestTabIntroductionComponent } from '../tab-introduction/tab-introduction.component';
-import { DevRestApiActionParamsComponent } from './action-params/action-params.component';
+import { DevRestApiActionParamsComponent } from './action-params/action-params';
 import { generateWebApiCalls } from './api-samples';
 import { DevRestApiModel } from './api-template-vars';
-import { DevRestApiIntroductionComponent } from './introduction/introduction.component';
-import { DevRestApiPermissionsComponent } from './permissions/permissions.component';
+import { DevRestApiIntroductionComponent } from './introduction/introduction';
+import { DevRestApiPermissionsComponent } from './permissions/permissions';
 
 const pathToApi = 'app/{appname}/{endpointPath}/{action}';
 

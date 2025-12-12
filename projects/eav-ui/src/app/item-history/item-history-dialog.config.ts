@@ -7,7 +7,7 @@ export const itemHistoryDialog: DialogConfig = {
   panelClass: null,
 
   async getComponent() {
-    const { ItemHistoryComponent } = await import('./item-history.component');
+    const { ItemHistoryComponent } = await import('./item-history');
     return ItemHistoryComponent;
   }
 };

@@ -1,6 +1,6 @@
 import { ColDef } from '@ag-grid-community/core';
 import { App } from '../../apps-management/models/app.model';
-import { TrueFalseComponent } from '../../dev-rest/api/true-false/true-false.component';
+import { TrueFalseComponent } from '../../dev-rest/api/true-false/true-false';
 import { TrueFalseParams } from '../../dev-rest/api/true-false/true-false.models';
 import { BooleanFilterComponent } from '../components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../components/id-field/id-field.component';

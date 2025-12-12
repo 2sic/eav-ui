@@ -9,7 +9,7 @@ import { RouterOutlet } from '@angular/router';
 import { transient } from '../../../../../core';
 import { SourceService } from '../../code-editor/services/source.service';
 import { CreateFileDialogComponent, CreateFileDialogData, CreateFileDialogResult } from '../../create-file-dialog';
-import { TrueFalseComponent } from '../../dev-rest/api/true-false/true-false.component';
+import { TrueFalseComponent } from '../../dev-rest/api/true-false/true-false';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { GridWithHelpComponent, HelpTextConst } from '../../shared/ag-grid/grid-with-help/grid-with-help.component';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';

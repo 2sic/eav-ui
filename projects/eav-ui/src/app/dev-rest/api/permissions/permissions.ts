@@ -7,7 +7,7 @@ import { DevRestApiModel } from '../api-template-vars';
 
 @Component({
     selector: 'app-dev-api-permissions',
-    templateUrl: './permissions.component.html',
+    templateUrl: './permissions.html',
     imports: [SxcGridModule,]
 })
 export class DevRestApiPermissionsComponent implements OnInit, OnChanges {
