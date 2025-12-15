@@ -106,7 +106,10 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
         this.urlChangeImportMode = settings.remoteUrl;
 
         this.remoteInstallerUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
-          this.buildRemoteUrl(this.urlChangeImportMode, { selectOnlyMode: 'true' })
+          this.buildRemoteUrl(this.urlChangeImportMode, {
+            view: 'app-extensions',
+            selectOnlyMode: 'true'
+          })
         );
         this.ready = true;
       })
@@ -119,7 +122,10 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
 
     this.importForm.get('importMode')?.valueChanges.subscribe(() => {
       this.remoteInstallerUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
-        this.buildRemoteUrl(this.urlChangeImportMode, { selectOnlyMode: 'true' })
+        this.buildRemoteUrl(this.urlChangeImportMode, {
+          view: 'app-extensions',
+          selectOnlyMode: 'true'
+        })
       );
     });
   }
