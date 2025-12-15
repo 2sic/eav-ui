@@ -114,22 +114,22 @@
     }
 
     @if (!file() && showExtensionCatalog()) {
-      <!-- @if (ready) { -->
+      @if (ready) {
         <iframe
           #installerWindow
           class="eav-app-catalog-iframe"
           [src]="remoteInstallerUrl"
         ></iframe>
-      <!-- } -->
-      <!-- @if (showProgress) { -->
-        <!-- <div class="eav-progress">
+      }
+      <!-- @if (showProgress) {
+        <div class="eav-progress">
           <mat-progress-spinner [mode]="'indeterminate'"
           ></mat-progress-spinner>
           <span>
             Installing {{ currentPackage?.displayName }}..
           </span>
-        </div> -->
-      <!-- } -->
+        </div>
+      } -->
     }
 
     @if (isInstalling()) {
