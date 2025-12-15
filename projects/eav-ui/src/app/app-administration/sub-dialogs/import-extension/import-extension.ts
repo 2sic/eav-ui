@@ -12,7 +12,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { transient } from 'projects/core';
 import { Observable, take } from 'rxjs';
 import { isCtrlEnter } from '../../../edit/dialog/main/keyboard-shortcuts';
-import { BaseComponent } from '../../../shared/components/base.component';
+import { BaseComponent } from '../../../shared/components/base';
 import { FileUploadResult, ImportModeValues, UploadTypes } from '../../../shared/components/file-upload-dialog';
 import { DragAndDropDirective } from '../../../shared/directives/drag-and-drop.directive';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
