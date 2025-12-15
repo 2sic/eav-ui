@@ -1,5 +1,5 @@
-import { PickerDialogComponent } from './picker-dialog/picker-dialog.component';
-import { PickerPreviewComponent } from './picker-preview/picker-preview.component';
+import { PickerDialogComponent } from './picker-dialog/picker-dialog';
+import { PickerPreviewComponent } from './picker-preview/picker-preview';
 
 export const PickerImports = [
   PickerPreviewComponent,

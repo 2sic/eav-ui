@@ -7,7 +7,7 @@ export const deleteExtensionDialog: DialogConfig = {
   panelClass: null,
 
   async getComponent() {
-    const { DeleteExtensionComponent } = await import('./delete-extension.component');
+    const { DeleteExtensionComponent } = await import('./delete-extension');
     return DeleteExtensionComponent;
   }
 };

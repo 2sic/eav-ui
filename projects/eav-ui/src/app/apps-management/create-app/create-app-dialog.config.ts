@@ -7,7 +7,7 @@ export const createAppDialog: DialogConfig = {
   panelClass: null,
 
   async getComponent() {
-    const { CreateAppComponent } = await import('./create-app.component');
+    const { CreateAppComponent } = await import('./create-app');
     return CreateAppComponent;
   }
 };

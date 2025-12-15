@@ -19,9 +19,9 @@ import { DialogRoutingService } from '../../shared/routing/dialog-routing.servic
 import { ServiceBase } from '../../shared/services/service-base';
 import { DataSource, DataSourceConfig, DataSourceConfigs, DebugStreamInfo, PipelineDataSource, PipelineModel, PipelineResult, PipelineResultStream, StreamWire, VisualDesignerData } from '../models';
 import { findDefByType } from '../plumb-editor/datasource.helpers';
-import { QueryResultComponent } from '../query-result/query-result.component';
+import { QueryResultComponent } from '../query-result/query-result';
 import { QueryResultDialogData } from '../query-result/query-result.models';
-import { StreamErrorResultComponent } from '../stream-error-result/stream-error-result.component';
+import { StreamErrorResultComponent } from '../stream-error-result/stream-error-result';
 import { StreamErrorResultDialogData } from '../stream-error-result/stream-error-result.models';
 
 /**

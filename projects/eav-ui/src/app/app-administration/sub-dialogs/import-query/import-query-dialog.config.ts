@@ -7,7 +7,7 @@ export const importQueryDialog: DialogConfig = {
   panelClass: null,
 
   async getComponent() {
-    const { ImportQueryComponent } = await import('./import-query.component');
+    const { ImportQueryComponent } = await import('./import-query');
     return ImportQueryComponent;
   }
 };

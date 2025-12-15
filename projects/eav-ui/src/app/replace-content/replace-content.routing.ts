@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
-import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
-import { replaceContentDialog } from './replace-content-dialog.config';
 import { EditRoutesNoHistory } from '../edit/edit.routing';
+import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry';
+import { replaceContentDialog } from './replace-content-dialog.config';
 
 export const replaceContentRoutes: Routes = [
   {

@@ -20,7 +20,7 @@ export const editDialog: DialogConfig = {
   async getComponent(injector: Injector) {
     injector.get(FeaturesDisableAutoLoadService).disableAutoLoad = true
 
-    const { EditEntryComponent } = await import('./dialog/entry/edit-entry.component');
+    const { EditEntryComponent } = await import('./dialog/entry/edit-entry');
     return EditEntryComponent;
   }
 };

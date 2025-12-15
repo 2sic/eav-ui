@@ -7,7 +7,7 @@ export const languagePermissionsDialog: DialogConfig = {
   panelClass: null,
 
   async getComponent() {
-    const { LanguagePermissionsComponent } = await import('./language-permissions.component');
+    const { LanguagePermissionsComponent } = await import('./language-permissions');
     return LanguagePermissionsComponent;
   }
 };

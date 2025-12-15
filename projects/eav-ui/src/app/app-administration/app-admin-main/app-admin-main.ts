@@ -9,7 +9,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterOutlet } from '@angular/router';
 import { BreadcrumbComponent, BreadcrumbItemDirective } from 'xng-breadcrumb';
 import { transient } from '../../../../../core';
-import { NavItemListComponent } from '../../shared/components/nav-item-list/nav-item-list.component';
+import { NavItemListComponent } from '../../shared/components/nav-item-list/nav-item-list';
 import { ToggleDebugDirective } from '../../shared/directives/toggle-debug.directive';
 import { Update$2sxcEnvFromContext } from '../../shared/helpers/update-env-vars-from-dialog-settings.helper';
 import { classLog } from '../../shared/logging';

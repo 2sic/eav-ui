@@ -5,18 +5,18 @@ import { featureInfoDialog } from '../features/feature-info-dialog/feature-info-
 import { FeatureNames } from '../features/feature-names';
 import { GoToMetadata } from '../metadata';
 import { GoToPermissions } from '../permissions/go-to-permissions';
-import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
+import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry';
 import { appAdminDialog } from './app-admin-main/app-admin-dialog';
 import { basicMessageDialog } from './app-configuration/message/basic-message-dialog';
 import { CopilotSpecs } from './copilot/copilot-specs';
 import { GoToCopilot } from './copilot/go-to-copilot';
-import { AppStateComponent } from './import-export-menu/app-state/app-state.component';
+import { AppStateComponent } from './import-export-menu/app-state/app-state';
+import { DataBundlesComponent } from './import-export-menu/data-bundles/data-bundles';
 import { dataBundlesDialog } from './import-export-menu/data-bundles/data-bundles-detail/data-bundles-dialog.config';
-import { DataBundlesComponent } from './import-export-menu/data-bundles/data-bundles.component';
-import { ExportAppPartsComponent } from './import-export-menu/export-app-parts/export-app-parts.component';
-import { ExportAppComponent } from './import-export-menu/export-app/export-app.component';
-import { ImportAppPartsComponent } from './import-export-menu/import-app-parts/import-app-parts.component';
-import { ImportExportComponent } from './import-export-menu/import-export/import-export.component';
+import { ExportAppPartsComponent } from './import-export-menu/export-app-parts/export-app-parts';
+import { ExportAppComponent } from './import-export-menu/export-app/export-app';
+import { ImportAppPartsComponent } from './import-export-menu/import-app-parts/import-app-parts';
+import { ImportExportComponent } from './import-export-menu/import-export/import-export';
 import { analyzeSettingsDialog } from './sub-dialogs/analyze-settings/analyze-settings-dialog.config';
 import { settingsItemDetailsDialog } from './sub-dialogs/analyze-settings/settings-item-details/settings-item-details.config';
 import { deleteExtensionDialog } from './sub-dialogs/delete-extension/delete-extension-dialog.config';
@@ -43,13 +43,13 @@ export const appAdministrationRoutes: Routes = [
       },
       {
         path: 'home',
-        loadComponent: () => import('./getting-started/getting-started.component')
+        loadComponent: () => import('./getting-started/getting-started')
           .then(mod => mod.GettingStartedComponent),
         data: { title: 'App Home', breadcrumb: 'Info', }
       },
       {
         path: 'data/:scope',
-        loadComponent: () => import('./data/data.component')
+        loadComponent: () => import('./data/data')
           .then(mod => mod.DataComponent),
         children: [
           {
@@ -103,7 +103,7 @@ export const appAdministrationRoutes: Routes = [
       {
         // Data Copilot
         path: `data-${GoToCopilot.route}`,
-        loadComponent: () => import('./copilot/page/copilot-page.component')
+        loadComponent: () => import('./copilot/page/copilot-page')
           .then(mod => mod.CopilotPageComponent),
         data: CopilotSpecs.data,
         children: [
@@ -112,7 +112,7 @@ export const appAdministrationRoutes: Routes = [
       },
       {
         path: GoToDevRest.routeData,
-        loadComponent: () => import('./data-rest-api/data-rest-api.component')
+        loadComponent: () => import('./data-rest-api/data-rest-api')
           .then(mod => mod.DataRestApiComponent),
         data: {
           title: 'Rest-Api Data',
@@ -121,7 +121,7 @@ export const appAdministrationRoutes: Routes = [
         children: [
           {
             path: `:${GoToDevRest.paramTypeName}`,
-            loadComponent: () => import('../dev-rest/data/data.component')
+            loadComponent: () => import('../dev-rest/data/data')
               .then(mod => mod.DevRestDataComponent),
             data: {
               breadcrumb: 'Rest-Api Data'
@@ -134,7 +134,7 @@ export const appAdministrationRoutes: Routes = [
       },
       {
         path: 'queries',
-        loadComponent: () => import('./queries/queries.component')
+        loadComponent: () => import('./queries/queries')
           .then(mod => mod.QueriesComponent),
         children: [
           {
@@ -154,13 +154,13 @@ export const appAdministrationRoutes: Routes = [
       },
       {
         path: GoToDevRest.routeQuery,
-        loadComponent: () => import('./queries-rest-api/queries-rest-api.component')
+        loadComponent: () => import('./queries-rest-api/queries-rest-api')
           .then(mod => mod.QueriesRestApiComponent),
         data: { title: 'Rest-Api Queries', breadcrumb: 'Rest-Api Queries' },
         children: [
           {
             path: `:${GoToDevRest.paramQuery}`,
-            loadComponent: () => import('../dev-rest/query/query.component')
+            loadComponent: () => import('../dev-rest/query/query')
               .then(mod => mod.DevRestQueryComponent),
             data: { breadcrumb: 'Rest-Api Queries', },
             children: [
@@ -171,7 +171,7 @@ export const appAdministrationRoutes: Routes = [
       },
       {
         path: 'views',
-        loadComponent: () => import('./views/views.component')
+        loadComponent: () => import('./views/views')
           .then(mod => mod.ViewsComponent),
         children: [
           {
@@ -195,7 +195,7 @@ export const appAdministrationRoutes: Routes = [
       {
         // Views Copilot
         path: `views-${GoToCopilot.route}`,
-        loadComponent: () => import('./copilot/page/copilot-page.component')
+        loadComponent: () => import('./copilot/page/copilot-page')
           .then(mod => mod.CopilotPageComponent),
         data: CopilotSpecs.views,
         children: [
@@ -228,7 +228,7 @@ export const appAdministrationRoutes: Routes = [
       },
       {
         path: 'web-api',
-        loadComponent: () => import('./web-api/web-api.component')
+        loadComponent: () => import('./web-api/web-api')
           .then(mod => mod.WebApiComponent),
         data: { title: 'App WebApi', breadcrumb: "WebApi" },
         children: [
@@ -238,7 +238,7 @@ export const appAdministrationRoutes: Routes = [
       {
         // WebAPI Copilot
         path: `web-api-${GoToCopilot.route}`,
-        loadComponent: () => import('./copilot/page/copilot-page.component')
+        loadComponent: () => import('./copilot/page/copilot-page')
           .then(mod => mod.CopilotPageComponent),
         data: CopilotSpecs.webApi,
         children: [
@@ -247,7 +247,7 @@ export const appAdministrationRoutes: Routes = [
       },
       {
         path: GoToDevRest.routeWebApi,
-        loadComponent: () => import('./web-api-rest-api/web-api-rest-api.component')
+        loadComponent: () => import('./web-api-rest-api/web-api-rest-api')
           .then(mod => mod.WebApiRestApiComponent),
         data: {
           title: 'Rest-Api Web Api',
@@ -256,7 +256,7 @@ export const appAdministrationRoutes: Routes = [
         children: [
           {
             path: `:${GoToDevRest.paramApiPath}`,
-            loadComponent: () => import('../dev-rest/api/api.component')
+            loadComponent: () => import('../dev-rest/api/api')
               .then(mod => mod.DevRestApiComponent),
             data: {
               breadcrumb: 'Rest-Api Web Api'

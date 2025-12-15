@@ -6,7 +6,7 @@ import { UserLanguageService } from '../../shared/services/user-language.service
 import { ComputedAnalyzer } from '../../shared/signals/computed-analyzer';
 import { ComputedCacheHelper } from '../../shared/signals/computed-cache';
 import { computedObj, signalObj } from '../../shared/signals/signal.utilities';
-import { LanguagePart } from '../dialog/header/language-settings-dialog/LanguageDropdownComponent/language-part.enum';
+import { LanguagePart } from '../dialog/header/language-settings-dialog/LanguageDropdown/language-part.enum';
 import { PickerData } from '../fields/picker/picker-data';
 import { FormConfigService } from '../form/form-config.service';
 import { FormLanguageService } from '../form/form-language.service';

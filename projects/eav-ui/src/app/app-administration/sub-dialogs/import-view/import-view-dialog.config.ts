@@ -7,7 +7,7 @@ export const importViewDialog: DialogConfig = {
   panelClass: null,
 
   async getComponent() {
-    const { ImportViewComponent } = await import('./import-view.component');
+    const { ImportViewComponent } = await import('./import-view');
     return ImportViewComponent;
   }
 };

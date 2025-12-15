@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { EditRoutes } from '../edit/edit.routing';
 import { GoToMetadata } from '../metadata';
-import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
+import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry';
 import { contentItemsDialog } from './content-items-dialog.config';
 import { importContentItemDialog } from './import-content-item/import-content-item-dialog.config';
 

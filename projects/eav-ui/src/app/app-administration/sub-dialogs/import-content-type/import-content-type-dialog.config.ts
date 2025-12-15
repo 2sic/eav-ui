@@ -7,7 +7,7 @@ export const importContentTypeDialog: DialogConfig = {
   panelClass: null,
 
   async getComponent() {
-    const { ImportContentTypeComponent } = await import('./import-content-type.component');
+    const { ImportContentTypeComponent } = await import('./import-content-type');
     return ImportContentTypeComponent;
   }
 };

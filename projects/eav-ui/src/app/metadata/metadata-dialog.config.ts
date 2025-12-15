@@ -7,7 +7,7 @@ export const metadataDialog: DialogConfig = {
   panelClass: null,
 
   async getComponent() {
-    const { MetadataComponent } = await import('./metadata.component');
+    const { MetadataComponent } = await import('./metadata');
     return MetadataComponent;
   }
 };

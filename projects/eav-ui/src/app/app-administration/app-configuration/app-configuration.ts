@@ -11,7 +11,7 @@ import { Of, transient } from '../../../../../core';
 import { DocsLinkHelper } from '../../admin-shared/docs-link-helper/docs-link-helper';
 import { ContentItemsService } from '../../content-items/services/content-items.service';
 import { FeatureNames } from '../../features/feature-names';
-import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
+import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info';
 import { FeaturesService } from '../../features/features.service';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { SystemSettingsScopes, eavConstants } from '../../shared/constants/eav.constants';

@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { EditRoutes } from '../edit/edit.routing';
 import { GoToMetadata } from '../metadata';
 import { GoToPermissions } from '../permissions/go-to-permissions';
-import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
+import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry';
 import { contentTypeFieldsDialog } from './content-type-fields-dialog.config';
 import { editContentTypeFieldsDialog } from './edit-content-type-fields/edit-content-type-fields-dialog.config';
 

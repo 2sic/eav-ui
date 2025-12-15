@@ -3,7 +3,7 @@ import { PipelineModel } from '../models';
 import { EndpointLabelRenameParts } from './endpoint-label-rename.model';
 import { JsPlumbEndpoint, JsPlumbOverlay } from './jsplumb.models';
 import { EndpointInfo } from './plumb-editor.models';
-import { RenameStreamComponent } from './rename-stream/rename-stream.component';
+import { RenameStreamComponent } from './rename-stream/rename-stream';
 import { RenameStreamDialogData } from './rename-stream/rename-stream.models';
 
 const logSpecs = {

@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { EditRoutes, EditRoutesUnderAppsList } from '../edit/edit.routing';
-import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
+import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry';
 import { addAppFromFolderDialog } from './add-app-from-folder/add-app-from-folder-dialog.config';
 import { appsManagementDialog } from './apps-management-nav/apps-management-dialog.config';
 import { createAppDialog } from './create-app/create-app-dialog.config';
@@ -15,13 +15,13 @@ export const appsManagementRoutes: Routes = [
       { path: '', redirectTo: 'system', pathMatch: 'full' },
       {
         path: 'system',
-        loadComponent: () => import('./system-info/system-info.component')
+        loadComponent: () => import('./system-info/system-info')
           .then(m => m.SystemInfoComponent),
         data: { title: 'System Info', breadcrumb: 'System Info' },
       },
       {
         path: 'registration',
-        loadComponent: () => import('./sub-dialogs/registration/registration.component')
+        loadComponent: () => import('./sub-dialogs/registration/registration')
           .then(m => m.RegistrationComponent),
         data: {
           title: 'Registration', breadcrumb: 'Register'
@@ -29,7 +29,7 @@ export const appsManagementRoutes: Routes = [
       },
       {
         path: 'list',
-        loadComponent: () => import('./apps-list/apps-list.component')
+        loadComponent: () => import('./apps-list/apps-list')
           .then(m => m.AppsListComponent),
         children: [
           {
@@ -64,13 +64,13 @@ export const appsManagementRoutes: Routes = [
       },
       {
         path: 'languages',
-        loadComponent: () => import('./site-languages/site-languages.component')
+        loadComponent: () => import('./site-languages/site-languages')
           .then(m => m.SiteLanguagesComponent),
         data: { title: 'Zone Languages', breadcrumb: 'Languages' }
       },
       {
         path: 'license',
-        loadComponent: () => import('./licence-info/license-info.component')
+        loadComponent: () => import('./licence-info/license-info')
           .then(m => m.LicenseInfoComponent),
         data: { title: 'Extensions / Features', breadcrumb: 'Extensions and Features' },
         children: [

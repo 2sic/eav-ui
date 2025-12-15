@@ -1,9 +1,9 @@
 import { Type } from '@angular/core';
+import { ExtendedFabSpeedDialComponent } from './extended-fab-speed-dial';
 import { ExtendedFabSpeedDialActionDirective } from './extended-fab-speed-dial-action.directive';
 import { ExtendedFabSpeedDialActionsContentDirective } from './extended-fab-speed-dial-actions-content.directive';
 import { ExtendedFabSpeedDialTriggerContentDirective } from './extended-fab-speed-dial-trigger-content.directive';
 import { ExtendedFabSpeedDialTriggerDirective } from './extended-fab-speed-dial-trigger.directive';
-import { ExtendedFabSpeedDialComponent } from './extended-fab-speed-dial.component';
 
 /**
  * The Extended Fab Speed Dial needs a component and a set of directives to work.

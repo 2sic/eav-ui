@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
+import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry';
 import { contentImportDialog } from './content-import-dialog.config';
 
 export const contentImportRoutes: Routes = [
