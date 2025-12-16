@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject, OnInit, signal } from '@angular/core';
+import { Component, ElementRef, Inject, OnInit, ViewChild, signal } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
@@ -10,7 +10,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { transient } from 'projects/core';
-import { Observable, take } from 'rxjs';
+import { Observable, fromEvent, take } from 'rxjs';
 import { isCtrlEnter } from '../../../edit/dialog/main/keyboard-shortcuts';
 import { BaseComponent } from '../../../shared/components/base';
 import { FileUploadResult, ImportModeValues, UploadTypes } from '../../../shared/components/file-upload-dialog';
@@ -73,9 +73,19 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
 
   // Selected editions for installation
   selectedEditions: string = '';
-  urlChangeImportMode = ""
+  urlChangeImportMode = "";
   ready = false;
   settings: InstallSettings;
+
+  // Remote install state (catalog)
+  installingRemote = signal(false);
+  remotePreflightError = signal<string | null>(null);
+  remotePreflight = signal<ExtensionPreflightItem | null>(null);
+  remoteUrlToInstall: string | null = null;
+  remoteSelectedEditions: string = '';
+  #alreadyProcessingRemote = false;
+
+  @ViewChild('installerWindow') installerWindow: ElementRef;
 
   importForm: FormGroup = this.#fb.group({
     importMode: [this.importModeValues.importOriginal, Validators.required],
@@ -104,7 +114,6 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
       this.#installSettingsService.settings$.subscribe(settings => {
         this.settings = settings;
         this.urlChangeImportMode = settings.remoteUrl;
-
         this.remoteInstallerUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
           this.buildRemoteUrl(this.urlChangeImportMode, {
             view: 'app-extensions',
@@ -128,11 +137,24 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
         })
       );
     });
+
+    // Handle postMessage events from the app catalog dialog (iframe)
+    this.subscriptions.add(
+      fromEvent<MessageEvent>(window, 'message').subscribe((evt) => {
+        // Optionally, check known origin: if (evt.origin !== 'https://2sxc.org') return;
+        let data: any;
+        try { data = typeof evt.data === 'string' ? JSON.parse(evt.data) : evt.data; } catch { return; }
+        if (this.showExtensionCatalog() && data.action === 'install' && data.packages) {
+          const firstPkg: any = Object.values(data.packages)[0];
+          if (!firstPkg?.url) return;
+          if (this.#alreadyProcessingRemote) return;
+          this.#alreadyProcessingRemote = true;
+          this.handleRemotePreflight(firstPkg.url);
+        }
+      })
+    );
   }
 
-  /**
-   * Builds a remote URL with the given base URL and query parameters.
-   */
   private buildRemoteUrl(baseUrl: string, params: Record<string, string> = {}): string {
     const [urlBase, queryString] = baseUrl.split('?');
     const query = new URLSearchParams(queryString || '');
@@ -168,7 +190,6 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
 
   private runPreflight(file: File): void {
     this.isLoadingPreflight.set(true);
-
     this.extensionSvc.installPreflightExtension([file])
       .pipe(take(1))
       .subscribe({
@@ -201,20 +222,17 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
     if (this.isInstalling()) return false;
     if (this.isLoadingPreflight()) return false;
     if (!this.extension()) return false;
-
     return true;
   }
 
   install(): void {
     if (!this.file()) return;
-
     this.isInstalling.set(true);
 
     // Pass selected edition as an array parameter if available
     const editions = this.selectedEditions?.length ? this.selectedEditions : undefined;
-
     this.extensionSvc.uploadExtensions(this.file(), editions).pipe(take(1)).subscribe({
-      next: (result) => {
+      next: () => {
         this.isInstalling.set(false);
         this.dialogRef.close(true); // Close and refresh parent
       },
@@ -228,5 +246,49 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
 
   closeDialog(): void {
     this.dialogRef.close(false);
+  }
+
+  private handleRemotePreflight(url: string) {
+    this.installingRemote.set(true);
+    this.remotePreflightError.set(null);
+    this.remotePreflight.set(null);
+    this.remoteUrlToInstall = null;
+    this.extensionSvc.installPreflightExtensionFromUrl(url).pipe(take(1)).subscribe({
+      next: (result) => {
+        this.installingRemote.set(false);
+        const ext = result.extensions[0];
+        this.remotePreflight.set(ext);
+        this.remoteUrlToInstall = url;
+        this.remoteSelectedEditions = ext.editions?.map(e => e.edition).join(',') ?? '';
+        this.showExtensionCatalog.set(false);
+      },
+      error: (err) => {
+        this.installingRemote.set(false);
+        this.remotePreflightError.set(err?.message || 'Remote preflight failed');
+        this.#alreadyProcessingRemote = false;
+      }
+    });
+  }
+
+  installRemote(): void {
+    if (!this.remoteUrlToInstall) return;
+    this.installingRemote.set(true);
+    this.remotePreflightError.set(null);
+    this.extensionSvc.installRemoteExtension(this.remoteUrlToInstall, this.remoteSelectedEditions)
+      .pipe(take(1)).subscribe({
+        next: () => {
+          this.installingRemote.set(false);
+          this.dialogRef.close(true);
+        },
+        error: (err) => {
+          this.installingRemote.set(false);
+          this.remotePreflightError.set(err?.message || 'Remote installation failed');
+          this.#alreadyProcessingRemote = false;
+        }
+      });
+  }
+
+  canInstallRemote(): boolean {
+    return !!this.remotePreflight() && !this.remotePreflightError() && !this.installingRemote();
   }
 }

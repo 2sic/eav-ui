@@ -113,6 +113,60 @@
       }
     }
 
+    @if (remotePreflight()) {
+      <div class="remote-preflight-details">
+        <h4>{{ remotePreflight().name }} Details</h4>
+        <span>Version {{ remotePreflight().version }}</span>
+        <br />
+        <div class="ext-info">
+          <div class="info-row">
+            <span class="label">File Count:</span>
+            <span class="value">{{ remotePreflight().fileCount }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Supports Editions:</span>
+            <span class="value">{{ remotePreflight().editionsSupported ? 'Yes' : 'No' }}</span>
+          </div>
+        </div>
+        <div class="ext-features">
+          <h4>Features</h4>
+          <mat-chip-set>
+            @for (feature of remotePreflight().features | keyvalue; track feature.key) {
+              <mat-chip [class.disabled]="!feature.value">
+                {{ feature.key.split('Inside').join('') }}
+              </mat-chip>
+            }
+          </mat-chip-set>
+        </div>
+        @if (remotePreflight().editionsSupported && remotePreflight().editions?.length) {
+          <div class="ext-editions">
+            <h4>Editions</h4>
+            <div class="edition-selector">
+              <mat-form-field color="accent" class="eav-mat-form-field">
+                <mat-label>Select Editions to Install</mat-label>
+                <mat-select [(value)]="remoteSelectedEditions" multiple>
+                  @for (edition of remotePreflight().editions; track edition.edition) {
+                    <mat-option [value]="edition.edition">
+                      {{ edition.edition || 'Default' }}
+                    </mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+        }
+        <button
+          mat-raised-button
+          color="primary"
+          class="eav-action-button"
+          (click)="installRemote()"
+          [disabled]="!canInstallRemote()"
+        >
+          Install
+        </button>
+      </div>
+    }
+
     @if (!file() && showExtensionCatalog()) {
       @if (ready) {
         <iframe
@@ -121,15 +175,15 @@
           [src]="remoteInstallerUrl"
         ></iframe>
       }
-      <!-- @if (showProgress) {
+      @if (installingRemote()) {
         <div class="eav-progress">
           <mat-progress-spinner [mode]="'indeterminate'"
           ></mat-progress-spinner>
           <span>
-            Installing {{ currentPackage?.displayName }}..
+            Installing..
           </span>
         </div>
-      } -->
+      }
     }
 
     @if (isInstalling()) {
