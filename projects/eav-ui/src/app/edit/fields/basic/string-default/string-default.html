@@ -21,3 +21,12 @@
   <mat-label>{{ basics().label }}</mat-label>
 </mat-form-field>
 <app-field-helper-text></app-field-helper-text>
+
+<!-- Show message if this input-field is only being shown as a fallback -->
+@if (typeIfNotWhatsExpected() != null) {
+  <div style="color: red;">
+    Error: Input <code>{{ typeIfNotWhatsExpected() }}</code> for <code>{{ basics().label }}</code> not found.
+    It's probably be an extension input field, but it's not loaded.
+    Showing default, please fix extension or change field configuration.
+  </div>
+}

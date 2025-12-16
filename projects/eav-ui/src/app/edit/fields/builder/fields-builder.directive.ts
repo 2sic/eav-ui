@@ -19,6 +19,7 @@ import { InjectorBundle } from './injector-bundle.model';
 const logSpecs = {
   all: false,
   createWrapper: true,
+  readComponentType: false,
 };
 
 /**
@@ -30,10 +31,10 @@ const logSpecs = {
 })
 export class EditControlsBuilderDirective implements OnInit, OnDestroy {
 
-  index: number;
+  #index: number;
 
   // In the class, inject Renderer2
-  private renderer = inject(Renderer2);
+  #renderer = inject(Renderer2);
   #firstInputFocused = false;
 
   log = classLog({ EditControlsBuilderDirective }, logSpecs);
@@ -49,7 +50,7 @@ export class EditControlsBuilderDirective implements OnInit, OnDestroy {
 
   constructor(private formConfigService: EntityFormStateService, private el: ElementRef) {
     effect(() => {
-      const onInitReady = this.onInitReady();
+      const onInitReady = this.#onInitReady();
       const controlsCreated = this.formConfigService.controlsCreated();
       this.log.a('createControls - effect', { onInitReady, controlsCreated });
       if (!(onInitReady && controlsCreated))
@@ -57,22 +58,22 @@ export class EditControlsBuilderDirective implements OnInit, OnDestroy {
 
       this.log.a('createControls RUN');
       // TODO: NOT YET CLEAR IF THIS IS THE RIGHT SOLUTION
-      untracked(() => this.createControls());
+      untracked(() => this.#createControls());
     });
   }
 
   /** Field Configs for clean-up after the control closes */
   #fieldConfigSets: FieldConfigSet[] = [];
 
-  onInitReady = signal(false);
+  #onInitReady = signal(false);
 
   ngOnInit() {
-    this.onInitReady.set(true);
+    this.#onInitReady.set(true);
     // Get the Index from the HTML element attribute
-    this.index = parseInt(this.el.nativeElement.getAttribute('data-index'));
+    this.#index = parseInt(this.el.nativeElement.getAttribute('data-index'));
   }
 
-  createControls() {
+  #createControls() {
     // clear container
     this.#myContainerRef.clear();
 
@@ -130,7 +131,10 @@ export class EditControlsBuilderDirective implements OnInit, OnDestroy {
     if (fieldProps.buildWrappers)
       wrapperInfo = this.#createWrappers(wrapperInfo, fieldProps.buildWrappers);
 
-    const componentName = inputSpecs.isExternal ? InputTypeCatalog.ExternalWebComponent : inputSpecs.inputType;
+    // if it's external, don't load it directly, but instead use the external-web-component wrapper
+    const componentName = inputSpecs.isExternal
+      ? InputTypeCatalog.ExternalWebComponent
+      : inputSpecs.inputType;
     const componentType = this.#readComponentType(componentName);
 
     // create component - ideally with metadata if provided (ATM can specify alternate wrapper)
@@ -151,8 +155,9 @@ export class EditControlsBuilderDirective implements OnInit, OnDestroy {
       this.log.a('createComponent - add preview', { previewType });
       this.#generateAndAttachField(previewType, pickerPreviewContainerRef, wrapperInfo.injectors);
     }
+
     // Set only the first input to be focused, if it is the first input
-    if (this.#firstInputFocused === false && this.index === 0 && fieldProps.settings.noAutoFocus !== true) {
+    if (this.#firstInputFocused === false && this.#index === 0 && fieldProps.settings.noAutoFocus !== true) {
       this.#setAutoFocus(componentRef);
       this.#firstInputFocused = true;
     }
@@ -163,7 +168,7 @@ export class EditControlsBuilderDirective implements OnInit, OnDestroy {
       // Get the input element from the component
       const nativeElement = componentRef.location.nativeElement.querySelector('input');
       if (nativeElement) {
-        this.renderer.setAttribute(nativeElement, 'autofocus', 'true');
+        this.#renderer.setAttribute(nativeElement, 'autofocus', 'true');
         nativeElement?.focus(); // Focus the input element - with null check in case we're too early
       }
     }, 250); // Wait for the input to be created before focusing
@@ -171,26 +176,26 @@ export class EditControlsBuilderDirective implements OnInit, OnDestroy {
   }
 
   #generateAndAttachField(componentType: Type<any>, container: ViewContainerRef, injectors: InjectorBundle): ComponentRef<any> {
-    const componentRef = container.createComponent(componentType, injectors);
+    const component = container.createComponent(componentType, injectors);
 
     // Prevent 'e' | 'E' (science notation) in <input type="number"> for "number-default"
     if (componentType === InputComponents['number-default']) {
-      const inputEl = componentRef.location.nativeElement.querySelector('input[type="number"]');
+      const inputEl = component.location.nativeElement.querySelector('input[type="number"]');
       inputEl?.addEventListener('keydown', (e: KeyboardEvent) => {
-        if (e.key?.toLowerCase() === 'e') e.preventDefault();
+        if (e.key?.toLowerCase() === 'e')
+          e.preventDefault();
       });
     }
 
-    return componentRef;
+    return component;
   }
 
-  #createWrappers(outerWrapper: DynamicControlInfo, wrappers: string[]): DynamicControlInfo {
-    let wrapperInfo = outerWrapper;
-    for (const wrapperName of wrappers)
-      wrapperInfo = this.#createWrapper(wrapperInfo, wrapperName);
-    return wrapperInfo;
+  /** Stack all wrappers inside each other */
+  #createWrappers(outerWrapper: DynamicControlInfo, wrapperNames: string[]): DynamicControlInfo {
+    return wrapperNames.reduce((acc, name) => this.#createWrapper(acc, name), outerWrapper);
   }
 
+  /** Create a single wrapper */
   #createWrapper(wrapperInfo: DynamicControlInfo, wrapperName: string): DynamicControlInfo {
     const l = this.log.fnIf('createWrapper', { wrapperName });
     const componentType = this.#readComponentType(wrapperName);
@@ -199,12 +204,21 @@ export class EditControlsBuilderDirective implements OnInit, OnDestroy {
   }
 
   #readComponentType(selector: string): Type<any> {
+    const l = this.log.fnIf('readComponentType', { selector, InputComponents });
     const componentType = InputComponents[selector];
     if (componentType != null)
-      return componentType;
+      return l.r(componentType, 'found component type');
 
-    console.error(`Missing component class for: ${selector}. This indicates that the field is not registered correctly, so the JS won't run. It could also mean that the JS runs, but doesn't correctly create the custom tag. Will show an info-error instead.`);
-    return CustomDefaultComponent;
+    console.error(`Missing component class for: ${selector}. 
+This indicates that the field is not registered correctly, so the JS won't run. 
+It could also mean that the JS runs, but doesn't correctly create the custom tag. 
+Will show an info-error instead.`
+    );
+
+    // Try to show the [type]-default component if it exists
+    const prefix = selector.split('-')[0];
+    const fallback = InputComponents[`${prefix}-default`] || CustomDefaultComponent;
+    return l.r(fallback, 'defaulting to fallback component');
   }
 }
 
