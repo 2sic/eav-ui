@@ -27,7 +27,6 @@ export interface FileUploadDialogData {
   allowedFileTypes?: string;
   file?: File;
   multiple?: boolean;
-  // upload$?(files: File[]): Observable<FileUploadResult>;
   upload$?(files: File[], name?: string): Observable<FileUploadResult>;
 }
 
@@ -56,14 +55,12 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
 
   uploadType = UploadTypes.Extension;
   remoteInstallerUrl: SafeResourceUrl;
-
   importModeValues = ImportModeValues;
 
   // TODO: @2pp - Replace debugging vars when backend is ready
   private readonly fallbackEditions = ['staging', 'live'];
 
-  // State signals
-  file = signal<File | null>(null);
+  // Unified State signals
   extension = signal<ExtensionPreflightItem | null>(null);
   isLoadingPreflight = signal(false);
   isInstalling = signal(false);
@@ -71,18 +68,13 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
   editions = signal<ExtensionEdition[]>([]);
   showExtensionCatalog = signal(false);
 
-  // Selected editions for installation
+  // Unified selection state
   selectedEditions: string = '';
+  preflightSource: File | string | null = null; // Can be a local File or a remote URL string
+
   urlChangeImportMode = "";
   ready = false;
   settings: InstallSettings;
-
-  // Remote install state (catalog)
-  installingRemote = signal(false);
-  remotePreflightError = signal<string | null>(null);
-  remotePreflight = signal<ExtensionPreflightItem | null>(null);
-  remoteUrlToInstall: string | null = null;
-  remoteSelectedEditions: string = '';
   #alreadyProcessingRemote = false;
 
   @ViewChild('installerWindow') installerWindow: ElementRef;
@@ -91,6 +83,15 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
     importMode: [this.importModeValues.importOriginal, Validators.required],
     name: ['']
   });
+
+  // Template Helpers to avoid 'instanceof' and strict type errors in HTML
+  get isFileSource(): boolean {
+    return this.preflightSource instanceof File;
+  }
+
+  get currentFile(): File | null {
+    return this.isFileSource ? (this.preflightSource as File) : null;
+  }
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public dialogData: FileUploadDialogData,
@@ -106,20 +107,14 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
 
     // Check if files were passed via dialogData (from drag-drop on main component)
     if (dialogData.file) {
-      this.file.set(dialogData.file);
-      this.runPreflight(dialogData.file);
+      this.runFilePreflight(dialogData.file);
     }
 
     this.subscriptions.add(
       this.#installSettingsService.settings$.subscribe(settings => {
         this.settings = settings;
         this.urlChangeImportMode = settings.remoteUrl;
-        this.remoteInstallerUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
-          this.buildRemoteUrl(this.urlChangeImportMode, {
-            view: 'app-extensions',
-            selectOnlyMode: 'true'
-          })
-        );
+        this.updateRemoteUrl();
         this.ready = true;
       })
     );
@@ -130,27 +125,32 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
     this.#installSettingsService.loadGettingStarted(false);
 
     this.importForm.get('importMode')?.valueChanges.subscribe(() => {
-      this.remoteInstallerUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
-        this.buildRemoteUrl(this.urlChangeImportMode, {
-          view: 'app-extensions',
-          selectOnlyMode: 'true'
-        })
-      );
+      this.updateRemoteUrl();
     });
 
     // Handle postMessage events from the app catalog dialog (iframe)
     this.subscriptions.add(
       fromEvent<MessageEvent>(window, 'message').subscribe((evt) => {
-        // Optionally, check known origin: if (evt.origin !== 'https://2sxc.org') return;
         let data: any;
         try { data = typeof evt.data === 'string' ? JSON.parse(evt.data) : evt.data; } catch { return; }
+
         if (this.showExtensionCatalog() && data.action === 'install' && data.packages) {
           const firstPkg: any = Object.values(data.packages)[0];
           if (!firstPkg?.url) return;
           if (this.#alreadyProcessingRemote) return;
+
           this.#alreadyProcessingRemote = true;
           this.handleRemotePreflight(firstPkg.url);
         }
+      })
+    );
+  }
+
+  private updateRemoteUrl() {
+    this.remoteInstallerUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
+      this.buildRemoteUrl(this.urlChangeImportMode, {
+        view: 'app-extensions',
+        selectOnlyMode: 'true'
       })
     );
   }
@@ -173,51 +173,85 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
     });
   }
 
+  // --- UI Triggers ---
+
   filesDropped(droppedFiles: File[]): void {
-    this.file.set(droppedFiles[0]);
-    this.runPreflight(droppedFiles[0]);
+    this.runFilePreflight(droppedFiles[0]);
   }
 
   filesChanged(event: Event): void {
     const file = (event.target as HTMLInputElement).files[0];
-    this.file.set(file);
-    this.runPreflight(file);
+    this.runFilePreflight(file);
   }
 
   toggleShowExtensionCatalog(): void {
     this.showExtensionCatalog.set(!this.showExtensionCatalog());
   }
 
-  private runPreflight(file: File): void {
+  closeDialog(): void {
+    this.dialogRef.close(false);
+  }
+
+  cancelPreflight(): void {
+    this.extension.set(null);
+    this.preflightSource = null;
+    this.selectedEditions = '';
+    this.preflightError.set(null);
+    this.#alreadyProcessingRemote = false; // Reset remote lock so user can try again
+  }
+
+  // --- Unified Preflight Logic ---
+
+  private runFilePreflight(file: File): void {
     this.isLoadingPreflight.set(true);
     this.extensionSvc.installPreflightExtension([file])
       .pipe(take(1))
       .subscribe({
-        next: (result) => {
-          this.isLoadingPreflight.set(false);
-          const ext = result.extensions[0];
-          this.extension.set(ext);
-
-
-          if (ext.editions?.length > 0) {
-            this.editions.set(ext.editions);
-          } else {
-            this.editions.set(
-              this.fallbackEditions.map(e => ({ edition: e }))
-            );
-          }
-
-          this.selectedEditions = this.editions().map(e => e.edition).join(',');
-        },
-        error: (error) => {
-          this.isLoadingPreflight.set(false);
-          this.preflightError.set(error?.message || 'Preflight check failed');
-        }
+        next: (result) => this.handlePreflightResult(result.extensions[0], file),
+        error: (error) => this.handlePreflightError(error)
       });
   }
 
-  canSave(): boolean {
-    if (!this.file()) return false;
+  private handleRemotePreflight(url: string): void {
+    // Hide catalog immediately so user sees spinner
+    this.showExtensionCatalog.set(false);
+    this.isLoadingPreflight.set(true);
+
+    this.extensionSvc.installPreflightExtensionFromUrl(url)
+      .pipe(take(1))
+      .subscribe({
+        next: (result) => this.handlePreflightResult(result.extensions[0], url),
+        error: (error) => this.handlePreflightError(error)
+      });
+  }
+
+  private handlePreflightResult(ext: ExtensionPreflightItem, source: File | string) {
+    this.isLoadingPreflight.set(false);
+    this.preflightError.set(null);
+    this.extension.set(ext);
+    this.preflightSource = source;
+
+    if (ext.editions?.length > 0) {
+      this.editions.set(ext.editions);
+    } else {
+      this.editions.set(this.fallbackEditions.map(e => ({ edition: e })));
+    }
+
+    this.selectedEditions = this.editions().map(e => e.edition).join(',');
+  }
+
+  private handlePreflightError(error: any) {
+    this.isLoadingPreflight.set(false);
+    this.extension.set(null);
+    this.preflightSource = null;
+    this.preflightError.set(error?.message || 'Preflight check failed');
+    this.#alreadyProcessingRemote = false;
+  }
+
+  // --- Unified Install Logic ---
+
+  canInstall(): boolean {
+    if (!this.preflightSource) return false;
     if (this.preflightError()) return false;
     if (this.isInstalling()) return false;
     if (this.isLoadingPreflight()) return false;
@@ -226,15 +260,24 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
   }
 
   install(): void {
-    if (!this.file()) return;
+    if (!this.canInstall()) return;
     this.isInstalling.set(true);
 
-    // Pass selected edition as an array parameter if available
     const editions = this.selectedEditions?.length ? this.selectedEditions : undefined;
-    this.extensionSvc.uploadExtensions(this.file(), editions).pipe(take(1)).subscribe({
+    let installObservable: Observable<any>;
+
+    if (this.preflightSource instanceof File) {
+      installObservable = this.extensionSvc.uploadExtensions(this.preflightSource, editions);
+    } else if (typeof this.preflightSource === 'string') {
+      installObservable = this.extensionSvc.installRemoteExtension(this.preflightSource, editions);
+    } else {
+      return; // Should not happen
+    }
+
+    installObservable.pipe(take(1)).subscribe({
       next: () => {
         this.isInstalling.set(false);
-        this.dialogRef.close(true); // Close and refresh parent
+        this.dialogRef.close(true);
       },
       error: (error) => {
         this.isInstalling.set(false);
@@ -242,53 +285,5 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
         console.error('Installation error:', error);
       }
     });
-  }
-
-  closeDialog(): void {
-    this.dialogRef.close(false);
-  }
-
-  private handleRemotePreflight(url: string) {
-    this.installingRemote.set(true);
-    this.remotePreflightError.set(null);
-    this.remotePreflight.set(null);
-    this.remoteUrlToInstall = null;
-    this.extensionSvc.installPreflightExtensionFromUrl(url).pipe(take(1)).subscribe({
-      next: (result) => {
-        this.installingRemote.set(false);
-        const ext = result.extensions[0];
-        this.remotePreflight.set(ext);
-        this.remoteUrlToInstall = url;
-        this.remoteSelectedEditions = ext.editions?.map(e => e.edition).join(',') ?? '';
-        this.showExtensionCatalog.set(false);
-      },
-      error: (err) => {
-        this.installingRemote.set(false);
-        this.remotePreflightError.set(err?.message || 'Remote preflight failed');
-        this.#alreadyProcessingRemote = false;
-      }
-    });
-  }
-
-  installRemote(): void {
-    if (!this.remoteUrlToInstall) return;
-    this.installingRemote.set(true);
-    this.remotePreflightError.set(null);
-    this.extensionSvc.installRemoteExtension(this.remoteUrlToInstall, this.remoteSelectedEditions)
-      .pipe(take(1)).subscribe({
-        next: () => {
-          this.installingRemote.set(false);
-          this.dialogRef.close(true);
-        },
-        error: (err) => {
-          this.installingRemote.set(false);
-          this.remotePreflightError.set(err?.message || 'Remote installation failed');
-          this.#alreadyProcessingRemote = false;
-        }
-      });
-  }
-
-  canInstallRemote(): boolean {
-    return !!this.remotePreflight() && !this.remotePreflightError() && !this.installingRemote();
   }
 }

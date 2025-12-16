@@ -6,34 +6,36 @@
     </button>
   </div>
   <div class="eav-dialog-content">
-    @if (!file()) {
+    <!-- 1. Selection Area (Dropzone & Catalog) -->
+    <!-- Show if we don't have a valid preflight result yet -->
+    @if (!extension() && !isLoadingPreflight()) {
       <div
         class="file-drop-zone"
         appDragAndDrop
         (filesDropped)="filesDropped($event)"
       >
-        <p>{{ dialogData.description }}</p>
-        <p>Drag and drop files here or click to select</p>
-        <input
-          type="file"
-          [accept]="dialogData.allowedFileTypes"
-          [multiple]="dialogData.multiple"
-          (change)="filesChanged($event)"
-          style="display: none"
-          #fileInput
-        />
-        <button
-          mat-raised-button
-          color="primary"
-          (click)="fileInput.click()"
-        >
-          Select Files
-        </button>
-        @if (!file()) {
+        @if (!showExtensionCatalog()) {
+          <p>{{ dialogData.description }}</p>
+          <p>Drag and drop files here or click to select</p>
+          <input
+            type="file"
+            [accept]="dialogData.allowedFileTypes"
+            [multiple]="dialogData.multiple"
+            (change)="filesChanged($event)"
+            style="display: none"
+            #fileInput
+          />
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="fileInput.click()"
+          >
+            Select Files
+          </button>
+          
           <button
             mat-raised-button
             class="eav-app-catalog-button eav-action-button"
-            [disabled]="canSave()"
             tippy="Open extension catalog"
             (click)="toggleShowExtensionCatalog()"
           >
@@ -41,8 +43,18 @@
           </button>
         }
       </div>
+
+      <!-- Remote Catalog Iframe -->
+      @if (showExtensionCatalog() && ready) {
+        <iframe
+          #installerWindow
+          class="eav-app-catalog-iframe"
+          [src]="remoteInstallerUrl"
+        ></iframe>
+      }
     }
 
+    <!-- 2. Loading State -->
     @if (isLoadingPreflight()) {
       <div class="preflight-loading">
         <mat-spinner diameter="40"></mat-spinner>
@@ -50,18 +62,33 @@
       </div>
     }
 
+    <!-- 3. Error State -->
     @if (preflightError()) {
       <div class="preflight-error">
         <h3>Error</h3>
         <p>{{ preflightError() }}</p>
+        <button
+          mat-stroked-button
+          color="warn"
+          (click)="cancelPreflight()"
+        >
+          Try Again
+        </button>
       </div>
     }
 
+    <!-- 4. Unified Preflight Details & Confirm -->
     @if (extension() && !isLoadingPreflight()) {
-      <em>File: {{ file().name }}</em>
+      
+      <!-- Source Identification -->
+      @if (isFileSource) {
+        <em>File: {{ currentFile?.name }}</em>
+      } @else {
+        <em>Remote Source: {{ preflightSource }}</em>
+      }
 
-      <h4>{{ extension().name }} Details</h4>
-      <span>Version {{ extension().version }}</span>
+      <h4>{{ extension()?.name }} Details</h4>
+      <span>Version {{ extension()?.version }}</span>
 
       <br />
 
@@ -69,13 +96,13 @@
         <div class="info-row">
           <span class="label">File Count:</span>
           <span class="value">
-            {{ extension().fileCount }}
+            {{ extension()?.fileCount }}
           </span>
         </div>
         <div class="info-row">
           <span class="label">Supports Editions:</span>
           <span class="value">
-            {{ extension().editionsSupported ? 'Yes' : 'No' }}
+            {{ extension()?.editionsSupported ? 'Yes' : 'No' }}
           </span>
         </div>
       </div>
@@ -83,10 +110,7 @@
       <div class="ext-features">
         <h4>Features</h4>
         <mat-chip-set>
-          @for (
-            feature of extension().features | keyvalue;
-            track feature.key
-          ) {
+          @for (feature of extension()?.features | keyvalue; track feature.key) {
             <mat-chip [class.disabled]="!feature.value">
               {{ feature.key.split('Inside').join('') }}
             </mat-chip>
@@ -94,7 +118,7 @@
         </mat-chip-set>
       </div>
 
-      @if (extension().editionsSupported && editions()?.length) {
+      @if (extension()?.editionsSupported && editions()?.length) {
         <div class="ext-editions">
           <h4>Editions</h4>
           <div class="edition-selector">
@@ -111,96 +135,31 @@
           </div>
         </div>
       }
-    }
-
-    @if (remotePreflight()) {
-      <div class="remote-preflight-details">
-        <h4>{{ remotePreflight().name }} Details</h4>
-        <span>Version {{ remotePreflight().version }}</span>
-        <br />
-        <div class="ext-info">
-          <div class="info-row">
-            <span class="label">File Count:</span>
-            <span class="value">{{ remotePreflight().fileCount }}</span>
-          </div>
-          <div class="info-row">
-            <span class="label">Supports Editions:</span>
-            <span class="value">{{ remotePreflight().editionsSupported ? 'Yes' : 'No' }}</span>
-          </div>
-        </div>
-        <div class="ext-features">
-          <h4>Features</h4>
-          <mat-chip-set>
-            @for (feature of remotePreflight().features | keyvalue; track feature.key) {
-              <mat-chip [class.disabled]="!feature.value">
-                {{ feature.key.split('Inside').join('') }}
-              </mat-chip>
-            }
-          </mat-chip-set>
-        </div>
-        @if (remotePreflight().editionsSupported && remotePreflight().editions?.length) {
-          <div class="ext-editions">
-            <h4>Editions</h4>
-            <div class="edition-selector">
-              <mat-form-field color="accent" class="eav-mat-form-field">
-                <mat-label>Select Editions to Install</mat-label>
-                <mat-select [(value)]="remoteSelectedEditions" multiple>
-                  @for (edition of remotePreflight().editions; track edition.edition) {
-                    <mat-option [value]="edition.edition">
-                      {{ edition.edition || 'Default' }}
-                    </mat-option>
-                  }
-                </mat-select>
-              </mat-form-field>
-            </div>
-          </div>
-        }
-        <button
-          mat-raised-button
-          color="primary"
-          class="eav-action-button"
-          (click)="installRemote()"
-          [disabled]="!canInstallRemote()"
-        >
-          Install
-        </button>
-      </div>
-    }
-
-    @if (!file() && showExtensionCatalog()) {
-      @if (ready) {
-        <iframe
-          #installerWindow
-          class="eav-app-catalog-iframe"
-          [src]="remoteInstallerUrl"
-        ></iframe>
-      }
-      @if (installingRemote()) {
-        <div class="eav-progress">
-          <mat-progress-spinner [mode]="'indeterminate'"
-          ></mat-progress-spinner>
-          <span>
-            Installing..
-          </span>
+      
+      @if (isInstalling()) {
+        <div class="installing-overlay">
+          <mat-spinner diameter="40"></mat-spinner>
+          <p>Installing extension...</p>
         </div>
       }
     }
 
-    @if (isInstalling()) {
-      <div class="installing">
-        <mat-spinner diameter="40"></mat-spinner>
-        <p>Installing extension...</p>
-      </div>
-    }
   </div>
 
   <mat-dialog-actions align="end">
-    @if (file() && !preflightError()) {
+    <!-- Only show actions if we have a valid preflight result -->
+    @if (extension() && !isLoadingPreflight() && !isInstalling()) {
+      <button
+        mat-stroked-button
+        (click)="cancelPreflight()"
+      >
+        Cancel
+      </button>
       <button
         mat-raised-button
         class="eav-action-button"
         (click)="install()"
-        [disabled]="!canSave()"
+        [disabled]="!canInstall()"
       >
         Install
       </button>
