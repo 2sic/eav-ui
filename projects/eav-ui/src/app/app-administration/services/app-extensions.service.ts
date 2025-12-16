@@ -23,6 +23,12 @@ export class AppExtensionsService extends HttpServiceBase {
     });
   }
 
+  getAll() {
+    return this.http.get<{ extensions: Extension[] }>(this.apiUrl('admin/appExtensions/extensions'), {
+      params: { appId: this.appId },
+    });
+  }
+
   /** Update config (mutations still best done via HttpClient per Angular docs) */
   updateConfiguration(name: string, config: string) {
     // Parse the config to JsonElement format that the API expects

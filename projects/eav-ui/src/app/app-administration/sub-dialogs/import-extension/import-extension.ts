@@ -11,15 +11,15 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { transient } from 'projects/core';
-import { Observable, fromEvent, take } from 'rxjs';
+import { Observable, filter, fromEvent, take, tap } from 'rxjs';
 import { isCtrlEnter } from '../../../edit/dialog/main/keyboard-shortcuts';
 import { BaseComponent } from '../../../shared/components/base';
 import { FileUploadResult, ImportModeValues, UploadTypes } from '../../../shared/components/file-upload-dialog';
 import { DragAndDropDirective } from '../../../shared/directives/drag-and-drop.directive';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
-import { InstallSettings } from '../../../shared/models/installer-models';
+import { InstallSettings, InstalledApp, SpecsForInstaller } from '../../../shared/models/installer-models';
 import { AppInstallSettingsService } from '../../../shared/services/getting-started.service';
-import { ExtensionEdition, ExtensionPreflightItem } from '../../models/extension.model';
+import { Extension, ExtensionEdition, ExtensionPreflightItem } from '../../models/extension.model';
 import { AppExtensionsService } from '../../services/app-extensions.service';
 
 export interface FileUploadDialogData {
@@ -133,19 +133,52 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
 
     // Handle postMessage events from the app catalog dialog (iframe)
     this.subscriptions.add(
-      fromEvent<MessageEvent>(window, 'message').subscribe((evt) => {
-        let data: any;
-        try { data = typeof evt.data === 'string' ? JSON.parse(evt.data) : evt.data; } catch { return; }
-        
-        if (this.showExtensionCatalog() && data.action === 'install' && data.packages) {
-          const firstPkg: any = Object.values(data.packages)[0];
-          if (!firstPkg?.url) return;
-          if (this.#alreadyProcessingRemote) return;
-          
-          this.#alreadyProcessingRemote = true;
-          this.handleRemotePreflight(firstPkg.url);
-        }
-      })
+      fromEvent<MessageEvent>(window, 'message')
+        .pipe(
+          filter(() => !!this.installerWindow),
+          tap(() => {
+            const winFrame = this.installerWindow.nativeElement as HTMLIFrameElement;
+
+            // Subscribe to the HttpResourceRef to get the data
+            this.extensionSvc.getAll().subscribe((res) => {
+              const extensions = res?.extensions ?? [];
+
+              const allInstalled = extensions.map((ext: Extension) => ({
+                name: ext.configuration?.name ?? ext.folder,
+                version: ext.configuration?.version ?? '0.0.0',
+                guid: ext.configuration?.nameId ?? ext.folder
+              })) as InstalledApp[];
+
+              const specsMsg: SpecsForInstaller = {
+                action: 'specs',
+                data: {
+                  installedApps: allInstalled,
+                  rules: allInstalled.map(app => ({
+                    target: 'guid',
+                    appGuid: app.guid,
+                    mode: 'f',
+                    url: ''
+                  }))
+                }
+              };
+              const specsJson = JSON.stringify(specsMsg);
+              winFrame.contentWindow.postMessage(specsJson, '*');
+              console.log('debug: just sent specs message:' + specsJson, specsMsg, winFrame);
+            });
+          })
+        ).subscribe((evt) => {
+          let data: any;
+          try { data = typeof evt.data === 'string' ? JSON.parse(evt.data) : evt.data; } catch { return; }
+
+          if (this.showExtensionCatalog() && data.action === 'install' && data.packages) {
+            const firstPkg: any = Object.values(data.packages)[0];
+            if (!firstPkg?.url) return;
+            if (this.#alreadyProcessingRemote) return;
+
+            this.#alreadyProcessingRemote = true;
+            this.handleRemotePreflight(firstPkg.url);
+          }
+        })
     );
   }
 
@@ -202,7 +235,7 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
     this.selectedEditions = '';
     this.preflightError.set(null);
     this.force.set(false); // Reset force toggle
-    this.#alreadyProcessingRemote = false; 
+    this.#alreadyProcessingRemote = false;
   }
 
   // --- Unified Preflight Logic ---
@@ -245,7 +278,7 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
     } else {
       this.editions.set(this.fallbackEditions.map(e => ({ edition: e })));
     }
-    
+
     this.selectedEditions = this.editions().map(e => e.edition).join(',');
   }
 
@@ -254,7 +287,7 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
     this.extension.set(null);
     this.preflightSource = null;
     this.preflightError.set(error?.message || 'Preflight check failed');
-    this.#alreadyProcessingRemote = false; 
+    this.#alreadyProcessingRemote = false;
   }
 
   // --- Unified Install Logic ---

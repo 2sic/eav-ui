@@ -167,7 +167,6 @@
     @if (extension() && !isLoadingPreflight()) {
       <button
         mat-stroked-button
-        class="eav-action-button"
         (click)="cancelPreflight()"
         [disabled]="isInstalling()"
       >
@@ -177,7 +176,6 @@
       <button
         mat-raised-button
         class="eav-action-button"
-        color="primary"
         (click)="install()"
         [disabled]="!canInstall()"
       >
