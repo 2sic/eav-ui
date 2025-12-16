@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, ElementRef, Inject, OnInit, ViewChild, signal } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -42,6 +43,7 @@ export interface FileUploadDialogData {
     MatChipsModule,
     MatFormFieldModule,
     MatSelectModule,
+    MatCheckboxModule,
     FormsModule,
     DragAndDropDirective,
     MatIconModule,
@@ -67,6 +69,7 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
   preflightError = signal<string | null>(null);
   editions = signal<ExtensionEdition[]>([]);
   showExtensionCatalog = signal(false);
+  force = signal(false); // Checkbox state for overwriting
 
   // Unified selection state
   selectedEditions: string = '';
@@ -133,12 +136,12 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
       fromEvent<MessageEvent>(window, 'message').subscribe((evt) => {
         let data: any;
         try { data = typeof evt.data === 'string' ? JSON.parse(evt.data) : evt.data; } catch { return; }
-
+        
         if (this.showExtensionCatalog() && data.action === 'install' && data.packages) {
           const firstPkg: any = Object.values(data.packages)[0];
           if (!firstPkg?.url) return;
           if (this.#alreadyProcessingRemote) return;
-
+          
           this.#alreadyProcessingRemote = true;
           this.handleRemotePreflight(firstPkg.url);
         }
@@ -150,7 +153,8 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
     this.remoteInstallerUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
       this.buildRemoteUrl(this.urlChangeImportMode, {
         view: 'app-extensions',
-        selectOnlyMode: 'true'
+        selectOnlyMode: 'true',
+        excludeInstalled: 'true' // Filter out installed extensions
       })
     );
   }
@@ -197,7 +201,8 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
     this.preflightSource = null;
     this.selectedEditions = '';
     this.preflightError.set(null);
-    this.#alreadyProcessingRemote = false; // Reset remote lock so user can try again
+    this.force.set(false); // Reset force toggle
+    this.#alreadyProcessingRemote = false; 
   }
 
   // --- Unified Preflight Logic ---
@@ -230,13 +235,17 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
     this.preflightError.set(null);
     this.extension.set(ext);
     this.preflightSource = source;
+    this.force.set(false); // Reset logic when new item loaded
+
+    // If already installed, maybe auto-enable force? Or leave for user to decide.
+    // For now, we rely on user interaction.
 
     if (ext.editions?.length > 0) {
       this.editions.set(ext.editions);
     } else {
       this.editions.set(this.fallbackEditions.map(e => ({ edition: e })));
     }
-
+    
     this.selectedEditions = this.editions().map(e => e.edition).join(',');
   }
 
@@ -245,7 +254,7 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
     this.extension.set(null);
     this.preflightSource = null;
     this.preflightError.set(error?.message || 'Preflight check failed');
-    this.#alreadyProcessingRemote = false;
+    this.#alreadyProcessingRemote = false; 
   }
 
   // --- Unified Install Logic ---
@@ -264,12 +273,13 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
     this.isInstalling.set(true);
 
     const editions = this.selectedEditions?.length ? this.selectedEditions : undefined;
+    const overwrite = this.force();
     let installObservable: Observable<any>;
 
     if (this.preflightSource instanceof File) {
-      installObservable = this.extensionSvc.uploadExtensions(this.preflightSource, editions);
+      installObservable = this.extensionSvc.uploadExtensions(this.preflightSource, editions, overwrite);
     } else if (typeof this.preflightSource === 'string') {
-      installObservable = this.extensionSvc.installRemoteExtension(this.preflightSource, editions);
+      installObservable = this.extensionSvc.installRemoteExtension(this.preflightSource, editions, overwrite);
     } else {
       return; // Should not happen
     }

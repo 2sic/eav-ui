@@ -24,29 +24,16 @@
       class="eav-dialog-actions"
       align="end"
     >
-      <eco-fab-speed-dial
-      class="eav-eco-fab-speed-dial"
-      [ngClass]="{ 'fab-opened': fabOpen() }"
-      (openChange)="openChange($event)"
-    >
-      <eco-fab-speed-dial-trigger [spin]="true">
-        <button mat-fab class="grid-fab">
-          <mat-icon class="spin180">
-            {{ fabOpen() ? 'close' : 'add' }}
-          </mat-icon>
-        </button>
-      </eco-fab-speed-dial-trigger>
-      <eco-fab-speed-dial-actions class="eav-eco-fab-speed-dial-actions">
-        <button
-          mat-mini-fab
-          class="eav-eco-fab-speed-dial-action-button"
-          label="Import extension"
-          (click)="importExtension()"
-        >
-          <mat-icon>cloud_upload</mat-icon>
-        </button>
-      </eco-fab-speed-dial-actions>
-    </eco-fab-speed-dial>
+      <button
+        mat-fab
+        mat-elevation-z24
+        class="grid-fab"
+        tippy="Add Extension"
+        tippyPlacement="top"
+        (click)="importExtension()"
+      >
+        <mat-icon>add</mat-icon>
+      </button>
     </mat-dialog-actions>
   </app-grid-with-help>
 </div>

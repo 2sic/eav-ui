@@ -84,14 +84,15 @@ export class AppExtensionsService extends HttpServiceBase {
   }
 
   /** Uploads extension files (no change, still uses FormData) */
-  uploadExtensions(file: File, editions?: string) {
+  uploadExtensions(file: File, editions?: string, overwrite?: boolean) {
     const formData = new FormData();
     formData.append('files', file);
 
     const params = {
       appId: this.appId,
       zoneId: this.zoneId,
-      ...(editions ? { editions } : {})
+      ...(editions ? { editions } : {}),
+      ...(overwrite ? { overwrite } : {})
     };
 
     return this.http.post<boolean>(this.apiUrl('admin/appExtensions/install'), formData, {

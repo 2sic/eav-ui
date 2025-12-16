@@ -5,13 +5,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogActions } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterOutlet } from '@angular/router';
-import { EcoFabSpeedDialActionsComponent, EcoFabSpeedDialComponent, EcoFabSpeedDialTriggerComponent } from '@ecodev/fab-speed-dial';
 import { of, take } from 'rxjs';
 import { transient } from '../../../../../core';
 import { DialogRoutingState } from '../../edit/dialog/dialogRouteState.model';
 import { GridWithHelpComponent, HelpTextConst } from '../../shared/ag-grid/grid-with-help/grid-with-help';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
+import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm, EditPrep } from '../../shared/models/edit-form.model';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
@@ -36,9 +36,7 @@ import { AppExtensionsLinkCell } from './extensions-link/extensions-link';
     SxcGridModule,
     DragAndDropDirective,
     GridWithHelpComponent,
-    EcoFabSpeedDialComponent,
-    EcoFabSpeedDialTriggerComponent,
-    EcoFabSpeedDialActionsComponent,
+    TippyDirective,
   ]
 })
 export class AppExtensions implements OnInit {
