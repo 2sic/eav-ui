@@ -48,7 +48,42 @@ export class AppExtensionsService extends HttpServiceBase {
     window.open(url, '_blank', '');
   }
 
-  /** Uploads extension files */
+  /** Install a remote extension by URL - v2: POST to .InstallFrom with url(s) in body */
+  installRemoteExtension(url: string, editions?: string, overwrite?: boolean) {
+    // Always use array of string (even if only one for now)
+    const body = [url];
+
+    const params: any = {
+      appId: this.appId,
+      zoneId: this.zoneId,
+      ...(editions ? { editions } : {}),
+      ...(overwrite ? { overwrite } : {})
+    };
+
+    return this.http.post<boolean>(
+      this.apiUrl('admin/appExtensions/InstallFrom'),
+      body,
+      { params }
+    );
+  }
+
+  /** Preflight a remote extension by URL - v2: POST to .InstallPreflightFrom with url(s) in body */
+  installPreflightExtensionFromUrl(url: string, editions?: string) {
+    const body = [url];
+
+    const params: any = {
+      appId: this.appId,
+      ...(editions ? { editions } : {})
+    };
+
+    return this.http.post<{ extensions: ExtensionPreflightItem[] }>(
+      this.apiUrl('admin/appExtensions/InstallPreflightFrom'),
+      body,
+      { params }
+    );
+  }
+
+  /** Uploads extension files (no change, still uses FormData) */
   uploadExtensions(file: File, editions?: string) {
     const formData = new FormData();
     formData.append('files', file);
@@ -71,6 +106,7 @@ export class AppExtensionsService extends HttpServiceBase {
     );
   }
 
+  /** Preflight file upload (no change, still uses FormData) */
   installPreflightExtension(files: File[]) {
     const formData = new FormData();
     files.forEach(file => formData.append('files', file));
