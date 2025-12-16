@@ -9,17 +9,18 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DomSanitizer } from '@angular/platform-browser';
-import { catchError, filter, fromEvent, map, of, switchMap, take, tap } from 'rxjs';
+import { catchError, filter, map, of, switchMap, take, tap } from 'rxjs';
 import { Of, transient } from '../../../../../../core';
 import { AppsListService } from '../../../apps-management/services/apps-list.service';
 import { DragAndDropDirective } from '../../directives/drag-and-drop.directive';
-import { CrossWindowMessage, InstallPackage, InstallSettings, SpecsForInstaller } from '../../models/installer-models';
+import { InstallPackage, InstallSettings, SpecsForInstaller } from '../../models/installer-models';
 import { SafeHtmlPipe } from '../../pipes/safe-html.pipe';
 import { Context } from '../../services/context';
 import { AppInstallSettingsService } from '../../services/getting-started.service';
 import { InstallerService } from '../../services/installer.service';
 import { BaseComponent } from '../base';
 import { FileUploadDialogData, FileUploadMessageTypes, FileUploadResult, ImportModeValues, UploadTypes } from './file-upload-dialog.models';
+import { MessagesFrom2sxc } from './messages-from-2sxc';
 
 @Component({
   selector: 'app-file-upload-dialog',
@@ -71,12 +72,15 @@ export class FileUploadDialogComponent extends BaseComponent implements OnInit, 
     name: ['']
   });
 
+  private context = inject(Context);
+
+  messages = new MessagesFrom2sxc(this.context.moduleId);
+
   constructor(
     @Inject(MAT_DIALOG_DATA) public dialogData: FileUploadDialogData,
     private dialog: MatDialogRef<FileUploadDialogComponent>,
     private snackBar: MatSnackBar,
     private sanitizer: DomSanitizer,
-    private context: Context,
     private changeDetectorRef: ChangeDetectorRef,
   ) {
     super();
@@ -94,26 +98,6 @@ export class FileUploadDialogComponent extends BaseComponent implements OnInit, 
     this.#setupConditionalValidation();
   }
 
-  #alreadyProcessing = false;
-  // copied from 2sxc-ui app/installer
-  // Initial Observable to monitor messages
-  #messages$ = fromEvent(window, 'message').pipe(
-    // Ensure only one installation is processed.
-    filter(() => !this.#alreadyProcessing),
-    filter((evt: MessageEvent) => evt.origin === "https://2sxc.org"),
-    // Get data from event.
-    map((evt: MessageEvent) => {
-      try {
-        return JSON.parse(evt.data) as CrossWindowMessage;
-      } catch (e) {
-        console.error('error procesing message. Message was ' + evt.data, e);
-        return void 0;
-      }
-    }),
-    // Check if data is valid and the moduleID matches
-    filter(data => data && Number(data.moduleId) === this.context.moduleId),
-  );
-
   ngOnInit(): void {
     // Update the remote installer URL based on the import mode
     // Show multiple select or single select based on import mode
@@ -129,12 +113,13 @@ export class FileUploadDialogComponent extends BaseComponent implements OnInit, 
     // copied from 2sxc-ui
     this.#installSettingsService.loadGettingStarted(false); // Passed as input from 2sxc-ui
 
-    // copied from 2sxc-ui app/installer
-    this.subscriptions.add(this.#messages$.pipe(
+    this.subscriptions.add(this.messages.messages$
       // Verify it's for this action
-      filter(data => data.action === 'specs'),
+      .pipe(
+        filter(data => data.action === 'specs'),
+      )
       // Send message to iframe
-      tap(() => {
+      .subscribe(() => {
         const winFrame = this.installerWindow.nativeElement as HTMLIFrameElement;
         const specsMsg: SpecsForInstaller = {
           action: 'specs',
@@ -147,13 +132,13 @@ export class FileUploadDialogComponent extends BaseComponent implements OnInit, 
         };
         const specsJson = JSON.stringify(specsMsg);
         winFrame.contentWindow.postMessage(specsJson, '*');
-        console.log('debug: just sent specs message:' + specsJson, specsMsg, winFrame);
-      }),
-    ).subscribe());
+        console.log('debug: just sent specs message #2:' + specsJson, specsMsg, winFrame);
+      })
+    );
 
     // copied from 2sxc-ui app/installer
     // Subscription to listen to 'install' messages
-    this.subscriptions.add(this.#messages$.pipe(
+    this.subscriptions.add(this.messages.messages$.pipe(
       filter(data => data.action === 'install'),
       // Get packages from data.
       map(data => Object.values(data.packages)),
@@ -170,7 +155,7 @@ This takes about 10 seconds per package. Don't reload the page while it's instal
       }),
       // Install the packages one at a time
       switchMap(packages => {
-        this.#alreadyProcessing = true;
+        this.messages.alreadyProcessing = true;
         this.showProgress = true;
         this.changeDetectorRef.detectChanges(); //without this spinner is not shown
         // If import mode is 'importAsTemplate', create a Install template with Url and new Name
@@ -191,7 +176,7 @@ This takes about 10 seconds per package. Don't reload the page while it's instal
       catchError(error => {
         console.error('Error: ', error);
         this.showProgress = false;
-        this.#alreadyProcessing = false;
+        this.messages.alreadyProcessing = false;
         this.changeDetectorRef.detectChanges(); //without this spinner is not removed
         const errorMsg = `An error occurred: Package ${this.currentPackage.displayName}
 

@@ -1,5 +1,6 @@
+
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, Inject, OnInit, ViewChild, signal } from '@angular/core';
+import { Component, ElementRef, Inject, OnInit, ViewChild, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -11,13 +12,15 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { transient } from 'projects/core';
-import { Observable, filter, fromEvent, take, tap } from 'rxjs';
+import { Observable, filter, fromEvent, take } from 'rxjs';
 import { isCtrlEnter } from '../../../edit/dialog/main/keyboard-shortcuts';
 import { BaseComponent } from '../../../shared/components/base';
 import { FileUploadResult, ImportModeValues, UploadTypes } from '../../../shared/components/file-upload-dialog';
+import { MessagesFrom2sxc } from '../../../shared/components/file-upload-dialog/messages-from-2sxc';
 import { DragAndDropDirective } from '../../../shared/directives/drag-and-drop.directive';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { InstallSettings, InstalledApp, SpecsForInstaller } from '../../../shared/models/installer-models';
+import { Context } from '../../../shared/services/context';
 import { AppInstallSettingsService } from '../../../shared/services/getting-started.service';
 import { Extension, ExtensionEdition, ExtensionPreflightItem } from '../../models/extension.model';
 import { AppExtensionsService } from '../../services/app-extensions.service';
@@ -87,6 +90,11 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
     name: ['']
   });
 
+  private context = inject(Context);
+
+  messages = new MessagesFrom2sxc(this.context.moduleId);
+  
+
   // Template Helpers to avoid 'instanceof' and strict type errors in HTML
   get isFileSource(): boolean {
     return this.preflightSource instanceof File;
@@ -131,49 +139,69 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
       this.updateRemoteUrl();
     });
 
+    this.subscriptions.add(this.messages.messages$
+      // Verify it's for this action
+      .pipe(
+        filter(data => data.action === 'specs'),
+      )
+      // Send message to iframe, which apps are already installed
+      // Disable 2025-12-16 for now, as we don't have a dedicated
+      // update-mode; so for now the installer should always show all apps
+      .subscribe(() => {
+        return; // Disabled for now
+        const winFrame = this.installerWindow.nativeElement as HTMLIFrameElement;
+
+        // Subscribe to the HttpResourceRef to get the data
+        this.extensionSvc.getAll().subscribe((res) => {
+          const extensions = res?.extensions ?? [];
+
+          const allInstalled = extensions.map((ext: Extension) => ({
+            name: ext.configuration?.name,
+            guid: ext.configuration?.nameId.toString(),
+            version: ext.configuration?.version,
+          })) satisfies InstalledApp[];
+
+          const specsMsg: SpecsForInstaller = {
+            action: 'specs',
+            data: {
+              installedApps: allInstalled,
+              rules: allInstalled.map(app => ({
+                target: 'guid',
+                appGuid: app.guid,
+                mode: 'f',
+                url: ''
+              }))
+            }
+          };
+          const specsJson = JSON.stringify(specsMsg);
+          winFrame.contentWindow.postMessage(specsJson, '*');
+          console.log('debug: just sent specs message:' + specsJson, specsMsg, winFrame);
+        });
+      })
+    );
+
     // Handle postMessage events from the app catalog dialog (iframe)
     this.subscriptions.add(
       fromEvent<MessageEvent>(window, 'message')
         .pipe(
           filter(() => !!this.installerWindow),
-          tap(() => {
-            const winFrame = this.installerWindow.nativeElement as HTMLIFrameElement;
-
-            // Subscribe to the HttpResourceRef to get the data
-            this.extensionSvc.getAll().subscribe((res) => {
-              const extensions = res?.extensions ?? [];
-
-              const allInstalled = extensions.map((ext: Extension) => ({
-                name: ext.configuration?.name ?? ext.folder,
-                version: ext.configuration?.version ?? '0.0.0',
-                guid: ext.configuration?.nameId ?? ext.folder
-              })) as InstalledApp[];
-
-              const specsMsg: SpecsForInstaller = {
-                action: 'specs',
-                data: {
-                  installedApps: allInstalled,
-                  rules: allInstalled.map(app => ({
-                    target: 'guid',
-                    appGuid: app.guid,
-                    mode: 'f',
-                    url: ''
-                  }))
-                }
-              };
-              const specsJson = JSON.stringify(specsMsg);
-              winFrame.contentWindow.postMessage(specsJson, '*');
-              console.log('debug: just sent specs message:' + specsJson, specsMsg, winFrame);
-            });
-          })
-        ).subscribe((evt) => {
+        )
+        .subscribe((evt) => {
           let data: any;
-          try { data = typeof evt.data === 'string' ? JSON.parse(evt.data) : evt.data; } catch { return; }
+          try {
+            data = typeof evt.data === 'string'
+              ? JSON.parse(evt.data)
+              : evt.data;
+          } catch {
+            return;
+          }
 
           if (this.showExtensionCatalog() && data.action === 'install' && data.packages) {
             const firstPkg: any = Object.values(data.packages)[0];
-            if (!firstPkg?.url) return;
-            if (this.#alreadyProcessingRemote) return;
+            if (!firstPkg?.url)
+              return;
+            if (this.#alreadyProcessingRemote)
+              return;
 
             this.#alreadyProcessingRemote = true;
             this.handleRemotePreflight(firstPkg.url);
