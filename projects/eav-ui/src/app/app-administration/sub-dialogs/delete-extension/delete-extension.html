@@ -8,7 +8,7 @@
 
   <div class="eav-dialog-content">
     <mat-accordion>
-      <mat-expansion-panel [expanded]="true">
+      <mat-expansion-panel [expanded]="false">
         <mat-expansion-panel-header>
           <mat-panel-title>Extension Details</mat-panel-title>
         </mat-expansion-panel-header>
@@ -17,16 +17,22 @@
         </div>
       </mat-expansion-panel>
     </mat-accordion>
-    <p>Are you Sure you want to delete this Extension?</p>
-    <p>
-      <mat-slide-toggle [(ngModel)]="withData">
-        Also delete data in the App which the extension created?
+    @if (totalLocalEntities() > 0) {
+      <p>Caution: This app has {{ totalLocalEntities() }} local entities.</p>
+      <p>
+        <mat-slide-toggle [(ngModel)]="withData">
+          With Data
+        </mat-slide-toggle>
+      </p>
+    }
+    @if (mustForceDelete()) {
+      <mat-slide-toggle [(ngModel)]="forceDelete">
+        Force Delete
       </mat-slide-toggle>
-    </p>
+    }
   </div>
 
   <mat-dialog-actions align="end">
-    <button mat-button (click)="forceDeleteAndClose(true)">Force Delete</button>
     <app-save-close-button-fab
       [label]="'Delete and close (ctrl + enter)'"
       (action)="deleteAndClose()"

@@ -1,4 +1,4 @@
-import { Component, inject, Inject, OnInit } from '@angular/core';
+import { Component, computed, inject, Inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogActions, MatDialogRef } from '@angular/material/dialog';
@@ -38,16 +38,64 @@ export class DeleteExtensionComponent implements OnInit {
 
   extensionFolder = this.route.snapshot.paramMap.get('extension') as 'extension';
   withData = false;
-  withForceAllowed = false;
+  forceDelete = false;
 
   preflightResult = this.#extensionsSvc.preflightExtension(this.extensionFolder, '').value;
+
+  totalLocalEntities = computed(() => {
+    const result = this.preflightResult();
+    if (!result?.data?.contentTypes) return 0;
+
+    return result.data.contentTypes
+      .map(ct => ct.localEntities)
+      .reduce((sum, n) => sum + n, 0);
+  });
+
+  mustForceDelete = computed((): boolean => {
+    const inspect = this.preflightResult()
+    if (!inspect) return false;
+
+    const fileSummary = inspect.summary;
+    const filesChanged = fileSummary.changed + fileSummary.added + fileSummary.missing;
+
+    // 1) Installed?
+    const isInstalled = inspect.files.some(f =>
+      f.path.endsWith('App_Data/extension.json') && f.status !== 'missing'
+    );
+
+    // If not installed → auto-force-delete
+    if (!isInstalled) {
+      return true;
+    }
+
+    // 2) Lock file must exist
+    if (!inspect.foundLock) {
+      this.showError('Missing extension.lock.json. Deletion not allowed.');
+      return true;
+    }
+
+    // 3) Changed / added / missing files?
+    if (filesChanged > 0) {
+      this.askForce(`The extension has file changes (${filesChanged}).`);
+      return true;
+    }
+
+    // 4) Existing local entities?
+    if (this.totalLocalEntities() > 0) {
+      this.askForce(`The extension has ${this.totalLocalEntities()} local entities.`);
+      return true;
+    }
+
+    // 5) All good → normal delete
+    return false;
+  });
 
   constructor(
     private route: ActivatedRoute,
     @Inject(MAT_DIALOG_DATA) public dialogData: ConfirmDeleteDialogData,
     public dialog: MatDialogRef<ConfirmDeleteDialogComponent>,
   ) { }
-  
+
   ngOnInit() {
     this.#watchKeyboardShortcuts();
   }
@@ -68,67 +116,20 @@ export class DeleteExtensionComponent implements OnInit {
       : this.dialog.close();
   }
 
-  forceDeleteAndClose(confirm: boolean) {
-    if (!confirm) {
-      this.dialog.close(false);
-      return;
-    }
-
-    this.executeDelete(true);
-  }
-
   deleteAndClose() {
-    this.evaluatePreflight();
-  }
-
-  private evaluatePreflight() {
-    const inspect = this.preflightResult()
-
-    const fileSummary = inspect.summary;
-    const filesChanged = fileSummary.changed + fileSummary.added + fileSummary.missing;
-
-    // 1) Installed?
-    const isInstalled = inspect.files.some(f =>
-      f.path.endsWith('App_Data/extension.json') && f.status !== 'missing'
-    );
-
-    // If not installed → auto-force-delete
-    if (!isInstalled) {
-      this.executeDelete(true);
+    if (this.mustForceDelete() && !this.forceDelete) {
+      this.showError('Deletion requires force. Please enable "Force Delete" and try again.');
       return;
     }
-
-    // 2) Lock file must exist
-    if (!inspect.foundLock) {
-      this.showError('Missing extension.lock.json. Deletion not allowed.');
-      return;
-    }
-
-    // 3) Changed / added / missing files?
-    if (filesChanged > 0 && !this.withForceAllowed) {
-      this.askForce(`The extension has file changes (${filesChanged}).`);
-      return;
-    }
-
-    // 4) Existing data?
-    const dataCount = inspect.data.contentTypes.length;
-    if (dataCount > 0 && !this.withForceAllowed) {
-      this.askForce(`The extension has data (${dataCount} items).`);
-      return;
-    }
-
-    // 5) All good → normal delete
-    this.executeDelete(false);
+    this.executeDelete(this.forceDelete);
   }
 
   private askForce(message: string) {
-    const snack = this.#snackBar.open(
-      `${message} Force delete?`,
-      'Force',
+    this.#snackBar.open(
+      `${message}`,
+      '',
       { duration: 10000 }
     );
-
-    snack.onAction().subscribe(() => this.executeDelete(true));
   }
 
   private executeDelete(force: boolean) {
