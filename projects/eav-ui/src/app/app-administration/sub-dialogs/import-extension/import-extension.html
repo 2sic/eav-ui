@@ -83,9 +83,15 @@
         
         <!-- Source Indicator -->
         @if (isFileSource) {
-            <em>File: {{ currentFile?.name }}</em>
+          File:
+          <em>{{ currentFile?.name }}</em>
         } @else {
-            <em>Remote Source: {{ preflightSource }}</em>
+          Remote Source:
+          <em>
+            <a [href]="preflightSource">
+              {{ preflightSource.toString().substring(0, 50) }}...
+            </a>
+          </em>
         }
 
         <h4>{{ extension().name }} Details</h4>
@@ -109,7 +115,7 @@
         </div>
 
         <div class="ext-features">
-          <h4>Features</h4>
+          <h4>Features used by this Extension</h4>
           <mat-chip-set>
             @for (
               feature of extension().features | keyvalue;
@@ -125,7 +131,7 @@
         <!-- Edition Selection -->
         @if (extension().editionsSupported && editions()?.length) {
           <div class="ext-editions">
-            <h4>Editions</h4>
+            <h4>Editions to install this Extension to</h4>
             <div class="edition-selector">
               @for (edition of editions(); track edition.edition) {
                 <mat-checkbox
@@ -140,16 +146,21 @@
           </div>
         }
 
-        <!-- Force Install Option -->
-        <div class="install-options" style="margin-top: 16px;">
-          <mat-checkbox 
-            [checked]="force()" 
-            (change)="force.set($event.checked)"
-            color="primary">
-            Force / Overwrite existing installation
-          </mat-checkbox>
-        </div>
-
+        <!-- TODO: only show if necessary -->
+        @if (allreadyInstalled()) {
+          <!-- Force Install Option -->
+          <div class="install-options" style="margin-top: 16px;">
+            <h4>Caution: Import causes an Overwrite</h4>
+            <p>
+              You need to force install/ overwrite the extension.
+            </p>
+            <mat-slide-toggle
+              [(ngModel)]="forceInstall"
+              color="primary">
+              Force / Overwrite
+            </mat-slide-toggle>
+          </div>
+        }
       </div>
     }
 

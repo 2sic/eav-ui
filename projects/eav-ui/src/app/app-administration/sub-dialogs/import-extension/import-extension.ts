@@ -1,6 +1,6 @@
 
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, Inject, OnInit, ViewChild, inject, signal } from '@angular/core';
+import { Component, ElementRef, Inject, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -10,6 +10,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { transient } from 'projects/core';
 import { Observable, filter, fromEvent, take } from 'rxjs';
@@ -51,6 +52,7 @@ export interface FileUploadDialogData {
     DragAndDropDirective,
     MatIconModule,
     TippyDirective,
+    MatSlideToggleModule,
   ],
 })
 export class ImportExtensionComponent extends BaseComponent implements OnInit {
@@ -72,7 +74,12 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
   preflightError = signal<string | null>(null);
   editions = signal<ExtensionEdition[]>([]);
   showExtensionCatalog = signal(false);
-  force = signal(false); // Checkbox state for overwriting
+  forceInstall = false;
+  allreadyInstalled = computed(() => {
+    const ext = this.extension();
+    if (!ext) return false;
+    return ext.editions?.some(e => e.isInstalled) ?? false; // TODO: instead of some it should check for the specified edition
+  });
 
   // Unified selection state
   selectedEditions: string[] = [];
@@ -93,16 +100,6 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
   private context = inject(Context);
 
   messages = new MessagesFrom2sxc(this.context.moduleId);
-  
-
-  // Template Helpers to avoid 'instanceof' and strict type errors in HTML
-  get isFileSource(): boolean {
-    return this.preflightSource instanceof File;
-  }
-
-  get currentFile(): File | null {
-    return this.isFileSource ? (this.preflightSource as File) : null;
-  }
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public dialogData: FileUploadDialogData,
@@ -209,6 +206,15 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
         })
     );
   }
+  
+  // Template Helpers to avoid 'instanceof' and strict type errors in HTML
+  get isFileSource(): boolean {
+    return this.preflightSource instanceof File;
+  }
+
+  get currentFile(): File | null {
+    return this.isFileSource ? (this.preflightSource as File) : null;
+  }
 
   private updateRemoteUrl() {
     this.remoteInstallerUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
@@ -262,7 +268,7 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
     this.preflightSource = null;
     this.selectedEditions = [];
     this.preflightError.set(null);
-    this.force.set(false); // Reset force toggle
+    this.forceInstall = false; // Reset force toggle
     this.#alreadyProcessingRemote = false;
   }
 
@@ -296,7 +302,7 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
     this.preflightError.set(null);
     this.extension.set(ext);
     this.preflightSource = source;
-    this.force.set(false); // Reset logic when new item loaded
+    this.forceInstall = false; // Reset logic when new item loaded
 
     // If already installed, maybe auto-enable force? Or leave for user to decide.
     // For now, we rely on user interaction.
@@ -326,6 +332,7 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
     if (this.isInstalling()) return false;
     if (this.isLoadingPreflight()) return false;
     if (!this.extension()) return false;
+    if (this.allreadyInstalled() && !this.forceInstall) return false;
     return true;
   }
 
@@ -333,8 +340,7 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
     if (!this.canInstall()) return;
     this.isInstalling.set(true);
 
-    const editions = this.selectedEditions?.length ? this.selectedEditions : undefined;
-    const overwrite = this.force();
+    const overwrite = this.forceInstall;
     let installObservable: Observable<any>;
 
     const editionsString = this.selectedEditions.length ? this.selectedEditions.join(',') : undefined;
