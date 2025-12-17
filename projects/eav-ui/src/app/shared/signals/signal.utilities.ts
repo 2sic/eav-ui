@@ -11,12 +11,12 @@ import { Observable, take } from 'rxjs';
  * @returns
  */
 export function signalObj<T>(name: string, initialValue: T): WritableSignal<T> {
-  const sig = signal(initialValue, { equal: isEqual }) as WritableSignal<T>;
+  const sig = signal(initialValue, { equal: isEqual, debugName: name }) as WritableSignal<T>;
   return named(name, sig);
 }
 
 export function computedObj<T>(name: string, computation: () => T): Signal<T> {
-  const comp =  computed(computation, { equal: isEqual }) as Signal<T>; // needs recast, because isEqual changes it to Signal<any>
+  const comp =  computed(computation, { equal: isEqual, debugName: name }) as Signal<T>; // needs recast, because isEqual changes it to Signal<any>
   return named(name, comp);
 }
 
@@ -31,7 +31,7 @@ export function computedObj<T>(name: string, computation: () => T): Signal<T> {
  * @returns
  */
 export function httpToSignal<T>(name: string, httpRequest: Observable<T>, initialValue: T = null): Signal<T> {
-  const sig = signal(initialValue, { equal: isEqual }) as WritableSignal<T>;
+  const sig = signal(initialValue, { equal: isEqual, debugName: name }) as WritableSignal<T>;
   // take(1) to only get the first value, and close the subscription right afterwards - which is what happens to all normal http requests
   httpRequest.pipe(take(1)).subscribe(value => sig.set(value));
   return named(name, sig.asReadonly());

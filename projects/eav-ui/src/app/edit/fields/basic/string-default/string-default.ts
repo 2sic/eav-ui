@@ -14,29 +14,29 @@ import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
 import { StringDefaultLogic } from './string-default-logic';
 
 @Component({
-    selector: InputTypeCatalog.StringDefault,
-    templateUrl: './string-default.html',
-    styleUrls: ['./string-default.scss'],
-    imports: [
-        MatFormFieldModule,
-        FormsModule,
-        ReactiveFormsModule,
-        NgClass,
-        MatInputModule,
-        NgStyle,
-        FieldHelperTextComponent,
-    ]
+  selector: InputTypeCatalog.StringDefault,
+  templateUrl: './string-default.html',
+  styleUrls: ['./string-default.scss'],
+  imports: [
+    MatFormFieldModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NgClass,
+    MatInputModule,
+    NgStyle,
+    FieldHelperTextComponent,
+  ]
 })
 @FieldMetadata({ ...WrappersLocalizationOnly })
 export class StringDefaultComponent {
 
-  protected fieldState = inject(FieldState) as FieldState<string, FieldSettings & FieldSettingsStringDefault>;
+  #fieldState = inject(FieldState) as FieldState<string, FieldSettings & FieldSettingsStringDefault>;
 
-  protected group = this.fieldState.group;
-  protected config = this.fieldState.config;
+  protected group = this.#fieldState.group;
+  protected config = this.#fieldState.config;
 
-  protected settings = this.fieldState.settings;
-  protected basics = this.fieldState.basics;
+  // #settings = this.#fieldState.settings;
+  protected basics = this.#fieldState.basics;
 
   /**
    * Row Count as it is in the settings
@@ -44,7 +44,7 @@ export class StringDefaultComponent {
    * where the row count can be negative to create a multi-line picker.
    * This is not an official feature, as we may add a toggle to this some day instead, and then fix the icon-picker.
    */
-  protected rowCountRaw = this.fieldState.settingExt('RowCount');
+  protected rowCountRaw = this.#fieldState.settingExt('RowCount');
 
   /**
    * Row Count corrected and also neutralize negative numbers, as it's an undocumented feature to create multi-line with 1 line
@@ -56,8 +56,15 @@ export class StringDefaultComponent {
     return rc < 0 || rc > 1;
   });
   
-  protected inputFontFamily = this.fieldState.settingExt('InputFontFamily');
-  protected textWrap = this.fieldState.settingExt('TextWrapping');
+  protected inputFontFamily = this.#fieldState.settingExt('InputFontFamily');
+  protected textWrap = this.#fieldState.settingExt('TextWrapping');
+
+  /**
+   * The string-default is also used when a custom string-* is not found.
+   * If this is being shown as a fallback for another field type, keep the name here
+   * to show in the UI.
+   */
+  protected typeIfNotWhatsExpected = this.#fieldState.isNotExpectedType([InputTypeCatalog.StringDefault]);
 
   constructor() {
     StringDefaultLogic.importMe();

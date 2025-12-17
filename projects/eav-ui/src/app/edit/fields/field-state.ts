@@ -121,4 +121,23 @@ export class FieldState<TValue extends FieldValue = FieldValue, TSettings extend
   }
 
   //#endregion
+
+  //#region Detectors for Showing-Default-When-Custom-Not-Found
+
+  /**
+   * The [typename]-default is also used when a custom [typename]-* is not found.
+   * So the *-default fields will use this to have a value if they are being shown in the fallback scenario.
+   * Otherwise the result will be null/empty/falsy.
+   * @param correctNames The correct type names which are not fallbacks
+   */
+  isNotExpectedType(correctNames: string[]): Signal<string | null> {
+    return computedObj('isFallbackForField', () => {
+      const inputType = this.settings().InputType;
+      return correctNames.includes(inputType)
+        ? null
+        : inputType || null; // make sure falsy values are null
+    });
+  }
+
+  //#endregion
 }
