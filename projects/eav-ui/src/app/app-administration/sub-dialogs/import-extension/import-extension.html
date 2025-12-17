@@ -127,16 +127,15 @@
           <div class="ext-editions">
             <h4>Editions</h4>
             <div class="edition-selector">
-              <mat-form-field color="accent" class="eav-mat-form-field">
-                <mat-label>Select Editions to Install</mat-label>
-                <mat-select [(value)]="selectedEditions" multiple>
-                  @for (edition of editions(); track edition.edition) {
-                    <mat-option [value]="edition.edition">
-                      {{ edition.edition || 'Default' }}
-                    </mat-option>
-                  }
-                </mat-select>
-              </mat-form-field>
+              @for (edition of editions(); track edition.edition) {
+                <mat-checkbox
+                  [checked]="selectedEditions.includes(edition.edition)"
+                  (change)="onEditionToggle(edition.edition, $event.checked)"
+                  color="accent"
+                >
+                  {{ edition.edition || 'Default' }}
+                </mat-checkbox>
+              }
             </div>
           </div>
         }

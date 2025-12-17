@@ -75,7 +75,7 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
   force = signal(false); // Checkbox state for overwriting
 
   // Unified selection state
-  selectedEditions: string = '';
+  selectedEditions: string[] = [];
   preflightSource: File | string | null = null; // Can be a local File or a remote URL string
 
   urlChangeImportMode = "";
@@ -260,7 +260,7 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
   cancelPreflight(): void {
     this.extension.set(null);
     this.preflightSource = null;
-    this.selectedEditions = '';
+    this.selectedEditions = [];
     this.preflightError.set(null);
     this.force.set(false); // Reset force toggle
     this.#alreadyProcessingRemote = false;
@@ -307,7 +307,7 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
       this.editions.set(this.fallbackEditions.map(e => ({ edition: e })));
     }
 
-    this.selectedEditions = this.editions().map(e => e.edition).join(',');
+    this.selectedEditions = this.editions().map(e => e.edition);
   }
 
   private handlePreflightError(error: any) {
@@ -337,10 +337,12 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
     const overwrite = this.force();
     let installObservable: Observable<any>;
 
+    const editionsString = this.selectedEditions.length ? this.selectedEditions.join(',') : undefined;
+
     if (this.preflightSource instanceof File) {
-      installObservable = this.extensionSvc.uploadExtensions(this.preflightSource, editions, overwrite);
+      installObservable = this.extensionSvc.uploadExtensions(this.preflightSource, editionsString, overwrite);
     } else if (typeof this.preflightSource === 'string') {
-      installObservable = this.extensionSvc.installRemoteExtension(this.preflightSource, editions, overwrite);
+      installObservable = this.extensionSvc.installRemoteExtension(this.preflightSource, editionsString, overwrite);
     } else {
       return; // Should not happen
     }
@@ -356,5 +358,15 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
         console.error('Installation error:', error);
       }
     });
+  }
+
+  onEditionToggle(edition: string, checked: boolean) {
+    if (checked) {
+      if (!this.selectedEditions.includes(edition)) {
+        this.selectedEditions.push(edition);
+      }
+    } else {
+      this.selectedEditions = this.selectedEditions.filter(e => e !== edition);
+    }
   }
 }
