@@ -20,6 +20,7 @@ import { EntityService } from '../../shared/services/entity.service';
 import { Extension } from '../models/extension.model';
 import { AppExtensionsService } from '../services/app-extensions.service';
 import { ImportExtensionComponent } from '../sub-dialogs/import-extension/import-extension';
+import { appExtIcon } from './app-extension-mask';
 import { AppExtensionActions } from './extension-actions/extension-actions';
 import { AppExtensionsLinkCell } from './extensions-link/extensions-link';
 
@@ -213,8 +214,9 @@ export class AppExtensions implements OnInit {
 
   cellTextRenderer(text: string, subText?: string, width?: string, icon?: string): string {
     return `
+      
       <div style="display: flex; align-items: center; gap: 8px;">
-        ${icon ? `<img src="${icon}" alt="${text}" style="width: 48px; height: 48px; border: 1px solid rgba(0, 0, 0, 0.2); border-radius: 16px 0;">` : ''}
+        ${icon ? `${appExtIcon}<img src="${icon}" alt="${text}" style="clip-path: url(#myClip); width:48px; height:48px;">` : ''}
         <div style="display: flex; flex-direction: column;">
           <span title="${text}" style="font-weight:bold; white-space: nowrap; width: ${width ?? '100%'}; overflow: hidden; text-overflow: ellipsis;">${text}</span>
           <span title="${subText}" style="margin-top: -15px; white-space: nowrap; width: ${width ?? '100%'}; overflow: hidden; text-overflow: ellipsis;">
