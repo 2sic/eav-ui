@@ -211,13 +211,16 @@ export class AppExtensions implements OnInit {
     return data?.length === 0 ? this.#helpTextConst.empty : this.#helpTextConst.content;
   });
 
-  cellTextRenderer(text: string, subText?: string, width?: string): string {
+  cellTextRenderer(text: string, subText?: string, width?: string, icon?: string): string {
     return `
-      <div style="display: flex; flex-direction: column;">
-        <span title="${text}" style="font-weight:bold; white-space: nowrap; width: ${width ?? '100%'}; overflow: hidden; text-overflow: ellipsis;">${text}</span>
-        <span title="${subText}" style="margin-top: -15px; white-space: nowrap; width: ${width ?? '100%'}; overflow: hidden; text-overflow: ellipsis;">
-          ${subText ?? ''}
-        </span>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        ${icon ? `<img src="${icon}" alt="${text}" style="width: 48px; height: 48px; border: 1px solid rgba(0, 0, 0, 0.2); border-radius: 16px 0;">` : ''}
+        <div style="display: flex; flex-direction: column;">
+          <span title="${text}" style="font-weight:bold; white-space: nowrap; width: ${width ?? '100%'}; overflow: hidden; text-overflow: ellipsis;">${text}</span>
+          <span title="${subText}" style="margin-top: -15px; white-space: nowrap; width: ${width ?? '100%'}; overflow: hidden; text-overflow: ellipsis;">
+            ${subText ?? ''}
+          </span>
+        </div>
       </div>
     `;
   }
@@ -234,7 +237,8 @@ export class AppExtensions implements OnInit {
         cellRenderer: (params: { data: Extension }) => {
           const folder = params.data?.folder ?? '';
           const guid = params.data?.configuration?.nameId ?? '';
-          return this.cellTextRenderer(folder, guid.toString());
+          const icon = params.data?.icon ?? '';
+          return this.cellTextRenderer(folder, guid.toString(), undefined, icon);
         },
       },
       {

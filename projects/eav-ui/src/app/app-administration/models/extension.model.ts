@@ -2,7 +2,9 @@ import { Guid } from "projects/field-string-wysiwyg/src/shared/guid";
 
 export interface Extension {
   folder: string;
+  edition: string;
   configuration: ExtensionConfiguration | null;
+  icon: string | null;
 }
 
 export interface ExtensionConfiguration {
