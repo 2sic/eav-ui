@@ -12,9 +12,7 @@
         <mat-expansion-panel-header>
           <mat-panel-title>Extension Details</mat-panel-title>
         </mat-expansion-panel-header>
-        <div class="content">
-          <app-inspect-extension-content [data]="preflightResult()"></app-inspect-extension-content>
-        </div>
+        <app-inspect-extension-content [data]="preflightResult()" />
       </mat-expansion-panel>
     </mat-accordion>
     @if (totalLocalEntities() > 0) {
@@ -34,6 +32,7 @@
 
   <mat-dialog-actions align="end">
     <app-save-close-button-fab
+      icon="delete"
       [label]="'Delete and close (ctrl + enter)'"
       (action)="deleteAndClose()"
     />

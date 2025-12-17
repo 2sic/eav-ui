@@ -9,7 +9,7 @@ export abstract class SaveCloseButtonBase {
   triggerOnFormSubmit = input<boolean>(false);
 
   /** Material icon name to show */
-  icon = input<string>('done');
+  icon = input<'done' | 'delete'>('done');
 
   /** Classes to apply to the button */
   ngClass = input<string>('');

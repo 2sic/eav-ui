@@ -77,90 +77,96 @@
       </div>
     }
 
-    <!-- Unified Preflight Details -->
     @if (extension() && !isLoadingPreflight()) {
-      <div class="unified-preflight-details">
-        
-        <!-- Source Indicator -->
-        @if (isFileSource) {
-          File:
-          <em>{{ currentFile?.name }}</em>
-        } @else {
-          Remote Source:
-          <em>
-            <a [href]="preflightSource">
-              {{ preflightSource.toString().substring(0, 50) }}...
-            </a>
-          </em>
-        }
-
-        <h4>{{ extension().name }} Details</h4>
-        <span>Version {{ extension().version }}</span>
-
-        <br />
-
-        <div class="ext-info">
-          <div class="info-row">
-            <span class="label">File Count:</span>
-            <span class="value">
-              {{ extension().fileCount }}
-            </span>
-          </div>
-          <div class="info-row">
-            <span class="label">Supports Editions:</span>
-            <span class="value">
-              {{ extension().editionsSupported ? 'Yes' : 'No' }}
-            </span>
-          </div>
-        </div>
-
-        <div class="ext-features">
-          <h4>Features used by this Extension</h4>
-          <mat-chip-set>
-            @for (
-              feature of extension().features | keyvalue;
-              track feature.key
-            ) {
-              <mat-chip [class.disabled]="!feature.value">
-                {{ feature.key.split('Inside').join('') }}
-              </mat-chip>
-            }
-          </mat-chip-set>
-        </div>
-
-        <!-- Edition Selection -->
-        @if (extension().editionsSupported && editions()?.length) {
-          <div class="ext-editions">
-            <h4>Editions to install this Extension to</h4>
-            <div class="edition-selector">
-              @for (edition of editions(); track edition.edition) {
-                <mat-checkbox
-                  [checked]="selectedEditions.includes(edition.edition)"
-                  (change)="onEditionToggle(edition.edition, $event.checked)"
-                  color="accent"
-                >
-                  {{ edition.edition || 'Default' }}
-                </mat-checkbox>
+      <mat-accordion>
+        <mat-expansion-panel [expanded]="false">
+          <mat-expansion-panel-header>
+            <mat-panel-title>Extension Details</mat-panel-title>
+          </mat-expansion-panel-header>
+            <div class="unified-preflight-details">
+              
+              <!-- Source Indicator -->
+              @if (isFileSource) {
+                File:
+                <em>{{ currentFile?.name }}</em>
+              } @else {
+                Remote Source:
+                <em>
+                  <a [href]="preflightSource">
+                    {{ preflightSource.toString().substring(0, 50) }}...
+                  </a>
+                </em>
               }
-            </div>
-          </div>
-        }
 
-        <!-- TODO: only show if necessary -->
-        @if (allreadyInstalled()) {
-          <!-- Force Install Option -->
-          <div class="install-options" style="margin-top: 16px;">
-            <h4>Caution: Import causes an Overwrite</h4>
-            <p>
-              You need to force install/ overwrite the extension.
-            </p>
-            <mat-slide-toggle
-              [(ngModel)]="forceInstall"
-              color="primary">
-              Force / Overwrite
-            </mat-slide-toggle>
-          </div>
-        }
+              <h4>{{ extension().name }} Details</h4>
+              <span>Version {{ extension().version }}</span>
+
+              <br />
+
+              <div class="ext-info">
+                <div class="info-row">
+                  <span class="label">File Count:</span>
+                  <span class="value">
+                    {{ extension().fileCount }}
+                  </span>
+                </div>
+                <div class="info-row">
+                  <span class="label">Supports Editions:</span>
+                  <span class="value">
+                    {{ extension().editionsSupported ? 'Yes' : 'No' }}
+                  </span>
+                </div>
+              </div>
+
+              <div class="ext-features">
+                <h4>Features used by this Extension</h4>
+                <mat-chip-set>
+                  @for (
+                    feature of extension().features | keyvalue;
+                    track feature.key
+                  ) {
+                    <mat-chip [class.disabled]="!feature.value">
+                      {{ feature.key.split('Inside').join('') }}
+                    </mat-chip>
+                  }
+                </mat-chip-set>
+              </div>
+            </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+    }
+    
+    <!-- Edition Selection -->
+    @if (extension()?.editionsSupported && editions()?.length) {
+      <div class="ext-editions">
+        <h4>Editions to install this Extension to</h4>
+        <div class="edition-selector">
+          @for (edition of editions(); track edition.edition) {
+            <mat-checkbox
+              [checked]="selectedEditions.includes(edition.edition)"
+              (change)="onEditionToggle(edition.edition, $event.checked)"
+              color="accent"
+            >
+              {{ edition.edition || 'Default' }}
+            </mat-checkbox>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- TODO: only show if necessary -->
+    @if (allreadyInstalled()) {
+      <!-- Force Install Option -->
+      <div class="install-options" style="margin-top: 16px;">
+        <h4>Caution: Import causes an Overwrite</h4>
+        <p>
+          You need to force install/ overwrite the extension.
+        </p>
+        <mat-slide-toggle
+          [(ngModel)]="forceInstall"
+          color="primary">
+          Force / Overwrite
+        </mat-slide-toggle>
       </div>
     }
 

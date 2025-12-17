@@ -6,11 +6,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { transient } from 'projects/core';
 import { Observable, filter, fromEvent, take } from 'rxjs';
@@ -53,12 +55,14 @@ export interface FileUploadDialogData {
     MatIconModule,
     TippyDirective,
     MatSlideToggleModule,
+    MatExpansionModule,
   ],
 })
 export class ImportExtensionComponent extends BaseComponent implements OnInit {
   private extensionSvc = transient(AppExtensionsService);
   #installSettingsService = transient(AppInstallSettingsService);
   #fb = transient(FormBuilder);
+  #snackBar = inject(MatSnackBar);
 
   uploadType = UploadTypes.Extension;
   remoteInstallerUrl: SafeResourceUrl;
@@ -332,12 +336,17 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
     if (this.isInstalling()) return false;
     if (this.isLoadingPreflight()) return false;
     if (!this.extension()) return false;
-    if (this.allreadyInstalled() && !this.forceInstall) return false;
     return true;
   }
 
   install(): void {
     if (!this.canInstall()) return;
+
+    if (this.allreadyInstalled() && !this.forceInstall) {
+      this.#snackBar.open('Installation requires force. Please enable "Force Install" and try again.', 'OK', { duration: 10000 });
+      return;
+    }
+
     this.isInstalling.set(true);
 
     const overwrite = this.forceInstall;
