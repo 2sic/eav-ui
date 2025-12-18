@@ -1,3 +1,4 @@
+import appExtensionMask from '!raw-loader!./app-extension-mask.svg';
 import { ColDef, GridOptions } from '@ag-grid-community/core';
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
@@ -20,10 +21,8 @@ import { EntityService } from '../../shared/services/entity.service';
 import { Extension } from '../models/extension.model';
 import { AppExtensionsService } from '../services/app-extensions.service';
 import { ImportExtensionComponent } from '../sub-dialogs/import-extension/import-extension';
-import { appExtIcon } from './app-extension-mask';
 import { AppExtensionActions } from './extension-actions/extension-actions';
 import { AppExtensionsLinkCell } from './extensions-link/extensions-link';
-
 @Component({
   selector: 'app-extensions',
   templateUrl: './app-extensions.html',
@@ -216,7 +215,7 @@ export class AppExtensions implements OnInit {
     return `
       
       <div style="display: flex; align-items: center; gap: 8px;">
-        ${icon ? `${appExtIcon}<img src="${icon}" alt="${text}" style="clip-path: url(#myClip); width:48px; height:48px;">` : ''}
+        ${icon ? `<img src="${icon}" alt="${text}" style="mask-image: url('data:image/svg+xml;utf8,${encodeURIComponent(appExtensionMask)}'); width:48px; height:48px;">` : ''}
         <div style="display: flex; flex-direction: column;">
           <span title="${text}" style="font-weight:bold; white-space: nowrap; width: ${width ?? '100%'}; overflow: hidden; text-overflow: ellipsis;">${text}</span>
           <span title="${subText}" style="margin-top: -15px; white-space: nowrap; width: ${width ?? '100%'}; overflow: hidden; text-overflow: ellipsis;">
