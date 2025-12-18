@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { EavItem } from "./eav-item";
 import { EavType } from "./eav-type";
 

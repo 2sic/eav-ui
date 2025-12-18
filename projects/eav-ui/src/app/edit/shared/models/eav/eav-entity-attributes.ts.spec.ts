@@ -1,6 +1,6 @@
+import { describe, expect, it } from 'vitest';
 import { EavEntityAttributes } from './eav-entity-attributes';
-import { TestDataAttributesCreate } from './eav-entity-attributes.ts.data.spec';
-
+import { TestDataAttributesCreate } from './eav-entity-attributes.ts.data';
 
 
 describe('EavEntityAttribute.Convert', () => {
