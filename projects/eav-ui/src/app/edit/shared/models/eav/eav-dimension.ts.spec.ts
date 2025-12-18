@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { EavDimension } from './eav-dimension';
 
 describe('EavDimension.Create', () => {

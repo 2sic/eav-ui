@@ -1,6 +1,6 @@
 import { EavEntityDto } from '../json-format-v1';
 import { EavEntity } from './eav-entity';
-import { testTypeSandwich } from './eav-type.ts.data.spec';
+import { testTypeSandwich } from './eav-type.ts.data';
 
 export const testEntityHeaderOnlyDto: EavEntityDto = {
   Attributes: {},

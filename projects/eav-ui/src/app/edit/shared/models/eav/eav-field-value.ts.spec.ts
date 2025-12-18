@@ -1,6 +1,6 @@
+import { describe, expect, it } from 'vitest';
 import { EavFieldValue } from './eav-field-value';
-import { EavFieldValueConvertTests, EavFieldValueCreateTests, TestDataFieldValueCreate } from './eav-field-value.ts.data.spec';
-
+import { EavFieldValueConvertTests, EavFieldValueCreateTests, TestDataFieldValueCreate } from './eav-field-value.ts.data';
 
 describe('EavValue.Create', () => {
   TestDataFieldValueCreate.forEach(({ title, value, dimensions, expected }) => {
