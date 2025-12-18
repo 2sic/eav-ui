@@ -211,19 +211,41 @@ export class AppExtensions implements OnInit {
     return data?.length === 0 ? this.#helpTextConst.empty : this.#helpTextConst.content;
   });
 
-  cellTextRenderer(text: string, subText?: string, width?: string, icon?: string): string {
+  /**
+   * Multi-line cell renderer to show a bold main text with optional subtext and something before (probably an icon).
+   * @param text 
+   * @param subText 
+   * @param width 
+   * @param introHtml 
+   * @returns 
+   */
+  cellTextRenderer(text: string, subText?: string, width?: string, introHtml?: string): string {
+    text = text || '';
+    subText = subText || '';
+    width = width || '100%';
     return `
       
       <div style="display: flex; align-items: center; gap: 8px;">
-        ${icon ? `<img src="${icon}" alt="${text}" style="mask-image: url('data:image/svg+xml;utf8,${encodeURIComponent(appExtensionMask)}'); width:48px; height:48px;">` : ''}
+        ${introHtml ?? ''}
         <div style="display: flex; flex-direction: column;">
-          <span title="${text}" style="font-weight:bold; white-space: nowrap; width: ${width ?? '100%'}; overflow: hidden; text-overflow: ellipsis;">${text}</span>
-          <span title="${subText}" style="margin-top: -15px; white-space: nowrap; width: ${width ?? '100%'}; overflow: hidden; text-overflow: ellipsis;">
+          <span title="${text}" style="font-weight:bold; white-space: nowrap; width: ${width}; overflow: hidden; text-overflow: ellipsis;">${text}</span>
+          <span title="${subText}" style="margin-top: -15px; white-space: nowrap; width: ${width}; overflow: hidden; text-overflow: ellipsis;">
             ${subText ?? ''}
           </span>
         </div>
       </div>
     `;
+  }
+  
+  /**
+   * Special cell renderer to show text with optional subtext and icon.
+   * The icon uses the svg file as mask to ensure consistent styling.
+   */
+  iconAndTitleCellRenderer(text: string, subText?: string, width?: string, icon?: string): string {
+    const iconHtml = icon
+      ? `<img src="${icon}" alt="${text}" style="mask-image: url('data:image/svg+xml;utf8,${encodeURIComponent(appExtensionMask)}'); width:48px; height:48px;">`
+      : '';
+    return this.cellTextRenderer(text, subText, width, iconHtml);
   }
 
   #buildColumnDefs(): ColDef[] {
@@ -236,10 +258,8 @@ export class AppExtensions implements OnInit {
         sort: 'asc',
         filter: 'agTextColumnFilter',
         cellRenderer: (params: { data: Extension }) => {
-          const folder = params.data?.folder ?? '';
-          const guid = params.data?.configuration?.nameId ?? '';
-          const icon = params.data?.icon ?? '';
-          return this.cellTextRenderer(folder, guid.toString(), undefined, icon);
+          const d = params.data;
+          return this.iconAndTitleCellRenderer(d?.folder, d?.configuration?.nameId?.toString(), undefined, d?.icon);
         },
       },
       {
@@ -249,9 +269,8 @@ export class AppExtensions implements OnInit {
         filter: 'agTextColumnFilter',
         flex: 1,
         cellRenderer: (params: { data: Extension }) => {
-          const name = params.data?.configuration?.name ?? '';
-          const teaser = params.data?.configuration?.teaser ?? '';
-          return this.cellTextRenderer(name, teaser);
+          const c = params.data?.configuration;
+          return this.cellTextRenderer(c?.name, c?.teaser);
         },
       },
       {
@@ -261,9 +280,8 @@ export class AppExtensions implements OnInit {
         sortable: true,
         filter: 'agTextColumnFilter',
         cellRenderer: (params: { data: Extension }) => {
-          const creator = params.data?.configuration?.createdBy ?? '';
-          const copyright = params.data?.configuration?.copyright ?? '';
-          return this.cellTextRenderer(creator, copyright, '150px');
+          const c = params.data?.configuration;
+          return this.cellTextRenderer(c?.createdBy, c?.copyright, '150px');
         },
       },
       {
@@ -273,10 +291,10 @@ export class AppExtensions implements OnInit {
         width: 125,
         cellRenderer: AppExtensionsLinkCell,
         cellRendererParams: (params: { data: Extension }) => ({
-          mainLink: params.data?.configuration?.linkMain ?? undefined,
-          docsLink: params.data?.configuration?.linkDocs ?? undefined,
-          demosLink: params.data?.configuration?.linkDemo ?? undefined,
-          sourceCodeLink: params.data?.configuration?.linkSource ?? undefined,
+          mainLink: params.data?.configuration?.linkMain,
+          docsLink: params.data?.configuration?.linkDocs,
+          demosLink: params.data?.configuration?.linkDemo,
+          sourceCodeLink: params.data?.configuration?.linkSource,
         }),
       },
       {
@@ -286,19 +304,19 @@ export class AppExtensions implements OnInit {
         cellRenderer: AppExtensionActions,
         cellRendererParams: (() => {
           const params: AppExtensionActions['params'] = {
-            urlTo: (verb, ext) => '#' + this.#urlTo(ext.folder),
+            urlTo: (_, ext) => '#' + this.#urlTo(ext.folder),
             do: (verb, ext) => {
               switch (verb) {
-                case 'edit': this.#openSettings(ext); break;
-                case 'download': this.extensionsSvc.downloadExtension(ext.folder); break;
-                case 'delete': this.#deleteExtension(ext.folder); break;
-                case 'inspect': this.#openInspection(ext.folder); break;
-                case 'openSettings': this.#openEditContentType(
+                case 'edit': return this.#openSettings(ext);
+                case 'download': return this.extensionsSvc.downloadExtension(ext.folder);
+                case 'delete': return this.#deleteExtension(ext.folder);
+                case 'inspect': return this.#openInspection(ext.folder);
+                case 'openSettings': return this.#openEditContentType(
                   ext.configuration?.settingsContentType
-                ); break;
-                case 'openResources': this.#openEditContentType(
+                );
+                case 'openResources': return this.#openEditContentType(
                   ext.configuration?.resourcesContentType
-                ); break;
+                );
               }
             }
           } satisfies AppExtensionActions['params'];
