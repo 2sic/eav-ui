@@ -223,8 +223,8 @@ export class AppExtensions implements OnInit {
     text = text || '';
     subText = subText || '';
     width = width || '100%';
+    
     return `
-      
       <div style="display: flex; align-items: center; gap: 8px;">
         ${introHtml ?? ''}
         <div style="display: flex; flex-direction: column;">
@@ -242,9 +242,10 @@ export class AppExtensions implements OnInit {
    * The icon uses the svg file as mask to ensure consistent styling.
    */
   iconAndTitleCellRenderer(text: string, subText?: string, width?: string, icon?: string): string {
+    const iconSize = 48; // in px
     const iconHtml = icon
-      ? `<img src="${icon}" alt="${text}" style="mask-image: url('data:image/svg+xml;utf8,${encodeURIComponent(appExtensionMask)}'); width:48px; height:48px;">`
-      : '';
+      ? `<img src="${icon}" alt="${text}" style="mask-image: url('data:image/svg+xml;utf8,${encodeURIComponent(appExtensionMask)}'); width:${iconSize}px; height:${iconSize}px;">`
+      : `<div style="flex:0 0 ${iconSize}px; height:${iconSize}px;"></div>` // Placeholder for alignment;
     return this.cellTextRenderer(text, subText, width, iconHtml);
   }
 
