@@ -1,5 +1,5 @@
 import { ICellRendererParams } from '@ag-grid-community/core';
-import { CommonModule } from '@angular/common';
+
 import { Component, signal } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
@@ -12,12 +12,11 @@ type GoToUrls = 'edit' | 'download' | 'delete' | 'inspect' | 'openSettings' | 'o
 @Component({
   selector: 'app-extension-actions',
   imports: [
-    CommonModule,
     MatIconModule,
     MatButtonModule,
     MatBadgeModule,
-    TippyDirective,
-  ],
+    TippyDirective
+],
   templateUrl: './extension-actions.html',
   styleUrls: ['./extension-actions.scss'],
 })

@@ -14,11 +14,6 @@
     "importHelpers": true,
     "target": "ES2022",
     "module": "esnext",
-    "lib": [
-      "es2018",
-      "es2019",
-      "dom"
-    ],
     "emitDecoratorMetadata": true,
     "typeRoots": [
       "./node_modules/@types", 

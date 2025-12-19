@@ -1,6 +1,6 @@
 import appExtensionMask from '!raw-loader!./app-extension-mask.svg';
 import { ColDef, GridOptions } from '@ag-grid-community/core';
-import { CommonModule } from '@angular/common';
+
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogActions } from '@angular/material/dialog';
@@ -28,7 +28,6 @@ import { AppExtensionsLinkCell } from './extensions-link/extensions-link';
   templateUrl: './app-extensions.html',
   styleUrls: ['./app-extensions.scss'],
   imports: [
-    CommonModule,
     MatIconModule,
     MatDialogActions,
     RouterOutlet,
@@ -36,8 +35,8 @@ import { AppExtensionsLinkCell } from './extensions-link/extensions-link';
     SxcGridModule,
     DragAndDropDirective,
     GridWithHelpComponent,
-    TippyDirective,
-  ]
+    TippyDirective
+]
 })
 export class AppExtensions implements OnInit {
   private extensionsSvc = transient(AppExtensionsService);

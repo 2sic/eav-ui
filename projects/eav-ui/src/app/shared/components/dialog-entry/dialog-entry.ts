@@ -33,7 +33,7 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
     private changeDetectorRef: ChangeDetectorRef,
     private injector: Injector,
   ) {
-    const navigation = this.router.getCurrentNavigation();
+    const navigation = this.router.currentNavigation();
     this.#dialogData = navigation?.extras?.state || {};
   }
 
