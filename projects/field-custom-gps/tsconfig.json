@@ -2,7 +2,8 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "./dist/",
-    "allowJs": true
+    "allowJs": true,
+    "typeRoots": ["../../node_modules/@types"]
   },
   "exclude": [
     "_reports",
