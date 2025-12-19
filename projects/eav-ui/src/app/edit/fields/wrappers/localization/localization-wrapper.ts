@@ -33,9 +33,13 @@ export class LocalizationWrapperComponent {
     return this.#formConfig.languages.list.length > 1;
   });
 
-  canTranslate = computed(() => {
-    return this.hasMultipleLanguages() && (this.language().current !== this.language().primary || this.translatePrimaryLanguage());
-  });
+canTranslate = computed(() => {
+  return (
+    this.hasMultipleLanguages() &&
+    !this.#fieldState.settings().DisableTranslation &&
+    (this.language().current !== this.language().primary || this.translatePrimaryLanguage())
+  );
+});
 
   hideTranslateButton: boolean = true;
 
