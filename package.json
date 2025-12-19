@@ -43,6 +43,7 @@
     "@ag-grid-community/angular": "^32.3.9",
     "@ag-grid-community/client-side-row-model": "^32.3.9",
     "@ag-grid-community/styles": "^32.3.9",
+    "@angular-devkit/build-angular": "^21.0.4",
     "@angular/animations": "^21.0.6",
     "@angular/cdk": "^21.0.5",
     "@angular/common": "^21.0.6",

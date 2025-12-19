@@ -3,7 +3,6 @@ import { transient } from '../../../../../core';
 import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
 import { classLog } from '../../shared/logging';
 import { UserLanguageService } from '../../shared/services/user-language.service';
-import { ComputedAnalyzer } from '../../shared/signals/computed-analyzer';
 import { ComputedCacheHelper } from '../../shared/signals/computed-cache';
 import { computedObj, signalObj } from '../../shared/signals/signal.utilities';
 import { LanguagePart } from '../dialog/header/language-settings-dialog/LanguageDropdown/language-part.enum';
@@ -154,7 +153,7 @@ export class FieldsSettingsService {
     const deps: Deps = {
       idMsg: `entityGuid: ${entityGuid}; contentTypeId: ${ct.Id};`,
       cycle: 0,
-      analyzer: null as ComputedAnalyzer<Record<string, FieldProps>>,
+      // analyzer: null, // @2pp: 2025-12-19 - unavailable
       disabled: this.#disabled,
       slotIsEmpty,
       slotWasEmpty: false, // must start false, so it will certainly run once.
@@ -180,15 +179,17 @@ export class FieldsSettingsService {
     this.#allProps = computedObj('allFieldProps', () => this.#regenerateProps(deps));
 
     // Start Analyzer if necessary
-    if (this.log.specs.activateAnalyzer)
-      deps.analyzer = new ComputedAnalyzer(this.#allProps);
+    // @2pp: 2025-12-19 - unavailable
+    // if (this.log.specs.activateAnalyzer)
+      // deps.analyzer = new ComputedAnalyzer(this.#allProps);
 
     this.#startSync.set(true);
   }
 
   #regenerateProps(deps: Deps): Record<string, FieldProps> {
-    if (deps.analyzer)
-      console.log('analyzer', { fieldProps: this.allProps }, deps.analyzer.snapShotProducers(true));
+    // @2pp: 2025-12-19 - unavailable
+    // if (deps.analyzer)
+      // console.log('analyzer', { fieldProps: this.allProps }, deps.analyzer.snapShotProducers(true));
 
     const l = this.log.fnIf('regenerateProps', { cycle: deps.cycle, props: this.allProps }, deps.idMsg);
     // If disabled for any reason, return the previous value (but do make sure there is a previous value)
@@ -288,7 +289,7 @@ export class FieldsSettingsService {
 interface Deps {
   idMsg: string,
   cycle: number,
-  analyzer: ComputedAnalyzer<Record<string, FieldProps>>,
+  // analyzer: any, // @2pp: 2025-12-19 - unavailable
   disabled: Signal<boolean>,
   slotIsEmpty: Signal<boolean>,
   forceRefresh: Signal<number>,
