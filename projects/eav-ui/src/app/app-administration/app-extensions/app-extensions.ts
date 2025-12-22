@@ -3,6 +3,7 @@ import { ColDef, GridOptions } from '@ag-grid-community/core';
 
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatChipsModule } from '@angular/material/chips';
 import { MatDialog, MatDialogActions } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterOutlet } from '@angular/router';
@@ -35,7 +36,8 @@ import { AppExtensionsLinkCell } from './extensions-link/extensions-link';
     SxcGridModule,
     DragAndDropDirective,
     GridWithHelpComponent,
-    TippyDirective
+    TippyDirective,
+    MatChipsModule,
   ]
 })
 export class AppExtensions implements OnInit {
@@ -281,8 +283,14 @@ export class AppExtensions implements OnInit {
         sortable: true,
         filter: 'agTextColumnFilter',
         cellRenderer: (params: { data: Extension }) => {
-          const c = params.data;
-          return this.cellTextRenderer(c?.edition || 'Default');
+          const edition = params.data?.edition || 'Default';
+          return `
+            <mat-chip-set>
+              <mat-chip>
+                ${edition}
+              </mat-chip>
+            </mat-chip-set>
+          `;
         },
       },
       {

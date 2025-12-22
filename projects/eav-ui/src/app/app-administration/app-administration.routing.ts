@@ -138,7 +138,10 @@ export const appAdministrationRoutes: Routes = [
         path: `data-${GoToRecycleBin.route}`,
         loadComponent: () => import('./recycle-bin/recycle-bin')
           .then(mod => mod.AppRecycleBin),
-        data: CopilotSpecs.data,
+        data: {
+          title: 'Recycle Bin (beta)',
+          breadcrumb: 'Recycle Bin (beta)'
+        },
         children: [
           ...EditRoutes,
         ]
