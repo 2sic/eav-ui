@@ -356,8 +356,8 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
     const overwrite = this.forceInstall;
     let installObservable: Observable<any>;
 
-    const editionsString = this.selectedEditions.length ? this.selectedEditions().join(',') : undefined;
-
+    const editionsString = this.selectedEditions().length ? this.selectedEditions().join(',') : undefined;
+    
     if (this.preflightSource instanceof File) {
       installObservable = this.extensionSvc.uploadExtensions(this.preflightSource, editionsString, overwrite);
     } else if (typeof this.preflightSource === 'string') {
