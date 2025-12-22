@@ -32,8 +32,9 @@ export class InspectExtensionComponent {
   #extensionsSvc = transient(AppExtensionsService);
 
   extensionFolder = this.route.snapshot.paramMap.get('extension') as 'extension';
+  edition = this.route.snapshot.queryParamMap.get('edition') || '';
 
-  preflightResult = this.#extensionsSvc.preflightExtension(this.extensionFolder, '').value;
+  preflightResult = this.#extensionsSvc.preflightExtension(this.extensionFolder, this.edition).value;
 
   constructor(
     private route: ActivatedRoute,

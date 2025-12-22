@@ -137,7 +137,7 @@
     }
     
     <!-- Edition Selection -->
-    @if (extension()?.editionsSupported && editions()?.length) {
+    @if (extension()?.editionsSupported && editions()?.length > 1) { <!-- Don't show if only default edition -->
       <div class="ext-editions">
         <h4>Editions to install this Extension to</h4>
         <div class="edition-selector">

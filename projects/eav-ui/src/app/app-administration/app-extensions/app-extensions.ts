@@ -36,7 +36,7 @@ import { AppExtensionsLinkCell } from './extensions-link/extensions-link';
     DragAndDropDirective,
     GridWithHelpComponent,
     TippyDirective
-]
+  ]
 })
 export class AppExtensions implements OnInit {
   private extensionsSvc = transient(AppExtensionsService);
@@ -123,13 +123,13 @@ export class AppExtensions implements OnInit {
       this.router.navigate(routeSegments, {
         state: {
           returnValue: true,
-        // overrideContents
+          // overrideContents
         } satisfies DialogRoutingState,
       });
     });
   }
 
-  #openInspection(extensionFolder: string) {
+  #openInspection(extensionFolder: string, edition?: string) {
     const url = this.#urlTo('inspect/' + extensionFolder);
     const normalized = url.replace(/^#\/?/, '').replace(/^\//, '');
     const routeSegments = normalized.split('/').filter(Boolean);
@@ -138,10 +138,11 @@ export class AppExtensions implements OnInit {
       state: {
         returnValue: true
       } satisfies DialogRoutingState,
+      queryParams: edition ? { edition } : undefined
     });
   }
 
-  #deleteExtension(extensionFolder: string) {
+  #deleteExtension(extensionFolder: string, edition?: string) {
     const url = this.#urlTo('delete/' + extensionFolder);
     const normalized = url.replace(/^#\/?/, '').replace(/^\//, '');
     const routeSegments = normalized.split('/').filter(Boolean);
@@ -150,6 +151,7 @@ export class AppExtensions implements OnInit {
       state: {
         returnValue: true
       } satisfies DialogRoutingState,
+      queryParams: edition ? { edition } : undefined
     });
   }
 
@@ -222,7 +224,7 @@ export class AppExtensions implements OnInit {
     text = text || '';
     subText = subText || '';
     width = width || '100%';
-    
+
     return `
       <div style="display: flex; align-items: center; gap: 8px;">
         ${introHtml ?? ''}
@@ -235,7 +237,7 @@ export class AppExtensions implements OnInit {
       </div>
     `;
   }
-  
+
   /**
    * Special cell renderer to show text with optional subtext and icon.
    * The icon uses the svg file as mask to ensure consistent styling.
@@ -319,8 +321,8 @@ export class AppExtensions implements OnInit {
               switch (verb) {
                 case 'edit': return this.#openSettings(ext);
                 case 'download': return this.extensionsSvc.downloadExtension(ext.folder);
-                case 'delete': return this.#deleteExtension(ext.folder);
-                case 'inspect': return this.#openInspection(ext.folder);
+                case 'delete': return this.#deleteExtension(ext.folder, ext.edition);
+                case 'inspect': return this.#openInspection(ext.folder, ext.edition);
                 case 'openSettings': return this.#openEditContentType(
                   ext.configuration?.settingsContentType
                 );

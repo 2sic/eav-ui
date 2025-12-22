@@ -37,11 +37,11 @@ export class DeleteExtensionComponent implements OnInit {
   #extensionsSvc = transient(AppExtensionsService);
 
   extensionFolder = this.route.snapshot.paramMap.get('extension') as 'extension';
+  edition = this.route.snapshot.queryParamMap.get('edition') || '';
   withData = false;
   forceDelete = false;
 
-  preflightResult = this.#extensionsSvc.preflightExtension(this.extensionFolder, '').value;
-
+  preflightResult = this.#extensionsSvc.preflightExtension(this.extensionFolder, this.edition).value;
   totalLocalEntities = computed(() => {
     const result = this.preflightResult();
     if (!result?.data?.contentTypes) return 0;
@@ -134,7 +134,7 @@ export class DeleteExtensionComponent implements OnInit {
 
   private executeDelete(force: boolean) {
     this.#extensionsSvc
-      .deleteExtension(this.extensionFolder, '', force, this.withData)
+      .deleteExtension(this.extensionFolder, this.edition, force, this.withData)
       .subscribe({
         next: () => {
           this.#snackBar.open('Extension deleted successfully', 'OK', { duration: 3000 });
