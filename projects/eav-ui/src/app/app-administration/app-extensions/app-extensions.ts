@@ -274,6 +274,16 @@ export class AppExtensions implements OnInit {
         },
       },
       {
+        headerName: 'Edition',
+        field: 'edition',
+        sortable: true,
+        filter: 'agTextColumnFilter',
+        cellRenderer: (params: { data: Extension }) => {
+          const c = params.data;
+          return this.cellTextRenderer(c?.edition || 'Default');
+        },
+      },
+      {
         headerName: 'Creator',
         field: 'configuration.createdBy',
         maxWidth: 175,
