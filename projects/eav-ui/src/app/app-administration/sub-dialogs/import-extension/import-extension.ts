@@ -79,14 +79,17 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
   editions = signal<ExtensionEdition[]>([]);
   showExtensionCatalog = signal(false);
   forceInstall = false;
-  allreadyInstalled = computed(() => {
+  alreadyInstalled = computed(() => {
     const ext = this.extension();
-    if (!ext) return false;
-    return ext.editions?.some(e => e.isInstalled) ?? false; // TODO: instead of some it should check for the specified edition
+    if (!ext || !this.selectedEditions().length) return false;
+    // If any selected edition is already installed, require force
+    return ext.editions?.some(e =>
+      this.selectedEditions().includes(e.edition ?? '') && e.isInstalled
+    ) ?? false;
   });
 
   // Unified selection state
-  selectedEditions: string[] = [];
+  selectedEditions = signal<string[]>([]);
   preflightSource: File | string | null = null; // Can be a local File or a remote URL string
 
   urlChangeImportMode = "";
@@ -210,7 +213,7 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
         })
     );
   }
-  
+
   // Template Helpers to avoid 'instanceof' and strict type errors in HTML
   get isFileSource(): boolean {
     return this.preflightSource instanceof File;
@@ -270,7 +273,7 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
   cancelPreflight(): void {
     this.extension.set(null);
     this.preflightSource = null;
-    this.selectedEditions = [];
+    this.selectedEditions.set([]);
     this.preflightError.set(null);
     this.forceInstall = false; // Reset force toggle
     this.#alreadyProcessingRemote = false;
@@ -317,7 +320,7 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
       this.editions.set(this.fallbackEditions.map(e => ({ edition: e })));
     }
 
-    this.selectedEditions = this.editions().map(e => e.edition);
+    this.selectedEditions.set(this.editions().map(e => e.edition));
   }
 
   private handlePreflightError(error: any) {
@@ -336,13 +339,14 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
     if (this.isInstalling()) return false;
     if (this.isLoadingPreflight()) return false;
     if (!this.extension()) return false;
+    if (this.selectedEditions().length === 0) return false;
     return true;
   }
 
   install(): void {
     if (!this.canInstall()) return;
 
-    if (this.allreadyInstalled() && !this.forceInstall) {
+    if (this.alreadyInstalled() && !this.forceInstall) {
       this.#snackBar.open('Installation requires force. Please enable "Force Install" and try again.', 'OK', { duration: 10000 });
       return;
     }
@@ -352,7 +356,7 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
     const overwrite = this.forceInstall;
     let installObservable: Observable<any>;
 
-    const editionsString = this.selectedEditions.length ? this.selectedEditions.join(',') : undefined;
+    const editionsString = this.selectedEditions.length ? this.selectedEditions().join(',') : undefined;
 
     if (this.preflightSource instanceof File) {
       installObservable = this.extensionSvc.uploadExtensions(this.preflightSource, editionsString, overwrite);
@@ -377,11 +381,11 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
 
   onEditionToggle(edition: string, checked: boolean) {
     if (checked) {
-      if (!this.selectedEditions.includes(edition)) {
-        this.selectedEditions.push(edition);
+      if (!this.selectedEditions().includes(edition)) {
+        this.selectedEditions.set([...this.selectedEditions(), edition]);
       }
     } else {
-      this.selectedEditions = this.selectedEditions.filter(e => e !== edition);
+      this.selectedEditions.set(this.selectedEditions().filter(e => e !== edition));
     }
   }
 }

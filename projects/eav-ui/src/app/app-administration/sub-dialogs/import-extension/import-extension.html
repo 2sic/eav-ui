@@ -143,7 +143,7 @@
         <div class="edition-selector">
           @for (edition of editions(); track edition.edition) {
             <mat-checkbox
-              [checked]="selectedEditions.includes(edition.edition)"
+              [checked]="selectedEditions().includes(edition.edition)"
               (change)="onEditionToggle(edition.edition, $event.checked)"
               color="accent"
             >
@@ -155,7 +155,7 @@
     }
 
     <!-- TODO: only show if necessary -->
-    @if (allreadyInstalled()) {
+    @if (alreadyInstalled()) {
       <!-- Force Install Option -->
       <div class="install-options" style="margin-top: 16px;">
         <h4>Caution: Import causes an Overwrite</h4>
