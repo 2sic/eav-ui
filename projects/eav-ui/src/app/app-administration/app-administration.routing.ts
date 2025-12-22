@@ -17,6 +17,7 @@ import { ExportAppPartsComponent } from './import-export-menu/export-app-parts/e
 import { ExportAppComponent } from './import-export-menu/export-app/export-app';
 import { ImportAppPartsComponent } from './import-export-menu/import-app-parts/import-app-parts';
 import { ImportExportComponent } from './import-export-menu/import-export/import-export';
+import { GoToRecycleBin } from './recycle-bin/go-to-recycle-bin';
 import { analyzeSettingsDialog } from './sub-dialogs/analyze-settings/analyze-settings-dialog.config';
 import { settingsItemDetailsDialog } from './sub-dialogs/analyze-settings/settings-item-details/settings-item-details.config';
 import { deleteExtensionDialog } from './sub-dialogs/delete-extension/delete-extension-dialog.config';
@@ -130,6 +131,16 @@ export const appAdministrationRoutes: Routes = [
               GoToPermissions.route,
             ]
           },
+        ]
+      },
+      {
+        // Recyle Bin
+        path: `data-${GoToRecycleBin.route}`,
+        loadComponent: () => import('./recycle-bin/recycle-bin')
+          .then(mod => mod.AppRecycleBin),
+        data: CopilotSpecs.data,
+        children: [
+          ...EditRoutes,
         ]
       },
       {
