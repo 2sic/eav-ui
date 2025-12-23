@@ -3,7 +3,7 @@ import { map } from 'rxjs';
 import { FileUploadResult } from '../../shared/components/file-upload-dialog/file-upload-dialog.models';
 import { classLog } from '../../shared/logging';
 import { HttpServiceBase } from '../../shared/services/http-service-base';
-import { Extension, ExtensionInspectResult, ExtensionPreflightItem } from '../models/extension.model';
+import { Extension, ExtensionInspectResult, ExtensionPreflightItem } from './extension.model';
 
 @Injectable()
 export class AppExtensionsService extends HttpServiceBase {

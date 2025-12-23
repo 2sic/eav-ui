@@ -4,12 +4,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { ExtensionInspectResult } from '../../../models/extension.model';
+import { ExtensionInspectResult } from '../extension.model';
 
 @Component({
-  selector: 'app-inspect-extension-content',
-  templateUrl: './inspect-extension-content.html',
-  styleUrls: ['./inspect-extension-content.scss'],
+  selector: 'app-inspect-extension',
+  templateUrl: './inspect-extension.html',
+  styleUrls: ['./inspect-extension.scss'],
   imports: [
     MatButtonModule,
     MatIconModule,
@@ -18,6 +18,6 @@ import { ExtensionInspectResult } from '../../../models/extension.model';
     MatExpansionModule,
   ]
 })
-export class InspectExtensionContentComponent {
+export class InspectExtensionComponent {
   data = input.required<ExtensionInspectResult | undefined>();
 }

@@ -9,13 +9,12 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ActivatedRoute } from '@angular/router';
 import { transient } from 'projects/core';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
-import { AppExtensionsService } from '../../services/app-extensions.service';
-import { InspectExtensionContentComponent } from './inspect-extension-content/inspect-extension-content';
+import { AppExtensionsService } from '../app-extensions.service';
+import { InspectExtensionComponent } from '../inspect/inspect-extension-content';
 
 @Component({
-  selector: 'app-inspect-extension',
-  templateUrl: './inspect-extension.html',
-  styleUrls: ['./inspect-extension.scss'],
+  templateUrl: './inspect-extension-dialog.html',
+  styleUrls: ['./inspect-extension-dialog.scss'],
   imports: [
     MatButtonModule,
     MatIconModule,
@@ -23,11 +22,11 @@ import { InspectExtensionContentComponent } from './inspect-extension-content/in
     FormsModule,
     MatCardModule,
     MatExpansionModule,
-    InspectExtensionContentComponent,
+    InspectExtensionComponent,
     TippyDirective,
   ]
 })
-export class InspectExtensionComponent {
+export class InspectExtensionDialog {
   #extensionsSvc = transient(AppExtensionsService);
 
   dialog = inject(MatDialogRef<{}>);

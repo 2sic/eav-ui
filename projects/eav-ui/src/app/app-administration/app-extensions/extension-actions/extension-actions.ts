@@ -5,7 +5,7 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
-import { Extension } from '../../models/extension.model';
+import { Extension } from '../extension.model';
 
 type GoToUrls = 'edit' | 'download' | 'delete' | 'inspect' | 'openSettings' | 'openResources';
 

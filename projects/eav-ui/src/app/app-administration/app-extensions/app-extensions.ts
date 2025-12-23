@@ -17,12 +17,12 @@ import { EditForm, EditPrep } from '../../shared/models/edit-form.model';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { EntityService } from '../../shared/services/entity.service';
-import { Extension } from '../models/extension.model';
-import { AppExtensionsService } from '../services/app-extensions.service';
-import { ImportExtensionComponent } from '../sub-dialogs/import-extension/import-extension';
 import appExtensionMask from './app-extension-mask.svg';
+import { AppExtensionsService } from './app-extensions.service';
 import { AppExtensionActions } from './extension-actions/extension-actions';
+import { Extension } from './extension.model';
 import { AppExtensionsLinkCell } from './extensions-link/extensions-link';
+import { ImportExtensionComponent } from './import/import-extension';
 @Component({
   selector: 'app-extensions',
   templateUrl: './app-extensions.html',

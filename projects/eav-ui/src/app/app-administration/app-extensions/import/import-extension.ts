@@ -25,8 +25,8 @@ import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { InstallSettings, InstalledApp, SpecsForInstaller } from '../../../shared/models/installer-models';
 import { Context } from '../../../shared/services/context';
 import { AppInstallSettingsService } from '../../../shared/services/getting-started.service';
-import { Extension, ExtensionEdition, ExtensionPreflightItem } from '../../models/extension.model';
-import { AppExtensionsService } from '../../services/app-extensions.service';
+import { AppExtensionsService } from '../app-extensions.service';
+import { Extension, ExtensionEdition, ExtensionPreflightItem } from '../extension.model';
 
 export interface FileUploadDialogData {
   title?: string;
@@ -38,7 +38,6 @@ export interface FileUploadDialogData {
 }
 
 @Component({
-  selector: 'app-import-extension',
   templateUrl: './import-extension.html',
   styleUrls: ['./import-extension.scss'],
   imports: [

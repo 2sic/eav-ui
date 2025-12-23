@@ -8,6 +8,9 @@ import { GoToPermissions } from '../permissions/go-to-permissions';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry';
 import { appAdminDialog } from './app-admin-main/app-admin-dialog';
 import { basicMessageDialog } from './app-configuration/message/basic-message-dialog';
+import { deleteExtensionDialog } from './app-extensions/delete/delete-extension-dialog.config';
+import { importExtensionDialog } from './app-extensions/import/import-extension-dialog.config';
+import { inspectExtensionDialog } from './app-extensions/inspect-dialog/inspect-extension-dialog.config';
 import { CopilotSpecs } from './copilot/copilot-specs';
 import { GoToCopilot } from './copilot/go-to-copilot';
 import { AppStateComponent } from './import-export-menu/app-state/app-state';
@@ -20,14 +23,11 @@ import { ImportExportComponent } from './import-export-menu/import-export/import
 import { GoToRecycleBin } from './recycle-bin/go-to-recycle-bin';
 import { analyzeSettingsDialog } from './sub-dialogs/analyze-settings/analyze-settings-dialog.config';
 import { settingsItemDetailsDialog } from './sub-dialogs/analyze-settings/settings-item-details/settings-item-details.config';
-import { deleteExtensionDialog } from './sub-dialogs/delete-extension/delete-extension-dialog.config';
 import { editContentTypeDialog } from './sub-dialogs/edit-content-type/edit-content-type-dialog.config';
 import { importContentTypeDialog } from './sub-dialogs/import-content-type/import-content-type-dialog.config';
 import { importDataBundlesDialog } from './sub-dialogs/import-data-bundles/import-data-bundles-dialog.config';
-import { importExtensionDialog } from './sub-dialogs/import-extension/import-extension-dialog.config';
 import { importQueryDialog } from './sub-dialogs/import-query/import-query-dialog.config';
 import { importViewDialog } from './sub-dialogs/import-view/import-view-dialog.config';
-import { inspectExtensionDialog } from './sub-dialogs/inspect-extension/inspect-extension-dialog.config';
 import { languagePermissionsDialog } from './sub-dialogs/language-permissions/language-permissions-dialog.config';
 import { viewsUsageDialog } from './sub-dialogs/views-usage/views-usage-dialog.config';
 

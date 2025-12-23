@@ -7,7 +7,7 @@ export const inspectExtensionDialog: DialogConfig = {
   panelClass: null,
 
   async getComponent() {
-    const { InspectExtensionComponent } = await import('./inspect-extension');
-    return InspectExtensionComponent;
+    const { InspectExtensionDialog } = await import('../inspect-dialog/inspect-extension-dialog');
+    return InspectExtensionDialog;
   }
 };

@@ -1,4 +1,3 @@
-import { Guid } from "projects/field-string-wysiwyg/src/shared/guid";
 
 export interface Extension {
   folder: string;
@@ -8,8 +7,8 @@ export interface Extension {
 }
 
 export interface ExtensionConfiguration {
-  guid: Guid;
-  nameId: Guid;
+  guid: string; // guid
+  nameId: string; // guid
   isInstalled: boolean;
   name: string;
   version: string;
@@ -54,7 +53,7 @@ export interface ExtensionInspectResult {
   data: {
     contentTypes: {
       name: string;
-      guid: Guid;
+      guid: string; // guid
       localEntities: number;
     }[];
   };
