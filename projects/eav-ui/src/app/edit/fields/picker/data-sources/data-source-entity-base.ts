@@ -94,6 +94,10 @@ export abstract class DataSourceEntityBase extends DataSourceBase {
 
   initPrefetch(entityGuids: string[]): void {
     const l = this.log.fnIfInList('initPrefetch', 'fields', this.fieldName, { entityGuids });
+    // in rare cases - such as json-based entities (which are never stored as real entities)
+    // the entityGuids can be null, in which case a prefetch would be pointless and cause errors
+    if (entityGuids == null)
+      return l.end('no entity guids to prefetch');
     const guids = entityGuids.filter(RxHelpers.distinct);
     this.#loadMoreIntoCache(this.#prefetchNew, guids, 'initPrefetch');
     l.end();
