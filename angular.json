@@ -25,7 +25,8 @@
           "builder": "@angular/build:application",
           "options": {
             "outputPath": {
-              "base": "dist/eav-ui"
+              "base": "dist/eav-ui",
+              "browser": ""
             },
             "index": "projects/eav-ui/src/index-raw.html",
             "polyfills": ["projects/eav-ui/src/polyfills.ts"],
