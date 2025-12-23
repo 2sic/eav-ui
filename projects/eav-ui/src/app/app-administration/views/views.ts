@@ -1,3 +1,4 @@
+import polymorphLogo from '!url-loader!./polymorph-logo.png';
 import { GridOptions } from '@ag-grid-community/core';
 import { ChangeDetectorRef, Component, computed, inject, OnInit, signal, ViewContainerRef } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -29,7 +30,6 @@ import { DialogConfigAppService } from '../services/dialog-config-app.service';
 import { ViewsService } from '../services/views.service';
 import { ConfirmDeleteDialogComponent } from '../sub-dialogs/confirm-delete-dialog/confirm-delete-dialog';
 import { ConfirmDeleteDialogData } from '../sub-dialogs/confirm-delete-dialog/confirm-delete-dialog.models';
-import polymorphLogo from './polymorph-logo.png';
 import { ViewsActionsComponent } from './views-actions/views-actions';
 import { ViewsShowComponent } from './views-show/views-show';
 import { ViewsTypeComponent } from './views-type/views-type';

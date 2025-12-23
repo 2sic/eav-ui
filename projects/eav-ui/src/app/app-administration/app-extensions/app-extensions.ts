@@ -1,4 +1,6 @@
+import appExtensionMask from '!raw-loader!./app-extension-mask.svg';
 import { ColDef, GridOptions } from '@ag-grid-community/core';
+
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
@@ -17,7 +19,6 @@ import { EditForm, EditPrep } from '../../shared/models/edit-form.model';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { EntityService } from '../../shared/services/entity.service';
-import appExtensionMask from './app-extension-mask.svg';
 import { AppExtensionsService } from './app-extensions.service';
 import { AppExtensionActions } from './extension-actions/extension-actions';
 import { Extension } from './extension.model';

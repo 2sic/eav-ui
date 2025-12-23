@@ -22,14 +22,12 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular/build:application",
+          "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": {
-              "base": "dist/eav-ui",
-              "browser": ""
-            },
+            "outputPath": "dist/eav-ui",
             "index": "projects/eav-ui/src/index-raw.html",
-            "polyfills": ["projects/eav-ui/src/polyfills.ts"],
+            "main": "projects/eav-ui/src/main.ts",
+            "polyfills": "projects/eav-ui/src/polyfills.ts",
             "tsConfig": "projects/eav-ui/tsconfig.app.json",
             "inlineStyleLanguage": "css",
             "assets": ["projects/eav-ui/src/assets"],
@@ -39,16 +37,7 @@
               "projects/eav-ui/src/app/edit/assets/scripts/dropzone-dragging-helper.js",
               "projects/eav-ui/src/app/edit/assets/scripts/clipboard-paste/paste.js"
             ],
-            "allowedCommonJsDependencies": [
-              "dayjs",
-              "papaparse"
-            ],
-            "browser": "projects/eav-ui/src/main.ts",
-            "loader": {
-              ".svg": "text",
-              ".png": "base64",
-              ".rawts": "text"
-            }
+            "allowedCommonJsDependencies": ["dayjs"]
           },
           "configurations": {
             "production": {
@@ -62,19 +51,23 @@
               "outputHashing": "bundles",
               "sourceMap": true,
               "namedChunks": true,
-              "extractLicenses": true
+              "extractLicenses": true,
+              "vendorChunk": true,
+              "buildOptimizer": true
             },
             "development": {
               "optimization": false,
               "sourceMap": true,
               "namedChunks": true,
-              "extractLicenses": false
+              "extractLicenses": false,
+              "vendorChunk": true,
+              "buildOptimizer": false
             }
           },
           "defaultConfiguration": "development"
         },
         "serve": {
-          "builder": "@angular/build:dev-server",
+          "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
             "buildTarget": "eav-ui:build",
             "publicHost": "http://localhost:4200"
@@ -90,7 +83,7 @@
           "defaultConfiguration": "development"
         },
         "extract-i18n": {
-          "builder": "@angular/build:extract-i18n",
+          "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
             "buildTarget": "eav-ui:build"
           }

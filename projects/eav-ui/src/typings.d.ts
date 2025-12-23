@@ -9,31 +9,12 @@ declare module "*.json" {
   export default value;
 }
 
-declare module "*.svg" {
-  const src: string;
-  // @ts-ignore - @2pp: throws error because wysiwyg also declares this module
-  export default src;
+declare module '!raw-loader!*' {
+  const contents: string;
+  export default contents;
 }
 
-declare module "*.png" {
-  const src: string;
-  export default src;
+declare module '!url-loader!*' {
+  const urlLoaderContents: string;
+  export default urlLoaderContents;
 }
-
-declare module "*.rawts" {
-  const src: string;
-  // @ts-ignore - @2pp: throws error because wysiwyg also declares this module
-  export default src;
-}
-
-// @2pp - 2025-12-23: removed as of new angular loader
-
-// declare module '*' {
-//   const contents: string;
-//   export default contents;
-// }
-
-// declare module '*' {
-//   const urlLoaderContents: string;
-//   export default urlLoaderContents;
-// }
