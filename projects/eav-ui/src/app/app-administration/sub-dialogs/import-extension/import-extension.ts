@@ -59,7 +59,8 @@ export interface FileUploadDialogData {
   ],
 })
 export class ImportExtensionComponent extends BaseComponent implements OnInit {
-  private extensionSvc = transient(AppExtensionsService);
+
+  #extensionSvc = transient(AppExtensionsService);
   #installSettingsService = transient(AppInstallSettingsService);
   #fb = transient(FormBuilder);
   #snackBar = inject(MatSnackBar);
@@ -81,7 +82,8 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
   forceInstall = false;
   alreadyInstalled = computed(() => {
     const ext = this.extension();
-    if (!ext || !this.selectedEditions().length) return false;
+    if (!ext || !this.selectedEditions().length)
+      return false;
     // If any selected edition is already installed, require force
     return ext.editions?.some(e =>
       this.selectedEditions().includes(e.edition ?? '') && e.isInstalled
@@ -156,7 +158,7 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
         const winFrame = this.installerWindow.nativeElement as HTMLIFrameElement;
 
         // Subscribe to the HttpResourceRef to get the data
-        this.extensionSvc.getAll().subscribe((res) => {
+        this.#extensionSvc.getAll().subscribe((res) => {
           const extensions = res?.extensions ?? [];
 
           const allInstalled = extensions.map((ext: Extension) => ({
@@ -236,9 +238,8 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
   private buildRemoteUrl(baseUrl: string, params: Record<string, string> = {}): string {
     const [urlBase, queryString] = baseUrl.split('?');
     const query = new URLSearchParams(queryString || '');
-    for (const key in params) {
+    for (const key in params)
       query.set(key, params[key]);
-    }
     return `${urlBase}?${query.toString()}`;
   }
 
@@ -283,7 +284,7 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
 
   private runFilePreflight(file: File): void {
     this.isLoadingPreflight.set(true);
-    this.extensionSvc.installPreflightExtension([file])
+    this.#extensionSvc.installPreflightExtension([file])
       .pipe(take(1))
       .subscribe({
         next: (result) => this.handlePreflightResult(result.extensions[0], file),
@@ -296,7 +297,7 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
     this.showExtensionCatalog.set(false);
     this.isLoadingPreflight.set(true);
 
-    this.extensionSvc.installPreflightExtensionFromUrl(url)
+    this.#extensionSvc.installPreflightExtensionFromUrl(url)
       .pipe(take(1))
       .subscribe({
         next: (result) => this.handlePreflightResult(result.extensions[0], url),
@@ -313,14 +314,12 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
 
     // If already installed, maybe auto-enable force? Or leave for user to decide.
     // For now, we rely on user interaction.
+    const editions = ext.editions?.length > 0
+      ? ext.editions
+      : this.fallbackEditions.map(e => ({ edition: e }));
+    this.editions.set(editions);
 
-    if (ext.editions?.length > 0) {
-      this.editions.set(ext.editions);
-    } else {
-      this.editions.set(this.fallbackEditions.map(e => ({ edition: e })));
-    }
-
-    this.selectedEditions.set(this.editions().map(e => e.edition));
+    this.selectedEditions.set([this.editions()[0].edition ?? '']); // Select first edition by default
   }
 
   private handlePreflightError(error: any) {
@@ -359,9 +358,9 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
     const editionsString = this.selectedEditions().length ? this.selectedEditions().join(',') : undefined;
     
     if (this.preflightSource instanceof File) {
-      installObservable = this.extensionSvc.uploadExtensions(this.preflightSource, editionsString, overwrite);
+      installObservable = this.#extensionSvc.uploadExtensions(this.preflightSource, editionsString, overwrite);
     } else if (typeof this.preflightSource === 'string') {
-      installObservable = this.extensionSvc.installRemoteExtension(this.preflightSource, editionsString, overwrite);
+      installObservable = this.#extensionSvc.installRemoteExtension(this.preflightSource, editionsString, overwrite);
     } else {
       return; // Should not happen
     }

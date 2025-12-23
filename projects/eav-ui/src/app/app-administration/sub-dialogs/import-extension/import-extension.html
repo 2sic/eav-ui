@@ -79,7 +79,7 @@
 
     @if (extension() && !isLoadingPreflight()) {
       <mat-accordion>
-        <mat-expansion-panel [expanded]="false">
+        <mat-expansion-panel [expanded]="true">
           <mat-expansion-panel-header>
             <mat-panel-title>Extension Details</mat-panel-title>
           </mat-expansion-panel-header>
@@ -154,9 +154,8 @@
       </div>
     }
 
-    <!-- TODO: only show if necessary -->
+    <!-- Force Install Option, only show if necessary -->
     @if (alreadyInstalled()) {
-      <!-- Force Install Option -->
       <div class="install-options" style="margin-top: 16px;">
         <h4>Caution: Import causes an Overwrite</h4>
         <p>
@@ -170,6 +169,7 @@
       </div>
     }
 
+    <!-- Installing State / Spinner -->
     @if (isInstalling()) {
       <div class="installing">
         <mat-spinner diameter="40"></mat-spinner>
