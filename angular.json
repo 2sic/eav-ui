@@ -39,7 +39,10 @@
               "projects/eav-ui/src/app/edit/assets/scripts/dropzone-dragging-helper.js",
               "projects/eav-ui/src/app/edit/assets/scripts/clipboard-paste/paste.js"
             ],
-            "allowedCommonJsDependencies": ["dayjs"],
+            "allowedCommonJsDependencies": [
+              "dayjs",
+              "papaparse"
+            ],
             "browser": "projects/eav-ui/src/main.ts",
             "loader": {
               ".svg": "text",

@@ -7,16 +7,23 @@
   </div>
 
   <div class="eav-dialog-content">
+    <!-- Show Details / Stats etc. -->
     <mat-accordion>
-      <mat-expansion-panel [expanded]="false">
+      <mat-expansion-panel [expanded]="true">
         <mat-expansion-panel-header>
           <mat-panel-title>Extension Details</mat-panel-title>
         </mat-expansion-panel-header>
         <app-inspect-extension-content [data]="preflightResult()" />
       </mat-expansion-panel>
     </mat-accordion>
+
+    <!-- Show special warnings if necessary -->
     @if (totalLocalEntities() > 0) {
-      <p>Caution: This app has {{ totalLocalEntities() }} local entities.</p>
+      <p>
+        Caution: This app has {{ totalLocalEntities() }} local entities
+        which were created using content-types of this extension.
+        You may want to also delete these entities.
+      </p>
       <p>
         <mat-slide-toggle [(ngModel)]="withData">
           With Data
