@@ -1,14 +1,14 @@
 import { FieldOption } from '../../dialog/footer/formula-designer/formula-designer.models';
-import { FormulaVersions } from '../formula-definitions';
-import { FormulaCacheItem } from '../cache/formula-cache.model';
-import { FormulaV1Data } from '../run/formula-run-data.model';
-import { FormulaV1Context } from '../run/formula-run-context.model';
-import { FormulaV1Experimental } from '../run/formula-run-experimental.model';
 import { PickerItem } from '../../fields/picker/models/picker-item.model';
-import { FormulaPropsParameters, FormulaRunOneHelpersFactory } from '../formula-run-one-helpers.factory';
+import { FormulaCacheItem } from '../cache/formula-cache.model';
+import { FormulaVersions } from '../formula-definitions';
+import { FormulaPropsParameters } from '../formula-run-one-helpers.factory';
+import { FormulaV1Context } from '../run/formula-run-context.model';
+import { FormulaV1Data } from '../run/formula-run-data.model';
+import { FormulaV1Experimental } from '../run/formula-run-experimental.model';
 
 // Import the type definitions for intellisense
-import editorTypesForIntellisense from '!raw-loader!./editor-intellisense-function-v2.rawts';
+import editorTypesForIntellisense from './editor-intellisense-function-v2.rawts';
 
 export class IntellisenseV2 {
   /**
