@@ -1,4 +1,3 @@
-import patronsLogo from '!raw-loader!./assets/2sxc-patrons.svg';
 import { Component, HostBinding, signal, ViewContainerRef } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -13,6 +12,7 @@ import { ClipboardService } from '../../../shared/services/clipboard.service';
 import { SystemInfoSet } from '../../models/system-info.model';
 import { FeaturesConfigService } from '../../services/features-config.service';
 import { ZoneService } from '../../services/zone.service';
+import patronsLogo from './assets/2sxc-patrons.svg';
 
 @Component({
   selector: 'app-registration',

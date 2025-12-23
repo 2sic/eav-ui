@@ -1,6 +1,4 @@
-import appExtensionMask from '!raw-loader!./app-extension-mask.svg';
 import { ColDef, GridOptions } from '@ag-grid-community/core';
-
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
@@ -22,6 +20,7 @@ import { EntityService } from '../../shared/services/entity.service';
 import { Extension } from '../models/extension.model';
 import { AppExtensionsService } from '../services/app-extensions.service';
 import { ImportExtensionComponent } from '../sub-dialogs/import-extension/import-extension';
+import appExtensionMask from './app-extension-mask.svg';
 import { AppExtensionActions } from './extension-actions/extension-actions';
 import { AppExtensionsLinkCell } from './extensions-link/extensions-link';
 @Component({
