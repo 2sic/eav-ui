@@ -8,7 +8,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EntityLightIdentifier } from 'projects/edit-types/src/EntityLight';
-import { Guid } from 'projects/field-string-wysiwyg/src/shared/guid';
 import { map, Observable, of, take } from 'rxjs';
 import { transient } from '../../../../../core';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
@@ -22,7 +21,7 @@ import { ConfirmDeleteDialogData } from '../sub-dialogs/confirm-delete-dialog/co
 import { CopilotService } from './copilot-service';
 
 type DataCopilotConfiguration = {
-  Guid: Guid;
+  Guid: string;
   Id: number;
   Title?: string;
 };
