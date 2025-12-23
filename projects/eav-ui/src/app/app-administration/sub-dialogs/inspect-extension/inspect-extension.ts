@@ -1,8 +1,8 @@
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -10,7 +10,6 @@ import { ActivatedRoute } from '@angular/router';
 import { transient } from 'projects/core';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { AppExtensionsService } from '../../services/app-extensions.service';
-import { ConfirmDeleteDialogData } from '../confirm-delete-dialog/confirm-delete-dialog.models';
 import { InspectExtensionContentComponent } from './inspect-extension-content/inspect-extension-content';
 
 @Component({
@@ -31,20 +30,11 @@ import { InspectExtensionContentComponent } from './inspect-extension-content/in
 export class InspectExtensionComponent {
   #extensionsSvc = transient(AppExtensionsService);
 
-  extensionFolder = this.route.snapshot.paramMap.get('extension') as 'extension';
-  edition = this.route.snapshot.queryParamMap.get('edition') || '';
+  dialog = inject(MatDialogRef<{}>);
+  #route = inject(ActivatedRoute);
+
+  extensionFolder = this.#route.snapshot.paramMap.get('extension');
+  edition = this.#route.snapshot.queryParamMap.get('edition') || '';
 
   preflightResult = this.#extensionsSvc.preflightExtension(this.extensionFolder, this.edition).value;
-
-  constructor(
-    private route: ActivatedRoute,
-    @Inject(MAT_DIALOG_DATA) public dialogData: ConfirmDeleteDialogData,
-    public dialog: MatDialogRef<{}>,
-  ) { }
-
-  closeDialog(confirm?: boolean) {
-    confirm
-      ? this.dialog.close(confirm)
-      : this.dialog.close();
-  }
 }
