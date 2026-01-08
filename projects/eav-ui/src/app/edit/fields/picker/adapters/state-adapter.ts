@@ -112,7 +112,7 @@ export class StateAdapter {
     const uiValue = this.#fieldState.uiValue();
     this.log.fnIf('selectedItems', { uiValue });
     const asUi = this.mapper.toUi(uiValue);
-    console.warn('asUi before empty fix', { field: this.#fieldName, mapper: this.mapper, uiValue, asUi });
+    // console.warn('asUi before empty fix', { field: this.#fieldName, mapper: this.mapper, uiValue, asUi });
     // if (this.#fieldName === 'releases')
     //   debugger;
     const pickerAllowsEmpty = this.allowsEmptyLazy()();

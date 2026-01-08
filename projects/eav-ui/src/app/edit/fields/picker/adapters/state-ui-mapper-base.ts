@@ -18,11 +18,3 @@ export abstract class StateUiMapperBase<TState extends FieldValue = FieldValue, 
 
   abstract toState(uiValue: TUi): TState;
 }
-
-
-// export abstract class StateUiMapperWithSettingsBase<TState extends FieldValue = FieldValue, TUi extends FieldValue = FieldValue>
-//   extends StateUiMapperBase<TState, TUi> {
-//   constructor(fieldName: string, settings: Signal<FieldSettings & FieldSettingsSharedSeparator>) {
-//     super(fieldName, settings);
-//   }
-// }
