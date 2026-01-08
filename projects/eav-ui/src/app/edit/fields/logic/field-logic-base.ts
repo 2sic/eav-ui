@@ -48,10 +48,22 @@ export abstract class FieldLogicBase {
    * 
    * Note: 2dm 2023-08-31 moved from InputFieldHelpers; in future, each logic can override this
    */
-  isValueEmpty(value: FieldValue, isCreateMode: boolean): boolean {
-    const l = this.log.fn('isValueEmpty', { value, isCreateMode });
+  isValueEmpty(fieldType: string, value: FieldValue, isCreateMode: boolean): boolean {
+    const l = this.log.fn('isValueEmpty', { fieldType, value, isCreateMode });
+
+    // If value is undefined, it's definitely empty
+    // Note: 2026-01-08 2dm: Not sure why we only check for undefined, but this is the original logic, so we won't change it now.
+    // My guess is that entities which are being edited will return null for many empty fields, so we don't want to treat null started-empty here.
+    if (value === undefined)
+      return l.r(true, 'value is undefined');
+    
+    // 2026-01-08 2dm added this special case for entity-fields which load data from a json, and they are null, not undefined
+    if (fieldType === 'entity' && value === null)
+      return l.r(true, 'entity field is null');
+
     const emptyEntityField = Array.isArray(value) && value.length === 0 && isCreateMode;
-    return l.r(value === undefined || emptyEntityField);
+
+    return l.r(emptyEntityField);
   }
 
   /** 

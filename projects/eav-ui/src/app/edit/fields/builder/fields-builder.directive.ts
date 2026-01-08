@@ -216,8 +216,8 @@ Will show an info-error instead.`
     );
 
     // Try to show the [type]-default component if it exists
-    const prefix = selector.split('-')[0];
-    const fallback = InputComponents[`${prefix}-default`] || CustomDefaultComponent;
+    const fieldType = selector.split('-')[0];
+    const fallback = InputComponents[`${fieldType}-default`] || CustomDefaultComponent;
     return l.r(fallback, 'defaulting to fallback component');
   }
 }

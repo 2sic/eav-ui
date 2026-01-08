@@ -21,7 +21,11 @@ export interface FormConfiguration {
   formId: number;
   isParentDialog: boolean;
   itemGuids: string[];
+
+  /** true if we're in create mode which would result in new data being saved */
   createMode: boolean;
+
+  /** true if this is a copy operation based off an existing item */
   isCopy: boolean;
   enableHistory: boolean;
   enableFormulaSave: boolean;
