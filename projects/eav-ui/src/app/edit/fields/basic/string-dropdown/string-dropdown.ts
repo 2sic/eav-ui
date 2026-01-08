@@ -3,7 +3,7 @@ import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { classLog } from '../../../../shared/logging';
 import { PickerComponent } from '../../picker/picker';
 import { PickerImports } from '../../picker/picker-providers.constant';
-import { EntityDefaultLogic } from '../entity-default/entity-default-logic';
+import { EntityDefaultLogic } from '../entity-default/entity-default-settings-helper';
 
 @Component({
     selector: InputTypeCatalog.StringDropdown,

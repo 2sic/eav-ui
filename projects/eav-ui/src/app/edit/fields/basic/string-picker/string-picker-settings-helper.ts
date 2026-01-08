@@ -5,7 +5,7 @@ import { classLog } from '../../../../shared/logging';
 import { FieldSettingsHelperBase } from '../../logic/field-settings-helper-base';
 import { FieldSettingsUpdateTask } from '../../logic/field-settings-update-task';
 import { PickerSourcesCustom } from '../../picker/constants/picker-config-model.constants';
-import { PickerLogicShared } from '../../picker/picker-logic-shared';
+import { PickerLogicShared } from '../../picker/picker-settings-helper-shared';
 
 export class StringPickerLogic extends FieldSettingsHelperBase {
   name: Of<typeof InputTypeCatalog> = InputTypeCatalog.StringPicker;

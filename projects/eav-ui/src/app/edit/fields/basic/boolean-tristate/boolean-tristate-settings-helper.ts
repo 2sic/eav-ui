@@ -1,8 +1,8 @@
 import { FieldSettingsBoolean } from 'projects/edit-types/src/FieldSettings-Boolean';
+import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldSettingsHelperBase } from '../../logic/field-settings-helper-base';
 import { FieldSettingsUpdateTask } from '../../logic/field-settings-update-task';
-import { FieldSettings } from './../../../../../../../edit-types/src/FieldSettings';
 
 export class BooleanTristateLogic extends FieldSettingsHelperBase {
   name = InputTypeCatalog.BooleanTristate;

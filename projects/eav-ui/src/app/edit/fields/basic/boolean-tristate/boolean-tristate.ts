@@ -9,7 +9,7 @@ import { FieldState } from '../../field-state';
 import { FieldHelperTextComponent } from '../../help-text/field-help-text';
 import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
 import { BooleanBaseComponent } from '../boolean-default/boolean-base';
-import { BooleanTristateLogic } from './boolean-tristate-logic';
+import { BooleanTristateLogic } from './boolean-tristate-settings-helper';
 
 @Component({
     selector: InputTypeCatalog.BooleanTristate,

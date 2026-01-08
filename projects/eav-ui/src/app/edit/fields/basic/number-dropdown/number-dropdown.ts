@@ -4,7 +4,7 @@ import { FieldMetadata } from '../../field-metadata.decorator';
 import { PickerComponent } from '../../picker/picker';
 import { PickerImports } from '../../picker/picker-providers.constant';
 import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
-import { NumberDropdownLogic } from './number-dropdown-logic';
+import { NumberDropdownLogic } from './number-dropdown-settings-helper';
 
 @Component({
   selector: InputTypeCatalog.NumberDropdown,

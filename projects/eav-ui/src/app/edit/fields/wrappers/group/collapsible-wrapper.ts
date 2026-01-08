@@ -10,7 +10,7 @@ import { FieldsSettingsService } from '../../../state/fields-settings.service';
 import { ChangeAnchorTargetDirective } from '../../directives/change-anchor-target.directive';
 import { FieldState } from '../../field-state';
 import { WrappersCatalog } from '../wrappers.constants';
-import { EmptyDefaultLogic } from './collapsible-wrapper-logic';
+import { EmptyDefaultLogic } from './collapsible-wrapper-settings-helper';
 
 
 @Component({

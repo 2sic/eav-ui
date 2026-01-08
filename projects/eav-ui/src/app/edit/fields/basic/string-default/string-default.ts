@@ -11,7 +11,7 @@ import { FieldMetadata } from '../../field-metadata.decorator';
 import { FieldState } from '../../field-state';
 import { FieldHelperTextComponent } from '../../help-text/field-help-text';
 import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
-import { StringDefaultLogic } from './string-default-logic';
+import { StringDefaultLogic } from './string-default-settings-helper';
 
 @Component({
   selector: InputTypeCatalog.StringDefault,

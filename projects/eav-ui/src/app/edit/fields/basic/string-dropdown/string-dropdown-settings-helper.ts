@@ -4,7 +4,7 @@ import { FieldSettingsPickerMerged, StringDropdown } from '../../../../../../../
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldSettingsHelperBase } from '../../logic/field-settings-helper-base';
 import { FieldSettingsUpdateTask } from '../../logic/field-settings-update-task';
-import { PickerLogicShared } from '../../picker/picker-logic-shared';
+import { PickerLogicShared } from '../../picker/picker-settings-helper-shared';
 import { DataSourceDropDownOptions } from '../string-picker/string-picker.helpers';
 
 export class StringDropdownLogic extends FieldSettingsHelperBase {

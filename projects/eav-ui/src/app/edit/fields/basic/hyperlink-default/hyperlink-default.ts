@@ -21,7 +21,7 @@ import { PasteClipboardImageDirective } from '../../directives/paste-clipboard-i
 import { FieldMetadata } from '../../field-metadata.decorator';
 import { WrappersCatalog } from '../../wrappers/wrappers.constants';
 import { HyperlinkDefaultBaseComponent } from './hyperlink-default-base';
-import { HyperlinkDefaultLogic } from './hyperlink-default-logic';
+import { HyperlinkDefaultLogic } from './hyperlink-default-settings-helper';
 
 @Component({
     selector: InputTypeCatalog.HyperlinkDefault,

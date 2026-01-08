@@ -5,7 +5,7 @@ import { computedObj } from '../../../../shared/signals/signal.utilities';
 import { FieldMetadata } from '../../field-metadata.decorator';
 import { FieldState } from '../../field-state';
 import { WrappersCatalog } from '../../wrappers/wrappers.constants';
-import { HyperlinkLibraryLogic } from './hyperlink-library-logic';
+import { HyperlinkLibraryLogic } from './hyperlink-library-settings-helper';
 import { AdamControl } from './hyperlink-library.models';
 
 @Component({

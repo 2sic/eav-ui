@@ -3,7 +3,7 @@ import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { classLog } from '../../../../shared/logging';
 import { PickerComponent } from '../../picker/picker';
 import { PickerImports } from '../../picker/picker-providers.constant';
-import { StringDropdownQueryLogic } from './string-dropdown-query-logic';
+import { StringDropdownQueryLogic } from './string-dropdown-query-settings-helper';
 
 @Component({
     selector: InputTypeCatalog.StringDropdownQuery,

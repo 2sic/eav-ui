@@ -4,7 +4,7 @@ import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldSettingsHelperBase } from '../../logic/field-settings-helper-base';
 import { FieldSettingsHelpersManager } from '../../logic/field-settings-helpers-manager';
 import { FieldSettingsUpdateTask } from '../../logic/field-settings-update-task';
-import { EntityDefaultLogic } from '../entity-default/entity-default-logic';
+import { EntityDefaultLogic } from '../entity-default/entity-default-settings-helper';
 
 export class StringDropdownQueryLogic extends FieldSettingsHelperBase {
   name = InputTypeCatalog.StringDropdownQuery;

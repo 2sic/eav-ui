@@ -3,7 +3,7 @@ import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { classLog } from '../../../../shared/logging/logging';
 import { PickerComponent } from '../../picker/picker';
 import { PickerImports } from '../../picker/picker-providers.constant';
-import { NumberPickerLogic } from './number-picker-logic';
+import { NumberPickerLogic } from './number-picker-settings-helper';
 
 @Component({
   selector: InputTypeCatalog.NumberPicker,

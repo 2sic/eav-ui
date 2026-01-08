@@ -12,7 +12,7 @@ import { FieldMetadata } from '../../field-metadata.decorator';
 import { FieldState } from '../../field-state';
 import { FieldHelperTextComponent } from '../../help-text/field-help-text';
 import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
-import { CustomJsonEditorLogic, StringJsonLogic } from './custom-json-editor-logic';
+import { CustomJsonEditorLogic, StringJsonLogic } from './custom-json-editor-settings-helper';
 
 @Component({
     selector: InputTypeCatalog.CustomJsonEditor,

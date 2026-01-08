@@ -10,7 +10,7 @@ import { FieldMetadata } from '../../field-metadata.decorator';
 import { FieldState } from '../../field-state';
 import { FieldHelperTextComponent } from '../../help-text/field-help-text';
 import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
-import { StringUrlPathLogic } from './string-url-path-logic';
+import { StringUrlPathLogic } from './string-url-path-settings-helper';
 
 @Component({
     selector: InputTypeCatalog.StringUrlPath,

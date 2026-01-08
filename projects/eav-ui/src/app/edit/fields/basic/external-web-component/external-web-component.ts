@@ -5,8 +5,8 @@ import { classLog } from '../../../../shared/logging';
 import { ScriptsLoaderService } from '../../../shared/services/scripts-loader.service';
 import { ConnectorComponent } from '../../connector/connector';
 import { FieldState } from '../../field-state';
-import { CustomGpsLogic } from './custom-gps-logic';
-import { StringWysiwygLogic } from './string-wysiwyg-logic';
+import { CustomGpsLogic } from './custom-gps-settings-helper';
+import { StringWysiwygLogic } from './string-wysiwyg-settings-helper';
 
 @Component({
   selector: InputTypeCatalog.ExternalWebComponent,

@@ -7,7 +7,7 @@ import { FieldMetadata } from '../../field-metadata.decorator';
 import { FieldState } from '../../field-state';
 import { FieldHelperTextComponent } from '../../help-text/field-help-text';
 import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
-import { NumberDefaultLogic } from './number-default-logic';
+import { NumberDefaultLogic } from './number-default-settings-helper';
 
 @Component({
     selector: InputTypeCatalog.NumberDefault,

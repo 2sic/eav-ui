@@ -4,7 +4,7 @@ import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldSettingsHelperBase } from '../../logic/field-settings-helper-base';
 import { FieldSettingsHelpersManager } from '../../logic/field-settings-helpers-manager';
 import { FieldSettingsUpdateTask } from '../../logic/field-settings-update-task';
-import { StringPickerLogic } from '../string-picker/string-picker-logic';
+import { StringPickerLogic } from '../string-picker/string-picker-settings-helper';
 
 export class NumberPickerLogic extends FieldSettingsHelperBase {
   name: Of<typeof InputTypeCatalog> = InputTypeCatalog.NumberPicker;
