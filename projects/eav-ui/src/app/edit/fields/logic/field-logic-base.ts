@@ -2,8 +2,8 @@ import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
 import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
 import { classLog, ClassLogger } from '../../../shared/logging';
 import { DebugFields } from '../../edit-debug';
-import { FieldLogicManager } from './field-logic-manager';
 import { FieldLogicTools } from './field-logic-tools';
+import { FieldSettingsHelpersManager } from './field-settings-helpers-manager';
 import { FieldSettingsUpdateTask } from './field-settings-update-task';
 
 const logSpecs = {
@@ -32,10 +32,10 @@ export abstract class FieldLogicBase {
   /** If this field supports AutoTranslate (new v15.x) */
   public canAutoTranslate = false;
 
-  /** Register a Logic to FieldLogicManager */
+  /** Quick shorthand to Register a Logic to FieldLogicManager */
   static add(logic: LogicFactory) {
     const logicInstance = new logic();
-    FieldLogicManager.singleton().add(logicInstance);
+    FieldSettingsHelpersManager.singleton().add(logicInstance);
   }
 
   /** Run this dummy method from component to make sure Logic files are not tree shaken */

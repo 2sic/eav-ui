@@ -5,40 +5,46 @@ import { UnknownLogic } from './field-logic-unknown';
 
 const logSpecs = {
   all: false,
-  get: true,
+  get: false,
 }
 
-// declare const window; //: EavWindow;
-
+/** Keep the singleton FieldLogicManager on the Window object - probably not the best way to do this? */
 declare global {
   interface Window {
-    eavFieldLogicManager: FieldLogicManager;
+    eavFieldSettingsHelpersManagerSingleton: FieldSettingsHelpersManager;
   }
 }
 
-export class FieldLogicManager {
-  private logics: Record<string, FieldLogicBase> = {};
+/**
+ * Manages all Field Settings Helpers.
+ * 
+ * Use this to get a specific field-settings helper for each input type.
+ */
+export class FieldSettingsHelpersManager {
+  log = classLog({ FieldSettingsHelpersManager}, logSpecs);
 
-  log = classLog({FieldLogicManager}, logSpecs);
-
+  // Private constructor to enforce singleton pattern
   private constructor() {
     // add unknown as a fallback for all scenarios
     this.add(new UnknownLogic());
   }
 
-  static singleton(): FieldLogicManager {
-    return window.eavFieldLogicManager ??= new FieldLogicManager();
+  static singleton(): FieldSettingsHelpersManager {
+    // Keep the singleton FieldLogicManager on the Window object - probably not the best way to do this?
+    return window.eavFieldSettingsHelpersManagerSingleton ??= new FieldSettingsHelpersManager();
   }
+
+  #helpers: Record<string, FieldLogicBase> = {};
 
   /** Add settings logic */
   add(logic: FieldLogicBase): void {
-    this.logics[logic.name] = logic;
+    this.#helpers[logic.name] = logic;
   }
 
   /** Get settings logic for input type */
   get(inputTypeName: string): FieldLogicBase {
     const l = this.log.fnIf('get', { inputTypeName });
-    const r = this.logics[inputTypeName] ?? null;
+    const r = this.#helpers[inputTypeName] ?? null;
     return l.r(r);
   }
 

@@ -3,7 +3,7 @@ import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
 import { classLog } from '../../shared/logging';
 import { computedObj } from '../../shared/signals/signal.utilities';
 import { DebugFields } from '../edit-debug';
-import { FieldLogicManager } from '../fields/logic/field-logic-manager';
+import { FieldSettingsHelpersManager } from '../fields/logic/field-settings-helpers-manager';
 import { FormConfigService } from '../form/form-config.service';
 import { EntityReader } from '../shared/helpers';
 import { InputTypeService } from '../shared/input-types/input-type.service';
@@ -144,7 +144,7 @@ export class FieldsSettingsConstantsService {
 
       lInner.a('details', { fieldName, contentType, language, attr, initialSettings, inputTypeSpecs });
 
-      const logic = FieldLogicManager.singleton().get(attr.InputType);
+      const logic = FieldSettingsHelpersManager.singleton().get(attr.InputType);
 
       // Construct the constants / unchanging aspects of the field, no matter what language
       const constants: FieldConstants = {

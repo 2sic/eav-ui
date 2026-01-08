@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { InputTypeHelpers } from '../../shared/fields/input-type-helpers';
 import { classLogEnabled } from '../../shared/logging';
 import { DebugFields } from '../edit-debug';
-import { FieldLogicManager } from '../fields/logic/field-logic-manager';
+import { FieldSettingsHelpersManager } from '../fields/logic/field-settings-helpers-manager';
 import { FieldReader } from '../localization/field-reader';
 import { LanguageService } from '../localization/language.service';
 import { ContentTypeService } from '../shared/content-types/content-type.service';
@@ -51,7 +51,7 @@ export class InitializeMissingValuesServices {
     const inputTypes = this.inputTypeService.getAll();
     const languages = this.languageService.getAll();
     const language = this.formConfig.language();
-    const logicManager = FieldLogicManager.singleton();
+    const logicManager = FieldSettingsHelpersManager.singleton();
 
     /** force UI to switch to default language, because some values are missing in the default language */
     let switchToDefault = false;

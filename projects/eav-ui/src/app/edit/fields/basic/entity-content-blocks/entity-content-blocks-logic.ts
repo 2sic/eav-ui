@@ -2,7 +2,7 @@ import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings
 import { FieldSettingsPickerMerged } from '../../../../../../../edit-types/src/FieldSettings-Pickers';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldLogicBase } from '../../logic/field-logic-base';
-import { FieldLogicManager } from '../../logic/field-logic-manager';
+import { FieldSettingsHelpersManager } from '../../logic/field-settings-helpers-manager';
 import { FieldSettingsUpdateTask } from '../../logic/field-settings-update-task';
 
 export class EntityContentBlocksLogic extends FieldLogicBase {
@@ -11,7 +11,7 @@ export class EntityContentBlocksLogic extends FieldLogicBase {
   constructor() { super({ EntityContentBlocksLogic }); }
 
   update(specs: FieldSettingsUpdateTask<string[]>): FieldSettings {
-    const entityDefaultLogic = FieldLogicManager.singleton().get(InputTypeCatalog.EntityDefault);
+    const entityDefaultLogic = FieldSettingsHelpersManager.singleton().get(InputTypeCatalog.EntityDefault);
     const fs = entityDefaultLogic.update(specs)  as FieldSettings & FieldSettingsPickerMerged;
     fs.EnableRemove = true;
     fs.AllowMultiValue = true;

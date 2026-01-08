@@ -1,7 +1,7 @@
-import { FieldLogicManager } from '../fields/logic/field-logic-manager';
-import { FieldProps } from './fields-configs.model';
 import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
 import { classLog } from '../../shared/logging';
+import { FieldSettingsHelpersManager } from '../fields/logic/field-settings-helpers-manager';
+import { FieldProps } from './fields-configs.model';
 
 export class FieldTranslationInfo implements Pick<FieldSettings, 'DisableTranslation' | 'DisableAutoTranslation'> {
 
@@ -29,7 +29,7 @@ export class FieldTranslationInfo implements Pick<FieldSettings, 'DisableTransla
     // first check if it's already disabled - in which case we say "false"
     // so it's not added (again) to lists of Fields that should not be translated
     if (this.DisableAutoTranslation) return false;
-    const logic = FieldLogicManager.singleton().get(this.getFieldsProps().constants.inputTypeSpecs.inputType);
+    const logic = FieldSettingsHelpersManager.singleton().get(this.getFieldsProps().constants.inputTypeSpecs.inputType);
     return !logic.canAutoTranslate;
   }
 }
