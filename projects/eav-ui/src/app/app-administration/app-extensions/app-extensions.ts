@@ -177,7 +177,6 @@ export class AppExtensions implements OnInit {
 
   #routeEditJson(configurationContentType: string, data: unknown): string {
     // Only produce "new:GUID" without "edit/"
-    console.log('2dm-routeEditJson', { configurationContentType, data });
     return convertFormToUrl({
       items: [ItemIdHelper.newJsonFromType(configurationContentType, data)],
     } satisfies EditForm);

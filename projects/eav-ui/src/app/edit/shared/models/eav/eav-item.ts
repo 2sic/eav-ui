@@ -47,9 +47,6 @@ export class EavItem {
     entityBundleDto: EavEntityBundleDto,
     message: string,
   ): EavItem {
-
-    console.log('2dm - EavItem - objToEav', { override, entityBundleDto, message });
-
     // Build attributes by converting each override key-value pair
     const attributes: EavEntityAttributes = Object.fromEntries(
       Object.entries(override).map(([key, value]) => {

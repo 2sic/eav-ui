@@ -2,7 +2,7 @@ import { computed, inject, Injectable, QueryList } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { transient } from 'projects/core';
-import { classLogEnabled } from '../../../shared/logging';
+import { classLog } from '../../../shared/logging';
 import { EntityFormBuilderComponent } from '../../entity-form/entity-form-builder/form-builder';
 import { EntityFormStateService } from '../../entity-form/entity-form-state.service';
 import { FormConfigService } from '../../form/form-config.service';
@@ -33,7 +33,7 @@ const logSpecs = {
 @Injectable()
 export class EditDialogSaveService {
 
-  log = classLogEnabled({ EditDialogSaveService }, logSpecs);
+  log = classLog({ EditDialogSaveService }, logSpecs);
   
   #formConfig = inject(FormConfigService);
   itemService = inject(ItemService);
@@ -83,8 +83,6 @@ export class EditDialogSaveService {
 
     const eavItem = this.itemService.get(editDialog.formBuilderRefs.get(0).entityGuid());
     const saveMode = eavItem.Header.ClientData?.save === 'js';
-
-    console.log('2dm: saveAll - isReturnValueMode', saveMode);
 
     if (saveMode) {
       this.#saveThroughJs(editDialog, close);

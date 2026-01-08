@@ -16,6 +16,5 @@ export class CustomDefaultComponent {
   protected config = this.fieldState.config;
 
   constructor() {
-    console.log('2dm: CustomDefaultComponent initialized with config:', this.config);
   }
 }
