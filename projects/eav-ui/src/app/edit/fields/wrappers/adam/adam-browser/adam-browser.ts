@@ -7,6 +7,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
 import isEqual from 'lodash-es/isEqual';
+import { ItemIdHelper } from 'projects/eav-ui/src/app/shared/models/item-id-helper';
 import { transient } from '../../../../../../../../core/transient';
 import { AdamConfig } from '../../../../../../../../edit-types/src/AdamConfig';
 import { AdamItem } from '../../../../../../../../edit-types/src/AdamItem';
@@ -17,7 +18,7 @@ import { eavConstants } from '../../../../../shared/constants/eav.constants';
 import { ClickStopPropagationDirective } from '../../../../../shared/directives/click-stop-propagation.directive';
 import { TippyDirective } from '../../../../../shared/directives/tippy.directive';
 import { classLog } from '../../../../../shared/logging';
-import { EditForm, EditPrep } from '../../../../../shared/models/edit-form.model';
+import { EditForm } from '../../../../../shared/models/edit-form.model';
 import { DialogRoutingService } from '../../../../../shared/routing/dialog-routing.service';
 import { computedObj, signalObj } from '../../../../../shared/signals/signal.utilities';
 import { FormsStateService } from '../../../../form/forms-state.service';
@@ -162,8 +163,8 @@ export class AdamBrowserComponent implements OnInit {
     const form: EditForm = {
       items: [
         metadataId > 0
-          ? EditPrep.editId(metadataId)
-          : EditPrep.newMetadata(adamItem.ReferenceId, contentTypeName, eavConstants.metadata.cmsObject),
+          ? ItemIdHelper.editId(metadataId)
+          : ItemIdHelper.newMetadata(adamItem.ReferenceId, contentTypeName, eavConstants.metadata.cmsObject),
       ],
     };
     this.#editRoutingService.open(this.config.index, this.config.entityGuid, form);

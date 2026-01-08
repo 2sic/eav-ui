@@ -11,7 +11,8 @@ import { EntityLightIdentifier } from 'projects/edit-types/src/EntityLight';
 import { map, Observable, of, take } from 'rxjs';
 import { transient } from '../../../../../core';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
-import { EditForm, EditPrep } from '../../shared/models/edit-form.model';
+import { EditForm } from '../../shared/models/edit-form.model';
+import { ItemIdHelper } from '../../shared/models/item-id-helper';
 import { RichResult } from '../../shared/models/rich-result';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { Context } from '../../shared/services/context';
@@ -94,8 +95,8 @@ export class CopilotGeneratorComponent {
   editConfig() {
     const form: EditForm = {
       items: [this.selectedEntity
-        ? EditPrep.editId(this.selectedEntity.Id)
-        : EditPrep.newFromType(this.#copilotConfigurationGuid)
+        ? ItemIdHelper.editId(this.selectedEntity.Id)
+        : ItemIdHelper.newFromType(this.#copilotConfigurationGuid)
       ]
     };
 

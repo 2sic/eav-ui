@@ -13,7 +13,8 @@ import { isCtrlEnter, isCtrlS } from '../edit/dialog/main/keyboard-shortcuts';
 import { MousedownStopPropagationDirective } from '../shared/directives/mousedown-stop-propagation.directive';
 import { TippyDirective } from '../shared/directives/tippy.directive';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
-import { EditForm, EditPrep } from '../shared/models/edit-form.model';
+import { EditForm } from '../shared/models/edit-form.model';
+import { ItemIdHelper } from '../shared/models/item-id-helper';
 import { ExtendedFabSpeedDialImports } from '../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
 import { SaveCloseButtonComponent } from '../shared/modules/save-close-button/save-close-button';
 import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
@@ -126,8 +127,8 @@ export class ManageContentListComponent implements OnInit {
   protected editHeader() {
     const form: EditForm = {
       items: [
-        EditPrep.relationship(this.#contentGroup.guid, 'listcontent', 0, this.header().Id === 0),
-        EditPrep.relationship(this.#contentGroup.guid, 'listpresentation', 0, this.header().Id === 0),
+        ItemIdHelper.relationship(this.#contentGroup.guid, 'listcontent', 0, this.header().Id === 0),
+        ItemIdHelper.relationship(this.#contentGroup.guid, 'listpresentation', 0, this.header().Id === 0),
       ],
     };
     const formUrl = convertFormToUrl(form);
@@ -136,7 +137,7 @@ export class ManageContentListComponent implements OnInit {
 
   protected editItem(id: number) {
     const form: EditForm = {
-      items: [EditPrep.editId(id)],
+      items: [ItemIdHelper.editId(id)],
     };
     const formUrl = convertFormToUrl(form);
     this.#dialogRoutes.navRelative([`edit/${formUrl}`]);
@@ -149,7 +150,7 @@ export class ManageContentListComponent implements OnInit {
 
   addBelow(index: number) {
     const form: EditForm = {
-      items: [EditPrep.relationship(this.#contentGroup.guid, this.#contentGroup.part, index + 1, true)],
+      items: [ItemIdHelper.relationship(this.#contentGroup.guid, this.#contentGroup.part, index + 1, true)],
     };
     const formUrl = convertFormToUrl(form);
     this.#dialogRoutes.navRelative([`edit/${formUrl}`]);

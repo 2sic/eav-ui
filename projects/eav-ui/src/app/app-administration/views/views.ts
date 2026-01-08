@@ -20,7 +20,8 @@ import { eavConstants } from '../../shared/constants/eav.constants';
 import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
-import { EditForm, EditPrep } from '../../shared/models/edit-form.model';
+import { EditForm } from '../../shared/models/edit-form.model';
+import { ItemIdHelper } from '../../shared/models/item-id-helper';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogInNewWindowService } from '../../shared/routing/dialog-in-new-window.service';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
@@ -140,7 +141,7 @@ export class ViewsComponent implements OnInit {
     return this.#urlTo(
       `edit/${convertFormToUrl({
         items: [
-          EditPrep.newFromType(eavConstants.contentTypes.template, { ...(this.appIsGlobal && { Location: 'Global' }) })
+          ItemIdHelper.newFromType(eavConstants.contentTypes.template, { ...(this.appIsGlobal && { Location: 'Global' }) })
         ],
       })}`
     );
@@ -154,8 +155,8 @@ export class ViewsComponent implements OnInit {
     if (!polymorphism) return;
 
     const itemsEntry = !polymorphism.Id
-      ? EditPrep.newFromType(polymorphism.TypeName)
-      : EditPrep.editId(polymorphism.Id);
+      ? ItemIdHelper.newFromType(polymorphism.TypeName)
+      : ItemIdHelper.editId(polymorphism.Id);
 
     return this.#urlTo(
       `edit/${convertFormToUrl({
@@ -302,8 +303,8 @@ export class ViewsComponent implements OnInit {
       `edit/${convertFormToUrl({
         items: [
           view == null
-            ? EditPrep.newFromType(eavConstants.contentTypes.template, { ...(this.appIsGlobal && { Location: 'Global' }) })
-            : EditPrep.editId(view.Id),
+            ? ItemIdHelper.newFromType(eavConstants.contentTypes.template, { ...(this.appIsGlobal && { Location: 'Global' }) })
+            : ItemIdHelper.editId(view.Id),
         ],
       })}`
     );
@@ -342,7 +343,7 @@ export class ViewsComponent implements OnInit {
     // Sets the # infront when calling this function
     return this.#dialogRouter.urlSubRoute(
       `edit/${convertFormToUrl({
-        items: [EditPrep.copy(eavConstants.contentTypes.template, view.Id)],
+        items: [ItemIdHelper.copy(eavConstants.contentTypes.template, view.Id)],
       })}`
     );
   }
@@ -385,8 +386,8 @@ export class ViewsComponent implements OnInit {
           },
           ...(
             (view.lightSpeed != null)
-              ? EditPrep.editId(view.lightSpeed.Id)
-              : EditPrep.newMetadata(view.Guid, eavConstants.appMetadata.LightSpeed.ContentTypeName, eavConstants.metadata.entity)
+              ? ItemIdHelper.editId(view.lightSpeed.Id)
+              : ItemIdHelper.newMetadata(view.Guid, eavConstants.appMetadata.LightSpeed.ContentTypeName, eavConstants.metadata.entity)
           )
         },
       ],

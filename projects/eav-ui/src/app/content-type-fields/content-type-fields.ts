@@ -22,7 +22,8 @@ import { ContentTypesFieldsService } from '../shared/fields/content-types-fields
 import { Field } from '../shared/fields/field.model';
 import { InputTypeHelpers } from '../shared/fields/input-type-helpers';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
-import { EditForm, EditPrep, ItemAddIdentifier, ItemEditIdentifier, ItemIdentifier } from '../shared/models/edit-form.model';
+import { EditForm, ItemAddIdentifier, ItemEditIdentifier, ItemIdentifier } from '../shared/models/edit-form.model';
+import { ItemIdHelper } from '../shared/models/item-id-helper';
 import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
 import { ContentTypeFieldsActionsComponent } from './content-type-fields-actions/content-type-fields-actions';
@@ -225,9 +226,9 @@ export class ContentTypeFieldsComponent implements OnInit {
     // Is an item of this type already loaded? Then just edit it, otherwise request new as Metadata
     const existingMd = field.Metadata[keyForMdLookup];
     return existingMd != null
-      ? EditPrep.editId(existingMd.Id) // if defined, return the entity-number to edit
+      ? ItemIdHelper.editId(existingMd.Id) // if defined, return the entity-number to edit
       : {
-        ...EditPrep.newMetadata(field.Id, newItemTypeName, eavConstants.metadata.attribute),
+        ...ItemIdHelper.newMetadata(field.Id, newItemTypeName, eavConstants.metadata.attribute),
         Prefill: { Name: field.StaticName },
       };
   }
@@ -274,8 +275,8 @@ export class ContentTypeFieldsComponent implements OnInit {
       throw new Error('This field does not expect to have an image configuration');
 
     const itemIdentifier: ItemIdentifier = imgConfig.entityId
-      ? EditPrep.editId(imgConfig.entityId)
-      : EditPrep.newMetadata(field.Id, imgConfig.typeName, eavConstants.metadata.attribute);
+      ? ItemIdHelper.editId(imgConfig.entityId)
+      : ItemIdHelper.newMetadata(field.Id, imgConfig.typeName, eavConstants.metadata.attribute);
     const formUrl = convertFormToUrl({ items: [itemIdentifier] });
     this.#dialogRouter.navRelative([`edit/${formUrl}`]);
   }

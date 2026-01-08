@@ -12,7 +12,7 @@ import { eavConstants } from '../../../shared/constants/eav.constants';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { convertFormToUrl } from '../../../shared/helpers/url-prep.helper';
 import { DialogSettings } from '../../../shared/models/dialog-settings.model';
-import { EditPrep } from '../../../shared/models/edit-form.model';
+import { ItemIdHelper } from '../../../shared/models/item-id-helper';
 import { DialogRoutingService } from '../../../shared/routing/dialog-routing.service';
 import { ClipboardService } from '../../../shared/services/clipboard.service';
 import { Context } from '../../../shared/services/context';
@@ -92,7 +92,7 @@ export class AppConfigurationCard implements OnDestroy {
 
       url.set(this.#urlTo(
         `edit/${convertFormToUrl({
-          items: [EditPrep.editId(contentItems[0].Id)],
+          items: [ItemIdHelper.editId(contentItems[0].Id)],
         })}`
       ));
     });

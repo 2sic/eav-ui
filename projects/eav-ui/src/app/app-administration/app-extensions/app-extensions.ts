@@ -15,7 +15,8 @@ import { defaultGridOptions } from '../../shared/constants/default-grid-options.
 import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
-import { EditForm, EditPrep } from '../../shared/models/edit-form.model';
+import { EditForm } from '../../shared/models/edit-form.model';
+import { ItemIdHelper } from '../../shared/models/item-id-helper';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { EntityService } from '../../shared/services/entity.service';
@@ -115,10 +116,13 @@ export class AppExtensions implements OnInit {
   }
 
   #openEditContentType(contentType: string) {
-    if (!contentType) return;
+    if (!contentType)
+      return;
 
     this.entitySvc.getEntities$(of({ contentTypeName: contentType })).subscribe(entities => {
-      const subRoute = entities ? entities[0].Id : this.#routeAddItem(contentType) // edit first or create new
+      const subRoute = entities
+        ? entities[0].Id
+        : this.#routeAddItem(contentType) // edit first or create new
       const rawUrl = this.#urlTo(`edit/${subRoute}`)
       const normalized = rawUrl.replace(/^#\/?/, '').replace(/^\//, '')
       const routeSegments = normalized.split('/').filter(Boolean)
@@ -188,7 +192,7 @@ export class AppExtensions implements OnInit {
   #routeAddItem(configurationContentType: string): string {
     // Only produce "new:GUID" without "edit/"
     return convertFormToUrl({
-      items: [EditPrep.newFromType(configurationContentType)],
+      items: [ItemIdHelper.newJsonFromType(configurationContentType)],
     } satisfies EditForm);
   }
 

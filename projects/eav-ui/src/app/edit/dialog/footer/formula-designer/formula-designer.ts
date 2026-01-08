@@ -12,13 +12,13 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import type * as Monaco from 'monaco-editor';
+import { ItemIdHelper } from 'projects/eav-ui/src/app/shared/models/item-id-helper';
 import { Of } from '../../../../../../../core';
 import { transient } from '../../../../../../../core/transient';
 import { MonacoEditorComponent } from '../../../../monaco-editor/monaco-editor';
 import { eavConstants } from '../../../../shared/constants/eav.constants';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { classLog } from '../../../../shared/logging';
-import { EditPrep } from '../../../../shared/models/edit-form.model';
 import { ClipboardService } from '../../../../shared/services/clipboard.service';
 import { EntityEditService } from '../../../../shared/services/entity-edit.service';
 import { FormConfigService } from '../../../form/form-config.service';
@@ -220,7 +220,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
           Target: formula.target,
           Formula: formula.sourceCode,
           Enabled: true,
-          ParentRelationship: EditPrep.relationship(atAllFieldSettings.Guid, 'Formulas'),
+          ParentRelationship: ItemIdHelper.relationship(atAllFieldSettings.Guid, 'Formulas'),
         },
       ).subscribe(savedFormula => {
         this.#designerSvc.cache.updateSaved(formula, savedFormula.Guid, savedFormula.Id);

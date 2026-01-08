@@ -19,7 +19,7 @@ import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.dire
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { classLog } from '../../shared/logging';
-import { EditPrep } from '../../shared/models/edit-form.model';
+import { ItemIdHelper } from '../../shared/models/item-id-helper';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { RouteLinkHelper } from '../../shared/routing/route-link-helper';
@@ -133,8 +133,8 @@ export class QueriesComponent implements OnInit {
       `edit/${convertFormToUrl({
         items: [
           query == null
-            ? EditPrep.newFromType(eavConstants.contentTypes.query, { TestParameters: eavConstants.pipelineDesigner.testParameters })
-            : EditPrep.editId(query.Id),
+            ? ItemIdHelper.newFromType(eavConstants.contentTypes.query, { TestParameters: eavConstants.pipelineDesigner.testParameters })
+            : ItemIdHelper.editId(query.Id),
         ],
       })}`
     );

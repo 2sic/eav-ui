@@ -23,7 +23,8 @@ import { MetadataKeyTypes } from '../shared/constants/eav.constants';
 import { MatBadgeIconDirective } from '../shared/directives/mat-badge-icon.directive';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { classLog } from '../shared/logging';
-import { EditForm, EditPrep, ItemAddIdentifier } from '../shared/models/edit-form.model';
+import { EditForm, ItemAddIdentifier } from '../shared/models/edit-form.model';
+import { ItemIdHelper } from '../shared/models/item-id-helper';
 import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
 import { SafeHtmlPipe } from '../shared/pipes/safe-html.pipe';
 import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
@@ -209,14 +210,14 @@ export class MetadataComponent implements OnInit {
   }
 
   private calculateItemFor(contentType: string): ItemAddIdentifier {
-    const temp = EditPrep.constructMetadataInfo(this.#params.targetType, this.#params.keyType, this.#params.key);
-    return EditPrep.newMetadataFromInfo(contentType, temp);
+    const temp = ItemIdHelper.constructMetadataInfo(this.#params.targetType, this.#params.keyType, this.#params.key);
+    return ItemIdHelper.newMetadataFromInfo(contentType, temp);
   }
 
 
   #editMetadata(metadata: MetadataItem) {
     const form: EditForm = {
-      items: [EditPrep.editId(metadata.Id)],
+      items: [ItemIdHelper.editId(metadata.Id)],
     };
     const formUrl = convertFormToUrl(form);
     this.#dialogRoutes.navRelative([`edit/${formUrl}`]);
@@ -256,7 +257,7 @@ export class MetadataComponent implements OnInit {
 
   #metadataEditUrl(metadata: MetadataItem): string {
     const form: EditForm = {
-      items: [EditPrep.editId(metadata.Id)],
+      items: [ItemIdHelper.editId(metadata.Id)],
     };
     const formUrl = convertFormToUrl(form);
     // Use your dialogRoutes service to generate the correct sub-route

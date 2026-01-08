@@ -13,7 +13,8 @@ import { eavConstants } from '../../../shared/constants/eav.constants';
 import { MousedownStopPropagationDirective } from '../../../shared/directives/mousedown-stop-propagation.directive';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { classLog } from '../../../shared/logging';
-import { EditForm, EditPrep, ItemIdentifierHeader } from '../../../shared/models/edit-form.model';
+import { EditForm, ItemIdentifierHeader } from '../../../shared/models/edit-form.model';
+import { ItemIdHelper } from '../../../shared/models/item-id-helper';
 import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';
 import { DialogRoutingService } from '../../../shared/routing/dialog-routing.service';
 import { EntityService } from '../../../shared/services/entity.service';
@@ -215,8 +216,8 @@ export class EntityFormComponent implements OnInit, AfterViewChecked, OnDestroy 
     const form: EditForm = {
       items: [
         note == null
-          ? EditPrep.newMetadata(entityGuid, eavConstants.contentTypes.notes, eavConstants.metadata.entity, true)
-          : EditPrep.editId(note.Id),
+          ? ItemIdHelper.newMetadata(entityGuid, eavConstants.contentTypes.notes, eavConstants.metadata.entity, true)
+          : ItemIdHelper.editId(note.Id),
       ],
     };
     this.editRoutingSvc.open(null, null, form);
@@ -241,7 +242,7 @@ export class EntityFormComponent implements OnInit, AfterViewChecked, OnDestroy 
     if (item.Entity.Id === 0)
       return l.end('no change');
 
-    const editItems = [EditPrep.editId(item.Entity.Id)];
+    const editItems = [ItemIdHelper.editId(item.Entity.Id)];
     this.#formDataSvc.fetchFormData(JSON.stringify(editItems))
       .subscribe(formData => {
         const l2 = this.log.fn('noteFormData', { formData });

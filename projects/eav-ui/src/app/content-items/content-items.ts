@@ -27,7 +27,8 @@ import { DataTypeCatalog } from '../shared/fields/data-type-catalog';
 import { Field } from '../shared/fields/field.model';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { classLog } from '../shared/logging';
-import { EditForm, EditPrep } from '../shared/models/edit-form.model';
+import { EditForm } from '../shared/models/edit-form.model';
+import { ItemIdHelper } from '../shared/models/item-id-helper';
 import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
 import { SafeHtmlPipe } from '../shared/pipes/safe-html.pipe';
 import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
@@ -196,8 +197,8 @@ export class ContentItemsComponent implements OnInit {
     const form: EditForm = {
       items: [
         item == null
-          ? EditPrep.newFromType(this.#contentTypeStaticName)
-          : EditPrep.editId(item.Id)
+          ? ItemIdHelper.newFromType(this.#contentTypeStaticName)
+          : ItemIdHelper.editId(item.Id)
       ],
     };
     const formUrl = convertFormToUrl(form);
@@ -209,8 +210,8 @@ export class ContentItemsComponent implements OnInit {
       `edit/${convertFormToUrl({
         items: [
           item == null
-            ? EditPrep.newFromType(this.#contentTypeStaticName)
-            : EditPrep.editId(item.Id)
+            ? ItemIdHelper.newFromType(this.#contentTypeStaticName)
+            : ItemIdHelper.editId(item.Id)
         ]
       })}`
     )
@@ -221,8 +222,8 @@ export class ContentItemsComponent implements OnInit {
       `edit/${convertFormToUrl({
         items: [
           item == null
-            ? EditPrep.newFromType(this.#contentTypeStaticName)
-            : EditPrep.editId(item.Id)
+            ? ItemIdHelper.newFromType(this.#contentTypeStaticName)
+            : ItemIdHelper.editId(item.Id)
         ],
       })}`
     );
@@ -286,7 +287,7 @@ export class ContentItemsComponent implements OnInit {
       if (itemFor == null) return;
 
       const form: EditForm = {
-        items: [EditPrep.newMetadataFromInfo(this.#contentTypeStaticName, itemFor)],
+        items: [ItemIdHelper.newMetadataFromInfo(this.#contentTypeStaticName, itemFor)],
       };
       const formUrl = convertFormToUrl(form);
       this.#dialogRouter.navRelative([`edit/${formUrl}`]);
@@ -401,7 +402,7 @@ export class ContentItemsComponent implements OnInit {
   #urlToClone(item: ContentItem) {
     return this.#dialogRouter.urlSubRoute(
       `edit/${convertFormToUrl({
-        items: [EditPrep.copy(this.#contentTypeStaticName, item.Id)],
+        items: [ItemIdHelper.copy(this.#contentTypeStaticName, item.Id)],
       })}`
     );
   }

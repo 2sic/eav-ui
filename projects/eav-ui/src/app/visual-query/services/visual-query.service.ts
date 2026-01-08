@@ -9,7 +9,8 @@ import { ContentTypesService } from '../../app-administration/services/content-t
 import { MetadataService } from '../../permissions/services/metadata.service';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
-import { EditForm, EditPrep } from '../../shared/models/edit-form.model';
+import { EditForm } from '../../shared/models/edit-form.model';
+import { ItemIdHelper } from '../../shared/models/item-id-helper';
 import { QueryDefinitionService } from './query-definition.service';
 // tslint:disable-next-line:max-line-length
 import { transient } from '../../../../../core';
@@ -79,7 +80,7 @@ export class VisualQueryStateService extends ServiceBase implements OnDestroy {
     // save Pipeline, then open Edit Dialog
     this.#savePipeline(() => {
       const form: EditForm = {
-        items: [EditPrep.editId(this.pipelineModel().Pipeline.EntityId)],
+        items: [ItemIdHelper.editId(this.pipelineModel().Pipeline.EntityId)],
       };
       const formUrl = convertFormToUrl(form);
       this.#dialogRoute.navRelative([`edit/${formUrl}`]);
@@ -199,7 +200,7 @@ export class VisualQueryStateService extends ServiceBase implements OnDestroy {
       // edit existing Entity
       if (metadata.Items.length) {
         const form: EditForm = {
-          items: [EditPrep.editId(metadata.Items[0].Id)],
+          items: [ItemIdHelper.editId(metadata.Items[0].Id)],
         };
         const formUrl = convertFormToUrl(form);
         this.#dialogRoute.navRelative([`edit/${formUrl}`]);
@@ -215,7 +216,7 @@ export class VisualQueryStateService extends ServiceBase implements OnDestroy {
             return;
           }
           const form: EditForm = {
-            items: [EditPrep.newMetadata(key, contentTypeName, eavConstants.metadata.entity)],
+            items: [ItemIdHelper.newMetadata(key, contentTypeName, eavConstants.metadata.entity)],
           };
           const formUrl = convertFormToUrl(form);
           this.#dialogRoute.navRelative([`edit/${formUrl}`]);

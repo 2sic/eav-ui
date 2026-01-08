@@ -21,7 +21,8 @@ import { defaultGridOptions } from '../../../shared/constants/default-grid-optio
 import { DragAndDropDirective } from '../../../shared/directives/drag-and-drop.directive';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { convertFormToUrl } from '../../../shared/helpers/url-prep.helper';
-import { EditForm, EditPrep } from '../../../shared/models/edit-form.model';
+import { EditForm } from '../../../shared/models/edit-form.model';
+import { ItemIdHelper } from '../../../shared/models/item-id-helper';
 import { SxcGridModule } from '../../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../../../shared/routing/dialog-routing.service';
 import { DataBundleActionsComponent } from './data-bundles-actions/data-bundles-actions';
@@ -228,8 +229,8 @@ export class DataBundlesComponent {
     const form: EditForm = {
       items: [
         item == null
-          ? EditPrep.newFromType(this.#defaultContentTypeId)
-          : EditPrep.editId(item.Id)
+          ? ItemIdHelper.newFromType(this.#defaultContentTypeId)
+          : ItemIdHelper.editId(item.Id)
       ],
     };
     const formUrl = convertFormToUrl(form);

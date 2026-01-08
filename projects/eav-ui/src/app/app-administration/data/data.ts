@@ -28,7 +28,8 @@ import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.dire
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { toString } from '../../shared/helpers/file-to-base64.helper';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
-import { EditForm, EditPrep } from '../../shared/models/edit-form.model';
+import { EditForm } from '../../shared/models/edit-form.model';
+import { ItemIdHelper } from '../../shared/models/item-id-helper';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { mapUntilChanged } from '../../shared/rxJs/mapUntilChanged';
@@ -333,7 +334,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
 
   #routeAddItem(contentType: ContentType): string {
     return convertFormToUrl({
-      items: [EditPrep.newFromType(contentType.NameId)],
+      items: [ItemIdHelper.newFromType(contentType.NameId)],
     } satisfies EditForm);
   }
 
@@ -346,13 +347,13 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
       items: [
         !contentType.Properties
           ? {
-            ...EditPrep.newMetadata(contentType.NameId, eavConstants.contentTypes.contentType, eavConstants.metadata.contentType),
+            ...ItemIdHelper.newMetadata(contentType.NameId, eavConstants.contentTypes.contentType, eavConstants.metadata.contentType),
             Prefill: {
               Label: contentType.Name,
               Description: contentType.Description
             },
           }
-          : EditPrep.editId(contentType.Properties.Id),
+          : ItemIdHelper.editId(contentType.Properties.Id),
       ],
     };
     return convertFormToUrl(form);

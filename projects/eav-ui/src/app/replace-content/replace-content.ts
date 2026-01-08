@@ -16,7 +16,8 @@ import { ContentGroupAdd } from '../manage-content-list/models/content-group.mod
 import { ContentGroupService } from '../manage-content-list/services/content-group.service';
 import { TippyDirective } from '../shared/directives/tippy.directive';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
-import { EditForm, EditPrep } from '../shared/models/edit-form.model';
+import { EditForm } from '../shared/models/edit-form.model';
+import { ItemIdHelper } from '../shared/models/item-id-helper';
 import { SaveCloseButtonFabComponent } from '../shared/modules/save-close-button-fab/save-close-button-fab';
 import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
 import { computedObj, signalObj } from '../shared/signals/signal.utilities';
@@ -109,7 +110,7 @@ export class ReplaceContentComponent implements OnInit {
   copySelected() {
     const contentGroup = this.#buildContentGroup();
     const form: EditForm = {
-      items: [EditPrep.copy(this.#contentTypeName, contentGroup.id)],
+      items: [ItemIdHelper.copy(this.#contentTypeName, contentGroup.id)],
     };
     const formUrl = convertFormToUrl(form);
     this.#dialogRoutes.navRelative([`edit/${formUrl}`]);

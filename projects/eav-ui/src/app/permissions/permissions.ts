@@ -12,7 +12,8 @@ import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
 import { eavConstants, MetadataKeyTypes } from '../shared/constants/eav.constants';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
-import { EditForm, EditPrep } from '../shared/models/edit-form.model';
+import { EditForm } from '../shared/models/edit-form.model';
+import { ItemIdHelper } from '../shared/models/item-id-helper';
 import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
 import { Permission } from './models/permission.model';
@@ -72,16 +73,16 @@ export class PermissionsComponent implements OnInit {
     if (permission == null) {
       form = {
         items: [{
-          ...EditPrep.newMetadataFromInfo(
+          ...ItemIdHelper.newMetadataFromInfo(
             eavConstants.contentTypes.permissions,
-            EditPrep.constructMetadataInfo(this.#params.targetType, this.#params.keyType, this.#params.key)
+            ItemIdHelper.constructMetadataInfo(this.#params.targetType, this.#params.keyType, this.#params.key)
           ),
           ...(this.#prefills[this.#params.targetType] && { Prefill: this.#prefills[this.#params.targetType] }),
         }],
       };
     } else {
       form = {
-        items: [EditPrep.editId(permission.Id)],
+        items: [ItemIdHelper.editId(permission.Id)],
       };
     }
     const formUrl = convertFormToUrl(form);

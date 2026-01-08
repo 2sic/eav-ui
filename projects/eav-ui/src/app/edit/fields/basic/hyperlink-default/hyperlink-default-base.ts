@@ -1,12 +1,13 @@
 import { ChangeDetectorRef, Component, Injector, OnInit, ViewContainerRef, effect, inject, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { ItemIdHelper } from 'projects/eav-ui/src/app/shared/models/item-id-helper';
 import { Hyperlink, HyperlinkLibrary } from 'projects/edit-types/src/FieldSettings-Hyperlink';
 import { transient } from '../../../../../../../core/transient';
 import { AdamItem } from '../../../../../../../edit-types/src/AdamItem';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { eavConstants } from '../../../../shared/constants/eav.constants';
 import { classLog } from '../../../../shared/logging';
-import { EditForm, EditPrep } from '../../../../shared/models/edit-form.model';
+import { EditForm } from '../../../../shared/models/edit-form.model';
 import { computedObj } from '../../../../shared/signals/signal.utilities';
 import { FormConfigService } from '../../../form/form-config.service';
 import { FormsStateService } from '../../../form/forms-state.service';
@@ -98,8 +99,8 @@ export class HyperlinkDefaultBaseComponent implements OnInit {
     const form: EditForm = {
       items: [
         adamItem._imageConfigurationId > 0
-          ? EditPrep.editId(adamItem._imageConfigurationId)
-          : EditPrep.newMetadata(adamItem.ReferenceId, adamItem._imageConfigurationContentType, eavConstants.metadata.cmsObject),
+          ? ItemIdHelper.editId(adamItem._imageConfigurationId)
+          : ItemIdHelper.newMetadata(adamItem.ReferenceId, adamItem._imageConfigurationContentType, eavConstants.metadata.cmsObject),
       ],
     };
     this.#editRoutingService.open(this.config.index, this.config.entityGuid, form);

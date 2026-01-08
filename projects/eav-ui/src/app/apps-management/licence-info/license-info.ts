@@ -22,7 +22,8 @@ import { IdFieldParams } from '../../shared/components/id-field/id-field.models'
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
-import { EditForm, EditPrep } from '../../shared/models/edit-form.model';
+import { EditForm } from '../../shared/models/edit-form.model';
+import { ItemIdHelper } from '../../shared/models/item-id-helper';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { GlobalConfigService } from '../../shared/services/global-config.service';
@@ -243,7 +244,7 @@ export class LicenseInfoComponent implements OnInit {
 
   #routeAddItem(contentType: Feature): string {
     return convertFormToUrl({
-      items: [EditPrep.newFromType(contentType.configurationContentType)],
+      items: [ItemIdHelper.newFromType(contentType.configurationContentType)],
     } satisfies EditForm);
   }
 
