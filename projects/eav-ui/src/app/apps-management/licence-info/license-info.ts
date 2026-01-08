@@ -12,8 +12,8 @@ import { MatInputModule } from '@angular/material/input';
 import { Router, RouterOutlet } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { transient } from '../../../../../core';
+import { SaveJsReturnData } from '../../edit/dialog/dialogRouteState.model';
 import { ExpirationExtension } from '../../features/expiration-extension';
-import { FeatureState } from '../../features/models';
 import { Feature } from '../../features/models/feature.model';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter';
@@ -28,9 +28,11 @@ import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.mod
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { GlobalConfigService } from '../../shared/services/global-config.service';
 import { License } from '../models/license.model';
+import { FeatureConfigSavePackage } from '../services/feature-config-save-package';
 import { FeaturesConfigService } from '../services/features-config.service';
 import { ActiveFeaturesCountPipe } from './active-features-count.pipe';
 import { AgGridHeightDirective } from './ag-grid-height.directive';
+import { FeatureConfigEdit } from './feature-config-edit';
 import { FeatureDetailsDialogComponent } from './feature-details-dialog/feature-details-dialog';
 import { FeatureDetailsDialogData } from './feature-details-dialog/feature-details-dialog.models';
 import { FeaturesListEnabledReasonComponent } from './features-list-enabled-reason/features-list-enabled-reason';
@@ -109,17 +111,17 @@ export class LicenseInfoComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.#dialogRouter.doOnDialogClosedWithData((data) => {
+    this.#dialogRouter.doOnDialogClosedWithData((data: SaveJsReturnData<FeatureConfigEdit>) => {
       // Local Save, data not refreshing from Server 
       // Save the Data in Json, same als Toggle 
 
       if (data?.objData) {
         const { guid, enabled, ...dynamicConfig } = data.objData;
 
-        const featuresConfig: FeatureState = {
+        const featuresConfig: FeatureConfigSavePackage = {
           FeatureGuid: guid,
           Enabled: enabled,
-          Configuration: dynamicConfig
+          Configuration: dynamicConfig,
         };
 
         this.#featuresConfigSvc.saveFeatures([featuresConfig]).subscribe(() => {
@@ -165,7 +167,7 @@ export class LicenseInfoComponent implements OnInit {
 
   #toggleFeature(feature: Feature, enabled: boolean): void {
     this.#disabled.set(true);
-    const state: FeatureState = {
+    const state: FeatureConfigSavePackage = {
       FeatureGuid: feature.guid,
       Enabled: enabled,
     };

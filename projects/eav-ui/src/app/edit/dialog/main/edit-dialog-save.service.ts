@@ -1,5 +1,4 @@
 import { computed, inject, Injectable, QueryList } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { transient } from 'projects/core';
@@ -16,6 +15,7 @@ import { EavEntityBundleDto } from '../../shared/models/json-format-v1/eav-entit
 import { ValidationMsgHelper } from '../../shared/validation/validation-messages.helpers';
 import { ItemService } from '../../state/item.service';
 import { MetadataDecorators } from '../../state/metadata-decorators.constants';
+import { SaveJsReturnData } from '../dialogRouteState.model';
 import { EditDialogMainComponent } from './edit-dialog-main';
 import { SaveEavFormData } from './edit-dialog-main.models';
 import { SnackBarSaveErrorsComponent } from './snack-bar-save-errors/snack-bar-save-errors';
@@ -42,9 +42,6 @@ export class EditDialogSaveService {
   publishStatusService = inject(FormPublishingService);
   translate = inject(TranslateService);
   snackBar = inject(MatSnackBar);
-
-  isReturnValueMode = inject(MAT_DIALOG_DATA)?.returnValue;
-
 
   #formDataService = transient(FormDataService);
 
@@ -84,9 +81,12 @@ export class EditDialogSaveService {
 
     // Case 1.2. If the Dialog is Local return data mode, then return the data
 
-    console.log('2dm: saveAll - isReturnValueMode', this.isReturnValueMode);
+    const eavItem = this.itemService.get(editDialog.formBuilderRefs.get(0).entityGuid());
+    const saveMode = eavItem.Header.ClientData?.save === 'js';
 
-    if (this.isReturnValueMode) {
+    console.log('2dm: saveAll - isReturnValueMode', saveMode);
+
+    if (saveMode) {
       this.#saveThroughJs(editDialog, close);
       return l.end('will be saved through js');
     }
@@ -108,7 +108,7 @@ export class EditDialogSaveService {
     );
 
     // Need to be clearly define for the route state (if objData in the state, data will be not refresh from the server) 
-    const wrappedData = {
+    const wrappedData: SaveJsReturnData<unknown> = {
       objData: itemsEavObj[0]
     };
     editDialog.dialog.close(wrappedData);

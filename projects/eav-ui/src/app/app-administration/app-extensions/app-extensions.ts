@@ -9,7 +9,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterOutlet } from '@angular/router';
 import { of, take } from 'rxjs';
 import { transient } from '../../../../../core';
-import { DialogRoutingState } from '../../edit/dialog/dialogRouteState.model';
 import { GridWithHelpComponent, HelpTextConst } from '../../shared/ag-grid/grid-with-help/grid-with-help';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
@@ -103,11 +102,7 @@ export class AppExtensions implements OnInit {
     // set token before navigation
     this.#pendingFolder = ext?.folder ?? null;
 
-    this.router.navigate(routeSegments, {
-      state: {
-        returnValue: true,
-      } satisfies DialogRoutingState,
-    });
+    this.router.navigate(routeSegments);
   }
 
   #openEditContentType(contentType: string) {

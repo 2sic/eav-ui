@@ -5,10 +5,9 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
-import { DialogRoutingState } from '../../../edit/dialog/dialogRouteState.model';
 import { Feature } from '../../../features/models';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
-import { OverrideContentsLogData } from './feature-list.model';
+import { FeatureConfigEdit } from '../feature-config-edit';
 
 @Component({
   selector: 'app-features-list-settings',
@@ -21,7 +20,7 @@ export class FeaturesListEnabledComponent implements ICellRendererAngularComp {
   configurationContentType: string | undefined;
   contentType: Feature | undefined;
   badgeValue: number
-  configurationData: OverrideContentsLogData; // TYPE
+  configurationData: Record<string, unknown>; // TYPE
 
   public params: {
     /** Parent helper to build URL to the settings dialog */
@@ -45,7 +44,7 @@ export class FeaturesListEnabledComponent implements ICellRendererAngularComp {
   }
 
   openSettings() {
-    const data: Record<string, unknown> = {
+    const data: FeatureConfigEdit = {
       // The guid, just for the round-trip so we know what to update after dialog close
       guid: this.contentType.guid,
       // Default / fallback, in case no configuration is set
@@ -67,10 +66,7 @@ export class FeaturesListEnabledComponent implements ICellRendererAngularComp {
     const routeSegments = normalizedUrl.split('/');
 
     // Use Angular router to navigate to the route segments with custom state
-    this.router.navigate(routeSegments, {
-      state: {
-        returnValue: true,
-      } satisfies DialogRoutingState,
-    });
+    this.router.navigate(routeSegments);
   }
 }
+

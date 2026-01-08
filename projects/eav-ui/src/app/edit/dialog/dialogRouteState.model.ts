@@ -1,8 +1,4 @@
-export interface ClosingDialogState<T> {
-    dialogValue: T;
-  }
   
-  export interface DialogRoutingState {
-    returnValue?: boolean;
-  }
-  
+export interface SaveJsReturnData<TData> {
+  objData: TData; // | Record<string, unknown>;
+}
