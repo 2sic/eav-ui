@@ -1,7 +1,8 @@
 import { PickerSourceEntity } from 'projects/edit-types/src/PickerSources';
 import { FieldSettingsEntity, FieldSettingsSharedCreate } from '../../../../../../../edit-types/src/FieldSettings-Pickers';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
+import { FieldLogicBase } from '../../logic/field-logic-base';
+import { FieldSettingsUpdateTask } from '../../logic/field-settings-update-task';
 import { PickerLogicShared } from '../../picker/picker-logic-shared';
 import { FieldSettings } from './../../../../../../../edit-types/src/FieldSettings';
 
@@ -10,7 +11,7 @@ export class EntityDefaultLogic extends FieldLogicBase {
   
   constructor() { super({ EntityDefaultLogic }); }
 
-  update({ settings, tools }: FieldLogicUpdate): FieldSettings {
+  update({ settings, tools }: FieldSettingsUpdateTask): FieldSettings {
     
     const fsRaw = PickerLogicShared.setDefaultSettings({ ...settings }) as FieldSettings & FieldSettingsSharedCreate & FieldSettingsEntity;
     

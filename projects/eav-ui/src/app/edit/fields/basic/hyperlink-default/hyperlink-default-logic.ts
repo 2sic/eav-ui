@@ -1,14 +1,15 @@
 import { Hyperlink } from 'projects/edit-types/src/FieldSettings-Hyperlink';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
+import { FieldLogicBase } from '../../logic/field-logic-base';
+import { FieldSettingsUpdateTask } from '../../logic/field-settings-update-task';
 
 export class HyperlinkDefaultLogic extends FieldLogicBase {
   name = InputTypeCatalog.HyperlinkDefault;
 
   constructor() { super({ HyperlinkDefaultLogic }); }
 
-  update({ settings }: FieldLogicUpdate): FieldSettings {
+  update({ settings }: FieldSettingsUpdateTask): FieldSettings {
     const fixedSettings = { ...settings } as FieldSettings & Hyperlink;
     fixedSettings.Buttons ||= 'adam,more';
     fixedSettings.FileFilter ??= '';

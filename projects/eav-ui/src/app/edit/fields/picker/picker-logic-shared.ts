@@ -8,8 +8,8 @@ import { FeatureNames } from '../../../features/feature-names';
 import { classLog } from '../../../shared/logging';
 import { EavEntity } from '../../shared/models/eav';
 import { DataSourceDropDownOptions } from '../basic/string-picker/string-picker.helpers';
-import { FieldLogicUpdate } from '../logic/field-logic-base';
 import { FieldLogicTools } from '../logic/field-logic-tools';
+import { FieldSettingsUpdateTask } from '../logic/field-settings-update-task';
 import { PickerConfigs, PickerSourcesCustom, UiPickerModeIsTree } from './constants/picker-config-model.constants';
 import { DataSourceParserCsv } from './data-sources/data-source-parser-csv';
 
@@ -56,7 +56,7 @@ export class PickerLogicShared {
     return { fs, removeEditRestrictions: true };
   }
 
-  preUpdate({ settings, tools, value }: FieldLogicUpdate) {
+  preUpdate({ settings, tools, value }: FieldSettingsUpdateTask) {
 
     const fsDefaults = PickerLogicShared.setDefaultSettings({ ...settings });
 

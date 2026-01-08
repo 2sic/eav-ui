@@ -1,6 +1,7 @@
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
+import { FieldLogicBase } from '../../logic/field-logic-base';
+import { FieldSettingsUpdateTask } from '../../logic/field-settings-update-task';
 import { PickerLogicShared } from '../../picker/picker-logic-shared';
 
 export class EntityPickerLogic extends FieldLogicBase {
@@ -8,7 +9,7 @@ export class EntityPickerLogic extends FieldLogicBase {
 
   constructor() { super({ EntityPickerLogic }); }
 
-  update(specs: FieldLogicUpdate): FieldSettings {
+  update(specs: FieldSettingsUpdateTask): FieldSettings {
     return new PickerLogicShared().preUpdate(specs).fs;
   }
 }

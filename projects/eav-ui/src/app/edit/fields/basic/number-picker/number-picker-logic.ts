@@ -1,8 +1,9 @@
 import { Of } from '../../../../../../../core/type-utilities';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
+import { FieldLogicBase } from '../../logic/field-logic-base';
 import { FieldLogicManager } from '../../logic/field-logic-manager';
+import { FieldSettingsUpdateTask } from '../../logic/field-settings-update-task';
 import { StringPickerLogic } from '../string-picker/string-picker-logic';
 
 export class NumberPickerLogic extends FieldLogicBase {
@@ -10,7 +11,7 @@ export class NumberPickerLogic extends FieldLogicBase {
 
   constructor() { super({ NumberPickerLogic }); }
 
-  update(specs: FieldLogicUpdate<string>): FieldSettings {
+  update(specs: FieldSettingsUpdateTask<string>): FieldSettings {
 
     const stringLogic = FieldLogicManager.singleton().get(InputTypeCatalog.StringPicker) as StringPickerLogic;
     return stringLogic.update(specs);

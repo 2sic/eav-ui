@@ -1,14 +1,15 @@
 import { CustomJsonEditor } from 'projects/edit-types/src/FieldSettings-CustomJsonEditor';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
+import { FieldLogicBase } from '../../logic/field-logic-base';
+import { FieldSettingsUpdateTask } from '../../logic/field-settings-update-task';
 
 export class CustomJsonEditorLogic extends FieldLogicBase {
   name = InputTypeCatalog.CustomJsonEditor as string;
 
   constructor() { super({ CustomJsonEditorLogic }); }
 
-  update({ settings }: FieldLogicUpdate): FieldSettings {
+  update({ settings }: FieldSettingsUpdateTask): FieldSettings {
     const fixedSettings = { ...settings } as FieldSettings & CustomJsonEditor;
     fixedSettings.Rows ||= 5;
     fixedSettings.JsonValidation ||= 'strict';

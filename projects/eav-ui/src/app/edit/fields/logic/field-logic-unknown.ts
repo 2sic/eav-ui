@@ -1,6 +1,7 @@
-import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
-import { FieldLogicBase, FieldLogicUpdate } from './field-logic-base';
 import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
+import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
+import { FieldLogicBase } from './field-logic-base';
+import { FieldSettingsUpdateTask } from './field-settings-update-task';
 
 export class UnknownLogic extends FieldLogicBase {
   name = InputTypeCatalog.Unknown;
@@ -9,7 +10,7 @@ export class UnknownLogic extends FieldLogicBase {
 
   canAutoTranslate = false;
 
-  update({ settings }: FieldLogicUpdate): FieldSettings {
+  update({ settings }: FieldSettingsUpdateTask): FieldSettings {
     return settings;
   }
 }

@@ -1,14 +1,15 @@
 import { EmptyDefault } from 'projects/edit-types/src/FieldSettings-EmptyDefault';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
+import { FieldLogicBase } from '../../logic/field-logic-base';
+import { FieldSettingsUpdateTask } from '../../logic/field-settings-update-task';
 
 export class EmptyDefaultLogic extends FieldLogicBase {
   name = InputTypeCatalog.EmptyDefault;
 
   constructor() { super({ EmptyDefaultLogic }); }
 
-  update({ settings }: FieldLogicUpdate): FieldSettings {
+  update({ settings }: FieldSettingsUpdateTask): FieldSettings {
     const fixedSettings = { ...settings } as FieldSettings & EmptyDefault;
     fixedSettings.Visible ??= true;
     fixedSettings.Collapsed ??= false;

@@ -2,7 +2,8 @@ import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings
 import { FieldSettingsPicker, FieldSettingsPickerMasks, FieldSettingsStringFontIconPicker } from '../../../../../../../edit-types/src/FieldSettings-Pickers';
 import { PickerSourceCss } from '../../../../../../../edit-types/src/PickerSources';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
+import { FieldLogicBase } from '../../logic/field-logic-base';
+import { FieldSettingsUpdateTask } from '../../logic/field-settings-update-task';
 import { buildRegExFromPrefixAndSuffix } from '../../picker/data-sources/css/string-font-icon-picker.helpers';
 
 /**
@@ -18,7 +19,7 @@ export class StringFontIconPickerLogic extends FieldLogicBase {
 
   constructor() { super({ StringFontIconPickerLogic }); }
 
-  update({ fieldName, settings }: FieldLogicUpdate): FieldSettings {
+  update({ fieldName, settings }: FieldSettingsUpdateTask): FieldSettings {
     const l = this.log.fnIfInFields('update', fieldName, { fieldName, settings });
 
     // Cast settings to type which knows about the properties

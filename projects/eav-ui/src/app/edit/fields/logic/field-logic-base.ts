@@ -4,6 +4,7 @@ import { classLog, ClassLogger } from '../../../shared/logging';
 import { DebugFields } from '../../edit-debug';
 import { FieldLogicManager } from './field-logic-manager';
 import { FieldLogicTools } from './field-logic-tools';
+import { FieldSettingsUpdateTask } from './field-settings-update-task';
 
 const logSpecs = {
   all: false,
@@ -69,7 +70,7 @@ export abstract class FieldLogicBase {
   /** 
    * Update field settings - typically used on init and in every formula cycle
    */
-  abstract update(updateSpecs: FieldLogicUpdate): FieldSettings;
+  abstract update(updateSpecs: FieldSettingsUpdateTask): FieldSettings;
 
   /**
    * Lookup advanced (external) configuration.
@@ -92,20 +93,6 @@ export abstract class FieldLogicBase {
     const advanced = tools.reader.flatten(additionalConfig) as T;
     return { ...defaults, ...advanced };
   }
-}
-
-export interface FieldLogicUpdate<T = FieldValue> {
-  /** The field name, to better debug */
-  fieldName: string;
-
-  /** Settings before logic update */
-  settings: FieldSettings;
-
-  /** Tools for doing various kind of work in the logic, which is singleton and may need context-specific tools */
-  tools: FieldLogicTools;
-
-  /** The field value which the settings-update sometimes needs to know, eg. to indicated selected option in a dropdown */
-  value?: T;
 }
 
 type LogicFactory = new (...args: any[]) => FieldLogicBase;

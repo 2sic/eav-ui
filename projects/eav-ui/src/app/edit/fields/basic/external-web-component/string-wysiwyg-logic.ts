@@ -3,8 +3,9 @@ import { AdamItem } from '../../../../../../../edit-types/src/AdamItem';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { FieldValue } from '../../../../../../../edit-types/src/FieldValue';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
+import { FieldLogicBase } from '../../logic/field-logic-base';
 import { FieldLogicWithValueInit } from '../../logic/field-logic-with-init';
+import { FieldSettingsUpdateTask } from '../../logic/field-settings-update-task';
 
 
 export class StringWysiwygLogic extends FieldLogicBase implements FieldLogicWithValueInit {
@@ -14,7 +15,7 @@ export class StringWysiwygLogic extends FieldLogicBase implements FieldLogicWith
 
   canAutoTranslate = true;
 
-  update({ settings, tools }: FieldLogicUpdate): FieldSettings {
+  update({ settings, tools }: FieldSettingsUpdateTask): FieldSettings {
     const fixedSettings = { ...settings } as FieldSettings & StringWysiwyg;
     // If the `Dialog` setting is blank, it means start inline (default) and allow switching to dialog.
     fixedSettings._allowDialog ??= fixedSettings.Dialog == null || fixedSettings.Dialog === '';

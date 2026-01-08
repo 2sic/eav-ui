@@ -1,15 +1,16 @@
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { FieldSettingsPickerMerged } from '../../../../../../../edit-types/src/FieldSettings-Pickers';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
+import { FieldLogicBase } from '../../logic/field-logic-base';
 import { FieldLogicManager } from '../../logic/field-logic-manager';
+import { FieldSettingsUpdateTask } from '../../logic/field-settings-update-task';
 
 export class EntityContentBlocksLogic extends FieldLogicBase {
   name = InputTypeCatalog.EntityContentBlocks;
 
   constructor() { super({ EntityContentBlocksLogic }); }
 
-  update(specs: FieldLogicUpdate<string[]>): FieldSettings {
+  update(specs: FieldSettingsUpdateTask<string[]>): FieldSettings {
     const entityDefaultLogic = FieldLogicManager.singleton().get(InputTypeCatalog.EntityDefault);
     const fs = entityDefaultLogic.update(specs)  as FieldSettings & FieldSettingsPickerMerged;
     fs.EnableRemove = true;

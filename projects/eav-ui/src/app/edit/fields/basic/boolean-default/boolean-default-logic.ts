@@ -1,6 +1,7 @@
 import { FieldSettingsBoolean } from 'projects/edit-types/src/FieldSettings-Boolean';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
+import { FieldLogicBase } from '../../logic/field-logic-base';
+import { FieldSettingsUpdateTask } from '../../logic/field-settings-update-task';
 import { FieldSettings } from './../../../../../../../edit-types/src/FieldSettings';
 
 export class BooleanDefaultLogic extends FieldLogicBase {
@@ -8,7 +9,7 @@ export class BooleanDefaultLogic extends FieldLogicBase {
 
   constructor() { super({ BooleanDefaultLogic }); }
 
-  update({ settings, value }: FieldLogicUpdate<boolean>): FieldSettings {
+  update({ settings, value }: FieldSettingsUpdateTask<boolean>): FieldSettings {
     const fixedSettings = { ...settings } as FieldSettings & FieldSettingsBoolean;
     fixedSettings.ReverseToggle ??= false;
     fixedSettings._label = this.#calculateLabel(value, fixedSettings);

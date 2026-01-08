@@ -2,7 +2,8 @@ import { Of } from '../../../../../../../core/type-utilities';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { classLog } from '../../../../shared/logging';
-import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
+import { FieldLogicBase } from '../../logic/field-logic-base';
+import { FieldSettingsUpdateTask } from '../../logic/field-settings-update-task';
 import { PickerSourcesCustom } from '../../picker/constants/picker-config-model.constants';
 import { PickerLogicShared } from '../../picker/picker-logic-shared';
 
@@ -11,7 +12,7 @@ export class StringPickerLogic extends FieldLogicBase {
 
   constructor() { super({StringPickerLogic}); }
 
-  update(specs: FieldLogicUpdate<string>): FieldSettings {
+  update(specs: FieldSettingsUpdateTask<string>): FieldSettings {
     
     var log = classLog({StringPickerLogic}, null);
 
