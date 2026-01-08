@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { PickerImports } from '../../picker/picker-providers.constant';
 import { EntityDefaultComponent } from '../entity-default/entity-default';
-import { EntityContentBlocksLogic } from './entity-content-blocks-settings-helper';
+import { EntityContentBlocksSettingsHelper } from './entity-content-blocks-settings-helper';
 
 @Component({
     selector: InputTypeCatalog.EntityContentBlocks,
@@ -13,6 +13,6 @@ export class EntityContentBlockComponent extends EntityDefaultComponent implemen
 
   constructor() {
     super();
-    EntityContentBlocksLogic.importMe();
+    EntityContentBlocksSettingsHelper.importMe();
   }
 }

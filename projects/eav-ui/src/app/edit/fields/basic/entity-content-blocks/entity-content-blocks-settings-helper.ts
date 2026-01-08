@@ -5,10 +5,10 @@ import { FieldSettingsHelperBase } from '../../logic/field-settings-helper-base'
 import { FieldSettingsHelpersManager } from '../../logic/field-settings-helpers-manager';
 import { FieldSettingsUpdateTask } from '../../logic/field-settings-update-task';
 
-export class EntityContentBlocksLogic extends FieldSettingsHelperBase {
+export class EntityContentBlocksSettingsHelper extends FieldSettingsHelperBase {
   name = InputTypeCatalog.EntityContentBlocks;
 
-  constructor() { super({ EntityContentBlocksLogic }); }
+  constructor() { super({ EntityContentBlocksSettingsHelper }); }
 
   update(specs: FieldSettingsUpdateTask<string[]>): FieldSettings {
     const entityDefaultLogic = FieldSettingsHelpersManager.singleton().get(InputTypeCatalog.EntityDefault);
@@ -28,4 +28,4 @@ export class EntityContentBlocksLogic extends FieldSettingsHelperBase {
   }
 }
 
-FieldSettingsHelperBase.add(EntityContentBlocksLogic);
+FieldSettingsHelperBase.add(EntityContentBlocksSettingsHelper);

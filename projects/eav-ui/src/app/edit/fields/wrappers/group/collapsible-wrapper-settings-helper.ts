@@ -4,10 +4,10 @@ import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldSettingsHelperBase } from '../../logic/field-settings-helper-base';
 import { FieldSettingsUpdateTask } from '../../logic/field-settings-update-task';
 
-export class EmptyDefaultLogic extends FieldSettingsHelperBase {
+export class EmptyDefaultSettingsHelper extends FieldSettingsHelperBase {
   name = InputTypeCatalog.EmptyDefault;
 
-  constructor() { super({ EmptyDefaultLogic }); }
+  constructor() { super({ EmptyDefaultSettingsHelper }); }
 
   update({ settings }: FieldSettingsUpdateTask): FieldSettings {
     const fixedSettings = { ...settings } as FieldSettings & EmptyDefault;
@@ -18,4 +18,4 @@ export class EmptyDefaultLogic extends FieldSettingsHelperBase {
   }
 }
 
-FieldSettingsHelperBase.add(EmptyDefaultLogic);
+FieldSettingsHelperBase.add(EmptyDefaultSettingsHelper);

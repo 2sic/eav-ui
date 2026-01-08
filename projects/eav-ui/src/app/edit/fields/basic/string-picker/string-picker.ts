@@ -3,7 +3,7 @@ import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { classLog } from '../../../../shared/logging';
 import { PickerComponent } from '../../picker/picker';
 import { PickerImports } from '../../picker/picker-providers.constant';
-import { StringPickerLogic } from './string-picker-settings-helper';
+import { StringPickerSettingsHelper } from './string-picker-settings-helper';
 
 @Component({
     selector: InputTypeCatalog.StringPicker,
@@ -17,7 +17,7 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
   constructor() {
     super();
     this.constructorEnd();
-    StringPickerLogic.importMe();
+    StringPickerSettingsHelper.importMe();
   }
 
 }

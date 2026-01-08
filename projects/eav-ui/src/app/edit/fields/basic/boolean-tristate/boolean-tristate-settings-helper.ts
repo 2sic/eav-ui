@@ -4,16 +4,15 @@ import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldSettingsHelperBase } from '../../logic/field-settings-helper-base';
 import { FieldSettingsUpdateTask } from '../../logic/field-settings-update-task';
 
-export class BooleanTristateLogic extends FieldSettingsHelperBase {
+export class BooleanTristateSettingsHelper extends FieldSettingsHelperBase {
   name = InputTypeCatalog.BooleanTristate;
 
-  constructor() { super({ BooleanTristateLogic }); }
+  constructor() { super({ BooleanTristateSettingsHelper }); }
 
   update({ settings, value }: FieldSettingsUpdateTask<boolean | ''>): FieldSettings {
     const fixedSettings = { ...settings } as FieldSettings & FieldSettingsBoolean;
     fixedSettings.ReverseToggle ??= false;
     fixedSettings._label = this.#calculateLabel(value, fixedSettings);
-    // fixedSettings.DisableAutoTranslation = true;
     return fixedSettings;
   }
 
@@ -28,4 +27,4 @@ export class BooleanTristateLogic extends FieldSettingsHelperBase {
   }
 }
 
-FieldSettingsHelperBase.add(BooleanTristateLogic);
+FieldSettingsHelperBase.add(BooleanTristateSettingsHelper);

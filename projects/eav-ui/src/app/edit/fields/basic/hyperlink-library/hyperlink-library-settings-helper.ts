@@ -4,10 +4,10 @@ import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldSettingsHelperBase } from '../../logic/field-settings-helper-base';
 import { FieldSettingsUpdateTask } from '../../logic/field-settings-update-task';
 
-export class HyperlinkLibraryLogic extends FieldSettingsHelperBase {
+export class HyperlinkLibrarySettingsHelper extends FieldSettingsHelperBase {
   name = InputTypeCatalog.HyperlinkLibrary;
 
-  constructor() { super({ HyperlinkLibraryLogic }); }
+  constructor() { super({ HyperlinkLibrarySettingsHelper }); }
 
   update({ settings }: FieldSettingsUpdateTask): FieldSettings {
     const fixedSettings = { ...settings } as FieldSettings & HyperlinkLibrary;
@@ -16,4 +16,4 @@ export class HyperlinkLibraryLogic extends FieldSettingsHelperBase {
   }
 }
 
-FieldSettingsHelperBase.add(HyperlinkLibraryLogic);
+FieldSettingsHelperBase.add(HyperlinkLibrarySettingsHelper);

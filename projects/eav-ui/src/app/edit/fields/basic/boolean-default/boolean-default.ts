@@ -8,7 +8,7 @@ import { FieldMetadata } from '../../field-metadata.decorator';
 import { FieldHelperTextComponent } from '../../help-text/field-help-text';
 import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
 import { BooleanBaseComponent } from './boolean-base';
-import { BooleanDefaultLogic } from './boolean-default-settings-helper';
+import { BooleanDefaultSettingsHelper } from './boolean-default-settings-helper';
 
 @Component({
     selector: InputTypeCatalog.BooleanDefault,
@@ -27,7 +27,7 @@ export class BooleanDefaultComponent extends BooleanBaseComponent {
 
   constructor() {
     super();
-    BooleanDefaultLogic.importMe();
+    BooleanDefaultSettingsHelper.importMe();
   }
 
   checkedState = computedObj('checkedState', () => {

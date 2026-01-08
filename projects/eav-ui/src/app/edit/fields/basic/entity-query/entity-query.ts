@@ -3,7 +3,7 @@ import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { classLog } from '../../../../shared/logging';
 import { PickerComponent } from '../../picker/picker';
 import { PickerImports } from '../../picker/picker-providers.constant';
-import { EntityQueryLogic } from './entity-query-settings-helper';
+import { EntityQuerySettingsHelper } from './entity-query-settings-helper';
 
 @Component({
     selector: InputTypeCatalog.EntityQuery,
@@ -17,6 +17,6 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
   constructor() {
     super();
     this.constructorEnd();
-    EntityQueryLogic.importMe();
+    EntityQuerySettingsHelper.importMe();
   }
 }

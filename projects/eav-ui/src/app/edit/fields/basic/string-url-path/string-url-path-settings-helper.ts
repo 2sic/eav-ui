@@ -4,7 +4,7 @@ import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldSettingsHelperBase } from '../../logic/field-settings-helper-base';
 import { FieldSettingsUpdateTask } from '../../logic/field-settings-update-task';
 
-export class StringUrlPathLogic extends FieldSettingsHelperBase {
+export class StringUrlPathSettingsHelper extends FieldSettingsHelperBase {
   name = InputTypeCatalog.StringUrlPath;
 
   constructor() { super({ InputTypeCatalog }); }
@@ -17,4 +17,4 @@ export class StringUrlPathLogic extends FieldSettingsHelperBase {
   }
 }
 
-FieldSettingsHelperBase.add(StringUrlPathLogic);
+FieldSettingsHelperBase.add(StringUrlPathSettingsHelper);

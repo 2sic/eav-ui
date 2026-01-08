@@ -5,8 +5,8 @@ import { classLog } from '../../../../shared/logging';
 import { ScriptsLoaderService } from '../../../shared/services/scripts-loader.service';
 import { ConnectorComponent } from '../../connector/connector';
 import { FieldState } from '../../field-state';
-import { CustomGpsLogic } from './custom-gps-settings-helper';
-import { StringWysiwygLogic } from './string-wysiwyg-settings-helper';
+import { CustomGpsSettingsHelper } from './custom-gps-settings-helper';
+import { StringWysiwygSettingsHelper } from './string-wysiwyg-settings-helper';
 
 @Component({
   selector: InputTypeCatalog.ExternalWebComponent,
@@ -28,8 +28,8 @@ export class ExternalWebComponentComponent {
   constructor(
     private scriptsLoaderService: ScriptsLoaderService,
   ) {
-    StringWysiwygLogic.importMe();
-    CustomGpsLogic.importMe();
+    StringWysiwygSettingsHelper.importMe();
+    CustomGpsSettingsHelper.importMe();
   }
 
   ngOnInit() {

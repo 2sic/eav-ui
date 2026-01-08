@@ -14,10 +14,10 @@ import { buildRegExFromPrefixAndSuffix } from '../../picker/data-sources/css/str
  * so it now ports the configuration from the names in the old config entity
  * to how the new picker expects them.
  */
-export class StringFontIconPickerLogic extends FieldSettingsHelperBase {
+export class StringFontIconPickerSettingsHelper extends FieldSettingsHelperBase {
   name = InputTypeCatalog.StringFontIconPicker;
 
-  constructor() { super({ StringFontIconPickerLogic }); }
+  constructor() { super({ StringFontIconPickerSettingsHelper }); }
 
   update({ fieldName, settings }: FieldSettingsUpdateTask): FieldSettings {
     const l = this.log.fnIfInFields('update', fieldName, { fieldName, settings });
@@ -52,4 +52,4 @@ export class StringFontIconPickerLogic extends FieldSettingsHelperBase {
   }
 }
 
-FieldSettingsHelperBase.add(StringFontIconPickerLogic);
+FieldSettingsHelperBase.add(StringFontIconPickerSettingsHelper);

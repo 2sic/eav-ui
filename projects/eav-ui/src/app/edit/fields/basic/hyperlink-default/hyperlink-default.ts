@@ -21,7 +21,7 @@ import { PasteClipboardImageDirective } from '../../directives/paste-clipboard-i
 import { FieldMetadata } from '../../field-metadata.decorator';
 import { WrappersCatalog } from '../../wrappers/wrappers.constants';
 import { HyperlinkDefaultBaseComponent } from './hyperlink-default-base';
-import { HyperlinkDefaultLogic } from './hyperlink-default-settings-helper';
+import { HyperlinkDefaultSettingsHelper } from './hyperlink-default-settings-helper';
 
 @Component({
     selector: InputTypeCatalog.HyperlinkDefault,
@@ -76,7 +76,7 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
       linkCacheService,
       formsStateService,
     );
-    HyperlinkDefaultLogic.importMe();
+    HyperlinkDefaultSettingsHelper.importMe();
 
     // ADAM Settings, in a way which ensures they only fire on relevant changes
     // must be in constructor for effect() to work

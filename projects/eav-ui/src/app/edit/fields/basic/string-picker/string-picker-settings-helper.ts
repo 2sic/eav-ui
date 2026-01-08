@@ -7,15 +7,14 @@ import { FieldSettingsUpdateTask } from '../../logic/field-settings-update-task'
 import { PickerSourcesCustom } from '../../picker/constants/picker-config-model.constants';
 import { PickerLogicShared } from '../../picker/picker-settings-helper-shared';
 
-export class StringPickerLogic extends FieldSettingsHelperBase {
+export class StringPickerSettingsHelper extends FieldSettingsHelperBase {
   name: Of<typeof InputTypeCatalog> = InputTypeCatalog.StringPicker;
 
-  constructor() { super({StringPickerLogic}); }
+  constructor() { super({StringPickerSettingsHelper}); }
 
   update(specs: FieldSettingsUpdateTask<string>): FieldSettings {
     
-    var log = classLog({StringPickerLogic}, null);
-
+    var log = classLog({StringPickerSettingsHelper}, null);
     const l = log.fn('update', { specs });
 
     const { fs, removeEditRestrictions, typeConfig } = new PickerLogicShared().preUpdate(specs);
@@ -41,4 +40,4 @@ export class StringPickerLogic extends FieldSettingsHelperBase {
   }
 }
 
-FieldSettingsHelperBase.add(StringPickerLogic);
+FieldSettingsHelperBase.add(StringPickerSettingsHelper);

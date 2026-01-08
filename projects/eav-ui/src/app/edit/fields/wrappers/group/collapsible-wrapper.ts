@@ -10,7 +10,7 @@ import { FieldsSettingsService } from '../../../state/fields-settings.service';
 import { ChangeAnchorTargetDirective } from '../../directives/change-anchor-target.directive';
 import { FieldState } from '../../field-state';
 import { WrappersCatalog } from '../wrappers.constants';
-import { EmptyDefaultLogic } from './collapsible-wrapper-settings-helper';
+import { EmptyDefaultSettingsHelper } from './collapsible-wrapper-settings-helper';
 
 
 @Component({
@@ -42,7 +42,7 @@ export class CollapsibleWrapperComponent {
   #fieldsSettingsSvc = inject(FieldsSettingsService);
 
   constructor() {
-    EmptyDefaultLogic.importMe();
+    EmptyDefaultSettingsHelper.importMe();
   }
 
   toggleCollapse(): void {

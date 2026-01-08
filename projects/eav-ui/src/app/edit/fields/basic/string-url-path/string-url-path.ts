@@ -10,7 +10,7 @@ import { FieldMetadata } from '../../field-metadata.decorator';
 import { FieldState } from '../../field-state';
 import { FieldHelperTextComponent } from '../../help-text/field-help-text';
 import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
-import { StringUrlPathLogic } from './string-url-path-settings-helper';
+import { StringUrlPathSettingsHelper } from './string-url-path-settings-helper';
 
 @Component({
     selector: InputTypeCatalog.StringUrlPath,
@@ -58,7 +58,7 @@ export class StringUrlPathComponent {
   });
 
   constructor() {
-    StringUrlPathLogic.importMe();
+    StringUrlPathSettingsHelper.importMe();
 
     // Listen to value changes to correct spaces and other non-allowed characters
     effect(() => {

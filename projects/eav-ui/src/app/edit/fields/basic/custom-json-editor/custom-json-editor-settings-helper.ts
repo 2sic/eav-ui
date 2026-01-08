@@ -4,10 +4,10 @@ import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldSettingsHelperBase } from '../../logic/field-settings-helper-base';
 import { FieldSettingsUpdateTask } from '../../logic/field-settings-update-task';
 
-export class CustomJsonEditorLogic extends FieldSettingsHelperBase {
+export class CustomJsonEditorSettingsHelper extends FieldSettingsHelperBase {
   name = InputTypeCatalog.CustomJsonEditor as string;
 
-  constructor() { super({ CustomJsonEditorLogic }); }
+  constructor() { super({ CustomJsonEditorSettingsHelper }); }
 
   update({ settings }: FieldSettingsUpdateTask): FieldSettings {
     const fixedSettings = { ...settings } as FieldSettings & CustomJsonEditor;
@@ -22,10 +22,10 @@ export class CustomJsonEditorLogic extends FieldSettingsHelperBase {
   }
 }
 
-FieldSettingsHelperBase.add(CustomJsonEditorLogic);
+FieldSettingsHelperBase.add(CustomJsonEditorSettingsHelper);
 
-export class StringJsonLogic extends CustomJsonEditorLogic {
+export class StringJsonSettingsHelper extends CustomJsonEditorSettingsHelper {
   name = InputTypeCatalog.StringJson;
 }
 
-FieldSettingsHelperBase.add(StringJsonLogic);
+FieldSettingsHelperBase.add(StringJsonSettingsHelper);

@@ -5,7 +5,7 @@ import { FieldMetadata } from '../../field-metadata.decorator';
 import { PickerComponent } from '../../picker/picker';
 import { PickerImports } from '../../picker/picker-providers.constant';
 import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
-import { StringFontIconPickerLogic } from './string-font-icon-picker-settings-helper';
+import { StringFontIconPickerSettingsHelper } from './string-font-icon-picker-settings-helper';
 
 @Component({
     selector: InputTypeCatalog.StringFontIconPicker,
@@ -22,6 +22,6 @@ export class StringFontIconPickerComponent extends PickerComponent {
   constructor() {
     super();
     this.constructorEnd();
-    StringFontIconPickerLogic.importMe();
+    StringFontIconPickerSettingsHelper.importMe();
   }
 }

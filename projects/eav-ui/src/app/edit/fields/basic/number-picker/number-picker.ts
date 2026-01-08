@@ -3,7 +3,7 @@ import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { classLog } from '../../../../shared/logging/logging';
 import { PickerComponent } from '../../picker/picker';
 import { PickerImports } from '../../picker/picker-providers.constant';
-import { NumberPickerLogic } from './number-picker-settings-helper';
+import { NumberPickerSettingsHelper } from './number-picker-settings-helper';
 
 @Component({
   selector: InputTypeCatalog.NumberPicker,
@@ -17,7 +17,7 @@ export class NumberPickerComponent extends PickerComponent implements OnInit, On
   constructor() {
     super();
     this.constructorEnd();
-    NumberPickerLogic.importMe();
+    NumberPickerSettingsHelper.importMe();
   }
 }
 

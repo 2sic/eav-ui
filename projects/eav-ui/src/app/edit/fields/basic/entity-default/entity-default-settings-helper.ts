@@ -6,10 +6,10 @@ import { FieldSettingsHelperBase } from '../../logic/field-settings-helper-base'
 import { FieldSettingsUpdateTask } from '../../logic/field-settings-update-task';
 import { PickerLogicShared } from '../../picker/picker-settings-helper-shared';
 
-export class EntityDefaultLogic extends FieldSettingsHelperBase {
+export class EntityDefaultSettingsHelper extends FieldSettingsHelperBase {
   name = InputTypeCatalog.EntityDefault;
   
-  constructor() { super({ EntityDefaultLogic }); }
+  constructor() { super({ EntityDefaultSettingsHelper }); }
 
   update({ settings, tools }: FieldSettingsUpdateTask): FieldSettings {
     
@@ -30,4 +30,4 @@ export class EntityDefaultLogic extends FieldSettingsHelperBase {
 
 }
 
-FieldSettingsHelperBase.add(EntityDefaultLogic);
+FieldSettingsHelperBase.add(EntityDefaultSettingsHelper);

@@ -4,7 +4,7 @@ import { FieldMetadata } from '../../field-metadata.decorator';
 import { PickerComponent } from '../../picker/picker';
 import { PickerImports } from '../../picker/picker-providers.constant';
 import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
-import { NumberDropdownLogic } from './number-dropdown-settings-helper';
+import { NumberDropdownSettingsHelper } from './number-dropdown-settings-helper';
 
 @Component({
   selector: InputTypeCatalog.NumberDropdown,
@@ -19,6 +19,6 @@ export class NumberDropdownComponent extends PickerComponent {
   constructor() {
     super();
     this.constructorEnd();
-    NumberDropdownLogic.importMe();
+    NumberDropdownSettingsHelper.importMe();
   }
 }

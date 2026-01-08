@@ -8,10 +8,10 @@ import { FieldSettingsHelperWithValueInit } from '../../logic/field-settings-hel
 import { FieldSettingsUpdateTask } from '../../logic/field-settings-update-task';
 
 
-export class StringWysiwygLogic extends FieldSettingsHelperBase implements FieldSettingsHelperWithValueInit {
+export class StringWysiwygSettingsHelper extends FieldSettingsHelperBase implements FieldSettingsHelperWithValueInit {
   name = InputTypeCatalog.StringWysiwyg;
 
-  constructor() { super({ StringWysiwygLogic }); }
+  constructor() { super({ StringWysiwygSettingsHelper }); }
 
   canAutoTranslate = true;
 
@@ -58,5 +58,5 @@ export class StringWysiwygLogic extends FieldSettingsHelperBase implements Field
   }
 }
 
-FieldSettingsHelperBase.add(StringWysiwygLogic);
+FieldSettingsHelperBase.add(StringWysiwygSettingsHelper);
 

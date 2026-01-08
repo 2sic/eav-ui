@@ -7,11 +7,11 @@ import { FieldSettingsUpdateTask } from '../../logic/field-settings-update-task'
 import { PickerLogicShared } from '../../picker/picker-settings-helper-shared';
 import { DataSourceDropDownOptions } from '../string-picker/string-picker.helpers';
 
-export class StringDropdownLogic extends FieldSettingsHelperBase {
+export class StringDropdownSettingsHelper extends FieldSettingsHelperBase {
   name: Of<typeof InputTypeCatalog> = InputTypeCatalog.StringDropdown;
   type: 'string' | 'number' = 'string';
 
-  constructor() { super({ StringDropdownLogic }); }
+  constructor() { super({ StringDropdownSettingsHelper }); }
 
   update({ settings, value }: FieldSettingsUpdateTask<string>): FieldSettings {
     const fs = PickerLogicShared.setDefaultSettings({ ...settings }) as FieldSettings & StringDropdown & FieldSettingsPickerMerged;
@@ -36,4 +36,4 @@ export class StringDropdownLogic extends FieldSettingsHelperBase {
   }
 }
 
-FieldSettingsHelperBase.add(StringDropdownLogic);
+FieldSettingsHelperBase.add(StringDropdownSettingsHelper);

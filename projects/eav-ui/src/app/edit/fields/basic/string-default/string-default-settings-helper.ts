@@ -4,10 +4,10 @@ import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldSettingsHelperBase } from '../../logic/field-settings-helper-base';
 import { FieldSettingsUpdateTask } from '../../logic/field-settings-update-task';
 
-export class StringDefaultLogic extends FieldSettingsHelperBase {
+export class StringDefaultSettingsHelper extends FieldSettingsHelperBase {
   name = InputTypeCatalog.StringDefault;
 
-  constructor() { super({ StringDefaultLogic }); }
+  constructor() { super({ StringDefaultSettingsHelper }); }
 
   canAutoTranslate = true;
 
@@ -19,4 +19,4 @@ export class StringDefaultLogic extends FieldSettingsHelperBase {
   }
 }
 
-FieldSettingsHelperBase.add(StringDefaultLogic);
+FieldSettingsHelperBase.add(StringDefaultSettingsHelper);

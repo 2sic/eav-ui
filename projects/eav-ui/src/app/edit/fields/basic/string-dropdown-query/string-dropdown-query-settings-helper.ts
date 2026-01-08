@@ -4,15 +4,15 @@ import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldSettingsHelperBase } from '../../logic/field-settings-helper-base';
 import { FieldSettingsHelpersManager } from '../../logic/field-settings-helpers-manager';
 import { FieldSettingsUpdateTask } from '../../logic/field-settings-update-task';
-import { EntityDefaultLogic } from '../entity-default/entity-default-settings-helper';
+import { EntityDefaultSettingsHelper } from '../entity-default/entity-default-settings-helper';
 
-export class StringDropdownQueryLogic extends FieldSettingsHelperBase {
+export class StringDropdownQuerySettingsHelper extends FieldSettingsHelperBase {
   name = InputTypeCatalog.StringDropdownQuery;
 
-  constructor() { super({ StringDropdownQueryLogic }); }
+  constructor() { super({ StringDropdownQuerySettingsHelper }); }
 
   update(specs: FieldSettingsUpdateTask<string[]>): FieldSettings {
-    const entityDefaultLogic = FieldSettingsHelpersManager.singleton().get(InputTypeCatalog.EntityDefault) as EntityDefaultLogic;
+    const entityDefaultLogic = FieldSettingsHelpersManager.singleton().get(InputTypeCatalog.EntityDefault) as EntityDefaultSettingsHelper;
     const fs = entityDefaultLogic.update(specs) as FieldSettings & FieldSettingsSharedSeparator;
     fs.Separator ||= ',';
 
@@ -24,4 +24,4 @@ export class StringDropdownQueryLogic extends FieldSettingsHelperBase {
   }
 }
 
-FieldSettingsHelperBase.add(StringDropdownQueryLogic);
+FieldSettingsHelperBase.add(StringDropdownQuerySettingsHelper);

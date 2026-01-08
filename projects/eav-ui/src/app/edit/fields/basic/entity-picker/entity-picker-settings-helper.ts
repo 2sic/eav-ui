@@ -4,14 +4,14 @@ import { FieldSettingsHelperBase } from '../../logic/field-settings-helper-base'
 import { FieldSettingsUpdateTask } from '../../logic/field-settings-update-task';
 import { PickerLogicShared } from '../../picker/picker-settings-helper-shared';
 
-export class EntityPickerLogic extends FieldSettingsHelperBase {
+export class EntityPickerSettingsHelper extends FieldSettingsHelperBase {
   name = InputTypeCatalog.EntityPicker;
 
-  constructor() { super({ EntityPickerLogic }); }
+  constructor() { super({ EntityPickerSettingsHelper }); }
 
   update(specs: FieldSettingsUpdateTask): FieldSettings {
     return new PickerLogicShared().preUpdate(specs).fs;
   }
 }
 
-FieldSettingsHelperBase.add(EntityPickerLogic);
+FieldSettingsHelperBase.add(EntityPickerSettingsHelper);
