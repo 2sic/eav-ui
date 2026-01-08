@@ -1,6 +1,6 @@
 import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
 import { classLog } from '../../../shared/logging';
-import { FieldLogicBase } from './field-settings-helper-base';
+import { FieldSettingsHelperBase } from './field-settings-helper-base';
 import { FieldSettingsHelperUnknown } from './field-settings-helper-unknown';
 
 const logSpecs = {
@@ -35,10 +35,10 @@ export class FieldSettingsHelpersManager {
     return window.eavFieldSettingsHelpersManagerSingleton ??= new FieldSettingsHelpersManager();
   }
 
-  #helpers: Record<string, FieldLogicBase> = {};
+  #helpers: Record<string, FieldSettingsHelperBase> = {};
 
   /** Add settings logic */
-  add(logic: FieldLogicBase): void {
+  add(logic: FieldSettingsHelperBase): void {
     this.#helpers[logic.name] = logic;
   }
 
@@ -47,7 +47,7 @@ export class FieldSettingsHelpersManager {
    * Note: 2026-01-08 changed to always return unknown if not found, to prevent any scenario where there is none.
    * Previously this was a separate getOrUnknown method marked as temporary v16.04
    */
-  get(inputTypeName: string): FieldLogicBase {
+  get(inputTypeName: string): FieldSettingsHelperBase {
     const l = this.log.fnIf('get', { inputTypeName });
     const helper = this.getExact(inputTypeName);
     return helper
@@ -56,7 +56,7 @@ export class FieldSettingsHelpersManager {
   }
   
   /** Get settings logic for input type */
-  getExact(inputTypeName: string): FieldLogicBase {
+  getExact(inputTypeName: string): FieldSettingsHelperBase {
     const l = this.log.fnIf('getExact', { inputTypeName });
     const r = this.#helpers[inputTypeName] ?? null;
     return l.r(r, `found logic: ${r != null}`);

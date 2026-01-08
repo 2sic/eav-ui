@@ -1,10 +1,10 @@
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { FieldLogicBase } from '../../logic/field-settings-helper-base';
+import { FieldSettingsHelperBase } from '../../logic/field-settings-helper-base';
 import { FieldSettingsUpdateTask } from '../../logic/field-settings-update-task';
 import { PickerLogicShared } from '../../picker/picker-logic-shared';
 
-export class EntityPickerLogic extends FieldLogicBase {
+export class EntityPickerLogic extends FieldSettingsHelperBase {
   name = InputTypeCatalog.EntityPicker;
 
   constructor() { super({ EntityPickerLogic }); }
@@ -14,4 +14,4 @@ export class EntityPickerLogic extends FieldLogicBase {
   }
 }
 
-FieldLogicBase.add(EntityPickerLogic);
+FieldSettingsHelperBase.add(EntityPickerLogic);

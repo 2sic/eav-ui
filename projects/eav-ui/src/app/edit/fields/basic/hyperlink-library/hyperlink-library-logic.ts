@@ -1,10 +1,10 @@
 import { HyperlinkLibrary } from 'projects/edit-types/src/FieldSettings-Hyperlink';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { FieldLogicBase } from '../../logic/field-settings-helper-base';
+import { FieldSettingsHelperBase } from '../../logic/field-settings-helper-base';
 import { FieldSettingsUpdateTask } from '../../logic/field-settings-update-task';
 
-export class HyperlinkLibraryLogic extends FieldLogicBase {
+export class HyperlinkLibraryLogic extends FieldSettingsHelperBase {
   name = InputTypeCatalog.HyperlinkLibrary;
 
   constructor() { super({ HyperlinkLibraryLogic }); }
@@ -16,4 +16,4 @@ export class HyperlinkLibraryLogic extends FieldLogicBase {
   }
 }
 
-FieldLogicBase.add(HyperlinkLibraryLogic);
+FieldSettingsHelperBase.add(HyperlinkLibraryLogic);

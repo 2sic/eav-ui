@@ -13,15 +13,15 @@ const logSpecs = {
   fields: [...DebugFields, 'Icon'],
 }
 
-export abstract class FieldLogicBase {
+export abstract class FieldSettingsHelperBase {
 
   /** Logger - lazy created on first access if not yet created */
-  get log() { return this.#log ??= classLog({FieldLogicBase}, logSpecs).extendName(`[${this.name}]`) };
+  get log() { return this.#log ??= classLog({FieldSettingsHelperBase}, logSpecs).extendName(`[${this.name}]`) };
   
   #log: ClassLogger<typeof logSpecs>;
 
   constructor(inheritingClassForLogging: Record<string, unknown> | string, logThis?: boolean) {
-    this.#log = classLog(inheritingClassForLogging ?? {FieldLogicBase}, logSpecs, null, logThis);
+    this.#log = classLog(inheritingClassForLogging ?? {FieldSettingsHelperBase}, logSpecs, null, logThis);
     this.name ??= this.#log.name;
     this.log.fnIf('constructor');
   }
@@ -95,4 +95,4 @@ export abstract class FieldLogicBase {
   }
 }
 
-type LogicFactory = new (...args: any[]) => FieldLogicBase;
+type LogicFactory = new (...args: any[]) => FieldSettingsHelperBase;

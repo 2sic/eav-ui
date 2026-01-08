@@ -1,7 +1,7 @@
 import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
 import { FieldValue } from '../../../../../edit-types/src/FieldValue';
 import { InputTypeMetadata } from '../../shared/fields/input-type-metadata.model';
-import { FieldLogicBase } from '../fields/logic/field-settings-helper-base';
+import { FieldSettingsHelperBase } from '../fields/logic/field-settings-helper-base';
 import { PickerItem } from '../fields/picker/models/picker-item.model';
 import { PickerData } from '../fields/picker/picker-data';
 import { FormulaFieldValidation } from '../formulas/targets/formula-targets';
@@ -52,7 +52,7 @@ export interface FieldConstants {
   inputTypeSpecs: InputTypeSpecs;
   isLastInGroup?: boolean;
   type: string;
-  logic?: FieldLogicBase,
+  logic?: FieldSettingsHelperBase,
 
   pickerData: () => PickerData | null;
 }

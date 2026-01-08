@@ -1,12 +1,12 @@
 import { PickerSourceEntity } from 'projects/edit-types/src/PickerSources';
 import { FieldSettingsEntity, FieldSettingsSharedCreate } from '../../../../../../../edit-types/src/FieldSettings-Pickers';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { FieldLogicBase } from '../../logic/field-settings-helper-base';
+import { FieldSettingsHelperBase } from '../../logic/field-settings-helper-base';
 import { FieldSettingsUpdateTask } from '../../logic/field-settings-update-task';
 import { PickerLogicShared } from '../../picker/picker-logic-shared';
 import { FieldSettings } from './../../../../../../../edit-types/src/FieldSettings';
 
-export class EntityDefaultLogic extends FieldLogicBase {
+export class EntityDefaultLogic extends FieldSettingsHelperBase {
   name = InputTypeCatalog.EntityDefault;
   
   constructor() { super({ EntityDefaultLogic }); }
@@ -30,4 +30,4 @@ export class EntityDefaultLogic extends FieldLogicBase {
 
 }
 
-FieldLogicBase.add(EntityDefaultLogic);
+FieldSettingsHelperBase.add(EntityDefaultLogic);

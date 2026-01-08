@@ -1,10 +1,10 @@
 import { FieldSettingsBoolean } from 'projects/edit-types/src/FieldSettings-Boolean';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { FieldLogicBase } from '../../logic/field-settings-helper-base';
+import { FieldSettingsHelperBase } from '../../logic/field-settings-helper-base';
 import { FieldSettingsUpdateTask } from '../../logic/field-settings-update-task';
 import { FieldSettings } from './../../../../../../../edit-types/src/FieldSettings';
 
-export class BooleanDefaultLogic extends FieldLogicBase {
+export class BooleanDefaultLogic extends FieldSettingsHelperBase {
   name = InputTypeCatalog.BooleanDefault;
 
   constructor() { super({ BooleanDefaultLogic }); }
@@ -26,4 +26,4 @@ export class BooleanDefaultLogic extends FieldLogicBase {
   }
 }
 
-FieldLogicBase.add(BooleanDefaultLogic);
+FieldSettingsHelperBase.add(BooleanDefaultLogic);

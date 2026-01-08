@@ -2,12 +2,12 @@ import { Of } from '../../../../../../../core';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { FieldSettingsPickerMerged, StringDropdown } from '../../../../../../../edit-types/src/FieldSettings-Pickers';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { FieldLogicBase } from '../../logic/field-settings-helper-base';
+import { FieldSettingsHelperBase } from '../../logic/field-settings-helper-base';
 import { FieldSettingsUpdateTask } from '../../logic/field-settings-update-task';
 import { PickerLogicShared } from '../../picker/picker-logic-shared';
 import { DataSourceDropDownOptions } from '../string-picker/string-picker.helpers';
 
-export class StringDropdownLogic extends FieldLogicBase {
+export class StringDropdownLogic extends FieldSettingsHelperBase {
   name: Of<typeof InputTypeCatalog> = InputTypeCatalog.StringDropdown;
   type: 'string' | 'number' = 'string';
 
@@ -36,4 +36,4 @@ export class StringDropdownLogic extends FieldLogicBase {
   }
 }
 
-FieldLogicBase.add(StringDropdownLogic);
+FieldSettingsHelperBase.add(StringDropdownLogic);

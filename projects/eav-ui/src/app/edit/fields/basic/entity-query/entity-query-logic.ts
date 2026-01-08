@@ -1,12 +1,12 @@
 import { FieldSettingsEntityQuery } from '../../../../../../../edit-types/src/FieldSettings-Pickers';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { FieldLogicBase } from '../../logic/field-settings-helper-base';
+import { FieldSettingsHelperBase } from '../../logic/field-settings-helper-base';
 import { FieldSettingsHelpersManager } from '../../logic/field-settings-helpers-manager';
 import { FieldSettingsUpdateTask } from '../../logic/field-settings-update-task';
 import { EntityDefaultLogic } from '../entity-default/entity-default-logic';
 import { FieldSettings } from './../../../../../../../edit-types/src/FieldSettings';
 
-export class EntityQueryLogic extends FieldLogicBase {
+export class EntityQueryLogic extends FieldSettingsHelperBase {
   name = InputTypeCatalog.EntityQuery;
 
   constructor() { super({ EntityQueryLogic }); }
@@ -21,4 +21,4 @@ export class EntityQueryLogic extends FieldLogicBase {
   }
 }
 
-FieldLogicBase.add(EntityQueryLogic);
+FieldSettingsHelperBase.add(EntityQueryLogic);

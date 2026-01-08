@@ -2,12 +2,12 @@ import { Of } from '../../../../../../../core/type-utilities';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { classLog } from '../../../../shared/logging';
-import { FieldLogicBase } from '../../logic/field-settings-helper-base';
+import { FieldSettingsHelperBase } from '../../logic/field-settings-helper-base';
 import { FieldSettingsUpdateTask } from '../../logic/field-settings-update-task';
 import { PickerSourcesCustom } from '../../picker/constants/picker-config-model.constants';
 import { PickerLogicShared } from '../../picker/picker-logic-shared';
 
-export class StringPickerLogic extends FieldLogicBase {
+export class StringPickerLogic extends FieldSettingsHelperBase {
   name: Of<typeof InputTypeCatalog> = InputTypeCatalog.StringPicker;
 
   constructor() { super({StringPickerLogic}); }
@@ -41,4 +41,4 @@ export class StringPickerLogic extends FieldLogicBase {
   }
 }
 
-FieldLogicBase.add(StringPickerLogic);
+FieldSettingsHelperBase.add(StringPickerLogic);

@@ -1,6 +1,6 @@
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { FieldLogicBase } from '../../logic/field-settings-helper-base';
+import { FieldSettingsHelperBase } from '../../logic/field-settings-helper-base';
 import { FieldSettingsUpdateTask } from '../../logic/field-settings-update-task';
 import { StringDropdownLogic } from '../string-dropdown/string-dropdown-logic';
 
@@ -16,4 +16,4 @@ export class NumberDropdownLogic extends StringDropdownLogic {
   }
 }
 
-FieldLogicBase.add(NumberDropdownLogic);
+FieldSettingsHelperBase.add(NumberDropdownLogic);

@@ -2,7 +2,7 @@ import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings
 import { FieldSettingsPicker, FieldSettingsPickerMasks, FieldSettingsStringFontIconPicker } from '../../../../../../../edit-types/src/FieldSettings-Pickers';
 import { PickerSourceCss } from '../../../../../../../edit-types/src/PickerSources';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { FieldLogicBase } from '../../logic/field-settings-helper-base';
+import { FieldSettingsHelperBase } from '../../logic/field-settings-helper-base';
 import { FieldSettingsUpdateTask } from '../../logic/field-settings-update-task';
 import { buildRegExFromPrefixAndSuffix } from '../../picker/data-sources/css/string-font-icon-picker.helpers';
 
@@ -14,7 +14,7 @@ import { buildRegExFromPrefixAndSuffix } from '../../picker/data-sources/css/str
  * so it now ports the configuration from the names in the old config entity
  * to how the new picker expects them.
  */
-export class StringFontIconPickerLogic extends FieldLogicBase {
+export class StringFontIconPickerLogic extends FieldSettingsHelperBase {
   name = InputTypeCatalog.StringFontIconPicker;
 
   constructor() { super({ StringFontIconPickerLogic }); }
@@ -52,4 +52,4 @@ export class StringFontIconPickerLogic extends FieldLogicBase {
   }
 }
 
-FieldLogicBase.add(StringFontIconPickerLogic);
+FieldSettingsHelperBase.add(StringFontIconPickerLogic);

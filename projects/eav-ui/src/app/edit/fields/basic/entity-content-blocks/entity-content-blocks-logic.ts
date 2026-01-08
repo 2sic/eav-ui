@@ -1,11 +1,11 @@
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { FieldSettingsPickerMerged } from '../../../../../../../edit-types/src/FieldSettings-Pickers';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { FieldLogicBase } from '../../logic/field-settings-helper-base';
+import { FieldSettingsHelperBase } from '../../logic/field-settings-helper-base';
 import { FieldSettingsHelpersManager } from '../../logic/field-settings-helpers-manager';
 import { FieldSettingsUpdateTask } from '../../logic/field-settings-update-task';
 
-export class EntityContentBlocksLogic extends FieldLogicBase {
+export class EntityContentBlocksLogic extends FieldSettingsHelperBase {
   name = InputTypeCatalog.EntityContentBlocks;
 
   constructor() { super({ EntityContentBlocksLogic }); }
@@ -28,4 +28,4 @@ export class EntityContentBlocksLogic extends FieldLogicBase {
   }
 }
 
-FieldLogicBase.add(EntityContentBlocksLogic);
+FieldSettingsHelperBase.add(EntityContentBlocksLogic);

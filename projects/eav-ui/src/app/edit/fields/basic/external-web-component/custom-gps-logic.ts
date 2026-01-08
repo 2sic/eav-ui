@@ -1,9 +1,9 @@
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { FieldLogicBase } from '../../logic/field-settings-helper-base';
+import { FieldSettingsHelperBase } from '../../logic/field-settings-helper-base';
 import { FieldSettingsUpdateTask } from '../../logic/field-settings-update-task';
 
-export class CustomGpsLogic extends FieldLogicBase {
+export class CustomGpsLogic extends FieldSettingsHelperBase {
   name = InputTypeCatalog.CustomGps;
 
   constructor() { super({ CustomGpsLogic }); }
@@ -15,4 +15,4 @@ export class CustomGpsLogic extends FieldLogicBase {
   }
 }
 
-FieldLogicBase.add(CustomGpsLogic);
+FieldSettingsHelperBase.add(CustomGpsLogic);

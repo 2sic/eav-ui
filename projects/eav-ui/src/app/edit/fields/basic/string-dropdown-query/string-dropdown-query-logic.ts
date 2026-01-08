@@ -1,12 +1,12 @@
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { FieldSettingsSharedSeparator } from '../../../../../../../edit-types/src/FieldSettings-Pickers';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { FieldLogicBase } from '../../logic/field-settings-helper-base';
+import { FieldSettingsHelperBase } from '../../logic/field-settings-helper-base';
 import { FieldSettingsHelpersManager } from '../../logic/field-settings-helpers-manager';
 import { FieldSettingsUpdateTask } from '../../logic/field-settings-update-task';
 import { EntityDefaultLogic } from '../entity-default/entity-default-logic';
 
-export class StringDropdownQueryLogic extends FieldLogicBase {
+export class StringDropdownQueryLogic extends FieldSettingsHelperBase {
   name = InputTypeCatalog.StringDropdownQuery;
 
   constructor() { super({ StringDropdownQueryLogic }); }
@@ -24,4 +24,4 @@ export class StringDropdownQueryLogic extends FieldLogicBase {
   }
 }
 
-FieldLogicBase.add(StringDropdownQueryLogic);
+FieldSettingsHelperBase.add(StringDropdownQueryLogic);

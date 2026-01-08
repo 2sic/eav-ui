@@ -1,10 +1,10 @@
 import { EmptyDefault } from 'projects/edit-types/src/FieldSettings-EmptyDefault';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { FieldLogicBase } from '../../logic/field-settings-helper-base';
+import { FieldSettingsHelperBase } from '../../logic/field-settings-helper-base';
 import { FieldSettingsUpdateTask } from '../../logic/field-settings-update-task';
 
-export class EmptyDefaultLogic extends FieldLogicBase {
+export class EmptyDefaultLogic extends FieldSettingsHelperBase {
   name = InputTypeCatalog.EmptyDefault;
 
   constructor() { super({ EmptyDefaultLogic }); }
@@ -18,4 +18,4 @@ export class EmptyDefaultLogic extends FieldLogicBase {
   }
 }
 
-FieldLogicBase.add(EmptyDefaultLogic);
+FieldSettingsHelperBase.add(EmptyDefaultLogic);

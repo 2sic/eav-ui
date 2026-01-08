@@ -1,10 +1,10 @@
 import { CustomJsonEditor } from 'projects/edit-types/src/FieldSettings-CustomJsonEditor';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { FieldLogicBase } from '../../logic/field-settings-helper-base';
+import { FieldSettingsHelperBase } from '../../logic/field-settings-helper-base';
 import { FieldSettingsUpdateTask } from '../../logic/field-settings-update-task';
 
-export class CustomJsonEditorLogic extends FieldLogicBase {
+export class CustomJsonEditorLogic extends FieldSettingsHelperBase {
   name = InputTypeCatalog.CustomJsonEditor as string;
 
   constructor() { super({ CustomJsonEditorLogic }); }
@@ -22,10 +22,10 @@ export class CustomJsonEditorLogic extends FieldLogicBase {
   }
 }
 
-FieldLogicBase.add(CustomJsonEditorLogic);
+FieldSettingsHelperBase.add(CustomJsonEditorLogic);
 
 export class StringJsonLogic extends CustomJsonEditorLogic {
   name = InputTypeCatalog.StringJson;
 }
 
-FieldLogicBase.add(StringJsonLogic);
+FieldSettingsHelperBase.add(StringJsonLogic);

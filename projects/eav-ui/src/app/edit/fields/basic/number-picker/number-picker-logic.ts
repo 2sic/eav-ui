@@ -1,12 +1,12 @@
 import { Of } from '../../../../../../../core/type-utilities';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { FieldLogicBase } from '../../logic/field-settings-helper-base';
+import { FieldSettingsHelperBase } from '../../logic/field-settings-helper-base';
 import { FieldSettingsHelpersManager } from '../../logic/field-settings-helpers-manager';
 import { FieldSettingsUpdateTask } from '../../logic/field-settings-update-task';
 import { StringPickerLogic } from '../string-picker/string-picker-logic';
 
-export class NumberPickerLogic extends FieldLogicBase {
+export class NumberPickerLogic extends FieldSettingsHelperBase {
   name: Of<typeof InputTypeCatalog> = InputTypeCatalog.NumberPicker;
 
   constructor() { super({ NumberPickerLogic }); }
@@ -19,4 +19,4 @@ export class NumberPickerLogic extends FieldLogicBase {
   }
 }
 
-FieldLogicBase.add(NumberPickerLogic);
+FieldSettingsHelperBase.add(NumberPickerLogic);
