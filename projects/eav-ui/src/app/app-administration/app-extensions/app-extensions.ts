@@ -14,7 +14,7 @@ import { defaultGridOptions } from '../../shared/constants/default-grid-options.
 import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
-import { classLogEnabled } from '../../shared/logging';
+import { classLog } from '../../shared/logging';
 import { EditForm } from '../../shared/models/edit-form.model';
 import { ItemIdHelper } from '../../shared/models/item-id-helper';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
@@ -22,7 +22,7 @@ import { DialogRoutingService } from '../../shared/routing/dialog-routing.servic
 import { EntityService } from '../../shared/services/entity.service';
 import { AppExtensionsService } from './app-extensions.service';
 import { AppExtensionActions } from './extension-actions/extension-actions';
-import { Extension } from './extension.model';
+import { DefaultExtensionEdition, Extension } from './extension.model';
 import { AppExtensionsLinkCell } from './extensions-link/extensions-link';
 import { ImportExtensionComponent } from './import/import-extension';
 
@@ -44,7 +44,7 @@ import { ImportExtensionComponent } from './import/import-extension';
 })
 export class AppExtensions implements OnInit {
 
-  log = classLogEnabled({AppExtensions}, {});
+  log = classLog({AppExtensions}, {});
 
   #extensionsSvc = transient(AppExtensionsService);
   #router = inject(Router);
@@ -96,10 +96,16 @@ export class AppExtensions implements OnInit {
   #openSettings(ext: Extension) {
     const configurationContentType = 'a0f44af0-6750-40c9-9ad9-4a07b6eda8b3';
 
+    if (ext == null)
+      return alert('No extension provided');
+
+    if (ext.edition && ext.edition !== DefaultExtensionEdition)
+      return alert('Cannot edit settings for specific edition - please select the default edition.');
+
     // Extend the basic configuration with the folder info, so it can be used later when saving
     const data = {
-      ...(ext?.configuration ?? {}),
-      _extensionFolder: ext?.folder ?? null,
+      ...(ext.configuration ?? {}),
+      _extensionFolder: ext.folder ?? null,
     }
 
     const subRoute = this.#routeEditJson(configurationContentType, data);
@@ -279,7 +285,7 @@ export class AppExtensions implements OnInit {
         sortable: true,
         filter: 'agTextColumnFilter',
         cellRenderer: (params: { data: Extension }) => {
-          const edition = params.data?.edition || 'Default';
+          const edition = params.data?.edition || DefaultExtensionEdition;
           return `
             <mat-chip-set>
               <mat-chip>

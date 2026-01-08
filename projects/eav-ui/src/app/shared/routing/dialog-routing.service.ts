@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, NavigationExtras, Router } from '@angular/router';
 import { filter, map, pairwise, startWith, tap } from 'rxjs';
-import { classLogEnabled } from '../logging';
+import { classLog } from '../logging';
 import { ServiceBase } from '../services/service-base';
 
 const logSpecs = {
@@ -17,7 +17,7 @@ const logSpecs = {
 @Injectable()
 export class DialogRoutingService extends ServiceBase {
 
-  log = classLogEnabled({ DialogRoutingService }, logSpecs);
+  log = classLog({ DialogRoutingService }, logSpecs);
 
   constructor(
     public router: Router,

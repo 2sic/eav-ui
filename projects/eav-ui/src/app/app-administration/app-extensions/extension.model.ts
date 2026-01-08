@@ -89,3 +89,5 @@ export interface ExtensionFeatures {
 }
 
 export type FileStatus = 'unchanged' | 'added' | 'missing' | 'changed';
+
+export const DefaultExtensionEdition = 'Default';
