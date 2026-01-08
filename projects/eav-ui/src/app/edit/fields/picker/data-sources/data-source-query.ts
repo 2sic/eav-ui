@@ -36,7 +36,7 @@ export class DataSourceQuery extends DataSourceEntityBase {
    * Get the data from a query - all or only the ones listed in the guids
    */
   protected override getFromBackend(params: string, guids: string[], purposeForLog: string): Observable<DataWithLoading<PickerItem[]>> {
-    var l = this.log.fnIfInList('getFromBackend', 'fields', this.fieldName, { params, guids }, purposeForLog);
+    var l = this.log.fnIfInFields('getFromBackend', this.fieldName, { params, guids }, purposeForLog);
     // If the configuration isn't complete, the query can be empty
     const sets = this.settings();
     const streamName = this.#streamName();

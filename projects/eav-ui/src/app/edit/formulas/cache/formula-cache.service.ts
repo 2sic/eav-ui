@@ -62,7 +62,7 @@ export class FormulaCacheService {
    * Uses the designerService as that can modify the behavior while developing a formula.
    */
   public getActive(entityGuid: string, name: string, forNewPicker: boolean): FormulaCacheItem[] {
-    const l = this.log.fnIfInList('getActive', 'fields', name, () => ({ name, forNewPicker, formulas: this.formulas() }));
+    const l = this.log.fnIfInFields('getActive', name, () => ({ name, forNewPicker, formulas: this.formulas() }));
     const targets = FormulaDefaultTargetValues
       .concat(forNewPicker ? FormulaNewPickerTargetValues : FormulaOptionalTargetValues);
     

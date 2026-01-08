@@ -37,7 +37,7 @@ export class FieldsSettingsHelpers {
    * @param genericSettings 
    */
   mergeGenericSettings(fieldName: string, settings: FieldSettings): FieldSettings {
-    const l = this.log.fnIfInList('mergeGenericSettings', 'fields', fieldName, { fieldName, settings });
+    const l = this.log.fnIfInFields('mergeGenericSettings', fieldName, { fieldName, settings });
     const asWithGenericSettings = settings as unknown as { SettingsGeneric: string };
     if (asWithGenericSettings.SettingsGeneric == null)
       return l.r(settings, 'No generic settings');

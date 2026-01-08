@@ -58,7 +58,7 @@ export class PickerData {
 
   /** Setup to load initial values and initialize the state */
   public setup(name: string, settings: Signal<FieldSettings>, state: StateAdapter, source: DataAdapterBase) {
-    const l = this.log.fnIfInList('setup', 'fields', name, { name, state, source });
+    const l = this.log.fnIfInFields('setup', this.name, { name, state, source });
 
     // Setup this object
     this.name = name;
@@ -129,7 +129,7 @@ export class PickerData {
 
   /** Currently selected items. Must watch for ready. */
   public selectedRaw = computedObj<PickerItem[]>('selectedState', () => {
-    const l = this.log.fnIfInList('selectedRaw', 'fields', this.name);
+    const l = this.log.fnIfInFields('selectedRaw', this.name);
     return !this.ready()
       ? l.r([], 'not ready')
       : l.r(this.#toSelectedWithUiInfo(this.state.selectedItems(), this.optionsAll()), 'ready');
@@ -209,7 +209,7 @@ export class PickerData {
   }
 
   #toSelectedWithUiInfo(selected: string[], opts: PickerItem[]): PickerItem[] {
-    const l = this.log.fnIfInList('addInfosFromSourceForUi', 'fields', this.name, { selected, opts });
+    const l = this.log.fnIfInFields('addInfosFromSourceForUi', this.name, { selected, opts });
 
     const result = selected.map(item => {
       // If the selected item is not in the data, show the raw / original item

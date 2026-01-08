@@ -87,7 +87,7 @@ export class FieldSettingsUpdateHelper {
    * @returns Corrected settings
    */
   correctSettingsAfterChanges(settings: FieldSettings, fieldValue: FieldValue): FieldSettings {
-    const l = this.log.fnIfInList('correctSettingsAfterChanges', 'fields', this.fieldName, () => ({ settings, fieldValue }));
+    const l = this.log.fnIfInFields('correctSettingsAfterChanges', this.fieldName, () => ({ settings, fieldValue }));
 
     const constantFieldPart = this.constantFieldPart;
     const slotIsEmpty = this.formSlotIsEmpty();
@@ -117,7 +117,7 @@ export class FieldSettingsUpdateHelper {
 
   /** Find if DisableTranslation is true in any setting and in any language */
   #schemaDisablesTranslation(): boolean {
-    const l = this.log.fnIfInList('schemaDisablesTranslation', 'fields', this.fieldName);
+    const l = this.log.fnIfInFields('schemaDisablesTranslation', this.fieldName);
     const contentTypeMetadata = this.contentTypeMetadata;
     const inputType = this.constantFieldPart.inputTypeConfiguration;
     const attributeValues = this.attributeValues;
@@ -147,7 +147,7 @@ export class FieldSettingsUpdateHelper {
   }
 
   #getDisabledBecauseTranslations(disableTranslation: boolean): boolean {
-    const l = this.log.fnIfInList('getDisabledBecauseTranslations', 'fields', this.fieldName);
+    const l = this.log.fnIfInFields('getDisabledBecauseTranslations', this.fieldName);
     const attributeValues = this.attributeValues;
     const language = this.language;
     // On primary edit is never disabled by translations

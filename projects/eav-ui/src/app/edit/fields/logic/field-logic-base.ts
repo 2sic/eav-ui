@@ -41,7 +41,9 @@ export abstract class FieldLogicBase {
   static importMe(): void { }
 
   /**
-   * Entity fields for empty items are prefilled on the backend with []
+   * We need to know if a value is empty, to decide if we should initialize it with a default value.
+   * 
+   * Special case: Entity fields for empty items are prefilled on the backend with []
    * so I can never know if entity field is brand new, or just emptied out by the user
    * 
    * Note: 2dm 2023-08-31 moved from InputFieldHelpers; in future, each logic can override this

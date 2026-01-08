@@ -31,7 +31,7 @@ export class DataSourceString extends DataSourceBase {
   data = computedObj('data', () => {
     const options = this.settings()._options;
     const maskHelper = this.#dataMaskHelper;
-    const l = this.log.fnIfInList('data', 'fields', this.fieldName, { options, maskHelper });
+    const l = this.log.fnIfInFields('data', this.fieldName, { options, maskHelper });
     const result = options.map(option => {
       const entity: EntityLight = {
         Id: null,

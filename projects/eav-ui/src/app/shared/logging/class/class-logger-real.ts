@@ -137,10 +137,14 @@ export class ClassLoggerReal<TSpecs extends unknown = any> implements ClassLogge
       : new FnLoggerNoOp();
   }
 
-  fnIfInList(key: BooleanKeys<TSpecs> & string, list: StringArrayKeys<TSpecs>, subKey: string, data?: RecordOrGenerator, message?: string): FnLogger {
-    return this.enabled && this.#ifInSpecs(key) && this.#ifInSpecsList(list, subKey)
-      ? this.fn(`${key}[${subKey}]`, data, message)
+  fnIfInList(key: BooleanKeys<TSpecs> & string, listName: StringArrayKeys<TSpecs>, value: string, data?: RecordOrGenerator, message?: string): FnLogger {
+    return this.enabled && this.#ifInSpecs(key) && this.#ifInSpecsList(listName, value)
+      ? this.fn(`${key}[${value}]`, data, message)
       : new FnLoggerNoOp();
+  }
+
+  fnIfInFields(key: BooleanKeys<TSpecs> & string, value: string, data?: RecordOrGenerator, message?: string): FnLogger {
+    return this.fnIfInList(key, 'fields' as StringArrayKeys<TSpecs>, value, data, message);
   }
 
   /** Helper to check if a key is in the specs and is true, or 'all' is true */
@@ -148,8 +152,9 @@ export class ClassLoggerReal<TSpecs extends unknown = any> implements ClassLogge
     return this.specs && !!(this.specs[key] || (this.specs as { all: boolean })['all']);
   }
 
-  #ifInSpecsList(list: StringArrayKeys<TSpecs>, subKey: string): boolean {
-    const keys = this.specs?.[list] as string[];
+  /** Check if tha property on the logSpecs contains the subKey or a wildcard '*' */
+  #ifInSpecsList(listName: StringArrayKeys<TSpecs>, subKey: string): boolean {
+    const keys = this.specs?.[listName] as string[] ?? [];
     return keys && (keys.includes(subKey) || keys.includes('*'));
   }
 }

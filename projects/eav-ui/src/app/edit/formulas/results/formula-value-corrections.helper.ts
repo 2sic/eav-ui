@@ -62,7 +62,7 @@ export class FormulaValueCorrections {
    * @returns Strongly typed FormulaResultRaw object
    */
   allValues(result: FieldValueOrResultRaw): FieldFormulasResultRaw {
-    const l = this.log.fnIfInList('allValues', 'fields', this.fieldName, { result });
+    const l = this.log.fnIfInFields('allValues', this.fieldName, { result });
 
     // if (l.enabled)
     //   debugger;

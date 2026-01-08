@@ -21,14 +21,28 @@ export interface ClassLogger<TSpecs extends unknown = any> {
   fn(name: string, data?: RecordOrGenerator, message?: string): FnLogger;
   fnCond(condition: boolean, name: string, data?: RecordOrGenerator, message?: string): FnLogger;
   fnIf(key: BooleanKeys<TSpecs> & string, data?: RecordOrGenerator, message?: string): FnLogger;
+
+  /** Create a logger for a function if the provided key is in the list of the log-specs */
   fnIfInList(
+    /** Logger name */
     key: BooleanKeys<TSpecs> & string,
-    /** typically 'fields' - must be an array property of the specs */
-    list: StringArrayKeys<TSpecs>,
-    subKey: string,
+    /** property name of the logSpecs; typically 'fields' - must be an array property of the specs */
+    listName: StringArrayKeys<TSpecs>,
+    /** sub-key to check if it's in the list */
+    value: string,
     data?: RecordOrGenerator,
     message?: string
   ): FnLogger;
+
+  /** Create a logger for a function if the provided key is in the logSpecs.fields */
+  fnIfInFields(
+    /** Logger name */
+    key: BooleanKeys<TSpecs> & string,
+    /** field name to check if it's in the logSpecs.fields */
+    fieldName: string,
+    data?: RecordOrGenerator,
+    message?: string
+  ): FnLogger;  
 }
 
 export type RecordOrGenerator = Record<string, unknown> | (() => Record<string, unknown>);

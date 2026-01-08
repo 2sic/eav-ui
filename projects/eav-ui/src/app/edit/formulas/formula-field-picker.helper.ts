@@ -5,7 +5,7 @@ import { FieldConstantsOfLanguage, FieldProps } from '../state/fields-configs.mo
 import { FormulaCacheItem } from './cache/formula-cache.model';
 import { FieldFormulasResultPartialSettings, FieldFormulasResultRaw } from './results/formula-results.models';
 import { FormulaRunPicker, FormulaRunPickers } from './run/formula-objects-internal-data';
-import { FormulaSpecialPickerAutoSleep, FormulaSpecialPickerTargets } from './targets/formula-targets';
+import { FormulaSpecialPickerAutoSleep } from './targets/formula-targets';
 
 const logSpecs = {
   all: false,
@@ -35,7 +35,7 @@ export class FormulaFieldPickerHelper {
    * 2. picker is ready but nothing has changed, and "sleep" determines that in this case it shouldn't run.
    */
   public filterFormulasIfPickerNotReady(before: FormulaCacheItem[]) {
-    const l = this.log.fnIfInList('filterFormulasIfPickerNotReady', 'fields', this.fieldName, { before });
+    const l = this.log.fnIfInFields('filterFormulasIfPickerNotReady', this.fieldName, { before });
     const picks = this.infos;
 
     const ready = this.isSpecialPicker && !picks.ready
@@ -50,7 +50,7 @@ export class FormulaFieldPickerHelper {
   }
 
   #getInfos(fieldName: string, fieldConstants: FieldConstantsOfLanguage, propsBefore: FieldProps): FormulaRunPickers {
-    const l = this.log.fnIfInList('getPickerInfos', 'fields', fieldName);
+    const l = this.log.fnIfInFields('getPickerInfos', fieldName);
     // Get the latest picker data and check if it has changed - as it affects which formulas to run
     const picker = fieldConstants.pickerData();
     if (picker?.ready() != true) {

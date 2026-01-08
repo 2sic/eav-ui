@@ -19,7 +19,7 @@ export class StringFontIconPickerLogic extends FieldLogicBase {
   constructor() { super({ StringFontIconPickerLogic }); }
 
   update({ fieldName, settings }: FieldLogicUpdate): FieldSettings {
-    const l = this.log.fnIfInList('update', 'fields', fieldName, { fieldName, settings });
+    const l = this.log.fnIfInFields('update', fieldName, { fieldName, settings });
 
     // Cast settings to type which knows about the properties
     // and the raw settings which show what values can be read

@@ -148,7 +148,7 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
   }
 
   tooltip(): string {
-    const l = this.log.fnIfInList('tooltip', 'fields', this.fieldState.name, null, this.fieldState.name);
+    const l = this.log.fnIfInFields('tooltip', this.fieldState.name, null, this.fieldState.name);
     // no tooltip if zero or multiple items selected
     const count = this.pickerData.selectedAll().length;
     if (count != 1)

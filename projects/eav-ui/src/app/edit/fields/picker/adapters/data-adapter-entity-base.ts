@@ -96,7 +96,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase implements D
 
   initPrefetch(prefetchGuids: string[]): void {
     this.syncParams();
-    this.log.fnIfInList('initPrefetch', 'fields', this.name, { prefetchGuids });
+    this.log.fnIfInFields('initPrefetch', this.name, { prefetchGuids });
     (this.dataSource() as DataSourceEntityBase).initPrefetch?.(prefetchGuids);
   }
 
