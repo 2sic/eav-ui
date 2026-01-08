@@ -25,7 +25,7 @@ export class FeaturesListEnabledComponent implements ICellRendererAngularComp {
 
   public params: {
     /** Parent helper to build URL to the settings dialog */
-    getSettingsUrl(contentType: Feature): string;
+    getSettingsUrl(contentType: Feature, data: Record<string, unknown>): string;
   };
 
   value: boolean;
@@ -45,21 +45,18 @@ export class FeaturesListEnabledComponent implements ICellRendererAngularComp {
   }
 
   openSettings() {
-    const { ...configuration } = this.configurationData ?? {};
+    const data: Record<string, unknown> = {
+      // The guid, just for the round-trip so we know what to update after dialog close
+      guid: this.contentType.guid,
+      // Default / fallback, in case no configuration is set
+      enabled: this.contentType.enabledInConfiguration,
+      ...(this.configurationData ?? {}),
+    };
 
-    const overrideContents: Record<string, unknown>[] = [
-      {
-        // The guid, just for the round-trip so we know what to update after dialog close
-        guid: this.contentType.guid,
-        // Default / fallback, in case no configuration is set
-        enabled: this.contentType.enabledInConfiguration,
-        // The actual configuration values to show in the UI
-        ...configuration
-      }
-    ];
+    // TODO: All this custom URL handling looks wrong, should probably be fixed
 
     // Raw URL string, e.g. '#/2/v2/381/...'
-    const rawUrl = this.params.getSettingsUrl(this.contentType);
+    const rawUrl = this.params.getSettingsUrl(this.contentType, data);
 
     // Remove leading '#' or '/' to clean the URL string
     const normalizedUrl = rawUrl.startsWith('#') || rawUrl.startsWith('/')
@@ -73,7 +70,6 @@ export class FeaturesListEnabledComponent implements ICellRendererAngularComp {
     this.router.navigate(routeSegments, {
       state: {
         returnValue: true,
-        overrideContents,
       } satisfies DialogRoutingState,
     });
   }

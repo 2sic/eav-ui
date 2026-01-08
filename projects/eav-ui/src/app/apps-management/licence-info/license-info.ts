@@ -242,9 +242,9 @@ export class LicenseInfoComponent implements OnInit {
     return '#' + this.#dialogRouter.urlSubRoute(url);
   }
 
-  #routeAddItem(contentType: Feature): string {
+  #routeAddItem(contentType: Feature, data: unknown): string {
     return convertFormToUrl({
-      items: [ItemIdHelper.newFromType(contentType.configurationContentType)],
+      items: [ItemIdHelper.newJsonFromType(contentType.configurationContentType, data)],
     } satisfies EditForm);
   }
 
@@ -291,7 +291,7 @@ export class LicenseInfoComponent implements OnInit {
           filter: BooleanFilterComponent,
           cellRenderer: FeaturesListEnabledComponent,
           cellRendererParams: ({
-            getSettingsUrl: (ct) => this.#urlTo(`edit/${this.#routeAddItem(ct)}`),
+            getSettingsUrl: (ct, data) => this.#urlTo(`edit/${this.#routeAddItem(ct, data)}`),
           } satisfies FeaturesListEnabledComponent["params"]),
         },
         {

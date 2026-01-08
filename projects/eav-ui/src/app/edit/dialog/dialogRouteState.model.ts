@@ -4,6 +4,5 @@ export interface ClosingDialogState<T> {
   
   export interface DialogRoutingState {
     returnValue?: boolean;
-    overrideContents?: Record<string, unknown>[];
   }
   

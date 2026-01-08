@@ -5,7 +5,7 @@ import { keyPartOfPage, keyPublishing, keySettings, partOfPageDefault } from '..
 import { classLog } from '../../shared/logging';
 import { Context } from '../../shared/services/context';
 import { EditSettings } from '../dialog/main/edit-dialog-main.models';
-import { FormConfiguration, VersioningOptions } from './form-configuration.model';
+import { FormConfiguration, FormSaveConfiguration, VersioningOptions } from './form-configuration.model';
 import { FormLanguageService } from './form-language.service';
 import { FormLanguageComplete, FormLanguagesConfig } from './form-languages.model';
 
@@ -73,15 +73,16 @@ export class FormConfigService {
 
 
     const saveSettingsFromUrl = sessionStorage.getItem(keySettings);
-    const saveSettingsData = saveSettingsFromUrl ? JSON.parse(saveSettingsFromUrl) : null as {
-      save: string | boolean;
-    } | null;
+    const saveSettingsData: { save: string | boolean; } | null = saveSettingsFromUrl
+      ? JSON.parse(saveSettingsFromUrl)
+      : null;
+
     const saveValue = saveSettingsData?.save;
-    const save = (saveValue == null)
+    const save: FormSaveConfiguration = saveValue == null
       ? { mode: true }
       : (saveValue === 'false' || saveValue === false)
         ? { mode: false }
-        : { mode: true, path: saveValue };
+        : { mode: true, path: saveValue as string };
 
     // console.log('2dm:save mode', save);
     this.config = {

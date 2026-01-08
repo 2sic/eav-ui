@@ -33,11 +33,14 @@ export interface FormConfiguration {
   removeEditRestrictions: boolean;
   dialogContext: DialogContext;
   settings: EditSettings;
-  save: FormSave;
+  save: FormSaveConfiguration;
 }
 
-interface FormSave {
+export interface FormSaveConfiguration {
+  /** Form save mode - if false, no save will be performed and the button should not show */
   mode: true | false | string;
+
+  /** Future feature, not yet implemented - idea is to provide an alternative save endpoint */
   path?: string;
 }
 

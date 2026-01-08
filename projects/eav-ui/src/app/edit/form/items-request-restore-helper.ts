@@ -1,6 +1,11 @@
-import { classLog } from '../../shared/logging';
+import { classLogEnabled } from '../../shared/logging';
 import { ItemIdentifier } from '../../shared/models/edit-form.model';
 import { EavEntityBundleDto } from '../shared/models/json-format-v1';
+
+const logSpecs = {
+  all: false,
+  mergeResponse: true,
+};
 
 /**
  * This helps to make items data smaller (for retrieving data),
@@ -8,7 +13,7 @@ import { EavEntityBundleDto } from '../shared/models/json-format-v1';
  */
 export class ItemsRequestRestoreHelper {
 
-  log = classLog({ ItemsRequestRestoreHelper }, { all: false, mergeResponse: true });
+  log = classLogEnabled({ ItemsRequestRestoreHelper }, logSpecs );
 
   constructor(items: ItemIdentifier[], private contentsOverride?: Record<string, unknown>[]) {
     // Add ClientId index number to request,
@@ -45,19 +50,21 @@ export class ItemsRequestRestoreHelper {
       else
         contents = null
 
-      
-
-      return {
+      const merged = {
         ...item,
         Header: {
           ...item.Header,
           Prefill: original?.Prefill,
           ClientData: {
             ...original?.ClientData,
-            overrideContents: contents,
+            // overrideContents: contents,
           },
         },
       } satisfies EavEntityBundleDto;
+
+      console.log('2dm-merged - no more overrideContents', { merged, original });
+
+      return merged;
     });
     return l.r(merged);
   }

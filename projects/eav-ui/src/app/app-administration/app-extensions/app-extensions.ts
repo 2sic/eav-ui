@@ -87,19 +87,15 @@ export class AppExtensions implements OnInit {
     const normalized = rawUrl.replace(/^#\/?/, '').replace(/^\//, '')
     const routeSegments = normalized.split('/').filter(Boolean)
 
-    this.router.navigate(routeSegments, {
-      state: {
-        returnValue: true,
-      } satisfies DialogRoutingState,
-    });
+    this.router.navigate(routeSegments);
   }
 
   #openSettings(ext?: Extension) {
     const configurationContentType = 'a0f44af0-6750-40c9-9ad9-4a07b6eda8b3';
     // Build overrideContents for existing configuration or new
-    const overrideContents: Record<string, unknown>[] = [{ ...(ext?.configuration ?? {}) }];
+    // const overrideContents: Record<string, unknown>[] = [{ ...(ext?.configuration ?? {}) }];
 
-    const subRoute = this.#routeAddItem(configurationContentType);
+    const subRoute = this.#routeEditJson(configurationContentType, ext?.configuration ?? {});
     const rawUrl = this.#urlTo(`edit/${subRoute}`);
     const normalized = rawUrl.replace(/^#\/?/, '').replace(/^\//, '');
     const routeSegments = normalized.split('/').filter(Boolean);
@@ -110,7 +106,6 @@ export class AppExtensions implements OnInit {
     this.router.navigate(routeSegments, {
       state: {
         returnValue: true,
-        overrideContents
       } satisfies DialogRoutingState,
     });
   }
@@ -126,12 +121,7 @@ export class AppExtensions implements OnInit {
       const rawUrl = this.#urlTo(`edit/${subRoute}`)
       const normalized = rawUrl.replace(/^#\/?/, '').replace(/^\//, '')
       const routeSegments = normalized.split('/').filter(Boolean)
-      this.router.navigate(routeSegments, {
-        state: {
-          returnValue: true,
-          // overrideContents
-        } satisfies DialogRoutingState,
-      });
+      this.router.navigate(routeSegments);
     });
   }
 
@@ -141,9 +131,6 @@ export class AppExtensions implements OnInit {
     const routeSegments = normalized.split('/').filter(Boolean);
 
     this.router.navigate(routeSegments, {
-      state: {
-        returnValue: true
-      } satisfies DialogRoutingState,
       queryParams: edition ? { edition } : undefined
     });
   }
@@ -154,9 +141,6 @@ export class AppExtensions implements OnInit {
     const routeSegments = normalized.split('/').filter(Boolean);
 
     this.router.navigate(routeSegments, {
-      state: {
-        returnValue: true
-      } satisfies DialogRoutingState,
       queryParams: edition ? { edition } : undefined
     });
   }
@@ -192,7 +176,15 @@ export class AppExtensions implements OnInit {
   #routeAddItem(configurationContentType: string): string {
     // Only produce "new:GUID" without "edit/"
     return convertFormToUrl({
-      items: [ItemIdHelper.newJsonFromType(configurationContentType)],
+      items: [ItemIdHelper.newFromType(configurationContentType)],
+    } satisfies EditForm);
+  }
+
+  #routeEditJson(configurationContentType: string, data: unknown): string {
+    // Only produce "new:GUID" without "edit/"
+    console.log('2dm-routeEditJson', { configurationContentType, data });
+    return convertFormToUrl({
+      items: [ItemIdHelper.newJsonFromType(configurationContentType, data)],
     } satisfies EditForm);
   }
 

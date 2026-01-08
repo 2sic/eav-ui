@@ -61,6 +61,9 @@ export interface ItemIdentifierShared {
     /** Saving will happen in JS, new v21 WIP; naming not final */
     save?: 'js';
 
+    /** Data to use instead of the entity; new v21 WIP */
+    data?: unknown;
+
     /** Any other keys as you need */
     [key: string]: unknown;
   };

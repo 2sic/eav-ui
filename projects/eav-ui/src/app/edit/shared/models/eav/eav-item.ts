@@ -1,6 +1,6 @@
 import { EavEntity, EavEntityAttributes, EavFieldValue } from '.';
 import { ItemIdentifierHeader } from '../../../../shared/models/edit-form.model';
-import { EavEntityBundleDto, EavEntityDto } from '../json-format-v1';
+import { EavEntityBundleDto } from '../json-format-v1';
 
 export type EavTypeMap = {
   String: string;
@@ -17,56 +17,66 @@ export class EavItem {
   Header: ItemIdentifierHeader;
 
   static anyToEav(entityBundleDto: EavEntityBundleDto): EavItem {
+
+    const data = entityBundleDto.Header.ClientData?.data;
+    if (data) {
+      return this.#objToEav(data as Record<string, unknown>, entityBundleDto, 'from ClientData.data');
+    }
+    
     const override = entityBundleDto.Header.ClientData?.overrideContents;
 
     return override
-      ? EavItem.objToEav(override, entityBundleDto.Header, entityBundleDto.Entity)
+      ? EavItem.#objToEav(override, entityBundleDto, 'from ClientData.overrideContents')
       : EavItem.dtoToEav(entityBundleDto);
   }
 
   static dtoToEav(entityBundleDto: EavEntityBundleDto): EavItem {
     const entity = EavEntity.dtoToEav(entityBundleDto.Entity);
 
-    const item: EavItem = {
+    return {
+      ...entityBundleDto,
       Entity: entity,
-      Header: entityBundleDto.Header,
-    };
-
-    return item;
+    } satisfies EavItem;
   }
 
   /**
  * Converts a raw override object and DTOs into a complete EavItem.
  */
-  static objToEav(
+  static #objToEav(
     override: Record<string, unknown>,
-    header: ItemIdentifierHeader,
-    entityDto: EavEntityDto
+    entityBundleDto: EavEntityBundleDto,
+    message: string,
   ): EavItem {
-    const attributes: EavEntityAttributes = {};
+
+    console.log('2dm - EavItem - objToEav', { override, entityBundleDto, message });
 
     // Build attributes by converting each override key-value pair
-    for (const key in override) {
-      const value = override[key];
-      const type = this.getType(value);
-
-      attributes[key] = {
-        Values: EavFieldValue.createEavFieldValue(
-          value as EavTypeMap[EavTypeName], // TS braucht Hilfe hier
-        ),
-        Type: type,
-      };
-    }
+    const attributes: EavEntityAttributes = Object.fromEntries(
+      Object.entries(override).map(([key, value]) => {
+        const type = this.getType(value);
+        return [
+          key,
+          {
+            Values: EavFieldValue.createEavFieldValue(
+              value as EavTypeMap[EavTypeName],
+            ),
+            Type: type,
+          },
+        ];
+      })
+    );
 
     // Convert DTO to entity and assign new attributes
-    const entity = EavEntity.dtoToEav(entityDto);
-    entity.Attributes = attributes;
+    const entity: EavEntity = {
+      ...EavEntity.dtoToEav(entityBundleDto.Entity),
+      Attributes: attributes,
+    };
 
     // Combine entity and header into EavItem
     return {
+      ...entityBundleDto,
       Entity: entity,
-      Header: header,
-    };
+    } satisfies EavItem;
   }
 
 

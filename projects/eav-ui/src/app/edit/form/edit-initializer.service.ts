@@ -98,7 +98,9 @@ export class EditInitializerService {
     const items = convertUrlToForm(itemsRaw).items;
 
     // Reduce amount of data sent to backend by removing unneeded properties
-    const dataHelper = new ItemsRequestRestoreHelper(items, this.dialogData?.overrideContents);
+    // Note: 2026-01-08 2dm - not really used any more, as the mechanisms now use a url parameter for data
+    // Leave the object in though, in case we want to use it again later for other data
+    const dataHelper = new ItemsRequestRestoreHelper(items, null);
 
     const requestItems = dataHelper.itemsForRequest();
 

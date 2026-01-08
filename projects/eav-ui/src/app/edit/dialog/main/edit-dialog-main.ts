@@ -58,6 +58,8 @@ const logSpecs = {
   all: false,
   constructor: true,
   saveAll: true,
+  '#saveDefault': false,
+  '#saveThroughJs': true,
 }
 
 /**
@@ -166,6 +168,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
   saveDisabled = computed(() => this.#entityFormStateService.isSaving() || this.formsStateService.saveButtonDisabled());
   protected hideHeader = this.languageStore.getHideHeaderSignal(this.#formConfig.config.formId);
 
+
   //#region Footer - Show once or more, hide again, and expand footer (extra large footer)
 
   /** Signal to determine if we should show the footer. Will affect style.display of the footer tag */
@@ -186,8 +189,8 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
   /** Special variable to check if debug was ever triggered, to allow super-users to re-hide the footer */
   #debugWasModified = false;
 
-
   //#endregion
+
 
   /** delay showing the form, but not quite sure why. maybe to prevent flickering? */
   protected delayForm = toSignal(
@@ -240,56 +243,77 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
   }
 
   /** Save all forms */
-  saveAll(close: boolean): boolean {
+  saveAll(close: boolean): void {
 
     this.#entityFormStateService.isSaving.set(true);
 
     const l = this.log.fnIf('saveAll', { close });
-    // Case 1. form is valid
-    if (this.formsStateService.formsAreValid()) {
 
-      // Case 1.1. New v20 - if no save mode, then just close the dialog
-      if (this.#formConfig.config.save.mode === false) {
-        l.a('No save mode, just closing dialog');
-        this.dialog.close();
-        return;
-      }
+    // Case 0. Form not valid
+    if (!this.formsStateService.formsAreValid()) {
+      this.#skipSaveWhenFormIsInvalid();
+      return l.end('save skipped - form invalid');
+    }
 
-      // Case 1.2. If the Dialog is Local return data mode, then return the data
-      if (this.isReturnValueMode) {
-        const itemsEavObj: Record<string, unknown>[] = this.#getValidEavItems(eavItem =>
-          EavItem.eavToObj(eavItem)
-        );
+    // Case 1.1. New v20 - if no save mode, then just close the dialog
+    if (this.#formConfig.config.save.mode === false) {
+      this.dialog.close();
+      return l.end('no-save mode; closed without saving');
+    }
 
-        // Need to be clearly define for the route state (if objData in the state, data will be not refresh from the server) 
-        const wrappedData = {
-          objData: itemsEavObj[0]
-        };
-        l.a('Returning wrapped data:', { wrappedData });
-        this.dialog.close(wrappedData)
-        return
-      }
+    // Case 1.2. If the Dialog is Local return data mode, then return the data
 
-      // Case 1.3. If the Dialog is in standard Save Mode, then just save the data
+    console.log('2dm: saveAll - isReturnValueMode', this.isReturnValueMode);
 
-      // Convert data to save format, get publishing state and prepare save data
-      const items = this.#getValidEavItems(eavItem =>
-        EavEntityBundleDto.bundleToDto(eavItem)
-      );
+    if (this.isReturnValueMode) {
+      this.#saveThroughJs(close);
+      return l.end('saved through js');
+    }
 
-      const publishStatus = this.publishStatusService.get(this.#formConfig.config.formId);
+    // Case 1.3. If the Dialog is in standard Save Mode, then just save the data
+    this.#saveDefault(close);
+    return l.end('saved default');
 
-      const saveFormData: SaveEavFormData = {
-        Items: items,
-        IsPublished: publishStatus.IsPublished,
-        DraftShouldBranch: publishStatus.DraftShouldBranch,
-      };
-      l.a('SAVE FORM DATA:', { saveFormData });
+  }
 
-      // Show saving message and start saving process
-      this.snackBar.open(this.translate.instant('Message.Saving'), null, { duration: 2000 });
+  #saveThroughJs(close: boolean): void {
+    const l = this.log.fnIf('#saveThroughJs', { close });
+    const itemsEavObj: Record<string, unknown>[] = this.#getValidEavItems(eavItem =>
+      EavItem.eavToObj(eavItem)
+    );
 
-      this.#formDataService.saveFormData(saveFormData, this.#formConfig.config.partOfPage).subscribe({
+    // Need to be clearly define for the route state (if objData in the state, data will be not refresh from the server) 
+    const wrappedData = {
+      objData: itemsEavObj[0]
+    };
+    l.a('Returning wrapped data:', { wrappedData });
+    this.dialog.close(wrappedData)
+    return l.end();
+  }
+  
+  #saveDefault(close: boolean): void {
+    const l = this.log.fnIf('#saveDefault', { close });
+
+    // Convert data to save format, get publishing state and prepare save data
+    const items = this.#getValidEavItems(eavItem =>
+      EavEntityBundleDto.bundleToDto(eavItem)
+    );
+
+    const publishStatus = this.publishStatusService.get(this.#formConfig.config.formId);
+
+    const saveFormData: SaveEavFormData = {
+      Items: items,
+      IsPublished: publishStatus.IsPublished,
+      DraftShouldBranch: publishStatus.DraftShouldBranch,
+    };
+    l.a('SAVE FORM DATA:', { saveFormData });
+
+    // Show saving message and start saving process
+    this.snackBar.open(this.translate.instant('Message.Saving'), null, { duration: 2000 });
+
+    this.#formDataService
+      .saveFormData(saveFormData, this.#formConfig.config.partOfPage)
+      .subscribe({
         next: result => {
           l.a('SAVED!, result:', { result, close });
           this.itemService.updater.updateItemId(result);
@@ -307,36 +331,40 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
           this.#entityFormStateService.isSaving.set(false)
         },
       });
-    } else {
-      // Case 2. form is not valid
-      // Quickly set saving to false, otherwise further saves will be blocked
-      this.#entityFormStateService.isSaving.set(false);
+  }
 
-      // check if there is even a formBuilder to process, otherwise exit
-      if (this.formBuilderRefs == null)
+
+  /**
+   * Handle skipping save when the form is invalid.
+   */
+  #skipSaveWhenFormIsInvalid(): void {
+    // Quickly set saving to false, otherwise further saves will be blocked
+    this.#entityFormStateService.isSaving.set(false);
+
+    // check if there is even a formBuilder to process, otherwise exit
+    if (this.formBuilderRefs == null)
+      return;
+
+    const formErrors: Record<string, string>[] = [];
+    this.formBuilderRefs.forEach(formBuilderRef => {
+      if (!formBuilderRef.form.invalid)
         return;
+      formErrors.push(ValidationMsgHelper.validateForm(formBuilderRef.form));
+    });
 
-      const formErrors: Record<string, string>[] = [];
-      this.formBuilderRefs.forEach(formBuilderRef => {
-        if (!formBuilderRef.form.invalid)
-          return;
-        formErrors.push(ValidationMsgHelper.validateForm(formBuilderRef.form));
+    const fieldErrors: FieldErrorMessage[] = [];
+    formErrors.forEach(formError => {
+      Object.keys(formError).forEach(key => {
+        fieldErrors.push({ field: key, message: formError[key] });
       });
+    });
 
-      const fieldErrors: FieldErrorMessage[] = [];
-      formErrors.forEach(formError => {
-        Object.keys(formError).forEach(key => {
-          fieldErrors.push({ field: key, message: formError[key] });
-        });
-      });
-
-      this.snackBar.openFromComponent(SnackBarSaveErrorsComponent, {
-        data: {
-          fieldErrors,
-        } satisfies SaveErrorsSnackBarData,
-        duration: 5000,
-      });
-    }
+    this.snackBar.openFromComponent(SnackBarSaveErrorsComponent, {
+      data: {
+        fieldErrors,
+      } satisfies SaveErrorsSnackBarData,
+      duration: 5000,
+    });
   }
 
   /**
@@ -344,9 +372,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
    * @param mapFn Function to map EavItem to a specific type T or null if invalid
    * @returns Array of valid mapped items
    */
-  #getValidEavItems<T>(
-    mapFn: (eavItem: EavItem) => T | null
-  ): T[] {
+  #getValidEavItems<T>(mapFn: (eavItem: EavItem) => T | null): T[] {
     return this.formBuilderRefs
       .map(ref => {
         const eavItem = this.itemService.get(ref.entityGuid());
@@ -385,6 +411,9 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
     );
   }
 
+  /**
+   * Watch for keyboard shortcuts like Ctrl+S, Esc, etc.
+   */
   #watchKeyboardShortcuts(): void {
     this.dialog.keydownEvents().subscribe(event => {
       if (isEscape(event))
@@ -405,6 +434,10 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
     });
   }
 
+  /**
+   * Show snack bar warning about unsaved changes
+   * and save/cancel depending on user action
+   */
   #snackBarYouHaveUnsavedChanges(): void {
     const snackBarRef = this.snackBar.openFromComponent(SnackBarUnsavedChangesComponent, {
       data: {

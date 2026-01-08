@@ -4,6 +4,7 @@ import { classLog } from '../logging';
 import { EditForm, ItemAddIdentifier, ItemEditIdentifier, ItemIdentifierInbound, ItemIdentifierShared, ItemInListIdentifier } from '../models/edit-form.model';
 import { ItemIdHelper } from '../models/item-id-helper';
 import { ParamEncoder } from './param-encoder';
+import { UrlParamBase64 } from './url-param-base64';
 
 // Note: everything in here is a bit magical - and probably not ideal
 // It basically prepares a very compact url representation of an EditForm
@@ -18,12 +19,13 @@ const PREFILL_PREFIX = 'prefill:';
 const GROUP_PREFIX = 'group:';
 const UIFIELDS_PREFIX = 'uifields:';
 const PARAM_PREFIX = 'parameters:';
+const COPY_PREFIX = 'copy:';
+const SAVE_PREFIX = 'save:';
+const DATA_PREFIX = 'data64:';
 const ITEM_SEPARATOR = ',';
 const VAL_SEPARATOR = '&';
 const LIST_SEPARATOR = ':';
 const METADATA_SEPARATOR = '~';
-const COPY_PREFIX = 'copy:';
-const SAVE_PREFIX = 'save:';
 
 function toOrderedParams(values: unknown[]): string {
   return values.join(LIST_SEPARATOR);
@@ -95,6 +97,14 @@ export function convertFormToUrl(form: EditForm) {
       formUrl += addTypicalUrlGroups(addItem, fields, parameters,
         { metadata: true, prefill: true, fields: true, params: true, duplicate: true, save: save }
       );
+
+      const overrideData = item.ClientData?.data;
+
+      console.log('2dm-convertFormToUrl - overrideData', { overrideData });
+
+      if (overrideData)
+        formUrl += `${VAL_SEPARATOR}${DATA_PREFIX}${UrlParamBase64.encode(overrideData)}`;
+
     }
   }
   return l.r(formUrl);
@@ -257,8 +267,6 @@ export function convertUrlToForm(formUrl: string) {
           // Add Item For
           const forParams = option.split(LIST_SEPARATOR);
           const [forKeyType, forKey] = forParams[1].split(METADATA_SEPARATOR);
-          // const forTarget = forParams[2];
-          // const forTargetType = parseInt(forParams[3], 10);
           const forSingleton = forParams[4] != null ? forParams[4] === 'true' : undefined;
           addItem.For = {
             Target: forParams[2],
@@ -270,8 +278,6 @@ export function convertUrlToForm(formUrl: string) {
           };
         } else if (option.startsWith(COPY_PREFIX)) {
           // Add Item Copy
-          // const copyParams = option.split(LIST_SEPARATOR);
-          // addItem.DuplicateEntity = parseInt(copyParams[1], 10);
           addItem = {
             ...addItem,
             DuplicateEntity: parseInt(option.split(LIST_SEPARATOR)[1], 10)
@@ -305,6 +311,22 @@ function addParamToItemIdentifier<T extends ItemIdentifierShared>(item: T, part:
     item.ClientData = { ...item.ClientData, parameters: formParams };
     return l.rSilent(item);
   }
+
+  // Add Save mode new v21 WIP
+  if (part.startsWith(SAVE_PREFIX)) {
+    const save = part.split(LIST_SEPARATOR)[1] as 'js';
+    item.ClientData = { ...item.ClientData, save };
+    return l.rSilent(item);
+  }
+
+  // restore data new v21 WIP
+  if (part.startsWith(DATA_PREFIX)) {
+    const dataEncoded = part.split(LIST_SEPARATOR)[1];
+    const data = UrlParamBase64.decode(dataEncoded);
+    item.ClientData = { ...item.ClientData, data };
+    return l.rSilent(item);
+  }
+
   return l.rSilent(item, 'no match');
 }
 

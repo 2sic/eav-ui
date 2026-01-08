@@ -31,12 +31,13 @@ export class ItemIdHelper {
    * @param prefill
    * @returns
    */
-  static newJsonFromType(contentType: string, prefill?: Record<string, unknown>): ItemAddIdentifier {
+  static newJsonFromType(contentType: string, data: unknown, prefill?: Record<string, unknown>): ItemAddIdentifier {
     const basics = {
       ...this.newFromType(contentType, prefill),
       ClientData: {
         save: 'js',
         duplicate: true,
+        data,
       }
     } as ItemAddIdentifier;
     return basics;
