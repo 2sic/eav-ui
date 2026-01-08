@@ -19,8 +19,8 @@ export abstract class FieldLogicBase {
   
   #log: ClassLogger<typeof logSpecs>;
 
-  constructor(inheritingClass: Record<string, unknown> | string, logThis?: boolean) {
-    this.#log = classLog(inheritingClass ?? {FieldLogicBase}, logSpecs, null, logThis);
+  constructor(inheritingClassForLogging: Record<string, unknown> | string, logThis?: boolean) {
+    this.#log = classLog(inheritingClassForLogging ?? {FieldLogicBase}, logSpecs, null, logThis);
     this.name ??= this.#log.name;
     this.log.fnIf('constructor');
   }
@@ -31,8 +31,8 @@ export abstract class FieldLogicBase {
   /** If this field supports AutoTranslate (new v15.x) */
   public canAutoTranslate = false;
 
-  /** Adds Logic to FieldLogicManager */
-  static add(logic: LogicConstructor) {
+  /** Register a Logic to FieldLogicManager */
+  static add(logic: LogicFactory) {
     const logicInstance = new logic();
     FieldLogicManager.singleton().add(logicInstance);
   }
@@ -61,16 +61,21 @@ export abstract class FieldLogicBase {
    * Lookup advanced (external) configuration.
    * These are usually stored in the eavConfig.settings.
    * Needs defaults to merge for anything that is not defined in the external config.
+   * As of 2026-01 only used in WYSIWYG.
    * @param possibleGuid - guid of the external config, if empty, return defaults
    * @param defaults - defaults to merge with external config
    */
   findAndMergeAdvanced<T>(tools: FieldLogicTools, possibleGuid: string, defaults: T): T {
-    if (!possibleGuid) return defaults;
+    if (!possibleGuid)
+      return defaults;
 
-    const wysiwygConfig = tools.eavConfig.settings.Entities.find(e => e.Guid === possibleGuid);
-    if (!wysiwygConfig) return defaults;
+    // Check if there were any settings provided for this guid
+    // For example, WYSIWYG has advanced settings which should be merged in.
+    const additionalConfig = tools.eavConfig.settings.Entities.find(e => e.Guid === possibleGuid);
+    if (!additionalConfig)
+      return defaults;
 
-    const advanced = tools.reader.flatten(wysiwygConfig) as T;
+    const advanced = tools.reader.flatten(additionalConfig) as T;
     return { ...defaults, ...advanced };
   }
 }
@@ -89,4 +94,4 @@ export interface FieldLogicUpdate<T = FieldValue> {
   value?: T;
 }
 
-type LogicConstructor = new (...args: any[]) => FieldLogicBase;
+type LogicFactory = new (...args: any[]) => FieldLogicBase;
