@@ -73,7 +73,7 @@ export class InitializeMissingValuesServices {
         if (isEmptyType)
           continue;
 
-        const logic = logicManager.getOrUnknown(inputType?.Type);
+        const logic = logicManager.get(inputType?.Type);
 
         const attributeValues = item.Entity.Attributes[ctAttribute.Name];
         const fieldSettings = fss.getDefaultSettings(
