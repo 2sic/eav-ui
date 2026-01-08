@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, NavigationExtras, Router } from '@angular/router';
 import { filter, map, pairwise, startWith, tap } from 'rxjs';
-import { classLog } from '../logging';
+import { classLogEnabled } from '../logging';
 import { ServiceBase } from '../services/service-base';
 
 const logSpecs = {
-  doOnDialogClosed: true,
+  doOnDialogClosed: false,
+  doOnDialogClosedWithData: true,
 };
 
 /**
@@ -16,7 +17,7 @@ const logSpecs = {
 @Injectable()
 export class DialogRoutingService extends ServiceBase {
 
-  log = classLog({ DialogRoutingService }, logSpecs);
+  log = classLogEnabled({ DialogRoutingService }, logSpecs);
 
   constructor(
     public router: Router,
@@ -70,7 +71,7 @@ export class DialogRoutingService extends ServiceBase {
   }
 
   public doOnDialogClosedWithData(callback: (data: any) => void) {
-    const l = this.log.fnIf('doOnDialogClosed');
+    const l = this.log.fnIf('doOnDialogClosedWithData');
     this.subscriptions.add(
       this.#childDialogClosedWithData().subscribe(({ state }) => {
         l.a('Dialog closed', { state });

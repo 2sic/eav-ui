@@ -1,6 +1,5 @@
 import appExtensionMask from '!raw-loader!./app-extension-mask.svg';
 import { ColDef, GridOptions } from '@ag-grid-community/core';
-
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
@@ -9,11 +8,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterOutlet } from '@angular/router';
 import { of, take } from 'rxjs';
 import { transient } from '../../../../../core';
+import { SaveJsReturnData } from '../../edit/dialog/dialogRouteState.model';
 import { GridWithHelpComponent, HelpTextConst } from '../../shared/ag-grid/grid-with-help/grid-with-help';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
+import { classLogEnabled } from '../../shared/logging';
 import { EditForm } from '../../shared/models/edit-form.model';
 import { ItemIdHelper } from '../../shared/models/item-id-helper';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
@@ -24,6 +25,7 @@ import { AppExtensionActions } from './extension-actions/extension-actions';
 import { Extension } from './extension.model';
 import { AppExtensionsLinkCell } from './extensions-link/extensions-link';
 import { ImportExtensionComponent } from './import/import-extension';
+
 @Component({
   selector: 'app-extensions',
   templateUrl: './app-extensions.html',
@@ -41,35 +43,36 @@ import { ImportExtensionComponent } from './import/import-extension';
   ]
 })
 export class AppExtensions implements OnInit {
-  private extensionsSvc = transient(AppExtensionsService);
-  private router = inject(Router);
+
+  log = classLogEnabled({AppExtensions}, {});
+
+  #extensionsSvc = transient(AppExtensionsService);
+  #router = inject(Router);
   #dialogRouter = transient(DialogRoutingService);
-  private dialog = transient(MatDialog);
-  private entitySvc = transient(EntityService);
+  #dialog = transient(MatDialog);
+  #entitySvc = transient(EntityService);
 
   fabOpen = signal(false);
 
   /** Signal to trigger reloading of data */
   refresh = signal(0);
 
-  #extensionsRaw = this.extensionsSvc.getAllLive(this.refresh).value;
+  #extensionsRaw = this.#extensionsSvc.getAllLive(this.refresh).value;
   extensions = computed(() => this.#extensionsRaw()?.extensions ?? []);
-
-  // minimal state like license-info: hold the pending folder so the single handler can operate
-  #pendingFolder: string | null = null;
 
   ngOnInit() {
     // register once
-    this.#dialogRouter.doOnDialogClosedWithData((data) => {
-      if (data?.objData && this.#pendingFolder) {
-        const folder = this.#pendingFolder;
-        this.#pendingFolder = null;
-        this.extensionsSvc.updateConfiguration(folder, JSON.stringify(data.objData)).subscribe(() => {
-          this.fetchExtensions();
-        });
-      } else {
+    this.#dialogRouter.doOnDialogClosedWithData((payload: SaveJsReturnData<Record<string, unknown>>) => {
+      const raw = payload?.data;
+      const { _extensionFolder: extensionFolder, ...dataToSave } = raw || {};
+      this.log.a('2dm - AppExtensions - dialog closed with data', { data: raw, dataToSave, extensionFolder });
+
+      if (raw && extensionFolder)
+        this.#extensionsSvc
+          .updateConfiguration(extensionFolder as string, JSON.stringify(dataToSave))
+          .subscribe(() => this.fetchExtensions());
+      else
         this.fetchExtensions();
-      }
     });
   }
 
@@ -83,41 +86,44 @@ export class AppExtensions implements OnInit {
 
   importExtension(files?: File[]): void {
     const rawUrl = this.#urlTo('import')
+    // TODO: MUST CLEAN THIS UP - IT WAS COPY PASTED MANY TIMES, BUT PROBABLY COMPLETELY WRONG
     const normalized = rawUrl.replace(/^#\/?/, '').replace(/^\//, '')
     const routeSegments = normalized.split('/').filter(Boolean)
 
-    this.router.navigate(routeSegments);
+    this.#router.navigate(routeSegments);
   }
 
-  #openSettings(ext?: Extension) {
+  #openSettings(ext: Extension) {
     const configurationContentType = 'a0f44af0-6750-40c9-9ad9-4a07b6eda8b3';
-    // Build overrideContents for existing configuration or new
-    // const overrideContents: Record<string, unknown>[] = [{ ...(ext?.configuration ?? {}) }];
 
-    const subRoute = this.#routeEditJson(configurationContentType, ext?.configuration ?? {});
+    // Extend the basic configuration with the folder info, so it can be used later when saving
+    const data = {
+      ...(ext?.configuration ?? {}),
+      _extensionFolder: ext?.folder ?? null,
+    }
+
+    const subRoute = this.#routeEditJson(configurationContentType, data);
     const rawUrl = this.#urlTo(`edit/${subRoute}`);
     const normalized = rawUrl.replace(/^#\/?/, '').replace(/^\//, '');
     const routeSegments = normalized.split('/').filter(Boolean);
 
-    // set token before navigation
-    this.#pendingFolder = ext?.folder ?? null;
-
-    this.router.navigate(routeSegments);
+    this.#router.navigate(routeSegments);
   }
 
   #openEditContentType(contentType: string) {
     if (!contentType)
       return;
 
-    this.entitySvc.getEntities$(of({ contentTypeName: contentType })).subscribe(entities => {
-      const subRoute = entities
-        ? entities[0].Id
-        : this.#routeAddItem(contentType) // edit first or create new
-      const rawUrl = this.#urlTo(`edit/${subRoute}`)
-      const normalized = rawUrl.replace(/^#\/?/, '').replace(/^\//, '')
-      const routeSegments = normalized.split('/').filter(Boolean)
-      this.router.navigate(routeSegments);
-    });
+    this.#entitySvc.getEntities$(of({ contentTypeName: contentType }))
+      .subscribe(entities => {
+        const subRoute = entities
+          ? entities[0].Id
+          : this.#routeAddItem(contentType) // edit first or create new
+        const rawUrl = this.#urlTo(`edit/${subRoute}`)
+        const normalized = rawUrl.replace(/^#\/?/, '').replace(/^\//, '')
+        const routeSegments = normalized.split('/').filter(Boolean)
+        this.#router.navigate(routeSegments);
+      });
   }
 
   #openInspection(extensionFolder: string, edition?: string) {
@@ -125,7 +131,7 @@ export class AppExtensions implements OnInit {
     const normalized = url.replace(/^#\/?/, '').replace(/^\//, '');
     const routeSegments = normalized.split('/').filter(Boolean);
 
-    this.router.navigate(routeSegments, {
+    this.#router.navigate(routeSegments, {
       queryParams: edition ? { edition } : undefined
     });
   }
@@ -135,20 +141,20 @@ export class AppExtensions implements OnInit {
     const normalized = url.replace(/^#\/?/, '').replace(/^\//, '');
     const routeSegments = normalized.split('/').filter(Boolean);
 
-    this.router.navigate(routeSegments, {
+    this.#router.navigate(routeSegments, {
       queryParams: edition ? { edition } : undefined
     });
   }
 
   filesDropped(files: File[]) {
-    const dialogRef = this.dialog.open(ImportExtensionComponent, {
+    const dialogRef = this.#dialog.open(ImportExtensionComponent, {
       data: {
         file: files[0],
         allowedFileTypes: 'zip',
         multiple: true,
         title: 'Import Extension',
         description: 'Select Extension folder from your computer to import.',
-        upload$: (selectedFile: File) => this.extensionsSvc.uploadExtensions(selectedFile)
+        upload$: (selectedFile: File) => this.#extensionsSvc.uploadExtensions(selectedFile)
       },
     });
 
@@ -318,7 +324,7 @@ export class AppExtensions implements OnInit {
             do: (verb, ext) => {
               switch (verb) {
                 case 'edit': return this.#openSettings(ext);
-                case 'download': return this.extensionsSvc.downloadExtension(ext.folder);
+                case 'download': return this.#extensionsSvc.downloadExtension(ext.folder);
                 case 'delete': return this.#deleteExtension(ext.folder, ext.edition);
                 case 'inspect': return this.#openInspection(ext.folder, ext.edition);
                 case 'openSettings': return this.#openEditContentType(

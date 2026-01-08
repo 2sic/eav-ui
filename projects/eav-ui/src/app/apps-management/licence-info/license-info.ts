@@ -111,26 +111,25 @@ export class LicenseInfoComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.#dialogRouter.doOnDialogClosedWithData((data: SaveJsReturnData<FeatureConfigEdit>) => {
+    this.#dialogRouter.doOnDialogClosedWithData((payload: SaveJsReturnData<FeatureConfigEdit>) => {
       // Local Save, data not refreshing from Server 
       // Save the Data in Json, same als Toggle 
 
-      if (data?.objData) {
-        const { guid, enabled, ...dynamicConfig } = data.objData;
+      if (payload?.data) {
+        const { guid: FeatureGuid, enabled: Enabled, ...Configuration } = payload.data;
 
         const featuresConfig: FeatureConfigSavePackage = {
-          FeatureGuid: guid,
-          Enabled: enabled,
-          Configuration: dynamicConfig,
+          FeatureGuid,
+          Enabled,
+          Configuration,
         };
 
-        this.#featuresConfigSvc.saveFeatures([featuresConfig]).subscribe(() => {
-          this.#refreshFn(100);    // Test, refresh Data from Server
-        });
-        //
-      } else { // Refresh from Server
+        this.#featuresConfigSvc
+          .saveFeatures([featuresConfig])
+          .subscribe(() => this.#refreshFn(100));    // Test, refresh Data from Server
+      } else
+        // Refresh from Server
         this.#refreshFn(0);
-      }
     });
   }
 

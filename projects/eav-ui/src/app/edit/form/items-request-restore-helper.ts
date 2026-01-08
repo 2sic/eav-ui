@@ -10,6 +10,10 @@ const logSpecs = {
 /**
  * This helps to make items data smaller (for retrieving data),
  * and then rejoin the returned data with the parts which were not sent.
+ * 
+ * Note that as of 2026-01-08 it's not in use any more, but may be useful later.
+ * It was previously created to transport js-only objects to the edit ui to bypass the url.
+ * But now it is in the url, so it's not relevant any more.
  */
 export class ItemsRequestRestoreHelper {
 

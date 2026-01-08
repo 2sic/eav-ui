@@ -67,29 +67,30 @@ export class EditDialogSaveService {
     this.entityFormStateService.isSaving.set(true);
 
 
-    // Case 0. Form not valid
-    if (!this.formsStateService.formsAreValid()) {
-      this.#skipSaveWhenFormIsInvalid(editDialog);
-      return l.end('save skipped - form invalid');
-    }
-
-    // Case 1.1. New v20 - if no save mode, then just close the dialog
+    // Case 1. New v20 - if no save mode, then just close the dialog
     if (this.#formConfig.config.save.mode === false) {
       editDialog.dialog.close();
       return l.end('no-save mode; closed without saving');
     }
 
-    // Case 1.2. If the Dialog is Local return data mode, then return the data
+    // Case 2. Form not valid
+    if (!this.formsStateService.formsAreValid()) {
+      this.#skipSaveWhenFormIsInvalid(editDialog);
+      return l.end('save skipped - form invalid');
+    }
 
+    // Case 3. If the Dialog is Local return data mode, then return the data
     const eavItem = this.itemService.get(editDialog.formBuilderRefs.get(0).entityGuid());
     const saveMode = eavItem.Header.ClientData?.save === 'js';
+
+    console.log('2dm - EditDialogSaveService - saveAll', { saveMode, clientData: eavItem.Header.ClientData });
 
     if (saveMode) {
       this.#saveThroughJs(editDialog, close);
       return l.end('will be saved through js');
     }
 
-    // Case 1.3. If the Dialog is in standard Save Mode, then just save the data
+    // Case 4. If the Dialog is in standard Save Mode, then just save the data
     this.#saveDefault(editDialog, close);
     return l.end('saved default');
 
@@ -107,7 +108,7 @@ export class EditDialogSaveService {
 
     // Need to be clearly define for the route state (if objData in the state, data will be not refresh from the server) 
     const wrappedData: SaveJsReturnData<unknown> = {
-      objData: itemsEavObj[0]
+      data: itemsEavObj[0]
     };
     editDialog.dialog.close(wrappedData);
     return l.end('returning wrapped data');
