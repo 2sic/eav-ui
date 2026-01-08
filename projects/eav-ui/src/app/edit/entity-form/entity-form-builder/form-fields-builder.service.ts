@@ -3,7 +3,7 @@ import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
 import { InputTypeHelpers } from '../../../shared/fields/input-type-helpers';
 import { classLog } from '../../../shared/logging';
-import { FieldLogicWithValueInit } from '../../fields/logic/field-logic-with-init';
+import { FieldSettingsHelperWithValueInit } from '../../fields/logic/field-settings-helper-with-value-init';
 import { FieldSettingsHelpersManager } from '../../fields/logic/field-settings-helpers-manager';
 import { AdamCacheService } from '../../shared/adam/adam-cache.service';
 import { ValidationHelpers, ValidationHelperSpecs } from '../../shared/validation/validation.helpers';
@@ -47,7 +47,7 @@ export class FormFieldsBuilderService {
       if (inputType === InputTypeCatalog.StringWysiwyg && initialValue) {
         const logic = FieldSettingsHelpersManager.singleton().get(InputTypeCatalog.StringWysiwyg);
         const adamItems = this.adamCacheSvc.getAdamSnapshot(entityGuid, fieldName);
-        fields.value = initialValue = (logic as unknown as FieldLogicWithValueInit).processValueOnLoad(initialValue, adamItems);
+        fields.value = initialValue = (logic as unknown as FieldSettingsHelperWithValueInit).processValueOnLoad(initialValue, adamItems);
       }
 
       // Build control in the Angular form with validators

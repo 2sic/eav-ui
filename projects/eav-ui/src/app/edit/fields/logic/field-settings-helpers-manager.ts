@@ -1,7 +1,7 @@
 import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
 import { classLog } from '../../../shared/logging';
-import { FieldLogicBase } from './field-logic-base';
-import { UnknownLogic } from './field-logic-unknown';
+import { FieldLogicBase } from './field-settings-helper-base';
+import { FieldSettingsHelperUnknown } from './field-settings-helper-unknown';
 
 const logSpecs = {
   all: false,
@@ -26,7 +26,7 @@ export class FieldSettingsHelpersManager {
   // Private constructor to enforce singleton pattern
   private constructor() {
     // add unknown as a fallback for all scenarios
-    this.add(new UnknownLogic());
+    this.add(new FieldSettingsHelperUnknown());
   }
 
   static singleton(): FieldSettingsHelpersManager {

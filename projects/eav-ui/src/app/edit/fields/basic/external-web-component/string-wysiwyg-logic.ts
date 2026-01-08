@@ -3,12 +3,12 @@ import { AdamItem } from '../../../../../../../edit-types/src/AdamItem';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { FieldValue } from '../../../../../../../edit-types/src/FieldValue';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { FieldLogicBase } from '../../logic/field-logic-base';
-import { FieldLogicWithValueInit } from '../../logic/field-logic-with-init';
+import { FieldLogicBase } from '../../logic/field-settings-helper-base';
+import { FieldSettingsHelperWithValueInit } from '../../logic/field-settings-helper-with-value-init';
 import { FieldSettingsUpdateTask } from '../../logic/field-settings-update-task';
 
 
-export class StringWysiwygLogic extends FieldLogicBase implements FieldLogicWithValueInit {
+export class StringWysiwygLogic extends FieldLogicBase implements FieldSettingsHelperWithValueInit {
   name = InputTypeCatalog.StringWysiwyg;
 
   constructor() { super({ StringWysiwygLogic }); }

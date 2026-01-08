@@ -3,7 +3,7 @@ import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
 import { FieldValue } from '../../../../../edit-types/src/FieldValue';
 import { classLog } from '../../shared/logging';
 import { DebugFields } from '../edit-debug';
-import { FieldLogicTools } from '../fields/logic/field-logic-tools';
+import { FieldSettingsTools } from '../fields/logic/field-settings-tools';
 import { FormLanguage } from '../form/form-languages.model';
 import { FieldReader } from '../localization/field-reader';
 import { EavContentTypeAttribute, EavEntity, EavField } from '../shared/models/eav';
@@ -26,7 +26,7 @@ export class FieldSettingsUpdateHelperFactory {
     private contentTypeMetadata: EavEntity[],
     private language: FormLanguage,
     /** set of configuration for running field logic - shared */
-    private fieldLogicTools: FieldLogicTools,
+    private fieldLogicTools: FieldSettingsTools,
     /** Info that the form is read-only */
     private formReadOnly: boolean,
     private slotIsEmpty: Signal<boolean>,
@@ -69,7 +69,7 @@ export class FieldSettingsUpdateHelper {
     private contentTypeMetadata: EavEntity[],
     private language: FormLanguage,
     /** set of configuration for running field logic - shared */
-    private fieldLogicTools: FieldLogicTools,
+    private fieldLogicTools: FieldSettingsTools,
     /** Info that the form is read-only */
     private formReadOnly: boolean,
     private formSlotIsEmpty: Signal<boolean>,

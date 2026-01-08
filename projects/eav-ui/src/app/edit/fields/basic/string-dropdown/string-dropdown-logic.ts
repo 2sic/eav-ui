@@ -2,7 +2,7 @@ import { Of } from '../../../../../../../core';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { FieldSettingsPickerMerged, StringDropdown } from '../../../../../../../edit-types/src/FieldSettings-Pickers';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { FieldLogicBase } from '../../logic/field-logic-base';
+import { FieldLogicBase } from '../../logic/field-settings-helper-base';
 import { FieldSettingsUpdateTask } from '../../logic/field-settings-update-task';
 import { PickerLogicShared } from '../../picker/picker-logic-shared';
 import { DataSourceDropDownOptions } from '../string-picker/string-picker.helpers';

@@ -2,7 +2,7 @@ import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings
 import { FieldSettingsPicker, FieldSettingsPickerMasks, FieldSettingsStringFontIconPicker } from '../../../../../../../edit-types/src/FieldSettings-Pickers';
 import { PickerSourceCss } from '../../../../../../../edit-types/src/PickerSources';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { FieldLogicBase } from '../../logic/field-logic-base';
+import { FieldLogicBase } from '../../logic/field-settings-helper-base';
 import { FieldSettingsUpdateTask } from '../../logic/field-settings-update-task';
 import { buildRegExFromPrefixAndSuffix } from '../../picker/data-sources/css/string-font-icon-picker.helpers';
 

@@ -8,7 +8,7 @@ import { FeatureNames } from '../../../features/feature-names';
 import { classLog } from '../../../shared/logging';
 import { EavEntity } from '../../shared/models/eav';
 import { DataSourceDropDownOptions } from '../basic/string-picker/string-picker.helpers';
-import { FieldLogicTools } from '../logic/field-logic-tools';
+import { FieldSettingsTools } from '../logic/field-settings-tools';
 import { FieldSettingsUpdateTask } from '../logic/field-settings-update-task';
 import { PickerConfigs, PickerSourcesCustom, UiPickerModeIsTree } from './constants/picker-config-model.constants';
 import { DataSourceParserCsv } from './data-sources/data-source-parser-csv';
@@ -42,7 +42,7 @@ export class PickerLogicShared {
     return s;
   }
 
-  static maybeOverrideEditRestrictions(fsUntyped: FieldSettings, tools: FieldLogicTools): { fs: FieldSettings, removeEditRestrictions: boolean } {
+  static maybeOverrideEditRestrictions(fsUntyped: FieldSettings, tools: FieldSettingsTools): { fs: FieldSettings, removeEditRestrictions: boolean } {
     const fs = fsUntyped as FieldSettings & FieldSettingsPickerMerged;
     if (!(tools.eavConfig.removeEditRestrictions && tools.debug))
       return { fs, removeEditRestrictions: false };
@@ -68,7 +68,7 @@ export class PickerLogicShared {
   }
 
 
-  #getDataSourceAndSetupFieldSettings(value: FieldValue, fsBasic: FieldSettings, tools: FieldLogicTools) {
+  #getDataSourceAndSetupFieldSettings(value: FieldValue, fsBasic: FieldSettings, tools: FieldSettingsTools) {
     // Define field settings to be a merged FieldSettings and PickerSources
     const fs = fsBasic as FieldSettingsWithPickerSource & FieldSettingsPickerMerged;
 
@@ -181,7 +181,7 @@ export class PickerLogicShared {
   }
 
   /** Get the tree config, unless it was already created, in which case we reuse it. */
-  #getTreeConfigOnce(fs: FieldSettings & FieldSettingsPicker, tools: FieldLogicTools): UiPickerModeTree {
+  #getTreeConfigOnce(fs: FieldSettings & FieldSettingsPicker, tools: FieldSettingsTools): UiPickerModeTree {
     if (fs.PickerTreeConfiguration)
       return fs.PickerTreeConfiguration;
 

@@ -2,8 +2,8 @@ import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
 import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
 import { classLog, ClassLogger } from '../../../shared/logging';
 import { DebugFields } from '../../edit-debug';
-import { FieldLogicTools } from './field-logic-tools';
 import { FieldSettingsHelpersManager } from './field-settings-helpers-manager';
+import { FieldSettingsTools } from './field-settings-tools';
 import { FieldSettingsUpdateTask } from './field-settings-update-task';
 
 const logSpecs = {
@@ -80,7 +80,7 @@ export abstract class FieldLogicBase {
    * @param possibleGuid - guid of the external config, if empty, return defaults
    * @param defaults - defaults to merge with external config
    */
-  findAndMergeAdvanced<T>(tools: FieldLogicTools, possibleGuid: string, defaults: T): T {
+  findAndMergeAdvanced<T>(tools: FieldSettingsTools, possibleGuid: string, defaults: T): T {
     if (!possibleGuid)
       return defaults;
 

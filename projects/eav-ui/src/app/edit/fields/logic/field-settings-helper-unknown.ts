@@ -1,12 +1,12 @@
 import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
 import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
-import { FieldLogicBase } from './field-logic-base';
+import { FieldLogicBase } from './field-settings-helper-base';
 import { FieldSettingsUpdateTask } from './field-settings-update-task';
 
-export class UnknownLogic extends FieldLogicBase {
+export class FieldSettingsHelperUnknown extends FieldLogicBase {
   name = InputTypeCatalog.Unknown;
   
-  constructor() { super({UnknownLogic}); }
+  constructor() { super({FieldSettingsHelperUnknown}); }
 
   canAutoTranslate = false;
 
