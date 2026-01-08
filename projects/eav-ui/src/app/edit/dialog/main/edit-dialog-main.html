@@ -47,7 +47,7 @@
         <ng-template extendedFabSpeedDialTriggerContent>
           <app-save-close-button
             [label]="canSave ? 'Form.Buttons.SaveAndClose' : 'Form.Buttons.Done'"
-            [ngClass]="saveDisabled() ? 'appear-disabled' : ''"
+            [ngClass]="saveSvc.disabled() ? 'appear-disabled' : ''"
             (action)="saveAll(true)"
           ></app-save-close-button>
         </ng-template>
@@ -55,7 +55,7 @@
           <ng-template extendedFabSpeedDialActionsContent>
             <button
               extended-fab-speed-dial-action
-              matRipple [ngClass]="saveDisabled()
+              matRipple [ngClass]="saveSvc.disabled()
                 ? 'appear-disabled'
                 : ''"
               (click)="saveAll(false)"
