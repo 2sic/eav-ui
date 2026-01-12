@@ -82,7 +82,7 @@ export class FormulaEngine {
     const fss = new FieldsSettingsHelpers(this.log.name);
 
     for (const attr of this.#attributes) {
-      const lAttr = this.log.fnIfInList('runAllFields', 'fields', attr.Name, { fieldName: attr.Name });
+      const lAttr = this.log.fnIfInFields('runAllFields', attr.Name, { fieldName: attr.Name });
       const values = cycle.allAttributes[attr.Name];
       const valueBefore = cycle.values[attr.Name];
 

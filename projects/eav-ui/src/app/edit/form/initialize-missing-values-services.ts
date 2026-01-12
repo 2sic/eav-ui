@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { InputTypeHelpers } from '../../shared/fields/input-type-helpers';
 import { classLog } from '../../shared/logging';
-import { FieldLogicManager } from '../fields/logic/field-logic-manager';
+import { DebugFields } from '../edit-debug';
+import { FieldSettingsHelpersManager } from '../fields/logic/field-settings-helpers-manager';
 import { FieldReader } from '../localization/field-reader';
 import { LanguageService } from '../localization/language.service';
 import { ContentTypeService } from '../shared/content-types/content-type.service';
@@ -14,7 +15,8 @@ import { FormConfigService } from './form-config.service';
 const logSpecs = {
   all: false,
   constructor: false,
-  initMissingValues: false,
+  initMissingValues: true,
+  fields: [...DebugFields, 'releases'],
 };
 
 /**
@@ -41,7 +43,7 @@ export class InitializeMissingValuesServices {
   ) { }
 
   initMissingValues(): boolean {
-    const l = this.log.fnIf('initMissingValues');
+    const lMain = this.log.fnIf('initMissingValues');
 
     const updater = this.itemService.updater;
     const eavConfig = this.formConfig.config;
@@ -49,7 +51,7 @@ export class InitializeMissingValuesServices {
     const inputTypes = this.inputTypeService.getAll();
     const languages = this.languageService.getAll();
     const language = this.formConfig.language();
-    const logicManager = FieldLogicManager.singleton();
+    const logicManager = FieldSettingsHelpersManager.singleton();
 
     /** force UI to switch to default language, because some values are missing in the default language */
     let switchToDefault = false;
@@ -62,6 +64,8 @@ export class InitializeMissingValuesServices {
 
       for (const ctAttribute of contentType.Attributes) {
         const currentName = ctAttribute.Name;
+        const l = this.log.fnIfInFields('initMissingValues', currentName);
+
         const inputType = inputTypes.find(i => i.Type === ctAttribute.InputType);
         const isEmptyType = InputTypeHelpers.isEmpty(inputType?.Type);
         l.a(`Attribute: '${currentName}' InputType: '${inputType?.Type}' isEmptyType: '${isEmptyType}'`);
@@ -69,17 +73,23 @@ export class InitializeMissingValuesServices {
         if (isEmptyType)
           continue;
 
-        const logic = logicManager.getOrUnknown(inputType?.Type);
+        const logic = logicManager.get(inputType?.Type);
 
         const attributeValues = item.Entity.Attributes[ctAttribute.Name];
         const fieldSettings = fss.getDefaultSettings(
           new EntityReader(language.primary, language.primary).flatten(ctAttribute.Metadata)
         );
 
+        // The type is needed for empty checks
+        const fieldType = ctAttribute.InputType.split('-')[0];
+
         if (languages.length === 0) {
           l.a(`${currentName} languages none, simple init`);
           const firstValue = new FieldReader(attributeValues, '*').currentOrDefaultOrAny?.value;
-          if (logic.isValueEmpty(firstValue, isCreateMode))
+
+          // console.log('2dm: empty values no lang', { item, ctAttribute, firstValue, isCreateMode });
+
+          if (logic.isValueEmpty(fieldType, firstValue, isCreateMode))
             updater.setDefaultValue(item, ctAttribute, inputType, fieldSettings, languages, language.primary);
         } else {
           l.a(`${currentName} languages many, complex init`);
@@ -107,8 +117,15 @@ export class InitializeMissingValuesServices {
 
           const defaultLanguageValue = new FieldReader(attributeValues, language.primary).currentOrDefault?.value;
 
-          const valueIsEmpty = logic.isValueEmpty(defaultLanguageValue, isCreateMode);
+          const valueIsEmpty = logic.isValueEmpty(fieldType, defaultLanguageValue, isCreateMode);
+
+          // if (currentName === 'releases')
+          //   console.log('2dm: empty values langs', { currentName, item, ctAttribute, defaultLanguageValue, isCreateMode, valueIsEmpty });
+
           l.a(currentName, { currentName, valueIsEmpty, defaultLanguageValue, isCreateMode });
+
+          // if (currentName === 'releases' && valueIsEmpty)
+          //   debugger;
 
           if (valueIsEmpty) {
             const valUsed = updater.setDefaultValue(item, ctAttribute, inputType, fieldSettings, languages, language.primary);
@@ -128,7 +145,7 @@ export class InitializeMissingValuesServices {
       }
     }
 
-    return l.r(switchToDefault);
+    return lMain.r(switchToDefault);
   }
 
 }

@@ -21,7 +21,11 @@ export interface FormConfiguration {
   formId: number;
   isParentDialog: boolean;
   itemGuids: string[];
+
+  /** true if we're in create mode which would result in new data being saved */
   createMode: boolean;
+
+  /** true if this is a copy operation based off an existing item */
   isCopy: boolean;
   enableHistory: boolean;
   enableFormulaSave: boolean;
@@ -29,11 +33,14 @@ export interface FormConfiguration {
   removeEditRestrictions: boolean;
   dialogContext: DialogContext;
   settings: EditSettings;
-  save: FormSave;
+  save: FormSaveConfiguration;
 }
 
-interface FormSave {
+export interface FormSaveConfiguration {
+  /** Form save mode - if false, no save will be performed and the button should not show */
   mode: true | false | string;
+
+  /** Future feature, not yet implemented - idea is to provide an alternative save endpoint */
   path?: string;
 }
 

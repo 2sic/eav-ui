@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { take } from 'rxjs';
 import { PagePickerResult } from '../../../../../../edit-types/src/PagePickerResult';
 import { FieldConfigSet } from '../field-config-set.model';
-import { PagePickerComponent } from './page-picker.component';
+import { PagePickerComponent } from './page-picker';
 import { PagePickerDialogData } from './page-picker.models';
 
 export class PagePicker {

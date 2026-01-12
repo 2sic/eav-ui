@@ -2,7 +2,8 @@ import { inject, Injectable } from '@angular/core';
 import { DialogTypeConstants } from '../constants/dialog-type.constants';
 // tslint:disable-next-line:max-line-length
 import { keyAppId, keyContentBlockId, keyDebug, keyDialog, keyExtras, keyIsShared, keyItems, keyModuleId, keyPartOfPage, keyUrl, keyZoneId, prefix } from '../constants/session.constants';
-import { EditPrep, ViewOrFileIdentifier } from '../models/edit-form.model';
+import { ViewOrFileIdentifier } from '../models/edit-form.model';
+import { ItemIdHelper } from '../models/item-id-helper';
 import { Context } from '../services/context';
 import { ExtrasParam } from './dialog-url-params.model';
 
@@ -18,7 +19,7 @@ export class DialogInNewWindowService {
     const form = {
       items: [{
         Path: path,
-        ...(templateId != null && EditPrep.editId(templateId)),
+        ...(templateId != null && ItemIdHelper.editId(templateId)),
       }] as ViewOrFileIdentifier[]
     };
 

@@ -60,7 +60,7 @@ export class FormulaPromiseHandler {
   #modifiedChecker: FieldsValuesModifiedHelper;
 
   public updateStop(formula: FormulaCacheItem, raw: FieldFormulasResultRaw): void {
-    const l = this.log.fnIfInList('updateStop', 'fields', formula.fieldName, { promiseResult: raw, formula }, formula.target);
+    const l = this.log.fnIfInFields('updateStop', formula.fieldName, { promiseResult: raw, formula }, formula.target);
 
     const hasPromise = raw.promise instanceof Promise;
 
@@ -80,7 +80,7 @@ export class FormulaPromiseHandler {
    * @param inputTypeName
    */
   public handleStopAndPromise(formula: FormulaCacheItem, raw: FieldFormulasResultRaw): void {
-    const l = this.log.fnIfInList('addFormulaPromise', 'fields', formula.fieldName, { promiseResult: raw, formula }, formula.target);
+    const l = this.log.fnIfInFields('addFormulaPromise', formula.fieldName, { promiseResult: raw, formula }, formula.target);
 
     // If no promise, exit early
     if (!(raw.promise instanceof Promise))
@@ -112,7 +112,7 @@ export class FormulaPromiseHandler {
    * @returns 
    */
   public filterFormulas(fieldName: string, before: FormulaCacheItem[]) {
-    const l = this.log.fnIfInList('filterFormulas', 'fields', fieldName, { enabled: before });
+    const l = this.log.fnIfInFields('filterFormulas', fieldName, { enabled: before });
     const formulas = before.filter(f => {
       const promise = f.promises$.value;
       l.a(`hasPromise: ${!!promise}; completed: ${promise?.completed}; sleep: ${promise?.sleep}`);
@@ -131,7 +131,7 @@ export class FormulaPromiseHandler {
    */
   #defineCallbackHandlerIfMissing(formula: FormulaCacheItem): void {
     const entityGuid = this.#entityGuid;
-    const lcb = this.log.fnIfInList('defineCallbackHandlerIfMissing', 'fields', formula.fieldName, { formula, entityGuid }, formula.target);
+    const lcb = this.log.fnIfInFields('defineCallbackHandlerIfMissing', formula.fieldName, { formula, entityGuid }, formula.target);
     if (formula.updateCallback$.value)
       return lcb.end('callback already defined');
 
@@ -140,7 +140,7 @@ export class FormulaPromiseHandler {
 
   #promiseComplete(formula: FormulaCacheItem, result: FieldValueOrResultRaw): void {
     const entityGuid = this.#entityGuid;
-    const l = this.log.fnIfInList('promiseComplete', 'fields', formula.fieldName, { result, formula, entityGuid }, formula.target);
+    const l = this.log.fnIfInFields('promiseComplete', formula.fieldName, { result, formula, entityGuid }, formula.target);
     const fieldName = formula.fieldName;
     const raw = new FormulaValueCorrections(this.#contentType(), entityGuid, fieldName, formula.isValue, formula.inputType, false).v2(result);
 

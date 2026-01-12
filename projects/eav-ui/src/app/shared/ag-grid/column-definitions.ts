@@ -1,11 +1,11 @@
 import { ColDef } from '@ag-grid-community/core';
 import { App } from '../../apps-management/models/app.model';
-import { TrueFalseComponent } from '../../dev-rest/api/true-false/true-false.component';
+import { TrueFalseComponent } from '../../dev-rest/api/true-false/true-false';
 import { TrueFalseParams } from '../../dev-rest/api/true-false/true-false.models';
-import { BooleanFilterComponent } from '../components/boolean-filter/boolean-filter.component';
-import { IdFieldComponent } from '../components/id-field/id-field.component';
+import { BooleanFilterComponent } from '../components/boolean-filter/boolean-filter';
+import { IdFieldComponent } from '../components/id-field/id-field';
 import { IdFieldParams } from '../components/id-field/id-field.models';
-import { AgBoolIconRenderer } from './apps-list-show/ag-bool-icon-renderer.component';
+import { AgBoolIconRenderer } from './apps-list-show/ag-bool-icon-renderer';
 
 const cellClassSecAction = 'secondary-action no-padding'.split(' ');
 

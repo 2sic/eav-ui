@@ -1,25 +1,23 @@
 import { ICellRendererParams } from '@ag-grid-community/core';
-import { CommonModule } from '@angular/common';
 import { Component, signal } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
-import { Extension } from '../../models/extension.model';
+import { Extension } from '../extension.model';
 
 type GoToUrls = 'edit' | 'download' | 'delete' | 'inspect' | 'openSettings' | 'openResources';
 
 @Component({
   selector: 'app-extension-actions',
+  templateUrl: './extension-actions.html',
+  styleUrls: ['./extension-actions.scss'],
   imports: [
-    CommonModule,
     MatIconModule,
     MatButtonModule,
     MatBadgeModule,
-    TippyDirective,
+    TippyDirective
   ],
-  templateUrl: './extension-actions.html',
-  styleUrls: ['./extension-actions.scss'],
 })
 export class AppExtensionActions {
   protected ext: Extension;
@@ -40,10 +38,6 @@ export class AppExtensionActions {
     this.extHasConfig.set(!!this.ext.configuration);
     this.hasSettings.set(!!this.ext.configuration?.settingsContentType);
     this.hasResources.set(!!this.ext.configuration?.resourcesContentType);
-  }
-
-  refresh(params?: any): boolean {
-    return true;
   }
 
   do(verb: GoToUrls): void {

@@ -3,6 +3,7 @@ import { eavConstants } from '../../shared/constants/eav.constants';
 import { NavItem } from "../../shared/models/nav-item.model";
 import { CopilotSpecs } from '../copilot/copilot-specs';
 import { GoToCopilot } from '../copilot/go-to-copilot';
+import { GoToRecycleBin } from '../recycle-bin/go-to-recycle-bin';
 
 export const AppAdminMenu: NavItem[] = [
   { name: 'App Info', path: 'home', icon: 'info', tippy: 'App Info' },
@@ -11,6 +12,7 @@ export const AppAdminMenu: NavItem[] = [
     child: [
       { ...GoToCopilot.routeDefinition('data'), tippy: 'Autogenerate content types ' },
       { ...GoToDevRest.routeDataDefinition, tippy: 'Rest-Api Data ' },
+      { ...GoToRecycleBin.routeDefinition('data'), tippy: 'Recycle Bin (beta)' },
     ]
   },
   {
@@ -35,10 +37,10 @@ export const AppAdminMenu: NavItem[] = [
     ]
   },
   {
-    name: 'App Extensions (beta)',
+    name: 'App Extensions',
     path: 'extensions',
     icon: 'extension',
-    tippy: 'App Extensions (beta)',
+    tippy: 'App Extensions',
   },
   {
     name: 'Web API', path: 'web-api', icon: 'offline_bolt', tippy: 'WebApi',

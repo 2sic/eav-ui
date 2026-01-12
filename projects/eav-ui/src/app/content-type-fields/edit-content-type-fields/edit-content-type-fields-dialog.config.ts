@@ -7,7 +7,7 @@ export const editContentTypeFieldsDialog: DialogConfig = {
   panelClass: null,
 
   async getComponent() {
-    const { EditContentTypeFieldsComponent } = await import('./edit-content-type-fields.component');
+    const { EditContentTypeFieldsComponent } = await import('./edit-content-type-fields');
     return EditContentTypeFieldsComponent;
   }
 };

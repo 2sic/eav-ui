@@ -116,7 +116,7 @@ export class UiControl {
   getErrors(): string {
     const control = this.control;
     const errors = control.errors;
-    const l = this.log.fnIfInList('getErrors', 'fields', this.name, { control, name: this.name });
+    const l = this.log.fnIfInFields('getErrors', this.name, { control, name: this.name });
     if (!control.invalid)
       return l.r('', 'valid');
     if (!control.dirty && !control.touched)

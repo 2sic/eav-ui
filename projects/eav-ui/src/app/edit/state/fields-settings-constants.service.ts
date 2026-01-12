@@ -3,7 +3,7 @@ import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
 import { classLog } from '../../shared/logging';
 import { computedObj } from '../../shared/signals/signal.utilities';
 import { DebugFields } from '../edit-debug';
-import { FieldLogicManager } from '../fields/logic/field-logic-manager';
+import { FieldSettingsHelpersManager } from '../fields/logic/field-settings-helpers-manager';
 import { FormConfigService } from '../form/form-config.service';
 import { EntityReader } from '../shared/helpers';
 import { InputTypeService } from '../shared/input-types/input-type.service';
@@ -78,7 +78,7 @@ export class FieldsSettingsConstantsService {
 
     const constPartOfLanguage = contentType.Attributes.map(attr => {
       const fieldName = attr.Name;
-      const lInner = this.log.fnIfInList('stablePartOfField', 'fields', fieldName, { fieldName });
+      const lInner = this.log.fnIfInFields('stablePartOfField', fieldName, { fieldName });
 
       // Input Type config in the current language
       const inputType = this.inputTypeSvc.get(attr.InputType);
@@ -134,7 +134,7 @@ export class FieldsSettingsConstantsService {
 
     const constFieldParts = contentType.Attributes.map((attr, index) => {
       const fieldName = attr.Name;
-      const lInner = this.log.fnIfInList('constantFieldParts', 'fields', fieldName, { fieldName, index });
+      const lInner = this.log.fnIfInFields('constantFieldParts', fieldName, { fieldName, index });
       // metadata in the initial language with all the core settings - just for initialDisabled!
       const metadata = mdMerger.flatten<FieldSettings>(attr.Metadata);
       const initialSettings = this.#fieldSettingsHelper.getDefaultSettings(metadata);
@@ -144,7 +144,7 @@ export class FieldsSettingsConstantsService {
 
       lInner.a('details', { fieldName, contentType, language, attr, initialSettings, inputTypeSpecs });
 
-      const logic = FieldLogicManager.singleton().get(attr.InputType);
+      const logic = FieldSettingsHelpersManager.singleton().get(attr.InputType);
 
       // Construct the constants / unchanging aspects of the field, no matter what language
       const constants: FieldConstants = {

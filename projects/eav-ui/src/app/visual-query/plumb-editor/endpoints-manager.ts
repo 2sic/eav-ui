@@ -33,7 +33,7 @@ export class EndpointsManager {
 
   
   addEndpoint(domDataSource: HTMLElement, endpointName: string, isIn: boolean, queryDs: PipelineDataSource, extraStyling?: string) {
-    const l = this.log.fnIfInList('addEndpoint', 'fields', endpointName, { endpointName, isIn, queryDs });
+    const l = this.log.fnIfInFields('addEndpoint', endpointName, { endpointName, isIn, queryDs });
     const dsDefinition = findDefByType(this.queryData.dataSources, queryDs.PartAssemblyAndType);
     const connectionList = isIn
       ? dsDefinition.In

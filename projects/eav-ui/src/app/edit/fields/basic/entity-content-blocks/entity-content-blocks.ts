@@ -1,0 +1,18 @@
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
+import { PickerImports } from '../../picker/picker-providers.constant';
+import { EntityDefaultComponent } from '../entity-default/entity-default';
+import { EntityContentBlocksSettingsHelper } from './entity-content-blocks-settings-helper';
+
+@Component({
+    selector: InputTypeCatalog.EntityContentBlocks,
+    templateUrl: '../../picker/picker.html',
+    imports: PickerImports
+})
+export class EntityContentBlockComponent extends EntityDefaultComponent implements OnInit, OnDestroy {
+
+  constructor() {
+    super();
+    EntityContentBlocksSettingsHelper.importMe();
+  }
+}

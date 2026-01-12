@@ -76,7 +76,7 @@ export class StateAdapter {
   public typesForNew = computedObj('typesForNew', () => {
     const raw = this.#createTypesRaw().map((guid: string) => ({ label: null as string, guid }));
     
-    const l = this.log.fnIfInList('typesForNew', 'fields', this.#fieldName, { raw });
+    const l = this.log.fnIfInFields('typesForNew', this.#fieldName, { raw });
 
     // return [];
     // Augment with additional label and guid if we have this
@@ -112,6 +112,9 @@ export class StateAdapter {
     const uiValue = this.#fieldState.uiValue();
     this.log.fnIf('selectedItems', { uiValue });
     const asUi = this.mapper.toUi(uiValue);
+    // console.warn('asUi before empty fix', { field: this.#fieldName, mapper: this.mapper, uiValue, asUi });
+    // if (this.#fieldName === 'releases')
+    //   debugger;
     const pickerAllowsEmpty = this.allowsEmptyLazy()();
     const uiFixed = asUi.length == 0 && pickerAllowsEmpty
       ? ['']
@@ -144,7 +147,7 @@ export class StateAdapter {
   //#region CRUD operations
 
   #updateValue(operation: (original: string[]) => string[]): void {
-    const l = this.log.fnIfInList('updateValue', 'fields', this.#fieldName);
+    const l = this.log.fnIfInFields('updateValue', this.#fieldName);
     // Get original data, and make sure we have a copy, so that ongoing changes won't affect the original
     // If we don't do this, then later change detection can fail!
     const valueArray = [...this.values()];
@@ -155,7 +158,7 @@ export class StateAdapter {
   }
 
   public add(value: string): void {
-    this.log.fnIfInList('add', 'fields', this.#fieldName, { value });
+    this.log.fnIfInFields('add', this.#fieldName, { value });
     this.#updateValue(list => (this.features().multiValue) ? [...list, value] : [value]);
   }
 

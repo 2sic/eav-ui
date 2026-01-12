@@ -176,6 +176,8 @@ export class AppEntryRouteHandler {
   // - but I can't seem to find a case where this is used
   // - so I ported it from the previous code, but couldn't really test / verify it
   // added console.error to spot if we ever see this
+  // 2025-12-23 2pp had a screenshot showing this message, but we still don't know why he saw it...
+  // also not sure if it actually found anything after the ##
   #handleNonNormalEntryParamRoute() {
     console.error('This code is believed to be unused - if you see this warning, please inform @ijungleboy and note what you clicked before you saw this message');
     const l = this.log.fnIf('handleNonNormalEntryParamRoute');

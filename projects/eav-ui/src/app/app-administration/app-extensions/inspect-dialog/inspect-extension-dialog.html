@@ -1,0 +1,16 @@
+<div class="eav-dialog">
+  <div class="eav-dialog-header">
+    <div class="eav-dialog-header__title">
+      Inspect Extension:
+      {{ extensionFolder || 'No Extension' }}
+      ({{ edition || 'Default' }})
+    </div>
+    <button mat-icon-button tippy="Close dialog" (click)="this.dialog.close()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <div class="eav-dialog-content">
+    <app-inspect-extension [data]="preflightResult()" />
+  </div>
+</div>

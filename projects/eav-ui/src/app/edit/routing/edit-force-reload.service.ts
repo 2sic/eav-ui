@@ -5,7 +5,7 @@ import { transient } from '../../../../../core';
 import { ItemHistoryResult } from '../../item-history/models/item-history-result.model';
 import { classLog } from '../../shared/logging';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
-import { EditEntryComponent } from '../dialog/entry/edit-entry.component';
+import { EditEntryComponent } from '../dialog/entry/edit-entry';
 import { UrlHelpers } from '../shared/helpers';
 import { NavigateFormResult } from './edit-routing.service';
 import { EditUrlParams } from './edit-url-params.model';

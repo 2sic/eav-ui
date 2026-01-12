@@ -27,7 +27,9 @@ export function classLog<TSpecs extends Record<string, unknown> = any>(
   pleaseUseClassLogEnabled?: string,
   enabled: boolean = false
 ): ClassLogger<TSpecs> {
+
   // Pick the first key as the name of the class
+  // Implemented as a function, to make the code clearer
   const name = (() => {
     if (!owner) return 'unknown';
     if (typeof owner === 'string') return owner;

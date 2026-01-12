@@ -1,8 +1,10 @@
 import { EavFor } from '../../edit/shared/models/eav';
 import { eavConstants } from '../constants/eav.constants';
 import { classLog } from '../logging';
-import { EditForm, EditPrep, ItemAddIdentifier, ItemEditIdentifier, ItemIdentifierInbound, ItemIdentifierShared, ItemInListIdentifier } from '../models/edit-form.model';
+import { EditForm, ItemAddIdentifier, ItemEditIdentifier, ItemIdentifierInbound, ItemIdentifierShared, ItemInListIdentifier } from '../models/edit-form.model';
+import { ItemIdHelper } from '../models/item-id-helper';
 import { ParamEncoder } from './param-encoder';
+import { UrlParamBase64 } from './url-param-base64';
 
 // Note: everything in here is a bit magical - and probably not ideal
 // It basically prepares a very compact url representation of an EditForm
@@ -17,6 +19,9 @@ const PREFILL_PREFIX = 'prefill:';
 const GROUP_PREFIX = 'group:';
 const UIFIELDS_PREFIX = 'uifields:';
 const PARAM_PREFIX = 'parameters:';
+const COPY_PREFIX = 'copy:';
+const SAVE_PREFIX = 'save:';
+const DATA_PREFIX = 'data64:';
 const ITEM_SEPARATOR = ',';
 const VAL_SEPARATOR = '&';
 const LIST_SEPARATOR = ':';
@@ -42,6 +47,7 @@ export function convertFormToUrl(form: EditForm) {
     // If it's from the Admin-UI itself, it should use the newer / deeper ClientData
     const fields = asInboundParams.UiFields ?? item.ClientData?.fields;
     const parameters = asInboundParams.Parameters ?? item.ClientData?.parameters;
+
     // Group- or Inner-Item
     if (asGroup.Parent) {
       l.a("asGroup having parent", {asGroup});
@@ -85,9 +91,20 @@ export function convertFormToUrl(form: EditForm) {
       const addItem = item as ItemAddIdentifier;
       formUrl += 'new:' + addItem.ContentTypeName;
 
+      // Save in JS, new v21 WIP
+      const save = item.ClientData?.save;
+
       formUrl += addTypicalUrlGroups(addItem, fields, parameters,
-        { metadata: true, prefill: true, fields: true, params: true, duplicate: true }
+        { metadata: true, prefill: true, fields: true, params: true, duplicate: true, save: save }
       );
+
+      const overrideData = item.ClientData?.data;
+
+      // console.log('2dm-convertFormToUrl - overrideData', { overrideData });
+
+      if (overrideData)
+        formUrl += `${VAL_SEPARATOR}${DATA_PREFIX}${UrlParamBase64.encode(overrideData)}`;
+
     }
   }
   return l.r(formUrl);
@@ -97,7 +114,7 @@ function addTypicalUrlGroups(
   item: ItemAddIdentifier | ItemEditIdentifier | ItemInListIdentifier,
   fields: string | undefined,
   parameters: Record<string, unknown> | undefined,
-  parts: { metadata?: boolean, prefill?: boolean, fields?: boolean, params?: boolean, duplicate?: boolean }
+  parts: { metadata?: boolean, prefill?: boolean, fields?: boolean, params?: boolean, duplicate?: boolean, save?: string }
 ): string {
   const addItem = item as ItemAddIdentifier;
   const result = ''
@@ -105,7 +122,8 @@ function addTypicalUrlGroups(
     + (parts.prefill ? prefill2UrlParams(item.Prefill) : '')
     + (parts.fields ? fields2UrlParams(fields) : '')
     + (parts.params ? obj2UrlParams(parameters, PARAM_PREFIX) : '')
-    + (parts.duplicate && addItem.DuplicateEntity ? `${VAL_SEPARATOR}copy:` + addItem.DuplicateEntity : '');
+    + (parts.duplicate && addItem.DuplicateEntity ? `${VAL_SEPARATOR}${COPY_PREFIX}` + addItem.DuplicateEntity : '')
+    + (parts.save ? `${VAL_SEPARATOR}${SAVE_PREFIX}${parts.save}` : '');
   return result;
 }
 
@@ -217,19 +235,12 @@ export function convertUrlToForm(formUrl: string) {
             Add: params[4] === 'true',
             ...(hasParam5Id && { EntityId: parseInt(params[5], 10) })
           }
-          // innerItem.Parent = params[1];
-          // innerItem.Field = params[2];
-          // innerItem.Index = parseInt(params[3], 10);
-          // innerItem.Add = params[4] === 'true';
-          // if (hasParam5Id)
-          //   innerItem.EntityId = parseInt(params[5], 10);
-        } else if (option.startsWith('copy:')) {
+        } else if (option.startsWith(COPY_PREFIX)) {
           // Add Item Copy
           innerItem = {
             ...innerItem,
             DuplicateEntity: parseInt(option.split(LIST_SEPARATOR)[1], 10)
           };
-          // innerItem.DuplicateEntity = parseInt(copyParams[1], 10);
         } else {
           innerItem = addParamToItemIdentifier(innerItem, option);
         }
@@ -238,7 +249,7 @@ export function convertUrlToForm(formUrl: string) {
     } else if (isNumber((item ?? '').split(VAL_SEPARATOR)[0])) {
       // Edit Item
       const parts = item.split(VAL_SEPARATOR);
-      let editItem: ItemEditIdentifier = EditPrep.editId(parseInt(parts[0], 10));
+      let editItem: ItemEditIdentifier = ItemIdHelper.editId(parseInt(parts[0], 10));
       for (const part of parts)
         editItem = addParamToItemIdentifier(editItem, part);
       form.items.push(editItem);
@@ -256,8 +267,6 @@ export function convertUrlToForm(formUrl: string) {
           // Add Item For
           const forParams = option.split(LIST_SEPARATOR);
           const [forKeyType, forKey] = forParams[1].split(METADATA_SEPARATOR);
-          // const forTarget = forParams[2];
-          // const forTargetType = parseInt(forParams[3], 10);
           const forSingleton = forParams[4] != null ? forParams[4] === 'true' : undefined;
           addItem.For = {
             Target: forParams[2],
@@ -267,10 +276,8 @@ export function convertUrlToForm(formUrl: string) {
             ...(forKeyType === 's' && { String: ParamEncoder.decode(forKey) }),
             ...(forSingleton != null && { Singleton: forSingleton }),
           };
-        } else if (option.startsWith('copy:')) {
+        } else if (option.startsWith(COPY_PREFIX)) {
           // Add Item Copy
-          // const copyParams = option.split(LIST_SEPARATOR);
-          // addItem.DuplicateEntity = parseInt(copyParams[1], 10);
           addItem = {
             ...addItem,
             DuplicateEntity: parseInt(option.split(LIST_SEPARATOR)[1], 10)
@@ -304,6 +311,22 @@ function addParamToItemIdentifier<T extends ItemIdentifierShared>(item: T, part:
     item.ClientData = { ...item.ClientData, parameters: formParams };
     return l.rSilent(item);
   }
+
+  // Add Save mode new v21 WIP
+  if (part.startsWith(SAVE_PREFIX)) {
+    const save = part.split(LIST_SEPARATOR)[1] as 'js';
+    item.ClientData = { ...item.ClientData, save };
+    return l.rSilent(item);
+  }
+
+  // restore data new v21 WIP
+  if (part.startsWith(DATA_PREFIX)) {
+    const dataEncoded = part.split(LIST_SEPARATOR)[1];
+    const data = UrlParamBase64.decode(dataEncoded);
+    item.ClientData = { ...item.ClientData, data };
+    return l.rSilent(item);
+  }
+
   return l.rSilent(item, 'no match');
 }
 

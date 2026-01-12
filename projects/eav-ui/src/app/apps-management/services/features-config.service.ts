@@ -1,10 +1,10 @@
 import { httpResource } from '@angular/common/http';
 import { Injectable, Signal } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { FeatureState } from '../../features/models';
 import { FileUploadMessageTypes, FileUploadResult } from '../../shared/components/file-upload-dialog';
 import { HttpServiceBaseSignal } from '../../shared/services/http-service-base-signal';
 import { License, LicenseDownloadInfo, LicenseUploadInfo } from '../models/license.model';
+import { FeatureConfigSavePackage } from './feature-config-save-package';
 
 const webAPiLicenseRetrieve = 'sys/license/Retrieve';
 const webApiFeatSaveNew = 'admin/feature/SaveNew';
@@ -14,7 +14,7 @@ const webApiUpload = 'sys/license/Upload';
 @Injectable()
 export class FeaturesConfigService extends HttpServiceBaseSignal {
 
-  saveFeatures(featuresStates: FeatureState[]): Observable<null> {
+  saveFeatures(featuresStates: FeatureConfigSavePackage[]): Observable<null> {
     return this.http.post<null>(this.apiUrl(webApiFeatSaveNew), featuresStates);
   }
 

@@ -61,7 +61,7 @@ export class DataSourceCss extends DataSourceBase {
     const options = this.#iconEntities();
     const maskHelper = this.#dataMaskHelper;
 
-    const l = this.log.fnIfInList('data', 'fields', this.fieldName, { options, maskHelper });
+    const l = this.log.fnIfInFields('data', this.fieldName, { options, maskHelper });
 
     const result = options.map(entity => {
       const pickerItem = maskHelper.data2PickerItem({ entity, streamName: null, valueMustUseGuid: false });

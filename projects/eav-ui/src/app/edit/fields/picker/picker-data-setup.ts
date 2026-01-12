@@ -176,8 +176,12 @@ const partsMap: Record<string, PartMap> = {
 };
 
 interface PartMap {
+  /** The allowed source adapters for this input type */
   sources: ProviderToken<unknown>[],
-  uiMapper: typeof StateUiMapperBase | typeof StateUiMapperStringArray | typeof StateUiMapperNumberArray, // ProviderToken<StateUiMapperBase>,
+
+  /** The UI mapper to convert between state and UI representations */
+  uiMapper: typeof StateUiMapperBase | typeof StateUiMapperStringArray | typeof StateUiMapperNumberArray,
+
   /** Force some string-sources to assume no-configuration, since the config is in the classic metadata, not in a DataSource config */
   forcePickerConfig?: Of<typeof PickerConfigs>,
 }

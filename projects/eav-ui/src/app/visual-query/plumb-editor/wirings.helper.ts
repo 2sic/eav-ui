@@ -73,7 +73,7 @@ export class WiringsHelper {
   
 
   #ensureWireEndpointExists(endpointId: string, sourceGuid: string, name: string, isIn: boolean) : DataSourceSet | null {
-    const l = this.log.fnIfInList('ensureWireEndpointExists', 'fields', name, { endpointId, sourceGuid, name, isIn });
+    const l = this.log.fnIfInFields('ensureWireEndpointExists', name, { endpointId, sourceGuid, name, isIn });
     // Find data source infos & DOM, if not found, do nothing
     const set = this.#findDataSourceInDom(endpointId, sourceGuid, name);
     if (set == null)
@@ -85,7 +85,7 @@ export class WiringsHelper {
   }
 
   #findDataSourceInDom(endpointId: string, sourceGuid: string, name: string) : DataSourceSet | null {
-    const l = this.log.fnIfInList('findDataSourceInDom', 'fields', name, { endpointId, sourceGuid, name });
+    const l = this.log.fnIfInFields('findDataSourceInDom', name, { endpointId, sourceGuid, name });
     // if exists, do nothing
     if (this.instance.getEndpoint(endpointId))
       return l.r(null, "endpoint exists, exit");

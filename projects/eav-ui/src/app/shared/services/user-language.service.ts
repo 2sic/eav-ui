@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LanguagePart } from '../../edit/dialog/header/language-settings-dialog/LanguageDropdownComponent/language-part.enum';
+import { LanguagePart } from '../../edit/dialog/header/language-settings-dialog/LanguageDropdown/language-part.enum';
 import { DialogUiSettings, keySettings } from '../constants/session.constants';
 import { StateManagerLocal } from '../user/state-manager';
 

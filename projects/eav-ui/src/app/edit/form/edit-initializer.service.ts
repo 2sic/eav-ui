@@ -1,5 +1,4 @@
-import { Inject, Injectable, signal } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Injectable, signal } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
@@ -10,7 +9,6 @@ import { convertUrlToForm } from '../../shared/helpers/url-prep.helper';
 import { classLog } from '../../shared/logging';
 import { ItemAddIdentifier } from '../../shared/models/edit-form.model';
 import { UserLanguageService } from '../../shared/services/user-language.service';
-import { DialogRoutingState } from '../dialog/dialogRouteState.model';
 import { calculateIsParentDialog, sortLanguages } from '../dialog/main/edit-dialog-main.helpers';
 import { EavEditLoadDto, EditSettings } from '../dialog/main/edit-dialog-main.models';
 import { LanguageService } from '../localization/language.service';
@@ -77,7 +75,6 @@ export class EditInitializerService {
     private linkCacheService: LinkCacheService,
     private featuresService: FeaturesService,
     private initialValuesService: InitialValuesService,
-    @Inject(MAT_DIALOG_DATA) private dialogData: DialogRoutingState,
   ) {
     this.log.aIf('constructor', null, "constructor");
 
@@ -93,12 +90,12 @@ export class EditInitializerService {
 
     const itemsRaw = (this.route.snapshot.params as EditUrlParams).items;
 
-    d.a('state Data from Dialog', { stateData: this.dialogData });
-
     const items = convertUrlToForm(itemsRaw).items;
 
     // Reduce amount of data sent to backend by removing unneeded properties
-    const dataHelper = new ItemsRequestRestoreHelper(items, this.dialogData?.overrideContents);
+    // Note: 2026-01-08 2dm - not really used any more, as the mechanisms now use a url parameter for data
+    // Leave the object in though, in case we want to use it again later for other data
+    const dataHelper = new ItemsRequestRestoreHelper(items, null);
 
     const requestItems = dataHelper.itemsForRequest();
 

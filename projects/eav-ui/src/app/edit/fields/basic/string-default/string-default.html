@@ -1,0 +1,32 @@
+
+<mat-form-field [formGroup]="group" color="accent" class="eav-mat-form-field" [ngClass]="{'textarea-field': rowCount() > 1}">
+  @if (!isMultiline()) {
+    <!-- Single Line field -->
+    <input matInput class="eav-translate-on-dblclick"
+      [formControlName]="config.fieldName"
+      [placeholder]="basics().placeholder"
+      [required]="basics().required"
+      [ngStyle]="{ 'font-family': inputFontFamily() }">
+  }
+  @else {
+    <!-- Multi Line field -->
+    <textarea matInput class="eav-translate-on-dblclick"
+      [formControlName]="config.fieldName"
+      [rows]="rowCount()"
+      [placeholder]="basics().placeholder"
+      [required]="basics().required"
+      [ngStyle]="{ 'font-family': inputFontFamily(), 'white-space': textWrap() }">
+    </textarea>
+  }
+  <mat-label>{{ basics().label }}</mat-label>
+</mat-form-field>
+<app-field-helper-text></app-field-helper-text>
+
+<!-- Show message if this input-field is only being shown as a fallback -->
+@if (typeIfNotWhatsExpected() != null) {
+  <div style="color: red;">
+    Error: Input <code>{{ typeIfNotWhatsExpected() }}</code> for <code>{{ basics().label }}</code> not found.
+    It's probably be an extension input field, but it's not loaded.
+    Showing default, please fix extension or change field configuration.
+  </div>
+}

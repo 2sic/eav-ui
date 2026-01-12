@@ -3,7 +3,7 @@ import { transient } from '../../../../../core/transient';
 import { classLog } from '../../shared/logging';
 import { GlobalConfigService } from '../../shared/services/global-config.service';
 import { computedObj } from '../../shared/signals/signal.utilities';
-import { FieldLogicTools } from '../fields/logic/field-logic-tools';
+import { FieldSettingsTools } from '../fields/logic/field-settings-tools';
 import { PickerData } from '../fields/picker/picker-data';
 import { PickerDataFactory } from '../fields/picker/picker-data.factory';
 import { FormConfigService } from '../form/form-config.service';
@@ -164,7 +164,7 @@ export class FieldsPropsEngine {
       const isReadOnly = this.#formsStateService.readOnly();
 
         // Logic Tools are needed when checking for settings defaults etc.
-        const logicTools: FieldLogicTools = {
+        const logicTools: FieldSettingsTools = {
           eavConfig: this.#formConfig.config,
           reader: reader,
           debug: isDebug,

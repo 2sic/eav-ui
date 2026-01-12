@@ -3,7 +3,7 @@ import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
 import { InputTypeHelpers } from '../../shared/fields/input-type-helpers';
 import { classLog } from '../../shared/logging';
 import { DebugFields } from '../edit-debug';
-import { FieldLogicManager } from '../fields/logic/field-logic-manager';
+import { FieldSettingsHelpersManager } from '../fields/logic/field-settings-helpers-manager';
 import { TranslateMenuHelpers } from '../fields/wrappers/localization/translate-menu/translate-menu.helpers';
 import { FormLanguage } from '../form/form-languages.model';
 import { FieldReader } from '../localization/field-reader';
@@ -37,7 +37,7 @@ export class FieldsSettingsHelpers {
    * @param genericSettings 
    */
   mergeGenericSettings(fieldName: string, settings: FieldSettings): FieldSettings {
-    const l = this.log.fnIfInList('mergeGenericSettings', 'fields', fieldName, { fieldName, settings });
+    const l = this.log.fnIfInFields('mergeGenericSettings', fieldName, { fieldName, settings });
     const asWithGenericSettings = settings as unknown as { SettingsGeneric: string };
     if (asWithGenericSettings.SettingsGeneric == null)
       return l.r(settings, 'No generic settings');
@@ -66,7 +66,7 @@ export class FieldsSettingsHelpers {
       delete defSettings.DefaultCollapsed;
     }
     defSettings.Formulas ??= [];
-    let logic = FieldLogicManager.singleton().get(settings.InputType);
+    let logic = FieldSettingsHelpersManager.singleton().get(settings.InputType);
     defSettings.DisableAutoTranslation ??= !logic?.canAutoTranslate;
     return defSettings;
   }

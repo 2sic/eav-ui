@@ -7,7 +7,7 @@ export const settingsItemDetailsDialog: DialogConfig = {
   panelClass: null,
 
   async getComponent() {
-    const { SettingsItemDetailsComponent } = await import('./settings-item-details.component');
+    const { SettingsItemDetailsComponent } = await import('./settings-item-details');
     return SettingsItemDetailsComponent;
   }
 };

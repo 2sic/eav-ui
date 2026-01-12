@@ -11,7 +11,7 @@ import { Of, transient } from '../../../../../core';
 import { DocsLinkHelper } from '../../admin-shared/docs-link-helper/docs-link-helper';
 import { ContentItemsService } from '../../content-items/services/content-items.service';
 import { FeatureNames } from '../../features/feature-names';
-import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
+import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info';
 import { FeaturesService } from '../../features/features.service';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { SystemSettingsScopes, eavConstants } from '../../shared/constants/eav.constants';
@@ -19,7 +19,7 @@ import { MatBadgeIconDirective } from '../../shared/directives/mat-badge-icon.di
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { AppScopes } from '../../shared/models/dialog-context.models';
-import { EditPrep } from '../../shared/models/edit-form.model';
+import { ItemIdHelper } from '../../shared/models/item-id-helper';
 import { DialogInNewWindowService } from '../../shared/routing/dialog-in-new-window.service';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { Context } from '../../shared/services/context';
@@ -329,12 +329,12 @@ export class AppConfiguration implements OnInit {
           `edit/${convertFormToUrl({
             items: [
               systemSettingsEntity == null
-                ? EditPrep.newFromType(staticName, {
+                ? ItemIdHelper.newFromType(staticName, {
                   ...(systemSettingsScope === SystemSettingsScopes.Site && {
                     SettingsEntityScope: SystemSettingsScopes.Site,
                   }),
                 })
-                : EditPrep.editId(systemSettingsEntity.Id),
+                : ItemIdHelper.editId(systemSettingsEntity.Id),
             ],
           })}`
         ));
@@ -357,8 +357,8 @@ export class AppConfiguration implements OnInit {
           `edit/${convertFormToUrl({
             items: [
               customSettingsEntity == null
-                ? EditPrep.newFromType(staticName)
-                : EditPrep.editId(customSettingsEntity.Id),
+                ? ItemIdHelper.newFromType(staticName)
+                : ItemIdHelper.editId(customSettingsEntity.Id),
             ],
           })}`
         ));
@@ -379,7 +379,7 @@ export class AppConfiguration implements OnInit {
       } else {
         url.set(this.#urlTo(
           `edit/${convertFormToUrl({
-            items: [EditPrep.editId(contentItems[0].Id)],
+            items: [ItemIdHelper.editId(contentItems[0].Id)],
           })}`
         ));
       }
@@ -439,7 +439,7 @@ export class AppConfiguration implements OnInit {
         // Open Edit dialog
         const url = (this.#urlTo(
           `edit/${convertFormToUrl({
-            items: [EditPrep.newFromType(typeName)],
+            items: [ItemIdHelper.newFromType(typeName)],
           })}`
         ));
         if (url) {

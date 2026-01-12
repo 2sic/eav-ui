@@ -1,0 +1,194 @@
+<div
+  class="eav-dialog"
+  style="margin-bottom: 12px"
+  appDragAndDrop
+  [allowedFileTypes]="dialogData.allowedFileTypes"
+  (filesDropped)="filesDropped($event)"
+>
+  @if (uploadType() != UploadTypes.ImportParts) {
+    <div class="eav-dialog-header">
+      <div
+        class="eav-dialog-header__title"
+        [innerHtml]="dialogData.title | safeHtml"
+      ></div>
+      <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  }
+
+  <div
+    [ngClass]="{
+      'outer-container-app': uploadType() === UploadTypes.ImportParts,
+      'eav-dialog-content': uploadType() !== UploadTypes.ImportParts,
+    }"
+  >
+    @if (uploadType() == UploadTypes.ImportParts) {
+      <h3 [innerHtml]="dialogData.title | safeHtml"></h3>
+    }
+
+    @if (uploading()) {
+      <mat-spinner mode="indeterminate" diameter="20"></mat-spinner>
+    }
+
+    <p [innerHtml]="dialogData.description | safeHtml"></p>
+
+    @if (uploadType() == UploadTypes.App) {
+      <form [formGroup]="importForm">
+        <mat-radio-group formControlName="importMode" aria-label="Select import mode">
+          <mat-radio-button [value]="importModeValues.importOriginal">
+            Import App(s)
+          </mat-radio-button>
+          <mat-radio-button [value]="importModeValues.importAsTemplate">
+            Import and Rename / Reset
+          </mat-radio-button>
+        </mat-radio-group>
+        <br />
+
+        @if (importForm.get('importMode')?.value === importModeValues.importOriginal) {
+          <span>
+            The app will be imported as is, using the original name and folder.
+          </span>
+          <span>
+            If you already have the same app installed, it will prevent you from overwriting it.
+          </span>
+        } @else if (
+          importForm.get('importMode')?.value === importModeValues.importAsTemplate
+        ) {
+          <span>
+            The app will be imported using a new name / folder.
+          </span>
+          <span>
+            This allows you to create multiple isolated copies of the same app or to create something very different using this app as a
+            template.
+          </span>
+          <br />
+          <mat-form-field
+            color="accent"
+            class="eav-mat-form-field"
+            style="max-width: 300px"
+          >
+            <mat-label>Name</mat-label>
+            <input
+              matInput
+              type="text"
+              formControlName="name"
+            />
+          </mat-form-field>
+        }
+      </form>
+      <br />
+    }
+
+    <div>
+      <button
+        mat-raised-button
+        tippy="Open file browser"
+        [disabled]="uploading() || importForm.invalid"
+        (click)="fileInput.click()"
+      >
+        @if (!files().length) {
+          <div>Select or drop file</div>
+        }
+        @for (file of files(); track file) {
+          <div>{{ file.name }}</div>
+        }
+      </button>
+
+      <input
+        #fileInput
+        type="file"
+        multiple
+        (change)="filesChanged($event)"
+        class="hide"
+      />
+
+      @if (uploadType() == UploadTypes.App && !files().length) {
+        <button
+          mat-raised-button
+          class="eav-app-catalog-button eav-action-button"
+          [disabled]="uploading() || importForm.invalid"
+          tippy="Open app catalog"
+          (click)="toggleShowAppCatalog()"
+        >
+          Get recommended Apps from Catalog
+        </button>
+      }
+
+      @if (files().length) {
+        <button
+          class="eav-action-button"
+          style="margin-left: 12px"
+          mat-raised-button
+          [disabled]="
+            !files().length ||
+            uploading() ||
+            !!result() ||
+            importForm.invalid"
+          (click)="upload()"
+        >
+          Upload
+        </button>
+      }
+    </div>
+    @if (result()) {
+      <div class="eav-result-container">
+        @if (result().Success) {
+          <div class="sxc-message sxc-message-info">
+            Upload succeeded. See the messages below for more information.
+            @if (uploadType() != UploadTypes.ImportParts) {
+              <a href="javascript:void(0)" (click)="closeDialog(true)">Close</a>
+            } @else {
+              <a href="javascript:void(0)" (click)="cleanUpload()">Clean</a>
+            }
+          </div>
+        }
+        @if (!result().Success) {
+          <div class="sxc-message sxc-message-error">
+            Upload failed. See the messages below for more information.
+            @if (uploadType() != UploadTypes.ImportParts) {
+              <a href="javascript:void(0)" (click)="closeDialog(true)">Close</a>
+            } @else {
+              <a href="javascript:void(0)" (click)="cleanUpload()">Clean</a>
+            }
+          </div>
+        }
+        @for (message of result().Messages; track message) {
+          <div
+            class="sxc-message"
+            [ngClass]="{
+              'sxc-message-warning': message.MessageType === FileUploadMessageTypes.Warning,
+              'sxc-message-success': message.MessageType === FileUploadMessageTypes.Success,
+              'sxc-message-error': message.MessageType === FileUploadMessageTypes.Error,
+            }"
+          >
+            {{ message.Text }}
+          </div>
+        }
+      </div>
+    }
+    @if (
+      uploadType() == UploadTypes.App
+        && showAppCatalog()
+        && !files().length
+        && importForm.valid
+      ) {
+      @if (ready) {
+        <iframe
+          #installerWindow
+          class="eav-app-catalog-iframe"
+          [src]="remoteInstallerUrl"
+        ></iframe>
+      }
+      @if (showProgress) {
+        <div class="eav-progress">
+          <mat-progress-spinner [mode]="'indeterminate'"
+          ></mat-progress-spinner>
+          <span>
+            Installing {{ currentPackage?.displayName }}..
+          </span>
+        </div>
+      }
+    }
+  </div>
+</div>

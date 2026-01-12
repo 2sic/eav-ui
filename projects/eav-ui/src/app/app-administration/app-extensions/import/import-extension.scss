@@ -1,0 +1,19 @@
+.disabled {
+  opacity: 0.25;
+  pointer-events: none;
+}
+
+.eav-app-catalog-button {
+  margin-left: 12px;
+}
+
+.eav-app-catalog-iframe {
+  margin-top: 16px;
+  width: 100%;
+  height: 500px;
+  border: none;
+}
+
+mat-slide-toggle {
+  margin-left: 5px;
+}

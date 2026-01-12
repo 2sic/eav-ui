@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { EditRoutes } from '../edit/edit.routing';
-import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
+import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry';
 import { manageContentListDialog } from './manage-content-list-dialog.config';
 
 export const manageContentRoutes: Routes = [

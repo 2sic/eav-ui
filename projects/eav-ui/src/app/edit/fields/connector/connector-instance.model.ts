@@ -1,15 +1,15 @@
+import { Signal } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { Observable } from 'rxjs';
 import { Connector } from '../../../../../../edit-types/src/Connector';
-import { ConnectorDialog } from '../../../../../../edit-types/src/ConnectorDialog';
 import { ConnectorData } from '../../../../../../edit-types/src/ConnectorData';
-import { FieldConfig } from '../../../../../../edit-types/src/FieldConfig';
+import { ConnectorDialog } from '../../../../../../edit-types/src/ConnectorDialog';
 import { ExperimentalProps } from '../../../../../../edit-types/src/ExperimentalProps';
+import { FieldConfig } from '../../../../../../edit-types/src/FieldConfig';
 import { loadScripts } from '../../../shared/helpers/load-scripts.helper';
-import { FormConfiguration } from '../../form/form-configuration.model';
-import { Signal } from '@angular/core';
-import { ScriptsLoaderService } from '../../shared/services/scripts-loader.service';
-import { toObservable } from '@angular/core/rxjs-interop';
 import { classLog } from '../../../shared/logging';
+import { FormConfiguration } from '../../form/form-configuration.model';
+import { ScriptsLoaderService } from '../../shared/services/scripts-loader.service';
 
 export class ConnectorInstance<T = any> implements Connector<T> {
   
@@ -21,7 +21,10 @@ export class ConnectorInstance<T = any> implements Connector<T> {
 
   get field() { return this.fieldConfigSignal(); }
 
-  get field$() { return this.#field$ ??= toObservable(this.fieldConfigSignal, { injector: this._experimental.injector }) }
+  get field$() {
+    return this.#field$
+      ??= toObservable(this.fieldConfigSignal, { injector: this._experimental.injector })
+  }
   #field$: Observable<FieldConfig>;
 
   constructor(

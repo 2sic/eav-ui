@@ -7,7 +7,7 @@ export const createInheritedAppDialog: DialogConfig = {
   panelClass: null,
 
   async getComponent() {
-    const { CreateInheritedAppComponent } = await import('./create-inherited-app.component');
+    const { CreateInheritedAppComponent } = await import('./create-inherited-app');
     return CreateInheritedAppComponent;
   }
 };

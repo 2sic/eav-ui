@@ -28,7 +28,7 @@ export class DataAdapterQuery extends DataAdapterEntityBase {
   }
 
   fetchItems(): void {
-    const l = this.log.fnIfInList('fetchItems', 'fields', this.name);
+    const l = this.log.fnIfInFields('fetchItems', this.name);
     this.syncParams();
     // note: it's kind of hard to produce this error, because the config won't save without a query
     if (!this.fieldState.settings().Query) {

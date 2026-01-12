@@ -7,7 +7,7 @@ export const analyzeSettingsDialog: DialogConfig = {
   panelClass: null,
 
   async getComponent() {
-    const { AnalyzeSettingsComponent } = await import('./analyze-settings.component');
+    const { AnalyzeSettingsComponent } = await import('./analyze-settings');
     return AnalyzeSettingsComponent;
   }
 };

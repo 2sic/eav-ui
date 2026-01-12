@@ -7,7 +7,7 @@ export const manageContentListDialog: DialogConfig = {
   panelClass: null,
 
   async getComponent() {
-    const { ManageContentListComponent } = await import('./manage-content-list.component');
+    const { ManageContentListComponent } = await import('./manage-content-list');
     return ManageContentListComponent;
   }
 };

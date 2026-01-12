@@ -93,7 +93,11 @@ export abstract class DataSourceEntityBase extends DataSourceBase {
   public override loading = computedObj('loading', () => this.#fullList().loading || this.#modified().loading) as WritableSignal<boolean>;
 
   initPrefetch(entityGuids: string[]): void {
-    const l = this.log.fnIfInList('initPrefetch', 'fields', this.fieldName, { entityGuids });
+    const l = this.log.fnIfInFields('initPrefetch', this.fieldName, { entityGuids });
+    // in rare cases - such as json-based entities (which are never stored as real entities)
+    // the entityGuids can be null, in which case a prefetch would be pointless and cause errors
+    if (entityGuids == null)
+      return l.end('no entity guids to prefetch');
     const guids = entityGuids.filter(RxHelpers.distinct);
     this.#loadMoreIntoCache(this.#prefetchNew, guids, 'initPrefetch');
     l.end();
@@ -101,7 +105,7 @@ export abstract class DataSourceEntityBase extends DataSourceBase {
 
   /** Set parameters for retrieval - either contentTypeName or query url parameters */
   setParams(params: string): void {
-    this.log.fnIfInList('setParams', 'fields', this.fieldName, { params });
+    this.log.fnIfInFields('setParams', this.fieldName, { params });
     this.#typeOrParams.set(params);
   }
 
@@ -117,7 +121,7 @@ export abstract class DataSourceEntityBase extends DataSourceBase {
    */
   #loadMoreIntoCache(target: WritableSignal<DataWithLoading<PickerItem[]>>, additionalGuids: string[], msgForLog: string): void {
     const params = this.#typeOrParams();
-    const l = this.log.fnIfInList('loadMoreIntoSignal', 'fields', this.fieldName, { additionalGuids, params, msgForLog });
+    const l = this.log.fnIfInFields('loadMoreIntoSignal', this.fieldName, { additionalGuids, params, msgForLog });
     if (additionalGuids == null || additionalGuids.length === 0)
       return l.end('no additional guids to load/refresh');
 

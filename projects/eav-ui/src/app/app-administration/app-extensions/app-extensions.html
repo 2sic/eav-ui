@@ -20,20 +20,22 @@
         [gridOptions]="gridOptions"
       />
     }
-    <mat-dialog-actions class="eav-dialog-actions">
-      <a [href]="urlToUploadExtension()">
-        <button
-          mat-button
-          class="eav-button__with-icon"
-          tippy="Upload Extension ZIP"
-          tippyPlacement="top"
-        >
-          <mat-icon class="eav-icon">upload</mat-icon>
-          <span>Upload</span>
-        </button>
-      </a>
+    <mat-dialog-actions
+      class="eav-dialog-actions"
+      align="end"
+    >
+      <button
+        mat-fab
+        mat-elevation-z24
+        class="grid-fab"
+        tippy="Add Extension"
+        tippyPlacement="top"
+        (click)="importExtension()"
+      >
+        <mat-icon>add</mat-icon>
+      </button>
     </mat-dialog-actions>
   </app-grid-with-help>
-
-  <router-outlet></router-outlet>
 </div>
+
+<router-outlet></router-outlet>

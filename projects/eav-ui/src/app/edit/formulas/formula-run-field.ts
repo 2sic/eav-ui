@@ -60,7 +60,7 @@ export class FormulaRunField {
     reuseExecSpecs: FormulaExecutionSpecs,
     setUpdHelper: FieldSettingsUpdateHelper,
   ): FieldFormulasResult {
-    const l = this.log.fnIfInList('runOrInitSettings', 'fields', fieldName, { fieldName });
+    const l = this.log.fnIfInFields('runOrInitSettings', fieldName, { fieldName });
 
     // Get the latest picker data and check if it has changed - as it affects which formulas to run
     const pickHelp = new FormulaFieldPickerHelper(fieldName, fieldConstants, propsBefore);
@@ -124,7 +124,7 @@ export class FormulaRunField {
     formulas: FormulaCacheItem[],
     reuseObjectsForFormulaDataAndContext: FormulaExecutionSpecs,
   ): FieldFormulasResultPartialSettings {
-    const l = this.log.fnIfInList('runAllOfField', 'fields', formulas[0].fieldName, { runParams, formulas });
+    const l = this.log.fnIfInFields('runAllOfField', formulas[0].fieldName, { runParams, formulas });
 
     // Target variables to fill using formula result
     let wip: FieldFormulasResultPartialSettings = {
@@ -205,7 +205,7 @@ export class FormulaRunField {
 
     const { formula, fieldName, params, title, devHelper, valHelper } = this.runOneHelper.getPartsFor(execSpecs);
 
-    const l = this.log.fnIfInList('runFormula', 'fields', fieldName, { fieldName });
+    const l = this.log.fnIfInFields('runFormula', fieldName, { fieldName });
 
     l.a(`formula version: ${formula.version}, entity: ${title}, field: ${fieldName}, target: ${formula.target}`, {formula});
     try {

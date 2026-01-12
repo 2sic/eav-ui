@@ -5,7 +5,8 @@ import { classLog } from '../logging';
 import { ServiceBase } from '../services/service-base';
 
 const logSpecs = {
-  doOnDialogClosed: true,
+  doOnDialogClosed: false,
+  doOnDialogClosedWithData: true,
 };
 
 /**
@@ -53,7 +54,7 @@ export class DialogRoutingService extends ServiceBase {
     }, {} as Record<string, string>);
   }
 
-  state<T = any>() { return this.router.getCurrentNavigation().extras?.state as T; }
+  state<T = any>() { return this.router.currentNavigation().extras?.state as T; }
 
   /**
    * Preferred way to register a callback, since the caller doesn't need to worry about subscriptions.
@@ -70,7 +71,7 @@ export class DialogRoutingService extends ServiceBase {
   }
 
   public doOnDialogClosedWithData(callback: (data: any) => void) {
-    const l = this.log.fnIf('doOnDialogClosed');
+    const l = this.log.fnIf('doOnDialogClosedWithData');
     this.subscriptions.add(
       this.#childDialogClosedWithData().subscribe(({ state }) => {
         l.a('Dialog closed', { state });
@@ -122,7 +123,7 @@ export class DialogRoutingService extends ServiceBase {
           event,
           firstChild: this.route.snapshot.firstChild,
           snapShot: this.route.snapshot,
-          state: this.router.getCurrentNavigation()?.extras.state,
+          state: this.router.currentNavigation()?.extras.state,
         });
         l.a('NavigationEnd', { event });
         l.end();
@@ -130,7 +131,7 @@ export class DialogRoutingService extends ServiceBase {
       startWith(!!this.route.snapshot.firstChild),
       map(() => ({
         hasChildNow: !!this.route.snapshot.firstChild,
-        state: this.router.getCurrentNavigation()?.extras.state,
+        state: this.router.currentNavigation()?.extras.state,
       })),
       pairwise(),
       filter(([prev, curr]) => prev.hasChildNow && !curr.hasChildNow),

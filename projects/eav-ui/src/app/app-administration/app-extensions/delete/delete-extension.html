@@ -1,0 +1,47 @@
+<div class="eav-dialog">
+  <div class="eav-dialog-header">
+    <div class="eav-dialog-header__title">Delete {{ extensionFolder }}</div>
+    <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <div class="eav-dialog-content">
+    <!-- Show Details / Stats etc. -->
+    <mat-accordion>
+      <mat-expansion-panel [expanded]="true">
+        <mat-expansion-panel-header>
+          <mat-panel-title>Extension Details</mat-panel-title>
+        </mat-expansion-panel-header>
+        <app-inspect-extension [data]="preflightResult()" />
+      </mat-expansion-panel>
+    </mat-accordion>
+
+    <!-- Show special warnings if necessary -->
+    @if (totalLocalEntities() > 0) {
+      <p>
+        Caution: This app has {{ totalLocalEntities() }} local entities
+        which were created using content-types of this extension.
+        You may want to also delete these entities.
+      </p>
+      <p>
+        <mat-slide-toggle [(ngModel)]="withData">
+          With Data
+        </mat-slide-toggle>
+      </p>
+    }
+    @if (mustForceDelete()) {
+      <mat-slide-toggle [(ngModel)]="forceDelete">
+        Force Delete
+      </mat-slide-toggle>
+    }
+  </div>
+
+  <mat-dialog-actions align="end">
+    <app-save-close-button-fab
+      icon="delete"
+      [label]="'Delete and close (ctrl + enter)'"
+      (action)="deleteAndClose()"
+    />
+  </mat-dialog-actions>
+</div>

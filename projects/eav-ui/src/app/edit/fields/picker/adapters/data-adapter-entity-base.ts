@@ -2,11 +2,12 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { inject } from '@angular/core';
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
+import { ItemIdHelper } from 'projects/eav-ui/src/app/shared/models/item-id-helper';
 import { take } from 'rxjs';
 import { transient } from '../../../../../../../core/transient';
 import { FieldSettingsPickerMerged } from '../../../../../../../edit-types/src/FieldSettings-Pickers';
 import { FieldSettingsWithPickerSource } from '../../../../../../../edit-types/src/PickerSources';
-import { EditForm, EditPrep } from "../../../../../app/shared/models/edit-form.model";
+import { EditForm } from "../../../../../app/shared/models/edit-form.model";
 import { EntityService } from "../../../../../app/shared/services/entity.service";
 import { ClassLogger } from '../../../../shared/logging/class/class-logger';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
@@ -96,7 +97,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase implements D
 
   initPrefetch(prefetchGuids: string[]): void {
     this.syncParams();
-    this.log.fnIfInList('initPrefetch', 'fields', this.name, { prefetchGuids });
+    this.log.fnIfInFields('initPrefetch', this.name, { prefetchGuids });
     (this.dataSource() as DataSourceEntityBase).initPrefetch?.(prefetchGuids);
   }
 
@@ -118,8 +119,8 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase implements D
       items: [
         {
           ...(editGuid == null)
-            ? EditPrep.newFromType(entityType ?? this.contentType(), this.#urlToObject(this.#prefill.result()))
-            : EditPrep.editId(this.optionsOrHints().find(item => item.value === editGuid)?.id ?? editParams.entityId),
+            ? ItemIdHelper.newFromType(entityType ?? this.contentType(), this.#urlToObject(this.#prefill.result()))
+            : ItemIdHelper.editId(this.optionsOrHints().find(item => item.value === editGuid)?.id ?? editParams.entityId),
           ...( formParams ? { ClientData: { parameters: formParams } } : {} ),
         },
       ],

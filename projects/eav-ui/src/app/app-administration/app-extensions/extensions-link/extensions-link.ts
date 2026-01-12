@@ -5,10 +5,12 @@ import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-extensions-link',
-  standalone: true,
-  imports: [MatIconModule, MatButtonModule],
   templateUrl: './extensions-link.html',
-  styleUrls: ['./extensions-link.scss']
+  styleUrls: ['./extensions-link.scss'],
+  imports: [
+    MatIconModule,
+    MatButtonModule
+  ],
 })
 export class AppExtensionsLinkCell implements ICellRendererAngularComp {
   mainLink?: string | undefined;

@@ -4,7 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { FeatureNames } from '../../../features/feature-names';
 import { FeaturesService } from '../../../features/features.service';
-import { openFeatureDialog } from '../../../features/shared/base-feature.component';
+import { openFeatureDialog } from '../../../features/shared/base-feature';
 import { classLog } from '../../../shared/logging';
 import { ElementEventListener } from '../../shared/controls/element-event-listener.model';
 import { FieldConfigSet } from '../field-config-set.model';

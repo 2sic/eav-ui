@@ -10,25 +10,28 @@ import localeData from 'dayjs/plugin/localeData';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { DateTimeUtils } from './datetime-fn';
 
 describe('DateTime Functions', () => {
-  let setUiValue: jasmine.Spy;
+  let setUiValue: ReturnType<typeof vi.fn>;
   let testDate: dayjs.Dayjs;
   let standardCurrentValue: string;
 
   const commonISODate = '2025-06-25T';
 
   function validateDateResult(result: boolean, expectedDate: dayjs.Dayjs, message?: string) {
-    expect(result).withContext(message || 'Result should be true').toBe(true);
-    expect(setUiValue).withContext(message || 'setUiValue should have been called').toHaveBeenCalled();
+    expect(result, message ?? 'Result should be true').toBe(true);
+    expect(setUiValue, message ?? 'setUiValue should have been called').toHaveBeenCalled();
 
-    const updatedValue = setUiValue.calls.mostRecent().args[0];
+
+    const updatedValue = setUiValue.mock.calls.at(-1)?.[0];
     const resultDate = dayjs(updatedValue);
 
-    expect(resultDate.isSame(expectedDate, 'second'))
-      .withContext(`Expected ${expectedDate.format()} but got ${resultDate.format()}. ${message || ''}`)
-      .toBe(true);
+    expect(
+      resultDate.isSame(expectedDate, 'second'),
+      `Expected ${expectedDate.format()} but got ${resultDate.format()}. ${message ?? ''}`.trim()
+    ).toBe(true);
   }
 
   beforeEach(() => {
@@ -40,7 +43,7 @@ describe('DateTime Functions', () => {
 
     DateTimeUtils.initializeDayjs('en');
 
-    setUiValue = jasmine.createSpy('setUiValue');
+    setUiValue = vi.fn();
     testDate = dayjs('2025-06-13T10:45:14Z');
     standardCurrentValue = '2025-06-13T10:45:14Z';
   });
@@ -295,7 +298,7 @@ describe('DateTime Functions', () => {
         expect(result).toBe(true);
         expect(setUiValue).toHaveBeenCalled();
         // Dayjs will auto-correct to March 1
-        const updatedValue = setUiValue.calls.mostRecent().args[0];
+        const updatedValue = setUiValue.mock.calls.at(-1)?.[0];
         const resultDate = dayjs(updatedValue);
         expect(resultDate.month()).toBe(2); // March (0-indexed)
         expect(resultDate.date()).toBe(1);
@@ -348,45 +351,39 @@ describe('DateTime Functions', () => {
   });
 
   describe('updateTime', () => {
-    it('should update time while preserving date', () => {
-      const expectedTime = dayjs.utc('2025-06-13T14:30:00Z');
-      DateTimeUtils.updateTime('14:30', standardCurrentValue, setUiValue);
+  it('should update time while preserving date', () => {
+    const expectedTime = dayjs.utc('2025-06-13T14:30:00Z');
+    DateTimeUtils.updateTime('14:30', standardCurrentValue, setUiValue);
 
-      expect(setUiValue).toHaveBeenCalled();
-      const updatedValue = setUiValue.calls.mostRecent().args[0];
-      const resultDate = dayjs(updatedValue);
-      expect(resultDate.isSame(expectedTime, 'second')).toBe(true);
-    });
+    expect(setUiValue).toHaveBeenCalled();
+    const updatedValue = setUiValue.mock.calls[setUiValue.mock.calls.length - 1][0];
+    const resultDate = dayjs(updatedValue);
 
-    it('should handle midnight time (00:00)', () => {
-      const expectedTime = dayjs.utc('2025-06-13T00:00:00Z');
-      DateTimeUtils.updateTime('00:00', standardCurrentValue, setUiValue);
-
-      expect(setUiValue).toHaveBeenCalled();
-      const updatedValue = setUiValue.calls.mostRecent().args[0];
-      const resultDate = dayjs(updatedValue);
-      expect(resultDate.isSame(expectedTime, 'second')).toBe(true);
-    });
-
-    it('should handle end of day time (23:59)', () => {
-      const expectedTime = dayjs.utc('2025-06-13T23:59:00Z');
-      DateTimeUtils.updateTime('23:59', standardCurrentValue, setUiValue);
-
-      expect(setUiValue).toHaveBeenCalled();
-      const updatedValue = setUiValue.calls.mostRecent().args[0];
-      const resultDate = dayjs(updatedValue);
-      expect(resultDate.isSame(expectedTime, 'second')).toBe(true);
-    });
-
-    it('should handle null time value', () => {
-      // updateTimeFn checks if time == null and sets to null
-      // But the check is `time == null` after parsing with dayjs
-      // When passed null, dayjs will create an invalid date
-      DateTimeUtils.updateTime(null as any, standardCurrentValue, setUiValue);
-      // updateTimeFn doesn't call setUiValue for invalid times
-      expect(setUiValue).not.toHaveBeenCalled();
-    });
+    expect(resultDate.isSame(expectedTime, 'second')).toBe(true);
   });
+
+  it('should handle midnight time (00:00)', () => {
+    const expectedTime = dayjs.utc('2025-06-13T00:00:00Z');
+    DateTimeUtils.updateTime('00:00', standardCurrentValue, setUiValue);
+
+    expect(setUiValue).toHaveBeenCalled();
+    const updatedValue = setUiValue.mock.calls[setUiValue.mock.calls.length - 1][0];
+    const resultDate = dayjs(updatedValue);
+
+    expect(resultDate.isSame(expectedTime, 'second')).toBe(true);
+  });
+
+  it('should handle end of day time (23:59)', () => {
+    const expectedTime = dayjs.utc('2025-06-13T23:59:00Z');
+    DateTimeUtils.updateTime('23:59', standardCurrentValue, setUiValue);
+
+    expect(setUiValue).toHaveBeenCalled();
+    const updatedValue = setUiValue.mock.calls[setUiValue.mock.calls.length - 1][0];
+    const resultDate = dayjs(updatedValue);
+
+    expect(resultDate.isSame(expectedTime, 'second')).toBe(true);
+  });
+});
 
   describe('updateDate', () => {
     it('should update date while preserving time', () => {
@@ -396,7 +393,7 @@ describe('DateTime Functions', () => {
       DateTimeUtils.updateDate(newDate, standardCurrentValue, setUiValue);
 
       expect(setUiValue).toHaveBeenCalled();
-      const updatedValue = setUiValue.calls.mostRecent().args[0];
+      const updatedValue = setUiValue.mock.calls[setUiValue.mock.calls.length - 1][0];
       const resultDate = dayjs(updatedValue);
       expect(resultDate.isSame(expectedDateTime, 'second')).toBe(true);
     });

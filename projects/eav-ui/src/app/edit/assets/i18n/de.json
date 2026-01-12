@@ -255,7 +255,7 @@
   "License-EditUi-Warning-Label": "Vorschau",
   "License-EditUi-Warning-Tooltip": "Du verwendest Funktionen, die nicht lizenziert sind.",
   "LanguageSettings": {
-    "Title": "Spracheinstellungen (BETA)",
+    "Title": "Spracheinstellungen",
     "Intro": "Standardmässig verwenden Schaltflächen und Beschriftungen die aktuelle Sprache. Hier können Sie ein anderes Verhalten wählen.",
     "Subtitle": "Ihre Spracheinstellungen",
     "UseCurrentLanguage": "Aktuelle Sprache verwenden (Standard)",

@@ -1,7 +1,7 @@
+import { describe, expect, it } from 'vitest';
 import { EavEntity } from './eav-entity';
-import { testAttributesDto, testAttributesInternal } from './eav-entity-attributes.ts.data.spec';
-import { testEntityHeaderOnly2Dto, testEntityHeaderOnly2Eav, testEntityHeaderOnlyDto, testEntityHeaderOnlyEav } from './eav-entity.ts.data.spec';
-
+import { testAttributesDto, testAttributesInternal } from './eav-entity-attributes.ts.data';
+import { testEntityHeaderOnly2Dto, testEntityHeaderOnly2Eav, testEntityHeaderOnlyDto, testEntityHeaderOnlyEav } from './eav-entity.ts.data';
 
 
 describe('EavEntity.convertOne(Headers)', () => {
