@@ -108,14 +108,15 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
       if (this.route.pathFromRoot.length <= 3) {
         try {
           window.parent.$2sxc.totalPopup.close();
-        } catch (error) { }
+        }
+        catch (error) { }
         return;
       }
 
-      if (this.route.snapshot.url.length > 0)
-        this.router.navigate(['./'], { relativeTo: this.route.parent, state: data });
-      else
-        this.router.navigate(['./'], { relativeTo: this.route.parent.parent, state: data });
+      const parent = this.route.snapshot.url.length > 0
+        ? this.route.parent
+        : this.route.parent.parent;
+      this.router.navigate(['./'], { relativeTo: parent, state: data });
     });
 
     this.changeDetectorRef.markForCheck();
