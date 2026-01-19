@@ -4,7 +4,8 @@ const chalkError = chalk.red;
 const chalkSuccess = chalk.green;
 const chokidar = require('chokidar');
 const fs = require('fs-extra');
-const bc = require('@2sic.com/2sxc-load-build-config');
+// const bc = require('@2sic.com/2sxc-load-build-config');
+const bc = require('../../2sxc-ui/packages/2sxc-load-build-config');
 const buildConfig = bc.BuildConfig;
 
 const sourcePath = 'dist';
@@ -33,8 +34,8 @@ const calculatePaths = (path) => {
   const src = path.slice(0, separatorIndex);
   const file = path.slice(separatorIndex + 1);
 
-  const targets = outputPaths.map(p => src.startsWith(sourcePathMain) 
-    ? `${p}${src.replace(sourcePathMain, '')}` 
+  const targets = outputPaths.map(p => src.startsWith(sourcePathMain)
+    ? `${p}${src.replace(sourcePathMain, '')}`
     : `${p}${src.replace(sourcePath, '')}`);
 
   return {
@@ -107,7 +108,7 @@ watcher
     if (isExcluded) return;
     paths.targets.forEach(target => {
       fs.removeSync(`${target}/${paths.file}`);
-    }); 
+    });
   })
   .on('error', error => {
     console.log(chalkError(`Watcher error: ${error}`));
