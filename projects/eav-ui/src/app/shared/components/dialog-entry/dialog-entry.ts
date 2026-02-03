@@ -61,6 +61,9 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
     this.#dialog.close();
   }
 
+  // Open the dialog with the specified component and configuration
+  // separated into its own method for clarity
+  // and to allow for async component loading
   private openDialogComponent(dialogConfig: DialogConfig, component: Type<any>) {
     this.log.a(`Open dialog(initContext: ${dialogConfig.initContext})`, { name: dialogConfig.name, 'Contextid:': this.context.log.svcId, 'Context:': this.context });
     if (dialogConfig.initContext)
@@ -83,6 +86,16 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
       viewContainerRef: this.viewContainerRef,
     });
 
+    // Workaround / Improvement for Angular Material Dialog and Popover issue
+    // With Angular 21 the popover attribute is added to the overlay container
+    // and causes issues with other elements like tooltips inside the dialog
+    // access the overlay host element
+    const dialogOverlayRef = this.#dialog["_ref"].overlayRef._host;
+    // remove popover attribute to avoid issues
+    dialogOverlayRef.removeAttribute('popover');
+
+    // Handle dialog close event
+    // When the dialog is closed, navigate or close popup as needed
     this.#dialog.afterClosed().subscribe((data: any) => {
       this.log.a('Dialog was closed - name:' + dialogConfig.name, { data });
 
@@ -95,14 +108,15 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
       if (this.route.pathFromRoot.length <= 3) {
         try {
           window.parent.$2sxc.totalPopup.close();
-        } catch (error) { }
+        }
+        catch (error) { }
         return;
       }
 
-      if (this.route.snapshot.url.length > 0)
-        this.router.navigate(['./'], { relativeTo: this.route.parent, state: data });
-      else
-        this.router.navigate(['./'], { relativeTo: this.route.parent.parent, state: data });
+      const parent = this.route.snapshot.url.length > 0
+        ? this.route.parent
+        : this.route.parent.parent;
+      this.router.navigate(['./'], { relativeTo: parent, state: data });
     });
 
     this.changeDetectorRef.markForCheck();
