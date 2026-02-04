@@ -8,7 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EntityLightIdentifier } from 'projects/edit-types/src/EntityLight';
-import { Observable, of, take } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { transient } from '../../../../../core';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm } from '../../shared/models/edit-form.model';
@@ -21,7 +21,6 @@ import { SysDataService } from '../../shared/services/sys-data.service';
 import { ConfirmDeleteDialogComponent } from '../sub-dialogs/confirm-delete-dialog/confirm-delete-dialog';
 import { ConfirmDeleteDialogData } from '../sub-dialogs/confirm-delete-dialog/confirm-delete-dialog.models';
 import { CodeGeneratorNew } from './code-generator';
-import { CopilotService } from './copilot-service';
 
 type DataCopilotConfiguration = {
   Guid: string;
@@ -46,7 +45,7 @@ export class CopilotGeneratorComponent {
   outputType = input<string>();
   title? = input<string>('Copilot Generator');
 
-  #copilotSvc = transient(CopilotService);
+  // #copilotSvc = transient(CopilotService);
   #entitySvc = transient(EntityService);
   #dialogRouter = transient(DialogRoutingService);
   #matDialog = transient(MatDialog);
@@ -61,7 +60,7 @@ export class CopilotGeneratorComponent {
   readonly #copilotConfigurationGuid = 'b08dcd23-2eb0-4a5e-a3d0-3178d2aae451';
 
   webApiGeneratedCode: string = 'admin/code/generateDataModels';
-  editions$ = this.#copilotSvc.getEditions();
+  // editions$ = this.#copilotSvc.getEditions();
 
   showConfigurationDropdown = signal(false);
 
@@ -95,15 +94,28 @@ export class CopilotGeneratorComponent {
     return gens.find(g => g.Name === selected);
   });
 
-  selectedEdition = '';
+  // selectedEdition = '';
+
+  #editions = this.#dataSvc.get<{ Name: string; Label: string; Description: string, IsDefault: boolean }>({
+    source: 'ToSic.Sxc.DataSources.AppEditions',
+  });
+
+  editions = computed(() => this.#editions().map(e => ({
+    name: e.Name,
+    label: `/${e.Name}/AppCode/Data`.replace(/\/\//g, '/'),
+    description: (e.Description || "no description provided") + (e.IsDefault ? ' ✅' : '')
+  })));
+
+  /** The name of the selected generator */
+  selectedEditionName = linkedSignal(() => this.#editions().find(e => e.IsDefault)?.Name ?? '');
 
   ngOnInit(): void {
     // this.generators$.pipe(take(1)).subscribe(gens => {
     //   this.selectedGenerator = gens[0]?.name ?? '';
     // });
-    this.#copilotSvc.specs.pipe(take(1)).subscribe(specs => {
-      this.selectedEdition = specs.editions.find(e => e.isDefault)?.name ?? '';
-    });
+    // this.#copilotSvc.specs.pipe(take(1)).subscribe(specs => {
+    //   this.selectedEdition = specs.editions.find(e => e.isDefault)?.name ?? '';
+    // });
     this.fetchEntities();
 
     // Subscribe to route changes to refresh entities when dialog closes
@@ -172,7 +184,7 @@ export class CopilotGeneratorComponent {
     this.#http.get<RichResult>(this.webApiGeneratedCode, {
       params: {
         appId: this.#context.appId,
-        edition: this.selectedEdition,
+        edition: this.selectedEditionName(),
         generator: this.selectedGeneratorName(),
         ...(this.selectedEntity ? { configurationId: this.selectedEntity.Id } : {}),
       }
