@@ -25,6 +25,7 @@ import { AppExtensionActions } from './extension-actions/extension-actions';
 import { DefaultExtensionEdition, Extension } from './extension.model';
 import { AppExtensionsLinkCell } from './extensions-link/extensions-link';
 import { ImportExtensionComponent } from './import/import-extension';
+import { ExtensionInfoDialog } from './info-dialog/extension-info-dialog';
 
 @Component({
   selector: 'app-extensions',
@@ -149,6 +150,17 @@ export class AppExtensions implements OnInit {
 
     this.#router.navigate(routeSegments, {
       queryParams: edition ? { edition } : undefined
+    });
+  }
+
+  #openInfo(ext: Extension): void {
+    this.#dialog.open(ExtensionInfoDialog, {
+      data: {
+        name: ext.folder,
+        configuration: ext.configuration
+      },
+      width: '800px',
+      maxWidth: '90vw'
     });
   }
 
@@ -289,7 +301,7 @@ export class AppExtensions implements OnInit {
           const edition = params.data?.edition || DefaultExtensionEdition;
           const version = params.data?.configuration?.version;
           return `
-            <div style="line-height:1.3;">
+            <div style="display: flex; flex-direction: column; justify-content: center; height: 100%; line-height: 1.3;">
               <div>${edition}</div>
               <div>${version ? `v${version}` : 'version n/a'}</div>
             </div>
@@ -334,6 +346,7 @@ export class AppExtensions implements OnInit {
                 case 'download': return this.#extensionsSvc.downloadExtension(ext.folder);
                 case 'delete': return this.#deleteExtension(ext.folder, ext.edition);
                 case 'inspect': return this.#openInspection(ext.folder, ext.edition);
+                case 'info': return this.#openInfo(ext);
                 case 'openSettings': return this.#openEditContentType(
                   ext.configuration?.settingsContentType
                 );
