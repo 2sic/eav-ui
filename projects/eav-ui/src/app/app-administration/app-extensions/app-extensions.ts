@@ -307,6 +307,17 @@ export class AppExtensions implements OnInit {
         },
       },
       {
+        headerName: 'Version',
+        field: 'configuration.version',
+        width: 100,
+        sortable: true,
+        filter: 'agTextColumnFilter',
+        cellRenderer: (params: { data: Extension }) => {
+          const version = params.data?.configuration?.version;
+          return this.cellTextRenderer(version || 'N/A');
+        },
+      },
+      {
         headerName: 'Links',
         sortable: false,
         field: 'configuration.link',
