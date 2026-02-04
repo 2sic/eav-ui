@@ -44,7 +44,7 @@ import { ImportExtensionComponent } from './import/import-extension';
 })
 export class AppExtensions implements OnInit {
 
-  log = classLog({AppExtensions}, {});
+  log = classLog({ AppExtensions }, {});
 
   #extensionsSvc = transient(AppExtensionsService);
   #router = inject(Router);
@@ -283,15 +283,16 @@ export class AppExtensions implements OnInit {
         headerName: 'Edition',
         field: 'edition',
         sortable: true,
+        maxWidth: 100,
         filter: 'agTextColumnFilter',
         cellRenderer: (params: { data: Extension }) => {
           const edition = params.data?.edition || DefaultExtensionEdition;
+          const version = params.data?.configuration?.version;
           return `
-            <mat-chip-set>
-              <mat-chip>
-                ${edition}
-              </mat-chip>
-            </mat-chip-set>
+            <div style="line-height:1.3;">
+              <div>${edition}</div>
+              <div>${version ? `v${version}` : 'version n/a'}</div>
+            </div>
           `;
         },
       },
@@ -304,17 +305,6 @@ export class AppExtensions implements OnInit {
         cellRenderer: (params: { data: Extension }) => {
           const c = params.data?.configuration;
           return this.cellTextRenderer(c?.createdBy, c?.copyright, '150px');
-        },
-      },
-      {
-        headerName: 'Version',
-        field: 'configuration.version',
-        width: 100,
-        sortable: true,
-        filter: 'agTextColumnFilter',
-        cellRenderer: (params: { data: Extension }) => {
-          const version = params.data?.configuration?.version;
-          return this.cellTextRenderer(version || 'N/A');
         },
       },
       {
