@@ -24,23 +24,29 @@
           <span class="info-value">{{ config.copyright || 'n/a' }}</span>
         </div>
       </div>
-      <div class="info-full-width" *ngIf="config.description">
-        <span class="info-label">Description</span>
-        <div class="info-value" [innerHTML]="getSafeHtml(config.description)"></div>
-      </div>
-      <div class="info-full-width" *ngIf="config.teaser">
-        <span class="info-label">Teaser</span>
-        <div class="info-value" [innerHTML]="getSafeHtml(config.teaser)"></div>
-      </div>
+      @if (config.description) {
+        <div class="info-full-width">
+          <span class="info-label">Description</span>
+          <div class="info-value" [innerHTML]="getSafeHtml(config.description)"></div>
+        </div>
+      }
+      @if (config.teaser) {
+        <div class="info-full-width">
+          <span class="info-label">Teaser</span>
+          <div class="info-value" [innerHTML]="getSafeHtml(config.teaser)"></div>
+        </div>
+      }
     </div>
 
     <!-- Features -->
     <div class="info-section">
       <h3 class="section-title">Features</h3>
       <mat-chip-set class="features-chips">
-        <mat-chip class="feature-chip" *ngFor="let feature of getFeatures()" [class.enabled]="feature.value" [class.disabled]="!feature.value">
-          <span class="feature-name">{{ feature.name }}</span>
-        </mat-chip>
+        @for (feature of getFeatures(); track $index) {
+          <mat-chip class="feature-chip" [class.enabled]="feature.value" [class.disabled]="!feature.value">
+            <span class="feature-name">{{ feature.name }}</span>
+          </mat-chip>
+        }
       </mat-chip-set>
     </div>
 
@@ -48,53 +54,71 @@
     <div class="info-section">
       <h3 class="section-title">Platform Requirements</h3>
       <div class="requirements-list">
-        <div class="requirement-item" *ngFor="let req of getVersionRequirements()">
-          <div class="req-header">
-            <span class="req-platform">{{ req.platform }}</span>
-            <mat-icon class="req-status" [class.supported]="req.supported">{{ req.supported ? 'check_circle' : 'cancel' }}</mat-icon>
+        @for (req of getVersionRequirements(); track $index) {
+          <div class="requirement-item">
+            <div class="req-header">
+              <span class="req-platform">{{ req.platform }}</span>
+              <mat-icon class="req-status" [class.supported]="req.supported">{{ req.supported ? 'check_circle' : 'cancel' }}</mat-icon>
+            </div>
+            <span class="req-version">{{ req.version || 'Not specified' }}</span>
           </div>
-          <span class="req-version">{{ req.version || 'Not specified' }}</span>
-        </div>
+        }
       </div>
     </div>
 
     <!-- Links -->
-    <div class="info-section" *ngIf="config.linkMain || config.linkDocs || config.linkDemo || config.linkSource">
-      <h3 class="section-title">Links</h3>
-      <div class="links-list">
-        <a *ngIf="config.linkMain" [href]="config.linkMain" target="_blank" mat-stroked-button class="link-button">
-          <mat-icon>language</mat-icon>
-          <span>Main Website</span>
-        </a>
-        <a *ngIf="config.linkDocs" [href]="config.linkDocs" target="_blank" mat-stroked-button class="link-button">
-          <mat-icon>description</mat-icon>
-          <span>Documentation</span>
-        </a>
-        <a *ngIf="config.linkDemo" [href]="config.linkDemo" target="_blank" mat-stroked-button class="link-button">
-          <mat-icon>preview</mat-icon>
-          <span>Demo</span>
-        </a>
-        <a *ngIf="config.linkSource" [href]="config.linkSource" target="_blank" mat-stroked-button class="link-button">
-          <mat-icon>code</mat-icon>
-          <span>Source Code</span>
-        </a>
+    @if (config.linkMain || config.linkDocs || config.linkDemo || config.linkSource) {
+      <div class="info-section">
+        <h3 class="section-title">Links</h3>
+        <div class="links-list">
+          @if (config.linkMain) {
+            <a [href]="config.linkMain" target="_blank" mat-stroked-button class="link-button">
+              <mat-icon>language</mat-icon>
+              <span>Main Website</span>
+            </a>
+          }
+          @if (config.linkDocs) {
+            <a [href]="config.linkDocs" target="_blank" mat-stroked-button class="link-button">
+              <mat-icon>description</mat-icon>
+              <span>Documentation</span>
+            </a>
+          }
+          @if (config.linkDemo) {
+            <a [href]="config.linkDemo" target="_blank" mat-stroked-button class="link-button">
+              <mat-icon>preview</mat-icon>
+              <span>Demo</span>
+            </a>
+          }
+          @if (config.linkSource) {
+            <a [href]="config.linkSource" target="_blank" mat-stroked-button class="link-button">
+              <mat-icon>code</mat-icon>
+              <span>Source Code</span>
+            </a>
+          }
+        </div>
       </div>
-    </div>
+    }
 
     <!-- Content Types -->
-    <div class="info-section" *ngIf="config.settingsContentType || config.resourcesContentType">
-      <h3 class="section-title">Content Types</h3>
-      <div class="info-grid">
-        <div class="info-item" *ngIf="config.settingsContentType">
-          <span class="info-label">Settings</span>
-          <span class="info-value code-value">{{ config.settingsContentType }}</span>
-        </div>
-        <div class="info-item" *ngIf="config.resourcesContentType">
-          <span class="info-label">Resources</span>
-          <span class="info-value code-value">{{ config.resourcesContentType }}</span>
+    @if (config.settingsContentType || config.resourcesContentType) {
+      <div class="info-section">
+        <h3 class="section-title">Content Types</h3>
+        <div class="info-grid">
+          @if (config.settingsContentType) {
+            <div class="info-item">
+              <span class="info-label">Settings</span>
+              <span class="info-value code-value">{{ config.settingsContentType }}</span>
+            </div>
+          }
+          @if (config.resourcesContentType) {
+            <div class="info-item">
+              <span class="info-label">Resources</span>
+              <span class="info-value code-value">{{ config.resourcesContentType }}</span>
+            </div>
+          }
         </div>
       </div>
-    </div>
+    }
 
   <div class="dialog-actions">
     <button mat-raised-button (click)="dialog.close()">

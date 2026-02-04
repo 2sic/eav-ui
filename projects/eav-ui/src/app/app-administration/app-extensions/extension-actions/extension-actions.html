@@ -1,16 +1,16 @@
 <div class="actions-component">
   <div class="actions-row">
-    <a
-      *ngIf="!showInfoButton(); else infoButton"
-      (click)="do('edit')"
-      [class.disabled]="!canEditExtension()"
-      class="eav-grid-action-button default-link highlight"
-      matRipple
-      tippy="Edit Extension configuration"
-    >
-      <mat-icon>edit</mat-icon>
-    </a>
-    <ng-template #infoButton>
+    @if (!showInfoButton()) {
+      <a
+        (click)="do('edit')"
+        [class.disabled]="!canEditExtension()"
+        class="eav-grid-action-button default-link highlight"
+        matRipple
+        tippy="Edit Extension configuration"
+      >
+        <mat-icon>edit</mat-icon>
+      </a>
+    } @else {
       <a
         (click)="do('info')"
         class="eav-grid-action-button default-link highlight"
@@ -18,7 +18,7 @@
         tippy="View Extension information">
         <mat-icon>info</mat-icon>
       </a>
-    </ng-template>
+    }
     <a
       (click)="do('download')"
       [class.disabled]="!canEditExtension() || !extHasConfig()"
