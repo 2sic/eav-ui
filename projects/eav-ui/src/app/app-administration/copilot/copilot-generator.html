@@ -6,30 +6,29 @@
     </mat-card-header>
     <mat-card-content>
       <br />
-      <!-- Generator select -->
-      @if (generators$ | async; as generators) {
-        <mat-form-field color="accent" class="eav-mat-form-field">
-          <mat-label>Generator</mat-label>
-          <mat-select required [(value)]="selectedGenerator">
-            <mat-select-trigger>
-              {{ selectedGenerator }}
-            </mat-select-trigger>
-            @for (generator of generators.sort(); track generator) {
-              <mat-option [value]="generator.name">
-                <strong>{{ generator.name }} v{{ generator.version }}</strong
-                ><br />
-                {{ generator.description }}
-              </mat-option>
-            }
-          </mat-select>
-          @if (selectedGenerator$ | async; as selectedGenerator) {
-            <mat-hint [innerHTML]="selectedGenerator.descriptionHtml"></mat-hint>
-          }
-        </mat-form-field>
-        <br />
-      }
 
+      <!-- Generator select -->
+      <mat-form-field color="accent" class="eav-mat-form-field">
+        <mat-label>Generator</mat-label>
+        <mat-select required [(value)]="selectedGeneratorName">
+          <mat-select-trigger>
+            {{ selectedGeneratorName() }}
+          </mat-select-trigger>
+          @for (generator of generators().sort(); track generator) {
+            <mat-option [value]="generator.Name">
+              <strong>{{ generator.Name }} v{{ generator.Version }}</strong
+              ><br />
+              {{ generator.Description }}
+            </mat-option>
+          }
+        </mat-select>
+        @if (selectedGenerator(); as selectedGenerator) {
+          <mat-hint [innerHTML]="selectedGenerator.DescriptionHtml"></mat-hint>
+        }
+      </mat-form-field>
       <br />
+      <br />
+
       <!-- Edition select -->
       @if (editions$ | async; as editions) {
         <mat-form-field color="accent" class="eav-mat-form-field">
@@ -100,9 +99,10 @@
 
         </div>
       }
-
     </mat-card-content>
+
     <div class="eav-card-space-div"></div>
+
     <mat-card-actions align="end">
       <button mat-button class="eav-button__with-icon" (click)="toggleConfigurationDropdown()">
         <mat-icon class="eav-icon">discover_tune</mat-icon>

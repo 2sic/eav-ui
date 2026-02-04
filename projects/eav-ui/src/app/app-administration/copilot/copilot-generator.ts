@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, inject, input, signal, ViewContainerRef } from '@angular/core';
+import { Component, computed, inject, input, linkedSignal, signal, ViewContainerRef } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
@@ -8,7 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EntityLightIdentifier } from 'projects/edit-types/src/EntityLight';
-import { map, Observable, of, take } from 'rxjs';
+import { Observable, of, take } from 'rxjs';
 import { transient } from '../../../../../core';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm } from '../../shared/models/edit-form.model';
@@ -17,8 +17,10 @@ import { RichResult } from '../../shared/models/rich-result';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { Context } from '../../shared/services/context';
 import { EntityService } from '../../shared/services/entity.service';
+import { SysDataService } from '../../shared/services/sys-data.service';
 import { ConfirmDeleteDialogComponent } from '../sub-dialogs/confirm-delete-dialog/confirm-delete-dialog';
 import { ConfirmDeleteDialogData } from '../sub-dialogs/confirm-delete-dialog/confirm-delete-dialog.models';
+import { CodeGeneratorNew } from './code-generator';
 import { CopilotService } from './copilot-service';
 
 type DataCopilotConfiguration = {
@@ -52,6 +54,8 @@ export class CopilotGeneratorComponent {
   #context = transient(Context);
   #http = transient(HttpClient);
 
+  #dataSvc = transient(SysDataService);
+
   #viewContainerRef = inject(ViewContainerRef);
 
   readonly #copilotConfigurationGuid = 'b08dcd23-2eb0-4a5e-a3d0-3178d2aae451';
@@ -64,20 +68,39 @@ export class CopilotGeneratorComponent {
   entities$: Observable<EntityLightIdentifier[]>;
   selectedEntity?: DataCopilotConfiguration;
 
-  generators$ = this.#copilotSvc.getGenerators()
-    .pipe(
-      map((gens) => gens.filter(g => g.outputType === this.outputType()))
-    );
+  // generators$ = this.#copilotSvc.getGenerators()
+  //   .pipe(
+  //     map((gens) => gens.filter(g => g.outputType === this.outputType()))
+  //   );
 
-  selectedGenerator$ = this.generators$.pipe(map(gens => gens.find(g => g.name === this.selectedGenerator)));
+  // selectedGenerator$ = this.generators$.pipe(map(gens => gens.find(g => g.name === this.selectedGenerator)));
 
-  selectedGenerator = '';
+  // selectedGenerator = '';
+
+  /** Load all the generators */
+  generators = this.#dataSvc.get<CodeGeneratorNew>({
+    source: 'ToSic.Sxc.DataSources.CodeGenerators',
+    params: {
+      '$filter': "OutputType eq 'DataModel'",
+    }
+  });
+
+  /** The name of the selected generator */
+  selectedGeneratorName = linkedSignal(() => this.generators()?.[0]?.Name ?? null);
+
+  /** The selected generator object - to display more info */
+  selectedGenerator = computed(() => {
+    const gens = this.generators();
+    const selected = this.selectedGeneratorName();
+    return gens.find(g => g.Name === selected);
+  });
+
   selectedEdition = '';
 
   ngOnInit(): void {
-    this.generators$.pipe(take(1)).subscribe(gens => {
-      this.selectedGenerator = gens[0]?.name ?? '';
-    });
+    // this.generators$.pipe(take(1)).subscribe(gens => {
+    //   this.selectedGenerator = gens[0]?.name ?? '';
+    // });
     this.#copilotSvc.specs.pipe(take(1)).subscribe(specs => {
       this.selectedEdition = specs.editions.find(e => e.isDefault)?.name ?? '';
     });
@@ -150,7 +173,7 @@ export class CopilotGeneratorComponent {
       params: {
         appId: this.#context.appId,
         edition: this.selectedEdition,
-        generator: this.selectedGenerator,
+        generator: this.selectedGeneratorName(),
         ...(this.selectedEntity ? { configurationId: this.selectedEntity.Id } : {}),
       }
     }).subscribe(d => {
