@@ -79,9 +79,9 @@ export class CopilotGeneratorComponent {
   /** Load all the generators */
   generators = this.#dataSvc.get<CodeGeneratorNew>({
     source: 'ToSic.Sxc.DataSources.CodeGenerators',
-    params: {
-      '$filter': "OutputType eq 'DataModel'",
-    }
+    params: computed(() => ({
+      '$filter': `OutputType eq '${this.outputType()}'`,
+    })),
   });
 
   /** The name of the selected generator */

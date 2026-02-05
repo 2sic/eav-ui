@@ -9,15 +9,15 @@ const logSpecs = {
   getResource: true,
 };
 
-interface SysDataParams {
+interface SysDataSpecs {
   /** optional signal to trigger refresh */
   refresh?: Signal<unknown>;
   /** The name of the data source */
   source: string;
   /** parameters in the query for the data source */
-  params?: Record<string, unknown>;
+  params?: Record<string, unknown> | Signal<Record<string, unknown>>;
   /** fields to select in the query */
-  fields?: string;
+  fields?: string | Signal<string>;
   // entitiesFilter?: string[];
 }
 
@@ -25,24 +25,39 @@ interface ResultWIP<TData> {
   Default: TData[]
 }
 
+/**
+ * Special service to get system data from the backend.
+ *
+ * @export
+ * @class SysDataService
+ * @extends {HttpServiceBase}
+ */
 @Injectable()
 export class SysDataService extends HttpServiceBase {
 
   log = classLogEnabled({SysDataService}, logSpecs);
 
-  // constructor(private http: HttpClient, private context: Context) { }
+  /** 
+   * Get data from the backend as a signal.
+   * Internally it uses an httpResource, but since we flatten it (remove the 'Default' wrapper)
+   * it arrives as a computed signal here.
+   * @returns 
+   */
+  get<TData>(specs : SysDataSpecs) {
+    const l = this.log.fnIf('get', specs as unknown as Record<string, unknown>);
 
-  get<TData>({ refresh, source, params, fields } : SysDataParams) {
-    const l = this.log.fnIf('get', { source, params, fields });
-    const resource = this.getResource<TData>({ refresh, source, params, fields });
-    const flattened = computedObj(source, () => {
-      l.a(`computing flattened data for source: ${source}`);
+    // Get the real underlying httpResource
+    const resource = this.getResource<TData>(specs);
+
+    // Flatten the data to remove the 'Default' wrapper
+    const flattened = computedObj(specs.source, () => {
+      l.a(`computing flattened data for source: ${specs.source}`);
       if (resource.isLoading()) {
         l.a('Resource is loading, returning empty array');
         return [];
       }
       if (resource.error()) {
-        l.a(`Error loading SysData source '${source}': ${resource.error()}`);
+        l.a(`Error loading SysData source '${specs.source}': ${resource.error()}`);
         return [];
       }
       const data = resource.value()?.Default;
@@ -57,17 +72,26 @@ export class SysDataService extends HttpServiceBase {
    * 
    * @returns 
    */
-  getResource<TData>({ refresh, source, params, fields } : SysDataParams) {
+  getResource<TData>({ refresh, source, params, fields } : SysDataSpecs) {
     const l = this.log.fnIf('getResource', { source, params, fields /*, entitiesFilter */ });
     return this.newHttpResource<ResultWIP<TData>>(() => {
-      refresh?.();
+      const paramChanged = refresh?.();
+
+      // Resolve the params
+      const paramsTemp = typeof params === 'function' ? params() : params;
+      params = paramsTemp ?? {};
+      const fieldsTemp = typeof fields === 'function' ? fields() : fields;
+      fields = fieldsTemp;
+
+      l.a(`creating httpResource for source: ${source}, '${paramChanged}'`);
+      // console.log(`creating httpResource for source: ${source}`);
       return {
         url: 'app/auto/query/System.SysData/Default',
         params: {
           appId: this.context.appId,
           SysDataSource: source,
           ...(fields ? { '$select': fields } : {}),
-          ...(params ?? {}),
+          ...params,
         }
       };
     });
