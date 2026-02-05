@@ -1,128 +1,138 @@
-<div class="extension-info-dialog">
-  <div class="dialog-header">
-    <h2>{{ data.name }}</h2>
-    <button mat-icon-button (click)="dialog.close()">
-      <mat-icon>close</mat-icon>
-    </button>
-  </div>
+<mat-toolbar>
+  <span>{{ data.name }}</span>
+  <span class="mat-spacer"></span>
+  <button mat-icon-button (click)="dialog.close()" aria-label="Close dialog">
+    <mat-icon>close</mat-icon>
+  </button>
+</mat-toolbar>
 
-  <div class="dialog-content">
-    <!-- Basic Info -->
-    <div class="info-section">
-      <h3 class="section-title">Basic Information</h3>
-      <div class="info-grid">
-        <div class="info-item">
-          <span class="info-label">Version</span>
-          <span class="info-value">{{ config.version || 'n/a' }}</span>
-        </div>
-        <div class="info-item">
-          <span class="info-label">Created By</span>
-          <span class="info-value">{{ config.createdBy || 'n/a' }}</span>
-        </div>
-        <div class="info-item">
-          <span class="info-label">Copyright</span>
-          <span class="info-value">{{ config.copyright || 'n/a' }}</span>
-        </div>
-      </div>
+<mat-dialog-content>
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Basic Information</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-list>
+        <mat-list-item>
+          <div matLine>Version</div>
+          <div matLine>{{ config.version || 'n/a' }}</div>
+        </mat-list-item>
+        <mat-list-item>
+          <div matLine>Created By</div>
+          <div matLine>{{ config.createdBy || 'n/a' }}</div>
+        </mat-list-item>
+        <mat-list-item>
+          <div matLine>Copyright</div>
+          <div matLine>{{ config.copyright || 'n/a' }}</div>
+        </mat-list-item>
+      </mat-list>
+
       @if (config.description) {
-        <div class="info-full-width">
-          <span class="info-label">Description</span>
-          <div class="info-value" [innerHTML]="getSafeHtml(config.description)"></div>
-        </div>
+        <mat-divider></mat-divider>
+        <h4>Description</h4>
+        <div [innerHTML]="getSafeHtml(config.description)"></div>
       }
       @if (config.teaser) {
-        <div class="info-full-width">
-          <span class="info-label">Teaser</span>
-          <div class="info-value" [innerHTML]="getSafeHtml(config.teaser)"></div>
-        </div>
+        <mat-divider></mat-divider>
+        <h4>Teaser</h4>
+        <div [innerHTML]="getSafeHtml(config.teaser)"></div>
       }
-    </div>
+    </mat-card-content>
+  </mat-card>
 
-    <!-- Features -->
-    <div class="info-section">
-      <h3 class="section-title">Features</h3>
-      <mat-chip-set class="features-chips">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Features</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-chip-set>
         @for (feature of getFeatures(); track $index) {
-          <mat-chip class="feature-chip" [class.enabled]="feature.value" [class.disabled]="!feature.value">
-            <span class="feature-name">{{ feature.name }}</span>
+          <mat-chip [disabled]="!feature.value" [color]="feature.value ? 'primary' : undefined">
+            {{ feature.name }}
           </mat-chip>
         }
       </mat-chip-set>
-    </div>
+    </mat-card-content>
+  </mat-card>
 
-  <!-- Platform Requirements -->
-    <div class="info-section">
-      <h3 class="section-title">Platform Requirements</h3>
-      <div class="requirements-list">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Platform Requirements</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-list>
         @for (req of getVersionRequirements(); track $index) {
-          <div class="requirement-item">
-            <div class="req-header">
-              <span class="req-platform">{{ req.platform }}</span>
-              <mat-icon class="req-status" [class.supported]="req.supported">{{ req.supported ? 'check_circle' : 'cancel' }}</mat-icon>
-            </div>
-            <span class="req-version">{{ req.version || 'Not specified' }}</span>
-          </div>
+          <mat-list-item>
+            <mat-icon matListItemIcon [color]="req.supported ? 'primary' : 'warn'">
+              {{ req.supported ? 'check_circle' : 'cancel' }}
+            </mat-icon>
+            <div matLine>{{ req.platform }}</div>
+            <div matLine>{{ req.version || 'Not specified' }}</div>
+          </mat-list-item>
         }
-      </div>
-    </div>
+      </mat-list>
+    </mat-card-content>
+  </mat-card>
 
-    <!-- Links -->
-    @if (config.linkMain || config.linkDocs || config.linkDemo || config.linkSource) {
-      <div class="info-section">
-        <h3 class="section-title">Links</h3>
-        <div class="links-list">
-          @if (config.linkMain) {
-            <a [href]="config.linkMain" target="_blank" mat-stroked-button class="link-button">
-              <mat-icon>language</mat-icon>
-              <span>Main Website</span>
-            </a>
-          }
-          @if (config.linkDocs) {
-            <a [href]="config.linkDocs" target="_blank" mat-stroked-button class="link-button">
-              <mat-icon>description</mat-icon>
-              <span>Documentation</span>
-            </a>
-          }
-          @if (config.linkDemo) {
-            <a [href]="config.linkDemo" target="_blank" mat-stroked-button class="link-button">
-              <mat-icon>preview</mat-icon>
-              <span>Demo</span>
-            </a>
-          }
-          @if (config.linkSource) {
-            <a [href]="config.linkSource" target="_blank" mat-stroked-button class="link-button">
-              <mat-icon>code</mat-icon>
-              <span>Source Code</span>
-            </a>
-          }
-        </div>
-      </div>
-    }
+  @if (config.linkMain || config.linkDocs || config.linkDemo || config.linkSource) {
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Links</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        @if (config.linkMain) {
+          <a [href]="config.linkMain" target="_blank" mat-stroked-button>
+            <mat-icon>language</mat-icon>
+            <span>Main Website</span>
+          </a>
+        }
+        @if (config.linkDocs) {
+          <a [href]="config.linkDocs" target="_blank" mat-stroked-button>
+            <mat-icon>description</mat-icon>
+            <span>Documentation</span>
+          </a>
+        }
+        @if (config.linkDemo) {
+          <a [href]="config.linkDemo" target="_blank" mat-stroked-button>
+            <mat-icon>preview</mat-icon>
+            <span>Demo</span>
+          </a>
+        }
+        @if (config.linkSource) {
+          <a [href]="config.linkSource" target="_blank" mat-stroked-button>
+            <mat-icon>code</mat-icon>
+            <span>Source Code</span>
+          </a>
+        }
+      </mat-card-content>
+    </mat-card>
+  }
 
-    <!-- Content Types -->
-    @if (config.settingsContentType || config.resourcesContentType) {
-      <div class="info-section">
-        <h3 class="section-title">Content Types</h3>
-        <div class="info-grid">
+  @if (config.settingsContentType || config.resourcesContentType) {
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Content Types</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-list>
           @if (config.settingsContentType) {
-            <div class="info-item">
-              <span class="info-label">Settings</span>
-              <span class="info-value code-value">{{ config.settingsContentType }}</span>
-            </div>
+            <mat-list-item>
+              <div matLine>Settings</div>
+              <div matLine>{{ config.settingsContentType }}</div>
+            </mat-list-item>
           }
           @if (config.resourcesContentType) {
-            <div class="info-item">
-              <span class="info-label">Resources</span>
-              <span class="info-value code-value">{{ config.resourcesContentType }}</span>
-            </div>
+            <mat-list-item>
+              <div matLine>Resources</div>
+              <div matLine>{{ config.resourcesContentType }}</div>
+            </mat-list-item>
           }
-        </div>
-      </div>
-    }
+        </mat-list>
+      </mat-card-content>
+    </mat-card>
+  }
+</mat-dialog-content>
 
-  <div class="dialog-actions">
-    <button mat-raised-button (click)="dialog.close()">
-      Close
-    </button>
-  </div>
-</div>
+<mat-dialog-actions align="end">
+  <button mat-raised-button (click)="dialog.close()">Close</button>
+</mat-dialog-actions>
