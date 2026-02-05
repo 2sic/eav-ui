@@ -4,8 +4,41 @@
     Here you can see and restore deleted items within this app.
   </p>
   <p>
-    <strong>Note:</strong> This feature is currently in beta and may not be fully stable. Use with caution.
+    <strong>Note:</strong> This feature is currently in beta and may not be fully stable. Use with caution1.
   </p>
+
+  <h3>Deleted Items ({{ deletedEntities().length }} total):</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Transaction ID</th>
+        <th>Title</th>
+        <th>Content Type</th>
+        <th>Parent Ref</th>
+        <th>App ID</th>
+        <th>Deleted UTC</th>
+        <th>Deleted By</th>
+        <th>Created</th>
+        <th>Modified</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (item of deletedEntities(); track item.DeletedTransactionId) {
+        <tr>
+          <td>{{ item.DeletedTransactionId }}</td>
+          <td>{{ item.Title || '(no title)' }}</td>
+          <td>{{ item.ContentTypeName || item.ContentTypeStaticName || '(none)' }}</td>
+          <td>{{ item.ParentRef }}</td>
+          <td>{{ item.AppId }}</td>
+          <td>{{ item.DeletedUtc }}</td>
+          <td>{{ item.DeletedBy }}</td>
+          <td>{{ item.Created }}</td>
+          <td>{{ item.Modified }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
 </div>
 
 <router-outlet></router-outlet>
