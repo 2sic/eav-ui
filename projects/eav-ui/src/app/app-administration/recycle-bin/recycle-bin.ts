@@ -1,10 +1,17 @@
-
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Component, computed, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { RouterOutlet } from '@angular/router';
+import { MatSelectModule } from '@angular/material/select';
+import { MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { transient } from 'projects/core';
+import { Context } from '../../shared/services/context';
 import { SysDataService } from '../../shared/services/sys-data.service';
 
 type DeletedEntity = {
@@ -25,22 +32,81 @@ type DeletedEntity = {
 @Component({
   selector: 'recycle-bin',
   templateUrl: './recycle-bin.html',
-  styleUrls: ['./recycle-bin.scss'],
+  standalone: true,
   imports: [
     CommonModule,
-    MatIconModule,
     RouterOutlet,
     MatButtonModule,
-    // TippyDirective
+    MatCardModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatSelectModule,
+    MatTableModule,
+    MatTooltipModule,
   ]
 })
 export class AppRecycleBin {
 
   #dataSvc = transient(SysDataService);
+  #context = inject(Context);
+  #http = inject(HttpClient);
+  #router = inject(Router);
+  #route = inject(ActivatedRoute);
+
+  #refresh = signal(0);
+
+  // Get content type from route
+  #routeContentType = toSignal(this.#route.queryParamMap);
+  selectedContentType = computed(() => this.#routeContentType()?.get('contentType') || '');
 
   // Get deleted entities from the backend
-  deletedEntities = this.#dataSvc.get<DeletedEntity>({
+  #allDeletedEntities = this.#dataSvc.get<DeletedEntity>({
     source: 'ToSic.Eav.DataSources.RecycleBin',
+    refresh: this.#refresh,
   });
+
+  // Filter entities based on selected content type
+  deletedEntities = computed(() => {
+    const all = this.#allDeletedEntities();
+    const filter = this.selectedContentType();
+    if (!filter) return all;
+    return all.filter(e => (e.ContentTypeName || e.ContentTypeStaticName) === filter);
+  });
+
+  // Get unique content types for the filter dropdown
+  contentTypes = computed(() => {
+    const all = this.#allDeletedEntities();
+    const types = new Set(all.map(e => e.ContentTypeName));
+    return Array.from(types).sort();
+  });
+
+  displayedColumns: string[] = ['Title', 'ContentTypeName', 'DeletedBy', 'DeletedUtc', 'actions'];
+
+  onContentTypeChange(contentType: string): void {
+    this.#router.navigate([], {
+      relativeTo: this.#route,
+      queryParams: { contentType: contentType || null },
+      queryParamsHandling: 'merge'
+    });
+  }
+
+  restore(item: DeletedEntity): void {
+    if (!confirm(`Are you sure you want to restore "${item.Title || '(no title)'}"?`)) {
+      return;
+    }
+
+    const url = `/api/2sxc/admin/data/recycle?appid=${this.#context.appId}&transactionid=${item.DeletedTransactionId}`;
+    
+    this.#http.post(url, {}, { responseType: 'text' }).subscribe({
+      next: () => {
+        alert('Data restored successfully');
+        this.#refresh.set(this.#refresh() + 1);
+      },
+      error: (error) => {
+        console.error('Error restoring data:', error);
+        alert('Error restoring data: ' + (error.message || 'Unknown error'));
+      }
+    });
+  }
 
 }

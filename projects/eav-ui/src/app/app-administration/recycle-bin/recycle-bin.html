@@ -1,44 +1,71 @@
-<div class="outer-container">
-  <h1>Recycle Bin (Beta)</h1>
-  <p>
-    Here you can see and restore deleted items within this app.
-  </p>
-  <p>
-    <strong>Note:</strong> This feature is currently in beta and may not be fully stable. Use with caution1.
-  </p>
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>
+      <span class="mat-headline">Recycle Bin (Beta)</span>
+    </mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <p class="mat-body-1">Here you can see and restore deleted items within this app.</p>
+    <p class="mat-caption"><strong>Note:</strong> This feature is currently in beta and may not be fully stable. Use with caution.</p>
 
-  <h3>Deleted Items ({{ deletedEntities().length }} total):</h3>
+    <mat-form-field appearance="outline">
+      <mat-label>Filter by Content Type</mat-label>
+      <mat-select [value]="selectedContentType()" (selectionChange)="onContentTypeChange($event.value)">
+        <mat-option value="">All Types</mat-option>
+        @for (type of contentTypes(); track type) {
+          <mat-option [value]="type">{{ type }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Transaction ID</th>
-        <th>Title</th>
-        <th>Content Type</th>
-        <th>Parent Ref</th>
-        <th>App ID</th>
-        <th>Deleted UTC</th>
-        <th>Deleted By</th>
-        <th>Created</th>
-        <th>Modified</th>
-      </tr>
-    </thead>
-    <tbody>
-      @for (item of deletedEntities(); track item.DeletedTransactionId) {
-        <tr>
-          <td>{{ item.DeletedTransactionId }}</td>
-          <td>{{ item.Title || '(no title)' }}</td>
-          <td>{{ item.ContentTypeName || item.ContentTypeStaticName || '(none)' }}</td>
-          <td>{{ item.ParentRef }}</td>
-          <td>{{ item.AppId }}</td>
-          <td>{{ item.DeletedUtc }}</td>
-          <td>{{ item.DeletedBy }}</td>
-          <td>{{ item.Created }}</td>
-          <td>{{ item.Modified }}</td>
-        </tr>
+    <h3 class="mat-subtitle-1">Deleted Items ({{ deletedEntities().length }} total):</h3>
+
+    <div>
+      @if (deletedEntities().length === 0) {
+        <p class="mat-body-1">No deleted items found</p>
+      } @else {
+        <table mat-table [dataSource]="deletedEntities()" class="mat-elevation-z2">
+
+          <!-- Title Column -->
+          <ng-container matColumnDef="Title">
+            <th mat-header-cell *matHeaderCellDef>Title</th>
+            <td mat-cell *matCellDef="let item">{{ item.Title || '(no title)' }}</td>
+          </ng-container>
+
+          <!-- Content Type Column -->
+          <ng-container matColumnDef="ContentTypeName">
+            <th mat-header-cell *matHeaderCellDef>Content Type</th>
+            <td mat-cell *matCellDef="let item">{{ item.ContentTypeName || item.ContentTypeStaticName }}</td>
+          </ng-container>
+
+          <!-- Deleted By Column -->
+          <ng-container matColumnDef="DeletedBy">
+            <th mat-header-cell *matHeaderCellDef>Deleted By</th>
+            <td mat-cell *matCellDef="let item">{{ item.DeletedBy }}</td>
+          </ng-container>
+
+          <!-- Deleted Date Column -->
+          <ng-container matColumnDef="DeletedUtc">
+            <th mat-header-cell *matHeaderCellDef>Deleted Date</th>
+            <td mat-cell *matCellDef="let item">{{ item.DeletedUtc | date: 'short' }}</td>
+          </ng-container>
+
+          <!-- Actions Column -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let item">
+              <button mat-raised-button color="primary" (click)="restore(item)">
+                <mat-icon>restore_from_trash</mat-icon>
+                Restore
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
       }
-    </tbody>
-  </table>
-</div>
-
+    </div>
+  </mat-card-content>
+</mat-card>
 <router-outlet></router-outlet>
