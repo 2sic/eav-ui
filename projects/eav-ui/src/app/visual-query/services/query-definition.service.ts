@@ -3,16 +3,17 @@ import { map } from 'rxjs';
 import { webApiQueryDataSources, webApiQueryDebugStream, webApiQueryGet, webApiQueryRun, webApiQuerySave } from '../../app-administration/services';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { HttpServiceBaseSignal } from '../../shared/services/http-service-base-signal';
-import { DataSource } from '../models/data-sources.model';
-import { PipelineResult } from '../models/pipeline-result.model';
-import { PipelineDataSource, PipelineModel } from '../models/pipeline.model';
+import { DataSourceDefinition } from '../models/data-source-definition';
+import { DataSourceInstance } from '../models/data-source-instance.model';
+import { QueryResult } from '../models/result/pipeline-result';
+import { VisualQueryModel } from '../models/visual-query.model';
 import { findDefByType } from '../plumb-editor/datasource.helpers';
 
 @Injectable()
 export class QueryDefinitionService extends HttpServiceBaseSignal {
 
-  fetchPipelinePromise(pipelineEntityId: number, dataSources: DataSource[]): Promise<PipelineModel> {
-    return this.fetchPromise<PipelineModel>(webApiQueryGet, {
+  fetchPipelinePromise(pipelineEntityId: number, dataSources: DataSourceInstance[]): Promise<VisualQueryModel> {
+    return this.fetchPromise<VisualQueryModel>(webApiQueryGet, {
       params: { appId: this.appId, id: pipelineEntityId.toString() }
     }).then(pipelineModel => {
       // if pipeline is new, populate it with default model
@@ -24,11 +25,11 @@ export class QueryDefinitionService extends HttpServiceBaseSignal {
     })
   }
 
-  #buildDefaultModel(pipelineModel: PipelineModel, dataSources: DataSource[]) {
+  #buildDefaultModel(pipelineModel: VisualQueryModel, dataSources: DataSourceInstance[]) {
     const templateDataSources = eavConstants.pipelineDesigner.defaultPipeline.dataSources;
     for (const templateDS of templateDataSources) {
       const dataSource = findDefByType(dataSources, templateDS.PartAssemblyAndType);
-      const pipelineDataSource: PipelineDataSource = {
+      const pipelineDataSource: DataSourceDefinition = {
         Description: '',
         EntityGuid: templateDS.EntityGuid,
         EntityId: undefined,
@@ -42,13 +43,13 @@ export class QueryDefinitionService extends HttpServiceBaseSignal {
     pipelineModel.Pipeline.StreamWiring = eavConstants.pipelineDesigner.defaultPipeline.streamWiring;
   }
 
-  #fixPipelineDataSources(pipelineDataSources: PipelineDataSource[]) {
+  #fixPipelineDataSources(pipelineDataSources: DataSourceDefinition[]) {
     const outDataSourceExists = pipelineDataSources.some(
       pipelineDS => pipelineDS.EntityGuid === eavConstants.pipelineDesigner.outDataSource.EntityGuid
     );
     if (!outDataSourceExists) {
       const outDs = eavConstants.pipelineDesigner.outDataSource;
-      const outDsConst: PipelineDataSource = {
+      const outDsConst: DataSourceDefinition = {
         Description: outDs.Description,
         EntityGuid: outDs.EntityGuid,
         EntityId: undefined,
@@ -64,8 +65,8 @@ export class QueryDefinitionService extends HttpServiceBaseSignal {
     }
   }
 
-  fetchDataSourcesPromise(): Promise<DataSource[]> {
-    return this.fetchPromise<DataSource[]>(webApiQueryDataSources, {
+  fetchDataSourcesPromise(): Promise<DataSourceInstance[]> {
+    return this.fetchPromise<DataSourceInstance[]>(webApiQueryDataSources, {
       params: {
         appid: this.appId,
         zoneId: this.zoneId,
@@ -94,11 +95,11 @@ export class QueryDefinitionService extends HttpServiceBaseSignal {
   }
 
   /** Save the current query and reload entire definition as returned from server */
-  savePipeline(pipelineModel: PipelineModel) {
+  savePipeline(pipelineModel: VisualQueryModel) {
     const pipeline = pipelineModel.Pipeline;
     const dataSources = pipelineModel.DataSources;
 
-    return this.http.post<PipelineModel>(
+    return this.http.post<VisualQueryModel>(
       webApiQuerySave,
       { pipeline, dataSources },
       { params: { appId: this.appId, Id: pipeline.EntityId.toString() } }
@@ -111,15 +112,15 @@ export class QueryDefinitionService extends HttpServiceBaseSignal {
   }
 
   /** `top` - fetch first X items */
-  runPipelinePromise(id: number, top: number): Promise<PipelineResult> {
-    return this.fetchPromise<PipelineResult>(webApiQueryRun, {
+  runPipelinePromise(id: number, top: number): Promise<QueryResult> {
+    return this.fetchPromise<QueryResult>(webApiQueryRun, {
       params: { appId: this.appId, id: id.toString(), top: top.toString() }
     });
   }
 
   /** `top` - fetch first X items */
-  debugStreamPromise(id: number, source: string, sourceOut: string, top: number): Promise<PipelineResult> {
-    return this.fetchPromise<PipelineResult>(webApiQueryDebugStream, {
+  debugStreamPromise(id: number, source: string, sourceOut: string, top: number): Promise<QueryResult> {
+    return this.fetchPromise<QueryResult>(webApiQueryDebugStream, {
       params: { appId: this.appId, id: id.toString(), from: source, out: sourceOut, top: top.toString() }
     });
   }

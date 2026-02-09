@@ -1,4 +1,4 @@
-export interface DataSource {
+export interface DataSourceInstance {
   ContentType: string;
   Difficulty: number;
   DynamicIn: boolean;
@@ -14,8 +14,4 @@ export interface DataSource {
   UiHint: string;
 
   OutMode: 'dynamic' | 'static' | 'mirror-in';
-}
-
-export interface SortedDataSources {
-  [key: string]: DataSource[];
 }

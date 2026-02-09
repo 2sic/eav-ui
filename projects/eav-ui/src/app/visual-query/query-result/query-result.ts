@@ -5,7 +5,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 import { DebugStreamInfo } from '../models/debug-stream-info.model';
-import { PipelineResultQuery, PipelineResultSources, PipelineResultStream } from '../models/pipeline-result.model';
+import { QueryResult } from '../models/result/pipeline-result';
 import { VisualQueryStateService } from '../services/visual-query.service';
 import { QueryResultDialogData } from './query-result.models';
 
@@ -27,10 +27,10 @@ export class QueryResultComponent implements OnInit {
   ticksUsed: number;
   top: number;
   optionsForTop: number[];
-  result: PipelineResultQuery;
+  result: QueryResult["Query"];
   debugStream: DebugStreamInfo;
-  sources: PipelineResultSources;
-  streams: PipelineResultStream[];
+  sources: QueryResult["Sources"];
+  streams: QueryResult["Streams"];
 
   constructor(
     @Inject(MAT_DIALOG_DATA) private dialogData: QueryResultDialogData,

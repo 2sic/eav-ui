@@ -1,5 +1,5 @@
 import { classLog } from '../../shared/logging';
-import { PipelineModel } from '../models/pipeline.model';
+import { VisualQueryModel } from '../models/visual-query.model';
 import { EndpointLabelRenameParts } from './endpoint-label-rename.model';
 import { JsPlumbEndpoint, JsPlumbOverlay } from './jsplumb.models';
 import { EndpointInfo } from './plumb-editor.models';
@@ -22,7 +22,7 @@ export class EndpointDefinitionsService {
   log = classLog({EndpointDefinitionsService}, logSpecs);
 
   constructor(
-    private pipelineModel: PipelineModel,
+    private pipelineModel: VisualQueryModel,
     private renameDialogParts: EndpointLabelRenameParts,
   ) { }
 

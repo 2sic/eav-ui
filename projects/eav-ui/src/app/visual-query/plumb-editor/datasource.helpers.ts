@@ -1,7 +1,7 @@
-import { DataSource } from '../models/data-sources.model';
+import { DataSourceInstance } from '../models/data-source-instance.model';
 import { JsPlumbEndpoint } from './jsplumb.models';
 
-export function findDefByType(dataSources: DataSource [], partAssemblyAndType: string): DataSource | undefined {
+export function findDefByType(dataSources: DataSourceInstance [], partAssemblyAndType: string): DataSourceInstance | undefined {
   return dataSources.find(ds => ds.PartAssemblyAndType === partAssemblyAndType)
 }
 

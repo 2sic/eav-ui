@@ -1,8 +1,8 @@
 import { DebugStreamInfo } from '../models/debug-stream-info.model';
-import { PipelineResult } from '../models/pipeline-result.model';
+import { QueryResult } from '../models/result/pipeline-result';
 
 export interface QueryResultDialogData {
-  result: PipelineResult;
+  result: QueryResult;
   debugStream?: DebugStreamInfo;
   top: number;
 }

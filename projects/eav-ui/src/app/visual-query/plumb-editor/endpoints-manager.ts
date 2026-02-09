@@ -1,6 +1,6 @@
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { classLog } from '../../shared/logging';
-import { PipelineDataSource } from '../models/pipeline.model';
+import { DataSourceDefinition } from '../models/data-source-definition';
 import { ConnectionsManager } from './connections-manager';
 import { findDefByType, getEndpointLabel } from './datasource.helpers';
 import { EndpointDefinitionsService } from './endpoint-definitions';
@@ -32,7 +32,7 @@ export class EndpointsManager {
   ) { }
 
   
-  addEndpoint(domDataSource: HTMLElement, endpointName: string, isIn: boolean, queryDs: PipelineDataSource, extraStyling?: string) {
+  addEndpoint(domDataSource: HTMLElement, endpointName: string, isIn: boolean, queryDs: DataSourceDefinition, extraStyling?: string) {
     const l = this.log.fnIfInFields('addEndpoint', endpointName, { endpointName, isIn, queryDs });
     const dsDefinition = findDefByType(this.queryData.dataSources, queryDs.PartAssemblyAndType);
     const connectionList = isIn

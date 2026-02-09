@@ -1,4 +1,4 @@
-import { StreamErrorData } from '../models/pipeline-result.model';
+import { StreamErrorData } from '../models/result/StreamErrorData';
 
 export interface StreamErrorResultDialogData {
   errorData: StreamErrorData;
