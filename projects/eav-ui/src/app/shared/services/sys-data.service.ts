@@ -19,10 +19,17 @@ interface SysDataSpecs {
   /** fields to select in the query */
   fields?: string | Signal<string>;
   // entitiesFilter?: string[];
+
+  /** Optional parameter to disable camel casing - WIP, in future we plan to always use camel casing */
+  noCamel?: boolean;
 }
 
 interface ResultWIP<TData> {
-  Default: TData[]
+  /** non-camel case */
+  Default: TData[];
+
+  /** camel case - recommended */
+  default: TData[];
 }
 
 /**
@@ -60,8 +67,10 @@ export class SysDataService extends HttpServiceBase {
         l.a(`Error loading SysData source '${specs.source}': ${resource.error()}`);
         return [];
       }
-      const data = resource.value()?.Default;
-      l.a('data', { value: resource.value(), data });
+
+      const allData = resource.value();
+      const data = allData?.default ?? allData?.Default;
+      l.a('data', { allData, data });
 
       return data ?? [];
     });
@@ -72,7 +81,7 @@ export class SysDataService extends HttpServiceBase {
    * 
    * @returns 
    */
-  getResource<TData>({ refresh, source, params, fields } : SysDataSpecs) {
+  getResource<TData>({ refresh, source, params, fields, noCamel } : SysDataSpecs) {
     const l = this.log.fnIf('getResource', { source, params, fields /*, entitiesFilter */ });
     return this.newHttpResource<ResultWIP<TData>>(() => {
       const paramChanged = refresh?.();
@@ -91,6 +100,7 @@ export class SysDataService extends HttpServiceBase {
           appId: this.context.appId,
           SysDataSource: source,
           ...(fields ? { '$select': fields } : {}),
+          ...(noCamel ? {} : { '$casing': 'camel' }),
           ...params,
         }
       };

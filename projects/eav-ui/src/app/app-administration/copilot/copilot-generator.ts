@@ -82,9 +82,11 @@ export class CopilotGeneratorComponent {
     params: computed(() => ({
       '$filter': `OutputType eq '${this.outputType()}'`,
     })),
+    // Temp, till it's fixed to use camel as the default
+    noCamel: true,
   });
 
-  /** The name of the selected generator */
+  /** The name of the selected generator - initially auto-select from the first available generator */
   selectedGeneratorName = linkedSignal(() => this.generators()?.[0]?.Name ?? null);
 
   /** The selected generator object - to display more info */
@@ -98,6 +100,8 @@ export class CopilotGeneratorComponent {
 
   #editions = this.#dataSvc.get<{ Name: string; Label: string; Description: string, IsDefault: boolean }>({
     source: 'ToSic.Sxc.DataSources.AppEditions',
+    // Temp, till it's fixed to use camel as the default
+    noCamel: true,
   });
 
   editions = computed(() => this.#editions().map(e => ({
