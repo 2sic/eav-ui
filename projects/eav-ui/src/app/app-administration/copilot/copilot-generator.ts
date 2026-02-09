@@ -1,15 +1,18 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, computed, inject, input, linkedSignal, signal, ViewContainerRef } from '@angular/core';
+import { Component, computed, inject, input, linkedSignal, ViewContainerRef } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogActions } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { EntityLightIdentifier } from 'projects/edit-types/src/EntityLight';
+import { MatTableModule } from '@angular/material/table';
+import { RouterOutlet } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { transient } from '../../../../../core';
+import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm } from '../../shared/models/edit-form.model';
 import { ItemIdHelper } from '../../shared/models/item-id-helper';
@@ -20,7 +23,7 @@ import { EntityService } from '../../shared/services/entity.service';
 import { SysDataService } from '../../shared/services/sys-data.service';
 import { ConfirmDeleteDialogComponent } from '../sub-dialogs/confirm-delete-dialog/confirm-delete-dialog';
 import { ConfirmDeleteDialogData } from '../sub-dialogs/confirm-delete-dialog/confirm-delete-dialog.models';
-import { CodeGeneratorNew } from './code-generator';
+import { CodeGenerator } from './code-generator';
 
 type DataCopilotConfiguration = {
   Guid: string;
@@ -33,139 +36,104 @@ type DataCopilotConfiguration = {
   templateUrl: './copilot-generator.html',
   styleUrls: ['./copilot-generator.scss'],
   imports: [
-    MatSelectModule,
+    CommonModule,
+    FormsModule,
     MatButtonModule,
     MatCardModule,
+    MatDialogActions,
     MatIconModule,
-    CommonModule,
+    MatSelectModule,
+    MatTableModule,
+    RouterOutlet,
+    TippyDirective,
   ]
 })
 export class CopilotGeneratorComponent {
-
   outputType = input<string>();
-  title? = input<string>('Copilot Generator');
+  title = input<string>('Copilot Generator');
 
-  // #copilotSvc = transient(CopilotService);
   #entitySvc = transient(EntityService);
   #dialogRouter = transient(DialogRoutingService);
   #matDialog = transient(MatDialog);
   #snackBar = transient(MatSnackBar);
   #context = transient(Context);
   #http = transient(HttpClient);
-
   #dataSvc = transient(SysDataService);
-
   #viewContainerRef = inject(ViewContainerRef);
 
   readonly #copilotConfigurationGuid = 'b08dcd23-2eb0-4a5e-a3d0-3178d2aae451';
+  readonly #webApiGeneratedCode = 'admin/code/generateDataModels';
 
-  webApiGeneratedCode: string = 'admin/code/generateDataModels';
-  // editions$ = this.#copilotSvc.getEditions();
+  entities$: Observable<DataCopilotConfiguration[]>;
+  displayedColumns = ['title', 'actions'];
 
-  showConfigurationDropdown = signal(false);
-
-  entities$: Observable<EntityLightIdentifier[]>;
-  selectedEntity?: DataCopilotConfiguration;
-
-  // generators$ = this.#copilotSvc.getGenerators()
-  //   .pipe(
-  //     map((gens) => gens.filter(g => g.outputType === this.outputType()))
-  //   );
-
-  // selectedGenerator$ = this.generators$.pipe(map(gens => gens.find(g => g.name === this.selectedGenerator)));
-
-  // selectedGenerator = '';
-
-  /** Load all the generators */
-  generators = this.#dataSvc.get<CodeGeneratorNew>({
+  generators = this.#dataSvc.get<CodeGenerator>({
     source: 'ToSic.Sxc.DataSources.CodeGenerators',
     params: computed(() => ({
       '$filter': `OutputType eq '${this.outputType()}'`,
     })),
-    // Temp, till it's fixed to use camel as the default
-    noCamel: true,
   });
 
-  /** The name of the selected generator - initially auto-select from the first available generator */
-  selectedGeneratorName = linkedSignal(() => this.generators()?.[0]?.Name ?? null);
+  selectedGeneratorName = linkedSignal(() => this.generators()?.[0]?.name ?? null);
 
-  /** The selected generator object - to display more info */
   selectedGenerator = computed(() => {
     const gens = this.generators();
     const selected = this.selectedGeneratorName();
-    return gens.find(g => g.Name === selected);
+    return gens.find(g => g.name === selected);
   });
 
-  // selectedEdition = '';
-
-  #editions = this.#dataSvc.get<{ Name: string; Label: string; Description: string, IsDefault: boolean }>({
+  #editions = this.#dataSvc.get<{ name: string; label: string; description: string, isDefault: boolean }>({
     source: 'ToSic.Sxc.DataSources.AppEditions',
-    // Temp, till it's fixed to use camel as the default
-    noCamel: true,
   });
 
   editions = computed(() => this.#editions().map(e => ({
-    name: e.Name,
-    label: `/${e.Name}/AppCode/Data`.replace(/\/\//g, '/'),
-    description: (e.Description || "no description provided") + (e.IsDefault ? ' ✅' : '')
+    name: e.name,
+    label: `/${e.name}/AppCode/Data`.replace(/\/\//g, '/'),
+    description: (e.description || 'no description provided') + (e.isDefault ? ' ✅' : '')
   })));
 
-  /** The name of the selected generator */
-  selectedEditionName = linkedSignal(() => this.#editions().find(e => e.IsDefault)?.Name ?? '');
+  selectedEditionName = linkedSignal(() => this.#editions().find(e => e.isDefault)?.name ?? '');
 
   ngOnInit(): void {
-    // this.generators$.pipe(take(1)).subscribe(gens => {
-    //   this.selectedGenerator = gens[0]?.name ?? '';
-    // });
-    // this.#copilotSvc.specs.pipe(take(1)).subscribe(specs => {
-    //   this.selectedEdition = specs.editions.find(e => e.isDefault)?.name ?? '';
-    // });
     this.fetchEntities();
-
-    // Subscribe to route changes to refresh entities when dialog closes
     this.#dialogRouter.doOnDialogClosed(() => this.fetchEntities());
   }
 
-  fetchEntities() {
+  fetchEntities(): void {
     this.entities$ = this.#entitySvc.getEntities$(of({ contentTypeName: this.#copilotConfigurationGuid }));
   }
 
-
-  editConfig() {
+  editConfig(entity?: DataCopilotConfiguration): void {
     const form: EditForm = {
-      items: [this.selectedEntity
-        ? ItemIdHelper.editId(this.selectedEntity.Id)
+      items: [entity
+        ? ItemIdHelper.editId(entity.Id)
         : ItemIdHelper.newFromType(this.#copilotConfigurationGuid)
       ]
     };
-
     const url = convertFormToUrl(form);
-    this.#dialogRouter.navRelative([`edit/${url}`]); //
+    this.#dialogRouter.navRelative([`edit/${url}`]);
   }
 
-  deleteConfiguration() {
-    const selected = this.selectedEntity;
+  deleteConfiguration(entity: DataCopilotConfiguration): void {
     const data: ConfirmDeleteDialogData = {
-      entityId: selected.Id,
-      entityTitle: selected.Title,
-      message: "Are you sure you want to delete?  ",
+      entityId: entity.Id,
+      entityTitle: entity.Title,
+      message: 'Are you sure you want to delete?',
       hasDeleteSnackbar: true
     };
 
-    const confirmationDialogRef = this.#matDialog.open(ConfirmDeleteDialogComponent, {
+    this.#matDialog.open(ConfirmDeleteDialogComponent, {
       autoFocus: false,
       data,
       viewContainerRef: this.#viewContainerRef,
       width: '400px',
-    });
-
-    confirmationDialogRef.afterClosed().subscribe((isConfirmed: boolean) => {
+    }).afterClosed().subscribe((isConfirmed: boolean) => {
       if (isConfirmed) {
         this.#entitySvc.delete(
-          this.#context.appId,           // appId: number
-          this.#copilotConfigurationGuid,// contentType: string
-          selected.Id,                   // entityId: number
-          false                          // force: boolean
+          this.#context.appId,
+          this.#copilotConfigurationGuid,
+          entity.Id,
+          false
         ).subscribe({
           next: () => {
             this.#snackBar.open('Deleted', null, { duration: 2000 });
@@ -180,20 +148,28 @@ export class CopilotGeneratorComponent {
     });
   }
 
-  toggleConfigurationDropdown() {
-    this.showConfigurationDropdown.set(!this.showConfigurationDropdown());
-  }
-
-  autoGeneratedCode() {
-    this.#http.get<RichResult>(this.webApiGeneratedCode, {
+  generateForConfiguration(entity: DataCopilotConfiguration): void {
+    this.#http.get<RichResult>(this.#webApiGeneratedCode, {
       params: {
         appId: this.#context.appId,
         edition: this.selectedEditionName(),
         generator: this.selectedGeneratorName(),
-        ...(this.selectedEntity ? { configurationId: this.selectedEntity.Id } : {}),
+        configurationId: entity.Id,
       }
-    }).subscribe(d => {
-      this.#snackBar.open(d.message + `\n (this took ${d.timeTaken}ms)`, null, { duration: 5000, });
+    }).subscribe(result => {
+      this.#snackBar.open(`${result.message} (took ${result.timeTaken}ms)`, null, { duration: 5000 });
+    });
+  }
+
+  autoGeneratedCode(): void {
+    this.#http.get<RichResult>(this.#webApiGeneratedCode, {
+      params: {
+        appId: this.#context.appId,
+        edition: this.selectedEditionName(),
+        generator: this.selectedGeneratorName(),
+      }
+    }).subscribe(result => {
+      this.#snackBar.open(`${result.message} (took ${result.timeTaken}ms)`, null, { duration: 5000 });
     });
   }
 }
