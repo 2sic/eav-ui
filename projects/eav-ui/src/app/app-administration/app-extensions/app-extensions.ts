@@ -213,19 +213,22 @@ export class AppExtensions implements OnInit {
   };
 
   #helpTextConst: HelpTextConst = {
-    empty: {
-      description: '<p><b>App Extensions</b><br>Install extensions to add extra functionality or input types to apps.</p>',
-      hint: '<p>Create an extension by placing an <code>extension.json</code> file in the <code>app/extensions</code> folder.</p>'
-    },
     content: {
-      description: '<p><b>App Extensions</b><br>Installed extensions are shown here.</p>',
-      hint: '<p>Use the Upload button to add an extension folder.</p>'
+      description: '<p><b>App Extensions</b><br>Extensions add functionality such as new input types to apps - see <a href="https://go.2sxc.org/app-ext" target="_blank">documentation</a>.</p>',
+      hint: '<p>Use the (+) button to install extensions.</p>'
+        + '<p>Or create your own extension by creating a folder in <br> <code>/extensions</code>, such as '
+        + '<code>/extensions/my-extension</code>.</p>'
+    },
+    empty: {
+      description: '',
+      hint: ''
     }
   };
 
   uxHelpText = computed(() => {
-    const data = this.extensions();
-    return data?.length === 0 ? this.#helpTextConst.empty : this.#helpTextConst.content;
+    return this.#helpTextConst.content;
+    // const data = this.extensions();
+    // return data?.length === 0 ? this.#helpTextConst.empty : this.#helpTextConst.content;
   });
 
   /**

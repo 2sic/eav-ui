@@ -9,17 +9,11 @@
     [refresh]="refresh()"
     [rowLength]="extensions()?.length"
   >
-    @if (extensions().length === 0) {
-      <p>
-        Create an extension by placing an <code>extension.json</code> file in the <code>app/extensions</code> folder.
-      </p>
-    } @else {
-      <ag-grid-angular
-        class="ag-theme-material"
-        [rowData]="extensions()"
-        [gridOptions]="gridOptions"
-      />
-    }
+    <ag-grid-angular
+      class="ag-theme-material"
+      [rowData]="extensions()"
+      [gridOptions]="gridOptions"
+    />
     <mat-dialog-actions
       class="eav-dialog-actions"
       align="end"
