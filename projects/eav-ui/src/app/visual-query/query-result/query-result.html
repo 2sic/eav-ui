@@ -49,7 +49,21 @@
               }
             </div>
           </div>
-          <pre class="query-result">{{ result | json }}</pre>
+
+          <mat-tab-group dynamicHeight color="accent" class="eav-tab-group">
+            @for (res of result; track res)
+            {
+              <mat-tab>
+                <div *matTabLabel class="mat-tab-label-box" tippy="Result as JSON">
+                  <span>{{ res.name }}</span>
+                </div>
+
+                <div class="eav-tab-inner-content">
+                  <pre>{{ res.data | json }}</pre>
+                </div>
+              </mat-tab>
+            }
+          </mat-tab-group>
         </div>
       </mat-tab>
 

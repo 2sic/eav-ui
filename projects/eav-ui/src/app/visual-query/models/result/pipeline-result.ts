@@ -13,11 +13,11 @@ export interface QueryResult {
 }
 
 interface QueryStreamsData {
-  [streamName: string]: Record<string, any>[];
+  [streamName: string]: Record<string, unknown>[];
 }
 
 interface QueryResultSourceInfo {
-  Configuration: Record<string, any>;
+  Configuration: Record<string, unknown>;
   Definition?: DataSourceDefinition;
   Error: boolean;
   Guid: string;

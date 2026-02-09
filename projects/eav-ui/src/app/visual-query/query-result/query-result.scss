@@ -12,6 +12,12 @@
   margin-top: 1rem;
 }
 
+.eav-tab-inner-content {
+  height: calc(100vh - 400px);
+  overflow-y: auto;
+  margin-top: 1rem;
+}
+
 .eav-tab-description {
   display: flex;
   justify-content: space-between;

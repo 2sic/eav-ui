@@ -27,7 +27,7 @@ export class QueryResultComponent implements OnInit {
   ticksUsed: number;
   top: number;
   optionsForTop: number[];
-  result: QueryResult["Query"];
+  result: Record<string, unknown>[];
   debugStream: DebugStreamInfo;
   sources: QueryResult["Sources"];
   streams: QueryResult["Streams"];
@@ -47,7 +47,17 @@ export class QueryResultComponent implements OnInit {
     this.ticksUsed = this.dialogData.result.QueryTimer.Ticks;
     this.top = this.dialogData.top;
     this.optionsForTop = [25, 100, 1000, 0];
-    this.result = this.dialogData.result.Query;
+
+    const result = this.dialogData.result.Query;
+    const streamTabs = Object.keys(result).map(key => ({
+      name: key + ' (' + Object.keys(result[key]).length + ')',
+      data: { [key]: result[key] }
+    }));
+    this.result = [
+      { name: 'All Data', data: result },
+      ...streamTabs
+    ];
+
     this.debugStream = this.dialogData.debugStream;
     this.sources = this.dialogData.result.Sources;
     this.streams = this.dialogData.result.Streams;
