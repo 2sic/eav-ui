@@ -3,7 +3,9 @@ import { map } from 'rxjs';
 import { webApiQueryDataSources, webApiQueryDebugStream, webApiQueryGet, webApiQueryRun, webApiQuerySave } from '../../app-administration/services';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { HttpServiceBaseSignal } from '../../shared/services/http-service-base-signal';
-import { DataSource, PipelineDataSource, PipelineModel, PipelineResult } from '../models';
+import { DataSource } from '../models/data-sources.model';
+import { PipelineResult } from '../models/pipeline-result.model';
+import { PipelineDataSource, PipelineModel } from '../models/pipeline.model';
 import { findDefByType } from '../plumb-editor/datasource.helpers';
 
 @Injectable()

@@ -1,5 +1,6 @@
 import { classLog } from '../../shared/logging';
-import { DataSource, PipelineModel } from '../models';
+import { DataSource } from '../models/data-sources.model';
+import { PipelineModel } from '../models/pipeline.model';
 import { DataSourceSet } from './data-source-set.model';
 import { findDefByType } from './datasource.helpers';
 import { domIdOfGuid, guidOfDomId } from './plumber-constants';

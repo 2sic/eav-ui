@@ -1,4 +1,5 @@
-import { DebugStreamInfo, PipelineResult } from '../models';
+import { DebugStreamInfo } from '../models/debug-stream-info.model';
+import { PipelineResult } from '../models/pipeline-result.model';
 
 export interface QueryResultDialogData {
   result: PipelineResult;

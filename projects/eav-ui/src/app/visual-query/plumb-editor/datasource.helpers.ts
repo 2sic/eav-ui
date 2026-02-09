@@ -1,4 +1,4 @@
-import { DataSource } from '../models';
+import { DataSource } from '../models/data-sources.model';
 import { JsPlumbEndpoint } from './jsplumb.models';
 
 export function findDefByType(dataSources: DataSource [], partAssemblyAndType: string): DataSource | undefined {

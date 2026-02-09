@@ -1,6 +1,6 @@
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { classLog } from '../../shared/logging';
-import { PipelineDataSource } from '../models';
+import { PipelineDataSource } from '../models/pipeline.model';
 import { ConnectionsManager } from './connections-manager';
 import { findDefByType, getEndpointLabel } from './datasource.helpers';
 import { EndpointDefinitionsService } from './endpoint-definitions';

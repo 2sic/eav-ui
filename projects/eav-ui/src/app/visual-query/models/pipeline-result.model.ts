@@ -1,4 +1,4 @@
-import { PipelineDataSource } from '.';
+import { PipelineDataSource } from './pipeline.model';
 
 export interface PipelineResult {
   Query: PipelineResultQuery;

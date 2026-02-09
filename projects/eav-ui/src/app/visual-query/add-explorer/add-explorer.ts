@@ -5,7 +5,7 @@ import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/sl
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { ArrayHelpers } from '../../shared/helpers/array.helpers';
-import { DataSource } from '../models';
+import { DataSource } from '../models/data-sources.model';
 import { guiTypes } from '../plumb-editor/plumb-editor.helpers';
 import { VisualQueryStateService } from '../services/visual-query.service';
 import { filterAndSortDataSources } from './add-explorer.helpers';

@@ -1,4 +1,4 @@
-import { PipelineResultStream } from '.';
+import { PipelineResultStream } from './pipeline-result.model';
 
 export interface DebugStreamInfo {
   name: string;

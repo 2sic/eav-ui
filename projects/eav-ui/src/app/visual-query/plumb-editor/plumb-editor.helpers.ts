@@ -1,4 +1,5 @@
-import { DataSource, PipelineDataSource } from '../models';
+import { DataSource } from '../models/data-sources.model';
+import { PipelineDataSource } from '../models/pipeline.model';
 import { findDefByType } from './datasource.helpers';
 import { GuiTypes, TypeInfo, TypeInfos } from './plumb-editor.models';
 

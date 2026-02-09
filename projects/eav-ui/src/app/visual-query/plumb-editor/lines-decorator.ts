@@ -1,5 +1,6 @@
 import { classLog } from '../../shared/logging';
-import { PipelineModel, PipelineResult, PipelineResultStream } from '../models';
+import { PipelineResult, PipelineResultStream } from '../models/pipeline-result.model';
+import { PipelineModel } from '../models/pipeline.model';
 import { JsPlumbEndpoint, JsPlumbInstance } from './jsplumb.models';
 import { domIdOfGuid } from './plumber-constants';
 

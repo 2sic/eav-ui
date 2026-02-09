@@ -1,6 +1,6 @@
 import cloneDeep from 'lodash-es/cloneDeep';
 import { eavConstants } from '../../shared/constants/eav.constants';
-import { DataSource, SortedDataSources } from '../models';
+import { DataSource, SortedDataSources } from '../models/data-sources.model';
 
 export function filterAndSortDataSources(dataSources: DataSource[], maxDifficulty: number) {
   if (!dataSources) return;

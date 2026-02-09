@@ -1,5 +1,5 @@
 import { classLog } from '../../shared/logging';
-import { PipelineModel } from '../models';
+import { PipelineModel } from '../models/pipeline.model';
 import { EndpointLabelRenameParts } from './endpoint-label-rename.model';
 import { JsPlumbEndpoint, JsPlumbOverlay } from './jsplumb.models';
 import { EndpointInfo } from './plumb-editor.models';

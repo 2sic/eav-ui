@@ -11,7 +11,8 @@ import { MousedownStopPropagationDirective } from '../../shared/directives/mouse
 import { JsonHelpers } from '../../shared/helpers/json.helpers';
 import { loadScripts } from '../../shared/helpers/load-scripts.helper';
 import { classLog } from '../../shared/logging';
-import { PipelineDataSource, PipelineResultStream, VisualDesignerData } from '../models';
+import { PipelineResultStream } from '../models/pipeline-result.model';
+import { PipelineDataSource, VisualDesignerData } from '../models/pipeline.model';
 import { QueryDefinitionService } from '../services/query-definition.service';
 import { VisualQueryStateService } from '../services/visual-query.service';
 import { findDefByType } from './datasource.helpers';

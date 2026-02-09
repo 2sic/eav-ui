@@ -1,5 +1,6 @@
 import { classLog } from '../../shared/logging';
-import { DataSource, PipelineModel, StreamWire } from '../models';
+import { DataSource } from '../models/data-sources.model';
+import { PipelineModel, StreamWire } from '../models/pipeline.model';
 import { findDefByType, getEndpointLabel } from './datasource.helpers';
 import { EndpointDefinitionsService } from './endpoint-definitions';
 import { JsPlumbConnection, JsPlumbInstance } from './jsplumb.models';

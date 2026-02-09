@@ -4,7 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogActions, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { EavWindow } from '../../shared/models/eav-window.model';
-import { StreamErrorData } from '../models';
+import { StreamErrorData } from '../models/pipeline-result.model';
 import { StreamErrorResultDialogData } from './stream-error-result.models';
 
 declare const window: EavWindow;

@@ -1,5 +1,5 @@
 import { Context } from '../../shared/services/context';
-import { PipelineModel } from '../models';
+import { PipelineModel } from '../models/pipeline.model';
 
 /**
  * Check if there are special warnings the developer should know.

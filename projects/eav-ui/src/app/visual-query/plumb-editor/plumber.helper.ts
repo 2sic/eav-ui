@@ -1,5 +1,7 @@
 import { classLog } from '../../shared/logging';
-import { DataSource, PipelineModel, PipelineResultStream, VisualDesignerData } from '../models';
+import { DataSource } from '../models/data-sources.model';
+import { PipelineResultStream } from '../models/pipeline-result.model';
+import { PipelineModel, VisualDesignerData } from '../models/pipeline.model';
 import { ConnectionLineColors } from './connection-line-colors';
 import { ConnectionsManager } from './connections-manager';
 import { getEndpointLabel } from './datasource.helpers';
