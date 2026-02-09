@@ -41,14 +41,13 @@ export class EndpointDefinitionsService {
     return l.r(result);
   }
 
-  getInfo(endpointName: string, isDynamic: boolean): EndpointInfo {
+  getInfo(endpointName: string, isDynamic: boolean, customLabel?: string): EndpointInfo {
     const l = this.log.fnIf('getEndpointInfo', {endpointName, isDynamic});
-    // let name: string;
-    // let required: boolean;
 
     // Trim name and see if it's required - marked with a trailing '*'
     const trimmed = endpointName.trim();
-    const required = trimmed.endsWith('*');
+    const isAsterisk = trimmed === '*';
+    const required = !isAsterisk && trimmed.endsWith('*');
     const name = !required
       ? trimmed
       : trimmed.substring(0, trimmed.length - 1);
@@ -56,10 +55,11 @@ export class EndpointDefinitionsService {
     if (isDynamic)
       return l.r({
         name,
-        required: false
+        required: false,
+        label: customLabel ?? (isAsterisk ? '*' : name),
       } satisfies EndpointInfo, 'isDynamic');
 
-    return l.r({ name, required } satisfies EndpointInfo, 'notDynamic');
+    return l.r({ name, required, label: customLabel ?? (isAsterisk ? '*' : name) } satisfies EndpointInfo, 'notDynamic');
   }
 
   buildSourceDef(dsGuid: string, style?: string) {

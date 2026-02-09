@@ -135,7 +135,7 @@ export class Plumber {
       const outCount = dataSource.Out?.length ?? 0;
       l.a('dataSource.Out', { outCount, out: dataSource.Out });
       dataSource.Out?.forEach(name => {
-        this.endpoints.addEndpoint(domDs, name, false, queryDs);
+        this.endpoints.addEndpoint(domDs, name, name, false, queryDs);
       });
 
       // Add dynamic Out-Endpoints (if .OutMode is not static)
@@ -148,7 +148,7 @@ export class Plumber {
       const inCount = dataSource.In?.length ?? 0;
       l.a('dataSource.In', { inCount, in: dataSource.In });
       dataSource.In?.forEach(name => {
-        this.endpoints.addEndpoint(domDs, name, true, queryDs);
+        this.endpoints.addEndpoint(domDs, name, name, true, queryDs);
       });
 
       // Make DataSource a Target for new Endpoints (if .In is an Array)

@@ -10,12 +10,12 @@ import { QueryDataManager } from './query-data-manager';
 
 const logSpecs = {
   all: false,
-  addEndpoint: false,
+  addEndpoint: true,
   reOrientAllLabels: false,
   updateAfterChanges: false,
   wireHasConnection: false,
   mirrorEndpoints: false,
-  fields: ['TestIn2', 'Default'],
+  fields: ['*', 'Default'],
 }
 
 const endPointsWhereWeRotate = 3;
@@ -32,21 +32,21 @@ export class EndpointsManager {
   ) { }
 
   
-  addEndpoint(domDataSource: HTMLElement, endpointName: string, isIn: boolean, queryDs: DataSourceDefinition, extraStyling?: string) {
-    const l = this.log.fnIfInFields('addEndpoint', endpointName, { endpointName, isIn, queryDs });
+  addEndpoint(domDataSource: HTMLElement, endpointName: string, endpointLabel: string, isIn: boolean, queryDs: DataSourceDefinition, extraStyling?: string) {
+    const l = this.log.fnIfInFields('addEndpoint', endpointName, { endpointName, endpointLabel, isIn, queryDs });
     const dsDefinition = findDefByType(this.queryData.dataSources, queryDs.PartAssemblyAndType);
     const connectionList = isIn
       ? dsDefinition.In
       : dsDefinition.Out;
-    const hasDynamic = connectionList?.some(name => this.endpointDefs.getInfo(name, false).required === false);
-    const endpointInfo = this.endpointDefs.getInfo(endpointName, hasDynamic);
+    const isDynamic = connectionList?.some(name => this.endpointDefs.getInfo(name, false).required === false);
+    const endpointInfo = this.endpointDefs.getInfo(endpointName, isDynamic, endpointLabel);
 
-    l.a(`endpointInfo`, { dataSource: dsDefinition, connectionList, hasDynamic, endpointInfo });
+    l.a(`endpointInfo`, { dataSource: dsDefinition, connectionList, hasDynamic: isDynamic, endpointInfo });
 
     // if (endpointName === "DEBUG") debugger;
 
     // Figure out additional styling based on the endpoint type
-    const style = hasDynamic
+    const style = isDynamic
       ? 'dynamic' // dynamic endpoints are not required
       : !endpointInfo.required
         ? ''      // not required
@@ -67,7 +67,7 @@ export class EndpointsManager {
     // Add endpoint and add label and css in case it must be angled
     const endpoint = this.instance.addEndpoint(domDataSource, model, params);
     const overlay = endpoint.getOverlay('endpointLabel');
-    overlay.setLabel(endpointInfo.name);
+    overlay.setLabel(endpointInfo.label);
     l.end("end", {overlay});
   }
 
@@ -129,7 +129,7 @@ export class EndpointsManager {
       // Add missing labels to out
       const { domDataSource, dataSource } = this.queryData.findDataSourceAndDom(ds.guid);
       if (missingInOut.length) {
-        missingInOut.forEach(p => this.addEndpoint(domDataSource, p.label, false, dataSource, 'mirror-in'));
+        missingInOut.forEach(p => this.addEndpoint(domDataSource, p.label, p.label, false, dataSource, 'mirror-in'));
       }
 
       // Remove excessive labels

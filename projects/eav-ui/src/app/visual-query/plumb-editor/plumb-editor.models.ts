@@ -29,4 +29,5 @@ export interface GuiType {
 export interface EndpointInfo {
   name: string;
   required: boolean;
+  label: string;
 }
