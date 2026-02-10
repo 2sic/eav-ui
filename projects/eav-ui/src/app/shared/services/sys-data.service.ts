@@ -57,7 +57,7 @@ export class SysDataService extends HttpServiceBase {
     const l = this.log.fnIf('get', specs as unknown as Record<string, unknown>);
 
     // Get the real underlying httpResource
-    const resource = this.getResource<TData>(specs);
+    const resource = this.getMany<ResultWIP<TData>>(specs);
 
     // Flatten the data to remove the 'Default' wrapper
     const flattened = computedObj(specs.source, () => {
@@ -84,9 +84,9 @@ export class SysDataService extends HttpServiceBase {
    * 
    * @returns 
    */
-  getResource<TData>({ refresh, source, params, fields, noCamel, streams } : SysDataSpecs) {
+  getMany<TData>({ refresh, source, params, fields, noCamel, streams } : SysDataSpecs) {
     const l = this.log.fnIf('getResource', { source, params, fields /*, entitiesFilter */ });
-    return this.newHttpResource<ResultWIP<TData>>(() => {
+    return this.newHttpResource<TData>(() => {
       const paramChanged = refresh?.();
 
       // Resolve the params
@@ -97,8 +97,13 @@ export class SysDataService extends HttpServiceBase {
 
       l.a(`creating httpResource for source: ${source}, '${paramChanged}'`);
       // console.log(`creating httpResource for source: ${source}`);
+
+      const streamNames = streams == '*'
+        ? ''
+        : streams ?? 'Default';
+
       return {
-        url: 'app/auto/query/System.SysData/' + (streams ?? 'Default'),
+        url: `app/auto/query/System.SysData/${streamNames}`,
         params: {
           appId: this.context.appId,
           SysDataSource: source,

@@ -11,6 +11,8 @@ import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { transient } from 'projects/core';
+import { FeatureIconComponent } from '../../features/feature-icon/feature-icon';
+import { FeatureSummary } from '../../features/models';
 import { Context } from '../../shared/services/context';
 import { SysDataService } from '../../shared/services/sys-data.service';
 
@@ -43,6 +45,7 @@ type DeletedEntity = {
     MatSelectModule,
     MatTableModule,
     MatTooltipModule,
+    FeatureIconComponent,
   ]
 })
 export class AppRecycleBin {
@@ -59,24 +62,34 @@ export class AppRecycleBin {
   #routeContentType = toSignal(this.#route.queryParamMap);
   selectedContentType = computed(() => this.#routeContentType()?.get('contentType') || '');
 
-  // Get deleted entities from the backend
-  #allDeletedEntities = this.#dataSvc.get<DeletedEntity>({
+  // Get the data and the feature information in one go, so we can use the feature information for filtering or other purposes in the future if needed
+  // Note that it's an httpResource, so it may still be loading, and the value may be null at the beginning
+  // Note: WIP, maybe not needed for the recycle bin
+  #data = this.#dataSvc.getMany<{ default: DeletedEntity[], feature: FeatureSummary[] }>({
     source: 'f890bec1-dee8-4ed6-9f2e-8ad412d2f4dc', // Recycle Bin DataSource internal ID
     refresh: this.#refresh,
     streams: 'Default,Feature',
   });
 
+  // Get deleted entities from the backend
+  // #allDeletedEntities = this.#dataSvc.get<DeletedEntity>({
+  //   source: 'f890bec1-dee8-4ed6-9f2e-8ad412d2f4dc', // Recycle Bin DataSource internal ID
+  //   refresh: this.#refresh,
+  //   streams: 'Default,Feature',
+  // });
+
   // Filter entities based on selected content type
   deletedEntities = computed(() => {
-    const all = this.#allDeletedEntities();
+    const all = this.#data.value()?.default ?? []; // may still be loading...
     const filter = this.selectedContentType();
-    if (!filter) return all;
-    return all.filter(e => (e.contentTypeName || e.contentTypeStaticName) === filter);
+    return (!filter)
+     ? all
+     : all.filter(e => (e.contentTypeName || e.contentTypeStaticName) === filter);
   });
 
   // Get unique content types for the filter dropdown
   contentTypes = computed(() => {
-    const all = this.#allDeletedEntities();
+    const all = this.#data.value()?.default ?? []; // may still be loading...
     const types = new Set(all.map(e => e.contentTypeName));
     return Array.from(types).sort();
   });
