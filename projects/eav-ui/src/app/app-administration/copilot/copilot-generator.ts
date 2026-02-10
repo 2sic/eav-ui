@@ -75,9 +75,9 @@ export class CopilotGeneratorComponent {
   #data = this.#dataSvc.getMany<{ default: CodeGenerator[], outputType: { name: string }[], feature: FeatureSummary[] }>({
     source: 'f512e44b-5b34-4a32-bfe3-d46d46800a7f', // Code Generators DataSource internal ID
     // Note 2dm: params temporarily turned off, as it affects all streams (accidentally) hiding the OutputType stream
-    // params: computed(() => ({
-    //   '$filter': `OutputType eq '${this.outputType()}'`,
-    // })),
+    params: computed(() => ({
+      '$filter': `OutputType eq '${this.outputType()}'`,
+    })),
     streams: '*', // All streams
   });
   
