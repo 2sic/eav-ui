@@ -14,6 +14,7 @@ import { RouterOutlet } from '@angular/router';
 import { combineLatest, from, map, Observable } from 'rxjs';
 import { transient } from '../../../../../core';
 import { ContentItemsService } from '../../content-items/services/content-items.service';
+import { FeatureSummary } from '../../features/models';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm } from '../../shared/models/edit-form.model';
@@ -22,7 +23,6 @@ import { RichResult } from '../../shared/models/rich-result';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { Context } from '../../shared/services/context';
 import { EntityService } from '../../shared/services/entity.service';
-import { QueryService } from '../../shared/services/query.service';
 import { SysDataService } from '../../shared/services/sys-data.service';
 import { ConfirmDeleteDialogComponent } from '../sub-dialogs/confirm-delete-dialog/confirm-delete-dialog';
 import { ConfirmDeleteDialogData } from '../sub-dialogs/confirm-delete-dialog/confirm-delete-dialog.models';
@@ -62,7 +62,6 @@ export class CopilotGeneratorComponent {
   #context = transient(Context);
   #http = transient(HttpClient);
   #dataSvc = transient(SysDataService);
-  #queryService = transient(QueryService);
   #contentItemsSvc = transient(ContentItemsService);
   #viewContainerRef = inject(ViewContainerRef);
 
@@ -72,12 +71,30 @@ export class CopilotGeneratorComponent {
   entities$: Observable<DataCopilotConfiguration[]>;
   displayedColumns = ['title', 'generator', 'actions'];
 
-  generators = this.#dataSvc.get<CodeGenerator>({
-    source: 'ToSic.Sxc.DataSources.CodeGenerators',
-    params: computed(() => ({
-      '$filter': `OutputType eq '${this.outputType()}'`,
-    })),
+  // Get the data from multiple streams in one go.
+  // Note that it's an httpResource, so it may still be loading, and the value may be null at the beginning
+  #data = this.#dataSvc.getMany<{ default: CodeGenerator[], outputType: { name: string }[], feature: FeatureSummary[] }>({
+    source: 'f512e44b-5b34-4a32-bfe3-d46d46800a7f', // Code Generators DataSource internal ID
+    // Note 2dm: params temporarily turned off, as it affects all streams (accidentally) hiding the OutputType stream
+    // params: computed(() => ({
+    //   '$filter': `OutputType eq '${this.outputType()}'`,
+    // })),
+    streams: '*', // All streams
   });
+  
+  generators = computed(() => 
+    // 2dm: had to temporarily move the outputType filter to here, as we can't use OData till I fix something
+    this.#data.value()?.default.filter(g => g.outputType === this.outputType())
+      ?? []  // may still be loading...
+  );
+
+  // generators = this.#dataSvc.get<CodeGenerator>({
+  //   source: 'f512e44b-5b34-4a32-bfe3-d46d46800a7f', // Code Generators DataSource internal ID
+  //   params: computed(() => ({
+  //     '$filter': `OutputType eq '${this.outputType()}'`,
+  //   })),
+  //   streams: 'Default,OutputType',
+  // });
 
   #generators$ = toObservable(this.generators);
 

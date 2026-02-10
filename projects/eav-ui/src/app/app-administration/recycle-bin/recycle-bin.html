@@ -8,7 +8,12 @@
     <p class="mat-body-1">Here you can see and restore deleted items within this app.</p>
     <p class="mat-caption"><strong>Note:</strong> This feature is currently in beta and may not be fully stable. Use with caution.</p>
 
-    <h3 class="mat-subtitle-1">Deleted Items ({{ deletedEntities().length }} total):</h3>
+    <h3 class="mat-subtitle-1">
+      Deleted Items ({{ deletedEntities().length }} total)
+
+      <!-- Indicator if feature is not active -->
+      <app-feature-icon [featureNameId]="'EntityUndelete'"></app-feature-icon>
+    </h3>
     
     <mat-form-field appearance="outline" color="accent" style="max-width: 300px;">
       <mat-label>Filter by Content Type</mat-label>
@@ -19,7 +24,7 @@
         }
       </mat-select>
     </mat-form-field>
-    
+
     <div>
       @if (deletedEntities().length === 0) {
         <p class="mat-body-1">No deleted items found</p>
