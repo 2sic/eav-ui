@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
@@ -19,7 +18,6 @@ import { ExtensionConfiguration } from '../extension.model';
   imports: [
     CommonModule,
     MatButtonModule,
-    MatCardModule,
     MatChipsModule,
     MatDialogModule,
     MatDividerModule,
@@ -77,5 +75,9 @@ export class ExtensionInfoDialog {
       { name: 'Entities', value: config.hasEntities },
     ];
     return features.sort((a, b) => +b.value - +a.value);
+  }
+
+  getReleaseNotes() {
+    return this.config.releases || [];
   }
 }

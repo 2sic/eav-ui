@@ -1,17 +1,18 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, computed, inject, input, linkedSignal, ViewContainerRef } from '@angular/core';
+import { Component, computed, inject, input, linkedSignal, signal, ViewContainerRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MatDialog, MatDialogActions } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { RouterOutlet } from '@angular/router';
-import { Observable, of } from 'rxjs';
+import { from, map, Observable } from 'rxjs';
 import { transient } from '../../../../../core';
+import { ContentItemsService } from '../../content-items/services/content-items.service';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm } from '../../shared/models/edit-form.model';
@@ -20,6 +21,7 @@ import { RichResult } from '../../shared/models/rich-result';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { Context } from '../../shared/services/context';
 import { EntityService } from '../../shared/services/entity.service';
+import { QueryService } from '../../shared/services/query.service';
 import { SysDataService } from '../../shared/services/sys-data.service';
 import { ConfirmDeleteDialogComponent } from '../sub-dialogs/confirm-delete-dialog/confirm-delete-dialog';
 import { ConfirmDeleteDialogData } from '../sub-dialogs/confirm-delete-dialog/confirm-delete-dialog.models';
@@ -29,6 +31,7 @@ type DataCopilotConfiguration = {
   Guid: string;
   Id: number;
   Title?: string;
+  CodeGenerator?: string;
 };
 
 @Component({
@@ -40,7 +43,6 @@ type DataCopilotConfiguration = {
     FormsModule,
     MatButtonModule,
     MatCardModule,
-    MatDialogActions,
     MatIconModule,
     MatSelectModule,
     MatTableModule,
@@ -59,27 +61,30 @@ export class CopilotGeneratorComponent {
   #context = transient(Context);
   #http = transient(HttpClient);
   #dataSvc = transient(SysDataService);
+  #queryService = transient(QueryService);
+  #contentItemsSvc = transient(ContentItemsService);
   #viewContainerRef = inject(ViewContainerRef);
 
   readonly #copilotConfigurationGuid = 'b08dcd23-2eb0-4a5e-a3d0-3178d2aae451';
   readonly #webApiGeneratedCode = 'admin/code/generateDataModels';
 
   entities$: Observable<DataCopilotConfiguration[]>;
-  displayedColumns = ['title', 'actions'];
+  displayedColumns = ['title', 'generator', 'actions'];
 
   generators = this.#dataSvc.get<CodeGenerator>({
     source: 'ToSic.Sxc.DataSources.CodeGenerators',
     params: computed(() => ({
       '$filter': `OutputType eq '${this.outputType()}'`,
     })),
+    noCamel: true,
   });
 
-  selectedGeneratorName = linkedSignal(() => this.generators()?.[0]?.name ?? null);
+  selectedGeneratorName = linkedSignal(() => this.generators()?.[0]?.Name ?? '');
 
   selectedGenerator = computed(() => {
     const gens = this.generators();
     const selected = this.selectedGeneratorName();
-    return gens.find(g => g.name === selected);
+    return gens.find(g => g.Name === selected);
   });
 
   #editions = this.#dataSvc.get<{ name: string; label: string; description: string, isDefault: boolean }>({
@@ -92,7 +97,10 @@ export class CopilotGeneratorComponent {
     description: (e.description || 'no description provided') + (e.isDefault ? ' ✅' : '')
   })));
 
-  selectedEditionName = linkedSignal(() => this.#editions().find(e => e.isDefault)?.name ?? '');
+  selectedEdition = linkedSignal(() => this.#editions().find(e => e.isDefault)?.name ?? '');
+
+  selectedEntity?: DataCopilotConfiguration;
+  showConfigurationDropdown = signal(false);
 
   ngOnInit(): void {
     this.fetchEntities();
@@ -100,13 +108,16 @@ export class CopilotGeneratorComponent {
   }
 
   fetchEntities(): void {
-    this.entities$ = this.#entitySvc.getEntities$(of({ contentTypeName: this.#copilotConfigurationGuid }));
+    this.entities$ = from(this.#contentItemsSvc.getAllPromise(this.#copilotConfigurationGuid)).pipe(
+      map(data => data as DataCopilotConfiguration[])
+    );
   }
 
   editConfig(entity?: DataCopilotConfiguration): void {
+    const target = entity ?? this.selectedEntity;
     const form: EditForm = {
-      items: [entity
-        ? ItemIdHelper.editId(entity.Id)
+      items: [target
+        ? ItemIdHelper.editId(target.Id)
         : ItemIdHelper.newFromType(this.#copilotConfigurationGuid)
       ]
     };
@@ -114,10 +125,14 @@ export class CopilotGeneratorComponent {
     this.#dialogRouter.navRelative([`edit/${url}`]);
   }
 
-  deleteConfiguration(entity: DataCopilotConfiguration): void {
+  deleteConfiguration(entity?: DataCopilotConfiguration): void {
+    const target = entity ?? this.selectedEntity;
+    if (!target) {
+      return;
+    }
     const data: ConfirmDeleteDialogData = {
-      entityId: entity.Id,
-      entityTitle: entity.Title,
+      entityId: target.Id,
+      entityTitle: target.Title,
       message: 'Are you sure you want to delete?',
       hasDeleteSnackbar: true
     };
@@ -132,11 +147,14 @@ export class CopilotGeneratorComponent {
         this.#entitySvc.delete(
           this.#context.appId,
           this.#copilotConfigurationGuid,
-          entity.Id,
+            target.Id,
           false
         ).subscribe({
           next: () => {
             this.#snackBar.open('Deleted', null, { duration: 2000 });
+              if (this.selectedEntity?.Id === target.Id) {
+                this.selectedEntity = undefined;
+              }
             this.fetchEntities();
           },
           error: (error) => {
@@ -152,7 +170,7 @@ export class CopilotGeneratorComponent {
     this.#http.get<RichResult>(this.#webApiGeneratedCode, {
       params: {
         appId: this.#context.appId,
-        edition: this.selectedEditionName(),
+        edition: this.selectedEdition(),
         generator: this.selectedGeneratorName(),
         configurationId: entity.Id,
       }
@@ -162,14 +180,22 @@ export class CopilotGeneratorComponent {
   }
 
   autoGeneratedCode(): void {
-    this.#http.get<RichResult>(this.#webApiGeneratedCode, {
-      params: {
-        appId: this.#context.appId,
-        edition: this.selectedEditionName(),
-        generator: this.selectedGeneratorName(),
-      }
-    }).subscribe(result => {
+    const params: Record<string, string | number> = {
+      appId: this.#context.appId,
+      edition: this.selectedEdition(),
+      generator: this.selectedGeneratorName(),
+    };
+
+    if (this.selectedEntity) {
+      params.configurationId = this.selectedEntity.Id;
+    }
+
+    this.#http.get<RichResult>(this.#webApiGeneratedCode, { params }).subscribe(result => {
       this.#snackBar.open(`${result.message} (took ${result.timeTaken}ms)`, null, { duration: 5000 });
     });
+  }
+
+  toggleConfigurationDropdown(): void {
+    this.showConfigurationDropdown.update(value => !value);
   }
 }
