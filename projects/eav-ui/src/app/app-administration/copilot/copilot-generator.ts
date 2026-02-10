@@ -76,15 +76,14 @@ export class CopilotGeneratorComponent {
     params: computed(() => ({
       '$filter': `OutputType eq '${this.outputType()}'`,
     })),
-    noCamel: true,
   });
 
-  selectedGeneratorName = linkedSignal(() => this.generators()?.[0]?.Name ?? '');
+  selectedGeneratorName = linkedSignal(() => this.generators()?.[0]?.name ?? '');
 
   selectedGenerator = computed(() => {
     const gens = this.generators();
     const selected = this.selectedGeneratorName();
-    return gens.find(g => g.Name === selected);
+    return gens.find(g => g.name === selected);
   });
 
   #editions = this.#dataSvc.get<{ name: string; label: string; description: string, isDefault: boolean }>({
