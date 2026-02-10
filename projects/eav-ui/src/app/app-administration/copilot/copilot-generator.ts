@@ -72,7 +72,7 @@ export class CopilotGeneratorComponent {
   displayedColumns = ['title', 'generator', 'actions'];
 
   generators = this.#dataSvc.get<CodeGenerator>({
-    source: 'ToSic.Sxc.DataSources.CodeGenerators',
+    source: 'f512e44b-5b34-4a32-bfe3-d46d46800a7f', // Code Generators DataSource internal ID
     params: computed(() => ({
       '$filter': `OutputType eq '${this.outputType()}'`,
     })),

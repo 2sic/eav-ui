@@ -61,7 +61,7 @@ export class AppRecycleBin {
 
   // Get deleted entities from the backend
   #allDeletedEntities = this.#dataSvc.get<DeletedEntity>({
-    source: 'ToSic.Eav.DataSources.RecycleBin',
+    source: 'f890bec1-dee8-4ed6-9f2e-8ad412d2f4dc', // Recycle Bin DataSource internal ID
     refresh: this.#refresh,
   });
 
