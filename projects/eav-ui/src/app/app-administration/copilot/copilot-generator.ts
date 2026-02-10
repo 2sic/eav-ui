@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, computed, inject, input, linkedSignal, signal, ViewContainerRef } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -10,7 +11,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { RouterOutlet } from '@angular/router';
-import { from, map, Observable } from 'rxjs';
+import { combineLatest, from, map, Observable } from 'rxjs';
 import { transient } from '../../../../../core';
 import { ContentItemsService } from '../../content-items/services/content-items.service';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
@@ -78,6 +79,8 @@ export class CopilotGeneratorComponent {
     })),
   });
 
+  #generators$ = toObservable(this.generators);
+
   selectedGeneratorName = linkedSignal(() => this.generators()?.[0]?.name ?? '');
 
   selectedGenerator = computed(() => {
@@ -107,8 +110,16 @@ export class CopilotGeneratorComponent {
   }
 
   fetchEntities(): void {
-    this.entities$ = from(this.#contentItemsSvc.getAllPromise(this.#copilotConfigurationGuid)).pipe(
-      map(data => data as DataCopilotConfiguration[])
+    const allEntities$ = from(this.#contentItemsSvc.getAllPromise(this.#copilotConfigurationGuid));
+
+    this.entities$ = combineLatest([allEntities$, this.#generators$]).pipe(
+      map(([data, currentGenerators]) => {
+        const entities = data as DataCopilotConfiguration[];
+        const generatorNames = new Set(currentGenerators.map(g => g.name));
+        
+        // Only show configurations that match one of the current generators
+        return entities.filter(e => generatorNames.has(e.CodeGenerator));
+      })
     );
   }
 
@@ -117,7 +128,10 @@ export class CopilotGeneratorComponent {
     const form: EditForm = {
       items: [target
         ? ItemIdHelper.editId(target.Id)
-        : ItemIdHelper.newFromType(this.#copilotConfigurationGuid)
+        : ItemIdHelper.newFromType(this.#copilotConfigurationGuid, {
+            CodeGenerator: this.selectedGeneratorName(),
+            OutputType: this.outputType()
+          })
       ]
     };
     const url = convertFormToUrl(form);

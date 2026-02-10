@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, RouterOutlet } from '@angular/router';
 import { CopilotGeneratorComponent } from '../copilot-generator';
 import { CopilotSpec } from '../copilot-specs';
@@ -10,6 +11,7 @@ import { CopilotSpec } from '../copilot-specs';
   imports: [
     CopilotGeneratorComponent,
     RouterOutlet,
+    MatIconModule,
   ]
 })
 export class CopilotPageComponent {
