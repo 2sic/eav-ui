@@ -1,138 +1,129 @@
-<mat-toolbar>
+<mat-toolbar style="display: flex; align-items: center;">
   <span>{{ data.name }}</span>
-  <span class="mat-spacer"></span>
+  <span style="flex: 1 1 auto;"></span>
   <button mat-icon-button (click)="dialog.close()" aria-label="Close dialog">
     <mat-icon>close</mat-icon>
   </button>
 </mat-toolbar>
 
 <mat-dialog-content>
-  <mat-card>
-    <mat-card-header>
-      <mat-card-title>Basic Information</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <mat-list>
-        <mat-list-item>
-          <div matLine>Version</div>
-          <div matLine>{{ config.version || 'n/a' }}</div>
-        </mat-list-item>
-        <mat-list-item>
-          <div matLine>Created By</div>
-          <div matLine>{{ config.createdBy || 'n/a' }}</div>
-        </mat-list-item>
-        <mat-list-item>
-          <div matLine>Copyright</div>
-          <div matLine>{{ config.copyright || 'n/a' }}</div>
-        </mat-list-item>
-      </mat-list>
+  <h3>Basic Information</h3>
+  <mat-list>
+    <mat-list-item>
+      <div matLine>Version</div>
+      <div matLine>{{ config.version || 'n/a' }}</div>
+    </mat-list-item>
+    <mat-list-item>
+      <div matLine>Created By</div>
+      <div matLine>{{ config.createdBy || 'n/a' }}</div>
+    </mat-list-item>
+    <mat-list-item>
+      <div matLine>Copyright</div>
+      <div matLine>{{ config.copyright || 'n/a' }}</div>
+    </mat-list-item>
+  </mat-list>
 
-      @if (config.description) {
-        <mat-divider></mat-divider>
-        <h4>Description</h4>
-        <div [innerHTML]="getSafeHtml(config.description)"></div>
+  @if (config.description) {
+    <mat-divider></mat-divider>
+    <h4>Description</h4>
+    <div [innerHTML]="getSafeHtml(config.description)"></div>
+  }
+  @if (config.teaser) {
+    <mat-divider></mat-divider>
+    <h4>Teaser</h4>
+    <div [innerHTML]="getSafeHtml(config.teaser)"></div>
+  }
+
+  <mat-divider></mat-divider>
+  <h3>Features</h3>
+  <mat-chip-set>
+    @for (feature of getFeatures(); track $index) {
+      <mat-chip [disabled]="!feature.value" [color]="feature.value ? 'primary' : undefined">
+        {{ feature.name }}
+      </mat-chip>
+    }
+  </mat-chip-set>
+
+  @if (getReleaseNotes().length > 0) {
+    <mat-divider></mat-divider>
+    <h3>Release Notes</h3>
+    <mat-list>
+      @for (release of getReleaseNotes(); track release.version) {
+        <mat-list-item>
+          <div matLine>
+            <strong>{{ release.version }}</strong>
+            @if (release.isBreaking) {
+              <mat-chip-set>
+                <mat-chip color="warn">Breaking</mat-chip>
+              </mat-chip-set>
+            }
+          </div>
+          <div matLine>{{ release.notes }}</div>
+        </mat-list-item>
       }
-      @if (config.teaser) {
-        <mat-divider></mat-divider>
-        <h4>Teaser</h4>
-        <div [innerHTML]="getSafeHtml(config.teaser)"></div>
-      }
-    </mat-card-content>
-  </mat-card>
+    </mat-list>
+  }
 
-  <mat-card>
-    <mat-card-header>
-      <mat-card-title>Features</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <mat-chip-set>
-        @for (feature of getFeatures(); track $index) {
-          <mat-chip [disabled]="!feature.value" [color]="feature.value ? 'primary' : undefined">
-            {{ feature.name }}
-          </mat-chip>
-        }
-      </mat-chip-set>
-    </mat-card-content>
-  </mat-card>
-
-  <mat-card>
-    <mat-card-header>
-      <mat-card-title>Platform Requirements</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <mat-list>
-        @for (req of getVersionRequirements(); track $index) {
-          <mat-list-item>
-            <mat-icon matListItemIcon [color]="req.supported ? 'primary' : 'warn'">
-              {{ req.supported ? 'check_circle' : 'cancel' }}
-            </mat-icon>
-            <div matLine>{{ req.platform }}</div>
-            <div matLine>{{ req.version || 'Not specified' }}</div>
-          </mat-list-item>
-        }
-      </mat-list>
-    </mat-card-content>
-  </mat-card>
+  <mat-divider></mat-divider>
+  <h3>Platform Requirements</h3>
+  <mat-list>
+    @for (req of getVersionRequirements(); track $index) {
+      <mat-list-item>
+        <mat-icon matListItemIcon [color]="req.supported ? 'primary' : 'warn'">
+          {{ req.supported ? 'check_circle' : 'cancel' }}
+        </mat-icon>
+        <div matLine>{{ req.platform }}: {{ req.version || 'Not specified' }}</div>
+      </mat-list-item>
+    }
+  </mat-list>
 
   @if (config.linkMain || config.linkDocs || config.linkDemo || config.linkSource) {
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title>Links</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        @if (config.linkMain) {
-          <a [href]="config.linkMain" target="_blank" mat-stroked-button>
-            <mat-icon>language</mat-icon>
-            <span>Main Website</span>
-          </a>
-        }
-        @if (config.linkDocs) {
-          <a [href]="config.linkDocs" target="_blank" mat-stroked-button>
-            <mat-icon>description</mat-icon>
-            <span>Documentation</span>
-          </a>
-        }
-        @if (config.linkDemo) {
-          <a [href]="config.linkDemo" target="_blank" mat-stroked-button>
-            <mat-icon>preview</mat-icon>
-            <span>Demo</span>
-          </a>
-        }
-        @if (config.linkSource) {
-          <a [href]="config.linkSource" target="_blank" mat-stroked-button>
-            <mat-icon>code</mat-icon>
-            <span>Source Code</span>
-          </a>
-        }
-      </mat-card-content>
-    </mat-card>
+    <mat-divider></mat-divider>
+    <h3>Links</h3>
+    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+      @if (config.linkMain) {
+        <a [href]="config.linkMain" target="_blank" mat-stroked-button>
+          <mat-icon>language</mat-icon>
+          <span>Main Website</span>
+        </a>
+      }
+      @if (config.linkDocs) {
+        <a [href]="config.linkDocs" target="_blank" mat-stroked-button>
+          <mat-icon>description</mat-icon>
+          <span>Documentation</span>
+        </a>
+      }
+      @if (config.linkDemo) {
+        <a [href]="config.linkDemo" target="_blank" mat-stroked-button>
+          <mat-icon>preview</mat-icon>
+          <span>Demo</span>
+        </a>
+      }
+      @if (config.linkSource) {
+        <a [href]="config.linkSource" target="_blank" mat-stroked-button>
+          <mat-icon>code</mat-icon>
+          <span>Source Code</span>
+        </a>
+      }
+    </div>
   }
 
   @if (config.settingsContentType || config.resourcesContentType) {
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title>Content Types</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <mat-list>
-          @if (config.settingsContentType) {
-            <mat-list-item>
-              <div matLine>Settings</div>
-              <div matLine>{{ config.settingsContentType }}</div>
-            </mat-list-item>
-          }
-          @if (config.resourcesContentType) {
-            <mat-list-item>
-              <div matLine>Resources</div>
-              <div matLine>{{ config.resourcesContentType }}</div>
-            </mat-list-item>
-          }
-        </mat-list>
-      </mat-card-content>
-    </mat-card>
+    <mat-divider></mat-divider>
+    <h3>Content Types</h3>
+    <mat-list>
+      @if (config.settingsContentType) {
+        <mat-list-item>
+          <div matLine>Settings</div>
+          <div matLine>{{ config.settingsContentType }}</div>
+        </mat-list-item>
+      }
+      @if (config.resourcesContentType) {
+        <mat-list-item>
+          <div matLine>Resources</div>
+          <div matLine>{{ config.resourcesContentType }}</div>
+        </mat-list-item>
+      }
+    </mat-list>
   }
 </mat-dialog-content>
-
-<mat-dialog-actions align="end">
-  <button mat-raised-button (click)="dialog.close()">Close</button>
-</mat-dialog-actions>

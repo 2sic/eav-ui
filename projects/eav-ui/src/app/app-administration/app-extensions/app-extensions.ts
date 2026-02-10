@@ -300,12 +300,7 @@ export class AppExtensions implements OnInit {
         cellRenderer: (params: { data: Extension }) => {
           const edition = params.data?.edition || DefaultExtensionEdition;
           const version = params.data?.configuration?.version;
-          return `
-            <div style="display: flex; flex-direction: column; justify-content: center; height: 100%; line-height: 1.3;">
-              <div>${edition}</div>
-              <div>${version ? `v${version}` : 'version n/a'}</div>
-            </div>
-          `;
+          return this.cellTextRenderer(edition, version ? `v${version}` : 'version n/a', '85px');
         },
       },
       {
