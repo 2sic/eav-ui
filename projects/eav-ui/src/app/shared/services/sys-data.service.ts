@@ -22,6 +22,9 @@ interface SysDataSpecs {
 
   /** Optional parameter to disable camel casing - WIP, in future we plan to always use camel casing */
   noCamel?: boolean;
+
+  /** Optional parameter to specify which stream to select from the result - WIP */
+  streams?: string;
 }
 
 interface ResultWIP<TData> {
@@ -81,7 +84,7 @@ export class SysDataService extends HttpServiceBase {
    * 
    * @returns 
    */
-  getResource<TData>({ refresh, source, params, fields, noCamel } : SysDataSpecs) {
+  getResource<TData>({ refresh, source, params, fields, noCamel, streams } : SysDataSpecs) {
     const l = this.log.fnIf('getResource', { source, params, fields /*, entitiesFilter */ });
     return this.newHttpResource<ResultWIP<TData>>(() => {
       const paramChanged = refresh?.();
@@ -95,7 +98,7 @@ export class SysDataService extends HttpServiceBase {
       l.a(`creating httpResource for source: ${source}, '${paramChanged}'`);
       // console.log(`creating httpResource for source: ${source}`);
       return {
-        url: 'app/auto/query/System.SysData/Default',
+        url: 'app/auto/query/System.SysData/' + (streams ?? 'Default'),
         params: {
           appId: this.context.appId,
           SysDataSource: source,

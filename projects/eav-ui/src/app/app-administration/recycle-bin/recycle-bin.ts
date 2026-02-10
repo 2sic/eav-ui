@@ -63,6 +63,7 @@ export class AppRecycleBin {
   #allDeletedEntities = this.#dataSvc.get<DeletedEntity>({
     source: 'f890bec1-dee8-4ed6-9f2e-8ad412d2f4dc', // Recycle Bin DataSource internal ID
     refresh: this.#refresh,
+    streams: 'Default,Feature',
   });
 
   // Filter entities based on selected content type
