@@ -109,7 +109,7 @@ export class AppRecycleBin {
       return;
     }
 
-    const url = `/api/2sxc/admin/data/recycle?appid=${this.#context.appId}&transactionid=${item.deletedTransactionId}`;
+    const url = `admin/data/recycle?appid=${this.#context.appId}&transactionid=${item.deletedTransactionId}`;
     
     this.#http.post(url, {}, { responseType: 'text' }).subscribe({
       next: () => {
