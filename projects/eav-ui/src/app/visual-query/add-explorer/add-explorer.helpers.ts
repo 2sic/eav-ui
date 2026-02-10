@@ -1,9 +1,10 @@
 import cloneDeep from 'lodash-es/cloneDeep';
 import { eavConstants } from '../../shared/constants/eav.constants';
-import { DataSource, SortedDataSources } from '../models';
+import { DataSourceInstance } from '../models/data-source-instance.model';
 
-export function filterAndSortDataSources(dataSources: DataSource[], maxDifficulty: number) {
-  if (!dataSources) return;
+export function filterAndSortDataSources(dataSources: DataSourceInstance[], maxDifficulty: number) {
+  if (!dataSources)
+    return;
 
   const cloned = cloneDeep(dataSources);
 
@@ -14,7 +15,7 @@ export function filterAndSortDataSources(dataSources: DataSource[], maxDifficult
 
   filtered.sort((a, b) => a.Name.toLocaleLowerCase().localeCompare(b.Name.toLocaleLowerCase()));
 
-  const sorted: SortedDataSources = {};
+  const sorted: Record<string, DataSourceInstance[]> = {};
   for (const dataSource of filtered) {
     const type = dataSource.PrimaryType;
     if (sorted[type]) {

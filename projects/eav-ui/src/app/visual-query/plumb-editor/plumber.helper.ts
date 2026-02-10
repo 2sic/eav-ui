@@ -1,5 +1,8 @@
 import { classLog } from '../../shared/logging';
-import { DataSource, PipelineModel, PipelineResultStream, VisualDesignerData } from '../models';
+import { DataSourceInstance } from '../models/data-source-instance.model';
+import { QueryStreamResult } from '../models/result/PipelineResultStream';
+import { VisualDesignerData } from '../models/visual-designer-data';
+import { VisualQueryModel } from '../models/visual-query.model';
 import { ConnectionLineColors } from './connection-line-colors';
 import { ConnectionsManager } from './connections-manager';
 import { getEndpointLabel } from './datasource.helpers';
@@ -44,11 +47,11 @@ export class Plumber {
 
   constructor(
     private jsPlumbRoot: HTMLElement,
-    private query: PipelineModel,
-    private dataSources: DataSource[],
+    private query: VisualQueryModel,
+    private dataSources: DataSourceInstance[],
     private onConnectionsChangedParent: () => void,
     private onDragend: (pipelineDataSourceGuid: string, position: VisualDesignerData) => void,
-    private onDebugStream: (stream: PipelineResultStream) => void,
+    private onDebugStream: (stream: QueryStreamResult) => void,
     renameDialogParts: EndpointLabelRenameParts,
   ) {
     this.queryData = new QueryDataManager(this.jsPlumbRoot, this.query, this.dataSources);
@@ -132,7 +135,7 @@ export class Plumber {
       const outCount = dataSource.Out?.length ?? 0;
       l.a('dataSource.Out', { outCount, out: dataSource.Out });
       dataSource.Out?.forEach(name => {
-        this.endpoints.addEndpoint(domDs, name, false, queryDs);
+        this.endpoints.addEndpoint(domDs, name, name, false, queryDs);
       });
 
       // Add dynamic Out-Endpoints (if .OutMode is not static)
@@ -145,7 +148,7 @@ export class Plumber {
       const inCount = dataSource.In?.length ?? 0;
       l.a('dataSource.In', { inCount, in: dataSource.In });
       dataSource.In?.forEach(name => {
-        this.endpoints.addEndpoint(domDs, name, true, queryDs);
+        this.endpoints.addEndpoint(domDs, name, name, true, queryDs);
       });
 
       // Make DataSource a Target for new Endpoints (if .In is an Array)

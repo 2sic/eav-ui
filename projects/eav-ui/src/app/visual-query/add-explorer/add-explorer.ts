@@ -5,7 +5,7 @@ import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/sl
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { ArrayHelpers } from '../../shared/helpers/array.helpers';
-import { DataSource } from '../models';
+import { DataSourceInstance } from '../models/data-source-instance.model';
 import { guiTypes } from '../plumb-editor/plumb-editor.helpers';
 import { VisualQueryStateService } from '../services/visual-query.service';
 import { filterAndSortDataSources } from './add-explorer.helpers';
@@ -38,7 +38,7 @@ export class AddExplorerComponent {
     this.#difficulty.set(difficulty);
   }
 
-  addDataSource(dataSource: DataSource) {
+  addDataSource(dataSource: DataSourceInstance) {
     this.visualQueryService.addDataSource(dataSource);
   }
 
@@ -46,11 +46,11 @@ export class AddExplorerComponent {
     ArrayHelpers.toggleInArray(item, this.toggledItems);
   }
 
-  trackGroups(index: number, type: KeyValue<string, DataSource[]>) {
+  trackGroups(index: number, type: KeyValue<string, DataSourceInstance[]>) {
     return type.key;
   }
 
-  trackDataSources(index: number, dataSource: DataSource) {
+  trackDataSources(index: number, dataSource: DataSourceInstance) {
     return dataSource.PartAssemblyAndType;
   }
 }

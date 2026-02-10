@@ -1,5 +1,7 @@
 import { classLog } from '../../shared/logging';
-import { PipelineModel, PipelineResult, PipelineResultStream } from '../models';
+import { QueryResult } from '../models/result/pipeline-result';
+import { QueryStreamResult } from '../models/result/PipelineResultStream';
+import { VisualQueryModel } from '../models/visual-query.model';
 import { JsPlumbEndpoint, JsPlumbInstance } from './jsplumb.models';
 import { domIdOfGuid } from './plumber-constants';
 
@@ -13,15 +15,15 @@ export class LinesDecorator {
 
   constructor(
     private instance: JsPlumbInstance, 
-    private pipelineModel: PipelineModel,
-    private onDebugStream: (stream: PipelineResultStream) => void,
+    private pipelineModel: VisualQueryModel,
+    private onDebugStream: (stream: QueryStreamResult) => void,
   ) { }
   
   /**
    * Updates the entity count on each connections based on the provided result.
    * @param result PipelineResult
    */
-  addEntityCount(result: PipelineResult) {
+  addEntityCount(result: QueryResult) {
     const l = this.log.fnIf('putEntityCountOnConnections');
     result.Streams?.forEach(stream => {
       const outDomId = domIdOfGuid(stream.Source);

@@ -1,5 +1,5 @@
 import { Of } from "../../../../../core";
-import { DataSource } from '../../visual-query/models/data-sources.model';
+import { DataSourceInstance } from '../../visual-query/models/data-source-instance.model';
 
 export const MetadataKeyTypes = {
   Guid: 'guid',
@@ -47,7 +47,7 @@ const dataSourceDifficulties = {
   advanced: 200,
 };
 
-const outFinalTarget: DataSource = {
+const outFinalTarget: DataSourceInstance = {
   ContentType: undefined,
   Difficulty: dataSourceDifficulties.default,
   DynamicIn: true,

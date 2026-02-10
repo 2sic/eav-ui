@@ -1,9 +1,9 @@
 
 export interface CodeGenerator {
-  Name: string;
-  Description: string;
-  DescriptionHtml: string;
-  Version: string;
-  OutputType: string;
-  OutputLanguage: string;
+  name: string;
+  description: string;
+  descriptionHtml: string;
+  version: string;
+  outputType: string;
+  outputLanguage: string;
 }

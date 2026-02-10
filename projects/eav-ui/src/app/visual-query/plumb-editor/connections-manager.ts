@@ -1,5 +1,7 @@
 import { classLog } from '../../shared/logging';
-import { DataSource, PipelineModel, StreamWire } from '../models';
+import { DataSourceInstance } from '../models/data-source-instance.model';
+import { StreamWire } from '../models/stream-wire';
+import { VisualQueryModel } from '../models/visual-query.model';
 import { findDefByType, getEndpointLabel } from './datasource.helpers';
 import { EndpointDefinitionsService } from './endpoint-definitions';
 import { JsPlumbConnection, JsPlumbInstance } from './jsplumb.models';
@@ -17,8 +19,8 @@ export class ConnectionsManager {
 
   constructor(
     private instance: JsPlumbInstance, 
-    private pipelineModel: PipelineModel,
-    private dataSources: DataSource[],
+    private pipelineModel: VisualQueryModel,
+    private dataSources: DataSourceInstance[],
     private endpointsSvc: EndpointDefinitionsService,
     private onConnectionsChanged: () => void,
   ) { }

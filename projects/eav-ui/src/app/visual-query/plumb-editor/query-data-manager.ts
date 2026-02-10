@@ -1,5 +1,6 @@
 import { classLog } from '../../shared/logging';
-import { DataSource, PipelineModel } from '../models';
+import { DataSourceInstance } from '../models/data-source-instance.model';
+import { VisualQueryModel } from '../models/visual-query.model';
 import { DataSourceSet } from './data-source-set.model';
 import { findDefByType } from './datasource.helpers';
 import { domIdOfGuid, guidOfDomId } from './plumber-constants';
@@ -15,11 +16,11 @@ export class QueryDataManager {
 
   constructor(
     private jsPlumbRoot: HTMLElement, 
-    public query: PipelineModel,
-    public dataSources: DataSource[]
+    public query: VisualQueryModel,
+    public dataSources: DataSourceInstance[]
   ) { }
 
-  findDomAndDef(guid: string, partAssemblyAndType: string): (DataSourceSet & { definition: DataSource }) | null {
+  findDomAndDef(guid: string, partAssemblyAndType: string): (DataSourceSet & { definition: DataSourceInstance }) | null {
     const dsSet = this.findDataSourceAndDom(guid);
     if (!dsSet)
       return null;

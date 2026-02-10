@@ -1,6 +1,6 @@
-import { PipelineDataSource } from '../models';
+import { DataSourceDefinition } from '../models/data-source-definition';
 
 export interface DataSourceSet {
   domDataSource: HTMLElement;
-  dataSource: PipelineDataSource;
+  dataSource: DataSourceDefinition;
 }
