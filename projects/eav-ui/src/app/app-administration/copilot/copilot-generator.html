@@ -54,14 +54,14 @@
           {{ selectedGeneratorName() }}
         </mat-select-trigger>
         @for (generator of generators().sort(); track generator) {
-          <mat-option [value]="generator.Name">
-            <strong>{{ generator.Name }} v{{ generator.Version }}</strong><br />
-            {{ generator.Description }}
+          <mat-option [value]="generator.name">
+            <strong>{{ generator.name }} v{{ generator.version }}</strong><br />
+            {{ generator.description }}
           </mat-option>
         }
       </mat-select>
       @if (selectedGenerator(); as selectedGenerator) {
-        <mat-hint [innerHTML]="selectedGenerator.DescriptionHtml"></mat-hint>
+        <mat-hint [innerHTML]="selectedGenerator.descriptionHtml"></mat-hint>
       }
     </mat-form-field>
     <br />
