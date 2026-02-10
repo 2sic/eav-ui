@@ -15,18 +15,18 @@ import { Context } from '../../shared/services/context';
 import { SysDataService } from '../../shared/services/sys-data.service';
 
 type DeletedEntity = {
-  ParentRef: string;
-  AppId: number;
-  Modified: string;
-  Guid: string | null;
-  Created: string;
-  Id: number;
-  DeletedTransactionId: number;
-  ContentTypeStaticName: string;
-  DeletedBy: string;
-  DeletedUtc: string;
-  ContentTypeName: string;
-  Title: string | null;
+  parentRef: string;
+  appId: number;
+  modified: string;
+  guid: string | null;
+  created: string;
+  id: number;
+  deletedTransactionId: number;
+  contentTypeStaticName: string;
+  deletedBy: string;
+  deletedUtc: string;
+  contentTypeName: string;
+  title: string | null;
 };
 
 @Component({
@@ -70,13 +70,13 @@ export class AppRecycleBin {
     const all = this.#allDeletedEntities();
     const filter = this.selectedContentType();
     if (!filter) return all;
-    return all.filter(e => (e.ContentTypeName || e.ContentTypeStaticName) === filter);
+    return all.filter(e => (e.contentTypeName || e.contentTypeStaticName) === filter);
   });
 
   // Get unique content types for the filter dropdown
   contentTypes = computed(() => {
     const all = this.#allDeletedEntities();
-    const types = new Set(all.map(e => e.ContentTypeName));
+    const types = new Set(all.map(e => e.contentTypeName));
     return Array.from(types).sort();
   });
 
@@ -91,11 +91,11 @@ export class AppRecycleBin {
   }
 
   restore(item: DeletedEntity): void {
-    if (!confirm(`Are you sure you want to restore "${item.Title || '(no title)'}"?`)) {
+    if (!confirm(`Are you sure you want to restore "${item.title || '(no title)'}"?`)) {
       return;
     }
 
-    const url = `/api/2sxc/admin/data/recycle?appid=${this.#context.appId}&transactionid=${item.DeletedTransactionId}`;
+    const url = `/api/2sxc/admin/data/recycle?appid=${this.#context.appId}&transactionid=${item.deletedTransactionId}`;
     
     this.#http.post(url, {}, { responseType: 'text' }).subscribe({
       next: () => {

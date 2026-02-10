@@ -29,25 +29,25 @@
           <!-- Title Column -->
           <ng-container matColumnDef="Title">
             <th mat-header-cell *matHeaderCellDef>Title</th>
-            <td mat-cell *matCellDef="let item">{{ item.Title || '(no title)' }}</td>
+            <td mat-cell *matCellDef="let item">{{ item.title || '(no title)' }}</td>
           </ng-container>
 
           <!-- Content Type Column -->
           <ng-container matColumnDef="ContentTypeName">
             <th mat-header-cell *matHeaderCellDef>Content Type</th>
-            <td mat-cell *matCellDef="let item">{{ item.ContentTypeName || item.ContentTypeStaticName }}</td>
+            <td mat-cell *matCellDef="let item">{{ item.contentTypeName || item.contentTypeStaticName }}</td>
           </ng-container>
 
           <!-- Deleted By Column -->
           <ng-container matColumnDef="DeletedBy">
             <th mat-header-cell *matHeaderCellDef>Deleted By</th>
-            <td mat-cell *matCellDef="let item">{{ item.DeletedBy }}</td>
+            <td mat-cell *matCellDef="let item">{{ item.deletedBy }}</td>
           </ng-container>
 
           <!-- Deleted Date Column -->
           <ng-container matColumnDef="DeletedUtc">
             <th mat-header-cell *matHeaderCellDef>Deleted Date</th>
-            <td mat-cell *matCellDef="let item">{{ item.DeletedUtc | date: 'short' }}</td>
+            <td mat-cell *matCellDef="let item">{{ item.deletedUtc | date: 'short' }}</td>
           </ng-container>
 
           <!-- Actions Column -->
