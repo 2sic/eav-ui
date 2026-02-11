@@ -210,6 +210,7 @@ export class AppExtensions implements OnInit {
     ...defaultGridOptions,
     rowHeight: 80,
     columnDefs: this.#buildColumnDefs(),
+    onCellClicked: (event) => this.#handleCellClicked(event),
   };
 
   #helpTextConst: HelpTextConst = {
@@ -230,6 +231,22 @@ export class AppExtensions implements OnInit {
     // const data = this.extensions();
     // return data?.length === 0 ? this.#helpTextConst.empty : this.#helpTextConst.content;
   });
+
+  #handleCellClicked(event: any): void {
+    // Don't open anything when clicking on Actions column
+    if (event.colDef?.headerName === 'Actions') {
+      return;
+    }
+
+    const extension = event.data as Extension;
+    
+    // If installed, open info dialog; otherwise open settings editor
+    if (extension.configuration?.isInstalled) {
+      this.#openInfo(extension);
+    } else {
+      this.#openSettings(extension);
+    }
+  }
 
   /**
    * Multi-line cell renderer to show a bold main text with optional subtext and something before (probably an icon).

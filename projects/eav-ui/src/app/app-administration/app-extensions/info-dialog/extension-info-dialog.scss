@@ -1,0 +1,36 @@
+.dialog-initial-focus {
+	position: absolute;
+	width: 0;
+	height: 0;
+	opacity: 0;
+	pointer-events: none;
+}
+
+.info-table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-bottom: 8px;
+
+	th,
+	td {
+		text-align: left;
+		vertical-align: top;
+		padding: 8px 6px;
+	}
+
+	th {
+		width: 160px;
+		font-weight: 600;
+		color: rgba(0, 0, 0, 0.7);
+	}
+
+	tr + tr {
+		border-top: 1px solid rgba(0, 0, 0, 0.08);
+	}
+}
+
+.info-links {
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+}

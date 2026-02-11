@@ -1,4 +1,5 @@
 <mat-toolbar style="display: flex; align-items: center;">
+  <span class="dialog-initial-focus" cdkFocusInitial tabindex="-1" aria-hidden="true"></span>
   <span>{{ data.name }}</span>
   <span style="flex: 1 1 auto;"></span>
   <button mat-icon-button (click)="dialog.close()" aria-label="Close dialog">
@@ -8,31 +9,71 @@
 
 <mat-dialog-content>
   <h3>Basic Information</h3>
-  <mat-list>
-    <mat-list-item>
-      <div matLine>Version</div>
-      <div matLine>{{ config.version || 'n/a' }}</div>
-    </mat-list-item>
-    <mat-list-item>
-      <div matLine>Created By</div>
-      <div matLine>{{ config.createdBy || 'n/a' }}</div>
-    </mat-list-item>
-    <mat-list-item>
-      <div matLine>Copyright</div>
-      <div matLine>{{ config.copyright || 'n/a' }}</div>
-    </mat-list-item>
-  </mat-list>
-
-  @if (config.description) {
-    <mat-divider></mat-divider>
-    <h4>Description</h4>
-    <div [innerHTML]="getSafeHtml(config.description)"></div>
-  }
-  @if (config.teaser) {
-    <mat-divider></mat-divider>
-    <h4>Teaser</h4>
-    <div [innerHTML]="getSafeHtml(config.teaser)"></div>
-  }
+  <table class="info-table">
+    <tbody>
+      <tr>
+        <th>Version</th>
+        <td>{{ config.version || 'n/a' }}</td>
+      </tr>
+      <tr>
+        <th>Created By</th>
+        <td>{{ config.createdBy || 'n/a' }}</td>
+      </tr>
+      <tr>
+        <th>Copyright</th>
+        <td>{{ config.copyright || 'n/a' }}</td>
+      </tr>
+      <tr>
+        <th>Guid</th>
+        <td>{{ config.nameId || 'n/a' }}</td>
+      </tr>
+      @if (config.teaser) {
+        <tr>
+          <th>Teaser</th>
+          <td><div [innerHTML]="getSafeHtml(config.teaser)"></div></td>
+        </tr>
+      }
+      @if (config.description) {
+        <tr>
+          <th>Description</th>
+          <td><div [innerHTML]="getSafeHtml(config.description)"></div></td>
+        </tr>
+      }
+      @if (config.linkMain || config.linkDocs || config.linkDemo || config.linkSource) {
+        <tr>
+          <th>Links</th>
+          <td>
+            <div class="info-links">
+              @if (config.linkMain) {
+                <a [href]="config.linkMain" target="_blank" mat-stroked-button>
+                  <mat-icon>language</mat-icon>
+                  <span>Main Website</span>
+                </a>
+              }
+              @if (config.linkDocs) {
+                <a [href]="config.linkDocs" target="_blank" mat-stroked-button>
+                  <mat-icon>description</mat-icon>
+                  <span>Documentation</span>
+                </a>
+              }
+              @if (config.linkDemo) {
+                <a [href]="config.linkDemo" target="_blank" mat-stroked-button>
+                  <mat-icon>preview</mat-icon>
+                  <span>Demo</span>
+                </a>
+              }
+              @if (config.linkSource) {
+                <a [href]="config.linkSource" target="_blank" mat-stroked-button>
+                  <mat-icon>code</mat-icon>
+                  <span>Source Code</span>
+                </a>
+              }
+            </div>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
 
   <mat-divider></mat-divider>
   <h3>Features</h3>
@@ -47,66 +88,44 @@
   @if (getReleaseNotes().length > 0) {
     <mat-divider></mat-divider>
     <h3>Release Notes</h3>
-    <mat-list>
-      @for (release of getReleaseNotes(); track release.version) {
-        <mat-list-item>
-          <div matLine>
-            <strong>{{ release.version }}</strong>
-            @if (release.isBreaking) {
-              <mat-chip-set>
-                <mat-chip color="warn">Breaking</mat-chip>
-              </mat-chip-set>
-            }
-          </div>
-          <div matLine>{{ release.notes }}</div>
-        </mat-list-item>
-      }
-    </mat-list>
+    <table class="info-table">
+      <thead>
+        <tr>
+          <th>Version</th>
+          <th>Breaking</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (release of getReleaseNotes(); track release.version) {
+          <tr>
+            <td><strong>{{ release.version }}</strong></td>
+            <td>{{ release.isBreaking ? 'Yes' : 'No' }}</td>
+            <td>{{ release.notes }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
   }
 
   <mat-divider></mat-divider>
   <h3>Platform Requirements</h3>
-  <mat-list>
-    @for (req of getVersionRequirements(); track $index) {
-      <mat-list-item>
-        <mat-icon matListItemIcon [color]="req.supported ? 'primary' : 'warn'">
-          {{ req.supported ? 'check_circle' : 'cancel' }}
-        </mat-icon>
-        <div matLine>{{ req.platform }}: {{ req.version || 'Not specified' }}</div>
-      </mat-list-item>
-    }
-  </mat-list>
-
-  @if (config.linkMain || config.linkDocs || config.linkDemo || config.linkSource) {
-    <mat-divider></mat-divider>
-    <h3>Links</h3>
-    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-      @if (config.linkMain) {
-        <a [href]="config.linkMain" target="_blank" mat-stroked-button>
-          <mat-icon>language</mat-icon>
-          <span>Main Website</span>
-        </a>
+  <table class="info-table">
+    <thead>
+      <tr>
+        <th>Platform</th>
+        <th>Version</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (req of getVersionRequirements(); track $index) {
+        <tr>
+          <td>{{ req.platform }}</td>
+          <td>{{ req.version || 'Not specified' }}</td>
+        </tr>
       }
-      @if (config.linkDocs) {
-        <a [href]="config.linkDocs" target="_blank" mat-stroked-button>
-          <mat-icon>description</mat-icon>
-          <span>Documentation</span>
-        </a>
-      }
-      @if (config.linkDemo) {
-        <a [href]="config.linkDemo" target="_blank" mat-stroked-button>
-          <mat-icon>preview</mat-icon>
-          <span>Demo</span>
-        </a>
-      }
-      @if (config.linkSource) {
-        <a [href]="config.linkSource" target="_blank" mat-stroked-button>
-          <mat-icon>code</mat-icon>
-          <span>Source Code</span>
-        </a>
-      }
-    </div>
-  }
+    </tbody>
+  </table>
 
   @if (config.settingsContentType || config.resourcesContentType) {
     <mat-divider></mat-divider>
