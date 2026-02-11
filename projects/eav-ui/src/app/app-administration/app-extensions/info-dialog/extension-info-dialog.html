@@ -8,7 +8,6 @@
 </mat-toolbar>
 
 <mat-dialog-content>
-  <h3>Basic Information</h3>
   <table class="info-table">
     <tbody>
       <tr>
@@ -43,7 +42,7 @@
         <tr>
           <th>Links</th>
           <td>
-            <div class="info-links">
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
               @if (config.linkMain) {
                 <a [href]="config.linkMain" target="_blank" mat-stroked-button>
                   <mat-icon>language</mat-icon>
@@ -72,77 +71,78 @@
           </td>
         </tr>
       }
-    </tbody>
-  </table>
-
-  <mat-divider></mat-divider>
-  <h3>Features</h3>
-  <mat-chip-set>
-    @for (feature of getFeatures(); track $index) {
-      <mat-chip [disabled]="!feature.value" [color]="feature.value ? 'primary' : undefined">
-        {{ feature.name }}
-      </mat-chip>
-    }
-  </mat-chip-set>
-
-  @if (getReleaseNotes().length > 0) {
-    <mat-divider></mat-divider>
-    <h3>Release Notes</h3>
-    <table class="info-table">
-      <thead>
-        <tr>
-          <th>Version</th>
-          <th>Breaking</th>
-          <th>Notes</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (release of getReleaseNotes(); track release.version) {
-          <tr>
-            <td><strong>{{ release.version }}</strong></td>
-            <td>{{ release.isBreaking ? 'Yes' : 'No' }}</td>
-            <td>{{ release.notes }}</td>
-          </tr>
-        }
-      </tbody>
-    </table>
-  }
-
-  <mat-divider></mat-divider>
-  <h3>Platform Requirements</h3>
-  <table class="info-table">
-    <thead>
       <tr>
-        <th>Platform</th>
-        <th>Version</th>
+        <th>Platform Requirements</th>
+        <td>
+          <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+            @for (req of getVersionRequirements(); track $index) {
+              @if (req.supported !== false) {
+                <div style="font-size: 0.9em;">
+                  {{ req.platform }}
+                  <table class="sub-table">
+                    <tbody>
+                      <tr>
+                        <td>Min. Version:</td>
+                        <td>{{ req.version || 'Not specified' }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              }
+            }
+          </div>
+        </td>
       </tr>
-    </thead>
-    <tbody>
-      @for (req of getVersionRequirements(); track $index) {
+      <tr>
+        <th>Features</th>
+        <td>
+          <mat-chip-set>
+            @for (feature of getFeatures(); track $index) {
+              @if (feature.value) {
+                <mat-chip>{{ feature.name }}</mat-chip>
+              }
+            }
+          </mat-chip-set>
+        </td>
+      </tr>
+      @if (getReleaseNotes().length > 0) {
         <tr>
-          <td>{{ req.platform }}</td>
-          <td>{{ req.version || 'Not specified' }}</td>
+          <th>Release Notes</th>
+          <td>
+            <table class="release-notes-table">
+              <thead>
+                <tr>
+                  <th>Version</th>
+                  <th>Breaking</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (release of getReleaseNotes(); track release.version) {
+                  <tr>
+                    <td>{{ release.version }}</td>
+                    <td>{{ release.isBreaking ? 'Breaking' : '' }}</td>
+                    <td>{{ release.notes }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      }
+      @if (config.settingsContentType || config.resourcesContentType) {
+        <tr>
+          <th>Content Types</th>
+          <td>
+            @if (config.settingsContentType) {
+              <div>Settings: {{ config.settingsContentType }}</div>
+            }
+            @if (config.resourcesContentType) {
+              <div>Resources: {{ config.resourcesContentType }}</div>
+            }
+          </td>
         </tr>
       }
     </tbody>
   </table>
-
-  @if (config.settingsContentType || config.resourcesContentType) {
-    <mat-divider></mat-divider>
-    <h3>Content Types</h3>
-    <mat-list>
-      @if (config.settingsContentType) {
-        <mat-list-item>
-          <div matLine>Settings</div>
-          <div matLine>{{ config.settingsContentType }}</div>
-        </mat-list-item>
-      }
-      @if (config.resourcesContentType) {
-        <mat-list-item>
-          <div matLine>Resources</div>
-          <div matLine>{{ config.resourcesContentType }}</div>
-        </mat-list-item>
-      }
-    </mat-list>
-  }
 </mat-dialog-content>
