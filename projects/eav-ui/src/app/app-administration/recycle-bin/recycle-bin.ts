@@ -1,16 +1,19 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, computed, inject, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatDatepickerInputEvent, MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
+import dayjs, { Dayjs } from 'dayjs';
 import { transient } from 'projects/core';
+import { MatDayjsModule } from '../../edit/shared/date-adapters/date-adapter-api';
 import { FeatureIconComponent } from '../../features/feature-icon/feature-icon';
 import { FeatureSummary } from '../../features/models';
 import { Context } from '../../shared/services/context';
@@ -34,17 +37,21 @@ type DeletedEntity = {
 @Component({
   selector: 'recycle-bin',
   templateUrl: './recycle-bin.html',
+  styleUrls: ['./recycle-bin.scss'],
   standalone: true,
   imports: [
     CommonModule,
     RouterOutlet,
     MatButtonModule,
     MatCardModule,
+    MatDatepickerModule,
     MatFormFieldModule,
     MatIconModule,
+    MatInputModule,
     MatSelectModule,
     MatTableModule,
     MatTooltipModule,
+    MatDayjsModule,
     FeatureIconComponent,
   ]
 })
@@ -53,14 +60,29 @@ export class AppRecycleBin {
   #dataSvc = transient(SysDataService);
   #context = inject(Context);
   #http = inject(HttpClient);
-  #router = inject(Router);
-  #route = inject(ActivatedRoute);
 
   #refresh = signal(0);
 
-  // Get content type from route
-  #routeContentType = toSignal(this.#route.queryParamMap);
-  selectedContentType = computed(() => this.#routeContentType()?.get('contentType') || '');
+  #defaultRangeEnd = dayjs().endOf('day');
+  #defaultRangeStart = dayjs().subtract(6, 'day').startOf('day');
+
+  dateRangeStart = signal<Dayjs | null>(this.#defaultRangeStart);
+  dateRangeEnd = signal<Dayjs | null>(this.#defaultRangeEnd);
+
+  selectedContentType = signal<string>('');
+
+  #dataParams = computed(() => {
+    const params: Record<string, unknown> = {};
+    const start = this.dateRangeStart();
+    const end = this.dateRangeEnd();
+    const contentType = this.selectedContentType();
+
+    if (start) params['DateFrom'] = start.toISOString();
+    if (end) params['DateTo'] = end.toISOString();
+    if (contentType) params['ContentType'] = contentType;
+
+    return params;
+  });
 
   // Get the data and the feature information in one go, so we can use the feature information for filtering or other purposes in the future if needed
   // Note that it's an httpResource, so it may still be loading, and the value may be null at the beginning
@@ -69,6 +91,7 @@ export class AppRecycleBin {
     source: 'f890bec1-dee8-4ed6-9f2e-8ad412d2f4dc', // Recycle Bin DataSource internal ID
     refresh: this.#refresh,
     streams: 'Default,Feature',
+    params: this.#dataParams,
   });
 
   // Get deleted entities from the backend
@@ -97,11 +120,18 @@ export class AppRecycleBin {
   displayedColumns: string[] = ['Title', 'ContentTypeName', 'DeletedBy', 'DeletedUtc', 'actions'];
 
   onContentTypeChange(contentType: string): void {
-    this.#router.navigate([], {
-      relativeTo: this.#route,
-      queryParams: { contentType: contentType || null },
-      queryParamsHandling: 'merge'
-    });
+    this.selectedContentType.set(contentType || '');
+    this.#refresh.set(this.#refresh() + 1);
+  }
+
+  onDateRangeChange(kind: 'start' | 'end', event: MatDatepickerInputEvent<Dayjs>): void {
+    const value = event.value ?? null;
+    if (kind === 'start') {
+      this.dateRangeStart.set(value);
+    } else {
+      this.dateRangeEnd.set(value);
+    }
+    this.#refresh.set(this.#refresh() + 1);
   }
 
   restore(item: DeletedEntity): void {
