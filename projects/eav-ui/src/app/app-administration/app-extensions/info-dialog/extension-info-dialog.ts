@@ -3,10 +3,7 @@ import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ExtensionConfiguration } from '../extension.model';
@@ -20,11 +17,8 @@ import { ExtensionConfiguration } from '../extension.model';
     MatButtonModule,
     MatChipsModule,
     MatDialogModule,
-    MatDividerModule,
     MatIconModule,
-    MatListModule,
     MatToolbarModule,
-    MatExpansionModule,
   ]
 })
 export class ExtensionInfoDialog {

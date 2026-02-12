@@ -1,7 +1,4 @@
 <mat-card>
-  <mat-card-header style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
-    <mat-icon style="font-size: 64px; width: 64px; height: 64px; margin-right: 16px;">support_agent</mat-icon>
-  </mat-card-header>
   <mat-card-content>
     <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
       <h3 class="mat-subtitle-1">Configurations ({{ (entities$ | async)?.length || 0 }})</h3>
@@ -30,12 +27,15 @@
           <ng-container matColumnDef="actions">
             <th mat-header-cell *matHeaderCellDef style="width: auto; padding: 8px 4px; text-align: center;">Actions</th>
             <td mat-cell *matCellDef="let entity" (click)="$event.stopPropagation()" style="padding: 8px 4px; text-align: center; white-space: nowrap;">
-              <button mat-icon-button (click)="generateForConfiguration(entity)" tippy="Generate" tippyPlacement="top">
-                <mat-icon>code</mat-icon>
-              </button>
-              <button mat-icon-button (click)="deleteConfiguration(entity)" tippy="Delete" tippyPlacement="top">
-                <mat-icon>delete</mat-icon>
-              </button>
+              <div style="display: flex; align-items: center; gap: 8px; justify-content: center;">
+                <button mat-button class="eav-button__with-icon" (click)="generateForConfiguration(entity)" tippy="Generate Code" tippyPlacement="top">
+                  <mat-icon class="eav-icon">code</mat-icon>
+                  <span>Generate Code</span>
+                </button>
+                <button mat-icon-button (click)="deleteConfiguration(entity)" tippy="Delete" tippyPlacement="top">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
             </td>
           </ng-container>
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
@@ -47,79 +47,53 @@
     <h3 class="mat-subtitle-1">Generator Settings</h3>
     <br />
 
-    <mat-form-field color="accent" class="eav-mat-form-field">
-      <mat-label>Generator</mat-label>
-      <mat-select required [(value)]="selectedGeneratorName">
-        <mat-select-trigger>
-          {{ selectedGeneratorName() }}
-        </mat-select-trigger>
-        @for (generator of generators().sort(); track generator) {
-          <mat-option [value]="generator.name">
-            <strong>{{ generator.name }} v{{ generator.version }}</strong><br />
-            {{ generator.description }}
-          </mat-option>
-        }
-      </mat-select>
-      @if (selectedGenerator(); as selectedGenerator) {
-        <mat-hint [innerHTML]="selectedGenerator.descriptionHtml"></mat-hint>
-      }
-    </mat-form-field>
-    <br />
-    <br />
-
-    @if (editions(); as editions) {
+    <div style="max-width: 400px;">
       <mat-form-field color="accent" class="eav-mat-form-field">
-        <mat-label>Select an Edition to generate code for</mat-label>
-        <mat-select required [(value)]="selectedEdition">
-          @for (edition of editions.sort(); track edition) {
-            <mat-option [value]="edition.name">
-              <strong>{{ edition.label }}</strong> ({{ edition.description }})
+        <mat-label>Generator</mat-label>
+        <mat-select required [(value)]="selectedGeneratorName">
+          <mat-select-trigger>
+            {{ selectedGeneratorName() }}
+          </mat-select-trigger>
+          @for (generator of generators().sort(); track generator) {
+            <mat-option [value]="generator.name">
+              <strong>{{ generator.name }} v{{ generator.version }}</strong><br />
+              {{ generator.description }}
             </mat-option>
           }
         </mat-select>
-        <mat-hint>
-          Editions are managed in the <code>/App_Data/app.json</code> file. See
-          <a href="https://go.2sxc.org/app-json" target="_blank">docs</a>.
-        </mat-hint>
+        @if (selectedGenerator(); as selectedGenerator) {
+          <mat-hint [innerHTML]="selectedGenerator.descriptionHtml"></mat-hint>
+        }
       </mat-form-field>
-    }
-
-    <br />
-
-    <!-- TODO: @2rb - I think you forgot to clean up old stuff here -->
-    @if (showConfigurationDropdown()) {
       <br />
-      <div class="config-group">
-        <mat-form-field color="accent" class="eav-mat-form-field config-field">
-          <mat-label>Select Configuration</mat-label>
-          <mat-select [(value)]="selectedEntity">
-            <mat-option [value]="undefined">Empty (click + to create)</mat-option>
-            @if (entities$ | async; as entities) {
-              @for (entity of entities; track entity.Id) {
-                <mat-option [value]="entity">{{ entity.Title }}</mat-option>
-              }
+      <br />
+
+      @if (editions(); as editions) {
+        <mat-form-field color="accent" class="eav-mat-form-field">
+          <mat-label>Select an Edition to generate code for</mat-label>
+          <mat-select required [(value)]="selectedEdition">
+            @for (edition of editions.sort(); track edition) {
+              <mat-option [value]="edition.name">
+                <strong>{{ edition.label }}</strong> ({{ edition.description }})
+              </mat-option>
             }
           </mat-select>
-          <mat-hint>Reusable configuration for the Data Copilot generator.</mat-hint>
+          <mat-hint>
+            Editions are managed in the <code>/App_Data/app.json</code> file. See
+            <a href="https://go.2sxc.org/app-json" target="_blank">docs</a>.
+          </mat-hint>
         </mat-form-field>
-        <button mat-icon-button (click)="editConfig()" tippy="{{ selectedEntity ? 'Edit' : 'Create' }}">
-          <mat-icon>{{ selectedEntity ? "edit" : "add" }}</mat-icon>
-        </button>
-        @if (selectedEntity) {
-          <button mat-icon-button (click)="deleteConfiguration()" tippy="Delete">
-            <mat-icon>delete</mat-icon>
-          </button>
-        }
-      </div>
-    }
-  </mat-card-content>
+      }
 
-  <mat-card-actions align="end">
-    <button mat-button class="eav-button__with-icon" (click)="autoGeneratedCode()">
-      <mat-icon class="eav-icon">code</mat-icon>
-      <span>Generate Code</span>
-    </button>
-  </mat-card-actions>
+      <br />
+      <div style="display: flex; justify-content: flex-end;">
+        <button mat-button class="eav-button__with-icon" (click)="autoGeneratedCode()">
+          <mat-icon class="eav-icon">code</mat-icon>
+          <span>Generate Code</span>
+        </button>
+      </div>
+    </div>
+  </mat-card-content>
 </mat-card>
 
 <router-outlet></router-outlet>
