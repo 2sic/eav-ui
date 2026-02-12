@@ -1,6 +1,9 @@
 <mat-toolbar style="display: flex; align-items: center;">
   <span class="dialog-initial-focus" cdkFocusInitial tabindex="-1" aria-hidden="true"></span>
-  <span>{{ data.name }}</span>
+  <span>
+    {{ config.name }}
+    <em>installed in {{ data.edition || 'root' }}</em>
+  </span>
   <span style="flex: 1 1 auto;"></span>
   <button mat-icon-button (click)="dialog.close()" aria-label="Close dialog">
     <mat-icon>close</mat-icon>
@@ -11,10 +14,17 @@
   <table class="info-table">
     <tbody>
       <tr>
-        <th>Version</th>
-        <td>{{ config.version || 'n/a' }}</td>
+        <th>Name</th>
+        <td>{{ config.name || 'n/a' }}</td>
       </tr>
       <tr>
+        <th>ID / Folder</th>
+        <td>{{ data.folder || 'n/a' }}</td>
+      </tr>
+      <tr>
+        <th>Version</th>
+        <td>{{ config.version || 'n/a' }}</td>
+      </tr>      <tr>
         <th>Created By</th>
         <td>{{ config.createdBy || 'n/a' }}</td>
       </tr>
@@ -72,24 +82,22 @@
         </tr>
       }
       <tr>
-        <th>Platform Requirements</th>
+        <th>Platforms</th>
         <td>
-          <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-            @for (req of getVersionRequirements(); track $index) {
-              @if (req.supported !== false) {
-                <div style="font-size: 0.9em;">
-                  {{ req.platform }}
-                  <table class="sub-table">
-                    <tbody>
-                      <tr>
-                        <td>Min. Version:</td>
-                        <td>{{ req.version || 'Not specified' }}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              }
-            }
+          <div style="font-size: 0.9em;">
+            <table class="sub-table">
+              <tbody>
+                @for (req of getVersionRequirements(); track $index) {
+                  @if (req.supported !== false) {
+                    <tr>
+                
+                      <td>{{ req.platform }} Min.: </td>
+                      <td>{{ req.version || 'Not specified' }}</td>
+                    </tr>
+                  }
+                }
+              </tbody>
+            </table>
           </div>
         </td>
       </tr>
