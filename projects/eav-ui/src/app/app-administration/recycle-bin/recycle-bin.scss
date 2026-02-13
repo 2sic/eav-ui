@@ -10,3 +10,40 @@
 	min-width: 240px;
 	max-width: 320px;
 }
+.recycle-bin-list {
+	display: block;
+	padding: 4px 0;
+}
+
+.recycle-bin-details {
+	display: block;
+	padding: 16px 0;
+	font-size: 14px;
+}
+
+.recycle-bin-detail-row {
+	display: flex;
+	padding-bottom: 8px;
+	gap: 16px;
+
+	&:last-child {
+		padding-bottom: 0;
+	}
+}
+
+.recycle-bin-detail-label {
+	flex: 0 0 auto;
+	width: 120px;
+	font-weight: 500;
+}
+
+.recycle-bin-detail-value {
+	flex: 1 1 auto;
+	word-break: break-word;
+}
+
+.recycle-bin-actions {
+	margin-top: 16px;
+	display: flex;
+	justify-content: flex-end;
+}

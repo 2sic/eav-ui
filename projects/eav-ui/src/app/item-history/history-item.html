@@ -1,0 +1,66 @@
+<mat-expansion-panel
+  [expanded]="isExpanded"
+  (expandedChange)="onExpandedChange($event)"
+>
+  <mat-expansion-panel-header>
+    <mat-panel-title>Version {{ historyItem.versionNumber }}</mat-panel-title>
+
+    <mat-panel-description>
+      {{ getLocalDate(historyItem.timeStamp) | date: 'yyyy-MM-dd HH:mm' }} &nbsp;
+      <small>({{ getLocalDate(historyItem.timeStamp) | date: 'yyyy-MM-dd HH:mm' : 'UTC' }} UTC)</small>
+    </mat-panel-description>
+  </mat-expansion-panel-header>
+  @if (isExpanded) {
+    @for (attribute of historyItem.attributes; track attribute) {
+      <div class="eav-table-row">
+        <div
+          class="eav-table-row__main eav-row-main"
+          (click)="onAttributeToggle(attribute.name)"
+        >
+          <div class="eav-row-main__label eav-history-{{ attribute.change }}">
+            {{ attribute.name }}
+          </div>
+          <div class="eav-row-main__value eav-history-{{ attribute.change }}">
+            @if (!expandedAttributes[historyItem.versionNumber + attribute.name]) {
+              {{ attribute.values[0]?.value }}
+            }
+          </div>
+          <div class="eav-row-main__type">
+            <i>[{{ attribute.dataType }}]</i>
+          </div>
+        </div>
+        @if (expandedAttributes[historyItem.versionNumber + attribute.name]) {
+          <div class="eav-table-row__details">
+            @for (value of attribute.values; track value) {
+              <div class="eav-detail-row">
+                <div class="eav-detail-row__label eav-history-{{ value.change }}">{{ value.langKey }}:</div>
+                <div class="eav-detail-row__value">
+                  @if (value.change !== 'changed') {
+                    <div class="eav-history-{{ value.change }}">
+                      {{ value.change === 'deleted' ? value.oldValue : value.value }}
+                    </div>
+                  }
+                  @if (value.change === 'changed') {
+                    <div class="eav-history-new">{{ value.value }}</div>
+                    <div class="eav-history-deleted eav-history-deleted__value">{{ value.oldValue }}</div>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
+    <div class="eav-row-actions">
+      @if (!historyItem.isLastVersion) {
+        <button
+          mat-raised-button
+          class="eav-action-button"
+          (click)="onRestore()"
+        >
+          Restore
+        </button>
+      }
+    </div>
+  }
+</mat-expansion-panel>

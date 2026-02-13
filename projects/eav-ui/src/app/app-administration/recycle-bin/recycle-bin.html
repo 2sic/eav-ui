@@ -41,46 +41,48 @@
       @if (deletedEntities().length === 0) {
         <p class="mat-body-1">No deleted items found</p>
       } @else {
-        <table mat-table [dataSource]="deletedEntities()" class="mat-elevation-z2">
-
-          <!-- Title Column -->
-          <ng-container matColumnDef="Title">
-            <th mat-header-cell *matHeaderCellDef>Title</th>
-            <td mat-cell *matCellDef="let item">{{ item.title || '(no title)' }}</td>
-          </ng-container>
-
-          <!-- Content Type Column -->
-          <ng-container matColumnDef="ContentTypeName">
-            <th mat-header-cell *matHeaderCellDef>Content Type</th>
-            <td mat-cell *matCellDef="let item">{{ item.contentTypeName || item.contentTypeStaticName }}</td>
-          </ng-container>
-
-          <!-- Deleted By Column -->
-          <ng-container matColumnDef="DeletedBy">
-            <th mat-header-cell *matHeaderCellDef>Deleted By</th>
-            <td mat-cell *matCellDef="let item">{{ item.deletedBy }}</td>
-          </ng-container>
-
-          <!-- Deleted Date Column -->
-          <ng-container matColumnDef="DeletedUtc">
-            <th mat-header-cell *matHeaderCellDef>Deleted Date</th>
-            <td mat-cell *matCellDef="let item">{{ item.deletedUtc | date: 'short' }}</td>
-          </ng-container>
-
-          <!-- Actions Column -->
-          <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef>Actions</th>
-            <td mat-cell *matCellDef="let item">
-              <button mat-raised-button color="primary" (click)="restore(item)">
-                <mat-icon>restore_from_trash</mat-icon>
-                Restore
-              </button>
-            </td>
-          </ng-container>
-
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        </table>
+        <mat-accordion multi class="recycle-bin-list">
+          @for (item of deletedEntities(); track item.id) {
+            <mat-expansion-panel
+              [expanded]="expandedItems[item.id]"
+              (expandedChange)="toggleExpandItem($event, item.id)"
+            >
+              <mat-expansion-panel-header>
+                <mat-panel-title>{{ item.title || '(no title)' }}</mat-panel-title>
+                <mat-panel-description>
+                  {{ item.contentTypeName || item.contentTypeStaticName }} &nbsp;
+                  <small>({{ item.deletedUtc | date: 'short' }})</small>
+                </mat-panel-description>
+              </mat-expansion-panel-header>
+              @if (expandedItems[item.id]) {
+                <div class="recycle-bin-details">
+                  <div class="recycle-bin-detail-row">
+                    <div class="recycle-bin-detail-label">Content Type:</div>
+                    <div class="recycle-bin-detail-value">{{ item.contentTypeName || item.contentTypeStaticName }}</div>
+                  </div>
+                  <div class="recycle-bin-detail-row">
+                    <div class="recycle-bin-detail-label">Deleted By:</div>
+                    <div class="recycle-bin-detail-value">{{ item.deletedBy }}</div>
+                  </div>
+                  <div class="recycle-bin-detail-row">
+                    <div class="recycle-bin-detail-label">Deleted Date:</div>
+                    <div class="recycle-bin-detail-value">{{ item.deletedUtc | date: 'medium' }}</div>
+                  </div>
+                  <div class="recycle-bin-detail-row">
+                    <div class="recycle-bin-detail-label">Item ID:</div>
+                    <div class="recycle-bin-detail-value">{{ item.id }}</div>
+                  </div>
+                </div>
+                <div class="recycle-bin-actions">
+                  <button mat-raised-button color="primary" (click)="restore(item)">
+                    <mat-icon>restore_from_trash</mat-icon>
+                    Restore
+                  </button>
+                </div>
+              }
+            </mat-expansion-panel>
+          }
+        </mat-accordion>
       }
     </div>
   </mat-card-content>

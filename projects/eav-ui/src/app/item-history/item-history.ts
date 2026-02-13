@@ -1,4 +1,3 @@
-import { DatePipe } from '@angular/common';
 import { Component, HostBinding, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
@@ -11,8 +10,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { transient } from '../../../../core';
-import { TippyDirective } from '../shared/directives/tippy.directive';
 import { computedObj, signalObj } from '../shared/signals/signal.utilities';
+import { HistoryItemComponent } from './history-item';
 import { getHistoryItems } from './item-history.helpers';
 import { CompareWith } from './models/compare-with.model';
 import { ItemHistoryResult } from './models/item-history-result.model';
@@ -30,8 +29,7 @@ import { VersionsService } from './services/versions.service';
     MatOptionModule,
     MatExpansionModule,
     MatPaginatorModule,
-    DatePipe,
-    TippyDirective,
+    HistoryItemComponent,
   ]
 })
 export class ItemHistoryComponent {
@@ -69,10 +67,6 @@ export class ItemHistoryComponent {
 
   attributeExpandedToggle(versionNumber: number, name: string) {
     this.expandedAttributes[versionNumber + name] = !this.expandedAttributes[versionNumber + name];
-  }
-
-  getLocalDate(date: string) {
-    return new Date(date);
   }
 
   pageChange(event: PageEvent) {
