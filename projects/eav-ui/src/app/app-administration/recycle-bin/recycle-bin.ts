@@ -70,9 +70,9 @@ export class AppRecycleBin {
       const start = this.dateRangeStart();
       const end = this.dateRangeEnd();
       return {
-        ...(start && { DateFrom: start.startOf('day').toISOString() }),
-        ...(end && { DateTo: end.endOf('day').toISOString() }),
-        ...(this.selectedContentType() && { ContentType: this.selectedContentType() }),
+        ...(start ? { DateFrom: start.startOf('day').toISOString() } : {}),
+        ...(end ? { DateTo: end.endOf('day').toISOString() } : {}),
+        ...(this.selectedContentType() ? { ContentType: this.selectedContentType() } : {}),
       };
     }),
   });
