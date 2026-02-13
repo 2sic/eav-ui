@@ -20,8 +20,8 @@
         <mat-label>Filter by Content Type</mat-label>
         <mat-select [(value)]="selectedContentType">
           <mat-option value="">All Types</mat-option>
-          @for (type of contentTypes(); track type) {
-            <mat-option [value]="type">{{ type }}</mat-option>
+          @for (type of contentTypes(); track type.staticName) {
+            <mat-option [value]="type.name">{{ type.title }}</mat-option>
           }
         </mat-select>
       </mat-form-field>

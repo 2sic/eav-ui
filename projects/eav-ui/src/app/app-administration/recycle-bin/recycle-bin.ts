@@ -62,10 +62,10 @@ export class AppRecycleBin {
 
   selectedContentType = model('');
 
-  #data = this.#dataSvc.getMany<{ default: DeletedEntity[], feature: FeatureSummary[] }>({
+  #data = this.#dataSvc.getMany<{ default: DeletedEntity[], feature: FeatureSummary[], contentTypes: ContentTypeInfo[] }>({
     source: RECYCLE_BIN_DATASOURCE_ID,
     refresh: this.#refresh,
-    streams: 'Default,Feature',
+    streams: 'Default,Feature,ContentTypes',
     params: computed(() => {
       const start = this.dateRangeStart();
       const end = this.dateRangeEnd();
@@ -79,25 +79,7 @@ export class AppRecycleBin {
 
   deletedEntities = computed(() => this.#data.value()?.default ?? []);
 
-  #allDataForTypes = this.#dataSvc.getMany<{ default: DeletedEntity[] }>({
-    source: RECYCLE_BIN_DATASOURCE_ID,
-    refresh: this.#refresh,
-    streams: 'Default',
-    params: computed(() => {
-      const start = this.dateRangeStart();
-      const end = this.dateRangeEnd();
-      return {
-        ...(start && { DateFrom: start.startOf('day').toISOString() }),
-        ...(end && { DateTo: end.endOf('day').toISOString() }),
-      };
-    }),
-  });
-
-  contentTypes = computed(() => {
-    const entities = this.#allDataForTypes.value()?.default ?? [];
-    const uniqueTypes = new Set(entities.map(e => e.contentTypeName).filter(Boolean));
-    return Array.from(uniqueTypes).sort();
-  });
+  contentTypes = computed(() => this.#data.value()?.contentTypes ?? []);
 
   displayedColumns: string[] = ['Title', 'ContentTypeName', 'DeletedBy', 'DeletedUtc', 'actions'];
 
@@ -135,4 +117,11 @@ type DeletedEntity = {
   deletedUtc: string;
   contentTypeName: string;
   title: string | null;
+};
+
+type ContentTypeInfo = {
+  name: string;
+  staticName: string;
+  count: number;
+  title: string;
 };
