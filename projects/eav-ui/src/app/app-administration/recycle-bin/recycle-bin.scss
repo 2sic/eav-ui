@@ -1,1 +1,12 @@
-// All custom styles removed. Angular Material styles will be used exclusively.
+.recycle-bin-filters {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	flex-wrap: wrap;
+	margin-bottom: 8px;
+}
+
+.recycle-bin-filter {
+	min-width: 240px;
+	max-width: 320px;
+}

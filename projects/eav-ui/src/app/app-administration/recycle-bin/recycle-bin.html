@@ -15,15 +15,37 @@
       <app-feature-icon [featureNameId]="'EntityUndelete'"></app-feature-icon>
     </h3>
     
-    <mat-form-field appearance="outline" color="accent" style="max-width: 300px;">
-      <mat-label>Filter by Content Type</mat-label>
-      <mat-select [value]="selectedContentType()" (selectionChange)="onContentTypeChange($event.value)">
-        <mat-option value="">All Types</mat-option>
-        @for (type of contentTypes(); track type) {
-          <mat-option [value]="type">{{ type }}</mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
+    <div class="recycle-bin-filters">
+      <mat-form-field appearance="outline" color="accent" class="recycle-bin-filter">
+        <mat-label>Filter by Content Type</mat-label>
+        <mat-select [value]="selectedContentType()" (selectionChange)="onContentTypeChange($event.value)">
+          <mat-option value="">All Types</mat-option>
+          @for (type of contentTypes(); track type) {
+            <mat-option [value]="type">{{ type }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" color="accent" class="recycle-bin-filter">
+        <mat-label>Date range</mat-label>
+        <mat-date-range-input [rangePicker]="dateRangePicker">
+          <input
+            matStartDate
+            [value]="dateRangeStart()"
+            (dateChange)="onDateRangeChange('start', $event)"
+            placeholder="Start date"
+          />
+          <input
+            matEndDate
+            [value]="dateRangeEnd()"
+            (dateChange)="onDateRangeChange('end', $event)"
+            placeholder="End date"
+          />
+        </mat-date-range-input>
+        <mat-datepicker-toggle matSuffix [for]="dateRangePicker"></mat-datepicker-toggle>
+        <mat-date-range-picker #dateRangePicker></mat-date-range-picker>
+      </mat-form-field>
+    </div>
 
     <div>
       @if (deletedEntities().length === 0) {
