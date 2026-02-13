@@ -18,7 +18,7 @@
     <div class="recycle-bin-filters">
       <mat-form-field appearance="outline" color="accent" class="recycle-bin-filter">
         <mat-label>Filter by Content Type</mat-label>
-        <mat-select [value]="selectedContentType()" (selectionChange)="onContentTypeChange($event.value)">
+        <mat-select [(value)]="selectedContentType">
           <mat-option value="">All Types</mat-option>
           @for (type of contentTypes(); track type) {
             <mat-option [value]="type">{{ type }}</mat-option>
@@ -29,18 +29,8 @@
       <mat-form-field appearance="outline" color="accent" class="recycle-bin-filter">
         <mat-label>Date range</mat-label>
         <mat-date-range-input [rangePicker]="dateRangePicker">
-          <input
-            matStartDate
-            [value]="dateRangeStart()"
-            (dateChange)="onDateRangeChange('start', $event)"
-            placeholder="Start date"
-          />
-          <input
-            matEndDate
-            [value]="dateRangeEnd()"
-            (dateChange)="onDateRangeChange('end', $event)"
-            placeholder="End date"
-          />
+          <input matStartDate [(ngModel)]="dateRangeStart" placeholder="Start date" />
+          <input matEndDate [(ngModel)]="dateRangeEnd" placeholder="End date" />
         </mat-date-range-input>
         <mat-datepicker-toggle matSuffix [for]="dateRangePicker"></mat-datepicker-toggle>
         <mat-date-range-picker #dateRangePicker></mat-date-range-picker>

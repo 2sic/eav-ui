@@ -90,12 +90,12 @@ export class SysDataService extends HttpServiceBase {
       const paramChanged = refresh?.();
 
       // Resolve the params
-      const paramsTemp = typeof params === 'function' ? params() : params;
-      params = paramsTemp ?? {};
-      const fieldsTemp = typeof fields === 'function' ? fields() : fields;
-      fields = fieldsTemp;
+      // const pIsSig = typeof params === 'function';
+      const paramsFinal = (typeof params === 'function' ? params() : params) ?? {};
+      
+      const fieldsFinal = (typeof fields === 'function' ? fields() : fields) ?? '';
 
-      l.a(`creating httpResource for source: ${source}, '${paramChanged}'`);
+      l.a(`creating httpResource for source: ${source}, '${paramChanged}'`, { params, fields, noCamel, streams });
       // console.log(`creating httpResource for source: ${source}`);
 
       const streamNames = streams == '*'
@@ -107,9 +107,9 @@ export class SysDataService extends HttpServiceBase {
         params: {
           appId: this.context.appId,
           SysDataSource: source,
-          ...(fields ? { '$select': fields } : {}),
+          ...(fieldsFinal ? { '$select': fieldsFinal } : {}),
           ...(noCamel ? {} : { '$casing': 'camel' }),
-          ...params,
+          ...paramsFinal,
         }
       };
     });
