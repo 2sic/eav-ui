@@ -1,4 +1,5 @@
 import { SxcHttpInterceptorProvider } from '@2sic.com/sxc-angular';
+import { OVERLAY_DEFAULT_CONFIG } from '@angular/cdk/overlay';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { ApplicationConfig, importProvidersFrom, inject, Injector, provideAppInitializer } from '@angular/core';
@@ -44,5 +45,8 @@ export const appConfig: ApplicationConfig = {
 
     { provide: LocationStrategy, useClass: HashLocationStrategy },
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { subscriptSizing: 'dynamic' } },
+
+    // Special thing to avoid using popover in angular stuff, as it causes trouble with z-indexes
+    { provide: OVERLAY_DEFAULT_CONFIG, useValue: { usePopover: false /* Restores legacy overlay behavior */ } }
   ],
 };
