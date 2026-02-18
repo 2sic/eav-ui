@@ -47,14 +47,7 @@
       ></ag-grid-angular>
     </div>
 
-    <div *ngIf="selectedHistoryItem" class="recycle-bin-details" style="margin-top: 2rem;">
-      <h4>Deleted Item Details</h4>
-      <app-history-item
-        [historyItem]="selectedHistoryItem"
-        [isExpanded]="true"
-        [expandedAttributes]="{}"
-      ></app-history-item>
-    </div>
+    <!-- Removed item history details view -->
   </mat-card-content>
 </mat-card>
 <router-outlet></router-outlet>

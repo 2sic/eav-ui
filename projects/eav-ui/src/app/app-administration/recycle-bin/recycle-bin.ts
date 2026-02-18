@@ -18,7 +18,6 @@ import { transient } from 'projects/core';
 import { MatDayjsModule } from '../../edit/shared/date-adapters/date-adapter-api';
 import { FeatureIconComponent } from '../../features/feature-icon/feature-icon';
 import { FeatureSummary } from '../../features/models';
-import { HistoryItemComponent } from '../../item-history/history-item';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
@@ -50,7 +49,6 @@ const RECYCLE_BIN_DATASOURCE_ID = 'f890bec1-dee8-4ed6-9f2e-8ad412d2f4dc';
     MatDayjsModule,
     FeatureIconComponent,
     SxcGridModule,
-    HistoryItemComponent,
   ]
 })
 export class AppRecycleBin {
@@ -61,7 +59,23 @@ export class AppRecycleBin {
   selectedHistoryItem: any = null; // Will be set to the parsed history item
 
   dataSourceData = computed(() => {
-    return this.deletedEntities();
+    // Parse and enrich each entity with realTitle and realContentType from JSON
+    return this.deletedEntities().map((entity: any) => {
+      if (entity.json) {
+        try {
+          const json = JSON.parse(entity.json);
+          entity.realTitle = json?.Entity?.Attributes?.String?.Title?.['*'] || entity.title;
+          entity.realContentType = json?.Entity?.Type?.Name || entity.contentType;
+        } catch {
+          entity.realTitle = entity.title;
+          entity.realContentType = entity.contentType;
+        }
+      } else {
+        entity.realTitle = entity.title;
+        entity.realContentType = entity.contentType;
+      }
+      return entity;
+    });
   });
 
   private buildGridOptions(): GridOptions {
@@ -71,13 +85,13 @@ export class AppRecycleBin {
         {
           ...ColumnDefinitions.TextWideMin100,
           headerName: 'Title',
-          field: 'title',
+          field: 'realTitle',
           flex: 2,
         },
         {
           ...ColumnDefinitions.TextWideMin100,
           headerName: 'Content Type',
-          field: 'contentTypeStaticName',
+          field: 'realContentType',
         },
         {
           ...ColumnDefinitions.TextWideMin100,
@@ -90,11 +104,16 @@ export class AppRecycleBin {
           field: 'id',
         },
         {
-          ...ColumnDefinitions.ActionsPinnedRight3,
+          ...ColumnDefinitions.ActionsPinnedRight4,
           headerName: 'Actions',
-          cellRenderer: (params: any) => {
-            return `<button class='ag-btn ag-btn-primary' data-action='restore'>Restore</button>`;
-          },
+              cellRenderer: (params: any) => {
+                return `
+                  <div class="eav-grid-action-button highlight" data-action="restore" matRipple tippy="Restore" style="display: inline-flex; align-items: center; gap: 6px; padding: 0 28px;">
+                    <span class="material-symbols-outlined">autorenew</span>
+                    <span>Restore</span>
+                  </div>
+                `;
+              },
         },
       ],
       onCellClicked: (event: any) => {
@@ -189,7 +208,7 @@ type DeletedEntity = {
   guid: string | null;
   id: number;
   deletedTransactionId: number;
-  contentTypeStaticName: string;
+  contentType: string;
   deletedBy: string;
   title: string | null;
 };
