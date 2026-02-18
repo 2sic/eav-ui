@@ -1,3 +1,4 @@
+import { GridOptions } from '@ag-grid-community/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, computed, inject, model, signal } from '@angular/core';
@@ -17,6 +18,10 @@ import { transient } from 'projects/core';
 import { MatDayjsModule } from '../../edit/shared/date-adapters/date-adapter-api';
 import { FeatureIconComponent } from '../../features/feature-icon/feature-icon';
 import { FeatureSummary } from '../../features/models';
+import { HistoryItemComponent } from '../../item-history/history-item';
+import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
+import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
+import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { Context } from '../../shared/services/context';
 import { SysDataService } from '../../shared/services/sys-data.service';
 
@@ -44,9 +49,77 @@ const RECYCLE_BIN_DATASOURCE_ID = 'f890bec1-dee8-4ed6-9f2e-8ad412d2f4dc';
     MatTooltipModule,
     MatDayjsModule,
     FeatureIconComponent,
+    SxcGridModule,
+    HistoryItemComponent,
   ]
 })
 export class AppRecycleBin {
+  // ag-Grid integration
+  gridOptions: GridOptions = this.buildGridOptions();
+
+  selectedDeletedEntity: DeletedEntity | null = null;
+  selectedHistoryItem: any = null; // Will be set to the parsed history item
+
+  dataSourceData = computed(() => {
+    return this.deletedEntities();
+  });
+
+  private buildGridOptions(): GridOptions {
+    return {
+      ...defaultGridOptions,
+      columnDefs: [
+        {
+          ...ColumnDefinitions.TextWideMin100,
+          headerName: 'Title',
+          field: 'title',
+          flex: 2,
+        },
+        {
+          ...ColumnDefinitions.TextWideMin100,
+          headerName: 'Content Type',
+          field: 'contentTypeStaticName',
+        },
+        {
+          ...ColumnDefinitions.TextWideMin100,
+          headerName: 'Deleted By',
+          field: 'deletedBy',
+        },
+        {
+          ...ColumnDefinitions.TextWideMin100,
+          headerName: 'Item ID',
+          field: 'id',
+        },
+        {
+          ...ColumnDefinitions.ActionsPinnedRight3,
+          headerName: 'Actions',
+          cellRenderer: (params: any) => {
+            return `<button class='ag-btn ag-btn-primary' data-action='restore'>Restore</button>`;
+          },
+        },
+      ],
+      onCellClicked: (event: any) => {
+        if (event.colDef.headerName === 'Actions' && event.event.target?.dataset?.action === 'restore') {
+          this.restore(event.data);
+        } else if (event.colDef.headerName !== 'Actions') {
+          this.onRowSelected(event.data);
+        }
+      },
+    };
+  }
+
+  onRowSelected(item: DeletedEntity) {
+    this.selectedDeletedEntity = item;
+    // Try to parse the JSON field (assuming it's called 'json' on the item)
+    if (item && (item as any).json) {
+      try {
+        this.selectedHistoryItem = JSON.parse((item as any).json);
+      } catch (e) {
+        this.selectedHistoryItem = null;
+      }
+    } else {
+      this.selectedHistoryItem = null;
+    }
+  }
 
   #dataSvc = transient(SysDataService);
   #context = inject(Context);
@@ -83,7 +156,7 @@ export class AppRecycleBin {
 
   displayedColumns: string[] = ['Title', 'ContentTypeName', 'DeletedBy', 'DeletedUtc', 'actions'];
 
-  expandedItems: Record<number, boolean> = {};
+  // expandedItems: Record<number, boolean> = {};
 
   restore(item: DeletedEntity): void {
     if (!confirm(`Are you sure you want to restore "${item.title || '(no title)'}"?`)) {
@@ -104,9 +177,9 @@ export class AppRecycleBin {
     });
   }
 
-  toggleExpandItem(expanded: boolean, itemId: number): void {
-    this.expandedItems[itemId] = expanded;
-  }
+  // toggleExpandItem(expanded: boolean, itemId: number): void {
+  //   this.expandedItems[itemId] = expanded;
+  // }
 
 }
 

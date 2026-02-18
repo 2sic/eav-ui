@@ -38,52 +38,22 @@
     </div>
 
     <div>
-      @if (deletedEntities().length === 0) {
-        <p class="mat-body-1">No deleted items found</p>
-      } @else {
-        <mat-accordion multi class="recycle-bin-list">
-          @for (item of deletedEntities(); track item.id) {
-            <mat-expansion-panel
-              [expanded]="expandedItems[item.id]"
-              (expandedChange)="toggleExpandItem($event, item.id)"
-            >
-              <mat-expansion-panel-header>
-                <mat-panel-title>{{ item.title || '(no title)' }}</mat-panel-title>
-                <mat-panel-description>
-                  {{ item.contentTypeName || item.contentTypeStaticName }} &nbsp;
-                  <small>({{ item.deletedUtc | date: 'short' }})</small>
-                </mat-panel-description>
-              </mat-expansion-panel-header>
-              @if (expandedItems[item.id]) {
-                <div class="recycle-bin-details">
-                  <div class="recycle-bin-detail-row">
-                    <div class="recycle-bin-detail-label">Content Type:</div>
-                    <div class="recycle-bin-detail-value">{{ item.contentTypeName || item.contentTypeStaticName }}</div>
-                  </div>
-                  <div class="recycle-bin-detail-row">
-                    <div class="recycle-bin-detail-label">Deleted By:</div>
-                    <div class="recycle-bin-detail-value">{{ item.deletedBy }}</div>
-                  </div>
-                  <div class="recycle-bin-detail-row">
-                    <div class="recycle-bin-detail-label">Deleted Date:</div>
-                    <div class="recycle-bin-detail-value">{{ item.deletedUtc | date: 'medium' }}</div>
-                  </div>
-                  <div class="recycle-bin-detail-row">
-                    <div class="recycle-bin-detail-label">Item ID:</div>
-                    <div class="recycle-bin-detail-value">{{ item.id }}</div>
-                  </div>
-                </div>
-                <div class="recycle-bin-actions">
-                  <button mat-raised-button color="primary" (click)="restore(item)">
-                    <mat-icon>restore_from_trash</mat-icon>
-                    Restore
-                  </button>
-                </div>
-              }
-            </mat-expansion-panel>
-          }
-        </mat-accordion>
-      }
+      <ag-grid-angular
+        class="ag-theme-material"
+        style="width: 100%; min-height: 300px;"
+        [rowData]="dataSourceData()"
+        [gridOptions]="gridOptions"
+        domLayout="autoHeight"
+      ></ag-grid-angular>
+    </div>
+
+    <div *ngIf="selectedHistoryItem" class="recycle-bin-details" style="margin-top: 2rem;">
+      <h4>Deleted Item Details</h4>
+      <app-history-item
+        [historyItem]="selectedHistoryItem"
+        [isExpanded]="true"
+        [expandedAttributes]="{}"
+      ></app-history-item>
     </div>
   </mat-card-content>
 </mat-card>
