@@ -7,6 +7,7 @@ const logSpecs = {
   all: false,
   get: true,
   getResource: true,
+  getFirst: true,
 };
 
 interface SysDataSpecs {
@@ -46,6 +47,20 @@ interface ResultWIP<TData> {
 export class SysDataService extends HttpServiceBase {
 
   log = classLogEnabled({SysDataService}, logSpecs);
+
+  /**
+   * Get the first item of a data source as a signal. This is useful for cases where you expect only one item, like the polymorphism info.
+   * @param specs 
+   * @returns 
+   */
+  getFirst<TData>(specs : SysDataSpecs) {
+    const l = this.log.fnIf('getFirst', specs as unknown as Record<string, unknown>);
+    const resource = this.get<TData>(specs);
+    return computedObj(specs.source, () => {
+      const data = resource();
+      return data.length > 0 ? data[0] : null;
+    });
+  }
 
   /** 
    * Get data from the backend as a signal.

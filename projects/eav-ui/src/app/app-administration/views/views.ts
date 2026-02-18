@@ -81,11 +81,7 @@ export class ViewsComponent implements OnInit {
   refresh = signal(1); // must start with 1 so it can be chained in computed as ...refresh() && ...
   views = this.#viewsSvc.getAllLive(this.refresh).value;
 
-  // #polymorphismLazy = this.#viewsSvc.getPolymorphismLive(this.refresh).value;
-
-  #polymorphismData = this.#sysData.get<Polymorphism>({ source: Polymorphism_DS_ID });
-
-  #polymorphismInfo = computed(() => this.#polymorphismData()?.[0]);
+  #polymorphismInfo = this.#sysData.getFirst<Polymorphism>({ source: Polymorphism_DS_ID });
 
   polymorphStatus = computed(() => {
     const polymorphism = this.#polymorphismInfo();
