@@ -18,7 +18,15 @@ import { isCtrlS } from '../../edit/dialog/main/keyboard-shortcuts';
 import { JsonHelpers } from '../../shared/helpers/json.helpers';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { ServiceBase } from '../../shared/services/service-base';
-import { DataSource, DataSourceConfig, DataSourceConfigs, DebugStreamInfo, PipelineDataSource, PipelineModel, PipelineResult, PipelineResultStream, StreamWire, VisualDesignerData } from '../models';
+import { DataSourceConfig } from '../models/data-source-configs.model';
+import { DataSourceDefinition } from '../models/data-source-definition';
+import { DataSourceInstance } from '../models/data-source-instance.model';
+import { DebugStreamInfo } from '../models/debug-stream-info.model';
+import { QueryResult } from '../models/result/pipeline-result';
+import { QueryStreamResult } from '../models/result/PipelineResultStream';
+import { StreamWire } from '../models/stream-wire';
+import { VisualDesignerData } from '../models/visual-designer-data';
+import { VisualQueryModel } from '../models/visual-query.model';
 import { findDefByType } from '../plumb-editor/datasource.helpers';
 import { QueryResultComponent } from '../query-result/query-result';
 import { QueryResultDialogData } from '../query-result/query-result.models';
@@ -38,13 +46,13 @@ export class VisualQueryStateService extends ServiceBase implements OnDestroy {
   #dialogRoute = transient(DialogRoutingService);
   #titleSvc = transient(Title);
 
-  pipelineModel = signal<PipelineModel>(null);
-  dataSources = signal<DataSource[]>(null);
-  dataSourceConfigs = signal<DataSourceConfigs>({});
+  pipelineModel = signal<VisualQueryModel>(null);
+  dataSources = signal<DataSourceInstance[]>(null);
+  dataSourceConfigs = signal<Record<number, DataSourceConfig[]>>({});
 
-  putEntityCountOnConnections$ = new Subject<PipelineResult>();
+  putEntityCountOnConnections$ = new Subject<QueryResult>();
 
-  queryResult?: PipelineResult;
+  queryResult?: QueryResult;
 
   #pipelineId = parseInt(this.#dialogRoute.getParam('pipelineId'), 10);
   #refreshPipeline = false;
@@ -107,9 +115,9 @@ export class VisualQueryStateService extends ServiceBase implements OnDestroy {
     this.pipelineModel.set(query);
   }
 
-  addDataSource(dataSource: DataSource) {
+  addDataSource(dataSource: DataSourceInstance) {
     const query = cloneDeep(this.pipelineModel());
-    const newSource: PipelineDataSource = {
+    const newSource: DataSourceDefinition = {
       Description: '',
       EntityGuid: 'unsaved' + (query.DataSources.length + 1),
       EntityId: undefined,
@@ -163,8 +171,8 @@ export class VisualQueryStateService extends ServiceBase implements OnDestroy {
     this.pipelineModel.set(query);
   }
 
-  #calculateDataSourceConfigs(dataSources: PipelineDataSource[]) {
-    const dataSourceConfigs: DataSourceConfigs = {};
+  #calculateDataSourceConfigs(dataSources: DataSourceDefinition[]) {
+    const dataSourceConfigs: Record<number, DataSourceConfig[]> = {};
     dataSources.forEach(dataSource => {
       if (dataSource.EntityId == null)
         return;
@@ -189,7 +197,7 @@ export class VisualQueryStateService extends ServiceBase implements OnDestroy {
     this.dataSourceConfigs.set(dataSourceConfigs);
   }
 
-  editDataSource(pipelineDataSource: PipelineDataSource) {
+  editDataSource(pipelineDataSource: DataSourceDefinition) {
     const dataSource = findDefByType(this.dataSources(), pipelineDataSource.PartAssemblyAndType);
     const contentTypeName = dataSource.ContentType;
     const { targetType, keyType } = eavConstants.metadata.entity;
@@ -260,7 +268,7 @@ export class VisualQueryStateService extends ServiceBase implements OnDestroy {
       });
   }
 
-  debugStream(stream: PipelineResultStream, top = 25): void {
+  debugStream(stream: QueryStreamResult, top = 25): void {
     if (stream.Error)
       return this.#showStreamErrorResult(stream);
 
@@ -307,7 +315,7 @@ export class VisualQueryStateService extends ServiceBase implements OnDestroy {
     });
   }
 
-  #showQueryResult(result: PipelineResult, top: number, debugStream?: DebugStreamInfo) {
+  #showQueryResult(result: QueryResult, top: number, debugStream?: DebugStreamInfo) {
     const dialogData: QueryResultDialogData = {
       result,
       debugStream,
@@ -327,7 +335,7 @@ export class VisualQueryStateService extends ServiceBase implements OnDestroy {
     this.changeDetectorRef.markForCheck();
   }
 
-  #showStreamErrorResult(stream: PipelineResultStream) {
+  #showStreamErrorResult(stream: QueryStreamResult) {
     const dialogData: StreamErrorResultDialogData = {
       errorData: stream.ErrorData,
     };

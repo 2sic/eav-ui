@@ -25,6 +25,7 @@ import { AppExtensionActions } from './extension-actions/extension-actions';
 import { DefaultExtensionEdition, Extension } from './extension.model';
 import { AppExtensionsLinkCell } from './extensions-link/extensions-link';
 import { ImportExtensionComponent } from './import/import-extension';
+import { ExtensionInfoDialog } from './info-dialog/extension-info-dialog';
 
 @Component({
   selector: 'app-extensions',
@@ -44,7 +45,7 @@ import { ImportExtensionComponent } from './import/import-extension';
 })
 export class AppExtensions implements OnInit {
 
-  log = classLog({AppExtensions}, {});
+  log = classLog({ AppExtensions }, {});
 
   #extensionsSvc = transient(AppExtensionsService);
   #router = inject(Router);
@@ -152,6 +153,14 @@ export class AppExtensions implements OnInit {
     });
   }
 
+  #openInfo(ext: Extension): void {
+    this.#dialog.open(ExtensionInfoDialog, {
+      data: ext,
+      width: '800px',
+      maxWidth: '90vw'
+    });
+  }
+
   filesDropped(files: File[]) {
     const dialogRef = this.#dialog.open(ImportExtensionComponent, {
       data: {
@@ -198,23 +207,43 @@ export class AppExtensions implements OnInit {
     ...defaultGridOptions,
     rowHeight: 80,
     columnDefs: this.#buildColumnDefs(),
+    onCellClicked: (event) => this.#handleCellClicked(event),
   };
 
   #helpTextConst: HelpTextConst = {
-    empty: {
-      description: '<p><b>App Extensions</b><br>Install extensions to add extra functionality or input types to apps.</p>',
-      hint: '<p>Create an extension by placing an <code>extension.json</code> file in the <code>app/extensions</code> folder.</p>'
-    },
     content: {
-      description: '<p><b>App Extensions</b><br>Installed extensions are shown here.</p>',
-      hint: '<p>Use the Upload button to add an extension folder.</p>'
+      description: '<p><b>App Extensions</b><br>Extensions add functionality such as new input types to apps - see <a href="https://go.2sxc.org/app-ext" target="_blank">documentation</a>.</p>',
+      hint: '<p>Use the (+) button to install extensions.</p>'
+        + '<p>Or create your own extension by creating a folder in <br> <code>/extensions</code>, such as '
+        + '<code>/extensions/my-extension</code>.</p>'
+    },
+    empty: {
+      description: '',
+      hint: ''
     }
   };
 
   uxHelpText = computed(() => {
-    const data = this.extensions();
-    return data?.length === 0 ? this.#helpTextConst.empty : this.#helpTextConst.content;
+    return this.#helpTextConst.content;
+    // const data = this.extensions();
+    // return data?.length === 0 ? this.#helpTextConst.empty : this.#helpTextConst.content;
   });
+
+  #handleCellClicked(event: any): void {
+    // Don't open anything when clicking on Actions column
+    if (event.colDef?.headerName === 'Actions') {
+      return;
+    }
+
+    const extension = event.data as Extension;
+    
+    // If installed, open info dialog; otherwise open settings editor
+    if (extension.configuration?.isInstalled) {
+      this.#openInfo(extension);
+    } else {
+      this.#openSettings(extension);
+    }
+  }
 
   /**
    * Multi-line cell renderer to show a bold main text with optional subtext and something before (probably an icon).
@@ -283,16 +312,12 @@ export class AppExtensions implements OnInit {
         headerName: 'Edition',
         field: 'edition',
         sortable: true,
+        maxWidth: 100,
         filter: 'agTextColumnFilter',
         cellRenderer: (params: { data: Extension }) => {
           const edition = params.data?.edition || DefaultExtensionEdition;
-          return `
-            <mat-chip-set>
-              <mat-chip>
-                ${edition}
-              </mat-chip>
-            </mat-chip-set>
-          `;
+          const version = params.data?.configuration?.version;
+          return this.cellTextRenderer(edition, version ? `v${version}` : 'version n/a', '85px');
         },
       },
       {
@@ -333,6 +358,7 @@ export class AppExtensions implements OnInit {
                 case 'download': return this.#extensionsSvc.downloadExtension(ext.folder);
                 case 'delete': return this.#deleteExtension(ext.folder, ext.edition);
                 case 'inspect': return this.#openInspection(ext.folder, ext.edition);
+                case 'info': return this.#openInfo(ext);
                 case 'openSettings': return this.#openEditContentType(
                   ext.configuration?.settingsContentType
                 );

@@ -4,7 +4,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
-import { DebugStreamInfo, PipelineResultQuery, PipelineResultSources, PipelineResultStream } from '../models';
+import { DebugStreamInfo } from '../models/debug-stream-info.model';
+import { QueryResult } from '../models/result/pipeline-result';
 import { VisualQueryStateService } from '../services/visual-query.service';
 import { QueryResultDialogData } from './query-result.models';
 
@@ -26,10 +27,10 @@ export class QueryResultComponent implements OnInit {
   ticksUsed: number;
   top: number;
   optionsForTop: number[];
-  result: PipelineResultQuery;
+  result: Record<string, unknown>[];
   debugStream: DebugStreamInfo;
-  sources: PipelineResultSources;
-  streams: PipelineResultStream[];
+  sources: QueryResult["Sources"];
+  streams: QueryResult["Streams"];
 
   constructor(
     @Inject(MAT_DIALOG_DATA) private dialogData: QueryResultDialogData,
@@ -46,7 +47,17 @@ export class QueryResultComponent implements OnInit {
     this.ticksUsed = this.dialogData.result.QueryTimer.Ticks;
     this.top = this.dialogData.top;
     this.optionsForTop = [25, 100, 1000, 0];
-    this.result = this.dialogData.result.Query;
+
+    const result = this.dialogData.result.Query;
+    const streamTabs = Object.keys(result).map(key => ({
+      name: key + ' (' + Object.keys(result[key]).length + ')',
+      data: { [key]: result[key] }
+    }));
+    this.result = [
+      { name: 'All Data', data: result },
+      ...streamTabs
+    ];
+
     this.debugStream = this.dialogData.debugStream;
     this.sources = this.dialogData.result.Sources;
     this.streams = this.dialogData.result.Streams;

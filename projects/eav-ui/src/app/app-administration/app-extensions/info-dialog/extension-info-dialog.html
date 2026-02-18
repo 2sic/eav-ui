@@ -1,0 +1,156 @@
+<mat-toolbar style="display: flex; align-items: center;">
+  <span class="dialog-initial-focus" cdkFocusInitial tabindex="-1" aria-hidden="true"></span>
+  <span>
+    {{ config.name }}
+    <em>installed in {{ data.edition || 'root' }}</em>
+  </span>
+  <span style="flex: 1 1 auto;"></span>
+  <button mat-icon-button (click)="dialog.close()" aria-label="Close dialog">
+    <mat-icon>close</mat-icon>
+  </button>
+</mat-toolbar>
+
+<mat-dialog-content>
+  <table class="info-table">
+    <tbody>
+      <tr>
+        <th>Name</th>
+        <td>{{ config.name || 'n/a' }}</td>
+      </tr>
+      <tr>
+        <th>ID / Folder</th>
+        <td>{{ data.folder || 'n/a' }}</td>
+      </tr>
+      <tr>
+        <th>Version</th>
+        <td>{{ config.version || 'n/a' }}</td>
+      </tr>      <tr>
+        <th>Created By</th>
+        <td>{{ config.createdBy || 'n/a' }}</td>
+      </tr>
+      <tr>
+        <th>Copyright</th>
+        <td>{{ config.copyright || 'n/a' }}</td>
+      </tr>
+      <tr>
+        <th>Guid</th>
+        <td>{{ config.nameId || 'n/a' }}</td>
+      </tr>
+      @if (config.teaser) {
+        <tr>
+          <th>Teaser</th>
+          <td><div [innerHTML]="getSafeHtml(config.teaser)"></div></td>
+        </tr>
+      }
+      @if (config.description) {
+        <tr>
+          <th>Description</th>
+          <td><div [innerHTML]="getSafeHtml(config.description)"></div></td>
+        </tr>
+      }
+      @if (config.linkMain || config.linkDocs || config.linkDemo || config.linkSource) {
+        <tr>
+          <th>Links</th>
+          <td>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              @if (config.linkMain) {
+                <a [href]="config.linkMain" target="_blank" mat-stroked-button>
+                  <mat-icon>language</mat-icon>
+                  <span>Main Website</span>
+                </a>
+              }
+              @if (config.linkDocs) {
+                <a [href]="config.linkDocs" target="_blank" mat-stroked-button>
+                  <mat-icon>description</mat-icon>
+                  <span>Documentation</span>
+                </a>
+              }
+              @if (config.linkDemo) {
+                <a [href]="config.linkDemo" target="_blank" mat-stroked-button>
+                  <mat-icon>preview</mat-icon>
+                  <span>Demo</span>
+                </a>
+              }
+              @if (config.linkSource) {
+                <a [href]="config.linkSource" target="_blank" mat-stroked-button>
+                  <mat-icon>code</mat-icon>
+                  <span>Source Code</span>
+                </a>
+              }
+            </div>
+          </td>
+        </tr>
+      }
+      <tr>
+        <th>Platforms</th>
+        <td>
+          <div style="font-size: 0.9em;">
+            <table class="sub-table">
+              <tbody>
+                @for (req of getVersionRequirements(); track $index) {
+                  @if (req.supported !== false) {
+                    <tr>
+                
+                      <td>{{ req.platform }} Min.: </td>
+                      <td>{{ req.version || 'Not specified' }}</td>
+                    </tr>
+                  }
+                }
+              </tbody>
+            </table>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <th>Features</th>
+        <td>
+          <mat-chip-set>
+            @for (feature of getFeatures(); track $index) {
+              @if (feature.value) {
+                <mat-chip>{{ feature.name }}</mat-chip>
+              }
+            }
+          </mat-chip-set>
+        </td>
+      </tr>
+      @if (getReleaseNotes().length > 0) {
+        <tr>
+          <th>Release Notes</th>
+          <td>
+            <table class="release-notes-table">
+              <thead>
+                <tr>
+                  <th>Version</th>
+                  <th>Breaking</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (release of getReleaseNotes(); track release.version) {
+                  <tr>
+                    <td>{{ release.version }}</td>
+                    <td>{{ release.isBreaking ? 'Breaking' : '' }}</td>
+                    <td>{{ release.notes }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      }
+      @if (config.settingsContentType || config.resourcesContentType) {
+        <tr>
+          <th>Content Types</th>
+          <td>
+            @if (config.settingsContentType) {
+              <div>Settings: {{ config.settingsContentType }}</div>
+            }
+            @if (config.resourcesContentType) {
+              <div>Resources: {{ config.resourcesContentType }}</div>
+            }
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</mat-dialog-content>

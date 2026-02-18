@@ -1,11 +1,11 @@
 import { Context } from '../../shared/services/context';
-import { PipelineModel } from '../models';
+import { VisualQueryModel } from '../models/visual-query.model';
 
 /**
  * Check if there are special warnings the developer should know.
  * Typically when the test ModuleId is different from the one we're currently working on
  */
-export function calculateWarnings(pipelineModel: PipelineModel, context: Context) {
+export function calculateWarnings(pipelineModel: VisualQueryModel, context: Context) {
   if(!pipelineModel) return [];
   const warnings: string[] = [];
 

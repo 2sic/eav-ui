@@ -1,117 +1,80 @@
-<div class="eav-cards-box" [class.eav-cards-box-expanded]="showConfigurationDropdown()">
-  <mat-card class="eav-card">
-    <mat-card-header class="eav-card-header">
-      <mat-card-title>{{ title() }}</mat-card-title>
-      <mat-icon>support_agent</mat-icon>
-    </mat-card-header>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 16px;">
+      <h3 class="mat-subtitle-1">Configurations ({{ (entities$ | async)?.length || 0 }})</h3>
+      <button mat-fab mat-elevation-z24 class="grid-fab" tippy="Add Configuration" tippyPlacement="left" (click)="editConfig()">
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
+
+    @if (entities$ | async; as entities) {
+      @if (entities.length === 0) {
+        <p class="mat-body-1">No configurations yet. Click + to create one.</p>
+      } @else {
+        <div style="padding: 0 16px;">
+          <ag-grid-angular
+            class="ag-theme-material"
+            style="width: 100%;"
+            [rowData]="dataSourceData()"
+            [gridOptions]="gridOptions"
+            domLayout="autoHeight"
+          ></ag-grid-angular>
+        </div>
+      }
+    }
+    
+<div style="max-width: 400px; margin-top: 24px; margin-left: 16px;">
+  <mat-card>
     <mat-card-content>
+      <h3 class="mat-subtitle-1">Quick Generate</h3>
       <br />
-      <!-- Generator select -->
-      @if (generators$ | async; as generators) {
+
+      <div style="max-width: 400px;">
         <mat-form-field color="accent" class="eav-mat-form-field">
           <mat-label>Generator</mat-label>
-          <mat-select required [(value)]="selectedGenerator">
+          <mat-select required [(value)]="selectedGeneratorName">
             <mat-select-trigger>
-              {{ selectedGenerator }}
+              {{ selectedGeneratorName() }}
             </mat-select-trigger>
-            @for (generator of generators.sort(); track generator) {
+            @for (generator of generators().sort(); track generator) {
               <mat-option [value]="generator.name">
-                <strong>{{ generator.name }} v{{ generator.version }}</strong
-                ><br />
+                <strong>{{ generator.name }} v{{ generator.version }}</strong><br />
                 {{ generator.description }}
               </mat-option>
             }
           </mat-select>
-          @if (selectedGenerator$ | async; as selectedGenerator) {
+          @if (selectedGenerator(); as selectedGenerator) {
             <mat-hint [innerHTML]="selectedGenerator.descriptionHtml"></mat-hint>
           }
         </mat-form-field>
         <br />
-      }
-
-      <br />
-      <!-- Edition select -->
-      @if (editions$ | async; as editions) {
-        <mat-form-field color="accent" class="eav-mat-form-field">
-          <mat-label>Select an Edition to generate code for</mat-label>
-          <mat-select required [(value)]="selectedEdition">
-            @for (edition of editions.sort(); track edition) {
-              <mat-option [value]="edition.name">
-                <strong>{{ edition.label }}</strong> ({{ edition.description }})
-              </mat-option>
-            }
-          </mat-select>
-          <mat-hint>
-            Editions are managed in the <code>/App_Data/app.json</code> file. See
-            <a href="https://go.2sxc.org/app-json" target="_blank">docs</a>.
-          </mat-hint>
-        </mat-form-field>
-      }
-
-      <br />
-      <!-- Configurations select -->
-      @if (showConfigurationDropdown()) {
         <br />
 
-        <div class="configuration-select">
+        @if (editions(); as editions) {
           <mat-form-field color="accent" class="eav-mat-form-field">
-            <mat-label>Select a Configuration</mat-label>
-            <mat-select [(value)]="selectedEntity">
-              <mat-option [value]="undefined">
-                Empty (press + to create new)
-              </mat-option>
-              @if (entities$ | async; as entities)
-              {
-                @for (entity of entities; track entity.Id)
-                {
-                  <mat-option [value]="entity">
-                    {{ entity.Title }}
-                  </mat-option>
-                }
+            <mat-label>Select an Edition to generate code for</mat-label>
+            <mat-select required [(value)]="selectedEdition">
+              @for (edition of editions.sort(); track edition) {
+                <mat-option [value]="edition.name">
+                  <strong>{{ edition.label }}</strong> ({{ edition.description }})
+                </mat-option>
               }
             </mat-select>
             <mat-hint>
-              Reusable configuration for the Data Copilot generator.
+              Editions are managed in the <code>/App_Data/app.json</code> file. See
+              <a href="https://go.2sxc.org/app-json" target="_blank">docs</a>.
             </mat-hint>
           </mat-form-field>
+        }
 
-          <!-- Add / edit button -->
-          <button
-            mat-icon-button
-            class="eav-icon"
-            aria-label="Create"
-            (click)="editConfig()"
-          >
-            <mat-icon>{{ selectedEntity ? "edit" : "add" }}</mat-icon>
+        <br />
+        <div style="display: flex; justify-content: flex-end;">
+          <button mat-button class="eav-button__with-icon" (click)="autoGeneratedCode()">
+            <mat-icon class="eav-icon">code</mat-icon>
+            <span>Generate Code</span>
           </button>
-          
-          <!-- Delete button -->
-          @if (selectedEntity)
-          {
-            <button
-              mat-icon-button
-              class="eav-icon"
-              aria-label="Delete"
-              (click)="deleteConfiguration()"
-            >
-              <mat-icon>delete</mat-icon>
-            </button>
-          }
-
         </div>
-      }
-
+      </div>
     </mat-card-content>
-    <div class="eav-card-space-div"></div>
-    <mat-card-actions align="end">
-      <button mat-button class="eav-button__with-icon" (click)="toggleConfigurationDropdown()">
-        <mat-icon class="eav-icon">discover_tune</mat-icon>
-        <span>Use Configuration</span>
-      </button>
-      <button mat-button class="eav-button__with-icon" (click)="autoGeneratedCode()">
-        <mat-icon class="eav-icon">code</mat-icon>
-        <span>Generate Code</span>
-      </button>
-    </mat-card-actions>
   </mat-card>
 </div>
+
+<router-outlet></router-outlet>

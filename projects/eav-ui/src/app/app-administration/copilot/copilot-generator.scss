@@ -1,16 +1,27 @@
-mat-card-actions {
-  display: flex;
-  width: 100%;
-  justify-content: space-between;
+@use "../../../styles/variables.scss";
+
+:host ::ng-deep .ag-row-hover .ag-cell a,
+:host ::ng-deep .ag-row-hover .ag-cell .eav-grid-action-button,
+.eav-button__with-icon {
+  color: variables.$sxc-solid !important;
 }
 
-.eav-cards-box-expanded {
-  min-height: 200px;
-  transition: min-height 0.2s;
+.eav-button__with-icon:disabled {
+  color: variables.$text-disabled !important;
 }
-
-.configuration-select {
+.header-row {
   display: flex;
-  gap: 8px;
   align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+}
+
+.header-icon {
+  font-size: 24px;
+  line-height: 24px;
 }

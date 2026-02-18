@@ -1,5 +1,5 @@
 export interface Polymorphism {
-  TypeName: string;
-  Id: number;
-  Resolver: string;
+  id: number;
+  typeName: string;
+  resolver: string;
 }

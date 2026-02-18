@@ -1,4 +1,5 @@
-import { DataSource, PipelineDataSource } from '../models';
+import { DataSourceDefinition } from '../models/data-source-definition';
+import { DataSourceInstance } from '../models/data-source-instance.model';
 import { findDefByType } from './datasource.helpers';
 import { GuiTypes, TypeInfo, TypeInfos } from './plumb-editor.models';
 
@@ -18,7 +19,7 @@ export const guiTypes: GuiTypes = {
   System: { Name: 'System', Icon: 'military_tech', UiHint: 'System Data' },
 };
 
-export function calculateTypeInfos(pipelineDataSources: PipelineDataSource[], dataSources: DataSource[]) {
+export function calculateTypeInfos(pipelineDataSources: DataSourceDefinition[], dataSources: DataSourceInstance[]) {
   const typeInfos: TypeInfos = {};
 
   for (const pipelineDataSource of pipelineDataSources) {

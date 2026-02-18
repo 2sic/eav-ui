@@ -11,7 +11,9 @@ import { MousedownStopPropagationDirective } from '../../shared/directives/mouse
 import { JsonHelpers } from '../../shared/helpers/json.helpers';
 import { loadScripts } from '../../shared/helpers/load-scripts.helper';
 import { classLog } from '../../shared/logging';
-import { PipelineDataSource, PipelineResultStream, VisualDesignerData } from '../models';
+import { DataSourceDefinition } from '../models/data-source-definition';
+import { QueryStreamResult } from '../models/result/PipelineResultStream';
+import { VisualDesignerData } from '../models/visual-designer-data';
 import { QueryDefinitionService } from '../services/query-definition.service';
 import { VisualQueryStateService } from '../services/visual-query.service';
 import { findDefByType } from './datasource.helpers';
@@ -130,11 +132,11 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
     this.visQuerySvc.changeDataSourcePosition(pipelineDataSourceGuid, position);
   }
 
-  onDebugStream(stream: PipelineResultStream) {
+  onDebugStream(stream: QueryStreamResult) {
     this.visQuerySvc.debugStream(stream);
   }
 
-  configureDataSource(dataSource: PipelineDataSource): void {
+  configureDataSource(dataSource: DataSourceDefinition): void {
     // ensure dataSource entity is saved
     if (dataSource.EntityGuid.includes('unsaved'))
       return this.visQuerySvc.saveAndRun(true, false);
@@ -147,11 +149,11 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
     return this.#queryDefinitionSvc.typeNameFilter(dataSource?.TypeNameForUi || partAssemblyAndType, 'className');
   }
 
-  isOutDataSource(pipelineDataSource: PipelineDataSource) {
+  isOutDataSource(pipelineDataSource: DataSourceDefinition) {
     return pipelineDataSource.PartAssemblyAndType === eavConstants.pipelineDesigner.outDataSource.PartAssemblyAndType;
   }
 
-  remove(pipelineDataSource: PipelineDataSource) {
+  remove(pipelineDataSource: DataSourceDefinition) {
     if (!confirm(`Delete ${pipelineDataSource.Name} data source?`))
       return;
 
@@ -168,7 +170,7 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
     window.open(url, '_blank');
   }
 
-  editName(dataSource: PipelineDataSource) {
+  editName(dataSource: DataSourceDefinition) {
     const newName = prompt('Rename data source', dataSource.Name)?.trim();
     if (newName == null || newName === '')
       return;
@@ -176,7 +178,7 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
     this.visQuerySvc.renameDataSource(dataSource.EntityGuid, newName);
   }
 
-  editDescription(dataSource: PipelineDataSource) {
+  editDescription(dataSource: DataSourceDefinition) {
     const newDescription = prompt('Edit description', dataSource.Description)?.trim();
     if (newDescription == null)
       return;

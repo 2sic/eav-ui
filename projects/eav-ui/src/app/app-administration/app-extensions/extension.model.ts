@@ -6,6 +6,12 @@ export interface Extension {
   icon: string | null;
 }
 
+export interface ReleaseNote {
+  version: string;
+  isBreaking: boolean;
+  notes: string;
+}
+
 export interface ExtensionConfiguration {
   guid: string; // guid
   nameId: string; // guid
@@ -30,7 +36,7 @@ export interface ExtensionConfiguration {
   hasQueries: boolean;
   hasViews: boolean;
   hasEntities: boolean;
-  releases: string[]; // Adjust if different
+  releases: ReleaseNote[];
   sxcSupported: boolean;
   sxcVersionMin: string;
   dnnSupported: boolean;
