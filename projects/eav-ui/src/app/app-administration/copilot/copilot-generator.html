@@ -10,36 +10,13 @@
         <p class="mat-body-1">No configurations yet. Click + to create one.</p>
       } @else {
         <div style="padding: 0 16px;">
-          <table mat-table [dataSource]="entities" class="mat-elevation-z2">
-            <ng-container matColumnDef="title">
-              <th mat-header-cell *matHeaderCellDef>Name</th>
-              <td mat-cell *matCellDef="let entity" (click)="editConfig(entity)">
-                {{ entity.Title || '(Untitled)' }}
-              </td>
-            </ng-container>
-            <ng-container matColumnDef="generator">
-              <th mat-header-cell *matHeaderCellDef>Generator</th>
-              <td mat-cell *matCellDef="let entity" (click)="editConfig(entity)">
-                {{ entity.CodeGenerator || '-' }}
-              </td>
-            </ng-container>
-            <ng-container matColumnDef="actions">
-              <th mat-header-cell *matHeaderCellDef style="width: auto; padding: 8px 4px; text-align: center;">Actions</th>
-              <td mat-cell *matCellDef="let entity" (click)="$event.stopPropagation()" style="padding: 8px 4px; text-align: center; white-space: nowrap;">
-                <div style="display: flex; align-items: center; gap: 8px; justify-content: center;">
-                  <button mat-button class="eav-button__with-icon" (click)="generateForConfiguration(entity)" tippy="Generate Code" tippyPlacement="top">
-                    <mat-icon class="eav-icon">code</mat-icon>
-                    <span>Generate Code</span>
-                  </button>
-                  <button mat-icon-button (click)="deleteConfiguration(entity)" tippy="Delete" tippyPlacement="top">
-                    <mat-icon>delete</mat-icon>
-                  </button>
-                </div>
-              </td>
-            </ng-container>
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-          </table>
+          <ag-grid-angular
+            class="ag-theme-material"
+            style="width: 100%;"
+            [rowData]="dataSourceData()"
+            [gridOptions]="gridOptions"
+            domLayout="autoHeight"
+          ></ag-grid-angular>
         </div>
       }
     }

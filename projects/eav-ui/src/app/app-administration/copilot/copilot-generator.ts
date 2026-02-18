@@ -1,3 +1,4 @@
+import { GridOptions } from '@ag-grid-community/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, computed, inject, input, linkedSignal, signal, ViewContainerRef } from '@angular/core';
@@ -15,11 +16,14 @@ import { combineLatest, from, map, Observable } from 'rxjs';
 import { transient } from '../../../../../core';
 import { ContentItemsService } from '../../content-items/services/content-items.service';
 import { FeatureSummary } from '../../features/models';
+import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
+import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm } from '../../shared/models/edit-form.model';
 import { ItemIdHelper } from '../../shared/models/item-id-helper';
 import { RichResult } from '../../shared/models/rich-result';
+import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { Context } from '../../shared/services/context';
 import { EntityService } from '../../shared/services/entity.service';
@@ -27,6 +31,7 @@ import { SysDataService } from '../../shared/services/sys-data.service';
 import { ConfirmDeleteDialogComponent } from '../sub-dialogs/confirm-delete-dialog/confirm-delete-dialog';
 import { ConfirmDeleteDialogData } from '../sub-dialogs/confirm-delete-dialog/confirm-delete-dialog.models';
 import { CodeGenerator } from './code-generator';
+import { CopilotActionsComponent } from './copilot-actions/copilot-actions.component';
 
 type DataCopilotConfiguration = {
   Guid: string;
@@ -49,9 +54,62 @@ type DataCopilotConfiguration = {
     MatTableModule,
     RouterOutlet,
     TippyDirective,
+    SxcGridModule,
   ]
 })
 export class CopilotGeneratorComponent {
+
+  gridOptions: GridOptions = this.buildGridOptions();
+  dataSourceData = signal<DataCopilotConfiguration[]>([]);
+
+  private buildGridOptions(): GridOptions {
+    return {
+      ...defaultGridOptions,
+      columnDefs: [
+        {
+          ...ColumnDefinitions.TextWideMin100,
+          headerName: 'Name',
+          field: 'Title',
+          flex: 2,
+          cellRenderer: (params: any) => `<a class='default-link' href='javascript:void(0)'>${params.value || '(Untitled)'}</a>`
+        },
+        {
+          ...ColumnDefinitions.TextWideMin100,
+          headerName: 'Generator',
+          field: 'CodeGenerator',
+        },
+        {
+          ...ColumnDefinitions.ActionsPinnedRight5,
+          headerName: 'Actions',
+          cellRenderer: CopilotActionsComponent,
+          cellRendererParams: {
+            do: (verb: 'generate' | 'delete', item: any) => {
+              switch (verb) {
+                case 'generate': 
+                this.generateForConfiguration(item); break;
+                
+                case 'delete': 
+                this.deleteConfiguration(item); break;
+              }
+            }
+          }
+        },
+      ],
+      onCellClicked: (event: any) => {
+        if (event.colDef.headerName === 'Name') {
+          this.editConfig(event.data);
+        }
+        if (event.colDef.headerName === 'Actions') {
+
+          if (event.event.target?.dataset?.action === 'generate') 
+            this.generateForConfiguration(event.data);
+          
+          if (event.event.target?.dataset?.action === 'delete') 
+            this.deleteConfiguration(event.data);
+        }
+      },
+    };
+  }
   outputType = input<string>();
   title = input<string>('Copilot Generator');
 
@@ -124,20 +182,26 @@ export class CopilotGeneratorComponent {
   ngOnInit(): void {
     this.fetchEntities();
     this.#dialogRouter.doOnDialogClosed(() => this.fetchEntities());
+    // Update dataSourceData when entities$ emits
+    if (this.entities$) {
+      this.entities$.subscribe(data => this.dataSourceData.set(data ?? []));
+    }
   }
 
   fetchEntities(): void {
     const allEntities$ = from(this.#contentItemsSvc.getAllPromise(this.#copilotConfigurationGuid));
-
     this.entities$ = combineLatest([allEntities$, this.#generators$]).pipe(
       map(([data, currentGenerators]) => {
         const entities = data as DataCopilotConfiguration[];
         const generatorNames = new Set(currentGenerators.map(g => g.name));
-        
         // Only show configurations that match one of the current generators
         return entities.filter(e => generatorNames.has(e.CodeGenerator));
       })
     );
+    // Update dataSourceData when fetchEntities is called
+    if (this.entities$) {
+      this.entities$.subscribe(data => this.dataSourceData.set(data ?? []));
+    }
   }
 
   editConfig(entity?: DataCopilotConfiguration): void {

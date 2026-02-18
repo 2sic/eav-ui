@@ -5,11 +5,11 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterOutlet } from '@angular/router';
 import dayjs, { Dayjs } from 'dayjs';
@@ -40,7 +40,7 @@ const RECYCLE_BIN_DATASOURCE_ID = 'f890bec1-dee8-4ed6-9f2e-8ad412d2f4dc';
     MatIconModule,
     MatInputModule,
     MatSelectModule,
-    MatTableModule,
+    MatExpansionModule,
     MatTooltipModule,
     MatDayjsModule,
     FeatureIconComponent,
@@ -83,6 +83,8 @@ export class AppRecycleBin {
 
   displayedColumns: string[] = ['Title', 'ContentTypeName', 'DeletedBy', 'DeletedUtc', 'actions'];
 
+  expandedItems: Record<number, boolean> = {};
+
   restore(item: DeletedEntity): void {
     if (!confirm(`Are you sure you want to restore "${item.title || '(no title)'}"?`)) {
       return;
@@ -102,20 +104,20 @@ export class AppRecycleBin {
     });
   }
 
+  toggleExpandItem(expanded: boolean, itemId: number): void {
+    this.expandedItems[itemId] = expanded;
+  }
+
 }
 
 type DeletedEntity = {
   parentRef: string;
   appId: number;
-  modified: string;
   guid: string | null;
-  created: string;
   id: number;
   deletedTransactionId: number;
   contentTypeStaticName: string;
   deletedBy: string;
-  deletedUtc: string;
-  contentTypeName: string;
   title: string | null;
 };
 
