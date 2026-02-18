@@ -26,9 +26,11 @@ import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.mod
 import { DialogInNewWindowService } from '../../shared/routing/dialog-in-new-window.service';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { GlobalConfigService } from '../../shared/services/global-config.service';
+import { SysDataService } from '../../shared/services/sys-data.service';
+import { Polymorphism } from '../models/polymorphism.model';
 import { View, ViewEntity } from '../models/view.model';
 import { DialogConfigAppService } from '../services/dialog-config-app.service';
-import { ViewsService } from '../services/views.service';
+import { Polymorphism_DS_ID, ViewsService } from '../services/views.service';
 import { ConfirmDeleteDialogComponent } from '../sub-dialogs/confirm-delete-dialog/confirm-delete-dialog';
 import { ConfirmDeleteDialogData } from '../sub-dialogs/confirm-delete-dialog/confirm-delete-dialog.models';
 import { ViewsActionsComponent } from './views-actions/views-actions';
@@ -72,19 +74,26 @@ export class ViewsComponent implements OnInit {
   polymorphLogo = polymorphLogo;
   gridOptions = this.#buildGridOptions();
 
+  #sysData = transient(SysDataService);
+
   constructor() { }
 
   refresh = signal(1); // must start with 1 so it can be chained in computed as ...refresh() && ...
   views = this.#viewsSvc.getAllLive(this.refresh).value;
-  #polymorphismLazy = this.#viewsSvc.getPolymorphismLive(this.refresh).value;
+
+  // #polymorphismLazy = this.#viewsSvc.getPolymorphismLive(this.refresh).value;
+
+  #polymorphismData = this.#sysData.get<Polymorphism>({ source: Polymorphism_DS_ID });
+
+  #polymorphismInfo = computed(() => this.#polymorphismData()?.[0]);
 
   polymorphStatus = computed(() => {
-    const polymorphism = this.#polymorphismLazy();
-    return polymorphism?.Id == null // polymorphism could be undefined, and id could be null
+    const polymorphism = this.#polymorphismInfo();
+    return polymorphism?.id == null // polymorphism could be undefined, and id could be null
       ? 'not configured'
-      : polymorphism.Resolver === null
+      : polymorphism.resolver === null
         ? 'disabled'
-        : 'using ' + polymorphism.Resolver;
+        : 'using ' + polymorphism.resolver;
   });
 
 
@@ -148,15 +157,15 @@ export class ViewsComponent implements OnInit {
   }
 
   urlToEditPolymorphisms() {
-    const polymorphismSignal = this.#polymorphismLazy();
+    const polymorphismSignal = this.#polymorphismInfo();
     if (!polymorphismSignal) return;
 
     const polymorphism = polymorphismSignal;
     if (!polymorphism) return;
 
-    const itemsEntry = !polymorphism.Id
-      ? ItemIdHelper.newFromType(polymorphism.TypeName)
-      : ItemIdHelper.editId(polymorphism.Id);
+    const itemsEntry = !polymorphism.id
+      ? ItemIdHelper.newFromType(polymorphism.typeName)
+      : ItemIdHelper.editId(polymorphism.id);
 
     return this.#urlTo(
       `edit/${convertFormToUrl({
