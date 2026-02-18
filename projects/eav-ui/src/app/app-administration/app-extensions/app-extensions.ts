@@ -155,10 +155,7 @@ export class AppExtensions implements OnInit {
 
   #openInfo(ext: Extension): void {
     this.#dialog.open(ExtensionInfoDialog, {
-      data: {
-        name: ext.folder,
-        configuration: ext.configuration
-      },
+      data: ext,
       width: '800px',
       maxWidth: '90vw'
     });

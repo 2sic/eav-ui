@@ -6,7 +6,7 @@ import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/materia
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { ExtensionConfiguration } from '../extension.model';
+import { Extension, ExtensionConfiguration } from '../extension.model';
 
 @Component({
   selector: 'app-extension-info-dialog',
@@ -25,10 +25,7 @@ export class ExtensionInfoDialog {
   dialog = inject(MatDialogRef<void>);
   #sanitizer = inject(DomSanitizer);
 
-  data = inject(MAT_DIALOG_DATA) as {
-    name: string;
-    configuration: ExtensionConfiguration;
-  };
+  data = inject(MAT_DIALOG_DATA) as Extension;
 
   get config(): ExtensionConfiguration {
     return this.data.configuration;
