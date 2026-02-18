@@ -1,3 +1,14 @@
+@use "../../../styles/variables.scss";
+
+:host ::ng-deep .ag-row-hover .ag-cell a,
+:host ::ng-deep .ag-row-hover .ag-cell .eav-grid-action-button,
+.eav-button__with-icon {
+  color: variables.$sxc-solid !important;
+}
+
+.eav-button__with-icon:disabled {
+  color: variables.$text-disabled !important;
+}
 .recycle-bin-filters {
 	display: flex;
 	align-items: center;
