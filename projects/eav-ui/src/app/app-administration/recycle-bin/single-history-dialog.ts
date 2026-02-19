@@ -1,23 +1,29 @@
 import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { HistoryItemComponent } from '../../item-history/history-item';
 import { HistoryItem } from '../../item-history/models/history-item.model';
 
 @Component({
   selector: 'app-single-history-dialog',
+  styleUrls: ['single-history-dialog.scss'],
   standalone: true,
   imports: [
     MatDialogModule,
     MatButtonModule,
+    MatIconModule,
     HistoryItemComponent
   ],
   template: `
-    <h2 mat-dialog-title>
-        History Details
-    </h2>
-
-    <mat-dialog-content>
+    <div class="single-history-dialog-header">
+      <span class="dialog-initial-focus" cdkFocusInitial tabindex="-1"></span>
+      <h2 class="single-history-dialog-title">History Details</h2>
+      <button mat-icon-button mat-dialog-close class="single-history-dialog-close-btn" tippy="Close">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    <mat-dialog-content class="single-history-dialog-content">
       @if (historyItem) {
         <app-history-item
           [historyItem]="historyItem"
@@ -28,12 +34,6 @@ import { HistoryItem } from '../../item-history/models/history-item.model';
         <p>No history data available.</p>
       }
     </mat-dialog-content>
-
-    <mat-dialog-actions align="end">
-      <button mat-button mat-dialog-close>
-        Close
-      </button>
-    </mat-dialog-actions>
   `
 })
 export class SingleHistoryDialogComponent {

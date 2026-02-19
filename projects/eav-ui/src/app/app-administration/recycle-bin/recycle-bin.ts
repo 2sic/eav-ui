@@ -20,7 +20,6 @@ import { MatDayjsModule } from '../../edit/shared/date-adapters/date-adapter-api
 import { FeatureIconComponent } from '../../features/feature-icon/feature-icon';
 import { FeatureSummary } from '../../features/models';
 import { getHistoryItems } from '../../item-history/item-history.helpers';
-import { HistoryAttributeValue, HistoryItem } from '../../item-history/models/history-item.model';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
@@ -60,28 +59,28 @@ export class AppRecycleBin {
   private dialog = inject(MatDialog);
 
   gridOptions: GridOptions = this.buildGridOptions();
-  selectedDeletedEntity: DeletedEntity | null = null;
-  selectedHistoryItem: any = null; // Will be set to the parsed history item
 
-  dataSourceData = computed(() => {
-    // Parse and enrich each entity with realTitle and realContentType from JSON
-    return this.deletedEntities().map((entity: any) => {
+  dataSourceData = computed(() =>
+    this.deletedEntities().map((entity: any) => {
       if (entity.json) {
         try {
           const json = JSON.parse(entity.json);
-          entity.realTitle = json?.Entity?.Attributes?.String?.Title?.['*'] || entity.title;
-          entity.realContentType = json?.Entity?.Type?.Name || entity.contentType;
+          return {
+            ...entity,
+            realTitle: json?.Entity?.Attributes?.String?.Title?.['*'] || entity.title,
+            realContentType: json?.Entity?.Type?.Name || entity.contentType,
+          };
         } catch {
-          entity.realTitle = entity.title;
-          entity.realContentType = entity.contentType;
+          return;
         }
-      } else {
-        entity.realTitle = entity.title;
-        entity.realContentType = entity.contentType;
       }
-      return entity;
-    });
-  });
+      return {
+        ...entity,
+        realTitle: entity.title,
+        realContentType: entity.contentType,
+      };
+    })
+  );
 
   private buildGridOptions(): GridOptions {
     return {
@@ -105,6 +104,12 @@ export class AppRecycleBin {
         },
         {
           ...ColumnDefinitions.TextWideMin100,
+          headerName: 'Date',
+          field: 'deleted',
+          valueFormatter: (params: any) => params.value ? dayjs(params.value).format('YYYY-MM-DD HH:mm') : '',
+        },
+        {
+          ...ColumnDefinitions.TextWideMin100,
           headerName: 'Item ID',
           field: 'id',
         },
@@ -122,9 +127,17 @@ export class AppRecycleBin {
         },
       ],
       onCellClicked: (event: any) => {
-        if (event.colDef.headerName === 'Actions' && event.event.target?.dataset?.action === 'restore') {
-          this.restore(event.data);
-        } else if (event.colDef.headerName !== 'Actions') {
+        if (event.colDef.headerName === 'Actions') {
+          let targetElement = event.event.target;
+          // Traverse up to find the element with data-action="restore"
+          while (targetElement && targetElement !== event.event.currentTarget) {
+            if (targetElement.dataset && targetElement.dataset.action === 'restore') {
+              this.restore(event.data);
+              return;
+            }
+            targetElement = targetElement.parentElement;
+          }
+        } else {
           this.onRowSelected(event.data);
         }
       },
@@ -134,8 +147,7 @@ export class AppRecycleBin {
   onRowSelected(item: DeletedEntity) {
     try {
       // Parse the deleted entity as a version
-      const parsed = JSON.parse(item.json);
-      const entity = parsed?.Entity;
+      const entity = JSON.parse(item.json).Entity;
       // Build a Version object
       const version = {
         ChangeSetId: 0,
@@ -148,11 +160,10 @@ export class AppRecycleBin {
       // Use getHistoryItems to process the data
       // We use a single version, so pass [version] and itself as versions
       const historyItems = getHistoryItems([version], 1, 1, 'live');
-      const historyItem = historyItems && historyItems.length > 0 ? historyItems[0] : null;
       this.dialog.open(SingleHistoryDialogComponent, {
         width: '900px',
         maxHeight: '80vh',
-        data: historyItem
+        data: historyItems && historyItems.length > 0 ? historyItems[0] : null,
       });
     } catch (error) {
       console.error('Invalid deleted entity JSON', error);
@@ -181,8 +192,8 @@ export class AppRecycleBin {
       const start = this.dateRangeStart();
       const end = this.dateRangeEnd();
       return {
-        ...(start ? { DateFrom: start.startOf('day').toISOString() } : {}),
-        ...(end ? { DateTo: end.endOf('day').toISOString() } : {}),
+        ...(start ? { DateFrom: start.startOf('day').format('YYYY-MM-DDTHH:mm:ss.SSS') } : {}),
+        ...(end ? { DateTo: end.endOf('day').format('YYYY-MM-DDTHH:mm:ss.SSS') } : {}),
         ...(this.selectedContentType() ? { ContentType: this.selectedContentType() } : {}),
       };
     }),
@@ -191,10 +202,6 @@ export class AppRecycleBin {
   deletedEntities = computed(() => this.#data.value()?.default ?? []);
 
   contentTypes = computed(() => this.#data.value()?.contentTypes ?? []);
-
-  displayedColumns: string[] = ['Title', 'ContentTypeName', 'DeletedBy', 'DeletedUtc', 'actions'];
-
-  // expandedItems: Record<number, boolean> = {};
 
   restore(item: DeletedEntity): void {
     if (!confirm(`Are you sure you want to restore "${item.title || '(no title)'}"?`)) {
@@ -214,44 +221,6 @@ export class AppRecycleBin {
       }
     });
   }
-
-  private buildHistoryItemFromDeletedEntity(
-    item: DeletedEntity
-  ): HistoryItem {
-
-    const parsed = JSON.parse(item.json);
-    const entity = parsed?.Entity;
-
-    const attributes = Object.entries(entity?.Attributes ?? {})
-      .flatMap(([dataType, attributeGroup]: any) => {
-        return Object.entries(attributeGroup).map(
-          ([attributeName, values]: any) => ({
-            name: attributeName,
-            dataType,
-            change: 'deleted' as const,
-            values: Object.entries(values).map(
-              ([langKey, val]): HistoryAttributeValue => ({
-                langKey,
-                value: null,
-                oldValue: val,
-                change: 'deleted'
-              })
-            )
-          })
-        );
-      });
-
-    return {
-      attributes,
-      changeSetId: 0, // Not applicable for deleted items
-      historyId: entity?.Id ?? item.id,
-      timeStamp: item.deleted,
-      user: item.deletedBy,
-      versionNumber: entity?.Version ?? 1,
-      isLastVersion: true
-    };
-  }
-
 }
 
 type DeletedEntity = {
