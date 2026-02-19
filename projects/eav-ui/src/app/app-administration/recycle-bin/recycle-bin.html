@@ -15,18 +15,16 @@
     <h3 class="mat-subtitle-1">
       Deleted Items ({{ deletedEntities().length }} total)
 
-      <!-- Indicator if feature is not active -->
-      <app-feature-icon-with-dialog [featureNameId]="GoToRecycleBin.featureId"></app-feature-icon-with-dialog>
+      <app-feature-icon [featureNameId]="'EntityUndelete'"></app-feature-icon>
     </h3>
 
-    
     <div class="recycle-bin-filters">
       <mat-form-field appearance="outline" color="accent" class="recycle-bin-filter">
         <mat-label>Filter by Content Type</mat-label>
         <mat-select [(value)]="selectedContentType">
           <mat-option value="">All Types</mat-option>
-          @for (type of contentTypes(); track type.staticName) {
-            <mat-option [value]="type.name">{{ type.title }}</mat-option>
+          @for (type of contentTypes(); track type.name) {
+          <mat-option [value]="type.name">{{ type.title }}</mat-option>
           }
         </mat-select>
       </mat-form-field>
@@ -45,14 +43,12 @@
     <div>
       <ag-grid-angular
         class="ag-theme-material"
-        style="width: 100%; min-height: 300px;"
+        style="width: 100%; min-height: 300px"
         [rowData]="dataSourceData()"
         [gridOptions]="gridOptions"
         domLayout="autoHeight"
       ></ag-grid-angular>
     </div>
-
-    <!-- Removed item history details view -->
   </mat-card-content>
+  <router-outlet></router-outlet>
 </mat-card>
-<router-outlet></router-outlet>
