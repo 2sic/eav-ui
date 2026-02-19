@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -19,12 +20,15 @@ import { MatDayjsModule } from '../../edit/shared/date-adapters/date-adapter-api
 import { FeatureInfoBoxComponent } from '../../features/feature-info-box/feature-info-box';
 import { FeatureIconWithDialogComponent } from '../../features/icons/feature-icon-with-dialog';
 import { FeatureSummary } from '../../features/models';
+import { getHistoryItems } from '../../item-history/item-history.helpers';
+import { HistoryAttributeValue, HistoryItem } from '../../item-history/models/history-item.model';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { Context } from '../../shared/services/context';
 import { SysDataService } from '../../shared/services/sys-data.service';
 import { GoToRecycleBin } from './go-to-recycle-bin';
+import { SingleHistoryDialogComponent } from './single-history-dialog';
 
 
 
@@ -52,12 +56,13 @@ const RECYCLE_BIN_DATASOURCE_ID = 'f890bec1-dee8-4ed6-9f2e-8ad412d2f4dc';
     FeatureIconWithDialogComponent,
     FeatureInfoBoxComponent,
     SxcGridModule,
+    MatDialogModule,
   ]
 })
 export class AppRecycleBin {
-  // ag-Grid integration
-  gridOptions: GridOptions = this.buildGridOptions();
+  private dialog = inject(MatDialog);
 
+  gridOptions: GridOptions = this.buildGridOptions();
   selectedDeletedEntity: DeletedEntity | null = null;
   selectedHistoryItem: any = null; // Will be set to the parsed history item
 
@@ -111,14 +116,14 @@ export class AppRecycleBin {
         {
           ...ColumnDefinitions.ActionsPinnedRight4,
           headerName: 'Actions',
-              cellRenderer: (params: any) => {
-                return `
+          cellRenderer: (params: any) => {
+            return `
                   <div class="eav-grid-action-button highlight" data-action="restore" matRipple tippy="Restore" style="display: inline-flex; align-items: center; gap: 6px; padding: 0 28px;">
                     <span class="material-symbols-outlined">autorenew</span>
                     <span>Restore</span>
                   </div>
                 `;
-              },
+          },
         },
       ],
       onCellClicked: (event: any) => {
@@ -132,16 +137,30 @@ export class AppRecycleBin {
   }
 
   onRowSelected(item: DeletedEntity) {
-    this.selectedDeletedEntity = item;
-    // Try to parse the JSON field (assuming it's called 'json' on the item)
-    if (item && (item as any).json) {
-      try {
-        this.selectedHistoryItem = JSON.parse((item as any).json);
-      } catch (e) {
-        this.selectedHistoryItem = null;
-      }
-    } else {
-      this.selectedHistoryItem = null;
+    try {
+      // Parse the deleted entity as a version
+      const parsed = JSON.parse(item.json);
+      const entity = parsed?.Entity;
+      // Build a Version object
+      const version = {
+        ChangeSetId: 0,
+        HistoryId: entity?.Id ?? item.id,
+        Json: item.json,
+        TimeStamp: item.deleted,
+        User: item.deletedBy,
+        VersionNumber: entity?.Version ?? 1
+      };
+      // Use getHistoryItems to process the data
+      // We use a single version, so pass [version] and itself as versions
+      const historyItems = getHistoryItems([version], 1, 1, 'live');
+      const historyItem = historyItems && historyItems.length > 0 ? historyItems[0] : null;
+      this.dialog.open(SingleHistoryDialogComponent, {
+        width: '900px',
+        maxHeight: '80vh',
+        data: historyItem
+      });
+    } catch (error) {
+      console.error('Invalid deleted entity JSON', error);
     }
   }
 
@@ -187,8 +206,8 @@ export class AppRecycleBin {
       return;
     }
 
-    const url = `admin/data/recycle?appid=${this.#context.appId}&transactionid=${item.deletedTransactionId}`;
-    
+    const url = `admin/data/recycle?appid=${this.#context.appId}&transactionid=${item.transactionId}`;
+
     this.#http.post(url, {}, { responseType: 'text' }).subscribe({
       next: () => {
         alert('Data restored successfully');
@@ -201,9 +220,42 @@ export class AppRecycleBin {
     });
   }
 
-  // toggleExpandItem(expanded: boolean, itemId: number): void {
-  //   this.expandedItems[itemId] = expanded;
-  // }
+  private buildHistoryItemFromDeletedEntity(
+    item: DeletedEntity
+  ): HistoryItem {
+
+    const parsed = JSON.parse(item.json);
+    const entity = parsed?.Entity;
+
+    const attributes = Object.entries(entity?.Attributes ?? {})
+      .flatMap(([dataType, attributeGroup]: any) => {
+        return Object.entries(attributeGroup).map(
+          ([attributeName, values]: any) => ({
+            name: attributeName,
+            dataType,
+            change: 'deleted' as const,
+            values: Object.entries(values).map(
+              ([langKey, val]): HistoryAttributeValue => ({
+                langKey,
+                value: null,
+                oldValue: val,
+                change: 'deleted'
+              })
+            )
+          })
+        );
+      });
+
+    return {
+      attributes,
+      changeSetId: 0, // Not applicable for deleted items
+      historyId: entity?.Id ?? item.id,
+      timeStamp: item.deleted,
+      user: item.deletedBy,
+      versionNumber: entity?.Version ?? 1,
+      isLastVersion: true
+    };
+  }
 
 }
 
@@ -212,10 +264,12 @@ type DeletedEntity = {
   appId: number;
   guid: string | null;
   id: number;
-  deletedTransactionId: number;
+  transactionId: number;
   contentType: string;
   deletedBy: string;
   title: string | null;
+  deleted: string;
+  json: string;
 };
 
 type ContentTypeInfo = {
