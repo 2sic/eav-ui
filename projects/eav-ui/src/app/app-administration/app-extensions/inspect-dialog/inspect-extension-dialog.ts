@@ -8,7 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ActivatedRoute } from '@angular/router';
 import { transient } from 'projects/core';
-import { TippyDirective } from '../../../shared/directives/tippy.directive';
+import { DialogHeaderComponent } from "../../../shared/dialog-header/dialog-header";
 import { AppExtensionsService } from '../app-extensions.service';
 import { InspectExtensionComponent } from '../inspect/inspect-extension-content';
 
@@ -23,8 +23,8 @@ import { InspectExtensionComponent } from '../inspect/inspect-extension-content'
     MatCardModule,
     MatExpansionModule,
     InspectExtensionComponent,
-    TippyDirective,
-  ]
+    DialogHeaderComponent,
+]
 })
 export class InspectExtensionDialog {
   #extensionsSvc = transient(AppExtensionsService);

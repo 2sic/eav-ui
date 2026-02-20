@@ -157,7 +157,8 @@ export class AppExtensions implements OnInit {
     this.#dialog.open(ExtensionInfoDialog, {
       data: ext,
       width: '800px',
-      maxWidth: '90vw'
+      maxWidth: '90vw',
+      autoFocus: false,
     });
   }
 
