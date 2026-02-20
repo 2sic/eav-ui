@@ -161,7 +161,8 @@ export class AppRecycleBin {
       this.dialog.open(SingleHistoryDialogComponent, {
         width: '900px',
         maxHeight: '80vh',
-        data: historyItems && historyItems.length > 0 ? historyItems[0] : null,
+        data: historyItems && historyItems.length > 0 ? historyItems[0] : null,  
+        autoFocus: false,
       });
     } catch (error) {
       console.error('Invalid deleted entity JSON', error);
