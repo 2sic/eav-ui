@@ -7,7 +7,6 @@ import { HistoryItem } from '../../item-history/models/history-item.model';
 
 @Component({
   selector: 'app-single-history-dialog',
-  styleUrls: ['single-history-dialog.scss'],
   standalone: true,
   imports: [
     MatDialogModule,
@@ -15,26 +14,7 @@ import { HistoryItem } from '../../item-history/models/history-item.model';
     MatIconModule,
     HistoryItemComponent
   ],
-  template: `
-    <div class="single-history-dialog-header">
-      <span class="dialog-initial-focus" cdkFocusInitial tabindex="-1"></span>
-      <h2 class="single-history-dialog-title">History Details</h2>
-      <button mat-icon-button mat-dialog-close class="single-history-dialog-close-btn" tippy="Close">
-        <mat-icon>close</mat-icon>
-      </button>
-    </div>
-    <mat-dialog-content class="single-history-dialog-content">
-      @if (historyItem) {
-        <app-history-item
-          [historyItem]="historyItem"
-          [expanded]="true"
-        />
-      }
-      @else {
-        <p>No history data available.</p>
-      }
-    </mat-dialog-content>
-  `
+  templateUrl: './single-history-dialog.html'
 })
 export class SingleHistoryDialogComponent {
   historyItem = inject(MAT_DIALOG_DATA) as HistoryItem | null;

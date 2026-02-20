@@ -7,39 +7,47 @@
   </div>
   <div class="eav-dialog-content">
     <p>Check version history for this item and restore the version you need.</p>
-    @if (historyItems()?.length > 0) {
-    <div class="eav-compare-box">
-      <mat-form-field color="accent" class="eav-mat-form-field eav-compare-box__dropdown">
-        <mat-select [value]="compareWith()" name="Scope" (selectionChange)="compareChange($event.value)">
-          <mat-option value="previous">Compare with: Previous</mat-option>
-          <mat-option value="live">Compare with: Live</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
+    @if (historyItems(); as items) { 
+      @if (items.length > 0) {
+        <div class="eav-compare-box">
+          <mat-form-field color="accent" class="eav-mat-form-field eav-compare-box__dropdown">
+            <mat-select [value]="compareWith()" name="Scope" (selectionChange)="compareChange($event.value)">
+              <mat-option value="previous">Compare with: Previous</mat-option>
+              <mat-option value="live">Compare with: Live</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      } 
     }
     <div>
-      @if (historyItems() === null) {
-      <div>Loading...</div>
-      } @if (historyItems()?.length === 0) {
-      <div>No previous versions of this item found</div>
-      } @if (historyItems()?.length > 0) {
-      <mat-accordion multi class="eav-history-tables">
-        @for (historyItem of historyItems(); track historyItem.versionNumber) {
-        <app-history-item [historyItem]="historyItem" (restore)="restore($event)" />
+      @if (historyItems(); as items) { @if (items === null) {
+        <div>Loading...</div>
+      } @else if (items.length === 0) {
+        <div>No previous versions of this item found</div>
+      } @else {
+        <mat-accordion multi class="eav-history-tables">
+        @for (historyItem of items; track historyItem.versionNumber) {
+          <app-history-item
+            [historyItem]="historyItem"
+            (restore)="restore($event)">
+          </app-history-item>
         }
       </mat-accordion>
-      }
+      } 
+    }
     </div>
-    @if (historyItems()?.length > 0) {
-    <mat-paginator
-      color="accent"
-      showFirstLastButtons="true"
-      [length]="version().length"
-      [pageSize]="pageSize()"
-      [pageSizeOptions]="pageSizeOptions"
-      (page)="pageChange($event)"
-    >
-    </mat-paginator>
+    @if (historyItems(); as items){
+      @if (items.length > 0) {
+        <mat-paginator
+          color="accent"
+          showFirstLastButtons="true"
+          [length]="version()?.length ?? 0"
+          [pageSize]="pageSize()"
+          [pageSizeOptions]="pageSizeOptions"
+          (page)="pageChange($event)"
+          >
+        </mat-paginator>
+      }
     }
   </div>
 </div>

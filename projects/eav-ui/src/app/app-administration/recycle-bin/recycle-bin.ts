@@ -1,6 +1,6 @@
 import { GridOptions } from '@ag-grid-community/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Component, computed, inject, model, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -27,9 +27,8 @@ import { Context } from '../../shared/services/context';
 import { SysDataService } from '../../shared/services/sys-data.service';
 import { SingleHistoryDialogComponent } from './single-history-dialog';
 
-
-
 const RECYCLE_BIN_DATASOURCE_ID = 'f890bec1-dee8-4ed6-9f2e-8ad412d2f4dc';
+const RECYCLE_BIN_RESTORE_URL = 'admin/data/recycle';
 
 @Component({
   selector: 'recycle-bin',
@@ -128,18 +127,12 @@ export class AppRecycleBin {
       ],
       onCellClicked: (event: any) => {
         if (event.colDef.headerName === 'Actions') {
-          let targetElement = event.event.target;
-          // Traverse up to find the element with data-action="restore"
-          while (targetElement && targetElement !== event.event.currentTarget) {
-            if (targetElement.dataset && targetElement.dataset.action === 'restore') {
-              this.restore(event.data);
-              return;
-            }
-            targetElement = targetElement.parentElement;
+          if ((event.event.target as HTMLElement).closest('[data-action="restore"]')) {
+            this.restore(event.data);
           }
-        } else {
-          this.onRowSelected(event.data);
+          return; // prevent row click
         }
+        this.onRowSelected(event.data);
       },
     };
   }
@@ -192,8 +185,8 @@ export class AppRecycleBin {
       const start = this.dateRangeStart();
       const end = this.dateRangeEnd();
       return {
-        ...(start ? { DateFrom: start.startOf('day').format('YYYY-MM-DDTHH:mm:ss.SSS') } : {}),
-        ...(end ? { DateTo: end.endOf('day').format('YYYY-MM-DDTHH:mm:ss.SSS') } : {}),
+        ...(start ? { DateFrom: start.startOf('day').utc().toISOString() } : {}),
+        ...(end ? { DateTo: end.endOf('day').utc().toISOString() } : {}),
         ...(this.selectedContentType() ? { ContentType: this.selectedContentType() } : {}),
       };
     }),
@@ -204,22 +197,28 @@ export class AppRecycleBin {
   contentTypes = computed(() => this.#data.value()?.contentTypes ?? []);
 
   restore(item: DeletedEntity): void {
-    if (!confirm(`Are you sure you want to restore "${item.title || '(no title)'}"?`)) {
+    if (!confirm(`Are you sure you want to restore "${item.title || '(no title)'}"?`))
       return;
-    }
 
-    const url = `admin/data/recycle?appid=${this.#context.appId}&transactionid=${item.transactionId}`;
 
-    this.#http.post(url, {}, { responseType: 'text' }).subscribe({
-      next: () => {
-        alert('Data restored successfully');
-        this.#refresh.update(v => v + 1);
-      },
-      error: (error) => {
-        console.error('Error restoring data:', error);
-        alert(`Error restoring data: ${error.message || 'Unknown error'}`);
-      }
-    });
+    const params = new HttpParams()
+      .set('appid', this.#context.appId.toString())
+      .set('transactionid', item.transactionId.toString());
+
+    this.#http.post(RECYCLE_BIN_RESTORE_URL, {},
+      {
+        params,
+        responseType: 'text'
+      }).subscribe({
+        next: () => {
+          alert('Data restored successfully');
+          this.#refresh.update(v => v + 1);
+        },
+        error: (error) => {
+          console.error('Error restoring data:', error);
+          alert(`Error restoring data: ${error.message || 'Unknown error'}`);
+        }
+      });
   }
 }
 

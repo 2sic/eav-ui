@@ -10,7 +10,6 @@
 
     <h3 class="mat-subtitle-1">
       Deleted Items ({{ deletedEntities().length }} total)
-
       <app-feature-icon [featureNameId]="'EntityUndelete'"></app-feature-icon>
     </h3>
 
@@ -20,7 +19,7 @@
         <mat-select [(value)]="selectedContentType">
           <mat-option value="">All Types</mat-option>
           @for (type of contentTypes(); track type.name) {
-          <mat-option [value]="type.name">{{ type.title }}</mat-option>
+            <mat-option [value]="type.name">{{ type.title }}</mat-option>
           }
         </mat-select>
       </mat-form-field>

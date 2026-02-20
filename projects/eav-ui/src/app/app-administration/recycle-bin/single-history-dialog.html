@@ -1,0 +1,18 @@
+<span class="dialog-initial-focus" cdkFocusInitial tabindex="-1"></span>
+<div class="mat-dialog-title" style="display: flex; align-items: center; justify-content: space-between;">
+  <h2 style="margin: 0; flex: 1; padding-left: 24px;">History Details</h2>
+  <button mat-icon-button mat-dialog-close tippy="Close">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+<mat-dialog-content>
+  @if (historyItem) {
+    <app-history-item
+      [historyItem]="historyItem"
+      [expanded]="true"
+    />
+  }
+  @else {
+    <p>No history data available.</p>
+  }
+</mat-dialog-content>
