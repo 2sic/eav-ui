@@ -1,6 +1,5 @@
 <mat-expansion-panel
-  [expanded]="isExpanded"
-  (expandedChange)="onExpandedChange($event)"
+  [(expanded)]="expanded"
 >
   <mat-expansion-panel-header>
     <mat-panel-title>Version {{ historyItem.versionNumber }}</mat-panel-title>
@@ -10,12 +9,12 @@
       <small>({{ getLocalDate(historyItem.timeStamp) | date: 'yyyy-MM-dd HH:mm' : 'UTC' }} UTC)</small>
     </mat-panel-description>
   </mat-expansion-panel-header>
-  @if (isExpanded) {
+  @if (expanded) {
     @for (attribute of historyItem.attributes; track attribute) {
       <div class="eav-table-row">
         <div
           class="eav-table-row__main eav-row-main"
-          (click)="onAttributeToggle(attribute.name)"
+          (click)="toggleAttribute(attribute.name)"
         >
           <div class="eav-row-main__label eav-history-{{ attribute.change }}">
             {{ attribute.name }}
