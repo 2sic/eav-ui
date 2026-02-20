@@ -5,19 +5,21 @@
   </button>
 </div>
 
-@if (entities$ | async; as entities) { @if (entities.length === 0) {
-<p class="mat-body-1">No configurations yet. Click + to create one.</p>
-} @else {
-<div style="padding: 0 16px">
-  <ag-grid-angular
-    class="ag-theme-material"
-    style="width: 100%"
-    [rowData]="dataSourceData()"
-    [gridOptions]="gridOptions"
-    domLayout="autoHeight"
-  ></ag-grid-angular>
-</div>
-} }
+@if (entities$ | async; as entities) { 
+  @if (entities.length === 0) {
+    <p class="mat-body-1">No configurations yet. Click + to create one.</p>
+  } @else {
+    <div style="padding: 0 16px">
+      <ag-grid-angular
+        class="ag-theme-material"
+        style="width: 100%"
+        [rowData]="dataSourceData()"
+        [gridOptions]="gridOptions"
+        domLayout="autoHeight"
+      ></ag-grid-angular>
+    </div>
+  } 
+}
 
 <div style="max-width: 400px; margin-top: 24px; margin-left: 16px">
   <mat-card>
