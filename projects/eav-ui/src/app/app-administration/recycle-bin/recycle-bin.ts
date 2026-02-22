@@ -16,6 +16,7 @@ import { RouterOutlet } from '@angular/router';
 import dayjs, { Dayjs } from 'dayjs';
 import { transient } from 'projects/core';
 import { MatDayjsModule } from '../../edit/shared/date-adapters/date-adapter-api';
+import { FeatureInfoBoxComponent } from '../../features/feature-info-box/feature-info-box';
 import { FeatureIconWithDialogComponent } from '../../features/icons/feature-icon-with-dialog';
 import { FeatureSummary } from '../../features/models';
 import { HistoryItemComponent } from '../../item-history/history-item';
@@ -24,6 +25,7 @@ import { defaultGridOptions } from '../../shared/constants/default-grid-options.
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { Context } from '../../shared/services/context';
 import { SysDataService } from '../../shared/services/sys-data.service';
+import { GoToRecycleBin } from './go-to-recycle-bin';
 
 
 
@@ -49,6 +51,7 @@ const RECYCLE_BIN_DATASOURCE_ID = 'f890bec1-dee8-4ed6-9f2e-8ad412d2f4dc';
     MatTooltipModule,
     MatDayjsModule,
     FeatureIconWithDialogComponent,
+    FeatureInfoBoxComponent,
     SxcGridModule,
     HistoryItemComponent,
   ]
@@ -63,6 +66,8 @@ export class AppRecycleBin {
   dataSourceData = computed(() => {
     return this.deletedEntities();
   });
+
+  GoToRecycleBin = GoToRecycleBin;
 
   private buildGridOptions(): GridOptions {
     return {

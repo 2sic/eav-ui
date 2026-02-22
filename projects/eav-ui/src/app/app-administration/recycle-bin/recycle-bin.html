@@ -5,15 +5,20 @@
     </mat-card-title>
   </mat-card-header>
   <mat-card-content>
-    <p class="mat-body-1">Here you can see and restore deleted items within this app.</p>
+    <p class="mat-body-1">
+      Here you can see and restore deleted items within this app.
+    </p>
     <p class="mat-caption"><strong>Note:</strong> This feature is currently in beta and may not be fully stable. Use with caution.</p>
 
+    <app-feature-info-box [featureNameId]="GoToRecycleBin.featureId"></app-feature-info-box>
+    
     <h3 class="mat-subtitle-1">
       Deleted Items ({{ deletedEntities().length }} total)
 
       <!-- Indicator if feature is not active -->
-      <app-feature-icon-with-dialog [featureNameId]="'EntityUndelete'"></app-feature-icon-with-dialog>
+      <app-feature-icon-with-dialog [featureNameId]="GoToRecycleBin.featureId"></app-feature-icon-with-dialog>
     </h3>
+
     
     <div class="recycle-bin-filters">
       <mat-form-field appearance="outline" color="accent" class="recycle-bin-filter">
