@@ -5,7 +5,7 @@ import { MatDialogActions } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { transient } from '../../../../../../core';
-import { FeatureTextInfoComponent } from '../../../features/feature-info-box/feature-info-box';
+import { FeatureInfoBoxComponent } from '../../../features/feature-info-box/feature-info-box';
 import { FeatureNames } from '../../../features/feature-names';
 import { FeaturesService } from '../../../features/features.service';
 import { ExportAppService } from '../../services/export-app.service';
@@ -19,7 +19,7 @@ import { ImportAppPartsService } from '../../services/import-app-parts.service';
     MatCardModule,
     MatIconModule,
     MatButtonModule,
-    FeatureTextInfoComponent,
+    FeatureInfoBoxComponent,
     MatDialogActions,
   ]
 })

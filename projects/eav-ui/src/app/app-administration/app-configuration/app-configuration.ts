@@ -10,7 +10,7 @@ import { Subject } from 'rxjs';
 import { Of, transient } from '../../../../../core';
 import { DocsLinkHelper } from '../../admin-shared/docs-link-helper/docs-link-helper';
 import { ContentItemsService } from '../../content-items/services/content-items.service';
-import { FeatureTextInfoComponent } from '../../features/feature-info-box/feature-info-box';
+import { FeatureInfoBoxComponent } from '../../features/feature-info-box/feature-info-box';
 import { FeatureNames } from '../../features/feature-names';
 import { FeaturesService } from '../../features/features.service';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
@@ -44,7 +44,7 @@ import { AppConfigurationCard } from './app-configuration-card/app-configuration
     MatBadgeIconDirective,
     NgTemplateOutlet,
     AppConfigurationCard,
-    FeatureTextInfoComponent,
+    FeatureInfoBoxComponent,
     RouterOutlet,
     TippyDirective,
     DocsLinkHelper,

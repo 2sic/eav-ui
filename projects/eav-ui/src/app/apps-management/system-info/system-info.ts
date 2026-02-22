@@ -11,7 +11,7 @@ import { map, take } from 'rxjs';
 import { transient } from '../../../../../core';
 import { DocsLinkHelper } from '../../admin-shared/docs-link-helper/docs-link-helper';
 import { DialogConfigAppService } from '../../app-administration/services/dialog-config-app.service';
-import { FeatureTextInfoComponent } from '../../features/feature-info-box/feature-info-box';
+import { FeatureInfoBoxComponent } from '../../features/feature-info-box/feature-info-box';
 import { FeatureNames } from '../../features/feature-names';
 import { FeaturesService } from '../../features/features.service';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint';
@@ -38,7 +38,7 @@ declare const window: EavWindow;
     MatFormFieldModule,
     MatInputModule,
     RouterOutlet,
-    FeatureTextInfoComponent,
+    FeatureInfoBoxComponent,
     FieldHintComponent,
     TippyDirective,
     DocsLinkHelper,

@@ -11,7 +11,7 @@ import { EntityLightIdentifier } from 'projects/edit-types/src/EntityLight';
 import { take } from 'rxjs';
 import { ContentItem } from '../../../content-items/models/content-item.model';
 import { ContentItemsService } from '../../../content-items/services/content-items.service';
-import { FeatureTextInfoComponent } from '../../../features/feature-info-box/feature-info-box';
+import { FeatureInfoBoxComponent } from '../../../features/feature-info-box/feature-info-box';
 import { FeatureNames } from '../../../features/feature-names';
 import { FeaturesService } from '../../../features/features.service';
 import { AgGridHelper } from '../../../shared/ag-grid/ag-grid-helper';
@@ -38,7 +38,7 @@ interface BundleQuery {
 @Component({
   selector: 'app-data-bundles',
   imports: [
-    FeatureTextInfoComponent,
+    FeatureInfoBoxComponent,
     SxcGridModule,
     MatButtonModule,
     MatIconModule,

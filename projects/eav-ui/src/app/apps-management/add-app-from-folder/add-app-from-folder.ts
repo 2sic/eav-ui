@@ -4,7 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialogActions, MatDialogRef } from "@angular/material/dialog";
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { transient } from '../../../../../core';
-import { FeatureTextInfoComponent } from '../../features/feature-info-box/feature-info-box';
+import { FeatureInfoBoxComponent } from '../../features/feature-info-box/feature-info-box';
 import { FeatureNames } from '../../features/feature-names';
 import { FeaturesService } from '../../features/features.service';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
@@ -24,7 +24,7 @@ import { CheckboxCellParams } from './checkbox-cell/checkbox-cell.model';
   imports: [
     MatDialogActions,
     MatButtonModule,
-    FeatureTextInfoComponent,
+    FeatureInfoBoxComponent,
     SxcGridModule,
   ]
 })

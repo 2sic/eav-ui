@@ -15,7 +15,7 @@ import { FeatureComponentBase } from '../shared/feature-component-base';
     TippyDirective,
   ]
 })
-export class FeatureTextInfoComponent extends FeatureComponentBase {
+export class FeatureInfoBoxComponent extends FeatureComponentBase {
 
   /**
    * Just indicate that this is an info, not a warning - so it can be styled differently if needed.
