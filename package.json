@@ -36,7 +36,8 @@
     "// this requires": "GraphVis - not installed",
     "dependencies-wysiwyg": "npx depcruise projects/field-string-wysiwyg/src/field-string-wysiwyg/field-string-wysiwyg.ts --output-type dot | dot -T svg > dependency-graph.svg",
     "dependencies-wysiwyg-text-must-run-in-command-line": "npx depcruise projects/field-string-wysiwyg/src/field-string-wysiwyg/field-string-wysiwyg.ts -T text > projects/field-string-wysiwyg/dependencies.txt",
-    "dependencies-wysiwyg-text-must-run-in-command-line2": "npx depcruise ./projects/field-string-wysiwyg/src/field-string-wysiwyg/field-string-wysiwyg.ts --include-only '^src' -T text > projects/field-string-wysiwyg/dependencies.txt"
+    "dependencies-wysiwyg-text-must-run-in-command-line2": "npx depcruise ./projects/field-string-wysiwyg/src/field-string-wysiwyg/field-string-wysiwyg.ts --include-only '^src' -T text > projects/field-string-wysiwyg/dependencies.txt",
+    "find-copies": "npx jscpd --config .jscpd.json ./projects/eav-ui"
   },
   "dependencies": {
     "@2sic.com/sxc-angular": "^18.0.0",
