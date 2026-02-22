@@ -7,7 +7,11 @@
   [tippy]="navItem().tippy"
 >
   <mat-icon>{{ navItem().icon }}</mat-icon>
-  <div class="link-text">{{ navItem().name }}</div>
+  <div class="link-text">{{ navItem().name }}
+    @if (navItem().featureRequired) {
+      <app-feature-icon-indicator [featureNameId]="navItem().featureRequired"></app-feature-icon-indicator>
+    }
+  </div>
   @if (navItem().child) {
     <mat-icon [ngClass]="{ closed: !isOpenMenu, open: isOpenMenu, 'ml-auto': true }"> expand_more</mat-icon>
   }

@@ -5,4 +5,9 @@ export interface NavItem {
   icon: string;
   tippy: string;
   child?: NavItem[];
+
+  /**
+   * Optional feature name to indicate if the feature is not active.
+   */
+  featureRequired?: string;
 }
