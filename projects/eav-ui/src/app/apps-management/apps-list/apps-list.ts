@@ -13,7 +13,7 @@ import { transient } from '../../../../../core';
 import { AppAdminHelpers } from '../../app-administration/app-admin-helpers';
 import { FeatureNames } from '../../features/feature-names';
 import { FeaturesService } from '../../features/features.service';
-import { openFeatureDialog } from '../../features/shared/base-feature';
+import { openFeatureDialog } from '../../features/shared/feature-component-base';
 import { AgBoolCellIconsParams } from '../../shared/ag-grid/apps-list-show/ag-bool-icon-params';
 import { AgBoolIconRenderer } from '../../shared/ag-grid/apps-list-show/ag-bool-icon-renderer';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';

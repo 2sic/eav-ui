@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { TranslateModule } from '@ngx-translate/core';
-import { FeatureIconIndicatorComponent } from '../../../features/feature-icon-indicator/feature-icon-indicator';
+import { FeatureIconIndicatorComponent } from '../../../features/icons/feature-icon-indicator';
 import { UserLanguageService } from '../../../shared/services/user-language.service';
 import { SignalEquals } from '../../../shared/signals/signal-equals';
 import { TranslateMenuDialogComponent } from '../../fields/wrappers/localization/translate-menu-dialog/translate-menu-dialog';

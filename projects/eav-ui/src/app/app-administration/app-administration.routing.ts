@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { GoToDevRest } from '../dev-rest';
 import { EditRoutes, EditRoutesNoHistory } from '../edit/edit.routing';
-import { featureInfoDialog } from '../features/feature-info-dialog/feature-info-dialog.config';
+import { featureInfoDialog } from '../features/dialogs/feature-info-dialog.config';
 import { FeatureNames } from '../features/feature-names';
 import { GoToMetadata } from '../metadata';
 import { GoToPermissions } from '../permissions/go-to-permissions';

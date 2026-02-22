@@ -8,10 +8,10 @@ import { MatTableModule } from '@angular/material/table';
 import { TranslateModule } from '@ngx-translate/core';
 import groupBy from 'lodash-es/groupBy';
 import { transient } from '../../../../../core/transient';
-import { FeatureIconTextComponent } from '../../features/feature-icon-text/feature-icon-text';
+import { FeatureTextInfoComponent } from '../../features/feature-info-box/feature-info-box';
 import { FeatureNames } from '../../features/feature-names';
-import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info';
 import { FeaturesService } from '../../features/features.service';
+import { FeatureIconWithDialogComponent } from '../../features/icons/feature-icon-with-dialog';
 import { ContentTypesFieldsService } from '../../shared/fields/content-types-fields.service';
 import { Field } from '../../shared/fields/field.model';
 import { classLog } from '../../shared/logging';
@@ -39,7 +39,7 @@ const noInheritGuid = '00000000-0000-0000-0000-000000000000';
     NgTemplateOutlet,
     TranslateModule,
     FeatureTextInfoComponent,
-    FeatureIconTextComponent,
+    FeatureIconWithDialogComponent,
     MatDialogActions,
     SaveCloseButtonFabComponent,
   ]

@@ -11,7 +11,7 @@ import { FieldConfig } from '../../../../../../edit-types/src/FieldConfig';
 import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
 import { FeatureNames } from '../../../features/feature-names';
 import { FeaturesService } from '../../../features/features.service';
-import { openFeatureDialog } from '../../../features/shared/base-feature';
+import { openFeatureDialog } from '../../../features/shared/feature-component-base';
 import { classLog } from '../../../shared/logging';
 import { ServiceBase } from '../../../shared/services/service-base';
 import { FormConfigService } from '../../form/form-config.service';

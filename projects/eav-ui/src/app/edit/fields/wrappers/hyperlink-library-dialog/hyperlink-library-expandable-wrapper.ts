@@ -3,8 +3,8 @@ import { AfterViewInit, Component, computed, inject, NgZone, OnDestroy, ViewChil
 import { MatRippleModule } from "@angular/material/core";
 import { MatIconModule } from "@angular/material/icon";
 import { TranslateModule } from "@ngx-translate/core";
+import { FeatureIconWithDialogComponent } from 'projects/eav-ui/src/app/features/icons/feature-icon-with-dialog';
 import { AdamItem } from '../../../../../../../edit-types/src/AdamItem';
-import { FeatureIconTextComponent } from "../../../../features/feature-icon-text/feature-icon-text";
 import { FeatureNames } from '../../../../features/feature-names';
 import { FeaturesService } from '../../../../features/features.service';
 import { SignalEquals } from '../../../../shared/signals/signal-equals';
@@ -27,7 +27,7 @@ import { WrappersCatalog } from "../wrappers.constants";
         MatIconModule,
         MatRippleModule,
         FieldHelperTextComponent,
-        FeatureIconTextComponent,
+        FeatureIconWithDialogComponent,
         TranslateModule,
         CommonModule,
     ]

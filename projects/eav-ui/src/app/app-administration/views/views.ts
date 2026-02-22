@@ -8,7 +8,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
 import { transient } from '../../../../../core';
 import { FeatureNames } from '../../features/feature-names';
-import { openFeatureDialog } from '../../features/shared/base-feature';
+import { openFeatureDialog } from '../../features/shared/feature-component-base';
 import { GoToMetadata } from '../../metadata';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { AgGridHelper } from '../../shared/ag-grid/ag-grid-helper';

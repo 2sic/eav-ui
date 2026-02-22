@@ -1,0 +1,8 @@
+@if (show()) {
+  <mat-icon class="feature-icon"
+    [class.feature-icon-text]="forText()"
+    tippyTranslate="Features.NotActivated"
+    [tippyData]="{ name: featureNameId() }"
+    (click)="openDialog()"
+  >diamond</mat-icon>
+}

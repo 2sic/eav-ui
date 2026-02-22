@@ -16,7 +16,7 @@ import { RouterOutlet } from '@angular/router';
 import dayjs, { Dayjs } from 'dayjs';
 import { transient } from 'projects/core';
 import { MatDayjsModule } from '../../edit/shared/date-adapters/date-adapter-api';
-import { FeatureIconComponent } from '../../features/feature-icon/feature-icon';
+import { FeatureIconWithDialogComponent } from '../../features/icons/feature-icon-with-dialog';
 import { FeatureSummary } from '../../features/models';
 import { HistoryItemComponent } from '../../item-history/history-item';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
@@ -48,7 +48,7 @@ const RECYCLE_BIN_DATASOURCE_ID = 'f890bec1-dee8-4ed6-9f2e-8ad412d2f4dc';
     MatExpansionModule,
     MatTooltipModule,
     MatDayjsModule,
-    FeatureIconComponent,
+    FeatureIconWithDialogComponent,
     SxcGridModule,
     HistoryItemComponent,
   ]

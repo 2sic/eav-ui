@@ -1,14 +1,14 @@
 import { ChangeDetectorRef, Directive, ViewContainerRef, inject, input } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { computedObj } from '../../shared/signals/signal.utilities';
-import { FeatureInfoDialogComponent } from '../feature-info-dialog/feature-info-dialog';
+import { FeatureInfoDialogComponent } from '../dialogs/feature-info-dialog';
 import { FeaturesService } from '../features.service';
 
 /**
- * Base component for various UI components which inform that a feature is not enabled.
+ * Base **component** for various UI components which inform that a feature is not enabled.
  * It's meant to show the indicator/warning, and open a dialog with more information about the feature.
  */
-@Directive()
+@Directive()  // actually a component, not really a directive, but this is necessary so that it works as a base class for components with their own templates.
 export class FeatureComponentBase {
 
   /** Feature NameId to check */
@@ -28,7 +28,8 @@ export class FeatureComponentBase {
 
   show = computedObj('show', () => {
     const feat = this.feature();
-    if (feat == null) return false;
+    if (feat == null)
+      return false;
     return this.showIf() == (feat?.isEnabled ?? false);
   })
 

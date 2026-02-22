@@ -13,7 +13,7 @@ import { ConfirmDeleteDialogComponent } from '../app-administration/sub-dialogs/
 import { ConfirmDeleteDialogData } from '../app-administration/sub-dialogs/confirm-delete-dialog/confirm-delete-dialog.models';
 import { ContentItemsService } from '../content-items/services/content-items.service';
 import { EavForInAdminUi } from '../edit/shared/models/eav';
-import { openFeatureDialog } from '../features/shared/base-feature';
+import { openFeatureDialog } from '../features/shared/feature-component-base';
 import { MetadataService } from '../permissions';
 import { AgGridHelper } from '../shared/ag-grid/ag-grid-helper';
 import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
