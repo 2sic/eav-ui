@@ -6,7 +6,8 @@ export class GoToRecycleBin {
       name: 'Recycle Bin (Beta)',
       icon: 'delete',
       svgIcon: false,
-      path: `${part}-${GoToRecycleBin.route}`
+      path: `${part}-${GoToRecycleBin.route}`,
+      tippy: 'Recycle Bin to undelete data'
     };
   }
 }
