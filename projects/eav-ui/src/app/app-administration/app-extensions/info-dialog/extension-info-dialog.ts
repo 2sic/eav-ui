@@ -12,7 +12,6 @@ import { Extension, ExtensionConfiguration } from '../extension.model';
 @Component({
   selector: 'app-extension-info-dialog',
   templateUrl: './extension-info-dialog.html',
-  styleUrls: ['./extension-info-dialog.scss'],
   imports: [
     CommonModule,
     MatButtonModule,
@@ -20,7 +19,7 @@ import { Extension, ExtensionConfiguration } from '../extension.model';
     MatDialogModule,
     MatIconModule,
     MatToolbarModule,
-    DialogHeaderComponent,
+    DialogHeaderComponent
 ]
 })
 export class ExtensionInfoDialog {

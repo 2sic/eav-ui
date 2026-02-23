@@ -33,10 +33,11 @@
           <mat-select required [(value)]="selectedGeneratorName">
             <mat-select-trigger> {{ selectedGeneratorName() }} </mat-select-trigger>
             @for (generator of generators().sort(); track generator) {
-            <mat-option [value]="generator.name">
-              <strong>{{ generator.name }} v{{ generator.version }}</strong><br />
-              {{ generator.description }}
-            </mat-option>
+              <mat-option [value]="generator.name">
+                <strong>{{ generator.name }} v{{ generator.version }}</strong>
+                <br />
+                {{ generator.description }}
+              </mat-option>
             }
           </mat-select>
           @if (selectedGenerator(); as selectedGenerator) {
@@ -49,18 +50,18 @@
         <br />
 
         @if (editions(); as editions) {
-        <mat-form-field color="accent" class="eav-mat-form-field">
-          <mat-label>Select an Edition to generate code for</mat-label>
-          <mat-select required [(value)]="selectedEdition">
-            @for (edition of editions.sort(); track edition) {
-            <mat-option [value]="edition.name"> <strong>{{ edition.label }}</strong> ({{ edition.description }}) </mat-option>
-            }
-          </mat-select>
-          <mat-hint>
-            Editions are managed in the <code>/App_Data/app.json</code> file. See
-            <a href="https://go.2sxc.org/app-json" target="_blank">docs</a>.
-          </mat-hint>
-        </mat-form-field>
+          <mat-form-field color="accent" class="eav-mat-form-field">
+            <mat-label>Select an Edition to generate code for</mat-label>
+            <mat-select required [(value)]="selectedEdition">
+              @for (edition of editions.sort(); track edition) {
+                <mat-option [value]="edition.name"> <strong>{{ edition.label }}</strong> ({{ edition.description }}) </mat-option>
+              }
+            </mat-select>
+            <mat-hint>
+              Editions are managed in the <code>/App_Data/app.json</code> file. See
+              <a href="https://go.2sxc.org/app-json" target="_blank">docs</a>.
+            </mat-hint>
+          </mat-form-field>
         }
 
         <br />
