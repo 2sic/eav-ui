@@ -23,6 +23,7 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
 
   #dialogData: Record<string, any>;
   #dialog: MatDialogRef<any>;
+  #originalUrl: string;
 
   constructor(
     private matDialog: MatDialog,
@@ -58,7 +59,7 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.#dialog.close();
+    this.#dialog?.close();
   }
 
   // Open the dialog with the specified component and configuration
@@ -68,6 +69,8 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
     this.log.a(`Open dialog(initContext: ${dialogConfig.initContext})`, { name: dialogConfig.name, 'Contextid:': this.context.log.svcId, 'Context:': this.context });
     if (dialogConfig.initContext)
       this.context.init(this.route);
+
+    this.#originalUrl = this.router.url;
 
     this.#dialog = this.matDialog.open(component, {
       autoFocus: false,
@@ -105,6 +108,12 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
         return;
       }
 
+      // Route already changed -> do nothing since we're not on the same view anymore
+      if (this.router.url !== this.#originalUrl) {
+        return;
+      }
+
+      // If this is the last opened dialog, close the popup to get back to the original site
       if (this.route.pathFromRoot.length <= 3) {
         try {
           window.parent.$2sxc.totalPopup.close();
@@ -113,6 +122,12 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
         return;
       }
 
+      // Determine the correct parent route to navigate back to after dialog closes.
+      // Explanation:
+      // - If the current route has a URL segment (snapshot.url.length > 0),
+      //   it means we're on a child route, so we use this.route.parent.
+      // - If not, we're likely on a route added purely for the dialog (no URL segment),
+      //   so we need to go up two levels (this.route.parent.parent) to reach the actual parent.
       const parent = this.route.snapshot.url.length > 0
         ? this.route.parent
         : this.route.parent.parent;
