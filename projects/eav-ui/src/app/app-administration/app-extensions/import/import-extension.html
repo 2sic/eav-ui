@@ -155,17 +155,28 @@
     }
 
     <!-- Force Install Option, only show if necessary -->
-    @if (alreadyInstalled()) {
+    @if (alreadyInstalled() && hasChanges()) {
       <div class="install-options" style="margin-top: 16px;">
         <h4>Caution: Import causes an Overwrite</h4>
         <p>
-          You need to force install/ overwrite the extension.
+          Upgrading this extension will overwrite your changes.
+          You must enable Force Install to proceed.
         </p>
         <mat-slide-toggle
           [(ngModel)]="forceInstall"
           color="primary">
           Force / Overwrite
         </mat-slide-toggle>
+      </div>
+    }
+    
+    @if (alreadyInstalled() && !hasChanges()) {
+      <div class="install-options" style="margin-top: 16px;">
+        <h4>Upgrade Available</h4>
+        <p>
+          This extension is already installed, but no local changes were detected.
+          Force Install is <strong>not required</strong>.
+        </p>
       </div>
     }
 
