@@ -5,7 +5,7 @@ export class GoToRecycleBin {
 
   static routeDefinition(part: string) {
     return {
-      name: 'Recycle Bin (Beta)',
+      name: 'Recycle Bin',
       icon: 'delete',
       svgIcon: false,
       path: `${part}-${GoToRecycleBin.route}`,
