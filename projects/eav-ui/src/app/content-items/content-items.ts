@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
 import { transient } from '../../../../core';
+import { GoToRecycleBin } from '../app-administration/recycle-bin/go-to-recycle-bin';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { ConfirmDeleteDialogComponent } from '../app-administration/sub-dialogs/confirm-delete-dialog/confirm-delete-dialog';
 import { ConfirmDeleteDialogData } from '../app-administration/sub-dialogs/confirm-delete-dialog/confirm-delete-dialog.models';
@@ -32,6 +33,8 @@ import { ItemIdHelper } from '../shared/models/item-id-helper';
 import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
 import { SafeHtmlPipe } from '../shared/pipes/safe-html.pipe';
 import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
+import { RouteLinkHelper } from '../shared/routing/route-link-helper';
+import { Context } from '../shared/services/context';
 import { EntityEditService } from '../shared/services/entity-edit.service';
 import { GlobalConfigService } from '../shared/services/global-config.service';
 import { computedObj } from '../shared/signals/signal.utilities';
@@ -81,6 +84,7 @@ export class ContentItemsComponent implements OnInit {
   #viewContainerRef = inject(ViewContainerRef);
   #changeDetectorRef = inject(ChangeDetectorRef);
   #dialog = inject(MatDialogRef<ContentItemsComponent>);
+  #context = inject(Context);
 
   #entitiesSvc = transient(EntityEditService);
   #contentExportSvc = transient(ContentExportService);
@@ -227,6 +231,11 @@ export class ContentItemsComponent implements OnInit {
         ],
       })}`
     );
+  }
+
+  // Returns the URL to the recycle bin
+  urlToRecycleBin() {
+    return `#/${new RouteLinkHelper().routeTo(this.#context, `app/data-${GoToRecycleBin.route}`)}`;
   }
 
   urlToExportContent = computedObj('urlToExportContent', () => {
