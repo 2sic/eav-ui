@@ -26,6 +26,7 @@ import { defaultGridOptions } from '../../shared/constants/default-grid-options.
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { Context } from '../../shared/services/context';
 import { SysDataService } from '../../shared/services/sys-data.service';
+import { GoToRecycleBin } from './go-to-recycle-bin';
 import { SingleHistoryDialogComponent } from './single-history-dialog';
 
 const RECYCLE_BIN_DATASOURCE_ID = 'f890bec1-dee8-4ed6-9f2e-8ad412d2f4dc';
@@ -196,6 +197,8 @@ export class AppRecycleBin {
   });
 
   deletedEntities = computed(() => this.#data.value()?.default ?? []);
+
+  GoToRecycleBin = GoToRecycleBin;
 
   contentTypes = computed(() => this.#data.value()?.contentTypes ?? []);
 
