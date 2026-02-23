@@ -36,7 +36,6 @@ const RECYCLE_BIN_RESTORE_URL = 'admin/data/recycle';
   selector: 'recycle-bin',
   templateUrl: './recycle-bin.html',
   styleUrls: ['./recycle-bin.scss'],
-  standalone: true,
   imports: [
     CommonModule,
     RouterOutlet,

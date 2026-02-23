@@ -6,7 +6,6 @@ import { HistoryItem } from './models/history-item.model';
 
 @Component({
   selector: 'app-history-item',
-  standalone: true,
   templateUrl: './history-item.html',
   styleUrls: ['./item-history.scss'],
   imports: [
