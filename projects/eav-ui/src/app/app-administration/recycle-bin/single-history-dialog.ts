@@ -8,7 +8,6 @@ import { DialogHeaderComponent } from "../../shared/dialog-header/dialog-header"
   selector: 'app-single-history-dialog',
   templateUrl: './single-history-dialog.html',
   styleUrls: ['./single-history-dialog.scss'],
-  standalone: true,
   imports: [
     HistoryItemComponent,
     DialogHeaderComponent

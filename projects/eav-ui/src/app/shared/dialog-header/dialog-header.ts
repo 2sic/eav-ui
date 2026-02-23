@@ -6,7 +6,6 @@ import { TippyDirective } from "../directives/tippy.directive";
 @Component({
   selector: 'app-dialog-header',
   templateUrl: './dialog-header.html',
-  standalone: true,
   imports: [
     MatIconModule,
     MatButtonModule,
