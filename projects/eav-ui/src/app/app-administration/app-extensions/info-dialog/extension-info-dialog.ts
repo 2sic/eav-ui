@@ -6,12 +6,12 @@ import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/materia
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { DialogHeaderComponent } from "../../../shared/dialog-header/dialog-header";
 import { Extension, ExtensionConfiguration } from '../extension.model';
 
 @Component({
   selector: 'app-extension-info-dialog',
   templateUrl: './extension-info-dialog.html',
-  styleUrls: ['./extension-info-dialog.scss'],
   imports: [
     CommonModule,
     MatButtonModule,
@@ -19,7 +19,8 @@ import { Extension, ExtensionConfiguration } from '../extension.model';
     MatDialogModule,
     MatIconModule,
     MatToolbarModule,
-  ]
+    DialogHeaderComponent
+]
 })
 export class ExtensionInfoDialog {
   dialog = inject(MatDialogRef<void>);

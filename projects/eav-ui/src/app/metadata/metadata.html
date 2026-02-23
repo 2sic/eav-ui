@@ -1,13 +1,7 @@
 <div class="eav-dialog nav-component-wrapper">
   <app-grid-with-help style="height: 100%" [helpText]="uxHelpText()" [refresh]="refresh()" [rowLength]="metadataSet()?.Items.length">
-    <div class="eav-dialog-header" eav-dialog-header>
-      <div class="eav-dialog-header__title">
-        {{ title || 'Metadata' }}
-      </div>
-      <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
-        <mat-icon>close</mat-icon>
-      </button>
-    </div>
+    
+    <app-dialog-header eav-dialog-header [title]="title || 'Metadata'" (close)="closeDialog()"></app-dialog-header>
 
     <div class="eav-dialog-content" eav-dialog-content>
       <p>

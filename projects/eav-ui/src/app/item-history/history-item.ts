@@ -15,24 +15,20 @@ import { HistoryItem } from './models/history-item.model';
   ]
 })
 export class HistoryItemComponent {
-  @Input() historyItem!: HistoryItem;
-  @Input() isExpanded!: boolean;
-  @Input() expandedAttributes!: Record<string, boolean>;
-  
-  @Output() panelExpandedChange = new EventEmitter<boolean>();
-  @Output() attributeToggle = new EventEmitter<string>();
+  @Input({ required: true }) historyItem!: HistoryItem;
+  @Input() expanded = false;
+  @Output() expandedChange = new EventEmitter<boolean>();
   @Output() restore = new EventEmitter<number>();
 
+  expandedAttributes: Record<string, boolean> = {};
+  
   getLocalDate(date: string) {
     return new Date(date);
   }
 
-  onExpandedChange(expanded: boolean) {
-    this.panelExpandedChange.emit(expanded);
-  }
-
-  onAttributeToggle(attributeName: string) {
-    this.attributeToggle.emit(attributeName);
+  toggleAttribute(attributeName: string) {
+    const key = this.historyItem.versionNumber + attributeName;
+    this.expandedAttributes[key] = !this.expandedAttributes[key];
   }
 
   onRestore() {

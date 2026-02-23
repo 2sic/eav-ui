@@ -8,8 +8,7 @@ import { CopilotActionsParams, CopilotActionsType } from './copilot-actions.mode
 
 @Component({
   selector: 'app-copilot-actions',
-  templateUrl: './copilot-actions.component.html',
-  standalone: true,
+  templateUrl: './copilot-actions.html',
   imports: [MatRippleModule, MatIconModule, TippyDirective],
 })
 export class CopilotActionsComponent implements ICellRendererAngularComp {
