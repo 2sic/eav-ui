@@ -5,22 +5,24 @@
     </mat-card-title>
   </mat-card-header>
   <mat-card-content>
-    <p class="mat-body-1">Here you can see and restore deleted items within this app.</p>
+    <p class="mat-body-1">
+      Here you can see and restore deleted items within this app.
+    </p>
     <p class="mat-caption"><strong>Note:</strong> This feature is currently in beta and may not be fully stable. Use with caution.</p>
 
+    <app-feature-info-box [featureNameId]="GoToRecycleBin.featureId"></app-feature-info-box>
+    
     <h3 class="mat-subtitle-1">
       Deleted Items ({{ deletedEntities().length }} total)
-
-      <!-- Indicator if feature is not active -->
-      <app-feature-icon [featureNameId]="'EntityUndelete'"></app-feature-icon>
+      <app-feature-icon-with-dialog [featureNameId]="'EntityUndelete'"></app-feature-icon-with-dialog>
     </h3>
-    
+
     <div class="recycle-bin-filters">
       <mat-form-field appearance="outline" color="accent" class="recycle-bin-filter">
         <mat-label>Filter by Content Type</mat-label>
         <mat-select [(value)]="selectedContentType">
           <mat-option value="">All Types</mat-option>
-          @for (type of contentTypes(); track type.staticName) {
+          @for (type of contentTypes(); track type.name) {
             <mat-option [value]="type.name">{{ type.title }}</mat-option>
           }
         </mat-select>
@@ -40,21 +42,12 @@
     <div>
       <ag-grid-angular
         class="ag-theme-material"
-        style="width: 100%; min-height: 300px;"
+        style="width: 100%; min-height: 300px"
         [rowData]="dataSourceData()"
         [gridOptions]="gridOptions"
         domLayout="autoHeight"
       ></ag-grid-angular>
     </div>
-
-    <div *ngIf="selectedHistoryItem" class="recycle-bin-details" style="margin-top: 2rem;">
-      <h4>Deleted Item Details</h4>
-      <app-history-item
-        [historyItem]="selectedHistoryItem"
-        [isExpanded]="true"
-        [expandedAttributes]="{}"
-      ></app-history-item>
-    </div>
   </mat-card-content>
+  <router-outlet></router-outlet>
 </mat-card>
-<router-outlet></router-outlet>

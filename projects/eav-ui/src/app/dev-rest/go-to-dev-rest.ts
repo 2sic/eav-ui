@@ -15,14 +15,16 @@ export class GoToDevRest {
     name: GoToDevRest.navLabel,
     icon: GoToDevRest.icon,
     svgIcon: true,
-    path: GoToDevRest.routeData
+    path: GoToDevRest.routeData,
+    tippy: 'Rest-Api Data'
   };
 
   static routeQueryDefinition = {
     name: GoToDevRest.navLabel,
     icon: GoToDevRest.icon,
     svgIcon: true,
-    path: GoToDevRest.routeQuery
+    path: GoToDevRest.routeQuery,
+    tippy: 'Rest-Api Queries'
   };
 
   static routeWebApiDefinition = {

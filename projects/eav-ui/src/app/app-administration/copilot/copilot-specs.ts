@@ -1,6 +1,7 @@
 export interface CopilotSpec {
   /** Title in the menu */
   title: string;
+  route?: string;
   /** Title in the breadcrumb */
   breadcrumb: string;
 
@@ -20,7 +21,7 @@ export const CopilotSpecs: { [key: string ]: CopilotSpec } = {
 
     heading: '2sxc Data Copilot',
     intro,
-    teaser: 'Autogenerate content types',
+    teaser: 'Auto-Generate content types',
 
     outputType: 'DataModel',
   },
@@ -30,17 +31,18 @@ export const CopilotSpecs: { [key: string ]: CopilotSpec } = {
 
     heading: '2sxc View Copilot',
     intro,
-    teaser: 'Autogenerate Razor Views',
+    teaser: 'Auto-Generate Razor Views',
 
     outputType: 'RazorView',
   },
   'webApi': {
     title: 'WebApi Copilot',
+    route: 'web-api',
     breadcrumb: '2sxc WebApi Copilot',
 
     heading: '2sxc WebApi Copilot',
     intro,
-    teaser: 'Autogenerate WebApi Controllers',
+    teaser: 'Auto-Generate WebApi Controllers',
 
     outputType: 'WebApi',
   }

@@ -1,7 +1,7 @@
 import { NgClass } from '@angular/common';
 import { Component, inject, ViewChild, ViewContainerRef } from '@angular/core';
-import { FeatureIconComponent } from '../../../../features/feature-icon/feature-icon';
 import { FeaturesService } from '../../../../features/features.service';
+import { FeatureIconWithDialogComponent } from '../../../../features/icons/feature-icon-with-dialog';
 import { computedObj } from '../../../../shared/signals/signal.utilities';
 import { FieldState } from '../../field-state';
 import { WrappersCatalog } from '../wrappers.constants';
@@ -12,7 +12,7 @@ import { WrappersCatalog } from '../wrappers.constants';
     styleUrls: ['./feature-warning-wrapper.scss'],
     imports: [
         NgClass,
-        FeatureIconComponent,
+        FeatureIconWithDialogComponent,
     ]
 })
 export class FeatureWarningWrapperComponent {

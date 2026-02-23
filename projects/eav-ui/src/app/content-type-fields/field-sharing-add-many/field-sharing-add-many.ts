@@ -13,10 +13,10 @@ import { catchError, concatMap, filter, of, toArray } from 'rxjs';
 import { transient } from '../../../../../core';
 import { fieldNameError, fieldNamePattern } from '../../app-administration/constants/field-name.patterns';
 import { ContentType } from '../../app-administration/models';
+import { FeatureInfoBoxComponent } from '../../features/feature-info-box/feature-info-box';
 import { FeatureNames } from '../../features/feature-names';
-import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info';
 import { FeaturesService } from '../../features/features.service';
-import { openFeatureDialog } from '../../features/shared/base-feature';
+import { openFeatureDialog } from '../../features/shared/feature-component-base';
 import { BaseComponent } from '../../shared/components/base';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint';
 import { ContentTypesFieldsService } from '../../shared/fields/content-types-fields.service';
@@ -39,7 +39,7 @@ import { ReservedNamesValidatorDirective } from '../edit-content-type-fields/res
     ReservedNamesValidatorDirective,
     MatDialogActions,
     TranslateModule,
-    FeatureTextInfoComponent,
+    FeatureInfoBoxComponent,
     FieldHintComponent,
     MatIconModule,
     SaveCloseButtonFabComponent,

@@ -13,13 +13,14 @@ import { ConfirmDeleteDialogComponent } from '../app-administration/sub-dialogs/
 import { ConfirmDeleteDialogData } from '../app-administration/sub-dialogs/confirm-delete-dialog/confirm-delete-dialog.models';
 import { ContentItemsService } from '../content-items/services/content-items.service';
 import { EavForInAdminUi } from '../edit/shared/models/eav';
-import { openFeatureDialog } from '../features/shared/base-feature';
+import { openFeatureDialog } from '../features/shared/feature-component-base';
 import { MetadataService } from '../permissions';
 import { AgGridHelper } from '../shared/ag-grid/ag-grid-helper';
 import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
 import { GridWithHelpComponent, HelpTextConst } from '../shared/ag-grid/grid-with-help/grid-with-help';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
 import { MetadataKeyTypes } from '../shared/constants/eav.constants';
+import { DialogHeaderComponent } from "../shared/dialog-header/dialog-header";
 import { MatBadgeIconDirective } from '../shared/directives/mat-badge-icon.directive';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { classLog } from '../shared/logging';
@@ -53,7 +54,8 @@ import { MetadataItem, MetadataRecommendation } from './models/metadata.model';
     MatBadgeIconDirective,
     SafeHtmlPipe,
     GridWithHelpComponent,
-  ]
+    DialogHeaderComponent,
+]
 })
 export class MetadataComponent implements OnInit {
 

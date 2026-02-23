@@ -1,27 +1,31 @@
 import { NgClass } from '@angular/common';
-import { Component, input, OnInit } from '@angular/core';
+import { Component, inject, input, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { FeatureIconIndicatorComponent } from "../../../features/icons/feature-icon-indicator";
 import { TippyDirective } from '../../directives/tippy.directive';
 import { NavItem } from '../../models/nav-item.model';
 
 @Component({
-    selector: 'app-nav-item-list',
-    templateUrl: './nav-item-list.html',
-    styleUrl: './nav-item-list.scss',
-    imports: [
-        MatIconModule,
-        NgClass,
-        RouterLink,
-        RouterLinkActive,
-        TippyDirective,
-    ]
+  selector: 'app-nav-item-list',
+  templateUrl: './nav-item-list.html',
+  styleUrl: './nav-item-list.scss',
+  imports: [
+    MatIconModule,
+    NgClass,
+    RouterLink,
+    RouterLinkActive,
+    TippyDirective,
+    FeatureIconIndicatorComponent
+]
 })
 export class NavItemListComponent implements OnInit {
   navItem = input<NavItem>();
   isOpenMenu = false;
 
-  constructor(private router: Router) { }
+  private router = inject(Router);
+
+  constructor() { }
 
   ngOnInit(): void {
     this.#openChildMenu();

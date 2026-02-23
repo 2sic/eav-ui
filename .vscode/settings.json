@@ -43,7 +43,8 @@
       "removeformat",
       "sitewide",
       "tinymce",
-      "uifields"
+      "uifields",
+      "undelete"
     ],
     "[html][typescript]": {
       "editor.codeActionsOnSave": {

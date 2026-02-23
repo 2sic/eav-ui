@@ -13,7 +13,7 @@ import { AdamConfig } from '../../../../../../../../edit-types/src/AdamConfig';
 import { AdamItem } from '../../../../../../../../edit-types/src/AdamItem';
 import { FeatureNames } from '../../../../../features/feature-names';
 import { FeaturesService } from '../../../../../features/features.service';
-import { openFeatureDialog } from '../../../../../features/shared/base-feature';
+import { openFeatureDialog } from '../../../../../features/shared/feature-component-base';
 import { eavConstants } from '../../../../../shared/constants/eav.constants';
 import { ClickStopPropagationDirective } from '../../../../../shared/directives/click-stop-propagation.directive';
 import { TippyDirective } from '../../../../../shared/directives/tippy.directive';

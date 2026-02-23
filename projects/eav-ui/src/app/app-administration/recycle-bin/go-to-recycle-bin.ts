@@ -1,12 +1,16 @@
 export class GoToRecycleBin {
   static route = 'recycle-bin';
 
+  static featureId = 'EntityUndelete';
+
   static routeDefinition(part: string) {
     return {
-      name: 'Recycle Bin (Beta)',
+      name: 'Recycle Bin',
       icon: 'delete',
       svgIcon: false,
-      path: `${part}-${GoToRecycleBin.route}`
+      path: `${part}-${GoToRecycleBin.route}`,
+      tippy: 'Recycle Bin to undelete data',
+      featureRequired: GoToRecycleBin.featureId,
     };
   }
 }

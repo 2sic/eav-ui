@@ -46,7 +46,7 @@
         </mat-checkbox>
       </li>
       <li>
-        <app-feature-icon [featureNameId]="'AppExportAssetsAdvanced'"></app-feature-icon>
+        <app-feature-icon-with-dialog [featureNameId]="'AppExportAssetsAdvanced'"></app-feature-icon-with-dialog>
         <mat-checkbox [(ngModel)]="assetsAdam" [disabled]="!expAssetsAdvEnabled()">
           <br />
           Include all ADAM assets.
@@ -55,7 +55,7 @@
         </mat-checkbox>
       </li>
       <li>
-        <app-feature-icon [featureNameId]="'AppExportAssetsAdvanced'"></app-feature-icon>
+        <app-feature-icon-with-dialog [featureNameId]="'AppExportAssetsAdvanced'"></app-feature-icon-with-dialog>
         <mat-checkbox [(ngModel)]="assetsAdamDeleted" [disabled]="!expAssetsAdvEnabled()">
           <br />
           Skip ADAM assets of deleted entities.
@@ -64,7 +64,7 @@
         </mat-checkbox>
       </li>
       <li>
-        <app-feature-icon [featureNameId]="'AppExportAssetsAdvanced'"></app-feature-icon>
+        <app-feature-icon-with-dialog [featureNameId]="'AppExportAssetsAdvanced'"></app-feature-icon-with-dialog>
         <mat-checkbox [(ngModel)]="assetsSite" [disabled]="!expAssetsAdvEnabled()">
           <br />
           Include all Site assets like images which are not in ADAM.

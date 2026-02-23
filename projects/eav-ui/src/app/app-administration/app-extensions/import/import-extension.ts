@@ -79,13 +79,22 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
   editions = signal<ExtensionEdition[]>([]);
   showExtensionCatalog = signal(false);
   forceInstall = false;
+  // --- Signals ---
   alreadyInstalled = computed(() => {
     const ext = this.extension();
-    if (!ext || !this.selectedEditions().length)
-      return false;
-    // If any selected edition is already installed, require force
+    if (!ext || !this.selectedEditions().length) return false;
+    // Installed editions
     return ext.editions?.some(e =>
       this.selectedEditions().includes(e.edition ?? '') && e.isInstalled
+    ) ?? false;
+  });
+
+  // detect if the installed extension has modifications
+  hasChanges = computed(() => {
+    const ext = this.extension();
+    if (!ext || !this.selectedEditions().length) return false;
+    return ext.editions?.some(e =>
+      this.selectedEditions().includes(e.edition ?? '') && e.hasFileChanges
     ) ?? false;
   });
 
@@ -344,18 +353,19 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
   install(): void {
     if (!this.canInstall()) return;
 
-    if (this.alreadyInstalled() && !this.forceInstall) {
+    if (this.hasChanges() && this.alreadyInstalled() && !this.forceInstall) {
       this.#snackBar.open('Installation requires force. Please enable "Force Install" and try again.', 'OK', { duration: 10000 });
       return;
     }
 
     this.isInstalling.set(true);
 
-    const overwrite = this.forceInstall;
+    const overwrite = this.forceInstall || (!this.hasChanges() && this.alreadyInstalled());
+    
     let installObservable: Observable<any>;
 
     const editionsString = this.selectedEditions().length ? this.selectedEditions().join(',') : undefined;
-    
+
     if (this.preflightSource instanceof File) {
       installObservable = this.#extensionSvc.uploadExtensions(this.preflightSource, editionsString, overwrite);
     } else if (typeof this.preflightSource === 'string') {

@@ -6,8 +6,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateModule } from '@ngx-translate/core';
+import { FeatureInfoBoxComponent } from '../../../features/feature-info-box/feature-info-box';
 import { FeatureNames } from '../../../features/feature-names';
-import { FeatureTextInfoComponent } from '../../../features/feature-text-info/feature-text-info';
 import { FeaturesService } from '../../../features/features.service';
 import { TranslateHelperComponent } from '../../../shared/components/translate-helper';
 import { EditApiKeyPaths } from '../../../shared/constants/eav.constants';
@@ -26,7 +26,7 @@ import { TranslationStateCore } from '../translate-state.model';
   styleUrls: ['./auto-translate-menu-dialog.scss'],
   imports: [
     MatCardModule,
-    FeatureTextInfoComponent,
+    FeatureInfoBoxComponent,
     MatListModule,
     NgClass,
     MatIconModule,

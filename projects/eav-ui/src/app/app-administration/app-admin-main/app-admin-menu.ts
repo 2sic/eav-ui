@@ -1,7 +1,6 @@
 import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { NavItem } from "../../shared/models/nav-item.model";
-import { CopilotSpecs } from '../copilot/copilot-specs';
 import { GoToCopilot } from '../copilot/go-to-copilot';
 import { GoToRecycleBin } from '../recycle-bin/go-to-recycle-bin';
 
@@ -10,9 +9,9 @@ export const AppAdminMenu: NavItem[] = [
   {
     name: 'Data', path: `data/${eavConstants.scopes.default.value}`, icon: 'menu', tippy: 'Data / Content',
     child: [
-      { ...GoToCopilot.routeDefinition('data'), tippy: 'Autogenerate content types ' },
-      { ...GoToDevRest.routeDataDefinition, tippy: 'Rest-Api Data ' },
-      { ...GoToRecycleBin.routeDefinition('data'), tippy: 'Recycle Bin (beta)' },
+      GoToCopilot.routeDefinition('data'),
+      GoToDevRest.routeDataDefinition,
+      GoToRecycleBin.routeDefinition('data'),
     ]
   },
   {
@@ -21,7 +20,7 @@ export const AppAdminMenu: NavItem[] = [
     icon: 'filter_list',
     tippy: 'Queries / Visual Query Designer',
     child: [
-      { ...GoToDevRest.routeQueryDefinition, tippy: 'Rest-Api Queries' },
+      GoToDevRest.routeQueryDefinition,
     ]
   },
   {
@@ -30,10 +29,7 @@ export const AppAdminMenu: NavItem[] = [
     icon: 'layers',
     tippy: 'Views / Templates',
     child: [
-      {
-        ...GoToCopilot.routeDefinition('views'),
-        tippy: 'Autogenerate Razor Views'
-      },
+      GoToCopilot.routeDefinition('views'),
     ]
   },
   {
@@ -45,10 +41,7 @@ export const AppAdminMenu: NavItem[] = [
   {
     name: 'Web API', path: 'web-api', icon: 'offline_bolt', tippy: 'WebApi',
     child: [
-      {
-        ...GoToCopilot.routeDefinition('web-api'),
-        tippy: CopilotSpecs.webApi.teaser,
-      },
+      GoToCopilot.routeDefinition('webApi'),
       {
         ...GoToDevRest.routeWebApiDefinition,
         tippy: 'Rest-Api Queries'

@@ -125,9 +125,9 @@
       }
     }
 
-    <app-feature-text-info [featureNameId]="requiredFeature" [asInfo]="true">
+    <app-feature-info-box [featureNameId]="requiredFeature" [asInfo]="true">
       <em> Even if the feature is not licensed, it will always work but show warnings. </em>
-    </app-feature-text-info>
+    </app-feature-info-box>
   </div>
 
   <mat-dialog-actions align="end">
@@ -162,7 +162,7 @@
       You can get more details about the parents by enabling the feature
       <br />
       {{ requiredFeature }}
-      <app-feature-icon-text [featureNameId]="requiredFeature"></app-feature-icon-text>.
+      <app-feature-icon-with-dialog [forText]="true" [featureNameId]="requiredFeature"></app-feature-icon-with-dialog>.
     </em>
   }
 </ng-template>

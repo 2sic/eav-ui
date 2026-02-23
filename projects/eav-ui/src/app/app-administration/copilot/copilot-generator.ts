@@ -31,7 +31,7 @@ import { SysDataService } from '../../shared/services/sys-data.service';
 import { ConfirmDeleteDialogComponent } from '../sub-dialogs/confirm-delete-dialog/confirm-delete-dialog';
 import { ConfirmDeleteDialogData } from '../sub-dialogs/confirm-delete-dialog/confirm-delete-dialog.models';
 import { CodeGenerator } from './code-generator';
-import { CopilotActionsComponent } from './copilot-actions/copilot-actions.component';
+import { CopilotActionsComponent } from './copilot-actions/copilot-actions';
 
 type DataCopilotConfiguration = {
   Guid: string;

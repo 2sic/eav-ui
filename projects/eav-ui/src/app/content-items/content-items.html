@@ -24,6 +24,10 @@
     </ag-grid-angular>
     <mat-dialog-actions class="eav-dialog-actions">
       <div class="eav-dialog-actions-div">
+        <a [href]="urlToRecycleBin()" mat-button class="eav-button__with-icon" tippy="Go to Recycle Bin" tippyPlacement="top">
+          <mat-icon class="eav-icon">delete</mat-icon>
+          <span>Recycle Bin</span>
+        </a>
         <a [href]="urlToExportContent()" mat-button class="eav-button__with-icon" tippy="Export xml list" tippyPlacement="top">
           <mat-icon class="eav-icon">cloud_download</mat-icon>
           <span>Data</span>

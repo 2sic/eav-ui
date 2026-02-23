@@ -10,7 +10,7 @@
     <!-- Show feature warnings if available. Do this first, to avoid the icons from fluttering back and forth -->
     @for (feature of featureWarnings(); track feature)
     {
-      <app-feature-icon [featureNameId]="feature"></app-feature-icon>
+      <app-feature-icon-with-dialog [featureNameId]="feature"></app-feature-icon-with-dialog>
     }
     <!-- Action items such as edit, remove, delete - in scenarios where they should be in front of the (i) etc. to avoid fluttering -->
     @if (actionsFirst()) {

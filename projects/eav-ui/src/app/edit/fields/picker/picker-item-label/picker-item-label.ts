@@ -1,6 +1,6 @@
 import { Component, computed, input } from '@angular/core';
 import { FieldSettingsWithPickerSource } from '../../../../../../../edit-types/src/PickerSources';
-import { FeatureIconComponent } from '../../../../features/feature-icon/feature-icon';
+import { FeatureIconWithDialogComponent } from '../../../../features/icons/feature-icon-with-dialog';
 import { PickerItem } from '../models/picker-item.model';
 import { PickerFeaturesItem } from '../picker-features.model';
 import { PickerIconHelpComponent } from '../picker-icon-help/picker-icon-help';
@@ -15,7 +15,7 @@ import { PickerItemPreviewComponent } from '../picker-item-preview/picker-item-p
     PickerIconHelpComponent,
     PickerIconInfoComponent,
     PickerItemButtonsComponent,
-    FeatureIconComponent,
+    FeatureIconWithDialogComponent,
   ],
   templateUrl: './picker-item-label.html',
   styleUrl: './picker-item-label.scss'
