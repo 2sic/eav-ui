@@ -89,7 +89,7 @@ export class ImportExtensionComponent extends BaseComponent implements OnInit {
     ) ?? false;
   });
 
-  // --- New: detect if the installed extension has modifications ---
+  // detect if the installed extension has modifications
   hasChanges = computed(() => {
     const ext = this.extension();
     if (!ext || !this.selectedEditions().length) return false;
