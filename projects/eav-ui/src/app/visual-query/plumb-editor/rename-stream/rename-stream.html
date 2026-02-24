@@ -1,14 +1,10 @@
 <div class="eav-dialog">
-  <div class="eav-dialog-header">
-    <div class="eav-dialog-header__title">Rename stream</div>
-    <button
-      mat-icon-button
-      tippy="Close dialog"
-      (click)="closeDialog()"
-    >
-      <mat-icon>close</mat-icon>
-    </button>
-  </div>
+  <app-dialog-header (close)="closeDialog()">  
+    <div dialog-title>
+      Rename stream
+    </div>
+  </app-dialog-header>
+  
   <div class="eav-dialog-content">
     <form [formGroup]="form">
       <!-- Simple form -->

@@ -16,6 +16,7 @@ import { isCtrlEnter } from '../../../edit/dialog/main/keyboard-shortcuts';
 import { BaseComponent } from '../../../shared/components/base';
 import { FieldHintComponent } from '../../../shared/components/field-hint/field-hint';
 import { eavConstants, ScopeOption } from '../../../shared/constants/eav.constants';
+import { DialogHeaderComponent } from "../../../shared/dialog-header/dialog-header";
 import { ClickStopPropagationDirective } from '../../../shared/directives/click-stop-propagation.directive';
 import { SaveCloseButtonFabComponent } from '../../../shared/modules/save-close-button-fab/save-close-button-fab';
 import { VisualQueryStateService } from '../../services/visual-query.service';
@@ -39,7 +40,8 @@ import { RenameStreamDialogControls, RenameStreamDialogData, RenameStreamDialogF
     FieldHintComponent,
     ClickStopPropagationDirective,
     SaveCloseButtonFabComponent,
-  ]
+    DialogHeaderComponent
+]
 })
 export class RenameStreamComponent extends BaseComponent implements OnInit {
   @HostBinding('className') hostClass = 'dialog-component';
