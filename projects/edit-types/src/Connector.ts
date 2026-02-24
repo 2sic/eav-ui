@@ -40,7 +40,7 @@ export interface Connector<T> {
    * @param {() => void} callback - your callback function
    * @memberof Connector
    */
-  loadScript(test: string | (() => boolean), src: string, callback: () => void): void;
+  loadScript(test: LoadScriptParameter, src: string, callback: () => void): void;
 
   /**
    * Load multiple scripts into the browser - but only once.
@@ -50,5 +50,7 @@ export interface Connector<T> {
    * @param {() => void} callback - your callback function
    * @memberof Connector
    */
-  loadScript(scripts: { test: string | (() => boolean); src: string }[], callback: () => void): void;
+  loadScript(scripts: { test: LoadScriptParameter; src: string }[], callback: () => void): void;
 }
+
+export type LoadScriptParameter = string | (() => boolean);

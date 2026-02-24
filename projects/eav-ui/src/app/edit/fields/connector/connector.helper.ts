@@ -13,6 +13,7 @@ import { classLog } from '../../../../../../shared/logging';
 import { FeatureNames } from '../../../features/feature-names';
 import { FeaturesService } from '../../../features/features.service';
 import { openFeatureDialog } from '../../../features/shared/feature-component-base';
+import { GlobalConfigService } from '../../../shared/services/global-config.service';
 import { ServiceBase } from '../../../shared/services/service-base';
 import { FormConfigService } from '../../form/form-config.service';
 import { EditRoutingService } from '../../routing/edit-routing.service';
@@ -26,7 +27,8 @@ import { FieldState } from '../field-state';
 import { PagePicker } from '../page-picker/page-picker.helper';
 import { ExperimentalProps } from './../../../../../../edit-types/src/ExperimentalProps';
 import { FieldValue } from './../../../../../../edit-types/src/FieldValue';
-import { ConnectorHost, ConnectorInstance } from './connector-instance.model';
+import { ConnectorHost } from './connector-host';
+import { ConnectorInstance } from './connector-instance';
 
 const logSpecs = {
   all: false,
@@ -54,6 +56,11 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
   #snackBar = inject(MatSnackBar);
   #zone = inject(NgZone);
   #adamService = transient(AdamService);
+
+  /**
+   * We need this to tell the components that we are in debug mode.
+   */
+  #globalConfigSvc = inject(GlobalConfigService);
 
   constructor() {
     super();
@@ -184,6 +191,12 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
           // keep silent on errors here, fallback will be handled by caller
           console.warn('[ConnectorHelper] showSnackBar failed', err);
         }
+      },
+
+      isDebug: () => this.#globalConfigSvc.isDebug(),
+
+      debugWatch(callback: (debug: boolean) => void) {
+        effect(() => { callback(experimentalProps.isDebug()); }, { injector: this.#injector });
       },
     };
 

@@ -32,4 +32,9 @@ export interface ExperimentalProps {
 
   /** 2024-09-03 v18 2dm - injector so effects can be used */
   injector: Injector;
+
+  /** 2026-02-24 2dm - provide info if debug */
+  isDebug: () => boolean;
+
+  debugWatch(callback: (debug: boolean) => void): void;
 }

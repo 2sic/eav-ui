@@ -1,7 +1,7 @@
 import { Signal } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { Observable } from 'rxjs';
-import { Connector } from '../../../../../../edit-types/src/Connector';
+import { Connector, LoadScriptParameter } from '../../../../../../edit-types/src/Connector';
 import { ConnectorData } from '../../../../../../edit-types/src/ConnectorData';
 import { ConnectorDialog } from '../../../../../../edit-types/src/ConnectorDialog';
 import { ExperimentalProps } from '../../../../../../edit-types/src/ExperimentalProps';
@@ -10,6 +10,7 @@ import { classLog } from '../../../../../../shared/logging';
 import { loadScripts } from '../../../shared/helpers/load-scripts.helper';
 import { FormConfiguration } from '../../form/form-configuration.model';
 import { ScriptsLoaderService } from '../../shared/services/scripts-loader.service';
+import { ConnectorHost } from './connector-host';
 
 export class ConnectorInstance<T = any> implements Connector<T> {
   
@@ -22,8 +23,7 @@ export class ConnectorInstance<T = any> implements Connector<T> {
   get field() { return this.fieldConfigSignal(); }
 
   get field$() {
-    return this.#field$
-      ??= toObservable(this.fieldConfigSignal, { injector: this._experimental.injector })
+    return this.#field$ ??= toObservable(this.fieldConfigSignal, { injector: this._experimental.injector })
   }
   #field$: Observable<FieldConfig>;
 
@@ -38,7 +38,7 @@ export class ConnectorInstance<T = any> implements Connector<T> {
     this.dialog = new ConnectorDialogInstance<T>(_connectorHost);
 
     this.loadScript = (
-      testOrScripts: string | (() => boolean) | { test: string | (() => boolean); src: string }[],
+      testOrScripts: LoadScriptParameter | { test: LoadScriptParameter; src: string }[],
       srcOrCallback: string | (() => void),
       callback?: () => void,
     ) => {
@@ -63,6 +63,9 @@ export class ConnectorInstance<T = any> implements Connector<T> {
   }
 }
 
+/**
+ * Class responsible for updating values or retrieving changes from the main state.
+ */
 class ConnectorDataInstance<T> implements ConnectorData<T> {
   value: T;
   clientValueChangeListeners: ((newValue: T) => void)[] = [];
@@ -84,6 +87,9 @@ class ConnectorDataInstance<T> implements ConnectorData<T> {
   }
 }
 
+/**
+ * Class responsible for opening / closing dialogs.
+ */
 class ConnectorDialogInstance<T> implements ConnectorDialog {
   constructor(private _connectorHost: ConnectorHost<T>) { }
 
@@ -96,8 +102,4 @@ class ConnectorDialogInstance<T> implements ConnectorDialog {
   }
 }
 
-/** Props and methods available to the connector to communicate with the host */
-export interface ConnectorHost<T = any> {
-  update: (value: T) => void;
-  expand: (expand: boolean, componentTag?: string) => void;
-}
+
