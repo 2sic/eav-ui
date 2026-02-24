@@ -1,7 +1,8 @@
 <div class="eav-dialog">
-  <div class="eav-dialog-header">
-    <div class="eav-dialog-header__title">Add App from Folder</div>
-  </div>
+  <app-dialog-header [showClose]="false">
+    <span dialog-title>Add App from Folder</span>
+  </app-dialog-header>
+
   <div class="eav-dialog-content">
     <app-feature-info-box [featureNameId]="AppSyncWithSiteFiles"></app-feature-info-box>
     <p>
