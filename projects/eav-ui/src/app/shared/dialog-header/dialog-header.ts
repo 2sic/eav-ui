@@ -13,7 +13,6 @@ import { TippyDirective } from "../directives/tippy.directive";
   ]
 })
 export class DialogHeaderComponent {
-  @Input() title: string = '';
   @Input() showClose: boolean = true;
   @Input() closeTooltip: string = 'Close dialog';
   @Output() close = new EventEmitter<void>();

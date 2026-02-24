@@ -1,5 +1,9 @@
 <div class="eav-dialog-header" eav-dialog-header>
-  <div class="eav-dialog-header__title">{{ title }}</div>
+  
+  <div class="eav-dialog-header__title">
+    <ng-content select="[dialog-title]"></ng-content>
+  </div>
+
   @if (showClose) {
     <button mat-icon-button mat-dialog-close [tippy]="closeTooltip" (click)="onClose()">
       <mat-icon>close</mat-icon>
