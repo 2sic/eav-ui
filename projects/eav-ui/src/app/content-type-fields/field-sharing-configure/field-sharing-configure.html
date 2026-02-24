@@ -1,12 +1,8 @@
 <div class="eav-dialog eav-no-scrollbar">
-  <div class="eav-dialog-header">
-    <div class="eav-dialog-header__title">
-      {{ title | translate }}
-    </div>
-    <button mat-icon-button tippy="Close dialog" (click)="dialog.close()">
-      <mat-icon>close</mat-icon>
-    </button>
-  </div>
+  <app-dialog-header (close)="dialog.close()">
+    <span dialog-title>{{ title | translate }}</span>
+  </app-dialog-header>
+  
   <div class="eav-dialog-content">
     @switch (initialState) {
       @case (sharingOrInheriting.Sharing) {
