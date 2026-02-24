@@ -39,6 +39,7 @@ import * as WysiwygDialogModes from '../constants/display-modes';
 import { buildTemplate } from '../shared/helpers';
 import { connectorToDisabled$, registerCustomElement } from './editor-helpers';
 import { EditorPasteOrDrop } from './editor-paste-or-drop';
+import { EditorValueHelper } from './editor-value-helper';
 import * as template from './editor.html';
 import * as styles from './editor.scss';
 import { fixMenuPositions } from './fix-menu-positions.helper';
@@ -83,10 +84,10 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   /** Class to add to the DOM so the surrounding Dropzone does everything right */
   #adamIntegrationClass = WysiwygConstants.classToDetectWysiwyg;
 
-  #editorContent: string; // saves editor content to prevent slow update when first using editor
   #subscriptions = new Subscription();
   #editor: Editor;
   #pasteHandler: EditorPasteOrDrop;
+  #valueHelper: EditorValueHelper;
   #firstInit: boolean;
   #dialogIsOpen: boolean;
   #menuObserver: MutationObserver;
@@ -157,6 +158,9 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     });
 
     this.#editor = editor;
+
+    this.#valueHelper = new EditorValueHelper(editor);
+
     editor.on('init', _event => {
       const l = this.log.fnIf('TinyMceInitialized', { editor });
       this.reconfigure?.editorOnInit?.(editor);
@@ -176,10 +180,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
       // Shared subscriptions
       this.#subscriptions.add(
         this.connector.data.value$.subscribe(newValue => {
-          if (this.#editorContent === newValue)
-            return;
-          this.#editorContent = newValue;
-          editor.setContent(this.#editorContent);
+          this.#valueHelper.handleExternalValueUpdate(newValue);
         })
       );
       this.#subscriptions.add(
@@ -238,7 +239,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     });
 
     // on change, undo and redo, save/push the value
-    ['change', 'undo', 'redo', 'input'].forEach(name => editor.on(name, () => this.#saveValue(editor)));
+    ['change', 'undo', 'redo', 'input'].forEach(name => editor.on(name, () => this.#valueHelper.saveValue(editor, this.connector)));
 
     editor.on('ExecCommand', (e) => {
       if (e.command === 'mceTogglePlainTextPaste')
@@ -249,43 +250,13 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     this.reconfigure?.configureEditor?.(editor);
   }
 
-  #saveValue(editor: Editor): void {
-    const l = this.log.fn(`saveValue`);
-    // Check what's new
-    let newContent = editor.getContent();
-
-    // If the new thing is an image in the middle of an upload,
-    // exit and wait for the change to be finalized
-    if (newContent.includes('<img src="data:image'))
-      return;
-
-    // this is necessary for adding data-cmsid attribute to image attributes
-    if (newContent.includes("?tododata-cmsid=")) {
-      // imageStrings becomes array of strings where every string except first starts with 'imageName"'
-      let imageStrings = newContent.split("?tododata-cmsid=");
-      newContent = "";
-      imageStrings.forEach((x, i) => {
-        // after each string in array except last one we add '" data-cmsid="file:' attribute
-        if (i != imageStrings.length - 1)
-          newContent += x + '" data-cmsid="file:';
-        else
-          newContent += x;
-      });
-      editor.setContent(newContent);
-    }
-    // remember for change detection
-    this.#editorContent = newContent;
-
-    // broadcast the change
-    this.connector.data.update(this.#editorContent);
-    l.end('done')
-  }
 
   #clearData(): void {
     this.#subscriptions.unsubscribe();
     this.#editor?.destroy();
     this.#editor?.remove();
-    this.#editorContent = null;
+    this.#valueHelper = null;
+    this.#pasteHandler = null;
     this.#menuObserver?.disconnect();
     this.#menuObserver = null;
   }
