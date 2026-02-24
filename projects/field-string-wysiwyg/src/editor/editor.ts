@@ -38,6 +38,7 @@ import { attachAdam } from '../connector/adam';
 import * as WysiwygDialogModes from '../constants/display-modes';
 import { buildTemplate } from '../shared/helpers';
 import { connectorToDisabled$, registerCustomElement } from './editor-helpers';
+import { EditorPasteOrDrop } from './editor-paste-or-drop';
 import * as template from './editor.html';
 import * as styles from './editor.scss';
 import { fixMenuPositions } from './fix-menu-positions.helper';
@@ -85,7 +86,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   #editorContent: string; // saves editor content to prevent slow update when first using editor
   #subscriptions = new Subscription();
   #editor: Editor;
-  #isDrop = false;
+  #pasteHandler: EditorPasteOrDrop;
   #firstInit: boolean;
   #dialogIsOpen: boolean;
   #menuObserver: MutationObserver;
@@ -93,6 +94,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   constructor() {
     super();
     this.log.fnIf('constructor');
+    this.#pasteHandler = new EditorPasteOrDrop();
   }
 
   /** This will be called by the system once the data is ready */
@@ -154,7 +156,6 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
         event.preventDefault();
     });
 
-    const pasteImage = this.connector._experimental.isFeatureEnabled['PasteImageFromClipboard'];
     this.#editor = editor;
     editor.on('init', _event => {
       const l = this.log.fnIf('TinyMceInitialized', { editor });
@@ -175,7 +176,8 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
       // Shared subscriptions
       this.#subscriptions.add(
         this.connector.data.value$.subscribe(newValue => {
-          if (this.#editorContent === newValue) return;
+          if (this.#editorContent === newValue)
+            return;
           this.#editorContent = newValue;
           editor.setContent(this.#editorContent);
         })
@@ -215,27 +217,8 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
       this.#clearData();
     });
 
-    // called before PastePreProcess
-    // this is needed so drag and drop will function even if pasteClipboardImage feature is false
-    // important: the { ... } brackets are necessary for `this` to be the correct object
-    editor.on('drop', _event => { this.#isDrop = true });
-
-    // called before PastePreProcess
-    // this is needed so paste will only work depending on pasteClipboardImage feature
-    // important: the { ... } brackets are necessary for `this` to be the correct object
-    editor.on('paste', _event => { this.#isDrop = false });
-
-    // called before actual image upload so _event.preventDefault(); can stop pasting
-    // this is needed because only here we can read clipboard content
-    editor.on('PastePreProcess', event => {
-      const l = this.log.fnIf('PastePreProcess', { event });
-      if (!pasteImage() && event.content.startsWith('<img src=') && !this.#isDrop) {
-        event.preventDefault();
-        this.connector._experimental.featureDisabledWarning('PasteImageFromClipboard');
-        return l.end('disabled');
-      }
-      l.end('enabled');
-    });
+    // Setup paste and drop handling
+    this.#pasteHandler.tinyMceSetup(editor, this.connector, rawEditorOptions);
 
     const handleFocus = (focused: boolean, _event: EditorEvent<unknown>) => {
       this.classList.toggle('focused', focused);
@@ -255,7 +238,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     });
 
     // on change, undo and redo, save/push the value
-    ['change', 'undo', 'redo', 'input'].forEach(name => editor.on(name, () => this.#saveValue()));
+    ['change', 'undo', 'redo', 'input'].forEach(name => editor.on(name, () => this.#saveValue(editor)));
 
     editor.on('ExecCommand', (e) => {
       if (e.command === 'mceTogglePlainTextPaste')
@@ -266,10 +249,10 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     this.reconfigure?.configureEditor?.(editor);
   }
 
-  #saveValue(): void {
+  #saveValue(editor: Editor): void {
     const l = this.log.fn(`saveValue`);
     // Check what's new
-    let newContent = this.#editor.getContent();
+    let newContent = editor.getContent();
 
     // If the new thing is an image in the middle of an upload,
     // exit and wait for the change to be finalized
@@ -288,7 +271,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
         else
           newContent += x;
       });
-      this.#editor.setContent(newContent);
+      editor.setContent(newContent);
     }
     // remember for change detection
     this.#editorContent = newContent;
