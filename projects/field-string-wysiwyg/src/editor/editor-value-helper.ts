@@ -55,5 +55,4 @@ export class EditorValueHelper {
     connector.data.update(this.editorContent);
     l.end('done')
   }
-
 }

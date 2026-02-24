@@ -21,29 +21,22 @@ import 'tinymce/plugins/table';
 import 'tinymce/themes/silver';
 // Keep at least one empty line after this, to ensure order of imports!
 
-import { Subscription } from 'rxjs';
 // tslint:disable-next-line: no-duplicate-imports
-import type { Editor, EditorEvent } from 'tinymce/tinymce';
+import type { Editor } from 'tinymce/tinymce';
 import { Connector } from '../../../edit-types/src/Connector';
 import { EavCustomInputField } from '../../../edit-types/src/EavCustomInputField';
 import { WysiwygReconfigure } from '../../../edit-types/src/WysiwygReconfigure';
 import { classLog } from '../../../shared/logging';
 import { tinyMceBaseUrl, wysiwygEditorHtmlTag } from '../../internal-constants';
 import { WysiwygConstants } from '../../shared/wysiwyg.constants';
-import { RawEditorOptionsExtended } from '../config/raw-editor-options-extended';
 import { TinyMceConfigurator } from '../config/tinymce-configurator';
 import { TranslationsLoader } from '../config/translation-loader';
-import { AddEverythingToRegistry } from '../config/ui-registry/add-everything-to-registry';
-import { attachAdam } from '../connector/adam';
-import * as WysiwygDialogModes from '../constants/display-modes';
 import { buildTemplate } from '../shared/helpers';
-import { connectorToDisabled$, registerCustomElement } from './editor-helpers';
-import { EditorPasteOrDrop } from './editor-paste-or-drop';
-import { EditorValueHelper } from './editor-value-helper';
+import { registerCustomElement } from './editor-helpers';
 import * as template from './editor.html';
 import * as styles from './editor.scss';
-import { fixMenuPositions } from './fix-menu-positions.helper';
 import * as skinOverrides from './skin-overrides.scss';
+import { TinyMceBuilder } from './tiny-mce-setup';
 
 const logSpecs = {
   all: false,
@@ -51,7 +44,6 @@ const logSpecs = {
   connectedCallback: true,
   disconnectedCallback: true,
   TinyMceInitialized: false,
-  PastePreProcess: true,
 };
 
 /**
@@ -84,18 +76,13 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   /** Class to add to the DOM so the surrounding Dropzone does everything right */
   #adamIntegrationClass = WysiwygConstants.classToDetectWysiwyg;
 
-  #subscriptions = new Subscription();
-  #editor: Editor;
-  #pasteHandler: EditorPasteOrDrop;
-  #valueHelper: EditorValueHelper;
-  #firstInit: boolean;
-  #dialogIsOpen: boolean;
-  #menuObserver: MutationObserver;
+  firstInit: boolean;
+  dialogIsOpen: boolean;
+  #tinyMceBuilder = new TinyMceBuilder();
 
   constructor() {
     super();
     this.log.fnIf('constructor');
-    this.#pasteHandler = new EditorPasteOrDrop();
   }
 
   /** This will be called by the system once the data is ready */
@@ -139,131 +126,23 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
       this.#toolbarContainerClass,
       this.mode === 'inline',
       // setup callback when the editor is initialized by TinyMCE
-      (editor: Editor) => this.#tinyMceSetup(editor, tinyOptions),
+      (editor: Editor) => this.#tinyMceBuilder.onInit(this, editor, tinyOptions),
     );
 
-    this.#firstInit = true;
+    this.firstInit = true;
     this.configurator.addTranslations();
     window.tinymce.baseURL = tinyMceBaseUrl;
     window.tinymce.init(tinyOptions);
   }
 
-  /** This will initialized an instance of an editor. Everything else is kind of global. */
-  #tinyMceSetup(editor: Editor, rawEditorOptions: RawEditorOptionsExtended): void {
-
-    // Capture Ctrl + Enter to prevent inserting a line break in the WYSIWYG editor 
-    editor.on('keydown', (event: KeyboardEvent) => {
-      if (event.ctrlKey && event.key === "Enter")
-        event.preventDefault();
-    });
-
-    this.#editor = editor;
-
-    this.#valueHelper = new EditorValueHelper(editor);
-
-    editor.on('init', _event => {
-      const l = this.log.fnIf('TinyMceInitialized', { editor });
-      this.reconfigure?.editorOnInit?.(editor);
-
-      new AddEverythingToRegistry({
-        field: this,
-        editor,
-        adam: this.connector._experimental.adam,
-        options: rawEditorOptions,
-      }).register();
-
-      if (!this.reconfigure?.disableAdam)
-        attachAdam(editor, this.connector._experimental.adam);
-
-      this.#menuObserver = fixMenuPositions(this);
-
-      // Shared subscriptions
-      this.#subscriptions.add(
-        this.connector.data.value$.subscribe(newValue => {
-          this.#valueHelper.handleExternalValueUpdate(newValue);
-        })
-      );
-      this.#subscriptions.add(
-        connectorToDisabled$(this.connector).subscribe(disabled => {
-          this.log.a(`Field config disabled`, { disabled, mode: editor.mode.get() });
-          this.classList.toggle('disabled', disabled);
-          this.#editor.mode.set(disabled ? 'readonly' : 'design');
-        }),
-      );
-
-      const delayFocus = () => setTimeout(() => editor.focus(false), 100);
-
-      // If not inline mode always focus on init
-      if (this.mode !== WysiwygDialogModes.DisplayInline)
-        delayFocus();
-      else {
-        // If is inline mode skip focus on first init
-        if (!this.#firstInit)
-          delayFocus()
-
-        // Inline only subscriptions
-        this.#subscriptions.add(this.connector._experimental.isExpanded$.subscribe(isExpanded => {
-          this.#dialogIsOpen = isExpanded;
-
-          if (!this.#firstInit && !this.#dialogIsOpen)
-            delayFocus();
-        }));
-      }
-      this.#firstInit = false;
-    });
-
-    // called after TinyMCE editor is removed
-    editor.on('remove', _event => {
-      this.log.a(`TinyMCE removed`, _event);
-      this.#clearData();
-    });
-
-    // Setup paste and drop handling
-    this.#pasteHandler.tinyMceSetup(editor, this.connector, rawEditorOptions);
-
-    const handleFocus = (focused: boolean, _event: EditorEvent<unknown>) => {
-      this.classList.toggle('focused', focused);
-      this.log.a(`TinyMCE focused ${focused}`, _event);
-      if (this.mode === 'inline')
-        this.connector._experimental.setFocused(focused);
-    };
-
-    editor.on('focus', _event => {
-      handleFocus(true, _event);
-      if (!this.reconfigure?.disableAdam)
-        attachAdam(editor, this.connector._experimental.adam);
-    });
-
-    editor.on('blur', _event => {
-      handleFocus(false, _event);
-    });
-
-    // on change, undo and redo, save/push the value
-    ['change', 'undo', 'redo', 'input'].forEach(name => editor.on(name, () => this.#valueHelper.saveValue(editor, this.connector)));
-
-    editor.on('ExecCommand', (e) => {
-      if (e.command === 'mceTogglePlainTextPaste')
-        return this.connector._experimental.showSnackBar("Plain Text Paste mode toggled.");
-    });
-
-    // if the system has a reconfigure object, run it's code now
-    this.reconfigure?.configureEditor?.(editor);
-  }
-
-
-  #clearData(): void {
-    this.#subscriptions.unsubscribe();
-    this.#editor?.destroy();
-    this.#editor?.remove();
-    this.#valueHelper = null;
-    this.#pasteHandler = null;
-    this.#menuObserver?.disconnect();
-    this.#menuObserver = null;
-  }
-
+  /**
+   * System callback if the editor is removed from the DOM, but also called by this class when the editor is removed (see onInit) to do cleanup.
+   */
   disconnectedCallback(): void {
     this.log.fnIf('disconnectedCallback');
-    this.#clearData();
+    // Do cleanup
+    this.#tinyMceBuilder?.cleanup();
+    this.#tinyMceBuilder = null;
   }
 }
 

@@ -6,9 +6,6 @@ import { RawEditorOptionsExtended } from '../config/raw-editor-options-extended'
 const logSpecs = {
   all: false,
   constructor: true,
-  connectedCallback: true,
-  disconnectedCallback: true,
-  TinyMceInitialized: false,
   PastePreProcess: true,
 };
 
@@ -41,5 +38,11 @@ export class EditorPasteOrDrop {
       }
       l.end('enabled');
     });
+
+    editor.on('ExecCommand', (e): void => {
+      if (e.command === 'mceTogglePlainTextPaste')
+        return connector._experimental.showSnackBar("Plain Text Paste mode toggled.");
+    });
+
   }
 }
