@@ -1,10 +1,8 @@
 <div class="eav-dialog nav-component-wrapper">
-  <div class="eav-dialog-header">
-    <div class="eav-dialog-header__title">Language permissions</div>
-    <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
-      <mat-icon>close</mat-icon>
-    </button>
-  </div>
+  <app-dialog-header (close)="closeDialog()">
+    <span dialog-title>Language permissions</span>
+  </app-dialog-header>
+  
   <div class="eav-dialog-content nav-component-wrapper">
     <p>
       If no language permissions are defined, all editors can edit all languages. As soon as you set any language permission, only the
