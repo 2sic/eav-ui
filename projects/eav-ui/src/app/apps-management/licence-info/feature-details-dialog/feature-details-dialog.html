@@ -1,7 +1,7 @@
 @if (feature()) {
   <div class="eav-dialog">
     <app-dialog-header (close)="closeDialog()">
-      <span dialog-title>{{ feature().name }}</span>
+      {{ feature().name }}
     </app-dialog-header>
 
     <div class="eav-dialog-content">

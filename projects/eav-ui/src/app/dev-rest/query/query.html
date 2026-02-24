@@ -1,9 +1,7 @@
 @if (viewModel$ | async; as vm) {
 <div class="eav-dialog eav-no-scrollbar">
   <app-dialog-header [showClose]="!isSideNavContent" (close)="closeDialog()">
-    <span dialog-title>
       Using REST with Query:&nbsp; <code>{{ vm.name }}</code>
-    </span>
   </app-dialog-header>
   
   <div class="eav-dialog-content">

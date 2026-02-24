@@ -1,11 +1,9 @@
 <div class="eav-dialog">
   <app-dialog-header (close)="closeDialog()">
-    <span dialog-title>
       Query Results
       @if (debugStream) {
         for Stream: "{{ debugStream.name }}" on Source: "{{ debugStream.sourceName }}"
       }
-    </span>
   </app-dialog-header>
 
   <div class="eav-dialog-content">

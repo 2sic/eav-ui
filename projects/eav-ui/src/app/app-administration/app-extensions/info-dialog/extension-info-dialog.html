@@ -1,9 +1,7 @@
 <div class="eav-dialog">
   <app-dialog-header (close)="dialog.close()">
-    <span dialog-title>
-      Extension Information:
-      {{ config.name || data.folder || 'Unknown Extension' }}
-    </span>
+      {{ config.name }}
+      <em>installed in {{ data.edition || 'root' }}</em>
   </app-dialog-header>
 
   <mat-dialog-content>

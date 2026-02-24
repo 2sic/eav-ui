@@ -1,6 +1,6 @@
 <div class="eav-dialog">
   <app-dialog-header (close)="closeDialog()">
-    <span dialog-title>{{ isAddMode() ? 'Add Existing Item' : 'Replace Content Item' }}</span>
+    {{ isAddMode() ? 'Add Existing Item' : 'Replace Content Item' }}
   </app-dialog-header>
   
   <div class="eav-dialog-content">

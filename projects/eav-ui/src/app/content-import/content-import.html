@@ -1,6 +1,6 @@
 <div class="eav-dialog" appDragAndDrop [allowedFileTypes]="'xml'" (filesDropped)="filesDropped($event)">
   <app-dialog-header (close)="closeDialog()">
-    <span dialog-title>{{ contentType()?.Name }} Import Data</span>
+   {{ contentType()?.Name }} Import Data
   </app-dialog-header>
   
   <div class="eav-dialog-description">

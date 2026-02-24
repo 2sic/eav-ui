@@ -7,7 +7,7 @@
 >
   @if (uploadType() != UploadTypes.ImportParts) {
     <app-dialog-header (close)="closeDialog()">
-      <div dialog-title [innerHtml]="dialogData.title | safeHtml"></div>
+      <span [innerHTML]="dialogData.title | safeHtml"></span>
     </app-dialog-header>
   }
 

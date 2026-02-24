@@ -1,7 +1,7 @@
 <div appToggleDebug class="eav-dialog nav-component-wrapper">
   <app-grid-with-help style="height: 100%" [helpText]="uxHelpText()" [refresh]="refresh()" [rowLength]="fields()?.length">
     <app-dialog-header eav-dialog-header (close)="dialog.close()">
-      <span dialog-title>{{ contentType()?.Label || contentType()?.Name }} Fields</span>
+      {{ contentType()?.Label || contentType()?.Name }} Fields
     </app-dialog-header>
 
     @if (fields()?.length > 0) {

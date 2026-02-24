@@ -1,6 +1,5 @@
 <div class="eav-dialog eav-no-scrollbar">
   <app-dialog-header (close)="closeDialog()">
-    <div dialog-title>
       @if (editMode === undefined) {
         Fields
       }
@@ -10,7 +9,6 @@
       @if (editMode != null) {
         Edit Field
       }
-    </div>
   </app-dialog-header>
   
   @if (fields()?.length) {

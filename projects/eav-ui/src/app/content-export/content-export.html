@@ -1,6 +1,6 @@
 <div class="eav-dialog">
   <app-dialog-header (close)="closeDialog()">
-    <span dialog-title>Export {{ (contentType$ | async)?.Name }}</span>
+    Export {{ (contentType$ | async)?.Name }}
   </app-dialog-header>
   
   @if ((loading$ | async) === false) {

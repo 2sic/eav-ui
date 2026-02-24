@@ -1,6 +1,6 @@
 <div class="eav-dialog">
   <app-dialog-header (close)="closeDialog()">
-    <span dialog-title>{{ modeIsEdit ? 'Edit Content Type' : 'New Content Type' }}</span>
+    {{ modeIsEdit ? 'Edit Content Type' : 'New Content Type' }}
   </app-dialog-header>
 
   @if (contentType()) {
