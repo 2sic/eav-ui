@@ -1,12 +1,8 @@
 <div class="eav-dialog">
-  <div class="eav-dialog-header">
-    <div class="eav-dialog-header__title">
-      Create Metadata
-    </div>
-    <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
-      <mat-icon>close</mat-icon>
-    </button>
-  </div>
+  <app-dialog-header (close)="closeDialog()">
+    <span dialog-title>Create Metadata</span>
+  </app-dialog-header>
+  
   <div class="eav-dialog-content">
     <p>
       This is a special operation to add an item which as metadata for another item,
