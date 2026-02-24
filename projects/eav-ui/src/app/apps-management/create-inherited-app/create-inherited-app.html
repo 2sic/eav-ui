@@ -1,15 +1,8 @@
 <div class="eav-dialog">
-  <div class="eav-dialog-header">
-    <div class="eav-dialog-header__title">Create inherited App</div>
-    <button
-      mat-icon-button
-      tippy="Close dialog"
-      [disabled]="loading()"
-      (click)="closeDialog()"
-    >
-      <mat-icon>close</mat-icon>
-    </button>
-  </div>
+  <app-dialog-header (close)="closeDialog()">
+    <span dialog-title>Create inherited App</span>
+  </app-dialog-header>
+  
   <div class="eav-dialog-content">
     <router-outlet></router-outlet>
     <p>
