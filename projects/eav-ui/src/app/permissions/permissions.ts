@@ -11,6 +11,7 @@ import { ConfirmDeleteDialogData } from '../app-administration/sub-dialogs/confi
 import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
 import { eavConstants, MetadataKeyTypes } from '../shared/constants/eav.constants';
+import { DialogHeaderComponent } from "../shared/dialog-header/dialog-header";
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { EditForm } from '../shared/models/edit-form.model';
 import { ItemIdHelper } from '../shared/models/item-id-helper';
@@ -30,7 +31,8 @@ import { PermissionsService } from './services/permissions.service';
     RouterOutlet,
     MatDialogActions,
     SxcGridModule,
-  ]
+    DialogHeaderComponent,
+]
 })
 export class PermissionsComponent implements OnInit {
   gridOptions = this.buildGridOptions();
