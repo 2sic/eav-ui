@@ -1,7 +1,8 @@
 <div class="eav-dialog">
-  <div class="eav-dialog-header">
-    <div class="eav-dialog-header__title">{{ 'Fields.Hyperlink.PagePicker.Title' | translate }}</div>
-  </div>
+  <app-dialog-header [showClose]="false">
+    <div dialog-title>{{ 'Fields.Hyperlink.PagePicker.Title' | translate }}</div>
+  </app-dialog-header>
+  
   <div class="eav-dialog-content">
     <div class="page-search-box">
       <mat-form-field color="accent" class="eav-mat-form-field">
