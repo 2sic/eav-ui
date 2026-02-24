@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { transient } from 'projects/core';
+import { DialogHeaderComponent } from "../../../shared/dialog-header/dialog-header";
 
 @Component({
   selector: 'app-message',
@@ -15,7 +16,8 @@ import { transient } from 'projects/core';
     MatDialogModule,
     MatButtonModule,
     MatIconModule,
-  ]
+    DialogHeaderComponent
+]
 })
 export class BasicMessage implements OnInit {
   message: string;
