@@ -5,26 +5,26 @@ import { MatButtonModule } from '@angular/material/button';
 import {
   MAT_DIALOG_DATA,
   MatDialogActions,
-  MatDialogClose,
   MatDialogModule, MatDialogRef
 } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { DialogHeaderComponent } from "projects/eav-ui/src/app/shared/dialog-header/dialog-header";
 import { transient } from '../../../../../../../../core/transient';
 import { ClipboardService } from '../../../../..//shared/services/clipboard.service';
 import { MonacoEditorComponent } from '../../../../../monaco-editor/monaco-editor';
 import { TippyDirective } from '../../../../../shared/directives/tippy.directive';
 @Component({
     imports: [
-        MatDialogModule,
-        FormsModule,
-        MonacoEditorComponent,
-        MatButtonModule,
-        MatDialogActions,
-        MatDialogClose,
-        ClipboardModule,
-        MatIconModule,
-        TippyDirective,
-    ],
+    MatDialogModule,
+    FormsModule,
+    MonacoEditorComponent,
+    MatButtonModule,
+    MatDialogActions,
+    ClipboardModule,
+    MatIconModule,
+    TippyDirective,
+    DialogHeaderComponent,
+],
     selector: 'app-monaco-editor-dialog',
     templateUrl: './config-editor-dialog.html'
 })

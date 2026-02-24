@@ -4,6 +4,8 @@ This is part of [2sxc](https://2sxc.org) - an awesome extension for DNN :)
 
 It's built using Angular 20+.
 
+For detailed architecture, development guidelines, and contribution documentation, see the official [docs](https://docs.2sxc.org/abyss/contribute/code/frontend/eav-ui/index.html)
+
 ## Projects
 
 1. **eav-ui** main Angular project. Build using `ng`

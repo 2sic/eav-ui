@@ -14,6 +14,7 @@ import { convert, transient } from '../../../../core';
 import { isCtrlEnter } from '../edit/dialog/main/keyboard-shortcuts';
 import { ContentGroupAdd } from '../manage-content-list/models/content-group.model';
 import { ContentGroupService } from '../manage-content-list/services/content-group.service';
+import { DialogHeaderComponent } from "../shared/dialog-header/dialog-header";
 import { TippyDirective } from '../shared/directives/tippy.directive';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { EditForm } from '../shared/models/edit-form.model';
@@ -32,21 +33,22 @@ interface ReplaceOption {
     templateUrl: './replace-content.html',
     styleUrls: ['./replace-content.scss'],
     imports: [
-        RouterOutlet,
-        MatFormFieldModule,
-        MatInputModule,
-        MatAutocompleteModule,
-        FormsModule,
-        CdkVirtualScrollViewport,
-        CdkFixedSizeVirtualScroll,
-        CdkVirtualForOf,
-        MatOptionModule,
-        MatButtonModule,
-        MatIconModule,
-        MatDialogActions,
-        TippyDirective,
-        SaveCloseButtonFabComponent,
-    ]
+    RouterOutlet,
+    MatFormFieldModule,
+    MatInputModule,
+    MatAutocompleteModule,
+    FormsModule,
+    CdkVirtualScrollViewport,
+    CdkFixedSizeVirtualScroll,
+    CdkVirtualForOf,
+    MatOptionModule,
+    MatButtonModule,
+    MatIconModule,
+    MatDialogActions,
+    TippyDirective,
+    SaveCloseButtonFabComponent,
+    DialogHeaderComponent,
+]
 })
 export class ReplaceContentComponent implements OnInit {
   @HostBinding('className') hostClass = 'dialog-component';

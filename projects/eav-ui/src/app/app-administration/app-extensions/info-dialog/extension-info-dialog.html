@@ -1,8 +1,8 @@
 <div class="eav-dialog">
-  <app-dialog-header
-    [title]="'Extension Information: ' + (config.name || data.folder || 'Unknown Extension')"
-    (close)="this.dialog.close()"
-  />
+  <app-dialog-header (close)="dialog.close()">
+    {{ config.name }}
+    <em>installed in {{ data.edition || 'root' }}</em>
+  </app-dialog-header>
 
   <mat-dialog-content>
     <table class="info-table">
@@ -107,7 +107,7 @@
           </td>
         </tr>
         @if (getReleaseNotes().length > 0) {
-          <tr>
+         <tr>
             <th>Release Notes</th>
             <td>
               <table class="release-notes-table">

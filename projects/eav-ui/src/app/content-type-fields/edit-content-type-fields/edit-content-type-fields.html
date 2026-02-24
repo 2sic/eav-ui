@@ -1,20 +1,16 @@
 <div class="eav-dialog eav-no-scrollbar">
-  <div class="eav-dialog-header">
-    <div class="eav-dialog-header__title">
-      @if (editMode === undefined) {
-        Fields
-      }
-      @if (editMode === null) {
-        Add Fields
-      }
-      @if (editMode != null) {
-        Edit Field
-      }
-    </div>
-    <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
-      <mat-icon>close</mat-icon>
-    </button>
-  </div>
+  <app-dialog-header (close)="closeDialog()">
+    @if (editMode === undefined) {
+      Fields
+    }
+    @if (editMode === null) {
+      Add Fields
+    }
+    @if (editMode != null) {
+      Edit Field
+    }
+  </app-dialog-header>
+  
   @if (fields()?.length) {
     <form #ngForm="ngForm" (ngSubmit)="saveAndClose()">
       <div class="eav-dialog-content">

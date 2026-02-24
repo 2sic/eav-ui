@@ -22,6 +22,7 @@ import { EntityFilterComponent } from '../shared/components/entity-filter/entity
 import { FileUploadDialogData } from '../shared/components/file-upload-dialog';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
 import { keyFilters } from '../shared/constants/session.constants';
+import { DialogHeaderComponent } from "../shared/dialog-header/dialog-header";
 import { DragAndDropDirective } from '../shared/directives/drag-and-drop.directive';
 import { TippyDirective } from '../shared/directives/tippy.directive';
 import { ToggleDebugDirective } from '../shared/directives/toggle-debug.directive';
@@ -71,8 +72,9 @@ const logSpecs = {
     ToggleDebugDirective,
     SxcGridModule,
     TippyDirective,
-    GridWithHelpComponent
-  ]
+    GridWithHelpComponent,
+    DialogHeaderComponent,
+]
 })
 export class ContentItemsComponent implements OnInit {
 

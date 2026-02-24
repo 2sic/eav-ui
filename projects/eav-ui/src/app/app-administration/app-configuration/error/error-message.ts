@@ -1,9 +1,9 @@
-
 import { Component, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute } from '@angular/router';
+import { DialogHeaderComponent } from '../../../shared/dialog-header/dialog-header';
 
 @Component({
   selector: 'app-error',
@@ -11,7 +11,8 @@ import { ActivatedRoute } from '@angular/router';
   imports: [
     MatDialogModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    DialogHeaderComponent
   ]
 })
 export class ErrorMessage implements OnInit {
