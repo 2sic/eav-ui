@@ -15,6 +15,7 @@ import { isCtrlEnter } from '../../../edit/dialog/main/keyboard-shortcuts';
 import { FieldHintComponent } from '../../../shared/components/field-hint/field-hint';
 import { dropdownInsertValue } from '../../../shared/constants/dropdown-insert-value.constant';
 import { eavConstants, ScopeOption } from '../../../shared/constants/eav.constants';
+import { DialogHeaderComponent } from "../../../shared/dialog-header/dialog-header";
 import { ClickStopPropagationDirective } from '../../../shared/directives/click-stop-propagation.directive';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { classLog } from '../../../shared/logging';
@@ -42,7 +43,8 @@ import { ContentTypesService } from '../../services/content-types.service';
     ClickStopPropagationDirective,
     TippyDirective,
     SaveCloseButtonFabComponent,
-  ]
+    DialogHeaderComponent
+]
 })
 export class EditContentTypeComponent implements OnInit, AfterViewInit {
 

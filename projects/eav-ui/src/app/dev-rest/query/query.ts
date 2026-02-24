@@ -15,6 +15,7 @@ import { transient } from '../../../../../core';
 import { PipelinesService } from '../../app-administration/services';
 import { PermissionsService } from '../../permissions';
 import { eavConstants } from '../../shared/constants/eav.constants';
+import { DialogHeaderComponent } from "../../shared/dialog-header/dialog-header";
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { Context } from '../../shared/services/context';
 import { DevRestBase } from '../dev-rest-base';
@@ -50,7 +51,8 @@ const pathToQuery = 'app/{appname}/query/{queryname}';
     DevRestTabPermissionsComponent,
     DevRestHttpHeadersComponent,
     AsyncPipe,
-  ]
+    DialogHeaderComponent
+]
 })
 export class DevRestQueryComponent extends DevRestBase<DevRestQueryModel> implements OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';

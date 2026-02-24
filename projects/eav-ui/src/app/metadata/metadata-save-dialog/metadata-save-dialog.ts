@@ -16,6 +16,7 @@ import { isCtrlEnter } from '../../edit/dialog/main/keyboard-shortcuts';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint';
 import { dropdownInsertValue } from '../../shared/constants/dropdown-insert-value.constant';
 import { eavConstants, ScopeOption } from '../../shared/constants/eav.constants';
+import { DialogHeaderComponent } from "../../shared/dialog-header/dialog-header";
 import { ClickStopPropagationDirective } from '../../shared/directives/click-stop-propagation.directive';
 import { SaveCloseButtonFabComponent } from '../../shared/modules/save-close-button-fab/save-close-button-fab';
 import { MetadataSaveFormValues } from './metadata-save-dialog.models';
@@ -25,21 +26,22 @@ import { MetadataSaveFormValues } from './metadata-save-dialog.models';
     templateUrl: './metadata-save-dialog.html',
     styleUrls: ['./metadata-save-dialog.scss'],
     imports: [
-        FormsModule,
-        ReactiveFormsModule,
-        MatFormFieldModule,
-        MatSelectModule,
-        MatOptionModule,
-        MatInputModule,
-        MatButtonModule,
-        NgClass,
-        MatIconModule,
-        MatSlideToggleModule,
-        FieldHintComponent,
-        ClickStopPropagationDirective,
-        MatDialogActions,
-        SaveCloseButtonFabComponent,
-    ]
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatInputModule,
+    MatButtonModule,
+    NgClass,
+    MatIconModule,
+    MatSlideToggleModule,
+    FieldHintComponent,
+    ClickStopPropagationDirective,
+    MatDialogActions,
+    SaveCloseButtonFabComponent,
+    DialogHeaderComponent,
+]
 })
 export class MetadataSaveDialogComponent implements OnInit {
   @HostBinding('className') hostClass = 'dialog-component';

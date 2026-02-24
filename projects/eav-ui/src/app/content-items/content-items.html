@@ -1,11 +1,9 @@
 <div appToggleDebug class="eav-dialog nav-component-wrapper">
   <app-grid-with-help style="height: 100%" [helpText]="uxHelpText()" [refresh]="refresh()" [rowLength]="items()?.length">
-    <div class="eav-dialog-header" eav-dialog-header>
-      <div class="eav-dialog-header__title">{{ contentType()?.Label || contentType()?.Name }} Data</div>
-      <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
-        <mat-icon>close</mat-icon>
-      </button>
-    </div>
+    <app-dialog-header (close)="closeDialog()" eav-dialog-header>
+      {{ contentType()?.Label || contentType()?.Name }} Data
+    </app-dialog-header>
+
     <!-- Info Content -->
     <div class="eav-dialog-content" eav-dialog-content>
       @if (contentType()?.Properties?.ListInstructions; as listInstructions) {

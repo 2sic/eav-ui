@@ -1,7 +1,9 @@
 <div class="eav-dialog nav-component-wrapper">
   <app-grid-with-help style="height: 100%" [helpText]="uxHelpText()" [refresh]="refresh()" [rowLength]="metadataSet()?.Items.length">
     
-    <app-dialog-header eav-dialog-header [title]="title || 'Metadata'" (close)="closeDialog()"></app-dialog-header>
+    <app-dialog-header eav-dialog-header (close)="closeDialog()">
+      {{ title || 'Metadata' }}
+    </app-dialog-header>
 
     <div class="eav-dialog-content" eav-dialog-content>
       <p>

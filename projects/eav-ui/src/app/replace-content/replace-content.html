@@ -1,12 +1,8 @@
 <div class="eav-dialog">
-  <div class="eav-dialog-header">
-    <div class="eav-dialog-header__title">
-      {{ isAddMode() ? 'Add Existing Item' : 'Replace Content Item' }}
-    </div>
-    <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
-      <mat-icon>close</mat-icon>
-    </button>
-  </div>
+  <app-dialog-header (close)="closeDialog()">
+    {{ isAddMode() ? 'Add Existing Item' : 'Replace Content Item' }}
+  </app-dialog-header>
+  
   <div class="eav-dialog-content">
     <router-outlet></router-outlet>
     <p>{{isAddMode()

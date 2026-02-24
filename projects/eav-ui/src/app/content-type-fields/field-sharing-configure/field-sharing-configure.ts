@@ -12,6 +12,7 @@ import { FeatureInfoBoxComponent } from '../../features/feature-info-box/feature
 import { FeatureNames } from '../../features/feature-names';
 import { FeaturesService } from '../../features/features.service';
 import { FeatureIconWithDialogComponent } from '../../features/icons/feature-icon-with-dialog';
+import { DialogHeaderComponent } from "../../shared/dialog-header/dialog-header";
 import { ContentTypesFieldsService } from '../../shared/fields/content-types-fields.service';
 import { Field } from '../../shared/fields/field.model';
 import { classLog } from '../../shared/logging';
@@ -42,7 +43,8 @@ const noInheritGuid = '00000000-0000-0000-0000-000000000000';
     FeatureIconWithDialogComponent,
     MatDialogActions,
     SaveCloseButtonFabComponent,
-  ]
+    DialogHeaderComponent
+]
 })
 export class ShareOrInheritDialogComponent {
 

@@ -1,13 +1,9 @@
 @if (viewModel$ | async; as vm) {
   <div class="eav-dialog">
-    <div class="eav-dialog-header">
-      <div class="eav-dialog-header__title">
-        Create Metadata
-      </div>
-      <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
-        <mat-icon>close</mat-icon>
-      </button>
-    </div>
+    <app-dialog-header (close)="closeDialog()">
+      Create Metadata
+    </app-dialog-header>
+    
     <div class="eav-dialog-content">
       <p>
         This is a special operation to add an item which is metadata for another item, see

@@ -1,10 +1,8 @@
 <div class="eav-dialog">
-  
-  <app-dialog-header eav-dialog-header 
-    [title]="'Inspect Extension: '
-    + (extensionFolder || 'No Extension') + 
-    ' (' + (edition || 'Default') + ')'" 
-    (close)="this.dialog.close()">
+  <app-dialog-header (close)="dialog.close()">
+    Inspect Extension:
+    {{ extensionFolder || 'No Extension' }}
+    ({{ edition || 'Default' }})
   </app-dialog-header>
 
   <div class="eav-dialog-content">
