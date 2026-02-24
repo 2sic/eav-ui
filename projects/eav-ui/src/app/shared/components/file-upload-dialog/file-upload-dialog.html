@@ -6,15 +6,9 @@
   (filesDropped)="filesDropped($event)"
 >
   @if (uploadType() != UploadTypes.ImportParts) {
-    <div class="eav-dialog-header">
-      <div
-        class="eav-dialog-header__title"
-        [innerHtml]="dialogData.title | safeHtml"
-      ></div>
-      <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
-        <mat-icon>close</mat-icon>
-      </button>
-    </div>
+    <app-dialog-header (close)="closeDialog()">
+      <div dialog-title [innerHtml]="dialogData.title | safeHtml"></div>
+    </app-dialog-header>
   }
 
   <div
