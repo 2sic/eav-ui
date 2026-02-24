@@ -1,10 +1,8 @@
 <div class="eav-dialog">
-  <div class="eav-dialog-header">
-    <div class="eav-dialog-header__title">Log Specs Editor</div>
-    <button mat-icon-button mat-dialog-close tippy="Close dialog">
-      <mat-icon>close</mat-icon>
-    </button>
-  </div>
+  <app-dialog-header>
+    <div dialog-title>Log Specs Editor</div>
+  </app-dialog-header>
+
   <div class="eav-dialog-content" style="padding-bottom: 0;">
     <app-monaco-editor
       [filename]="filename"
