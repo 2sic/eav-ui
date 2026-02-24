@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { EntityLight } from 'projects/edit-types/src/EntityLight';
 import { getWith } from '../../../../../../../core/object-utilities';
-import { classLog } from '../../../../shared/logging';
+import { classLog } from '../../../../../../../shared/logging';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
 import { ScriptsLoaderService } from '../../../shared/services/scripts-loader.service';
 import { findAllIconsInCss } from './css/string-font-icon-picker.helpers';

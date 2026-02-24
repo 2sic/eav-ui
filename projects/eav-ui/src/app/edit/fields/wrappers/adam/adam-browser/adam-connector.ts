@@ -3,7 +3,7 @@ import { computedObj } from 'projects/eav-ui/src/app/shared/signals/signal.utili
 import { Adam } from '../../../../../../../../edit-types/src/Adam';
 import { AdamConfig } from '../../../../../../../../edit-types/src/AdamConfig';
 import { AdamItem } from '../../../../../../../../edit-types/src/AdamItem';
-import { classLog } from '../../../../../shared/logging';
+import { classLog } from '../../../../../../../../shared/logging';
 import { AdamBrowserComponent } from './adam-browser';
 
 const logSpecs = {

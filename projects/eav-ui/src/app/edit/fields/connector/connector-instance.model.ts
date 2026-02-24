@@ -6,8 +6,8 @@ import { ConnectorData } from '../../../../../../edit-types/src/ConnectorData';
 import { ConnectorDialog } from '../../../../../../edit-types/src/ConnectorDialog';
 import { ExperimentalProps } from '../../../../../../edit-types/src/ExperimentalProps';
 import { FieldConfig } from '../../../../../../edit-types/src/FieldConfig';
+import { classLog } from '../../../../../../shared/logging';
 import { loadScripts } from '../../../shared/helpers/load-scripts.helper';
-import { classLog } from '../../../shared/logging';
 import { FormConfiguration } from '../../form/form-configuration.model';
 import { ScriptsLoaderService } from '../../shared/services/scripts-loader.service';
 

@@ -1,5 +1,5 @@
+import { classLog } from '../../../../../shared/logging';
 import { eavConstants } from '../../shared/constants/eav.constants';
-import { classLog } from '../../shared/logging';
 import { DataSourceDefinition } from '../models/data-source-definition';
 import { ConnectionsManager } from './connections-manager';
 import { findDefByType, getEndpointLabel } from './datasource.helpers';

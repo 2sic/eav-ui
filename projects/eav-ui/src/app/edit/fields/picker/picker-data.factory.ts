@@ -1,7 +1,7 @@
 import { Injectable, Injector } from '@angular/core';
 import { transient } from '../../../../../../core';
+import { classLog } from '../../../../../../shared/logging';
 import { InputTypeHelpers } from '../../../shared/fields/input-type-helpers';
-import { classLog } from '../../../shared/logging';
 import { InputTypeSpecs } from '../../shared/input-types/input-type-specs.model';
 import { InputTypeService } from '../../shared/input-types/input-type.service';
 import { EavContentTypeAttribute } from '../../shared/models/eav';

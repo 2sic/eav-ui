@@ -1,12 +1,12 @@
-import { FieldConstantsOfLanguage, FieldProps } from './fields-configs.model';
-import { ItemValuesOfLanguage } from './item-values-of-language.model';
-import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
-import { WrapperHelper } from '../fields/wrappers/wrapper.helper';
 import isEqual from 'lodash-es/isEqual';
-import { FieldsPropsEngine } from './fields-properties-engine';
+import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
+import { classLog } from '../../../../../shared/logging';
+import { WrapperHelper } from '../fields/wrappers/wrapper.helper';
 import { EavEntityAttributes } from '../shared/models/eav';
+import { FieldConstantsOfLanguage, FieldProps } from './fields-configs.model';
+import { FieldsPropsEngine } from './fields-properties-engine';
 import { FieldSettingsUpdateHelperFactory } from './fields-settings-update.helpers';
-import { classLog } from '../../shared/logging';
+import { ItemValuesOfLanguage } from './item-values-of-language.model';
 
 const logSpecs = {
   all: false,

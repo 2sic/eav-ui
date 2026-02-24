@@ -6,9 +6,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { RouterOutlet } from '@angular/router';
 import { transient } from '../../../../../core';
+import { classLog } from '../../../../../shared/logging';
 import { SourceService } from '../../code-editor/services/source.service';
 import { RestApiHelpTextComponent } from '../../shared/components/rest-api-help-text/rest-api-help-text';
-import { classLog } from '../../shared/logging';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 

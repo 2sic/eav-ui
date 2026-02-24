@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { map, Observable, shareReplay, tap } from 'rxjs';
-import { classLog } from '../../shared/logging';
+import { classLog } from '../../../../../shared/logging';
 import { DialogSettings } from '../../shared/models/dialog-settings.model';
 import { GlobalConfigService } from '../../shared/services/global-config.service';
 import { HttpServiceBase } from '../../shared/services/http-service-base';

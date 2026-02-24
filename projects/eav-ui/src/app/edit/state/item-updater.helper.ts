@@ -1,7 +1,7 @@
 import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
 import { FieldValue } from '../../../../../edit-types/src/FieldValue';
+import { classLog } from '../../../../../shared/logging';
 import { InputTypeMetadata } from '../../shared/fields/input-type-metadata.model';
-import { classLog } from '../../shared/logging';
 import { ItemEditIdentifier, ItemIdentifierHeader } from '../../shared/models/edit-form.model';
 import { FormLanguage, Language } from '../form/form-languages.model';
 import { FieldReader } from '../localization/field-reader';

@@ -1,5 +1,5 @@
 import { Directive, HostListener } from '@angular/core';
-import { classLog } from '../logging';
+import { classLog } from '../../../../../shared/logging';
 
 @Directive({
   selector: '[appClickStopPropagation]',

@@ -1,8 +1,8 @@
-import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
-import isEqual from 'lodash-es/isEqual';
 import { Signal } from '@angular/core';
+import isEqual from 'lodash-es/isEqual';
+import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
+import { classLog } from '../../../../../shared/logging';
 import { FieldProps } from './fields-configs.model';
-import { classLog } from '../../shared/logging';
 
 /**
  * Manage "manual" / forced updates of fields properties

@@ -1,4 +1,4 @@
-import { classLogEnabled } from '../../shared/logging';
+import { classLogEnabled } from '../../../../../shared/logging';
 import { DataSourceSet } from './data-source-set.model';
 import { JsPlumbInstance } from './jsplumb.models';
 import { domIdOfGuid } from './plumber-constants';

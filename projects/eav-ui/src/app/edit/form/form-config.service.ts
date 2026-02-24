@@ -1,8 +1,8 @@
 import { Injectable, Signal, inject, signal } from '@angular/core';
 import { Observable } from 'rxjs';
+import { classLog } from '../../../../../shared/logging';
 import { DialogContext } from '../../app-administration/models';
 import { keyPartOfPage, keyPublishing, keySettings, partOfPageDefault } from '../../shared/constants/session.constants';
-import { classLog } from '../../shared/logging';
 import { Context } from '../../shared/services/context';
 import { EditSettings } from '../dialog/main/edit-dialog-main.models';
 import { FormConfiguration, FormSaveConfiguration, VersioningOptions } from './form-configuration.model';

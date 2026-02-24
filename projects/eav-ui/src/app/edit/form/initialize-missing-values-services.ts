@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
+import { classLog } from '../../../../../shared/logging';
 import { InputTypeHelpers } from '../../shared/fields/input-type-helpers';
-import { classLog } from '../../shared/logging';
 import { DebugFields } from '../edit-debug';
 import { FieldSettingsHelpersManager } from '../fields/logic/field-settings-helpers-manager';
 import { FieldReader } from '../localization/field-reader';

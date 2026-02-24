@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { TranslateService } from "@ngx-translate/core";
 import { Observable, catchError, map, of } from "rxjs";
-import { classLog } from '../../../../shared/logging';
+import { classLog } from '../../../../../../../shared/logging';
 import { QueryStreams } from '../../../../shared/models/query-stream.model';
 import { computedObj } from '../../../../shared/signals/signal.utilities';
 import { FormConfigService } from '../../../form/form-config.service';

@@ -1,6 +1,6 @@
 import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
 import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
-import { classLog, ClassLogger } from '../../../shared/logging';
+import { classLog, ClassLogger } from '../../../../../../shared/logging';
 import { DebugFields } from '../../edit-debug';
 import { FieldSettingsHelpersManager } from './field-settings-helpers-manager';
 import { FieldSettingsTools } from './field-settings-tools';

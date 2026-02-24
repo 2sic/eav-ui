@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { map, tap } from 'rxjs';
-import { classLog } from '../../shared/logging';
+import { classLog } from '../../../../../shared/logging';
 import { GlobalConfigService } from '../../shared/services/global-config.service';
 import { HttpServiceBaseSignal } from '../../shared/services/http-service-base-signal';
 import { EavEditLoadDto, SaveEavFormData } from '../dialog/main/edit-dialog-main.models';

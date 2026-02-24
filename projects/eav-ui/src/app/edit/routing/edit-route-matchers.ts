@@ -1,5 +1,5 @@
 import { UrlMatchResult, UrlSegment } from '@angular/router';
-import { classLog } from '../../shared/logging';
+import { classLog } from '../../../../../shared/logging';
 import { EditUrlParams } from './edit-url-params.model';
 
 const logSpecs = {

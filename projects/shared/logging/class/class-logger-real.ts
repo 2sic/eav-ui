@@ -1,10 +1,9 @@
-import { environment } from '../../../../environments/environment';
+import { environment } from '../../environments/environment';
 import { FnLoggerNoOp } from '../fn/fn-logger-noop';
 import { FnLoggerReal } from '../fn/fn-logger-real';
 import { FnLogger } from '../fn/fn-logger.interface';
 import { LogSpecs } from '../log-specs';
 import { consoleLogObject } from '../output-console';
-import { RxTapDebug } from '../rx-debug-dbg';
 import { BooleanKeys, ClassLogger, RecordOrGenerator, StringArrayKeys } from './class-logger';
 
 /**
@@ -96,11 +95,6 @@ export class ClassLoggerReal<TSpecs extends unknown = any> implements ClassLogge
   aIfInList(list: StringArrayKeys<TSpecs>, subKey: string, data?: RecordOrGenerator, message?: string): void {
     if (this.enabled && this.#ifInSpecsList(list, subKey))
       this.#a(message, data);
-  }
-
-  /** Create a special logger for rx logging */
-  rxTap(name: string, { enabled = true, jsonify = true }: { enabled?: boolean; jsonify?: boolean; } = { enabled: true, jsonify: true }): RxTapDebug {
-    return new RxTapDebug(this as ClassLogger, name, enabled, jsonify);
   }
 
   /**

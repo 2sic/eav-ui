@@ -1,6 +1,6 @@
-import { LogSpecs } from './log-specs';
-import { StateManagerSession, StateManager } from '../user/state-manager';
 import isEqual from 'lodash-es/isEqual';
+import { StateManager, StateManagerSession } from '../../eav-ui/src/app/shared/user/state-manager';
+import { LogSpecs } from './log-specs';
 
 let logManager: LogManager;
 const storePrefix = 'logSpecs';

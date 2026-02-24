@@ -1,5 +1,5 @@
 import { PickerOptionCustom } from '../../../../../../../edit-types/src/DropdownOption';
-import { classLog } from '../../../../shared/logging/logging';
+import { classLog } from '../../../../../../../shared/logging';
 
 const logSpecs = {
   all: true,

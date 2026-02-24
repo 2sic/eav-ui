@@ -1,11 +1,11 @@
 import { httpResource } from '@angular/common/http';
 import { Injectable, Signal } from '@angular/core';
 import { from, map, switchMap } from 'rxjs';
+import { classLog } from '../../../../../shared/logging';
 import { FileUploadResult } from '../../shared/components/file-upload-dialog';
 import { webApiFieldsAll } from '../../shared/fields/content-types-fields.service';
 import { Field } from '../../shared/fields/field.model';
 import { toBase64 } from '../../shared/helpers/file-to-base64.helper';
-import { classLog } from '../../shared/logging';
 import { webApiEntityList, webApiEntityRoot } from '../../shared/services/entity.service';
 import { HttpServiceBaseSignal } from '../../shared/services/http-service-base-signal';
 import { ContentItem } from '../models/content-item.model';

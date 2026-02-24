@@ -4,8 +4,8 @@ import { FieldSettingsEntity, FieldSettingsPicker, FieldSettingsPickerMerged } f
 import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
 import { RelationshipParentChild, UiPickerModeTree } from '../../../../../../edit-types/src/PickerModeTree';
 import { FieldSettingsWithPickerSource, PickerSourceCustomCsv, PickerSourceCustomList, PickerSourceEntity, PickerSourceQuery, UiPickerSourcesAll } from '../../../../../../edit-types/src/PickerSources';
+import { classLog } from '../../../../../../shared/logging';
 import { FeatureNames } from '../../../features/feature-names';
-import { classLog } from '../../../shared/logging';
 import { EavEntity } from '../../shared/models/eav';
 import { DataSourceDropDownOptions } from '../basic/string-picker/string-picker.helpers';
 import { FieldSettingsTools } from '../logic/field-settings-tools';

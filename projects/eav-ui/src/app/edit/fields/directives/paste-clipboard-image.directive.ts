@@ -2,10 +2,10 @@ import { ChangeDetectorRef, Directive, ElementRef, input, OnDestroy, OnInit, Vie
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
+import { classLog } from '../../../../../../shared/logging';
 import { FeatureNames } from '../../../features/feature-names';
 import { FeaturesService } from '../../../features/features.service';
 import { openFeatureDialog } from '../../../features/shared/feature-component-base';
-import { classLog } from '../../../shared/logging';
 import { ElementEventListener } from '../../shared/controls/element-event-listener.model';
 import { FieldConfigSet } from '../field-config-set.model';
 

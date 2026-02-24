@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { map, Observable } from "rxjs";
-import { classLog } from '../../../../shared/logging';
+import { classLog } from '../../../../../../../shared/logging';
 import { DataWithLoading } from '../models/data-with-loading';
 import { PickerItem } from '../models/picker-item.model';
 import { DataSourceEntityBase, logSpecsDataSourceEntityQueryBase } from './data-source-entity-base';

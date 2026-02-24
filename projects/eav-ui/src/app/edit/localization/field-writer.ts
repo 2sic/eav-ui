@@ -1,5 +1,5 @@
 import { FieldValue } from '../../../../../edit-types/src/FieldValue';
-import { classLog } from '../../shared/logging';
+import { classLog } from '../../../../../shared/logging';
 import { FormLanguage } from '../form/form-languages.model';
 import { EavDimension } from '../shared/models/eav/eav-dimension';
 import { EavEntityAttributes } from '../shared/models/eav/eav-entity-attributes';

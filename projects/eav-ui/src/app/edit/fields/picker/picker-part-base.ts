@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { FieldSettingsPickerMerged } from '../../../../../../edit-types/src/FieldSettings-Pickers';
 import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
 import { FieldSettingsWithPickerSource } from '../../../../../../edit-types/src/PickerSources';
-import { classLog } from '../../../shared/logging';
+import { classLog } from '../../../../../../shared/logging';
 import { computedObj } from '../../../shared/signals/signal.utilities';
 import { EditRoutingService } from '../../routing/edit-routing.service';
 import { FieldState } from '../field-state';

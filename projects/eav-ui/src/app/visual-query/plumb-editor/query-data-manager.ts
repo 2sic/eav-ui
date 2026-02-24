@@ -1,4 +1,4 @@
-import { classLog } from '../../shared/logging';
+import { classLog } from '../../../../../shared/logging';
 import { DataSourceInstance } from '../models/data-source-instance.model';
 import { VisualQueryModel } from '../models/visual-query.model';
 import { DataSourceSet } from './data-source-set.model';

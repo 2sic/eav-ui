@@ -1,5 +1,4 @@
 import { FnLogger } from '../fn/fn-logger.interface';
-import { RxTapDebug } from '../rx-debug-dbg';
 
 export interface ClassLogger<TSpecs extends unknown = any> {
   svcId: string;
@@ -17,7 +16,8 @@ export interface ClassLogger<TSpecs extends unknown = any> {
   aIf(key: BooleanKeys<TSpecs> & string, data?: RecordOrGenerator, message?: string): void;
   aIfInList(list: StringArrayKeys<TSpecs>, subKey: string, data?: RecordOrGenerator, message?: string): void;
 
-  rxTap(name: string, options?: { enabled?: boolean; jsonify?: boolean }): RxTapDebug;
+  // 2026-02-24 2dm - removed this, so that logs don't contain deep dependencies which are then also used in gps etc. to rxJs
+  // rxTap(name: string, options?: { enabled?: boolean; jsonify?: boolean }): RxTapDebug;
   fn(name: string, data?: RecordOrGenerator, message?: string): FnLogger;
   fnCond(condition: boolean, name: string, data?: RecordOrGenerator, message?: string): FnLogger;
   fnIf(key: BooleanKeys<TSpecs> & string, data?: RecordOrGenerator, message?: string): FnLogger;

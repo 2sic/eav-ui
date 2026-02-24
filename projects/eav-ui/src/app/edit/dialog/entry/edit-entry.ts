@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { transient } from 'projects/core';
+import { classLog } from '../../../../../../shared/logging';
 import { FeaturesService } from '../../../features/features.service';
-import { classLog } from '../../../shared/logging';
 import { Context } from '../../../shared/services/context';
 import { EditInitializerService } from '../../form/edit-initializer.service';
 import { FormConfigService } from '../../form/form-config.service';

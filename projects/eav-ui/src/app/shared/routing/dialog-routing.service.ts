@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, NavigationExtras, Router } from '@angular/router';
 import { filter, map, pairwise, startWith, tap } from 'rxjs';
-import { classLog } from '../logging';
+import { classLog } from '../../../../../shared/logging';
 import { ServiceBase } from '../services/service-base';
 
 const logSpecs = {

@@ -1,5 +1,5 @@
 import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
-import { classLog } from '../../shared/logging';
+import { classLog } from '../../../../../shared/logging';
 import { FieldSettingsHelpersManager } from '../fields/logic/field-settings-helpers-manager';
 import { FieldProps } from './fields-configs.model';
 

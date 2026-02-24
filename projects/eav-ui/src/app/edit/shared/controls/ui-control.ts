@@ -1,7 +1,7 @@
 import { AbstractControl } from '@angular/forms';
 import isEqual from 'lodash-es/isEqual';
 import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
-import { classLog } from '../../../shared/logging';
+import { classLog } from '../../../../../../shared/logging';
 import { DebugFields } from '../../edit-debug';
 import { FieldValueHelpers } from '../helpers/field-value.helpers';
 import { ValidationMsgHelper } from '../validation/validation-messages.helpers';

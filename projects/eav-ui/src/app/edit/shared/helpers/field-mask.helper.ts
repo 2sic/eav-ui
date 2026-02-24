@@ -1,6 +1,6 @@
 import { Injectable, Injector, Signal, computed, effect, inject, signal } from '@angular/core';
 import { IFieldMask } from '../../../../../../edit-types/src/IFieldMask';
-import { classLog } from '../../../shared/logging';
+import { classLog } from '../../../../../../shared/logging';
 import { ServiceBase } from '../../../shared/services/service-base';
 import { FieldState } from '../../fields/field-state';
 import { FormConfigService } from '../../form/form-config.service';

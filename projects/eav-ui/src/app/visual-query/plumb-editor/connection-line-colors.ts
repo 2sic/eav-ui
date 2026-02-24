@@ -1,4 +1,4 @@
-import { classLog } from '../../shared/logging';
+import { classLog } from '../../../../../shared/logging';
 
 const logSpecs = {
   all: false,

@@ -24,10 +24,10 @@ import 'tinymce/themes/silver';
 import { Subscription } from 'rxjs';
 // tslint:disable-next-line: no-duplicate-imports
 import type { Editor, EditorEvent } from 'tinymce/tinymce';
-import { classLog } from '../../../../projects/eav-ui/src/app/shared/logging';
 import { Connector } from '../../../edit-types/src/Connector';
 import { EavCustomInputField } from '../../../edit-types/src/EavCustomInputField';
 import { WysiwygReconfigure } from '../../../edit-types/src/WysiwygReconfigure';
+import { classLog } from '../../../shared/logging';
 import { tinyMceBaseUrl, wysiwygEditorHtmlTag } from '../../internal-constants';
 import { WysiwygConstants } from '../../shared/wysiwyg.constants';
 import { RawEditorOptionsExtended } from '../config/raw-editor-options-extended';

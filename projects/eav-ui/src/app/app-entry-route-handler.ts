@@ -1,11 +1,11 @@
 import { Injector } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { Of } from '../../../core';
+import { classLog } from '../../../shared/logging';
 import { UrlHelpers } from './edit/shared/helpers/url.helpers';
 import { DialogTypeConstants } from './shared/constants/dialog-type.constants';
 import { keyAppId, keyContentBlockId, keyContentType, keyDialog, keyExtras, keyItems, keyModuleId, keyPipelineId, keyUrl, keyZoneId, prefix } from './shared/constants/session.constants';
 import { convertFormToUrl } from './shared/helpers/url-prep.helper';
-import { classLog } from './shared/logging';
 import { EavWindow } from './shared/models/eav-window.model';
 import { EditForm, ItemEditIdentifier, ItemInListIdentifier } from './shared/models/edit-form.model';
 import { ExtrasParam } from './shared/routing/dialog-url-params.model';

@@ -1,7 +1,7 @@
 import { Of } from '../../../../../../../core/type-utilities';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
+import { classLog } from '../../../../../../../shared/logging';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { classLog } from '../../../../shared/logging';
 import { FieldSettingsHelperBase } from '../../logic/field-settings-helper-base';
 import { FieldSettingsUpdateTask } from '../../logic/field-settings-update-task';
 import { PickerSourcesCustom } from '../../picker/constants/picker-config-model.constants';

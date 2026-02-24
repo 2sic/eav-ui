@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { transient } from '../../../../../../../core/transient';
-import { classLog, ClassLogger } from '../../../../shared/logging';
+import { classLog, ClassLogger } from '../../../../../../../shared/logging';
 import { FieldMask } from '../../../shared/helpers/field-mask.helper';
 import { DataSourceQuery } from "../data-sources/data-source-query";
 import { PickerItemFactory } from '../models/picker-item.model';

@@ -1,7 +1,7 @@
 import { Injectable, Signal } from '@angular/core';
 import { map } from 'rxjs';
+import { classLog } from '../../../../../shared/logging';
 import { FileUploadResult } from '../../shared/components/file-upload-dialog/file-upload-dialog.models';
-import { classLog } from '../../shared/logging';
 import { HttpServiceBase } from '../../shared/services/http-service-base';
 import { Extension, ExtensionInspectResult, ExtensionPreflightItem } from './extension.model';
 

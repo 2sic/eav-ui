@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { classLog } from '../../shared/logging';
+import { classLog } from '../../../../../shared/logging';
 import { LanguageService } from '../localization/language.service';
 import { EntityReader } from '../shared/helpers/entity-reader';
 import { ItemValuesOfLanguage } from '../state/item-values-of-language.model';

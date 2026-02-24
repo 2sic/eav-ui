@@ -1,4 +1,4 @@
-import { classLog } from '../../shared/logging';
+import { classLog } from '../../../../../shared/logging';
 import { VisualQueryModel } from '../models/visual-query.model';
 import { EndpointLabelRenameParts } from './endpoint-label-rename.model';
 import { JsPlumbEndpoint, JsPlumbOverlay } from './jsplumb.models';

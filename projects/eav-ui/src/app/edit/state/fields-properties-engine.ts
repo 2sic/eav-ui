@@ -1,6 +1,6 @@
 import { inject, Injectable, Signal } from '@angular/core';
 import { transient } from '../../../../../core/transient';
-import { classLog } from '../../shared/logging';
+import { classLog } from '../../../../../shared/logging';
 import { GlobalConfigService } from '../../shared/services/global-config.service';
 import { computedObj } from '../../shared/signals/signal.utilities';
 import { FieldSettingsTools } from '../fields/logic/field-settings-tools';

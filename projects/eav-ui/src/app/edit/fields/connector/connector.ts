@@ -1,6 +1,6 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, inject, ViewChild, ViewContainerRef } from '@angular/core';
 import { transient } from '../../../../../../core/transient';
-import { classLog } from '../../../shared/logging';
+import { classLog } from '../../../../../../shared/logging';
 import { FieldState } from '../field-state';
 import { ConnectorHelper } from './connector.helper';
 

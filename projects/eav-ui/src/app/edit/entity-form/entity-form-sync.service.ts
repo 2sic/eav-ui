@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { combineLatest, distinctUntilChanged, map, startWith } from 'rxjs';
-import { classLog } from '../../shared/logging';
+import { classLog } from '../../../../../shared/logging';
 import { mapUntilChanged } from '../../shared/rxJs/mapUntilChanged';
 import { ServiceBase } from '../../shared/services/service-base';
 import { FormConfigService } from '../form/form-config.service';

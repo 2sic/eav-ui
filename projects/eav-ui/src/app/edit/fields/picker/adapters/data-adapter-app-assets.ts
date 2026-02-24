@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { transient } from '../../../../../../../core/transient';
-import { classLog, ClassLogger } from '../../../../shared/logging';
+import { classLog, ClassLogger } from '../../../../../../../shared/logging';
 import { DataSourceAppAssets } from '../data-sources/data-source-app-assets';
 import { DataAdapterBase } from './data-adapter-base';
 import { DataAdapterEntityBase, logSpecsDataAdapterEntityBase } from "./data-adapter-entity-base";

@@ -1,4 +1,4 @@
-import { classLog } from '../../shared/logging';
+import { classLog } from '../../../../../shared/logging';
 import { DataSourceInstance } from '../models/data-source-instance.model';
 import { QueryStreamResult } from '../models/result/PipelineResultStream';
 import { VisualDesignerData } from '../models/visual-designer-data';

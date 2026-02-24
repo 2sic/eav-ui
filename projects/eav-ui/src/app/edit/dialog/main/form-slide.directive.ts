@@ -1,7 +1,7 @@
 import { Directive, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import { delay, filter, fromEvent, map, merge, pairwise } from 'rxjs';
+import { classLog } from '../../../../../../shared/logging';
 import { BaseDirective } from '../../../shared/directives/base.directive';
-import { classLog } from '../../../shared/logging';
 import { mapUntilChanged } from '../../../shared/rxJs/mapUntilChanged';
 import { FormConfigService } from '../../form/form-config.service';
 import { LanguageService } from '../../localization/language.service';

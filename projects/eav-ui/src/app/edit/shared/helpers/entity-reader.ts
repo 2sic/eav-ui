@@ -1,4 +1,4 @@
-import { classLog } from '../../../shared/logging';
+import { classLog } from '../../../../../../shared/logging';
 import { FormLanguage } from '../../form/form-languages.model';
 import { FieldReader } from '../../localization/field-reader';
 import { ItemValuesOfLanguage } from '../../state/item-values-of-language.model';

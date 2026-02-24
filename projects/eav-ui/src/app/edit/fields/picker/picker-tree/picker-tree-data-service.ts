@@ -2,7 +2,7 @@ import { Injectable, Injector, Signal, effect, runInInjectionContext } from '@an
 import { FieldSettingsPicker } from 'projects/edit-types/src/FieldSettings-Pickers';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { RelationshipParentChild } from '../../../../../../../edit-types/src/PickerModeTree';
-import { classLog } from '../../../../shared/logging';
+import { classLog } from '../../../../../../../shared/logging';
 import { PickerItem } from '../models/picker-item.model';
 import { PickerTreeItem } from '../models/picker-tree.models';
 import { PickerTreeDataHelper } from './picker-tree-data-helper';

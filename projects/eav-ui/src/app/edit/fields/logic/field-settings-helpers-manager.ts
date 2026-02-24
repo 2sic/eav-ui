@@ -1,5 +1,5 @@
+import { classLog } from '../../../../../../shared/logging';
 import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
-import { classLog } from '../../../shared/logging';
 import { FieldSettingsHelperBase } from './field-settings-helper-base';
 import { FieldSettingsHelperUnknown } from './field-settings-helper-unknown';
 

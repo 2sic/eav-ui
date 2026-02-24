@@ -1,8 +1,8 @@
-import { ItemIdentifierShared } from '../../shared/models/edit-form.model';
-import { InputTypeHelpers } from '../../shared/fields/input-type-helpers';
-import { FieldConstantsOfLanguage } from './fields-configs.model';
 import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
-import { classLog } from '../../shared/logging';
+import { classLog } from '../../../../../shared/logging';
+import { InputTypeHelpers } from '../../shared/fields/input-type-helpers';
+import { ItemIdentifierShared } from '../../shared/models/edit-form.model';
+import { FieldConstantsOfLanguage } from './fields-configs.model';
 
 /**
  * Small helper to parse Item-Field-Visibility requirements from the URL.

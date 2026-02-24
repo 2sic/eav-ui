@@ -1,8 +1,8 @@
 import { Injectable, Signal, signal } from '@angular/core';
 import { Of, transient } from '../../../../core';
+import { classLog } from '../../../../shared/logging';
 import { DialogConfigAppService } from '../app-administration/services/dialog-config-app.service';
 import { EavEditLoadDto, RequiredFeatures } from '../edit/dialog/main/edit-dialog-main.models';
-import { classLog } from '../shared/logging';
 import { DialogContext } from '../shared/models/dialog-settings.model';
 import { ComputedCacheHelper } from '../shared/signals/computed-cache';
 import { computedObj, signalObj } from '../shared/signals/signal.utilities';

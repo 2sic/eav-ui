@@ -1,5 +1,5 @@
 import { Injectable, Signal } from '@angular/core';
-import { classLogEnabled } from '../logging';
+import { classLogEnabled } from '../../../../../shared/logging';
 import { computedObj } from '../signals/signal.utilities';
 import { HttpServiceBase } from './http-service-base';
 

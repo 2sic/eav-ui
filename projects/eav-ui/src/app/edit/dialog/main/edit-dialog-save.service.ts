@@ -2,7 +2,7 @@ import { computed, inject, Injectable, QueryList } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { transient } from 'projects/core';
-import { classLog } from '../../../shared/logging';
+import { classLog } from '../../../../../../shared/logging';
 import { EntityFormBuilderComponent } from '../../entity-form/entity-form-builder/form-builder';
 import { EntityFormStateService } from '../../entity-form/entity-form-state.service';
 import { FormConfigService } from '../../form/form-config.service';

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
+import { classLog } from '../../../../../../../shared/logging';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { classLog } from '../../../../shared/logging';
 import { FieldMetadata } from '../../field-metadata.decorator';
 import { PickerComponent } from '../../picker/picker';
 import { PickerImports } from '../../picker/picker-providers.constant';

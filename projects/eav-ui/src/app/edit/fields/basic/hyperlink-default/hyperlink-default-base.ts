@@ -5,8 +5,8 @@ import { Hyperlink, HyperlinkLibrary } from 'projects/edit-types/src/FieldSettin
 import { transient } from '../../../../../../../core/transient';
 import { AdamItem } from '../../../../../../../edit-types/src/AdamItem';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
+import { classLog } from '../../../../../../../shared/logging';
 import { eavConstants } from '../../../../shared/constants/eav.constants';
-import { classLog } from '../../../../shared/logging';
 import { EditForm } from '../../../../shared/models/edit-form.model';
 import { computedObj } from '../../../../shared/signals/signal.utilities';
 import { FormConfigService } from '../../../form/form-config.service';

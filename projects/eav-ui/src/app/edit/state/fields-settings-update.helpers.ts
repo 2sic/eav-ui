@@ -1,7 +1,7 @@
 import { Signal } from '@angular/core';
 import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
 import { FieldValue } from '../../../../../edit-types/src/FieldValue';
-import { classLog } from '../../shared/logging';
+import { classLog } from '../../../../../shared/logging';
 import { DebugFields } from '../edit-debug';
 import { FieldSettingsTools } from '../fields/logic/field-settings-tools';
 import { FormLanguage } from '../form/form-languages.model';

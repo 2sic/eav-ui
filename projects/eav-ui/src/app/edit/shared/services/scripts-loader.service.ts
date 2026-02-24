@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { classLog } from '../../../shared/logging';
+import { classLog } from '../../../../../../shared/logging';
 import { EavWindow } from '../../../shared/models/eav-window.model';
 import { FormConfigService } from '../../form/form-config.service';
 import { FormConfiguration } from '../../form/form-configuration.model';

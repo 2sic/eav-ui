@@ -3,8 +3,8 @@ import { FieldSettingsPicker } from 'projects/edit-types/src/FieldSettings-Picke
 import { Of, transient } from '../../../../../../core';
 import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
 import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
+import { classLog } from '../../../../../../shared/logging';
 import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
-import { classLog } from '../../../shared/logging';
 import { FieldState } from '../field-state';
 import { DataAdapterAppAssets } from './adapters/data-adapter-app-assets';
 import { DataAdapterBase } from './adapters/data-adapter-base';

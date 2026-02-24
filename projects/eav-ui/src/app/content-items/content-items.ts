@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
 import { transient } from '../../../../core';
+import { classLog } from '../../../../shared/logging';
 import { GoToRecycleBin } from '../app-administration/recycle-bin/go-to-recycle-bin';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { ConfirmDeleteDialogComponent } from '../app-administration/sub-dialogs/confirm-delete-dialog/confirm-delete-dialog';
@@ -27,7 +28,6 @@ import { ToggleDebugDirective } from '../shared/directives/toggle-debug.directiv
 import { DataTypeCatalog } from '../shared/fields/data-type-catalog';
 import { Field } from '../shared/fields/field.model';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
-import { classLog } from '../shared/logging';
 import { EditForm } from '../shared/models/edit-form.model';
 import { ItemIdHelper } from '../shared/models/item-id-helper';
 import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
