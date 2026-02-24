@@ -1,13 +1,11 @@
 @if (viewModel$ | async; as vm) {
 <div class="eav-dialog eav-no-scrollbar">
-  <div class="eav-dialog-header">
-    <div class="eav-dialog-header__title">Using REST with Query:&nbsp; <code>{{ vm.name }}</code></div>
-    @if (!isSideNavContent){
-    <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
-      <mat-icon>close</mat-icon>
-    </button>
-    }
-  </div>
+  <app-dialog-header [showClose]="!isSideNavContent" (close)="closeDialog()">
+    <span dialog-title>
+      Using REST with Query:&nbsp; <code>{{ vm.name }}</code>
+    </span>
+  </app-dialog-header>
+  
   <div class="eav-dialog-content">
     <router-outlet></router-outlet>
     <!-- Template below this line -->
