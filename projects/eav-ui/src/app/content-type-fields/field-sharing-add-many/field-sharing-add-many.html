@@ -1,15 +1,8 @@
 <div class="eav-dialog eav-no-scrollbar">
-  <!-- <div class="eav-dialog-header">
-    <div class="eav-dialog-header__title">{{ 'SharingOrInheriting.TitleAddFieldsWhichInherit' | translate }} (new v18)</div>
-    <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
-      <mat-icon>close</mat-icon>
-    </button>
-  </div> -->
-
   <app-dialog-header (close)="closeDialog()">
     <span dialog-title>{{ 'SharingOrInheriting.TitleAddFieldsWhichInherit' | translate }}</span>
   </app-dialog-header>
-  
+
   <div class="eav-dialog-content">
     <p>
       Shared fields allow you to compose a content-type using fields which were defined in another content-type. These fields exist on this
