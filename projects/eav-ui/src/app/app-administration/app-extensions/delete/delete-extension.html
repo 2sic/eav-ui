@@ -1,10 +1,7 @@
 <div class="eav-dialog">
-  <div class="eav-dialog-header">
-    <div class="eav-dialog-header__title">Delete {{ extensionFolder }}</div>
-    <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
-      <mat-icon>close</mat-icon>
-    </button>
-  </div>
+  <app-dialog-header (close)="closeDialog()">
+    <span dialog-title>Delete {{ extensionFolder }}</span>
+  </app-dialog-header>
 
   <div class="eav-dialog-content">
     <!-- Show Details / Stats etc. -->
