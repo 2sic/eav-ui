@@ -18,6 +18,7 @@ import { ContentTypesService } from '../../app-administration/services/content-t
 import { isCtrlEnter } from '../../edit/dialog/main/keyboard-shortcuts';
 import { BaseComponent } from '../../shared/components/base';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint';
+import { DialogHeaderComponent } from "../../shared/dialog-header/dialog-header";
 import { ContentTypesFieldsService } from '../../shared/fields/content-types-fields.service';
 import { DataTypeCatalog } from '../../shared/fields/data-type-catalog';
 import { Field, FieldInputTypeOption } from '../../shared/fields/field.model';
@@ -51,8 +52,9 @@ type FieldSubset = Pick<Field, 'Id' | 'Type' | 'InputType' | 'StaticName' | 'IsT
     MatButtonModule,
     TranslateModule,
     FieldHintComponent,
-    SaveCloseButtonFabComponent
-  ]
+    SaveCloseButtonFabComponent,
+    DialogHeaderComponent
+]
 })
 export class EditContentTypeFieldsComponent extends BaseComponent implements AfterViewInit, OnInit {
   @HostBinding('className') hostClass = 'dialog-component';
