@@ -136,6 +136,9 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
 
     const lEx = classLog("ConnectorHelperExperimental");
 
+    // Must create an own variable, as we'll use in in a lambda where `this` is not valid.
+    const injector = this.#injector;
+
     const experimentalProps: ExperimentalProps = {
       entityGuid: this.#config.entityGuid,
       allInputTypeNames,
@@ -175,7 +178,7 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
         return transient(FieldMask, this.#injector).init(name, mask);
       },
 
-      injector: this.#injector,
+      injector,
 
       // expose a showSnackBar helper so editor can display messages directly
       showSnackBar: (message: string) => {
@@ -196,7 +199,7 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
       isDebug: () => this.#globalConfigSvc.isDebug(),
 
       debugWatch(callback: (debug: boolean) => void) {
-        effect(() => { callback(experimentalProps.isDebug()); }, { injector: this.#injector });
+        effect(() => { callback(experimentalProps.isDebug()); }, { injector });
       },
     };
 

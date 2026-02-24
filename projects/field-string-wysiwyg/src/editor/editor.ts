@@ -26,7 +26,7 @@ import type { Editor } from 'tinymce/tinymce';
 import { Connector } from '../../../edit-types/src/Connector';
 import { EavCustomInputField } from '../../../edit-types/src/EavCustomInputField';
 import { WysiwygReconfigure } from '../../../edit-types/src/WysiwygReconfigure';
-import { classLog } from '../../../shared/logging';
+import { classLogEnabled } from '../../../shared/logging';
 import { tinyMceBaseUrl, wysiwygEditorHtmlTag } from '../../internal-constants';
 import { WysiwygConstants } from '../../shared/wysiwyg.constants';
 import { TinyMceConfigurator } from '../config/tinymce-configurator';
@@ -54,7 +54,7 @@ const logSpecs = {
  */
 export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomInputField<string> {
 
-  log = classLog({ FieldStringWysiwygEditor }, logSpecs);
+  log = classLogEnabled({ FieldStringWysiwygEditor }, logSpecs);
 
   fieldInitialized = false;
   connector: Connector<string>;
@@ -114,7 +114,16 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     );
 
     this.connector._experimental.dropzone.setConfig({ disabled: false });
+    
+    // experimental debug info
+    l.a(`Debug info for this connector:`, { isDebug: this.connector._experimental.isDebug() });
+
+    this.connector._experimental.debugWatch(isDebug => {
+      l.a(`Debug mode changed:`, { isDebug });
+    });
+
     l.end();
+
   }
 
   #tinyMceScriptLoaded(): void {
