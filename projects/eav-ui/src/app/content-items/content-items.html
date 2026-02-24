@@ -1,6 +1,6 @@
 <div appToggleDebug class="eav-dialog nav-component-wrapper">
   <app-grid-with-help style="height: 100%" [helpText]="uxHelpText()" [refresh]="refresh()" [rowLength]="items()?.length">
-    <app-dialog-header (close)="closeDialog()">
+    <app-dialog-header (close)="closeDialog()" eav-dialog-header>
       <span dialog-title>{{ contentType()?.Label || contentType()?.Name }} Data</span>
     </app-dialog-header>
 
