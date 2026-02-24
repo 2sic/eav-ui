@@ -1,9 +1,11 @@
 <div class="eav-dialog">
   
-  <app-dialog-header 
-    [title]="'History Item Details'"
-    (close)="this.dialog.close()"
-  />
+  <app-dialog-header (close)="this.dialog.close()">
+    <span dialog-title>
+      History Details
+    </span>
+  </app-dialog-header>
+
   <div class="eav-dialog-content">
     @if (historyItem) {
       <app-history-item [historyItem]="historyItem" [expanded]="true" />
