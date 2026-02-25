@@ -38,45 +38,45 @@
 
     <mat-dialog-actions align="end">
       @if (recommendations()?.length === 0) {
-        <button mat-fab mat-elevation-z24 class="grid-fab" tippy="Create a new metadata for this item" (click)="createMetadata()">
+        <button matFab mat-elevation-z24 class="grid-fab" tippy="Create a new metadata for this item" (click)="createMetadata()">
           <mat-icon>add</mat-icon>
         </button>
-      }
+      } 
       @if (recommendations()?.length > 0) {
-        <eco-fab-speed-dial class="eav-eco-fab-speed-dial" [ngClass]="{ 'fab-opened': fabOpen() }" (openChange)="openChange($event)">
-          <eco-fab-speed-dial-trigger [spin]="true">
-            <button mat-fab class="grid-fab">
-              <mat-icon class="spin180">{{ fabOpen() ? 'close' : 'add' }}</mat-icon>
-            </button>
-          </eco-fab-speed-dial-trigger>
-          <eco-fab-speed-dial-actions class="eav-eco-fab-speed-dial-actions">
-            <button mat-mini-fab class="eav-eco-fab-speed-dial-action-button" label="Other Content Type" (click)="createMetadata()">
-              <mat-icon>search</mat-icon>
-            </button>
-            @for (recommendation of recommendations(); track recommendation) {
-              <button
-                mat-mini-fab
-                class="eav-eco-fab-speed-dial-action-button"
-                [attr.label]="recommendation.Title"
-                (click)="createMetadata(recommendation)"
-              >
-                @if (recommendation.Icon && fabOpen()) {
-                  <div
-                    style="color: white; fill: white"
-                    [innerHTML]="recommendation.Icon | safeHtml"
-                    matBadgeColor="accent"
-                    matBadgeSize="small"
-                    [matBadgeIcon]="!recommendation.Enabled ? 'diamond' : null"
-                    matBadgePosition="below after"
-                    aria-hidden="false"
-                  ></div>
-                } @else {
-                  <mat-icon>add</mat-icon>
-                }
-              </button>
+      <eco-fab-speed-dial class="eav-eco-fab-speed-dial" [ngClass]="{ 'fab-opened': fabOpen() }" (openChange)="openChange($event)">
+        <eco-fab-speed-dial-trigger [spin]="true">
+          <button matFab class="grid-fab">
+            <mat-icon class="spin180">{{ fabOpen() ? 'close' : 'add' }}</mat-icon>
+          </button>
+        </eco-fab-speed-dial-trigger>
+        <eco-fab-speed-dial-actions class="eav-eco-fab-speed-dial-actions">
+          <button matMiniFab class="eav-eco-fab-speed-dial-action-button" label="Other Content Type" (click)="createMetadata()">
+            <mat-icon>search</mat-icon>
+          </button>
+          @for (recommendation of recommendations(); track recommendation) {
+            <button
+              matMiniFab
+              class="eav-eco-fab-speed-dial-action-button"
+              [attr.label]="recommendation.Title"
+              (click)="createMetadata(recommendation)"
+            >
+            @if (recommendation.Icon && fabOpen()) {
+              <div
+                style="color: white; fill: white"
+                [innerHTML]="recommendation.Icon | safeHtml"
+                matBadgeColor="accent"
+                matBadgeSize="small"
+                [matBadgeIcon]="!recommendation.Enabled ? 'diamond' : null"
+                matBadgePosition="below after"
+                aria-hidden="false"
+              ></div>
+            } @else {
+            <mat-icon>add</mat-icon>
             }
-          </eco-fab-speed-dial-actions>
-        </eco-fab-speed-dial>
+          </button>
+          }
+        </eco-fab-speed-dial-actions>
+      </eco-fab-speed-dial>
       }
     </mat-dialog-actions>
   </app-grid-with-help>
