@@ -201,7 +201,8 @@ export class ManageContentListComponent implements OnInit {
   }
 
   protected toPlainText(value: string | null | undefined): string {
-    if (!value) return '';
+    if (!value) 
+      return '';
 
     const temp = document.createElement('div');
     temp.innerHTML = value;
