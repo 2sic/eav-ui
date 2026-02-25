@@ -3,7 +3,7 @@
     <div class="fabs-box">
       @if (buttonAdam()) {
         <button
-          mat-mini-fab
+          matMiniFab
           color="accent"
           tippyTranslate="Fields.Hyperlink.Default.AdamTip"
           [disabled]="ui().disabled"
@@ -13,7 +13,7 @@
         </button>
       }
       <button
-        mat-mini-fab
+        matMiniFab
         color="primary"
         [disabled]="!adamItem()?._imageConfigurationContentType"
         [ngClass]="{ 'metadata-exists': adamItem()?._imageConfigurationId > 0 }"
@@ -32,7 +32,7 @@
       </button>
       @if (buttonPage()) {
         <button
-          mat-mini-fab
+          matMiniFab
           color="primary"
           tippyTranslate="Fields.Hyperlink.Default.PageTip"
           [disabled]="ui().disabled"
@@ -43,7 +43,7 @@
       }
       @if (buttonMore()) {
         <button
-          mat-mini-fab
+          matMiniFab
           color="primary"
           tippyTranslate="Fields.Hyperlink.Default.MoreOptions"
           [disabled]="ui().disabled"
