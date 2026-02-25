@@ -43,7 +43,7 @@ import { ContentGroupService } from './services/content-group.service';
     ...ExtendedFabSpeedDialImports,
     SaveCloseButtonComponent,
     DialogHeaderComponent,
-]
+  ]
 })
 export class ManageContentListComponent implements OnInit {
   @HostBinding('className') hostClass = 'dialog-component';
@@ -198,5 +198,13 @@ export class ManageContentListComponent implements OnInit {
 
   #fetchHeader() {
     this.#refresh.set(this.#refresh() + 1);
+  }
+
+  protected toPlainText(value: string | null | undefined): string {
+    if (!value) return '';
+
+    const temp = document.createElement('div');
+    temp.innerHTML = value;
+    return temp.textContent?.trim() ?? '';
   }
 }
