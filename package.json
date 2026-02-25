@@ -55,7 +55,7 @@
     "@angular/platform-browser": "^21.0.6",
     "@angular/platform-browser-dynamic": "^21.0.6",
     "@angular/router": "^21.0.6",
-    "@ecodev/fab-speed-dial": "^19.0.0",
+    "@ecodev/fab-speed-dial": "^21.0.2",
     "@monaco-editor/loader": "^1.5.0",
     "@ngx-translate/core": "^15.0.0",
     "@ngx-translate/http-loader": "^8.0.0",
