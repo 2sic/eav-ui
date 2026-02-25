@@ -43,8 +43,8 @@
             "production": {
               "fileReplacements": [
                 {
-                  "replace": "projects/eav-ui/src/environments/environment.ts",
-                  "with": "projects/eav-ui/src/environments/environment.prod.ts"
+                  "replace": "projects/shared/environments/environment.ts",
+                  "with": "projects/shared/environments/environment.prod.ts"
                 }
               ],
               "optimization": true,
