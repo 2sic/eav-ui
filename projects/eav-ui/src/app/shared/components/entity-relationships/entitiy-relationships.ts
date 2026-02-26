@@ -1,7 +1,9 @@
 import { GridOptions, ICellRendererParams } from '@ag-grid-community/core';
 import { Component, Input, computed } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from "@angular/router";
 import { transient } from 'projects/core';
+import { FeaturesService } from '../../../features/features.service';
 import { AgGridHelper } from '../../ag-grid/ag-grid-helper';
 import { convertFormToUrl } from '../../helpers/url-prep.helper';
 import { ItemIdHelper } from '../../models/item-id-helper';
@@ -18,22 +20,34 @@ import { SysDataService } from '../../services/sys-data.service';
 })
 export class EntityRelationshipsComponent {
     @Input({ required: true }) entityId!: number;
+    @Input() featureEnabled = false;
+
+    readonly source = '4f5faacb-27bd-4946-ae41-9fe46f9f260c';
 
     #dialogRouter = transient(DialogRoutingService);
     #sysData = transient(SysDataService);
-
-    gridOptions = this.#buildGridOptions();
-
-    readonly #source = '4f5faacb-27bd-4946-ae41-9fe46f9f260c';
-
+    #features = transient(FeaturesService);
+    #snack = transient(MatSnackBar);
     #resource = this.#sysData.getMany<{ default: RelationshipRow[] }>({
-        source: this.#source,
+        source: this.source,
         params: computed(() => ({ Id: this.entityId })),
         fields: 'id,title,field,isChild,contentTypeName',
         streams: 'Default',
     });
 
+    gridOptions = this.#buildGridOptions();
+
     loading = computed(() => this.#resource.isLoading());
+
+    isFeatureEnabled = computed(() => {
+        const feature = this.#features.getCurrent('EntityInspectRelationships');
+
+        // If feature not found -> enabled
+        if (!feature)
+            return true;
+
+        return feature.isEnabled;
+    });
 
     readonly rows = computed<RelationshipRow[]>(() => {
         const value = this.#resource.value();
@@ -59,7 +73,12 @@ export class EntityRelationshipsComponent {
                     cellRenderer: (p: ICellRendererParams<RelationshipRow>) => {
                         const row = p.data;
                         if (!row) return '';
-                        return AgGridHelper.cellLink(this.#urlToOpenEditView(row), row.title);
+
+                        const url = this.isFeatureEnabled()
+                            ? this.#urlToOpenEditView(row)
+                            : this.#urlToOpenFeatureDetails('EntityInspectRelationships');
+
+                        return AgGridHelper.cellLink(url, row.title);
                     },
                 },
                 {
@@ -83,12 +102,16 @@ export class EntityRelationshipsComponent {
                     sortable: true,
                     filter: 'agTextColumnFilter'
                 },
-            ]
+            ],
         };
     }
 
     #urlTo(url: string) {
         return '#' + this.#dialogRouter.urlSubRoute(url);
+    }
+
+    #urlToOpenFeatureDetails(featureId: string): string {
+        return this.#urlTo(`features/details/${featureId}`);
     }
 
     #urlToOpenEditView(row: RelationshipRow) {

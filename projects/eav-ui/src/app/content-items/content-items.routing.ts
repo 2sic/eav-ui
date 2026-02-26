@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { EditRoutes } from '../edit/edit.routing';
+import { featureInfoRouteDialog } from '../features/dialogs/feature-info-dialog-route.config';
 import { GoToMetadata } from '../metadata';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry';
 import { contentItemsDialog } from './content-items-dialog.config';
@@ -40,6 +41,11 @@ export const contentItemsRoutes: Routes = [
         data: { dialog: relationshipsDialog },
         children: [
           ...EditRoutes,
+          {
+            path: 'features/details/:featureId',
+            component: DialogEntryComponent,
+            data: { dialog: featureInfoRouteDialog },
+          },
         ],
       },
       ...EditRoutes,
