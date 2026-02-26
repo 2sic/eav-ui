@@ -74,7 +74,7 @@ const logSpecs = {
     TippyDirective,
     GridWithHelpComponent,
     DialogHeaderComponent,
-]
+  ]
 })
 export class ContentItemsComponent implements OnInit {
 
@@ -240,6 +240,11 @@ export class ContentItemsComponent implements OnInit {
     return `#/${new RouteLinkHelper().routeTo(this.#context, `app/data-${GoToRecycleBin.route}`)}`;
   }
 
+  // Returns the URL to the relationships dialog for a given item
+  #urlToRelationships(item: ContentItem) {
+    return this.#urlTo(`relationships/${item.Id}`);
+  }
+
   urlToExportContent = computedObj('urlToExportContent', () => {
     const value = this.#gridApiSig();
     if (!value)
@@ -354,7 +359,16 @@ export class ContentItemsComponent implements OnInit {
         cellClass: 'no-outline',
         sortable: true,
         filter: 'agTextColumnFilter',
-        valueGetter: (p: { data: ContentItem }) => `${p.data._Used} / ${p.data._Uses}`,
+
+        valueGetter: (p) => 
+          `${p.data._Used} / ${p.data._Uses}`,
+
+        cellRenderer: (p: { data: ContentItem }) => {
+          const item = p.data;
+          return AgGridHelper.cellLink(
+            this.#urlToRelationships(item), `${item._Used} / ${item._Uses}`
+          );
+        },
       },
       {
         ...ColumnDefinitions.ActionsPinnedRight3,

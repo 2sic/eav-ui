@@ -1,0 +1,11 @@
+<div class="eav-dialog nav-component-wrapper">
+  <app-dialog-header eav-dialog-header (close)="closeDialog()">
+    Relationships
+  </app-dialog-header>
+
+  <div class="eav-dialog-content">
+    <app-entity-relationships
+      [entityId]="itemId()">
+    </app-entity-relationships>
+  </div>
+</div>

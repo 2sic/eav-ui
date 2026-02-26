@@ -1,0 +1,17 @@
+@use "../../../../styles/variables.scss";
+
+:host ::ng-deep .ag-row-hover .ag-cell a,
+:host ::ng-deep .ag-row-hover .ag-cell .id-box *,
+:host ::ng-deep .ag-row-hover .ag-cell .eav-grid-action-button,
+.eav-button__with-icon * {
+  color: variables.$sxc-solid !important;
+}
+
+.grid-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.mat-tab-grid-wrapper {
+  height: 100vh;
+}
