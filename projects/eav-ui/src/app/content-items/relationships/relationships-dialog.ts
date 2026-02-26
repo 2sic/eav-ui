@@ -1,5 +1,6 @@
 import { Component, computed, HostBinding } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
+import { RouterOutlet } from "@angular/router";
 import { transient } from 'projects/core';
 import { EntityRelationshipsComponent } from '../../shared/components/entity-relationships/entitiy-relationships';
 import { DialogHeaderComponent } from '../../shared/dialog-header/dialog-header';
@@ -17,7 +18,8 @@ export interface RelationshipsDialogData {
   imports: [
     DialogHeaderComponent,
     EntityRelationshipsComponent,
-  ],
+    RouterOutlet
+],
 })
 export class RelationshipsPageComponent {
   @HostBinding('className') hostClass = 'dialog-component';

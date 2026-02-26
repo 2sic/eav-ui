@@ -1,5 +1,6 @@
 import { GridOptions, ICellRendererParams } from '@ag-grid-community/core';
 import { Component, Input, computed } from '@angular/core';
+import { RouterOutlet } from "@angular/router";
 import { transient } from 'projects/core';
 import { AgGridHelper } from '../../ag-grid/ag-grid-helper';
 import { convertFormToUrl } from '../../helpers/url-prep.helper';
@@ -14,7 +15,7 @@ import { SysDataService } from '../../services/sys-data.service';
     templateUrl: './entity-relationships.html',
     styleUrls: ['./entity-relationships.scss'],
     standalone: true,
-    imports: [SxcGridModule],
+    imports: [SxcGridModule, RouterOutlet],
 })
 export class EntityRelationshipsComponent {
     @Input({ required: true }) entityId!: number;
