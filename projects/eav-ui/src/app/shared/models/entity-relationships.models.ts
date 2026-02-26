@@ -1,4 +1,3 @@
-import { ColDef } from '@ag-grid-community/core';
 
 export interface RelationshipRow {
   id: number;
@@ -7,8 +6,4 @@ export interface RelationshipRow {
   field: string;
   isChild: boolean;
   contentTypeName: string;
-}
-
-export interface RelationshipColDef extends ColDef<RelationshipRow> {
-  isTitleLink?: boolean;
 }

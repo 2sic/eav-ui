@@ -4,7 +4,6 @@ import { RouterOutlet } from "@angular/router";
 import { transient } from 'projects/core';
 import { AgGridHelper } from '../../ag-grid/ag-grid-helper';
 import { convertFormToUrl } from '../../helpers/url-prep.helper';
-import { RelationshipColDef } from '../../models/entity-relationships.models';
 import { ItemIdHelper } from '../../models/item-id-helper';
 import { SxcGridModule } from '../../modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../../routing/dialog-routing.service';
@@ -19,7 +18,6 @@ import { SysDataService } from '../../services/sys-data.service';
 })
 export class EntityRelationshipsComponent {
     @Input({ required: true }) entityId!: number;
-    @Input() entityTitle?: string;
 
     #dialogRouter = transient(DialogRoutingService);
     #sysData = transient(SysDataService);
@@ -37,16 +35,17 @@ export class EntityRelationshipsComponent {
 
     loading = computed(() => this.#resource.isLoading());
 
-    rows = computed<RelationshipRow[]>(() => {
-        const v = this.#resource.value() as any;
-        return v?.default ?? v?.Default ?? [];
+    readonly rows = computed<RelationshipRow[]>(() => {
+        const value = this.#resource.value();
+        return value?.default ?? [];
     });
 
     children = computed(() => this.rows().filter(r => r.isChild));
     parents = computed(() => this.rows().filter(r => !r.isChild));
 
     #buildGridOptions(): GridOptions {
-        const gridOptions: GridOptions = {
+        return {
+            domLayout: 'autoHeight',
             columnDefs: [
                 {
                     headerName: 'Title',
@@ -84,10 +83,8 @@ export class EntityRelationshipsComponent {
                     sortable: true,
                     filter: 'agTextColumnFilter'
                 },
-            ] satisfies RelationshipColDef[],
+            ]
         };
-
-        return gridOptions;
     }
 
     #urlTo(url: string) {
@@ -104,9 +101,9 @@ export class EntityRelationshipsComponent {
 }
 
 interface RelationshipRow {
-  id: number;
-  title: string;
-  field: string;
-  isChild: boolean;
-  contentTypeName: string;
+    id: number;
+    title: string;
+    field: string;
+    isChild: boolean;
+    contentTypeName: string;
 }

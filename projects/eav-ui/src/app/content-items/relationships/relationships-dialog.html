@@ -1,13 +1,13 @@
-<div class="eav-dialog nav-component-wrapper">
+<div class="eav-dialog">
   <app-dialog-header eav-dialog-header (close)="closeDialog()">
     Relationships
   </app-dialog-header>
-
-  <div class="eav-dialog-content">
+  
+  <div class="eav-dialog-content" style="padding-bottom: 16px;">
     <app-entity-relationships
       [entityId]="itemId()">
     </app-entity-relationships>
   </div>
-</div>
+</div >
 
 <router-outlet></router-outlet>

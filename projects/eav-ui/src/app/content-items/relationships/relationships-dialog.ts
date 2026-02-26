@@ -1,4 +1,4 @@
-import { Component, computed, HostBinding } from '@angular/core';
+import { Component, computed } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { RouterOutlet } from "@angular/router";
 import { transient } from 'projects/core';
@@ -18,12 +18,11 @@ export interface RelationshipsDialogData {
   imports: [
     DialogHeaderComponent,
     EntityRelationshipsComponent,
-    RouterOutlet
+    RouterOutlet,
 ],
 })
 export class RelationshipsPageComponent {
-  @HostBinding('className') hostClass = 'dialog-component';
-
+  
   #dialogRouter = transient(DialogRoutingService);
   
    constructor(
