@@ -8,7 +8,6 @@ import { FeatureDetailService } from '../services/feature-detail.service';
 @Component({
   selector: 'app-feature-info-dialog-route',
   templateUrl: './feature-info-dialog-route.html',
-  standalone: true,
   imports: [FeatureDetailsDialogComponent, RouterOutlet],
 })
 export class FeatureInfoDialogRouteComponent {

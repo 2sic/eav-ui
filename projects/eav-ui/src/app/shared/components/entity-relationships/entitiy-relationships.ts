@@ -15,7 +15,6 @@ import { SysDataService } from '../../services/sys-data.service';
     selector: 'app-entity-relationships',
     templateUrl: './entity-relationships.html',
     styleUrls: ['./entity-relationships.scss'],
-    standalone: true,
     imports: [SxcGridModule, RouterOutlet],
 })
 export class EntityRelationshipsComponent {

@@ -3,7 +3,7 @@ import { RelationshipsPageComponent } from "./relationships-dialog";
 
 
 export const relationshipsDialog: DialogConfig = {
-  name: 'Relationships',
+  name: 'RELATIONSHIPS_DIALOG',
 
   initContext: false,
 
