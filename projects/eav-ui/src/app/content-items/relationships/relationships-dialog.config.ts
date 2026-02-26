@@ -7,7 +7,7 @@ export const relationshipsDialog: DialogConfig = {
 
   initContext: false,
 
-  panelSize: 'large', 
+  panelSize: 'medium', 
 
   panelClass: ['dialog-component'], 
 

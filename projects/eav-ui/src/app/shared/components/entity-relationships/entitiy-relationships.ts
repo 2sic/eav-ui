@@ -31,7 +31,7 @@ export class EntityRelationshipsComponent {
     #resource = this.#sysData.getMany<{ default: RelationshipRow[] }>({
         source: this.#source,
         params: computed(() => ({ Id: this.entityId })),
-        fields: 'id,guid,title,field,isChild,contentTypeName',
+        fields: 'id,title,field,isChild,contentTypeName',
         streams: 'Default',
     });
 
@@ -84,14 +84,6 @@ export class EntityRelationshipsComponent {
                     sortable: true,
                     filter: 'agTextColumnFilter'
                 },
-                {
-                    headerName: 'Guid',
-                    field: 'guid',
-                    flex: 2,
-                    minWidth: 280,
-                    sortable: true,
-                    filter: 'agTextColumnFilter'
-                },
             ] satisfies RelationshipColDef[],
         };
 
@@ -112,10 +104,9 @@ export class EntityRelationshipsComponent {
 }
 
 interface RelationshipRow {
-    id: number;
-    guid: string;
-    title: string;
-    field: string;
-    isChild: boolean;
-    contentTypeName: string;
+  id: number;
+  title: string;
+  field: string;
+  isChild: boolean;
+  contentTypeName: string;
 }
