@@ -1,0 +1,6 @@
+@if (featureDetails.value(); as feature) {
+  <app-feature-details-dialog
+    [specs]="{ feature: feature, showGuid: false, showStatus: true, showClose: true }">
+  </app-feature-details-dialog>
+}
+<router-outlet></router-outlet>

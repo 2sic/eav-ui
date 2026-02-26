@@ -1,0 +1,22 @@
+<div class="eav-dialog">
+  <app-dialog-header eav-dialog-header (close)="closeDialog()">
+    Relationships
+    <app-feature-icon-with-dialog
+      class="feature-icon-large"
+      [forText]="true"
+      [featureNameId]="featureId">
+    </app-feature-icon-with-dialog>
+    </app-dialog-header>
+  
+  <div class="eav-dialog-content" style="padding-bottom: 16px;">
+    <app-feature-info-box
+      [featureNameId]="featureId">
+    </app-feature-info-box>
+    
+    <app-entity-relationships
+      [entityId]="itemId()">
+    </app-entity-relationships>
+  </div>
+</div >
+
+<router-outlet></router-outlet>
