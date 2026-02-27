@@ -6,7 +6,7 @@ import { FieldSettingsHelpersManager } from './field-settings-helpers-manager';
 import { FieldSettingsTools } from './field-settings-tools';
 import { FieldSettingsUpdateTask } from './field-settings-update-task';
 
-const logSpecs = {
+export const fieldSettingsLogSpecs = {
   all: false,
   constructor: true,
   update: true,
@@ -15,13 +15,15 @@ const logSpecs = {
 
 export abstract class FieldSettingsHelperBase {
 
-  /** Logger - lazy created on first access if not yet created */
-  get log() { return this.#log ??= classLog({FieldSettingsHelperBase}, logSpecs).extendName(`[${this.name}]`) };
+  /**
+   * Logger - lazy created on first access if not yet created in constructor.
+   */
+  get log() { return this.#log ??= classLog({FieldSettingsHelperBase}, fieldSettingsLogSpecs).extendName(`[${this.name}]`) };
   
-  #log: ClassLogger<typeof logSpecs>;
+  #log: ClassLogger<typeof fieldSettingsLogSpecs>;
 
-  constructor(inheritingClassForLogging: Record<string, unknown> | string, logThis?: boolean) {
-    this.#log = classLog(inheritingClassForLogging ?? {FieldSettingsHelperBase}, logSpecs, null, logThis);
+  constructor(inheritingClassForLogging: Record<string, unknown> | string, logThis?: boolean, logSpecs?: typeof fieldSettingsLogSpecs) {
+    this.#log = classLog(inheritingClassForLogging ?? {FieldSettingsHelperBase}, logSpecs ?? fieldSettingsLogSpecs, null, logThis);
     this.name ??= this.#log.name;
     this.log.fnIf('constructor');
   }

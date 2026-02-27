@@ -1,22 +1,37 @@
-import { StringWysiwyg } from 'projects/edit-types/src/FieldSettings-String';
 import { AdamItem } from '../../../../../../../edit-types/src/AdamItem';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
+import { StringWysiwyg, StringWysiwygGlobals } from '../../../../../../../edit-types/src/FieldSettings-String';
 import { FieldValue } from '../../../../../../../edit-types/src/FieldValue';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { FieldSettingsHelperBase } from '../../logic/field-settings-helper-base';
+import { FieldSettingsHelperBase, fieldSettingsLogSpecs } from '../../logic/field-settings-helper-base';
 import { FieldSettingsHelperWithValueInit } from '../../logic/field-settings-helper-with-value-init';
 import { FieldSettingsUpdateTask } from '../../logic/field-settings-update-task';
 
+const logSpecs = {
+  ...fieldSettingsLogSpecs,
+  all: false,
+  constructor: true,
+  update: true,
+  // fields: [...DebugFields, 'Icon'],
+}
 
 export class StringWysiwygSettingsHelper extends FieldSettingsHelperBase implements FieldSettingsHelperWithValueInit {
   name = InputTypeCatalog.StringWysiwyg;
 
-  constructor() { super({ StringWysiwygSettingsHelper }); }
+  constructor() { super({ StringWysiwygSettingsHelper }, true); }
 
   canAutoTranslate = true;
 
   update({ settings, tools }: FieldSettingsUpdateTask): FieldSettings {
-    const fixedSettings = { ...settings } as FieldSettings & StringWysiwyg;
+
+    const defaults: Partial<StringWysiwygGlobals> = tools.eavConfig.settings?.Values["Settings.InputFields.StringWysiwyg"] || {};
+
+    const l = this.log.fnIf('update', { global: defaults, settings });
+    const fixedSettings = {
+      ...defaults,
+      ...settings,
+      _defaults: defaults,
+    } as FieldSettings & StringWysiwyg;
     // If the `Dialog` setting is blank, it means start inline (default) and allow switching to dialog.
     fixedSettings._allowDialog ??= fixedSettings.Dialog == null || fixedSettings.Dialog === '';
     fixedSettings.Dialog ||= 'inline';
@@ -31,7 +46,8 @@ export class StringWysiwygSettingsHelper extends FieldSettingsHelperBase impleme
       Json: '',
     });
 
-    return fixedSettings;
+    l.a('updated settings', { settings, fixedSettings});
+    return l.r(fixedSettings);
   }
 
   /** Checks if dataCmsId is same as file name and if it is switches img src with adam item url */

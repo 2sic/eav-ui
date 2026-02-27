@@ -72,5 +72,13 @@ export interface StringWysiwyg {
     Json: string;
   };
   _allowDialog: boolean;
+
+  _defaults: StringWysiwygGlobals;
+}
+
+export interface StringWysiwygGlobals {
+  ButtonSource: "" | "true" | "false";
+  ButtonSourceInDebugMode: "" | "true" | "false";
+  EditorPlugin: "tinymce";
 }
 
