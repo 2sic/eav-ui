@@ -58,6 +58,13 @@ export class EntityRelationshipsComponent {
             domLayout: 'autoHeight',
             columnDefs: [
                 {
+                    headerName: 'Id',
+                    field: 'id',
+                    width: 90,
+                    sortable: true,
+                    filter: 'agNumberColumnFilter'
+                },
+                {
                     headerName: 'Title',
                     field: 'title',
                     flex: 2,
@@ -76,13 +83,6 @@ export class EntityRelationshipsComponent {
 
                         return AgGridHelper.cellLink(url, row.title);
                     },
-                },
-                {
-                    headerName: 'Id',
-                    field: 'id',
-                    width: 90,
-                    sortable: true,
-                    filter: 'agNumberColumnFilter'
                 },
                 {
                     headerName: 'Field',
