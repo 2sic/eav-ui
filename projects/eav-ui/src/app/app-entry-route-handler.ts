@@ -179,7 +179,6 @@ export class AppEntryRouteHandler {
    * @returns 
    */
   #handleNewWindowOpenedRoute() {
-    console.error('This code is believed to be unused - if you see this warning, please inform @ijungleboy and note what you clicked before you saw this message');
     const l = this.log.fnIf('handleNewWindowOpenedRoute');
     // if not params route and no params are saved, e.g. browser was reopened,
     // check if we have additional context info in the url behind a ##
