@@ -47,6 +47,7 @@ import { DataItemsComponent } from './data-items/data-items';
 @Component({
   selector: 'app-data',
   templateUrl: './data.html',
+  styleUrl: './data.scss',
   imports: [
     MatDialogActions,
     MatFormFieldModule,
