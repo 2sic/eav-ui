@@ -1,4 +1,4 @@
-import { classLogEnabled } from '../../../../../shared/logging';
+import { classLog } from '../../../../../shared/logging';
 import { DataSourceSet } from './data-source-set.model';
 import { JsPlumbInstance } from './jsplumb.models';
 import { domIdOfGuid } from './plumber-constants';
@@ -15,7 +15,7 @@ const logSpecs = {
 }
 
 export class WiringsHelper {
-  log = classLogEnabled({WiringsHelper}, logSpecs);
+  log = classLog({WiringsHelper}, logSpecs);
 
   constructor(
     private plumber: Plumber,

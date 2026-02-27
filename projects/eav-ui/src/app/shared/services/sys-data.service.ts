@@ -1,5 +1,5 @@
 import { Injectable, Signal } from '@angular/core';
-import { classLogEnabled } from '../../../../../shared/logging';
+import { classLog } from '../../../../../shared/logging';
 import { computedObj } from '../signals/signal.utilities';
 import { HttpServiceBase } from './http-service-base';
 
@@ -46,7 +46,7 @@ interface ResultWIP<TData> {
 @Injectable()
 export class SysDataService extends HttpServiceBase {
 
-  log = classLogEnabled({SysDataService}, logSpecs);
+  log = classLog({SysDataService}, logSpecs);
 
   /**
    * Get the first item of a data source as a signal. This is useful for cases where you expect only one item, like the polymorphism info.

@@ -18,7 +18,7 @@ const logSpecs = {
 export class StringWysiwygSettingsHelper extends FieldSettingsHelperBase implements FieldSettingsHelperWithValueInit {
   name = InputTypeCatalog.StringWysiwyg;
 
-  constructor() { super({ StringWysiwygSettingsHelper }, true); }
+  constructor() { super({ StringWysiwygSettingsHelper }, false, logSpecs); }
 
   canAutoTranslate = true;
 

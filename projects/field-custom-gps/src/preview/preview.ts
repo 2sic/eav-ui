@@ -3,7 +3,7 @@ import { CustomGps } from 'projects/edit-types/src/FieldSettings-CustomGps';
 import { ElementEventListener } from '../../../eav-ui/src/app/edit/shared/controls/element-event-listener.model';
 import { Connector } from '../../../edit-types/src/Connector';
 import { EavCustomInputField } from '../../../edit-types/src/EavCustomInputField';
-import { classLogEnabled } from '../../../shared/logging';
+import { classLog } from '../../../shared/logging';
 import { buildTemplate, customGpsIcons, isLatLngObject, parseLatLng } from '../shared/gps-helpers';
 import * as template from './preview.html';
 import * as styles from './preview.scss';
@@ -12,7 +12,7 @@ const gpsTag = 'field-custom-gps';
 
 class FieldCustomGps extends HTMLElement implements EavCustomInputField<string> {
 
-  log = classLogEnabled({ FieldCustomGps });
+  log = classLog({ FieldCustomGps });
 
   fieldInitialized: boolean;
   connector: Connector<string>;
