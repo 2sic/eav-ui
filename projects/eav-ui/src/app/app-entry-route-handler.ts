@@ -25,7 +25,7 @@ export class AppEntryRouteHandler {
     constructor: false,
     processEntryUrl: false,
     handleLongEntryRouteWithState: false,
-    handleNonNormalEntryParamRoute: false,
+    handleNewWindowOpenedRoute: false,
     transferToSession: false,
   });
 
@@ -59,7 +59,7 @@ export class AppEntryRouteHandler {
     const eavKeys = Object.keys(sessionStorage).filter(key => key.startsWith(prefix));
     if (eavKeys.length === 0) {
       this.#logInitialRoute();
-      this.#handleNonNormalEntryParamRoute();
+      this.#handleNewWindowOpenedRoute();
       return l.end();
     }
 
@@ -171,20 +171,20 @@ export class AppEntryRouteHandler {
     }
   }
 
-  // Note: 2025-03-20 not clear what this is for
-  // - it seems to indicate that there are URLs with ## in them, but I can't see where
-  // - but I can't seem to find a case where this is used
-  // - so I ported it from the previous code, but couldn't really test / verify it
-  // added console.error to spot if we ever see this
-  // 2025-12-23 2pp had a screenshot showing this message, but we still don't know why he saw it...
-  // also not sure if it actually found anything after the ##
-  #handleNonNormalEntryParamRoute() {
+  /**
+   * Handle actions which open a new window but should re-initialize everything.
+   * Examples are: 
+   * 1. control-clicks in the admin-UI
+   * 2. Open the query dialog from the query list
+   * @returns 
+   */
+  #handleNewWindowOpenedRoute() {
     console.error('This code is believed to be unused - if you see this warning, please inform @ijungleboy and note what you clicked before you saw this message');
-    const l = this.log.fnIf('handleNonNormalEntryParamRoute');
+    const l = this.log.fnIf('handleNewWindowOpenedRoute');
     // if not params route and no params are saved, e.g. browser was reopened,
     // check if we have additional context info in the url behind a ##
     const urlHash = window.location.hash;
-    const urlWithCtx = urlHash.split('##')
+    const urlWithCtx = urlHash.split('##') // Not quite sure if this is still used
     const finalRoute = urlWithCtx[0].substring(1);
     // url is like '/73/v2/42/-42/770/app/data/...'
     // or is like  '/73/v2/0/42/-42/770/apps/data/...'
