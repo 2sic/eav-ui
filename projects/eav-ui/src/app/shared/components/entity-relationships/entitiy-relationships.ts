@@ -13,7 +13,6 @@ import { SysDataService } from '../../services/sys-data.service';
 @Component({
     selector: 'app-entity-relationships',
     templateUrl: './entity-relationships.html',
-    styleUrls: ['./entity-relationships.scss'],
     imports: [SxcGridModule, RouterOutlet],
 })
 export class EntityRelationshipsComponent {

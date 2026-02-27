@@ -40,7 +40,6 @@ import { ShareOrInheritDialogComponent } from './field-sharing-configure/field-s
 @Component({
   selector: 'app-content-type-fields',
   templateUrl: './content-type-fields.html',
-  styleUrls: ['./content-type-fields.scss'],
   imports: [
     MatButtonModule,
     MatIconModule,

@@ -7,6 +7,7 @@
 @use '../app/edit/assets/styles/variables.scss';
 @use '../app/edit/assets/styles/theme/material-colors.scss';
 @use '../app/edit/assets/styles/theme/override-mat-form-field-fill-typography.scss';
+@use './ag-grid.styles.scss';
 
 // Edit Picker styles which affect Material components and must go "deep"
 @use '../app/edit/fields/picker/picker-global.scss';
