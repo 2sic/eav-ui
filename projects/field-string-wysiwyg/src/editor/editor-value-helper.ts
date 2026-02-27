@@ -1,31 +1,32 @@
 import { Connector } from 'projects/edit-types/src/Connector';
-import { Editor } from 'tinymce';
-import { classLog } from '../../../shared/logging';
+import { classLogEnabled } from '../../../shared/logging';
+import { EditorWithId } from './editor-with-id';
 
 const logSpecs = {
   all: false,
   saveValue: false,
-  handleExternalValueUpdate: false,
+  handleExternalValueUpdate: true,
 };
 
 export class EditorValueHelper {
-  log = classLog({ EditorValueHelper }, logSpecs);
+  log = classLogEnabled({ EditorValueHelper }, logSpecs);
 
-  constructor(private editor: Editor) { }
+  constructor(private editor: EditorWithId) { }
 
   /** saves editor content to prevent slow update when first using editor */
   editorContent: string;
 
   handleExternalValueUpdate(newValue: string): void {
-    this.log.aIf('handleExternalValueUpdate', { newValue });
+    this.log.aIf('handleExternalValueUpdate', { newValue, editorId: this.editor.idRandom });
     if (this.editorContent === newValue)
       return;
     this.editorContent = newValue;
     this.editor.setContent(this.editorContent);
   }
 
-  saveValue(editor: Editor, connector: Connector<string>): void {
-    const l = this.log.fnIf(`saveValue`);
+  saveValue(/* editor: Editor, */ connector: Connector<string>): void {
+    const editor = this.editor;
+    const l = this.log.fnIf(`saveValue`, { editorId: editor.idRandom });
     // Check what's new
     let newContent = editor.getContent();
 

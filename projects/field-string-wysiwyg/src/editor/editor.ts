@@ -76,6 +76,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   /** Class to add to the DOM so the surrounding Dropzone does everything right */
   #adamIntegrationClass = WysiwygConstants.classToDetectWysiwyg;
 
+  #editor: Editor;
   firstInit: boolean;
   dialogIsOpen: boolean;
   #tinyMceBuilder = new TinyMceBuilder();
@@ -137,7 +138,14 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
         modeIsInline: this.mode === 'inline',
         isDebug: this.connector._experimental.isDebug(),
         // setup callback when the editor is initialized by TinyMCE
-        setup: (editor: Editor) => this.#tinyMceBuilder.onInit(this, editor, tinyOptions)
+        setup: (editor: Editor) => {
+          this.#editor = editor; // remember to later clean up
+          // must always create a new builder, as the previous one has probably been cleaned up
+          this.#tinyMceBuilder = this.#tinyMceBuilder.isKilled
+            ? new TinyMceBuilder()
+            : this.#tinyMceBuilder;
+          this.#tinyMceBuilder.onInit(this, editor, tinyOptions)
+        },
       },
     );
 
@@ -155,6 +163,8 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     // Do cleanup
     this.#tinyMceBuilder?.cleanup();
     this.#tinyMceBuilder = null;
+    this.#editor?.destroy();
+    this.#editor?.remove();
   }
 }
 

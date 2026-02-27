@@ -3,12 +3,15 @@ import { Editor, EditorEvent } from 'tinymce';
 import { classLog } from '../../../shared/logging';
 import { RawEditorOptionsExtended } from '../config/raw-editor-options-extended';
 import { AddEverythingToRegistry } from '../config/ui-registry/add-everything-to-registry';
+import { AddToRegistryParams } from '../config/ui-registry/add-to-registry-base';
+import { SwitchModeHelper } from '../config/ui-registry/switch-mode.helper';
 import { attachAdam } from '../connector/adam';
 import { WysiwygDialogModes } from '../constants';
 import { FieldStringWysiwygEditor } from './editor';
 import { connectorToDisabled$ } from './editor-helpers';
 import { EditorPasteOrDrop } from './editor-paste-or-drop';
 import { EditorValueHelper } from './editor-value-helper';
+import { EditorWithId } from './editor-with-id';
 import { fixMenuPositions } from './fix-menu-positions.helper';
 
 const logSpecs = {
@@ -19,11 +22,13 @@ const logSpecs = {
 export class TinyMceBuilder {
   log = classLog({ TinyMceBuilder }, logSpecs);
 
-  #editor: Editor;
+  // #editor: Editor;
   #subscriptions = new Subscription();
   #menuObserver: MutationObserver;
   #valueHelper: EditorValueHelper;
   #pasteHandler = new EditorPasteOrDrop();
+
+  isKilled = false;
 
   /** This will initialized an instance of an editor. Everything else is kind of global. */
   onInit(parent: FieldStringWysiwygEditor, editor: Editor, rawEditorOptions: RawEditorOptionsExtended): void {
@@ -33,12 +38,13 @@ export class TinyMceBuilder {
       if (event.ctrlKey && event.key === "Enter")
         event.preventDefault();
     });
+
+    (editor as EditorWithId).idRandom = Math.random().toString(36).substring(2, 8);
     
-
     // Remember reference to destroy later
-    this.#editor = editor;
+    // this.#editor = editor;
 
-    this.#valueHelper = new EditorValueHelper(editor);
+    this.#valueHelper = new EditorValueHelper(editor as EditorWithId);
 
     // On init, add everything to the registry so it can be used by buttons and other UI elements, and do other setup like setting up subscriptions
     editor.on('init', _ => {
@@ -47,12 +53,25 @@ export class TinyMceBuilder {
       // If there is a reconfiguration, run the editorOnInit code now, so it can do things like add buttons before we add everything to the registry
       parent.reconfigure?.editorOnInit?.(editor);
 
-      new AddEverythingToRegistry({
+      const addToRegistryParams = {
         field: parent,
         editor,
         adam: parent.connector._experimental.adam,
         options: rawEditorOptions,
-      }).register();
+      } satisfies AddToRegistryParams;
+
+      new AddEverythingToRegistry(addToRegistryParams).register();
+
+      const isDebug = parent.connector._experimental.isDebug();
+      parent.connector._experimental.debugWatch(isNewDebug => {
+        // The first case must be skipped, as the editor is not ready yet, and the callback is triggered automatically.
+        if (isDebug == isNewDebug)
+          return;
+        console.warn(`Debug mode changed:`, { isDebug });
+        new SwitchModeHelper(addToRegistryParams).switchMode(null, null);
+      });
+
+
 
       if (!parent.reconfigure?.disableAdam)
         attachAdam(editor, parent.connector._experimental.adam);
@@ -80,7 +99,7 @@ export class TinyMceBuilder {
     });
 
     // on change, undo and redo, save/push the value
-    ['change', 'undo', 'redo', 'input'].forEach(name => editor.on(name, () => this.#valueHelper.saveValue(editor, parent.connector)));
+    ['change', 'undo', 'redo', 'input'].forEach(name => editor.on(name, () => this.#valueHelper.saveValue(parent.connector)));
 
     // Setup focus/blur handling
     this.watchFocusEvents(parent, editor);
@@ -136,20 +155,19 @@ export class TinyMceBuilder {
         attachAdam(editor, parent.connector._experimental.adam);
     });
 
-    editor.on('blur', _event => {
-      handleFocus(false, _event);
-    });
+    editor.on('blur', _event => handleFocus(false, _event));
   }
 
 
   
   cleanup(): void {
     this.#subscriptions.unsubscribe();
-    this.#editor?.destroy();
-    this.#editor?.remove();
+    // this.#editor?.destroy();
+    // this.#editor?.remove();
     this.#valueHelper = null;
     this.#pasteHandler = null;
     this.#menuObserver?.disconnect();
     this.#menuObserver = null;
+    this.isKilled = true;
   }
 }
