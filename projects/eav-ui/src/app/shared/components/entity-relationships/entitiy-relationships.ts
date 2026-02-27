@@ -1,6 +1,5 @@
 import { GridOptions, ICellRendererParams } from '@ag-grid-community/core';
 import { Component, Input, computed } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from "@angular/router";
 import { transient } from 'projects/core';
 import { FeaturesService } from '../../../features/features.service';
@@ -26,7 +25,6 @@ export class EntityRelationshipsComponent {
     #dialogRouter = transient(DialogRoutingService);
     #sysData = transient(SysDataService);
     #features = transient(FeaturesService);
-    #snack = transient(MatSnackBar);
     #resource = this.#sysData.getMany<{ default: RelationshipRow[] }>({
         source: this.source,
         params: computed(() => ({ Id: this.entityId })),
