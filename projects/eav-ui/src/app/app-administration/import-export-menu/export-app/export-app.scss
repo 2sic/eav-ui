@@ -1,12 +1,4 @@
-@use '../../../../styles/variables.scss';
-
-a {
-  color: variables.$external-link !important;
-}
-
-.eav-button__with-icon {
-  color: variables.$sxc-solid !important;
-}
+@use "../../../../styles/ag-grid-hover";
 
 .eav-app-info {
   &__title {
