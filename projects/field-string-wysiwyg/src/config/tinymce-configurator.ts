@@ -17,7 +17,7 @@ const logSpecs = {
   isWysiwygPasteFormatted$: false,
 };
 
-const reconfigErr = `Very likely an error in your reconfigure code. Check https://go.2sxc.org/field-wysiwyg`;
+const reConfigErr = `Very likely an error in your reconfigure code. Check https://go.2sxc.org/field-wysiwyg`;
 
 /** This object will configure the TinyMCE */
 export class TinyMceConfigurator {
@@ -42,7 +42,7 @@ export class TinyMceConfigurator {
         if (changedAddOns)
           this.addOnSettings = changedAddOns;
         else
-          console.error(`reconfigure.configureAddOns(...) didn't return a value. ${reconfigErr}`);
+          console.error(`reconfigure.configureAddOns(...) didn't return a value. ${reConfigErr}`);
       }
 
       this.addOnSettings = reconfigure.configureAddOns?.(this.addOnSettings) || this.addOnSettings;
@@ -58,7 +58,9 @@ export class TinyMceConfigurator {
   }
 
   /** Construct TinyMCE options */
-  buildOptions(selectorClass: string, fixedToolbarClass: string, modeIsInline: boolean, setup: (editor: Editor) => void): RawEditorOptionsExtended {
+  buildOptions({ selectorClass, fixedToolbarClass, modeIsInline, setup, isDebug }
+    : { selectorClass: string; fixedToolbarClass: string; modeIsInline: boolean; setup: (editor: Editor) => void; isDebug: boolean }
+  ): RawEditorOptionsExtended {
     const connector = this.connector;
     const exp = connector._experimental;
     // Create a TinyMceModeConfig object with bool only
@@ -67,7 +69,7 @@ export class TinyMceConfigurator {
 
     // 2. Get the preset configuration for this mode
     const configManager = new WysiwygConfigurationManager(connector, fieldSettings);
-    const wysiwygConfiguration = configManager.getSettings(null, modeIsInline ? DisplayModes.DisplayInline : DisplayModes.DisplayDialog);
+    const wysiwygConfiguration = configManager.getSettings(null, modeIsInline ? DisplayModes.DisplayInline : DisplayModes.DisplayDialog, isDebug);
 
     // 3. Dropzone / adam checks
     if (exp.dropzone == null || exp.adam == null)
@@ -102,7 +104,7 @@ export class TinyMceConfigurator {
       const newOptions = this.reconfigure.configureOptions(options);
       if (newOptions)
         return newOptions;
-      console.error(`reconfigure.configureOptions(options) didn't return an options object. ${reconfigErr}`);
+      console.error(`reconfigure.configureOptions(options) didn't return an options object. ${reConfigErr}`);
     }
     return options;
   }

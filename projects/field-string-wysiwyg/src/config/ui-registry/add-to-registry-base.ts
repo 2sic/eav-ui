@@ -66,11 +66,12 @@ export abstract class AddToRegistryBase {
   }
 
   /** Mode switching to inline/dialog and advanced/normal */
-  protected switchMode(displayMode?: DialogModes.DisplayModes, editMode?: EditModes.WysiwygEditMode): void {
+  protected switchMode(displayMode: DialogModes.DisplayModes | null, editMode: EditModes.WysiwygEditMode | null): void {
     const currMode = this.options.configManager.current;
     displayMode ??= currMode.displayMode;
     editMode ??= currMode.editMode;
-    const newSettings = this.options.configManager.switch(editMode, displayMode);
+    const isDebug = this.field.connector._experimental.isDebug();
+    const newSettings = this.options.configManager.switch(editMode, displayMode, isDebug);
     // don't create a new object, we must keep a reference to the previous parent `this.options`.
     // don't do this: this.options = {...this.options, ...newSettings};
     this.options.toolbar = newSettings.toolbar;

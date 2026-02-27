@@ -131,11 +131,14 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
 
     this.configurator = new TinyMceConfigurator(this.connector, this.reconfigure);
     const tinyOptions = this.configurator.buildOptions(
-      this.#containerClass,
-      this.#toolbarContainerClass,
-      this.mode === 'inline',
-      // setup callback when the editor is initialized by TinyMCE
-      (editor: Editor) => this.#tinyMceBuilder.onInit(this, editor, tinyOptions),
+      {
+        selectorClass: this.#containerClass,
+        fixedToolbarClass: this.#toolbarContainerClass,
+        modeIsInline: this.mode === 'inline',
+        isDebug: this.connector._experimental.isDebug(),
+        // setup callback when the editor is initialized by TinyMCE
+        setup: (editor: Editor) => this.#tinyMceBuilder.onInit(this, editor, tinyOptions)
+      },
     );
 
     this.firstInit = true;
