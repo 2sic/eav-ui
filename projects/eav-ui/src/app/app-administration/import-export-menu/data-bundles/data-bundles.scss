@@ -1,14 +1,4 @@
-@use "../../../../styles/variables.scss";
-
-:host ::ng-deep .ag-row-hover .ag-cell a,
-:host ::ng-deep .ag-row-hover .ag-cell .eav-grid-action-button,
-.eav-button__with-icon {
-  color: variables.$sxc-solid !important;
-}
-
-.eav-button__with-icon:disabled {
-  color: variables.$text-disabled !important;
-}
+@use "../../../../styles/ag-grid-hover";
 
 .grid-height {
   max-height: calc(100vh - 560px);

@@ -1,11 +1,4 @@
-@use "../../../../styles/variables.scss";
-
-:host ::ng-deep .ag-row-hover .ag-cell a,
-:host ::ng-deep .ag-row-hover .ag-cell .id-box *,
-:host ::ng-deep .ag-row-hover .ag-cell .eav-grid-action-button,
-.eav-button__with-icon * {
-  color: variables.$sxc-solid !important;
-}
+@use "../../../../styles/ag-grid-hover";
 
 .grid-wrapper {
   display: flex;
