@@ -259,17 +259,6 @@ ag-grid-angular {
   }
 }
 
-.ag-theme-material {
-
-  .ag-row-hover .ag-cell a,
-  .ag-row-hover .ag-cell .id-box *,
-  .ag-row-hover .ag-cell .eav-grid-action-button,
-  .eav-button__with-icon * {
-    color: variables.$sxc-solid !important;
-  }
-
-}
-
 .ag-tooltip {
   background-color: rgba(97, 97, 97, 0.9) !important;
   color: #fff !important;
