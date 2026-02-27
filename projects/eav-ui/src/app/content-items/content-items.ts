@@ -61,7 +61,6 @@ const logSpecs = {
 @Component({
   selector: 'app-content-items',
   templateUrl: './content-items.html',
-  styleUrls: ['./content-items.scss'],
   imports: [
     MatButtonModule,
     MatIconModule,
