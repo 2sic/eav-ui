@@ -1,3 +1,4 @@
+import { Connector } from '../../../edit-types/src/Connector';
 import * as search from '../assets/icons/font-awesome/magnifying-glass.svg';
 import * as mapMarker from '../assets/icons/font-awesome/map-marker-alt-solid.svg';
 import * as locationPin from '../assets/icons/google-material/location-pin.svg';
@@ -12,7 +13,7 @@ export const customGpsIcons = {
 };
 
 // TODO: TRY to refactor to use the new context.app.getSetting(...) in the formulas-data
-export function getDefaultCoordinates(connector: any): LatLngObject | null {
+export function getDefaultCoordinates(connector: Connector<string>): LatLngObject | null {
   const defaultCoordinates = connector?._experimental?.getSettings("Settings.GoogleMaps.DefaultCoordinates") as CoordinatesDto;
   return defaultCoordinates ? {
     lat: defaultCoordinates.Latitude,
