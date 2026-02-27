@@ -2,7 +2,7 @@
 /**
  * Data as it comes from settings
  */
-export interface CoordinatesDto{
+export interface CoordinatesDto {
   Latitude: number;
   Longitude: number;
 }

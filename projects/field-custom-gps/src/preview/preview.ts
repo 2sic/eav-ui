@@ -1,8 +1,10 @@
+import { FieldSettings } from 'projects/edit-types/src/FieldSettings';
+import { CustomGps } from 'projects/edit-types/src/FieldSettings-CustomGps';
 import { ElementEventListener } from '../../../eav-ui/src/app/edit/shared/controls/element-event-listener.model';
 import { Connector } from '../../../edit-types/src/Connector';
 import { EavCustomInputField } from '../../../edit-types/src/EavCustomInputField';
-import { classLog } from '../../../shared/logging';
-import { buildTemplate, customGpsIcons, getDefaultCoordinates, isLatLngObject, parseLatLng } from '../shared/helpers';
+import { classLogEnabled } from '../../../shared/logging';
+import { buildTemplate, customGpsIcons, isLatLngObject, parseLatLng } from '../shared/gps-helpers';
 import * as template from './preview.html';
 import * as styles from './preview.scss';
 
@@ -10,7 +12,7 @@ const gpsTag = 'field-custom-gps';
 
 class FieldCustomGps extends HTMLElement implements EavCustomInputField<string> {
 
-  log = classLog({ FieldCustomGps });
+  log = classLogEnabled({ FieldCustomGps });
 
   fieldInitialized: boolean;
   connector: Connector<string>;
@@ -18,7 +20,6 @@ class FieldCustomGps extends HTMLElement implements EavCustomInputField<string> 
   private latContainer: HTMLSpanElement;
   private lngContainer: HTMLSpanElement;
   private eventListeners: ElementEventListener[];
-  private defaultCoordinates: google.maps.LatLngLiteral | null;
 
   constructor() {
     super();
@@ -27,9 +28,12 @@ class FieldCustomGps extends HTMLElement implements EavCustomInputField<string> 
   }
 
   connectedCallback(): void {
-    if (this.fieldInitialized) return;
+    if (this.fieldInitialized)
+      return;
+
+    const l = this.log.fn('connectedCallback', () => ({ fieldInitialized: this.fieldInitialized }));
     this.fieldInitialized = true;
-    this.log.a(`${gpsTag} connectedCallback called`);
+    l.a(`${gpsTag} connectedCallback called`);
 
     this.innerHTML = buildTemplate(template.default, styles.default);
     const mapIconContainer = this.querySelector<HTMLDivElement>('#map-icon-container');
@@ -41,25 +45,26 @@ class FieldCustomGps extends HTMLElement implements EavCustomInputField<string> 
     this.addEventListener('click', expand);
     this.eventListeners.push({ element: this, type: 'click', listener: expand });
 
-    this.defaultCoordinates = getDefaultCoordinates(this.connector);
+    const defaultCoordinates = (this.connector.field.settings as FieldSettings & CustomGps)._defaults;
+    
+    l.a('default coordinates from settings', { defaultCoordinates });
 
-    // set initial value (normalize with parseLatLng)
-    if (this.connector.data.value && isLatLngObject(this.connector.data.value)) {
-      const latLng = parseLatLng(this.connector.data.value);
+    // set initial value
+    this.#tryUpdateHtmlCoordinates(this.connector.data.value, defaultCoordinates);
+
+    // update on value change
+    this.connector.data.onValueChange(value => {
+      this.#tryUpdateHtmlCoordinates(value, defaultCoordinates);
+    });
+  }
+
+  #tryUpdateHtmlCoordinates(value: string, defaultCoordinates: google.maps.LatLngLiteral | null): void {
+    if (value && isLatLngObject(value)) {
+      const latLng = parseLatLng(value);  // (normalize with parseLatLng)
       this.updateHtml(latLng);
     } else {
-      this.updateHtml(this.defaultCoordinates);
+      this.updateHtml(defaultCoordinates);
     }
-
-    // update on value change (normalize with parseLatLng)
-    this.connector.data.onValueChange(value => {
-      if (value && isLatLngObject(value)) {
-        const latLng = parseLatLng(value);
-        this.updateHtml(latLng);
-      } else {
-        this.updateHtml(this.defaultCoordinates);
-      }
-    });
   }
 
   private updateHtml(latLng: google.maps.LatLngLiteral | null): void {

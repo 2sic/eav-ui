@@ -7,7 +7,7 @@ import { EavCustomInputField } from '../../../edit-types/src/EavCustomInputField
 import { FieldSettings } from '../../../edit-types/src/FieldSettings';
 import { IFieldMask } from '../../../edit-types/src/IFieldMask';
 import { classLog } from '../../../shared/logging';
-import { buildTemplate, customGpsIcons, getDefaultCoordinates, isLatLngObject, parseLatLng, stringifyLatLng } from '../shared/helpers';
+import { buildTemplate, customGpsIcons, isLatLngObject, parseLatLng, stringifyLatLng } from '../shared/gps-helpers';
 import * as template from './main.html';
 import * as styles from './main.scss';
 
@@ -31,7 +31,6 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
   private mapContainer: HTMLDivElement;
   private marker: any;
   private eventListeners: ElementEventListener[];
-  private defaultCoordinates: google.maps.LatLngLiteral;
   private iconPin: HTMLAnchorElement
 
   constructor() {
@@ -60,27 +59,31 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
     const expConnector = this.connector._experimental;
     const allInputNames = expConnector.allInputTypeNames.map(inputType => inputType.name);
     const settings = this.connector.field.settings as FieldSettings & CustomGps & { 'Address Mask': string };
-    if (allInputNames.includes(settings.LatField)) {
+
+    if (allInputNames.includes(settings.LatField))
       this.latFieldName = settings.LatField;
-    }
-    if (allInputNames.includes(settings.LongField)) {
+
+    if (allInputNames.includes(settings.LongField))
       this.lngFieldName = settings.LongField;
-    }
 
     const addressMaskSetting = settings.AddressMask || settings['Address Mask'];
     this.addressMask = expConnector.getFieldMask(addressMaskSetting, 'Gps');
 
     this.log.a(`${gpsDialogTag} addressMask:`, { addressMaskSetting });
+    
     if (addressMaskSetting)
       formattedAddressContainer.value = this.addressMask.result();
 
-    this.defaultCoordinates = getDefaultCoordinates(this.connector);
+    const defaultCoordinates = settings._defaults;
 
     const googleMapsParams = (expConnector.getSettings(EditApiKeyPaths.GoogleMaps) as ApiKeySpecs).ApiKey;
-    this.connector.loadScript('google', `https://maps.googleapis.com/maps/api/js?key=${googleMapsParams}&callback=Function.prototype`, () => { this.mapScriptLoaded(); });
+    this.connector.loadScript('google',
+      `https://maps.googleapis.com/maps/api/js?key=${googleMapsParams}&callback=Function.prototype`,
+      () => { this.mapScriptLoaded(defaultCoordinates); }
+    );
   }
 
-  private async mapScriptLoaded(): Promise<void> {
+  private async mapScriptLoaded(defaultCoordinates: google.maps.LatLngLiteral): Promise<void> {
     this.log.a(`${gpsDialogTag} mapScriptLoaded called`);
 
     //@ts-ignore
@@ -90,7 +93,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
 
     this.map = new Map(this.mapContainer, {
       zoom: 15,
-      center: this.defaultCoordinates,
+      center: defaultCoordinates,
       gestureHandling: 'greedy',
       mapId: 'DEMO_MAP_ID',
       streetViewControlOptions: {
@@ -103,7 +106,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
 
     this.marker = new AdvancedMarkerElement({
       map: this.map,
-      position: this.defaultCoordinates,
+      position: defaultCoordinates,
       gmpDraggable: true,
     });
 
@@ -111,18 +114,18 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
 
     // set initial values - read stored JSON (either shape) and normalize for the map (lat/lng)
     if (!this.connector.data.value) {
-      this.updateHtml(this.defaultCoordinates);
+      this.updateHtml(defaultCoordinates);
     } else {
       try {
         if (isLatLngObject(this.connector.data.value)) {
           const normalized = parseLatLng(this.connector.data.value); // returns {lat,lng}
           this.updateHtml(normalized);
         } else {
-          this.updateHtml(this.defaultCoordinates);
+          this.updateHtml(defaultCoordinates);
         }
       } catch (e) {
         console.error('Invalid data.value:', this.connector.data.value);
-        this.updateHtml(this.defaultCoordinates);
+        this.updateHtml(defaultCoordinates);
       }
     }
 
