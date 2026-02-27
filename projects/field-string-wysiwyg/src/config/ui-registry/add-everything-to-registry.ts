@@ -13,14 +13,15 @@ import { AddToRegistryWysiwygSections } from './add-to-registry-wysiwyg-sections
 /** Register all kinds of buttons on TinyMCE */
 export class AddEverythingToRegistry extends AddToRegistryBase {
 
-  constructor(private makerParams: AddToRegistryParams) {
+  constructor(makerParams: AddToRegistryParams) {
     super(makerParams);
   }
 
   register(): void {
     const instSettings = this.field.configurator.addOnSettings;
 
-    if (!instSettings.enabled) return;
+    if (!instSettings.enabled)
+      return;
 
     const p = this.makerParams;
     new TinyButtonsImg(p).register();

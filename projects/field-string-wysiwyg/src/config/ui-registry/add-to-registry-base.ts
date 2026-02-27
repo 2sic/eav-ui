@@ -5,6 +5,7 @@ import * as DialogModes from '../../constants/display-modes';
 import * as EditModes from '../../constants/edit-modes';
 import { FieldStringWysiwygEditor } from '../../editor/editor';
 import { RawEditorOptionsExtended } from '../raw-editor-options-extended';
+import { SwitchModeHelper } from './switch-mode.helper';
 
 type FuncVoid = () => void | unknown;
 
@@ -27,7 +28,7 @@ export abstract class AddToRegistryBase {
   adam: Adam;
   options: RawEditorOptionsExtended;
 
-  constructor(makerParams: AddToRegistryParams, message?: string) {
+  constructor(protected makerParams: AddToRegistryParams, message?: string) {
     this.field = makerParams.field;
     this.editor = makerParams.editor;
     this.adam = makerParams.adam;
@@ -67,19 +68,7 @@ export abstract class AddToRegistryBase {
 
   /** Mode switching to inline/dialog and advanced/normal */
   protected switchMode(displayMode: DialogModes.DisplayModes | null, editMode: EditModes.WysiwygEditMode | null): void {
-    const currMode = this.options.configManager.current;
-    displayMode ??= currMode.displayMode;
-    editMode ??= currMode.editMode;
-    const isDebug = this.field.connector._experimental.isDebug();
-    const newSettings = this.options.configManager.switch(editMode, displayMode, isDebug);
-    // don't create a new object, we must keep a reference to the previous parent `this.options`.
-    // don't do this: this.options = {...this.options, ...newSettings};
-    this.options.toolbar = newSettings.toolbar;
-    this.options.menubar = newSettings.menubar;
-    this.options.contextmenu = newSettings.contextmenu;
-    // refresh editor toolbar
-    this.editor.editorManager.remove(this.editor);
-    this.editor.editorManager.init(this.options);
+    new SwitchModeHelper(this.makerParams).switchMode(displayMode, editMode);
   }
 
   protected openInDialog() {

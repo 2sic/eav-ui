@@ -26,7 +26,7 @@ import type { Editor } from 'tinymce/tinymce';
 import { Connector } from '../../../edit-types/src/Connector';
 import { EavCustomInputField } from '../../../edit-types/src/EavCustomInputField';
 import { WysiwygReconfigure } from '../../../edit-types/src/WysiwygReconfigure';
-import { classLogEnabled } from '../../../shared/logging';
+import { classLog } from '../../../shared/logging';
 import { tinyMceBaseUrl, wysiwygEditorHtmlTag } from '../../internal-constants';
 import { WysiwygConstants } from '../../shared/wysiwyg.constants';
 import { TinyMceConfigurator } from '../config/tinymce-configurator';
@@ -54,7 +54,7 @@ const logSpecs = {
  */
 export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomInputField<string> {
 
-  log = classLogEnabled({ FieldStringWysiwygEditor }, logSpecs);
+  log = classLog({ FieldStringWysiwygEditor }, logSpecs);
 
   fieldInitialized = false;
   connector: Connector<string>;

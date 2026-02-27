@@ -10,9 +10,15 @@ import { ToolbarParser } from './toolbar-parser';
 import { WysiwygButtons, WysiwygFeatures } from './types';
 import { WysiwygConfiguration } from './types/wysiwyg-configurations';
 
+const logSpecs = {
+  all: false,
+  constructor: true,
+  getSettings: true,
+};
+
 export class WysiwygConfigurationManager {
 
-  log = classLog({ WysiwygConfigurationManager });
+  log = classLog({ WysiwygConfigurationManager }, logSpecs);
 
   constructor(
     private connector: Connector<string>,
@@ -26,6 +32,7 @@ export class WysiwygConfigurationManager {
   }
 
   public getSettings(editMode: EditModes.WysiwygEditMode, displayMode: DialogModes.DisplayModes, isDebug: boolean): WysiwygConfiguration {
+    const l = this.log.fnIf('getSettings', { editMode, displayMode, isDebug });
     // 0. Shorten some variables
     const exp = this.connector._experimental;
     const fieldSettings = this.fieldSettings;
