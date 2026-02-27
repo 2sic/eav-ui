@@ -17,7 +17,7 @@ import { EavContentType, EavEntityAttributes, EavItem } from '../shared/models/e
 import { FieldConstantsOfLanguage, FieldProps } from './fields-configs.model';
 import { FieldsPropsEngineCycle } from './fields-properties-engine-cycle';
 import { FieldsSettingsConstantsService } from './fields-settings-constants.service';
-import { FieldSettingsUpdateHelperFactory } from './fields-settings-update.helpers';
+import { FieldSettingsUpdateHelperFactory } from './fields-settings-update-helper-factory';
 import { FieldsSettingsService } from './fields-settings.service';
 import { FieldsSignalsHelper } from './fields-signals.helper';
 import { FieldsValuesModifiedHelper } from './fields-values-modified.helper';

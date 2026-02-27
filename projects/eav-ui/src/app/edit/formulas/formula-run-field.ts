@@ -8,7 +8,7 @@ import { ItemIdentifierShared } from '../../shared/models/edit-form.model';
 import { DebugFields } from '../edit-debug';
 import { FieldDefaults } from '../shared/helpers';
 import { FieldConstantsOfLanguage, FieldProps, FieldPropsPicker } from '../state/fields-configs.model';
-import { FieldSettingsUpdateHelper } from '../state/fields-settings-update.helpers';
+import { FieldSettingsUpdateHelper } from '../state/fields-settings-update-helper';
 import { ItemValuesOfLanguage } from '../state/item-values-of-language.model';
 import { FormulaCacheItem } from './cache/formula-cache.model';
 import { FormulaDesignerService } from './designer/formula-designer.service';

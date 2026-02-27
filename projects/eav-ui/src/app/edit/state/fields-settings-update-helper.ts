@@ -19,39 +19,6 @@ const logSpecs = {
   fields: [...DebugFields], // or '*' for all
 };
 
-export class FieldSettingsUpdateHelperFactory {
-  log = classLog({FieldSettingsUpdateHelperFactory});
-  constructor(
-    // General & Content Type Info
-    private contentTypeMetadata: EavEntity[],
-    private language: FormLanguage,
-    /** set of configuration for running field logic - shared */
-    private fieldLogicTools: FieldSettingsTools,
-    /** Info that the form is read-only */
-    private formReadOnly: boolean,
-    private slotIsEmpty: Signal<boolean>,
-  ) { }
-
-  create(
-    fieldName: string,
-    attribute: EavContentTypeAttribute,
-    constantFieldPart: FieldConstantsOfLanguage,
-    attributeValues: EavField<any>,
-  ): FieldSettingsUpdateHelper {
-    return new FieldSettingsUpdateHelper(
-      fieldName,
-      this.contentTypeMetadata,
-      this.language,
-      this.fieldLogicTools,
-      this.formReadOnly,
-      this.slotIsEmpty,
-      attribute,
-      constantFieldPart,
-      attributeValues,
-    );
-  }
-}
-
 /**
  * Special helper to check if a field should remain disabled because of various language settings.
  * 
@@ -69,7 +36,7 @@ export class FieldSettingsUpdateHelper {
     private contentTypeMetadata: EavEntity[],
     private language: FormLanguage,
     /** set of configuration for running field logic - shared */
-    private fieldLogicTools: FieldSettingsTools,
+    private fieldSettingsTools: FieldSettingsTools,
     /** Info that the form is read-only */
     private formReadOnly: boolean,
     private formSlotIsEmpty: Signal<boolean>,
@@ -109,7 +76,12 @@ export class FieldSettingsUpdateHelper {
       || settings.DisableTranslation;
 
     // Correct these fresh settings with FieldLogics of this field
-    const fixed = constantFieldPart.logic?.update({ fieldName: this.fieldName, settings: settings, value: fieldValue, tools: this.fieldLogicTools }) ?? settings;
+    const fixed = constantFieldPart.logic?.update({
+      fieldName: this.fieldName,
+      settings: settings,
+      value: fieldValue,
+      tools: this.fieldSettingsTools
+    }) ?? settings;
 
     return l.r(fixed);
   }

@@ -5,7 +5,7 @@ import { WrapperHelper } from '../fields/wrappers/wrapper.helper';
 import { EavEntityAttributes } from '../shared/models/eav';
 import { FieldConstantsOfLanguage, FieldProps } from './fields-configs.model';
 import { FieldsPropsEngine } from './fields-properties-engine';
-import { FieldSettingsUpdateHelperFactory } from './fields-settings-update.helpers';
+import { FieldSettingsUpdateHelperFactory } from './fields-settings-update-helper-factory';
 import { ItemValuesOfLanguage } from './item-values-of-language.model';
 
 const logSpecs = {
