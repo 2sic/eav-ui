@@ -1,6 +1,7 @@
 <div class="eav-dialog">
   <app-dialog-header eav-dialog-header (close)="closeDialog()">
-    Relationships
+    Relationships of {{ entityTitle() + ' ' + ('#' + itemId()) }}
+    
     <app-feature-icon-with-dialog
       class="feature-icon-large"
       [forText]="true"

@@ -1,4 +1,4 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { RouterOutlet } from "@angular/router";
 import { transient } from 'projects/core';
@@ -7,6 +7,11 @@ import { FeatureIconWithDialogComponent } from '../../features/icons/feature-ico
 import { EntityRelationshipsComponent } from '../../shared/components/entity-relationships/entitiy-relationships';
 import { DialogHeaderComponent } from '../../shared/dialog-header/dialog-header';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
+import { SysDataService } from '../../shared/services/sys-data.service';
+
+type EntityLookupResult = {
+  title?: string;
+};
 
 @Component({
   selector: 'app-relationships-dialog',
@@ -24,13 +29,27 @@ export class RelationshipsPageComponent {
   readonly featureId = 'EntityInspectRelationships';
 
   #dialogRouter = transient(DialogRoutingService);
+  #sysData = transient(SysDataService);
 
   constructor(
     private dialog: MatDialogRef<RelationshipsPageComponent>,
   ) { }
 
   itemId = computed(() => Number(this.#dialogRouter.getParam('itemId')));
-  entityTitle = signal<string>('');
+  
+  entity = this.#sysData.getFirst<EntityLookupResult>({
+    source: 'System.GetEntities',
+    streams: 'Default',
+    params: computed(() => ({ 
+      entityIds: String(this.itemId()),
+    })),
+    fields: 'Title',
+  });
+
+  entityTitle = computed(() => {
+    const e = this.entity();
+    return e?.title ?? '';
+  });
 
   closeDialog() {
     this.dialog.close();
