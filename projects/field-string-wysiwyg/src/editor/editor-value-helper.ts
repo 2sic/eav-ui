@@ -4,7 +4,7 @@ import { EditorWithId } from './editor-with-id';
 
 const logSpecs = {
   all: false,
-  saveValue: false,
+  saveValue: true,
   handleExternalValueUpdate: true,
 };
 
@@ -26,14 +26,15 @@ export class EditorValueHelper {
 
   saveValue(/* editor: Editor, */ connector: Connector<string>): void {
     const editor = this.editor;
-    const l = this.log.fnIf(`saveValue`, { editorId: editor.idRandom });
     // Check what's new
     let newContent = editor.getContent();
+    
+    const l = this.log.fnIf(`saveValue`, { editorId: editor.idRandom, newContent });
 
     // If the new thing is an image in the middle of an upload,
     // exit and wait for the change to be finalized
     if (newContent.includes('<img src="data:image'))
-      return;
+      return l.end("no image; done");
 
     // this is necessary for adding data-cmsid attribute to image attributes
     if (newContent.includes("?tododata-cmsid=")) {

@@ -1,4 +1,4 @@
-import { FieldStringWysiwygEditor } from './editor';
+import { FieldStringWysiwygEditor } from '../field-string-wysiwyg/field-string-wysiwyg-editor';
 
 export function fixMenuPositions(fieldStringWysiwyg: FieldStringWysiwygEditor): MutationObserver {
   const observer = new MutationObserver((mutations: MutationRecord[]) => {

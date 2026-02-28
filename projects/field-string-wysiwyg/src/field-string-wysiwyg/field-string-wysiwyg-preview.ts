@@ -5,8 +5,8 @@ import { EavCustomInputField } from '../../../edit-types/src/EavCustomInputField
 import { classLog } from '../../../shared/logging';
 import { connectorToDisabled$, registerCustomElement } from '../editor/editor-helpers';
 import { buildTemplate } from '../shared/helpers';
-import * as template from './preview.html';
-import * as styles from './preview.scss';
+import * as template from './field-string-wysiwyg-preview.html';
+import * as styles from './field-string-wysiwyg-preview.scss';
 
 export const wysiwygPreviewTag = 'field-string-wysiwyg-preview';
 
@@ -30,7 +30,8 @@ export class FieldStringWysiwygPreview extends HTMLElement implements EavCustomI
   }
 
   connectedCallback(): void {
-    if (this.fieldInitialized) return;
+    if (this.fieldInitialized)
+      return;
     this.fieldInitialized = true;
 
     this.log.a(`connectedCallback`);
@@ -43,7 +44,11 @@ export class FieldStringWysiwygPreview extends HTMLElement implements EavCustomI
     const expand = () => this.connector.dialog.open();
 
     previewContainer.addEventListener('click', expand);
-    this.eventListeners.push({ element: previewContainer, type: 'click', listener: expand });
+    this.eventListeners.push({
+      element: previewContainer,
+      type: 'click',
+      listener: expand
+    });
 
     this.subscriptions.add(
       this.connector.data.value$.subscribe(value => {

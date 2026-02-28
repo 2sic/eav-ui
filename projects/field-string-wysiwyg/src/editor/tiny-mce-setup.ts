@@ -7,7 +7,7 @@ import { AddToRegistryParams } from '../config/ui-registry/add-to-registry-base'
 import { SwitchModeHelper } from '../config/ui-registry/switch-mode.helper';
 import { attachAdam } from '../connector/adam';
 import { WysiwygDialogModes } from '../constants';
-import { FieldStringWysiwygEditor } from './editor';
+import { FieldStringWysiwygEditor } from '../field-string-wysiwyg/field-string-wysiwyg-editor';
 import { connectorToDisabled$ } from './editor-helpers';
 import { EditorPasteOrDrop } from './editor-paste-or-drop';
 import { EditorValueHelper } from './editor-value-helper';

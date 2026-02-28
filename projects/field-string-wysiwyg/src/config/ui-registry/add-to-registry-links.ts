@@ -1,6 +1,6 @@
 import * as tinymce from 'tinymce';
 import * as Buttons from '../../constants/buttons';
-import { FieldStringWysiwygEditor } from '../../editor/editor';
+import { FieldStringWysiwygEditor } from '../../field-string-wysiwyg/field-string-wysiwyg-editor';
 import { AddToRegistryBase, AddToRegistryParams } from './add-to-registry-base';
 
 type CallbackParams = Parameters<Parameters<tinymce.Ui.Toolbar.ToolbarSplitButtonSpec['fetch']>[0]>[0];

@@ -1,9 +1,8 @@
 import { Editor } from 'tinymce';
 import { Adam } from '../../../../edit-types/src/Adam';
-import { wysiwygEditorHtmlTag } from '../../../internal-constants';
 import * as DialogModes from '../../constants/display-modes';
 import * as EditModes from '../../constants/edit-modes';
-import { FieldStringWysiwygEditor } from '../../editor/editor';
+import { FieldStringWysiwygEditor, wysiwygEditorHtmlTag } from '../../field-string-wysiwyg/field-string-wysiwyg-editor';
 import { RawEditorOptionsExtended } from '../raw-editor-options-extended';
 import { SwitchModeHelper } from './switch-mode.helper';
 

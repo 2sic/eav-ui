@@ -27,16 +27,18 @@ import { Connector } from '../../../edit-types/src/Connector';
 import { EavCustomInputField } from '../../../edit-types/src/EavCustomInputField';
 import { WysiwygReconfigure } from '../../../edit-types/src/WysiwygReconfigure';
 import { classLog } from '../../../shared/logging';
-import { tinyMceBaseUrl, wysiwygEditorHtmlTag } from '../../internal-constants';
+import { tinyMceBaseUrl } from '../../internal-constants';
 import { WysiwygConstants } from '../../shared/wysiwyg.constants';
 import { TinyMceConfigurator } from '../config/tinymce-configurator';
 import { TranslationsLoader } from '../config/translation-loader';
+import { registerCustomElement } from '../editor/editor-helpers';
+import { TinyMceBuilder } from '../editor/tiny-mce-setup';
 import { buildTemplate } from '../shared/helpers';
-import { registerCustomElement } from './editor-helpers';
-import * as template from './editor.html';
-import * as styles from './editor.scss';
+import * as template from './field-string-wysiwyg-editor.html';
+import * as styles from './field-string-wysiwyg-editor.scss';
 import * as skinOverrides from './skin-overrides.scss';
-import { TinyMceBuilder } from './tiny-mce-setup';
+
+export const wysiwygEditorHtmlTag = 'field-string-wysiwyg-editor';
 
 const logSpecs = {
   all: false,

@@ -1,19 +1,19 @@
+import { FieldSettings } from 'projects/edit-types/src/FieldSettings';
 import { StringWysiwyg } from 'projects/edit-types/src/FieldSettings-String';
 import { Connector } from '../../../edit-types/src/Connector';
 import { EavCustomInputField } from '../../../edit-types/src/EavCustomInputField';
 import { WysiwygReconfigure } from '../../../edit-types/src/WysiwygReconfigure';
 import { classLog } from '../../../shared/logging';
-import { wysiwygEditorHtmlTag } from '../../internal-constants';
-import { FieldStringWysiwygEditor } from '../editor/editor';
 import { registerCustomElement } from '../editor/editor-helpers';
-import { FieldStringWysiwygPreview, wysiwygPreviewTag } from '../preview/preview';
+import { FieldStringWysiwygEditor, wysiwygEditorHtmlTag } from './field-string-wysiwyg-editor';
+import { FieldStringWysiwygPreview, wysiwygPreviewTag } from './field-string-wysiwyg-preview';
 import * as styles from './field-string-wysiwyg.scss';
 
 const wysiwygTag = 'field-string-wysiwyg';
 
 /**
  * Main component for the WYSIWYG field.
- * Acts like a switcher that decides whether to load preview or the editor
+ * Acts like a switcher that decides whether to load read-only preview or the editor with all the buttons, based on the mode (edit/preview) and field settings.
  */
 class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<string> {
   fieldInitialized = false;
@@ -29,39 +29,38 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
   }
 
   connectedCallback(): void {
-    if (this.fieldInitialized) return;
+    if (this.fieldInitialized)
+      return;
     this.fieldInitialized = true;
     this.log.a(`connectedCallback`);
 
     this.innerHTML = `<style>${styles.default}</style>`;
     this.classList.add('wysiwyg-switcher');
 
-    const previewMode = this.isPreviewMode();
+    const previewMode = this.#isPreviewMode();
     if (previewMode)
-      this.createPreview();
+      this.#createPreview();
     else
-      this.createEditor();
+      this.#createEditor();
   }
 
-  private isPreviewMode(): boolean {
+  #isPreviewMode(): boolean {
     // first check if mode is explicitly set and what it is
     const attrMode = this.getAttribute('mode');
     if ((this.mode ?? attrMode) != null)
       return this.mode === 'preview' || attrMode === 'preview';
 
-    return (this.connector.field.settings as unknown as StringWysiwyg)?.Dialog === 'dialog';
+    return (this.connector.field.settings as FieldSettings & StringWysiwyg)?.Dialog === 'dialog';
   }
 
-  private createPreview(): void {
-    const previewName = wysiwygPreviewTag;
-    const previewEl = document.createElement(previewName) as FieldStringWysiwygPreview;
+  #createPreview(): void {
+    const previewEl = document.createElement(wysiwygPreviewTag) as FieldStringWysiwygPreview;
     previewEl.connector = this.connector;
     this.appendChild(previewEl);
   }
 
-  private createEditor(): void {
-    const editorTagName = wysiwygEditorHtmlTag;
-    const editorEl = document.createElement(editorTagName) as FieldStringWysiwygEditor;
+  #createEditor(): void {
+    const editorEl = document.createElement(wysiwygEditorHtmlTag) as FieldStringWysiwygEditor;
     editorEl.connector = this.connector;
     editorEl.mode = 'inline';
     editorEl.reconfigure = this.reconfigure;
