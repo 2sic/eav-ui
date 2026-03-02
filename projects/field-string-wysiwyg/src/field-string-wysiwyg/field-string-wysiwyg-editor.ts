@@ -194,6 +194,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     this.cleanup();
     l.end();
   }
+  
   cleanup(): void {
     const l = this.log.fnIf('cleanup');
     // Do cleanup

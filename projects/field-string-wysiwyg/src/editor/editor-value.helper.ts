@@ -4,20 +4,37 @@ import { EditorWithId } from './editor.types';
 
 const logSpecs = {
   all: false,
+  constructor: true,
+  start: true,
   saveValue: true,
   handleExternalValueUpdate: true,
 };
 
 export class EditorValueHelper {
+
   log = classLogEnabled({ EditorValueHelper }, logSpecs);
 
-  constructor(private editor: EditorWithId) { }
+  constructor(private editor: EditorWithId, private connector: Connector<string>) {
+    this.log.aIf(`constructor`, { editorId: this.editor.idRandom, initialContent: editor.getContent() }, 'constructor');
+  }
 
   /** saves editor content to prevent slow update when first using editor */
   editorContent: string;
 
+  start() {
+    const l = this.log.fnIf(`start`, { editorId: this.editor.idRandom }, 'start');
+    // Initialize first value
+    this.handleExternalValueUpdate(this.connector.data.value);
+
+    this.connector.data.onValueChange(newValue => {
+      console.log('onValueChange callback', { newValue, editorId: this.editor.idRandom });
+      this.handleExternalValueUpdate(newValue);
+    });
+    l.end();
+  }
+
   handleExternalValueUpdate(newValue: string): void {
-    this.log.aIf('handleExternalValueUpdate', { newValue, editorId: this.editor.idRandom });
+    this.log.aIf('handleExternalValueUpdate', { newValue, editorId: this.editor.idRandom }, 'handleExternalValueUpdate');
     if (this.editorContent === newValue)
       return;
     this.editorContent = newValue;
@@ -29,7 +46,7 @@ export class EditorValueHelper {
     // Check what's new
     let newContent = editor.getContent();
     
-    const l = this.log.fnIf(`saveValue`, { editorId: editor.idRandom, newContent });
+    const l = this.log.fnIf(`saveValue`, { x: 'todo', editorId: editor.idRandom, newContent }, 'saveValue');
 
     // If the new thing is an image in the middle of an upload,
     // exit and wait for the change to be finalized

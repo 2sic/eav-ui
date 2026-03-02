@@ -17,6 +17,7 @@ import { fixMenuPositions } from './fix-menu-positions.helper';
 const logSpecs = {
   all: false,
   TinyMceInitialized: false,
+  cleanup: true,
 };
 
 export class TinyMceSetup {
@@ -39,12 +40,11 @@ export class TinyMceSetup {
         event.preventDefault();
     });
 
-    (editor as EditorWithId).idRandom = Math.random().toString(36).substring(2, 8);
-    
-    // Remember reference to destroy later
-    // this.#editor = editor;
+    const editorWithId = editor as EditorWithId;
+    editorWithId.idRandom = Math.random().toString(36).substring(2, 8);
 
-    this.#valueHelper = new EditorValueHelper(editor as EditorWithId);
+    // Setup value helper
+    this.#valueHelper = new EditorValueHelper(editorWithId, parent.connector);
 
     // On init, add everything to the registry so it can be used by buttons and other UI elements, and do other setup like setting up subscriptions
     editor.on('init', _ => {
@@ -79,12 +79,8 @@ export class TinyMceSetup {
 
       this.#menuObserver = fixMenuPositions(parent);
 
-      // Shared subscriptions
-      this.#subscriptions.add(
-        parent.connector.data.value$.subscribe(newValue => {
-          this.#valueHelper.handleExternalValueUpdate(newValue);
-        })
-      );
+      // Start watching value changes from the editor to update the connector value, and from the connector to update the editor content
+      this.#valueHelper.start();
 
       this.#subscriptions.add(
         connectorToDisabled$(parent.connector).subscribe(disabled => {
@@ -154,11 +150,13 @@ export class TinyMceSetup {
 
  
   cleanup(): void {
+    const l = this.log.fnIf('cleanup');
     this.#subscriptions.unsubscribe();
     this.#valueHelper = null;
     this.#pasteHandler = null;
     this.#menuObserver?.disconnect();
     this.#menuObserver = null;
     this.isKilled = true;
+    l.end();
   }
 }

@@ -72,7 +72,8 @@ class ConnectorDataInstance<T> implements ConnectorData<T> {
   clientValueChangeListeners: ((newValue: T) => void)[] = [];
 
   constructor(private _connectorHost: ConnectorHost<T>, public value$: Observable<T>) {
-    // Host will complete this observable. Therefore unsubscribe is not required
+    // On value change, update value and call client listeners.
+    // Host will complete this observable. Therefore unsubscribe is not required.
     this.value$.subscribe(newValue => {
       this.value = newValue;
       this.clientValueChangeListeners.forEach(callback => callback(newValue));
@@ -92,6 +93,7 @@ class ConnectorDataInstance<T> implements ConnectorData<T> {
  * Class responsible for opening / closing dialogs.
  */
 class ConnectorDialogInstance<T> implements ConnectorDialog {
+
   constructor(private _connectorHost: ConnectorHost<T>) { }
 
   open(componentTag?: string) {
