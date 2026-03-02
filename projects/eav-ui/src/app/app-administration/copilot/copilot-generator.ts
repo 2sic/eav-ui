@@ -33,7 +33,7 @@ import { ConfirmDeleteDialogData } from '../sub-dialogs/confirm-delete-dialog/co
 import { CodeGenerator } from './code-generator';
 import { CopilotActionsComponent } from './copilot-actions/copilot-actions';
 
-type DataCopilotConfiguration = {
+export type DataCopilotConfiguration = {
   Guid: string;
   Id: number;
   Title?: string;
@@ -83,7 +83,7 @@ export class CopilotGeneratorComponent {
           headerName: 'Actions',
           cellRenderer: CopilotActionsComponent,
           cellRendererParams: {
-            do: (verb: 'generate' | 'delete', item: any) => {
+            do: (verb, item) => {
               switch (verb) {
                 case 'generate':
                 this.generateForConfiguration(item); break;
@@ -92,7 +92,7 @@ export class CopilotGeneratorComponent {
                 this.deleteConfiguration(item); break;
               }
             }
-          }
+          } satisfies CopilotActionsComponent['params']
         },
       ],
       onCellClicked: (event: any) => {
