@@ -31,7 +31,7 @@ import { WysiwygConstants } from '../../shared/wysiwyg.constants';
 import { TinyMceConfigurator } from '../config/tinymce-configurator';
 import { TranslationsLoader } from '../config/translation-loader';
 import { tinyMceBaseUrl } from '../constants/internal-constants';
-import { TinyMceBuilder } from '../editor/tiny-mce-setup';
+import { TinyMceSetup } from '../editor/tiny-mce-setup';
 import * as template from './field-string-wysiwyg-editor.html';
 import * as styles from './field-string-wysiwyg-editor.scss';
 import { buildHtmlAndStyles } from './html-helpers';
@@ -45,7 +45,11 @@ const logSpecs = {
   constructor: true,
   connectedCallback: true,
   disconnectedCallback: true,
+  setupDom: true,
   TinyMceInitialized: false,
+  tinyMceScriptLoaded: true,
+  setup: true,
+  cleanup: true,
 };
 
 /**
@@ -63,7 +67,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   mode?: 'inline' | 'normal';
   reconfigure?: WysiwygReconfigure;
 
-  /** Responsible for configuring TinyMCE */
+  /** Responsible for configuring TinyMCE, will be created later on connectedCallback */
   configurator: TinyMceConfigurator;
 
   /** random, unique ID for this instance of the editor to keep them separate */
@@ -75,32 +79,31 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   /** class to uniquely identify the toolbar area */
   #toolbarContainerClass = `tinymce-toolbar-container-${this.#instanceId}`;
 
-  /** Class to add to the DOM so the surrounding Dropzone does everything right */
-  #adamIntegrationClass = WysiwygConstants.classToDetectWysiwyg;
-
   #editor: Editor;
   firstInit: boolean;
   dialogIsOpen: boolean;
-  #tinyMceBuilder = new TinyMceBuilder();
+  #tinyMceSetup = new TinyMceSetup();
 
   constructor() {
     super();
     this.log.fnIf('constructor');
   }
 
-  /** This will be called by the system once the data is ready */
-  // connectedCallback call by FieldStringWysiwyg
+  /**
+   * connectedCallback call by FieldStringWysiwyg
+   * This will be called by the system once the data is ready
+   */
   connectedCallback(): void {
+    const l = this.log.fnIf(`connectedCallback`, { fieldInitialized: this.fieldInitialized });
+    
     if (this.fieldInitialized)
-      return;
-
+      return l.end();
     this.fieldInitialized = true;
-    const l = this.log.fnIf('connectedCallback');
 
-    this.innerHTML = buildHtmlAndStyles(template.default, styles.default + skinOverrides.default);
-    this.querySelector<HTMLDivElement>('.tinymce-container').classList.add(this.#containerClass, this.#adamIntegrationClass);
-    this.querySelector<HTMLDivElement>('.tinymce-toolbar-container').classList.add(this.#toolbarContainerClass);
-    this.classList.add(this.mode === 'inline' ? 'inline-wysiwyg' : 'full-wysiwyg');
+    // Create dom with classes having a unique, random ID
+    // so we can be sure to target the right elements when we load tinyMCE,
+    // even if there are multiple editors on the page
+    this.#setupDom();
 
     // Figure out what language tinyMce should use
     const tinyLang = TranslationsLoader.fixTranslationKey(this.connector._experimental.translateService.currentLang);
@@ -129,8 +132,24 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
 
   }
 
+  #setupDom(): void {
+    const l = this.log.fnIf('setupDom');
+    // add the unique classes to the DOM so tiny-mce can find the right container to load into
+    this.innerHTML = buildHtmlAndStyles(template.default, styles.default + skinOverrides.default);
+    this.querySelector<HTMLDivElement>('.tinymce-container').classList.add(
+      // Class so tiny-mce can find the container to load the editor into
+      this.#containerClass,
+      // Class to add to the DOM so the surrounding Dropzone does everything right
+      WysiwygConstants.classToDetectWysiwyg
+    );
+    this.querySelector<HTMLDivElement>('.tinymce-toolbar-container').classList.add(this.#toolbarContainerClass);
+    this.classList.add(this.mode === 'inline' ? 'inline-wysiwyg' : 'full-wysiwyg');
+    l.end();
+  }
+
+
   #tinyMceScriptLoaded(): void {
-    this.log.a(`tinyMceScriptLoaded`);
+    const l = this.log.fnIf(`tinyMceScriptLoaded`);
 
     this.configurator = new TinyMceConfigurator(this.connector, this.reconfigure);
     const tinyOptions = this.configurator.buildOptions(
@@ -141,12 +160,21 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
         isDebug: this.connector._experimental.isDebug(),
         // setup callback when the editor is initialized by TinyMCE
         setup: (editor: Editor) => {
+          const lSetup = this.log.fnIf('setup');
           this.#editor = editor; // remember to later clean up
           // must always create a new builder, as the previous one has probably been cleaned up
-          this.#tinyMceBuilder = this.#tinyMceBuilder.isKilled
-            ? new TinyMceBuilder()
-            : this.#tinyMceBuilder;
-          this.#tinyMceBuilder.onInit(this, editor, tinyOptions)
+          this.#tinyMceSetup = this.#tinyMceSetup?.isKilled ?? true
+            ? new TinyMceSetup()
+            : this.#tinyMceSetup;
+          this.#tinyMceSetup.onInit(this, editor, tinyOptions);
+
+          // called after TinyMCE editor is removed
+          // this should be here, as it's responsibility is on this class
+          editor.on('remove', _event => {
+            this.log.a(`TinyMCE removed`, _event);
+            this.cleanup();
+          });
+          lSetup.end();
         },
       },
     );
@@ -155,18 +183,25 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     this.configurator.addTranslations();
     window.tinymce.baseURL = tinyMceBaseUrl;
     window.tinymce.init(tinyOptions);
+    l.end();
   }
 
   /**
    * System callback if the editor is removed from the DOM, but also called by this class when the editor is removed (see onInit) to do cleanup.
    */
   disconnectedCallback(): void {
-    this.log.fnIf('disconnectedCallback');
+    const l = this.log.fnIf('disconnectedCallback');
+    this.cleanup();
+    l.end();
+  }
+  cleanup(): void {
+    const l = this.log.fnIf('cleanup');
     // Do cleanup
-    this.#tinyMceBuilder?.cleanup();
-    this.#tinyMceBuilder = null;
+    this.#tinyMceSetup?.cleanup();
+    this.#tinyMceSetup = null;
     this.#editor?.destroy();
     this.#editor?.remove();
+    l.end();
   }
 }
 

@@ -6,5 +6,12 @@ export class EavCustomInputField<T = any> extends HTMLElement {
    * https://html.spec.whatwg.org/multipage/custom-elements.html#custom-element-conformance
    */
   fieldInitialized: boolean;
+
+  /**
+   * The connector, provided by eav-ui
+   *
+   * @type {Connector<T>}
+   * @memberof EavCustomInputField
+   */
   connector: Connector<T>;
 }

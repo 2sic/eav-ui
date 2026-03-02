@@ -13,15 +13,15 @@ export class TinyButtonsImg extends AddToRegistryBase {
     const imgSizes = this.field.configurator.addOnSettings.imgSizes;
     this.registerBasicFormats(imgSizes);
     this.registerEnhancedFormats();
-    this.registerFormattingWidths(imgSizes);
-    this.registerEnhancedFormattingRatios();
-    this.buttonsEnhancedAlignment();
-    this.contextMenus();
-    this.groupImages();
-    this.pasteImageButton();
+    this.#registerFormattingWidths(imgSizes);
+    this.#registerEnhancedFormattingRatios();
+    this.#buttonsEnhancedAlignment();
+    this.#addContextMenus();
+    this.#addGroupImages();
+    this.#addPasteImageButton();
   }
 
-  private pasteImageButton() {
+  #addPasteImageButton() {
     this.editor.ui.registry.addButton(Buttons.PasteImage, {
       icon: 'paste-row-after',
       tooltip: 'Image.PasteImage.Tooltip',
@@ -30,7 +30,7 @@ export class TinyButtonsImg extends AddToRegistryBase {
   }
 
   /** Images menu */
-  private groupImages(): void {
+  #addGroupImages(): void {
     const thisForLater = this;
     const btns = this.getButtons();
 
@@ -56,7 +56,7 @@ export class TinyButtonsImg extends AddToRegistryBase {
 
 
   /** Add Context toolbars */
-  private contextMenus(): void {
+  #addContextMenus(): void {
     const rangeSelected = this.rangeSelected;
 
     // Different behavior depending on responsiveImages mode
@@ -71,7 +71,7 @@ export class TinyButtonsImg extends AddToRegistryBase {
   }
 
   /** Image alignment / size buttons in context menu */
-  private registerFormattingWidths(imgSizes: number[]): void {
+  #registerFormattingWidths(imgSizes: number[]): void {
     const formatter = this.editor.formatter;
     const sButItem = this.splitButtonItem;
     this.editor.ui.registry.addSplitButton(Buttons.ImgWidthsGroup, {
@@ -88,10 +88,10 @@ export class TinyButtonsImg extends AddToRegistryBase {
   }
 
   /** Image alignment / size buttons in context menu */
-  private registerEnhancedFormattingRatios(): void {
+  #registerEnhancedFormattingRatios(): void {
     const that = this;
     const main = RichSpecs.ImgRatioDefault;
-    const tog = (current: RichSpecs.ImageFormatDefinition) => this.toggleOneImgFormatDefinition(RichSpecs.ImgRatios, current);
+    const tog = (current: RichSpecs.ImageFormatDefinition) => this.#toggleOneImgFormatDefinition(RichSpecs.ImgRatios, current);
     this.editor.ui.registry.addSplitButton(Buttons.ImgRatiosGroup, {
       ...that.splitButtonSpecs(() => tog(main)),
       icon: 'resize',
@@ -114,20 +114,20 @@ export class TinyButtonsImg extends AddToRegistryBase {
     });
   }
 
-  private toggleOneImgFormatDefinition(all: RichSpecs.ImageFormatDefinition[], current: RichSpecs.ImageFormatDefinition) {
+  #toggleOneImgFormatDefinition(all: RichSpecs.ImageFormatDefinition[], current: RichSpecs.ImageFormatDefinition) {
     this.toggleOneClassFromList(current.name, all.map((v) => v.name));
   }
 
 
   // New wysiwyg alignments
-  private buttonsEnhancedAlignment(): void {
+  #buttonsEnhancedAlignment(): void {
     const btns = this.getButtons();
     const editor = this.editor;
     RichSpecs.ImgAlignments.forEach((ai) => {
       editor.ui.registry.addToggleButton(ai.name, {
         icon: ai.icon ?? btns[ai.inherit]?.icon,
         tooltip: editor.translate([ai.tooltip ?? btns[ai.inherit]?.tooltip]),
-        onAction: () => { this.toggleOneImgFormatDefinition(RichSpecs.ImgAlignments, ai); },
+        onAction: () => { this.#toggleOneImgFormatDefinition(RichSpecs.ImgAlignments, ai); },
         onSetup: (api) => {
             // Sample used from here: https://www.tiny.cloud/docs/tinymce/6/custom-toggle-toolbar-button/
             api.setActive(editor.formatter.match(ai.name));

@@ -17,12 +17,12 @@ export const wysiwygPreviewTag = 'field-string-wysiwyg-preview';
  */
 export class FieldStringWysiwygPreview extends HTMLElement implements EavCustomInputField<string> {
 
-  log = classLog({FieldStringWysiwygPreview});
+  log = classLog({ FieldStringWysiwygPreview });
 
   fieldInitialized = false;
   connector: Connector<string>;
 
-  private eventListeners: ElementEventListener[];
+  private eventListeners: ElementEventListener[] = [];
   private subscriptions = new Subscription();
 
   constructor() {
@@ -31,13 +31,11 @@ export class FieldStringWysiwygPreview extends HTMLElement implements EavCustomI
   }
 
   connectedCallback(): void {
+    const l = this.log.fnIf(`connectedCallback`, { fieldInitialized: this.fieldInitialized });
+
     if (this.fieldInitialized)
-      return;
+      return l.end();
     this.fieldInitialized = true;
-
-    this.log.a(`connectedCallback`);
-
-    this.eventListeners = [];
 
     this.innerHTML = buildHtmlAndStyles(template.default, styles.default);
     const previewContainer = this.querySelector<HTMLDivElement>('.wysiwyg-preview');
@@ -70,6 +68,7 @@ export class FieldStringWysiwygPreview extends HTMLElement implements EavCustomI
   disconnectedCallback(): void {
     this.log.a(`disconnectedCallback called`);
     this.eventListeners.forEach(({ element, type, listener }) => element.removeEventListener(type, listener));
+    this.eventListeners = [];
     this.subscriptions.unsubscribe();
   }
 }

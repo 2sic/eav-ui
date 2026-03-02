@@ -19,10 +19,9 @@ const logSpecs = {
   TinyMceInitialized: false,
 };
 
-export class TinyMceBuilder {
-  log = classLog({ TinyMceBuilder }, logSpecs);
+export class TinyMceSetup {
+  log = classLog({ TinyMceSetup }, logSpecs);
 
-  // #editor: Editor;
   #subscriptions = new Subscription();
   #menuObserver: MutationObserver;
   #valueHelper: EditorValueHelper;
@@ -33,7 +32,8 @@ export class TinyMceBuilder {
   /** This will initialized an instance of an editor. Everything else is kind of global. */
   onInit(parent: FieldStringWysiwygEditor, editor: Editor, rawEditorOptions: RawEditorOptionsExtended): void {
 
-    // Capture Ctrl + Enter to prevent inserting a line break in the WYSIWYG editor 
+    // Capture Ctrl + Enter to prevent inserting a line break in the WYSIWYG editor
+    // as Ctrl+Enter is the save-and-close shortcut for the dialog
     editor.on('keydown', (event: KeyboardEvent) => {
       if (event.ctrlKey && event.key === "Enter")
         event.preventDefault();
@@ -56,11 +56,12 @@ export class TinyMceBuilder {
       const addToRegistryParams = {
         field: parent,
         editor,
+        manager: editor.editorManager,
         adam: parent.connector._experimental.adam,
         options: rawEditorOptions,
       } satisfies AddToRegistryParams;
 
-      new AddEverythingToRegistry(addToRegistryParams).register();
+      new AddEverythingToRegistry().register(addToRegistryParams);
 
       const isDebug = parent.connector._experimental.isDebug();
       parent.connector._experimental.debugWatch(isNewDebug => {
@@ -107,13 +108,6 @@ export class TinyMceBuilder {
     // Setup paste and drop handling
     this.#pasteHandler.tinyMceSetup(editor, parent.connector, rawEditorOptions);
 
-    // called after TinyMCE editor is removed
-    // this should be here, as it's responsibility is on this class
-    editor.on('remove', _event => {
-      this.log.a(`TinyMCE removed`, _event);
-      this.cleanup();
-    });
-
     // if the system has a reconfigure object, run it's code now
     parent.reconfigure?.configureEditor?.(editor);
   }
@@ -158,12 +152,9 @@ export class TinyMceBuilder {
     editor.on('blur', _event => handleFocus(false, _event));
   }
 
-
-  
+ 
   cleanup(): void {
     this.#subscriptions.unsubscribe();
-    // this.#editor?.destroy();
-    // this.#editor?.remove();
     this.#valueHelper = null;
     this.#pasteHandler = null;
     this.#menuObserver?.disconnect();

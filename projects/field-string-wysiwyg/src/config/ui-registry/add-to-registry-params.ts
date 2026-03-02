@@ -1,4 +1,4 @@
-import { Editor } from 'tinymce';
+import { Editor, EditorManager } from 'tinymce';
 import { Adam } from '../../../../edit-types/src/Adam';
 import { FieldStringWysiwygEditor } from '../../field-string-wysiwyg/field-string-wysiwyg-editor';
 import { RawEditorOptionsExtended } from '../raw-editor-options-extended';
@@ -7,6 +7,7 @@ import { RawEditorOptionsExtended } from '../raw-editor-options-extended';
 export interface AddToRegistryParams {
   field: FieldStringWysiwygEditor;
   editor: Editor;
+  manager: EditorManager;
   adam: Adam;
   options: RawEditorOptionsExtended;
 }

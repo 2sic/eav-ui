@@ -1,5 +1,4 @@
 import { loadCustomIcons } from '../../editor/load-icons.helper';
-import { AddToRegistryBase } from './add-to-registry-base';
 import { AddToRegistryParams } from './add-to-registry-params';
 import { TinyButtonsBullets } from './buttons-bullets';
 import { TinyButtonsContentBlocks } from './buttons-content-blocks';
@@ -12,19 +11,16 @@ import { TinyButtonsModes } from './buttons-modes';
 import { AddToRegistryWysiwygSections } from './buttons-wysiwyg-sections';
 
 /** Register all kinds of buttons on TinyMCE */
-export class AddEverythingToRegistry extends AddToRegistryBase {
+export class AddEverythingToRegistry {
 
-  constructor(makerParams: AddToRegistryParams) {
-    super(makerParams);
-  }
 
-  register(): void {
-    const instSettings = this.field.configurator.addOnSettings;
+  register(makerParams: AddToRegistryParams): void {
+    const instSettings = makerParams.field.configurator.addOnSettings;
 
     if (!instSettings.enabled)
       return;
 
-    const p = this.makerParams;
+    const p = makerParams;
     new TinyButtonsImg(p).register();
     new TinyButtonsBullets(p).register();
     new TinyButtonsHeadings(p).register();
@@ -35,6 +31,6 @@ export class AddEverythingToRegistry extends AddToRegistryBase {
     new TinyButtonsDialog(p).register();
     new TinyButtonsModes(p).register();
 
-    loadCustomIcons(this.editor);
+    loadCustomIcons(p.editor);
   }
 }

@@ -7,8 +7,6 @@ export class SwitchModeHelper {
   constructor(private makerParams: AddToRegistryParams) {
   }
 
-  register(): void { throw new Error('Method not implemented.'); }
-
   /** Mode switching to inline/dialog and advanced/normal */
   public switchMode(displayMode: DisplayModes | null, editMode: EditModes.WysiwygEditMode | null): void {
     const options = this.makerParams.options;
@@ -24,9 +22,9 @@ export class SwitchModeHelper {
     options.menubar = newSettings.menubar;
     options.contextmenu = newSettings.contextmenu;
     // refresh editor toolbar
-    const editor = this.makerParams.editor;
-    editor.editorManager.remove(editor);
-    editor.editorManager.init(options);
+    const manager = this.makerParams.manager;
+    manager.remove(this.makerParams.editor);
+    manager.init(this.makerParams.options);
   }
 
 }

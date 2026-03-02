@@ -68,7 +68,8 @@ export abstract class AddToRegistryBase {
     // todo: docs say that Drawer is being deprecated ? but I don't think this has to do with drawer?
     // https://www.tiny.cloud/docs/configure/editor-appearance/#toolbar_mode
     const toolbarDrawerOpen = this.editor.queryCommandState('ToggleToolbarDrawer');
-    if (toolbarDrawerOpen) this.editor.execCommand('ToggleToolbarDrawer');
+    if (toolbarDrawerOpen)
+      this.editor.execCommand('ToggleToolbarDrawer');
 
     // Open the Dialog
     this.field.connector.dialog.open(wysiwygEditorHtmlTag);
@@ -84,10 +85,12 @@ export abstract class AddToRegistryBase {
   /** Inner call for most onItemAction commands */
   protected runOrExecCommand(api: unknown, value: unknown) {
     // If it's a function, call it with params (the params are usually not used)
-    if (typeof(value) === 'function') value(api, value);
+    if (typeof(value) === 'function')
+      value(api, value);
 
     // If it's a string, it must be a command the editor knows
-    if (typeof(value) === 'string') this.editor.execCommand(value);
+    if (typeof(value) === 'string')
+      this.editor.execCommand(value);
   }
 
   protected toggleFormat(tag: string) {
