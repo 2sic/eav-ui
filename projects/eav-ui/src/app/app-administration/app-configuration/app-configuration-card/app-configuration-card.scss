@@ -1,9 +1,5 @@
-@use '../../../../styles/variables.scss';
+@use "../../../../styles/ag-grid-hover";
 
 .eav-card-space-div {
   min-height: 30px;
-}
-
-.eav-button__with-icon * {
-  color: variables.$sxc-solid !important;
 }

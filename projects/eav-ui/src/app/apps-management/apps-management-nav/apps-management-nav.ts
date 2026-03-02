@@ -6,8 +6,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterOutlet } from '@angular/router';
-import { BreadcrumbComponent, BreadcrumbItemDirective } from 'xng-breadcrumb';
 import { transient } from '../../../../../core';
+import { AppBreadcrumbComponent } from "../../app-administration/breadcrumb/app-breadcrumb";
 import { DialogConfigGlobalService } from '../../app-administration/services';
 import { NavItemListComponent } from '../../shared/components/nav-item-list/nav-item-list';
 import { ToggleDebugDirective } from '../../shared/directives/toggle-debug.directive';
@@ -22,14 +22,13 @@ import { AppsManagementNavItems } from './management-nav-items';
   imports: [
     MatToolbarModule,
     MatIconModule,
-    BreadcrumbComponent,
-    BreadcrumbItemDirective,
     MatButtonModule,
     MatSidenavModule,
     RouterOutlet,
     NavItemListComponent,
     ToggleDebugDirective,
-  ]
+    AppBreadcrumbComponent
+]
 })
 export class AppsManagementNavComponent implements OnInit {
   @ViewChild('sidenav') sidenav!: MatSidenav;

@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -11,6 +11,7 @@ import { SourceService } from '../../code-editor/services/source.service';
 import { RestApiHelpTextComponent } from '../../shared/components/rest-api-help-text/rest-api-help-text';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
+import { syncFormWithLastUrlSegment } from '../helper/sync-form-with-last-url-segment';
 
 const logSpecs = {
   all: false,
@@ -40,21 +41,16 @@ export class WebApiRestApiComponent {
   #formBuilder = inject(FormBuilder);
 
   constructor() {
-    // Update form if the url changes and the item is found
-    effect(() => {
-      const l = this.log.fnIf('syncUrl');
-      const webApis = this.webApisTypes();
-      if (webApis.length === 0)
-        return l.end();
-      const urlPath = this.#dialogRouter.urlSegments.at(-1);
-
-      var encodedUrlPath = urlPath.replace(/%252F/g, "/");
-
-      const webApi = webApis.find(w => w.path === encodedUrlPath);
-      l.a('status:', { webApis, webApi, urlPath, encodedUrlPath });
-      if (webApi)
-        this.webApiTypeForm.get('webApiType').setValue(webApi.path);
-      l.end();
+    syncFormWithLastUrlSegment(this.#dialogRouter, {
+      items: () => this.webApisTypes(),
+      control: () => this.webApiTypeForm.get('webApiType'),
+      decode: s => s.replace(/%252F/g, '/'),
+      itemKey: w => w.path,
+      onMatch: (match, ctx) => {
+        const l = this.log.fnIf('syncUrl');
+        l?.a?.('status:', { ...ctx, match });
+        l?.end?.();
+      },
     });
   }
 

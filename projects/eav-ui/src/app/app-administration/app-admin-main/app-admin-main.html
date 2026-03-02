@@ -22,14 +22,7 @@
       </span>
     </div>
     <!-- Breadcrumb in the Toolbar after show Img and Aoo Name -->
-    <xng-breadcrumb [separator]="emptyTemplate">
-      <ng-container *xngBreadcrumbItem="let breadcrumb; let info = info; let last = last">
-        @if (last) {
-          <mat-icon class="breadcrumb-icon">chevron_right</mat-icon>
-          {{ breadcrumb }}
-        }
-      </ng-container>
-    </xng-breadcrumb>
+    <app-breadcrumb />
     <ng-template #emptyTemplate></ng-template>
   </div>
   <span class="toolbar-spacer"></span>
