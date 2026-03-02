@@ -5,7 +5,7 @@ import { Connector } from '../../../edit-types/src/Connector';
 import { WysiwygReconfigure } from '../../../edit-types/src/WysiwygReconfigure';
 import { classLog } from '../../../shared/logging';
 import { WysiwygDialogModes } from '../constants';
-import * as contentStyle from '../editor/tinymce-content.scss';
+import * as contentStyle from '../styles-content/tinymce-content.scss';
 import { DefaultAddOnSettings, DefaultPaste } from './defaults';
 import { RawEditorOptionsExtended } from './raw-editor-options-extended';
 import { TranslationsLoader } from './translation-loader';
