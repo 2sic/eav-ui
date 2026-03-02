@@ -28,18 +28,19 @@
     <br />
     They will be placed in a folder inside <code>App_Data</code> and allow sync/restore with git or another server.
   </p>
+  
   <app-feature-info-box [featureNameId]="AppSyncWithSiteFiles"></app-feature-info-box>
 
-    <mat-dialog-actions class="eav-dialog-actions" style="height: 73px">
-      <div class="eav-dialog-actions-div">
-        <button [disabled]="!appExportAssetsAdvancedEnabled()" mat-button class="eav-button__with-icon" (click)="exportAppXml(true)">
-          <mat-icon class="eav-icon">more_time</mat-icon>
-          <span>Save with Assets</span>
-        </button>
-        <button [disabled]="!appExportAssetsAdvancedEnabled()" mat-button class="eav-button__with-icon" (click)="resetApp(true)">
-          <mat-icon class="eav-icon">restore</mat-icon>
-          <span>Restore with Assets</span>
-        </button>
-      </div>
-    </mat-dialog-actions>
+  <mat-dialog-actions class="eav-dialog-actions" style="height: 73px">
+    <div class="eav-dialog-actions-div">
+      <button [disabled]="!appExportAssetsAdvancedEnabled()" mat-button class="eav-button__with-icon" (click)="exportAppXml(true)">
+        <mat-icon class="eav-icon">more_time</mat-icon>
+        <span>Save with Assets</span>
+      </button>
+      <button [disabled]="!appExportAssetsAdvancedEnabled()" mat-button class="eav-button__with-icon" (click)="resetApp(true)">
+        <mat-icon class="eav-icon">restore</mat-icon>
+        <span>Restore with Assets</span>
+      </button>
+    </div>
+  </mat-dialog-actions>
 </div>

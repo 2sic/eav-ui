@@ -36,45 +36,47 @@
             <th>Teaser</th>
             <td><div [innerHTML]="getSafeHtml(config.teaser)"></div></td>
           </tr>
-          } @if (config.description) {
-              <tr>
-                <th>Description</th>
-                <td><div [innerHTML]="getSafeHtml(config.description)"></div></td>
-              </tr>
-          } 
-          @if (config.linkMain || config.linkDocs || config.linkDemo || config.linkSource) {
-            <tr>
-              <th>Links</th>
-                <td>
-                  <div style="display: flex; gap: 8px; flex-wrap: wrap">
-                    @if (config.linkMain) {
-                      <a [href]="config.linkMain" target="_blank" mat-stroked-button>
-                        <mat-icon>language</mat-icon>
-                        <span>Main Website</span>
-                      </a>
-                    } 
-                    @if (config.linkDocs) {
-                      <a [href]="config.linkDocs" target="_blank" mat-stroked-button>
-                        <mat-icon>description</mat-icon>
-                        <span>Documentation</span>
-                      </a>
-                    } 
-                    @if (config.linkDemo) {
-                      <a [href]="config.linkDemo" target="_blank" mat-stroked-button>
-                        <mat-icon>preview</mat-icon>
-                        <span>Demo</span>
-                      </a>
-                    } 
-                    @if (config.linkSource) {
-                      <a [href]="config.linkSource" target="_blank" mat-stroked-button>
-                        <mat-icon>code</mat-icon>
-                        <span>Source Code</span>
-                      </a>
-                    }
+        }
+        @if (config.description) {
+          <tr>
+            <th>Description</th>
+            <td><div [innerHTML]="getSafeHtml(config.description)"></div></td>
+          </tr>
+        } 
+        @if (config.linkMain || config.linkDocs || config.linkDemo || config.linkSource) {
+          <tr>
+            <th>Links</th>
+            <td>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap">
+                @if (config.linkMain) {
+                  <a [href]="config.linkMain" target="_blank" mat-stroked-button>
+                    <mat-icon>language</mat-icon>
+                    <span>Main Website</span>
+                  </a>
+                } 
+                @if (config.linkDocs) {
+                  <a [href]="config.linkDocs" target="_blank" mat-stroked-button>
+                    <mat-icon>description</mat-icon>
+                    <span>Documentation</span>
+                  </a>
+                } 
+                @if (config.linkDemo) {
+                  <a [href]="config.linkDemo" target="_blank" mat-stroked-button>
+                    <mat-icon>preview</mat-icon>
+                    <span>Demo</span>
+                  </a>
+                } 
+                @if (config.linkSource) {
+                  <a [href]="config.linkSource" target="_blank" mat-stroked-button>
+                    <mat-icon>code</mat-icon>
+                    <span>Source Code</span>
+                  </a>
+                }
               </div>
             </td>
           </tr>
         }
+
         <tr>
           <th>Platforms</th>
           <td>
@@ -94,6 +96,7 @@
             </div>
           </td>
         </tr>
+
         <tr>
           <th>Features</th>
           <td>
@@ -106,8 +109,9 @@
             </mat-chip-set>
           </td>
         </tr>
+
         @if (getReleaseNotes().length > 0) {
-         <tr>
+          <tr>
             <th>Release Notes</th>
             <td>
               <table class="release-notes-table">
@@ -130,7 +134,8 @@
               </table>
             </td>
           </tr>
-        } 
+        }
+
         @if (config.settingsContentType || config.resourcesContentType) {
           <tr>
             <th>Content Types</th>
