@@ -31,11 +31,11 @@ import { WysiwygConstants } from '../../shared/wysiwyg.constants';
 import { TinyMceConfigurator } from '../config/tinymce-configurator';
 import { TranslationsLoader } from '../config/translation-loader';
 import { tinyMceBaseUrl } from '../constants/internal-constants';
-import { registerCustomElement } from '../editor/editor-helpers';
 import { TinyMceBuilder } from '../editor/tiny-mce-setup';
 import * as template from './field-string-wysiwyg-editor.html';
 import * as styles from './field-string-wysiwyg-editor.scss';
 import { buildHtmlAndStyles } from './html-helpers';
+import { registerCustomElement } from './register-custom-element';
 import * as skinOverrides from './skin-overrides.scss';
 
 export const wysiwygEditorHtmlTag = 'field-string-wysiwyg-editor';

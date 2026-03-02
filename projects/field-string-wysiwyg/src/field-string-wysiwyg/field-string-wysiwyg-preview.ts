@@ -3,10 +3,11 @@ import { ElementEventListener } from '../../../eav-ui/src/app/edit/shared/contro
 import { Connector } from '../../../edit-types/src/Connector';
 import { EavCustomInputField } from '../../../edit-types/src/EavCustomInputField';
 import { classLog } from '../../../shared/logging';
-import { connectorToDisabled$, registerCustomElement } from '../editor/editor-helpers';
+import { connectorToDisabled$ } from '../editor/editor-helpers';
 import * as template from './field-string-wysiwyg-preview.html';
 import * as styles from './field-string-wysiwyg-preview.scss';
 import { buildHtmlAndStyles } from './html-helpers';
+import { registerCustomElement } from './register-custom-element';
 
 export const wysiwygPreviewTag = 'field-string-wysiwyg-preview';
 

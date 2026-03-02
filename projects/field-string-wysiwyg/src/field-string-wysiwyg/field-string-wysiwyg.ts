@@ -4,10 +4,10 @@ import { Connector } from '../../../edit-types/src/Connector';
 import { EavCustomInputField } from '../../../edit-types/src/EavCustomInputField';
 import { WysiwygReconfigure } from '../../../edit-types/src/WysiwygReconfigure';
 import { classLog } from '../../../shared/logging';
-import { registerCustomElement } from '../editor/editor-helpers';
 import { FieldStringWysiwygEditor, wysiwygEditorHtmlTag } from './field-string-wysiwyg-editor';
 import { FieldStringWysiwygPreview, wysiwygPreviewTag } from './field-string-wysiwyg-preview';
 import * as styles from './field-string-wysiwyg.scss';
+import { registerCustomElement } from './register-custom-element';
 
 const wysiwygTag = 'field-string-wysiwyg';
 
