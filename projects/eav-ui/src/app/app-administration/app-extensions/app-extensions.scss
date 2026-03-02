@@ -1,8 +1,4 @@
-@use '../../../styles/variables.scss';
-
-:host ::ng-deep .ag-row-hover .ag-cell a {
-  color: variables.$sxc-solid !important;
-}
+@use "../../../styles/ag-grid-hover";
 
 .container {
   height: 100%;

@@ -1,0 +1,10 @@
+<xng-breadcrumb [separator]="emptyTemplate">
+  <ng-container *xngBreadcrumbItem="let breadcrumb; let last = last">
+    @if (last) {
+      <mat-icon class="breadcrumb-icon">chevron_right</mat-icon>
+      {{ breadcrumb }}
+    }
+  </ng-container>
+</xng-breadcrumb>
+
+<ng-template #emptyTemplate></ng-template>

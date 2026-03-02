@@ -1,4 +1,4 @@
-import { Component, effect, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -9,6 +9,7 @@ import { transient } from '../../../../../core';
 import { RestApiHelpTextComponent } from '../../shared/components/rest-api-help-text/rest-api-help-text';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
+import { syncFormWithLastUrlSegment } from '../helper/sync-form-with-last-url-segment';
 import { ContentTypesService } from '../services';
 
 @Component({
@@ -32,17 +33,10 @@ export class DataRestApiComponent {
   #formBuilder = inject(FormBuilder);
 
   constructor() {
-    // Update form if the url changes and the item is found
-    effect(() => {
-      const types = this.contentTypes();
-      if (types.length === 0)
-        return;
-
-      const urlStaticName = this.#dialogRouter.urlSegments.at(-1);
-
-      const type = types.find(ct => ct.NameId === urlStaticName);
-      if (type)
-        this.contentTypeForm.get('contentType').setValue(type.NameId);
+    syncFormWithLastUrlSegment(this.#dialogRouter, {
+      items: () => this.contentTypes(),
+      control: () => this.contentTypeForm.get('contentType'),
+      itemKey: ct => ct.NameId,
     });
   }
 
