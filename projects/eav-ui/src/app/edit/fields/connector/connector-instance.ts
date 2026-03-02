@@ -18,48 +18,49 @@ export class ConnectorInstance<T = any> implements Connector<T> {
   
   data: ConnectorData<T>;
   dialog: ConnectorDialog;
-  loadScript: (...args: any[]) => void;
 
   get field() { return this.fieldConfigSignal(); }
 
   get field$() {
-    return this.#field$ ??= toObservable(this.fieldConfigSignal, { injector: this._experimental.injector })
+    return this.#field$ ??= toObservable(this.fieldConfigSignal, {
+      injector: this._experimental.injector
+    });
   }
   #field$: Observable<FieldConfig>;
 
   constructor(
     _connectorHost: ConnectorHost<T>,
-    value$: Observable<T>,
+    public value$: Observable<T>,
     private fieldConfigSignal: Signal<FieldConfig>,
     public _experimental: ExperimentalProps,
-    formConfig: FormConfiguration,
+    private formConfig: FormConfiguration,
   ) {
     this.data = new ConnectorDataInstance<T>(_connectorHost, value$);
     this.dialog = new ConnectorDialogInstance<T>(_connectorHost);
+  }
 
-    this.loadScript = (
-      testOrScripts: LoadScriptParameter | { test: LoadScriptParameter; src: string }[],
-      srcOrCallback: string | (() => void),
-      callback?: () => void,
-    ) => {
-      // one script (3 parameters: global or test, script url and a callback)
-      const isMainSignature = (typeof testOrScripts === 'string' || typeof testOrScripts === 'function')
-        && typeof srcOrCallback === 'string'
-        && typeof callback === 'function';
-      if (isMainSignature) {
-        srcOrCallback = ScriptsLoaderService.resolveUrlTokens(srcOrCallback as string, formConfig);
-        loadScripts([{ test: testOrScripts, src: srcOrCallback }], callback);
-        return;
-      }
-      // multiple scripts (2 parameters: scripts array and a callback)
-      if (Array.isArray(testOrScripts) && typeof srcOrCallback === 'function') {
-        for (const script of testOrScripts)
-          script.src = ScriptsLoaderService.resolveUrlTokens(script.src, formConfig);
-        loadScripts(testOrScripts, srcOrCallback);
-        return;
-      }
-      throw new Error('Unrecognized parameters. Please double check your input');
-    };
+  loadScript(
+    testOrScripts: LoadScriptParameter | { test: LoadScriptParameter; src: string }[],
+    srcOrCallback: string | (() => void),
+    callback?: () => void,
+  ) {
+    // one script (3 parameters: global or test, script url and a callback)
+    const isMainSignature = (typeof testOrScripts === 'string' || typeof testOrScripts === 'function')
+      && typeof srcOrCallback === 'string'
+      && typeof callback === 'function';
+    if (isMainSignature) {
+      srcOrCallback = ScriptsLoaderService.resolveUrlTokens(srcOrCallback as string, this.formConfig);
+      loadScripts([{ test: testOrScripts, src: srcOrCallback }], callback);
+      return;
+    }
+    // multiple scripts (2 parameters: scripts array and a callback)
+    if (Array.isArray(testOrScripts) && typeof srcOrCallback === 'function') {
+      for (const script of testOrScripts)
+        script.src = ScriptsLoaderService.resolveUrlTokens(script.src, this.formConfig);
+      loadScripts(testOrScripts, srcOrCallback);
+      return;
+    }
+    throw new Error('Unrecognized parameters. Please double check your input');
   }
 }
 
