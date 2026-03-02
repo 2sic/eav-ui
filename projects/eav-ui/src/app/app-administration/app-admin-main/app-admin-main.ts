@@ -7,7 +7,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterOutlet } from '@angular/router';
-import { BreadcrumbComponent, BreadcrumbItemDirective } from 'xng-breadcrumb';
 import { transient } from '../../../../../core';
 import { classLog } from '../../../../../shared/logging';
 import { NavItemListComponent } from '../../shared/components/nav-item-list/nav-item-list';
@@ -16,6 +15,7 @@ import { Update$2sxcEnvFromContext } from '../../shared/helpers/update-env-vars-
 import { AppScopes } from '../../shared/models/dialog-context.models';
 import { DialogSettings } from '../../shared/models/dialog-settings.model';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
+import { AppBreadcrumbComponent } from "../breadcrumb/app-breadcrumb";
 import { DialogConfigAppService } from '../services/dialog-config-app.service';
 import { AppAdminMenu } from './app-admin-menu';
 
@@ -26,15 +26,14 @@ import { AppAdminMenu } from './app-admin-menu';
   imports: [
     MatToolbarModule,
     MatIconModule,
-    BreadcrumbComponent,
-    BreadcrumbItemDirective,
     MatButtonModule,
     MatSidenavModule,
     RouterOutlet,
     NavItemListComponent,
     ToggleDebugDirective,
-    MatProgressSpinnerModule
-  ]
+    MatProgressSpinnerModule,
+    AppBreadcrumbComponent
+]
 })
 export class AppAdminMain implements OnInit {
 
