@@ -1,6 +1,6 @@
-import * as Rich from '../constants/rich-wysiwyg';
 import * as Buttons from '../constants/buttons';
 import * as EditModes from '../constants/edit-modes';
+import * as Rich from '../constants/rich-wysiwyg';
 import { WysiwygConfiguration } from './types/wysiwyg-configurations';
 
 /**
@@ -21,14 +21,14 @@ export class ToolbarParser {
       return acc;
     }, [new Array<string>()]);
 
-    const cleaned = this.cleanUpDisabledButtons(wysiwygConfiguration, rows.map(t => t.join(' | ')));
+    const cleaned = this.#removeDisabledButtons(wysiwygConfiguration, rows.map(t => t.join(' | ')));
     return cleaned;
   }
 
-  private cleanUpDisabledButtons(settings: WysiwygConfiguration, toolbar: string[]): string[] {
+  #removeDisabledButtons(config: WysiwygConfiguration, toolbar: string[]): string[] {
     // make sure each button is separated by a space, so we can easily remove it
     toolbar = toolbar.map(t => ` ${t.replace(/\|/g, ' | ')} `);
-    const removeMap = this.createRemoveMap(settings);
+    const removeMap = this.#createRemoveMap(config);
     return toolbar.map(row =>
       removeMap.reduce((t, rmvRule) => !rmvRule.enabled && t.indexOf(` ${rmvRule.button} `) > -1
         ? t.replace(rmvRule.button, '')
@@ -37,18 +37,25 @@ export class ToolbarParser {
     );
   }
 
-  private createRemoveMap(settings: WysiwygConfiguration): { button: string, enabled: boolean }[] {
-    const editModeAdvanced = settings.editMode === EditModes.WysiwygAdvanced;
+  /**
+   * Create list/map of buttons and whether they are enabled or not, so we can easily remove them from the toolbar if needed.
+   * @returns the map which will later be processed to remove disabled buttons from the toolbar configuration
+   */
+  #createRemoveMap(config: WysiwygConfiguration): { button: string, enabled: boolean }[] {
+    const editModeAdvanced = config.editMode === EditModes.WysiwygAdvanced;
     const map = [
-      { button: Buttons.Code, enabled: settings.buttons.source },
-      { button: Buttons.DialogOpen, enabled: settings.buttons.dialog && settings.features.editInDialog },
-      { button: Buttons.ModeAdvanced, enabled: settings.buttons.advanced && !editModeAdvanced },
+      { button: Buttons.Code, enabled: config.buttons.source },
+      { button: Buttons.DialogOpen, enabled: config.buttons.dialog && config.features.editInDialog },
+      { button: Buttons.ModeAdvanced, enabled: config.buttons.advanced && !editModeAdvanced },
       { button: Buttons.ModeDefault, enabled: editModeAdvanced },
-      { button: Buttons.AddContentBlock, enabled: settings.features.contentBlocks },
+      { button: Buttons.AddContentBlock, enabled: config.features.contentBlocks },
     ];
 
     // Add rules for all spacers / splitter buttons
-    const splitters = Rich.ContentSplitters.map(cs => ({button: cs.name, enabled: settings.features.contentSplitters}));
+    const splitters = Rich.ContentSplitters.map(cs => ({
+      button: cs.name,
+      enabled: config.features.contentSplitters,
+    }));
 
     return [...map, ...splitters];
   }

@@ -1,6 +1,6 @@
 import { Connector } from 'projects/edit-types/src/Connector';
 import { classLogEnabled } from '../../../shared/logging';
-import { EditorWithId } from './editor-with-id';
+import { EditorWithId } from './editor.types';
 
 const logSpecs = {
   all: false,

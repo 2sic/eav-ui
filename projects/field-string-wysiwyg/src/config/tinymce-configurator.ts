@@ -4,7 +4,7 @@ import { AddOnSettings } from '../../../edit-types/src/AddOnSettings';
 import { Connector } from '../../../edit-types/src/Connector';
 import { WysiwygReconfigure } from '../../../edit-types/src/WysiwygReconfigure';
 import { classLog } from '../../../shared/logging';
-import * as DisplayModes from '../constants/display-modes';
+import { WysiwygDialogModes } from '../constants';
 import * as contentStyle from '../editor/tinymce-content.scss';
 import { DefaultAddOnSettings, DefaultPaste } from './defaults';
 import { RawEditorOptionsExtended } from './raw-editor-options-extended';
@@ -69,7 +69,7 @@ export class TinyMceConfigurator {
 
     // 2. Get the preset configuration for this mode
     const configManager = new WysiwygConfigurationManager(connector, fieldSettings);
-    const wysiwygConfiguration = configManager.getSettings(null, modeIsInline ? DisplayModes.DisplayInline : DisplayModes.DisplayDialog, isDebug);
+    const wysiwygConfiguration = configManager.getSettings(null, modeIsInline ? WysiwygDialogModes.DisplayInline : WysiwygDialogModes.DisplayDialog, isDebug);
 
     // 3. Dropzone / adam checks
     if (exp.dropzone == null || exp.adam == null)

@@ -1,7 +1,8 @@
 import * as Buttons from '../../constants/buttons';
 import * as RichSpecs from '../../constants/rich-wysiwyg';
-import { ImageFormats } from '../../shared/models';
-import { AddToRegistryBase, AddToRegistryParams } from './add-to-registry-base';
+import { ImageFormats } from '../types/image-formats';
+import { AddToRegistryBase } from './add-to-registry-base';
+import { AddToRegistryParams } from './add-to-registry-params';
 
 export class TinyButtonsImg extends AddToRegistryBase {
   constructor(makerParams: AddToRegistryParams) {

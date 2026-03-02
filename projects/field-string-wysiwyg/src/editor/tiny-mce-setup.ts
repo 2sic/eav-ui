@@ -3,15 +3,15 @@ import { Editor, EditorEvent } from 'tinymce';
 import { classLog } from '../../../shared/logging';
 import { RawEditorOptionsExtended } from '../config/raw-editor-options-extended';
 import { AddEverythingToRegistry } from '../config/ui-registry/add-everything-to-registry';
-import { AddToRegistryParams } from '../config/ui-registry/add-to-registry-base';
+import { AddToRegistryParams } from '../config/ui-registry/add-to-registry-params';
 import { SwitchModeHelper } from '../config/ui-registry/switch-mode.helper';
 import { attachAdam } from '../connector/adam';
 import { WysiwygDialogModes } from '../constants';
 import { FieldStringWysiwygEditor } from '../field-string-wysiwyg/field-string-wysiwyg-editor';
 import { connectorToDisabled$ } from './editor-helpers';
-import { EditorPasteOrDrop } from './editor-paste-or-drop';
-import { EditorValueHelper } from './editor-value-helper';
-import { EditorWithId } from './editor-with-id';
+import { EditorPasteOrDropHelper } from './editor-paste-or-drop.helper';
+import { EditorValueHelper } from './editor-value.helper';
+import { EditorWithId } from './editor.types';
 import { fixMenuPositions } from './fix-menu-positions.helper';
 
 const logSpecs = {
@@ -26,7 +26,7 @@ export class TinyMceBuilder {
   #subscriptions = new Subscription();
   #menuObserver: MutationObserver;
   #valueHelper: EditorValueHelper;
-  #pasteHandler = new EditorPasteOrDrop();
+  #pasteHandler = new EditorPasteOrDropHelper();
 
   isKilled = false;
 

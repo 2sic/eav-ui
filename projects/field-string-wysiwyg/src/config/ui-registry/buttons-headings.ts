@@ -1,6 +1,7 @@
 import { Ui } from 'tinymce';
 import * as Buttons from '../../constants/buttons';
-import { AddToRegistryBase, AddToRegistryParams } from './add-to-registry-base';
+import { AddToRegistryBase } from './add-to-registry-base';
+import { AddToRegistryParams } from './add-to-registry-params';
 
 export class TinyButtonsHeadings extends AddToRegistryBase {
   constructor(makerParams: AddToRegistryParams) {

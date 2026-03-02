@@ -1,7 +1,6 @@
-import * as DialogModes from '../../constants/display-modes';
+import { DisplayModes } from '../../constants/display-modes';
 import * as EditModes from '../../constants/edit-modes';
-import { AddToRegistryParams } from './add-to-registry-base';
-
+import { AddToRegistryParams } from './add-to-registry-params';
 
 export class SwitchModeHelper {
 
@@ -11,7 +10,7 @@ export class SwitchModeHelper {
   register(): void { throw new Error('Method not implemented.'); }
 
   /** Mode switching to inline/dialog and advanced/normal */
-  public switchMode(displayMode: DialogModes.DisplayModes | null, editMode: EditModes.WysiwygEditMode | null): void {
+  public switchMode(displayMode: DisplayModes | null, editMode: EditModes.WysiwygEditMode | null): void {
     const options = this.makerParams.options;
     const field = this.makerParams.field;
     const currMode = options.configManager.current;

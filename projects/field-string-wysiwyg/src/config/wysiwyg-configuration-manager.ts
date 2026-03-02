@@ -3,12 +3,13 @@ import { RawEditorOptions } from 'tinymce';
 import { InputTypeCatalog } from '../../../eav-ui/src/app/shared/fields/input-type-catalog';
 import { Connector } from '../../../edit-types/src/Connector';
 import { classLog, ClassLogger } from '../../../shared/logging';
-import * as DialogModes from '../constants/display-modes';
+import { WysiwygDialogModes } from '../constants';
 import * as EditModes from '../constants/edit-modes';
 import { ConfigurationPresets, DefaultMode } from './defaults/defaults';
 import { ToolbarParser } from './toolbar-parser';
-import { WysiwygButtons, WysiwygFeatures } from './types';
+import { WysiwygButtons } from './types/wysiwyg-buttons';
 import { WysiwygConfiguration } from './types/wysiwyg-configurations';
+import { WysiwygFeatures } from './types/wysiwyg-features';
 
 const logSpecs = {
   all: false,
@@ -31,7 +32,7 @@ export class WysiwygConfigurationManager {
     return this.fieldSettings._advanced?.Mode || DefaultMode;
   }
 
-  public getSettings(editMode: EditModes.WysiwygEditMode, displayMode: DialogModes.DisplayModes, isDebug: boolean): WysiwygConfiguration {
+  public getSettings(editMode: EditModes.WysiwygEditMode, displayMode: WysiwygDialogModes.DisplayModes, isDebug: boolean): WysiwygConfiguration {
     const l = this.log.fnIf('getSettings', { editMode, displayMode, isDebug });
     // 0. Shorten some variables
     const exp = this.connector._experimental;
@@ -71,7 +72,7 @@ export class WysiwygConfigurationManager {
       advanced: showAdvanced,
       dialog: !fieldSettings.Dialog
         ? preset.buttons.dialog // not set / empty - use default
-        : preset.displayMode === DialogModes.DisplayInline && fieldSettings._allowDialog, // set, activate if 'inline'
+        : preset.displayMode === WysiwygDialogModes.DisplayInline && fieldSettings._allowDialog, // set, activate if 'inline'
     };
 
     const wysiwygConfiguration = {
@@ -95,13 +96,13 @@ export class WysiwygConfigurationManager {
     return wysiwygConfiguration;
   }
 
-  public switch(editMode: EditModes.WysiwygEditMode, displayMode: DialogModes.DisplayModes, isDebug: boolean): RawEditorOptions {
+  public switch(editMode: EditModes.WysiwygEditMode, displayMode: WysiwygDialogModes.DisplayModes, isDebug: boolean): RawEditorOptions {
     // temp/wip - rebuild settings and toolbarMaker as sideEffect - this is not good
     const updated = this.getSettings(editMode, displayMode, isDebug);
     return updated.tinyMce;
   }
 
-  private getPreset(editMode: EditModes.WysiwygEditMode, displayMode: DialogModes.DisplayModes): WysiwygConfiguration {
+  private getPreset(editMode: EditModes.WysiwygEditMode, displayMode: WysiwygDialogModes.DisplayModes): WysiwygConfiguration {
     try {
       return getPresetConfiguration(editMode, displayMode, this.log);
     } catch (e) {
@@ -113,7 +114,7 @@ export class WysiwygConfigurationManager {
   }
 }
 
-function getPresetConfiguration(editMode: EditModes.WysiwygEditMode, displayMode: DialogModes.DisplayModes, log: ClassLogger): WysiwygConfiguration {
+function getPresetConfiguration(editMode: EditModes.WysiwygEditMode, displayMode: WysiwygDialogModes.DisplayModes, log: ClassLogger): WysiwygConfiguration {
 
   log.a('wysiwyg: getPresetConfiguration', { editMode, displayMode, ConfigurationPresets });
   // Find best match for modeConfig, if not found, rename and use default

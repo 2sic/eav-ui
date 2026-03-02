@@ -9,8 +9,8 @@ const logSpecs = {
   PastePreProcess: true,
 };
 
-export class EditorPasteOrDrop {
-  log = classLog({ EditorPasteOrDrop }, logSpecs);
+export class EditorPasteOrDropHelper {
+  log = classLog({ EditorPasteOrDropHelper }, logSpecs);
   
   isDrop = false;
 

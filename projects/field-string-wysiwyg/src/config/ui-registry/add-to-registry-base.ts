@@ -4,17 +4,10 @@ import * as DialogModes from '../../constants/display-modes';
 import * as EditModes from '../../constants/edit-modes';
 import { FieldStringWysiwygEditor, wysiwygEditorHtmlTag } from '../../field-string-wysiwyg/field-string-wysiwyg-editor';
 import { RawEditorOptionsExtended } from '../raw-editor-options-extended';
+import { AddToRegistryParams } from './add-to-registry-params';
 import { SwitchModeHelper } from './switch-mode.helper';
 
 type FuncVoid = () => void | unknown;
-
-/** Helper to ensure add-to-registry params don't always change on every implementing class */
-export interface AddToRegistryParams {
-  field: FieldStringWysiwygEditor;
-  editor: Editor;
-  adam: Adam;
-  options: RawEditorOptionsExtended;
-}
 
 /**
  * Base class for tools which add buttons to tinymce

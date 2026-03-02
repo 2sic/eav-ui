@@ -27,15 +27,15 @@ import { Connector } from '../../../edit-types/src/Connector';
 import { EavCustomInputField } from '../../../edit-types/src/EavCustomInputField';
 import { WysiwygReconfigure } from '../../../edit-types/src/WysiwygReconfigure';
 import { classLog } from '../../../shared/logging';
-import { tinyMceBaseUrl } from '../../internal-constants';
 import { WysiwygConstants } from '../../shared/wysiwyg.constants';
 import { TinyMceConfigurator } from '../config/tinymce-configurator';
 import { TranslationsLoader } from '../config/translation-loader';
+import { tinyMceBaseUrl } from '../constants/internal-constants';
 import { registerCustomElement } from '../editor/editor-helpers';
 import { TinyMceBuilder } from '../editor/tiny-mce-setup';
-import { buildTemplate } from '../shared/helpers';
 import * as template from './field-string-wysiwyg-editor.html';
 import * as styles from './field-string-wysiwyg-editor.scss';
+import { buildHtmlAndStyles } from './html-helpers';
 import * as skinOverrides from './skin-overrides.scss';
 
 export const wysiwygEditorHtmlTag = 'field-string-wysiwyg-editor';
@@ -97,7 +97,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     this.fieldInitialized = true;
     const l = this.log.fnIf('connectedCallback');
 
-    this.innerHTML = buildTemplate(template.default, styles.default + skinOverrides.default);
+    this.innerHTML = buildHtmlAndStyles(template.default, styles.default + skinOverrides.default);
     this.querySelector<HTMLDivElement>('.tinymce-container').classList.add(this.#containerClass, this.#adamIntegrationClass);
     this.querySelector<HTMLDivElement>('.tinymce-toolbar-container').classList.add(this.#toolbarContainerClass);
     this.classList.add(this.mode === 'inline' ? 'inline-wysiwyg' : 'full-wysiwyg');

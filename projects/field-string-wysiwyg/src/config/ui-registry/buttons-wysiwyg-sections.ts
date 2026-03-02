@@ -1,6 +1,7 @@
 import * as Buttons from '../../constants/buttons';
 import * as RichSpecs from '../../constants/rich-wysiwyg';
-import { AddToRegistryBase, AddToRegistryParams } from './add-to-registry-base';
+import { AddToRegistryBase } from './add-to-registry-base';
+import { AddToRegistryParams } from './add-to-registry-params';
 
 export class AddToRegistryWysiwygSections extends AddToRegistryBase {
   constructor(makerParams: AddToRegistryParams) {
