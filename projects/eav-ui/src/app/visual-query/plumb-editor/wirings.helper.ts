@@ -10,12 +10,12 @@ const logSpecs = {
   initWirings: true,
   ensureWireEndpointExists: false,
   findDataSourceInDom: false,
-  connect: true,
+  connect: false,
   fields: ['TestIn2', '*'],
 }
 
 export class WiringsHelper {
-  log = classLog({WiringsHelper}, logSpecs);
+  log = classLog({ WiringsHelper }, logSpecs);
 
   constructor(
     private plumber: Plumber,

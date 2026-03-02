@@ -111,7 +111,14 @@ export class Plumber {
   #initDomDataSources() {
     const l = this.log.fnIf('initDomDataSources');
     for (const queryDs of this.query.DataSources) {
-      const { domDataSource: domDs, definition: dataSource } = this.queryData.findDomAndDef(queryDs.EntityGuid, queryDs.PartAssemblyAndType);
+
+      // find data, find DOM, if either is missing, skip
+      const domAndDef = this.queryData.findDomAndDef(queryDs.EntityGuid, queryDs.PartAssemblyAndType);
+      if (!domAndDef)
+        continue;
+
+      // deconstruct, test again
+      const { domDataSource: domDs, definition: dataSource } = domAndDef;
       if (!domDs)
         continue;
 

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { classLogEnabled } from 'projects/shared/logging';
+import { classLog } from 'projects/shared/logging';
 import { map } from 'rxjs';
 import { webApiQueryDataSources, webApiQueryDebugStream, webApiQueryGet, webApiQueryRun, webApiQuerySave } from '../../app-administration/services';
 import { eavConstants } from '../../shared/constants/eav.constants';
@@ -18,7 +18,7 @@ const logSpecs = {
 @Injectable()
 export class QueryDefinitionService extends HttpServiceBaseSignal {
 
-  log = classLogEnabled({ QueryDefinitionService}, logSpecs);
+  log = classLog({ QueryDefinitionService}, logSpecs);
 
   fetchPipelinePromise(pipelineEntityId: number, dataSources: DataSourceInstance[]): Promise<VisualQueryModel> {
     return this.fetchPromise<VisualQueryModel>(webApiQueryGet, {
