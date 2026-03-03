@@ -2,18 +2,18 @@ import { GridOptions, ICellRendererParams } from '@ag-grid-community/core';
 import { Component, Input, computed } from '@angular/core';
 import { RouterOutlet } from "@angular/router";
 import { transient } from 'projects/core';
-import { FeaturesService } from '../../../features/features.service';
-import { AgGridHelper } from '../../ag-grid/ag-grid-helper';
-import { convertFormToUrl } from '../../helpers/url-prep.helper';
-import { ItemIdHelper } from '../../models/item-id-helper';
-import { SxcGridModule } from '../../modules/sxc-grid-module/sxc-grid.module';
-import { DialogRoutingService } from '../../routing/dialog-routing.service';
-import { SysDataService } from '../../services/sys-data.service';
+import { FeaturesService } from '../../features/features.service';
+import { AgGridHelper } from '../../shared/ag-grid/ag-grid-helper';
+import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
+import { ItemIdHelper } from '../../shared/models/item-id-helper';
+import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
+import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
+import { SysDataService } from '../../shared/services/sys-data.service';
 
 @Component({
     selector: 'app-entity-relationships',
-    templateUrl: './entity-relationships.html',
-    styleUrls: ['./entity-relationships.scss'],
+    templateUrl: './relationships-table.html',
+    styleUrls: ['./relationships-table.scss'],
     imports: [SxcGridModule, RouterOutlet],
 })
 export class EntityRelationshipsComponent {

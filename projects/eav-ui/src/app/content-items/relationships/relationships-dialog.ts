@@ -1,13 +1,13 @@
-import { Component, computed } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { RouterOutlet } from "@angular/router";
 import { transient } from 'projects/core';
 import { FeatureInfoBoxComponent } from "../../features/feature-info-box/feature-info-box";
 import { FeatureIconWithDialogComponent } from '../../features/icons/feature-icon-with-dialog';
-import { EntityRelationshipsComponent } from '../../shared/components/entity-relationships/entitiy-relationships';
 import { DialogHeaderComponent } from '../../shared/dialog-header/dialog-header';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { SysDataService } from '../../shared/services/sys-data.service';
+import { EntityRelationshipsComponent } from './relationships-table';
 
 type EntityLookupResult = {
   title?: string;
@@ -31,9 +31,9 @@ export class RelationshipsPageComponent {
   #dialogRouter = transient(DialogRoutingService);
   #sysData = transient(SysDataService);
 
-  constructor(
-    private dialog: MatDialogRef<RelationshipsPageComponent>,
-  ) { }
+  protected dialog = inject(MatDialogRef<RelationshipsPageComponent>);
+
+  constructor() { }
 
   itemId = computed(() => Number(this.#dialogRouter.getParam('itemId')));
   
@@ -50,10 +50,6 @@ export class RelationshipsPageComponent {
     const e = this.entity();
     return e?.title ?? '';
   });
-
-  closeDialog() {
-    this.dialog.close();
-  }
 }
 
 export interface RelationshipsDialogData {
