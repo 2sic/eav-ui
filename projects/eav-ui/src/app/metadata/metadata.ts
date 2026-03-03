@@ -263,7 +263,7 @@ export class MetadataComponent implements OnInit {
     };
     const formUrl = convertFormToUrl(form);
     // Use your dialogRoutes service to generate the correct sub-route
-    return '#' + this.#dialogRoutes.urlSubRoute(`edit/${formUrl}`);
+    return this.#dialogRoutes.linkSubRoute(`edit/${formUrl}`);
   }
 
   #buildGridOptions(): GridOptions {

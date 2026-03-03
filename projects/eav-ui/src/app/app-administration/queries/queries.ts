@@ -125,7 +125,7 @@ export class QueriesComponent implements OnInit {
   }
 
   #urlTo(url: string) {
-    return `#${this.#dialogRouter.urlSubRoute(url)}`;
+    return this.#dialogRouter.linkSubRoute(url);
   }
 
   #urlToEditOrNew(query?: Query) {

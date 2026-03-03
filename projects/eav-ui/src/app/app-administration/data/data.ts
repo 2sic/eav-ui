@@ -329,7 +329,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
   //#region Actions in the grid
 
   #urlTo(url: string) {
-    return '#' + this.#dialogRouter.urlSubRoute(url);
+    return this.#dialogRouter.linkSubRoute(url);
   }
 
   #routeAddItem(contentType: ContentType): string {

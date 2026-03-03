@@ -81,9 +81,10 @@ export class EntityRelationshipsComponent {
             if (!row)
               return '';
 
-            const url = this.isFeatureEnabled()
-              ? this.#urlToOpenEditView(row)
-              : this.#urlToOpenFeatureDetails('EntityInspectRelationships');
+            const url = this.#dialogRouter.linkSubRoute(this.isFeatureEnabled()
+              ? `edit/${convertFormToUrl({ items: [ItemIdHelper.editId(row.id)] })}`
+              : `features/details/EntityInspectRelationships`
+            );
 
             return AgGridHelper.cellLink(url, row.title);
           },
@@ -104,22 +105,6 @@ export class EntityRelationshipsComponent {
         },
       ],
     };
-  }
-
-  #urlTo(url: string) {
-    return '#' + this.#dialogRouter.urlSubRoute(url);
-  }
-
-  #urlToOpenFeatureDetails(featureId: string): string {
-    return this.#urlTo(`features/details/${featureId}`);
-  }
-
-  #urlToOpenEditView(row: RelationshipRow) {
-    return this.#urlTo(
-      `edit/${convertFormToUrl({
-        items: [ItemIdHelper.editId(row.id)],
-      })}`
-    );
   }
 }
 

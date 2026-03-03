@@ -81,8 +81,15 @@ export class DialogRoutingService extends ServiceBase {
     l.end();
   }
 
+  /** Preferred way to get a link/url to a sub-route, will prefix the '#' so it works everywhere */
+  public linkSubRoute(params: string) {
+    return '#' + this.urlSubRoute(params);
+  }
+
   /**
    * Get the URL for a sub-route of the current route.
+   * Will not have a leading #, so it can be used for both links and navigation.
+   * Use linkSubRoute if you need a leading # for links.
    */
   public urlSubRoute(params: string) {
     const tree = this.router.createUrlTree([params], { relativeTo: this.route });
