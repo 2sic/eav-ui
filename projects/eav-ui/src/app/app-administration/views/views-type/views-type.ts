@@ -1,4 +1,4 @@
-import { Component, computed } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { AgGridActionsBaseComponent } from '../../../shared/ag-grid/ag-grid-actions-base';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
@@ -12,12 +12,20 @@ import { calculateViewType } from '../views.helpers';
 })
 export class ViewsTypeComponent extends AgGridActionsBaseComponent<View, 'noop'> {
 
-  /** what ag-grid used to pass as `params.value` */
-  protected readonly value = computed(() => this.params?.value as string);
+  get type() {
+    // calculate once per change detection pass;
+    return this.data ? calculateViewType(this.data) : null;
+  }
 
-  protected readonly type = computed(() => calculateViewType(this.data));
+  get icon(): string {
+    return this.type?.icon ?? '';
+  }
 
-  protected readonly icon = computed(() => this.type().icon);
+  get label(): string {
+    return this.type?.value ?? '';
+  }
 
-  protected readonly isShared = computed(() => !!this.data?.IsShared);
+  get isShared(): boolean {
+    return !!this.data?.IsShared;
+  }
 }

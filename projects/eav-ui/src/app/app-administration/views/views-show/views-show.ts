@@ -8,4 +8,9 @@ import { View } from '../../models';
   templateUrl: './views-show.html',
   imports: [MatIconModule],
 })
-export class ViewsShowComponent extends AgGridActionsBaseComponent<View> {}
+export class ViewsShowComponent extends AgGridActionsBaseComponent<View> {
+  get isVisible(): boolean {
+    // same meaning as your old valueGetter: !(p.data).IsHidden
+    return !this.data?.IsHidden;
+  }
+}
