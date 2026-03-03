@@ -17,7 +17,6 @@ import { ViewsService } from '../../services';
 import { AnalyzeSettingsService } from '../../services/analyze-settings.service';
 import { AnalyzeSettingsKeyComponent } from './analyze-settings-key/analyze-settings-key';
 import { AnalyzeSettingsTotalResultsComponent } from './analyze-settings-total-results/analyze-settings-total-results';
-import { AnalyzeSettingsTotalResultsParams } from './analyze-settings-total-results/analyze-settings-total-results.models';
 import { AnalyzeSettingsValueComponent } from './analyze-settings-value/analyze-settings-value';
 import { AnalyzeParts } from './analyze-settings.models';
 
@@ -47,7 +46,7 @@ export class AnalyzeSettingsComponent implements OnInit {
 
   constructor(
     private dialog: MatDialogRef<AnalyzeSettingsComponent>,
-  ) {}
+  ) { }
 
   selectedView = signal<string>(undefined);
   views = this.#viewsSvc.getAllOnce().value;
@@ -108,14 +107,15 @@ export class AnalyzeSettingsComponent implements OnInit {
           cellClass: 'no-outline',
 
           cellRenderer: AnalyzeSettingsTotalResultsComponent,
-          cellRendererParams: (() => {
-            const params: AnalyzeSettingsTotalResultsParams = {
-              openDetails: (stackItem) => {
-                this.#dialogRouter.navRelative([`details/${this.selectedView()}/${stackItem.Path}`]);
-              },
-            };
-            return params;
-          })(),
+          cellRendererParams: {
+            do: (verb, stackItem) => {
+              switch (verb) {
+                case 'openDetails':
+                  this.#dialogRouter.navRelative([`details/${this.selectedView()}/${stackItem.Path}`]);
+                  break;
+              }
+            },
+          } satisfies AnalyzeSettingsTotalResultsComponent['params'],
         },
 
       ],
