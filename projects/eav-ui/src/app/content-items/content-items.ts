@@ -356,7 +356,7 @@ export class ContentItemsComponent implements OnInit {
         field: '_Used',
         width: 70,
         headerClass: 'dense',
-        cellClass: 'no-outline',
+        cellClass: 'highlight', // 'no-outline',
         sortable: true,
         filter: 'agTextColumnFilter',
 
@@ -366,7 +366,7 @@ export class ContentItemsComponent implements OnInit {
         cellRenderer: (p: { data: ContentItem }) => {
           const item = p.data;
           return AgGridHelper.cellLink(
-            this.#urlToRelationships(item), `${item._Used} / ${item._Uses}`
+            this.#urlToRelationships(item), `${item._Used} / ${item._Uses} 🔍`
           );
         },
       },
