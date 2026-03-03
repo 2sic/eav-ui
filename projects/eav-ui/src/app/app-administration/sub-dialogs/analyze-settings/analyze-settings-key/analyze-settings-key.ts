@@ -7,6 +7,8 @@ type AnalyzeSettingsRow = {
   Path: string;
 };
 
+export type AnalyzeSettingsVerb = 'copy';
+
 @Component({
   selector: 'app-analyze-settings-key',
   templateUrl: './analyze-settings-key.html',
