@@ -10,10 +10,9 @@ import { calculateViewType } from '../views.helpers';
   templateUrl: './views-type.html',
   imports: [MatIconModule, TippyDirective],
 })
-export class ViewsTypeComponent extends AgGridActionsBaseComponent<View, 'noop'> {
+export class ViewsTypeComponent extends AgGridActionsBaseComponent<View, never> {
 
   get type() {
-    // calculate once per change detection pass;
     return this.data ? calculateViewType(this.data) : null;
   }
 

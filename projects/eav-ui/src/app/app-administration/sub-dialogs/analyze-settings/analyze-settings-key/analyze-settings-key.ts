@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
 import { MatRippleModule } from '@angular/material/core';
-import { transient } from '../../../../../../../core/transient';
 import { AgGridActionsBaseComponent } from '../../../../shared/ag-grid/ag-grid-actions-base';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
-import { ClipboardService } from '../../../../shared/services/clipboard.service';
 
 type AnalyzeSettingsRow = {
   Key: string;
 };
+
+export type AnalyzeSettingsVerb = 'copy';
 
 @Component({
   selector: 'app-analyze-settings-key',
@@ -18,9 +18,8 @@ type AnalyzeSettingsRow = {
     TippyDirective,
   ],
 })
-export class AnalyzeSettingsKeyComponent extends AgGridActionsBaseComponent<AnalyzeSettingsRow, 'noop'> {
-
-  protected clipboard = transient(ClipboardService);
+export class AnalyzeSettingsKeyComponent
+  extends AgGridActionsBaseComponent<AnalyzeSettingsRow, AnalyzeSettingsVerb> {
 
   get key(): string {
     return this.data?.Key ?? '';

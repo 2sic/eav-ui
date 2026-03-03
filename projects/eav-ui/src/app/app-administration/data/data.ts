@@ -42,7 +42,7 @@ import { ConfirmDeleteDialogComponent } from '../sub-dialogs/confirm-delete-dial
 import { ConfirmDeleteDialogData } from '../sub-dialogs/confirm-delete-dialog/confirm-delete-dialog.models';
 import { DataActionsComponent } from './data-actions/data-actions';
 import { DataFieldsComponent } from './data-fields/data-fields';
-import { DataItemsComponent } from './data-items/data-items';
+import { DataItemsComponent, DataItemsVerb } from './data-items/data-items';
 
 @Component({
   selector: 'app-data',
@@ -271,9 +271,17 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
           field: 'Items',
           cellRenderer: DataItemsComponent,
           cellRendererParams: ({
-            addItemUrl: (ct) => this.#urlTo(`edit/${this.#routeAddItem(ct)}`),
-            itemsUrl: (ct) => this.#urlTo(`items/${ct.NameId}`),
-          } satisfies DataItemsComponent["params"]),
+            do: (verb: DataItemsVerb, ct: ContentType) => {
+              switch (verb) {
+                case 'openItems':
+                  this.#dialogRouter.navRelative([`items/${ct.NameId}`]);
+                  break;
+                case 'addItem':
+                  this.#dialogRouter.navRelative([`edit/${this.#routeAddItem(ct)}`]);
+                  break;
+              }
+            },
+          } satisfies DataItemsComponent['params']),
         },
         {
           ...ColumnDefinitions.Fields,
