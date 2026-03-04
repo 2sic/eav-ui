@@ -1,0 +1,43 @@
+
+@if (loading()) {
+
+  <p>Loading relationships...</p>
+
+} @else {
+
+  <div class="grid-wrapper mat-tab-grid-wrapper">
+    <!-- Children -->
+    <h3 class="mat-headline-4">
+        Children <span>({{ children().length }})</span>
+    </h3>
+
+    @if (children().length === 0) {
+
+      <p>No children found.</p>
+
+    } @else {
+      <ag-grid-angular
+        class="ag-theme-material"
+        [gridOptions]="gridOptions"
+        [rowData]="children()">
+      </ag-grid-angular>
+    }
+    <!-- Parents -->
+    <h3 class="mat-headline-4">
+      Parents <span>({{ parents().length }})</span>
+    </h3>
+
+    @if (parents().length === 0) {
+
+      <p>No parents found.</p>
+
+    } @else {
+      <ag-grid-angular
+        class="ag-theme-material"
+        [gridOptions]="gridOptions"
+        [rowData]="parents()">
+      </ag-grid-angular>
+    }
+  </div>
+}
+<router-outlet></router-outlet>

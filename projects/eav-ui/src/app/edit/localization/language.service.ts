@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { classLog } from '../../shared/logging';
+import { classLog } from '../../../../../shared/logging';
 import { Language } from '../../shared/models/language.model';
 import { SignalStoreBase } from '../shared/store/signal-store-base';
 

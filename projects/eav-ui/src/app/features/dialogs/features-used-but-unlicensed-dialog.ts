@@ -5,8 +5,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
 import { transient } from '../../../../../core';
+import { classLog, commonSpecs } from '../../../../../shared/logging';
 import { FeatureDetailsDialogComponent } from '../../apps-management/licence-info/feature-details-dialog/feature-details-dialog';
-import { classLog, commonSpecs } from '../../shared/logging';
 import { FeaturesService } from '../features.service';
 import { FeatureDetailService } from '../services/feature-detail.service';
 

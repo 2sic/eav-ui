@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { classLog } from '../../../../../../../shared/logging';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { classLog } from '../../../../shared/logging';
 import { ScriptsLoaderService } from '../../../shared/services/scripts-loader.service';
 import { ConnectorComponent } from '../../connector/connector';
 import { FieldState } from '../../field-state';

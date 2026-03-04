@@ -15,7 +15,7 @@
       (openChange)="openChange($event)"
     >
       <eco-fab-speed-dial-trigger [spin]="true">
-        <button mat-fab class="grid-fab">
+        <button matFab class="grid-fab">
           <mat-icon class="spin180">
             {{ fabOpen() ? 'close' : 'add' }}
           </mat-icon>
@@ -23,7 +23,7 @@
       </eco-fab-speed-dial-trigger>
       <eco-fab-speed-dial-actions class="eav-eco-fab-speed-dial-actions">
         <button
-          mat-mini-fab
+          matMiniFab
           class="eav-eco-fab-speed-dial-action-button"
           label="Find more apps"
           (click)="browseCatalog()"
@@ -31,7 +31,7 @@
           <mat-icon>search</mat-icon>
         </button>
         <button
-          mat-mini-fab
+          matMiniFab
           class="eav-eco-fab-speed-dial-action-button"
           label="Create inherited app"
           (click)="createInheritedApp()"
@@ -39,7 +39,7 @@
           <mat-icon>holiday_village</mat-icon>
         </button>
         <button
-          mat-mini-fab
+          matMiniFab
           class="eav-eco-fab-speed-dial-action-button"
           label="Add from folder"
           (click)="addFromFolder()"
@@ -56,7 +56,7 @@
           </mat-icon>
         </button>
         <button
-          mat-mini-fab
+          matMiniFab
           class="eav-eco-fab-speed-dial-action-button"
           label="Import app"
           (click)="importApp()"
@@ -64,7 +64,7 @@
           <mat-icon>cloud_upload</mat-icon>
         </button>
         <button
-          mat-mini-fab
+          matMiniFab
           class="eav-eco-fab-speed-dial-action-button"
           label="Create app"
           (click)="createApp()"

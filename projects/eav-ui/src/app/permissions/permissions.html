@@ -1,10 +1,8 @@
 <div class="eav-dialog nav-component-wrapper">
-  <div class="eav-dialog-header">
-    <div class="eav-dialog-header__title">Permissions</div>
-    <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
-      <mat-icon>close</mat-icon>
-    </button>
-  </div>
+  <app-dialog-header (close)="closeDialog()">
+    Permissions
+  </app-dialog-header>
+  
   <div class="eav-dialog-content nav-component-wrapper">
     <router-outlet></router-outlet>
     <div class="grid-wrapper">
@@ -12,7 +10,7 @@
       </ag-grid-angular>
     </div>
     <mat-dialog-actions align="end">
-      <button mat-fab mat-elevation-z24 class="grid-fab" tippy="Create a new permission" (click)="editPermission(null)">
+      <button matFab mat-elevation-z24 class="grid-fab" tippy="Create a new permission" (click)="editPermission(null)">
         <mat-icon>add</mat-icon>
       </button>
     </mat-dialog-actions>

@@ -1,7 +1,7 @@
 import { EmptyDefault } from 'projects/edit-types/src/FieldSettings-EmptyDefault';
 import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
+import { classLog } from '../../../../../shared/logging';
 import { InputTypeHelpers } from '../../shared/fields/input-type-helpers';
-import { classLog } from '../../shared/logging';
 import { DebugFields } from '../edit-debug';
 import { FieldSettingsHelpersManager } from '../fields/logic/field-settings-helpers-manager';
 import { TranslateMenuHelpers } from '../fields/wrappers/localization/translate-menu/translate-menu.helpers';

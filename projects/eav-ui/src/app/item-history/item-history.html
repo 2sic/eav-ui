@@ -1,10 +1,8 @@
 <div class="eav-dialog eav-no-scrollbar">
-  <div class="eav-dialog-header">
-    <div class="eav-dialog-header__title">Item History</div>
-    <button mat-icon-button tippy="Close dialog" (click)="dialog.close()">
-      <mat-icon>close</mat-icon>
-    </button>
-  </div>
+  <app-dialog-header (close)="dialog.close()">
+    Item History
+  </app-dialog-header>
+
   <div class="eav-dialog-content">
     <p>Check version history for this item and restore the version you need.</p>
     @if (historyItems(); as items) { 

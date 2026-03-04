@@ -10,6 +10,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
 import { transient } from '../../../../../core';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint';
+import { DialogHeaderComponent } from "../../shared/dialog-header/dialog-header";
 import { AppsListService } from '../services/apps-list.service';
 
 @Component({
@@ -25,8 +26,9 @@ import { AppsListService } from '../services/apps-list.service';
     MatDialogActions,
     MatButtonModule,
     MatIconModule,
-    FieldHintComponent
-  ]
+    FieldHintComponent,
+    DialogHeaderComponent
+]
 })
 export class CreateInheritedAppComponent {
   @HostBinding('className') hostClass = 'dialog-component';

@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { classLog } from '../logging';
+import { classLog } from '../../../../../shared/logging';
 import { QueryStreams } from '../models/query-stream.model';
 import { Context } from './context';
 

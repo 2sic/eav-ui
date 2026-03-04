@@ -1,6 +1,6 @@
 import { Injectable, Signal } from '@angular/core';
 import { map, Observable, shareReplay } from 'rxjs';
-import { classLog } from '../../shared/logging';
+import { classLog } from '../../../../../shared/logging';
 import { mapUntilChanged } from '../../shared/rxJs/mapUntilChanged';
 import { ComputedCacheHelper } from '../../shared/signals/computed-cache';
 import { EntityReader } from '../shared/helpers';

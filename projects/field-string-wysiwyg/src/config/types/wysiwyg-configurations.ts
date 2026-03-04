@@ -1,7 +1,8 @@
 import type { RawEditorOptions } from 'tinymce';
-import { WysiwygEditMode } from '../../constants/edit-modes';
 import { DisplayModes } from '../../constants/display-modes';
-import { WysiwygButtons, WysiwygFeatures } from '.';
+import { WysiwygEditMode } from '../../constants/edit-modes';
+import { WysiwygButtons } from './wysiwyg-buttons';
+import { WysiwygFeatures } from './wysiwyg-features';
 
 export interface WysiwygConfigurationSet extends WysiwygConfiguration {
   variations: WysiwygConfigurationVariation[],

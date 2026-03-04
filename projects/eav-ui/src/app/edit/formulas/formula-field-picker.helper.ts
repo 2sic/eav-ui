@@ -1,4 +1,4 @@
-import { classLog, FnLogger } from '../../shared/logging';
+import { classLog, FnLogger } from '../../../../../shared/logging';
 import { getVersion } from '../../shared/signals/signal.utilities';
 import { DebugFields } from '../edit-debug';
 import { FieldConstantsOfLanguage, FieldProps } from '../state/fields-configs.model';

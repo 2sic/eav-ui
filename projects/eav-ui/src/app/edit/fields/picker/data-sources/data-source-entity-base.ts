@@ -2,7 +2,7 @@ import { Injectable, WritableSignal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { Observable, combineLatest, distinctUntilChanged, filter, map, switchMap } from "rxjs";
 import { transient } from '../../../../../../../core';
-import { ClassLogger } from '../../../../shared/logging';
+import { ClassLogger } from '../../../../../../../shared/logging';
 import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 import { QueryService } from '../../../../shared/services/query.service';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';

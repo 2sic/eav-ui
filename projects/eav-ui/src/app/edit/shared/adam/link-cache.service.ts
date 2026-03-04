@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AdamItem } from '../../../../../../edit-types/src/AdamItem';
-import { classLog } from '../../../shared/logging';
+import { classLog } from '../../../../../../shared/logging';
 import { LinkInfo, PrefetchAdams, PrefetchLinks } from '../../dialog/main/edit-dialog-main.models';
 import { SignalStoreBase } from '../store/signal-store-base';
 

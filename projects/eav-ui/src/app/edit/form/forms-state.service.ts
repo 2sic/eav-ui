@@ -1,5 +1,5 @@
 import { Injectable, Signal, signal } from '@angular/core';
-import { classLog } from '../../shared/logging';
+import { classLog } from '../../../../../shared/logging';
 import { SignalEquals } from '../../shared/signals/signal-equals';
 import { computedObj } from '../../shared/signals/signal.utilities';
 import { LanguageService } from '../localization/language.service';

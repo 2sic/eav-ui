@@ -1,12 +1,8 @@
 <div class="eav-dialog" appDragAndDrop [allowedFileTypes]="'xml'" (filesDropped)="filesDropped($event)">
-  <div class="eav-dialog-header">
-    <div class="eav-dialog-header__title">
-      {{ contentType()?.Name }} Import Data
-    </div>
-    <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
-      <mat-icon>close</mat-icon>
-    </button>
-  </div>
+  <app-dialog-header (close)="closeDialog()">
+    {{ contentType()?.Name }} Import Data
+  </app-dialog-header>
+  
   <div class="eav-dialog-description">
     <p>
       This will import content-items into 2sxc. It requires that you already defined the content-type before you try

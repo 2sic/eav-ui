@@ -4,6 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
+import { DialogHeaderComponent } from "../../shared/dialog-header/dialog-header";
 import { DebugStreamInfo } from '../models/debug-stream-info.model';
 import { QueryResult } from '../models/result/pipeline-result';
 import { VisualQueryStateService } from '../services/visual-query.service';
@@ -14,12 +15,13 @@ import { QueryResultDialogData } from './query-result.models';
     templateUrl: './query-result.html',
     styleUrls: ['./query-result.scss'],
     imports: [
-        MatButtonModule,
-        MatIconModule,
-        MatTabsModule,
-        JsonPipe,
-        KeyValuePipe,
-    ]
+    MatButtonModule,
+    MatIconModule,
+    MatTabsModule,
+    JsonPipe,
+    KeyValuePipe,
+    DialogHeaderComponent,
+]
 })
 export class QueryResultComponent implements OnInit {
   parameters: string[];

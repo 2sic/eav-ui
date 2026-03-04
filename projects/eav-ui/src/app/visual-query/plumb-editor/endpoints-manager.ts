@@ -1,5 +1,5 @@
+import { classLog } from '../../../../../shared/logging';
 import { eavConstants } from '../../shared/constants/eav.constants';
-import { classLog } from '../../shared/logging';
 import { DataSourceDefinition } from '../models/data-source-definition';
 import { ConnectionsManager } from './connections-manager';
 import { findDefByType, getEndpointLabel } from './datasource.helpers';
@@ -35,6 +35,10 @@ export class EndpointsManager {
   addEndpoint(domDataSource: HTMLElement, endpointName: string, endpointLabel: string, isIn: boolean, queryDs: DataSourceDefinition, extraStyling?: string) {
     const l = this.log.fnIfInFields('addEndpoint', endpointName, { endpointName, endpointLabel, isIn, queryDs });
     const dsDefinition = findDefByType(this.queryData.dataSources, queryDs.PartAssemblyAndType);
+    
+    if (!dsDefinition)
+      return l.end('DataSource definition not found, exit', { nameId: queryDs.PartAssemblyAndType });
+
     const connectionList = isIn
       ? dsDefinition.In
       : dsDefinition.Out;
@@ -110,7 +114,9 @@ export class EndpointsManager {
     const partsMirrorIn = this.queryData.query.DataSources
     .map(ds => {
       const def = findDefByType(this.queryData.dataSources, ds.PartAssemblyAndType);
-      return (def.OutMode === 'mirror-in') ? { def, guid: ds.EntityGuid } : null;
+      return def?.OutMode === 'mirror-in'
+        ? { def, guid: ds.EntityGuid }
+        : null;
     })
     .filter(d => d !== null);
     
@@ -128,9 +134,8 @@ export class EndpointsManager {
 
       // Add missing labels to out
       const { domDataSource, dataSource } = this.queryData.findDataSourceAndDom(ds.guid);
-      if (missingInOut.length) {
+      if (missingInOut.length)
         missingInOut.forEach(p => this.addEndpoint(domDataSource, p.label, p.label, false, dataSource, 'mirror-in'));
-      }
 
       // Remove excessive labels
       // Only consider the ones which have a `mirror-in` class and remove them
@@ -163,7 +168,7 @@ export class EndpointsManager {
     const parts = this.queryData.query.DataSources.map(ds => ds.EntityGuid);
 
     parts.forEach(guid => {
-      const {inPoints, outPoints} = this.#getEndpointsByType(guid);
+      const { inPoints, outPoints } = this.#getEndpointsByType(guid);
       this.#reorientListOfEndpoints(inPoints);
       this.#reorientListOfEndpoints(outPoints);
     });

@@ -15,6 +15,7 @@ import { filter, fromEvent, map, Observable, take } from 'rxjs';
 import { transient } from '../../../../../core';
 import { isCtrlEnter } from '../../edit/dialog/main/keyboard-shortcuts';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint';
+import { DialogHeaderComponent } from "../../shared/dialog-header/dialog-header";
 import { CrossWindowMessage, InstallSettings } from '../../shared/models/installer-models';
 import { SaveCloseButtonFabComponent } from '../../shared/modules/save-close-button-fab/save-close-button-fab';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
@@ -40,7 +41,8 @@ import { AppsListService } from '../services/apps-list.service';
     MatRadioModule,
     MatIconModule,
     SaveCloseButtonFabComponent,
-  ]
+    DialogHeaderComponent
+]
 })
 export class CreateAppComponent {
   // Add a CSS class to the host element for consistent dialog styling

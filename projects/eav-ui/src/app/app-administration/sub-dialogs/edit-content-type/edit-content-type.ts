@@ -11,13 +11,14 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { transient } from '../../../../../../core';
+import { classLog } from '../../../../../../shared/logging';
 import { isCtrlEnter } from '../../../edit/dialog/main/keyboard-shortcuts';
 import { FieldHintComponent } from '../../../shared/components/field-hint/field-hint';
 import { dropdownInsertValue } from '../../../shared/constants/dropdown-insert-value.constant';
 import { eavConstants, ScopeOption } from '../../../shared/constants/eav.constants';
+import { DialogHeaderComponent } from "../../../shared/dialog-header/dialog-header";
 import { ClickStopPropagationDirective } from '../../../shared/directives/click-stop-propagation.directive';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
-import { classLog } from '../../../shared/logging';
 import { SaveCloseButtonFabComponent } from '../../../shared/modules/save-close-button-fab/save-close-button-fab';
 import { computedObj, signalObj } from '../../../shared/signals/signal.utilities';
 import { contentTypeNameError, contentTypeNamePattern } from '../../constants/content-type.patterns';
@@ -42,7 +43,8 @@ import { ContentTypesService } from '../../services/content-types.service';
     ClickStopPropagationDirective,
     TippyDirective,
     SaveCloseButtonFabComponent,
-  ]
+    DialogHeaderComponent
+]
 })
 export class EditContentTypeComponent implements OnInit, AfterViewInit {
 

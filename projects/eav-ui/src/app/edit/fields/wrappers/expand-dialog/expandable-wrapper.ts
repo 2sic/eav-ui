@@ -1,9 +1,9 @@
 import { CommonModule } from "@angular/common";
 import { AfterViewInit, ChangeDetectorRef, Component, computed, ElementRef, inject, NgZone, OnDestroy, signal, ViewChild, ViewContainerRef } from "@angular/core";
 import { transient } from '../../../../../../../core/transient';
+import { classLog } from '../../../../../../../shared/logging';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { vh } from '../../../../shared/helpers/viewport.helpers';
-import { classLog } from '../../../../shared/logging';
 import { FormsStateService } from "../../../form/forms-state.service";
 import { ConnectorHelper } from "../../connector/connector.helper";
 import { FieldState } from "../../field-state";

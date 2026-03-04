@@ -1,20 +1,13 @@
 import { Editor } from 'tinymce';
 import { Adam } from '../../../../edit-types/src/Adam';
-import { wysiwygEditorHtmlTag } from '../../../internal-constants';
 import * as DialogModes from '../../constants/display-modes';
 import * as EditModes from '../../constants/edit-modes';
-import { FieldStringWysiwygEditor } from '../../editor/editor';
+import { FieldStringWysiwygEditor, wysiwygEditorHtmlTag } from '../../field-string-wysiwyg/field-string-wysiwyg-editor';
 import { RawEditorOptionsExtended } from '../raw-editor-options-extended';
+import { AddToRegistryParams } from './add-to-registry-params';
+import { SwitchModeHelper } from './switch-mode.helper';
 
 type FuncVoid = () => void | unknown;
-
-/** Helper to ensure add-to-registry params don't always change on every implementing class */
-export interface AddToRegistryParams {
-  field: FieldStringWysiwygEditor;
-  editor: Editor;
-  adam: Adam;
-  options: RawEditorOptionsExtended;
-}
 
 /**
  * Base class for tools which add buttons to tinymce
@@ -27,7 +20,7 @@ export abstract class AddToRegistryBase {
   adam: Adam;
   options: RawEditorOptionsExtended;
 
-  constructor(makerParams: AddToRegistryParams, message?: string) {
+  constructor(protected makerParams: AddToRegistryParams, message?: string) {
     this.field = makerParams.field;
     this.editor = makerParams.editor;
     this.adam = makerParams.adam;
@@ -66,19 +59,8 @@ export abstract class AddToRegistryBase {
   }
 
   /** Mode switching to inline/dialog and advanced/normal */
-  protected switchMode(displayMode?: DialogModes.DisplayModes, editMode?: EditModes.WysiwygEditMode): void {
-    const currMode = this.options.configManager.current;
-    displayMode ??= currMode.displayMode;
-    editMode ??= currMode.editMode;
-    const newSettings = this.options.configManager.switch(editMode, displayMode);
-    // don't create a new object, we must keep a reference to the previous parent `this.options`.
-    // don't do this: this.options = {...this.options, ...newSettings};
-    this.options.toolbar = newSettings.toolbar;
-    this.options.menubar = newSettings.menubar;
-    this.options.contextmenu = newSettings.contextmenu;
-    // refresh editor toolbar
-    this.editor.editorManager.remove(this.editor);
-    this.editor.editorManager.init(this.options);
+  protected switchMode(displayMode: DialogModes.DisplayModes | null, editMode: EditModes.WysiwygEditMode | null): void {
+    new SwitchModeHelper(this.makerParams).switchMode(displayMode, editMode);
   }
 
   protected openInDialog() {
@@ -86,7 +68,8 @@ export abstract class AddToRegistryBase {
     // todo: docs say that Drawer is being deprecated ? but I don't think this has to do with drawer?
     // https://www.tiny.cloud/docs/configure/editor-appearance/#toolbar_mode
     const toolbarDrawerOpen = this.editor.queryCommandState('ToggleToolbarDrawer');
-    if (toolbarDrawerOpen) this.editor.execCommand('ToggleToolbarDrawer');
+    if (toolbarDrawerOpen)
+      this.editor.execCommand('ToggleToolbarDrawer');
 
     // Open the Dialog
     this.field.connector.dialog.open(wysiwygEditorHtmlTag);
@@ -102,10 +85,12 @@ export abstract class AddToRegistryBase {
   /** Inner call for most onItemAction commands */
   protected runOrExecCommand(api: unknown, value: unknown) {
     // If it's a function, call it with params (the params are usually not used)
-    if (typeof(value) === 'function') value(api, value);
+    if (typeof(value) === 'function')
+      value(api, value);
 
     // If it's a string, it must be a command the editor knows
-    if (typeof(value) === 'string') this.editor.execCommand(value);
+    if (typeof(value) === 'string')
+      this.editor.execCommand(value);
   }
 
   protected toggleFormat(tag: string) {

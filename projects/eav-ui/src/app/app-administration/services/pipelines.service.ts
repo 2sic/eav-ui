@@ -1,9 +1,9 @@
 import { httpResource } from '@angular/common/http';
 import { Injectable, Signal } from '@angular/core';
 import { from, map, switchMap } from 'rxjs';
+import { classLog } from '../../../../../shared/logging';
 import { FileUploadResult } from '../../shared/components/file-upload-dialog';
 import { toBase64 } from '../../shared/helpers/file-to-base64.helper';
-import { classLog } from '../../shared/logging';
 import { webApiEntityList } from '../../shared/services/entity.service';
 import { HttpServiceBase } from '../../shared/services/http-service-base';
 import { Query } from '../models/query.model';

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { filter, map, Observable, shareReplay, switchMap } from 'rxjs';
 import { transient } from '../../../../../core';
 import { EntityLightIdentifier } from '../../../../../edit-types/src/EntityLight';
-import { classLog } from '../logging';
+import { classLog } from '../../../../../shared/logging';
 import { HttpServiceBaseSignal } from './http-service-base-signal';
 import { QueryService } from './query.service';
 

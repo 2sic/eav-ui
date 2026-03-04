@@ -17,6 +17,7 @@ import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
 import { GridWithHelpComponent, HelpTextConst } from '../shared/ag-grid/grid-with-help/grid-with-help';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
 import { eavConstants } from '../shared/constants/eav.constants';
+import { DialogHeaderComponent } from "../shared/dialog-header/dialog-header";
 import { ToggleDebugDirective } from '../shared/directives/toggle-debug.directive';
 import { ContentTypesFieldsService } from '../shared/fields/content-types-fields.service';
 import { Field } from '../shared/fields/field.model';
@@ -50,7 +51,8 @@ import { ShareOrInheritDialogComponent } from './field-sharing-configure/field-s
     SxcGridModule,
     TranslateModule,
     GridWithHelpComponent,
-  ]
+    DialogHeaderComponent
+]
 })
 export class ContentTypeFieldsComponent implements OnInit {
 
@@ -295,11 +297,11 @@ export class ContentTypeFieldsComponent implements OnInit {
       items: Object.keys(field.ConfigTypes).map((t) => this.#createItemDefinition(field, t))
     };
     const formUrl = convertFormToUrl(form);
-    return '#' + this.#dialogRouter.urlSubRoute(`edit/${formUrl}`);
+    return this.#dialogRouter.linkSubRoute(`edit/${formUrl}`);
   }
 
   #inputTypeEditUrl(field: Field): string {
-    return '#' + this.#dialogRouter.urlSubRoute(`update/${this.#contentTypeStaticName}/${field.Id}/inputType`);
+    return this.#dialogRouter.linkSubRoute(`update/${this.#contentTypeStaticName}/${field.Id}/inputType`);
   }
 
   #shareOrInherit(field: Field) {

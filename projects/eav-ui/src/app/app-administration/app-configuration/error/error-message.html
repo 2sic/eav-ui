@@ -1,10 +1,7 @@
 <div class="eav-dialog">
-  <div class="eav-dialog-header">
-    <div class="eav-dialog-header__title">Error Messages</div>
-    <button mat-icon-button mat-dialog-close tippy="Close dialog">
-      <mat-icon>close</mat-icon>
-    </button>
-  </div>
+  <app-dialog-header (close)="dialogRef.close()">
+    Error Messages
+  </app-dialog-header>
   <div class="eav-dialog-content">
     <p>{{ errorMessage }}</p>
   </div>

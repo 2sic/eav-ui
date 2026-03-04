@@ -1,7 +1,7 @@
 <div class="actions-component">
-  @if (!contentType.EditInfo.DisableEdit || contentType.Properties) {
+  @if (!data.EditInfo.DisableEdit || data.Properties) {
     <a
-      [href]="params.urlTo('createUpdateMetaData', contentType)"
+      [href]="params.urlTo('createUpdateMetaData', data)"
       class="eav-grid-action-button default-link highlight"
       matRipple
       tippy="Description and more"
@@ -14,18 +14,18 @@
     </div>
   }
 
-  @if (!contentType.EditInfo.DisableMetadata) {
+  @if (!data.EditInfo.DisableMetadata) {
     <a
-      [href]="params.urlTo('openMetadata', contentType)"
+      [href]="params.urlTo('openMetadata', data)"
       class="eav-grid-action-button default-link highlight"
       matRipple
       tippy="Metadata"
     >
       <mat-icon
-        [matBadge]="contentType.Metadata.length"
+        [matBadge]="data.Metadata.length"
         matBadgePosition="below after"
         matBadgeSize="small"
-        [matBadgeHidden]="!contentType.Metadata.length"
+        [matBadgeHidden]="!data.Metadata.length"
         aria-hidden="false"
       >
         local_offer
@@ -34,11 +34,11 @@
   } @else {
     <div class="eav-grid-action-button disabled">
       <mat-icon
-        [matBadge]="contentType.Metadata.length"
+        [matBadge]="data.Metadata.length"
         matBadgePosition="below after"
         matBadgeSize="small"
         matBadgeDisabled="true"
-        [matBadgeHidden]="!contentType.Metadata.length"
+        [matBadgeHidden]="!data.Metadata.length"
         aria-hidden="false"
       >
         local_offer
@@ -46,18 +46,18 @@
     </div>
   }
 
-  @if (!contentType.EditInfo.DisableEdit && enablePermissions) {
+  @if (!data.EditInfo.DisableEdit && enablePermissions) {
     <a
-      [href]="params.urlTo('openPermissions', contentType)"
+      [href]="params.urlTo('openPermissions', data)"
       class="eav-grid-action-button default-link highlight"
       matRipple
       tippy="Permissions"
     >
       <mat-icon
-        [matBadge]="contentType.Permissions.Count"
+        [matBadge]="data.Permissions.Count"
         matBadgePosition="below after"
         matBadgeSize="small"
-        [matBadgeHidden]="!contentType.Permissions.Count"
+        [matBadgeHidden]="!data.Permissions.Count"
         aria-hidden="false"
       >
         person</mat-icon
@@ -66,11 +66,11 @@
   } @else {
     <div class="eav-grid-action-button disabled">
       <mat-icon
-        [matBadge]="contentType.Permissions.Count"
+        [matBadge]="data.Permissions.Count"
         matBadgePosition="below after"
         matBadgeSize="small"
         matBadgeDisabled="true"
-        [matBadgeHidden]="!contentType.Permissions.Count"
+        [matBadgeHidden]="!data.Permissions.Count"
         aria-hidden="false"
       >
         person
@@ -90,33 +90,33 @@
 <mat-menu #menu="matMenu" class="grid-more-menu">
   <ng-template matMenuContent>
     <a
-      [href]="params.urlTo('editContentType', contentType)"
+      [href]="params.urlTo('editContentType', data)"
       mat-menu-item
-      [disabled]="contentType.EditInfo.DisableRename"
+      [disabled]="data.EditInfo.DisableRename"
     >
       <mat-icon>settings</mat-icon>
       <span>Rename</span>
     </a>
-    <a mat-menu-item [href]="params.urlTo('openRestApi', contentType)">
+    <a mat-menu-item [href]="params.urlTo('openRestApi', data)">
       <mat-icon svgIcon="code-curly"></mat-icon>
       <span>REST API</span>
     </a>
-    <button mat-menu-item (click)="params.do('typeExport', contentType)">
+    <button mat-menu-item (click)="params.do('typeExport', data)">
       <mat-icon>cloud_download</mat-icon>
       <span>Export content type</span>
     </button>
-    <a mat-menu-item [href]="params.urlTo('dataExport', contentType)">
+    <a mat-menu-item [href]="params.urlTo('dataExport', data)">
       <mat-icon>cloud_download</mat-icon>
       <span>Export data</span>
     </a>
-    <a mat-menu-item [href]="params.urlTo('dataImport', contentType)">
+    <a mat-menu-item [href]="params.urlTo('dataImport', data)">
       <mat-icon>cloud_upload</mat-icon>
       <span>Import data</span>
     </a>
     <button
       mat-menu-item
-      [disabled]="contentType.EditInfo.DisableDelete"
-      (click)="params.do('deleteContentType', contentType)"
+      [disabled]="data.EditInfo.DisableDelete"
+      (click)="params.do('deleteContentType', data)"
     >
       <mat-icon>delete</mat-icon>
       <span>Delete</span>

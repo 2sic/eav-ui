@@ -1,4 +1,4 @@
-import { environment } from '../../environments/environment';
+import { environment } from '../../../../shared/environments/environment';
 
 /**
  * List of fields to debug across the entire application.

@@ -4,7 +4,7 @@ import { AfterViewInit, Component, computed, inject, signal, ViewChild, ViewCont
 import { DropzoneDirective, DropzoneModule } from 'ngx-dropzone-wrapper';
 import { AdamItem } from '../../../../../../../edit-types/src/AdamItem';
 import { DropzoneConfigExt } from '../../../../../../../edit-types/src/DropzoneConfigExt';
-import { classLog } from '../../../../shared/logging';
+import { classLog } from '../../../../../../../shared/logging';
 import { FormConfigService } from '../../../form/form-config.service';
 import { FieldState } from '../../field-state';
 import { WrappersCatalog } from '../wrappers.constants';

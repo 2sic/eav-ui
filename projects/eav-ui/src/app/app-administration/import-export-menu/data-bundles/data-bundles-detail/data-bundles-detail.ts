@@ -9,6 +9,7 @@ import { transient } from 'projects/core';
 import { ContentItem } from 'projects/eav-ui/src/app/content-items/models/content-item.model';
 import { ColumnDefinitions } from 'projects/eav-ui/src/app/shared/ag-grid/column-definitions';
 import { defaultGridOptions } from 'projects/eav-ui/src/app/shared/constants/default-grid-options.constants';
+import { DialogHeaderComponent } from "projects/eav-ui/src/app/shared/dialog-header/dialog-header";
 import { SxcGridModule } from 'projects/eav-ui/src/app/shared/modules/sxc-grid-module/sxc-grid.module';
 import { switchMap, tap } from 'rxjs';
 import { DataBundlesQueryService } from '../data-bundles-query.service';
@@ -18,11 +19,12 @@ import { DataBundlesDetailActionsParams } from './data-bundles-detail-actions/da
 @Component({
     selector: 'app-data-bundles-detail',
     imports: [
-        MatButtonModule,
-        MatIconModule,
-        SxcGridModule,
-        TranslateModule,
-    ],
+    MatButtonModule,
+    MatIconModule,
+    SxcGridModule,
+    TranslateModule,
+    DialogHeaderComponent
+],
     templateUrl: './data-bundles-detail.html',
     styleUrl: './data-bundles-detail.scss'
 })

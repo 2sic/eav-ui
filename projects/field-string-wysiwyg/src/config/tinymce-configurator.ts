@@ -1,11 +1,11 @@
 import { StringWysiwyg } from 'projects/edit-types/src/FieldSettings-String';
 import type { Editor } from 'tinymce';
-import { classLog } from '../../../../projects/eav-ui/src/app/shared/logging';
 import { AddOnSettings } from '../../../edit-types/src/AddOnSettings';
 import { Connector } from '../../../edit-types/src/Connector';
 import { WysiwygReconfigure } from '../../../edit-types/src/WysiwygReconfigure';
-import * as DisplayModes from '../constants/display-modes';
-import * as contentStyle from '../editor/tinymce-content.scss';
+import { classLog } from '../../../shared/logging';
+import { WysiwygDialogModes } from '../constants';
+import * as contentStyle from '../styles-content/tinymce-content.scss';
 import { DefaultAddOnSettings, DefaultPaste } from './defaults';
 import { RawEditorOptionsExtended } from './raw-editor-options-extended';
 import { TranslationsLoader } from './translation-loader';
@@ -17,7 +17,7 @@ const logSpecs = {
   isWysiwygPasteFormatted$: false,
 };
 
-const reconfigErr = `Very likely an error in your reconfigure code. Check https://go.2sxc.org/field-wysiwyg`;
+const reConfigErr = `Very likely an error in your reconfigure code. Check https://go.2sxc.org/field-wysiwyg`;
 
 /** This object will configure the TinyMCE */
 export class TinyMceConfigurator {
@@ -42,7 +42,7 @@ export class TinyMceConfigurator {
         if (changedAddOns)
           this.addOnSettings = changedAddOns;
         else
-          console.error(`reconfigure.configureAddOns(...) didn't return a value. ${reconfigErr}`);
+          console.error(`reconfigure.configureAddOns(...) didn't return a value. ${reConfigErr}`);
       }
 
       this.addOnSettings = reconfigure.configureAddOns?.(this.addOnSettings) || this.addOnSettings;
@@ -58,7 +58,9 @@ export class TinyMceConfigurator {
   }
 
   /** Construct TinyMCE options */
-  buildOptions(selectorClass: string, fixedToolbarClass: string, modeIsInline: boolean, setup: (editor: Editor) => void): RawEditorOptionsExtended {
+  buildOptions({ selectorClass, fixedToolbarClass, modeIsInline, setup, isDebug }
+    : { selectorClass: string; fixedToolbarClass: string; modeIsInline: boolean; setup: (editor: Editor) => void; isDebug: boolean }
+  ): RawEditorOptionsExtended {
     const connector = this.connector;
     const exp = connector._experimental;
     // Create a TinyMceModeConfig object with bool only
@@ -67,7 +69,7 @@ export class TinyMceConfigurator {
 
     // 2. Get the preset configuration for this mode
     const configManager = new WysiwygConfigurationManager(connector, fieldSettings);
-    const wysiwygConfiguration = configManager.getSettings(null, modeIsInline ? DisplayModes.DisplayInline : DisplayModes.DisplayDialog);
+    const wysiwygConfiguration = configManager.getSettings(null, modeIsInline ? WysiwygDialogModes.DisplayInline : WysiwygDialogModes.DisplayDialog, isDebug);
 
     // 3. Dropzone / adam checks
     if (exp.dropzone == null || exp.adam == null)
@@ -102,7 +104,7 @@ export class TinyMceConfigurator {
       const newOptions = this.reconfigure.configureOptions(options);
       if (newOptions)
         return newOptions;
-      console.error(`reconfigure.configureOptions(options) didn't return an options object. ${reconfigErr}`);
+      console.error(`reconfigure.configureOptions(options) didn't return an options object. ${reConfigErr}`);
     }
     return options;
   }

@@ -3,7 +3,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { getWith } from '../../../../../../core';
 import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
 import { FieldSettingsPickerMerged } from '../../../../../../edit-types/src/FieldSettings-Pickers';
-import { classLog } from '../../../shared/logging';
+import { classLog } from '../../../../../../shared/logging';
 import { computedObj, signalObj } from '../../../shared/signals/signal.utilities';
 import { DebugFields } from '../../edit-debug';
 import { DataAdapterBase } from './adapters/data-adapter-base';

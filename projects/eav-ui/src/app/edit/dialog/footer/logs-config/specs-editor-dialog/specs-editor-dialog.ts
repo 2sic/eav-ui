@@ -4,24 +4,24 @@ import { MatButtonModule } from '@angular/material/button';
 import {
   MAT_DIALOG_DATA,
   MatDialogActions,
-  MatDialogClose,
   MatDialogModule,
   MatDialogRef
 } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { DialogHeaderComponent } from "projects/eav-ui/src/app/shared/dialog-header/dialog-header";
 import { MonacoEditorComponent } from '../../../../../monaco-editor/monaco-editor';
 import { TippyDirective } from '../../../../../shared/directives/tippy.directive';
 @Component({
     imports: [
-        MatDialogModule,
-        FormsModule,
-        MonacoEditorComponent,
-        MatButtonModule,
-        MatDialogActions,
-        MatDialogClose,
-        MatIconModule,
-        TippyDirective,
-    ],
+    MatDialogModule,
+    FormsModule,
+    MonacoEditorComponent,
+    MatButtonModule,
+    MatDialogActions,
+    MatIconModule,
+    TippyDirective,
+    DialogHeaderComponent,
+],
     selector: 'app-monaco-editor-dialog',
     templateUrl: './specs-editor-dialog.html'
 })

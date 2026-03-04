@@ -1,6 +1,6 @@
+import { classLog } from '../../../../../shared/logging';
 import { EavFor } from '../../edit/shared/models/eav';
 import { eavConstants } from '../constants/eav.constants';
-import { classLog } from '../logging';
 import { EditForm, ItemAddIdentifier, ItemEditIdentifier, ItemIdentifierInbound, ItemIdentifierShared, ItemInListIdentifier } from '../models/edit-form.model';
 import { ItemIdHelper } from '../models/item-id-helper';
 import { ParamEncoder } from './param-encoder';

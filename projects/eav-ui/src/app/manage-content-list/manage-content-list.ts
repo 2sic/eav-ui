@@ -10,6 +10,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { convert, transient } from '../../../../core';
 import { DialogConfigAppService } from '../app-administration/services/dialog-config-app.service';
 import { isCtrlEnter, isCtrlS } from '../edit/dialog/main/keyboard-shortcuts';
+import { DialogHeaderComponent } from "../shared/dialog-header/dialog-header";
 import { MousedownStopPropagationDirective } from '../shared/directives/mousedown-stop-propagation.directive';
 import { TippyDirective } from '../shared/directives/tippy.directive';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
@@ -41,6 +42,7 @@ import { ContentGroupService } from './services/content-group.service';
     MousedownStopPropagationDirective,
     ...ExtendedFabSpeedDialImports,
     SaveCloseButtonComponent,
+    DialogHeaderComponent,
   ]
 })
 export class ManageContentListComponent implements OnInit {
@@ -196,5 +198,14 @@ export class ManageContentListComponent implements OnInit {
 
   #fetchHeader() {
     this.#refresh.set(this.#refresh() + 1);
+  }
+
+  protected toPlainText(value: string | null | undefined): string {
+    if (!value) 
+      return '';
+
+    const temp = document.createElement('div');
+    temp.innerHTML = value;
+    return temp.textContent?.trim() ?? '';
   }
 }

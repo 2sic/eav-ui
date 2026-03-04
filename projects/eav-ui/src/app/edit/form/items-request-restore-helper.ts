@@ -1,4 +1,4 @@
-import { classLog } from '../../shared/logging';
+import { classLog } from '../../../../../shared/logging';
 import { ItemIdentifier } from '../../shared/models/edit-form.model';
 import { EavEntityBundleDto } from '../shared/models/json-format-v1';
 

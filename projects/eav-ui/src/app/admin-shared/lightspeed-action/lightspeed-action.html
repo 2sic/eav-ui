@@ -9,11 +9,11 @@
     [tippy]="appHasLightSpeed ? lightSpeed().Title : 'Not yet configured for LightSpeed'"
   >
     @if (appLightSpeedEnabled) {
-      <a class="default-link" [href]="'#' + params().lightSpeedLink(lightSpeedOwner())">
+      <a class="default-link" [href]="params().lightSpeedLink(lightSpeedOwner())">
         <mat-icon matBadgeSize="small" matBadgeIcon="check" matBadgePosition="below after" aria-hidden="false"> bolt </mat-icon>
       </a>
     } @else {
-      <a class="default-link" [href]="'#' + params().lightSpeedLink(lightSpeedOwner())">
+      <a class="default-link" [href]="params().lightSpeedLink(lightSpeedOwner())">
         <mat-icon matBadgeSize="small" matBadgeIcon="block" matBadgePosition="below after" aria-hidden="false"> bolt </mat-icon>
       </a>
     }

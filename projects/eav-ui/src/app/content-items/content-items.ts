@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
 import { transient } from '../../../../core';
+import { classLog } from '../../../../shared/logging';
 import { GoToRecycleBin } from '../app-administration/recycle-bin/go-to-recycle-bin';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { ConfirmDeleteDialogComponent } from '../app-administration/sub-dialogs/confirm-delete-dialog/confirm-delete-dialog';
@@ -21,13 +22,13 @@ import { EntityFilterComponent } from '../shared/components/entity-filter/entity
 import { FileUploadDialogData } from '../shared/components/file-upload-dialog';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
 import { keyFilters } from '../shared/constants/session.constants';
+import { DialogHeaderComponent } from "../shared/dialog-header/dialog-header";
 import { DragAndDropDirective } from '../shared/directives/drag-and-drop.directive';
 import { TippyDirective } from '../shared/directives/tippy.directive';
 import { ToggleDebugDirective } from '../shared/directives/toggle-debug.directive';
 import { DataTypeCatalog } from '../shared/fields/data-type-catalog';
 import { Field } from '../shared/fields/field.model';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
-import { classLog } from '../shared/logging';
 import { EditForm } from '../shared/models/edit-form.model';
 import { ItemIdHelper } from '../shared/models/item-id-helper';
 import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
@@ -71,7 +72,8 @@ const logSpecs = {
     ToggleDebugDirective,
     SxcGridModule,
     TippyDirective,
-    GridWithHelpComponent
+    GridWithHelpComponent,
+    DialogHeaderComponent,
   ]
 })
 export class ContentItemsComponent implements OnInit {
@@ -186,11 +188,11 @@ export class ContentItemsComponent implements OnInit {
   // and sets a # infront of the url, so angular can differentiate
   // angular routes from ordinary urls.
   #urlTo(url: string) {
-    return '#' + this.#dialogRouter.urlSubRoute(url);
+    return this.#dialogRouter.linkSubRoute(url);
   }
 
-  #urlToMetadata(item: ContentItem) {
-    return this.#dialogRouter.urlSubRoute(GoToMetadata.getUrlEntity(
+  #linkToMetadata(item: ContentItem) {
+    return this.#dialogRouter.linkSubRoute(GoToMetadata.getUrlEntity(
       item.Guid,
       `Metadata for Entity: ${item._Title} (${item.Id})`,
       this.#contentTypeStaticName,
@@ -236,6 +238,11 @@ export class ContentItemsComponent implements OnInit {
   // Returns the URL to the recycle bin
   urlToRecycleBin() {
     return `#/${new RouteLinkHelper().routeTo(this.#context, `app/data-${GoToRecycleBin.route}`)}`;
+  }
+
+  // Returns the URL to the relationships dialog for a given item
+  #urlToRelationships(item: ContentItem) {
+    return this.#urlTo(`relationships/${item.Id}`);
   }
 
   urlToExportContent = computedObj('urlToExportContent', () => {
@@ -333,7 +340,7 @@ export class ContentItemsComponent implements OnInit {
         },
         cellRenderer: ContentItemsStatusComponent,
         cellRendererParams: (() => ({
-          urlTo: (verb, item) => '#' + this.#urlToMetadata(item),
+          urlTo: (verb, item) => this.#linkToMetadata(item),
         } satisfies ContentItemsStatusComponent['params']))(),
       },
       {
@@ -349,17 +356,26 @@ export class ContentItemsComponent implements OnInit {
         field: '_Used',
         width: 70,
         headerClass: 'dense',
-        cellClass: 'no-outline',
+        cellClass: 'highlight', // 'no-outline',
         sortable: true,
         filter: 'agTextColumnFilter',
-        valueGetter: (p: { data: ContentItem }) => `${p.data._Used} / ${p.data._Uses}`,
+
+        valueGetter: (p) => 
+          `${p.data._Used} / ${p.data._Uses}`,
+
+        cellRenderer: (p: { data: ContentItem }) => {
+          const item = p.data;
+          return AgGridHelper.cellLink(
+            this.#urlToRelationships(item), `${item._Used} / ${item._Uses} 🔍`
+          );
+        },
       },
       {
         ...ColumnDefinitions.ActionsPinnedRight3,
         cellRenderer: ContentItemsActionsComponent,
         cellRendererParams: (() => {
           const params: ContentItemsActionsParams = {
-            urlTo: (verb, item) => '#' + this.#urlToClone(item),
+            urlTo: (verb, item) => this.#urlToClone(item),
             do: (verb, item) => {
               switch (verb) {
                 case 'export': this.#export(item); break;
@@ -409,7 +425,7 @@ export class ContentItemsComponent implements OnInit {
   }
 
   #urlToClone(item: ContentItem) {
-    return this.#dialogRouter.urlSubRoute(
+    return this.#dialogRouter.linkSubRoute(
       `edit/${convertFormToUrl({
         items: [ItemIdHelper.copy(this.#contentTypeStaticName, item.Id)],
       })}`

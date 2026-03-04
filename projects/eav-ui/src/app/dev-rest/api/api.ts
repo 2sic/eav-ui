@@ -15,9 +15,10 @@ import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, combineLatest, filter, map, share, shareReplay, switchMap } from 'rxjs';
 import { DevRestBase } from '..';
 import { transient } from '../../../../../core';
+import { classLog } from '../../../../../shared/logging';
 import { SourceService } from '../../code-editor/services/source.service';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
-import { classLog } from '../../shared/logging';
+import { RxTapDebug } from '../../shared/logging/rx-debug-dbg';
 import { Context } from '../../shared/services/context';
 import { DevRestUrlsAndCodeComponent } from '../dev-rest-urls-and-code/dev-rest-urls-and-code';
 import { GoToDevRest } from '../go-to-dev-rest';
@@ -85,7 +86,7 @@ export class DevRestApiComponent extends DevRestBase<DevRestApiModel> implements
   ) {
     super(context, dialog, dnnContext, router, route, null);
 
-    const logWebApi = this.log.rxTap('webApi$', { enabled: true });
+    const logWebApi = new RxTapDebug(this.log, 'webApi$', true);
     const webApi$ = combineLatest([
       this.route.paramMap.pipe(map(pm => pm.get(GoToDevRest.paramApiPath))),
       this.sourceService.getWebApis().pipe(shareReplay(1)),
@@ -103,7 +104,7 @@ export class DevRestApiComponent extends DevRestBase<DevRestApiModel> implements
       share()
     );
 
-    const logToSelectedAction = this.log.rxTap('selectedActionName$', { enabled: true });
+    const logToSelectedAction = new RxTapDebug(this.log, 'selectedActionName$', true);
     apiDetails$.pipe(
       logToSelectedAction.pipe(),
       // take(1),
@@ -114,7 +115,7 @@ export class DevRestApiComponent extends DevRestBase<DevRestApiModel> implements
       return this.selectedActionName$.next(x?.actions[0]?.name);
     });
 
-    var logSelectedActions = this.log.rxTap('selectedAction$', { enabled: true });
+    const logSelectedActions = new RxTapDebug(this.log, 'selectedAction$', true);
     const selectedAction$ = combineLatest([apiDetails$, this.selectedActionName$])
       .pipe(
         logSelectedActions.pipe(),

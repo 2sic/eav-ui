@@ -10,6 +10,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
 import { EcoFabSpeedDialActionsComponent, EcoFabSpeedDialComponent, EcoFabSpeedDialTriggerComponent } from '@ecodev/fab-speed-dial';
 import { transient } from '../../../../../core';
+import { classLog } from '../../../../../shared/logging';
 import { AppAdminHelpers } from '../../app-administration/app-admin-helpers';
 import { FeatureNames } from '../../features/feature-names';
 import { FeaturesService } from '../../features/features.service';
@@ -23,7 +24,6 @@ import { defaultGridOptions } from '../../shared/constants/default-grid-options.
 import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
 import { MatBadgeIconDirective } from '../../shared/directives/mat-badge-icon.directive';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
-import { classLog } from '../../shared/logging';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { Context } from '../../shared/services/context';
@@ -168,7 +168,7 @@ export class AppsListComponent implements OnInit {
   #getLightSpeedLink(app?: App): string {
     const formUrl = convertFormToUrl(AppAdminHelpers.getLightSpeedEditParams(app.Id));
     const urlString = `${this.context.zoneId}/${app.Id}/edit/${formUrl}`;
-    return this.#dialogRouter.urlSubRoute(urlString);
+    return this.#dialogRouter.linkSubRoute(urlString);
   }
 
   openLightSpeedFeatInfo() {
@@ -199,9 +199,9 @@ export class AppsListComponent implements OnInit {
           sort: 'asc',
           cellRenderer: (p: ICellRendererParams & { data: App }) => {
             const app = p.data;
-            const url = this.#dialogRouter.urlSubRoute(app.Id.toString());
+            const url = this.#dialogRouter.linkSubRoute(app.Id.toString());
             return `
-              <a class="default-link fill-cell" href="#${url}">
+              <a class="default-link fill-cell" href="${url}">
                 <div class="container">
                   ${app.Thumbnail
                 ? `<img class="image logo" src="${app.Thumbnail}?w=40&h=40&mode=crop"></img>`

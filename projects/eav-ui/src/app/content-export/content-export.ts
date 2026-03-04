@@ -15,6 +15,7 @@ import { ContentType } from '../app-administration/models/content-type.model';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { DialogConfigAppService } from '../app-administration/services/dialog-config-app.service';
 import { isCtrlEnter } from '../edit/dialog/main/keyboard-shortcuts';
+import { DialogHeaderComponent } from "../shared/dialog-header/dialog-header";
 import { Language } from '../shared/models/language.model';
 import { ContentExport } from './models/content-export.model';
 import { ContentExportService } from './services/content-export.service';
@@ -24,16 +25,17 @@ import { ContentExportService } from './services/content-export.service';
     templateUrl: './content-export.html',
     styleUrls: ['./content-export.scss'],
     imports: [
-        FormsModule,
-        MatFormFieldModule,
-        MatIconModule,
-        MatSelectModule,
-        MatOptionModule,
-        MatRadioModule,
-        MatDialogActions,
-        MatButtonModule,
-        AsyncPipe,
-    ]
+    FormsModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatRadioModule,
+    MatDialogActions,
+    MatButtonModule,
+    AsyncPipe,
+    DialogHeaderComponent
+]
 })
 export class ContentExportComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';

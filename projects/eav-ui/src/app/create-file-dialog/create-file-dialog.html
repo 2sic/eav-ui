@@ -1,17 +1,13 @@
 @if (viewModel$ | async; as vm) {
   <div class="eav-dialog eav-no-scrollbar">
-    <div class="eav-dialog-header">
-      <div class="eav-dialog-header__title eav-dialog-title-box">
-        <span>Create</span>
-        <span class="eav-file-name">
-          {{ controls.finalName.value
-              || (controls.folder.value ? controls.folder.value.trim() + '/' : '') }}
-        </span>
-      </div>
-      <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
-        <mat-icon>close</mat-icon>
-      </button>
-    </div>
+    <app-dialog-header (close)="closeDialog()">
+      Create
+      <span class="eav-file-name">
+        {{ controls.finalName.value
+            || (controls.folder.value ? controls.folder.value.trim() + '/' : '') }}
+      </span>
+    </app-dialog-header>
+
     <form [formGroup]="ngForm">
       <div class="eav-dialog-content">
         <div class="eav-field-container">

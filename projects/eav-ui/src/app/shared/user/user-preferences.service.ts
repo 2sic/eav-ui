@@ -1,5 +1,5 @@
 import { Injectable, signal, WritableSignal } from '@angular/core';
-import { classLog } from '../logging';
+import { classLog } from '../../../../../shared/logging';
 import { StateManagerLocal, StateManagerSession } from './state-manager';
 
 const storeKey = 'user-settings';

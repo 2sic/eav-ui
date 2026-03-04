@@ -19,6 +19,7 @@ import { BaseComponent } from '../../shared/components/base';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint';
 import { dropdownInsertValue } from '../../shared/constants/dropdown-insert-value.constant';
 import { eavConstants, MetadataKeyTypes, ScopeOption } from '../../shared/constants/eav.constants';
+import { DialogHeaderComponent } from "../../shared/dialog-header/dialog-header";
 import { ClickStopPropagationDirective } from '../../shared/directives/click-stop-propagation.directive';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { SaveCloseButtonFabComponent } from '../../shared/modules/save-close-button-fab/save-close-button-fab';
@@ -52,7 +53,8 @@ import { metadataKeyValidator } from './metadata-key.validator';
     ClickStopPropagationDirective,
     TippyDirective,
     SaveCloseButtonFabComponent,
-  ]
+    DialogHeaderComponent
+]
 })
 export class CreateMetadataDialogComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';

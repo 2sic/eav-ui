@@ -9,6 +9,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { transient } from '../../../../../../core';
 import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
 import { PagePickerResult } from '../../../../../../edit-types/src/PagePickerResult';
+import { DialogHeaderComponent } from "../../../shared/dialog-header/dialog-header";
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { ArrayHelpers } from '../../../shared/helpers/array.helpers';
 import { QueryService } from '../../../shared/services/query.service';
@@ -20,16 +21,17 @@ import { PageEntity, PagePickerDialogData, PageSearchItem, PageTreeItem } from '
     templateUrl: './page-picker.html',
     styleUrls: ['./page-picker.scss'],
     imports: [
-        MatFormFieldModule,
-        MatInputModule,
-        FormsModule,
-        NgTemplateOutlet,
-        NgClass,
-        MatIconModule,
-        MatDialogActions,
-        TranslateModule,
-        TippyDirective,
-    ]
+    MatFormFieldModule,
+    MatInputModule,
+    FormsModule,
+    NgTemplateOutlet,
+    NgClass,
+    MatIconModule,
+    MatDialogActions,
+    TranslateModule,
+    TippyDirective,
+    DialogHeaderComponent,
+]
 })
 export class PagePickerComponent implements OnInit {
   selected: number;

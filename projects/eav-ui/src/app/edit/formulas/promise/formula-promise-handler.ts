@@ -1,6 +1,6 @@
 import { Injectable, Signal } from "@angular/core";
 import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
-import { classLog } from '../../../shared/logging';
+import { classLog } from '../../../../../../shared/logging';
 import { DebugFields } from '../../edit-debug';
 import { EavContentType } from "../../shared/models/eav";
 import { FieldProps } from '../../state/fields-configs.model';

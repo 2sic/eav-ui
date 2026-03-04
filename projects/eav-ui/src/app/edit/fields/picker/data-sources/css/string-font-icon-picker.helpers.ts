@@ -1,6 +1,6 @@
 import escapeRegExp from 'lodash-es/escapeRegExp';
 import { EntityLight } from '../../../../../../../../edit-types/src/EntityLight';
-import { classLog } from '../../../../../shared/logging/logging';
+import { classLog } from '../../../../../../../../shared/logging';
 
 const logSpecs = {
   all: true,

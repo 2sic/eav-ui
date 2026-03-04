@@ -4,6 +4,7 @@ import { MAT_DIALOG_DATA, MatDialogActions, MatDialogRef } from '@angular/materi
 import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
 import { transient } from '../../../../../../core/transient';
+import { DialogHeaderComponent } from "../../../shared/dialog-header/dialog-header";
 import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';
 import { ClipboardService } from '../../../shared/services/clipboard.service';
 import { computedObj } from '../../../shared/signals/signal.utilities';
@@ -19,7 +20,8 @@ import { FeatureDetailsDialogData } from './feature-details-dialog.models';
     SafeHtmlPipe,
     TranslateModule,
     MatDialogActions,
-  ]
+    DialogHeaderComponent
+]
 })
 export class FeatureDetailsDialogComponent {
   specs = input<FeatureDetailsDialogData>();

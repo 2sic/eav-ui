@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { classLog } from 'projects/shared/logging';
 import { map } from 'rxjs';
 import { webApiQueryDataSources, webApiQueryDebugStream, webApiQueryGet, webApiQueryRun, webApiQuerySave } from '../../app-administration/services';
 import { eavConstants } from '../../shared/constants/eav.constants';
@@ -9,8 +10,15 @@ import { QueryResult } from '../models/result/pipeline-result';
 import { VisualQueryModel } from '../models/visual-query.model';
 import { findDefByType } from '../plumb-editor/datasource.helpers';
 
+const logSpecs = {
+  all: true,
+  buildDefaultModel: true,
+}
+
 @Injectable()
 export class QueryDefinitionService extends HttpServiceBaseSignal {
+
+  log = classLog({ QueryDefinitionService}, logSpecs);
 
   fetchPipelinePromise(pipelineEntityId: number, dataSources: DataSourceInstance[]): Promise<VisualQueryModel> {
     return this.fetchPromise<VisualQueryModel>(webApiQueryGet, {
@@ -27,6 +35,7 @@ export class QueryDefinitionService extends HttpServiceBaseSignal {
 
   #buildDefaultModel(pipelineModel: VisualQueryModel, dataSources: DataSourceInstance[]) {
     const templateDataSources = eavConstants.pipelineDesigner.defaultPipeline.dataSources;
+    const l = this.log.fnIf('buildDefaultModel', { pipelineModel, templateDataSources, dataSources });
     for (const templateDS of templateDataSources) {
       const dataSource = findDefByType(dataSources, templateDS.PartAssemblyAndType);
       const pipelineDataSource: DataSourceDefinition = {
@@ -41,6 +50,7 @@ export class QueryDefinitionService extends HttpServiceBaseSignal {
     }
 
     pipelineModel.Pipeline.StreamWiring = eavConstants.pipelineDesigner.defaultPipeline.streamWiring;
+    l.end();
   }
 
   #fixPipelineDataSources(pipelineDataSources: DataSourceDefinition[]) {

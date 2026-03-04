@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { classLog } from '../shared/logging';
+import { classLog } from '../../../../shared/logging';
 import { editDialog } from './edit-dialog.config';
 import { matchEditRoot, matchEditRootRefresh, matchEditRootRefreshV2, matchEditRootV2, matchEditSub, matchEditSubRefresh } from './routing/edit-route-matchers';
 

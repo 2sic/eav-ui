@@ -1,4 +1,4 @@
-import { classLog } from '../../shared/logging';
+import { classLog } from '../../../../../shared/logging';
 import { FormLanguage } from '../form/form-languages.model';
 import { EavField, EavFieldValue } from '../shared/models/eav';
 import { DimensionReader } from './dimension-reader';

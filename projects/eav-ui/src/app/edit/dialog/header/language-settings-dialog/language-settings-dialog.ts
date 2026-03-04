@@ -5,6 +5,7 @@ import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from "@angular/material/select";
 import { TranslateModule } from "@ngx-translate/core";
+import { DialogHeaderComponent } from "projects/eav-ui/src/app/shared/dialog-header/dialog-header";
 import { SaveCloseButtonFabComponent } from "projects/eav-ui/src/app/shared/modules/save-close-button-fab/save-close-button-fab";
 import { UserLanguageService } from "projects/eav-ui/src/app/shared/services/user-language.service";
 import { transient } from '../../../../../../../core/transient';
@@ -29,7 +30,8 @@ import { LanguagePart } from "./LanguageDropdown/language-part.enum";
     LanguageDropdownComponent,
     TranslateModule,
     SaveCloseButtonFabComponent,
-  ]
+    DialogHeaderComponent,
+]
 })
 export class LanguageSettingsDialogComponent {
   /** Language SVC - to get list of all possible languages */

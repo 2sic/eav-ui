@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { classLog } from '../../../shared/logging';
+import { classLog } from '../../../../../../shared/logging';
 import { ItemHelper } from '../helpers/item.helper';
 import { EavContentType, EavContentTypeAttribute, EavItem } from '../models/eav';
 import { EavContentTypeDto } from '../models/json-format-v1';

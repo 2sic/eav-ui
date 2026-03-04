@@ -10,6 +10,7 @@ import { FeaturesService } from '../../features/features.service';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from "../../shared/constants/default-grid-options.constants";
+import { DialogHeaderComponent } from "../../shared/dialog-header/dialog-header";
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { PendingApp } from "../models/app.model";
 import { AppsListService } from "../services/apps-list.service";
@@ -26,7 +27,8 @@ import { CheckboxCellParams } from './checkbox-cell/checkbox-cell.model';
     MatButtonModule,
     FeatureInfoBoxComponent,
     SxcGridModule,
-  ]
+    DialogHeaderComponent
+]
 })
 export class AddAppFromFolderComponent {
   @HostBinding('className') hostClass = 'dialog-component';

@@ -12,6 +12,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { catchError, filter, map, of, switchMap, take, tap } from 'rxjs';
 import { Of, transient } from '../../../../../../core';
 import { AppsListService } from '../../../apps-management/services/apps-list.service';
+import { DialogHeaderComponent } from "../../dialog-header/dialog-header";
 import { DragAndDropDirective } from '../../directives/drag-and-drop.directive';
 import { InstallPackage, InstallSettings, SpecsForInstaller } from '../../models/installer-models';
 import { SafeHtmlPipe } from '../../pipes/safe-html.pipe';
@@ -36,8 +37,9 @@ import { MessagesFrom2sxc } from './messages-from-2sxc';
     MatIconModule,
     MatRadioModule,
     MatInputModule,
-    ReactiveFormsModule
-  ]
+    ReactiveFormsModule,
+    DialogHeaderComponent,
+]
 })
 export class FileUploadDialogComponent extends BaseComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';

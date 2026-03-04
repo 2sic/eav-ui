@@ -1,5 +1,5 @@
 import { Observable, tap } from 'rxjs';
-import { ClassLogger } from './class/class-logger';
+import { ClassLogger } from '../../../../../shared/logging';
 
 /**
  * Special debug helper for RxJS observables

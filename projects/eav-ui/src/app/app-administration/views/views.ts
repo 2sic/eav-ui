@@ -124,11 +124,11 @@ export class ViewsComponent implements OnInit {
   }
 
   // This method is called multiple times, to reduce redundancy.
-  // It calls the urlSubRoute method from the dialogRouter service
+  // It calls the linkSubRoute method from the dialogRouter service
   // and sets a # infront of the url, so angular can differentiate
   // angular routes from ordinary urls.
   #urlTo(url: string) {
-    return '#' + this.#dialogRouter.urlSubRoute(url);
+    return this.#dialogRouter.linkSubRoute(url);
   }
 
   urlToImportView() { return this.#urlTo('import'); }
@@ -280,9 +280,9 @@ export class ViewsComponent implements OnInit {
             openLightspeedFeatureInfo: () => openLightSpeedFeatInfo(),
             urlTo: (verb, item) => {
               switch (verb) {
-                case 'openMetadata': return '#' + this.#urlToOpenMetadata(item);
-                case 'cloneView': return '#' + this.#urlToCloneView(item);
-                case 'openPermissions': return '#' + this.#urlToOpenPermissions(item);
+                case 'openMetadata': return this.#urlToOpenMetadata(item);
+                case 'cloneView': return this.#urlToCloneView(item);
+                case 'openPermissions': return this.#urlToOpenPermissions(item);
               }
             },
             do: (verb, view) => {
@@ -327,7 +327,7 @@ export class ViewsComponent implements OnInit {
 
   #urlToOpenPermissions(view: View) {
     // Sets the # infront when calling this function
-    return this.#dialogRouter.urlSubRoute(
+    return this.#dialogRouter.linkSubRoute(
       GoToPermissions.getUrlEntity(
         view.Guid
       )
@@ -336,7 +336,7 @@ export class ViewsComponent implements OnInit {
 
   #urlToOpenMetadata(view: View) {
     // Sets the # infront when calling this function  
-    return this.#dialogRouter.urlSubRoute(
+    return this.#dialogRouter.linkSubRoute(
       GoToMetadata.getUrlEntity(
         view.Guid,
         // Encode the title and replace '/' with '%2F'
@@ -346,7 +346,7 @@ export class ViewsComponent implements OnInit {
 
   #urlToCloneView(view: View) {
     // Sets the # infront when calling this function
-    return this.#dialogRouter.urlSubRoute(
+    return this.#dialogRouter.linkSubRoute(
       `edit/${convertFormToUrl({
         items: [ItemIdHelper.copy(eavConstants.contentTypes.template, view.Id)],
       })}`
@@ -398,7 +398,7 @@ export class ViewsComponent implements OnInit {
       ],
     };
 
-    return this.#dialogRouter.urlSubRoute(`edit/${convertFormToUrl(form)}`);
+    return this.#dialogRouter.linkSubRoute(`edit/${convertFormToUrl(form)}`);
   }
 
   //#endregion

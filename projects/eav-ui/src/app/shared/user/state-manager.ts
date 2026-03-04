@@ -1,4 +1,4 @@
-import { LogSpecs } from '../logging/log-specs';
+import { LogSpecs } from '../../../../../shared/logging/log-specs';
 
 const logThis = false;
 const separator = ":";

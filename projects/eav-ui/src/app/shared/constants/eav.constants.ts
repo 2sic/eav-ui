@@ -145,7 +145,7 @@ export const eavConstants = {
       dataSources: [
         {
           EntityGuid: 'unsaved1',
-          PartAssemblyAndType: 'ToSic.Sxc.DataSources.CmsBlock, ToSic.Sxc',
+          PartAssemblyAndType: 'ce46fcac-e531-45a2-adc5-181164e742f6',// 'ToSic.Sxc.DataSources.CmsBlock, ToSic.Sxc',
           VisualDesignerData: { Top: 170, Left: 440 },
         }
       ],

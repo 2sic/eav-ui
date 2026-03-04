@@ -1,17 +1,25 @@
 import { StringWysiwyg } from 'projects/edit-types/src/FieldSettings-String';
-import { classLog, ClassLogger } from '../../../../projects/eav-ui/src/app/shared/logging';
+import { RawEditorOptions } from 'tinymce';
 import { InputTypeCatalog } from '../../../eav-ui/src/app/shared/fields/input-type-catalog';
 import { Connector } from '../../../edit-types/src/Connector';
-import * as DialogModes from '../constants/display-modes';
+import { classLog, ClassLogger } from '../../../shared/logging';
+import { WysiwygDialogModes } from '../constants';
 import * as EditModes from '../constants/edit-modes';
 import { ConfigurationPresets, DefaultMode } from './defaults/defaults';
 import { ToolbarParser } from './toolbar-parser';
-import { WysiwygButtons, WysiwygFeatures } from './types';
+import { WysiwygButtons } from './types/wysiwyg-buttons';
 import { WysiwygConfiguration } from './types/wysiwyg-configurations';
+import { WysiwygFeatures } from './types/wysiwyg-features';
+
+const logSpecs = {
+  all: false,
+  constructor: true,
+  getSettings: true,
+};
 
 export class WysiwygConfigurationManager {
 
-  log = classLog({ WysiwygConfigurationManager });
+  log = classLog({ WysiwygConfigurationManager }, logSpecs);
 
   constructor(
     private connector: Connector<string>,
@@ -24,7 +32,8 @@ export class WysiwygConfigurationManager {
     return this.fieldSettings._advanced?.Mode || DefaultMode;
   }
 
-  public getSettings(editMode: EditModes.WysiwygEditMode, displayMode: DialogModes.DisplayModes): WysiwygConfiguration {
+  public getSettings(editMode: EditModes.WysiwygEditMode, displayMode: WysiwygDialogModes.DisplayModes, isDebug: boolean): WysiwygConfiguration {
+    const l = this.log.fnIf('getSettings', { editMode, displayMode, isDebug });
     // 0. Shorten some variables
     const exp = this.connector._experimental;
     const fieldSettings = this.fieldSettings;
@@ -43,14 +52,27 @@ export class WysiwygConfigurationManager {
       contentBlocks: useContentBlocks,
     };
 
-    // 3. Buttons reconfiguration
+    // 3. Decide if we should show the HTML button, this is based on the following logic:
+    // - if ButtonSourceInDebugMode is not disabled, and we are in Debug mode, show the button
+    //   (if not set, or if true, it will be shown in Debug mode)
+    // - otherwise check if the _defaults.ButtonSource is set to "false", which would forbid it
+    // - then respect the normal setting - if not set, use the preset according to this toolbar configuration
+    const allowHtml = nullOrBool(fieldSettings._defaults.ButtonSource) ?? true;
+    const forceHtml = isDebug && (nullOrBool(fieldSettings._defaults.ButtonSourceInDebugMode) ?? true);
+    const showHtml = forceHtml || (allowHtml && (nullOrBool(fieldSettings.ButtonSource) ?? preset.buttons.source));
+
+    // 4. Decide about the advanced button, which is only based on the setting, if not set, use preset
+    // Note that if the advanced button is not shown, the dialog button will also not be shown, because it is part of the advanced menu
+    const showAdvanced = nullOrBool(fieldSettings.ButtonAdvanced) ?? preset.buttons.advanced;
+
+    // 5. Buttons reconfiguration
     const buttons: WysiwygButtons = {
       // ...preset.buttons,
-      source: nullOrBool(fieldSettings.ButtonSource) ?? preset.buttons.source,
-      advanced: nullOrBool(fieldSettings.ButtonAdvanced) ?? preset.buttons.advanced,
+      source: showHtml,
+      advanced: showAdvanced,
       dialog: !fieldSettings.Dialog
         ? preset.buttons.dialog // not set / empty - use default
-        : preset.displayMode === DialogModes.DisplayInline && fieldSettings._allowDialog, // set, activate if 'inline'
+        : preset.displayMode === WysiwygDialogModes.DisplayInline && fieldSettings._allowDialog, // set, activate if 'inline'
     };
 
     const wysiwygConfiguration = {
@@ -74,13 +96,13 @@ export class WysiwygConfigurationManager {
     return wysiwygConfiguration;
   }
 
-  public switch(editMode: EditModes.WysiwygEditMode, displayMode: DialogModes.DisplayModes) {
+  public switch(editMode: EditModes.WysiwygEditMode, displayMode: WysiwygDialogModes.DisplayModes, isDebug: boolean): RawEditorOptions {
     // temp/wip - rebuild settings and toolbarMaker as sideEffect - this is not good
-    const updated = this.getSettings(editMode, displayMode);
+    const updated = this.getSettings(editMode, displayMode, isDebug);
     return updated.tinyMce;
   }
 
-  private getPreset(editMode: EditModes.WysiwygEditMode, displayMode: DialogModes.DisplayModes): WysiwygConfiguration {
+  private getPreset(editMode: EditModes.WysiwygEditMode, displayMode: WysiwygDialogModes.DisplayModes): WysiwygConfiguration {
     try {
       return getPresetConfiguration(editMode, displayMode, this.log);
     } catch (e) {
@@ -92,7 +114,7 @@ export class WysiwygConfigurationManager {
   }
 }
 
-function getPresetConfiguration(editMode: EditModes.WysiwygEditMode, displayMode: DialogModes.DisplayModes, log: ClassLogger): WysiwygConfiguration {
+function getPresetConfiguration(editMode: EditModes.WysiwygEditMode, displayMode: WysiwygDialogModes.DisplayModes, log: ClassLogger): WysiwygConfiguration {
 
   log.a('wysiwyg: getPresetConfiguration', { editMode, displayMode, ConfigurationPresets });
   // Find best match for modeConfig, if not found, rename and use default

@@ -1,12 +1,7 @@
 <div class="eav-dialog">
-  <div class="eav-dialog-header">
-    <div class="eav-dialog-header__title">
-      {{ dialogData.title ?? 'Delete' }} {{ dialogData.entityTitle }} ({{ dialogData.entityId }})
-    </div>
-    <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
-      <mat-icon>close</mat-icon>
-    </button>
-  </div>
+  <app-dialog-header (close)="closeDialog()">
+    {{ dialogData.title ?? 'Delete' + ' ' + dialogData.entityTitle + ' (' + dialogData.entityId + ')' }}
+  </app-dialog-header>
 
   <div class="eav-dialog-content">
     @if (dialogData.message) {

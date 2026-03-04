@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { transient } from '../../../../../../core';
-import { classLog } from '../../../shared/logging';
+import { classLog } from '../../../../../../shared/logging';
 import { computedObj, signalObj } from '../../../shared/signals/signal.utilities';
 import { EntityOption, FieldOption, TargetOption } from '../../dialog/footer/formula-designer/formula-designer.models';
 import { FieldsSettingsService } from '../../state/fields-settings.service';

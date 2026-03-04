@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { classLog } from '../../shared/logging';
+import { classLog } from '../../../../../shared/logging';
 import { UrlHelpers } from '../shared/helpers';
 import { EditUrlParams } from './edit-url-params.model';
 

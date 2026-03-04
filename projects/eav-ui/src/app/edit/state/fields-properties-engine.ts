@@ -1,6 +1,6 @@
 import { inject, Injectable, Signal } from '@angular/core';
 import { transient } from '../../../../../core/transient';
-import { classLog } from '../../shared/logging';
+import { classLog } from '../../../../../shared/logging';
 import { GlobalConfigService } from '../../shared/services/global-config.service';
 import { computedObj } from '../../shared/signals/signal.utilities';
 import { FieldSettingsTools } from '../fields/logic/field-settings-tools';
@@ -17,7 +17,7 @@ import { EavContentType, EavEntityAttributes, EavItem } from '../shared/models/e
 import { FieldConstantsOfLanguage, FieldProps } from './fields-configs.model';
 import { FieldsPropsEngineCycle } from './fields-properties-engine-cycle';
 import { FieldsSettingsConstantsService } from './fields-settings-constants.service';
-import { FieldSettingsUpdateHelperFactory } from './fields-settings-update.helpers';
+import { FieldSettingsUpdateHelperFactory } from './fields-settings-update-helper-factory';
 import { FieldsSettingsService } from './fields-settings.service';
 import { FieldsSignalsHelper } from './fields-signals.helper';
 import { FieldsValuesModifiedHelper } from './fields-values-modified.helper';

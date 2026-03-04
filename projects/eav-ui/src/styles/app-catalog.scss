@@ -1,0 +1,29 @@
+.eav-app-catalog-button {
+  margin-left: 12px;
+}
+
+.eav-app-catalog-iframe {
+  margin-top: 16px;
+  width: 100%;
+  height: 500px;
+  border: none;
+}
+
+.eav-progress {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.8);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+
+  mat-progress-spinner {
+    margin: 0 auto;
+  }
+
+  span {
+    line-height: 48px;
+  }
+}

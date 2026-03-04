@@ -1,12 +1,8 @@
 <div class="eav-dialog">
-  <div class="eav-dialog-header">
-    <div class="eav-dialog-header__title">
-      Export {{ (contentType$ | async)?.Name }}
-    </div>
-    <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
-      <mat-icon>close</mat-icon>
-    </button>
-  </div>
+  <app-dialog-header (close)="closeDialog()">
+    Export {{ (contentType$ | async)?.Name }}
+  </app-dialog-header>
+  
   @if ((loading$ | async) === false) {
     <form #ngForm="ngForm">
       <div class="eav-dialog-content">

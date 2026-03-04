@@ -1,4 +1,4 @@
-import { classLog } from '../../shared/logging';
+import { classLog } from '../../../../../shared/logging';
 import { QueryResult } from '../models/result/pipeline-result';
 import { QueryStreamResult } from '../models/result/PipelineResultStream';
 import { VisualQueryModel } from '../models/visual-query.model';

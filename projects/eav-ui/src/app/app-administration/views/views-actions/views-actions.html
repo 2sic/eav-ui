@@ -56,7 +56,7 @@
       person
     </mat-icon>
   </a>
-  <app-lightspeed-action [lightSpeedOwner]="view" [params]="params" [lightSpeed]="view.lightSpeed"></app-lightspeed-action>
+  <app-lightspeed-action [lightSpeedOwner]="view" [params]="params" [lightSpeed]="view.lightSpeed ?? null"></app-lightspeed-action>
 
   <div class="eav-grid-action-button highlight" matRipple tippy="More" [matMenuTriggerFor]="menu">
     <mat-icon>more_horiz</mat-icon>

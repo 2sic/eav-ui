@@ -1,10 +1,10 @@
 <div class="eav-dialog">
-  <div class="eav-dialog-header">
-    <h1 class="eav-dialog-header__title" [ngStyle]="{ color: isError ? 'red' : 'inherit' }">{{ isError ? 'Error' : 'Messages' }}</h1>
-    <button mat-icon-button mat-dialog-close tippy="Close dialog">
-      <mat-icon>close</mat-icon>
-    </button>
-  </div>
+  <app-dialog-header>
+    <span dialog-title
+      [ngStyle]="{ color: isError ? 'red' : 'inherit' }">
+      {{ isError ? 'Error' : 'Messages' }}
+    </span>
+  </app-dialog-header>
   <div class="eav-dialog-content">
     <p>
       {{ message }}

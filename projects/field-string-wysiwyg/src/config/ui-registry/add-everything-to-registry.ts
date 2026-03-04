@@ -1,28 +1,26 @@
 import { loadCustomIcons } from '../../editor/load-icons.helper';
-import { AddToRegistryBase, AddToRegistryParams } from './add-to-registry-base';
-import { TinyButtonsContentBlocks } from './add-to-registry-blocks';
-import { TinyButtonsBullets } from './add-to-registry-bullets';
-import { TinyButtonsDialog } from './add-to-registry-dialog';
-import { TinyButtonsFormatting } from './add-to-registry-formatting';
-import { TinyButtonsHeadings } from './add-to-registry-headings';
-import { TinyButtonsImg } from './add-to-registry-img';
-import { TinyButtonsLinks } from './add-to-registry-links';
-import { TinyButtonsModes } from './add-to-registry-modes';
-import { AddToRegistryWysiwygSections } from './add-to-registry-wysiwyg-sections';
+import { AddToRegistryParams } from './add-to-registry-params';
+import { TinyButtonsBullets } from './buttons-bullets';
+import { TinyButtonsContentBlocks } from './buttons-content-blocks';
+import { TinyButtonsDialog } from './buttons-dialog';
+import { TinyButtonsFormatting } from './buttons-formatting';
+import { TinyButtonsHeadings } from './buttons-headings';
+import { TinyButtonsImg } from './buttons-img';
+import { TinyButtonsLinks } from './buttons-links';
+import { TinyButtonsModes } from './buttons-modes';
+import { AddToRegistryWysiwygSections } from './buttons-wysiwyg-sections';
 
 /** Register all kinds of buttons on TinyMCE */
-export class AddEverythingToRegistry extends AddToRegistryBase {
+export class AddEverythingToRegistry {
 
-  constructor(private makerParams: AddToRegistryParams) {
-    super(makerParams);
-  }
 
-  register(): void {
-    const instSettings = this.field.configurator.addOnSettings;
+  register(makerParams: AddToRegistryParams): void {
+    const instSettings = makerParams.field.configurator.addOnSettings;
 
-    if (!instSettings.enabled) return;
+    if (!instSettings.enabled)
+      return;
 
-    const p = this.makerParams;
+    const p = makerParams;
     new TinyButtonsImg(p).register();
     new TinyButtonsBullets(p).register();
     new TinyButtonsHeadings(p).register();
@@ -33,6 +31,6 @@ export class AddEverythingToRegistry extends AddToRegistryBase {
     new TinyButtonsDialog(p).register();
     new TinyButtonsModes(p).register();
 
-    loadCustomIcons(this.editor);
+    loadCustomIcons(p.editor);
   }
 }

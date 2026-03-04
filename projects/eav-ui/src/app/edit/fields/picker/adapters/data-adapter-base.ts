@@ -1,5 +1,5 @@
 import { Signal } from '@angular/core';
-import { ClassLogger } from '../../../../shared/logging';
+import { ClassLogger } from '../../../../../../../shared/logging';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
 import { DebugFields } from '../../../edit-debug';
 import { DataSourceBase } from '../data-sources/data-source-base';

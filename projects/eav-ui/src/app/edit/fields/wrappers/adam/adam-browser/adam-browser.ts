@@ -11,13 +11,13 @@ import { ItemIdHelper } from 'projects/eav-ui/src/app/shared/models/item-id-help
 import { transient } from '../../../../../../../../core/transient';
 import { AdamConfig } from '../../../../../../../../edit-types/src/AdamConfig';
 import { AdamItem } from '../../../../../../../../edit-types/src/AdamItem';
+import { classLog } from '../../../../../../../../shared/logging';
 import { FeatureNames } from '../../../../../features/feature-names';
 import { FeaturesService } from '../../../../../features/features.service';
 import { openFeatureDialog } from '../../../../../features/shared/feature-component-base';
 import { eavConstants } from '../../../../../shared/constants/eav.constants';
 import { ClickStopPropagationDirective } from '../../../../../shared/directives/click-stop-propagation.directive';
 import { TippyDirective } from '../../../../../shared/directives/tippy.directive';
-import { classLog } from '../../../../../shared/logging';
 import { EditForm } from '../../../../../shared/models/edit-form.model';
 import { DialogRoutingService } from '../../../../../shared/routing/dialog-routing.service';
 import { computedObj, signalObj } from '../../../../../shared/signals/signal.utilities';

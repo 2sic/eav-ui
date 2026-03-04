@@ -10,6 +10,7 @@ import { transient } from '../../../../core';
 import { ContentType } from '../app-administration/models/content-type.model';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { DialogConfigAppService } from '../app-administration/services/dialog-config-app.service';
+import { DialogHeaderComponent } from "../shared/dialog-header/dialog-header";
 import { DragAndDropDirective } from '../shared/directives/drag-and-drop.directive';
 import { ContentImportDialogData } from './content-import-dialog.config';
 import { ContentImport, EvaluateContentResult, ImportContentResult } from './models/content-import.model';
@@ -26,7 +27,8 @@ import { ContentImportService } from './services/content-import.service';
     MatIconModule,
     MatDialogActions,
     DragAndDropDirective,
-  ]
+    DialogHeaderComponent
+]
 })
 export class ContentImportComponent implements OnInit {
   @HostBinding('className') hostClass = 'dialog-component';

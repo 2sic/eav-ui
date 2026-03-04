@@ -1,6 +1,6 @@
 <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 16px">
   <h3 class="mat-subtitle-1">Configurations ({{ (entities$ | async)?.length || 0 }})</h3>
-  <button mat-fab mat-elevation-z24 class="grid-fab" tippy="Add Configuration" tippyPlacement="left" (click)="editConfig()">
+  <button matFab mat-elevation-z24 class="grid-fab" tippy="Add Configuration" tippyPlacement="left" (click)="editConfig()">
     <mat-icon>add</mat-icon>
   </button>
 </div>

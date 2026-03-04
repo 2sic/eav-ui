@@ -8,13 +8,14 @@ import { MatTableModule } from '@angular/material/table';
 import { TranslateModule } from '@ngx-translate/core';
 import groupBy from 'lodash-es/groupBy';
 import { transient } from '../../../../../core/transient';
+import { classLog } from '../../../../../shared/logging';
 import { FeatureInfoBoxComponent } from '../../features/feature-info-box/feature-info-box';
 import { FeatureNames } from '../../features/feature-names';
 import { FeaturesService } from '../../features/features.service';
 import { FeatureIconWithDialogComponent } from '../../features/icons/feature-icon-with-dialog';
+import { DialogHeaderComponent } from "../../shared/dialog-header/dialog-header";
 import { ContentTypesFieldsService } from '../../shared/fields/content-types-fields.service';
 import { Field } from '../../shared/fields/field.model';
-import { classLog } from '../../shared/logging';
 import { SaveCloseButtonFabComponent } from '../../shared/modules/save-close-button-fab/save-close-button-fab';
 import { computedObj, signalObj } from '../../shared/signals/signal.utilities';
 import { SharingOrInheriting } from './field-sharing-configure.enums';
@@ -42,7 +43,8 @@ const noInheritGuid = '00000000-0000-0000-0000-000000000000';
     FeatureIconWithDialogComponent,
     MatDialogActions,
     SaveCloseButtonFabComponent,
-  ]
+    DialogHeaderComponent
+]
 })
 export class ShareOrInheritDialogComponent {
 

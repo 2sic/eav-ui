@@ -3,7 +3,7 @@ import { toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { filter, map, Observable, take } from 'rxjs';
 import { transient } from '../../../../../../core';
-import { classLog } from '../../../shared/logging';
+import { classLog } from '../../../../../../shared/logging';
 import { FormulaDesignerService } from '../../formulas/designer/formula-designer.service';
 import { FieldsSettingsService } from '../../state/fields-settings.service';
 import { FieldsTranslateService } from '../../state/fields-translate.service';

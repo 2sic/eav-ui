@@ -9,7 +9,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { transient } from 'projects/core';
 import { isCtrlEnter } from '../../../edit/dialog/main/keyboard-shortcuts';
-import { TippyDirective } from '../../../shared/directives/tippy.directive';
+import { DialogHeaderComponent } from "../../../shared/dialog-header/dialog-header";
 import { SaveCloseButtonFabComponent } from '../../../shared/modules/save-close-button-fab/save-close-button-fab';
 import { ConfirmDeleteDialogComponent } from '../../sub-dialogs/confirm-delete-dialog/confirm-delete-dialog';
 import { ConfirmDeleteDialogData } from '../../sub-dialogs/confirm-delete-dialog/confirm-delete-dialog.models';
@@ -28,8 +28,8 @@ import { InspectExtensionComponent } from '../inspect/inspect-extension-content'
     FormsModule,
     MatExpansionModule,
     InspectExtensionComponent,
-    TippyDirective,
-  ]
+    DialogHeaderComponent
+]
 })
 export class DeleteExtensionComponent implements OnInit {
   #snackBar = inject(MatSnackBar);

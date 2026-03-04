@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import { classLog } from '../../../../../../shared/logging';
 import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
 import { InputTypeHelpers } from '../../../shared/fields/input-type-helpers';
-import { classLog } from '../../../shared/logging';
 import { FieldSettingsHelperWithValueInit } from '../../fields/logic/field-settings-helper-with-value-init';
 import { FieldSettingsHelpersManager } from '../../fields/logic/field-settings-helpers-manager';
 import { AdamCacheService } from '../../shared/adam/adam-cache.service';

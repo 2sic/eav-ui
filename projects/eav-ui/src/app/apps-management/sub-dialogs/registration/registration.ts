@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { transient } from '../../../../../../core';
 import { FileUploadDialogComponent, FileUploadDialogData } from '../../../shared/components/file-upload-dialog';
+import { DialogHeaderComponent } from "../../../shared/dialog-header/dialog-header";
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';
 import { ClipboardService } from '../../../shared/services/clipboard.service';
@@ -24,7 +25,8 @@ import { ZoneService } from '../../services/zone.service';
     MatButtonModule,
     TippyDirective,
     SafeHtmlPipe,
-  ]
+    DialogHeaderComponent
+]
 })
 export class RegistrationComponent {
   @HostBinding('className') hostClass = 'dialog-component';

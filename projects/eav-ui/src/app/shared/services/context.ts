@@ -1,7 +1,7 @@
 import { Injectable, Optional, SkipSelf } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
+import { classLog } from '../../../../../shared/logging';
 import { keyAppId, keyContentBlockId, keyModuleId, keyZoneId, prefix } from '../constants/session.constants';
-import { classLog } from '../logging';
 import { EavWindow } from '../models/eav-window.model';
 import { RouteContextInfo } from '../routing/route-context-info';
 

@@ -11,6 +11,7 @@ import { GoToPermissions } from '../../../permissions';
 import { ColumnDefinitions } from '../../../shared/ag-grid/column-definitions';
 import { IdFieldParams } from '../../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';
+import { DialogHeaderComponent } from "../../../shared/dialog-header/dialog-header";
 import { SxcGridModule } from '../../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../../../shared/routing/dialog-routing.service';
 import { LanguagesPermissionsActionsComponent } from './languages-permissions-actions/languages-permissions-actions';
@@ -25,7 +26,8 @@ import { LanguagesPermissionsActionsParams } from './languages-permissions-actio
     RouterOutlet,
     MatDialogActions,
     SxcGridModule,
-  ]
+    DialogHeaderComponent
+]
 })
 export class LanguagePermissionsComponent implements OnInit {
   gridOptions: GridOptions = this.#buildGridOptions();

@@ -20,6 +20,7 @@ import { isCtrlEnter } from '../../../edit/dialog/main/keyboard-shortcuts';
 import { BaseComponent } from '../../../shared/components/base';
 import { FileUploadResult, ImportModeValues, UploadTypes } from '../../../shared/components/file-upload-dialog';
 import { MessagesFrom2sxc } from '../../../shared/components/file-upload-dialog/messages-from-2sxc';
+import { DialogHeaderComponent } from "../../../shared/dialog-header/dialog-header";
 import { DragAndDropDirective } from '../../../shared/directives/drag-and-drop.directive';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { InstallSettings, InstalledApp, SpecsForInstaller } from '../../../shared/models/installer-models';
@@ -55,7 +56,8 @@ export interface FileUploadDialogData {
     TippyDirective,
     MatSlideToggleModule,
     MatExpansionModule,
-  ],
+    DialogHeaderComponent
+],
 })
 export class ImportExtensionComponent extends BaseComponent implements OnInit {
 

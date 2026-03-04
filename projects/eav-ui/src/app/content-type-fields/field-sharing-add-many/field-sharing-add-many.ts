@@ -19,6 +19,7 @@ import { FeaturesService } from '../../features/features.service';
 import { openFeatureDialog } from '../../features/shared/feature-component-base';
 import { BaseComponent } from '../../shared/components/base';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint';
+import { DialogHeaderComponent } from "../../shared/dialog-header/dialog-header";
 import { ContentTypesFieldsService } from '../../shared/fields/content-types-fields.service';
 import { Field } from '../../shared/fields/field.model';
 import { SaveCloseButtonFabComponent } from '../../shared/modules/save-close-button-fab/save-close-button-fab';
@@ -43,7 +44,8 @@ import { ReservedNamesValidatorDirective } from '../edit-content-type-fields/res
     FieldHintComponent,
     MatIconModule,
     SaveCloseButtonFabComponent,
-  ]
+    DialogHeaderComponent
+]
 })
 export class FieldSharingAddMany extends BaseComponent implements OnInit {
   @HostBinding('className') hostClass = 'dialog-component';

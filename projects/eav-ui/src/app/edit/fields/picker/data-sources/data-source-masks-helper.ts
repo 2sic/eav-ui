@@ -1,7 +1,7 @@
 import { EntityLight } from '../../../../../../../edit-types/src/EntityLight';
+import { classLog } from '../../../../../../../shared/logging';
 import { FeatureNames } from '../../../../features/feature-names';
 import { FeaturesService } from '../../../../features/features.service';
-import { classLog } from '../../../../shared/logging';
 import { FormConfigService } from '../../../form/form-config.service';
 import { PickerItem } from '../models/picker-item.model';
 import { DataSourceHelpers } from './data-source-helpers';

@@ -1,12 +1,8 @@
 <div class="eav-dialog">
-  <div class="eav-dialog-header">
-    <div class="eav-dialog-header__title">
-      {{ modeIsEdit ? 'Edit Content Type' : 'New Content Type' }}
-    </div>
-    <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
-      <mat-icon>close</mat-icon>
-    </button>
-  </div>
+  <app-dialog-header (close)="closeDialog()">
+    {{ modeIsEdit ? 'Edit Content Type' : 'New Content Type' }}
+  </app-dialog-header>
+
   @if (contentType()) {
     <form #ngForm="ngForm" (ngSubmit)="saveAndClose()">
       <div class="eav-dialog-content">

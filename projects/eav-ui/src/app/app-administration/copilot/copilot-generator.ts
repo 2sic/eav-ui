@@ -33,7 +33,7 @@ import { ConfirmDeleteDialogData } from '../sub-dialogs/confirm-delete-dialog/co
 import { CodeGenerator } from './code-generator';
 import { CopilotActionsComponent } from './copilot-actions/copilot-actions';
 
-type DataCopilotConfiguration = {
+export type DataCopilotConfiguration = {
   Guid: string;
   Id: number;
   Title?: string;
@@ -83,16 +83,16 @@ export class CopilotGeneratorComponent {
           headerName: 'Actions',
           cellRenderer: CopilotActionsComponent,
           cellRendererParams: {
-            do: (verb: 'generate' | 'delete', item: any) => {
+            do: (verb, item) => {
               switch (verb) {
-                case 'generate': 
+                case 'generate':
                 this.generateForConfiguration(item); break;
-                
-                case 'delete': 
+
+                case 'delete':
                 this.deleteConfiguration(item); break;
               }
             }
-          }
+          } satisfies CopilotActionsComponent['params']
         },
       ],
       onCellClicked: (event: any) => {
@@ -101,10 +101,10 @@ export class CopilotGeneratorComponent {
         }
         if (event.colDef.headerName === 'Actions') {
 
-          if (event.event.target?.dataset?.action === 'generate') 
+          if (event.event.target?.dataset?.action === 'generate')
             this.generateForConfiguration(event.data);
-          
-          if (event.event.target?.dataset?.action === 'delete') 
+
+          if (event.event.target?.dataset?.action === 'delete')
             this.deleteConfiguration(event.data);
         }
       },
@@ -139,8 +139,8 @@ export class CopilotGeneratorComponent {
     })),
     streams: '*', // All streams
   });
-  
-  generators = computed(() => 
+
+  generators = computed(() =>
     // 2dm: had to temporarily move the outputType filter to here, as we can't use OData till I fix something
     this.#data.value()?.default.filter(g => g.outputType === this.outputType())
       ?? []  // may still be loading...
@@ -165,7 +165,7 @@ export class CopilotGeneratorComponent {
   });
 
   #editions = this.#dataSvc.get<{ name: string; label: string; description: string, isDefault: boolean }>({
-    source: 'ToSic.Sxc.DataSources.AppEditions',
+    source: 'System.AppEditions',
   });
 
   editions = computed(() => this.#editions().map(e => ({

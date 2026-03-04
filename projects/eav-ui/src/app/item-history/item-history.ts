@@ -10,6 +10,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { transient } from '../../../../core';
+import { DialogHeaderComponent } from "../shared/dialog-header/dialog-header";
 import { computedObj, signalObj } from '../shared/signals/signal.utilities';
 import { HistoryItemComponent } from './history-item';
 import { getHistoryItems } from './item-history.helpers';
@@ -30,7 +31,8 @@ import { VersionsService } from './services/versions.service';
     MatExpansionModule,
     MatPaginatorModule,
     HistoryItemComponent,
-  ]
+    DialogHeaderComponent,
+]
 })
 export class ItemHistoryComponent {
   @HostBinding('className') hostClass = 'dialog-component';

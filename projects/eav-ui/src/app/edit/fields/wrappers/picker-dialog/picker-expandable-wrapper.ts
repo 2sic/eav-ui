@@ -1,7 +1,7 @@
 
 import { Component, inject, ViewChild, ViewContainerRef } from "@angular/core";
 import { MatCardModule } from "@angular/material/card";
-import { classLog } from '../../../../shared/logging';
+import { classLog } from '../../../../../../../shared/logging';
 import { FormsStateService } from "../../../form/forms-state.service";
 import { FieldState } from "../../field-state";
 import { DialogPopupComponent } from "../dialog-popup/dialog-popup";
