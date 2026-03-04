@@ -5,8 +5,6 @@ import { AgGridActionsBaseComponent } from '../../../shared/ag-grid/ag-grid-acti
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { ContentType } from '../../models';
 
-export type DataItemsVerb = 'addItem' | 'openItems';
-
 @Component({
   selector: 'app-data-items',
   templateUrl: './data-items.html',
