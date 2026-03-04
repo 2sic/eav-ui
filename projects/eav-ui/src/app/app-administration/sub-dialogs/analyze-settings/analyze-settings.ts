@@ -13,6 +13,7 @@ import { ColumnDefinitions } from '../../../shared/ag-grid/column-definitions';
 import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';
 import { SxcGridModule } from '../../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../../../shared/routing/dialog-routing.service';
+import { ClipboardService } from '../../../shared/services/clipboard.service';
 import { ViewsService } from '../../services';
 import { AnalyzeSettingsService } from '../../services/analyze-settings.service';
 import { AnalyzeSettingsKeyComponent } from './analyze-settings-key/analyze-settings-key';
@@ -41,6 +42,7 @@ export class AnalyzeSettingsComponent implements OnInit {
   #viewsSvc = transient(ViewsService);
   #analyzeSettingsSvc = transient(AnalyzeSettingsService);
   #dialogRouter = transient(DialogRoutingService);
+  #clipboard = transient(ClipboardService);
 
   part: Of<typeof AnalyzeParts> = this.#dialogRouter.getParam('part') as Of<typeof AnalyzeParts>;
 
@@ -88,12 +90,30 @@ export class AnalyzeSettingsComponent implements OnInit {
           headerName: 'Key',
           field: 'Path',
           cellRenderer: AnalyzeSettingsKeyComponent,
+          cellRendererParams: {
+            do: (verb, row) => {
+              switch (verb) {
+                case 'copy':
+                  this.#clipboard.copyToClipboard(row.Path);
+                  break;
+              }
+            },
+          } satisfies AnalyzeSettingsKeyComponent['params'],
         },
         {
           ...ColumnDefinitions.TextWideActionClass,
           headerName: 'Value',
-          field: '_value',
+          field: 'value',
           cellRenderer: AnalyzeSettingsValueComponent,
+          cellRendererParams: {
+            do: (verb, stackItem) => {
+              switch (verb) {
+                case 'copy':
+                  this.#clipboard.copyToClipboard(stackItem._value ?? '');
+                  break;
+              }
+            },
+          } satisfies AnalyzeSettingsValueComponent['params'],
         },
         {
           field: 'Source',

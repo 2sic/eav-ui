@@ -4,10 +4,8 @@ import { AgGridActionsBaseComponent } from '../../../../shared/ag-grid/ag-grid-a
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 
 type AnalyzeSettingsRow = {
-  Key: string;
+  Path: string;
 };
-
-export type AnalyzeSettingsVerb = 'copy';
 
 @Component({
   selector: 'app-analyze-settings-key',
@@ -19,9 +17,9 @@ export type AnalyzeSettingsVerb = 'copy';
   ],
 })
 export class AnalyzeSettingsKeyComponent
-  extends AgGridActionsBaseComponent<AnalyzeSettingsRow, AnalyzeSettingsVerb> {
+  extends AgGridActionsBaseComponent<AnalyzeSettingsRow, 'copy'> {
 
   get key(): string {
-    return this.data?.Key ?? '';
+    return this.params?.value
   }
 }

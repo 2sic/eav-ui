@@ -7,8 +7,6 @@ type AnalyzeSettingsRow = {
   _value: string;
 };
 
-export type AnalyzeSettingsValueVerb = 'copy';
-
 @Component({
   selector: 'app-analyze-settings-value',
   templateUrl: './analyze-settings-value.html',
@@ -16,9 +14,9 @@ export type AnalyzeSettingsValueVerb = 'copy';
   imports: [MatRippleModule, TippyDirective],
 })
 export class AnalyzeSettingsValueComponent
-  extends AgGridActionsBaseComponent<AnalyzeSettingsRow, AnalyzeSettingsValueVerb> {
+  extends AgGridActionsBaseComponent<AnalyzeSettingsRow, 'copy'> {
 
   get value(): string {
-    return this.data?._value ?? '';
+    return this.data?._value;
   }
 }
