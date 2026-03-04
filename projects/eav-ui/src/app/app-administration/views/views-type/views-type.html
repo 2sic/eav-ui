@@ -1,7 +1,8 @@
 <div class="icon-container">
-  <div class="eav-grid-action-button icon" [tippy]="value">
+  <div class="eav-grid-action-button icon" [tippy]="label">
     <mat-icon>{{ icon }}</mat-icon>
   </div>
+
   @if (isShared) {
     <div class="eav-grid-action-button icon" tippy="View is shared">
       <mat-icon>share</mat-icon>

@@ -271,9 +271,17 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
           field: 'Items',
           cellRenderer: DataItemsComponent,
           cellRendererParams: ({
-            addItemUrl: (ct) => this.#urlTo(`edit/${this.#routeAddItem(ct)}`),
-            itemsUrl: (ct) => this.#urlTo(`items/${ct.NameId}`),
-          } satisfies DataItemsComponent["params"]),
+            do: (verb, ct) => {
+              switch (verb) {
+                case 'openItems':
+                  this.#dialogRouter.navRelative([`items/${ct.NameId}`]);
+                  break;
+                case 'addItem':
+                  this.#dialogRouter.navRelative([`edit/${this.#routeAddItem(ct)}`]);
+                  break;
+              }
+            },
+          } satisfies DataItemsComponent['params']),
         },
         {
           ...ColumnDefinitions.Fields,

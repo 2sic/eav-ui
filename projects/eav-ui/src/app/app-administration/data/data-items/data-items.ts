@@ -1,9 +1,7 @@
-import { ICellRendererAngularComp } from '@ag-grid-community/angular';
-import { ICellRendererParams } from '@ag-grid-community/core';
-import { Component, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
-import { Router } from '@angular/router';
+import { AgGridActionsBaseComponent } from '../../../shared/ag-grid/ag-grid-actions-base';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { ContentType } from '../../models';
 
@@ -11,33 +9,14 @@ import { ContentType } from '../../models';
   selector: 'app-data-items',
   templateUrl: './data-items.html',
   styleUrls: ['./data-items.scss'],
-  imports: [
-    MatRippleModule,
-    MatIconModule,
-    TippyDirective,
-  ]
+  imports: [MatRippleModule, MatIconModule, TippyDirective],
 })
-export class DataItemsComponent implements ICellRendererAngularComp {
-  value: number;
-
-  router = inject(Router);
-
-  /** Params, directly typed here and anywhere it's used should use this type definition */
-  public params: {
-    addItemUrl(contentType: ContentType): string;
-    itemsUrl(contentType: ContentType): string;
-  };
-
-  protected contentType: ContentType;
-
-  agInit(params: ICellRendererParams & DataItemsComponent["params"]): void {
-    this.params = params;
-    this.contentType = params.data;
-    this.value = params.value;
+export class DataItemsComponent extends AgGridActionsBaseComponent<ContentType, 'addItem' | 'openItems'> {
+  get value(): number {
+    return (this.params?.value as number) ?? 0;
   }
 
-  refresh(params?: any): boolean {
-    return true;
+  get contentType(): ContentType {
+    return this.data;
   }
-
 }
