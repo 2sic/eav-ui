@@ -108,9 +108,19 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
         return;
       }
 
+      // TODO: @2rb - this introduced a bug - closing the dialog now sometimes doesn't correctly inform the parent page that the dialog is closed.
+      // which causes the popup to not close and the user stuck on a blank page after closing the dialog. 
+      // #BugDialogNotAlwaysClosing https://github.com/2sic/2sxc/issues/3738
+      // We need to find a better solution for this.
+      // Reproduce
+      // - uncomment the line below
+      // - open app-settings
+      // - go to tab "data"
+      // - now just close the dialog - the popup will not close and you will be stuck unless you F5
+
       // Route already changed -> do nothing since we're not on the same view anymore
       if (this.router.url !== this.#originalUrl) {
-        return;
+        // return;
       }
 
       // If this is the last opened dialog, close the popup to get back to the original site

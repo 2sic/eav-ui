@@ -235,6 +235,9 @@ export class ContentItemsComponent implements OnInit {
     );
   }
 
+  // Note: the urlToRecycleBin() is related to a bug in the dialog-entry
+  // #BugDialogNotAlwaysClosing https://github.com/2sic/2sxc/issues/3738
+
   // Returns the URL to the recycle bin
   urlToRecycleBin() {
     return `#/${new RouteLinkHelper().routeTo(this.#context, `app/data-${GoToRecycleBin.route}`)}`;
