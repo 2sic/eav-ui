@@ -110,6 +110,14 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
       
       // If no parent dialog is left open, this was the top-level dialog.
       // Always close the outer popup so the parent page is informed correctly.
+      
+      // @2rb, 2026-03-10:
+      // Changed detection from route-depth to open-dialog count because
+      // route depth was unreliable with nested/route-less dialog entries.
+      // Bug: popup could close incorrectly while nested dialogs were involved.
+      // 2sic/2sxv#3738
+      // Keep the old check commented until at least 2026-06 for tracking/rollback.
+      // if (this.route.pathFromRoot.length <= 3) {
       if (!(this.matDialog.openDialogs.length > 0)) {
         try {
           window.parent.$2sxc.totalPopup.close();
