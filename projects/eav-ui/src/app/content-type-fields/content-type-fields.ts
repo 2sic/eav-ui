@@ -297,11 +297,11 @@ export class ContentTypeFieldsComponent implements OnInit {
       items: Object.keys(field.ConfigTypes).map((t) => this.#createItemDefinition(field, t))
     };
     const formUrl = convertFormToUrl(form);
-    return '#' + this.#dialogRouter.urlSubRoute(`edit/${formUrl}`);
+    return this.#dialogRouter.linkSubRoute(`edit/${formUrl}`);
   }
 
   #inputTypeEditUrl(field: Field): string {
-    return '#' + this.#dialogRouter.urlSubRoute(`update/${this.#contentTypeStaticName}/${field.Id}/inputType`);
+    return this.#dialogRouter.linkSubRoute(`update/${this.#contentTypeStaticName}/${field.Id}/inputType`);
   }
 
   #shareOrInherit(field: Field) {

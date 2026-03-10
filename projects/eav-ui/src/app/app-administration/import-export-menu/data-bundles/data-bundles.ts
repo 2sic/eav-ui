@@ -276,7 +276,7 @@ export class DataBundlesComponent {
           headerName: 'Name',
           field: 'Name',
           flex: 2,
-          cellRenderer: (p: { data: ContentItem }) => AgGridHelper.cellLink('#' + this.#dialogRouter.urlSubRoute(`details/${p.data.Guid}/${p.data.Name}`), p.data.Name),
+          cellRenderer: (p: { data: ContentItem }) => AgGridHelper.cellLink(this.#dialogRouter.linkSubRoute(`details/${p.data.Guid}/${p.data.Name}`), p.data.Name),
         },
         {
           ...ColumnDefinitions.TextWideMin100,

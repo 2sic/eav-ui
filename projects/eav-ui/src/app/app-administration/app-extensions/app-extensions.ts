@@ -187,7 +187,7 @@ export class AppExtensions implements OnInit {
   }
 
   #urlTo(subRoute: string): string {
-    return `#${this.#dialogRouter.urlSubRoute(subRoute)}`;
+    return this.#dialogRouter.linkSubRoute(subRoute);
   }
 
   #routeAddItem(configurationContentType: string): string {

@@ -67,7 +67,7 @@ export class AppConfigurationCard implements OnDestroy {
   protected clipboard = transient(ClipboardService);
 
   #urlTo(url: string, queryParams?: { [key: string]: string }, errComponent?: string) {
-    let newUrl = '#' + this.#dialogRouter.urlSubRoute(url);
+    let newUrl = this.#dialogRouter.linkSubRoute(url);
 
     if (queryParams)
       newUrl += `?${new URLSearchParams(queryParams).toString()}`;

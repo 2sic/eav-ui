@@ -240,7 +240,7 @@ export class LicenseInfoComponent implements OnInit {
   }
 
   #urlTo(url: string) {
-    return '#' + this.#dialogRouter.urlSubRoute(url);
+    return this.#dialogRouter.linkSubRoute(url);
   }
 
   #routeAddItem(contentType: Feature, data: unknown): string {

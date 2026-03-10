@@ -188,11 +188,11 @@ export class ContentItemsComponent implements OnInit {
   // and sets a # infront of the url, so angular can differentiate
   // angular routes from ordinary urls.
   #urlTo(url: string) {
-    return '#' + this.#dialogRouter.urlSubRoute(url);
+    return this.#dialogRouter.linkSubRoute(url);
   }
 
-  #urlToMetadata(item: ContentItem) {
-    return this.#dialogRouter.urlSubRoute(GoToMetadata.getUrlEntity(
+  #linkToMetadata(item: ContentItem) {
+    return this.#dialogRouter.linkSubRoute(GoToMetadata.getUrlEntity(
       item.Guid,
       `Metadata for Entity: ${item._Title} (${item.Id})`,
       this.#contentTypeStaticName,
@@ -234,6 +234,9 @@ export class ContentItemsComponent implements OnInit {
       })}`
     );
   }
+
+  // Note: the urlToRecycleBin() is related to a bug in the dialog-entry
+  // #BugDialogNotAlwaysClosing https://github.com/2sic/2sxc/issues/3738
 
   // Returns the URL to the recycle bin
   urlToRecycleBin() {
@@ -340,7 +343,7 @@ export class ContentItemsComponent implements OnInit {
         },
         cellRenderer: ContentItemsStatusComponent,
         cellRendererParams: (() => ({
-          urlTo: (verb, item) => '#' + this.#urlToMetadata(item),
+          urlTo: (verb, item) => this.#linkToMetadata(item),
         } satisfies ContentItemsStatusComponent['params']))(),
       },
       {
@@ -356,7 +359,7 @@ export class ContentItemsComponent implements OnInit {
         field: '_Used',
         width: 70,
         headerClass: 'dense',
-        cellClass: 'no-outline',
+        cellClass: 'highlight', // 'no-outline',
         sortable: true,
         filter: 'agTextColumnFilter',
 
@@ -366,7 +369,7 @@ export class ContentItemsComponent implements OnInit {
         cellRenderer: (p: { data: ContentItem }) => {
           const item = p.data;
           return AgGridHelper.cellLink(
-            this.#urlToRelationships(item), `${item._Used} / ${item._Uses}`
+            this.#urlToRelationships(item), `${item._Used} / ${item._Uses} 🔍`
           );
         },
       },
@@ -375,7 +378,7 @@ export class ContentItemsComponent implements OnInit {
         cellRenderer: ContentItemsActionsComponent,
         cellRendererParams: (() => {
           const params: ContentItemsActionsParams = {
-            urlTo: (verb, item) => '#' + this.#urlToClone(item),
+            urlTo: (verb, item) => this.#urlToClone(item),
             do: (verb, item) => {
               switch (verb) {
                 case 'export': this.#export(item); break;
@@ -425,7 +428,7 @@ export class ContentItemsComponent implements OnInit {
   }
 
   #urlToClone(item: ContentItem) {
-    return this.#dialogRouter.urlSubRoute(
+    return this.#dialogRouter.linkSubRoute(
       `edit/${convertFormToUrl({
         items: [ItemIdHelper.copy(this.#contentTypeStaticName, item.Id)],
       })}`
