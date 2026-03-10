@@ -1,6 +1,8 @@
 import { WebApi } from '../../models/web-api.model';
 
+export type WebApiActionsVerb = 'code' | 'restApi';
+
 export interface WebApiActionsParams {
-  enableCodeGetter(): boolean;
-  onOpenCode(api: WebApi): void;
+  enableCode: boolean;
+  do(verb: WebApiActionsVerb, data: WebApi): void;
 }
