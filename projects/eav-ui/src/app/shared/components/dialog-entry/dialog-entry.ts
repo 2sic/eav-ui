@@ -107,30 +107,29 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
         this.router.navigate([navRes.navigateUrl]);
         return;
       }
-
-      // TODO: @2rb - this introduced a bug - closing the dialog now sometimes doesn't correctly inform the parent page that the dialog is closed.
-      // which causes the popup to not close and the user stuck on a blank page after closing the dialog. 
-      // #BugDialogNotAlwaysClosing https://github.com/2sic/2sxc/issues/3738
-      // We need to find a better solution for this.
-      // Reproduce
-      // - uncomment the line below
-      // - open app-settings
-      // - go to tab "data"
-      // - now just close the dialog - the popup will not close and you will be stuck unless you F5
-
-      // Route already changed -> do nothing since we're not on the same view anymore
-      if (this.router.url !== this.#originalUrl) {
-        // return;
-      }
-
-      // If this is the last opened dialog, close the popup to get back to the original site
-      if (this.route.pathFromRoot.length <= 3) {
+      
+      // If no parent dialog is left open, this was the top-level dialog.
+      // Always close the outer popup so the parent page is informed correctly.
+      
+      // @2rb, 2026-03-10:
+      // Changed detection from route-depth to open-dialog count because
+      // route depth was unreliable with nested/route-less dialog entries.
+      // Bug: popup could close incorrectly while nested dialogs were involved.
+      // 2sic/2sxv#3738
+      // Keep the old check commented until at least 2026-06 for tracking/rollback.
+      // if (this.route.pathFromRoot.length <= 3) {
+      if (!(this.matDialog.openDialogs.length > 0)) {
         try {
           window.parent.$2sxc.totalPopup.close();
         }
         catch (error) { }
         return;
       }
+
+      // Route already changed while nested dialog was open -> avoid forcing another navigation.
+      // This can happen when the parent dialog changes tabs/views while child dialogs are active.
+      if (this.router.url !== this.#originalUrl)
+        return;
 
       // Determine the correct parent route to navigate back to after dialog closes.
       // Explanation:
