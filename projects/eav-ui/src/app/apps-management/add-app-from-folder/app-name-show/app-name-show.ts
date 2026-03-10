@@ -13,6 +13,8 @@ import { TippyDirective } from '../../../shared/directives/tippy.directive';
         TippyDirective,
     ]
 })
+
+// TODO: 2rb show to 2dm
 export class AppNameShowComponent implements ICellRendererAngularComp {
   name: string;
   tooltip: string;
