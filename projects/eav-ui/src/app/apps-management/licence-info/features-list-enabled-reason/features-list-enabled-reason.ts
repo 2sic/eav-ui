@@ -4,6 +4,8 @@ import { Component } from '@angular/core';
 import { Feature } from '../../../features/models/feature.model';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 
+// TODO: 2rb show 2dm
+
 @Component({
     selector: 'app-features-list-enabled-reason',
     templateUrl: './features-list-enabled-reason.html',

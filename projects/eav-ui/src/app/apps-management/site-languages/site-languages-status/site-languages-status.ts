@@ -5,6 +5,8 @@ import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/sl
 import { SiteLanguage } from '../../models/site-language.model';
 import { SiteLanguagesStatusParams } from './site-languages-status.models';
 
+// TODO: 2rb show 2dm
+
 @Component({
     selector: 'app-site-languages-status',
     templateUrl: './site-languages-status.html',

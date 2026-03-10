@@ -9,6 +9,8 @@ import { Feature } from '../../../features/models';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { FeatureConfigEdit } from '../feature-config-edit';
 
+// TODO: 2rb show 2dm
+
 @Component({
   selector: 'app-features-list-settings',
   templateUrl: './features-list-enabled.html',
