@@ -1,21 +1,8 @@
 <div class="actions-component">
-  <button
-    class="eav-grid-action-button default-link highlight"
-    matRipple
-    [tippy]="tooltip"
-    (click)="do('openFields')">
-
-    <mat-icon
-      [matBadge]="value"
-      matBadgePosition="below after"
-      matBadgeColor="accent"
-      matBadgeSize="small"
-      [matBadgeHidden]="!value"
-      aria-hidden="false">
-
-      {{ icon }}
-
+  <a class="eav-grid-action-button default-link highlight" matRipple [tippy]="tooltip"  (click)="do('openFields')">
+    <mat-icon [matBadge]="value" matBadgePosition="below after" matBadgeColor="accent" matBadgeSize="small"
+      [matBadgeHidden]="!value" aria-hidden="false">
+      {{icon}}
     </mat-icon>
-
-  </button>
+  </a>
 </div>

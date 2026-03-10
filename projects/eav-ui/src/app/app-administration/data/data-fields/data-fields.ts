@@ -16,8 +16,7 @@ import { ContentType } from '../../models/content-type.model';
     TippyDirective,
   ]
 })
-export class DataFieldsComponent
-  extends AgGridActionsBaseComponent<ContentType, 'openFields'> {
+export class DataFieldsComponent extends AgGridActionsBaseComponent<ContentType, 'openFields'> {
 
   get value() { return this.params?.value; }
 

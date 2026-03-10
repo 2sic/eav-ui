@@ -40,7 +40,6 @@ import { EntityEditService } from '../shared/services/entity-edit.service';
 import { GlobalConfigService } from '../shared/services/global-config.service';
 import { computedObj } from '../shared/signals/signal.utilities';
 import { ContentItemsActionsComponent } from './content-items-actions/content-items-actions';
-import { ContentItemsActionsParams } from './content-items-actions/content-items-actions.models';
 import { ContentItemsEntityComponent } from './content-items-entity/content-items-entity';
 import { ContentItemsStatusComponent } from './content-items-status/content-items-status';
 import { buildFilterModel } from './content-items.helpers';
@@ -363,7 +362,7 @@ export class ContentItemsComponent implements OnInit {
         sortable: true,
         filter: 'agTextColumnFilter',
 
-        valueGetter: (p) => 
+        valueGetter: (p) =>
           `${p.data._Used} / ${p.data._Uses}`,
 
         cellRenderer: (p: { data: ContentItem }) => {
@@ -376,18 +375,29 @@ export class ContentItemsComponent implements OnInit {
       {
         ...ColumnDefinitions.ActionsPinnedRight3,
         cellRenderer: ContentItemsActionsComponent,
-        cellRendererParams: (() => {
-          const params: ContentItemsActionsParams = {
-            urlTo: (verb, item) => this.#urlToClone(item),
-            do: (verb, item) => {
-              switch (verb) {
-                case 'export': this.#export(item); break;
-                case 'delete': this.#delete(item); break;
-              }
+        cellRendererParams: {
+          do: (verb, item) => {
+            switch (verb) {
+              case 'clone':
+                window.location.href = this.#urlToClone(item);
+                break;
+              case 'export':
+                this.#export(item);
+                break;
+              case 'delete':
+                this.#delete(item);
+                break;
             }
-          } satisfies ContentItemsActionsParams;
-          return params;
-        })(),
+          },
+          urlTo: (verb, item) => {
+            switch (verb) {
+              case 'clone':
+                return this.#urlToClone(item);
+              default:
+                return '';
+            }
+          },
+        } satisfies ContentItemsActionsComponent['params'],
       },
     ];
     for (const column of columns) {
