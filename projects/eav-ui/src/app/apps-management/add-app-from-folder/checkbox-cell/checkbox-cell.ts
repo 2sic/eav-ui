@@ -3,6 +3,8 @@ import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
 import { CheckboxCellParams } from './checkbox-cell.model';
 
+// TODO: 2rb show to 2dm
+
 @Component({
   selector: 'app-checkbox-cell',
   templateUrl: './checkbox-cell.html',
