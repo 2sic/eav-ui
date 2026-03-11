@@ -295,7 +295,13 @@ export class MetadataComponent implements OnInit {
           ...ColumnDefinitions.ActionsPinnedRight1,
           cellRenderer: MetadataActionsComponent,
           cellRendererParams: {
-            onDelete: (metadata) => this.#deleteMetadata(metadata),
+            do: (verb, metadata) => {
+              switch (verb) {
+                case 'delete':
+                  this.#deleteMetadata(metadata);
+                  break;
+              }
+            },
           } satisfies MetadataActionsParams,
         },
       ],

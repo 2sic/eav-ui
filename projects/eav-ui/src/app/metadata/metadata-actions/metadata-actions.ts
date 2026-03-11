@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
-import { AgGridCellRendererBaseComponent } from '../../shared/ag-grid/ag-grid-cell-renderer-base';
+import { AgGridActionsBaseComponent } from '../../shared/ag-grid/ag-grid-actions-base';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { MetadataItem } from '../models/metadata.model';
+import { MetadataActionsParams, MetadataActionsVerb } from './metadata-actions.models';
 
 @Component({
   selector: 'app-metadata-actions',
@@ -15,13 +16,6 @@ import { MetadataItem } from '../models/metadata.model';
   ]
 })
 export class MetadataActionsComponent
-  extends AgGridCellRendererBaseComponent<MetadataItem, unknown, MetadataActionsParams> {
-
-  deleteMetadata(): void {
-    this.params.onDelete(this.data);
-  }
+  extends AgGridActionsBaseComponent<MetadataItem, MetadataActionsVerb, MetadataActionsParams> {
 }
 
-export interface MetadataActionsParams {
-  onDelete(metadata: MetadataItem): void;
-}
