@@ -18,11 +18,7 @@ import { PendingApp } from '../../models/app.model';
 export class AppNameShowComponent
   extends AgGridCellRendererBaseComponent<PendingApp, string, IdFieldParams<PendingApp>> {
 
-  get name(): string {
-    return this.value;
-  }
+  get name(): string { return this.value; }
 
-  get tooltip(): string {
-    return this.params.tooltipGetter(this.data);
-  }
+  get tooltip(): string { return this.params.tooltipGetter(this.data); }
 }

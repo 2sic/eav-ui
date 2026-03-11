@@ -273,12 +273,8 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
           cellRendererParams: ({
             do: (verb, ct) => {
               switch (verb) {
-                case 'openItems':
-                  this.#dialogRouter.navRelative([`items/${ct.NameId}`]);
-                  break;
-                case 'addItem':
-                  this.#dialogRouter.navRelative([`edit/${this.#routeAddItem(ct)}`]);
-                  break;
+                case 'openItems': return this.#dialogRouter.navRelative([`items/${ct.NameId}`]);
+                case 'addItem': return this.#dialogRouter.navRelative([`edit/${this.#routeAddItem(ct)}`]);
               }
             },
           } satisfies DataItemsComponent['params']),
@@ -290,9 +286,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
           cellRendererParams: {
             do: (verb, ct) => {
               switch (verb) {
-                case 'openFields':
-                  this.#dialogRouter.navRelative([`fields/${ct.NameId}`]);
-                  break;
+                case 'openFields': return this.#dialogRouter.navRelative([`fields/${ct.NameId}`]);
               }
             },
           } satisfies DataFieldsComponent['params'],
