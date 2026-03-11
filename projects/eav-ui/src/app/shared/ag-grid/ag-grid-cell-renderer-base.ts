@@ -10,9 +10,9 @@ import { ICellRendererParams } from '@ag-grid-community/core';
  * @template TParams - Additional custom params passed to the renderer.
  */
 export class AgGridCellRendererBaseComponent<
-  TData,
-  TValue,
-  TParams
+  TData = unknown,
+  TValue = unknown,
+  TParams = unknown
 > implements ICellRendererAngularComp {
 
   /** Row data for the current grid row */
