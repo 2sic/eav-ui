@@ -1,30 +1,28 @@
-import { ICellRendererAngularComp } from '@ag-grid-community/angular';
-import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
+import { AgGridCellRendererBaseComponent } from '../../../shared/ag-grid/ag-grid-cell-renderer-base';
 import { IdFieldParams } from '../../../shared/components/id-field/id-field.models';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
+import { PendingApp } from '../../models/app.model';
 
 @Component({
-    selector: 'app-app-name-show',
-    templateUrl: './app-name-show.html',
-    styleUrls: ['./app-name-show.scss'],
-    imports: [MatIconModule,
-        TippyDirective,
-    ]
+  selector: 'app-app-name-show',
+  templateUrl: './app-name-show.html',
+  styleUrls: ['./app-name-show.scss'],
+  imports: [
+    MatIconModule,
+    TippyDirective,
+  ]
 })
 
-// TODO: 2rb show to 2dm
-export class AppNameShowComponent implements ICellRendererAngularComp {
-  name: string;
-  tooltip: string;
+export class AppNameShowComponent
+  extends AgGridCellRendererBaseComponent<PendingApp, string, IdFieldParams<PendingApp>> {
 
-  agInit(params: ICellRendererParams & IdFieldParams): void {
-    this.name = params.value;
-    this.tooltip = params.tooltipGetter(params.data);
+  get name(): string {
+    return this.value;
   }
 
-  refresh(params?: any): boolean {
-    return true;
+  get tooltip(): string {
+    return this.params.tooltipGetter(this.data);
   }
 }
