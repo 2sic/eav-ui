@@ -11,10 +11,12 @@ export class TrueFalseComponent
   extends AgGridCellRendererBaseComponent<unknown, boolean, TrueFalseParams> {
 
   get trueIcon(): string { return this.params.trueIcon ?? 'check_circle'; }
-  get falseIcon(): string { return this.params.falseIcon ?? 'circle'; }
-  get normalizedValue(): boolean { return this.params.reverse ? !this.value : this.value; }
-  get icon(): string { return this.normalizedValue ? this.trueIcon : this.falseIcon; }
 
+  get falseIcon(): string { return this.params.falseIcon ?? 'circle'; }
+
+  get normalizedValue(): boolean { return this.params.reverse ? !this.value : this.value; }
+
+  get icon(): string { return this.normalizedValue ? this.trueIcon : this.falseIcon; }
 }
 
 export interface TrueFalseParams {

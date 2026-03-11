@@ -20,7 +20,9 @@ export class ContentTypeFieldsTitleComponent
   extends AgGridCellRendererBaseComponent<Field, boolean, ContentTypeFieldsTitleParams> {
 
   get field(): Field { return this.data; }
+
   get isTitle(): boolean { return this.value; }
+  
   get suitableForTitle(): boolean { return !InputTypeHelpers.isEmpty(this.field.InputType); }
 
   setTitle(): void {

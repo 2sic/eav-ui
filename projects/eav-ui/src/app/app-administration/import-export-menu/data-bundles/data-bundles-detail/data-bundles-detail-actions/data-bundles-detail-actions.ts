@@ -20,7 +20,5 @@ import { DataBundlesDetailActionsParams, DataBundlesType } from './data-bundles-
 export class DataBundlesDetailActionsComponent
   extends AgGridActionsBaseComponent<ContentItem, DataBundlesType, DataBundlesDetailActionsParams> {
 
-  get item(): ContentItem {
-    return this.data;
-  }
+  get item(): ContentItem { return this.data; }
 }

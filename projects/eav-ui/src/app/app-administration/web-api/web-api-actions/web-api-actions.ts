@@ -35,10 +35,8 @@ export class WebApiActionsComponent extends AgGridActionsBaseComponent<WebApi, W
     super();
   }
 
-  get enableCode(): boolean {
-    return !!this.params?.enableCode;
-  }
-  
+  get enableCode(): boolean { return !!this.params?.enableCode; }
+
   override do(verb: WebApiActionsVerb): void {
     switch (verb) {
       case 'code':

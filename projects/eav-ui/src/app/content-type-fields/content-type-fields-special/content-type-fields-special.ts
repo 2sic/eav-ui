@@ -17,11 +17,16 @@ export class ContentTypeFieldsSpecialComponent
   extends AgGridCellRendererBaseComponent<Field, unknown> {
 
   get field(): Field { return this.data; }
-  get hasFormulas(): boolean { return this.field.HasFormulas; }
-  get isEphemeral(): boolean { return this.field.IsEphemeral; }
-  get isHidden(): boolean { return !this.field.Metadata.All?.VisibleInEditUI; }
-  get disableTranslation(): boolean { return this.field.Metadata.All?.DisableTranslation ?? false; }
-  get disabled(): boolean { return this.field.Metadata.All?.Disabled ?? false; }
-  get required(): boolean { return this.field.Metadata.All?.Required ?? false; }
 
+  get hasFormulas(): boolean { return this.field.HasFormulas; }
+
+  get isEphemeral(): boolean { return this.field.IsEphemeral; }
+
+  get isHidden(): boolean { return !this.field.Metadata.All?.VisibleInEditUI; }
+
+  get disableTranslation(): boolean { return this.field.Metadata.All?.DisableTranslation ?? false; }
+
+  get disabled(): boolean { return this.field.Metadata.All?.Disabled ?? false; }
+
+  get required(): boolean { return this.field.Metadata.All?.Required ?? false; }
 }

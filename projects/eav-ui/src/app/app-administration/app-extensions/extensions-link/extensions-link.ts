@@ -17,7 +17,10 @@ export class AppExtensionsLinkCell
   extends AgGridActionsBaseComponent<Extension, 'openMain' | 'openDocs' | 'openDemo' | 'openSourceCode'> {
 
   get mainLink() { return this.data?.configuration?.linkMain; }
+
   get docsLink() { return this.data?.configuration?.linkDocs; }
+
   get demosLink() { return this.data?.configuration?.linkDemo; }
+  
   get sourceCodeLink() { return this.data?.configuration?.linkSource; }
 }

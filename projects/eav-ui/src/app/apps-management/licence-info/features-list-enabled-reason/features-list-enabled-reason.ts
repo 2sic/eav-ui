@@ -11,7 +11,5 @@ import { TippyDirective } from '../../../shared/directives/tippy.directive';
 export class FeaturesListEnabledReasonComponent
   extends AgGridCellRendererBaseComponent<Feature, boolean> {
 
-  get feature(): Feature {
-    return this.data;
-  }
+  get feature(): Feature { return this.data; }
 }

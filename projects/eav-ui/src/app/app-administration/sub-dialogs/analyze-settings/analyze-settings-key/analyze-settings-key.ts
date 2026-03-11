@@ -19,7 +19,5 @@ type AnalyzeSettingsRow = {
 export class AnalyzeSettingsKeyComponent
   extends AgGridActionsBaseComponent<AnalyzeSettingsRow, 'copy'> {
 
-  get key(): string {
-    return this.params?.value
-  }
+  get key(): string { return this.params?.value }
 }

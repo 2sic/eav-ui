@@ -13,9 +13,7 @@ import { SettingsStackItem } from '../analyze-settings.models';
 export class AnalyzeSettingsTotalResultsComponent
   extends AgGridActionsBaseComponent<SettingsStackItem, 'openDetails'> {
 
-  get totalResults(): number {
-    return this.data?.TotalResults ?? 0;
-  }
+  get totalResults(): number { return this.data?.TotalResults ?? 0; }
 
   openDetails(): void {
     this.do('openDetails');

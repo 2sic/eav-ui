@@ -11,9 +11,7 @@ import { AgGridCellRendererBaseComponent } from '../../shared/ag-grid/ag-grid-ce
 export class ContentTypeFieldsDragComponent
   extends AgGridCellRendererBaseComponent<unknown, unknown, ContentTypeFieldsDragParams> {
 
-  get isReordering(): () => boolean {
-    return this.params.isReordering;
-  }
+  get isReordering(): () => boolean { return this.params.isReordering; }
 }
 
 export interface ContentTypeFieldsDragParams {
