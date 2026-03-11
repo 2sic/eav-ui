@@ -342,9 +342,9 @@ export class ContentTypeFieldsComponent implements OnInit {
           cellClass: 'secondary-action no-padding no-outline'.split(' '),
           valueGetter: (p: { data: Field }) => p.data.IsTitle,
           cellRenderer: ContentTypeFieldsTitleComponent,
-          cellRendererParams: (() => ({
+          cellRendererParams: {
             onSetTitle: (field) => this.#setTitle(field),
-          } satisfies ContentTypeFieldsTitleParams))(),
+          } satisfies ContentTypeFieldsTitleParams,
         },
         {
           ...ColumnDefinitions.TextWidePrimary,
