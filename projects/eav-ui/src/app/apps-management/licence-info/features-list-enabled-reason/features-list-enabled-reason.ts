@@ -1,26 +1,17 @@
-import { ICellRendererAngularComp } from '@ag-grid-community/angular';
-import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
 import { Feature } from '../../../features/models/feature.model';
+import { AgGridCellRendererBaseComponent } from '../../../shared/ag-grid/ag-grid-cell-renderer-base';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 
-// TODO: 2rb show 2dm
-
 @Component({
-    selector: 'app-features-list-enabled-reason',
-    templateUrl: './features-list-enabled-reason.html',
-    imports: [TippyDirective]
+  selector: 'app-features-list-enabled-reason',
+  templateUrl: './features-list-enabled-reason.html',
+  imports: [TippyDirective]
 })
-export class FeaturesListEnabledReasonComponent implements ICellRendererAngularComp {
-  value: boolean;
-  feature: Feature;
+export class FeaturesListEnabledReasonComponent
+  extends AgGridCellRendererBaseComponent<Feature, boolean> {
 
-  agInit(params: ICellRendererParams): void {
-    this.value = params.value;
-    this.feature = params.data;
-  }
-
-  refresh(params?: any): boolean {
-    return true;
+  get feature(): Feature {
+    return this.data;
   }
 }
