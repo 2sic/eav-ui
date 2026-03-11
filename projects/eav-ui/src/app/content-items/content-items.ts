@@ -40,8 +40,10 @@ import { EntityEditService } from '../shared/services/entity-edit.service';
 import { GlobalConfigService } from '../shared/services/global-config.service';
 import { computedObj } from '../shared/signals/signal.utilities';
 import { ContentItemsActionsComponent } from './content-items-actions/content-items-actions';
+import { ContentItemsActionsParams } from './content-items-actions/content-items-actions.models';
 import { ContentItemsEntityComponent } from './content-items-entity/content-items-entity';
 import { ContentItemsStatusComponent } from './content-items-status/content-items-status';
+import { ContentItemsStatusParams } from './content-items-status/content-items-status.models';
 import { buildFilterModel } from './content-items.helpers';
 import { CreateMetadataDialogComponent } from './create-metadata-dialog/create-metadata-dialog';
 import { MetadataInfo } from './create-metadata-dialog/create-metadata-dialog.models';
@@ -341,9 +343,9 @@ export class ContentItemsComponent implements OnInit {
           return published;
         },
         cellRenderer: ContentItemsStatusComponent,
-        cellRendererParams: (() => ({
+        cellRendererParams: {
           urlTo: (verb, item) => this.#linkToMetadata(item),
-        } satisfies ContentItemsStatusComponent['params']))(),
+        } satisfies ContentItemsStatusParams,
       },
       {
         ...ColumnDefinitions.TextWidePrimary,
@@ -397,7 +399,7 @@ export class ContentItemsComponent implements OnInit {
                 return '';
             }
           },
-        } satisfies ContentItemsActionsComponent['params'],
+        } satisfies ContentItemsActionsParams,
       },
     ];
     for (const column of columns) {
