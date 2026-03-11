@@ -86,9 +86,7 @@ export class DataBundlesDetailComponent {
           cellRendererParams: {
             do: (verb, item) => {
               switch (verb) {
-                case 'delete':
-                  this.#deleteItem(item);
-                  break;
+                case 'delete':return this.#deleteItem(item);
               }
             },
           } satisfies DataBundlesDetailActionsParams,

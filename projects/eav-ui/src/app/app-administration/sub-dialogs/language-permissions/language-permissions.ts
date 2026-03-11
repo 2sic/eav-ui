@@ -84,9 +84,7 @@ export class LanguagePermissionsComponent implements OnInit {
           cellRenderer: LanguagesPermissionsActionsComponent,
           cellRendererParams: {
             do: (verb, lang) => {
-              switch (verb) {
-                case 'openPermissions': return this.openPermissions(lang);
-              }
+              switch (verb) { case 'openPermissions': return this.openPermissions(lang); }
             },
           } satisfies LanguagesPermissionsActionsComponent['params'],
         },

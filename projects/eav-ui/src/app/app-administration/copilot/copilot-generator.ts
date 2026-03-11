@@ -85,11 +85,8 @@ export class CopilotGeneratorComponent {
           cellRendererParams: {
             do: (verb, item) => {
               switch (verb) {
-                case 'generate':
-                this.generateForConfiguration(item); break;
-
-                case 'delete':
-                this.deleteConfiguration(item); break;
+                case 'generate': return this.generateForConfiguration(item);
+                case 'delete': return this.deleteConfiguration(item);
               }
             }
           } satisfies CopilotActionsComponent['params']

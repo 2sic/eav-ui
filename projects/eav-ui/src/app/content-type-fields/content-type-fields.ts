@@ -408,12 +408,12 @@ export class ContentTypeFieldsComponent implements OnInit {
           cellRendererParams: {
             do: (verb, field) => {
               switch (verb) {
-                case 'rename': this.#rename(field); break;
-                case 'delete': this.#delete(field); break;
-                case 'permissions': this.#openPermissions(field); break;
-                case 'metadata': this.#openMetadata(field); break;
-                case 'shareOrInherit': this.#shareOrInherit(field); break;
-                case 'image': this.#openImageConfiguration(field); break;
+                case 'rename': return this.#rename(field);
+                case 'delete': return this.#delete(field); 
+                case 'permissions': return this.#openPermissions(field);
+                case 'metadata': return this.#openMetadata(field);
+                case 'shareOrInherit': return this.#shareOrInherit(field);
+                case 'image': return this.#openImageConfiguration(field);
               }
             }
           } satisfies ContentTypeFieldsActionsComponent['params'],
