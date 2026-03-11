@@ -1,6 +1,6 @@
-import { ICellRendererAngularComp } from '@ag-grid-community/angular';
-import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
+import { AgGridCellRendererBaseComponent } from '../../../shared/ag-grid/ag-grid-cell-renderer-base';
+import { PendingApp } from '../../models/app.model';
 import { CheckboxCellParams } from './checkbox-cell.model';
 
 @Component({
@@ -8,18 +8,11 @@ import { CheckboxCellParams } from './checkbox-cell.model';
   templateUrl: './checkbox-cell.html',
   styleUrls: ['./checkbox-cell.scss'],
 })
-export class CheckboxCellComponent implements ICellRendererAngularComp {
-  params: ICellRendererParams & CheckboxCellParams;
+export class CheckboxCellComponent
+  extends AgGridCellRendererBaseComponent<PendingApp, boolean, CheckboxCellParams> {
 
-  agInit(params: ICellRendererParams & CheckboxCellParams): void {
-    this.params = params;
-  }
-
-  refresh(params?: any): boolean {
-    return true;
-  }
-
-  public onChange(event: any) {
-    this.params.onChange(this.params.data, event.currentTarget.checked);
+  onChange(event: Event): void {
+    const input = event.currentTarget as HTMLInputElement;
+    this.params.onChange(this.data, input.checked);
   }
 }

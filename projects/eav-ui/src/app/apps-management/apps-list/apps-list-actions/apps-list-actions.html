@@ -1,6 +1,7 @@
 <div class="actions-component">
   <!-- Global/Inherited button for shared apps (if enabled) -->
-  <div class="eav-grid-action-button icon"
+  <div
+    class="eav-grid-action-button icon"
     [tippy]="app.IsGlobal ? 'This app is global' : app.IsInherited ? 'This app is inherited' : ''"
     [tippyDisabled]="!app.IsGlobal && !app.IsInherited">
     @if (app.IsGlobal) {
@@ -12,13 +13,14 @@
   </div>
 
   <!-- Lightspeed button -->
-  <app-lightspeed-action [lightSpeedOwner]="app" [params]="params" [lightSpeed]="app.lightSpeed"></app-lightspeed-action>
-
+  <app-lightspeed-action
+    [lightSpeedOwner]="app"
+    [params]="params"
+    [lightSpeed]="app.lightSpeed"></app-lightspeed-action>
   <!-- More button -->
   <div class="eav-grid-action-button highlight" matRipple tippy="More" [matMenuTriggerFor]="menu">
     <mat-icon>more_horiz</mat-icon>
   </div>
-</div>
 
 <!-- The menu which appears on more -->
 <mat-menu #menu="matMenu" class="grid-more-menu">

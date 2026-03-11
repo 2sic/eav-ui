@@ -3,14 +3,14 @@ export interface AgBoolCellIconSetting {
   tooltip: string;
   icon: string;
   url?: string;
-  getUrl?: (data: any) => string;
+  getUrl?: (data: unknown) => string;
 }
 
 export interface AgBoolCellIconSettings {
   states: Record<'true' | 'false' | string, AgBoolCellIconSetting>;
 }
 
-export interface AgBoolCellIconsParams<T = any> {
+export interface AgBoolCellIconsParams<T = unknown> {
   settings(data: T): AgBoolCellIconSettings;
 }
 

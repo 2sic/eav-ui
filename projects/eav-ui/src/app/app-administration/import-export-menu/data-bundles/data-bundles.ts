@@ -26,7 +26,6 @@ import { ItemIdHelper } from '../../../shared/models/item-id-helper';
 import { SxcGridModule } from '../../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../../../shared/routing/dialog-routing.service';
 import { DataBundleActionsComponent } from './data-bundles-actions/data-bundles-actions';
-import { DataBundlesActionsParams } from './data-bundles-actions/data-bundles-actions.models';
 import { DataBundlesQueryService } from './data-bundles-query.service';
 import { DataBundlesService } from './data-bundles.service';
 
@@ -225,7 +224,7 @@ export class DataBundlesComponent {
   }
 
   // Open Edit Dialog
-  editItem(item?: ContentItem) {
+  editItem(item?: { Id: number }) {
     const form: EditForm = {
       items: [
         item == null
@@ -238,12 +237,12 @@ export class DataBundlesComponent {
   }
 
   // Export Data to Download Json File
-  #export(item: ContentItem) {
+  #export(item: { Guid: string }) {
     this.#dataBundlesService.exportDataBundle(item.Guid);
   }
 
   // Save State wit Fetch
-  async #saveState(item: ContentItem) {
+  async #saveState(item: { Guid: string }) {
     this.snackBar.open('Save Bundle State...');
     try {
       const status = await this.#dataBundlesService.saveDataBundlesFetch(item.Guid);
@@ -258,7 +257,7 @@ export class DataBundlesComponent {
   }
 
   // Restore State
-  #restoreState(item: ContentItem) {
+  #restoreState(item: { FileName: string }) {
     this.snackBar.open('Restore Bundle State...');
     this.#dataBundlesService.restoreDataBundles(item.FileName).subscribe({
       next: _ => this.snackBar.open('Reset worked! Since this is a complex operation, please restart the Website to ensure all caches are correct', null, { duration: 30000 }),
@@ -305,7 +304,7 @@ export class DataBundlesComponent {
                 case 'restoreState': this.#restoreState(item); break;
               }
             }
-          } satisfies DataBundlesActionsParams,
+          } satisfies DataBundleActionsComponent['params'],
         },
       ],
     };

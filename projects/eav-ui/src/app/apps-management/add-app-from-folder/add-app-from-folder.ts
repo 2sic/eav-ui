@@ -28,7 +28,7 @@ import { CheckboxCellParams } from './checkbox-cell/checkbox-cell.model';
     FeatureInfoBoxComponent,
     SxcGridModule,
     DialogHeaderComponent
-]
+  ]
 })
 export class AddAppFromFolderComponent {
   @HostBinding('className') hostClass = 'dialog-component';
@@ -90,13 +90,10 @@ export class AddAppFromFolderComponent {
           cellClass: 'no-outline',
           sortable: true,
           cellRenderer: CheckboxCellComponent,
-          cellRendererParams: (() => {
-            const params: CheckboxCellParams = {
-              isDisabled: !this.#isAddFromFolderEnabled(),
-              onChange: (app, enabled) => this.onChange(app, enabled),
-            };
-            return params;
-          }),
+          cellRendererParams: {
+            isDisabled: !this.#isAddFromFolderEnabled(),
+            onChange: (app, enabled) => this.onChange(app, enabled),
+          } satisfies CheckboxCellParams,
         },
         {
           ...ColumnDefinitions.ItemsText,

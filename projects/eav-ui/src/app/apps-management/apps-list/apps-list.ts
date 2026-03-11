@@ -30,7 +30,7 @@ import { Context } from '../../shared/services/context';
 import { App } from '../models/app.model';
 import { AppsListService } from '../services/apps-list.service';
 import { AppListCodeErrorIcons, AppListShowIcons } from './app-list-grid-config';
-import { AppsListActions } from './apps-list-actions/apps-list-actions';
+import { AppsListActionsComponent } from './apps-list-actions/apps-list-actions';
 
 @Component({
   selector: 'app-apps-list',
@@ -232,23 +232,27 @@ export class AppsListComponent implements OnInit {
           headerName: 'Code',
           filter: BooleanFilterComponent,
           cellRenderer: AgBoolIconRenderer,
-          cellRendererParams: (() => (
-            { settings: () => AppListCodeErrorIcons } as AgBoolCellIconsParams<App>
-          ))(),
+          cellRendererParams: {
+            settings: () => AppListCodeErrorIcons,
+          } satisfies AgBoolCellIconsParams<App>,
         },
         {
           ...ColumnDefinitions.ActionsPinnedRight3,
-          cellRenderer: AppsListActions,
+          cellRenderer: AppsListActionsComponent,
           cellRendererParams: {
             lightSpeedLink: (app: App) => this.#getLightSpeedLink(app),
             openLightspeedFeatureInfo: () => this.openLightSpeedFeatInfo(),
             do: (verb, app) => {
               switch (verb) {
-                case 'deleteApp': this.#deleteApp(app); break;
-                case 'flushCache': this.#flushApp(app); break;
+                case 'deleteApp':
+                  this.#deleteApp(app);
+                  break;
+                case 'flushCache':
+                  this.#flushApp(app);
+                  break;
               }
-            }
-          } satisfies AppsListActions['params'],
+            },
+          } satisfies AppsListActionsComponent['params'],
         },
       ],
     };

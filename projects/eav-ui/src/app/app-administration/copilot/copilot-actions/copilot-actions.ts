@@ -15,23 +15,3 @@ import { DataCopilotConfiguration } from '../copilot-generator';
   ],
 })
 export class CopilotActionsComponent extends AgGridActionsBaseComponent<DataCopilotConfiguration, 'generate' | 'delete'> {}
-
-// old example for @2rb
-
-// export class CopilotActionsComponent implements ICellRendererAngularComp {
-//   item: any;
-//   private params: ICellRendererParams & CopilotActionsParams;
-
-//   agInit(params: ICellRendererParams & CopilotActionsParams): void {
-//     this.params = params;
-//     this.item = params.data;
-//   }
-
-//   refresh(params?: any): boolean {
-//     return true;
-//   }
-
-//   do(verb: CopilotActionsType) {
-//     this.params.do(verb, this.item);
-//   }
-// }

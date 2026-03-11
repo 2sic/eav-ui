@@ -1,17 +1,17 @@
 <div class="icon-container">
-  @if (data.url) {
-    <a [href]="data.url" target="_blank">
+  @if (cellData.url) {
+    <a [href]="cellData.url" target="_blank">
       <ng-container *ngTemplateOutlet="showIcon"></ng-container>
     </a>
   } @else {
-    <div class="icon-cell icon" [ngClass]="{'clickable': data.clickable }" [tippy]="data.tooltip">
-      <mat-icon>{{ data.icon }}</mat-icon>
+    <div class="icon-cell icon" [ngClass]="{'clickable': cellData.clickable }" [tippy]="cellData.tooltip">
+      <mat-icon>{{ cellData.icon }}</mat-icon>
     </div>
   }
 </div>
 
 <ng-template #showIcon>
-  <div class="icon-cell icon" [ngClass]="{'clickable': data.clickable }" [tippy]="data.tooltip">
-    <mat-icon>{{ data.icon }}</mat-icon>
+  <div class="icon-cell icon" [ngClass]="{'clickable': cellData.clickable }" [tippy]="cellData.tooltip">
+    <mat-icon>{{ cellData.icon }}</mat-icon>
   </div>
 </ng-template>

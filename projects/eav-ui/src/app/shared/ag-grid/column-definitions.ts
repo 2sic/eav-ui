@@ -140,9 +140,9 @@ export class ColumnDefinitions {
     width: 80,
     cellClass: 'no-outline',
     cellRenderer: TrueFalseComponent,
-    cellRendererParams: (() => ({
+    cellRendererParams: {
       reverse: false,
-    } satisfies TrueFalseParams))(),
+    } satisfies TrueFalseParams,
   }
 
   /**

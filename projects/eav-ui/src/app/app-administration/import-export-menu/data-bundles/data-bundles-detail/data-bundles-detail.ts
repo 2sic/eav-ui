@@ -17,16 +17,16 @@ import { DataBundlesDetailActionsComponent } from './data-bundles-detail-actions
 import { DataBundlesDetailActionsParams } from './data-bundles-detail-actions/data-bundles-detail-actions.models';
 
 @Component({
-    selector: 'app-data-bundles-detail',
-    imports: [
+  selector: 'app-data-bundles-detail',
+  imports: [
     MatButtonModule,
     MatIconModule,
     SxcGridModule,
     TranslateModule,
     DialogHeaderComponent
-],
-    templateUrl: './data-bundles-detail.html',
-    styleUrl: './data-bundles-detail.scss'
+  ],
+  templateUrl: './data-bundles-detail.html',
+  styleUrl: './data-bundles-detail.scss'
 })
 export class DataBundlesDetailComponent {
 
@@ -83,16 +83,15 @@ export class DataBundlesDetailComponent {
         {
           ...ColumnDefinitions.ActionsPinnedRight3,
           cellRenderer: DataBundlesDetailActionsComponent,
-          cellRendererParams: (() => {
-            const params: DataBundlesDetailActionsParams = {
-              do: (verb, item) => {
-                switch (verb) {
-                  case 'delete': this.#deleteItem(item); break;
-                }
+          cellRendererParams: {
+            do: (verb, item) => {
+              switch (verb) {
+                case 'delete':
+                  this.#deleteItem(item);
+                  break;
               }
-            } satisfies DataBundlesDetailActionsParams;
-            return params;
-          })(),
+            },
+          } satisfies DataBundlesDetailActionsParams,
         },
       ],
     };

@@ -1,29 +1,24 @@
-import { ICellRendererAngularComp } from '@ag-grid-community/angular';
-import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { TrueFalseParams } from './true-false.models';
+import { AgGridCellRendererBaseComponent } from '../../../shared/ag-grid/ag-grid-cell-renderer-base';
 
 @Component({
-    selector: 'app-rest-api-true-false',
-    templateUrl: './true-false.html',
-    imports: [MatIconModule]
+  selector: 'app-rest-api-true-false',
+  templateUrl: './true-false.html',
+  imports: [MatIconModule]
 })
-export class TrueFalseComponent implements ICellRendererAngularComp {
-  icon: string;
+export class TrueFalseComponent
+  extends AgGridCellRendererBaseComponent<unknown, boolean, TrueFalseParams> {
 
-  private trueIcon = 'check_circle';
-  private falseIcon = 'circle';
+  get trueIcon(): string { return this.params.trueIcon ?? 'check_circle'; }
+  get falseIcon(): string { return this.params.falseIcon ?? 'circle'; }
+  get normalizedValue(): boolean { return this.params.reverse ? !this.value : this.value; }
+  get icon(): string { return this.normalizedValue ? this.trueIcon : this.falseIcon; }
 
-  agInit(params: ICellRendererParams & TrueFalseParams): void {
-    let value: boolean = params.value;
-    if (params.reverse) { value = !value; }
-    if (params.trueIcon) { this.trueIcon = params.trueIcon; }
-    if (params.falseIcon) { this.falseIcon = params.falseIcon; }
-    this.icon = value ? this.trueIcon : this.falseIcon;
-  }
+}
 
-  refresh(params?: any): boolean {
-    return true;
-  }
+export interface TrueFalseParams {
+  reverse?: boolean;
+  trueIcon?: string;
+  falseIcon?: string;
 }

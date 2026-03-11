@@ -1,7 +1,8 @@
 import { ContentItem } from '../models/content-item.model';
 
-export type ContentItemType = 'export' | 'delete';
+export type ContentItemsActionVerb = 'clone' | 'export' | 'delete';
+
 export interface ContentItemsActionsParams {
-  do(verb: ContentItemType, item: ContentItem): void;
-  urlTo(verb: ContentItemType, item: ContentItem): string;
+  do(verb: ContentItemsActionVerb, item: ContentItem): void;
+  urlTo(verb: ContentItemsActionVerb, item: ContentItem): string;
 }

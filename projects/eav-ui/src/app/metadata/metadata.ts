@@ -55,7 +55,7 @@ import { MetadataItem, MetadataRecommendation } from './models/metadata.model';
     SafeHtmlPipe,
     GridWithHelpComponent,
     DialogHeaderComponent,
-]
+  ]
 })
 export class MetadataComponent implements OnInit {
 
@@ -294,9 +294,15 @@ export class MetadataComponent implements OnInit {
         {
           ...ColumnDefinitions.ActionsPinnedRight1,
           cellRenderer: MetadataActionsComponent,
-          cellRendererParams: (() => ({
-            onDelete: (metadata) => this.#deleteMetadata(metadata),
-          } satisfies MetadataActionsParams))(),
+          cellRendererParams: {
+            do: (verb, metadata) => {
+              switch (verb) {
+                case 'delete':
+                  this.#deleteMetadata(metadata);
+                  break;
+              }
+            },
+          } satisfies MetadataActionsParams,
         },
       ],
     };

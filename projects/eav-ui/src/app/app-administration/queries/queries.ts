@@ -30,7 +30,7 @@ import { PipelinesService } from '../services/pipelines.service';
 import { ConfirmDeleteDialogComponent } from '../sub-dialogs/confirm-delete-dialog/confirm-delete-dialog';
 import { ConfirmDeleteDialogData } from '../sub-dialogs/confirm-delete-dialog/confirm-delete-dialog.models';
 import { QueriesActionsComponent } from './queries-actions/queries-actions';
-import { QueriesActionsParams, QueryActions } from './queries-actions/queries-actions-models';
+import { QueryActions } from './queries-actions/queries-actions-models';
 
 const logSpecs = {
   all: false,
@@ -230,24 +230,20 @@ export class QueriesComponent implements OnInit {
         {
           ...ColumnDefinitions.ActionsPinnedRight4,
           cellRenderer: QueriesActionsComponent,
-          cellRendererParams: ({
+          cellRendererParams: {
             getEnablePermissions: () => this.enablePermissions,
             do: (action, query) => {
               switch (action) {
+                case QueryActions.Edit: return window.open(this.#urlToEditOrNew(query), '_self');
+                case QueryActions.Metadata: return window.open(this.#urlToOpenMetadata(query), '_self');
+                case QueryActions.Rest: return window.open(this.#urlToRestApi(query), '_self');
+                case QueryActions.Permissions: return window.open(this.#urlToPermissions(query), '_self');
                 case QueryActions.Clone: return this.cloneQuery(query);
                 case QueryActions.Export: return this.exportQuery(query);
                 case QueryActions.Delete: return this.deleteQuery(query);
               }
             },
-            urlTo: (action, query) => {
-              switch (action) {
-                case QueryActions.Edit: return this.#urlToEditOrNew(query);
-                case QueryActions.Metadata: return this.#urlToOpenMetadata(query);
-                case QueryActions.Rest: return this.#urlToRestApi(query);
-                case QueryActions.Permissions: return this.#urlToPermissions(query);
-              }
-            },
-          } satisfies QueriesActionsParams),
+          } satisfies QueriesActionsComponent['params'],
         },
       ],
     };

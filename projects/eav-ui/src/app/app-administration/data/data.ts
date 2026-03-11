@@ -287,9 +287,15 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
           ...ColumnDefinitions.Fields,
           field: 'Fields',
           cellRenderer: DataFieldsComponent,
-          cellRendererParams: ({
-            fieldsUrl: (contentType) => this.#urlTo(`fields/${contentType.NameId}`),
-          } satisfies DataFieldsComponent["params"]),
+          cellRendererParams: {
+            do: (verb, ct) => {
+              switch (verb) {
+                case 'openFields':
+                  this.#dialogRouter.navRelative([`fields/${ct.NameId}`]);
+                  break;
+              }
+            },
+          } satisfies DataFieldsComponent['params'],
         },
         {
           ...ColumnDefinitions.TextWideMin100,
