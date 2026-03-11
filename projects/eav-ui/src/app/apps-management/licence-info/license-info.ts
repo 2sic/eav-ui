@@ -266,12 +266,9 @@ export class LicenseInfoComponent implements OnInit {
           width: 200,
           cellClass: 'no-outline',
           cellRenderer: IdFieldComponent,
-          cellRendererParams: (() => {
-            const params: IdFieldParams<Feature> = {
-              tooltipGetter: (feature: Feature) => feature.nameId,
-            };
-            return params;
-          })(),
+          cellRendererParams: {
+            tooltipGetter: (feature: Feature) => feature.nameId,
+          } satisfies IdFieldParams<Feature>,
         },
         {
           ...ColumnDefinitions.TextWideMin100,
