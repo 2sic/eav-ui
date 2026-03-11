@@ -1,7 +1,6 @@
-import { ICellRendererAngularComp } from '@ag-grid-community/angular';
-import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
+import { AgGridCellRendererBaseComponent } from '../../shared/ag-grid/ag-grid-cell-renderer-base';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { Field } from '../../shared/fields/field.model';
 
@@ -14,25 +13,15 @@ import { Field } from '../../shared/fields/field.model';
     TippyDirective,
   ]
 })
-export class ContentTypeFieldsSpecialComponent implements ICellRendererAngularComp {
-  hasFormulas: boolean;
-  isEphemeral: boolean;
-  isHidden: boolean;
-  disableTranslation: boolean;
-  disabled: boolean;
-  required: boolean;
+export class ContentTypeFieldsSpecialComponent
+  extends AgGridCellRendererBaseComponent<Field, unknown> {
 
-  agInit(params: ICellRendererParams) {
-    const field: Field = params.data;
-    this.hasFormulas = field.HasFormulas;
-    this.isEphemeral = field.IsEphemeral;
-    this.isHidden = !field.Metadata.All?.VisibleInEditUI;
-    this.disableTranslation = field.Metadata.All?.DisableTranslation || false;
-    this.disabled = field.Metadata.All?.Disabled || false;
-    this.required = field.Metadata.All?.Required || false;
-  }
+  get field(): Field { return this.data; }
+  get hasFormulas(): boolean { return this.field.HasFormulas; }
+  get isEphemeral(): boolean { return this.field.IsEphemeral; }
+  get isHidden(): boolean { return !this.field.Metadata.All?.VisibleInEditUI; }
+  get disableTranslation(): boolean { return this.field.Metadata.All?.DisableTranslation ?? false; }
+  get disabled(): boolean { return this.field.Metadata.All?.Disabled ?? false; }
+  get required(): boolean { return this.field.Metadata.All?.Required ?? false; }
 
-  refresh(params?: any): boolean {
-    return true;
-  }
 }
