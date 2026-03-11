@@ -1,15 +1,18 @@
-import { ICellRendererAngularComp } from '@ag-grid-community/angular';
-import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component, inject } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 import { Feature } from '../../../features/models';
+import { AgGridCellRendererBaseComponent } from '../../../shared/ag-grid/ag-grid-cell-renderer-base';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { FeatureConfigEdit } from '../feature-config-edit';
 
-// TODO: 2rb show 2dm
+
+type FeaturesListRow = Feature & {
+  configurationContentType?: string;
+  configuration?: Record<string, unknown>;
+};
 
 @Component({
   selector: 'app-features-list-settings',
@@ -17,58 +20,37 @@ import { FeatureConfigEdit } from '../feature-config-edit';
   styleUrls: ['./features-list-enabled.scss'],
   imports: [MatIconModule, MatBadgeModule, MatRippleModule, TippyDirective]
 })
-export class FeaturesListEnabledComponent implements ICellRendererAngularComp {
-  router = inject(Router);
-  configurationContentType: string | undefined;
-  contentType: Feature | undefined;
-  badgeValue: number
-  configurationData: Record<string, unknown>; // TYPE
+export class FeaturesListEnabledComponent
+  extends AgGridCellRendererBaseComponent<FeaturesListRow, boolean, FeaturesListEnabledParams> {
 
-  public params: {
-    /** Parent helper to build URL to the settings dialog */
-    getSettingsUrl(contentType: Feature, data: Record<string, unknown>): string;
-  };
+  private readonly router = inject(Router);
 
-  value: boolean;
+  get configurationContentType(): string | undefined { return this.data?.configurationContentType; }
 
-  agInit(params: ICellRendererParams & FeaturesListEnabledComponent["params"]): void {
-    this.params = params;
-    this.value = params.value;
-    this.configurationContentType = params.data.configurationContentType;
-    this.contentType = params.data;
+  get contentType(): Feature { return this.data; }
 
-    this.configurationData = params.data?.configuration;
-    this.badgeValue = this.configurationData && Object.keys(this.configurationData).length > 0 ? 1 : 0;
-  }
+  get configurationData(): Record<string, unknown> { return this.data?.configuration ?? {}; }
 
-  refresh(params?: any): boolean {
-    return true;
-  }
+  get badgeValue(): number { return Object.keys(this.configurationData).length > 0 ? 1 : 0; }
 
-  openSettings() {
+  openSettings(): void {
     const data: FeatureConfigEdit = {
-      // The guid, just for the round-trip so we know what to update after dialog close
       guid: this.contentType.guid,
-      // Default / fallback, in case no configuration is set
       enabled: this.contentType.enabledInConfiguration,
-      ...(this.configurationData ?? {}),
+      ...this.configurationData,
     };
 
-    // TODO: All this custom URL handling looks wrong, should probably be fixed
-
-    // Raw URL string, e.g. '#/2/v2/381/...'
     const rawUrl = this.params.getSettingsUrl(this.contentType, data);
-
-    // Remove leading '#' or '/' to clean the URL string
     const normalizedUrl = rawUrl.startsWith('#') || rawUrl.startsWith('/')
       ? rawUrl.substring(1)
       : rawUrl;
-
-    // Convert the cleaned URL string into individual route segments
     const routeSegments = normalizedUrl.split('/');
 
-    // Use Angular router to navigate to the route segments with custom state
     this.router.navigate(routeSegments);
   }
 }
 
+export interface FeaturesListEnabledParams {
+  /** Parent helper to build URL to the settings dialog */
+  getSettingsUrl(contentType: Feature, data: Record<string, unknown>): string;
+}
