@@ -232,9 +232,9 @@ export class AppsListComponent implements OnInit {
           headerName: 'Code',
           filter: BooleanFilterComponent,
           cellRenderer: AgBoolIconRenderer,
-          cellRendererParams: (() => (
-            { settings: () => AppListCodeErrorIcons } as AgBoolCellIconsParams<App>
-          ))(),
+          cellRendererParams: {
+            settings: () => AppListCodeErrorIcons,
+          } satisfies AgBoolCellIconsParams<App>,
         },
         {
           ...ColumnDefinitions.ActionsPinnedRight3,
