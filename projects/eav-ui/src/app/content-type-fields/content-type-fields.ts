@@ -332,9 +332,9 @@ export class ContentTypeFieldsComponent implements OnInit {
           width: 18,
           cellClass: 'no-select no-padding no-outline'.split(' '),
           cellRenderer: ContentTypeFieldsDragComponent,
-          cellRendererParams: (() => ({
+          cellRendererParams: {
             isReordering: () => this.isReordering(),
-          } satisfies ContentTypeFieldsDragParams))(),
+          } satisfies ContentTypeFieldsDragParams,
         },
         {
           field: 'Title',
