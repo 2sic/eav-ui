@@ -13,11 +13,11 @@ import { ColumnDefinitions } from '../../../shared/ag-grid/column-definitions';
 import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';
 import { SxcGridModule } from '../../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../../../shared/routing/dialog-routing.service';
+import { ClipboardService } from '../../../shared/services/clipboard.service';
 import { ViewsService } from '../../services';
 import { AnalyzeSettingsService } from '../../services/analyze-settings.service';
 import { AnalyzeSettingsKeyComponent } from './analyze-settings-key/analyze-settings-key';
 import { AnalyzeSettingsTotalResultsComponent } from './analyze-settings-total-results/analyze-settings-total-results';
-import { AnalyzeSettingsTotalResultsParams } from './analyze-settings-total-results/analyze-settings-total-results.models';
 import { AnalyzeSettingsValueComponent } from './analyze-settings-value/analyze-settings-value';
 import { AnalyzeParts } from './analyze-settings.models';
 
@@ -42,12 +42,13 @@ export class AnalyzeSettingsComponent implements OnInit {
   #viewsSvc = transient(ViewsService);
   #analyzeSettingsSvc = transient(AnalyzeSettingsService);
   #dialogRouter = transient(DialogRoutingService);
+  #clipboard = transient(ClipboardService);
 
   part: Of<typeof AnalyzeParts> = this.#dialogRouter.getParam('part') as Of<typeof AnalyzeParts>;
 
   constructor(
     private dialog: MatDialogRef<AnalyzeSettingsComponent>,
-  ) {}
+  ) { }
 
   selectedView = signal<string>(undefined);
   views = this.#viewsSvc.getAllOnce().value;
@@ -89,12 +90,26 @@ export class AnalyzeSettingsComponent implements OnInit {
           headerName: 'Key',
           field: 'Path',
           cellRenderer: AnalyzeSettingsKeyComponent,
+          cellRendererParams: {
+            do: (verb, row) => {
+              switch (verb) {
+                case 'copy':return this.#clipboard.copyToClipboard(row.Path);
+              }
+            },
+          } satisfies AnalyzeSettingsKeyComponent['params'],
         },
         {
           ...ColumnDefinitions.TextWideActionClass,
           headerName: 'Value',
-          field: '_value',
+          field: 'value',
           cellRenderer: AnalyzeSettingsValueComponent,
+          cellRendererParams: {
+            do: (verb, stackItem) => {
+              switch (verb) {
+                case 'copy': return this.#clipboard.copyToClipboard(stackItem._value ?? '');
+              }
+            },
+          } satisfies AnalyzeSettingsValueComponent['params'],
         },
         {
           field: 'Source',
@@ -108,14 +123,13 @@ export class AnalyzeSettingsComponent implements OnInit {
           cellClass: 'no-outline',
 
           cellRenderer: AnalyzeSettingsTotalResultsComponent,
-          cellRendererParams: (() => {
-            const params: AnalyzeSettingsTotalResultsParams = {
-              openDetails: (stackItem) => {
-                this.#dialogRouter.navRelative([`details/${this.selectedView()}/${stackItem.Path}`]);
-              },
-            };
-            return params;
-          })(),
+          cellRendererParams: {
+            do: (verb, stackItem) => {
+              switch (verb) {
+                case 'openDetails': return this.#dialogRouter.navRelative([`details/${this.selectedView()}/${stackItem.Path}`]);
+              }
+            },
+          } satisfies AnalyzeSettingsTotalResultsComponent['params'],
         },
 
       ],

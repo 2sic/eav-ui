@@ -43,6 +43,7 @@ import { ContentItemsActionsComponent } from './content-items-actions/content-it
 import { ContentItemsActionsParams } from './content-items-actions/content-items-actions.models';
 import { ContentItemsEntityComponent } from './content-items-entity/content-items-entity';
 import { ContentItemsStatusComponent } from './content-items-status/content-items-status';
+import { ContentItemsStatusParams } from './content-items-status/content-items-status.models';
 import { buildFilterModel } from './content-items.helpers';
 import { CreateMetadataDialogComponent } from './create-metadata-dialog/create-metadata-dialog';
 import { MetadataInfo } from './create-metadata-dialog/create-metadata-dialog.models';
@@ -235,6 +236,9 @@ export class ContentItemsComponent implements OnInit {
     );
   }
 
+  // Note: the urlToRecycleBin() is related to a bug in the dialog-entry
+  // #BugDialogNotAlwaysClosing https://github.com/2sic/2sxc/issues/3738
+
   // Returns the URL to the recycle bin
   urlToRecycleBin() {
     return `#/${new RouteLinkHelper().routeTo(this.#context, `app/data-${GoToRecycleBin.route}`)}`;
@@ -339,9 +343,9 @@ export class ContentItemsComponent implements OnInit {
           return published;
         },
         cellRenderer: ContentItemsStatusComponent,
-        cellRendererParams: (() => ({
+        cellRendererParams: {
           urlTo: (verb, item) => this.#linkToMetadata(item),
-        } satisfies ContentItemsStatusComponent['params']))(),
+        } satisfies ContentItemsStatusParams,
       },
       {
         ...ColumnDefinitions.TextWidePrimary,
@@ -360,7 +364,7 @@ export class ContentItemsComponent implements OnInit {
         sortable: true,
         filter: 'agTextColumnFilter',
 
-        valueGetter: (p) => 
+        valueGetter: (p) =>
           `${p.data._Used} / ${p.data._Uses}`,
 
         cellRenderer: (p: { data: ContentItem }) => {
@@ -373,18 +377,27 @@ export class ContentItemsComponent implements OnInit {
       {
         ...ColumnDefinitions.ActionsPinnedRight3,
         cellRenderer: ContentItemsActionsComponent,
-        cellRendererParams: (() => {
-          const params: ContentItemsActionsParams = {
-            urlTo: (verb, item) => this.#urlToClone(item),
-            do: (verb, item) => {
-              switch (verb) {
-                case 'export': this.#export(item); break;
-                case 'delete': this.#delete(item); break;
-              }
+        cellRendererParams: {
+          do: (verb, item) => {
+            switch (verb) {
+              case 'clone':
+                window.location.href = this.#urlToClone(item);
+                break;
+              case 'export':
+                this.#export(item);
+                break;
+              case 'delete':
+                this.#delete(item);
+                break;
             }
-          } satisfies ContentItemsActionsParams;
-          return params;
-        })(),
+          },
+          urlTo: (verb, item) => {
+            switch (verb) {
+              case 'clone': return this.#urlToClone(item);
+              default: return '';
+            }
+          },
+        } satisfies ContentItemsActionsParams,
       },
     ];
     for (const column of columns) {

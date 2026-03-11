@@ -1,10 +1,9 @@
-import { ICellRendererAngularComp } from '@ag-grid-community/angular';
-import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { AgGridActionsBaseComponent } from '../../shared/ag-grid/ag-grid-actions-base';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { DataTypeCatalog } from '../../shared/fields/data-type-catalog';
 import { Field } from '../../shared/fields/field.model';
@@ -12,51 +11,56 @@ import { InputTypeCatalog } from '../../shared/fields/input-type-catalog';
 import { ContentTypeFieldsActions, ContentTypeFieldsActionsParams } from './content-type-fields-actions.models';
 
 @Component({
-    selector: 'app-content-type-fields-actions',
-    templateUrl: './content-type-fields-actions.html',
-    styleUrls: ['./content-type-fields-actions.scss'],
-    imports: [
-        MatRippleModule,
-        MatIconModule,
-        MatBadgeModule,
-        MatMenuModule,
-        TippyDirective,
-    ]
+  selector: 'app-content-type-fields-actions',
+  templateUrl: './content-type-fields-actions.html',
+  styleUrls: ['./content-type-fields-actions.scss'],
+  imports: [
+    MatRippleModule,
+    MatIconModule,
+    MatBadgeModule,
+    MatMenuModule,
+    TippyDirective,
+  ]
 })
-export class ContentTypeFieldsActionsComponent implements ICellRendererAngularComp {
-  field: Field;
-  metadataCount: number;
-  enablePermissions: boolean;
-  enableMetadata: boolean;
+export class ContentTypeFieldsActionsComponent
+  extends AgGridActionsBaseComponent<Field, ContentTypeFieldsActions> {
 
-  enableImageConfig: boolean;
-  imgConfigCount: number;
-  private params: ICellRendererParams & ContentTypeFieldsActionsParams;
+  declare params: ContentTypeFieldsActionsParams;
 
+  get field(): Field {return this.data;}
 
-  agInit(params: ICellRendererParams & ContentTypeFieldsActionsParams): void {
-    this.params = params;
-    this.field = this.params.data;
-    const disableEdit = this.field.EditInfo.DisableEdit;
-
-    this.enablePermissions = !disableEdit && (this.field.InputType === InputTypeCatalog.StringWysiwyg || this.field.Type === DataTypeCatalog.Hyperlink);
-    this.enableMetadata = !this.field.EditInfo.DisableMetadata;
-    this.metadataCount = this.field.Metadata ? Object.keys(this.field.Metadata).filter(key => key !== 'merged').length : 0;
-
-    this.enableImageConfig = !disableEdit && this.field.imageConfiguration.isRecommended;
-    this.imgConfigCount = this.field.imageConfiguration.entityId ? 1 : 0;
+  get metadataCount(): number {
+    return this.field?.Metadata
+      ? Object.keys(this.field.Metadata).filter(key => key !== 'merged').length
+      : 0;
   }
+
+  get enablePermissions(): boolean {
+    const disableEdit = this.field?.EditInfo?.DisableEdit;
+    return !disableEdit
+      && (
+        this.field?.InputType === InputTypeCatalog.StringWysiwyg
+        || this.field?.Type === DataTypeCatalog.Hyperlink
+      );
+  }
+
+  get enableMetadata(): boolean {return !this.field?.EditInfo?.DisableMetadata;}
+
+  get enableImageConfig(): boolean {return !this.field?.EditInfo?.DisableEdit && !!this.field?.imageConfiguration?.isRecommended;}
+
+  get imgConfigCount(): number {return this.field?.imageConfiguration?.entityId ? 1 : 0;}
 
   highlightOrDisabled(toggle: boolean): string {
     return toggle ? 'highlight' : 'disabled';
   }
 
-  // #region Sharing Info for better icons #SharedFieldDefinition
-
   shareText(): string {
     const clickToConfigure = 'click to configure sharing';
-    const ss = this.field.SysSettings;
-    if (!ss) return clickToConfigure;
+    const ss = this.field?.SysSettings;
+
+    if (!ss) 
+      return clickToConfigure;
+
     return ss.Share
       ? 'shared enabled as ' + this.field.Guid
       : ss.InheritMetadataOf
@@ -65,19 +69,12 @@ export class ContentTypeFieldsActionsComponent implements ICellRendererAngularCo
   }
 
   shareOrInheritIcon(): string {
-    const ss = this.field.SysSettings;
-    if (!ss) return '';
+    const ss = this.field?.SysSettings;
+    if (!ss) 
+      return '';
+    
     return ss.Share
       ? 'share'
       : ss.InheritMetadataOf ? 'adjust' : '';
   }
-
-  refresh(params?: any): boolean {
-    return true;
-  }
-
-  do(verb: ContentTypeFieldsActions): void {
-    this.params.do(verb, this.field);
-  }
-
 }

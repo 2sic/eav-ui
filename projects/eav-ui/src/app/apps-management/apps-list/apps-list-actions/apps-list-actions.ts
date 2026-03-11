@@ -1,13 +1,11 @@
-import { ICellRendererAngularComp } from '@ag-grid-community/angular';
-import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { LightSpeedActions } from '../../../admin-shared/lightspeed-action/lightspeed-action';
+import { AgGridActionsBaseComponent } from '../../../shared/ag-grid/ag-grid-actions-base';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
-import { typeofSignal } from '../../../shared/signals/typeof-signal';
 import { App } from '../../models/app.model';
 
 @Component({
@@ -20,25 +18,18 @@ import { App } from '../../models/app.model';
     MatRippleModule,
     MatMenuModule,
     LightSpeedActions,
-  ]
+  ],
 })
-export class AppsListActions implements ICellRendererAngularComp {
-  app: App;
+export class AppsListActionsComponent extends AgGridActionsBaseComponent<App, AppsListActionsVerb> {
+  declare params: AppsListActionsParams;
 
-  public params: typeofSignal<LightSpeedActions['params']> & {
-    do(verb: 'deleteApp' | 'flushCache', app: App): void;
-  }
+  get app(): App { return this.data; }
+}
 
-  agInit(params: ICellRendererParams & AppsListActions['params']): void {
-    this.params = params;
-    this.app = params.data;
-  }
+export type AppsListActionsVerb = 'deleteApp' | 'flushCache';
 
-  refresh(params?: any): boolean {
-    return true;
-  }
-
-  do(verb: Parameters<typeof this.params.do>[0]): void {
-    this.params.do(verb, this.app);
-  }
+export interface AppsListActionsParams {
+  lightSpeedLink(app: App): string;
+  openLightspeedFeatureInfo(): void;
+  do(verb: AppsListActionsVerb, app: App): void;
 }

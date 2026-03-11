@@ -1,9 +1,10 @@
 <div class="actions-component">
   @if (enableCode) {
-    <div class="eav-grid-action-button highlight" matRipple tippy="Code" (click)="openCode()">
+    <div class="eav-grid-action-button highlight" matRipple tippy="Code" (click)="do('code')">
       <mat-icon>code</mat-icon>
     </div>
   }
+
   @if (!enableCode) {
     <div class="eav-grid-action-button disabled">
       <mat-icon>code</mat-icon>
@@ -17,7 +18,7 @@
 
 <mat-menu #menu="matMenu" class="grid-more-menu">
   <ng-template matMenuContent>
-    <button mat-menu-item (click)="openRestApi()">
+    <button mat-menu-item (click)="do('restApi')">
       <mat-icon svgIcon="code-curly"></mat-icon>
       <span>REST API</span>
     </button>

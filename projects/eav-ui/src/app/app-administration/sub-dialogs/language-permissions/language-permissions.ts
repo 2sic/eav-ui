@@ -15,7 +15,6 @@ import { DialogHeaderComponent } from "../../../shared/dialog-header/dialog-head
 import { SxcGridModule } from '../../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../../../shared/routing/dialog-routing.service';
 import { LanguagesPermissionsActionsComponent } from './languages-permissions-actions/languages-permissions-actions';
-import { LanguagesPermissionsActionsParams } from './languages-permissions-actions/languages-permissions-actions.models';
 
 @Component({
   selector: 'app-language-permissions',
@@ -27,7 +26,7 @@ import { LanguagesPermissionsActionsParams } from './languages-permissions-actio
     MatDialogActions,
     SxcGridModule,
     DialogHeaderComponent
-]
+  ]
 })
 export class LanguagePermissionsComponent implements OnInit {
   gridOptions: GridOptions = this.#buildGridOptions();
@@ -83,12 +82,11 @@ export class LanguagePermissionsComponent implements OnInit {
         {
           ...ColumnDefinitions.ActionsPinnedRight1,
           cellRenderer: LanguagesPermissionsActionsComponent,
-          cellRendererParams: (() => {
-            const params: LanguagesPermissionsActionsParams = {
-              onOpenPermissions: (lang) => this.openPermissions(lang),
-            };
-            return params;
-          })(),
+          cellRendererParams: {
+            do: (verb, lang) => {
+              switch (verb) { case 'openPermissions': return this.openPermissions(lang); }
+            },
+          } satisfies LanguagesPermissionsActionsComponent['params'],
         },
       ],
     };

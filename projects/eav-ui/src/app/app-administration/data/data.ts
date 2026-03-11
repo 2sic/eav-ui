@@ -271,17 +271,25 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
           field: 'Items',
           cellRenderer: DataItemsComponent,
           cellRendererParams: ({
-            addItemUrl: (ct) => this.#urlTo(`edit/${this.#routeAddItem(ct)}`),
-            itemsUrl: (ct) => this.#urlTo(`items/${ct.NameId}`),
-          } satisfies DataItemsComponent["params"]),
+            do: (verb, ct) => {
+              switch (verb) {
+                case 'openItems': return this.#dialogRouter.navRelative([`items/${ct.NameId}`]);
+                case 'addItem': return this.#dialogRouter.navRelative([`edit/${this.#routeAddItem(ct)}`]);
+              }
+            },
+          } satisfies DataItemsComponent['params']),
         },
         {
           ...ColumnDefinitions.Fields,
           field: 'Fields',
           cellRenderer: DataFieldsComponent,
-          cellRendererParams: ({
-            fieldsUrl: (contentType) => this.#urlTo(`fields/${contentType.NameId}`),
-          } satisfies DataFieldsComponent["params"]),
+          cellRendererParams: {
+            do: (verb, ct) => {
+              switch (verb) {
+                case 'openFields': return this.#dialogRouter.navRelative([`fields/${ct.NameId}`]);
+              }
+            },
+          } satisfies DataFieldsComponent['params'],
         },
         {
           ...ColumnDefinitions.TextWideMin100,
@@ -313,8 +321,8 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
             },
             do: (verb, ct) => {
               switch (verb) {
-                case 'typeExport': this.#exportType(ct); break;
-                case 'deleteContentType': this.#deleteContentType(ct); break;
+                case 'typeExport': return this.#exportType(ct);
+                case 'deleteContentType': return this.#deleteContentType(ct);
               }
             }
           } satisfies DataActionsComponent['params']),

@@ -172,6 +172,7 @@ export class AppExtensions implements OnInit {
         description: 'Select Extension folder from your computer to import.',
         upload$: (selectedFile: File) => this.#extensionsSvc.uploadExtensions(selectedFile)
       },
+      autoFocus: false,
     });
 
     // Refresh extensions list after dialog closes if installation was successful
@@ -237,7 +238,7 @@ export class AppExtensions implements OnInit {
     }
 
     const extension = event.data as Extension;
-    
+
     // If installed, open info dialog; otherwise open settings editor
     if (extension.configuration?.isInstalled) {
       this.#openInfo(extension);
@@ -338,12 +339,16 @@ export class AppExtensions implements OnInit {
         field: 'configuration.link',
         width: 125,
         cellRenderer: AppExtensionsLinkCell,
-        cellRendererParams: (params: { data: Extension }) => ({
-          mainLink: params.data?.configuration?.linkMain,
-          docsLink: params.data?.configuration?.linkDocs,
-          demosLink: params.data?.configuration?.linkDemo,
-          sourceCodeLink: params.data?.configuration?.linkSource,
-        }),
+        cellRendererParams: {
+          do: (verb, ext) => {
+            switch (verb) {
+              case 'openMain': return ext.configuration?.linkMain && window.open(ext.configuration.linkMain, '_blank', 'noopener');
+              case 'openDocs': return ext.configuration?.linkDocs && window.open(ext.configuration.linkDocs, '_blank', 'noopener');
+              case 'openDemo': return ext.configuration?.linkDemo && window.open(ext.configuration.linkDemo, '_blank', 'noopener');
+              case 'openSourceCode': return ext.configuration?.linkSource && window.open(ext.configuration.linkSource, '_blank', 'noopener');
+            }
+          },
+        } satisfies AppExtensionsLinkCell['params'],
       },
       {
         headerName: 'Actions',

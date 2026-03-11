@@ -32,7 +32,7 @@ import { PermissionsService } from './services/permissions.service';
     MatDialogActions,
     SxcGridModule,
     DialogHeaderComponent,
-]
+  ]
 })
 export class PermissionsComponent implements OnInit {
   gridOptions = this.buildGridOptions();
@@ -147,12 +147,15 @@ export class PermissionsComponent implements OnInit {
         {
           ...ColumnDefinitions.ActionsPinnedRight1,
           cellRenderer: PermissionsActionsComponent,
-          cellRendererParams: (() => {
-            const params: PermissionsActionsParams = {
-              onDelete: (permission) => this.#deletePermission(permission),
-            };
-            return params;
-          })(),
+          cellRendererParams: {
+            do: (verb, permission) => {
+              switch (verb) {
+                case 'delete':
+                  this.#deletePermission(permission);
+                  break;
+              }
+            },
+          } satisfies PermissionsActionsParams,
         },
       ],
     };

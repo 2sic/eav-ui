@@ -287,9 +287,9 @@ export class ViewsComponent implements OnInit {
             },
             do: (verb, view) => {
               switch (verb) {
-                case 'openCode': this.#openCode(view); break;
-                case 'exportView': this.#viewsSvc.export(view.Id); break;
-                case 'deleteView': this.#deleteView(view); break;
+                case 'openCode': return this.#openCode(view);
+                case 'exportView': return this.#viewsSvc.export(view.Id);
+                case 'deleteView': return this.#deleteView(view);
               }
             },
           } satisfies ViewsActionsComponent['params'],

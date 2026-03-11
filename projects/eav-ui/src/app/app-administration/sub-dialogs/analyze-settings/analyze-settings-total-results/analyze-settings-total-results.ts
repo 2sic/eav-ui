@@ -1,37 +1,21 @@
-import { ICellRendererAngularComp } from '@ag-grid-community/angular';
-import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
+import { AgGridActionsBaseComponent } from '../../../../shared/ag-grid/ag-grid-actions-base';
 import { SettingsStackItem } from '../analyze-settings.models';
-import { AnalyzeSettingsTotalResultsParams } from './analyze-settings-total-results.models';
 
 @Component({
-    selector: 'app-analyze-settings-total-results',
-    templateUrl: './analyze-settings-total-results.html',
-    styleUrls: ['./analyze-settings-total-results.scss'],
-    imports: [
-        MatIconModule,
-        MatRippleModule,
-    ]
+  selector: 'app-analyze-settings-total-results',
+  templateUrl: './analyze-settings-total-results.html',
+  styleUrls: ['./analyze-settings-total-results.scss'],
+  imports: [MatIconModule, MatRippleModule],
 })
-export class AnalyzeSettingsTotalResultsComponent implements ICellRendererAngularComp {
-  totalResults: number;
+export class AnalyzeSettingsTotalResultsComponent
+  extends AgGridActionsBaseComponent<SettingsStackItem, 'openDetails'> {
 
-  private stackItem: SettingsStackItem;
-  private params: ICellRendererParams & AnalyzeSettingsTotalResultsParams;
-
-  agInit(params: ICellRendererParams & AnalyzeSettingsTotalResultsParams): void {
-    this.totalResults = params.value;
-    this.params = params;
-    this.stackItem = this.params.data;
-  }
-
-  refresh(params?: any): boolean {
-    return true;
-  }
+  get totalResults(): number { return this.data?.TotalResults ?? 0; }
 
   openDetails(): void {
-    this.params.openDetails(this.stackItem);
+    this.do('openDetails');
   }
 }

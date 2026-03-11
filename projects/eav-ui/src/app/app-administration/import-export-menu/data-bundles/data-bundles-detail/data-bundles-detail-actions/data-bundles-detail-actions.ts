@@ -1,39 +1,24 @@
-import { ICellRendererAngularComp } from '@ag-grid-community/angular';
-import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { ContentItem } from 'projects/eav-ui/src/app/content-items/models/content-item.model';
+import { AgGridActionsBaseComponent } from 'projects/eav-ui/src/app/shared/ag-grid/ag-grid-actions-base';
 import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
 import { DataBundlesDetailActionsParams, DataBundlesType } from './data-bundles-detail-actions.models';
 
 @Component({
-    selector: 'app-data-bundle-actions',
-    templateUrl: './data-bundles-detail-actions.html',
-    imports: [
-        MatRippleModule,
-        MatIconModule,
-        MatMenuModule,
-        TippyDirective,
-    ]
+  selector: 'app-data-bundle-actions',
+  templateUrl: './data-bundles-detail-actions.html',
+  imports: [
+    MatRippleModule,
+    MatIconModule,
+    MatMenuModule,
+    TippyDirective,
+  ]
 })
-export class DataBundlesDetailActionsComponent implements ICellRendererAngularComp {
-  item: ContentItem;
+export class DataBundlesDetailActionsComponent
+  extends AgGridActionsBaseComponent<ContentItem, DataBundlesType, DataBundlesDetailActionsParams> {
 
-  private params: ICellRendererParams & DataBundlesDetailActionsParams;
-
-  agInit(params: ICellRendererParams & DataBundlesDetailActionsParams): void {
-    this.params = params;
-    this.item = params.data;
-  }
-
-  refresh(params?: any): boolean {
-    return true;
-  }
-
-
-  do(verb: DataBundlesType) {
-    this.params.do(verb, this.item);
-  }
+  get item(): ContentItem { return this.data; }
 }

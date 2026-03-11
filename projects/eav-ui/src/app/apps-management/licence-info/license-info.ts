@@ -36,7 +36,7 @@ import { FeatureConfigEdit } from './feature-config-edit';
 import { FeatureDetailsDialogComponent } from './feature-details-dialog/feature-details-dialog';
 import { FeatureDetailsDialogData } from './feature-details-dialog/feature-details-dialog.models';
 import { FeaturesListEnabledReasonComponent } from './features-list-enabled-reason/features-list-enabled-reason';
-import { FeaturesListEnabledComponent } from './features-list-enabled/features-list-enabled';
+import { FeaturesListEnabledComponent, FeaturesListEnabledParams } from './features-list-enabled/features-list-enabled';
 import { FeaturesStatusComponent } from './features-status/features-status';
 import { FeaturesStatusParams } from './features-status/features-status.models';
 import { LicensesOrderPipe } from './licenses-order.pipe';
@@ -183,9 +183,9 @@ export class LicenseInfoComponent implements OnInit {
     // Update the current filter value
     this.#currentFilter.set(filterValue);
 
-    if(!filterValue)
+    if (!filterValue)
       this.closeAllPanels();
-    
+
     // Apply the filter
     this.applyFilter();
   }
@@ -266,12 +266,9 @@ export class LicenseInfoComponent implements OnInit {
           width: 200,
           cellClass: 'no-outline',
           cellRenderer: IdFieldComponent,
-          cellRendererParams: (() => {
-            const params: IdFieldParams<Feature> = {
-              tooltipGetter: (feature: Feature) => feature.nameId,
-            };
-            return params;
-          })(),
+          cellRendererParams: {
+            tooltipGetter: (feature: Feature) => feature.nameId,
+          } satisfies IdFieldParams<Feature>,
         },
         {
           ...ColumnDefinitions.TextWideMin100,
@@ -291,9 +288,9 @@ export class LicenseInfoComponent implements OnInit {
           sortable: true,
           filter: BooleanFilterComponent,
           cellRenderer: FeaturesListEnabledComponent,
-          cellRendererParams: ({
+          cellRendererParams: {
             getSettingsUrl: (ct, data) => this.#urlTo(`edit/${this.#routeAddItem(ct, data)}`),
-          } satisfies FeaturesListEnabledComponent["params"]),
+          } satisfies FeaturesListEnabledParams,
         },
         {
           ...ColumnDefinitions.TextNarrow,

@@ -1,3 +1,3 @@
-export interface IdFieldParams<T = any> {
+export interface IdFieldParams<T = unknown> {
   tooltipGetter(data: T): string;
 }

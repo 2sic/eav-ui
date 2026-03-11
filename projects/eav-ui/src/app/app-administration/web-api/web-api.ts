@@ -18,7 +18,6 @@ import { DialogInNewWindowService } from '../../shared/routing/dialog-in-new-win
 import { WebApi } from '../models/web-api.model';
 import { DialogConfigAppService } from '../services/dialog-config-app.service';
 import { WebApiActionsComponent } from './web-api-actions/web-api-actions';
-import { WebApiActionsParams } from './web-api-actions/web-api-actions.models';
 
 @Component({
   selector: 'app-web-api',
@@ -127,10 +126,6 @@ export class WebApiComponent implements OnInit {
     });
   }
 
-  private enableCodeGetter() {
-    return this.enableCode;
-  }
-
   private openCode(api: WebApi) {
     this.#dialogInNewWindowSvc.openCodeFile(api.path, api.isShared);
   }
@@ -172,13 +167,14 @@ export class WebApiComponent implements OnInit {
         {
           ...ColumnDefinitions.ActionsPinnedRight6,
           cellRenderer: WebApiActionsComponent,
-          cellRendererParams: (() => {
-            const params: WebApiActionsParams = {
-              enableCodeGetter: () => this.enableCodeGetter(),
-              onOpenCode: (api) => this.openCode(api),
-            };
-            return params;
-          })(),
+          cellRendererParams: {
+            enableCode: this.enableCode,
+            do: (verb, data) => {
+              switch (verb) {
+                case 'code':return this.openCode(data);
+              }
+            },
+          } satisfies WebApiActionsComponent['params'],
         },
       ],
     };

@@ -1,21 +1,16 @@
-import { ICellRendererAngularComp } from '@ag-grid-community/angular';
-import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
+import { AgGridActionsBaseComponent } from '../../../shared/ag-grid/ag-grid-actions-base';
+import { View } from '../../models';
 
 @Component({
-    selector: 'app-views-show',
-    templateUrl: './views-show.html',
-    imports: [MatIconModule]
+  selector: 'app-views-show',
+  templateUrl: './views-show.html',
+  imports: [MatIconModule],
 })
-export class ViewsShowComponent implements ICellRendererAngularComp {
-  value: boolean;
-
-  agInit(params: ICellRendererParams) {
-    this.value = params.value;
-  }
-
-  refresh(params?: any): boolean {
-    return true;
+export class ViewsShowComponent extends AgGridActionsBaseComponent<View> {
+  get isVisible(): boolean {
+    // same meaning as your old valueGetter: !(p.data).IsHidden
+    return !this.data?.IsHidden;
   }
 }

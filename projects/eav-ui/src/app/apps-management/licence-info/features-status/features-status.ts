@@ -1,45 +1,32 @@
-import { ICellRendererAngularComp } from '@ag-grid-community/angular';
-import { ICellRendererParams } from '@ag-grid-community/core';
 import { NgClass } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { Feature } from '../../../features/models/feature.model';
+import { AgGridCellRendererBaseComponent } from '../../../shared/ag-grid/ag-grid-cell-renderer-base';
 import { IdFieldParams } from '../../../shared/components/id-field/id-field.models';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { FeaturesStatusParams } from './features-status.models';
 
 @Component({
-    selector: 'app-features-status',
-    templateUrl: './features-status.html',
-    styleUrls: ['./features-status.scss'],
-    imports: [
-        MatSlideToggleModule,
-        NgClass,
-        TippyDirective,
-    ]
+  selector: 'app-features-status',
+  templateUrl: './features-status.html',
+  styleUrls: ['./features-status.scss'],
+  imports: [
+    MatSlideToggleModule,
+    NgClass,
+    TippyDirective,
+  ]
 })
-export class FeaturesStatusComponent implements ICellRendererAngularComp {
-  value: boolean | null;
-  disabled: boolean;
-  tooltip: string;
+export class FeaturesStatusComponent
+  extends AgGridCellRendererBaseComponent<Feature, boolean | null, FeaturesStatusRendererParams> {
 
-  private params: ICellRendererParams & FeaturesStatusParams;
+  get disabled(): boolean { return this.params.isDisabled(this.data); }
 
-  agInit(params: ICellRendererParams & FeaturesStatusParams & IdFieldParams<Feature>): void {
-    this.params = params;
-    this.value = params.value;
-    this.disabled = params.isDisabled(params.data);
-    this.tooltip = params.tooltipGetter(params.data);
-  }
-
-  refresh(params: ICellRendererParams & FeaturesStatusParams): boolean {
-    this.disabled = this.params.isDisabled(this.params.data);
-    return true;
-  }
+  get tooltip(): string { return this.params.tooltipGetter(this.data); }
 
   toggle(): void {
-    const feature: Feature = this.params.data;
-    let nextValue: boolean;
+    let nextValue: boolean | null;
+
     switch (this.value) {
       case false:
         nextValue = null;
@@ -48,10 +35,14 @@ export class FeaturesStatusComponent implements ICellRendererAngularComp {
         nextValue = true;
         break;
       case true:
+      default:
         nextValue = false;
         break;
     }
+
     this.value = nextValue;
-    this.params.onToggle(feature, nextValue);
+    this.params.onToggle(this.data, nextValue);
   }
 }
+
+type FeaturesStatusRendererParams = FeaturesStatusParams & IdFieldParams<Feature>;

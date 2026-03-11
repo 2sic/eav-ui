@@ -1,25 +1,18 @@
-import { ICellRendererAngularComp } from '@ag-grid-community/angular';
-import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
+import { AgGridCellRendererBaseComponent } from '../../shared/ag-grid/ag-grid-cell-renderer-base';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { MetadataItem } from '../models/metadata.model';
 
 @Component({
-    selector: 'app-metadata-content-type',
-    templateUrl: './metadata-content-type.html',
-    styleUrls: ['./metadata-content-type.scss'],
-    imports: [TippyDirective,]
+  selector: 'app-metadata-content-type',
+  templateUrl: './metadata-content-type.html',
+  styleUrls: ['./metadata-content-type.scss'],
+  imports: [TippyDirective],
 })
-export class MetadataContentTypeComponent implements ICellRendererAngularComp {
-  value: string;
-  metadata: MetadataItem;
+export class MetadataContentTypeComponent
+  extends AgGridCellRendererBaseComponent<MetadataItem, string> {
 
-  agInit(params: ICellRendererParams) {
-    this.value = params.value;
-    this.metadata = params.data;
-  }
-
-  refresh(params?: any): boolean {
-    return true;
-  }
+  get description(): string { return this.data?._Type?.Description ?? ''; }
+  
+  get contentType(): string { return this.value ?? ''; }
 }

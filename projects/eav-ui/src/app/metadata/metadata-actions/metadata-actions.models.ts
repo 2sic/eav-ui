@@ -1,5 +1,7 @@
-import { MetadataItem } from '../models/metadata.model';
+import { MetadataItem } from "../models/metadata.model";
+
+export type MetadataActionsVerb = 'delete';
 
 export interface MetadataActionsParams {
-  onDelete(metadata: MetadataItem): void;
+  do(verb: MetadataActionsVerb, metadata: MetadataItem): void;
 }

@@ -28,7 +28,6 @@ import { ItemIdHelper } from '../shared/models/item-id-helper';
 import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
 import { ContentTypeFieldsActionsComponent } from './content-type-fields-actions/content-type-fields-actions';
-import { ContentTypeFieldsActionsParams } from './content-type-fields-actions/content-type-fields-actions.models';
 import { ContentTypeFieldsDragComponent, ContentTypeFieldsDragParams } from './content-type-fields-drag/content-type-fields-drag';
 import { ContentTypeFieldsSpecialComponent } from './content-type-fields-special/content-type-fields-special';
 import { ContentTypeFieldsTitleComponent } from './content-type-fields-title/content-type-fields-title';
@@ -52,7 +51,7 @@ import { ShareOrInheritDialogComponent } from './field-sharing-configure/field-s
     TranslateModule,
     GridWithHelpComponent,
     DialogHeaderComponent
-]
+  ]
 })
 export class ContentTypeFieldsComponent implements OnInit {
 
@@ -333,9 +332,9 @@ export class ContentTypeFieldsComponent implements OnInit {
           width: 18,
           cellClass: 'no-select no-padding no-outline'.split(' '),
           cellRenderer: ContentTypeFieldsDragComponent,
-          cellRendererParams: (() => ({
+          cellRendererParams: {
             isReordering: () => this.isReordering(),
-          } satisfies ContentTypeFieldsDragParams))(),
+          } satisfies ContentTypeFieldsDragParams,
         },
         {
           field: 'Title',
@@ -343,9 +342,9 @@ export class ContentTypeFieldsComponent implements OnInit {
           cellClass: 'secondary-action no-padding no-outline'.split(' '),
           valueGetter: (p: { data: Field }) => p.data.IsTitle,
           cellRenderer: ContentTypeFieldsTitleComponent,
-          cellRendererParams: (() => ({
+          cellRendererParams: {
             onSetTitle: (field) => this.#setTitle(field),
-          } satisfies ContentTypeFieldsTitleParams))(),
+          } satisfies ContentTypeFieldsTitleParams,
         },
         {
           ...ColumnDefinitions.TextWidePrimary,
@@ -406,18 +405,18 @@ export class ContentTypeFieldsComponent implements OnInit {
         {
           ...ColumnDefinitions.ActionsPinnedRight5,
           cellRenderer: ContentTypeFieldsActionsComponent,
-          cellRendererParams: (() => ({
+          cellRendererParams: {
             do: (verb, field) => {
               switch (verb) {
-                case 'rename': this.#rename(field); break;
-                case 'delete': this.#delete(field); break;
-                case 'permissions': this.#openPermissions(field); break;
-                case 'metadata': this.#openMetadata(field); break;
-                case 'shareOrInherit': this.#shareOrInherit(field); break;
-                case 'image': this.#openImageConfiguration(field); break;
+                case 'rename': return this.#rename(field);
+                case 'delete': return this.#delete(field); 
+                case 'permissions': return this.#openPermissions(field);
+                case 'metadata': return this.#openMetadata(field);
+                case 'shareOrInherit': return this.#shareOrInherit(field);
+                case 'image': return this.#openImageConfiguration(field);
               }
             }
-          } satisfies ContentTypeFieldsActionsParams))(),
+          } satisfies ContentTypeFieldsActionsComponent['params'],
         },
       ],
     };

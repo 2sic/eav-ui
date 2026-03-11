@@ -1,32 +1,23 @@
-import { ICellRendererAngularComp } from '@ag-grid-community/angular';
-import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
 import { MatRippleModule } from '@angular/material/core';
-import { transient } from '../../../../../../../core/transient';
+import { AgGridActionsBaseComponent } from '../../../../shared/ag-grid/ag-grid-actions-base';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
-import { ClipboardService } from '../../../../shared/services/clipboard.service';
+
+type AnalyzeSettingsRow = {
+  Path: string;
+};
 
 @Component({
-    selector: 'app-analyze-settings-key',
-    templateUrl: './analyze-settings-key.html',
-    styleUrls: ['./analyze-settings-key.scss'],
-    imports: [
-        MatRippleModule,
-        TippyDirective,
-    ]
+  selector: 'app-analyze-settings-key',
+  templateUrl: './analyze-settings-key.html',
+  styleUrls: ['./analyze-settings-key.scss'],
+  imports: [
+    MatRippleModule,
+    TippyDirective,
+  ],
 })
-export class AnalyzeSettingsKeyComponent implements ICellRendererAngularComp {
-  key: string;
+export class AnalyzeSettingsKeyComponent
+  extends AgGridActionsBaseComponent<AnalyzeSettingsRow, 'copy'> {
 
-  constructor() { }
-
-  protected clipboard = transient(ClipboardService);
-
-  agInit(params: ICellRendererParams) {
-    this.key = params.value;
-  }
-
-  refresh(params?: any): boolean {
-    return true;
-  }
+  get key(): string { return this.params?.value }
 }
