@@ -93,9 +93,7 @@ export class AnalyzeSettingsComponent implements OnInit {
           cellRendererParams: {
             do: (verb, row) => {
               switch (verb) {
-                case 'copy':
-                  this.#clipboard.copyToClipboard(row.Path);
-                  break;
+                case 'copy':return this.#clipboard.copyToClipboard(row.Path);
               }
             },
           } satisfies AnalyzeSettingsKeyComponent['params'],
@@ -108,9 +106,7 @@ export class AnalyzeSettingsComponent implements OnInit {
           cellRendererParams: {
             do: (verb, stackItem) => {
               switch (verb) {
-                case 'copy':
-                  this.#clipboard.copyToClipboard(stackItem._value ?? '');
-                  break;
+                case 'copy': return this.#clipboard.copyToClipboard(stackItem._value ?? '');
               }
             },
           } satisfies AnalyzeSettingsValueComponent['params'],
@@ -130,9 +126,7 @@ export class AnalyzeSettingsComponent implements OnInit {
           cellRendererParams: {
             do: (verb, stackItem) => {
               switch (verb) {
-                case 'openDetails':
-                  this.#dialogRouter.navRelative([`details/${this.selectedView()}/${stackItem.Path}`]);
-                  break;
+                case 'openDetails': return this.#dialogRouter.navRelative([`details/${this.selectedView()}/${stackItem.Path}`]);
               }
             },
           } satisfies AnalyzeSettingsTotalResultsComponent['params'],

@@ -393,10 +393,8 @@ export class ContentItemsComponent implements OnInit {
           },
           urlTo: (verb, item) => {
             switch (verb) {
-              case 'clone':
-                return this.#urlToClone(item);
-              default:
-                return '';
+              case 'clone': return this.#urlToClone(item);
+              default: return '';
             }
           },
         } satisfies ContentItemsActionsParams,

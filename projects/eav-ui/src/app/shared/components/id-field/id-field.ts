@@ -23,7 +23,9 @@ export class IdFieldComponent
   constructor(private snackBar: MatSnackBar) { super(); }
 
   get id(): number | string { return this.value; }
+
   get align(): 'start' | 'end' { return typeof this.id === 'number' ? 'end' : 'start'; }
+  
   get tooltip(): string { return this.params.tooltipGetter(this.data); }
 
   copy(): void {

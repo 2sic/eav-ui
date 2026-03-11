@@ -12,19 +12,11 @@ import { calculateViewType } from '../views.helpers';
 })
 export class ViewsTypeComponent extends AgGridActionsBaseComponent<View, never> {
 
-  get type() {
-    return this.data ? calculateViewType(this.data) : null;
-  }
+  get type() { return this.data ? calculateViewType(this.data) : null; }
 
-  get icon(): string {
-    return this.type?.icon ?? '';
-  }
+  get icon(): string { return this.type?.icon ?? ''; }
 
-  get label(): string {
-    return this.type?.value ?? '';
-  }
+  get label(): string { return this.type?.value ?? ''; }
 
-  get isShared(): boolean {
-    return !!this.data?.IsShared;
-  }
+  get isShared(): boolean { return !!this.data?.IsShared; }
 }

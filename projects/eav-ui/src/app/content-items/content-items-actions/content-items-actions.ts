@@ -21,13 +21,9 @@ export type ContentItemsActionVerb = 'clone' | 'export' | 'delete';
 export class ContentItemsActionsComponent
   extends AgGridActionsBaseComponent<ContentItem, ContentItemsActionVerb> {
 
-  get cloneUrl(): string {
-    return this.params.urlTo('clone', this.data);
-  }
+  get cloneUrl(): string { return this.params.urlTo('clone', this.data); }
 
-  get disableDelete(): boolean {
-    return !!this.data?._EditInfo?.DisableDelete;
-  }
+  get disableDelete(): boolean { return !!this.data?._EditInfo?.DisableDelete; }
 
   declare params: {
     do(verb: ContentItemsActionVerb, item: ContentItem): void;

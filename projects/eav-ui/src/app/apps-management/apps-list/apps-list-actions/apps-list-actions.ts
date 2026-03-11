@@ -23,9 +23,7 @@ import { App } from '../../models/app.model';
 export class AppsListActionsComponent extends AgGridActionsBaseComponent<App, AppsListActionsVerb> {
   declare params: AppsListActionsParams;
 
-  get app(): App {
-    return this.data;
-  }
+  get app(): App { return this.data; }
 }
 
 export type AppsListActionsVerb = 'deleteApp' | 'flushCache';

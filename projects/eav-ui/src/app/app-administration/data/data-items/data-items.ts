@@ -12,11 +12,7 @@ import { ContentType } from '../../models';
   imports: [MatRippleModule, MatIconModule, TippyDirective],
 })
 export class DataItemsComponent extends AgGridActionsBaseComponent<ContentType, 'addItem' | 'openItems'> {
-  get value(): number {
-    return (this.params?.value as number) ?? 0;
-  }
+  get value(): number { return (this.params?.value as number) ?? 0; }
 
-  get contentType(): ContentType {
-    return this.data;
-  }
+  get contentType(): ContentType { return this.data; }
 }

@@ -20,13 +20,9 @@ import { FeaturesStatusParams } from './features-status.models';
 export class FeaturesStatusComponent
   extends AgGridCellRendererBaseComponent<Feature, boolean | null, FeaturesStatusRendererParams> {
 
-  get disabled(): boolean {
-    return this.params.isDisabled(this.data);
-  }
+  get disabled(): boolean { return this.params.isDisabled(this.data); }
 
-  get tooltip(): string {
-    return this.params.tooltipGetter(this.data);
-  }
+  get tooltip(): string { return this.params.tooltipGetter(this.data); }
 
   toggle(): void {
     let nextValue: boolean | null;

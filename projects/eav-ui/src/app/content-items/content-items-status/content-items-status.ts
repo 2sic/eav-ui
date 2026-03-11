@@ -24,17 +24,11 @@ import { PubMeta } from '../pub-meta-filter/pub-meta-filter.model';
 export class ContentItemsStatusComponent
   extends AgGridCellRendererBaseComponent<ContentItem, PubMeta, ContentItemsStatusParams> {
 
-  get item(): ContentItem {
-    return this.data;
-  }
+  get item(): ContentItem { return this.data; }
 
-  get disableMetadata(): boolean {
-    return this.item._EditInfo.DisableMetadata;
-  }
+  get disableMetadata(): boolean { return this.item._EditInfo.DisableMetadata; }
 
-  get metadataCount(): number {
-    return this.item.Metadata?.length ?? 0;
-  }
+  get metadataCount(): number { return this.item.Metadata?.length ?? 0; }
 
   get metadataTooltip(): string {
     const metadataFor = this.item.For as EavForInAdminUi;

@@ -171,9 +171,7 @@ export class WebApiComponent implements OnInit {
             enableCode: this.enableCode,
             do: (verb, data) => {
               switch (verb) {
-                case 'code':
-                  this.openCode(data);
-                  break;
+                case 'code':return this.openCode(data);
               }
             },
           } satisfies WebApiActionsComponent['params'],

@@ -321,8 +321,8 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
             },
             do: (verb, ct) => {
               switch (verb) {
-                case 'typeExport': this.#exportType(ct); break;
-                case 'deleteContentType': this.#deleteContentType(ct); break;
+                case 'typeExport': return this.#exportType(ct);
+                case 'deleteContentType': return this.#deleteContentType(ct);
               }
             }
           } satisfies DataActionsComponent['params']),

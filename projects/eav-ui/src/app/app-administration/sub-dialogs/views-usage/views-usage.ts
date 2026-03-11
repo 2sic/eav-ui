@@ -69,10 +69,7 @@ export class ViewsUsageComponent {
     },
   ): void {
     switch (verb) {
-      case 'copy':
-        this.clipboard.copyToClipboard(String(data));
-        break;
-    }
+      case 'copy':return this.clipboard.copyToClipboard(String(data)); }
   }
 
   private buildGridOptions(): GridOptions {

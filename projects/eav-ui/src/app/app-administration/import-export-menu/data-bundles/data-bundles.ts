@@ -298,10 +298,10 @@ export class DataBundlesComponent {
           cellRendererParams: {
             do: (verb, item) => {
               switch (verb) {
-                case 'edit': this.editItem(item); break;
-                case 'download': this.#export(item); break;
-                case 'saveState': this.#saveState(item); break;
-                case 'restoreState': this.#restoreState(item); break;
+                case 'edit': return this.editItem(item);
+                case 'download': return this.#export(item);
+                case 'saveState': return this.#saveState(item);
+                case 'restoreState': return this.#restoreState(item);
               }
             }
           } satisfies DataBundleActionsComponent['params'],
