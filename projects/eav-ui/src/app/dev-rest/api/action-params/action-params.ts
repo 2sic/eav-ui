@@ -9,12 +9,12 @@ import { TrueFalseComponent } from '../true-false/true-false';
 import { TrueFalseParams } from '../true-false/true-false.models';
 
 @Component({
-    selector: 'app-dev-rest-api-action-params',
-    templateUrl: './action-params.html',
-    imports: [
-        MatIconModule,
-        SxcGridModule,
-    ]
+  selector: 'app-dev-rest-api-action-params',
+  templateUrl: './action-params.html',
+  imports: [
+    MatIconModule,
+    SxcGridModule,
+  ]
 })
 export class DevRestApiActionParamsComponent {
   data = input<WebApiAction>();
@@ -34,12 +34,9 @@ export class DevRestApiActionParamsComponent {
           cellClass: 'no-padding no-outline'.split(' '),
           valueGetter: (p: { data: WebApiActionParameters }) => p.data.isOptional,
           cellRenderer: TrueFalseComponent,
-          cellRendererParams: (() => {
-            const params: TrueFalseParams = {
-              reverse: false,
-            };
-            return params;
-          })(),
+          cellRendererParams: {
+            reverse: false,
+          } satisfies TrueFalseParams,
         },
         {
           field: 'Name',
