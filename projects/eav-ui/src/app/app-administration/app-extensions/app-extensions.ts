@@ -172,6 +172,7 @@ export class AppExtensions implements OnInit {
         description: 'Select Extension folder from your computer to import.',
         upload$: (selectedFile: File) => this.#extensionsSvc.uploadExtensions(selectedFile)
       },
+      autoFocus: false,
     });
 
     // Refresh extensions list after dialog closes if installation was successful
