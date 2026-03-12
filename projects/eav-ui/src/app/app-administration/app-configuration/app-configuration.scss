@@ -29,3 +29,15 @@ button.mat-mdc-button.mat-mdc-button-disabled * {
     text-align: left;
   }
 }
+
+:host ::ng-deep .eav-button__with-icon,
+:host ::ng-deep .eav-button__with-icon .mdc-button__label,
+:host ::ng-deep .eav-button__with-icon .mat-icon {
+  overflow: visible;
+}
+
+:host ::ng-deep .eav-button__with-icon .mat-badge-content {
+  color: white !important;
+  font-family: Roboto, "Helvetica Neue", sans-serif !important;
+  z-index: 2;
+}

@@ -18,6 +18,9 @@ export class MatBadgeIconDirective extends MatBadge implements OnInit {
 
     // Style the badge element as a flex container
     this.renderer.setStyle(badgeElement, 'display', 'flex');
+    this.renderer.setStyle(badgeElement, 'align-items', 'center');
+    this.renderer.setStyle(badgeElement, 'justify-content', 'center');
+    this.renderer.setStyle(badgeElement, 'padding', '0');
     
     // Create the icon element
     const iconElement = this.renderer.createElement('mat-icon');
@@ -27,13 +30,17 @@ export class MatBadgeIconDirective extends MatBadge implements OnInit {
     this.renderer.setStyle(iconElement, 'font-family', 'Material Symbols Outlined');
 
     // Set styles for the icon
-    this.renderer.setStyle(iconElement, 'font-size', '10');
-    this.renderer.setStyle(iconElement, 'height', '16px');
-    this.renderer.setStyle(iconElement, 'line-height', '16px');
+    this.renderer.setStyle(iconElement, 'display', 'block');
+    this.renderer.setStyle(iconElement, 'font-size', '10px');
+    this.renderer.setStyle(iconElement, 'width', '10px');
+    this.renderer.setStyle(iconElement, 'min-width', '10px');
+    this.renderer.setStyle(iconElement, 'height', '10px');
+    this.renderer.setStyle(iconElement, 'line-height', '10px');
     this.renderer.setStyle(iconElement, 'color', '#fff', RendererStyleFlags2.Important);
     
     // Add Material icon classes
     this.renderer.addClass(iconElement, 'mat-icon');
+    this.renderer.addClass(iconElement, 'material-symbols-outlined');
     this.renderer.addClass(iconElement, 'material-icons');
     
     // Append the icon to the badge
