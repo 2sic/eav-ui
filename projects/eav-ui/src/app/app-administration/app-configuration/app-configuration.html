@@ -414,11 +414,10 @@
       <mat-card-actions align="start">
         <app-docs-link-helper [link]="'https://go.2sxc.org/lightspeed'" [label]="" [icon]=""></app-docs-link-helper>
         <a
-          class="default-link"
           [href]="buttons().lightspeed.url"
           mat-button
-          class="eav-button__with-icon"
-          disabled="{{ !lightSpeedEnabled() }}"
+          class="default-link eav-button__with-icon"
+          [disabled]="!lightSpeedEnabled()"
         >
           <mat-icon
             matBadgeSize="small"
