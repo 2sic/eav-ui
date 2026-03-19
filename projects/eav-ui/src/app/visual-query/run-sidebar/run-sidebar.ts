@@ -48,7 +48,7 @@ export class RunExplorerComponent {
   }
 
   showDataSourceDetails(event: MatSlideToggleChange): void {
-    this.vsSvc.showDataSourceDetails(event.checked);
+    this.vsSvc.sourceEditor.showDataSourceDetails(event.checked);
   }
 
   openRestApi() {

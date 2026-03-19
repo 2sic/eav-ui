@@ -13,7 +13,7 @@ import { JsonHelpers } from '../../shared/helpers/json.helpers';
 import { loadScripts } from '../../shared/helpers/load-scripts.helper';
 import { DataSourceDefinition } from '../models/data-source-definition';
 import { QueryStreamResult } from '../models/result/PipelineResultStream';
-import { VisualDesignerDataForQuery, VisualDesignerDataSource } from '../models/visual-designer-data';
+import { VisualDesignerDataForQuery, VisualDesignerDataForSource } from '../models/visual-designer-data';
 import { QueryDefinitionService } from '../services/query-definition.service';
 import { VisualQueryStateService } from '../services/visual-query.service';
 import { findDefByType } from './datasource.helpers';
@@ -128,8 +128,8 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
     this.visQuerySvc.changeConnections(connections, streamsOut);
   }
 
-  onDragend(pipelineDataSourceGuid: string, position: VisualDesignerDataSource) {
-    this.visQuerySvc.changeDataSourcePosition(pipelineDataSourceGuid, position);
+  onDragend(pipelineDataSourceGuid: string, position: VisualDesignerDataForSource) {
+    this.visQuerySvc.sourceEditor.changeDataSourcePosition(pipelineDataSourceGuid, position);
   }
 
   onDebugStream(stream: QueryStreamResult) {
@@ -163,7 +163,7 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
     // Tell backend to clean up
     const connections = this.#plumber.connections.getAll();
     const streamsOut = this.#plumber.getStreamsOut();
-    this.visQuerySvc.removeDataSource(pipelineDataSource.EntityGuid, connections, streamsOut);
+    this.visQuerySvc.sourceEditor.removeDataSource(pipelineDataSource.EntityGuid, connections, streamsOut);
   }
 
   openHelp(url: string) {
@@ -175,7 +175,7 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
     if (newName == null || newName === '')
       return;
 
-    this.visQuerySvc.renameDataSource(dataSource.EntityGuid, newName);
+    this.visQuerySvc.sourceEditor.renameDataSource(dataSource.EntityGuid, newName);
   }
 
   editDescription(dataSource: DataSourceDefinition) {
@@ -183,7 +183,7 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
     if (newDescription == null)
       return;
 
-    this.visQuerySvc.changeDataSourceDescription(dataSource.EntityGuid, newDescription);
+    this.visQuerySvc.sourceEditor.changeDataSourceDescription(dataSource.EntityGuid, newDescription);
   }
 
 }

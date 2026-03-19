@@ -1,5 +1,5 @@
 
-export interface VisualDesignerDataSource {
+export interface VisualDesignerDataForSource {
   Top: number;
   Left: number;
   Width?: number;

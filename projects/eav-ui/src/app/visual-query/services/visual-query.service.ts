@@ -5,17 +5,14 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 import cloneDeep from 'lodash-es/cloneDeep';
 import { filter, fromEvent, Subject } from 'rxjs';
+import { transient } from '../../../../../core';
 import { ContentTypesService } from '../../app-administration/services/content-types.service';
+import { isCtrlS } from '../../edit/dialog/main/keyboard-shortcuts';
 import { MetadataService } from '../../permissions/services/metadata.service';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm } from '../../shared/models/edit-form.model';
 import { ItemIdHelper } from '../../shared/models/item-id-helper';
-import { QueryDefinitionService } from './query-definition.service';
-// tslint:disable-next-line:max-line-length
-import { transient } from '../../../../../core';
-import { isCtrlS } from '../../edit/dialog/main/keyboard-shortcuts';
-import { JsonHelpers } from '../../shared/helpers/json.helpers';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { ServiceBase } from '../../shared/services/service-base';
 import { DataSourceConfig } from '../models/data-source-configs.model';
@@ -25,13 +22,14 @@ import { DebugStreamInfo } from '../models/debug-stream-info.model';
 import { QueryResult } from '../models/result/pipeline-result';
 import { QueryStreamResult } from '../models/result/PipelineResultStream';
 import { StreamWire } from '../models/stream-wire';
-import { VisualDesignerDataForQuery, VisualDesignerDataSource } from '../models/visual-designer-data';
 import { VisualQueryModel } from '../models/visual-query.model';
 import { findDefByType } from '../plumb-editor/datasource.helpers';
 import { QueryResultComponent } from '../query-result/query-result';
 import { QueryResultDialogData } from '../query-result/query-result.models';
 import { StreamErrorResultComponent } from '../stream-error-result/stream-error-result';
 import { StreamErrorResultDialogData } from '../stream-error-result/stream-error-result.models';
+import { QueryDataSourceEditor } from './query-datasource-editor';
+import { QueryDefinitionService } from './query-definition.service';
 
 /**
  * Service containing the state for the visual query.
@@ -53,6 +51,7 @@ export class VisualQueryStateService extends ServiceBase implements OnDestroy {
   putEntityCountOnConnections$ = new Subject<QueryResult>();
 
   queryResult?: QueryResult;
+  sourceEditor: QueryDataSourceEditor = new QueryDataSourceEditor(this);
 
   #pipelineId = parseInt(this.#dialogRoute.getParam('pipelineId'), 10);
   #refreshPipeline = false;
@@ -107,67 +106,15 @@ export class VisualQueryStateService extends ServiceBase implements OnDestroy {
       return this.runPipeline();
   }
 
-  showDataSourceDetails(showDetails: boolean) {
-    const query = cloneDeep(this.pipelineModel());
-    const designerData: VisualDesignerDataForQuery = JsonHelpers.tryParse(query.Pipeline.VisualDesignerData) ?? {};
-    designerData.ShowDataSourceDetails = showDetails;
-    query.Pipeline.VisualDesignerData = JSON.stringify(designerData);
-    this.pipelineModel.set(query);
-  }
-
-  addDataSource(dataSource: DataSourceInstance) {
-    const query = cloneDeep(this.pipelineModel());
-    const newSource: DataSourceDefinition = {
-      Description: '',
-      EntityGuid: 'unsaved' + (query.DataSources.length + 1),
-      EntityId: undefined,
-      Name: dataSource.Name,
-      PartAssemblyAndType: dataSource.PartAssemblyAndType,
-      VisualDesignerData: { Top: 100, Left: 100 },
-    };
-    query.DataSources.push(newSource);
-    this.pipelineModel.set(query);
+  addSourceAndSave(dataSource: DataSourceInstance) {
+    this.sourceEditor.add(dataSource);
     this.#savePipeline();
-  }
-
-  removeDataSource(pipelineDataSourceGuid: string, connections: StreamWire[], streamsOut: string) {
-    const query = cloneDeep(this.pipelineModel());
-    query.DataSources = query.DataSources.filter(pipelineDS => pipelineDS.EntityGuid !== pipelineDataSourceGuid);
-    query.Pipeline.StreamWiring = connections;
-    query.Pipeline.StreamsOut = streamsOut;
-    this.pipelineModel.set(query);
-  }
-
-  renameDataSource(pipelineDataSourceGuid: string, name: string) {
-    const query = cloneDeep(this.pipelineModel());
-    const dataSource = query.DataSources.find(pipelineDS => pipelineDS.EntityGuid === pipelineDataSourceGuid);
-    dataSource.Name = name;
-    this.pipelineModel.set(query);
-  }
-
-  changeDataSourceDescription(pipelineDataSourceGuid: string, description: string) {
-    const query = cloneDeep(this.pipelineModel());
-    const dataSource = query.DataSources.find(pipelineDS => pipelineDS.EntityGuid === pipelineDataSourceGuid);
-    dataSource.Description = description;
-    this.pipelineModel.set(query);
   }
 
   changeConnections(connections: StreamWire[], streamsOut: string) {
     const query = cloneDeep(this.pipelineModel());
     query.Pipeline.StreamWiring = connections;
     query.Pipeline.StreamsOut = streamsOut;
-    this.pipelineModel.set(query);
-  }
-
-  changeDataSourcePosition(pipelineDataSourceGuid: string, position: VisualDesignerDataSource) {
-    const query = cloneDeep(this.pipelineModel());
-    const dataSource = query.DataSources.find(pipelineDS => pipelineDS.EntityGuid === pipelineDataSourceGuid);
-    if (!dataSource) {
-      // spm NOTE: fixes problem where dataSource position can't be updated if dataSource with guid unsavedXX gets saved while dragging.
-      // Can happen if dataSource is just added and user drags it and save happens.
-      return;
-    }
-    dataSource.VisualDesignerData = { ...dataSource.VisualDesignerData, ...position };
     this.pipelineModel.set(query);
   }
 
