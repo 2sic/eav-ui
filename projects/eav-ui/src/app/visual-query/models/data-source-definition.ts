@@ -1,5 +1,5 @@
 import { MetadataItem } from '../../metadata';
-import { VisualDesignerData } from './visual-designer-data';
+import { VisualDesignerDataSource } from './visual-designer-data';
 
 /**
  * DataSource definition with it's name, type, etc.
@@ -11,5 +11,5 @@ export interface DataSourceDefinition {
   Metadata?: MetadataItem[];
   Name: string;
   PartAssemblyAndType: string;
-  VisualDesignerData: VisualDesignerData;
+  VisualDesignerData: VisualDesignerDataSource;
 }

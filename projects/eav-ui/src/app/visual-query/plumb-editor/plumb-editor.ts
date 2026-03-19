@@ -13,7 +13,7 @@ import { JsonHelpers } from '../../shared/helpers/json.helpers';
 import { loadScripts } from '../../shared/helpers/load-scripts.helper';
 import { DataSourceDefinition } from '../models/data-source-definition';
 import { QueryStreamResult } from '../models/result/PipelineResultStream';
-import { VisualDesignerData } from '../models/visual-designer-data';
+import { VisualDesignerDataForQuery, VisualDesignerDataSource } from '../models/visual-designer-data';
 import { QueryDefinitionService } from '../services/query-definition.service';
 import { VisualQueryStateService } from '../services/visual-query.service';
 import { findDefByType } from './datasource.helpers';
@@ -57,7 +57,7 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
   #queryDefinitionSvc = transient(QueryDefinitionService);
 
   showDataSourceDetails = computed(() => {
-    const result = JsonHelpers.tryParse(this.visQuerySvc.pipelineModel()?.Pipeline.VisualDesignerData) ?? {};
+    const result: VisualDesignerDataForQuery = JsonHelpers.tryParse(this.visQuerySvc.pipelineModel()?.Pipeline.VisualDesignerData) ?? {};
     return result.ShowDataSourceDetails ?? false;
   });
 
@@ -128,7 +128,7 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
     this.visQuerySvc.changeConnections(connections, streamsOut);
   }
 
-  onDragend(pipelineDataSourceGuid: string, position: VisualDesignerData) {
+  onDragend(pipelineDataSourceGuid: string, position: VisualDesignerDataSource) {
     this.visQuerySvc.changeDataSourcePosition(pipelineDataSourceGuid, position);
   }
 

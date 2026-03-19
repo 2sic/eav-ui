@@ -25,7 +25,7 @@ import { DebugStreamInfo } from '../models/debug-stream-info.model';
 import { QueryResult } from '../models/result/pipeline-result';
 import { QueryStreamResult } from '../models/result/PipelineResultStream';
 import { StreamWire } from '../models/stream-wire';
-import { VisualDesignerData } from '../models/visual-designer-data';
+import { VisualDesignerDataForQuery, VisualDesignerDataSource } from '../models/visual-designer-data';
 import { VisualQueryModel } from '../models/visual-query.model';
 import { findDefByType } from '../plumb-editor/datasource.helpers';
 import { QueryResultComponent } from '../query-result/query-result';
@@ -109,7 +109,7 @@ export class VisualQueryStateService extends ServiceBase implements OnDestroy {
 
   showDataSourceDetails(showDetails: boolean) {
     const query = cloneDeep(this.pipelineModel());
-    const designerData: Record<string, any> = JsonHelpers.tryParse(query.Pipeline.VisualDesignerData) ?? {};
+    const designerData: VisualDesignerDataForQuery = JsonHelpers.tryParse(query.Pipeline.VisualDesignerData) ?? {};
     designerData.ShowDataSourceDetails = showDetails;
     query.Pipeline.VisualDesignerData = JSON.stringify(designerData);
     this.pipelineModel.set(query);
@@ -159,7 +159,7 @@ export class VisualQueryStateService extends ServiceBase implements OnDestroy {
     this.pipelineModel.set(query);
   }
 
-  changeDataSourcePosition(pipelineDataSourceGuid: string, position: VisualDesignerData) {
+  changeDataSourcePosition(pipelineDataSourceGuid: string, position: VisualDesignerDataSource) {
     const query = cloneDeep(this.pipelineModel());
     const dataSource = query.DataSources.find(pipelineDS => pipelineDS.EntityGuid === pipelineDataSourceGuid);
     if (!dataSource) {

@@ -1,7 +1,7 @@
 import { classLog } from '../../../../../shared/logging';
 import { DataSourceInstance } from '../models/data-source-instance.model';
 import { QueryStreamResult } from '../models/result/PipelineResultStream';
-import { VisualDesignerData } from '../models/visual-designer-data';
+import { VisualDesignerDataSource } from '../models/visual-designer-data';
 import { VisualQueryModel } from '../models/visual-query.model';
 import { ConnectionLineColors } from './connection-line-colors';
 import { ConnectionsManager } from './connections-manager';
@@ -50,7 +50,7 @@ export class Plumber {
     private query: VisualQueryModel,
     private dataSources: DataSourceInstance[],
     private onConnectionsChangedParent: () => void,
-    private onDragend: (pipelineDataSourceGuid: string, position: VisualDesignerData) => void,
+    private onDragend: (pipelineDataSourceGuid: string, position: VisualDesignerDataSource) => void,
     private onDebugStream: (stream: QueryStreamResult) => void,
     renameDialogParts: EndpointLabelRenameParts,
   ) {
@@ -129,7 +129,7 @@ export class Plumber {
           stop: (event: { el: HTMLElement, finalPos: number[] }) => {
             const element: HTMLElement = event.el;
             const queryDsGuid: string = guidOfDomId(element.id);
-            const position: VisualDesignerData = {
+            const position: VisualDesignerDataSource = {
               Top: event.finalPos[1],
               Left: event.finalPos[0],
             };
