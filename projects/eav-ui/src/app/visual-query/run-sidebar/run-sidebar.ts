@@ -8,12 +8,12 @@ import { JsonHelpers } from '../../shared/helpers/json.helpers';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { Context } from '../../shared/services/context';
 import { VisualQueryStateService } from '../services/visual-query.service';
-import { calculateWarnings } from './run-explorer.helpers';
+import { calculateWarnings } from './query-warnings.helpers';
 
 @Component({
     selector: 'app-run-explorer',
-    templateUrl: './run-explorer.html',
-    styleUrls: ['./run-explorer.scss'],
+    templateUrl: './run-sidebar.html',
+    styleUrls: ['./run-sidebar.scss'],
     imports: [
         MatButtonModule,
         MatIconModule,
@@ -39,10 +39,6 @@ export class RunExplorerComponent {
 
   editPipeline() {
     this.vsSvc.editPipelineEntity();
-  }
-
-  openParamsHelp() {
-    window.open('https://go.2sxc.org/QueryParams', '_blank');
   }
 
   saveAndRunQuery(save: boolean, run: boolean) {

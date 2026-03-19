@@ -32,9 +32,9 @@
             <button mat-icon-button tippy="Edit parameters" (click)="editPipeline()">
               <mat-icon>edit</mat-icon>
             </button>
-            <button mat-icon-button tippy="Query Params Docs" (click)="openParamsHelp()">
+            <a mat-icon-button tippy="Query Params Docs" href="https://go.2sxc.org/QueryParams" target="_blank">
               <mat-icon>info</mat-icon>
-            </button>
+            </a>
           </div>
         </div>
         @if (vsSvc.pipelineModel().Pipeline.Params?.length) {
