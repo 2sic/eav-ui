@@ -44,7 +44,6 @@
     "@ag-grid-community/angular": "^32.3.9",
     "@ag-grid-community/client-side-row-model": "^32.3.9",
     "@ag-grid-community/styles": "^32.3.9",
-    "@angular-devkit/build-angular": "^21.2.3",
     "@angular/animations": "^21.2.5",
     "@angular/cdk": "^21.0.5",
     "@angular/common": "^21.2.5",
@@ -74,6 +73,7 @@
   },
   "devDependencies": {
     "@2sic.com/2sxc-typings": "^14.7.3",
+    "@angular-devkit/build-angular": "^21.2.3",
     "@angular-eslint/builder": "^21.3.1",
     "@angular-eslint/eslint-plugin": "^21.3.1",
     "@angular-eslint/eslint-plugin-template": "^21.3.1",
