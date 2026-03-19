@@ -23,7 +23,7 @@ export class WiringsHelper {
     private queryData: QueryDataManager,
   ) { }
 
-  getWireEndpointName(endpointId: string): string {
+  #safeWireEndpointName(endpointId: string): string {
     if (endpointId == '*')
       return 'asterisk';
     return endpointId;
@@ -38,10 +38,10 @@ export class WiringsHelper {
     const wirings = wiringsRaw.map(wire => {
       // read connections from Pipeline
       const outDsDomId = domIdOfGuid(wire.From);
-      const outTargetName = this.getWireEndpointName(wire.Out);
+      const outTargetName = this.#safeWireEndpointName(wire.Out);
       const outPointDomId = outDsDomId + '_out_' + outTargetName;
       const inDsDomId = domIdOfGuid(wire.To);
-      const inTargetName = this.getWireEndpointName(wire.In);
+      const inTargetName = this.#safeWireEndpointName(wire.In);
       const inPointDomId = inDsDomId + '_in_' + inTargetName;
       return {
         outPointDomId,

@@ -1,4 +1,4 @@
-import { classLog } from '../../../../../../shared/logging';
+import { classLogEnabled } from '../../../../../../shared/logging';
 import { eavConstants } from '../../../shared/constants/eav.constants';
 import { DataSourceDefinition } from '../../models/data-source-definition';
 import { ConnectionsManager } from '../connections-manager';
@@ -22,7 +22,7 @@ const endPointsWhereWeRotate = 3;
 const maxLabelLengthToRotate = 30;
 
 export class EndpointsManager {
-  log = classLog({EndpointsManager}, logSpecs);
+  log = classLogEnabled({EndpointsManager}, logSpecs);
 
   constructor(
     private instance: JsPlumbInstance, 
@@ -32,8 +32,8 @@ export class EndpointsManager {
   ) { }
 
   
-  addEndpoint(domDataSource: HTMLElement, endpointName: string, endpointLabel: string, isIn: boolean, queryDs: DataSourceDefinition, extraStyling?: string) {
-    const l = this.log.fnIfInFields('addEndpoint', endpointName, { endpointName, endpointLabel, isIn, queryDs });
+  addEndpoint(dsHtmlElement: HTMLElement, endpointName: string, customLabel: string | null, isIn: boolean, queryDs: DataSourceDefinition, extraStyling?: string) {
+    const l = this.log.fnIfInFields('addEndpoint', endpointName, { endpointName, endpointLabel: customLabel, isIn, queryDs });
     const dsDefinition = findDefByType(this.queryData.dataSources, queryDs.PartAssemblyAndType);
     
     if (!dsDefinition)
@@ -43,7 +43,7 @@ export class EndpointsManager {
       ? dsDefinition.In
       : dsDefinition.Out;
     const isDynamic = connectionList?.some(name => this.endpointDefs.getInfo(name, false).required === false);
-    const endpointInfo = this.endpointDefs.getInfo(endpointName, isDynamic, endpointLabel);
+    const endpointInfo = this.endpointDefs.getInfo(endpointName, isDynamic, customLabel);
 
     l.a(`endpointInfo`, { dataSource: dsDefinition, connectionList, hasDynamic: isDynamic, endpointInfo });
 
@@ -54,10 +54,10 @@ export class EndpointsManager {
       ? 'dynamic' // dynamic endpoints are not required
       : !endpointInfo.required
         ? ''      // not required
-        : this.#wireHasConnection(domDataSource, endpointInfo.name, isIn) ? '' : 'required'; // required - check if it's populated; otherwise make red
+        : this.#wireHasConnection(dsHtmlElement, endpointInfo.name, isIn) ? '' : 'required'; // required - check if it's populated; otherwise make red
 
 
-    const uuid = domDataSource.id + (isIn ? '_in_' : '_out_') + endpointInfo.name;
+    const uuid = dsHtmlElement.id + (isIn ? '_in_' : '_out_') + endpointInfo.name;
     const model = isIn
       ? this.endpointDefs.buildTargetDef(queryDs.EntityGuid, `${style} ${extraStyling}`)
       : this.endpointDefs.buildSourceDef(queryDs.EntityGuid, `${style} ${extraStyling}`);
@@ -69,7 +69,7 @@ export class EndpointsManager {
     };
 
     // Add endpoint and add label and css in case it must be angled
-    const endpoint = this.instance.addEndpoint(domDataSource, model, params);
+    const endpoint = this.instance.addEndpoint(dsHtmlElement, model, params);
     const overlay = endpoint.getOverlay(EndpointLabelName);
     overlay.setLabel(endpointInfo.label);
     l.end("end", {overlay});
@@ -135,7 +135,7 @@ export class EndpointsManager {
       // Add missing labels to out
       const { domDataSource, dataSource } = this.queryData.findDataSourceAndDom(ds.guid);
       if (missingInOut.length)
-        missingInOut.forEach(p => this.addEndpoint(domDataSource, p.label, p.label, false, dataSource, 'mirror-in'));
+        missingInOut.forEach(p => this.addEndpoint(domDataSource, p.label, null, false, dataSource, 'mirror-in'));
 
       // Remove excessive labels
       // Only consider the ones which have a `mirror-in` class and remove them

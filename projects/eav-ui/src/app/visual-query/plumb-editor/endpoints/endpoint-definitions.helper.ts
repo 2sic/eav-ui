@@ -1,4 +1,4 @@
-import { classLog } from '../../../../../../shared/logging';
+import { classLogEnabled } from '../../../../../../shared/logging';
 import { VisualQueryModel } from '../../models/visual-query.model';
 import { JsPlumbEndpoint, JsPlumbOverlay } from '../jsplumb.models';
 import { EndpointInfo } from '../plumb-editor.models';
@@ -8,11 +8,11 @@ import { RenameStreamDialogData } from '../rename-stream/rename-stream.models';
 import { EndpointLabelRenameParts } from './endpoint-label-rename.model';
 
 const logSpecs = {
-  all: true,
-  getEndpointOverlays: true,
-  getEndpointInfo: true,
-  buildSourceDef: true,
-  buildTargetDef: true,
+  all: false,
+  getEndpointOverlays: false,
+  getInfo: true,
+  buildSourceDef: false,
+  buildTargetDef: false,
 }
 
 /**
@@ -20,7 +20,7 @@ const logSpecs = {
  */
 export class EndpointDefinitionsHelper {
 
-  log = classLog({EndpointDefinitionsHelper}, logSpecs);
+  log = classLogEnabled({EndpointDefinitionsHelper}, logSpecs);
 
   constructor(
     private pipelineModel: VisualQueryModel,
@@ -43,7 +43,7 @@ export class EndpointDefinitionsHelper {
   }
 
   getInfo(endpointName: string, isDynamic: boolean, customLabel?: string): EndpointInfo {
-    const l = this.log.fnIf('getEndpointInfo', {endpointName, isDynamic});
+    const l = this.log.fnIf('getInfo', {endpointName, isDynamic});
 
     // Trim name and see if it's required - marked with a trailing '*'
     const trimmed = endpointName.trim();
@@ -53,14 +53,16 @@ export class EndpointDefinitionsHelper {
       ? trimmed
       : trimmed.substring(0, trimmed.length - 1);
 
+    const label = customLabel ?? (isAsterisk ? '*' : name);
+
     if (isDynamic)
       return l.r({
         name,
         required: false,
-        label: customLabel ?? (isAsterisk ? '*' : name),
+        label,
       } satisfies EndpointInfo, 'isDynamic');
 
-    return l.r({ name, required, label: customLabel ?? (isAsterisk ? '*' : name) } satisfies EndpointInfo, 'notDynamic');
+    return l.r({ name, required, label } satisfies EndpointInfo, 'notDynamic');
   }
 
   buildSourceDef(dsGuid: string, style?: string) {
