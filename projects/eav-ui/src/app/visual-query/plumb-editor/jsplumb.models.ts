@@ -1,3 +1,4 @@
+import { EndpointLabelName } from './plumber-constants';
 // Custom models for better typed JSPlumb usage
 // An update to a newer jsPlumb may not need this later on
 
@@ -16,7 +17,7 @@ export interface JsPlumbConnection {
 
 export interface JsPlumbEndpoint {
   // elementId: string;
-  getOverlay(name: 'endpointLabel'): JsPlumbOverlay;
+  getOverlay(name: typeof EndpointLabelName): JsPlumbOverlay;
   connections: JsPlumbConnection[];
   getUuid(): string;
   canvas: HTMLCanvasElement;

@@ -4,7 +4,7 @@ import { DataSourceDefinition } from '../../models/data-source-definition';
 import { ConnectionsManager } from '../connections-manager';
 import { findDefByType, getEndpointLabel } from '../datasource.helpers';
 import { JsPlumbEndpoint, JsPlumbInstance } from '../jsplumb.models';
-import { domIdOfGuid } from '../plumber-constants';
+import { domIdOfGuid, EndpointLabelName } from '../plumber-constants';
 import { QueryDataManager } from '../query-data-manager';
 import { EndpointDefinitionsHelper } from './endpoint-definitions.helper';
 
@@ -70,7 +70,7 @@ export class EndpointsManager {
 
     // Add endpoint and add label and css in case it must be angled
     const endpoint = this.instance.addEndpoint(domDataSource, model, params);
-    const overlay = endpoint.getOverlay('endpointLabel');
+    const overlay = endpoint.getOverlay(EndpointLabelName);
     overlay.setLabel(endpointInfo.label);
     l.end("end", {overlay});
   }

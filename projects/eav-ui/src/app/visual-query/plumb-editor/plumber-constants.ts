@@ -1,10 +1,11 @@
 
-export const dataSrcIdPrefix = 'dataSource_';
+export const DataSrcIdPrefix = 'dataSource_';
+export const EndpointLabelName = 'endpointLabel';
 
 export function domIdOfGuid(guid: string): string {
-  return dataSrcIdPrefix + guid;
+  return DataSrcIdPrefix + guid;
 }
 
 export function guidOfDomId(domId: string): string {
-  return domId.replace(dataSrcIdPrefix, '');
+  return domId.replace(DataSrcIdPrefix, '');
 }

@@ -2,6 +2,7 @@ import { classLog } from '../../../../../../shared/logging';
 import { VisualQueryModel } from '../../models/visual-query.model';
 import { JsPlumbEndpoint, JsPlumbOverlay } from '../jsplumb.models';
 import { EndpointInfo } from '../plumb-editor.models';
+import { EndpointLabelName } from '../plumber-constants';
 import { RenameStreamComponent } from '../rename-stream/rename-stream';
 import { RenameStreamDialogData } from '../rename-stream/rename-stream.models';
 import { EndpointLabelRenameParts } from './endpoint-label-rename.model';
@@ -31,7 +32,7 @@ export class EndpointDefinitionsHelper {
     const result = [
       [
         'Label', {
-          id: 'endpointLabel',
+          id: EndpointLabelName,
           location: [0.5, isSource ? 0 : 1],
           label: 'Default',
           cssClass: isSource ? 'endpointSourceLabel' : 'endpointTargetLabel',
@@ -103,7 +104,7 @@ export class EndpointDefinitionsHelper {
       return;
 
     debugger;
-    const overlay: JsPlumbOverlay = (endpointOrOverlay as JsPlumbEndpoint)?.getOverlay?.('endpointLabel')
+    const overlay: JsPlumbOverlay = (endpointOrOverlay as JsPlumbEndpoint)?.getOverlay?.(EndpointLabelName)
       ?? endpointOrOverlay as JsPlumbOverlay;
 
     this.renameDialogParts.matDialog
@@ -132,7 +133,7 @@ export class EndpointDefinitionsHelper {
   //   if (!this.pipelineModel.Pipeline.AllowEdit)
   //     return;
 
-  //   const overlay: JsPlumbOverlay = (endpointOrOverlay as JsPlumbEndpoint)?.getOverlay('endpointLabel')
+  //   const overlay: JsPlumbOverlay = (endpointOrOverlay as JsPlumbEndpoint)?.getOverlay(EndpointLabelName)
   //     ?? endpointOrOverlay as JsPlumbOverlay;
 
   //   this.matDialog
