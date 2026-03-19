@@ -1,12 +1,12 @@
-import { classLog } from '../../../../../shared/logging';
-import { eavConstants } from '../../shared/constants/eav.constants';
-import { DataSourceDefinition } from '../models/data-source-definition';
-import { ConnectionsManager } from './connections-manager';
-import { findDefByType, getEndpointLabel } from './datasource.helpers';
-import { EndpointDefinitionsService } from './endpoint-definitions';
-import { JsPlumbEndpoint, JsPlumbInstance } from './jsplumb.models';
-import { domIdOfGuid } from './plumber-constants';
-import { QueryDataManager } from './query-data-manager';
+import { classLog } from '../../../../../../shared/logging';
+import { eavConstants } from '../../../shared/constants/eav.constants';
+import { DataSourceDefinition } from '../../models/data-source-definition';
+import { ConnectionsManager } from '../connections-manager';
+import { findDefByType, getEndpointLabel } from '../datasource.helpers';
+import { JsPlumbEndpoint, JsPlumbInstance } from '../jsplumb.models';
+import { domIdOfGuid } from '../plumber-constants';
+import { QueryDataManager } from '../query-data-manager';
+import { EndpointDefinitionsHelper } from './endpoint-definitions.helper';
 
 const logSpecs = {
   all: false,
@@ -26,7 +26,7 @@ export class EndpointsManager {
 
   constructor(
     private instance: JsPlumbInstance, 
-    private endpointDefs: EndpointDefinitionsService,
+    private endpointDefs: EndpointDefinitionsHelper,
     private connections: ConnectionsManager,
     private queryData: QueryDataManager,
   ) { }

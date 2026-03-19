@@ -1,9 +1,9 @@
-import { classLog } from '../../../../../shared/logging';
-import { DataSourceSet } from './data-source-set.model';
-import { JsPlumbInstance } from './jsplumb.models';
-import { domIdOfGuid } from './plumber-constants';
-import { Plumber } from './plumber.helper';
-import { QueryDataManager } from './query-data-manager';
+import { classLog } from '../../../../../../shared/logging';
+import { DataSourceSet } from '../../models/data-source-definition';
+import { JsPlumbInstance } from '../jsplumb.models';
+import { domIdOfGuid } from '../plumber-constants';
+import { Plumber } from '../plumber.helper';
+import { QueryDataManager } from '../query-data-manager';
 
 const logSpecs = {
   all: false,

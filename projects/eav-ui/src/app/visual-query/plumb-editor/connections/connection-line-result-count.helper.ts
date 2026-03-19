@@ -1,17 +1,17 @@
-import { classLog } from '../../../../../shared/logging';
-import { QueryResult } from '../models/result/pipeline-result';
-import { QueryStreamResult } from '../models/result/PipelineResultStream';
-import { VisualQueryModel } from '../models/visual-query.model';
-import { JsPlumbEndpoint, JsPlumbInstance } from './jsplumb.models';
-import { domIdOfGuid } from './plumber-constants';
+import { classLog } from '../../../../../../shared/logging';
+import { QueryResult } from '../../models/result/pipeline-result';
+import { QueryStreamResult } from '../../models/result/PipelineResultStream';
+import { VisualQueryModel } from '../../models/visual-query.model';
+import { JsPlumbEndpoint, JsPlumbInstance } from '../jsplumb.models';
+import { domIdOfGuid } from '../plumber-constants';
 
 const logSpecs = {
   all: false,
   putEntityCountOnConnections: false,
 }
 
-export class LinesDecorator {
-  log = classLog({LinesDecorator}, logSpecs);
+export class ConnectionLineResultCountHelper {
+  log = classLog({ConnectionLineResultCountHelper}, logSpecs);
 
   constructor(
     private instance: JsPlumbInstance, 

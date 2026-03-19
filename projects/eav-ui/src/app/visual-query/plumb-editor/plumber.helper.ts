@@ -3,18 +3,18 @@ import { DataSourceInstance } from '../models/data-source-instance.model';
 import { QueryStreamResult } from '../models/result/PipelineResultStream';
 import { VisualDesignerDataSource } from '../models/visual-designer-data';
 import { VisualQueryModel } from '../models/visual-query.model';
-import { ConnectionLineColors } from './connection-line-colors';
 import { ConnectionsManager } from './connections-manager';
+import { ConnectionLineColors } from './connections/connection-line-colors';
+import { ConnectionLineResultCountHelper } from './connections/connection-line-result-count.helper';
+import { WiringsHelper } from './connections/wirings.helper';
 import { getEndpointLabel } from './datasource.helpers';
-import { EndpointDefinitionsService } from './endpoint-definitions';
-import { EndpointLabelRenameParts } from './endpoint-label-rename.model';
-import { EndpointsManager } from './endpoints-manager';
+import { EndpointDefinitionsHelper } from './endpoints/endpoint-definitions.helper';
+import { EndpointLabelRenameParts } from './endpoints/endpoint-label-rename.model';
+import { EndpointsManager } from './endpoints/endpoints-manager';
 import { JsPlumbInstanceManager } from './jsplumb-instance-manager';
 import { JsPlumbEndpoint, JsPlumbInstance } from './jsplumb.models';
-import { LinesDecorator } from './lines-decorator';
 import { domIdOfGuid, guidOfDomId } from './plumber-constants';
 import { QueryDataManager } from './query-data-manager';
-import { WiringsHelper } from './wirings.helper';
 
 const logSpecs = {
   all: false,
@@ -33,9 +33,9 @@ export class Plumber {
 
   lineColors = new ConnectionLineColors();
 
-  #endpointDefs: EndpointDefinitionsService;
+  #endpointDefs: EndpointDefinitionsHelper;
 
-  lineDecorator: LinesDecorator;
+  lineDecorator: ConnectionLineResultCountHelper;
 
   connections: ConnectionsManager;
 
@@ -55,11 +55,11 @@ export class Plumber {
     renameDialogParts: EndpointLabelRenameParts,
   ) {
     this.queryData = new QueryDataManager(this.jsPlumbRoot, this.query, this.dataSources);
-    this.#endpointDefs = new EndpointDefinitionsService(query, { ...renameDialogParts, onConnectionsChanged: () => this.#onConnectionsChanged() });
+    this.#endpointDefs = new EndpointDefinitionsHelper(query, { ...renameDialogParts, onConnectionsChanged: () => this.#onConnectionsChanged() });
     this.#instanceManager = new JsPlumbInstanceManager(this.jsPlumbRoot, this.lineColors);
     this.#instance = this.#instanceManager.instance;
     // requires instance, so must happen after that
-    this.lineDecorator = new LinesDecorator(this.#instance, this.query, this.onDebugStream);
+    this.lineDecorator = new ConnectionLineResultCountHelper(this.#instance, this.query, this.onDebugStream);
     this.connections = new ConnectionsManager(this.#instance, this.query, this.dataSources, this.#endpointDefs, () => this.#onConnectionsChanged());
     this.endpoints = new EndpointsManager(this.#instance, this.#endpointDefs, this.connections, this.queryData);
 

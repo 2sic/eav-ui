@@ -13,3 +13,8 @@ export interface DataSourceDefinition {
   PartAssemblyAndType: string;
   VisualDesignerData: VisualDesignerDataSource;
 }
+
+export interface DataSourceSet {
+  domDataSource: HTMLElement;
+  dataSource: DataSourceDefinition;
+}

@@ -3,7 +3,7 @@ import { DataSourceInstance } from '../models/data-source-instance.model';
 import { StreamWire } from '../models/stream-wire';
 import { VisualQueryModel } from '../models/visual-query.model';
 import { findDefByType, getEndpointLabel } from './datasource.helpers';
-import { EndpointDefinitionsService } from './endpoint-definitions';
+import { EndpointDefinitionsHelper } from './endpoints/endpoint-definitions.helper';
 import { JsPlumbConnection, JsPlumbInstance } from './jsplumb.models';
 import { guidOfDomId } from './plumber-constants';
 
@@ -21,7 +21,7 @@ export class ConnectionsManager {
     private instance: JsPlumbInstance, 
     private pipelineModel: VisualQueryModel,
     private dataSources: DataSourceInstance[],
-    private endpointsSvc: EndpointDefinitionsService,
+    private endpointsSvc: EndpointDefinitionsHelper,
     private onConnectionsChanged: () => void,
   ) { }
 

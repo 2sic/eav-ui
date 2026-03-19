@@ -1,10 +1,10 @@
-import { classLog } from '../../../../../shared/logging';
-import { VisualQueryModel } from '../models/visual-query.model';
+import { classLog } from '../../../../../../shared/logging';
+import { VisualQueryModel } from '../../models/visual-query.model';
+import { JsPlumbEndpoint, JsPlumbOverlay } from '../jsplumb.models';
+import { EndpointInfo } from '../plumb-editor.models';
+import { RenameStreamComponent } from '../rename-stream/rename-stream';
+import { RenameStreamDialogData } from '../rename-stream/rename-stream.models';
 import { EndpointLabelRenameParts } from './endpoint-label-rename.model';
-import { JsPlumbEndpoint, JsPlumbOverlay } from './jsplumb.models';
-import { EndpointInfo } from './plumb-editor.models';
-import { RenameStreamComponent } from './rename-stream/rename-stream';
-import { RenameStreamDialogData } from './rename-stream/rename-stream.models';
 
 const logSpecs = {
   all: true,
@@ -17,9 +17,9 @@ const logSpecs = {
 /**
  * Trivial helper to get endpoint definitions and similar things
  */
-export class EndpointDefinitionsService {
+export class EndpointDefinitionsHelper {
 
-  log = classLog({EndpointDefinitionsService}, logSpecs);
+  log = classLog({EndpointDefinitionsHelper}, logSpecs);
 
   constructor(
     private pipelineModel: VisualQueryModel,
