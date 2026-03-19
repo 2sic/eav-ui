@@ -93,7 +93,7 @@ export class WiringsHelper {
       return l.r(set, "set null");
 
     // const name = isIn ? wire.In : wire.Out;
-    this.plumber.endpoints.addEndpoint(set.domDataSource, name, label, isIn, set.dataSource);
+    this.plumber.endpoints.addEndpoint(set, name, label, isIn);
     return l.r(set, 'ok');
   }
 
