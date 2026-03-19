@@ -108,38 +108,3 @@ export class WiringsHelper {
   }
 
 }
-
-
-
-
-// https://stackoverflow.com/questions/14446511/most-efficient-method-to-groupby-on-an-array-of-objects
-const groupBy = <T, K extends keyof any>(arr: T[], key: (i: T) => K) =>
-  arr.reduce((groups, item) => {
-    (groups[key(item)] ||= []).push(item);
-    return groups;
-  }, {} as Record<K, T[]>);
-
-
-      // 2025-04-02 2dm standardized / reduced the code old
-      // leave commented out portions in for a few weeks, to ensure we know what happened if something breaks
-      // Ensure In-Endpoint exist
-      // if (!this.#instance.getEndpoint(fromUuid)) {
-      //   const domDataSource = this.jsPlumbRoot.querySelector<HTMLElement>('#' + sourceElementId);
-      //   if (!domDataSource)
-      //     return;
-      //   const guid: string = domDataSource.id.replace(dataSrcIdPrefix, '');
-      //   const dataSource = this.pipelineModel.DataSources.find(pipeDataSource => pipeDataSource.EntityGuid === guid);
-      //   this.#addEndpoint(domDataSource, wire.Out, false, dataSource, outGroups[wire.From].length);
-      // }
-      // Ensure Out-Endpoint exist
-      // if (!this.#instance.getEndpoint(toUuid)) {
-      //   const domDataSource = this.jsPlumbRoot.querySelector<HTMLElement>('#' + targetElementId);
-      //   if (!domDataSource)
-      //     return;
-      //   const guid: string = domDataSource.id.replace(dataSrcIdPrefix, '');
-      //   const dataSource = this.pipelineModel.DataSources.find(pipeDataSource => pipeDataSource.EntityGuid === guid);
-      //   // if (wire.In === "DEBUG") debugger;
-      //   this.#addEndpoint(domDataSource, wire.In, true, dataSource, inGroups[wire.To].length);
-      // }
-
-      // this.#connect(w.outPointDomId, w.inPointDomId);
