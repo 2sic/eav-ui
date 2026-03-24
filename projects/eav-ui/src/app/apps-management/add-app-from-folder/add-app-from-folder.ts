@@ -33,12 +33,12 @@ import { CheckboxCellParams } from './checkbox-cell/checkbox-cell.model';
 export class AddAppFromFolderComponent {
   @HostBinding('className') hostClass = 'dialog-component';
 
-  gridOptions = this.buildGridOptions();
   installing: boolean = false;
 
   public features = inject(FeaturesService);
   #isAddFromFolderEnabled = this.features.isEnabled[FeatureNames.AppSyncWithSiteFiles];
   #appsListService = transient(AppsListService);
+  gridOptions = this.buildGridOptions();
 
   AppSyncWithSiteFiles = FeatureNames.AppSyncWithSiteFiles;
 
