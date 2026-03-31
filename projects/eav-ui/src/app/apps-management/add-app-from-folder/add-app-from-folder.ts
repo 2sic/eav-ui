@@ -1,5 +1,5 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { Component, HostBinding, WritableSignal, inject } from "@angular/core";
+import { Component, computed, effect, HostBinding, inject, signal } from "@angular/core";
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogActions, MatDialogRef } from "@angular/material/dialog";
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -33,41 +33,48 @@ import { CheckboxCellParams } from './checkbox-cell/checkbox-cell.model';
 export class AddAppFromFolderComponent {
   @HostBinding('className') hostClass = 'dialog-component';
 
-  gridOptions = this.buildGridOptions();
   installing: boolean = false;
 
   public features = inject(FeaturesService);
   #isAddFromFolderEnabled = this.features.isEnabled[FeatureNames.AppSyncWithSiteFiles];
   #appsListService = transient(AppsListService);
+  #pendingAppsResource = this.#appsListService.getPendingApps();
+  gridOptions = this.buildGridOptions();
 
   AppSyncWithSiteFiles = FeatureNames.AppSyncWithSiteFiles;
+
+  pendingApps = signal<PendingAppSelectable[]>([]);
+  protected selectedAppsCount = computed(() => this.pendingApps().filter(app => app.IsSelected).length);
 
   constructor(
     private dialog: MatDialogRef<AddAppFromFolderComponent>,
     private snackBar: MatSnackBar,
-  ) { }
-
-  pendingApps = this.#appsListService.getPendingApps().value as WritableSignal<PendingApp[]>;
+  ) {
+    effect(() => {
+      const pendingApps = this.#pendingAppsResource.value() ?? [];
+      this.pendingApps.set(pendingApps.map(app => ({ ...app, IsSelected: true })));
+    });
+  }
 
   closeDialog(): void {
     this.dialog.close();
   }
 
   onChange(app: PendingApp, enabled: boolean) {
-    const pendingAppsTemp = this.pendingApps();
-
-    if (enabled)
-      pendingAppsTemp.push(app);
-    else
-      pendingAppsTemp.splice(pendingAppsTemp.indexOf(app), 1);
-
-    this.pendingApps.set(pendingAppsTemp);
+    this.pendingApps.update(pendingApps => pendingApps.map(current =>
+      this.isSamePendingApp(current, app)
+        ? { ...current, IsSelected: enabled }
+        : current
+    ));
   }
 
   install(): void {
     this.installing = true;
     this.snackBar.open('Installing', undefined, { duration: 2000 });
-    this.#appsListService.installPendingApps(this.pendingApps()).subscribe({
+    const selectedApps = this.pendingApps()
+      .filter(app => app.IsSelected)
+      .map(({ IsSelected, ...app }) => app);
+    this.#appsListService.installPendingApps(selectedApps).subscribe({
       error: () => {
         this.installing = false;
         this.snackBar.open('Failed to install app. Please check console for more information', undefined, { duration: 3000 });
@@ -85,7 +92,7 @@ export class AddAppFromFolderComponent {
       ...defaultGridOptions,
       columnDefs: [
         {
-          field: '',
+          field: 'IsSelected',
           width: 40,
           cellClass: 'no-outline',
           sortable: true,
@@ -112,5 +119,13 @@ export class AddAppFromFolderComponent {
     }
     return gridOptions;
   }
+
+  private isSamePendingApp(left: PendingApp, right: PendingApp): boolean {
+    return left.ServerFolder === right.ServerFolder && left.Folder === right.Folder;
+  }
+}
+
+interface PendingAppSelectable extends PendingApp {
+  IsSelected: boolean;
 }
 

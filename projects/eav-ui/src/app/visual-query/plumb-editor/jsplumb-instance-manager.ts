@@ -1,5 +1,5 @@
 import { WindowWithJsPlumb } from '../window';
-import { ConnectionLineColors } from './connection-line-colors';
+import { ConnectionLineColors } from './connections/connection-line-colors';
 import { JsPlumbInstance } from './jsplumb.models';
 
 declare const window: WindowWithJsPlumb;

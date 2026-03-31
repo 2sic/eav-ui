@@ -5,7 +5,7 @@ import { ActivatedRoute, RouterOutlet } from '@angular/router';
 import { Context } from '../shared/services/context';
 import { AddExplorerComponent } from './add-explorer/add-explorer';
 import { PlumbEditorComponent } from './plumb-editor/plumb-editor';
-import { RunExplorerComponent } from './run-explorer/run-explorer';
+import { RunExplorerComponent } from './run-sidebar/run-sidebar';
 import { VisualQueryStateService } from './services/visual-query.service';
 
 @Component({

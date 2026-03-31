@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, computed, OnDestroy } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialogActions } from '@angular/material/dialog';
@@ -36,9 +36,11 @@ export class AppStateComponent implements OnDestroy {
   ngOnDestroy() {
     this.snackBar.dismiss();
   }
-
-  protected appExportAssetsAdvancedEnabled = this.#featuresSvc.isEnabled[FeatureNames.AppExportAssetsAdvanced];
-
+  
+  // Use computed so Angular tracks the feature signal reactively.
+  // Without this the Material disabled state can get out of sync.
+  protected appExportAssetsAdvancedEnabled = computed(() => !!this.#featuresSvc.isEnabled[FeatureNames.AppExportAssetsAdvanced]());
+  
   async exportAppXml(withFiles: boolean) {
     this.snackBar.open('Exporting...');
     try {

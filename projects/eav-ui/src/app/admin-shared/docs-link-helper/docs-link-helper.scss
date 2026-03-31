@@ -1,1 +1,13 @@
-@use "../../../styles/ag-grid-hover";
+@use '../../../styles/variables.scss';
+
+:host {
+  --mdc-text-button-label-text-color: #{variables.$external-link};
+  --mat-text-button-state-layer-color: #{variables.$external-link};
+}
+
+.eav-button__with-icon,
+.eav-button__with-icon span,
+.eav-button__with-icon .eav-icon,
+.eav-button__with-icon mat-icon {
+  color: variables.$external-link !important;
+}

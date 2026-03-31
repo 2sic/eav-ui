@@ -1,7 +1,7 @@
 import { classLog } from '../../../../../shared/logging';
+import { DataSourceSet } from '../models/data-source-definition';
 import { DataSourceInstance } from '../models/data-source-instance.model';
 import { VisualQueryModel } from '../models/visual-query.model';
-import { DataSourceSet } from './data-source-set.model';
 import { findDefByType } from './datasource.helpers';
 import { domIdOfGuid, guidOfDomId } from './plumber-constants';
 

@@ -209,6 +209,7 @@ export class EditControlsBuilderDirective implements OnInit, OnDestroy {
     if (componentType != null)
       return l.r(componentType, 'found component type');
 
+    // #FallbackToDefaultInputField - if the component doesn't exist, show an error and return the default component, to prevent the entire form from breaking
     console.error(`Missing component class for: ${selector}. 
 This indicates that the field is not registered correctly, so the JS won't run. 
 It could also mean that the JS runs, but doesn't correctly create the custom tag. 
@@ -216,6 +217,8 @@ Will show an info-error instead.`
     );
 
     // Try to show the [type]-default component if it exists
+    // If not even the default can be found, then show the CustomDefaultComponent,
+    // which at least shows the name of the missing component in the UI, so it's clear what is missing.
     const fieldType = selector.split('-')[0];
     const fallback = InputComponents[`${fieldType}-default`] || CustomDefaultComponent;
     return l.r(fallback, 'defaulting to fallback component');

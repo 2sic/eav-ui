@@ -1,25 +1,26 @@
-import { classLog } from '../../../../../shared/logging';
-import { VisualQueryModel } from '../models/visual-query.model';
+import { classLogEnabled } from '../../../../../../shared/logging';
+import { VisualQueryModel } from '../../models/visual-query.model';
+import { JsPlumbEndpoint, JsPlumbOverlay } from '../jsplumb.models';
+import { EndpointInfo } from '../plumb-editor.models';
+import { EndpointLabelName } from '../plumber-constants';
+import { RenameStreamComponent } from '../rename-stream/rename-stream';
+import { RenameStreamDialogData } from '../rename-stream/rename-stream.models';
 import { EndpointLabelRenameParts } from './endpoint-label-rename.model';
-import { JsPlumbEndpoint, JsPlumbOverlay } from './jsplumb.models';
-import { EndpointInfo } from './plumb-editor.models';
-import { RenameStreamComponent } from './rename-stream/rename-stream';
-import { RenameStreamDialogData } from './rename-stream/rename-stream.models';
 
 const logSpecs = {
-  all: true,
-  getEndpointOverlays: true,
-  getEndpointInfo: true,
-  buildSourceDef: true,
-  buildTargetDef: true,
+  all: false,
+  getEndpointOverlays: false,
+  getInfo: true,
+  buildSourceDef: false,
+  buildTargetDef: false,
 }
 
 /**
  * Trivial helper to get endpoint definitions and similar things
  */
-export class EndpointDefinitionsService {
+export class EndpointDefinitionsHelper {
 
-  log = classLog({EndpointDefinitionsService}, logSpecs);
+  log = classLogEnabled({EndpointDefinitionsHelper}, logSpecs);
 
   constructor(
     private pipelineModel: VisualQueryModel,
@@ -31,7 +32,7 @@ export class EndpointDefinitionsService {
     const result = [
       [
         'Label', {
-          id: 'endpointLabel',
+          id: EndpointLabelName,
           location: [0.5, isSource ? 0 : 1],
           label: 'Default',
           cssClass: isSource ? 'endpointSourceLabel' : 'endpointTargetLabel',
@@ -42,7 +43,7 @@ export class EndpointDefinitionsService {
   }
 
   getInfo(endpointName: string, isDynamic: boolean, customLabel?: string): EndpointInfo {
-    const l = this.log.fnIf('getEndpointInfo', {endpointName, isDynamic});
+    const l = this.log.fnIf('getInfo', {endpointName, isDynamic});
 
     // Trim name and see if it's required - marked with a trailing '*'
     const trimmed = endpointName.trim();
@@ -52,14 +53,16 @@ export class EndpointDefinitionsService {
       ? trimmed
       : trimmed.substring(0, trimmed.length - 1);
 
+    const label = customLabel ?? (isAsterisk ? '*' : name);
+
     if (isDynamic)
       return l.r({
         name,
         required: false,
-        label: customLabel ?? (isAsterisk ? '*' : name),
+        label,
       } satisfies EndpointInfo, 'isDynamic');
 
-    return l.r({ name, required, label: customLabel ?? (isAsterisk ? '*' : name) } satisfies EndpointInfo, 'notDynamic');
+    return l.r({ name, required, label } satisfies EndpointInfo, 'notDynamic');
   }
 
   buildSourceDef(dsGuid: string, style?: string) {
@@ -103,7 +106,7 @@ export class EndpointDefinitionsService {
       return;
 
     debugger;
-    const overlay: JsPlumbOverlay = (endpointOrOverlay as JsPlumbEndpoint)?.getOverlay?.('endpointLabel')
+    const overlay: JsPlumbOverlay = (endpointOrOverlay as JsPlumbEndpoint)?.getOverlay?.(EndpointLabelName)
       ?? endpointOrOverlay as JsPlumbOverlay;
 
     this.renameDialogParts.matDialog
@@ -132,7 +135,7 @@ export class EndpointDefinitionsService {
   //   if (!this.pipelineModel.Pipeline.AllowEdit)
   //     return;
 
-  //   const overlay: JsPlumbOverlay = (endpointOrOverlay as JsPlumbEndpoint)?.getOverlay('endpointLabel')
+  //   const overlay: JsPlumbOverlay = (endpointOrOverlay as JsPlumbEndpoint)?.getOverlay(EndpointLabelName)
   //     ?? endpointOrOverlay as JsPlumbOverlay;
 
   //   this.matDialog

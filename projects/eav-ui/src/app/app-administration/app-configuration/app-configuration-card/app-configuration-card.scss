@@ -1,5 +1,34 @@
-@use "../../../../styles/ag-grid-hover";
+@use "../../../../styles/variables.scss";
+
+/* 2sxc Color-Override: External Links */
+a {
+  color: variables.$external-link !important;
+}
+
+/* 2sxc Color-Override: Actions */
+a mat-icon,
+button mat-icon {
+  color: variables.$sxc-solid !important;
+}
+
+/* 2sxc Color-Override: Actions Disabled */
+a.mat-mdc-button.mat-mdc-button-disabled *,
+button.mat-mdc-button.mat-mdc-button-disabled * {
+  color: variables.$text-disabled !important;
+}
 
 .eav-card-space-div {
   min-height: 30px;
+}
+
+:host ::ng-deep .eav-button__with-icon,
+:host ::ng-deep .eav-button__with-icon .mdc-button__label,
+:host ::ng-deep .eav-button__with-icon .mat-icon {
+  overflow: visible;
+}
+
+:host ::ng-deep .eav-button__with-icon .mat-badge-content {
+  color: white !important;
+  font-family: Roboto, "Helvetica Neue", sans-serif !important;
+  z-index: 2;
 }

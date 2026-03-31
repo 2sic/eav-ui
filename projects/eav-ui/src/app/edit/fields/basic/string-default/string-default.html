@@ -22,7 +22,10 @@
 </mat-form-field>
 <app-field-helper-text></app-field-helper-text>
 
-<!-- Show message if this input-field is only being shown as a fallback -->
+<!-- #FallbackToDefaultInputField
+  Show message if this input-field is only being shown as a fallback
+  Note to 2rb: If you end up re-using this, make sure you don't have a lot of duplicate code.
+-->
 @if (typeIfNotWhatsExpected() != null) {
   <div style="color: red;">
     Error: Input <code>{{ typeIfNotWhatsExpected() }}</code> for <code>{{ basics().label }}</code> not found.

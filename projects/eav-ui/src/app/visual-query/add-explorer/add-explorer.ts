@@ -39,7 +39,7 @@ export class AddExplorerComponent {
   }
 
   addDataSource(dataSource: DataSourceInstance) {
-    this.visualQueryService.addDataSource(dataSource);
+    this.visualQueryService.addSourceAndSave(dataSource);
   }
 
   toggleItem(item: string) {

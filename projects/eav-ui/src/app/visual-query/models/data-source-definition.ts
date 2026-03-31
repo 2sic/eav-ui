@@ -1,5 +1,5 @@
 import { MetadataItem } from '../../metadata';
-import { VisualDesignerData } from './visual-designer-data';
+import { VisualDesignerDataForSource } from './visual-designer-data';
 
 /**
  * DataSource definition with it's name, type, etc.
@@ -11,5 +11,10 @@ export interface DataSourceDefinition {
   Metadata?: MetadataItem[];
   Name: string;
   PartAssemblyAndType: string;
-  VisualDesignerData: VisualDesignerData;
+  VisualDesignerData: VisualDesignerDataForSource;
+}
+
+export interface DataSourceSet {
+  domDataSource: HTMLElement;
+  dataSource: DataSourceDefinition;
 }

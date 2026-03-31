@@ -1,20 +1,20 @@
 import { classLog } from '../../../../../shared/logging';
 import { DataSourceInstance } from '../models/data-source-instance.model';
 import { QueryStreamResult } from '../models/result/PipelineResultStream';
-import { VisualDesignerData } from '../models/visual-designer-data';
+import { VisualDesignerDataForSource } from '../models/visual-designer-data';
 import { VisualQueryModel } from '../models/visual-query.model';
-import { ConnectionLineColors } from './connection-line-colors';
 import { ConnectionsManager } from './connections-manager';
+import { ConnectionLineColors } from './connections/connection-line-colors';
+import { ConnectionLineResultCountHelper } from './connections/connection-line-result-count.helper';
+import { WiringsHelper } from './connections/wirings.helper';
 import { getEndpointLabel } from './datasource.helpers';
-import { EndpointDefinitionsService } from './endpoint-definitions';
-import { EndpointLabelRenameParts } from './endpoint-label-rename.model';
-import { EndpointsManager } from './endpoints-manager';
+import { EndpointDefinitionsHelper } from './endpoints/endpoint-definitions.helper';
+import { EndpointLabelRenameParts } from './endpoints/endpoint-label-rename.model';
+import { EndpointsManager } from './endpoints/endpoints-manager';
 import { JsPlumbInstanceManager } from './jsplumb-instance-manager';
 import { JsPlumbEndpoint, JsPlumbInstance } from './jsplumb.models';
-import { LinesDecorator } from './lines-decorator';
 import { domIdOfGuid, guidOfDomId } from './plumber-constants';
 import { QueryDataManager } from './query-data-manager';
-import { WiringsHelper } from './wirings.helper';
 
 const logSpecs = {
   all: false,
@@ -33,9 +33,9 @@ export class Plumber {
 
   lineColors = new ConnectionLineColors();
 
-  #endpointDefs: EndpointDefinitionsService;
+  #endpointDefs: EndpointDefinitionsHelper;
 
-  lineDecorator: LinesDecorator;
+  lineDecorator: ConnectionLineResultCountHelper;
 
   connections: ConnectionsManager;
 
@@ -50,16 +50,16 @@ export class Plumber {
     private query: VisualQueryModel,
     private dataSources: DataSourceInstance[],
     private onConnectionsChangedParent: () => void,
-    private onDragend: (pipelineDataSourceGuid: string, position: VisualDesignerData) => void,
+    private onDragend: (pipelineDataSourceGuid: string, position: VisualDesignerDataForSource) => void,
     private onDebugStream: (stream: QueryStreamResult) => void,
     renameDialogParts: EndpointLabelRenameParts,
   ) {
     this.queryData = new QueryDataManager(this.jsPlumbRoot, this.query, this.dataSources);
-    this.#endpointDefs = new EndpointDefinitionsService(query, { ...renameDialogParts, onConnectionsChanged: () => this.#onConnectionsChanged() });
+    this.#endpointDefs = new EndpointDefinitionsHelper(query, { ...renameDialogParts, onConnectionsChanged: () => this.#onConnectionsChanged() });
     this.#instanceManager = new JsPlumbInstanceManager(this.jsPlumbRoot, this.lineColors);
     this.#instance = this.#instanceManager.instance;
     // requires instance, so must happen after that
-    this.lineDecorator = new LinesDecorator(this.#instance, this.query, this.onDebugStream);
+    this.lineDecorator = new ConnectionLineResultCountHelper(this.#instance, this.query, this.onDebugStream);
     this.connections = new ConnectionsManager(this.#instance, this.query, this.dataSources, this.#endpointDefs, () => this.#onConnectionsChanged());
     this.endpoints = new EndpointsManager(this.#instance, this.#endpointDefs, this.connections, this.queryData);
 
@@ -129,7 +129,7 @@ export class Plumber {
           stop: (event: { el: HTMLElement, finalPos: number[] }) => {
             const element: HTMLElement = event.el;
             const queryDsGuid: string = guidOfDomId(element.id);
-            const position: VisualDesignerData = {
+            const position: VisualDesignerDataForSource = {
               Top: event.finalPos[1],
               Left: event.finalPos[0],
             };
@@ -139,10 +139,11 @@ export class Plumber {
       }
 
       // Add Out-Endpoints from Definition
+      const dsSet = { domDataSource: domDs, dataSource: queryDs };
       const outCount = dataSource.Out?.length ?? 0;
       l.a('dataSource.Out', { outCount, out: dataSource.Out });
       dataSource.Out?.forEach(name => {
-        this.endpoints.addEndpoint(domDs, name, name, false, queryDs);
+        this.endpoints.addEndpoint(dsSet, name, null, false);
       });
 
       // Add dynamic Out-Endpoints (if .OutMode is not static)
@@ -155,7 +156,7 @@ export class Plumber {
       const inCount = dataSource.In?.length ?? 0;
       l.a('dataSource.In', { inCount, in: dataSource.In });
       dataSource.In?.forEach(name => {
-        this.endpoints.addEndpoint(domDs, name, name, true, queryDs);
+        this.endpoints.addEndpoint(dsSet, name, null, true);
       });
 
       // Make DataSource a Target for new Endpoints (if .In is an Array)

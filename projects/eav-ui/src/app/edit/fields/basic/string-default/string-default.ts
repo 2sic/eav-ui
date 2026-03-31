@@ -60,6 +60,7 @@ export class StringDefaultComponent {
   protected textWrap = this.#fieldState.settingExt('TextWrapping');
 
   /**
+   * #FallbackToDefaultInputField
    * The string-default is also used when a custom string-* is not found.
    * If this is being shown as a fallback for another field type, keep the name here
    * to show in the UI.

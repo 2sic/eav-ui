@@ -3,9 +3,9 @@ import { DataSourceInstance } from '../models/data-source-instance.model';
 import { StreamWire } from '../models/stream-wire';
 import { VisualQueryModel } from '../models/visual-query.model';
 import { findDefByType, getEndpointLabel } from './datasource.helpers';
-import { EndpointDefinitionsService } from './endpoint-definitions';
+import { EndpointDefinitionsHelper } from './endpoints/endpoint-definitions.helper';
 import { JsPlumbConnection, JsPlumbInstance } from './jsplumb.models';
-import { guidOfDomId } from './plumber-constants';
+import { EndpointLabelName, guidOfDomId } from './plumber-constants';
 
 const logSpecs = {
   all: false,
@@ -21,7 +21,7 @@ export class ConnectionsManager {
     private instance: JsPlumbInstance, 
     private pipelineModel: VisualQueryModel,
     private dataSources: DataSourceInstance[],
-    private endpointsSvc: EndpointDefinitionsService,
+    private endpointsSvc: EndpointDefinitionsHelper,
     private onConnectionsChanged: () => void,
   ) { }
 
@@ -29,8 +29,8 @@ export class ConnectionsManager {
    * Handle attach/detach of connections
    */
   setup(): void{
-    this.instance.bind('connectionDetached', (info: JsPlumbConnection) => this.handleDetached(info));
-    this.instance.bind('connection', (info: JsPlumbConnection) => this.handleAttached(info));
+    this.instance.bind('connectionDetached', (info: JsPlumbConnection) => this.#handleDetached(info));
+    this.instance.bind('connection', (info: JsPlumbConnection) => this.#handleAttached(info));
   }
 
   getAll(): StreamWire[] {
@@ -46,7 +46,7 @@ export class ConnectionsManager {
   }
   
   
-  handleDetached(info: JsPlumbConnection) {
+  #handleDetached(info: JsPlumbConnection) {
     const l = this.log.fnIf('eventConnectionDetached');
     if (this.bulkDelete)
       return l.end('in bulk-delete mode, exit');
@@ -64,7 +64,7 @@ export class ConnectionsManager {
     l.end('done');
   }
 
-  handleAttached(info: JsPlumbConnection) {
+  #handleAttached(info: JsPlumbConnection) {
     const l = this.log.fnIf('eventConnectionAttached');
     // This seems to handle a special detach case, but ATM 2025-04-03 I can't see where it would ever hit
     if (info.sourceId === info.targetId) {
@@ -74,7 +74,7 @@ export class ConnectionsManager {
       });
       return l.end('self-connection, will delete and exit');
     }
-    const targetEndpointOverlay = info.targetEndpoint.getOverlay('endpointLabel');
+    const targetEndpointOverlay = info.targetEndpoint.getOverlay(EndpointLabelName);
     const targetLabel = targetEndpointOverlay.getLabel();
     const endpoints = this.instance.getEndpoints(info.target.id);
     const targetHasSameLabel = endpoints.some(ep => {
