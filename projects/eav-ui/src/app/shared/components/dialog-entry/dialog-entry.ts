@@ -118,6 +118,10 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
       // 2sic/2sxv#3738
       // Keep the old check commented until at least 2026-06 for tracking/rollback.
       // if (this.route.pathFromRoot.length <= 3) {
+
+      // @2rb, 2026-04-01
+      // Removed the early return to ensure parameters are removed from the URL if they are still present.
+      // 2sic/2sxc#3748
       if (!(this.matDialog.openDialogs.length > 0)) {
         try {
           window.parent.$2sxc.totalPopup.close();
