@@ -101,7 +101,7 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
     // When the dialog is closed, navigate or close popup as needed
     this.#dialog.afterClosed().subscribe((data: any) => {
       this.log.a('Dialog was closed - name:' + dialogConfig.name, { data });
-
+      console.log('Dialog was closed - name:' + dialogConfig.name, { data });
       const navRes = data as NavigateFormResult;
       if (navRes?.navigateUrl != null) {
         this.router.navigate([navRes.navigateUrl]);
@@ -123,7 +123,6 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
           window.parent.$2sxc.totalPopup.close();
         }
         catch (error) { }
-        return;
       }
 
       // Route already changed while nested dialog was open -> avoid forcing another navigation.
