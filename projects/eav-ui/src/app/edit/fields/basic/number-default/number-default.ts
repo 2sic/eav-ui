@@ -33,6 +33,14 @@ export class NumberDefaultComponent {
   protected min = this.fieldState.settingExt('Min');
   protected max = this.fieldState.settingExt('Max');
 
+  /**
+   * #FallbackToDefaultInputField
+   * The number-default is also used when a custom number-* is not found.
+   * If this is being shown as a fallback for another field type, keep the name here
+   * to show in the UI.
+   */
+  protected typeIfNotWhatsExpected = this.fieldState.isNotExpectedType([InputTypeCatalog.NumberDefault]);
+
   constructor() {
     NumberDefaultSettingsHelper.importMe();
   }
