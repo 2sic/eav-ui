@@ -25,6 +25,14 @@ import { BooleanDefaultSettingsHelper } from './boolean-default-settings-helper'
 @FieldMetadata({ ...WrappersLocalizationOnly })
 export class BooleanDefaultComponent extends BooleanBaseComponent {
 
+  /**
+   * #FallbackToDefaultInputField
+   * The boolean-default is also used when a custom boolean-* is not found.
+   * If this is being shown as a fallback for another field type, keep the name here
+   * to show in the UI.
+   */
+  protected typeIfNotWhatsExpected = this.fieldState.isNotExpectedType([InputTypeCatalog.BooleanDefault]);
+
   constructor() {
     super();
     BooleanDefaultSettingsHelper.importMe();

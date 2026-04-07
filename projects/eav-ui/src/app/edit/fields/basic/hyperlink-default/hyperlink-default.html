@@ -137,3 +137,11 @@
     </div>
   }
 }
+
+@if (typeIfNotWhatsExpected() != null) {
+  <div style="color: red;">
+    Error: Input <code>{{ typeIfNotWhatsExpected() }}</code> for <code>{{ basics().label }}</code> not found.
+    It's probably an extension input field, but it's not loaded.
+    Showing default, please fix extension or change field configuration.
+  </div>
+}

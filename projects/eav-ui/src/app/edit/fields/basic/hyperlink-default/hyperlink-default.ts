@@ -60,6 +60,14 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
   protected showFileManager = this.fieldState.settingExt('ShowFileManager');
   protected enableImageConfiguration = this.fieldState.settingExt('EnableImageConfiguration');
 
+  /**
+   * #FallbackToDefaultInputField
+   * The hyperlink-default is also used when a custom hyperlink-* is not found.
+   * If this is being shown as a fallback for another field type, keep the name here
+   * to show in the UI.
+   */
+  protected typeIfNotWhatsExpected = this.fieldState.isNotExpectedType([InputTypeCatalog.HyperlinkDefault]);
+
   constructor(
     eavService: FormConfigService,
     matDialog: MatDialog,
@@ -111,6 +119,6 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
   private setValue(item: AdamItem) {
     const usePath = this.settings().ServerResourceMapping === 'url';
     const newValue = !usePath ? item.ReferenceId : item.Url;
-    this.fieldState.ui().setIfChanged(newValue);
+    this.fieldState.ui().setIfChanged(newValue ?? '');
   }
 }

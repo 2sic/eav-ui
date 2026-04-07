@@ -17,7 +17,7 @@ import { FieldState } from '../../field-state';
 import { FieldHelperTextComponent } from '../../help-text/field-help-text';
 import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
 import {
-  DateTimeUtils
+    DateTimeUtils
 } from './datetime-fn';
 import { MyMatTimepickerInput } from './mat-time-picker';
 
@@ -60,7 +60,7 @@ export class DatetimeDefaultComponent implements AfterViewInit {
 
   log = classLog({ DatetimeDefaultComponent }, logSpecs);
 
-  @ViewChild(MatTimepicker) timePickerRef: MatTimepicker<Dayjs>;
+  @ViewChild(MatTimepicker) timePickerRef!: MatTimepicker<Dayjs>;
 
   protected fieldState = inject(FieldState) as FieldState<string, FieldSettings & FieldSettingsDateTime>;
   protected group = this.fieldState.group;
@@ -68,6 +68,14 @@ export class DatetimeDefaultComponent implements AfterViewInit {
   uiValue = this.fieldState.uiValue;
   protected basics = this.fieldState.basics;
   protected useTimePicker = this.fieldState.settingExt('UseTimePicker');
+
+  /**
+   * #FallbackToDefaultInputField
+   * The datetime-default is also used when a custom datetime-* is not found.
+   * If this is being shown as a fallback for another field type, keep the name here
+   * to show in the UI.
+   */
+  protected typeIfNotWhatsExpected = this.fieldState.isNotExpectedType([InputTypeCatalog.DateTimeDefault]);
 
   // Computed value for the current date-time from UI value
   dateTimeValue = computed(() => {
@@ -108,7 +116,7 @@ export class DatetimeDefaultComponent implements AfterViewInit {
     if (this.timePickerRef) {
       this.timePickerRef.selected.subscribe(timeData => {
         if (timeData)
-          this.updateFormattedValue(null, timeData.value);
+          this.updateFormattedValue(undefined, timeData.value);
       });
     }
     l.end();
@@ -135,7 +143,7 @@ export class DatetimeDefaultComponent implements AfterViewInit {
     const isValid = DateTimeUtils.handleDateTimeInput(
       value,
       this.uiValue(),
-      (value) => this.ui().setIfChanged(value),
+      (value) => this.ui().setIfChanged(value ?? ''),
       this.useTimePicker()
     );
 
@@ -154,7 +162,7 @@ export class DatetimeDefaultComponent implements AfterViewInit {
     DateTimeUtils.updateTime(
       event.target.value,
       this.uiValue(),
-      (value) => this.ui().setIfChanged(value)
+      (value) => this.ui().setIfChanged(value ?? '')
     );
   }
 
@@ -167,7 +175,7 @@ export class DatetimeDefaultComponent implements AfterViewInit {
     DateTimeUtils.updateDate(
       event.value,
       this.uiValue(),
-      (value) => this.ui().setIfChanged(value)
+      (value) => this.ui().setIfChanged(value ?? '')
     );
 
     // Log invalid dates for debugging
@@ -185,10 +193,10 @@ export class DatetimeDefaultComponent implements AfterViewInit {
       date || null,
       time || null,
       this.uiValue(),
-      (value) => { }, //this.ui().setIfChanged(value),
+      (value) => { }, //this.ui().setIfChanged(value ?? ''),
       this.useTimePicker()
     );
-    this.ui().setIfChanged(updated);
+    this.ui().setIfChanged(updated ?? '');
     return updated;
   }
 }
