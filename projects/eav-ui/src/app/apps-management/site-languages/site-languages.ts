@@ -1,6 +1,6 @@
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
 import { GridOptions, ModuleRegistry } from '@ag-grid-community/core';
-import { Component, signal } from '@angular/core';
+import { Component, effect, signal } from '@angular/core';
 import { transient } from '../../../../../core';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter';
@@ -26,11 +26,17 @@ export class SiteLanguagesComponent {
   #zoneSvc = transient(ZoneService);
   constructor() {
     ModuleRegistry.registerModules([ClientSideRowModelModule]);
+
+    effect(() => {
+      const languageData = this.languages();
+      if (!languageData) return;
+      console.log('[SiteLanguages] Language data loaded:', languageData);
+    });
   }
 
   #refreshLanguagesSig = signal(0);
 
-  languages = this.#zoneSvc.getLanguageLive(this.#refreshLanguagesSig).value;
+  languages = this.#zoneSvc.getLanguageLive(this.#refreshLanguagesSig);
 
   async #toggleLanguage(language: SiteLanguage, enable: boolean) {
     try {

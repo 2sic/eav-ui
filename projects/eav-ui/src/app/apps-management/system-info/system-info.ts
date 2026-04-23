@@ -63,7 +63,7 @@ export class SystemInfoComponent implements OnInit {
   loading = signal(false);
   #refresh = signal(0);
 
-  #languages = this.#zoneSvc.getLanguageLive(this.#refresh).value;
+  #languages = this.#zoneSvc.getLanguageLive(this.#refresh);
   #systemInfoSet = this.#zoneSvc.getSystemInfoLive(this.#refresh).value;
 
   systemInfos = computed(() => {
