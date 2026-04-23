@@ -30,7 +30,7 @@ export class SiteLanguagesComponent {
 
   #refreshLanguagesSig = signal(0);
 
-  languages = this.#zoneSvc.getLanguageLive(this.#refreshLanguagesSig).value;
+  languages = this.#zoneSvc.getLanguageLive(this.#refreshLanguagesSig);
 
   async #toggleLanguage(language: SiteLanguage, enable: boolean) {
     try {
