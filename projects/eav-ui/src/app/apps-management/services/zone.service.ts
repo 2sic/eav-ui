@@ -8,7 +8,6 @@ import { SystemInfoSet } from '../models/system-info.model';
 
 const webApiZoneRootSwitchLanguage = 'admin/zone/SwitchLanguage';
 const webApiZoneRootGetSystemInfo = 'admin/zone/GetSystemInfo';
-const webApiAppRootLanguages = 'admin/app/languages';
 
 @Injectable()
 export class ZoneService extends HttpServiceBaseSignal {
@@ -39,12 +38,10 @@ export class ZoneService extends HttpServiceBaseSignal {
   }
 
   getLanguagesPermissionsLive(refresh: Signal<unknown>) {
-    return httpResource<SiteLanguagePermissions[]>(() => {
-      refresh();
-      return ({
-        url: this.apiUrl(webApiAppRootLanguages),
-        params: { appId: this.appId }
-      });
+    return this.#sysData.get<SiteLanguagePermissions>({
+      refresh,
+      source: 'System.ZoneLanguages',
+      noCamel: true,
     });
   }
 }
