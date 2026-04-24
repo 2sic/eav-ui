@@ -1,5 +1,5 @@
 import patronsLogo from '!raw-loader!./assets/2sxc-patrons.svg';
-import { Component, HostBinding, signal, ViewContainerRef } from '@angular/core';
+import { Component, computed, HostBinding, signal, ViewContainerRef } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
@@ -45,8 +45,35 @@ export class RegistrationComponent {
   ) { }
 
   #refresh = signal(0);
-  systemInfoSet = this.#zoneSvc.getSystemInfoLive(this.#refresh).value;
-  openLicenseRegistration(systemInfoSet: SystemInfoSet): void {
+  #systemInfoStreams = this.#zoneSvc.getSystemInfoLive(this.#refresh).value;
+
+  systemInfoSet = computed<SystemInfoSet | undefined>(() => {
+    const streams = this.#systemInfoStreams();
+    if (streams == null) 
+      return undefined;
+
+    const system = streams.System?.[0];
+    const site = streams.Site?.[0];
+    const license = streams.License?.[0];
+    const messages = streams.Messages?.[0];
+
+    if (system == null || site == null || license == null) 
+      return undefined;
+
+    return {
+      System: system,
+      Site: site,
+      License: license,
+      Messages: messages ?? {
+        WarningsObsolete: 0,
+        WarningsOther: 0,
+      },
+    };
+  });
+
+  openLicenseRegistration(systemInfoSet: SystemInfoSet | undefined): void {
+    if (systemInfoSet == null)
+      return;
     window.open(`https://patrons.2sxc.org/register?fingerprint=${systemInfoSet.System.Fingerprint}`, '_blank');
   }
 

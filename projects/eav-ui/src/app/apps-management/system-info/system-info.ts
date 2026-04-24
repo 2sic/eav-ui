@@ -20,6 +20,7 @@ import { EavWindow } from '../../shared/models/eav-window.model';
 import { DialogInNewWindowService } from '../../shared/routing/dialog-in-new-window.service';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { ClipboardService } from '../../shared/services/clipboard.service';
+import { SystemInfoSet } from '../models/system-info.model';
 import { SxcInsightsService } from '../services/sxc-insights.service';
 import { ZoneService } from '../services/zone.service';
 import { InfoTemplate } from './system-info.models';
@@ -64,11 +65,36 @@ export class SystemInfoComponent implements OnInit {
   #refresh = signal(0);
 
   #languages = this.#zoneSvc.getLanguageLive(this.#refresh);
-  #systemInfoSet = this.#zoneSvc.getSystemInfoLive(this.#refresh).value;
+  #systemInfoStreams = this.#zoneSvc.getSystemInfoLive(this.#refresh).value;
+
+  #systemInfoSet = computed<SystemInfoSet | undefined>(() => {
+    const streams = this.#systemInfoStreams();
+    if (streams == null) return undefined;
+
+    const system = streams.System?.[0];
+    const site = streams.Site?.[0];
+    const license = streams.License?.[0];
+    const messages = streams.Messages?.[0];
+
+    // Some environments may not return all streams, so only return data once core streams exist.
+    if (system == null || site == null || license == null)
+      return undefined;
+
+    return {
+      System: system,
+      Site: site,
+      License: license,
+      Messages: messages ?? {
+        WarningsObsolete: 0,
+        WarningsOther: 0,
+      },
+    };
+  });
 
   systemInfos = computed(() => {
     const systemInfoSetValue = this.#systemInfoSet();
-    if (systemInfoSetValue == null) return;
+    if (systemInfoSetValue == null) 
+      return;
     const url = this.#dialogRouter.router.url + '/' + "registration";
     const info: InfoTemplate[] = [
       { label: 'CMS', value: `2sxc v.${systemInfoSetValue.System.EavVersion}` },
