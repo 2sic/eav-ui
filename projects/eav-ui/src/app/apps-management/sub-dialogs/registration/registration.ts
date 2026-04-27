@@ -47,33 +47,23 @@ export class RegistrationComponent {
   #refresh = signal(0);
   #systemInfoStreams = this.#zoneSvc.getSystemInfoLive(this.#refresh).value;
 
-  systemInfoSet = computed<SystemInfoSet | undefined>(() => {
-    const streams = this.#systemInfoStreams();
-    if (streams == null) 
-      return undefined;
+systemInfoSet = computed<SystemInfoSet | null>(() => {
+  const streams = this.#systemInfoStreams();
+  if (streams == null)
+    return null;
 
-    const system = streams.System?.[0];
-    const site = streams.Site?.[0];
-    const license = streams.License?.[0];
-    const messages = streams.Messages?.[0];
+  return {
+    System: streams.System?.[0] ?? null,
+    Site: streams.Site?.[0] ?? null,
+    License: streams.License?.[0] ?? null,
+    Messages: streams.Messages?.[0] ?? null,
+  };
+});
 
-    if (system == null || site == null || license == null) 
-      return undefined;
+openLicenseRegistration(systemInfoSet: SystemInfoSet | null): void {
+  if (systemInfoSet?.System == null)
+    return;
 
-    return {
-      System: system,
-      Site: site,
-      License: license,
-      Messages: messages ?? {
-        WarningsObsolete: 0,
-        WarningsOther: 0,
-      },
-    };
-  });
-
-  openLicenseRegistration(systemInfoSet: SystemInfoSet | undefined): void {
-    if (systemInfoSet == null)
-      return;
     window.open(`https://patrons.2sxc.org/register?fingerprint=${systemInfoSet.System.Fingerprint}`, '_blank');
   }
 
