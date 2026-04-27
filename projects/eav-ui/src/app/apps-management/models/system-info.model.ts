@@ -5,6 +5,13 @@ export interface SystemInfoSet {
   System: SystemInfo;
 }
 
+export interface SystemInfoStreams {
+  License?: LicenseInfo[];
+  Messages?: WarningsCount[];
+  Site?: SiteStats[];
+  System?: SystemInfo[];
+}
+
 export interface LicenseInfo {
   Count: number;
   Main: string;
