@@ -91,7 +91,7 @@ export class AppsListComponent implements OnInit {
   //   return untracked(() => this.#appsListSvc.getAll().value) // Untracked to avoid re-running this when the refresh changes
   // });
 
-  apps = this.#appsListSvc.getAllLive(this.#refresh).value;
+  apps = this.#appsListSvc.getAllLive(this.#refresh);
 
 
   ngOnInit(): void {
