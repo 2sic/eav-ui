@@ -45,6 +45,7 @@ export class ExportAppComponent {
   downloadUrl = computed(() => this.#exportAppService.exportAppUrl()
     + `&includeContentGroups=${this.includeContentGroups()}&resetAppGuid=${this.resetAppGuid()}`
     + `&assetsAdam=${this.assetsAdam()}&assetsSite=${this.assetsSite()}`
+    + `&assetAdamDeleted=${this.assetsAdamDeleted()}`
   );
 
 }
