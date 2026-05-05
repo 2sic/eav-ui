@@ -80,7 +80,12 @@
       link="https://go.2sxc.org/app-export"
       label="Export App Info"
     />
-    <a mat-button class="eav-button__with-icon" [href]="downloadUrl()" download>
+    <!--
+      Intentionally no "download" attribute here. Export can return either a real ZIP or a backend
+      error response; forcing browser-download mode caused error JSON/HTML to be saved as Export.json
+      instead of showing the error in the opened response.
+    -->
+    <a mat-button class="eav-button__with-icon" [href]="downloadUrl()" target="_blank" rel="noopener">
       <mat-icon class="eav-icon">deployed_code_update</mat-icon>
       <span>Download</span>
     </a>
