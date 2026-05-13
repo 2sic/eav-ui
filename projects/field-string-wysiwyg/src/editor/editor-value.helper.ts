@@ -1,5 +1,5 @@
 import { Connector } from 'projects/edit-types/src/Connector';
-import { classLogEnabled } from '../../../shared/logging';
+import { classLog } from '../../../shared/logging';
 import { EditorWithId } from './editor.types';
 
 const logSpecs = {
@@ -12,7 +12,7 @@ const logSpecs = {
 
 export class EditorValueHelper {
 
-  log = classLogEnabled({ EditorValueHelper }, logSpecs);
+  log = classLog({ EditorValueHelper }, logSpecs);
 
   constructor(private editor: EditorWithId, private connector: Connector<string>) {
     this.log.aIf(`constructor`, { editorId: this.editor.idRandom, initialContent: editor.getContent() }, 'constructor');
