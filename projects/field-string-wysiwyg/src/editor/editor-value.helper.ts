@@ -27,7 +27,7 @@ export class EditorValueHelper {
     this.handleExternalValueUpdate(this.connector.data.value);
 
     this.connector.data.onValueChange(newValue => {
-      console.log('onValueChange callback', { newValue, editorId: this.editor.idRandom });
+      // console.log('onValueChange callback', { newValue, editorId: this.editor.idRandom });
       this.handleExternalValueUpdate(newValue);
     });
     l.end();
