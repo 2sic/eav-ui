@@ -83,7 +83,7 @@ export class EditDialogSaveService {
     const eavItem = this.itemService.get(editDialog.formBuilderRefs.get(0).entityGuid());
     const saveMode = eavItem.Header.ClientData?.save === 'js';
 
-    console.log('2dm - EditDialogSaveService - saveAll', { saveMode, clientData: eavItem.Header.ClientData });
+    // console.log('2dm - EditDialogSaveService - saveAll', { saveMode, clientData: eavItem.Header.ClientData });
 
     if (saveMode) {
       this.#saveThroughJs(editDialog, close);
