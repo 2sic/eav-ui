@@ -24,8 +24,8 @@ export class TinyMceSetup {
   log = classLog({ TinyMceSetup }, logSpecs);
 
   #subscriptions = new Subscription();
-  #menuObserver: MutationObserver;
-  #valueHelper: EditorValueHelper;
+  #menuObserver!: MutationObserver;
+  #valueHelper!: EditorValueHelper;
   #pasteHandler = new EditorPasteOrDropHelper();
 
   isKilled = false;
@@ -152,10 +152,10 @@ export class TinyMceSetup {
   cleanup(): void {
     const l = this.log.fnIf('cleanup');
     this.#subscriptions.unsubscribe();
-    this.#valueHelper = null;
-    this.#pasteHandler = null;
+    this.#valueHelper = null!;
+    this.#pasteHandler = null!;
     this.#menuObserver?.disconnect();
-    this.#menuObserver = null;
+    this.#menuObserver = null!;
     this.isKilled = true;
     l.end();
   }

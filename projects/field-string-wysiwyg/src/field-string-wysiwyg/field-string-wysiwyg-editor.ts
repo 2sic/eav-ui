@@ -136,13 +136,13 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     const l = this.log.fnIf('setupDom');
     // add the unique classes to the DOM so tiny-mce can find the right container to load into
     this.innerHTML = buildHtmlAndStyles(template.default, styles.default + skinOverrides.default);
-    this.querySelector<HTMLDivElement>('.tinymce-container').classList.add(
+    this.querySelector<HTMLDivElement>('.tinymce-container')!.classList.add(
       // Class so tiny-mce can find the container to load the editor into
       this.#containerClass,
       // Class to add to the DOM so the surrounding Dropzone does everything right
       WysiwygConstants.classToDetectWysiwyg
     );
-    this.querySelector<HTMLDivElement>('.tinymce-toolbar-container').classList.add(this.#toolbarContainerClass);
+    this.querySelector<HTMLDivElement>('.tinymce-toolbar-container')!.classList.add(this.#toolbarContainerClass);
     this.classList.add(this.mode === 'inline' ? 'inline-wysiwyg' : 'full-wysiwyg');
     l.end();
   }
@@ -151,7 +151,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   #tinyMceScriptLoaded(): void {
     const l = this.log.fnIf(`tinyMceScriptLoaded`);
 
-    this.configurator = new TinyMceConfigurator(this.connector, this.reconfigure);
+    this.configurator = new TinyMceConfigurator(this.connector, this.reconfigure!);
     const tinyOptions = this.configurator.buildOptions(
       {
         selectorClass: this.#containerClass,
@@ -199,7 +199,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     const l = this.log.fnIf('cleanup');
     // Do cleanup
     this.#tinyMceSetup?.cleanup();
-    this.#tinyMceSetup = null;
+    this.#tinyMceSetup = null!;
     this.#editor?.destroy();
     this.#editor?.remove();
     l.end();

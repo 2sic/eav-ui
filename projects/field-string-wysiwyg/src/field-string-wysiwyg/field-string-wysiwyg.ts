@@ -56,7 +56,7 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
       this.#createPreview();
     else
       this.#createEditor();
-    l.end(null, { previewMode });
+    l.end(undefined, { previewMode });
   }
 
   #isPreviewMode(): boolean {

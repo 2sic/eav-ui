@@ -22,7 +22,7 @@ export interface ExperimentalProps {
   isFeatureEnabled: Record<string, Signal<boolean>>;
   openPagePicker(callback: (value: PagePickerResult) => void): void;
   /** Optional helper that shows a snackbar/toast message */
-  showSnackBar?: (message: string) => void;
+  showSnackBar: (message: string) => void;
   featureDisabledWarning(featureNameId: string): void;
   getUrlOfId(value: string, callback: (value: string) => void): void;
   getSettings(name: string): any;

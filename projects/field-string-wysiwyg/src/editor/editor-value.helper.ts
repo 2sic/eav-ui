@@ -19,7 +19,7 @@ export class EditorValueHelper {
   }
 
   /** saves editor content to prevent slow update when first using editor */
-  editorContent: string;
+  private editorContent?: string;
 
   start() {
     const l = this.log.fnIf(`start`, { editorId: this.editor.idRandom }, 'start');
