@@ -15,20 +15,25 @@ import { UrlParamBase64 } from './url-param-base64';
 
 const log = classLog("UrlPrepHelper")
 
-const PREFILL_PREFIX = 'prefill:';
-// const GROUP_PREFIX = 'group:';
-const UIFIELDS_PREFIX = 'uifields:';
-const PARAM_PREFIX = 'parameters:';
-const COPY_PREFIX = 'copy:';
-const SAVE_PREFIX = 'save:';
-const DATA_PREFIX = 'data64:';
-const ITEM_SEPARATOR = ',';
-const VAL_SEPARATOR = '&';
-const LIST_SEPARATOR = ':';
-const METADATA_SEPARATOR = '~';
+
+const PREFIX = {
+  Prefill: 'prefill:',
+  UiFields: 'uifields:',
+  Params: 'parameters:',
+  Copy: 'copy:',
+  Save: 'save:',
+  Data: 'data64:',
+} as const;
+
+const SEPARATOR = {
+  Item: ',',
+  Val: '&',
+  List: ':',
+  Metadata: '~',
+} as const;
 
 function toOrderedParams(values: unknown[]): string {
-  return values.join(LIST_SEPARATOR);
+  return values.join(SEPARATOR.List);
 }
 
 interface UrlDataSpecs {
@@ -49,7 +54,7 @@ export function convertFormToUrl(form: EditForm) {
   for (const item of form.items) {
     // If we already have one, the next must be separated
     if (formUrl)
-      formUrl += ITEM_SEPARATOR;
+      formUrl += SEPARATOR.Item;
 
     // Fields/Parameters can come from two places
     // When a link is inbound from the page, it will use UiFields/Parameters
@@ -97,7 +102,7 @@ function obj2UrlParams(obj: Record<string, unknown> | undefined, prefix: string)
   for (const [key, value] of Object.entries(obj)) {
     if (value == null)
       continue;
-    result += `${VAL_SEPARATOR}${prefix}${key}~${ParamEncoder.encode(value.toString())}`;
+    result += `${SEPARATOR.Val}${prefix}${key}${SEPARATOR.Metadata}${ParamEncoder.encode(value.toString())}`;
   }
   return result;
 }
@@ -107,8 +112,8 @@ function prefillFromUrlParams(url: string, addTo: Record<string, unknown> | unde
   const result = addTo ?? {} as Record<string, string>;
   if (url == null)
     return result;
-  const prefillParams = url.split(LIST_SEPARATOR);
-  const [key, value] = prefillParams[1].split(METADATA_SEPARATOR);
+  const prefillParams = url.split(SEPARATOR.List);
+  const [key, value] = prefillParams[1].split(SEPARATOR.Metadata);
   const decodedValue = ParamEncoder.decode(value);
   result[key] = decodedValue;
   return result;
@@ -121,7 +126,7 @@ function isNumber(maybeNumber: string): boolean {
 
 export function convertUrlToForm(formUrl: string) {
   const l = log.fn("convertUrlToForm", { formUrl });
-  const itemPaths = formUrl.split(ITEM_SEPARATOR);
+  const itemPaths = formUrl.split(SEPARATOR.Item);
 
   const translators: UrlTranslator[] = [
     new GroupTranslator(),
@@ -184,15 +189,15 @@ class PartSaveTranslator implements PartTranslator {
   public name = 'PartSaveTranslator';
 
   add(parts: AddPartsSpecs, item: ItemIdentifierShared, data?: UrlDataSpecs): string {
-    return parts.save ? `${VAL_SEPARATOR}${SAVE_PREFIX}${parts.save}` : ''
+    return parts.save ? `${SEPARATOR.Val}${PREFIX.Save}${parts.save}` : ''
   }
 
   shouldExtract(part: string): boolean {
-    return part.startsWith(SAVE_PREFIX);
+    return part.startsWith(PREFIX.Save);
   }
 
   extract<T extends ItemIdentifierShared>(item: T, part: string): T {
-    const save = part.split(LIST_SEPARATOR)[1] as 'js';
+    const save = part.split(SEPARATOR.List)[1] as 'js';
     return { ...item, ClientData: { ...item.ClientData, save } };
   }
 }
@@ -202,16 +207,16 @@ class PartCopyTranslator implements PartTranslator {
 
   add(parts: AddPartsSpecs, addItem: ItemAddIdentifier, data?: UrlDataSpecs): string {
     return (parts.duplicate && addItem.DuplicateEntity)
-      ? `${VAL_SEPARATOR}${COPY_PREFIX}` + addItem.DuplicateEntity
+      ? `${SEPARATOR.Val}${PREFIX.Copy}` + addItem.DuplicateEntity
       : '';
   }
 
   shouldExtract(part: string): boolean {
-    return part.startsWith(COPY_PREFIX);
+    return part.startsWith(PREFIX.Copy);
   }
 
   extract<T extends ItemIdentifierShared>(item: T, part: string): T {
-    const duplicateEntity = parseInt(part.split(LIST_SEPARATOR)[1], 10);
+    const duplicateEntity = parseInt(part.split(SEPARATOR.List)[1], 10);
     return {
       ...item,
       DuplicateEntity: duplicateEntity,
@@ -223,11 +228,11 @@ class PartParamsTranslator implements PartTranslator {
   public name = 'PartParamsTranslator';
 
   add(parts: AddPartsSpecs, item: ItemIdentifierShared, data: UrlDataSpecs): string {
-    return parts.params ? obj2UrlParams(data.parameters, PARAM_PREFIX) : '';
+    return parts.params ? obj2UrlParams(data.parameters, PREFIX.Params) : '';
   }
 
   shouldExtract(part: string): boolean {
-    return part.startsWith(PARAM_PREFIX);
+    return part.startsWith(PREFIX.Params);
   }
 
   extract<T extends ItemIdentifierShared>(item: T, part: string): T {
@@ -241,16 +246,16 @@ class PartFieldsTranslator implements PartTranslator {
 
   add(parts: AddPartsSpecs, item: ItemIdentifierShared, data: UrlDataSpecs): string {
     return parts.fields && data.fields
-      ? `${VAL_SEPARATOR}${UIFIELDS_PREFIX}${ParamEncoder.encode(data.fields)}`
+      ? `${SEPARATOR.Val}${PREFIX.UiFields}${ParamEncoder.encode(data.fields)}`
       : '';
   }
 
   shouldExtract(part: string): boolean {
-    return part.startsWith(UIFIELDS_PREFIX);
+    return part.startsWith(PREFIX.UiFields);
   }
 
   extract<T extends ItemIdentifierShared>(item: T, part: string): T {
-    const fields = ParamEncoder.decode(part.split(LIST_SEPARATOR)[1]);
+    const fields = ParamEncoder.decode(part.split(SEPARATOR.List)[1]);
     return { ...item, ClientData: { ...item.ClientData, fields } };
   }
 }
@@ -259,11 +264,11 @@ class PartPrefillTranslator implements PartTranslator {
   public name = 'PartPrefillTranslator';
 
   add(parts: AddPartsSpecs, item: ItemIdentifierShared, data: UrlDataSpecs): string {
-    return parts.prefill ? obj2UrlParams(item.Prefill, PREFILL_PREFIX) : '';
+    return parts.prefill ? obj2UrlParams(item.Prefill, PREFIX.Prefill) : '';
   }
 
   shouldExtract(part: string): boolean {
-    return part.startsWith(PREFILL_PREFIX);
+    return part.startsWith(PREFIX.Prefill);
   }
 
   extract<T extends ItemIdentifierShared>(item: T, part: string): T {
@@ -284,8 +289,8 @@ class PartMetadataTranslator implements PartTranslator {
   }
 
   extract<T extends ItemIdentifierShared>(addItem: T, part: string): T {
-    const forParams = part.split(LIST_SEPARATOR);
-    const [forKeyType, forKey] = forParams[1].split(METADATA_SEPARATOR);
+    const forParams = part.split(SEPARATOR.List);
+    const [forKeyType, forKey] = forParams[1].split(SEPARATOR.Metadata);
     const forSingleton = forParams[4] != null ? forParams[4] === 'true' : undefined;
     const For = {
       Target: forParams[2],
@@ -313,7 +318,7 @@ class PartMetadataTranslator implements PartTranslator {
     ]);
 
     if (addItem.For != null) {
-      const prefix = `${VAL_SEPARATOR}for:`;
+      const prefix = `${SEPARATOR.Val}for:`;
       const forSuffix = buildForSuffix(addItem.For);
       if (addItem.For?.String)
         return l.r(`${prefix}s~${ParamEncoder.encode(addItem.For.String)}${forSuffix}`, "for string");
@@ -344,7 +349,7 @@ class PartMetadataTranslator implements PartTranslator {
     }
     const target = Object.values(eavConstants.metadata)
       .find(m => m.targetType === md.targetType)?.target;
-    const result = `${VAL_SEPARATOR}for:${keyType}${METADATA_SEPARATOR}` + toOrderedParams([
+    const result = `${SEPARATOR.Val}for:${keyType}${SEPARATOR.Metadata}` + toOrderedParams([
       ParamEncoder.encode(md.key),
       target,
       md.targetType
@@ -362,15 +367,15 @@ class PartDataTranslator implements PartTranslator {
     if (!overrideData)
       return '';
 
-    return `${VAL_SEPARATOR}${DATA_PREFIX}${UrlParamBase64.encode(overrideData)}`;
+    return `${SEPARATOR.Val}${PREFIX.Data}${UrlParamBase64.encode(overrideData)}`;
   }
 
   shouldExtract(part: string): boolean {
-    return part.startsWith(DATA_PREFIX);
+    return part.startsWith(PREFIX.Data);
   }
 
   extract<T extends ItemIdentifierShared>(item: T, part: string): T {
-    const dataEncoded = part.split(LIST_SEPARATOR)[1];
+    const dataEncoded = part.split(SEPARATOR.List)[1];
     const data = UrlParamBase64.decode(dataEncoded);
     return { ...item, ClientData: { ...item.ClientData, data } };
   }
@@ -417,13 +422,13 @@ class GroupTranslator implements UrlTranslator {
   fromUrl(item: string): ItemInListIdentifier {
     // Inner Item / Group Item
     let innerItem = {} as ItemInListIdentifier;
-    const options = item.split(VAL_SEPARATOR);
+    const options = item.split(SEPARATOR.Val);
 
     const partCopy = new PartCopyTranslator();
     for (const option of options) {
       // The group prefix must always be the first option
       if (option.startsWith(GroupTranslator.GROUP_PREFIX)) {
-        const params = option.split(LIST_SEPARATOR);
+        const params = option.split(SEPARATOR.List);
         const hasParam5Id = params.length > 4 && params[5] && isNumber(params[5]);
         innerItem = {
           ...innerItem,
@@ -461,13 +466,13 @@ class EditTranslator implements UrlTranslator {
   }
 
   shouldDecode(item: string): boolean {
-    const firstPart = item.split(VAL_SEPARATOR)[0];
+    const firstPart = item.split(SEPARATOR.Val)[0];
     return isNumber(firstPart);
   }
 
   fromUrl(item: string): ItemEditIdentifier {
     // Edit Item
-    const parts = item.split(VAL_SEPARATOR);
+    const parts = item.split(SEPARATOR.Val);
     let editItem: ItemEditIdentifier = ItemIdHelper.editId(parseInt(parts[0], 10));
     for (const part of parts)
       editItem = addParamToItemIdentifier(editItem, part);
@@ -505,7 +510,7 @@ class AddTranslator implements UrlTranslator {
   fromUrl(item: string): ItemAddIdentifier {
     // Add Item
     let addItem = {} as ItemAddIdentifier;
-    const options = item.split(VAL_SEPARATOR);
+    const options = item.split(SEPARATOR.Val);
 
     const partCopy = new PartCopyTranslator();
     const partMetadata = new PartMetadataTranslator();
@@ -514,7 +519,7 @@ class AddTranslator implements UrlTranslator {
       // the first part must always be the content type with the "new:" prefix
       if (option.startsWith('new:')) {
         // Add Item ContentType
-        const newParams = option.split(LIST_SEPARATOR);
+        const newParams = option.split(SEPARATOR.List);
         addItem.ContentTypeName = newParams[1];
       } else if (partMetadata.shouldExtract(option))
         addItem = partMetadata.extract(addItem, option);
