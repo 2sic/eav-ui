@@ -1,7 +1,7 @@
 import { classLog } from '../../../../../shared/logging';
 import { EavFor } from '../../edit/shared/models/eav';
 import { eavConstants } from '../constants/eav.constants';
-import { EditForm, ItemAddIdentifier, ItemEditIdentifier, ItemIdentifierInbound, ItemIdentifierShared, ItemInListIdentifier } from '../models/edit-form.model';
+import { EditForm, ItemAddIdentifier, ItemEditIdentifier, ItemIdentifier, ItemIdentifierInbound, ItemIdentifierShared, ItemInListIdentifier } from '../models/edit-form.model';
 import { ItemIdHelper } from '../models/item-id-helper';
 import { ParamEncoder } from './param-encoder';
 import { UrlParamBase64 } from './url-param-base64';
@@ -40,15 +40,11 @@ export function convertFormToUrl(form: EditForm) {
   const l = log.fn('convertFormToUrl', { form });
   let formUrl = '';
 
-    const groupTranslator = new GroupTranslator();
-    const editTranslator = new EditTranslator();
-    const addTranslator = new AddTranslator();
-
-    const translators: UrlTranslator[] = [
-      new GroupTranslator(),
-      new EditTranslator(),
-      new AddTranslator()
-    ];
+  const translators: UrlTranslator[] = [
+    new GroupTranslator(),
+    new EditTranslator(),
+    new AddTranslator()
+  ];
 
   for (const item of form.items) {
     // If we already have one, the next must be separated
@@ -73,22 +69,6 @@ export function convertFormToUrl(form: EditForm) {
         break;
       }
     }
-
-    // Group- or Inner-Item
-    // if (groupTranslator.isForIdentifier(item)) {
-    //   l.a(groupTranslator.name, {item});
-    //   formUrl += groupTranslator.toUrl(item as ItemInListIdentifier, specs);
-
-    // } else if (editTranslator.isForIdentifier(item)) {
-    //   l.a(editTranslator.name, {item});
-    //   formUrl += editTranslator.toUrl(item as ItemEditIdentifier, specs);
-
-    // }
-    // // Add item, optionally with For-Metadata
-    // else if (addTranslator.isForIdentifier(item)) {
-    //   l.a(addTranslator.name, {item});
-    //   formUrl += addTranslator.toUrl(item as ItemAddIdentifier, specs);
-    // }
   }
   return l.r(formUrl);
 }
@@ -199,36 +179,24 @@ function isNumber(maybeNumber: string): boolean {
 
 export function convertUrlToForm(formUrl: string) {
   const l = log.fn("convertUrlToForm", { formUrl });
-  const form: EditForm = { items: [] };
-  const items = formUrl.split(ITEM_SEPARATOR);
+  const itemPaths = formUrl.split(ITEM_SEPARATOR);
 
-  const translators = [
+  const translators: UrlTranslator[] = [
     new GroupTranslator(),
     new EditTranslator(),
     new AddTranslator()
   ];
 
-  for (const item of items) {
-    l.a("item", {item});
-    for (const translator of translators) {
-      if (translator.isForString(item)) {
-        form.items.push(translator.fromUrl(item));
-        break;
-      }
-    }
-    // Handle group:
-    // if (groupTranslator.isForString(item)) {
-    //   const innerItem = groupTranslator.fromUrl(item);
-    //   form.items.push(innerItem);
-    // } else if (editTranslator.isForString(item)) {
-    //   const editItem = editTranslator.fromUrl(item);
-    //   form.items.push(editItem);
-    // } else if (addTranslator.isForString(item)) {
-    //   const addItem = addTranslator.fromUrl(item);
-    //   form.items.push(addItem);
-    // }
-  }
-  return l.r(form);
+  const items = itemPaths
+    .map(path => {
+      for (const translator of translators)
+        if (translator.isForString(path))
+          return translator.fromUrl(path);
+      l.a("No translator found for item path", {path});
+      return null;
+    })
+    .filter(item => item != null) as ItemIdentifier[];
+  return l.r({ items } satisfies EditForm);
 }
 
 /** add prefill and filter to url parameters */
@@ -273,6 +241,7 @@ interface UrlTranslator {
   name: string;
   isForIdentifier(item: ItemIdentifierShared): boolean;
   toUrl(item: ItemIdentifierShared, parts: UrlPartSpecs): string;
+  isForString(item: string): boolean;
   fromUrl(item: string): ItemIdentifierShared;
 }
 
@@ -351,16 +320,6 @@ class EditTranslator implements UrlTranslator {
     formUrl += addTypicalUrlGroups(asItem, parts.fields, parts.parameters,
       { fields: true, params: true }
     );
-
-    // 2023-05-11 in edit-id mode, prefill isn't supported, but we want the fields
-    // I actually think that prefill should be supported, because it can also transport more parameters
-    // formUrl += prefill2UrlParams(groupItem.Prefill, fields);
-
-    // 2024-05-30 2dm reactivating prefill on edit, for scenarios where new fields were added
-    // and for ephemeral control fields
-    // 2024-06-01 2dm re-disabled, since this also affects links coming in from the page
-    // so this could be an unexpected breaking change...
-    // formUrl += prefill2UrlParams(asItem.Prefill);
     return formUrl;
   }
 
