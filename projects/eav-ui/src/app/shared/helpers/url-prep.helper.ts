@@ -51,8 +51,6 @@ export function convertFormToUrl(form: EditForm) {
     if (formUrl)
       formUrl += ITEM_SEPARATOR;
 
-    // const asGroup = item as ItemInListIdentifier;
-    // const asItem = item as ItemEditIdentifier;
     // Fields/Parameters can come from two places
     // When a link is inbound from the page, it will use UiFields/Parameters
     // If it's from the Admin-UI itself, it should use the newer / deeper ClientData
@@ -82,65 +80,15 @@ function addTypicalUrlGroups(
 ): string {
   const addItem = item as ItemAddIdentifier;
   const result = ''
-    + new PartMetadataTranslator().add(parts, addItem) // (parts.metadata ? getParamForMetadata(addItem) : '')
-    + new PartPrefillTranslator().add(parts, item, data) // (parts.prefill ? prefill2UrlParams(item.Prefill) : '')
-    + new PartFieldsTranslator().add(parts, item, data) // (parts.fields ? fields2UrlParams(data.fields) : '')
-    + new PartParamsTranslator().add(parts, item, data) // (parts.params ? obj2UrlParams(data.parameters, PARAM_PREFIX) : '')
-    + new PartCopyTranslator().add(parts, addItem) // (parts.duplicate && addItem.DuplicateEntity ? `${VAL_SEPARATOR}${COPY_PREFIX}` + addItem.DuplicateEntity : '')
-    + new PartSaveTranslator().add(parts, item); // (parts.save ? `${VAL_SEPARATOR}${SAVE_PREFIX}${parts.save}` : '');
+    + new PartMetadataTranslator().add(parts, addItem)
+    + new PartPrefillTranslator().add(parts, item, data)
+    + new PartFieldsTranslator().add(parts, item, data)
+    + new PartParamsTranslator().add(parts, item, data)
+    + new PartCopyTranslator().add(parts, addItem)
+    + new PartSaveTranslator().add(parts, item);
   return result;
 }
 
-// function getParamForMetadata(addItem: ItemAddIdentifier) {
-//   const l = log.fn("getParamForMetadata", {addItem});
-
-//   // helper function
-//   const buildForSuffix = (itemFor: EavFor) => toOrderedParams([
-//     '', // empty string to ensure it will start with a ":"
-//     itemFor.Target,
-//     itemFor.TargetType,
-//     (itemFor.Singleton ? itemFor.Singleton.toString() : '')
-//   ]);
-
-//   if (addItem.For != null) {
-//     const prefix = `${VAL_SEPARATOR}for:`;
-//     const forSuffix = buildForSuffix(addItem.For);
-//     if (addItem.For?.String)
-//       return l.r(`${prefix}s~${ParamEncoder.encode(addItem.For.String)}${forSuffix}`, "for string");
-//     if (addItem.For?.Number)
-//       return l.r(`${prefix}n~${addItem.For.Number}${forSuffix}`, "for number");
-//     if (addItem.For?.Guid)
-//       return l.r(`${prefix}g~${addItem.For.Guid}${forSuffix}`, "for guid");
-//   }
-//   if (addItem.Metadata)
-//     return l.r(getParamForOldMetadata(addItem), "metadata");
-//   return l.r('', "other");
-// }
-
-// function getParamForOldMetadata(addItem: ItemAddIdentifier) {
-//   const l = log.fn("getParamForOldMetadata", {addItem});
-//   let keyType: string;
-//   const md = addItem.Metadata!;
-//   switch (md.keyType.toLocaleLowerCase()) {
-//     case eavConstants.keyTypes.string:
-//       keyType = 's';
-//       break;
-//     case eavConstants.keyTypes.number:
-//       keyType = 'n';
-//       break;
-//     case eavConstants.keyTypes.guid:
-//       keyType = 'g';
-//       break;
-//   }
-//   const target = Object.values(eavConstants.metadata)
-//     .find(m => m.targetType === md.targetType)?.target;
-//   const result = `${VAL_SEPARATOR}for:${keyType}${METADATA_SEPARATOR}` + toOrderedParams([
-//     ParamEncoder.encode(md.key),
-//     target,
-//     md.targetType
-//   ]);
-//   return l.r(result, result);
-// }
 
 function obj2UrlParams(obj: Record<string, unknown> | undefined, prefix: string) {
   let result = '';
@@ -154,10 +102,6 @@ function obj2UrlParams(obj: Record<string, unknown> | undefined, prefix: string)
   return result;
 }
 
-// function prefill2UrlParams(prefill: Record<string, unknown> | undefined) {
-//   return obj2UrlParams(prefill, PREFILL_PREFIX);
-// }
-
 
 function prefillFromUrlParams(url: string, addTo: Record<string, unknown> | undefined): Record<string, unknown> {
   const result = addTo ?? {} as Record<string, string>;
@@ -169,10 +113,6 @@ function prefillFromUrlParams(url: string, addTo: Record<string, unknown> | unde
   result[key] = decodedValue;
   return result;
 }
-
-// function fields2UrlParams(fields: string | undefined) {
-//   return fields ? `${VAL_SEPARATOR}${UIFIELDS_PREFIX}${ParamEncoder.encode(fields)}` : '';
-// }
 
 function isNumber(maybeNumber: string): boolean {
   // The regex must be re-created for each test
@@ -207,50 +147,26 @@ function addParamToItemIdentifier<T extends ItemIdentifierShared>(item: T, part:
   const fieldsPart = new PartFieldsTranslator();
   if (fieldsPart.shouldExtract(part))
     return l.rSilent(fieldsPart.extract(item, part));
-  // if (part.startsWith(UIFIELDS_PREFIX)) {
-  //   const fields = ParamEncoder.decode(part.split(LIST_SEPARATOR)[1]);
-  //   item.ClientData = { ...item.ClientData, fields };
-  //   return l.rSilent(item);
-  // }
 
   // Add Item Prefill
   const partPrefill = new PartPrefillTranslator();
   if (partPrefill.shouldExtract(part))
     return l.rSilent(partPrefill.extract(item, part));
-  // if (part.startsWith(PREFILL_PREFIX)) {
-  //   item.Prefill = prefillFromUrlParams(part, item.Prefill);
-  //   return l.rSilent(item);
-  // }
+
   // Add Item Form
   const partParams = new PartParamsTranslator();
   if (partParams.shouldExtract(part))
     return l.rSilent(partParams.extract(item, part));
-  // if (part.startsWith(PARAM_PREFIX)) {
-  //   const formParams = prefillFromUrlParams(part, item.ClientData?.parameters);
-  //   item.ClientData = { ...item.ClientData, parameters: formParams };
-  //   return l.rSilent(item);
-  // }
 
   // Add Save mode new v21 WIP
   const savePart = new PartSaveTranslator();
   if (savePart.shouldExtract(part))
     return l.rSilent(savePart.extract(item, part));
-  // if (part.startsWith(SAVE_PREFIX)) {
-  //   const save = part.split(LIST_SEPARATOR)[1] as 'js';
-  //   item.ClientData = { ...item.ClientData, save };
-  //   return l.rSilent(item);
-  // }
 
   // restore data new v21 WIP
   const dataPart = new PartDataTranslator();
   if (dataPart.shouldExtract(part))
     return l.rSilent(dataPart.extract(item, part));
-  // if (part.startsWith(DATA_PREFIX)) {
-  //   const dataEncoded = part.split(LIST_SEPARATOR)[1];
-  //   const data = UrlParamBase64.decode(dataEncoded);
-  //   item.ClientData = { ...item.ClientData, data };
-  //   return l.rSilent(item);
-  // }
 
   return l.rSilent(item, 'no match');
 }
@@ -519,13 +435,6 @@ class GroupTranslator implements UrlTranslator {
         }
       } else if (partCopy.shouldExtract(option))
         innerItem = partCopy.extract(innerItem, option);
-      //  else if (option.startsWith(COPY_PREFIX)) {
-      //   // Add Item Copy
-      //   innerItem = {
-      //     ...innerItem,
-      //     DuplicateEntity: parseInt(option.split(LIST_SEPARATOR)[1], 10)
-      //   };
-      // }
       else
         innerItem = addParamToItemIdentifier(innerItem, option);
     }
@@ -574,7 +483,6 @@ class AddTranslator implements UrlTranslator {
   }
   toUrl(addItem: ItemAddIdentifier, data: UrlDataSpecs): string {
     // Add Item
-    // const addItem = item as ItemAddIdentifier;
     let formUrl = 'new:' + addItem.ContentTypeName;
 
     // Save in JS, new v21 WIP
@@ -587,12 +495,6 @@ class AddTranslator implements UrlTranslator {
     // Data
     formUrl += new PartDataTranslator().add({ save: save }, addItem, data);
 
-    // const overrideData = addItem.ClientData?.data;
-
-    // // console.log('2dm-convertFormToUrl - overrideData', { overrideData });
-
-    // if (overrideData)
-    //   formUrl += `${VAL_SEPARATOR}${DATA_PREFIX}${UrlParamBase64.encode(overrideData)}`;
     return formUrl;
   }
 
@@ -614,30 +516,10 @@ class AddTranslator implements UrlTranslator {
         // Add Item ContentType
         const newParams = option.split(LIST_SEPARATOR);
         addItem.ContentTypeName = newParams[1];
-      } else if (partMetadata.shouldExtract(option)) {
+      } else if (partMetadata.shouldExtract(option))
         addItem = partMetadata.extract(addItem, option);
-      // } else if (option.startsWith('for:')) {
-        // Add Item For
-        // const forParams = option.split(LIST_SEPARATOR);
-        // const [forKeyType, forKey] = forParams[1].split(METADATA_SEPARATOR);
-        // const forSingleton = forParams[4] != null ? forParams[4] === 'true' : undefined;
-        // addItem.For = {
-        //   Target: forParams[2],
-        //   TargetType: parseInt(forParams[3], 10),
-        //   ...(forKeyType === 'g' && { Guid: forKey }),
-        //   ...(forKeyType === 'n' && { Number: parseInt(forKey, 10) }),
-        //   ...(forKeyType === 's' && { String: ParamEncoder.decode(forKey) }),
-        //   ...(forSingleton != null && { Singleton: forSingleton }),
-        // };
-      } else if (partCopy.shouldExtract(option))
+      else if (partCopy.shouldExtract(option))
         addItem = partCopy.extract(addItem, option);
-      //  else if (option.startsWith(COPY_PREFIX)) {
-      //   // Add Item Copy
-      //   addItem = {
-      //     ...addItem,
-      //     DuplicateEntity: parseInt(option.split(LIST_SEPARATOR)[1], 10)
-      //   };
-      // }
       else
         addItem = addParamToItemIdentifier(addItem, option);
     }
