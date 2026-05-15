@@ -100,7 +100,7 @@ export class AppEntryRouteHandler {
     const router = this.injector.get(Router);
     const dialog = sS.getItem(keyDialog) as Of<typeof DialogTypeConstants>;
     const contentType = sS.getItem(keyContentType);
-    const items = sS.getItem(keyItems);
+    const items = sS.getItem(keyItems) || '[]';
 
     // New 2025-03-20; centralize code to create full route
     const getFull = () => new RouteLinkHelper().routeRoot({
@@ -209,7 +209,7 @@ export class AppEntryRouteHandler {
   }
 
   /** Log initial route so a developer can re-open the dialog with the link in the console */
-  #logInitialRoute(url?: string): void {
+  #logInitialRoute(url?: string | null): void {
     console.log('Initial route:', url ?? window.location.href);
   }
   

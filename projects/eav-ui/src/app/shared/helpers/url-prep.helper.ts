@@ -37,7 +37,8 @@ export function convertFormToUrl(form: EditForm) {
 
   for (const item of form.items) {
     // If we already have one, the next must be separated
-    if (formUrl) formUrl += ITEM_SEPARATOR;
+    if (formUrl)
+      formUrl += ITEM_SEPARATOR;
 
     const asGroup = item as ItemInListIdentifier;
     const asItem = item as ItemEditIdentifier;
@@ -156,7 +157,8 @@ function getParamForMetadata(addItem: ItemAddIdentifier) {
 function getParamForOldMetadata(addItem: ItemAddIdentifier) {
   const l = log.fn("getParamForOldMetadata", {addItem});
   let keyType: string;
-  switch (addItem.Metadata.keyType.toLocaleLowerCase()) {
+  const md = addItem.Metadata!;
+  switch (md.keyType.toLocaleLowerCase()) {
     case eavConstants.keyTypes.string:
       keyType = 's';
       break;
@@ -168,32 +170,35 @@ function getParamForOldMetadata(addItem: ItemAddIdentifier) {
       break;
   }
   const target = Object.values(eavConstants.metadata)
-    .find(m => m.targetType === addItem.Metadata.targetType)?.target;
-  const result = `${VAL_SEPARATOR}for:` + keyType + METADATA_SEPARATOR + toOrderedParams([
-    ParamEncoder.encode(addItem.Metadata.key),
+    .find(m => m.targetType === md.targetType)?.target;
+  const result = `${VAL_SEPARATOR}for:${keyType}${METADATA_SEPARATOR}` + toOrderedParams([
+    ParamEncoder.encode(md.key),
     target,
-    addItem.Metadata.targetType
+    md.targetType
   ]);
   return l.r(result, result);
 }
 
-function prefill2UrlParams(prefill: Record<string, unknown>) {
+function prefill2UrlParams(prefill: Record<string, unknown> | undefined) {
   return obj2UrlParams(prefill, PREFILL_PREFIX);
 }
 
-function obj2UrlParams(obj: Record<string, unknown>, prefix: string) {
+function obj2UrlParams(obj: Record<string, unknown> | undefined, prefix: string) {
   let result = '';
-  if (!obj) return result;
+  if (!obj)
+    return result;
   for (const [key, value] of Object.entries(obj)) {
-    if (value == null) continue;
+    if (value == null)
+      continue;
     result += `${VAL_SEPARATOR}${prefix}${key}~${ParamEncoder.encode(value.toString())}`;
   }
   return result;
 }
 
-function prefillFromUrlParams(url: string, addTo: Record<string, unknown>): Record<string, unknown> {
+function prefillFromUrlParams(url: string, addTo: Record<string, unknown> | undefined): Record<string, unknown> {
   const result = addTo ?? {} as Record<string, string>;
-  if (url == null) return result;
+  if (url == null)
+    return result;
   const prefillParams = url.split(LIST_SEPARATOR);
   const [key, value] = prefillParams[1].split(METADATA_SEPARATOR);
   const decodedValue = ParamEncoder.decode(value);
@@ -201,7 +206,7 @@ function prefillFromUrlParams(url: string, addTo: Record<string, unknown>): Reco
   return result;
 }
 
-function fields2UrlParams(fields: string) {
+function fields2UrlParams(fields: string | undefined) {
   return fields ? `${VAL_SEPARATOR}${UIFIELDS_PREFIX}${ParamEncoder.encode(fields)}` : '';
 }
 

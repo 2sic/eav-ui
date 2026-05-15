@@ -20,7 +20,7 @@ export interface ClassLogger<TSpecs extends unknown = any> {
   // rxTap(name: string, options?: { enabled?: boolean; jsonify?: boolean }): RxTapDebug;
   fn(name: string, data?: RecordOrGenerator, message?: string): FnLogger;
   fnCond(condition: boolean, name: string, data?: RecordOrGenerator, message?: string): FnLogger;
-  fnIf(key: BooleanKeys<TSpecs> & string, data?: RecordOrGenerator, message?: string): FnLogger;
+  fnIf(key: BooleanKeys<TSpecs> & string, data?: RecordOrGenerator | null, message?: string): FnLogger;
 
   /** Create a logger for a function if the provided key is in the list of the log-specs */
   fnIfInList(
