@@ -16,7 +16,7 @@ import { UrlParamBase64 } from './url-param-base64';
 const log = classLog("UrlPrepHelper")
 
 const PREFILL_PREFIX = 'prefill:';
-const GROUP_PREFIX = 'group:';
+// const GROUP_PREFIX = 'group:';
 const UIFIELDS_PREFIX = 'uifields:';
 const PARAM_PREFIX = 'parameters:';
 const COPY_PREFIX = 'copy:';
@@ -31,82 +31,64 @@ function toOrderedParams(values: unknown[]): string {
   return values.join(LIST_SEPARATOR);
 }
 
+interface UrlPartSpecs {
+  fields: string | undefined;
+  parameters: Record<string, unknown> | undefined;
+}
+
 export function convertFormToUrl(form: EditForm) {
   const l = log.fn('convertFormToUrl', { form });
   let formUrl = '';
+
+    const groupTranslator = new GroupTranslator();
+    const editTranslator = new EditTranslator();
+    const addTranslator = new AddTranslator();
+
+    const translators: UrlTranslator[] = [
+      new GroupTranslator(),
+      new EditTranslator(),
+      new AddTranslator()
+    ];
 
   for (const item of form.items) {
     // If we already have one, the next must be separated
     if (formUrl)
       formUrl += ITEM_SEPARATOR;
 
-    const asGroup = item as ItemInListIdentifier;
-    const asItem = item as ItemEditIdentifier;
-    const asInboundParams = item as ItemIdentifierInbound;
+    // const asGroup = item as ItemInListIdentifier;
+    // const asItem = item as ItemEditIdentifier;
     // Fields/Parameters can come from two places
     // When a link is inbound from the page, it will use UiFields/Parameters
     // If it's from the Admin-UI itself, it should use the newer / deeper ClientData
-    const fields = asInboundParams.UiFields ?? item.ClientData?.fields;
-    const parameters = asInboundParams.Parameters ?? item.ClientData?.parameters;
+    const asInboundParams = item as ItemIdentifierInbound;
+    const specs = {
+      fields: asInboundParams.UiFields ?? item.ClientData?.fields,
+      parameters: asInboundParams.Parameters ?? item.ClientData?.parameters
+    } satisfies UrlPartSpecs;
+
+    for (const translator of translators) {
+      if (translator.isForIdentifier(item)) {
+        l.a(translator.name, {item});
+        formUrl += translator.toUrl(item, specs);
+        break;
+      }
+    }
 
     // Group- or Inner-Item
-    if (asGroup.Parent) {
-      l.a("asGroup having parent", {asGroup});
-      formUrl += GROUP_PREFIX + toOrderedParams([
-        asGroup.Parent,
-        asGroup.Field,
-        asGroup.Index,
-        asGroup.Add,
-        asGroup.EntityId
-      ]);
-      formUrl += addTypicalUrlGroups(asGroup, fields, parameters,
-        { prefill: true, fields: true, params: true, duplicate: true }
-      );
+    // if (groupTranslator.isForIdentifier(item)) {
+    //   l.a(groupTranslator.name, {item});
+    //   formUrl += groupTranslator.toUrl(item as ItemInListIdentifier, specs);
 
-    } else if (asItem.EntityId) {
-      l.a("asItem having entity id", {asItem});
-      // Edit Item
-      formUrl += asItem.EntityId;
+    // } else if (editTranslator.isForIdentifier(item)) {
+    //   l.a(editTranslator.name, {item});
+    //   formUrl += editTranslator.toUrl(item as ItemEditIdentifier, specs);
 
-      // New: fields
-      formUrl += addTypicalUrlGroups(asItem, fields, parameters,
-        { fields: true, params: true }
-      );
-
-      // 2023-05-11 in edit-id mode, prefill isn't supported, but we want the fields
-      // I actually think that prefill should be supported, because it can also transport more parameters
-      // formUrl += prefill2UrlParams(groupItem.Prefill, fields);
-
-      // 2024-05-30 2dm reactivating prefill on edit, for scenarios where new fields were added
-      // and for ephemeral control fields
-      // 2024-06-01 2dm re-disabled, since this also affects links coming in from the page
-      // so this could be an unexpected breaking change...
-      // formUrl += prefill2UrlParams(asItem.Prefill);
-
-    
-    }
-    // Add item, optionally with For-Metadata
-    else if ((item as ItemAddIdentifier).ContentTypeName) {
-      l.a("asItem having content type name", {item});
-      // Add Item
-      const addItem = item as ItemAddIdentifier;
-      formUrl += 'new:' + addItem.ContentTypeName;
-
-      // Save in JS, new v21 WIP
-      const save = item.ClientData?.save;
-
-      formUrl += addTypicalUrlGroups(addItem, fields, parameters,
-        { metadata: true, prefill: true, fields: true, params: true, duplicate: true, save: save }
-      );
-
-      const overrideData = item.ClientData?.data;
-
-      // console.log('2dm-convertFormToUrl - overrideData', { overrideData });
-
-      if (overrideData)
-        formUrl += `${VAL_SEPARATOR}${DATA_PREFIX}${UrlParamBase64.encode(overrideData)}`;
-
-    }
+    // }
+    // // Add item, optionally with For-Metadata
+    // else if (addTranslator.isForIdentifier(item)) {
+    //   l.a(addTranslator.name, {item});
+    //   formUrl += addTranslator.toUrl(item as ItemAddIdentifier, specs);
+    // }
   }
   return l.r(formUrl);
 }
@@ -220,79 +202,31 @@ export function convertUrlToForm(formUrl: string) {
   const form: EditForm = { items: [] };
   const items = formUrl.split(ITEM_SEPARATOR);
 
+  const translators = [
+    new GroupTranslator(),
+    new EditTranslator(),
+    new AddTranslator()
+  ];
+
   for (const item of items) {
     l.a("item", {item});
-    // Handle group:
-    if (item.startsWith(GROUP_PREFIX)) {
-      // Inner Item / Group Item
-      let innerItem = {} as ItemInListIdentifier;
-      const options = item.split(VAL_SEPARATOR);
-
-      for (const option of options) {
-        if (option.startsWith(GROUP_PREFIX)) {
-          const params = option.split(LIST_SEPARATOR);
-          const hasParam5Id = params.length > 4 && params[5] && isNumber(params[5]);
-          innerItem = {
-            ...innerItem,
-            Parent: params[1],
-            Field: params[2],
-            Index: parseInt(params[3], 10),
-            Add: params[4] === 'true',
-            ...(hasParam5Id && { EntityId: parseInt(params[5], 10) })
-          }
-        } else if (option.startsWith(COPY_PREFIX)) {
-          // Add Item Copy
-          innerItem = {
-            ...innerItem,
-            DuplicateEntity: parseInt(option.split(LIST_SEPARATOR)[1], 10)
-          };
-        } else {
-          innerItem = addParamToItemIdentifier(innerItem, option);
-        }
+    for (const translator of translators) {
+      if (translator.isForString(item)) {
+        form.items.push(translator.fromUrl(item));
+        break;
       }
-      form.items.push(innerItem);
-    } else if (isNumber((item ?? '').split(VAL_SEPARATOR)[0])) {
-      // Edit Item
-      const parts = item.split(VAL_SEPARATOR);
-      let editItem: ItemEditIdentifier = ItemIdHelper.editId(parseInt(parts[0], 10));
-      for (const part of parts)
-        editItem = addParamToItemIdentifier(editItem, part);
-      form.items.push(editItem);
-    } else if (item.startsWith('new:')) {
-      // Add Item
-      let addItem = {} as ItemAddIdentifier;
-      const options = item.split(VAL_SEPARATOR);
-
-      for (const option of options) {
-        if (option.startsWith('new:')) {
-          // Add Item ContentType
-          const newParams = option.split(LIST_SEPARATOR);
-          addItem.ContentTypeName = newParams[1];
-        } else if (option.startsWith('for:')) {
-          // Add Item For
-          const forParams = option.split(LIST_SEPARATOR);
-          const [forKeyType, forKey] = forParams[1].split(METADATA_SEPARATOR);
-          const forSingleton = forParams[4] != null ? forParams[4] === 'true' : undefined;
-          addItem.For = {
-            Target: forParams[2],
-            TargetType: parseInt(forParams[3], 10),
-            ...(forKeyType === 'g' && { Guid: forKey }),
-            ...(forKeyType === 'n' && { Number: parseInt(forKey, 10) }),
-            ...(forKeyType === 's' && { String: ParamEncoder.decode(forKey) }),
-            ...(forSingleton != null && { Singleton: forSingleton }),
-          };
-        } else if (option.startsWith(COPY_PREFIX)) {
-          // Add Item Copy
-          addItem = {
-            ...addItem,
-            DuplicateEntity: parseInt(option.split(LIST_SEPARATOR)[1], 10)
-          };
-
-        } else
-          addItem = addParamToItemIdentifier(addItem, option);
-      }
-      form.items.push(addItem);
     }
+    // Handle group:
+    // if (groupTranslator.isForString(item)) {
+    //   const innerItem = groupTranslator.fromUrl(item);
+    //   form.items.push(innerItem);
+    // } else if (editTranslator.isForString(item)) {
+    //   const editItem = editTranslator.fromUrl(item);
+    //   form.items.push(editItem);
+    // } else if (addTranslator.isForString(item)) {
+    //   const addItem = addTranslator.fromUrl(item);
+    //   form.items.push(addItem);
+    // }
   }
   return l.r(form);
 }
@@ -335,3 +269,180 @@ function addParamToItemIdentifier<T extends ItemIdentifierShared>(item: T, part:
   return l.rSilent(item, 'no match');
 }
 
+interface UrlTranslator {
+  name: string;
+  isForIdentifier(item: ItemIdentifierShared): boolean;
+  toUrl(item: ItemIdentifierShared, parts: UrlPartSpecs): string;
+  fromUrl(item: string): ItemIdentifierShared;
+}
+
+class GroupTranslator implements UrlTranslator {
+  public static readonly GROUP_PREFIX = 'group:';
+
+  public name = 'GroupTranslator';
+
+  isForIdentifier(item: ItemIdentifierShared): boolean {
+    return (item as ItemInListIdentifier).Parent != null;
+  }
+
+  toUrl(asGroup: ItemInListIdentifier, parts: UrlPartSpecs): string {
+    let formUrl = GroupTranslator.GROUP_PREFIX + toOrderedParams([
+      asGroup.Parent,
+      asGroup.Field,
+      asGroup.Index,
+      asGroup.Add,
+      asGroup.EntityId
+    ]);
+
+    formUrl += addTypicalUrlGroups(asGroup, parts.fields, parts.parameters,
+      { prefill: true, fields: true, params: true, duplicate: true }
+    );
+    return formUrl;
+  }
+
+  isForString(item: string): boolean {
+    return item.startsWith(GroupTranslator.GROUP_PREFIX);
+  }
+
+  fromUrl(item: string): ItemInListIdentifier {
+    // Inner Item / Group Item
+    let innerItem = {} as ItemInListIdentifier;
+    const options = item.split(VAL_SEPARATOR);
+
+    for (const option of options) {
+      // The group prefix must always be the first option
+      if (option.startsWith(GroupTranslator.GROUP_PREFIX)) {
+        const params = option.split(LIST_SEPARATOR);
+        const hasParam5Id = params.length > 4 && params[5] && isNumber(params[5]);
+        innerItem = {
+          ...innerItem,
+          Parent: params[1],
+          Field: params[2],
+          Index: parseInt(params[3], 10),
+          Add: params[4] === 'true',
+          ...(hasParam5Id && { EntityId: parseInt(params[5], 10) })
+        }
+      } else if (option.startsWith(COPY_PREFIX)) {
+        // Add Item Copy
+        innerItem = {
+          ...innerItem,
+          DuplicateEntity: parseInt(option.split(LIST_SEPARATOR)[1], 10)
+        };
+      } else {
+        innerItem = addParamToItemIdentifier(innerItem, option);
+      }
+    }
+    return innerItem;
+  }
+}
+
+class EditTranslator implements UrlTranslator {
+  public name = 'EditTranslator';
+
+  isForIdentifier(item: ItemIdentifierShared): boolean {
+    return (item as ItemEditIdentifier).EntityId != null;
+  }
+
+  toUrl(asItem: ItemEditIdentifier, parts: UrlPartSpecs): string {
+    // Edit Item
+    let formUrl = asItem.EntityId + '';
+
+    // New: fields
+    formUrl += addTypicalUrlGroups(asItem, parts.fields, parts.parameters,
+      { fields: true, params: true }
+    );
+
+    // 2023-05-11 in edit-id mode, prefill isn't supported, but we want the fields
+    // I actually think that prefill should be supported, because it can also transport more parameters
+    // formUrl += prefill2UrlParams(groupItem.Prefill, fields);
+
+    // 2024-05-30 2dm reactivating prefill on edit, for scenarios where new fields were added
+    // and for ephemeral control fields
+    // 2024-06-01 2dm re-disabled, since this also affects links coming in from the page
+    // so this could be an unexpected breaking change...
+    // formUrl += prefill2UrlParams(asItem.Prefill);
+    return formUrl;
+  }
+
+  isForString(item: string): boolean {
+    const firstPart = item.split(VAL_SEPARATOR)[0];
+    return isNumber(firstPart);
+  }
+
+  fromUrl(item: string): ItemEditIdentifier {
+    // Edit Item
+    const parts = item.split(VAL_SEPARATOR);
+    let editItem: ItemEditIdentifier = ItemIdHelper.editId(parseInt(parts[0], 10));
+    for (const part of parts)
+      editItem = addParamToItemIdentifier(editItem, part);
+    return editItem;
+  }
+}
+
+class AddTranslator implements UrlTranslator {
+  public name = 'AddTranslator';
+
+  isForIdentifier(item: ItemIdentifierShared): boolean {
+    return (item as ItemAddIdentifier).ContentTypeName != null;
+  }
+  toUrl(addItem: ItemAddIdentifier, parts: UrlPartSpecs): string {
+    // Add Item
+    // const addItem = item as ItemAddIdentifier;
+    let formUrl = 'new:' + addItem.ContentTypeName;
+
+    // Save in JS, new v21 WIP
+    const save = addItem.ClientData?.save;
+
+    formUrl += addTypicalUrlGroups(addItem, parts.fields, parts.parameters,
+      { metadata: true, prefill: true, fields: true, params: true, duplicate: true, save: save }
+    );
+
+    const overrideData = addItem.ClientData?.data;
+
+    // console.log('2dm-convertFormToUrl - overrideData', { overrideData });
+
+    if (overrideData)
+      formUrl += `${VAL_SEPARATOR}${DATA_PREFIX}${UrlParamBase64.encode(overrideData)}`;
+    return formUrl;
+  }
+
+  isForString(item: string): boolean {
+    return item.startsWith('new:');
+  }
+
+  fromUrl(item: string): ItemAddIdentifier {
+    // Add Item
+    let addItem = {} as ItemAddIdentifier;
+    const options = item.split(VAL_SEPARATOR);
+
+    for (const option of options) {
+      if (option.startsWith('new:')) {
+        // Add Item ContentType
+        const newParams = option.split(LIST_SEPARATOR);
+        addItem.ContentTypeName = newParams[1];
+      } else if (option.startsWith('for:')) {
+        // Add Item For
+        const forParams = option.split(LIST_SEPARATOR);
+        const [forKeyType, forKey] = forParams[1].split(METADATA_SEPARATOR);
+        const forSingleton = forParams[4] != null ? forParams[4] === 'true' : undefined;
+        addItem.For = {
+          Target: forParams[2],
+          TargetType: parseInt(forParams[3], 10),
+          ...(forKeyType === 'g' && { Guid: forKey }),
+          ...(forKeyType === 'n' && { Number: parseInt(forKey, 10) }),
+          ...(forKeyType === 's' && { String: ParamEncoder.decode(forKey) }),
+          ...(forSingleton != null && { Singleton: forSingleton }),
+        };
+      } else if (option.startsWith(COPY_PREFIX)) {
+        // Add Item Copy
+        addItem = {
+          ...addItem,
+          DuplicateEntity: parseInt(option.split(LIST_SEPARATOR)[1], 10)
+        };
+
+      } else
+        addItem = addParamToItemIdentifier(addItem, option);
+    }
+    return addItem;
+  }
+}
