@@ -32,7 +32,8 @@ class GroupTranslator implements UrlItemIdentifierTranslator {
       asGroup.Field,
       asGroup.Index,
       asGroup.Add,
-      asGroup.EntityId
+      asGroup.EntityId,
+      (asGroup as unknown as ItemAddIdentifier).ContentTypeName ?? '',
     ]);
 
     formUrl += urlAddTypicalParts(asGroup, data,
@@ -56,13 +57,15 @@ class GroupTranslator implements UrlItemIdentifierTranslator {
       if (option.startsWith(GroupTranslator.GROUP_PREFIX)) {
         const params = option.split(SEPARATOR.List);
         const hasParam5Id = params.length > 4 && params[5] && isNumber(params[5]);
+        const hasParam6ContentType = params.length > 5 && params[6];
         innerItem = {
           ...innerItem,
           Parent: params[1],
           Field: params[2],
           Index: parseInt(params[3], 10),
           Add: params[4] === 'true',
-          ...(hasParam5Id && { EntityId: parseInt(params[5], 10) })
+          ...(hasParam5Id && { EntityId: parseInt(params[5], 10) }),
+          ...(hasParam6ContentType && { ContentTypeName: params[6] }),
         }
       } else if (partCopy.shouldExtract(option))
         innerItem = partCopy.extract(innerItem, option);
