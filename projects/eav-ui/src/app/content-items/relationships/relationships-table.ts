@@ -5,11 +5,11 @@ import { transient } from 'projects/core';
 import { FeaturesService } from '../../features/features.service';
 import { AgGridHelper } from '../../shared/ag-grid/ag-grid-helper';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
-import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { ItemIdHelper } from '../../shared/models/item-id-helper';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { SysDataService } from '../../shared/services/sys-data.service';
+import { convertFormToUrl } from '../../shared/url/url-converter';
 
 @Component({
   selector: 'app-entity-relationships',

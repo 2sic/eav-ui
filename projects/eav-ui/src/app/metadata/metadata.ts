@@ -23,13 +23,13 @@ import { defaultGridOptions } from '../shared/constants/default-grid-options.con
 import { MetadataKeyTypes } from '../shared/constants/eav.constants';
 import { DialogHeaderComponent } from "../shared/dialog-header/dialog-header";
 import { MatBadgeIconDirective } from '../shared/directives/mat-badge-icon.directive';
-import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { EditForm, ItemAddIdentifier } from '../shared/models/edit-form.model';
 import { ItemIdHelper } from '../shared/models/item-id-helper';
 import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
 import { SafeHtmlPipe } from '../shared/pipes/safe-html.pipe';
 import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
 import { EntityEditService } from '../shared/services/entity-edit.service';
+import { convertFormToUrl } from '../shared/url/url-converter';
 import { MetadataActionsComponent } from './metadata-actions/metadata-actions';
 import { MetadataActionsParams } from './metadata-actions/metadata-actions.models';
 import { MetadataContentTypeComponent } from './metadata-content-type/metadata-content-type';

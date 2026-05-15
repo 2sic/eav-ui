@@ -5,12 +5,12 @@ import { classLog } from '../../../shared/logging';
 import { UrlHelpers } from './edit/shared/helpers/url.helpers';
 import { DialogTypeConstants } from './shared/constants/dialog-type.constants';
 import { keyAppId, keyContentBlockId, keyContentType, keyDialog, keyExtras, keyItems, keyModuleId, keyPipelineId, keyUrl, keyZoneId, prefix } from './shared/constants/session.constants';
-import { convertFormToUrl } from './shared/helpers/url-prep.helper';
 import { EavWindow } from './shared/models/eav-window.model';
 import { EditForm, ItemEditIdentifier, ItemInListIdentifier } from './shared/models/edit-form.model';
 import { ExtrasParam } from './shared/routing/dialog-url-params.model';
 import { RouteContextInfo } from './shared/routing/route-context-info';
 import { RouteLinkHelper } from './shared/routing/route-link-helper';
+import { convertFormToUrl } from './shared/url/url-converter';
 
 declare const window: EavWindow;
 

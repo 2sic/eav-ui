@@ -16,12 +16,12 @@ import { ContentGroupAdd } from '../manage-content-list/models/content-group.mod
 import { ContentGroupService } from '../manage-content-list/services/content-group.service';
 import { DialogHeaderComponent } from "../shared/dialog-header/dialog-header";
 import { TippyDirective } from '../shared/directives/tippy.directive';
-import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { EditForm } from '../shared/models/edit-form.model';
 import { ItemIdHelper } from '../shared/models/item-id-helper';
 import { SaveCloseButtonFabComponent } from '../shared/modules/save-close-button-fab/save-close-button-fab';
 import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
 import { computedObj, signalObj } from '../shared/signals/signal.utilities';
+import { convertFormToUrl } from '../shared/url/url-converter';
 
 interface ReplaceOption {
   id: number;

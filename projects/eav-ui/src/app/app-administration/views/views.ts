@@ -19,7 +19,6 @@ import { defaultGridOptions } from '../../shared/constants/default-grid-options.
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
-import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm } from '../../shared/models/edit-form.model';
 import { ItemIdHelper } from '../../shared/models/item-id-helper';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
@@ -27,6 +26,7 @@ import { DialogInNewWindowService } from '../../shared/routing/dialog-in-new-win
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { GlobalConfigService } from '../../shared/services/global-config.service';
 import { SysDataService } from '../../shared/services/sys-data.service';
+import { convertFormToUrl } from '../../shared/url/url-converter';
 import { Polymorphism } from '../models/polymorphism.model';
 import { View, ViewEntity } from '../models/view.model';
 import { DialogConfigAppService } from '../services/dialog-config-app.service';

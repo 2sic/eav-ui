@@ -10,12 +10,12 @@ import { ContentItemsService } from '../../../content-items/services/content-ite
 import { GoToMetadata } from '../../../metadata';
 import { eavConstants } from '../../../shared/constants/eav.constants';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
-import { convertFormToUrl } from '../../../shared/helpers/url-prep.helper';
 import { DialogSettings } from '../../../shared/models/dialog-settings.model';
 import { ItemIdHelper } from '../../../shared/models/item-id-helper';
 import { DialogRoutingService } from '../../../shared/routing/dialog-routing.service';
 import { ClipboardService } from '../../../shared/services/clipboard.service';
 import { Context } from '../../../shared/services/context';
+import { convertFormToUrl } from '../../../shared/url/url-converter';
 import { AppInternals } from '../../models/app-internals.model';
 
 @Component({

@@ -10,11 +10,11 @@ import { ContentTypesService } from '../../app-administration/services/content-t
 import { isCtrlS } from '../../edit/dialog/main/keyboard-shortcuts';
 import { MetadataService } from '../../permissions/services/metadata.service';
 import { eavConstants } from '../../shared/constants/eav.constants';
-import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm } from '../../shared/models/edit-form.model';
 import { ItemIdHelper } from '../../shared/models/item-id-helper';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { ServiceBase } from '../../shared/services/service-base';
+import { convertFormToUrl } from '../../shared/url/url-converter';
 import { DataSourceConfig } from '../models/data-source-configs.model';
 import { DataSourceDefinition } from '../models/data-source-definition';
 import { DataSourceInstance } from '../models/data-source-instance.model';

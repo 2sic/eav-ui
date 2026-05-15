@@ -18,12 +18,12 @@ import { defaultGridOptions } from '../../shared/constants/default-grid-options.
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
-import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { ItemIdHelper } from '../../shared/models/item-id-helper';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { RouteLinkHelper } from '../../shared/routing/route-link-helper';
 import { Context } from '../../shared/services/context';
+import { convertFormToUrl } from '../../shared/url/url-converter';
 import { Query } from '../models/query.model';
 import { DialogConfigAppService } from '../services/dialog-config-app.service';
 import { PipelinesService } from '../services/pipelines.service';

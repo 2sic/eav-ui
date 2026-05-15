@@ -22,11 +22,11 @@ import { ToggleDebugDirective } from '../shared/directives/toggle-debug.directiv
 import { ContentTypesFieldsService } from '../shared/fields/content-types-fields.service';
 import { Field } from '../shared/fields/field.model';
 import { InputTypeHelpers } from '../shared/fields/input-type-helpers';
-import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { EditForm, ItemAddIdentifier, ItemEditIdentifier, ItemIdentifier } from '../shared/models/edit-form.model';
 import { ItemIdHelper } from '../shared/models/item-id-helper';
 import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
+import { convertFormToUrl } from '../shared/url/url-converter';
 import { ContentTypeFieldsActionsComponent } from './content-type-fields-actions/content-type-fields-actions';
 import { ContentTypeFieldsDragComponent, ContentTypeFieldsDragParams } from './content-type-fields-drag/content-type-fields-drag';
 import { ContentTypeFieldsSpecialComponent } from './content-type-fields-special/content-type-fields-special';
