@@ -6,6 +6,7 @@
     <input
       matInput
       [disabled]="ui().disabled"
+      [errorStateMatcher]="errorStateMatcher"
       [required]="basics().required"
       [value]="formatDateTime(dateTimeValue())"
       (change)="handleDateTimeInput($event)"
@@ -19,6 +20,7 @@
   <input
     matInput
     [disabled]="ui().disabled"
+    [errorStateMatcher]="errorStateMatcher"
     [class.hidden-picker-input]="useTimePicker()"
     [required]="basics().required"
     [matDatepicker]="datepicker"
@@ -39,6 +41,7 @@
       <input
         matInput
         [disabled]="ui().disabled"
+        [errorStateMatcher]="errorStateMatcher"
         [required]="basics().required"
         [myMatTimepicker]="timepicker"
         class="hidden-picker-input"

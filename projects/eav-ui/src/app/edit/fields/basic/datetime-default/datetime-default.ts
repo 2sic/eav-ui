@@ -1,12 +1,26 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, computed, inject, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  inject,
+  QueryList,
+  ViewChild,
+  ViewChildren,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ErrorStateMatcher } from '@angular/material/core';
 import { MatDatepickerInputEvent, MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
+import { MatInput, MatInputModule } from '@angular/material/input';
 import { MatTimepicker, MatTimepickerModule } from '@angular/material/timepicker';
 import { TranslateService } from '@ngx-translate/core';
 import dayjs, { Dayjs } from 'dayjs';
 import { FieldSettingsDateTime } from 'projects/edit-types/src/FieldSettings-DateTime';
+import { FieldValue } from 'projects/edit-types/src/FieldValue';
+import { merge, startWith } from 'rxjs';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { classLog } from '../../../../../../../shared/logging';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
@@ -31,7 +45,7 @@ const logSpecs = {
   dateTimeValue: false,
   formatDateTime: false,
   InvalidDate: false,
-}
+};
 
 /**
  * Component for date and time input field with calendar and time picker
@@ -59,8 +73,11 @@ const logSpecs = {
 export class DatetimeDefaultComponent implements AfterViewInit {
 
   log = classLog({ DatetimeDefaultComponent }, logSpecs);
+  #destroyRef = inject(DestroyRef);
+  #translate = inject(TranslateService);
 
-  @ViewChild(MatTimepicker) timePickerRef: MatTimepicker<Dayjs>;
+  @ViewChild(MatTimepicker) timePickerRef!: MatTimepicker<Dayjs>;
+  @ViewChildren(MatInput) matInputs!: QueryList<MatInput>;
 
   protected fieldState = inject(FieldState) as FieldState<string, FieldSettings & FieldSettingsDateTime>;
   protected group = this.fieldState.group;
@@ -68,12 +85,18 @@ export class DatetimeDefaultComponent implements AfterViewInit {
   uiValue = this.fieldState.uiValue;
   protected basics = this.fieldState.basics;
   protected useTimePicker = this.fieldState.settingExt('UseTimePicker');
+  protected readonly errorStateMatcher: ErrorStateMatcher = {
+    isErrorState: () => {
+      const control = this.ui().control;
+      return control.invalid && (control.touched || control.dirty);
+    },
+  };
 
   // Computed value for the current date-time from UI value
   dateTimeValue = computed(() => {
-    const l = this.log.fnIf('dateTimeValue', { uiValue: this.uiValue() });
+    this.log.fnIf('dateTimeValue', { uiValue: this.uiValue() });
     if (!this.uiValue()) return null;
-    return DateTimeUtils.getDateTimeValue(this.uiValue())
+    return DateTimeUtils.getDateTimeValue(this.uiValue());
   });
 
   // Generates time picker options including the current time and common presets
@@ -81,12 +104,10 @@ export class DatetimeDefaultComponent implements AfterViewInit {
     return DateTimeUtils.generateTimePickerOptions(this.dateTimeValue());
   });
 
-  constructor(
-    private translate: TranslateService,
-  ) {
+  constructor() {
     const locale = navigator.language.substring(0, 2); // e.g. 'de-De' to 'de'
     DateTimeUtils.initializeDayjs(locale);
-    this.translate.currentLang = locale;
+    this.#translate.currentLang = locale;
   }
 
   /**
@@ -106,19 +127,45 @@ export class DatetimeDefaultComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     const l = this.log.fnIf('ngAfterViewInit');
     if (this.timePickerRef) {
+      // `selected` is an Angular output, not an RxJS stream. Angular cleans it up with the component.
       this.timePickerRef.selected.subscribe(timeData => {
         if (timeData)
           this.updateFormattedValue(null, timeData.value);
       });
     }
+
+    // These inputs don't have their own NgControl, so MatInput won't recalculate errorState
+    // from async validators unless we forward the real form-control state ourselves.
+    const control = this.ui().control;
+    merge(control.statusChanges, control.valueChanges)
+      .pipe(startWith(null), takeUntilDestroyed(this.#destroyRef))
+      .subscribe(() => this.#syncMatInputErrorState());
+
     l.end();
+  }
+
+  #syncMatInputErrorState(): void {
+    const control = this.ui().control;
+    const showError = control.invalid && (control.touched || control.dirty);
+
+    for (const matInput of this.matInputs) {
+      if (matInput.errorState === showError)
+        continue;
+
+      matInput.errorState = showError;
+      matInput.stateChanges.next();
+    }
+  }
+
+  #setUiValue(value: string | null): void {
+    this.ui().setIfChanged(value as FieldValue);
   }
 
   /**
    * Format date for display in UI using localized format
    */
   formatDateTime(date: dayjs.Dayjs | Date | null): string {
-    const l = this.log.fnIf('formatDateTime', { date: date });
+    this.log.fnIf('formatDateTime', { date: date });
     return DateTimeUtils.formatDateTime(date);
   }
 
@@ -135,7 +182,7 @@ export class DatetimeDefaultComponent implements AfterViewInit {
     const isValid = DateTimeUtils.handleDateTimeInput(
       value,
       this.uiValue(),
-      (value) => this.ui().setIfChanged(value),
+      value => this.#setUiValue(value),
       this.useTimePicker()
     );
 
@@ -149,12 +196,14 @@ export class DatetimeDefaultComponent implements AfterViewInit {
   /**
    * Handle time picker changes
    */
-  updateTime(event: any): void {
+  updateTime(event: Event): void {
     this.log.aIf('updateTime', { event });
+    const input = event.target as HTMLInputElement;
+
     DateTimeUtils.updateTime(
-      event.target.value,
+      input.value,
       this.uiValue(),
-      (value) => this.ui().setIfChanged(value)
+      value => this.#setUiValue(value)
     );
   }
 
@@ -167,28 +216,25 @@ export class DatetimeDefaultComponent implements AfterViewInit {
     DateTimeUtils.updateDate(
       event.value,
       this.uiValue(),
-      (value) => this.ui().setIfChanged(value)
+      value => this.#setUiValue(value)
     );
 
     // Log invalid dates for debugging
-    if (event.value && !event.value.isValid()) {
-      const l = this.log.fnIf('InvalidDate', { date: event.value });
-    }
+    if (event.value && !event.value.isValid())
+      this.log.fnIf('InvalidDate', { date: event.value });
   }
 
   /**
    * Update the formatted value by combining date and time
    * Preserves unmodified components from the current value
    */
-  updateFormattedValue(date?: Dayjs, time?: Dayjs) {
-    const updated = DateTimeUtils.updateFormattedValue(
+  updateFormattedValue(date?: Dayjs | null, time?: Dayjs | null) {
+    return DateTimeUtils.updateFormattedValue(
       date || null,
       time || null,
       this.uiValue(),
-      (value) => { }, //this.ui().setIfChanged(value),
+      value => this.#setUiValue(value),
       this.useTimePicker()
     );
-    this.ui().setIfChanged(updated);
-    return updated;
   }
 }

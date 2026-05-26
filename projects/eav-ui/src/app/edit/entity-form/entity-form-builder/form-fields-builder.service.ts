@@ -1,5 +1,6 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import { transient } from '../../../../../../core';
 import { classLog } from '../../../../../../shared/logging';
 import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
 import { InputTypeHelpers } from '../../../shared/fields/input-type-helpers';
@@ -10,18 +11,17 @@ import { ValidationHelpers, ValidationHelperSpecs } from '../../shared/validatio
 import { FieldsSettingsService } from '../../state/fields-settings.service';
 import { EntityFormStateService } from '../entity-form-state.service';
 import { FieldInitSpecs } from './field-init-specs.model';
+import { FormFieldsUniqueValueValidatorService } from './form-fields-unique-value-validator.service';
 
 @Injectable()
 export class FormFieldsBuilderService {
 
-  log = classLog({FormFieldsBuilderService}, null);
-
-  constructor(
-    private fieldsSettingsSvc: FieldsSettingsService,
-    private adamCacheSvc: AdamCacheService,
-    private formBuilder: UntypedFormBuilder,
-    private entityFormConfigSvc: EntityFormStateService,
-  ) { }
+  log = classLog({FormFieldsBuilderService});
+  #adamCacheSvc = inject(AdamCacheService);
+  #entityFormConfigSvc = inject(EntityFormStateService);
+  #fieldsSettingsSvc = inject(FieldsSettingsService);
+  #formBuilder = inject(UntypedFormBuilder);
+  #uniqueValueValidator = transient(FormFieldsUniqueValueValidatorService);
 
   public createFields(entityGuid: string, form: UntypedFormGroup, allFields: FieldInitSpecs[]) {
 
@@ -46,21 +46,33 @@ export class FormFieldsBuilderService {
       // ...except for directly below
       if (inputType === InputTypeCatalog.StringWysiwyg && initialValue) {
         const logic = FieldSettingsHelpersManager.singleton().get(InputTypeCatalog.StringWysiwyg);
-        const adamItems = this.adamCacheSvc.getAdamSnapshot(entityGuid, fieldName);
+        const adamItems = this.#adamCacheSvc.getAdamSnapshot(entityGuid, fieldName);
         fields.value = initialValue = (logic as unknown as FieldSettingsHelperWithValueInit).processValueOnLoad(initialValue, adamItems);
       }
 
       // Build control in the Angular form with validators
       const disabled = fieldProps.settings.uiDisabled;
-      const fss = this.fieldsSettingsSvc;
-      const valSpecs = new ValidationHelperSpecs(fieldName, inputType, fss.settings[fieldName], fss.fieldProps[fieldName], () => fss.pickerData);
+      const fss = this.#fieldsSettingsSvc;
+      const valSpecs = new ValidationHelperSpecs(
+        fieldName,
+        inputType,
+        fss.settings[fieldName],
+        fss.fieldProps[fieldName],
+        () => fss.pickerData,
+      );
       const validators = ValidationHelpers.getValidators(valSpecs, inputType);
-      const newControl = this.formBuilder.control({ disabled, value: initialValue }, validators);
+      const asyncValidator = this.#uniqueValueValidator.create(valSpecs);
+      const newControl = this.#formBuilder.control(
+        { disabled, value: initialValue },
+        asyncValidator === null
+          ? { validators }
+          : { validators, asyncValidators: [asyncValidator] }
+      );
       // TODO: build all fields at once. That should be faster
       form.addControl(fieldName, newControl);
     }
 
-    this.entityFormConfigSvc.controlsCreated.set(true);
+    this.#entityFormConfigSvc.controlsCreated.set(true);
     l.end();
   }
 }
