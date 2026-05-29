@@ -1,8 +1,12 @@
 import { httpResource } from '@angular/common/http';
 import { computed, Injectable, Signal } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { transient } from 'projects/core';
+import { filter, first } from 'rxjs';
 import { FileUploadResult } from '../../shared/components/file-upload-dialog';
 import { ScopeOption } from '../../shared/constants/eav.constants';
 import { HttpServiceBase } from '../../shared/services/http-service-base';
+import { SysDataService } from '../../shared/services/sys-data.service';
 import { ContentType, ContentTypeEdit } from '../models/content-type.model';
 import { ScopeDetailsDto } from '../models/scopedetails.dto';
 
@@ -15,31 +19,47 @@ const webApiTypeSave = 'admin/type/save';
 const webApiTypeDelete = 'admin/type/delete';
 const webApiTypeImport = 'admin/type/import';
 const webApiTypeAddGhost = 'admin/type/addghost';
+
+const dataSourceContentTypeDetails = 'System.ContentTypeDetails';
+
 @Injectable()
 export class ContentTypesService extends HttpServiceBase {
+  #sysData = transient(SysDataService);
 
   // TODO: @2dg, ask 2dm 
   // content-export.component.ts
   // content-import.component.ts
   // data.component.ts
   retrieveContentType(nameId: string) {
-    return this.getHttpApiUrl<ContentType>(webApiTypeGet, {
-      params: { appId: this.appId, contentTypeId: nameId }
+    const sig = this.#sysData.getFirst<ContentType>({
+      source: dataSourceContentTypeDetails,
+      params: {
+        AppId: this.appId,
+        ContentTypeId: nameId,
+      },
+      noCamel: true,
     });
+    return toObservable(sig, { injector: this.injector }).pipe(
+      filter(v => v != null),
+      first()
+    );
   }
 
   getType(nameId: string) {
-    return httpResource<ContentType>(() => ({
-      url: this.apiUrl(webApiTypeGet),
-      params: { appId: this.appId, contentTypeId: nameId }
-    }));
+    return this.#sysData.getFirst<ContentType>({
+      source: dataSourceContentTypeDetails,
+      params: {
+        AppId: this.appId,
+        ContentTypeId: nameId,
+      },
+      noCamel: true,
+    });
   }
-
   getTypes(scope: Signal<string>) {
     return httpResource<ContentType[]>(() => ({
       url: this.apiUrl(webApiTypes),
       params: { appId: this.appId, scope: scope() }
-    }), {defaultValue: []});
+    }), { defaultValue: [] });
   }
 
   retrieveContentTypesPromise(scope: string): Promise<ContentType[]> {
