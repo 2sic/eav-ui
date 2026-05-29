@@ -102,7 +102,7 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements Aft
 
   #inputTypeOptions = this.#typesFieldsSvc.getInputTypes().value;
 
-  #contentTypeRouteName = this.#typesSvc.getType(this.route.snapshot.paramMap.get('contentTypeStaticName')).value;
+  #contentTypeRouteName = this.#typesSvc.getType(this.route.snapshot.paramMap.get('contentTypeStaticName'));
 
   #existingFieldsLazy = computed(() => {
     const contentTypeRouteName = this.#contentTypeRouteName();

@@ -91,7 +91,7 @@ export class ContentTypeFieldsComponent implements OnInit {
     return data?.length === 0 ? this.#helpTextConst.empty : this.#helpTextConst.content;
   })
 
-  contentType = this.#contentTypesSvc.getType(this.#contentTypeStaticName).value;
+  contentType = this.#contentTypesSvc.getType(this.#contentTypeStaticName);
 
   fields = signal<Field[]>(undefined);
 
