@@ -212,10 +212,13 @@ export class ContentTypeFieldsComponent implements OnInit {
   }
 
   #fetchFields(callback?: () => void) {
-    this.#contentTypesFieldsSvc.getFieldsPromise(this.#contentTypeStaticName).then(fields => {
-      this.fields.set(fields);
-      if (callback != null)
-        callback();
+    this.#contentTypesFieldsSvc.retrieveContentTypeFields(this.#contentTypeStaticName).subscribe(fields => {
+      if (fields?.length > 0) {
+        this.fields.set(fields);
+        if (callback != null)
+          callback();
+        return;
+      }
     });
   }
 
@@ -321,7 +324,7 @@ export class ContentTypeFieldsComponent implements OnInit {
       getRowClass(params: RowClassParams) {
         const field: Field = params.data;
         const rowClass: string[] = [];
-        if (field.EditInfo.DisableSort) { rowClass.push('disable-row-drag'); }
+        if (field.EditInfo?.DisableSort) { rowClass.push('disable-row-drag'); }
         if (InputTypeHelpers.isGroupStart(field.InputType)) { rowClass.push('group-start-row'); }
         if (InputTypeHelpers.isGroupEnd(field.InputType)) { rowClass.push('group-end-row'); }
         return rowClass;
@@ -350,7 +353,7 @@ export class ContentTypeFieldsComponent implements OnInit {
           ...ColumnDefinitions.TextWidePrimary,
           headerName: 'Name',
           field: 'StaticName',
-          cellClass: (p: { data: Field }) => `${p.data.EditInfo.DisableEdit ? 'no-outline' : 'primary-action highlight'}`.split(' '),
+          cellClass: (p: { data: Field }) => `${p.data.EditInfo?.DisableEdit ? 'no-outline' : 'primary-action highlight'}`.split(' '),
           cellRenderer: (params: ICellRendererParams & { data: Field }) =>
             AgGridHelper.cellLink(
               this.#fieldEditUrl(params.data),
@@ -369,7 +372,7 @@ export class ContentTypeFieldsComponent implements OnInit {
           headerName: 'Input',
           field: 'InputType',
           width: 160,
-          cellClass: (p: { data: Field }) => `${p.data.EditInfo.DisableEdit ? 'no-outline' : 'primary-action highlight'}`.split(' '),
+          cellClass: (p: { data: Field }) => `${p.data.EditInfo?.DisableEdit ? 'no-outline' : 'primary-action highlight'}`.split(' '),
           valueGetter: (p: { data: Field }) => p.data.InputType.substring(p.data.InputType.indexOf('-') + 1),
           cellRenderer: (params: ICellRendererParams & { data: Field }) =>
             AgGridHelper.cellLink(

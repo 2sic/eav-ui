@@ -12,7 +12,6 @@ import { ScopeDetailsDto } from '../models/scopedetails.dto';
 
 // We should list all the "full" paths here, so it's easier to find when searching for API calls
 export const webApiTypeRoot = 'admin/type/';
-const webApiTypeGet = 'admin/type/get';
 const webApiTypes = 'admin/type/list';
 const webApiTypeScopes = 'admin/type/scopes';
 const webApiTypeSave = 'admin/type/save';

@@ -1,9 +1,12 @@
 import { computed, Injectable, Signal } from '@angular/core';
-import { Of } from '../../../../../core';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { filter, first, map } from 'rxjs';
+import { Of, transient } from '../../../../../core';
 import { ContentType } from '../../app-administration/models/content-type.model';
 import { webApiTypeRoot } from '../../app-administration/services';
 import { calculateDataTypes, DataType } from '../../content-type-fields/edit-content-type-fields/edit-content-type-fields.helpers';
 import { HttpServiceBaseSignal } from '../services/http-service-base-signal';
+import { SysDataService } from '../services/sys-data.service';
 import { Field, FieldInputTypeOption } from './field.model';
 import { InputTypeCatalog } from './input-type-catalog';
 import { InputTypeMetadata } from './input-type-metadata.model';
@@ -26,10 +29,12 @@ const webApiAdd = 'admin/field/Add';
 const webApiFieldsGetShared = 'admin/field/GetSharedFields';
 const webApiGetAncestors = 'admin/field/GetAncestors';
 const webApiGetDescendants = 'admin/field/GetDescendants';
+const dataSourceContentTypeDetails = 'System.ContentTypeDetails';
 
 
 @Injectable()
 export class ContentTypesFieldsService extends HttpServiceBaseSignal {
+  #sysData = transient(SysDataService);
 
   protected paramsAppId(more: Record<string, string | number | boolean | ReadonlyArray<string | number | boolean>> = {}) {
     return {
@@ -100,6 +105,24 @@ export class ContentTypesFieldsService extends HttpServiceBaseSignal {
     }));
   }
 
+  retrieveContentTypeFields(nameId: string) {
+    const resource = this.#sysData.getMany<{ Fields?: Field[] }>({
+      source: dataSourceContentTypeDetails,
+      params: {
+        AppId: this.appId,
+        ContentTypeId: nameId,
+      },
+      streams: 'Default,Fields',
+      noCamel: true,
+    });
+
+    return toObservable(resource.value, { injector: this.injector }).pipe(
+      filter(v => v != null),
+      map(streams => streams.Fields ?? []),
+      first(),
+    );
+  }
+
   getFieldsLive(refresh: Signal<unknown>, contentTypeStaticName: string): Signal<Field[]> {
     // Create the HTTP resource that will fetch the fields
     const fieldsResource = this.newHttpResource<Field[]>(() => {
@@ -129,27 +152,6 @@ export class ContentTypesFieldsService extends HttpServiceBaseSignal {
       return fields;
     });
   }
-
-  /** Get all fields for some content type */
-  getFieldsPromise(contentTypeStaticName: string): Promise<Field[]> {
-    return this.fetchPromise<Field[]>(
-      webApiFieldsAll,
-      this.paramsAppId({ staticName: contentTypeStaticName })
-    ).then(fields => {
-      if (fields) {
-        for (const fld of fields) {
-          if (!fld.Metadata) continue;
-          const md = fld.Metadata;
-          const allMd = md.All;
-          const typeMd = md[fld.Type];
-          const inputMd = md[fld.InputType];
-          md.merged = { ...allMd, ...typeMd, ...inputMd };
-        }
-      }
-      return fields;
-    });
-  }
-
   /** Get all possible sharable fields for a new sharing */
   getShareableFieldsPromise(): Promise<Field[]> {
     return this.fetchPromise<Field[]>(webApiFieldsGetShared, {
