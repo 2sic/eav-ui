@@ -138,7 +138,10 @@ export class DatetimeDefaultComponent implements AfterViewInit {
     // from async validators unless we forward the real form-control state ourselves.
     const control = this.ui().control;
     merge(control.statusChanges, control.valueChanges)
-      .pipe(startWith(null), takeUntilDestroyed(this.#destroyRef))
+      .pipe(
+        startWith(null),
+        takeUntilDestroyed(this.#destroyRef)
+      )
       .subscribe(() => this.#syncMatInputErrorState());
 
     l.end();
@@ -229,6 +232,7 @@ export class DatetimeDefaultComponent implements AfterViewInit {
    * Preserves unmodified components from the current value
    */
   updateFormattedValue(date?: Dayjs | null, time?: Dayjs | null) {
+    // 2026-05 @STV new code, not fully verified
     return DateTimeUtils.updateFormattedValue(
       date || null,
       time || null,
@@ -236,5 +240,17 @@ export class DatetimeDefaultComponent implements AfterViewInit {
       value => this.#setUiValue(value),
       this.useTimePicker()
     );
+
+    // 2026-05 previous code, keep for reference until new code is verified
+    // This is probably the same.
+    // const updated = DateTimeUtils.updateFormattedValue(
+    //   date || null,
+    //   time || null,
+    //   this.uiValue(),
+    //   (value) => { }, //this.ui().setIfChanged(value),
+    //   this.useTimePicker()
+    // );
+    // this.ui().setIfChanged(updated);
+    // return updated;
   }
 }

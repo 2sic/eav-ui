@@ -9,66 +9,60 @@ import { EavContentTypeAttribute } from '../../shared/models/eav';
 import { ValidationHelperSpecs } from '../../shared/validation/validation.helpers';
 import { ItemFieldVisibility } from '../../state/item-field-visibility';
 
-type UniqueValueValidationResult = {
-  IsValid?: boolean;
-  Reason?: string;
-  ConflictEntityId?: number;
-  ConflictGuid?: string;
-  ConflictTitle?: string;
-};
-
-type UniqueValueValidationRequest = {
-  contentTypeName: string;
-  fieldName: string;
-  value: string;
-  currentEntityGuid: string;
-  currentEntityId: number;
-  language: string;
-};
-
-type UniqueValueValidationCache = {
-  // Angular can cancel debounced async validators before they hit the backend.
-  // We only reuse a cached result after one request completed for this exact key.
-  requestKey: string;
-  hasResult: boolean;
-  result: ValidationErrors | null;
-  pending$?: Observable<ValidationErrors | null>;
-};
-
+/** Types which support unique value validation */
 const supportedUniqueValidationTypes = new Set(['String', 'Hyperlink', 'Custom', 'Number', 'DateTime']);
+
+/** Debounce delay for the async unique value validation */
 const uniqueValueValidationDelay = 300;
 
+/**
+ * Service to create async validators for unique value validation of form fields.
+ * It checks if a value is unique across entities for a given content type and field.
+ * The validation is triggered based on specific field settings and types.
+ * It also implements caching to avoid redundant backend calls for the same value.
+ */
 @Injectable()
 export class FormFieldsUniqueValueValidatorService {
   #queryService = transient(QueryService);
   #contentTypeService = inject(ContentTypeService);
   #cache = new WeakMap<AbstractControl, UniqueValueValidationCache>();
 
+  /**
+   * Factory to create an async validator function for unique value validation of form fields.
+   * But only if it's configured to be used.
+   * @param specs 
+   * @returns 
+   */
   create(specs: ValidationHelperSpecs): AsyncValidatorFn | null {
-    const attribute = this.#fieldAttribute(specs);
+    const attribute = this.#findAttributeDefinition(specs);
     if (attribute === null || !this.#shouldValidateUniqueValue(attribute))
       return null;
 
+    // Return a function that will be used as an async validator for the form control.
     return (control: AbstractControl): Observable<ValidationErrors | null> => {
+      // Skip if disabled or not visible or pristine, and also clear any cached validation result in that case.
       if (control.disabled || !ItemFieldVisibility.mergedVisible(specs.settings()) || control.pristine)
         return this.#clearCacheAndNull(control);
 
-      const normalizedValue = this.#normalizedValue(control.value);
-      if (normalizedValue === null)
+      const nullOrTrimmedString = this.#nullOrTrimmedString(control.value);
+      if (nullOrTrimmedString === null)
         return this.#clearCacheAndNull(control);
 
-      const request = this.#buildRequest(specs, normalizedValue);
-      const requestKey = this.#queryParams(request);
+      const requestKey = this.#queryParams(specs, nullOrTrimmedString);
 
       const cached = this.#cache.get(control);
       if (cached?.requestKey === requestKey)
         return cached.pending$
-          ?? (cached.hasResult ? of(cached.result) : this.#startRequest(control, requestKey));
+          ?? (cached.hasResult
+            ? of(cached.result)
+            : this.#startRequest(control, requestKey)
+          );
 
       return this.#startRequest(control, requestKey);
     };
   }
 
+  /** Start a validation request for the given control and request key */
   #startRequest(control: AbstractControl, requestKey: string): Observable<ValidationErrors | null> {
     const pending$ = timer(uniqueValueValidationDelay).pipe(
       switchMap(() => this.#queryService.getFromQuery(
@@ -76,7 +70,7 @@ export class FormFieldsUniqueValueValidatorService {
         requestKey,
         'IsValid,Reason,ConflictEntityId,ConflictGuid,ConflictTitle',
       )),
-      map(streams => this.#validationError(streams?.Default?.[0] as UniqueValueValidationResult | undefined)),
+      map(streams => this.#buildValidationError(streams?.Default?.[0] as UniqueValueValidationResult | undefined)),
       catchError(() => of(null)),
       tap(result => this.#setResult(control, requestKey, result)),
       finalize(() => this.#clearPending(control, requestKey)),
@@ -93,11 +87,13 @@ export class FormFieldsUniqueValueValidatorService {
     return pending$;
   }
 
+  /** Clear the cache for the given control and return null */
   #clearCacheAndNull(control: AbstractControl): Observable<ValidationErrors | null> {
     this.#cache.delete(control);
     return of(null);
   }
 
+  /** Set the result for the given control and request key */
   #setResult(control: AbstractControl, requestKey: string, result: ValidationErrors | null): void {
     const current = this.#cache.get(control);
     if (current?.requestKey !== requestKey)
@@ -107,6 +103,7 @@ export class FormFieldsUniqueValueValidatorService {
     current.result = result;
   }
 
+  /** Clear the pending observable for the given control and request key */
   #clearPending(control: AbstractControl, requestKey: string): void {
     const current = this.#cache.get(control);
     if (current?.requestKey !== requestKey)
@@ -115,82 +112,65 @@ export class FormFieldsUniqueValueValidatorService {
     current.pending$ = undefined;
   }
 
-  #buildRequest(specs: ValidationHelperSpecs, normalizedValue: string): UniqueValueValidationRequest {
-    const props = specs.props();
-
-    return {
-      contentTypeName: props.constants.contentTypeNameId,
-      fieldName: props.constants.fieldName,
-      value: normalizedValue,
-      currentEntityGuid: props.constants.entityGuid ?? '',
-      currentEntityId: props.constants.entityId ?? 0,
-      language: props.translationState?.language ?? '',
-    };
-  }
-
-  #fieldAttribute(specs: ValidationHelperSpecs): EavContentTypeAttribute | null {
+  #findAttributeDefinition(specs: ValidationHelperSpecs): EavContentTypeAttribute | null {
     try {
       const { contentTypeNameId, fieldName } = specs.props().constants;
-      return this.#contentTypeService.get(contentTypeNameId)?.Attributes.find(attribute => attribute.Name === fieldName) ?? null;
+      return this.#contentTypeService
+        .get(contentTypeNameId)?.Attributes
+        .find(attribute => attribute.Name === fieldName)
+        ?? null;
     } catch {
       return null;
     }
   }
 
+  /**
+   * Determine whether unique value validation should be applied for the given attribute.
+   * Based on  explicit "IsUnique" setting or implicit type "string-url-path" for string fields.
+   * @param attribute The attribute to check for unique value validation.
+   * @returns True if unique value validation should be applied, false otherwise.
+   */
   #shouldValidateUniqueValue(attribute: EavContentTypeAttribute): boolean {
     if (!supportedUniqueValidationTypes.has(attribute.Type))
       return false;
 
-    const explicitUnique = this.#toBoolean(attribute.Settings.IsUnique?.Values?.[0]?.value);
-    const isUrlPath = attribute.Type === 'String' && attribute.InputType?.toLowerCase() === 'string-url-path';
-    return explicitUnique ?? isUrlPath;
+    const toggleOrNull = attribute.Settings.IsUnique?.Values?.[0]?.value;
+    if(/* this.#toBoolean( */ !!toggleOrNull /* ) */)
+      return true;
+
+    const isUrlPath = attribute.InputType?.toLowerCase() === 'string-url-path';
+    // In any case, if explicitly set, use that, otherwise default to true for "string-url-path" and false for other types.
+    return toggleOrNull ?? isUrlPath;
   }
 
-  #normalizedValue(value: unknown): string | null {
-    if (value === undefined || value === null)
+  #nullOrTrimmedString(value: unknown): string | null {
+    if (value == null)
       return null;
 
     const normalized = String(value);
     return normalized.trim() === '' ? null : normalized;
   }
 
-  #toBoolean(value: unknown): boolean | undefined {
-    if (typeof value === 'boolean')
-      return value;
+  #queryParams(specs: ValidationHelperSpecs, normalizedValue: string): string {
+    // not sure why we have a helper function, could be because of dates.
+    const encode = (v: string | number): string => encodeURIComponent(String(v));
 
-    if (typeof value === 'number')
-      return value === 1
-        ? true
-        : value === 0
-          ? false
-          : undefined;
+    const props = specs.props();
+    const constants = props.constants;
 
-    if (typeof value !== 'string')
-      return undefined;
-
-    const normalized = value.trim().toLowerCase();
-    return normalized === 'true'
-      ? true
-      : normalized === 'false'
-        ? false
-        : undefined;
-  }
-
-  #queryParams(values: UniqueValueValidationRequest): string {
-    const encode = (value: string | number): string => encodeURIComponent(String(value));
     return [
       'SysDataSource=System.UniqueValueValidation',
-      `ContentTypeName=${encode(values.contentTypeName)}`,
-      `FieldName=${encode(values.fieldName)}`,
-      `Value=${encode(values.value)}`,
-      `CurrentEntityGuid=${encode(values.currentEntityGuid)}`,
-      `CurrentEntityId=${encode(values.currentEntityId)}`,
-      `Language=${encode(values.language)}`,
+      `ContentTypeName=${encode(constants.contentTypeNameId)}`,
+      `FieldName=${encode(constants.fieldName)}`,
+      `Value=${encode(normalizedValue)}`,
+      `CurrentEntityGuid=${encode(constants.entityGuid ?? '')}`,
+      `CurrentEntityId=${encode(constants.entityId ?? 0)}`,
+      `Language=${encode(props.translationState?.language ?? '')}`,
     ].join('&');
   }
 
-  #validationError(result?: UniqueValueValidationResult): ValidationErrors | null {
-    if ((result === undefined || result === null) || result.IsValid !== false || result.Reason !== 'duplicate')
+  #buildValidationError(result?: UniqueValueValidationResult): ValidationErrors | null {
+    if (result == null || result.IsValid !== false || result.Reason !== 'duplicate')
       return null;
 
     return {
@@ -203,3 +183,21 @@ export class FormFieldsUniqueValueValidatorService {
     };
   }
 }
+
+
+type UniqueValueValidationResult = {
+  IsValid?: boolean;
+  Reason?: string;
+  ConflictEntityId?: number;
+  ConflictGuid?: string;
+  ConflictTitle?: string;
+};
+
+type UniqueValueValidationCache = {
+  // Angular can cancel debounced async validators before they hit the backend.
+  // We only reuse a cached result after one request completed for this exact key.
+  requestKey: string;
+  hasResult: boolean;
+  result: ValidationErrors | null;
+  pending$?: Observable<ValidationErrors | null>;
+};

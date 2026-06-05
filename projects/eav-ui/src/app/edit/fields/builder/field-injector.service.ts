@@ -128,7 +128,11 @@ export class FieldStateInjectorFactory {
       return runInInjectionContext(this.#injector, () => {
         // Async validators can flip invalid/pending after the value change finished, so we must also
         // react to statusChanges for custom fields which don't bind Angular Material directly to the control.
-        const uiStateChange$ = merge(control.valueChanges, control.statusChanges).pipe(
+        const uiStateChange$ = merge(
+          control.valueChanges,
+          control.statusChanges
+        )
+        .pipe(
           startWith(null),
           mapUntilObjChanged(() => ({
             dirty: control.dirty,
