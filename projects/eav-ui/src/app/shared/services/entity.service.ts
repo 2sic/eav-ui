@@ -15,6 +15,7 @@ const logSpecs = {
 
 export const webApiEntityRoot = 'admin/entity/';
 export const webApiEntityList = 'admin/entity/list';
+export const dataSourceEntitiesAdmin = 'System.EntitiesAdmin';
 
 @Injectable()
 export class EntityService extends HttpServiceBaseSignal {

@@ -1,11 +1,13 @@
-import { httpResource } from '@angular/common/http';
-import { Injectable, Signal } from '@angular/core';
+import { computed, Injectable, Signal } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { transient } from 'projects/core';
 import { from, map, switchMap } from 'rxjs';
 import { classLog } from '../../../../../shared/logging';
 import { FileUploadResult } from '../../shared/components/file-upload-dialog';
 import { toBase64 } from '../../shared/helpers/file-to-base64.helper';
-import { webApiEntityList } from '../../shared/services/entity.service';
+import { dataSourceEntitiesAdmin } from '../../shared/services/entity.service';
 import { HttpServiceBase } from '../../shared/services/http-service-base';
+import { SysDataService } from '../../shared/services/sys-data.service';
 import { Query } from '../models/query.model';
 
 const logSpecs = {
@@ -32,34 +34,45 @@ export const webApiQueryDataSources = 'admin/query/DataSources';
 @Injectable()
 export class PipelinesService extends HttpServiceBase {
 
+  readonly #sysData = transient(SysDataService);
   log = classLog({ PipelinesService }, logSpecs);
-  // TODO: @2dg, ask 2dm 
-  getAll(contentType: string) {
-    const l = this.log.fnIf('getAll');
-    return l.r(this.getHttpApiUrl<Query[]>(webApiEntityList, {
-      params: { appId: this.appId, contentType }
-    }));
-  }
-
-  // Full Code, repated x times
-  getAllLive(contentType: string, refresh: Signal<unknown>) {
-    this.log.fnIf('getAllLive', { contentType, refresh });
-    return httpResource<Query[]>(() => {
-      refresh();
-      return ({
-        url: this.apiUrl(webApiEntityList),
-        params: { appId: this.appId, contentType: contentType }
-      });
+  getAllSig(contentType: string, refresh?: Signal<unknown>) {
+    return this.#sysData.getMany<{ Default?: Query[] }>({
+      refresh,
+      source: dataSourceEntitiesAdmin,
+      params: {
+        AppId: this.appId,
+        ContentType: contentType,
+      },
+      streams: 'Default',
+      noCamel: true,
     });
   }
 
-  /** Experimental httpResource use! */
+  getAll(contentType: string) {
+    const l = this.log.fnIf('getAll');
+    const resource = this.getAllSig(contentType);
+    return l.r(toObservable(resource.value, { injector: this.injector }).pipe(
+      map(streams => streams?.Default ?? []),
+    ));
+  }
+
+  getAllLive(contentType: string, refresh: Signal<unknown>) {
+    this.log.fnIf('getAllLive', { contentType, refresh });
+    const resource = this.getAllSig(contentType, refresh);
+    return {
+      ...resource,
+      value: computed(() => resource.value()?.Default ?? []),
+    };
+  }
+
   getAllRes(contentType: string, initial?: Query[]) {
     const l = this.log.fnIf('getAllRes');
-    const res = httpResource<Query[]>(() => ({
-      url: webApiEntityList,
-      params: { appId: this.appId, contentType },
-    }), { defaultValue: initial });
+    const resource = this.getAllSig(contentType);
+    const res = {
+      ...resource,
+      value: computed(() => resource.value()?.Default ?? initial ?? []),
+    };
     return l.r(res);
   }
 
