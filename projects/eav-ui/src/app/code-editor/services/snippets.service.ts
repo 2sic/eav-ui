@@ -1,13 +1,15 @@
 import { Injectable } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { TranslateService } from '@ngx-translate/core';
 import cloneDeep from 'lodash-es/cloneDeep';
-import { map, Observable } from 'rxjs';
-import { Of } from '../../../../../core';
-import { webApiFieldsAll } from '../../shared/fields/content-types-fields.service';
+import { filter, first, firstValueFrom, map, Observable } from 'rxjs';
+import { Of, transient } from '../../../../../core';
+import { dataSourceContentTypeDetails } from '../../shared/fields/content-types-fields.service';
 import { DataTypeCatalog } from '../../shared/fields/data-type-catalog';
 import { Field } from '../../shared/fields/field.model';
 import { InputTypeCatalog } from '../../shared/fields/input-type-catalog';
 import { HttpServiceBase } from '../../shared/services/http-service-base';
+import { SysDataService } from '../../shared/services/sys-data.service';
 import { MoreSnippet, SetSnippet, SetSnippetLink, Snippet, SnippetsSets, SnippetsSubSubSets } from '../models/snippet.model';
 import { SourceView } from '../models/source-view.model';
 import { Tooltip } from '../models/tooltip.model';
@@ -16,6 +18,8 @@ export const inlineHelp = 'admin/Code/InlineHelp';
 
 @Injectable()
 export class SnippetsService extends HttpServiceBase {
+
+  #sysData = transient(SysDataService);
 
   constructor(private translate: TranslateService) {
     super();
@@ -271,22 +275,35 @@ export class SnippetsService extends HttpServiceBase {
 
 
 #getFields(appId: number, staticName: string): Promise<Field[]> {
-  return this.fetchPromise<Field[]>(webApiFieldsAll, {
-    params: { appid: appId.toString(), staticName },
-  }).then(fields => {
-    // Filtere leere Datentypen raus
-    fields = fields.filter(field => field.Type !== DataTypeCatalog.Empty);
-    // Merged-Metadata erzeugen wie vorher
-    for (const fld of fields) {
-      if (!fld.Metadata) continue;
-      const md = fld.Metadata;
-      const allMd = md.All;
-      const typeMd = md[fld.Type];
-      const inputMd = md[fld.InputType];
-      md.merged = { ...allMd, ...typeMd, ...inputMd };
-    }
-    return fields;
+  const resource = this.#sysData.getMany<{ Fields?: Field[] }>({
+    source: dataSourceContentTypeDetails,
+    params: {
+      AppId: appId,
+      ContentTypeId: staticName,
+    },
+    streams: 'Default,Fields',
+    noCamel: true,
   });
+
+  return firstValueFrom(
+    toObservable(resource.value, { injector: this.injector }).pipe(
+      filter(v => v != null),
+      map(streams => {
+        let fields = streams.Fields ?? [];
+        fields = fields.filter(field => field.Type !== DataTypeCatalog.Empty);
+        for (const fld of fields) {
+          if (!fld.Metadata) continue;
+          const md = fld.Metadata;
+          const allMd = md.All;
+          const typeMd = md[fld.Type];
+          const inputMd = md[fld.InputType];
+          md.merged = { ...allMd, ...typeMd, ...inputMd };
+        }
+        return fields;
+      }),
+      first(),
+    ),
+  );
 }
 
   #attachSnippets(

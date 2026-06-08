@@ -11,8 +11,6 @@ import { Field, FieldInputTypeOption } from './field.model';
 import { InputTypeCatalog } from './input-type-catalog';
 import { InputTypeMetadata } from './input-type-metadata.model';
 
-export const webApiFieldsAll = 'admin/field/all';
-
 // All WebApi paths - to easily search/find when looking for where these are used
 const webApiDataTypes = 'admin/field/DataTypes';
 const webApiReservedNames = 'admin/field/ReservedNames';
@@ -29,7 +27,7 @@ const webApiAdd = 'admin/field/Add';
 const webApiFieldsGetShared = 'admin/field/GetSharedFields';
 const webApiGetAncestors = 'admin/field/GetAncestors';
 const webApiGetDescendants = 'admin/field/GetDescendants';
-const dataSourceContentTypeDetails = 'System.ContentTypeDetails';
+export const dataSourceContentTypeDetails = 'System.ContentTypeDetails';
 
 
 @Injectable()
@@ -82,7 +80,7 @@ export class ContentTypesFieldsService extends HttpServiceBaseSignal {
       isObsolete: config.IsObsolete,
       isRecommended: config.IsRecommended,
       obsoleteMessage: config.ObsoleteMessage,
-      icon: config.IsDefault ? 'stars' : config.IsRecommended ? 'star' : null,
+      icon: config.IsDefault ? 'stars' : config.IsRecommended ? 'star' : undefined,
       sort: (config.IsObsolete ? 'z' : config.IsDefault ? 'a' : config.IsRecommended ? 'b' : 'c') + config.Label,
     });
 
@@ -124,23 +122,20 @@ export class ContentTypesFieldsService extends HttpServiceBaseSignal {
   }
 
   getFieldsLive(refresh: Signal<unknown>, contentTypeStaticName: string): Signal<Field[]> {
-    // Create the HTTP resource that will fetch the fields
-    const fieldsResource = this.newHttpResource<Field[]>(() => {
-      // Reference the refresh signal to trigger refetching when it changes
-      refresh();
-      return {
-        url: this.apiUrl(webApiFieldsAll),
-        params: this.paramsAppId({ staticName: contentTypeStaticName }).params,
-      };
+    const fieldsResource = this.#sysData.getMany<{ Fields?: Field[] }>({
+      refresh,
+      source: dataSourceContentTypeDetails,
+      params: {
+        AppId: this.appId,
+        ContentTypeId: contentTypeStaticName,
+      },
+      streams: 'Default,Fields',
+      noCamel: true,
     }).value;
 
     // Create a computed signal that processes the fetched fields
     return computed(() => {
-      // Get the current state of the fields resource
-      const state = fieldsResource();
-
-      // Process fields just like in the Promise version
-      const fields = state || [];
+      const fields = fieldsResource()?.Fields ?? [];
       for (const fld of fields) {
         if (!fld.Metadata) continue;
         const md = fld.Metadata;
@@ -261,12 +256,12 @@ export class ContentTypesFieldsService extends HttpServiceBaseSignal {
       params: {
         AppId: this.appId,
         ContentTypeId: contentTypeId.toString(),
-        Id: newField.Id.toString(),
+        Id: (newField.Id).toString(),
         Type: newField.Type,
         InputType: newField.InputType,
         StaticName: newField.StaticName,
-        IsTitle: newField.IsTitle.toString(),
-        Index: newField.SortOrder.toString(),
+        IsTitle: (newField.IsTitle).toString(),
+        Index: (newField.SortOrder).toString(),
       }
     });
   }
