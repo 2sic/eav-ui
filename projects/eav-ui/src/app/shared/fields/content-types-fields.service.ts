@@ -9,13 +9,9 @@ import { HttpServiceBaseSignal } from '../services/http-service-base-signal';
 import { SysDataService } from '../services/sys-data.service';
 import { Field, FieldInputTypeOption } from './field.model';
 import { InputTypeCatalog } from './input-type-catalog';
-import { InputTypeMetadata } from './input-type-metadata.model';
 
 // All WebApi paths - to easily search/find when looking for where these are used
-const webApiDataTypes = 'admin/field/DataTypes';
-const webApiReservedNames = 'admin/field/ReservedNames';
 const webApiAddInheritedField = 'admin/field/AddInheritedField';
-const webApiInputTypes = 'admin/field/InputTypes';
 const webApiInputType = 'admin/field/InputType';
 const webApiShare = 'admin/field/Share';
 const webApiInherit = 'admin/field/Inherit';
@@ -28,11 +24,34 @@ const webApiFieldsGetShared = 'admin/field/GetSharedFields';
 const webApiGetAncestors = 'admin/field/GetAncestors';
 const webApiGetDescendants = 'admin/field/GetDescendants';
 export const dataSourceContentTypeDetails = 'System.ContentTypeDetails';
+export const dataSourceInputTypes = 'System.InputTypes';
+
+export interface DataTypeOption {
+  Name: string;
+  Value: string;
+}
+
+export interface ReservedNameOption {
+  Name: string;
+  Value: string;
+}
 
 
 @Injectable()
 export class ContentTypesFieldsService extends HttpServiceBaseSignal {
   #sysData = transient(SysDataService);
+  #inputTypeData = this.#sysData.getMany<{
+    InputTypes?: any[];
+    DataTypes?: DataTypeOption[];
+    ReservedNames?: ReservedNameOption[];
+  }>({
+    source: dataSourceInputTypes,
+    params: {
+      AppId: this.appId,
+    },
+    streams: 'InputTypes,DataTypes,ReservedNames',
+    noCamel: true,
+  });
 
   protected paramsAppId(more: Record<string, string | number | boolean | ReadonlyArray<string | number | boolean>> = {}) {
     return {
@@ -45,62 +64,63 @@ export class ContentTypesFieldsService extends HttpServiceBaseSignal {
 
   /** Get list of data types available in the system, such as 'string', 'number' etc. */
   dataTypes() {
-    const resourceRef = this.newHttpResource<string[]>(() => ({
-      url: this.apiUrl(webApiDataTypes),
-      params: this.paramsAppId().params,
-    }));
     // Transform raw string data into rich DataType objects
     const transformedData = computed(() => {
-      const rawData = resourceRef.value();
-      if (!rawData) return [];
+      const rawData = this.#inputTypeData.value()?.DataTypes?.map(dataType => dataType.Value || dataType.Name) ?? [];
+      if (rawData.length === 0) 
+        return [];
       return calculateDataTypes(rawData);
     });
     // Return a resource object with the transformed data, loading state and error information
     return {
       value: transformedData as Signal<DataType[]>,
-      loading: resourceRef.isLoading,
-      error: resourceRef.error,
+      loading: this.#inputTypeData.isLoading,
+      error: this.#inputTypeData.error,
     };
   }
 
   // Returns a Signal-based resource with sorted and transformed FieldInputTypeOption objects
   getInputTypes() {
-    const resourceRef = this.newHttpResource<InputTypeMetadata[]>(() => ({
-      url: this.apiUrl(webApiInputTypes),
-      params: this.paramsAppId().params,
-    }));
-
     // This extracts and formats relevant information from each input type configuration
-    const mapToFieldInputTypeOption = (config: InputTypeMetadata): FieldInputTypeOption & { sort: string } => ({
-      dataType: config.Type.substring(0, config.Type.indexOf('-')),
+    const mapToFieldInputTypeOption = (config: any): FieldInputTypeOption & { sort: string } => ({
+      dataType: config.Type.includes('-') ? config.Type.substring(0, config.Type.indexOf('-')) : config.Type,
       inputType: config.Type,
-      label: config.Label,
+      label: config.Label ?? config.Type,
       description: config.Description,
       isDefault: config.IsDefault,
       isObsolete: config.IsObsolete,
       isRecommended: config.IsRecommended,
       obsoleteMessage: config.ObsoleteMessage,
       icon: config.IsDefault ? 'stars' : config.IsRecommended ? 'star' : undefined,
-      sort: (config.IsObsolete ? 'z' : config.IsDefault ? 'a' : config.IsRecommended ? 'b' : 'c') + config.Label,
+      sort: (config.IsObsolete ? 'z' : config.IsDefault ? 'a' : config.IsRecommended ? 'b' : 'c') + (config.Label ?? config.Type),
     });
 
     // Create a computed signal that automatically transforms and sorts the data when it changes
     const transformedData = computed(() =>
-      resourceRef.value()?.map(mapToFieldInputTypeOption)
+      this.#inputTypeData.value()?.InputTypes?.map(mapToFieldInputTypeOption)
         .sort((a, b) => a.sort.localeCompare(b.sort)) || []
     );
 
     return {
       value: transformedData,
-      loading: resourceRef.isLoading,
-      error: resourceRef.error,
+      loading: this.#inputTypeData.isLoading,
+      error: this.#inputTypeData.error,
     };
   }
 
   getReservedNames() {
-    return this.newHttpResource<Record<string, string>>(() => ({
-      url: this.apiUrl(webApiReservedNames),
-    }));
+    const transformedData = computed(() =>
+      (this.#inputTypeData.value()?.ReservedNames ?? []).reduce((reserved, current) => {
+        reserved[current.Name] = current.Value;
+        return reserved;
+      }, {} as Record<string, string>)
+    );
+
+    return {
+      value: transformedData,
+      loading: this.#inputTypeData.isLoading,
+      error: this.#inputTypeData.error,
+    };
   }
 
   retrieveContentTypeFields(nameId: string) {
