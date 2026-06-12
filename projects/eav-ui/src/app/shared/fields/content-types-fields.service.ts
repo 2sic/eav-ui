@@ -29,22 +29,30 @@ export const dataSourceInputTypes = 'System.InputTypes';
 // @2rb - no export if not reused
 // @2rb - no "option" suffix
 // @2rb - no value if it's the same thing anyhow
-/* export */ interface DataTypeItem {
+interface DataTypeItem {
   Name: string;
-  // Value: string;
 }
 
-/* export */ interface ReservedName {
+interface ReservedName {
   Name: string;
   Value: string;
 }
 
+interface InputTypeInfo {
+  Type: Of<typeof InputTypeCatalog>;
+  Label?: string;
+  Description?: string;
+  IsDefault?: boolean;
+  IsObsolete?: boolean;
+  IsRecommended?: boolean;
+  ObsoleteMessage?: string;
+}
 
 @Injectable()
 export class ContentTypesFieldsService extends HttpServiceBaseSignal {
   #sysData = transient(SysDataService);
   #inputTypeData = this.#sysData.getMany<{
-    InputTypes?: any[]; /* @2rb 'any' is bad */
+    InputTypes?: InputTypeInfo[];
     DataTypes?: DataTypeItem[];
     ReservedNames?: ReservedName[];
   }>({
@@ -70,7 +78,7 @@ export class ContentTypesFieldsService extends HttpServiceBaseSignal {
     // Transform raw string data into rich DataType objects
     const transformedData = computed(() => {
       const rawData = this.#inputTypeData.value()?.DataTypes?.map(dataType => dataType.Name) ?? [];
-      if (rawData.length === 0) 
+      if (rawData.length === 0)
         return [];
       return calculateDataTypes(rawData);
     });
@@ -85,30 +93,39 @@ export class ContentTypesFieldsService extends HttpServiceBaseSignal {
   // Returns a Signal-based resource with sorted and transformed FieldInputTypeOption objects
   getInputTypes() {
     // This extracts and formats relevant information from each input type configuration
-    const mapToFieldInputTypeOption = (config: any /* @2rb 'any' is bad */): FieldInputTypeOption & { sort: string } => ({
-      dataType: config.Type.includes('-') ? config.Type.substring(0, config.Type.indexOf('-')) : config.Type,
-      inputType: config.Type,
-      label: config.Label ?? config.Type,
-      description: config.Description,
-      isDefault: config.IsDefault,
-      isObsolete: config.IsObsolete,
-      isRecommended: config.IsRecommended,
-      obsoleteMessage: config.ObsoleteMessage,
+    const mapToFieldInputTypeOption = (config: InputTypeInfo): FieldInputTypeOption & { sort: string } => {
+    const inputType = config.Type;
+    const label = config.Label ?? inputType;
+    const dataType = inputType.includes('-')
+      ? inputType.substring(0, inputType.indexOf('-'))
+      : inputType;
+
+    return {
+      dataType,
+      inputType,
+      label,
+      description: config.Description ?? '',
+      isDefault: config.IsDefault ?? false,
+      isObsolete: config.IsObsolete ?? false,
+      isRecommended: config.IsRecommended ?? false,
+      obsoleteMessage: config.ObsoleteMessage ?? '',
       icon: config.IsDefault ? 'stars' : config.IsRecommended ? 'star' : undefined,
-      sort: (config.IsObsolete ? 'z' : config.IsDefault ? 'a' : config.IsRecommended ? 'b' : 'c') + (config.Label ?? config.Type),
-    });
+      sort: (config.IsObsolete ? 'z' : config.IsDefault ? 'a' : config.IsRecommended ? 'b' : 'c') + label,
+    };
+  };
 
     // Create a computed signal that automatically transforms and sorts the data when it changes
     const transformedData = computed(() =>
-      this.#inputTypeData.value()?.InputTypes?.map(mapToFieldInputTypeOption)
-        .sort((a, b) => a.sort.localeCompare(b.sort)) || []
-    );
+    this.#inputTypeData.value()?.InputTypes
+      ?.map(mapToFieldInputTypeOption)
+      .sort((a, b) => a.sort.localeCompare(b.sort)) ?? []
+  );
 
-    return {
-      value: transformedData,
-      loading: this.#inputTypeData.isLoading,
-      error: this.#inputTypeData.error,
-    };
+  return {
+    value: transformedData,
+    loading: this.#inputTypeData.isLoading,
+    error: this.#inputTypeData.error,
+  };
   }
 
   getReservedNames() {
