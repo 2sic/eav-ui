@@ -1,7 +1,7 @@
 import { GridOptions } from '@ag-grid-community/core';
 import { Component, input } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { WebApiAction, WebApiActionParameters } from '../../../app-administration/models/web-api-details';
+import { WebApiControllerEndpoint, WebApiControllerParameter } from '../../../app-administration/models/web-api-details';
 import { ColumnDefinitions } from '../../../shared/ag-grid/column-definitions';
 import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';
 import { SxcGridModule } from '../../../shared/modules/sxc-grid-module/sxc-grid.module';
@@ -17,7 +17,7 @@ import { TrueFalseParams } from '../true-false/true-false.models';
   ]
 })
 export class DevRestApiActionParamsComponent {
-  data = input<WebApiAction>();
+  data = input<WebApiControllerEndpoint>();
 
   gridOptions = this.buildGridOptions();
 
@@ -32,7 +32,7 @@ export class DevRestApiActionParamsComponent {
           headerClass: 'dense',
           width: 80,
           cellClass: 'no-padding no-outline'.split(' '),
-          valueGetter: (p: { data: WebApiActionParameters }) => p.data.isOptional,
+          valueGetter: (p: { data: WebApiControllerParameter }) => p.data.isOptional,
           cellRenderer: TrueFalseComponent,
           cellRendererParams: {
             reverse: false,
@@ -43,14 +43,14 @@ export class DevRestApiActionParamsComponent {
           flex: 2,
           minWidth: 200,
           cellClass: 'no-outline',
-          valueGetter: (p: { data: WebApiActionParameters }) => p.data.name,
+          valueGetter: (p: { data: WebApiControllerParameter }) => p.data.name,
         },
         {
           field: 'Type',
           flex: 2,
           headerClass: 'dense',
           cellClass: 'no-outline',
-          valueGetter: (p: { data: WebApiActionParameters }) => p.data.type,
+          valueGetter: (p: { data: WebApiControllerParameter }) => p.data.type,
         },
         {
           ...ColumnDefinitions.TextWide,

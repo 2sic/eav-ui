@@ -1,8 +1,8 @@
 import { computed, Injectable, Signal } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
-import { filter, map, Observable } from 'rxjs';
+import { filter, first, map, Observable } from 'rxjs';
 import { transient } from '../../../../../core';
-import { WebApi, WebApiDetails } from '../../app-administration/models';
+import { WebApi, WebApiControllerDetails, WebApiControllerEndpoint } from '../../app-administration/models';
 import { ViewOrFileIdentifier } from '../../shared/models/edit-form.model';
 import { HttpServiceBase } from '../../shared/services/http-service-base';
 import { SysDataService } from '../../shared/services/sys-data.service';
@@ -14,10 +14,11 @@ import { SourceView } from '../models/source-view.model';
 const appFilesAll = 'admin/AppFiles/AppFiles';
 const appFilesAsset = 'admin/AppFiles/asset';
 const appFilesCreate = 'admin/AppFiles/create';
-const apiExplorerInspect = 'admin/ApiExplorer/inspect';
 const appFilesPredefinedTemplates = 'admin/AppFiles/GetTemplates';
 const appFilesPreview = 'admin/AppFiles/preview';
 const dataSourceAppWebApiControllers = 'System.AppWebApiControllers';
+const dataSourceAppWebApiControllerDetails = 'System.AppWebApiControllerDetails';
+const dataSourceAppWebApiControllerEndpoints = 'System.AppWebApiControllerEndpoints';
 
 interface AppWebApiControllerRow {
   Path: string;
@@ -168,11 +169,40 @@ export class SourceService extends HttpServiceBase {
   }
 
 
-  // TODO: @2dg, ask 2dm 
-  getWebApiDetails(apiPath: string): Observable<WebApiDetails> {
-    return this.getHttpApiUrl<WebApiDetails>(apiExplorerInspect, {
-      params: { appId: this.appId, zoneId: this.zoneId, path: apiPath },
+  retrieveWebApiControllerDetails(path: string): Observable<WebApiControllerDetails | null> {
+    const resource = this.#sysData.getMany<{ Default?: WebApiControllerDetails[] }>({
+      source: dataSourceAppWebApiControllerDetails,
+      params: {
+        AppId: this.appId,
+        Path: path,
+      },
+      streams: 'Default',
+      noCamel: true,
     });
+
+    return toObservable(resource.value, { injector: this.injector }).pipe(
+      filter(value => value != null),
+      map(streams => streams.Default?.[0] ?? null),
+      first(),
+    );
+  }
+
+  retrieveWebApiControllerEndpoints(path: string): Observable<WebApiControllerEndpoint[]> {
+    const resource = this.#sysData.getMany<{ Default?: WebApiControllerEndpoint[] }>({
+      source: dataSourceAppWebApiControllerEndpoints,
+      params: {
+        AppId: this.appId,
+        Path: path,
+      },
+      streams: 'Default',
+      noCamel: true,
+    });
+
+    return toObservable(resource.value, { injector: this.injector }).pipe(
+      filter(value => value != null),
+      map(streams => streams.Default ?? []),
+      first(),
+    );
   }
 
   getPredefinedTemplates(purpose?: 'Template' | 'Search' | 'Api', type?: 'Token' | 'Razor'): Promise<PredefinedTemplatesResponse> {
