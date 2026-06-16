@@ -99,7 +99,7 @@ export class ContentItemsComponent implements OnInit {
     effect(() => {
       const data = this.items(); // re-runs when items are refreshed
       if (data)
-        this.#gridApiSig().setGridOption("loading", false);
+        this.#setGridLoading(false);
     });
   }
 
@@ -131,7 +131,7 @@ export class ContentItemsComponent implements OnInit {
     return data?.length === 0 ? this.#helpTextConst.empty : this.#helpTextConst.content;
   })
 
-  #gridApiSig: WritableSignal<GridApi<ContentItem>> = signal<GridApi<ContentItem>>(null);
+  #gridApiSig: WritableSignal<GridApi<ContentItem> | null> = signal<GridApi<ContentItem> | null>(null);
 
   #contentTypeStaticName = this.#dialogRouter.getParam('contentTypeStaticName');
   contentType = this.#contentTypesSvc.getType(this.#contentTypeStaticName);
@@ -157,12 +157,21 @@ export class ContentItemsComponent implements OnInit {
     this.#gridApiSig.set(params.api);
     this.fetchColumns();
     this.urlToExportContent();
+    this.#setGridLoading(false);
   }
 
   private fetchItems() {
     // Show the AG Grid loading overlay
-    this.#gridApiSig().setGridOption("loading", true);
+    this.#setGridLoading(true);
     this.refresh.update(v => ++v);
+  }
+
+  #setGridLoading(loading: boolean) {
+    const gridApi = this.#gridApiSig();
+    if (!gridApi)
+      return;
+
+    gridApi.setGridOption("loading", loading);
   }
 
   private fetchColumns() {
@@ -170,17 +179,22 @@ export class ContentItemsComponent implements OnInit {
       // filter out ephemeral columns as they don't have data to show
       const columnsWithoutEphemeral = columns.filter(column => !column.IsEphemeral);
       const columnDefs = this.#buildColumnDefs(columnsWithoutEphemeral);
-      const filterModel = buildFilterModel(sessionStorage.getItem(keyFilters), columnDefs);
-      if (this.#gridApiSig())
+      const filterModel = buildFilterModel(sessionStorage.getItem(keyFilters) ?? '', columnDefs);
+      const gridApi = this.#gridApiSig();
+      if (gridApi)
         this.setColumnDefs(columnDefs, filterModel);
     });
   }
 
-  private setColumnDefs(columnDefs: ColDef[], filterModel: AgGridFilterModel) {
-    this.#gridApiSig().setGridOption("columnDefs", columnDefs);
+  private setColumnDefs(columnDefs: ColDef[], filterModel: AgGridFilterModel | undefined) {
+    const gridApi = this.#gridApiSig();
+    if (!gridApi)
+      return;
+
+    gridApi.setGridOption("columnDefs", columnDefs);
     if (filterModel) {
       this.log.a('Will try to apply filter:', filterModel);
-      this.#gridApiSig().setFilterModel(filterModel);
+      gridApi.setFilterModel(filterModel);
     }
   }
 
@@ -261,7 +275,10 @@ export class ContentItemsComponent implements OnInit {
     const ids: number[] = [];
 
     if (hasFilters)
-      value.forEachNodeAfterFilterAndSort(n => ids.push(n.data.Id));
+      value.forEachNodeAfterFilterAndSort(n => {
+        if (n.data)
+          ids.push(n.data.Id);
+      });
 
     return this.#urlTo(
       `export/${this.#contentTypeStaticName}${ids.length > 0 ? `/${ids.join(',')}` : ''}`
@@ -316,7 +333,14 @@ export class ContentItemsComponent implements OnInit {
   }
 
   debugFilter() {
-    console.warn('Current filter:', this.#gridApiSig().getFilterModel());
+    const gridApi = this.#gridApiSig();
+    if (!gridApi) {
+      console.warn('Grid API not ready yet.');
+      this.#snackBar.open('Grid not ready yet', undefined, { duration: 3000 });
+      return;
+    }
+
+    console.warn('Current filter:', gridApi.getFilterModel());
     this.#snackBar.open('Check console for filter information', undefined, { duration: 3000 });
   }
 
