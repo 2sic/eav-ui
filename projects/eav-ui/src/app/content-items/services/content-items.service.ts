@@ -56,7 +56,7 @@ export class ContentItemsService extends HttpServiceBaseSignal {
     const resource = this.#getAllSig(contentTypeStaticName);
     return {
       ...resource,
-      value: computed(() => resource.value()?.Default ?? []),
+      value: computed(() => resource.value()?.Default),
     };
   }
 
@@ -65,7 +65,7 @@ export class ContentItemsService extends HttpServiceBaseSignal {
     const resource = this.#getAllSig(contentTypeStaticName, refresh);
     return {
       ...resource,
-      value: computed(() => resource.value()?.Default ?? []),
+      value: computed(() => resource.value()?.Default),
     };
   }
 

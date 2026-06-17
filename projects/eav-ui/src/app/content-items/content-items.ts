@@ -96,12 +96,16 @@ export class ContentItemsComponent implements OnInit {
   #dialogRouter = transient(DialogRoutingService);
 
   constructor() {
-    effect(() => {
-      const data = this.items(); // re-runs when items are refreshed
-      if (data)
-        this.#gridApiSig().setGridOption("loading", false);
-    });
-  }
+  effect(() => {
+    const data = this.items();
+    const api = this.#gridApiSig();
+
+    if (!api || data == null)
+      return;
+
+    api.setGridOption('loading', false);
+  });
+}
 
   gridOptions: GridOptions = {
     ...defaultGridOptions,
