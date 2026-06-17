@@ -274,7 +274,7 @@ export class ContentTypeFieldsComponent implements OnInit {
   }
 
   #openImageConfiguration(field: Field) {
-    const imgConfig = field.imageConfiguration;
+    const imgConfig = field.ImageConfiguration;
     if (imgConfig?.isRecommended != true)
       throw new Error('This field does not expect to have an image configuration');
 
