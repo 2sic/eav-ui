@@ -32,7 +32,7 @@ export interface Field {
   ConfigTypes: Record<string, boolean>;
 
   /** WIP v18 with imageconfiguration on links and wysiwyg */
-  imageConfiguration: {
+  ImageConfiguration: {
     isRecommended: boolean;
     typeName: string;
     entityId: number;
