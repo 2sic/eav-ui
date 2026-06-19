@@ -17,7 +17,7 @@ import { TrueFalseParams } from '../true-false/true-false.models';
   ]
 })
 export class DevRestApiActionParamsComponent {
-  data = input<WebApiControllerEndpoint>();
+  data = input<WebApiControllerEndpoint | null>();
 
   gridOptions = this.buildGridOptions();
 

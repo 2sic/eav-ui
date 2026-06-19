@@ -5,5 +5,5 @@ export interface DevRestApiModel extends DevRestBaseModel {
   webApi: WebApi;
   details: WebApiControllerDetails | null;
   endpoints: WebApiControllerEndpoint[];
-  selected: WebApiControllerEndpoint;
+  selected: WebApiControllerEndpoint | null;
 }

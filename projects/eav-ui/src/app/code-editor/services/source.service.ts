@@ -1,8 +1,8 @@
 import { computed, Injectable, Signal } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
-import { filter, first, map, Observable } from 'rxjs';
+import { catchError, filter, first, map, Observable, of } from 'rxjs';
 import { transient } from '../../../../../core';
-import { WebApi, WebApiControllerDetails, WebApiControllerEndpoint } from '../../app-administration/models';
+import { WebApi, WebApiControllerDetails, WebApiControllerEndpoint, WebApiControllerParameter, WebApiSecurity } from '../../app-administration/models';
 import { ViewOrFileIdentifier } from '../../shared/models/edit-form.model';
 import { HttpServiceBase } from '../../shared/services/http-service-base';
 import { SysDataService } from '../../shared/services/sys-data.service';
@@ -26,6 +26,42 @@ interface AppWebApiControllerRow {
   Edition: string;
   Shared: boolean;
 }
+
+type WebApiControllerDetailsResponse = { Default?: WebApiControllerDetailsRaw[] };
+type WebApiControllerEndpointsResponse = { Default?: WebApiControllerEndpointRaw[] };
+
+type WebApiControllerDetailsRaw = {
+  controller?: string;
+  path?: string;
+  ignoreSecurity?: boolean;
+  allowAnonymous?: boolean;
+  requireVerificationToken?: boolean;
+  validateAntiForgeryToken?: boolean;
+  autoValidateAntiforgeryToken?: boolean;
+  ignoreAntiforgeryToken?: boolean;
+  view?: boolean;
+  edit?: boolean;
+  admin?: boolean;
+  superUser?: boolean;
+  requireContext?: boolean;
+};
+
+type WebApiControllerEndpointRaw = {
+  name?: string;
+  endpointPath?: string;
+  returns?: string;
+  verbs?: string;
+  parameters?: WebApiControllerParameter[];
+  security?: WebApiSecurity;
+  ignoreSecurity?: boolean;
+  allowAnonymous?: boolean;
+  requireVerificationToken?: boolean;
+  view?: boolean;
+  edit?: boolean;
+  admin?: boolean;
+  superUser?: boolean;
+  requireContext?: boolean;
+};
 
 @Injectable()
 export class SourceService extends HttpServiceBase {
@@ -170,7 +206,7 @@ export class SourceService extends HttpServiceBase {
 
 
   retrieveWebApiControllerDetails(path: string): Observable<WebApiControllerDetails | null> {
-    const resource = this.#sysData.getMany<{ Default?: WebApiControllerDetails[] }>({
+    const resource = this.#sysData.getMany<WebApiControllerDetailsResponse>({
       source: dataSourceAppWebApiControllerDetails,
       params: {
         AppId: this.appId,
@@ -182,13 +218,17 @@ export class SourceService extends HttpServiceBase {
 
     return toObservable(resource.value, { injector: this.injector }).pipe(
       filter(value => value != null),
-      map(streams => streams.Default?.[0] ?? null),
+      map(streams => this.#mapWebApiControllerDetails(streams.Default?.[0] ?? null)),
+      catchError(error => {
+        console.error('Error loading WebApi controller details', error);
+        return of(null);
+      }),
       first(),
     );
   }
 
   retrieveWebApiControllerEndpoints(path: string): Observable<WebApiControllerEndpoint[]> {
-    const resource = this.#sysData.getMany<{ Default?: WebApiControllerEndpoint[] }>({
+    const resource = this.#sysData.getMany<WebApiControllerEndpointsResponse>({
       source: dataSourceAppWebApiControllerEndpoints,
       params: {
         AppId: this.appId,
@@ -200,9 +240,86 @@ export class SourceService extends HttpServiceBase {
 
     return toObservable(resource.value, { injector: this.injector }).pipe(
       filter(value => value != null),
-      map(streams => streams.Default ?? []),
+      map(streams => (streams.Default ?? []).map(endpoint => this.#mapWebApiControllerEndpoint(endpoint))),
+      catchError(error => {
+        console.error('Error loading WebApi controller endpoints', error);
+        return of([]);
+      }),
       first(),
     );
+  }
+
+  #mapWebApiControllerDetails(details: WebApiControllerDetailsRaw | null): WebApiControllerDetails | null {
+    if (details == null)
+      return null;
+
+    const {
+      controller = '',
+      path = '',
+      ignoreSecurity = false,
+      allowAnonymous = false,
+      requireVerificationToken = false,
+      validateAntiForgeryToken = false,
+      autoValidateAntiforgeryToken = false,
+      ignoreAntiforgeryToken = false,
+      view = false,
+      edit = false,
+      admin = false,
+      superUser = false,
+      requireContext = false,
+    } = details;
+
+    return {
+      Controller: controller,
+      Path: path,
+      IgnoreSecurity: ignoreSecurity,
+      AllowAnonymous: allowAnonymous,
+      RequireVerificationToken: requireVerificationToken,
+      ValidateAntiForgeryToken: validateAntiForgeryToken,
+      AutoValidateAntiforgeryToken: autoValidateAntiforgeryToken,
+      IgnoreAntiforgeryToken: ignoreAntiforgeryToken,
+      View: view,
+      Edit: edit,
+      Admin: admin,
+      SuperUser: superUser,
+      RequireContext: requireContext,
+    };
+  }
+
+  #mapWebApiControllerEndpoint(endpoint: WebApiControllerEndpointRaw): WebApiControllerEndpoint {
+    const {
+      name = '',
+      endpointPath = '',
+      returns = '',
+      verbs = '',
+      parameters = [],
+      security,
+      ignoreSecurity = false,
+      allowAnonymous = false,
+      requireVerificationToken = false,
+      view = false,
+      edit = false,
+      admin = false,
+      superUser = false,
+      requireContext = false,
+    } = endpoint;
+
+    return {
+      Name: name,
+      EndpointPath: endpointPath,
+      Returns: returns,
+      Verbs: verbs,
+      Parameters: parameters,
+      Security: security,
+      IgnoreSecurity: ignoreSecurity,
+      AllowAnonymous: allowAnonymous,
+      RequireVerificationToken: requireVerificationToken,
+      View: view,
+      Edit: edit,
+      Admin: admin,
+      SuperUser: superUser,
+      RequireContext: requireContext,
+    };
   }
 
   getPredefinedTemplates(purpose?: 'Template' | 'Search' | 'Api', type?: 'Token' | 'Razor'): Promise<PredefinedTemplatesResponse> {

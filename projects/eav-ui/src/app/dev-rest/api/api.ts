@@ -125,10 +125,8 @@ export class DevRestApiComponent extends DevRestBase<DevRestApiModel> implements
         logSelectedActions.pipe(),
         // add debounce because of diamond problem with apiDetails$ and selectedAction$
         // debounceTime(10),
-        map(([endpoints, name]) => endpoints?.find(a => a.Name === name)),
+        map(([endpoints, name]) => endpoints?.find(a => a.Name === name) ?? endpoints?.[0] ?? null),
         logSelectedActions.map(),
-        filter(x => !!x),
-        logSelectedActions.filter(),
       );
 
     // Build Root Stream for the root folder
@@ -137,7 +135,7 @@ export class DevRestApiComponent extends DevRestBase<DevRestApiModel> implements
         const resolved = pathToApi
           .replace('{appname}', scenario.inSameContext ? 'auto' : encodeURI(dialogSettings.Context.App.Folder))
           .replace('{endpointPath}', webApi.endpointPath)
-          .replace('{action}', action.Name);
+          .replace('{action}', action?.Name ?? '');
         return this.rootBasedOnScenario(resolved, scenario);
       }),
     );
@@ -155,7 +153,7 @@ export class DevRestApiComponent extends DevRestBase<DevRestApiModel> implements
           endpoints,
           selected: selActions,
           permissionsHasAnonymous: true, // dummy value to prevent error being shown
-          apiCalls: generateWebApiCalls(dnnContext.$2sxc, scenario, context, root, urlParams, selActions.Verbs),
+          apiCalls: generateWebApiCalls(dnnContext.$2sxc, scenario, context, root, urlParams, selActions?.Verbs ?? ''),
         })),
       );
   }
