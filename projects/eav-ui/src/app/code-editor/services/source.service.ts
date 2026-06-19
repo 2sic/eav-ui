@@ -156,10 +156,10 @@ export class SourceService extends HttpServiceBase {
   // TODO: @2dg, ask 2dm
   getWebApis(): Observable<WebApi[]> {
     const resource = this.#sysData.getMany<{ Default?: AppWebApiControllerRow[] }>({
+      source: dataSourceAppWebApiControllers,
       params: {
         AppId: this.appId,
       },
-      source: dataSourceAppWebApiControllers,
       streams: 'Default',
       noCamel: true,
     });
