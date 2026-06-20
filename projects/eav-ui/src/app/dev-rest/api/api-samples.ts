@@ -4,7 +4,8 @@ import { Context } from '../../shared/services/context';
 // tslint:disable: curly
 
 export function generateWebApiCalls($2sxc: SxcGlobal, scenario: Scenario, context: Context, root: string,
-  urlParams: string, verbs: string[]) {
+  urlParams: string, verbs: string) {
+  const verbList = verbs.split(',').map(v => v.trim()).filter(v => !!v);
   const virtual = root[0] !== '/' && !root.startsWith('http');
 
   // if urlParams exist and it doesn't starts with a ?, add that
@@ -18,11 +19,11 @@ export function generateWebApiCalls($2sxc: SxcGlobal, scenario: Scenario, contex
   const pathWithParams = root + urlParams;
 
   const result = new Array<ApiCall>();
-  if (verbs.includes('GET'))
+  if (verbList.includes('GET'))
     result.push(new ApiCall(virtual, 'GET', pathWithParams, 'call the WebAPI endpoint', 'call GET on this endpoint', true,
       snippetsGet(scenario, pathWithParams, context), directUrl));
 
-  if (verbs.includes('POST'))
+  if (verbList.includes('POST'))
     result.push(new ApiCall(virtual, 'POST', pathWithParams, 'call the WebAPI endpoint', 'call POST on this endpoint', false,
       snippetsPost(scenario, pathWithParams, context.moduleId), directUrl));
 

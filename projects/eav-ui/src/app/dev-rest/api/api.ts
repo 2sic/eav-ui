@@ -12,7 +12,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
-import { BehaviorSubject, combineLatest, filter, map, share, shareReplay, switchMap } from 'rxjs';
+import { BehaviorSubject, combineLatest, filter, map, shareReplay, switchMap } from 'rxjs';
 import { DevRestBase } from '..';
 import { transient } from '../../../../../core';
 import { classLog } from '../../../../../shared/logging';
@@ -99,32 +99,34 @@ export class DevRestApiComponent extends DevRestBase<DevRestApiModel> implements
         logWebApi.map(),
       ));
 
-    const apiDetails$ = webApi$.pipe(
-      switchMap(webApi => this.sourceService.getWebApiDetails(webApi.path)),
-      share()
+    const details$ = webApi$.pipe(
+      switchMap(webApi => this.sourceService.retrieveWebApiControllerDetails(webApi.path)),
+      shareReplay(1),
+    );
+
+    const endpoints$ = webApi$.pipe(
+      switchMap(webApi => this.sourceService.retrieveWebApiControllerEndpoints(webApi.path)),
+      shareReplay(1),
     );
 
     const logToSelectedAction = new RxTapDebug(this.log, 'selectedActionName$', true);
-    apiDetails$.pipe(
+    endpoints$.pipe(
       logToSelectedAction.pipe(),
-      // take(1),
-      filter(x => !!x?.actions?.length),
+      filter(endpoints => !!endpoints.length),
       logToSelectedAction.filter(),
-    ).subscribe(x => {
-      this.log.a(`first action '${x?.actions[0]?.name}'`);
-      return this.selectedActionName$.next(x?.actions[0]?.name);
+    ).subscribe(endpoints => {
+      this.log.a(`first action '${endpoints[0]?.Name}'`);
+      return this.selectedActionName$.next(endpoints[0]?.Name);
     });
 
     const logSelectedActions = new RxTapDebug(this.log, 'selectedAction$', true);
-    const selectedAction$ = combineLatest([apiDetails$, this.selectedActionName$])
+    const selectedAction$ = combineLatest([endpoints$, this.selectedActionName$])
       .pipe(
         logSelectedActions.pipe(),
         // add debounce because of diamond problem with apiDetails$ and selectedAction$
         // debounceTime(10),
-        map(([details, name]) => details?.actions?.find(a => a.name === name)),
+        map(([endpoints, name]) => endpoints?.find(a => a.Name === name) ?? endpoints?.[0] ?? null),
         logSelectedActions.map(),
-        filter(x => !!x),
-        logSelectedActions.filter(),
       );
 
     // Build Root Stream for the root folder
@@ -133,24 +135,25 @@ export class DevRestApiComponent extends DevRestBase<DevRestApiModel> implements
         const resolved = pathToApi
           .replace('{appname}', scenario.inSameContext ? 'auto' : encodeURI(dialogSettings.Context.App.Folder))
           .replace('{endpointPath}', webApi.endpointPath)
-          .replace('{action}', action.name);
+          .replace('{action}', action?.Name ?? '');
         return this.rootBasedOnScenario(resolved, scenario);
       }),
     );
 
 
     this.viewModel$ = combineLatest([
-      combineLatest([webApi$, apiDetails$, selectedAction$, this.urlParams$, this.scenario$]),
+      combineLatest([webApi$, details$, endpoints$, selectedAction$, this.urlParams$, this.scenario$]),
       combineLatest([root$, this.dialogSettings$]),
     ])
       .pipe(
-        map(([[webApi, details, selActions, urlParams, scenario], [root, diag]]) => ({
+        map(([[webApi, details, endpoints, selActions, urlParams, scenario], [root, diag]]) => ({
           ...this.buildBaseViewModel(webApi.name, webApi.endpointPath, diag, null, root, scenario),
           webApi,
           details,
+          endpoints,
           selected: selActions,
           permissionsHasAnonymous: true, // dummy value to prevent error being shown
-          apiCalls: generateWebApiCalls(dnnContext.$2sxc, scenario, context, root, urlParams, selActions.verbs),
+          apiCalls: generateWebApiCalls(dnnContext.$2sxc, scenario, context, root, urlParams, selActions?.Verbs ?? ''),
         })),
       );
   }
