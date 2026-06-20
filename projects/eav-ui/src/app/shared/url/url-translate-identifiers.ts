@@ -5,10 +5,19 @@ import { SEPARATOR, toOrderedParams } from './url.constants';
 import { UrlDataSpecs } from './url.models';
 
 export interface UrlItemIdentifierTranslator {
+  /** Name of this translator */
   name: string;
+
+  /** Determine if this translator should encode the given item */
   shouldEncode(item: ItemIdentifierShared): boolean;
+
+  /** Convert the given item to a URL string */
   toUrl(item: ItemIdentifierShared, data: UrlDataSpecs): string;
+
+  /** Determine if this translator should decode the given item */
   shouldDecode(item: string): boolean;
+  
+  /** Convert the given URL string to an item */
   fromUrl(item: string): ItemIdentifierShared;
 }
 
