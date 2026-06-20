@@ -71,6 +71,7 @@ export class ReplaceContentComponent implements OnInit {
   
   /** Mode is adding the to-be-selected item, not replace */
   protected isAddMode = signalObj('isAddMode', !!this.#dialogRoutes.getQueryParam('add'));
+  #contentType = signalObj('contentType', this.#dialogRoutes.getQueryParam('contentType'));
 
   /** The text being searched for */
   filterText = model<string>('');
@@ -142,11 +143,14 @@ export class ReplaceContentComponent implements OnInit {
     const filter = this.filterText();
     const id = this.#optionsRaw().find(o => o.label === filter)?.id ?? null;
 
-    const contentGroup: ContentGroupAdd = {
+    const contentType = this.#contentType();
+    console.log('2dm, buildContentGroup', { filter, id, contentType, params: this.#params });
+    const contentGroup = {
       id,
       ...this.#params,
       add: this.isAddMode(),
-    };
+      ...(contentType ? { contentType: contentType } : {}),
+    } satisfies ContentGroupAdd;
     return contentGroup;
   }
   

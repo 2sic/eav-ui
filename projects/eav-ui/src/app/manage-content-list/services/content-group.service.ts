@@ -16,7 +16,7 @@ export class ContentGroupService extends HttpServiceBaseSignal {
 
   getItemsPromise(item: ContentGroup): Promise<ReplaceConfig> {
     return this.fetchPromise<ReplaceConfig>(webApiContentGroupReplace, {
-      params: { appId: this.appId, guid: item.guid, part: item.part, index: item.index.toString() }
+      params: { appId: this.appId, guid: item.guid, part: item.part, index: item.index.toString(), ...(item.contentType ? { contentType: item.contentType } : {}) }
     });
   }
 
