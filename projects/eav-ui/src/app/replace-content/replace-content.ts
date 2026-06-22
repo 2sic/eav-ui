@@ -95,8 +95,8 @@ export class ReplaceContentComponent implements OnInit {
     this.#fetchConfig(false, null);
 
     this.#dialogRoutes.doOnDialogClosed(() => {
-      const navigation = this.#dialogRoutes.router.getCurrentNavigation();
-      const editResult = navigation.extras?.state;
+      const navigation = this.#dialogRoutes.router.currentNavigation();
+      const editResult = navigation?.extras?.state;
       const cloneId: number = editResult?.[Object.keys(editResult)[0]];
       this.#fetchConfig(true, cloneId);
     });
@@ -119,7 +119,7 @@ export class ReplaceContentComponent implements OnInit {
     this.#dialogRoutes.navRelative([`edit/${formUrl}`]);
   }
 
-  #fetchConfig(isRefresh: boolean, cloneId: number) {
+  #fetchConfig(isRefresh: boolean, cloneId: number | null) {
     const contentGroup = this.#buildContentGroup();
     this.#contentGroupSvc.getItemsPromise(contentGroup).then(replaceConfig => {
       const options = Object.entries(replaceConfig.Items)
@@ -139,17 +139,17 @@ export class ReplaceContentComponent implements OnInit {
     });
   }
 
-  #buildContentGroup() {
+  #buildContentGroup(): ContentGroupAdd {
     const filter = this.filterText();
     const id = this.#optionsRaw().find(o => o.label === filter)?.id ?? null;
 
     const contentType = this.#contentType();
-    console.log('2dm, buildContentGroup', { filter, id, contentType, params: this.#params });
+    // console.log('2dm, buildContentGroup', { filter, id, contentType, params: this.#params });
     const contentGroup = {
       id,
       ...this.#params,
       add: this.isAddMode(),
-      ...(contentType ? { contentType: contentType } : {}),
+      ...(contentType ? { contentType } : {}),
     } satisfies ContentGroupAdd;
     return contentGroup;
   }
@@ -158,7 +158,7 @@ export class ReplaceContentComponent implements OnInit {
     this.snackBar.open('Saving...');
     const contentGroup = this.#buildContentGroup();
     this.#contentGroupSvc.saveItem(contentGroup).subscribe(() => {
-      this.snackBar.open('Saved', null, { duration: 2000 });
+      this.snackBar.open('Saved', undefined, { duration: 2000 });
       this.closeDialog();
     });
   }

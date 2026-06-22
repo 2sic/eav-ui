@@ -1,5 +1,5 @@
 export interface ContentGroup {
-  id: number;
+  id: number | null;
   guid: string;
   index: number;
   part: string;

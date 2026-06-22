@@ -58,10 +58,10 @@ export class ManageContentListComponent implements OnInit {
     private translate: TranslateService,
   ) { }
 
-  protected items = signalObj<GroupHeader[]>('items', null);
+  protected items = signalObj<GroupHeader[]>('items', null!);
 
   #contentGroup = convert(this.#dialogRoutes.getParams(['guid', 'part', 'index']), p => ({
-    id: null as number,
+    id: null,
     guid: p.guid,
     part: p.part,
     index: parseInt(p.index, 10),
@@ -97,7 +97,7 @@ export class ManageContentListComponent implements OnInit {
   protected saveList() {
     this.snackBar.open('Saving...');
     this.#contentGroupSvc.saveList(this.#contentGroup, this.items()).subscribe(() => {
-      this.snackBar.open('Saved', null, { duration: 2000 });
+      this.snackBar.open('Saved', undefined, { duration: 2000 });
       this.#fetchList();
       this.#fetchHeader();
     });
@@ -106,7 +106,7 @@ export class ManageContentListComponent implements OnInit {
   protected saveAndCloseList() {
     this.snackBar.open('Saving...');
     this.#contentGroupSvc.saveList(this.#contentGroup, this.items()).subscribe(() => {
-      this.snackBar.open('Saved', null, { duration: 2000 });
+      this.snackBar.open('Saved', undefined, { duration: 2000 });
       this.closeDialog();
     });
   }
@@ -159,10 +159,11 @@ export class ManageContentListComponent implements OnInit {
   }
 
   protected remove(item: GroupHeader) {
-    if (!confirm(this.translate.instant('ManageContentList.ConfirmRemove'))) return;
+    if (!confirm(this.translate.instant('ManageContentList.ConfirmRemove')))
+      return;
     this.snackBar.open('Removing...');
     this.#contentGroupSvc.removeItem(this.#contentGroup, item.Index).subscribe(() => {
-      this.snackBar.open('Removed', null, { duration: 2000 });
+      this.snackBar.open('Removed', undefined, { duration: 2000 });
       this.#fetchList();
     });
   }
@@ -189,7 +190,7 @@ export class ManageContentListComponent implements OnInit {
             return aIndex - bIndex;
           });
         } else if (keepOrder)
-          this.snackBar.open('List was changed from somewhere else. Order of items is reset', null, { duration: 5000 });
+          this.snackBar.open('List was changed from somewhere else. Order of items is reset', undefined, { duration: 5000 });
       }
       this.items.set(items);
       this.reordered.set(false);

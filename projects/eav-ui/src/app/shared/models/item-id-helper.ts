@@ -88,19 +88,19 @@ export class ItemIdHelper {
     } satisfies MetadataInfo;
   }
 
-  static relationship(parent: string, field: string, index: number = 0, add: boolean = null): ItemInListIdentifier {
+  static relationship(parent: string, field: string, index: number = 0, add: boolean | null = null): ItemInListIdentifier {
     return {
       Parent: parent,
       Field: field,
       Index: index,
-      Add: add,
+      Add: !!add,
     } satisfies ItemInListIdentifier;
   }
 
-  static copy(contentType: string, id: number): ItemAddIdentifier {
+  static copy(contentType: string, id: number | null): ItemAddIdentifier {
     return {
       ContentTypeName: contentType,
-      DuplicateEntity: id,
+      DuplicateEntity: id ?? undefined,
     } satisfies ItemAddIdentifier;
   }
 }
