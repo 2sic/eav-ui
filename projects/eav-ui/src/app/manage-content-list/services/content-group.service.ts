@@ -5,10 +5,9 @@ import { HttpServiceBaseSignal } from '../../shared/services/http-service-base-s
 import { ContentGroup, ContentGroupAdd } from '../models/content-group.model';
 import { GroupHeader } from '../models/group-header.model';
 
-const webApiContentGroup = 'cms/contentgroup/';
-const webApiContentGroupReplace = webApiContentGroup + 'replace';
-const webApiContentGroupItemlist = webApiContentGroup + 'itemlist';
-const webApiContentGroupHeader = webApiContentGroup + 'header';
+const webApiContentGroupReplace = 'cms/contentgroup/replace';
+const webApiContentGroupItemList = 'cms/contentgroup/itemlist';
+const webApiContentGroupHeader = 'cms/contentgroup/header';
 const removeItem = 'cms/list/delete';
 
 @Injectable()
@@ -16,13 +15,24 @@ export class ContentGroupService extends HttpServiceBaseSignal {
 
   getItemsPromise(item: ContentGroup): Promise<ReplaceConfig> {
     return this.fetchPromise<ReplaceConfig>(webApiContentGroupReplace, {
-      params: { appId: this.appId, guid: item.guid, part: item.part, index: item.index.toString(), ...(item.contentType ? { contentType: item.contentType } : {}) }
+      params: {
+        ...this.getParams(item, true),
+        index: item.index.toString(),
+        ...(item.contentType ? { contentType: item.contentType } : {})
+      }
     });
   }
 
   saveItem(item: ContentGroupAdd) {
     return this.http.post<null>(this.apiUrl(webApiContentGroupReplace), {}, {
-      params: { guid: item.guid, part: item.part, index: item.index.toString(), entityId: item.id.toString(), add: `${item.add}` }
+      params: {
+        ...this.getParams(item, true),
+        // parent: item.guid,
+        // part: item.part,
+        index: item.index.toString(),
+        entityId: item.id ?? 0,
+        add: `${item.add}`
+      }
     });
   }
 
@@ -34,14 +44,14 @@ export class ContentGroupService extends HttpServiceBaseSignal {
   }
 
   getListPromise(contentGroup: ContentGroup): Promise<GroupHeader[]> {
-    return this.fetchPromise<GroupHeader[]>(webApiContentGroupItemlist, {
-      params: { appId: this.appId, guid: contentGroup.guid, part: contentGroup.part }
+    return this.fetchPromise<GroupHeader[]>(webApiContentGroupItemList, {
+      params: this.getParams(contentGroup, true)
     });
   }
 
   saveList(contentGroup: ContentGroup, resortedList: GroupHeader[]) {
-    return this.http.post<boolean>(this.apiUrl(webApiContentGroupItemlist), resortedList, {
-      params: { appId: this.appId, guid: contentGroup.guid, part: contentGroup.part }
+    return this.http.post<boolean>(this.apiUrl(webApiContentGroupItemList), resortedList, {
+      params: this.getParams(contentGroup, true)
     });
   }
 
@@ -50,8 +60,16 @@ export class ContentGroupService extends HttpServiceBaseSignal {
       refresh();
       return ({
         url: this.apiUrl(webApiContentGroupHeader),
-        params: { appId: this.appId, guid: contentGroup.guid }
+        params: this.getParams(contentGroup)
       });
     });
+  }
+
+  getParams(contentGroup: ContentGroup, withPart?: boolean) {
+    return {
+      appId: this.appId,
+      parent: contentGroup.guid,
+      ...(withPart ? { part: contentGroup.part } : {}),
+    };
   }
 }

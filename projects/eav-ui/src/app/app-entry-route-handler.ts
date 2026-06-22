@@ -159,7 +159,7 @@ export class AppEntryRouteHandler {
           ...(repItem.Add ? { add: true } : {}),
           ...(repItem.ContentType ? { contentType: repItem.ContentType } : {}),
         };
-        console.log('2dm, replace', { items, contentType: repItem.ContentType, queryParams });
+        // console.log('2dm, replace', { items, contentType: repItem.ContentType, queryParams });
         return go(`/${repItem.Parent}/${repItem.Field}/${repItem.Index}/replace`, { queryParams });
 
       case DialogTypeConstants.InstanceList:
