@@ -2,23 +2,25 @@ import { httpResource } from '@angular/common/http';
 import { Injectable, Signal } from '@angular/core';
 import { ReplaceConfig } from '../../replace-content/replace-config.model';
 import { HttpServiceBaseSignal } from '../../shared/services/http-service-base-signal';
-import { ContentGroup, ContentGroupAdd } from '../models/content-group.model';
+import { ContentGroupAdd, ParentReference } from '../models/content-group.model';
 import { GroupHeader } from '../models/group-header.model';
 
-const webApiContentGroupReplace = 'cms/contentgroup/replace';
-const webApiContentGroupItemList = 'cms/contentgroup/itemlist';
-const webApiContentGroupHeader = 'cms/contentgroup/header';
+// These must still be moved to the list controller somehow
+const webApiContentGroupHeader = 'cms/list/contentblockheader';
+
+const webApiContentGroupItemList = 'cms/list/items';
+const webApiContentGroupReplace = 'cms/list/replace';
+const webApiContentGroupReplaceOptions = 'cms/list/replaceoptions';
 const removeItem = 'cms/list/delete';
 
 @Injectable()
 export class ContentGroupService extends HttpServiceBaseSignal {
 
-  getItemsPromise(item: ContentGroup): Promise<ReplaceConfig> {
-    return this.fetchPromise<ReplaceConfig>(webApiContentGroupReplace, {
+  getItemsPromise(item: ParentReference, contentType?: string): Promise<ReplaceConfig> {
+    return this.fetchPromise<ReplaceConfig>(webApiContentGroupReplaceOptions, {
       params: {
-        ...this.getParams(item, true),
-        index: item.index.toString(),
-        ...(item.contentType ? { contentType: item.contentType } : {})
+        ...this.#getParams(item, true, item.index),
+        ...(contentType ? { contentType } : {})
       }
     });
   }
@@ -26,50 +28,48 @@ export class ContentGroupService extends HttpServiceBaseSignal {
   saveItem(item: ContentGroupAdd) {
     return this.http.post<null>(this.apiUrl(webApiContentGroupReplace), {}, {
       params: {
-        ...this.getParams(item, true),
-        // parent: item.guid,
-        // part: item.part,
-        index: item.index.toString(),
+        ...this.#getParams(item, true, item.index),
         entityId: item.id ?? 0,
         add: `${item.add}`
       }
     });
   }
 
-  removeItem(contentGroup: ContentGroup, index: number) {
+  removeItem(contentGroup: ParentReference, index: number) {
     // note: the server checks if the part == 'content' and will automatically treat it as a pair with presentation
     return this.http.delete<null>(this.apiUrl(removeItem), {
-      params: { index: index, parent: contentGroup.guid, fields: contentGroup.part }
+      params: this.#getParams(contentGroup, true, index)
     });
   }
 
-  getListPromise(contentGroup: ContentGroup): Promise<GroupHeader[]> {
+  getListPromise(contentGroup: ParentReference): Promise<GroupHeader[]> {
     return this.fetchPromise<GroupHeader[]>(webApiContentGroupItemList, {
-      params: this.getParams(contentGroup, true)
+      params: this.#getParams(contentGroup, true)
     });
   }
 
-  saveList(contentGroup: ContentGroup, resortedList: GroupHeader[]) {
+  saveList(contentGroup: ParentReference, resortedList: GroupHeader[]) {
     return this.http.post<boolean>(this.apiUrl(webApiContentGroupItemList), resortedList, {
-      params: this.getParams(contentGroup, true)
+      params: this.#getParams(contentGroup, true)
     });
   }
 
-  getAllLive(contentGroup: ContentGroup, refresh: Signal<unknown>) {
-    return httpResource<GroupHeader>(() => {
+  getHeaderResource(contentGroup: ParentReference, refresh: Signal<unknown>) {
+    return httpResource<GroupHeader[]>(() => {
       refresh();
       return ({
-        url: this.apiUrl(webApiContentGroupHeader),
-        params: this.getParams(contentGroup)
+        url: this.apiUrl(webApiContentGroupHeader /* webApiContentGroupHeader */),
+        params: { ...this.#getParams(contentGroup, false) }
       });
     });
   }
 
-  getParams(contentGroup: ContentGroup, withPart?: boolean) {
+  #getParams(contentGroup: ParentReference, withPart: boolean, index?: number) {
     return {
       appId: this.appId,
       parent: contentGroup.guid,
       ...(withPart ? { part: contentGroup.part } : {}),
+      ...(index !== undefined ? { index } : {}),
     };
   }
 }

@@ -4,8 +4,9 @@ export interface GroupHeader {
   Guid: string;
   Title: string;
   Type: string;
-  TypeWip: {
-    Name: string;
-    Id: string;
-  }
+  // 2026-06-22 2dm removed, doesn't seem to be in use, must have been a test
+  // TypeWip: {
+  //   Name: string;
+  //   Id: string;
+  // }
 }
