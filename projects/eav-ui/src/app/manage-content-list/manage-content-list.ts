@@ -126,7 +126,7 @@ export class ManageContentListComponent implements OnInit {
   }
 
   protected editHeader() {
-    const id = this.header()?.[0]?.Id ?? 0;
+    const id = this.header()[0]?.Id ?? 0;
     const form: EditForm = {
       items: [
         ItemIdHelper.relationship(this.#parentIdentifier.guid, 'listcontent', 0, id === 0),

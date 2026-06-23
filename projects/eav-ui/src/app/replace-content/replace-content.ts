@@ -108,7 +108,7 @@ export class ReplaceContentComponent implements OnInit {
 
   copySelected() {
     // WIP 2dm
-    const contentGroup = this.#optionsRaw().find(o => o.title === this.filterText())!; // this.#buildContentGroup();
+    const contentGroup = this.#optionsRaw().find(o => o.title === this.filterText())!;
     const form: EditForm = {
       items: [ItemIdHelper.copy(contentGroup.contentType, contentGroup.id)],
     };

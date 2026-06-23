@@ -1,18 +1,17 @@
-import { httpResource } from '@angular/common/http';
+import { httpResource, HttpResourceRef } from '@angular/common/http';
 import { Injectable, Signal } from '@angular/core';
 import { ReplaceConfig } from '../../replace-content/replace-config.model';
 import { HttpServiceBaseSignal } from '../../shared/services/http-service-base-signal';
 import { ContentGroupAdd, ParentReference } from '../models/content-group.model';
 import { GroupHeader } from '../models/group-header.model';
 
-// These must still be moved to the list controller somehow
-const webApiContentGroupHeader = 'cms/list/contentblockheader';
-
 const webApiContentGroupItemList = 'cms/list/items';
 const webApiContentGroupReplace = 'cms/list/replace';
-const webApiContentGroupReplaceOptions = 'cms/list/replaceoptions';
 const removeItem = 'cms/list/delete';
+const webApiContentGroupReplaceOptions = 'cms/list/replaceoptions';
+const webApiContentGroupHeader = 'cms/list/contentblockheader';
 
+// TODO: @2rb - this would be great to convert to signals, would require all the code to be updated
 @Injectable()
 export class ContentGroupService extends HttpServiceBaseSignal {
 
@@ -54,14 +53,15 @@ export class ContentGroupService extends HttpServiceBaseSignal {
     });
   }
 
-  getHeaderResource(contentGroup: ParentReference, refresh: Signal<unknown>) {
+  // This one is already nice, using signals
+  getHeaderResource(contentGroup: ParentReference, refresh: Signal<unknown>): HttpResourceRef<GroupHeader[]> {
     return httpResource<GroupHeader[]>(() => {
       refresh();
       return ({
-        url: this.apiUrl(webApiContentGroupHeader /* webApiContentGroupHeader */),
+        url: this.apiUrl(webApiContentGroupHeader),
         params: { ...this.#getParams(contentGroup, false) }
       });
-    });
+    }, { defaultValue: [] });
   }
 
   #getParams(contentGroup: ParentReference, withPart: boolean, index?: number) {
