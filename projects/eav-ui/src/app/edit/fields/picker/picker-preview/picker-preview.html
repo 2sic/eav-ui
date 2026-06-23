@@ -96,12 +96,13 @@
         }
       </mat-menu>
     } @else {
+      <!-- Note: this can be if there is exactly one type for new, or none! in which case it passes null to the method -->
       <button
         mat-icon-button
         class="picker-inline-button"
         tippyTranslate="Fields.Picker.New"
         [disabled]="ui().disabled || !features().create"
-        (click)="openNewEntityDialog(null)"
+        (click)="openNewEntityDialog(pickerData.state.typesForNew()[0]?.guid)"
       >
         <mat-icon>add_circle_outline</mat-icon>
       </button>
