@@ -81,12 +81,13 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase implements D
   #deletedItemsGuids = signalObj<string[]>('deletedItemsGuids', []);
 
   /* Error handling to use in the final options - ATM never really used, since we can't really trigger the problem it was meant for */
-  protected errorOptions = signalObj<PickerItem[]>('errorOptions', null);
+  protected errorOptions = signalObj<PickerItem[] | null>('errorOptions', null);
 
   /** The options/hints to show in the UI */
   override optionsOrHints = computedObj('optionsOrHints', () => {
     const errors = this.errorOptions();
-    if (errors) return errors;
+    if (errors)
+      return errors;
     const ds = this.dataSource();
     const deleted = this.#deletedItemsGuids();
     const items = ds.data().filter(item => !deleted.some(guid => guid === item.value));
@@ -111,7 +112,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase implements D
   // not even sure if the guid would still be needed, as I assume the entityId
   // should always be available.
   // Must test all use cases and then probably simplify again.
-  editItem(editParams: { entityGuid: string, entityId: number }, entityType: string): void {
+  editItem(editParams?: { entityGuid: string, entityId: number }, entityType?: string): void {
     const l = this.log.fnIf('editItem', { editParams });
     const editGuid = editParams?.entityGuid;
     const formParams = this.#urlToObject(editGuid == null ? this.#createParams.result() : this.#editParams.result());
@@ -120,7 +121,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase implements D
         {
           ...(editGuid == null)
             ? ItemIdHelper.newFromType(entityType ?? this.contentType(), this.#urlToObject(this.#prefill.result()))
-            : ItemIdHelper.editId(this.optionsOrHints().find(item => item.value === editGuid)?.id ?? editParams.entityId),
+            : ItemIdHelper.editId(this.optionsOrHints().find(item => item.value === editGuid)?.id ?? editParams?.entityId!),
           ...( formParams ? { ClientData: { parameters: formParams } } : {} ),
         },
       ],
@@ -147,8 +148,8 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase implements D
 
   deleteItem(props: DeleteEntityProps): void {
     this.log.a('deleteItem', { props });
-    const entity = this.optionsOrHints().find(item => item.value === props.entityGuid);
-    const id = entity.id;
+    const entity = this.optionsOrHints().find(item => item.value === props.entityGuid)!;
+    const id = entity.id!;
     const title = entity.label;
     const contentType = this.contentType();
     const config = this.fieldState.config;
@@ -156,31 +157,37 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase implements D
     const parentField = config.fieldName;
 
     const confirmed = confirm(this.translate.instant('Data.Delete.Question', { title, id }));
-    if (!confirmed) return;
+    if (!confirmed)
+      return;
 
     this.#snackBar.open(this.translate.instant('Message.Deleting'));
-    this.#entityService.delete(this.formConfig.config.appId, contentType, id, false, parentId, parentField).subscribe({
-      next: () => {
-        this.#snackBar.open(this.translate.instant('Message.Deleted'), null, { duration: 2000 });
-        this.deleteCallback(props); // removes value from selected values
-        this.#deletedItemsGuids.update(p => [...p, props.entityGuid]);
-      },
-      error: (_: HttpErrorResponse) => {
-        this.#snackBar.dismiss();
-        if (!confirm(this.translate.instant('Data.Delete.Question', { title, id }))) return;
-        this.#snackBar.open(this.translate.instant('Message.Deleting'));
-        this.#entityService.delete(this.formConfig.config.appId, contentType, id, true, parentId, parentField).subscribe({
-          next: () => {
-            this.#snackBar.open(this.translate.instant('Message.Deleted'), null, { duration: 2000 });
-            this.deleteCallback(props); // removes value from selected values
-            this.#deletedItemsGuids.update(p => [...p, props.entityGuid]);
-          },
-          error: (_: HttpErrorResponse) => {
-            this.#snackBar.open(this.translate.instant('Message.DeleteError'), null, { duration: 2000 });
-          }
-        });
-      }
-    });
+    this.#entityService
+      .delete(this.formConfig.config.appId, contentType, id, false, parentId, parentField)
+      .subscribe({
+        next: () => {
+          this.#snackBar.open(this.translate.instant('Message.Deleted'), undefined, { duration: 2000 });
+          this.deleteCallback(props); // removes value from selected values
+          this.#deletedItemsGuids.update(p => [...p, props.entityGuid]);
+        },
+        error: (_: HttpErrorResponse) => {
+          this.#snackBar.dismiss();
+          if (!confirm(this.translate.instant('Data.Delete.Question', { title, id })))
+            return;
+          this.#snackBar.open(this.translate.instant('Message.Deleting'));
+          this.#entityService
+            .delete(this.formConfig.config.appId, contentType, id, true, parentId, parentField)
+            .subscribe({
+              next: () => {
+                this.#snackBar.open(this.translate.instant('Message.Deleted'), undefined, { duration: 2000 });
+                this.deleteCallback(props); // removes value from selected values
+                this.#deletedItemsGuids.update(p => [...p, props.entityGuid]);
+              },
+              error: (_: HttpErrorResponse) => {
+                this.#snackBar.open(this.translate.instant('Message.DeleteError'), undefined, { duration: 2000 });
+              }
+            });
+        }
+      });
   }
 
   /**

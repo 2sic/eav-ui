@@ -74,7 +74,8 @@ export class StateAdapter {
 
   /**  List of entity types to create for the (+) button; ATM exclusively used in the new pickers for selecting the source. */
   public typesForNew = computedObj('typesForNew', () => {
-    const raw = this.#createTypesRaw().map((guid: string) => ({ label: null as string, guid }));
+    const createTypes = this.#createTypesRaw();
+    const raw = createTypes.map((guid: string) => ({ label: null as string, guid }));
     
     const l = this.log.fnIfInFields('typesForNew', this.#fieldName, { raw });
 
@@ -91,6 +92,7 @@ export class StateAdapter {
         guid: ct?.Id ?? guid,
       }
     });
+
     return l.r(updated);
   });
 

@@ -18,7 +18,7 @@ export class ItemIdHelper {
    * @param prefill
    * @returns
    */
-  static newFromType(contentType: string, prefill?: Record<string, unknown>): ItemAddIdentifier {
+  static newFromType(contentType: string, prefill?: Record<string, unknown> | null): ItemAddIdentifier {
     return {
       ContentTypeName: contentType,
       ...(prefill && { Prefill: prefill })
@@ -31,7 +31,7 @@ export class ItemIdHelper {
    * @param prefill
    * @returns
    */
-  static newJsonFromType(contentType: string, data: unknown, prefill?: Record<string, unknown>): ItemAddIdentifier {
+  static newJsonFromType(contentType: string, data: unknown, prefill?: Record<string, unknown> | null): ItemAddIdentifier {
     const basics = {
       ...this.newFromType(contentType, prefill),
       ClientData: {

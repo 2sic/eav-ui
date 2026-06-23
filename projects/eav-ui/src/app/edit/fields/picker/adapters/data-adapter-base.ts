@@ -29,7 +29,7 @@ export abstract class DataAdapterBase {
   public abstract myFeatures: Signal<Partial<PickerFeatures>>;
 
   /** a signal for data-sources - may not need a signal, if it's unchanging... */
-  public dataSource = signalObj<DataSourceBase>('dataSource', null satisfies DataSourceBase);
+  public dataSource = signalObj<DataSourceBase>('dataSource', null);
 
   /**
    * The options to show.
@@ -57,7 +57,7 @@ export abstract class DataAdapterBase {
 
   abstract deleteItem(props: DeleteEntityProps): void;
 
-  abstract editItem(editParams: { entityGuid: string, entityId: number }, entityType: string): void;
+  abstract editItem(editParams?: { entityGuid: string, entityId: number }, entityType?: string): void;
 
   abstract fetchItems(): void;
 }
