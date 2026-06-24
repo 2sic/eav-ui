@@ -1,5 +1,5 @@
 import { Connector } from 'projects/edit-types/src/Connector';
-import { classLogEnabled } from '../../../shared/logging';
+import { classLog } from '../../../shared/logging';
 import { EditorWithId } from './editor.types';
 
 const logSpecs = {
@@ -12,14 +12,14 @@ const logSpecs = {
 
 export class EditorValueHelper {
 
-  log = classLogEnabled({ EditorValueHelper }, logSpecs);
+  log = classLog({ EditorValueHelper }, logSpecs);
 
   constructor(private editor: EditorWithId, private connector: Connector<string>) {
     this.log.aIf(`constructor`, { editorId: this.editor.idRandom, initialContent: editor.getContent() }, 'constructor');
   }
 
   /** saves editor content to prevent slow update when first using editor */
-  editorContent: string;
+  private editorContent?: string;
 
   start() {
     const l = this.log.fnIf(`start`, { editorId: this.editor.idRandom }, 'start');
@@ -27,7 +27,7 @@ export class EditorValueHelper {
     this.handleExternalValueUpdate(this.connector.data.value);
 
     this.connector.data.onValueChange(newValue => {
-      console.log('onValueChange callback', { newValue, editorId: this.editor.idRandom });
+      // console.log('onValueChange callback', { newValue, editorId: this.editor.idRandom });
       this.handleExternalValueUpdate(newValue);
     });
     l.end();

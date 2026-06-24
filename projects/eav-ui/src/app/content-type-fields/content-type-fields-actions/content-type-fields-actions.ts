@@ -27,7 +27,7 @@ export class ContentTypeFieldsActionsComponent
 
   declare params: ContentTypeFieldsActionsParams;
 
-  get field(): Field {return this.data;}
+  get field(): Field { return this.data; }
 
   get metadataCount(): number {
     return this.field?.Metadata
@@ -44,11 +44,11 @@ export class ContentTypeFieldsActionsComponent
       );
   }
 
-  get enableMetadata(): boolean {return !this.field?.EditInfo?.DisableMetadata;}
+  get enableMetadata(): boolean { return !this.field?.EditInfo?.DisableMetadata; }
 
-  get enableImageConfig(): boolean {return !this.field?.EditInfo?.DisableEdit && !!this.field?.imageConfiguration?.isRecommended;}
+  get enableImageConfig(): boolean { return !this.field?.EditInfo?.DisableEdit && !!this.field?.ImageConfiguration?.isRecommended; }
 
-  get imgConfigCount(): number {return this.field?.imageConfiguration?.entityId ? 1 : 0;}
+  get imgConfigCount(): number { return this.field?.ImageConfiguration?.entityId ? 1 : 0; }
 
   highlightOrDisabled(toggle: boolean): string {
     return toggle ? 'highlight' : 'disabled';
@@ -58,7 +58,7 @@ export class ContentTypeFieldsActionsComponent
     const clickToConfigure = 'click to configure sharing';
     const ss = this.field?.SysSettings;
 
-    if (!ss) 
+    if (!ss)
       return clickToConfigure;
 
     return ss.Share
@@ -70,9 +70,9 @@ export class ContentTypeFieldsActionsComponent
 
   shareOrInheritIcon(): string {
     const ss = this.field?.SysSettings;
-    if (!ss) 
+    if (!ss)
       return '';
-    
+
     return ss.Share
       ? 'share'
       : ss.InheritMetadataOf ? 'adjust' : '';

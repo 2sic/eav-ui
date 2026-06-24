@@ -1,0 +1,51 @@
+name: Retarget Dependabot Security PRs
+
+on:
+  pull_request_target:
+    types: [opened, reopened]
+  workflow_dispatch:
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  retarget-new-pr:
+    name: Retarget new Dependabot PR
+    if: github.event_name == 'pull_request_target' && github.actor == 'dependabot[bot]' && github.event.pull_request.base.ref == 'master'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Change PR base branch to develop
+        run: gh pr edit "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --base develop
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+
+  retarget-existing-prs:
+    name: Retarget existing Dependabot PRs
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Retarget all open Dependabot PRs from master to develop
+        run: |
+          prs=$(gh pr list \
+            --repo "$GITHUB_REPOSITORY" \
+            --state open \
+            --author "app/dependabot" \
+            --base master \
+            --json number \
+            --jq '.[].number')
+
+          if [ -z "$prs" ]; then
+            echo "No open Dependabot PRs targeting master found."
+            exit 0
+          fi
+
+          for pr in $prs; do
+            echo "Retargeting PR #$pr to develop..."
+            gh pr edit "$pr" --repo "$GITHUB_REPOSITORY" --base develop
+          done
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,13 +1,18 @@
 <div class="eav-dialog">
   <app-dialog-header (close)="closeDialog()">
-    {{ isAddMode() ? 'Add Existing Item' : 'Replace Content Item' }}
+    {{
+      isAddMode() ? 'Add Existing Item' : 'Replace Content Item'
+    }}
   </app-dialog-header>
   
   <div class="eav-dialog-content">
     <router-outlet></router-outlet>
-    <p>{{isAddMode()
-      ? 'Select a content-item to add to this list.'
-      : 'By replacing a content-item you can make other content appear in the slot of the original content.'}}
+    <p>
+      {{
+        isAddMode()
+          ? 'Select a content-item to add to this list.'
+          : 'By replacing a content-item you can make other content appear in the slot of the original content.'
+      }}
     </p>
     <div class="eav-options-box">
       <mat-form-field color="accent" class="eav-mat-form-field">
@@ -20,7 +25,7 @@
           <cdk-virtual-scroll-viewport itemSize="48" minBufferPx="500" maxBufferPx="1000"
             [style.height.px]="options().length < 6 ? options().length * 48 : 240"
           >
-            <mat-option *cdkVirtualFor="let option of options()" [value]="option.label">{{ option.label }}</mat-option>
+            <mat-option *cdkVirtualFor="let option of options()" [value]="option.title">{{ option.title }}</mat-option>
           </cdk-virtual-scroll-viewport>
         </mat-autocomplete>
       </mat-form-field>

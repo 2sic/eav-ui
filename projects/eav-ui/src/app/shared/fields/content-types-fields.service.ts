@@ -1,20 +1,17 @@
 import { computed, Injectable, Signal } from '@angular/core';
-import { Of } from '../../../../../core';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { filter, first, map } from 'rxjs';
+import { Of, transient } from '../../../../../core';
 import { ContentType } from '../../app-administration/models/content-type.model';
 import { webApiTypeRoot } from '../../app-administration/services';
 import { calculateDataTypes, DataType } from '../../content-type-fields/edit-content-type-fields/edit-content-type-fields.helpers';
 import { HttpServiceBaseSignal } from '../services/http-service-base-signal';
+import { SysDataService } from '../services/sys-data.service';
 import { Field, FieldInputTypeOption } from './field.model';
 import { InputTypeCatalog } from './input-type-catalog';
-import { InputTypeMetadata } from './input-type-metadata.model';
-
-export const webApiFieldsAll = 'admin/field/all';
 
 // All WebApi paths - to easily search/find when looking for where these are used
-const webApiDataTypes = 'admin/field/DataTypes';
-const webApiReservedNames = 'admin/field/ReservedNames';
 const webApiAddInheritedField = 'admin/field/AddInheritedField';
-const webApiInputTypes = 'admin/field/InputTypes';
 const webApiInputType = 'admin/field/InputType';
 const webApiShare = 'admin/field/Share';
 const webApiInherit = 'admin/field/Inherit';
@@ -26,10 +23,46 @@ const webApiAdd = 'admin/field/Add';
 const webApiFieldsGetShared = 'admin/field/GetSharedFields';
 const webApiGetAncestors = 'admin/field/GetAncestors';
 const webApiGetDescendants = 'admin/field/GetDescendants';
+export const dataSourceContentTypeDetails = 'System.ContentTypeDetails';
+export const dataSourceInputTypes = 'System.InputTypes';
 
+// @2rb - no export if not reused
+// @2rb - no "option" suffix
+// @2rb - no value if it's the same thing anyhow
+interface DataTypeItem {
+  Name: string;
+}
+
+interface ReservedName {
+  Name: string;
+  Value: string;
+}
+
+interface InputTypeInfo {
+  Type: Of<typeof InputTypeCatalog>;
+  Label?: string;
+  Description?: string;
+  IsDefault?: boolean;
+  IsObsolete?: boolean;
+  IsRecommended?: boolean;
+  ObsoleteMessage?: string;
+}
 
 @Injectable()
 export class ContentTypesFieldsService extends HttpServiceBaseSignal {
+  #sysData = transient(SysDataService);
+  #inputTypeData = this.#sysData.getMany<{
+    InputTypes?: InputTypeInfo[];
+    DataTypes?: DataTypeItem[];
+    ReservedNames?: ReservedName[];
+  }>({
+    source: dataSourceInputTypes,
+    params: {
+      AppId: this.appId,
+    },
+    streams: 'InputTypes,DataTypes,ReservedNames',
+    noCamel: true,
+  });
 
   protected paramsAppId(more: Record<string, string | number | boolean | ReadonlyArray<string | number | boolean>> = {}) {
     return {
@@ -42,82 +75,107 @@ export class ContentTypesFieldsService extends HttpServiceBaseSignal {
 
   /** Get list of data types available in the system, such as 'string', 'number' etc. */
   dataTypes() {
-    const resourceRef = this.newHttpResource<string[]>(() => ({
-      url: this.apiUrl(webApiDataTypes),
-      params: this.paramsAppId().params,
-    }));
     // Transform raw string data into rich DataType objects
     const transformedData = computed(() => {
-      const rawData = resourceRef.value();
-      if (!rawData) return [];
+      const rawData = this.#inputTypeData.value()?.DataTypes?.map(dataType => dataType.Name) ?? [];
+      if (rawData.length === 0)
+        return [];
       return calculateDataTypes(rawData);
     });
     // Return a resource object with the transformed data, loading state and error information
     return {
       value: transformedData as Signal<DataType[]>,
-      loading: resourceRef.isLoading,
-      error: resourceRef.error,
+      loading: this.#inputTypeData.isLoading,
+      error: this.#inputTypeData.error,
     };
   }
 
   // Returns a Signal-based resource with sorted and transformed FieldInputTypeOption objects
   getInputTypes() {
-    const resourceRef = this.newHttpResource<InputTypeMetadata[]>(() => ({
-      url: this.apiUrl(webApiInputTypes),
-      params: this.paramsAppId().params,
-    }));
-
     // This extracts and formats relevant information from each input type configuration
-    const mapToFieldInputTypeOption = (config: InputTypeMetadata): FieldInputTypeOption & { sort: string } => ({
-      dataType: config.Type.substring(0, config.Type.indexOf('-')),
-      inputType: config.Type,
-      label: config.Label,
-      description: config.Description,
-      isDefault: config.IsDefault,
-      isObsolete: config.IsObsolete,
-      isRecommended: config.IsRecommended,
-      obsoleteMessage: config.ObsoleteMessage,
-      icon: config.IsDefault ? 'stars' : config.IsRecommended ? 'star' : null,
-      sort: (config.IsObsolete ? 'z' : config.IsDefault ? 'a' : config.IsRecommended ? 'b' : 'c') + config.Label,
-    });
+    const mapToFieldInputTypeOption = (config: InputTypeInfo): FieldInputTypeOption & { sort: string } => {
+    const inputType = config.Type;
+    const label = config.Label ?? inputType;
+    const dataType = inputType.includes('-')
+      ? inputType.substring(0, inputType.indexOf('-'))
+      : inputType;
+
+    return {
+      dataType,
+      inputType,
+      label,
+      description: config.Description ?? '',
+      isDefault: config.IsDefault ?? false,
+      isObsolete: config.IsObsolete ?? false,
+      isRecommended: config.IsRecommended ?? false,
+      obsoleteMessage: config.ObsoleteMessage ?? '',
+      icon: config.IsDefault ? 'stars' : config.IsRecommended ? 'star' : undefined,
+      sort: (config.IsObsolete ? 'z' : config.IsDefault ? 'a' : config.IsRecommended ? 'b' : 'c') + label,
+    };
+  };
 
     // Create a computed signal that automatically transforms and sorts the data when it changes
     const transformedData = computed(() =>
-      resourceRef.value()?.map(mapToFieldInputTypeOption)
-        .sort((a, b) => a.sort.localeCompare(b.sort)) || []
+    this.#inputTypeData.value()?.InputTypes
+      ?.map(mapToFieldInputTypeOption)
+      .sort((a, b) => a.sort.localeCompare(b.sort)) ?? []
+  );
+
+  return {
+    value: transformedData,
+    loading: this.#inputTypeData.isLoading,
+    error: this.#inputTypeData.error,
+  };
+  }
+
+  getReservedNames() {
+    const transformedData = computed(() =>
+      (this.#inputTypeData.value()?.ReservedNames ?? []).reduce((reserved, current) => {
+        reserved[current.Name] = current.Value;
+        return reserved;
+      }, {} as Record<string, string>)
     );
 
     return {
       value: transformedData,
-      loading: resourceRef.isLoading,
-      error: resourceRef.error,
+      loading: this.#inputTypeData.isLoading,
+      error: this.#inputTypeData.error,
     };
   }
 
-  getReservedNames() {
-    return this.newHttpResource<Record<string, string>>(() => ({
-      url: this.apiUrl(webApiReservedNames),
-    }));
+  retrieveContentTypeFields(nameId: string) {
+    const resource = this.#sysData.getMany<{ Fields?: Field[] }>({
+      source: dataSourceContentTypeDetails,
+      params: {
+        AppId: this.appId,
+        ContentTypeId: nameId,
+      },
+      streams: 'Default,Fields',
+      noCamel: true,
+    });
+
+    return toObservable(resource.value, { injector: this.injector }).pipe(
+      filter(v => v != null),
+      map(streams => streams.Fields ?? []),
+      first(),
+    );
   }
 
   getFieldsLive(refresh: Signal<unknown>, contentTypeStaticName: string): Signal<Field[]> {
-    // Create the HTTP resource that will fetch the fields
-    const fieldsResource = this.newHttpResource<Field[]>(() => {
-      // Reference the refresh signal to trigger refetching when it changes
-      refresh();
-      return {
-        url: this.apiUrl(webApiFieldsAll),
-        params: this.paramsAppId({ staticName: contentTypeStaticName }).params,
-      };
+    const fieldsResource = this.#sysData.getMany<{ Fields?: Field[] }>({
+      refresh,
+      source: dataSourceContentTypeDetails,
+      params: {
+        AppId: this.appId,
+        ContentTypeId: contentTypeStaticName,
+      },
+      streams: 'Default,Fields',
+      noCamel: true,
     }).value;
 
     // Create a computed signal that processes the fetched fields
     return computed(() => {
-      // Get the current state of the fields resource
-      const state = fieldsResource();
-
-      // Process fields just like in the Promise version
-      const fields = state || [];
+      const fields = fieldsResource()?.Fields ?? [];
       for (const fld of fields) {
         if (!fld.Metadata) continue;
         const md = fld.Metadata;
@@ -129,27 +187,6 @@ export class ContentTypesFieldsService extends HttpServiceBaseSignal {
       return fields;
     });
   }
-
-  /** Get all fields for some content type */
-  getFieldsPromise(contentTypeStaticName: string): Promise<Field[]> {
-    return this.fetchPromise<Field[]>(
-      webApiFieldsAll,
-      this.paramsAppId({ staticName: contentTypeStaticName })
-    ).then(fields => {
-      if (fields) {
-        for (const fld of fields) {
-          if (!fld.Metadata) continue;
-          const md = fld.Metadata;
-          const allMd = md.All;
-          const typeMd = md[fld.Type];
-          const inputMd = md[fld.InputType];
-          md.merged = { ...allMd, ...typeMd, ...inputMd };
-        }
-      }
-      return fields;
-    });
-  }
-
   /** Get all possible sharable fields for a new sharing */
   getShareableFieldsPromise(): Promise<Field[]> {
     return this.fetchPromise<Field[]>(webApiFieldsGetShared, {
@@ -259,12 +296,12 @@ export class ContentTypesFieldsService extends HttpServiceBaseSignal {
       params: {
         AppId: this.appId,
         ContentTypeId: contentTypeId.toString(),
-        Id: newField.Id.toString(),
+        Id: (newField.Id).toString(),
         Type: newField.Type,
         InputType: newField.InputType,
         StaticName: newField.StaticName,
-        IsTitle: newField.IsTitle.toString(),
-        Index: newField.SortOrder.toString(),
+        IsTitle: (newField.IsTitle).toString(),
+        Index: (newField.SortOrder).toString(),
       }
     });
   }

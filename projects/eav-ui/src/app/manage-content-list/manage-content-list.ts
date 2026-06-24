@@ -13,14 +13,14 @@ import { isCtrlEnter, isCtrlS } from '../edit/dialog/main/keyboard-shortcuts';
 import { DialogHeaderComponent } from "../shared/dialog-header/dialog-header";
 import { MousedownStopPropagationDirective } from '../shared/directives/mousedown-stop-propagation.directive';
 import { TippyDirective } from '../shared/directives/tippy.directive';
-import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { EditForm } from '../shared/models/edit-form.model';
 import { ItemIdHelper } from '../shared/models/item-id-helper';
 import { ExtendedFabSpeedDialImports } from '../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
 import { SaveCloseButtonComponent } from '../shared/modules/save-close-button/save-close-button';
 import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
 import { signalObj } from '../shared/signals/signal.utilities';
-import { ContentGroup } from './models/content-group.model';
+import { convertFormToUrl } from '../shared/url/url-converter';
+import { ParentReference } from './models/content-group.model';
 import { GroupHeader } from './models/group-header.model';
 import { ContentGroupService } from './services/content-group.service';
 
@@ -58,17 +58,16 @@ export class ManageContentListComponent implements OnInit {
     private translate: TranslateService,
   ) { }
 
-  protected items = signalObj<GroupHeader[]>('items', null);
+  protected items = signalObj<GroupHeader[]>('items', null!);
 
-  #contentGroup = convert(this.#dialogRoutes.getParams(['guid', 'part', 'index']), p => ({
-    id: null as number,
+  #parentIdentifier = convert(this.#dialogRoutes.getParams(['guid', 'part', 'index']), p => ({
     guid: p.guid,
     part: p.part,
     index: parseInt(p.index, 10),
-  } satisfies ContentGroup));
+  } satisfies ParentReference));
 
   #refresh = signal(0);
-  header = this.#contentGroupSvc.getAllLive(this.#contentGroup, this.#refresh).value;
+  header = this.#contentGroupSvc.getHeaderResource(this.#parentIdentifier, this.#refresh).value;
 
   protected reordered = signalObj('reordered', false);
 
@@ -96,8 +95,8 @@ export class ManageContentListComponent implements OnInit {
 
   protected saveList() {
     this.snackBar.open('Saving...');
-    this.#contentGroupSvc.saveList(this.#contentGroup, this.items()).subscribe(() => {
-      this.snackBar.open('Saved', null, { duration: 2000 });
+    this.#contentGroupSvc.saveList(this.#parentIdentifier, this.items()).subscribe(() => {
+      this.snackBar.open('Saved', undefined, { duration: 2000 });
       this.#fetchList();
       this.#fetchHeader();
     });
@@ -105,8 +104,8 @@ export class ManageContentListComponent implements OnInit {
 
   protected saveAndCloseList() {
     this.snackBar.open('Saving...');
-    this.#contentGroupSvc.saveList(this.#contentGroup, this.items()).subscribe(() => {
-      this.snackBar.open('Saved', null, { duration: 2000 });
+    this.#contentGroupSvc.saveList(this.#parentIdentifier, this.items()).subscribe(() => {
+      this.snackBar.open('Saved', undefined, { duration: 2000 });
       this.closeDialog();
     });
   }
@@ -127,10 +126,11 @@ export class ManageContentListComponent implements OnInit {
   }
 
   protected editHeader() {
+    const id = this.header()[0]?.Id ?? 0;
     const form: EditForm = {
       items: [
-        ItemIdHelper.relationship(this.#contentGroup.guid, 'listcontent', 0, this.header().Id === 0),
-        ItemIdHelper.relationship(this.#contentGroup.guid, 'listpresentation', 0, this.header().Id === 0),
+        ItemIdHelper.relationship(this.#parentIdentifier.guid, 'listcontent', 0, id === 0),
+        ItemIdHelper.relationship(this.#parentIdentifier.guid, 'listpresentation', 0, id === 0),
       ],
     };
     const formUrl = convertFormToUrl(form);
@@ -147,22 +147,23 @@ export class ManageContentListComponent implements OnInit {
 
   protected addFromExisting(index: number) {
     const queryParams = { add: true };
-    this.#dialogRoutes.navRelative([`${this.#contentGroup.guid}/${this.#contentGroup.part}/${index + 1}/replace`], { queryParams });
+    this.#dialogRoutes.navRelative([`${this.#parentIdentifier.guid}/${this.#parentIdentifier.part}/${index + 1}/replace`], { queryParams });
   }
 
   addBelow(index: number) {
     const form: EditForm = {
-      items: [ItemIdHelper.relationship(this.#contentGroup.guid, this.#contentGroup.part, index + 1, true)],
+      items: [ItemIdHelper.relationship(this.#parentIdentifier.guid, this.#parentIdentifier.part, index + 1, true)],
     };
     const formUrl = convertFormToUrl(form);
     this.#dialogRoutes.navRelative([`edit/${formUrl}`]);
   }
 
   protected remove(item: GroupHeader) {
-    if (!confirm(this.translate.instant('ManageContentList.ConfirmRemove'))) return;
+    if (!confirm(this.translate.instant('ManageContentList.ConfirmRemove')))
+      return;
     this.snackBar.open('Removing...');
-    this.#contentGroupSvc.removeItem(this.#contentGroup, item.Index).subscribe(() => {
-      this.snackBar.open('Removed', null, { duration: 2000 });
+    this.#contentGroupSvc.removeItem(this.#parentIdentifier, item.Index).subscribe(() => {
+      this.snackBar.open('Removed', undefined, { duration: 2000 });
       this.#fetchList();
     });
   }
@@ -175,7 +176,7 @@ export class ManageContentListComponent implements OnInit {
   }
 
   #fetchList(keepOrder = false) {
-    this.#contentGroupSvc.getListPromise(this.#contentGroup).then(items => {
+    this.#contentGroupSvc.getListPromise(this.#parentIdentifier).then(items => {
       if (this.reordered()) {
         const oldIds = this.items().map(item => item.Id);
         const idsChanged = this.items().length !== items.length || items.some(item => !oldIds.includes(item.Id));
@@ -189,7 +190,7 @@ export class ManageContentListComponent implements OnInit {
             return aIndex - bIndex;
           });
         } else if (keepOrder)
-          this.snackBar.open('List was changed from somewhere else. Order of items is reset', null, { duration: 5000 });
+          this.snackBar.open('List was changed from somewhere else. Order of items is reset', undefined, { duration: 5000 });
       }
       this.items.set(items);
       this.reordered.set(false);

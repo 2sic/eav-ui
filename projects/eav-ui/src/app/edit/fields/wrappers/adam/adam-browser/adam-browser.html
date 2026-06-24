@@ -46,14 +46,13 @@
               filter
             </mat-icon>
 
-            <!-- TODO: @2dm -->
             <div class="adam-upload-label">
               {{
-                !isPasteImageFromClipboardEnabled()
-                  ? 'Fields.Hyperlink.AdamFileManager.UploadPasteLabel'
+                ('Fields.Hyperlink.AdamFileManager.' +(!isPasteImageFromClipboardEnabled()
+                  ? 'UploadPasteLabel'
                   : pasteDiv.classList.contains('pastable-focus')
-                    ? 'Fields.Hyperlink.AdamFileManager.UploadPasteFocusedLabel'
-                    : ('Fields.Hyperlink.AdamFileManager.UploadPasteLabel' | translate)
+                    ? 'UploadPasteFocusedLabel'
+                    : 'UploadPasteLabel')) | translate
               }}
             </div>
           </div>

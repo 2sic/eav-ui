@@ -17,6 +17,7 @@ export class ValidationMsgHelper {
     decimals: (long: boolean) => long ? `${prefix}Decimals` : notValid,
     jsonError: (long: boolean) => long ? `${prefix}JsonError` : notValid,
     formulaError: (long: boolean) => notValid,
+    uniqueValue: (long: boolean) => notValid,
   };
 
   /** Marks controls as touched to show errors beneath controls and collects error messages */

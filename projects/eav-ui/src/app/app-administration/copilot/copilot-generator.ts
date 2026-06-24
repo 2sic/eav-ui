@@ -19,7 +19,6 @@ import { FeatureSummary } from '../../features/models';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
-import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm } from '../../shared/models/edit-form.model';
 import { ItemIdHelper } from '../../shared/models/item-id-helper';
 import { RichResult } from '../../shared/models/rich-result';
@@ -28,6 +27,7 @@ import { DialogRoutingService } from '../../shared/routing/dialog-routing.servic
 import { Context } from '../../shared/services/context';
 import { EntityService } from '../../shared/services/entity.service';
 import { SysDataService } from '../../shared/services/sys-data.service';
+import { convertFormToUrl } from '../../shared/url/url-converter';
 import { ConfirmDeleteDialogComponent } from '../sub-dialogs/confirm-delete-dialog/confirm-delete-dialog';
 import { ConfirmDeleteDialogData } from '../sub-dialogs/confirm-delete-dialog/confirm-delete-dialog.models';
 import { CodeGenerator } from './code-generator';

@@ -61,7 +61,7 @@ export class PickerItemButtonsComponent extends PickerPartBaseComponent {
 
   edit(entityGuid: string, entityId: number): void {
     this.log.a(`edit guid: '${entityGuid}'; id: '${entityId}'`);
-    this.pickerData.source.editItem({ entityGuid, entityId }, null);
+    this.pickerData.source.editItem({ entityGuid, entityId }, undefined);
   }
 
   removeItem(index: number): void {

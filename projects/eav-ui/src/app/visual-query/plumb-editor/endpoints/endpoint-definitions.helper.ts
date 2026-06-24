@@ -1,4 +1,4 @@
-import { classLogEnabled } from '../../../../../../shared/logging';
+import { classLog } from '../../../../../../shared/logging';
 import { VisualQueryModel } from '../../models/visual-query.model';
 import { JsPlumbEndpoint, JsPlumbOverlay } from '../jsplumb.models';
 import { EndpointInfo } from '../plumb-editor.models';
@@ -20,7 +20,7 @@ const logSpecs = {
  */
 export class EndpointDefinitionsHelper {
 
-  log = classLogEnabled({EndpointDefinitionsHelper}, logSpecs);
+  log = classLog({EndpointDefinitionsHelper}, logSpecs);
 
   constructor(
     private pipelineModel: VisualQueryModel,

@@ -1,24 +1,22 @@
-import { httpResource } from '@angular/common/http';
 import { Injectable, Signal } from '@angular/core';
+import { transient } from '../../../../../core';
 import { HttpServiceBaseSignal } from '../../shared/services/http-service-base-signal';
+import { SysDataService } from '../../shared/services/sys-data.service';
 import { SiteLanguage, SiteLanguagePermissions } from '../models/site-language.model';
-import { SystemInfoSet } from '../models/system-info.model';
+import { SystemInfoStreams } from '../models/system-info.model';
 
-const webApiZoneRootGetLanguages = 'admin/zone/GetLanguages';
 const webApiZoneRootSwitchLanguage = 'admin/zone/SwitchLanguage';
-const webApiZoneRootGetSystemInfo = 'admin/zone/GetSystemInfo';
-const webApiAppRootLanguages = 'admin/app/languages';
 
 @Injectable()
 export class ZoneService extends HttpServiceBaseSignal {
+  #sysData = transient(SysDataService);
 
   getLanguageLive(refresh: Signal<unknown>) {
-    return httpResource<SiteLanguage[]>(() => {
-      refresh();
-      return ({
-        url: this.apiUrl(webApiZoneRootGetLanguages),
-        params: { appId: this.appId }
-      });
+    return this.#sysData.get<SiteLanguage>({
+      refresh,
+      source: 'System.ZoneLanguages',
+      fields: 'Code,Culture,IsEnabled,NameId',
+      noCamel: true,
     });
   }
 
@@ -29,21 +27,20 @@ export class ZoneService extends HttpServiceBaseSignal {
   }
 
   getSystemInfoLive(refresh: Signal<unknown>) {
-    return httpResource<SystemInfoSet>(() => {
-      refresh();
-      return ({
-        url: this.apiUrl(webApiZoneRootGetSystemInfo),
-      });
+    return this.#sysData.getMany<SystemInfoStreams>({
+      refresh,
+      source: 'System.SystemInfo',
+      streams: 'Site,System,License,Messages',
+      noCamel: true,
     });
   }
 
   getLanguagesPermissionsLive(refresh: Signal<unknown>) {
-    return httpResource<SiteLanguagePermissions[]>(() => {
-      refresh();
-      return ({
-        url: this.apiUrl(webApiAppRootLanguages),
-        params: { appId: this.appId }
-      });
+    return this.#sysData.get<SiteLanguagePermissions>({
+      refresh,
+      source: 'System.AppLanguages',
+      noCamel: true,
+      params: { appId: this.appId },
     });
   }
 }

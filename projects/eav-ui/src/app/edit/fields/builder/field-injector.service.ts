@@ -1,7 +1,7 @@
 import { EnvironmentInjector, Injectable, Injector, Signal, createEnvironmentInjector, inject, runInInjectionContext } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { AbstractControl } from '@angular/forms';
-import { combineLatest, tap } from 'rxjs';
+import { combineLatest, merge, startWith, tap } from 'rxjs';
 import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
 import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
 import { classLog } from '../../../../../../shared/logging';
@@ -108,19 +108,38 @@ export class FieldStateInjectorFactory {
   /**
    * Create a signal for the control status - mainly disabled etc.
    */
-  #buildUiSignal(fieldName: string, control: AbstractControl, inputType: InputTypeSpecs, settings: Signal<FieldSettings>): Signal<UiControl> {
+  #buildUiSignal(
+    fieldName: string,
+    control: AbstractControl,
+    inputType: InputTypeSpecs,
+    settings: Signal<FieldSettings>
+  ): Signal<UiControl> {
     // Conditional logger for detailed logging
-    const lDetailed = this.log.fnCond(this.log.specs.fields.includes(fieldName), 'buildControlChangeSignal', { fieldName, inputType });
+    const lDetailed = this.log.fnCond(
+      this.log.specs.fields.includes(fieldName),
+      'buildControlChangeSignal',
+      { fieldName, inputType }
+    );
 
     // Create a signal to watch for control-state changes
     if (control) {
       const settings$ = toObservable(settings, { injector: this.#injector });
 
       return runInInjectionContext(this.#injector, () => {
-        // Watch the control for state changes - this is triggered on the ValueChanges
-        // but we only want to continue triggering if a relevant state changed.
-        const uiStateChange$ = control.valueChanges.pipe(
-          mapUntilObjChanged(_ => ({ dirty: control.dirty, invalid: control.invalid, touched: control.touched, disabled: control.disabled })),
+        // Async validators can flip invalid/pending after the value change finished, so we must also
+        // react to statusChanges for custom fields which don't bind Angular Material directly to the control.
+        const uiStateChange$ = merge(
+          control.valueChanges,
+          control.statusChanges
+        )
+        .pipe(
+          startWith(null),
+          mapUntilObjChanged(() => ({
+            dirty: control.dirty,
+            invalid: control.invalid,
+            touched: control.touched,
+            disabled: control.disabled,
+          })),
           tap(state => detailedDebug && console.error('controlStateChange', state)),
         );
 
@@ -130,8 +149,8 @@ export class FieldStateInjectorFactory {
           uiStateChange$,
           settings$.pipe(mapUntilObjChanged(s => s.uiDisabled)),
         ]).pipe(
-          tap(([_, disabled]) => lDetailed.a('controlStateChange on control', { control, disabled })),
-          mapUntilObjChanged(([_, disabled]) => new UiControl(control, fieldName, disabled)),
+          tap(([controlState, disabled]) => lDetailed.a('controlStateChange on control', { controlState, control, disabled })),
+          mapUntilObjChanged(([, disabled]) => new UiControl(control, fieldName, disabled)),
           tap(result => lDetailed.a('controlStatusChangeSignal', { result })),
         );
 
@@ -145,11 +164,14 @@ export class FieldStateInjectorFactory {
     // No control found - could be a problem, could be expected
     // If it's an empty message field, this is kind of expected, since it doesn't have a value control in the form
     if (!InputTypeHelpers.isEmpty(inputType.inputType)) {
-      console.error(`Error: can't create signal for control of ${fieldName} (not found). Input type is not empty, it's ${inputType.inputType}.`);
-      // try to have a temporary result, so that in most cases it won't just fail
-      return signalObj('control-status-empty', UiControl.emptyControl());
+      console.error(
+        `Error: can't create signal for control of ${fieldName} (not found). `
+        + `Input type is not empty, it's ${inputType.inputType}.`
+      );
     }
-    return null;
+
+    // Return an inert signal even for empty fields so downstream consumers can always rely on a UiControl.
+    return signalObj('control-status-empty', UiControl.emptyControl());
   }
 
   /**

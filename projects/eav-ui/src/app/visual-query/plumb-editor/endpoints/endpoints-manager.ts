@@ -1,4 +1,4 @@
-import { classLogEnabled } from '../../../../../../shared/logging';
+import { classLog } from '../../../../../../shared/logging';
 import { eavConstants } from '../../../shared/constants/eav.constants';
 import { DataSourceSet } from '../../models/data-source-definition';
 import { ConnectionsManager } from '../connections-manager';
@@ -22,7 +22,7 @@ const endPointsWhereWeRotate = 3;
 const maxLabelLengthToRotate = 30;
 
 export class EndpointsManager {
-  log = classLogEnabled({EndpointsManager}, logSpecs);
+  log = classLog({EndpointsManager}, logSpecs);
 
   constructor(
     private instance: JsPlumbInstance, 

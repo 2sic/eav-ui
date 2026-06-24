@@ -15,7 +15,7 @@ export class DataAdapterEmpty extends DataAdapterBase {
 
   protected dataSourceRaw = transient(DataSourceEmpty);
 
-  constructor() { super();}
+  constructor() { super(); }
 
   public myFeatures = signalObj('features', { edit: false, create: false, delete: false, } satisfies Partial<PickerFeatures>);
 
@@ -39,7 +39,7 @@ export class DataAdapterEmpty extends DataAdapterBase {
     throw new Error("Method not implemented.");
   }
 
-  editItem(editParams: { entityGuid: string; entityId: number; }, entityType: string): void {
+  editItem(editParams: { entityGuid: string; entityId: number; }, entityType?: string): void {
     throw new Error("Method not implemented.");
   }
 }

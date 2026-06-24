@@ -27,7 +27,7 @@ export class DataAdapterString extends DataAdapterBase {
     throw new Error("Method not implemented.");
   }
 
-  editItem(editParams: { entityGuid: string; entityId: number; }, entityType: string): void {
+  editItem(editParams: { entityGuid: string; entityId: number; }, entityType?: string): void {
     throw new Error("Method not implemented.");
   }
 }

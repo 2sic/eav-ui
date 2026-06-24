@@ -22,11 +22,11 @@ import { ToggleDebugDirective } from '../shared/directives/toggle-debug.directiv
 import { ContentTypesFieldsService } from '../shared/fields/content-types-fields.service';
 import { Field } from '../shared/fields/field.model';
 import { InputTypeHelpers } from '../shared/fields/input-type-helpers';
-import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { EditForm, ItemAddIdentifier, ItemEditIdentifier, ItemIdentifier } from '../shared/models/edit-form.model';
 import { ItemIdHelper } from '../shared/models/item-id-helper';
 import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
+import { convertFormToUrl } from '../shared/url/url-converter';
 import { ContentTypeFieldsActionsComponent } from './content-type-fields-actions/content-type-fields-actions';
 import { ContentTypeFieldsDragComponent, ContentTypeFieldsDragParams } from './content-type-fields-drag/content-type-fields-drag';
 import { ContentTypeFieldsSpecialComponent } from './content-type-fields-special/content-type-fields-special';
@@ -91,7 +91,7 @@ export class ContentTypeFieldsComponent implements OnInit {
     return data?.length === 0 ? this.#helpTextConst.empty : this.#helpTextConst.content;
   })
 
-  contentType = this.#contentTypesSvc.getType(this.#contentTypeStaticName).value;
+  contentType = this.#contentTypesSvc.getType(this.#contentTypeStaticName);
 
   fields = signal<Field[]>(undefined);
 
@@ -212,10 +212,13 @@ export class ContentTypeFieldsComponent implements OnInit {
   }
 
   #fetchFields(callback?: () => void) {
-    this.#contentTypesFieldsSvc.getFieldsPromise(this.#contentTypeStaticName).then(fields => {
-      this.fields.set(fields);
-      if (callback != null)
-        callback();
+    this.#contentTypesFieldsSvc.retrieveContentTypeFields(this.#contentTypeStaticName).subscribe(fields => {
+      if (fields?.length > 0) {
+        this.fields.set(fields);
+        if (callback != null)
+          callback();
+        return;
+      }
     });
   }
 
@@ -271,7 +274,7 @@ export class ContentTypeFieldsComponent implements OnInit {
   }
 
   #openImageConfiguration(field: Field) {
-    const imgConfig = field.imageConfiguration;
+    const imgConfig = field.ImageConfiguration;
     if (imgConfig?.isRecommended != true)
       throw new Error('This field does not expect to have an image configuration');
 
@@ -321,7 +324,7 @@ export class ContentTypeFieldsComponent implements OnInit {
       getRowClass(params: RowClassParams) {
         const field: Field = params.data;
         const rowClass: string[] = [];
-        if (field.EditInfo.DisableSort) { rowClass.push('disable-row-drag'); }
+        if (field.EditInfo?.DisableSort) { rowClass.push('disable-row-drag'); }
         if (InputTypeHelpers.isGroupStart(field.InputType)) { rowClass.push('group-start-row'); }
         if (InputTypeHelpers.isGroupEnd(field.InputType)) { rowClass.push('group-end-row'); }
         return rowClass;
@@ -350,7 +353,7 @@ export class ContentTypeFieldsComponent implements OnInit {
           ...ColumnDefinitions.TextWidePrimary,
           headerName: 'Name',
           field: 'StaticName',
-          cellClass: (p: { data: Field }) => `${p.data.EditInfo.DisableEdit ? 'no-outline' : 'primary-action highlight'}`.split(' '),
+          cellClass: (p: { data: Field }) => `${p.data.EditInfo?.DisableEdit ? 'no-outline' : 'primary-action highlight'}`.split(' '),
           cellRenderer: (params: ICellRendererParams & { data: Field }) =>
             AgGridHelper.cellLink(
               this.#fieldEditUrl(params.data),
@@ -369,7 +372,7 @@ export class ContentTypeFieldsComponent implements OnInit {
           headerName: 'Input',
           field: 'InputType',
           width: 160,
-          cellClass: (p: { data: Field }) => `${p.data.EditInfo.DisableEdit ? 'no-outline' : 'primary-action highlight'}`.split(' '),
+          cellClass: (p: { data: Field }) => `${p.data.EditInfo?.DisableEdit ? 'no-outline' : 'primary-action highlight'}`.split(' '),
           valueGetter: (p: { data: Field }) => p.data.InputType.substring(p.data.InputType.indexOf('-') + 1),
           cellRenderer: (params: ICellRendererParams & { data: Field }) =>
             AgGridHelper.cellLink(

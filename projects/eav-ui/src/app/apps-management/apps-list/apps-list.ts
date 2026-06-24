@@ -23,10 +23,10 @@ import { FileUploadDialogData } from '../../shared/components/file-upload-dialog
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
 import { MatBadgeIconDirective } from '../../shared/directives/mat-badge-icon.directive';
-import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { Context } from '../../shared/services/context';
+import { convertFormToUrl } from '../../shared/url/url-converter';
 import { App } from '../models/app.model';
 import { AppsListService } from '../services/apps-list.service';
 import { AppListCodeErrorIcons, AppListShowIcons } from './app-list-grid-config';
@@ -91,7 +91,7 @@ export class AppsListComponent implements OnInit {
   //   return untracked(() => this.#appsListSvc.getAll().value) // Untracked to avoid re-running this when the refresh changes
   // });
 
-  apps = this.#appsListSvc.getAllLive(this.#refresh).value;
+  apps = this.#appsListSvc.getAllLive(this.#refresh);
 
 
   ngOnInit(): void {

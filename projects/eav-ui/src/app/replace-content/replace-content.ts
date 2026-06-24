@@ -12,21 +12,17 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
 import { convert, transient } from '../../../../core';
 import { isCtrlEnter } from '../edit/dialog/main/keyboard-shortcuts';
-import { ContentGroupAdd } from '../manage-content-list/models/content-group.model';
+import { ContentGroupAdd, ParentReference } from '../manage-content-list/models/content-group.model';
 import { ContentGroupService } from '../manage-content-list/services/content-group.service';
 import { DialogHeaderComponent } from "../shared/dialog-header/dialog-header";
 import { TippyDirective } from '../shared/directives/tippy.directive';
-import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { EditForm } from '../shared/models/edit-form.model';
 import { ItemIdHelper } from '../shared/models/item-id-helper';
 import { SaveCloseButtonFabComponent } from '../shared/modules/save-close-button-fab/save-close-button-fab';
 import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
 import { computedObj, signalObj } from '../shared/signals/signal.utilities';
-
-interface ReplaceOption {
-  id: number;
-  label: string;
-}
+import { convertFormToUrl } from '../shared/url/url-converter';
+import { ReplaceOption } from './replace-config.model';
 
 @Component({
     selector: 'app-replace-content',
@@ -61,16 +57,17 @@ export class ReplaceContentComponent implements OnInit {
     private snackBar: MatSnackBar,
   ) { }
 
-  #params = convert(this.#dialogRoutes.getParams(['guid', 'part', 'index']), p => ({
+  #parentIdentifiers = convert(this.#dialogRoutes.getParams(['guid', 'part', 'index']), p => ({
     guid: p.guid,
     part: p.part,
     index: parseInt(p.index, 10),
-  }));
+  } satisfies ParentReference));
 
-  #contentTypeName: string;
+  // #contentTypeName: string;
   
   /** Mode is adding the to-be-selected item, not replace */
   protected isAddMode = signalObj('isAddMode', !!this.#dialogRoutes.getQueryParam('add'));
+  #contentTypesFilter = signalObj('contentType', this.#dialogRoutes.getQueryParam('contentType'));
 
   /** The text being searched for */
   filterText = model<string>('');
@@ -82,11 +79,11 @@ export class ReplaceContentComponent implements OnInit {
   options = computedObj<ReplaceOption[]>('filteredOptions', () => {
     const filter = this.filterText().toLocaleLowerCase();
     return this.#optionsRaw()
-      .filter(o => o.label.toLocaleLowerCase().includes(filter));
+      .filter(o => o.title.toLocaleLowerCase().includes(filter));
   });
 
   /** The system has a selected item, when the text exactly matches the label of an option */
-  canSave = computedObj<boolean>('isMatch', () => this.options().map(o => o.label).includes(this.filterText()));
+  canSave = computedObj<boolean>('isMatch', () => this.options().map(o => o.title).includes(this.filterText()));
 
   ngOnInit() {
     this.#watchKeyboardShortcuts();
@@ -94,8 +91,8 @@ export class ReplaceContentComponent implements OnInit {
     this.#fetchConfig(false, null);
 
     this.#dialogRoutes.doOnDialogClosed(() => {
-      const navigation = this.#dialogRoutes.router.getCurrentNavigation();
-      const editResult = navigation.extras?.state;
+      const navigation = this.#dialogRoutes.router.currentNavigation();
+      const editResult = navigation?.extras?.state;
       const cloneId: number = editResult?.[Object.keys(editResult)[0]];
       this.#fetchConfig(true, cloneId);
     });
@@ -110,43 +107,44 @@ export class ReplaceContentComponent implements OnInit {
   }
 
   copySelected() {
-    const contentGroup = this.#buildContentGroup();
+    // WIP 2dm
+    const contentGroup = this.#optionsRaw().find(o => o.title === this.filterText())!;
     const form: EditForm = {
-      items: [ItemIdHelper.copy(this.#contentTypeName, contentGroup.id)],
+      items: [ItemIdHelper.copy(contentGroup.contentType, contentGroup.id)],
     };
     const formUrl = convertFormToUrl(form);
     this.#dialogRoutes.navRelative([`edit/${formUrl}`]);
   }
 
-  #fetchConfig(isRefresh: boolean, cloneId: number) {
-    const contentGroup = this.#buildContentGroup();
-    this.#contentGroupSvc.getItemsPromise(contentGroup).then(replaceConfig => {
-      const options = Object.entries(replaceConfig.Items)
-        .map(([itemId, itemName]) => ({
-          id: parseInt(itemId, 10),
-          label: `${itemName} (${itemId})`,
+  #fetchConfig(isRefresh: boolean, cloneId: number | null) {
+    this.#contentGroupSvc.getItemsPromise(this.#parentIdentifiers, this.#contentTypesFilter()).then(replaceConfig => {
+      const options = replaceConfig.items
+        .map((item) => ({
+          ...item,
+          title: `${item.title} (${item.contentType} - ${item.id})`,
         } satisfies ReplaceOption));
       this.#optionsRaw.set(options);
 
       // don't set selected option if dialog should be in add-mode and don't change selected option on refresh unless it's cloneId
-      if ((!contentGroup.add && !isRefresh) || cloneId != null) {
-        const newId = !isRefresh ? replaceConfig.SelectedId : cloneId;
-        const newFilter = this.#optionsRaw().find(o => o.id === newId)?.label || '';
+      if ((!this.isAddMode() && !isRefresh) || cloneId != null) {
+        const newId = !isRefresh ? replaceConfig.selectedId : cloneId;
+        const newFilter = this.#optionsRaw().find(o => o.id === newId)?.title || '';
         this.filterText.set(newFilter);
       }
-      this.#contentTypeName = replaceConfig.ContentTypeName;
     });
   }
 
-  #buildContentGroup() {
+  #buildContentGroup(): ContentGroupAdd {
     const filter = this.filterText();
-    const id = this.#optionsRaw().find(o => o.label === filter)?.id ?? null;
+    const selected = this.#optionsRaw().find(o => o.title === filter)!; //?.id ?? null;
 
-    const contentGroup: ContentGroupAdd = {
-      id,
-      ...this.#params,
+    // const contentType = this.#contentTypeFilter();
+    // console.log('2dm, buildContentGroup', { filter, id, contentType, params: this.#params });
+    const contentGroup = {
+      ...selected,
+      ...this.#parentIdentifiers,
       add: this.isAddMode(),
-    };
+    } satisfies ContentGroupAdd;
     return contentGroup;
   }
   
@@ -154,7 +152,7 @@ export class ReplaceContentComponent implements OnInit {
     this.snackBar.open('Saving...');
     const contentGroup = this.#buildContentGroup();
     this.#contentGroupSvc.saveItem(contentGroup).subscribe(() => {
-      this.snackBar.open('Saved', null, { duration: 2000 });
+      this.snackBar.open('Saved', undefined, { duration: 2000 });
       this.closeDialog();
     });
   }

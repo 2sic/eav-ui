@@ -38,7 +38,7 @@ export class FieldStringWysiwygPreview extends HTMLElement implements EavCustomI
     this.fieldInitialized = true;
 
     this.innerHTML = buildHtmlAndStyles(template.default, styles.default);
-    const previewContainer = this.querySelector<HTMLDivElement>('.wysiwyg-preview');
+    const previewContainer = this.querySelector<HTMLDivElement>('.wysiwyg-preview')!;
 
     const expand = () => this.connector.dialog.open();
 

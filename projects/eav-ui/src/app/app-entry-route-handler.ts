@@ -5,12 +5,12 @@ import { classLog } from '../../../shared/logging';
 import { UrlHelpers } from './edit/shared/helpers/url.helpers';
 import { DialogTypeConstants } from './shared/constants/dialog-type.constants';
 import { keyAppId, keyContentBlockId, keyContentType, keyDialog, keyExtras, keyItems, keyModuleId, keyPipelineId, keyUrl, keyZoneId, prefix } from './shared/constants/session.constants';
-import { convertFormToUrl } from './shared/helpers/url-prep.helper';
 import { EavWindow } from './shared/models/eav-window.model';
 import { EditForm, ItemEditIdentifier, ItemInListIdentifier } from './shared/models/edit-form.model';
 import { ExtrasParam } from './shared/routing/dialog-url-params.model';
 import { RouteContextInfo } from './shared/routing/route-context-info';
 import { RouteLinkHelper } from './shared/routing/route-link-helper';
+import { convertFormToUrl } from './shared/url/url-converter';
 
 declare const window: EavWindow;
 
@@ -100,7 +100,7 @@ export class AppEntryRouteHandler {
     const router = this.injector.get(Router);
     const dialog = sS.getItem(keyDialog) as Of<typeof DialogTypeConstants>;
     const contentType = sS.getItem(keyContentType);
-    const items = sS.getItem(keyItems);
+    const items = sS.getItem(keyItems) || '[]';
 
     // New 2025-03-20; centralize code to create full route
     const getFull = () => new RouteLinkHelper().routeRoot({
@@ -155,7 +155,11 @@ export class AppEntryRouteHandler {
 
       case DialogTypeConstants.Replace:
         const repItem = (JSON.parse(items) as ItemInListIdentifier[])[0];
-        const queryParams = repItem.Add ? { add: true } : {};
+        const queryParams = {
+          ...(repItem.Add ? { add: true } : {}),
+          ...(repItem.ContentType ? { contentType: repItem.ContentType } : {}),
+        };
+        // console.log('2dm, replace', { items, contentType: repItem.ContentType, queryParams });
         return go(`/${repItem.Parent}/${repItem.Field}/${repItem.Index}/replace`, { queryParams });
 
       case DialogTypeConstants.InstanceList:
@@ -209,7 +213,7 @@ export class AppEntryRouteHandler {
   }
 
   /** Log initial route so a developer can re-open the dialog with the link in the console */
-  #logInitialRoute(url?: string): void {
+  #logInitialRoute(url?: string | null): void {
     console.log('Initial route:', url ?? window.location.href);
   }
   

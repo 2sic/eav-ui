@@ -1,9 +1,11 @@
-import { httpResource } from '@angular/common/http';
 import { computed, Injectable, Signal } from '@angular/core';
-import { map, Observable } from 'rxjs';
-import { WebApi, WebApiDetails } from '../../app-administration/models';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { catchError, filter, first, map, Observable, of } from 'rxjs';
+import { transient } from '../../../../../core';
+import { WebApi, WebApiControllerDetails, WebApiControllerEndpoint, WebApiControllerParameter, WebApiSecurity } from '../../app-administration/models';
 import { ViewOrFileIdentifier } from '../../shared/models/edit-form.model';
 import { HttpServiceBase } from '../../shared/services/http-service-base';
+import { SysDataService } from '../../shared/services/sys-data.service';
 import { FileAsset } from '../models/file-asset.model';
 import { PredefinedTemplatesResponse } from '../models/predefined-template.model';
 import { Preview } from '../models/preview.models';
@@ -12,13 +14,58 @@ import { SourceView } from '../models/source-view.model';
 const appFilesAll = 'admin/AppFiles/AppFiles';
 const appFilesAsset = 'admin/AppFiles/asset';
 const appFilesCreate = 'admin/AppFiles/create';
-const apiExplorerInspect = 'admin/ApiExplorer/inspect';
-const apiExplorerAppApiFiles = 'admin/ApiExplorer/AppApiFiles';
 const appFilesPredefinedTemplates = 'admin/AppFiles/GetTemplates';
 const appFilesPreview = 'admin/AppFiles/preview';
+const dataSourceAppWebApiControllers = 'System.AppWebApiControllers';
+const dataSourceAppWebApiControllerDetails = 'System.AppWebApiControllerDetails';
+const dataSourceAppWebApiControllerEndpoints = 'System.AppWebApiControllerEndpoints';
+
+interface AppWebApiControllerRow {
+  Path: string;
+  EndpointPath: string;
+  Edition: string;
+  Shared: boolean;
+}
+
+type WebApiControllerDetailsResponse = { Default?: WebApiControllerDetailsRaw[] };
+type WebApiControllerEndpointsResponse = { Default?: WebApiControllerEndpointRaw[] };
+
+type WebApiControllerDetailsRaw = {
+  controller?: string;
+  path?: string;
+  ignoreSecurity?: boolean;
+  allowAnonymous?: boolean;
+  requireVerificationToken?: boolean;
+  validateAntiForgeryToken?: boolean;
+  autoValidateAntiforgeryToken?: boolean;
+  ignoreAntiforgeryToken?: boolean;
+  view?: boolean;
+  edit?: boolean;
+  admin?: boolean;
+  superUser?: boolean;
+  requireContext?: boolean;
+};
+
+type WebApiControllerEndpointRaw = {
+  name?: string;
+  endpointPath?: string;
+  returns?: string;
+  verbs?: string;
+  parameters?: WebApiControllerParameter[];
+  security?: WebApiSecurity;
+  ignoreSecurity?: boolean;
+  allowAnonymous?: boolean;
+  requireVerificationToken?: boolean;
+  view?: boolean;
+  edit?: boolean;
+  admin?: boolean;
+  superUser?: boolean;
+  requireContext?: boolean;
+};
 
 @Injectable()
 export class SourceService extends HttpServiceBase {
+  #sysData = transient(SysDataService);
 
   // TODO: @2dg, ask 2dm 
   /** ViewKey is templateId or path */
@@ -108,82 +155,171 @@ export class SourceService extends HttpServiceBase {
 
   // TODO: @2dg, ask 2dm
   getWebApis(): Observable<WebApi[]> {
-    return this.getHttpApiUrl<{ files: WebApi[] }>(apiExplorerAppApiFiles, {
+    const resource = this.#sysData.getMany<{ Default?: AppWebApiControllerRow[] }>({
+      source: dataSourceAppWebApiControllers,
       params: {
-        appId: this.appId,
+        AppId: this.appId,
       },
-    }).pipe(
-      map(({ files }) => {
-        files.forEach(file => {
-          file.isShared ??= false;
-          file.isCompiled ??= false;
-        });
-        return files;
-      }),
-    ).pipe(
-      map(files => {
-        const webApis: WebApi[] = files.map(file => {
-          const splitIndex = file.path.lastIndexOf('/');
-          const fileExtIndex = file.path.lastIndexOf('.');
-          const folder = file.path.substring(0, splitIndex);
-          const name = file.path.substring(splitIndex + 1, fileExtIndex);
-          const webApi: WebApi = { path: file.path, folder, name, isShared: file.isShared, endpointPath: file.endpointPath, isCompiled: file.isCompiled, edition: file.edition };
-          return webApi;
-        });
-        return webApis;
-      }),
+      streams: 'Default',
+      noCamel: true,
+    });
+
+    return toObservable(resource.value, { injector: this.injector }).pipe(
+      filter(v => v != null),
+      map(streams => this.#mapWebApiRows(streams.Default ?? [])),
     );
   }
 
 
   getWebApisLive(refresh: Signal<unknown>) {
-    const apiResource = httpResource<{ files: WebApi[] }>(() => {
-      refresh();
-      return {
-        url: this.apiUrl(apiExplorerAppApiFiles),
-        params: { appId: this.appId },
-      };
+    const resource = this.#sysData.getMany<{ Default?: AppWebApiControllerRow[] }>({
+      refresh,
+      source: dataSourceAppWebApiControllers,
+      params: {
+        AppId: this.appId,
+      },
+      streams: 'Default',
+      noCamel: true,
     });
 
-    // Return a computed signal that transforms the data
-    return computed(() => {
-      const response = apiResource.value();
-      const files = response?.files;
+    return computed(() => this.#mapWebApiRows(resource.value()?.Default ?? []));
+  }
 
-      if (!files) return [];
+  #mapWebApiRows(rows: AppWebApiControllerRow[]): WebApi[] {
+    return rows.map(row => {
+      const splitIndex = row.Path.lastIndexOf('/');
+      const fileExtIndex = row.Path.lastIndexOf('.');
+      const folder = row.Path.substring(0, splitIndex);
+      const name = row.Path.substring(splitIndex + 1, fileExtIndex);
 
-      // Set default values for isShared and isCompiled if they are undefined
-      files.forEach(file => {
-        file.isShared ??= false;
-        file.isCompiled ??= false;
-      });
-
-      // Transform the raw files into the desired WebApi format
-      return files.map(file => {
-        const splitIndex = file.path.lastIndexOf('/');
-        const fileExtIndex = file.path.lastIndexOf('.');
-        const folder = file.path.substring(0, splitIndex);
-        const name = file.path.substring(splitIndex + 1, fileExtIndex);
-
-        return {
-          path: file.path,
-          folder,
-          name,
-          isShared: file.isShared,
-          endpointPath: file.endpointPath,
-          isCompiled: file.isCompiled,
-          edition: file.edition,
-        } as WebApi;
-      });
+      return {
+        path: row.Path,
+        folder,
+        name,
+        isShared: row.Shared,
+        endpointPath: row.EndpointPath,
+        isCompiled: false,
+        edition: row.Edition,
+      };
     });
   }
 
 
-  // TODO: @2dg, ask 2dm 
-  getWebApiDetails(apiPath: string): Observable<WebApiDetails> {
-    return this.getHttpApiUrl<WebApiDetails>(apiExplorerInspect, {
-      params: { appId: this.appId, zoneId: this.zoneId, path: apiPath },
+  retrieveWebApiControllerDetails(path: string): Observable<WebApiControllerDetails | null> {
+    const resource = this.#sysData.getMany<WebApiControllerDetailsResponse>({
+      source: dataSourceAppWebApiControllerDetails,
+      params: {
+        AppId: this.appId,
+        Path: path,
+      },
+      streams: 'Default',
+      noCamel: true,
     });
+
+    return toObservable(resource.value, { injector: this.injector }).pipe(
+      filter(value => value != null),
+      map(streams => this.#mapWebApiControllerDetails(streams.Default?.[0] ?? null)),
+      catchError(error => {
+        console.error('Error loading WebApi controller details', error);
+        return of(null);
+      }),
+      first(),
+    );
+  }
+
+  retrieveWebApiControllerEndpoints(path: string): Observable<WebApiControllerEndpoint[]> {
+    const resource = this.#sysData.getMany<WebApiControllerEndpointsResponse>({
+      source: dataSourceAppWebApiControllerEndpoints,
+      params: {
+        AppId: this.appId,
+        Path: path,
+      },
+      streams: 'Default',
+      noCamel: true,
+    });
+
+    return toObservable(resource.value, { injector: this.injector }).pipe(
+      filter(value => value != null),
+      map(streams => (streams.Default ?? []).map(endpoint => this.#mapWebApiControllerEndpoint(endpoint))),
+      catchError(error => {
+        console.error('Error loading WebApi controller endpoints', error);
+        return of([]);
+      }),
+      first(),
+    );
+  }
+
+  #mapWebApiControllerDetails(details: WebApiControllerDetailsRaw | null): WebApiControllerDetails | null {
+    if (details == null)
+      return null;
+
+    const {
+      controller = '',
+      path = '',
+      ignoreSecurity = false,
+      allowAnonymous = false,
+      requireVerificationToken = false,
+      validateAntiForgeryToken = false,
+      autoValidateAntiforgeryToken = false,
+      ignoreAntiforgeryToken = false,
+      view = false,
+      edit = false,
+      admin = false,
+      superUser = false,
+      requireContext = false,
+    } = details;
+
+    return {
+      Controller: controller,
+      Path: path,
+      IgnoreSecurity: ignoreSecurity,
+      AllowAnonymous: allowAnonymous,
+      RequireVerificationToken: requireVerificationToken,
+      ValidateAntiForgeryToken: validateAntiForgeryToken,
+      AutoValidateAntiforgeryToken: autoValidateAntiforgeryToken,
+      IgnoreAntiforgeryToken: ignoreAntiforgeryToken,
+      View: view,
+      Edit: edit,
+      Admin: admin,
+      SuperUser: superUser,
+      RequireContext: requireContext,
+    };
+  }
+
+  #mapWebApiControllerEndpoint(endpoint: WebApiControllerEndpointRaw): WebApiControllerEndpoint {
+    const {
+      name = '',
+      endpointPath = '',
+      returns = '',
+      verbs = '',
+      parameters = [],
+      security,
+      ignoreSecurity = false,
+      allowAnonymous = false,
+      requireVerificationToken = false,
+      view = false,
+      edit = false,
+      admin = false,
+      superUser = false,
+      requireContext = false,
+    } = endpoint;
+
+    return {
+      Name: name,
+      EndpointPath: endpointPath,
+      Returns: returns,
+      Verbs: verbs,
+      Parameters: parameters,
+      Security: security,
+      IgnoreSecurity: ignoreSecurity,
+      AllowAnonymous: allowAnonymous,
+      RequireVerificationToken: requireVerificationToken,
+      View: view,
+      Edit: edit,
+      Admin: admin,
+      SuperUser: superUser,
+      RequireContext: requireContext,
+    };
   }
 
   getPredefinedTemplates(purpose?: 'Template' | 'Search' | 'Api', type?: 'Token' | 'Razor'): Promise<PredefinedTemplatesResponse> {

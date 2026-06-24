@@ -14,12 +14,12 @@ import { GridWithHelpComponent, HelpTextConst } from '../../shared/ag-grid/grid-
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
-import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm } from '../../shared/models/edit-form.model';
 import { ItemIdHelper } from '../../shared/models/item-id-helper';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { EntityService } from '../../shared/services/entity.service';
+import { convertFormToUrl } from '../../shared/url/url-converter';
 import { AppExtensionsService } from './app-extensions.service';
 import { AppExtensionActions } from './extension-actions/extension-actions';
 import { DefaultExtensionEdition, Extension } from './extension.model';

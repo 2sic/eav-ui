@@ -18,7 +18,7 @@ export class PickerPartBaseComponent {
 
   //#region Setup: Logging, inject, constructor
 
-  log = classLog({PickerPartBaseComponent});
+  log = classLog({ PickerPartBaseComponent });
 
   /** Entire Field State */
   protected fieldState = inject(FieldState) as FieldState<FieldValue, FieldSettingsWithPickerSource & FieldSettingsPickerMerged>;
@@ -61,20 +61,22 @@ export class PickerPartBaseComponent {
 
   expandDialog() {
     const config = this.fieldState.config;
-    if (config.initialDisabled) return;
+    if (config.initialDisabled)
+      return;
     this.editRoutingService.expand(true, config.index, config.entityGuid);
   }
 
   openNewEntityDialog(entityType: string): void {
     this.log.a(`openNewEntityDialog: '${entityType}'`);
-    this.pickerData.source.editItem(null, entityType);
+    this.pickerData.source.editItem(undefined, entityType);
   }
 
   //#endregion
 
   toggleFreeText(disabled: boolean): void {
     this.log.a(`toggleFreeText ${disabled}`);
-    if (disabled) return;
+    if (disabled)
+      return;
     this.pickerData.toggleFreeTextMode();
   }
 }

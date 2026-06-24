@@ -1,13 +1,15 @@
-import { httpResource } from '@angular/common/http';
-import { Injectable, Signal } from '@angular/core';
-import { from, map, switchMap } from 'rxjs';
+import { computed, Injectable, Signal } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { filter, first, firstValueFrom, from, map, switchMap } from 'rxjs';
+import { transient } from '../../../../../core';
 import { classLog } from '../../../../../shared/logging';
 import { FileUploadResult } from '../../shared/components/file-upload-dialog';
-import { webApiFieldsAll } from '../../shared/fields/content-types-fields.service';
+import { dataSourceContentTypeDetails } from '../../shared/fields/content-types-fields.service';
 import { Field } from '../../shared/fields/field.model';
 import { toBase64 } from '../../shared/helpers/file-to-base64.helper';
-import { webApiEntityList, webApiEntityRoot } from '../../shared/services/entity.service';
+import { dataSourceEntitiesAdmin, webApiEntityRoot } from '../../shared/services/entity.service';
 import { HttpServiceBaseSignal } from '../../shared/services/http-service-base-signal';
+import { SysDataService } from '../../shared/services/sys-data.service';
 import { ContentItem } from '../models/content-item.model';
 
 const logSpecs = {
@@ -19,40 +21,72 @@ const logSpecs = {
 @Injectable()
 export class ContentItemsService extends HttpServiceBaseSignal {
 
+  #sysData = transient(SysDataService);
+
   log = classLog({ ContentItemsService }, logSpecs);
-  
+
+  #getAllSig(contentTypeStaticName: string, refresh?: Signal<unknown>) {
+    return this.#sysData.getMany<{ Default?: ContentItem[] }>({
+      refresh,
+      source: dataSourceEntitiesAdmin,
+      params: {
+        AppId: this.appId,
+        ContentType: contentTypeStaticName,
+      },
+      streams: 'Default',
+      noCamel: true,
+    });
+  }
+
   getAllPromise(contentTypeStaticName: string): Promise<ContentItem[]> {
     this.log.fnIf('getAll', { contentTypeStaticName });
-    return this.fetchPromise<ContentItem[]>(webApiEntityList, {
-      params: { appId: this.appId, contentType: contentTypeStaticName }
-    });
+    const resource = this.#getAllSig(contentTypeStaticName);
+
+    return firstValueFrom(
+      toObservable(resource.value, { injector: this.injector }).pipe(
+        filter(v => v != null),
+        map(streams => streams.Default ?? []),
+        first(),
+      ),
+    );
   }
 
   getAllOnce(contentTypeStaticName: string) {
     this.log.fnIf('getAllOnce', { contentTypeStaticName });
-    return httpResource<ContentItem[]>(() => {
-      return ({
-        url: this.apiUrl(webApiEntityList),
-        params: { appId: this.appId, contentType: contentTypeStaticName }
-      });
-    });
+    const resource = this.#getAllSig(contentTypeStaticName);
+    return {
+      ...resource,
+      value: computed(() => resource.value()?.Default),
+    };
   }
 
   getAllLive(contentTypeStaticName: string, refresh: Signal<unknown>) {
     this.log.fnIf('getAllLive', { contentTypeStaticName, refresh });
-    return httpResource<ContentItem[]>(() => {
-      refresh();
-      return ({
-        url: this.apiUrl(webApiEntityList),
-        params: { appId: this.appId, contentType: contentTypeStaticName }
-      });
-    });
+    const resource = this.#getAllSig(contentTypeStaticName, refresh);
+    return {
+      ...resource,
+      value: computed(() => resource.value()?.Default),
+    };
   }
 
   getColumnsPromise(contentTypeStaticName: string): Promise<Field[]> {
-    return this.fetchPromise<Field[]>(webApiFieldsAll, {
-      params: { appId: this.appId, staticName: contentTypeStaticName }
+    const resource = this.#sysData.getMany<{ Fields?: Field[] }>({
+      source: dataSourceContentTypeDetails,
+      params: {
+        AppId: this.appId,
+        ContentTypeId: contentTypeStaticName,
+      },
+      streams: 'Default,Fields',
+      noCamel: true,
     });
+
+    return firstValueFrom(
+      toObservable(resource.value, { injector: this.injector }).pipe(
+        filter(v => v != null),
+        map(streams => streams.Fields ?? []),
+        first(),
+      ),
+    );
   }
 
   importItem(file: File) {

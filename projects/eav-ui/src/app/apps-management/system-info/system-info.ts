@@ -20,6 +20,7 @@ import { EavWindow } from '../../shared/models/eav-window.model';
 import { DialogInNewWindowService } from '../../shared/routing/dialog-in-new-window.service';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { ClipboardService } from '../../shared/services/clipboard.service';
+import { SystemInfoSet } from '../models/system-info.model';
 import { SxcInsightsService } from '../services/sxc-insights.service';
 import { ZoneService } from '../services/zone.service';
 import { InfoTemplate } from './system-info.models';
@@ -63,12 +64,27 @@ export class SystemInfoComponent implements OnInit {
   loading = signal(false);
   #refresh = signal(0);
 
-  #languages = this.#zoneSvc.getLanguageLive(this.#refresh).value;
-  #systemInfoSet = this.#zoneSvc.getSystemInfoLive(this.#refresh).value;
+  #languages = this.#zoneSvc.getLanguageLive(this.#refresh);
+  #systemInfoStreams = this.#zoneSvc.getSystemInfoLive(this.#refresh).value;
+
+  #systemInfoSet = computed<SystemInfoSet | null>(() => {
+    const streams = this.#systemInfoStreams();
+    if (streams == null)
+      return null;
+
+    return {
+      System: streams.System[0],
+      Site: streams.Site[0],
+      License: streams.License[0],
+      Messages: streams.Messages[0],
+    };
+  });
+
 
   systemInfos = computed(() => {
     const systemInfoSetValue = this.#systemInfoSet();
-    if (systemInfoSetValue == null) return;
+    if (systemInfoSetValue == null)
+      return null;
     const url = this.#dialogRouter.router.url + '/' + "registration";
     const info: InfoTemplate[] = [
       { label: 'CMS', value: `2sxc v.${systemInfoSetValue.System.EavVersion}` },

@@ -1,5 +1,10 @@
 export interface ReplaceConfig {
-  SelectedId: number;
-  Items: Record<string, string>;
-  ContentTypeName: string;
+  selectedId: number;
+  items: ReplaceOption[];
+}
+
+export interface ReplaceOption {
+  id: number;
+  title: string;
+  contentType: string;
 }
