@@ -1,5 +1,5 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { Component, computed, OnInit, signal } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
@@ -36,7 +36,7 @@ import { AnalyzeParts } from './analyze-settings.models';
     SxcGridModule,
   ]
 })
-export class AnalyzeSettingsComponent implements OnInit {
+export class AnalyzeSettingsComponent {
   gridOptions = this.buildGridOptions();
 
   #viewsSvc = transient(ViewsService);
@@ -53,7 +53,7 @@ export class AnalyzeSettingsComponent implements OnInit {
   selectedView = signal<string>(undefined);
   views = this.#viewsSvc.getAllOnce().value;
 
-  #stackSignal = this.#analyzeSettingsSvc.getStack(this.part, undefined, this.selectedView()).value;
+  #stackSignal = this.#analyzeSettingsSvc.getStack(this.part, undefined, this.selectedView);
 
   stack = computed(() => {
     const stackItems = this.#stackSignal();
@@ -63,22 +63,12 @@ export class AnalyzeSettingsComponent implements OnInit {
     }));
   });
 
-  ngOnInit(): void {
-    this.#getStack();
-  }
-
   closeDialog(): void {
     this.dialog.close();
   }
 
   changeView(viewGuid: string): void {
     this.selectedView.set(viewGuid);
-    this.#getStack();
-  }
-
-
-  #getStack(): void {
-    this.stack();
   }
 
   private buildGridOptions(): GridOptions {

@@ -1,5 +1,5 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { Component, OnInit, Signal, computed, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
@@ -83,73 +83,44 @@ export class AppConfiguration implements OnInit {
 
   /*=== URL SIGNALS FOR EDIT ROUTES ===*/
 
-  //============== System Settings ==============
+  #systemSettingsAppUrl = this.urlToEditSystem(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App);
+  #systemSettingsSiteUrl = this.urlToEditSystem(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.Site);
+  #systemResourcesAppUrl = this.urlToEditSystem(eavConstants.contentTypes.systemResources, SystemSettingsScopes.App);
+  #systemResourcesSiteUrl = this.urlToEditSystem(eavConstants.contentTypes.systemResources, SystemSettingsScopes.Site);
+  #customSettingsGlobalUrl = this.urlToEditSystem(eavConstants.contentTypes.customSettings, SystemSettingsScopes.App);
+  #customSettingsSiteUrl = this.urlToEditSystem(eavConstants.contentTypes.customSettings, SystemSettingsScopes.Site);
+  #customSettingsAppUrl = this.urlToEditSystem(eavConstants.contentTypes.settings, SystemSettingsScopes.App);
+  #customResourcesGlobalUrl = this.urlToEditSystem(eavConstants.contentTypes.customResources, SystemSettingsScopes.App);
+  #customResourcesSiteUrl = this.urlToEditSystem(eavConstants.contentTypes.customResources, SystemSettingsScopes.Site);
+  #customResourcesAppUrl = this.urlToEditSystem(eavConstants.contentTypes.resources, SystemSettingsScopes.App);
 
-  // Assign System Settings Url
-  #appSystemSettingsUrlSource: Signal<string>;
   appSystemSettingsUrl = computed(() => {
     const isGlobal = this.isGlobal();
     const isSite = this.isSite();
     if (isGlobal == null || isSite == null) return null;
-    // Ensure that the source is only created once when global/site are ready.
-    this.#appSystemSettingsUrlSource ??= this.urlToEditSystem(
-      eavConstants.contentTypes.systemSettings,
-      isGlobal ? SystemSettingsScopes.App : isSite ? SystemSettingsScopes.Site : SystemSettingsScopes.App
-    );
-    // return value unwrapped
-    return this.#appSystemSettingsUrlSource();
-  })
+    return (isSite ? this.#systemSettingsSiteUrl : this.#systemSettingsAppUrl)();
+  });
 
-  //============== System Resources ==============
-
-  // Assign System Resources Url
-  #appSystemResourcesUrlSource: Signal<string>;
   appSystemResourcesUrl = computed(() => {
     const isGlobal = this.isGlobal();
     const isSite = this.isSite();
     if (isGlobal == null || isSite == null) return null;
-    // Ensure that the source is only created once when global/site are ready.
-    this.#appSystemResourcesUrlSource ??= this.urlToEditSystem(
-      eavConstants.contentTypes.systemResources,
-      isGlobal ? SystemSettingsScopes.App : isSite ? SystemSettingsScopes.Site : SystemSettingsScopes.App
-    );
-    // return value unwrapped
-    return this.#appSystemResourcesUrlSource();
-  })
+    return (isSite ? this.#systemResourcesSiteUrl : this.#systemResourcesAppUrl)();
+  });
 
-  //============== Custm Settings ==============
-
-  // Assign Custom Settings Url
-  #appCustomSettingsUrlSource: Signal<string>;
   appCustomSettingsUrl = computed(() => {
     const isGlobal = this.isGlobal();
     const isSite = this.isSite();
     if (isGlobal == null || isSite == null) return null;
-    // Ensure that the source is only created once when global/site are ready.
-    this.#appCustomSettingsUrlSource ??= this.urlToEditSystem(
-      isGlobal ? eavConstants.contentTypes.customSettings : isSite ? eavConstants.contentTypes.customSettings : eavConstants.contentTypes.settings,
-      isGlobal ? SystemSettingsScopes.App : isSite ? SystemSettingsScopes.Site : SystemSettingsScopes.App
-    );
-    // return value unwrapped
-    return this.#appCustomSettingsUrlSource();
-  })
+    return (isGlobal ? this.#customSettingsGlobalUrl : isSite ? this.#customSettingsSiteUrl : this.#customSettingsAppUrl)();
+  });
 
-  //============== Custom Resources ==============
-
-  // Assign Custom Resources Url
-  #appCustomResourcesUrlSource: Signal<string>;
   appCustomResourcesUrl = computed(() => {
     const isGlobal = this.isGlobal();
     const isSite = this.isSite();
     if (isGlobal == null || isSite == null) return null;
-    // Ensure that the source is only created once when global/site are ready.
-    this.#appCustomResourcesUrlSource ??= this.urlToEditSystem(
-      isGlobal ? eavConstants.contentTypes.customResources : isSite ? eavConstants.contentTypes.customResources : eavConstants.contentTypes.resources,
-      isGlobal ? SystemSettingsScopes.App : isSite ? SystemSettingsScopes.Site : SystemSettingsScopes.App
-    );
-    // return value unwrapped
-    return this.#appCustomResourcesUrlSource();
-  })
+    return (isGlobal ? this.#customResourcesGlobalUrl : isSite ? this.#customResourcesSiteUrl : this.#customResourcesAppUrl)();
+  });
 
   //============== END ==============
 
