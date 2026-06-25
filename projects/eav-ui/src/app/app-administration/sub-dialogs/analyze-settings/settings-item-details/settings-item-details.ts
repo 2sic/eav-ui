@@ -28,8 +28,8 @@ export class SettingsItemDetailsComponent {
 
   part: Of<typeof AnalyzeParts> = this.route.snapshot.parent.paramMap.get('part') as Of<typeof AnalyzeParts>;
   routeViewGuid = this.route.snapshot.paramMap.get('view');
-  selectedView: string = ['undefined', 'null'].includes(this.routeViewGuid) ? undefined : this.routeViewGuid;;
-  settingsItemKey: string = this.route.snapshot.paramMap.get('settingsItemKey');;
+  selectedView: string = ['undefined', 'null'].includes(this.routeViewGuid) ? undefined : this.routeViewGuid;
+  settingsItemKey: string = this.route.snapshot.paramMap.get('settingsItemKey');
 
 
   constructor(
@@ -37,7 +37,7 @@ export class SettingsItemDetailsComponent {
     private route: ActivatedRoute,
   ) { }
 
-  #stackSignal = this.#analyzeSettingsSvc.getStack(this.part, undefined, this.selectedView).value;
+  #stackSignal = this.#analyzeSettingsSvc.getStack(this.part, this.settingsItemKey, this.selectedView);
 
   stack = computed(() => {
     const stackItems = this.#stackSignal();
