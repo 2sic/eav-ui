@@ -45,21 +45,22 @@ export class CreateInheritedAppComponent {
   }
 
   loading = signal<boolean>(false);
-  inheritableApps = this.appsListService.getInheritable().value;
+  inheritableApps = this.appsListService.getInheritable();
 
   closeDialog(): void {
     this.dialog.close();
   }
 
   create(): void {
+    const inheritId = this.form.controls.inheritId.value;
+    const app = this.inheritableApps().find(app => app.Id === inheritId);
+    if (!app) 
+      return;
+
     this.form.disable();
     this.loading.set(true);
-    const inheritId = this.form.controls.inheritId.value;
-    // TODO:: remove after test
-    // const name = this.inheritableApps$.value.find(app => app.Id === inheritId).Name;
-    const name = this.inheritableApps().find(app => app.Id === inheritId).Name;
     this.snackBar.open('Creating inherited app...');
-    this.appsListService.create(name, inheritId).subscribe({
+    this.appsListService.create(app.Name, app.Id).subscribe({
       error: () => {
         this.form.enable();
         this.loading.set(false);

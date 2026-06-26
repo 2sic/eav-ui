@@ -6,9 +6,8 @@ import { HttpServiceBaseSignal } from '../../shared/services/http-service-base-s
 import { SysDataService } from '../../shared/services/sys-data.service';
 import { App, PendingApp } from '../models/app.model';
 
-const dataSourceApps = "System.Apps";
-
-const webApiAppRootInheritableApps = 'admin/app/InheritableApps';
+const dataSourceApps = 'System.Apps';
+const dataSourceInheritableApps = 'System.InheritableApps';
 const webApiAppRootPendingApps = 'admin/app/GetPendingApps';
 const webApiAppRootApp = 'admin/app/app';
 const webApiAppRootInstallPendingApps = 'admin/app/InstallPendingApps';
@@ -17,20 +16,20 @@ const webApiAppRootFlushcache = 'admin/app/flushcache';
 @Injectable()
 export class AppsListService extends HttpServiceBaseSignal {
   #sysData = transient(SysDataService);
-  
+
   getAllLive(refresh: Signal<unknown>) {
     return this.#sysData.get<App>({
       refresh,
       source: dataSourceApps,
       noCamel: true,
-    })
+    });
   }
 
   getInheritable() {
-    return httpResource<App[]>(() => ({
-      url: this.apiUrl(webApiAppRootInheritableApps),
-      params: { zoneId: this.zoneId }
-    }));
+    return this.#sysData.get<App>({
+      source: dataSourceInheritableApps,
+      noCamel: true,
+    });
   }
 
   getPendingApps() {
