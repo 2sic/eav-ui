@@ -15,6 +15,7 @@ export interface App {
   /** LightSpeed info provided by the backend */
   lightSpeed?: LightSpeedInfo;
   Name: string;
+  Title?: string;
   Thumbnail: string | null;
   Version: string;
 

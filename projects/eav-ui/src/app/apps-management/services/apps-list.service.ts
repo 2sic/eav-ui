@@ -39,14 +39,23 @@ export class AppsListService extends HttpServiceBaseSignal {
     }));
   }
 
-  create(name: string, inheritAppId?: number, templateId?: number) {
+  create(name: string, inheritAppId?: number, templateId?: number, folder?: string, displayName?: string) {
+    const params: Record<string, string | number | boolean | readonly (string | number | boolean)[]> = {
+      zoneId: this.zoneId,
+      name,
+    };
+
+    if (inheritAppId != null) {
+      params.inheritAppId = inheritAppId;
+      params.displayName = displayName;
+      params.folder = folder ?? name;
+    }
+
+    if (templateId != null)
+      params.templateId = templateId;
+
     return this.http.post<null>(this.apiUrl(webApiAppRootApp), {}, {
-      params: {
-        zoneId: this.zoneId,
-        name,
-        ...(inheritAppId != null && { inheritAppId }),
-        ...(templateId != null && { templateId }),
-      },
+      params,
     });
   }
 
