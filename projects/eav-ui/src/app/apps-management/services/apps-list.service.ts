@@ -47,7 +47,7 @@ export class AppsListService extends HttpServiceBaseSignal {
 
     if (inheritAppId != null) {
       params.inheritAppId = inheritAppId;
-      params.displayName = displayName;
+      params.displayName = displayName ?? name;
       params.folder = folder ?? name;
     }
 

@@ -60,7 +60,7 @@ export class CreateInheritedAppComponent {
     this.form.disable();
     this.loading.set(true);
     this.snackBar.open('Creating inherited app...');
-    this.appsListService.create(app.Name, app.Id, undefined, app.Folder, app.Title).subscribe({
+    this.appsListService.create(app.Folder, app.Id, undefined, undefined, app.Title ?? app.Name).subscribe({
       error: () => {
         this.form.enable();
         this.loading.set(false);
