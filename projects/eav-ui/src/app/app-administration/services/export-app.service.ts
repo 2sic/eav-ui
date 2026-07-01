@@ -1,26 +1,21 @@
+import { httpResource } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { transient } from 'projects/core';
 import { webApiAppRoot } from '../../import-app/services/import-app.service';
 import { HttpServiceBaseSignal } from '../../shared/services/http-service-base-signal';
-import { SysDataService } from '../../shared/services/sys-data.service';
 import { AppInfo } from '../models/app-info.model';
 
+const webApiAppRootStatistics = 'admin/app/Statistics';
 const webApiAppRootSaveData = 'admin/app/SaveData';
 
 
 @Injectable()
 export class ExportAppService extends HttpServiceBaseSignal {
 
-  #sysData = transient(SysDataService);
-
   getAppInfo() {
-    return {
-      value: this.#sysData.getFirst<AppInfo>({
-        source: 'System.AppStatistics',
-        params: { ZoneId: this.zoneId },
-        noCamel: true,
-      }),
-    };
+    return httpResource<AppInfo>(() => ({
+      url: this.apiUrl(webApiAppRootStatistics),
+      params: { appid: this.appId, zoneId: this.zoneId },
+    }));
   }
 
   /** Generate the export app path. It can be extended with additional parameters */
