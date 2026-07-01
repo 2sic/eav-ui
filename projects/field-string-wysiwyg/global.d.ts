@@ -26,3 +26,8 @@ declare module "*.rawts" {
   const content: string;
   export default content;
 }
+
+declare module "!raw-loader!*" {
+  const contents: string;
+  export default contents;
+}
