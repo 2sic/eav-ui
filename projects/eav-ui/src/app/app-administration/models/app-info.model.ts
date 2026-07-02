@@ -1,6 +1,6 @@
 export interface AppInfo {
   Name: string;
-  Guid: string;
+  NameId: string;
   Version: string;
   EntitiesCount: number;
   LanguagesCount: number;
