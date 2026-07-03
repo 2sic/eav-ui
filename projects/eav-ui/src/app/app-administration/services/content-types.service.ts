@@ -2,7 +2,7 @@ import { httpResource } from '@angular/common/http';
 import { computed, Injectable, Signal } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { transient } from 'projects/core';
-import { filter, first } from 'rxjs';
+import { filter, first, firstValueFrom, map } from 'rxjs';
 import { FileUploadResult } from '../../shared/components/file-upload-dialog';
 import { ScopeOption } from '../../shared/constants/eav.constants';
 import { HttpServiceBase } from '../../shared/services/http-service-base';
@@ -13,13 +13,25 @@ import { ScopeDetailsDto } from '../models/scopedetails.dto';
 // We should list all the "full" paths here, so it's easier to find when searching for API calls
 export const webApiTypeRoot = 'admin/type/';
 const webApiTypes = 'admin/type/list';
-const webApiTypeScopes = 'admin/type/scopes';
 const webApiTypeSave = 'admin/type/save';
 const webApiTypeDelete = 'admin/type/delete';
 const webApiTypeImport = 'admin/type/import';
 const webApiTypeAddGhost = 'admin/type/addghost';
 
 const dataSourceContentTypeDetails = 'System.ContentTypeDetails';
+const dataSourceScopes = 'System.Scopes';
+
+interface ScopeRaw {
+  NameId: string;
+  Name: string;
+  TypesTotal: number;
+  TypesInherited: number;
+  TypesOfApp: number;
+}
+
+interface ScopesDataSourceResponse {
+  Default?: ScopeRaw[];
+}
 
 @Injectable()
 export class ContentTypesService extends HttpServiceBase {
@@ -68,45 +80,41 @@ export class ContentTypesService extends HttpServiceBase {
   }
 
   getScopesPromise(): Promise<ScopeOption[]> {
-    return this.fetchPromise<{ old: Record<string, string>, scopes: ScopeDetailsDto[] }>(webApiTypeScopes, {
-      params: { appId: this.appId }
-    }).then(scopesData => {
-      const scopes = scopesData.old;
-      const scopeOptions: ScopeOption[] = Object.keys(scopes).map(key => ({
-        name: scopes[key],
-        value: key,
-      }));
-      return scopeOptions;
+    const resource = this.#sysData.getMany<ScopesDataSourceResponse>({
+      source: dataSourceScopes,
+      params: { AppId: this.appId },
+      noCamel: true,
     });
+
+    return firstValueFrom(toObservable(resource.value, { injector: this.injector }).pipe(
+      filter(value => value != null),
+      first(),
+      map(streams => this.#mapScopeOptions(streams.Default ?? [])),
+    ));
   }
 
   getScopesSig() {
-    const scopesSignal = httpResource<{ old: Record<string, string>, scopes: ScopeDetailsDto[] }>(() => ({
-      url: this.apiUrl(webApiTypeScopes),
-      params: { appid: this.appId },
-    }));
-
-    const scopeOptionsSignal = computed(() => {
-      // Access the value property directly without calling scopesSignal as a function
-      const value = scopesSignal.value;
-      const scopesData = value();
-
-      // Add null/undefined check here
-      if (!scopesData || !scopesData.old) {
-        return []; // Return an empty array or handle this case as appropriate
-      }
-
-      const scopes = scopesData.old;
-      return Object.keys(scopes).map(key => ({ name: scopes[key], value: key }));
+    const scopes = this.#sysData.get<ScopeRaw>({
+      source: dataSourceScopes,
+      params: { AppId: this.appId },
+      noCamel: true,
     });
 
-    return scopeOptionsSignal;
+    return computed(() => this.#mapScopeOptions(scopes()));
   }
 
   getScopesV2Promise(): Promise<ScopeDetailsDto[]> {
-    return this.fetchPromise<{ old: Record<string, string>, scopes: ScopeDetailsDto[] }>(webApiTypeScopes, {
-      params: { appId: this.appId }
-    }).then(scopesData => scopesData.scopes);
+    const resource = this.#sysData.getMany<ScopesDataSourceResponse>({
+      source: dataSourceScopes,
+      params: { AppId: this.appId },
+      noCamel: true,
+    });
+
+    return firstValueFrom(toObservable(resource.value, { injector: this.injector }).pipe(
+      filter(value => value != null),
+      first(),
+      map(streams => this.#mapScopeDetails(streams.Default ?? [])),
+    ));
   }
 
   save(contentType: ContentTypeEdit) {
@@ -135,5 +143,21 @@ export class ContentTypesService extends HttpServiceBase {
     return this.http.post<boolean>(this.apiUrl(webApiTypeAddGhost), null, {
       params: { appid: this.appId, sourceNameId },
     });
+  }
+
+  #mapScopeOptions(scopes: ScopeRaw[]): ScopeOption[] {
+    return scopes.map(scope => ({
+      name: scope.Name,
+      value: scope.NameId,
+    }));
+  }
+
+  #mapScopeDetails(scopes: ScopeRaw[]): ScopeDetailsDto[] {
+    return scopes.map(scope => ({
+      name: scope.NameId,
+      typesTotal: scope.TypesTotal,
+      typesInherited: scope.TypesInherited,
+      typesOfApp: scope.TypesOfApp,
+    }));
   }
 }
