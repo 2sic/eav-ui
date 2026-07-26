@@ -21,16 +21,12 @@ const webApiTypeAddGhost = 'admin/type/addghost';
 const dataSourceContentTypeDetails = 'System.ContentTypeDetails';
 const dataSourceScopes = 'System.Scopes';
 
-interface ScopeRaw {
+interface ScopeData {
   NameId: string;
   Name: string;
   TypesTotal: number;
   TypesInherited: number;
   TypesOfApp: number;
-}
-
-interface ScopesDataSourceResponse {
-  Default?: ScopeRaw[];
 }
 
 @Injectable()
@@ -40,6 +36,14 @@ export class ContentTypesService extends HttpServiceBase {
   // TODO: @2dg, ask 2dm 
   // content-export.component.ts
   // content-import.component.ts
+  #scopesData = this.#sysData.getMany<{ Default?: ScopeData[] }>({
+    source: dataSourceScopes,
+    params: {
+      AppId: this.appId,
+    },
+    noCamel: true,
+  });
+
   // data.component.ts
   retrieveContentType(nameId: string) {
     const sig = this.#sysData.getFirst<ContentType>({
@@ -80,40 +84,34 @@ export class ContentTypesService extends HttpServiceBase {
   }
 
   getScopesPromise(): Promise<ScopeOption[]> {
-    const resource = this.#sysData.getMany<ScopesDataSourceResponse>({
-      source: dataSourceScopes,
-      params: { AppId: this.appId },
-      noCamel: true,
-    });
-
-    return firstValueFrom(toObservable(resource.value, { injector: this.injector }).pipe(
-      filter(value => value != null),
-      first(),
-      map(streams => this.#mapScopeOptions(streams.Default ?? [])),
-    ));
+    return this.#getScopesPromise().then(scopes => scopes.map(scope => ({
+      name: scope.Name,
+      value: scope.NameId,
+    })));
   }
 
   getScopesSig() {
-    const scopes = this.#sysData.get<ScopeRaw>({
-      source: dataSourceScopes,
-      params: { AppId: this.appId },
-      noCamel: true,
-    });
-
-    return computed(() => this.#mapScopeOptions(scopes()));
+    return computed(() => (this.#scopesData.value()?.Default ?? []).map(scope => ({
+      name: scope.Name,
+      value: scope.NameId,
+    })));
   }
 
   getScopesV2Promise(): Promise<ScopeDetailsDto[]> {
-    const resource = this.#sysData.getMany<ScopesDataSourceResponse>({
-      source: dataSourceScopes,
-      params: { AppId: this.appId },
-      noCamel: true,
-    });
+    return this.#getScopesPromise().then(scopes => scopes.map(scope => ({
+      name: scope.NameId,
+      label: scope.Name,
+      typesTotal: scope.TypesTotal,
+      typesInherited: scope.TypesInherited,
+      typesOfApp: scope.TypesOfApp,
+    })));
+  }
 
-    return firstValueFrom(toObservable(resource.value, { injector: this.injector }).pipe(
+  #getScopesPromise(): Promise<ScopeData[]> {
+    return firstValueFrom(toObservable(this.#scopesData.value, { injector: this.injector }).pipe(
       filter(value => value != null),
+      map(value => value.Default ?? []),
       first(),
-      map(streams => this.#mapScopeDetails(streams.Default ?? [])),
     ));
   }
 
@@ -143,21 +141,5 @@ export class ContentTypesService extends HttpServiceBase {
     return this.http.post<boolean>(this.apiUrl(webApiTypeAddGhost), null, {
       params: { appid: this.appId, sourceNameId },
     });
-  }
-
-  #mapScopeOptions(scopes: ScopeRaw[]): ScopeOption[] {
-    return scopes.map(scope => ({
-      name: scope.Name,
-      value: scope.NameId,
-    }));
-  }
-
-  #mapScopeDetails(scopes: ScopeRaw[]): ScopeDetailsDto[] {
-    return scopes.map(scope => ({
-      name: scope.NameId,
-      typesTotal: scope.TypesTotal,
-      typesInherited: scope.TypesInherited,
-      typesOfApp: scope.TypesOfApp,
-    }));
   }
 }
