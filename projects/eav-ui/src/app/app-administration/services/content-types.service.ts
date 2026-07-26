@@ -19,7 +19,6 @@ const webApiTypeImport = 'admin/type/import';
 const webApiTypeAddGhost = 'admin/type/addghost';
 
 const dataSourceContentTypeDetails = 'System.ContentTypeDetails';
-
 const dataSourceScopes = 'System.Scopes';
 
 interface ScopeData {
