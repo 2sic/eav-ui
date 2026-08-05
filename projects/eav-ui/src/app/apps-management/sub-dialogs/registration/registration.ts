@@ -1,4 +1,4 @@
-import patronsLogo from '!raw-loader!./assets/2sxc-patrons.svg';
+import patronsLogo from './assets/2sxc-patrons.svg';
 import { Component, computed, HostBinding, signal, ViewContainerRef } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';

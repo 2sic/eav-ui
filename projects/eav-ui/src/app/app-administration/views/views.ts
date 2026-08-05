@@ -1,4 +1,4 @@
-import polymorphLogo from '!url-loader!./polymorph-logo.png';
+import polymorphLogo from './polymorph-logo.png';
 import { GridOptions } from '@ag-grid-community/core';
 import { ChangeDetectorRef, Component, computed, inject, OnInit, signal, ViewContainerRef } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
