@@ -120,5 +120,13 @@
     "vitest": "^4.1.0",
     "esbuild": "^0.27.3",
     "sass": "^1.99.0"
+  },
+  "allowScripts": {
+    "esbuild@0.28.1": true,
+    "esbuild@0.27.3": true,
+    "@compodoc/compodoc@1.2.1": true,
+    "@parcel/watcher@2.5.6": true,
+    "lmdb@3.5.4": true,
+    "msgpackr-extract@3.0.4": true
   }
 }
