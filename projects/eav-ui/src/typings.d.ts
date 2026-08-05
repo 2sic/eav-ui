@@ -9,12 +9,17 @@ declare module "*.json" {
   export default value;
 }
 
-declare module '!raw-loader!*' {
+declare module '*.svg' {
   const contents: string;
   export default contents;
 }
 
-declare module '!url-loader!*' {
+declare module '*.rawts' {
+  const contents: string;
+  export default contents;
+}
+
+declare module '*.png' {
   const urlLoaderContents: string;
   export default urlLoaderContents;
 }

@@ -8,7 +8,7 @@ import { PickerItem } from '../../fields/picker/models/picker-item.model';
 import { FormulaPropsParameters, FormulaRunOneHelpersFactory } from '../formula-run-one-helpers.factory';
 
 // Import the type definitions for intellisense
-import editorTypesForIntellisense from '!raw-loader!./editor-intellisense-function-v2.rawts';
+import editorTypesForIntellisense from './editor-intellisense-function-v2.rawts';
 
 export class IntellisenseV2 {
   /**
