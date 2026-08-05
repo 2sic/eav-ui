@@ -49,13 +49,13 @@ const customTinyMceIcons: Record<string, string> = {
 };
 
 // Rich Text Editor Icons
-import imageLeft from '../assets/icons/rich/Image-left.svg';
-import imageRight from '../assets/icons/rich/Image-right.svg';
 import imageCenter from '../assets/icons/rich/image-center.svg';
+import imageLeft from '../assets/icons/rich/image-left.svg';
+import imageRight from '../assets/icons/rich/image-right.svg';
 import splitter0 from '../assets/icons/rich/split-0.svg';
-import splitters from '../assets/icons/rich/split-s.svg'; // todo
-import splitterm from '../assets/icons/rich/split-m.svg';
 import splitterl from '../assets/icons/rich/split-l.svg';
+import splitterm from '../assets/icons/rich/split-m.svg';
+import splitters from '../assets/icons/rich/split-s.svg'; // todo
 // import splitterxl from '../assets/icons/rich/split-xl.svg';
 
 // Rich Text Editor Icons
