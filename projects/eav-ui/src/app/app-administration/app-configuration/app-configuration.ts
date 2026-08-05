@@ -79,7 +79,7 @@ export class AppConfiguration implements OnInit {
   // Booleans containing the current scope state
   isGlobal = computed(() => { const cs = this.#currentScope(); return cs == null ? null : cs === AppScopes.Global; });
   isSite = computed(() => { const cs = this.#currentScope(); return cs == null ? null : cs === AppScopes.Site; });
-  isApp = computed(() => { const cs = this.#currentScope(); return cs == null ? null : cs === AppScopes.App });
+  isApp = computed(() => { const cs = this.#currentScope(); return cs == null ? null : cs === AppScopes.App; });
 
   /*=== URL SIGNALS FOR EDIT ROUTES ===*/
 
@@ -172,14 +172,12 @@ export class AppConfiguration implements OnInit {
       : {
         settings: appSpecs.FieldAll.AppSettings != null,
         resources: appSpecs.FieldAll.AppResources != null,
-      }
+      };
   });
 
   ngOnInit() {
     // Update dialog router when child a dialog was closesd
-    this.#dialogRouter.doOnDialogClosed(() => {
-      this.refresh.update(v => ++v)
-    });
+    this.#dialogRouter.doOnDialogClosed(() => this.refresh.update(v => ++v));
   }
 
   buttons = computed<Buttons>(() => {
@@ -198,7 +196,7 @@ export class AppConfiguration implements OnInit {
         customResources: nothing,
         customResourcesFields: nothing,
         lightspeed: nothing,
-      }
+      };
     }
 
     // From the current settings computed booleans containing the scope state
@@ -387,9 +385,9 @@ export class AppConfiguration implements OnInit {
 
   urlToOpenLanguagePermissions(enabled: boolean) {
     if (enabled)
-      return this.#urlTo('language-permissions')
+      return this.#urlTo('language-permissions');
     else
-      return this.#urlTo('edit-language-permissions')
+      return this.#urlTo('edit-language-permissions');
   }
 
   urlToAnalyze(part: Of<typeof AnalyzeParts>) {
@@ -415,10 +413,10 @@ export class AppConfiguration implements OnInit {
         ));
         if (url) {
           window.open(url, "_self");
-          return
+          return;
         }
         else
-          return
+          return;
       } else {
         const newContentType = {
           StaticName: '',

@@ -57,7 +57,7 @@ import { ContentItemsService } from './services/content-items.service';
 const logSpecs = {
   all: false,
   items: true,
-}
+};
 
 @Component({
   selector: 'app-content-items',
@@ -100,7 +100,7 @@ export class ContentItemsComponent implements OnInit {
     const data = this.items();
     const api = this.#gridApiSig();
 
-    if (!api || data == null)
+    if (!api || !data)
       return;
 
     api.setGridOption('loading', false);
@@ -109,7 +109,7 @@ export class ContentItemsComponent implements OnInit {
 
   gridOptions: GridOptions = {
     ...defaultGridOptions,
-    onFilterChanged: _ => this.#filterChanged.update(v => v + 1),
+    onFilterChanged: () => this.#filterChanged.update(v => v + 1),
   };
 
   /** Signal to tell other signals that the filter changed */
@@ -126,14 +126,16 @@ export class ContentItemsComponent implements OnInit {
     },
     content: {
       description: '<p><b>Each row shows a data item</b> <br>They contain the data, similar to a database row.</p>',
-      hint: '<p>Click on the title to edit. <br>You can also do much more - best hover over the row and icons to discover the possibilities. <br><br>You can also do data import/export (one or many), copy items, and do advanced stuff like assigning metadata.</p>'
+      hint: '<p>Click on the title to edit. <br>You can also do much more '
+        + '- best hover over the row and icons to discover the possibilities. '
+        + '<br><br>You can also do data import/export (one or many), copy items, and do advanced stuff like assigning metadata.</p>'
     }
   };
 
   uxHelpText = computed(() => {
     const data = this.items();
     return data?.length === 0 ? this.#helpTextConst.empty : this.#helpTextConst.content;
-  })
+  });
 
   #gridApiSig: WritableSignal<GridApi<ContentItem>> = signal<GridApi<ContentItem>>(null);
 
@@ -204,12 +206,14 @@ export class ContentItemsComponent implements OnInit {
     ));
   }
 
+  // #region TODO: @2rb - this looks like very duplicate code - ca. 3x almost the same, pls DRY (don't repeat yourself)
+
   editItem(item?: ContentItem) {
     const form: EditForm = {
       items: [
-        item == null
-          ? ItemIdHelper.newFromType(this.#contentTypeStaticName)
-          : ItemIdHelper.editId(item.Id)
+        item
+          ? ItemIdHelper.editId(item.Id)
+          : ItemIdHelper.newFromType(this.#contentTypeStaticName)
       ],
     };
     const formUrl = convertFormToUrl(form);
@@ -220,25 +224,27 @@ export class ContentItemsComponent implements OnInit {
     return this.#urlTo(
       `edit/${convertFormToUrl({
         items: [
-          item == null
-            ? ItemIdHelper.newFromType(this.#contentTypeStaticName)
-            : ItemIdHelper.editId(item.Id)
+          item
+            ? ItemIdHelper.editId(item.Id)
+            : ItemIdHelper.newFromType(this.#contentTypeStaticName)
         ]
       })}`
-    )
+    );
   }
 
   urlToNewItem(item?: ContentItem) {
     return this.#urlTo(
       `edit/${convertFormToUrl({
         items: [
-          item == null
-            ? ItemIdHelper.newFromType(this.#contentTypeStaticName)
-            : ItemIdHelper.editId(item.Id)
+          item
+            ? ItemIdHelper.editId(item.Id)
+            : ItemIdHelper.newFromType(this.#contentTypeStaticName)
         ],
       })}`
     );
   }
+
+  // #endregion
 
   // Note: the urlToRecycleBin() is related to a bug in the dialog-entry
   // #BugDialogNotAlwaysClosing https://github.com/2sic/2sxc/issues/3738
@@ -308,7 +314,8 @@ export class ContentItemsComponent implements OnInit {
       width: '650px',
     });
     metadataDialogRef.afterClosed().subscribe((itemFor: MetadataInfo) => {
-      if (itemFor == null) return;
+      if (!itemFor)
+        return;
 
       const form: EditForm = {
         items: [ItemIdHelper.newMetadataFromInfo(this.#contentTypeStaticName, itemFor)],
@@ -328,7 +335,8 @@ export class ContentItemsComponent implements OnInit {
     const columnDefs: ColDef[] = [
       {
         ...ColumnDefinitions.IdWithDefaultRenderer,
-        cellClass: (p: { data: ContentItem }) => `id-action no-padding no-outline ${p.data._EditInfo.ReadOnly ? 'disabled' : ''}`.split(' '),
+        cellClass: (p: { data: ContentItem }) => `id-action no-padding no-outline ${p.data._EditInfo.ReadOnly ? 'disabled' : ''}`
+          .split(' '),
         cellRendererParams: ColumnDefinitions.idFieldParamsTooltipGetter<ContentItem>()
       },
       {

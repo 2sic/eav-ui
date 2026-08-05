@@ -81,14 +81,15 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
     },
     content: {
       description: '<p><b>Each row shows a Content Type</b> <br> They define the fields, similar to a database table.</p>',
-      hint: '<p>Click on the title to list the Entities (think: records). <br>You can also create new Entities, configure the fields and export/import the schema or the data.</p>'
+      hint: '<p>Click on the title to list the Entities (think: records). '
+        + '<br>You can also create new Entities, configure the fields and export/import the schema or the data.</p>'
     }
   };
 
   uxHelpText = computed(() => {
     const data = this.contentTypes();
     return data?.length === 0 ? this.#helpTextConst.empty : this.#helpTextConst.content;
-  })
+  });
 
   constructor(private viewContainerRef: ViewContainerRef,) {
     super();
@@ -109,9 +110,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.#fetchScopes();
     this.#refreshScopeOnRouteChange();
-    this.#dialogRouter.doOnDialogClosedWithData(() => {
-      this.#fetchContentTypes()
-    });
+    this.#dialogRouter.doOnDialogClosedWithData(() => this.#fetchContentTypes());
 
     this.#dialogConfigSvc.getCurrent$().subscribe(data => {
       this.enablePermissions = data.Context.Enable.AppPermissions;
@@ -164,7 +163,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
         contentType._compareLabel = contentType.Label.replace(/\p{Emoji}/gu, 'ž');
       }
       this.contentTypes.set(contentTypes);
-      this.refresh.update(v => ++v)
+      this.refresh.update(v => ++v);
 
       if (this.scope() !== eavConstants.scopes.default.value) {
         const message = 'Warning! You are in a special scope. Changing things here could easily break functionality';
@@ -259,7 +258,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
           headerName: 'ContentType',
           field: 'Label',
           sort: 'asc',
-          comparator: (valueA, valueB, nodeA, nodeB, isInverted) => {
+          comparator: (valueA, valueB, nodeA, nodeB /*, isInverted */) => {
             const contentTypeA: ContentType = nodeA.data;
             const contentTypeB: ContentType = nodeB.data;
             return contentTypeA._compareLabel.localeCompare(contentTypeB._compareLabel);
@@ -390,10 +389,10 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
     });
     confirmationDialogRef.afterClosed().subscribe((isConfirmed: boolean) => {
       if (isConfirmed)
-        this.#contentTypeSvc.delete(contentType).subscribe(_ => {
+        this.#contentTypeSvc.delete(contentType).subscribe(() => {
           this.#snackBar.open('Deleted', null, { duration: 2000 });
           this.#fetchContentTypes();
-        })
+        });
     });
     return;
   }
