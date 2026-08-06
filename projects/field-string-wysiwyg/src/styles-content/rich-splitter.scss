@@ -1,5 +1,5 @@
 @use "sass:math";
-@import './rich-variables.scss';
+@use './rich-variables' as *;
 
 $border-color-top: #00275388;
 $border-color: #00275327;
