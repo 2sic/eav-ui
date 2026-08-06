@@ -36,7 +36,11 @@
             "assets": ["projects/eav-ui/src/assets"],
             "styles": ["projects/eav-ui/src/styles.scss"],
             "scripts": [
-              "projects/eav-ui/src/scripts/require.js",
+              // #IssuePapaParseAngular22
+              // Had to disable require.js, but not sure what will break.
+              // It was added 2021-08-20 by Petar to include Ace and Monaco
+              // but Monaco seems to work fine without it, and Ace is not used anymore.
+              // "projects/eav-ui/src/scripts/require.js",
               "projects/eav-ui/src/app/edit/assets/scripts/dropzone-dragging-helper.js",
               "projects/eav-ui/src/app/edit/assets/scripts/clipboard-paste/paste.js"
             ],
