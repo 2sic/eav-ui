@@ -1,6 +1,8 @@
 // NOTE: THIS is a shared file between 2sxc-ui/cms and eav-ui
 // The original should be maintained in 2sxc-ui/cms and copied to eav-ui
 
+$container-tag: 'wysiwyg-container' !default;
+
 // Only inside a container (div, span, etc.) of the img/html output or the editor
 .#{$container-tag} {
 
