@@ -4,6 +4,7 @@ const { fileURLToPath } = require('node:url');
 const esbuild = require('esbuild');
 const sass = require('sass');
 const buildConfig = require('../../2sxc-ui/packages/2sxc-load-build-config').BuildConfig;
+const setExternalSourceMap = require('./external-source-maps-elements');
 
 const root = path.resolve(__dirname, '..');
 const args = new Set(process.argv.slice(2));
@@ -79,8 +80,7 @@ async function buildPart(name) {
         copyAssets();
         if (production) {
           const bundle = path.join(output, 'index.js');
-          const sourceMapUrl = `https://sources.2sxc.org/${require('../package.json').version}/extensions/${definition.project}/index.js.map`;
-          fs.appendFileSync(bundle, `\n//# sourceMappingURL=${sourceMapUrl}\n`);
+          setExternalSourceMap(bundle, `/extensions/${definition.project}/`);
         }
         if (copy) copyToTargets(output, definition.project);
         console.log(`Built ${name} to ${path.relative(root, output)}`);
@@ -103,7 +103,7 @@ async function buildPart(name) {
     minify: production,
     plugins: [sassTextPlugin, afterBuildPlugin],
     sourcemap: production ? 'external' : true,
-    sourcesContent: !production,
+    sourcesContent: true,
     target: 'es2022',
     tsconfig: path.join(projectRoot, 'tsconfig.json'),
   });
