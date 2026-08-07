@@ -90,10 +90,10 @@ export class LanguageSwitcherComponent implements AfterViewInit, OnDestroy {
     this.centerSelectedHelper.lngButtonClick(event);
 
     if (!this.centerSelectedHelper.stopClickIfMouseMoved()) {
-      this.languageInstanceService.setCurrent(this.formConfig.config.formId, language.NameId);
+      this.languageInstanceService.setCurrent(this.formConfig.config.formId, language.nameId);
 
       // Also set the UI language
-      const lngCode = this.userLanguageSvc.uiCode(language.NameId);
+      const lngCode = this.userLanguageSvc.uiCode(language.nameId);
       this.translate.use(lngCode);
     }
   }

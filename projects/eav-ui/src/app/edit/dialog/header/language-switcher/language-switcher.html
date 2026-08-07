@@ -8,11 +8,11 @@
   <div #scrollable class="scrollable lang-switch" tippyTranslate="Message.CantSwitchLanguage" [tippyDisabled]="!disabled()">
     @for (langButton of buttons; track langButton) {
       <!-- Current Button is a bit different, not clickable, but has language settings on hover -->
-      @if (current() === langButton.NameId) {
+      @if (current() === langButton.nameId) {
         <button mat-flat-button
           class="lang-switch__button hover-area"
           color="accent"
-          [tippy]="langButton.Culture"
+          [tippy]="langButton.culture"
           [tippyDisabled]="disabled()"
         >
           {{ langButton.label }}
@@ -28,7 +28,7 @@
           color="white"
           (mousedown)="lngButtonMouseDown($event)"
           (click)="lngButtonClick($event, langButton)"
-          [tippy]="langButton.Culture"
+          [tippy]="langButton.culture"
           [tippyDisabled]="disabled()"
         >
           {{ langButton.label }}

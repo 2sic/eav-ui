@@ -10,5 +10,5 @@ export class LanguageService extends SignalStoreBase<string, Language> {
     super(classLog({LanguageService}));
   }
 
-  override getId = (item: Language) => item.NameId.toLocaleLowerCase();
+  override getId = (item: Language) => item.nameId.toLocaleLowerCase();
 }

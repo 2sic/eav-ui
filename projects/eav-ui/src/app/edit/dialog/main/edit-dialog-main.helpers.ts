@@ -20,16 +20,16 @@ export function sortLanguages(primaryLangKey: string, languages: Language[]) {
   const sameLangs: Language[] = [];
   const otherLangs: Language[] = [];
   for (const language of languages) {
-    if (language.NameId === primaryLangKey) {
+    if (language.nameId === primaryLangKey) {
       primaryLang = language;
-    } else if (language.NameId.startsWith(primaryLangKey.split('-')[0])) {
+    } else if (language.nameId.startsWith(primaryLangKey.split('-')[0])) {
       sameLangs.push(language);
     } else {
       otherLangs.push(language);
     }
   }
-  sameLangs.sort((a, b) => a.NameId.localeCompare(b.NameId));
-  otherLangs.sort((a, b) => a.NameId.localeCompare(b.NameId));
+  sameLangs.sort((a, b) => a.nameId.localeCompare(b.nameId));
+  otherLangs.sort((a, b) => a.nameId.localeCompare(b.nameId));
 
   const allLangsSorted: Language[] = !primaryLang ? [...sameLangs, ...otherLangs] : [primaryLang, ...sameLangs, ...otherLangs];
   return allLangsSorted;

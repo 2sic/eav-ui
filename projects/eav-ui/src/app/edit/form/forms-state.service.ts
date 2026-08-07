@@ -31,7 +31,7 @@ export class FormsStateService {
 
     const readOnly = computedObj('readOnly', () => {
       const itemsReadOnly = itemHeaders().some(itemHeader => itemHeader().EditInfo?.ReadOnly ?? false);
-      const languageAllowed = language().find(l => l.NameId === this.formConfig.language().current)?.IsAllowed ?? true;
+      const languageAllowed = language().find(l => l.nameId === this.formConfig.language().current)?.isAllowed ?? true;
       const isReadOnly = itemsReadOnly || !languageAllowed;
       const reason = itemsReadOnly ? 'Form' : !languageAllowed ? 'Language' : undefined;
 
