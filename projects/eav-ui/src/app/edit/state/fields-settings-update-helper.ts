@@ -102,7 +102,7 @@ export class FieldSettingsUpdateHelper {
       return true;
 
     // Disable translation if the input type says it can't be translated (e.g. Entity).
-    if (inputType?.DisableI18n)
+    if (inputType?.disableI18n)
       return true;
 
     // TODO: CHECK if this should be here - it's repeated below

@@ -1,14 +1,14 @@
-<h3><code>{{ data()?.Name }}</code> Parameters</h3>
+<h3><code>{{ data()?.name }}</code> Parameters</h3>
 
-@if (!(data()?.Parameters?.length ?? 0)) {
+@if (!(data()?.parameters?.length ?? 0)) {
   <p class="warning info-box">
     <mat-icon>info</mat-icon>
     This endpoint doesn't seem to use any parameters.
   </p>
 }
 
-@if (data()?.Parameters?.length) {
-  <ag-grid-angular class="ag-theme-material" [rowData]="data()?.Parameters ?? []"
-    [gridOptions]="gridOptions" [style.height]="(33 + (data()?.Parameters?.length ?? 0) * 48) + 'px'">
+@if (data()?.parameters?.length) {
+  <ag-grid-angular class="ag-theme-material" [rowData]="data()?.parameters ?? []"
+    [gridOptions]="gridOptions" [style.height]="(33 + (data()?.parameters?.length ?? 0) * 48) + 'px'">
   </ag-grid-angular>
 }

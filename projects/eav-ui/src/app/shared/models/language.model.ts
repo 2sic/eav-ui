@@ -1,9 +1,9 @@
 export interface Language {
-  readonly Code: string;
+  readonly code: string;
   /** Previously name */
-  readonly Culture: string;
-  readonly IsAllowed: boolean;
-  readonly IsEnabled: boolean;
+  readonly culture: string;
+  readonly isAllowed: boolean;
+  readonly isEnabled: boolean;
   /** Previously key */
-  readonly NameId: string;
+  readonly nameId: string;
 }

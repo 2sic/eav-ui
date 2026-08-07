@@ -1,11 +1,11 @@
 export interface SiteLanguage {
-  Code: string;
-  Culture: string;
-  IsEnabled: boolean;
-  NameId: string;
+  code: string;
+  culture: string;
+  isEnabled: boolean;
+  nameId: string;
 }
 
 export interface SiteLanguagePermissions extends SiteLanguage {
-  IsAllowed: boolean;
-  Permissions: { Count: number; };
+  isAllowed: boolean;
+  permissions: { Count: number; };
 }

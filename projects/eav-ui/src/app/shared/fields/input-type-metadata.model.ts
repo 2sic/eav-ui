@@ -2,14 +2,14 @@ import { Of } from '../../../../../core';
 import { InputTypeCatalog } from './input-type-catalog';
 
 export interface InputTypeMetadata {
-  UiAssets: Record<'default' | string, string>;
-  Description: string;
-  DisableI18n: boolean;
-  IsDefault?: boolean;
-  IsObsolete?: boolean;
-  IsRecommended?: boolean;
-  Label: string;
-  ObsoleteMessage?: string;
-  Type: Of<typeof InputTypeCatalog>;
-  UseAdam: boolean;
+  uiAssets: Record<'default' | string, string>;
+  description: string;
+  disableI18n: boolean;
+  isDefault?: boolean;
+  isObsolete?: boolean;
+  isRecommended?: boolean;
+  label: string;
+  obsoleteMessage?: string;
+  type: Of<typeof InputTypeCatalog>;
+  useAdam: boolean;
 }

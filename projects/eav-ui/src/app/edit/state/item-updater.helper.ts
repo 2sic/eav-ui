@@ -135,7 +135,7 @@ export class ItemUpdateHelper {
     defaultLanguage: string,
   ): FieldValue {
     const l = this.log.fnIf('setDefaultValue', { item, ctAttribute, inputType, settings, languages, defaultLanguage }, `Name: ${ctAttribute.Name}`);
-    const defaultValue = new FieldDefaults(ctAttribute.Name, inputType?.Type, settings, item.Header).getDefaultOrPrefillValue();
+    const defaultValue = new FieldDefaults(ctAttribute.Name, inputType?.type, settings, item.Header).getDefaultOrPrefillValue();
 
     // const defaultLanguageValue = LocalizationHelpers.getBestValue(
     //   item.Entity.Attributes[ctAttribute.Name],
@@ -146,7 +146,7 @@ export class ItemUpdateHelper {
     const defaultLanguageValue = new FieldReader(item.Entity.Attributes[ctAttribute.Name], defaultLanguage).currentOrDefault?.value;
 
     // 2023-08-31 2dm simplified; leave comments in till EOY in case I broke something
-    const languageCode = (languages.length === 0 || inputType?.DisableI18n) ? '*' : defaultLanguage;
+    const languageCode = (languages.length === 0 || inputType?.disableI18n) ? '*' : defaultLanguage;
     if (defaultLanguageValue === undefined) {
       this.addItemAttributeValue(item.Entity.Guid, ctAttribute.Name, defaultValue, languageCode, false, ctAttribute.Type);
     } else {

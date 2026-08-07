@@ -34,7 +34,7 @@ export class InitialValuesService {
     const l = this.log.fnIf('preserve');
     const items = this.itemService.getMany(this.formConfig.config.itemGuids);
 
-    const allLangs = this.languageService.getAll().map(language => language.NameId);
+    const allLangs = this.languageService.getAll().map(language => language.nameId);
     const language = this.formConfig.language();
     if (!allLangs.includes(language.current))
       allLangs.push(language.current);

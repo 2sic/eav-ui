@@ -117,7 +117,7 @@ export class SystemInfoComponent implements OnInit {
     if (systemInfoSetValue == null || languagesValue == null) return;
 
     const allLanguages = languagesValue.length;
-    const activeLanguages = languagesValue.filter(l => l.IsEnabled).length;
+    const activeLanguages = languagesValue.filter(l => l.isEnabled).length;
 
     const info: InfoTemplate[] = [
       { label: 'Zone', value: systemInfoSetValue.Site.ZoneId.toString() },
@@ -148,7 +148,7 @@ export class SystemInfoComponent implements OnInit {
   warningIcon = computed(() => {
     const systemInfoSetValue = this.#systemInfoSet();
     if (systemInfoSetValue == null) return undefined;
-    if (systemInfoSetValue.Messages.WarningsObsolete || systemInfoSetValue.Messages.WarningsOther) {
+    if (systemInfoSetValue.Messages.warningsObsolete || systemInfoSetValue.Messages.warningsOther) {
       return 'warning';
     }
     return 'check';
@@ -161,8 +161,8 @@ export class SystemInfoComponent implements OnInit {
     const info: InfoTemplate[] = [
       {
         label: 'Warnings Obsolete',
-        value: systemInfoSetValue.Messages.WarningsObsolete.toString(),
-        link: !systemInfoSetValue.Messages.WarningsObsolete
+        value: systemInfoSetValue.Messages.warningsObsolete.toString(),
+        link: !systemInfoSetValue.Messages.warningsObsolete
           ? undefined
           : {
             url: window.$2sxc.http.apiUrl('sys/insights/logs?key=warnings-obsolete'),
@@ -172,8 +172,8 @@ export class SystemInfoComponent implements OnInit {
       },
       {
         label: 'Warnings Other',
-        value: systemInfoSetValue.Messages.WarningsOther.toString(),
-        link: !systemInfoSetValue.Messages.WarningsOther
+        value: systemInfoSetValue.Messages.warningsOther.toString(),
+        link: !systemInfoSetValue.Messages.warningsOther
           ? undefined
           : {
             url: window.$2sxc.http.apiUrl('sys/insights/logs'),

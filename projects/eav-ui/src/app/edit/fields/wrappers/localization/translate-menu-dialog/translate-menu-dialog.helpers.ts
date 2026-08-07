@@ -14,13 +14,13 @@ export function getTemplateLanguages(
   linkType: Of<typeof TranslationLinks>,
 ): TranslateMenuDialogTemplateLanguage[] {
   const templateLanguages = languages
-    .filter(lang => lang.NameId !== language.current)
+    .filter(lang => lang.nameId !== language.current)
     .map(lang => {
       const values = attributes[config.fieldName];
-      const disabled = (linkType === TranslationLinks.LinkReadWrite && !lang.IsAllowed)
-        || !new FieldReader(values, FormLanguage.diffCurrent(language, lang.NameId)).hasEditableValues;
+      const disabled = (linkType === TranslationLinks.LinkReadWrite && !lang.isAllowed)
+        || !new FieldReader(values, FormLanguage.diffCurrent(language, lang.nameId)).hasEditableValues;
       const templateLanguage: TranslateMenuDialogTemplateLanguage = {
-        key: lang.NameId,
+        key: lang.nameId,
         disabled,
       };
       return templateLanguage;
@@ -36,22 +36,22 @@ export function getTemplateLanguagesWithContent(
   translatableFields?: string[],
 ): TranslateMenuDialogTemplateLanguage[] {
   const templateLanguages = languages
-    .filter(lang => lang.NameId !== language.current)
+    .filter(lang => lang.nameId !== language.current)
     .map(lang => {
       let countTranslatableFields: number = 0;
       let countTranslatableFieldsWithContent: number = 0;
       let isDisabled: boolean = false;
-      const langDefToUse = FormLanguage.diffCurrent(language, lang.NameId);
+      const langDefToUse = FormLanguage.diffCurrent(language, lang.nameId);
       translatableFields.forEach(field => {
         const values = attributes[field];
         const fieldReader = new FieldReader(values, langDefToUse);
         countTranslatableFields += fieldReader.countEditable(); // LocalizationHelpers.countEditableValues(values, langDefToUse);
         countTranslatableFieldsWithContent += fieldReader.countEditableWithContents(); // LocalizationHelpers.countEditableValuesWithContent(values, langDefToUse);
-        isDisabled = (linkType === TranslationLinks.LinkReadWrite && !lang.IsAllowed)
+        isDisabled = (linkType === TranslationLinks.LinkReadWrite && !lang.isAllowed)
           || countTranslatableFields == 0;
       });
       const templateLanguage: TranslateMenuDialogTemplateLanguage = {
-        key: lang.NameId,
+        key: lang.nameId,
         disabled: isDisabled,
         noTranslatableFields: countTranslatableFields,
         noTranslatableFieldsThatHaveContent: countTranslatableFieldsWithContent,

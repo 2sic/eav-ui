@@ -20,5 +20,5 @@ import { LanguagesPermissionsActionsParams } from './languages-permissions-actio
 export class LanguagesPermissionsActionsComponent
   extends AgGridActionsBaseComponent<SiteLanguagePermissions, 'openPermissions', LanguagesPermissionsActionsParams> {
 
-  get permissionCount() { return this.data?.Permissions?.Count; }
+  get permissionCount() { return this.data?.permissions?.Count; }
 }

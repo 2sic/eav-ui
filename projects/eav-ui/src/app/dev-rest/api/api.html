@@ -17,10 +17,10 @@
         </app-selector-with-help>
         <mat-form-field color="accent" class="eav-mat-form-field" style="width: 360px; max-width: calc(100% - 40px);">
           <mat-label>Select an Action on the Controller</mat-label>
-          <mat-select [value]="vm.selected?.Name" (selectionChange)="updateAction($event.value)">
+          <mat-select [value]="vm.selected?.name" (selectionChange)="updateAction($event.value)">
             @for (endpoint of vm.endpoints; track endpoint) {
-              <mat-option [value]="endpoint.Name">
-                {{ endpoint.Name }} ({{ endpoint.Verbs }})
+              <mat-option [value]="endpoint.name">
+                {{ endpoint.name }} ({{ endpoint.verbs }})
               </mat-option>
             }
           </mat-select>
