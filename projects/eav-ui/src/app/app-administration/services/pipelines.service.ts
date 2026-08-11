@@ -53,7 +53,7 @@ export class PipelinesService extends HttpServiceBase {
     const l = this.log.fnIf('getAll');
     const resource = this.getAllSig(contentType);
     return l.r(toObservable(resource.value, { injector: this.injector }).pipe(
-      map(streams => streams?.Default ?? []),
+      map(streams => (streams?.Default ?? []).map(query => this.#withDisplayName(query))),
     ));
   }
 
@@ -62,7 +62,7 @@ export class PipelinesService extends HttpServiceBase {
     const resource = this.getAllSig(contentType, refresh);
     return {
       ...resource,
-      value: computed(() => resource.value()?.Default ?? []),
+      value: computed(() => (resource.value()?.Default ?? []).map(query => this.#withDisplayName(query))),
     };
   }
 
@@ -71,9 +71,18 @@ export class PipelinesService extends HttpServiceBase {
     const resource = this.getAllSig(contentType);
     const res = {
       ...resource,
-      value: computed(() => resource.value()?.Default ?? initial ?? []),
+      value: computed(() => (resource.value()?.Default ?? initial ?? []).map(query => this.#withDisplayName(query))),
     };
     return l.r(res);
+  }
+
+  #withDisplayName(query: Query): Query {
+    const displayName = query.Title || query.Name || `Query ${query.Id}`;
+    return {
+      ...query,
+      Name: query.Name || displayName,
+      Title: query.Title || displayName,
+    };
   }
 
   importQuery(file: File) {

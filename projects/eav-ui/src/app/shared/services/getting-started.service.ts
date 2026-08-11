@@ -1,18 +1,26 @@
+import { inject, Injectable, Injector } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { transient } from 'projects/core';
+import { filter, first, Observable, Subject } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
+import { InstallRule, InstallSettings, InstalledApp } from '../models/installer-models';
+import { SysDataService } from './sys-data.service';
 
-import { startWith, map, tap } from 'rxjs/operators';
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Subject, Observable } from 'rxjs';
-import { InstallSettings } from '../models/installer-models';
+interface AppInstallationStreams {
+  settings?: { remoteUrl: string }[];
+  installedApps?: InstalledApp[];
+  rules?: InstallRule[];
+}
 
-// copied from 2sxc-ui app/installer
 @Injectable()
 export class AppInstallSettingsService {
+  #sysData = transient(SysDataService);
 
+  #injector = inject(Injector);
   private installSettingsSubject: Subject<InstallSettings> = new Subject<InstallSettings>();
   settings$: Observable<InstallSettings> = this.installSettingsSubject.asObservable();
 
-  constructor(private http: HttpClient) {
+  constructor() {
     const ready$ = this.settings$.pipe(
       map(() => true),
       startWith(false));
@@ -21,7 +29,19 @@ export class AppInstallSettingsService {
   }
 
   public loadGettingStarted(isContentApp: boolean): void {
-    this.http.get<InstallSettings>(`sys/install/InstallSettings?isContentApp=${isContentApp}`)
-      .subscribe(json => this.installSettingsSubject.next(json));
+    const resource = this.#sysData.getMany<AppInstallationStreams>({
+      source: 'System.AppInstallation',
+      streams: '*',
+      params: { IsContentApp: isContentApp },
+    });
+    toObservable(resource.value, { injector: this.#injector }).pipe(
+      filter((result): result is AppInstallationStreams => result != null),
+      first(),
+      map(result => ({
+        remoteUrl: result.settings?.[0]?.remoteUrl ?? '',
+        installedApps: result.installedApps ?? [],
+        rules: result.rules ?? [],
+      } satisfies InstallSettings)),
+    ).subscribe(settings => this.installSettingsSubject.next(settings));
   }
 }

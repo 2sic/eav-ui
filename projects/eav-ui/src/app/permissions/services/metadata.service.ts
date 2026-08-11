@@ -1,61 +1,94 @@
-import { Injectable, Signal } from '@angular/core';
-import { Observable } from 'rxjs';
+import { computed, Injectable, Signal } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { transient } from 'projects/core';
+import { filter, first, firstValueFrom, map, Observable } from 'rxjs';
 import { Of } from '../../../../../core';
-import { MetadataDto } from '../../metadata';
+import { MetadataDto, MetadataRecommendation } from '../../metadata';
 import { MetadataKeyTypes } from '../../shared/constants/eav.constants';
 import { HttpServiceBase } from '../../shared/services/http-service-base';
+import { SysDataService } from '../../shared/services/sys-data.service';
 
-const webApiRoot = 'admin/metadata/get';
+type MetadataRecommendationRaw = Omit<MetadataRecommendation, 'Id'> & {
+  ContentTypeId?: string;
+  Id?: string | number;
+};
+type MetadataItemRaw = MetadataDto['Items'][number] & {
+  MetadataTypeId?: string;
+  MetadataTypeName?: string;
+  MetadataTypeTitle?: string;
+  MetadataTypeDescription?: string;
+};
+
+interface MetadataStreams {
+  Recommendations?: MetadataRecommendationRaw[];
+  Items?: MetadataItemRaw[];
+  For?: MetadataDto['For'][];
+}
+
 @Injectable()
 export class MetadataService extends HttpServiceBase {
-  /**
-   * Fetches metadata for given key in metadata content type
-   * @param targetType type of target metadata item is for, e.g. for Entity, or ContentType
-   * @param keyType e.g. for keyType === guid, key === contentTypeStaticName
-   * @param key key of target metadata item is for
-   * @param contentTypeName name of content type where permissions are stored. If blank, backend returns all metadata except permissions
-   */
-  // TODO: 2dg, ask 2dm 
+  #sysData = transient(SysDataService);
+
   getMetadata(targetType: number, keyType: Of<typeof MetadataKeyTypes>, key: string | number, contentTypeName?: string): Observable<MetadataDto> {
-    return this.getHttpApiUrl<MetadataDto>(webApiRoot, {
-      params: {
-        appId: this.appId,
-        targetType: targetType.toString(),
-        keyType,
-        key: key.toString(),
-        ...(contentTypeName && { contentType: contentTypeName }),
-      },
+    const resource = this.#sysData.getMany<MetadataStreams>({
+      source: 'System.ItemMetadata',
+      streams: '*',
+      noCamel: true,
+      params: this.#params(targetType, keyType, key, contentTypeName),
     });
+    return toObservable(resource.value, { injector: this.injector }).pipe(
+      filter((result): result is MetadataStreams => result != null),
+      first(),
+      map(result => this.#toDto(result)),
+    );
   }
 
   getMetadataLive(refresh: Signal<unknown>, targetType: number, keyType: Of<typeof MetadataKeyTypes>, key: string | number, contentTypeName?: string) {
-    return this.newHttpResource<MetadataDto>(() => {
-      refresh();
-      return ({
-        url: this.apiUrl(webApiRoot),
-        params: {
-          appId: this.appId,
-          targetType: targetType.toString(),
-          keyType,
-          key: key.toString(),
-          ...(contentTypeName && { contentType: contentTypeName }),
-        },
-      });
+    const resource = this.#sysData.getMany<MetadataStreams>({
+      source: 'System.ItemMetadata',
+      streams: '*',
+      noCamel: true,
+      refresh,
+      params: computed(() => ({
+        ...this.#params(targetType, keyType, key, contentTypeName),
+        Refresh: String(refresh()),
+      })),
     });
+    return {
+      ...resource,
+      value: computed(() => this.#toDto(resource.value())),
+    };
   }
 
-  // New method to return a promise
   getMetadataPromise(targetType: number, keyType: Of<typeof MetadataKeyTypes>, key: string | number, contentTypeName?: string): Promise<MetadataDto> {
-    return this.fetchPromise<MetadataDto>(webApiRoot, {
-      params: {
-        appId: this.appId,
-        targetType: targetType.toString(),
-        keyType,
-        key: key.toString(),
-        ...(contentTypeName && { contentType: contentTypeName }),
-      },
-    });
+    return firstValueFrom(this.getMetadata(targetType, keyType, key, contentTypeName));
   }
 
+  #params(targetType: number, keyType: Of<typeof MetadataKeyTypes>, key: string | number, contentTypeName?: string) {
+    return {
+      TargetType: targetType,
+      KeyType: keyType,
+      Key: key.toString(),
+      ...(contentTypeName && { ContentType: contentTypeName }),
+    };
+  }
 
+  #toDto(result?: MetadataStreams): MetadataDto {
+    return {
+      Recommendations: (result?.Recommendations ?? []).map(recommendation => ({
+        ...recommendation,
+        Id: recommendation.ContentTypeId ?? (typeof recommendation.Id === 'string' ? recommendation.Id : ''),
+      })),
+      Items: (result?.Items ?? []).map(item => ({
+        ...item,
+        _Type: item._Type ?? {
+          Id: item.MetadataTypeId ?? '',
+          Name: item.MetadataTypeName ?? '',
+          Title: item.MetadataTypeTitle ?? item.MetadataTypeName ?? '',
+          Description: item.MetadataTypeDescription ?? '',
+        },
+      })),
+      For: result?.For?.[0],
+    };
+  }
 }

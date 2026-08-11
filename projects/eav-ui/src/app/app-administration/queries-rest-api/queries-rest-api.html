@@ -6,7 +6,7 @@
       @if (queryTypes()) {
         @for (contentType of queryTypes().sort(); track contentType) {
         <mat-option [value]="contentType.Guid">
-          {{ contentType.Name }}
+          {{ contentType.Title || contentType.Name }}
         </mat-option>
         }
       }

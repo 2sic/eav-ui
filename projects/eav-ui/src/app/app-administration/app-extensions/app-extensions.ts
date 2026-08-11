@@ -58,8 +58,7 @@ export class AppExtensions implements OnInit {
   /** Signal to trigger reloading of data */
   refresh = signal(0);
 
-  #extensionsRaw = this.#extensionsSvc.getAllLive(this.refresh).value;
-  extensions = computed(() => this.#extensionsRaw()?.extensions ?? []);
+  extensions = this.#extensionsSvc.getAllLive(this.refresh).value;
 
   ngOnInit() {
     // register once

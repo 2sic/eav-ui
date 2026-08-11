@@ -21,10 +21,10 @@ const dataSourceAppWebApiControllerDetails = 'System.AppWebApiControllerDetails'
 const dataSourceAppWebApiControllerEndpoints = 'System.AppWebApiControllerEndpoints';
 
 interface AppWebApiControllerRow {
-  Path: string;
-  EndpointPath: string;
-  Edition: string;
-  Shared: boolean;
+  path: string;
+  endpointPath: string;
+  edition: string;
+  shared: boolean;
 }
 
 type WebApiControllerDetailsResponse = { Default?: WebApiControllerDetailsRaw[] };
@@ -187,19 +187,19 @@ export class SourceService extends HttpServiceBase {
 
   #mapWebApiRows(rows: AppWebApiControllerRow[]): WebApi[] {
     return rows.map(row => {
-      const splitIndex = row.Path.lastIndexOf('/');
-      const fileExtIndex = row.Path.lastIndexOf('.');
-      const folder = row.Path.substring(0, splitIndex);
-      const name = row.Path.substring(splitIndex + 1, fileExtIndex);
+      const splitIndex = row.path.lastIndexOf('/');
+      const fileExtIndex = row.path.lastIndexOf('.');
+      const folder = row.path.substring(0, splitIndex);
+      const name = row.path.substring(splitIndex + 1, fileExtIndex);
 
       return {
-        path: row.Path,
+        path: row.path,
         folder,
         name,
-        isShared: row.Shared,
-        endpointPath: row.EndpointPath,
+        isShared: row.shared,
+        endpointPath: row.endpointPath,
         isCompiled: false,
-        edition: row.Edition,
+        edition: row.edition,
       };
     });
   }

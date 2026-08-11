@@ -1,38 +1,29 @@
-import { httpResource } from '@angular/common/http';
 import { Injectable, Signal } from '@angular/core';
+import { transient } from 'projects/core';
 import { FileUploadResult } from '../../shared/components/file-upload-dialog';
 import { HttpServiceBaseSignal } from '../../shared/services/http-service-base-signal';
+import { SysDataService } from '../../shared/services/sys-data.service';
 import { ViewUsage } from '../models/view-usage.model';
 import { View } from '../models/view.model';
 
-const webApiViews = 'admin/view/all';
 const webApiViewDelete = 'admin/view/delete';
 const webApiViewImport = 'admin/view/import';
 // const webApiViewPolymorph = 'admin/view/polymorphism';
-const webApiViewUsage = 'admin/view/usage';
 const webApiJson = 'admin/view/json';
 
 export const Polymorphism_DS_ID = 'a495b51f-44e7-4335-81db-b8a7e33120f0'; // Polymorphism DataSource internal ID
 @Injectable()
 export class ViewsService extends HttpServiceBaseSignal {
+  #sysData = transient(SysDataService);
 
   getAllOnce() {
-    return httpResource<View[]>(() => {
-      return ({
-        url: this.apiUrl(webApiViews),
-        params: { appId: this.appId }
-      });
-    });
+    const views = this.#sysData.get<View>({ source: 'System.Views', noCamel: true });
+    return { value: views };
   }
 
   getAllLive(refresh: Signal<unknown>) {
-    return httpResource<View[]>(() => {
-      refresh();
-      return ({
-        url: this.apiUrl(webApiViews),
-        params: { appId: this.appId }
-      });
-    });
+    const views = this.#sysData.get<View>({ refresh, source: 'System.Views', noCamel: true });
+    return { value: views };
   }
 
   async delete(id: number): Promise<number> {
@@ -57,9 +48,14 @@ export class ViewsService extends HttpServiceBaseSignal {
   }
 
   getUsage(guid: string) {
-    return this.newHttpResource<ViewUsage[]>(() => ({
-      url: this.apiUrl(webApiViewUsage),
-      params: { appId: this.appId, guid: guid }
-    }));
+    const usage = this.#sysData.get<ViewUsage>({
+      source: 'System.ViewUsage',
+      params: {
+        AppId: this.appId,
+        ViewGuid: guid,
+      },
+      noCamel: true,
+    });
+    return { value: usage };
   }
 }

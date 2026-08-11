@@ -1,32 +1,36 @@
 import { Injectable, Signal } from '@angular/core';
-import { map } from 'rxjs';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { transient } from 'projects/core';
+import { filter, first, map } from 'rxjs';
 import { classLog } from '../../../../../shared/logging';
 import { FileUploadResult } from '../../shared/components/file-upload-dialog/file-upload-dialog.models';
 import { HttpServiceBase } from '../../shared/services/http-service-base';
+import { SysDataService } from '../../shared/services/sys-data.service';
 import { Extension, ExtensionInspectResult, ExtensionPreflightItem } from './extension.model';
 
 @Injectable()
 export class AppExtensionsService extends HttpServiceBase {
+  #sysData = transient(SysDataService);
   log = classLog({ AppExtensionsService });
 
   /** Get all extensions with live refresh capability */
   getAllLive(refresh: Signal<unknown>) {
-    return this.newHttpResource<{ extensions: Extension[] }>(() => {
-      // Watch the refresh signal to trigger reloads
-      refresh();
-
-      return {
-        url: this.apiUrl('admin/appExtensions/extensions'),
-        params: { appId: this.appId },
-        method: 'GET',
-      };
+    const extensions = this.#sysData.get<Extension>({
+      refresh,
+      source: 'System.AppExtensions',
     });
+    return { value: extensions };
   }
 
   getAll() {
-    return this.http.get<{ extensions: Extension[] }>(this.apiUrl('admin/appExtensions/extensions'), {
-      params: { appId: this.appId },
+    const resource = this.#sysData.getMany<{ default?: Extension[]; Default?: Extension[] }>({
+      source: 'System.AppExtensions',
     });
+    return toObservable(resource.value, { injector: this.injector }).pipe(
+      filter((result): result is { default?: Extension[]; Default?: Extension[] } => result != null),
+      first(),
+      map(result => ({ extensions: result.default ?? result.Default ?? [] })),
+    );
   }
 
   /** Update config (mutations still best done via HttpClient per Angular docs) */
@@ -131,17 +135,31 @@ export class AppExtensionsService extends HttpServiceBase {
   }
 
   preflightExtension(name: string, edition?: string) {
-    const params: { appId: string, name: string, edition?: string } = {
-      appId: this.appId,
-      name,
-    };
-    if (edition) params.edition = edition;
+    interface InspectStreams {
+      state?: { foundLock: boolean }[];
+      files?: ExtensionInspectResult['files'];
+      summary?: ExtensionInspectResult['summary'][];
+      contentTypes?: ExtensionInspectResult['data']['contentTypes'];
+    }
 
-    return this.newHttpResource<ExtensionInspectResult>(() => ({
-      url: this.apiUrl('admin/appExtensions/inspect'),
-      params,
-      method: 'GET',
-    }));
+    const resource = this.#sysData.getMany<InspectStreams>({
+      source: 'System.AppExtensionInspect',
+      streams: '*',
+      params: { Name: name, ...(edition && { Edition: edition }) },
+    });
+    return {
+      ...resource,
+      value: () => {
+        const result = resource.value();
+        if (!result) return undefined;
+        return {
+          foundLock: result.state?.[0]?.foundLock ?? false,
+          files: result.files ?? [],
+          summary: result.summary?.[0],
+          data: { contentTypes: result.contentTypes ?? [] },
+        } as ExtensionInspectResult;
+      },
+    };
   }
 
   deleteExtension(name: string, edition?: string, force = false, withData = false) {
