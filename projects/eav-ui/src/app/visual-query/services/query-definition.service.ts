@@ -1,9 +1,12 @@
 import { Injectable } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { transient } from 'projects/core';
 import { classLog } from 'projects/shared/logging';
-import { map } from 'rxjs';
-import { webApiQueryDataSources, webApiQueryDebugStream, webApiQueryGet, webApiQueryRun, webApiQuerySave } from '../../app-administration/services';
+import { filter, first, firstValueFrom, map } from 'rxjs';
+import { webApiQueryDebugStream, webApiQueryRun, webApiQuerySave } from '../../app-administration/services';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { HttpServiceBaseSignal } from '../../shared/services/http-service-base-signal';
+import { SysDataService } from '../../shared/services/sys-data.service';
 import { DataSourceDefinition } from '../models/data-source-definition';
 import { DataSourceInstance } from '../models/data-source-instance.model';
 import { QueryResult } from '../models/result/pipeline-result';
@@ -15,15 +18,35 @@ const logSpecs = {
   buildDefaultModel: true,
 }
 
+interface QueryDefinitionStreams {
+  Definition?: VisualQueryModel['Pipeline'][];
+  DataSources?: VisualQueryModel['DataSources'];
+}
+
+interface DataSourcesStreams {
+  Default?: DataSourceInstance[];
+}
+
 @Injectable()
 export class QueryDefinitionService extends HttpServiceBaseSignal {
+  #sysData = transient(SysDataService);
 
   log = classLog({ QueryDefinitionService}, logSpecs);
 
   fetchPipelinePromise(pipelineEntityId: number, dataSources: DataSourceInstance[]): Promise<VisualQueryModel> {
-    return this.fetchPromise<VisualQueryModel>(webApiQueryGet, {
-      params: { appId: this.appId, id: pipelineEntityId.toString() }
-    }).then(pipelineModel => {
+    const resource = this.#sysData.getMany<QueryDefinitionStreams>({
+      source: 'System.QueryDefinition',
+      streams: '*',
+      params: { QueryId: pipelineEntityId },
+      noCamel: true,
+    });
+    return firstValueFrom(toObservable(resource.value, { injector: this.injector }).pipe(
+      filter((result): result is QueryDefinitionStreams => result != null),
+      first(),
+    )).then(result => ({
+      Pipeline: result.Definition?.[0],
+      DataSources: result.DataSources ?? [],
+    } as VisualQueryModel)).then(pipelineModel => {
       // if pipeline is new, populate it with default model
       if (!pipelineModel.DataSources.length) {
         this.#buildDefaultModel(pipelineModel, dataSources);
@@ -76,12 +99,16 @@ export class QueryDefinitionService extends HttpServiceBaseSignal {
   }
 
   fetchDataSourcesPromise(): Promise<DataSourceInstance[]> {
-    return this.fetchPromise<DataSourceInstance[]>(webApiQueryDataSources, {
-      params: {
-        appid: this.appId,
-        zoneId: this.zoneId,
-      },
-    }).then(dataSources => {
+    const resource = this.#sysData.getMany<DataSourcesStreams>({
+      source: 'System.DataSources',
+      params: { ZoneId: this.zoneId },
+      noCamel: true,
+    });
+    return firstValueFrom(toObservable(resource.value, { injector: this.injector }).pipe(
+      filter((result): result is DataSourcesStreams => result != null),
+      first(),
+    )).then(result => {
+      const dataSources = result.Default ?? [];
       // Add the final target DataSource to the list of DataSources
       dataSources.push(eavConstants.pipelineDesigner.outFinalTarget);
       return dataSources;

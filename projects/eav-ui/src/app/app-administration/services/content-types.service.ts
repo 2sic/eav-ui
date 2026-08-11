@@ -1,4 +1,3 @@
-import { httpResource } from '@angular/common/http';
 import { computed, Injectable, Signal } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { transient } from 'projects/core';
@@ -12,13 +11,13 @@ import { ScopeDetailsDto } from '../models/scopedetails.dto';
 
 // We should list all the "full" paths here, so it's easier to find when searching for API calls
 export const webApiTypeRoot = 'admin/type/';
-const webApiTypes = 'admin/type/list';
 const webApiTypeSave = 'admin/type/save';
 const webApiTypeDelete = 'admin/type/delete';
 const webApiTypeImport = 'admin/type/import';
 const webApiTypeAddGhost = 'admin/type/addghost';
 
 const dataSourceContentTypeDetails = 'System.ContentTypeDetails';
+const dataSourceContentTypes = 'System.ContentTypes';
 const dataSourceScopes = 'System.Scopes';
 
 interface ScopeData {
@@ -27,6 +26,12 @@ interface ScopeData {
   TypesTotal: number;
   TypesInherited: number;
   TypesOfApp: number;
+}
+
+interface ContentTypeDataSourceItem extends Partial<ContentType> {
+  AttributesCount?: number;
+  RepositoryType?: string;
+  Title?: string;
 }
 
 @Injectable()
@@ -71,16 +76,55 @@ export class ContentTypesService extends HttpServiceBase {
     });
   }
   getTypes(scope: Signal<string>) {
-    return httpResource<ContentType[]>(() => ({
-      url: this.apiUrl(webApiTypes),
-      params: { appId: this.appId, scope: scope() }
-    }), { defaultValue: [] });
+    const contentTypes = this.#sysData.get<ContentTypeDataSourceItem>({
+      source: dataSourceContentTypes,
+      params: computed(() => ({
+        AppId: this.appId,
+        Scope: scope(),
+      })),
+      noCamel: true,
+    });
+    return { value: computed(() => contentTypes().map(item => this.#mapContentType(item))) };
   }
 
   retrieveContentTypesPromise(scope: string): Promise<ContentType[]> {
-    return this.fetchPromise<ContentType[]>(webApiTypes, {
-      params: { appId: this.appId, scope }
+    const resource = this.#sysData.getMany<{ Default?: ContentTypeDataSourceItem[] }>({
+      source: dataSourceContentTypes,
+      params: {
+        AppId: this.appId,
+        Scope: scope,
+      },
+      noCamel: true,
     });
+    return firstValueFrom(toObservable(resource.value, { injector: this.injector }).pipe(
+      filter((result): result is { Default?: ContentTypeDataSourceItem[] } => result != null),
+      first(),
+    )).then(result => (result.Default ?? []).map(item => this.#mapContentType(item)));
+  }
+
+  #mapContentType(item: ContentTypeDataSourceItem): ContentType {
+    const nameId = item.NameId ?? item.StaticName ?? '';
+    const name = item.Name ?? item.Title ?? nameId;
+
+    return {
+      ...item,
+      Description: item.Description ?? '',
+      Fields: item.Fields ?? item.AttributesCount ?? 0,
+      Id: item.Id ?? 0,
+      Items: item.Items ?? 0,
+      Label: item.Label ?? item.Title ?? name,
+      Metadata: item.Metadata ?? [],
+      Name: name,
+      Permissions: item.Permissions ?? { Count: 0 },
+      Scope: item.Scope ?? '',
+      SharedDefId: item.SharedDefId ?? 0,
+      StaticName: item.StaticName ?? nameId,
+      NameId: nameId,
+      EditInfo: item.EditInfo ?? {
+        ReadOnly: item.RepositoryType != null && item.RepositoryType !== 'Sql',
+      },
+      TitleField: item.TitleField ?? '',
+    };
   }
 
   getScopesPromise(): Promise<ScopeOption[]> {

@@ -1,4 +1,3 @@
-import { httpResource } from '@angular/common/http';
 import { Injectable, Signal } from '@angular/core';
 import { transient } from 'projects/core';
 import { Observable } from 'rxjs';
@@ -8,7 +7,6 @@ import { App, PendingApp } from '../models/app.model';
 
 const dataSourceApps = 'System.Apps';
 const dataSourceInheritableApps = 'System.InheritableApps';
-const webApiAppRootPendingApps = 'admin/app/GetPendingApps';
 const webApiAppRootApp = 'admin/app/app';
 const webApiAppRootInstallPendingApps = 'admin/app/InstallPendingApps';
 const webApiAppRootFlushcache = 'admin/app/flushcache';
@@ -33,10 +31,12 @@ export class AppsListService extends HttpServiceBaseSignal {
   }
 
   getPendingApps() {
-    return httpResource<PendingApp[]>(() => ({
-      url: this.apiUrl(webApiAppRootPendingApps),
-      params: { zoneId: this.zoneId },
-    }));
+    const pendingApps = this.#sysData.get<PendingApp>({
+      source: 'System.AppsPendingInitialization',
+      params: { ZoneId: this.zoneId },
+      noCamel: true,
+    });
+    return { value: pendingApps };
   }
 
   create(name: string, inheritAppId?: number, templateId?: number, folder?: string, displayName?: string) {
