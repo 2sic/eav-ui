@@ -136,16 +136,16 @@ export class AppExtensionsService extends HttpServiceBase {
 
   preflightExtension(name: string, edition?: string) {
     interface InspectStreams {
-      state?: { foundLock: boolean }[];
+      default?: { foundLock: boolean }[];
       files?: ExtensionInspectResult['files'];
       summary?: ExtensionInspectResult['summary'][];
-      contentTypes?: ExtensionInspectResult['data']['contentTypes'];
+      contentTypes?: ExtensionInspectResult['contentTypes'];
     }
 
     const resource = this.#sysData.getMany<InspectStreams>({
-      source: 'System.AppExtensionInspect',
+      source: 'System.AppExtensionDetails',
       streams: '*',
-      params: { Name: name, ...(edition && { Edition: edition }) },
+      params: { ExtensionName: name, ...(edition && { Edition: edition }) },
     });
     return {
       ...resource,
@@ -153,10 +153,10 @@ export class AppExtensionsService extends HttpServiceBase {
         const result = resource.value();
         if (!result) return undefined;
         return {
-          foundLock: result.state?.[0]?.foundLock ?? false,
+          foundLock: result.default?.[0]?.foundLock ?? false,
           files: result.files ?? [],
           summary: result.summary?.[0],
-          data: { contentTypes: result.contentTypes ?? [] },
+          contentTypes: result.contentTypes ?? [],
         } as ExtensionInspectResult;
       },
     };

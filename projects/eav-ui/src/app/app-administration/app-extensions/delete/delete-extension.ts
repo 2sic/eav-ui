@@ -43,9 +43,9 @@ export class DeleteExtensionComponent implements OnInit {
   preflightResult = this.#extensionsSvc.preflightExtension(this.extensionFolder, this.edition).value;
   totalLocalEntities = computed(() => {
     const result = this.preflightResult();
-    if (!result?.data?.contentTypes) return 0;
+    if (!result?.contentTypes) return 0;
 
-    return result.data.contentTypes
+    return result.contentTypes
       .map(ct => ct.localEntities)
       .reduce((sum, n) => sum + n, 0);
   });

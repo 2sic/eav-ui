@@ -28,8 +28,6 @@ const webApiQueryDelete = 'admin/query/Delete';
 export const webApiQueryRun = 'admin/query/RunDev';
 export const webApiQueryDebugStream = 'admin/query/DebugStream';
 export const webApiQuerySave = 'admin/query/Save';
-export const webApiQueryGet = 'admin/query/Get';
-export const webApiQueryDataSources = 'admin/query/DataSources';
 
 @Injectable()
 export class PipelinesService extends HttpServiceBase {
