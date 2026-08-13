@@ -56,13 +56,11 @@ export interface ExtensionInspectResult {
     added: number;
     missing: number;
   };
-  data: {
-    contentTypes: {
-      name: string;
-      guid: string; // guid
-      localEntities: number;
-    }[];
-  };
+  contentTypes: {
+    name: string;
+    guid: string; // guid
+    localEntities: number;
+  }[];
 }
 
 export interface ExtensionPreflightItem {

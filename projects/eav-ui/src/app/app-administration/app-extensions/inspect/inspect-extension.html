@@ -1,10 +1,10 @@
 @if (data()?.foundLock) {
   <h4>Data</h4>
   <div>
-    Content Types: {{ data().data.contentTypes.length }}
+    Content Types: {{ data().contentTypes.length }}
     <br />
 
-    @for (ct of data().data.contentTypes; track ct) {
+    @for (ct of data().contentTypes; track ct) {
       <div class="content-type-chip">
         {{ ct.name }} ({{ ct.localEntities }})
       </div>
