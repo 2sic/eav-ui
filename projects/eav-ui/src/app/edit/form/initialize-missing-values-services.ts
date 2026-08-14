@@ -66,14 +66,14 @@ export class InitializeMissingValuesServices {
         const currentName = ctAttribute.Name;
         const l = this.log.fnIfInFields('initMissingValues', currentName);
 
-        const inputType = inputTypes.find(i => i.type === ctAttribute.InputType);
-        const isEmptyType = InputTypeHelpers.isEmpty(inputType?.type);
-        l.a(`Attribute: '${currentName}' InputType: '${inputType?.type}' isEmptyType: '${isEmptyType}'`);
+        const inputType = inputTypes.find(i => i.Type === ctAttribute.InputType);
+        const isEmptyType = InputTypeHelpers.isEmpty(inputType?.Type);
+        l.a(`Attribute: '${currentName}' InputType: '${inputType?.Type}' isEmptyType: '${isEmptyType}'`);
 
         if (isEmptyType)
           continue;
 
-        const logic = logicManager.get(inputType?.type);
+        const logic = logicManager.get(inputType?.Type);
 
         const attributeValues = item.Entity.Attributes[ctAttribute.Name];
         const fieldSettings = fss.getDefaultSettings(
@@ -95,7 +95,7 @@ export class InitializeMissingValuesServices {
           l.a(`${currentName} languages many, complex init`);
 
           // check if there is a value for the generic / all language
-          const disableI18n = inputType?.disableI18n;
+          const disableI18n = inputType?.DisableI18n;
           const noLanguageValue = new FieldReader(attributeValues, '*').currentOrDefault?.value;
           l.a(currentName, { disableI18n, noLanguageValue });
           if (!disableI18n && noLanguageValue !== undefined) {

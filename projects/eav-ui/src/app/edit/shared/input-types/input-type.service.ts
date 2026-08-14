@@ -16,7 +16,7 @@ export class InputTypeService extends SignalStoreBase<string, InputTypeMetadata>
     super(classLog({InputTypeService}, null));
   }
 
-  override getId = (item: InputTypeMetadata) => item.type;
+  override getId = (item: InputTypeMetadata) => item.Type;
 
   /**
    * Get Name specs with a nice name and a longer name
@@ -38,11 +38,11 @@ export class InputTypeService extends SignalStoreBase<string, InputTypeMetadata>
   }
 
   #getSpecsInternal(inputType: Of<typeof InputTypeCatalog>, inputTypes: InputTypeMetadata[]): InputTypeSpecs {
-    const inputTypeMetadata = inputTypes.find(i => i.type === inputType);
+    const inputTypeMetadata = inputTypes.find(i => i.Type === inputType);
     const name = inputType.toString();
     const calculated: InputTypeSpecs = {
       inputType,
-      isExternal: !!inputTypeMetadata?.uiAssets?.default,
+      isExternal: !!inputTypeMetadata?.UiAssets?.default,
       mustUseGuid: !name.startsWith('string') && !name.startsWith('number'),
       componentTagName: `field-${inputType}`,
       componentTagDialogName: `field-${inputType}-dialog`,
