@@ -50,7 +50,7 @@ export class SiteLanguagesComponent {
       columnDefs: [
         {
           ...ColumnDefinitions.IdWithDefaultRenderer,
-          field: 'Code',
+          field: 'code',
           filter: 'agTextColumnFilter',
           cellRendererParams: (() => {
             const params: IdFieldParams<SiteLanguage> = {
@@ -62,7 +62,7 @@ export class SiteLanguagesComponent {
         {
           ...ColumnDefinitions.TextWide,
           headerName: 'Name',
-          field: 'Culture',
+          field: 'culture',
           sort: 'asc',
           onCellClicked: (params) => {
             const language: SiteLanguage = params.data;

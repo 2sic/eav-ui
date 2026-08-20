@@ -33,7 +33,10 @@ export class FormDataService extends HttpServiceBaseSignal {
       params: { appId: this.appId }
     }).pipe(
       map(formData => {
-        formData.Context.Language.List = formData.Context.Language.List.filter(language => language.isEnabled);
+        formData.Context.Language.List = formData.Context.Language.List.map(language => {
+          const raw = language as unknown as { Code: string; Culture: string; IsAllowed: boolean; IsEnabled: boolean; NameId: string };
+          return { code: raw.Code, culture: raw.Culture, isAllowed: raw.IsAllowed, isEnabled: raw.IsEnabled, nameId: raw.NameId };
+        }).filter(language => language.isEnabled);
         return formData;
       }),
       tap(formData => {
