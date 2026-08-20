@@ -22,7 +22,7 @@ interface LicenseRaw {
   IsEnabled: boolean;
   NameId: string;
   Priority: number;
-  Title: string;
+  Name: string;
 }
 
 interface FeatureStateRaw {
@@ -66,6 +66,7 @@ export class FeaturesConfigService extends HttpServiceBaseSignal {
     const features = this.#sysData.get<FeatureStateRaw>({
       source: dataSourceFeatureStates,
       refresh,
+      params: { All: true },
       noCamel: true,
     });
 
@@ -77,11 +78,11 @@ export class FeaturesConfigService extends HttpServiceBaseSignal {
           Description: license.Description,
           Expires: license.Expiration,
           Features: features()
-            .filter(feature => feature.LicenseName === license.Title || feature.LicenseName === license.NameId)
+            .filter(feature => feature.LicenseName === license.Name || feature.LicenseName === license.NameId)
             .map(feature => this.#mapFeature(feature)),
           Guid: license.Guid,
           IsEnabled: license.IsEnabled,
-          Name: license.Title,
+          Name: license.Name,
           Priority: license.Priority,
         } satisfies License))),
     };
