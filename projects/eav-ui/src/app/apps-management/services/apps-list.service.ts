@@ -1,8 +1,8 @@
-import { Injectable, Signal } from '@angular/core';
-import { transient } from 'projects/core';
-import { Observable } from 'rxjs';
+import { computed, inject, Injectable, Signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { map, Observable } from 'rxjs';
+import { DialogConfigGlobalService } from '../../app-administration/services/dialog-config-global.service';
 import { HttpServiceBaseSignal } from '../../shared/services/http-service-base-signal';
-import { SysDataService } from '../../shared/services/sys-data.service';
 import { App, PendingApp } from '../models/app.model';
 
 const dataSourceApps = 'System.Apps';
@@ -13,30 +13,46 @@ const webApiAppRootFlushcache = 'admin/app/flushcache';
 
 @Injectable()
 export class AppsListService extends HttpServiceBaseSignal {
-  #sysData = transient(SysDataService);
+  #dialogConfig = inject(DialogConfigGlobalService);
+  #primaryAppId = toSignal(
+    this.#dialogConfig.getShared$(0).pipe(
+      map(settings => settings.Context.Site.PrimaryApp.AppId),
+    ),
+    { initialValue: 0 },
+  );
 
   getAllLive(refresh: Signal<unknown>) {
-    return this.#sysData.get<App>({
-      refresh,
-      source: dataSourceApps,
-      noCamel: true,
-    });
+    return this.#getSystemData<App>(dataSourceApps, refresh);
   }
 
   getInheritable() {
-    return this.#sysData.get<App>({
-      source: dataSourceInheritableApps,
-      noCamel: true,
-    });
+    return this.#getSystemData<App>(dataSourceInheritableApps);
   }
 
   getPendingApps() {
-    const pendingApps = this.#sysData.get<PendingApp>({
-      source: 'System.AppsPendingInitialization',
-      params: { ZoneId: this.zoneId },
-      noCamel: true,
+    const pendingApps = this.#getSystemData<PendingApp>('System.AppsPendingInitialization', undefined, {
+      ZoneId: this.zoneId,
     });
     return { value: pendingApps };
+  }
+
+  #getSystemData<T>(source: string, refresh?: Signal<unknown>, params?: Record<string, string>) {
+    const resource = this.newHttpResource<{ Default: T[] }>(() => {
+      const appId = this.#primaryAppId();
+      if (!appId)
+        return;
+
+      refresh?.();
+      return {
+        url: 'app/auto/query/System.SysData/Default',
+        params: {
+          appId,
+          SysDataSource: source,
+          ...params,
+        },
+      };
+    });
+    return computed(() => resource.value()?.Default ?? []);
   }
 
   create(name: string, inheritAppId?: number, templateId?: number, folder?: string, displayName?: string) {

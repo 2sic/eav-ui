@@ -1,10 +1,10 @@
-import { inject, Injectable, Injector } from '@angular/core';
-import { toObservable } from '@angular/core/rxjs-interop';
-import { transient } from 'projects/core';
-import { filter, first, Observable, Subject } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
+import { first, Observable, Subject, switchMap } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
+import { DialogConfigGlobalService } from '../../app-administration/services/dialog-config-global.service';
 import { InstallRule, InstallSettings, InstalledApp } from '../models/installer-models';
-import { SysDataService } from './sys-data.service';
+import { Context } from './context';
 
 interface AppInstallationStreams {
   settings?: { remoteUrl: string }[];
@@ -14,9 +14,10 @@ interface AppInstallationStreams {
 
 @Injectable()
 export class AppInstallSettingsService {
-  #sysData = transient(SysDataService);
+  #context = inject(Context);
+  #dialogConfig = inject(DialogConfigGlobalService);
+  #http = inject(HttpClient);
 
-  #injector = inject(Injector);
   private installSettingsSubject: Subject<InstallSettings> = new Subject<InstallSettings>();
   settings$: Observable<InstallSettings> = this.installSettingsSubject.asObservable();
 
@@ -29,14 +30,16 @@ export class AppInstallSettingsService {
   }
 
   public loadGettingStarted(isContentApp: boolean): void {
-    const resource = this.#sysData.getMany<AppInstallationStreams>({
-      source: 'System.AppInstallation',
-      streams: '*',
-      params: { IsContentApp: isContentApp },
-    });
-    toObservable(resource.value, { injector: this.#injector }).pipe(
-      filter((result): result is AppInstallationStreams => result != null),
+    this.#dialogConfig.getShared$(this.#context.appId).pipe(
       first(),
+      switchMap(settings => this.#http.get<AppInstallationStreams>('app/auto/query/System.SysData/', {
+        params: {
+          appId: this.#context.appId || settings.Context.Site.PrimaryApp.AppId,
+          SysDataSource: 'System.AppInstallation',
+          '$casing': 'camel',
+          IsContentApp: isContentApp,
+        },
+      })),
       map(result => ({
         remoteUrl: result.settings?.[0]?.remoteUrl ?? '',
         installedApps: result.installedApps ?? [],
