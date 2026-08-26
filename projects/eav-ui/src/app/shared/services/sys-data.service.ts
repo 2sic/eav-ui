@@ -56,10 +56,11 @@ export class SysDataService extends HttpServiceBase {
   getFirst<TData>(specs : SysDataSpecs) {
     const l = this.log.fnIf('getFirst', specs as unknown as Record<string, unknown>);
     const resource = this.get<TData>(specs);
-    return computedObj(specs.source, () => {
+    const result = computedObj(specs.source, () => {
       const data = resource();
       return data.length > 0 ? data[0] : null;
     });
+    return l.r(result);
   }
 
   /** 

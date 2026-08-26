@@ -1,12 +1,12 @@
 import { computed, Injectable, Signal } from '@angular/core';
 import { transient } from 'projects/core';
-import { Feature } from '../../features/models';
 import { map, Observable } from 'rxjs';
+import { Feature } from '../../features/models';
 import { FileUploadMessageTypes, FileUploadResult } from '../../shared/components/file-upload-dialog';
 import { HttpServiceBaseSignal } from '../../shared/services/http-service-base-signal';
+import { SysDataService } from '../../shared/services/sys-data.service';
 import { License, LicenseDownloadInfo, LicenseUploadInfo } from '../models/license.model';
 import { FeatureConfigSavePackage } from './feature-config-save-package';
-import { SysDataService } from '../../shared/services/sys-data.service';
 
 const webAPiLicenseRetrieve = 'sys/license/Retrieve';
 const webApiFeatSaveNew = 'admin/feature/SaveNew';
@@ -63,10 +63,38 @@ export class FeaturesConfigService extends HttpServiceBaseSignal {
       refresh,
       noCamel: true,
     });
+
+    // Build the CSV from a typed key map so it stays aligned with FeatureStateRaw.
+    // This syntax ensures that if a new field is added to FeatureStateRaw, the compiler will force us to list it as well.
+    // Note that this is necessary, because the GUID would not be included in the response by default.
+    // Maybe that behavior will change some day. 
+    const featureStateRawFields = Object.keys({
+      Guid: true,
+      Name: true,
+      NameId: true,
+      Description: true,
+      IsEnabled: true,
+      LicenseName: true,
+      EnabledByDefault: true,
+      EnabledInConfiguration: true,
+      EnabledReason: true,
+      EnabledReasonDetailed: true,
+      Expiration: true,
+      AllowUse: true,
+      Behavior: true,
+      Configuration: true,
+      ConfigurationContentType: true,
+      IsConfigurable: true,
+      SecurityImpact: true,
+      SecurityMessage: true,
+      Link: true,
+    } satisfies Record<keyof FeatureStateRaw, boolean>).join(',');
+
     const features = this.#sysData.get<FeatureStateRaw>({
       source: dataSourceFeatureStates,
       refresh,
       params: { All: true },
+      fields: featureStateRawFields,
       noCamel: true,
     });
 
