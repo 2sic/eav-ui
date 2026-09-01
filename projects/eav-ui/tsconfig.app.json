@@ -3,7 +3,14 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "../../out-tsc/app",
-    "types": []
+    "types": [],
+
+    // #IssuePapaParseAngular22
+    // 2026-08-06 2dm trying to get PapaParse to work with Angular 22.0.4
+    // This doesn't seem to change anything; removing require.js from angular.json seems to be the only thing that works.
+    // will keep this in for reference, was recommended by Gemini
+    // "esModuleInterop": true,
+    // "allowSyntheticDefaultImports": true
   },
   "files": [
     "src/main.ts",

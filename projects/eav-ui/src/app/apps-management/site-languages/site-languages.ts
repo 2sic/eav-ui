@@ -35,7 +35,7 @@ export class SiteLanguagesComponent {
   async #toggleLanguage(language: SiteLanguage, enable: boolean) {
     try {
       // Wait for the API call to complete and get the status code
-      const status = await this.#zoneSvc.toggleLanguage(language.Code, enable);
+      const status = await this.#zoneSvc.toggleLanguage(language.code, enable);
       if (status >= 200 && status < 300) {
         this.#refreshLanguagesSig.set(this.#refreshLanguagesSig() + 1);
       }
@@ -50,11 +50,11 @@ export class SiteLanguagesComponent {
       columnDefs: [
         {
           ...ColumnDefinitions.IdWithDefaultRenderer,
-          field: 'Code',
+          field: 'code',
           filter: 'agTextColumnFilter',
           cellRendererParams: (() => {
             const params: IdFieldParams<SiteLanguage> = {
-              tooltipGetter: (language: SiteLanguage) => `ID: ${language.Code}`,
+              tooltipGetter: (language: SiteLanguage) => `ID: ${language.code}`,
             };
             return params;
           })(),
@@ -62,11 +62,11 @@ export class SiteLanguagesComponent {
         {
           ...ColumnDefinitions.TextWide,
           headerName: 'Name',
-          field: 'Culture',
+          field: 'culture',
           sort: 'asc',
           onCellClicked: (params) => {
             const language: SiteLanguage = params.data;
-            this.#toggleLanguage(language, !language.IsEnabled);
+            this.#toggleLanguage(language, !language.isEnabled);
           },
         },
         {
@@ -76,7 +76,7 @@ export class SiteLanguagesComponent {
           cellClass: 'no-padding no-outline'.split(' '),
           sortable: true,
           filter: BooleanFilterComponent,
-          valueGetter: (p: { data: SiteLanguage }) => p.data.IsEnabled,
+          valueGetter: (p: { data: SiteLanguage }) => p.data.isEnabled,
           cellRenderer: SiteLanguagesStatusComponent,
           cellRendererParams: (() => {
             const params: SiteLanguagesStatusParams = {

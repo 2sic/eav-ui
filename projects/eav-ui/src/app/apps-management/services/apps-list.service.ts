@@ -1,53 +1,77 @@
-import { httpResource } from '@angular/common/http';
-import { Injectable, Signal } from '@angular/core';
-import { transient } from 'projects/core';
-import { Observable } from 'rxjs';
+import { computed, inject, Injectable, Signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { map, Observable } from 'rxjs';
+import { DialogConfigGlobalService } from '../../app-administration/services/dialog-config-global.service';
 import { HttpServiceBaseSignal } from '../../shared/services/http-service-base-signal';
-import { SysDataService } from '../../shared/services/sys-data.service';
 import { App, PendingApp } from '../models/app.model';
 
-const dataSourceApps = "System.Apps";
-
-const webApiAppRootInheritableApps = 'admin/app/InheritableApps';
-const webApiAppRootPendingApps = 'admin/app/GetPendingApps';
+const dataSourceApps = 'System.Apps';
+const dataSourceInheritableApps = 'System.InheritableApps';
 const webApiAppRootApp = 'admin/app/app';
 const webApiAppRootInstallPendingApps = 'admin/app/InstallPendingApps';
 const webApiAppRootFlushcache = 'admin/app/flushcache';
 
 @Injectable()
 export class AppsListService extends HttpServiceBaseSignal {
-  #sysData = transient(SysDataService);
-  
+  #dialogConfig = inject(DialogConfigGlobalService);
+  #primaryAppId = toSignal(
+    this.#dialogConfig.getShared$(0).pipe(
+      map(settings => settings.Context.Site.PrimaryApp.AppId),
+    ),
+    { initialValue: 0 },
+  );
+
   getAllLive(refresh: Signal<unknown>) {
-    return this.#sysData.get<App>({
-      refresh,
-      source: dataSourceApps,
-      noCamel: true,
-    })
+    return this.#getSystemData<App>(dataSourceApps, refresh);
   }
 
   getInheritable() {
-    return httpResource<App[]>(() => ({
-      url: this.apiUrl(webApiAppRootInheritableApps),
-      params: { zoneId: this.zoneId }
-    }));
+    return this.#getSystemData<App>(dataSourceInheritableApps);
   }
 
   getPendingApps() {
-    return httpResource<PendingApp[]>(() => ({
-      url: this.apiUrl(webApiAppRootPendingApps),
-      params: { zoneId: this.zoneId },
-    }));
+    const pendingApps = this.#getSystemData<PendingApp>('System.AppsPendingInitialization', undefined, {
+      ZoneId: this.zoneId,
+    });
+    return { value: pendingApps };
   }
 
-  create(name: string, inheritAppId?: number, templateId?: number) {
+  #getSystemData<T>(source: string, refresh?: Signal<unknown>, params?: Record<string, string>) {
+    const resource = this.newHttpResource<{ Default: T[] }>(() => {
+      const appId = this.#primaryAppId();
+      if (!appId)
+        return;
+
+      refresh?.();
+      return {
+        url: 'app/auto/query/System.SysData/Default',
+        params: {
+          appId,
+          SysDataSource: source,
+          ...params,
+        },
+      };
+    });
+    return computed(() => resource.value()?.Default ?? []);
+  }
+
+  create(name: string, inheritAppId?: number, templateId?: number, folder?: string, displayName?: string) {
+    const params: Record<string, string | number | boolean | readonly (string | number | boolean)[]> = {
+      zoneId: this.zoneId,
+      name,
+    };
+
+    if (inheritAppId != null) {
+      params.inheritAppId = inheritAppId;
+      params.displayName = displayName ?? name;
+      params.folder = folder ?? name;
+    }
+
+    if (templateId != null)
+      params.templateId = templateId;
+
     return this.http.post<null>(this.apiUrl(webApiAppRootApp), {}, {
-      params: {
-        zoneId: this.zoneId,
-        name,
-        ...(inheritAppId != null && { inheritAppId }),
-        ...(templateId != null && { templateId }),
-      },
+      params,
     });
   }
 

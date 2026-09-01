@@ -1,4 +1,3 @@
-import appExtensionMask from '!raw-loader!./app-extension-mask.svg';
 import { ColDef, GridOptions } from '@ag-grid-community/core';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -20,6 +19,7 @@ import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.mod
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { EntityService } from '../../shared/services/entity.service';
 import { convertFormToUrl } from '../../shared/url/url-converter';
+import appExtensionMask from './app-extension-mask.svg';
 import { AppExtensionsService } from './app-extensions.service';
 import { AppExtensionActions } from './extension-actions/extension-actions';
 import { DefaultExtensionEdition, Extension } from './extension.model';
@@ -58,8 +58,7 @@ export class AppExtensions implements OnInit {
   /** Signal to trigger reloading of data */
   refresh = signal(0);
 
-  #extensionsRaw = this.#extensionsSvc.getAllLive(this.refresh).value;
-  extensions = computed(() => this.#extensionsRaw()?.extensions ?? []);
+  extensions = this.#extensionsSvc.getAllLive(this.refresh).value;
 
   ngOnInit() {
     // register once

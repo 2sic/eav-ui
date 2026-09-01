@@ -1,35 +1,34 @@
-
 export interface WebApiControllerDetails {
-  Controller: string;
-  Path: string;
-  IgnoreSecurity: boolean;
-  AllowAnonymous: boolean;
-  RequireVerificationToken: boolean;
-  ValidateAntiForgeryToken: boolean;
-  AutoValidateAntiforgeryToken: boolean;
-  IgnoreAntiforgeryToken: boolean;
-  View: boolean;
-  Edit: boolean;
-  Admin: boolean;
-  SuperUser: boolean;
-  RequireContext: boolean;
+  controller: string;
+  path: string;
+  ignoreSecurity: boolean;
+  allowAnonymous: boolean;
+  requireVerificationToken: boolean;
+  validateAntiForgeryToken: boolean;
+  autoValidateAntiforgeryToken: boolean;
+  ignoreAntiforgeryToken: boolean;
+  view: boolean;
+  edit: boolean;
+  admin: boolean;
+  superUser: boolean;
+  requireContext: boolean;
 }
 
 export interface WebApiControllerEndpoint {
-  Name: string;
-  EndpointPath: string;
-  Returns: string;
-  Verbs: string;
-  Parameters?: WebApiControllerParameter[];
-  Security?: WebApiSecurity;
-  IgnoreSecurity: boolean;
-  AllowAnonymous: boolean;
-  RequireVerificationToken: boolean;
-  View: boolean;
-  Edit: boolean;
-  Admin: boolean;
-  SuperUser: boolean;
-  RequireContext: boolean;
+  name: string;
+  endpointPath: string;
+  returns: string;
+  verbs: string;
+  parameters?: WebApiControllerParameter[];
+  security?: WebApiSecurity;
+  ignoreSecurity: boolean;
+  allowAnonymous: boolean;
+  requireVerificationToken: boolean;
+  view: boolean;
+  edit: boolean;
+  admin: boolean;
+  superUser: boolean;
+  requireContext: boolean;
 }
 
 export interface WebApiControllerParameter {

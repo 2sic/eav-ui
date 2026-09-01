@@ -1,5 +1,6 @@
 @use "sass:math";
-@import './rich-variables.scss';
+@use "sass:meta";
+@use './rich-variables' as *;
 
 // The surrounding tag, in the editor it's `mce-content-body`, in the html output it's `wysiwyg-container`
 $container-tag: 'mce-content-body';
@@ -30,13 +31,18 @@ $img-background: repeating-linear-gradient(135deg, $spacer-pattern-lines 0, $spa
 }
 
 // Import default css variables
-@import './wysiwyg-img-shared-setup.scss';
+@include meta.load-css('./wysiwyg-img-shared-setup');
 
 // Import container css
-@import './wysiwyg-img-shared-container.scss';
+@include meta.load-css('./wysiwyg-img-shared-container', $with: (
+  'container-tag': $container-tag,
+));
 
 
 /* Responsive Images stuff */
 .#{$container-tag} {
-  @import './wysiwyg-img-shared-img-columns.scss';
+  @include meta.load-css('./wysiwyg-img-shared-img-columns', $with: (
+    'main-tag': $main-tag,
+    'sub-tag': $sub-tag,
+  ));
 }

@@ -1,6 +1,6 @@
 import { computed, Injectable, Signal } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
-import { filter, first, map } from 'rxjs';
+import { filter, first, firstValueFrom, map } from 'rxjs';
 import { Of, transient } from '../../../../../core';
 import { ContentType } from '../../app-administration/models/content-type.model';
 import { webApiTypeRoot } from '../../app-administration/services';
@@ -20,11 +20,9 @@ const webApiSetTitle = webApiTypeRoot + 'SetTitle';
 const webApiRename = 'admin/field/Rename';
 const webApiDelete = 'admin/field/Delete';
 const webApiAdd = 'admin/field/Add';
-const webApiFieldsGetShared = 'admin/field/GetSharedFields';
-const webApiGetAncestors = 'admin/field/GetAncestors';
-const webApiGetDescendants = 'admin/field/GetDescendants';
 export const dataSourceContentTypeDetails = 'System.ContentTypeDetails';
 export const dataSourceInputTypes = 'System.InputTypes';
+export const dataSourceSharedFields = 'System.SharedFields';
 
 // @2rb - no export if not reused
 // @2rb - no "option" suffix
@@ -189,9 +187,7 @@ export class ContentTypesFieldsService extends HttpServiceBaseSignal {
   }
   /** Get all possible sharable fields for a new sharing */
   getShareableFieldsPromise(): Promise<Field[]> {
-    return this.fetchPromise<Field[]>(webApiFieldsGetShared, {
-      params: this.paramsAppId().params
-    });
+    return this.#getShareInfoPromise('Default');
   }
 
   /**
@@ -200,21 +196,33 @@ export class ContentTypesFieldsService extends HttpServiceBaseSignal {
    * @param attributeId the existing attributeId which will receive the new metadata
    */
   getShareableFieldsFor(attributeId: number) {
-    return this.#getShareinfoPromise(webApiFieldsGetShared, attributeId);
+    return this.#getShareInfoPromise('Default', attributeId);
   }
 
   getAncestors(attributeId: number) {
-    return this.#getShareinfoPromise(webApiGetAncestors, attributeId);
+    return this.#getShareInfoPromise('Ancestors', attributeId);
   }
 
   getDescendants(attributeId: number) {
-    return this.#getShareinfoPromise(webApiGetDescendants, attributeId);
+    return this.#getShareInfoPromise('Descendants', attributeId);
   }
 
-  #getShareinfoPromise(endpoint: string, attributeId: number): Promise<Field[]> {
-    return this.fetchPromise<Field[]>(endpoint, {
-      params: this.paramsAppId({ attributeId }).params
+  #getShareInfoPromise(stream: 'Default' | 'Ancestors' | 'Descendants', attributeId?: number): Promise<Field[]> {
+    const resource = this.#sysData.getMany<Record<typeof stream, Field[]>>({
+      source: dataSourceSharedFields,
+      params: {
+        AppId: this.appId,
+        ...(attributeId == null ? {} : { AttributeId: attributeId }),
+      },
+      streams: stream,
+      noCamel: true,
     });
+
+    return firstValueFrom(toObservable(resource.value, { injector: this.injector }).pipe(
+      filter(value => value != null),
+      map(value => value[stream] ?? []),
+      first(),
+    ));
   }
 
 

@@ -115,8 +115,8 @@ export class DevRestApiComponent extends DevRestBase<DevRestApiModel> implements
       filter(endpoints => !!endpoints.length),
       logToSelectedAction.filter(),
     ).subscribe(endpoints => {
-      this.log.a(`first action '${endpoints[0]?.Name}'`);
-      return this.selectedActionName$.next(endpoints[0]?.Name);
+      this.log.a(`first action '${endpoints[0]?.name}'`);
+      return this.selectedActionName$.next(endpoints[0]?.name);
     });
 
     const logSelectedActions = new RxTapDebug(this.log, 'selectedAction$', true);
@@ -125,7 +125,7 @@ export class DevRestApiComponent extends DevRestBase<DevRestApiModel> implements
         logSelectedActions.pipe(),
         // add debounce because of diamond problem with apiDetails$ and selectedAction$
         // debounceTime(10),
-        map(([endpoints, name]) => endpoints?.find(a => a.Name === name) ?? endpoints?.[0] ?? null),
+        map(([endpoints, name]) => endpoints?.find(a => a.name === name) ?? endpoints?.[0] ?? null),
         logSelectedActions.map(),
       );
 
@@ -135,7 +135,7 @@ export class DevRestApiComponent extends DevRestBase<DevRestApiModel> implements
         const resolved = pathToApi
           .replace('{appname}', scenario.inSameContext ? 'auto' : encodeURI(dialogSettings.Context.App.Folder))
           .replace('{endpointPath}', webApi.endpointPath)
-          .replace('{action}', action?.Name ?? '');
+          .replace('{action}', action?.name ?? '');
         return this.rootBasedOnScenario(resolved, scenario);
       }),
     );
@@ -153,7 +153,7 @@ export class DevRestApiComponent extends DevRestBase<DevRestApiModel> implements
           endpoints,
           selected: selActions,
           permissionsHasAnonymous: true, // dummy value to prevent error being shown
-          apiCalls: generateWebApiCalls(dnnContext.$2sxc, scenario, context, root, urlParams, selActions?.Verbs ?? ''),
+          apiCalls: generateWebApiCalls(dnnContext.$2sxc, scenario, context, root, urlParams, selActions?.verbs ?? ''),
         })),
       );
   }

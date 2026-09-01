@@ -9,10 +9,10 @@ For detailed architecture, development guidelines, and contribution documentatio
 ## Projects
 
 1. **eav-ui** main Angular project. Build using `ng`
-1. **field-custom-gps** an extension field with gps-picker & map. Build using `webpack`
-1. **field-string-wysiwyg** an extension field for wysiwyg. Build using `webpack`
+1. **field-custom-gps** an extension field with gps-picker & map. Build using `esbuild`
+1. **field-string-wysiwyg** an extension field for wysiwyg. Build using `esbuild`
 
-There are various projects in here, some building with angular `ng build` and others directly with webpack.
+The main application uses Angular's application builder; the extension fields use esbuild.
 
 ## Building the Main Angular Project
 
@@ -22,13 +22,13 @@ To build, use the normal `ng` syntax, like `ng build` or `ng build --watch`
 
 For more guidance on building and deploying to Dnn/Oqtane, see <https://go.2sxc.org/build>
 
-## Building Webpack projects
+## Building extension projects
 
-Just run `webpack --env parts=PARTNAME` where PARTNAME is `wysiwyg`, `gps`, `all` (which is like using `'wysiwyg,gps'`).
+Run `node ./build-helpers/build-parts.js --parts=PARTNAME`, where PARTNAME is `wysiwyg`, `gps`, `all`, or a comma-separated combination.
 
-You can also use `--watch` like `webpack --env parts=all --watch`
+Add `--watch` for continuous builds, for example `node ./build-helpers/build-parts.js --parts=all --watch`.
 
-You can also use `--mode=production` like `webpack --env parts=wysiwyg --mode=production`
+Add `--production` for minified output with externally hosted source maps.
 
 ## Dev info
 

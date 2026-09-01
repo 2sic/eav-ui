@@ -1,18 +1,33 @@
-
-import { startWith, map, tap } from 'rxjs/operators';
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Subject, Observable } from 'rxjs';
-import { InstallSettings } from '../models/installer-models';
+import { inject, Injectable } from '@angular/core';
+import { first, Observable, Subject, switchMap } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
+import { DialogConfigGlobalService } from '../../app-administration/services/dialog-config-global.service';
+import { InstallRule, InstallSettings } from '../models/installer-models';
+import { Context } from './context';
 
-// copied from 2sxc-ui app/installer
+interface AppInstallationStreams {
+  settings?: { remoteUrl: string }[];
+  installedApps?: InstalledAppResponse[];
+  rules?: InstallRule[];
+}
+
+interface InstalledAppResponse {
+  name: string;
+  appGuid: string;
+  version: string;
+}
+
 @Injectable()
 export class AppInstallSettingsService {
+  #context = inject(Context);
+  #dialogConfig = inject(DialogConfigGlobalService);
+  #http = inject(HttpClient);
 
   private installSettingsSubject: Subject<InstallSettings> = new Subject<InstallSettings>();
   settings$: Observable<InstallSettings> = this.installSettingsSubject.asObservable();
 
-  constructor(private http: HttpClient) {
+  constructor() {
     const ready$ = this.settings$.pipe(
       map(() => true),
       startWith(false));
@@ -21,7 +36,25 @@ export class AppInstallSettingsService {
   }
 
   public loadGettingStarted(isContentApp: boolean): void {
-    this.http.get<InstallSettings>(`sys/install/InstallSettings?isContentApp=${isContentApp}`)
-      .subscribe(json => this.installSettingsSubject.next(json));
+    this.#dialogConfig.getShared$(this.#context.appId).pipe(
+      first(),
+      switchMap(settings => this.#http.get<AppInstallationStreams>('app/auto/query/System.SysData/', {
+        params: {
+          appId: this.#context.appId || settings.Context.Site.PrimaryApp.AppId,
+          SysDataSource: 'System.AppInstallation',
+          '$casing': 'camel',
+          IsContentApp: isContentApp,
+        },
+      })),
+      map(result => ({
+        remoteUrl: result.settings?.[0]?.remoteUrl ?? '',
+        installedApps: (result.installedApps ?? []).map(app => ({
+          name: app.name,
+          guid: app.appGuid,
+          version: app.version,
+        })),
+        rules: result.rules ?? [],
+      } satisfies InstallSettings)),
+    ).subscribe(settings => this.installSettingsSubject.next(settings));
   }
 }

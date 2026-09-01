@@ -16,7 +16,6 @@ export class ZoneService extends HttpServiceBaseSignal {
       refresh,
       source: 'System.ZoneLanguages',
       fields: 'Code,Culture,IsEnabled,NameId',
-      noCamel: true,
     });
   }
 

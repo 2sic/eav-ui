@@ -12,7 +12,7 @@
       {{'LanguageSettings.UseCurrentLanguage' | translate}}
     </mat-option>
     @for (option of options; track option) {
-      <mat-option [value]="option.Code.toLocaleLowerCase()">{{ option.label }}</mat-option>
+      <mat-option [value]="option.code.toLocaleLowerCase()">{{ option.label }}</mat-option>
     }
   </mat-select>
 </mat-form-field>

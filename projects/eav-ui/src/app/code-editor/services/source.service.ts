@@ -21,10 +21,10 @@ const dataSourceAppWebApiControllerDetails = 'System.AppWebApiControllerDetails'
 const dataSourceAppWebApiControllerEndpoints = 'System.AppWebApiControllerEndpoints';
 
 interface AppWebApiControllerRow {
-  Path: string;
-  EndpointPath: string;
-  Edition: string;
-  Shared: boolean;
+  path: string;
+  endpointPath: string;
+  edition: string;
+  shared: boolean;
 }
 
 type WebApiControllerDetailsResponse = { Default?: WebApiControllerDetailsRaw[] };
@@ -98,7 +98,7 @@ export class SourceService extends HttpServiceBase {
 
   // TODO: @2dg, ask 2dm 
   // getSig(viewKey: string, global: boolean, urlItems: ViewOrFileIdentifier[], initial: undefined): Signal<SourceView> {
-  //   // Signal für die SourceView erstellen
+  //   // Signal fÃ¼r die SourceView erstellen
   //   const temp = this.getSignal<SourceView>(appFilesAsset, {
   //     params: {
   //       appId: this.appId,
@@ -187,19 +187,19 @@ export class SourceService extends HttpServiceBase {
 
   #mapWebApiRows(rows: AppWebApiControllerRow[]): WebApi[] {
     return rows.map(row => {
-      const splitIndex = row.Path.lastIndexOf('/');
-      const fileExtIndex = row.Path.lastIndexOf('.');
-      const folder = row.Path.substring(0, splitIndex);
-      const name = row.Path.substring(splitIndex + 1, fileExtIndex);
+      const splitIndex = row.path.lastIndexOf('/');
+      const fileExtIndex = row.path.lastIndexOf('.');
+      const folder = row.path.substring(0, splitIndex);
+      const name = row.path.substring(splitIndex + 1, fileExtIndex);
 
       return {
-        path: row.Path,
+        path: row.path,
         folder,
         name,
-        isShared: row.Shared,
-        endpointPath: row.EndpointPath,
+        isShared: row.shared,
+        endpointPath: row.endpointPath,
         isCompiled: false,
-        edition: row.Edition,
+        edition: row.edition,
       };
     });
   }
@@ -210,7 +210,7 @@ export class SourceService extends HttpServiceBase {
       source: dataSourceAppWebApiControllerDetails,
       params: {
         AppId: this.appId,
-        Path: path,
+        path,
       },
       streams: 'Default',
       noCamel: true,
@@ -232,7 +232,7 @@ export class SourceService extends HttpServiceBase {
       source: dataSourceAppWebApiControllerEndpoints,
       params: {
         AppId: this.appId,
-        Path: path,
+        path,
       },
       streams: 'Default',
       noCamel: true,
@@ -270,19 +270,19 @@ export class SourceService extends HttpServiceBase {
     } = details;
 
     return {
-      Controller: controller,
-      Path: path,
-      IgnoreSecurity: ignoreSecurity,
-      AllowAnonymous: allowAnonymous,
-      RequireVerificationToken: requireVerificationToken,
-      ValidateAntiForgeryToken: validateAntiForgeryToken,
-      AutoValidateAntiforgeryToken: autoValidateAntiforgeryToken,
-      IgnoreAntiforgeryToken: ignoreAntiforgeryToken,
-      View: view,
-      Edit: edit,
-      Admin: admin,
-      SuperUser: superUser,
-      RequireContext: requireContext,
+      controller,
+      path,
+      ignoreSecurity,
+      allowAnonymous,
+      requireVerificationToken,
+      validateAntiForgeryToken,
+      autoValidateAntiforgeryToken,
+      ignoreAntiforgeryToken,
+      view,
+      edit,
+      admin,
+      superUser,
+      requireContext,
     };
   }
 
@@ -305,20 +305,20 @@ export class SourceService extends HttpServiceBase {
     } = endpoint;
 
     return {
-      Name: name,
-      EndpointPath: endpointPath,
-      Returns: returns,
-      Verbs: verbs,
-      Parameters: parameters,
-      Security: security,
-      IgnoreSecurity: ignoreSecurity,
-      AllowAnonymous: allowAnonymous,
-      RequireVerificationToken: requireVerificationToken,
-      View: view,
-      Edit: edit,
-      Admin: admin,
-      SuperUser: superUser,
-      RequireContext: requireContext,
+      name,
+      endpointPath,
+      returns,
+      verbs,
+      parameters,
+      security,
+      ignoreSecurity,
+      allowAnonymous,
+      requireVerificationToken,
+      view,
+      edit,
+      admin,
+      superUser,
+      requireContext,
     };
   }
 

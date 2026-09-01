@@ -39,8 +39,8 @@ export class FormSlideDirective extends BaseDirective implements OnInit, OnDestr
           pairwise(),
           map(([previousLang, currentLang]) => {
             l.a('toggle', { previousLang, currentLang });
-            const prevIndex = languages.findIndex(lang => lang.NameId === previousLang);
-            const currentIndex = languages.findIndex(lang => lang.NameId === currentLang);
+            const prevIndex = languages.findIndex(lang => lang.nameId === previousLang);
+            const currentIndex = languages.findIndex(lang => lang.nameId === currentLang);
             const slide = (prevIndex > currentIndex) ? classPrevious : classNext;
             l.a('slide', { prevIndex, currentIndex, slide });
             return slide;

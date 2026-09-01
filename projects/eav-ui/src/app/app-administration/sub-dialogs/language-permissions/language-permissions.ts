@@ -54,7 +54,7 @@ export class LanguagePermissionsComponent implements OnInit {
   }
 
   openPermissions(language: SiteLanguagePermissions): void {
-    this.#dialogRouting.navRelative([GoToPermissions.getUrlLanguage(language.NameId)]);
+    this.#dialogRouting.navRelative([GoToPermissions.getUrlLanguage(language.nameId)]);
   }
 
 
@@ -68,7 +68,7 @@ export class LanguagePermissionsComponent implements OnInit {
           filter: 'agTextColumnFilter',
           cellRendererParams: (() => {
             const params: IdFieldParams<SiteLanguagePermissions> = {
-              tooltipGetter: (language) => `ID: ${language.Code}`,
+              tooltipGetter: (language) => `ID: ${language.code}`,
             };
             return params;
           })(),
@@ -77,7 +77,7 @@ export class LanguagePermissionsComponent implements OnInit {
           ...ColumnDefinitions.TextWide,
           field: 'Name',
           sort: 'asc',
-          valueGetter: (p: { data: SiteLanguagePermissions }) => p.data.Culture,
+          valueGetter: (p: { data: SiteLanguagePermissions }) => p.data.culture,
         },
         {
           ...ColumnDefinitions.ActionsPinnedRight1,
@@ -93,5 +93,3 @@ export class LanguagePermissionsComponent implements OnInit {
     return gridOptions;
   }
 }
-
-

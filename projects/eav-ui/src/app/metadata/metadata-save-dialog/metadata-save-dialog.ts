@@ -117,7 +117,9 @@ export class MetadataSaveDialogComponent implements OnInit {
 
       // add new scope on manual entry
       if (newScope === dropdownInsertValue) {
-        newScope = prompt('This is an advanced feature to show content-types of another scope. Don\'t use this if you don\'t know what you\'re doing, as content-types of other scopes are usually hidden for a good reason.') || eavConstants.scopes.default.value;
+        newScope = prompt("This is an advanced feature to show content-types of another scope. "
+          + "Don't use this if you don\'t know what you\'re doing, as content-types of other scopes are usually hidden for a good reason.")
+          || eavConstants.scopes.default.value;
         if (!this.scopeOptions().some(option => option.value === newScope)) {
           const newScopeOption: ScopeOption = {
             name: newScope,

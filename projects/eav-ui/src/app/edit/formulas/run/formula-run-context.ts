@@ -47,7 +47,7 @@ export class FormulaContextObject implements FormulaV1Context {
     const languages = specs.languages
     this.culture = {
       code: language.current,
-      name: languages.find(l => l.NameId === language.current)?.Culture,
+      name: languages.find(l => l.nameId === language.current)?.culture,
     };
 
     this.features = new FormulaContextFeatures(specs);
@@ -155,7 +155,7 @@ class FormulaContextApp implements FormulaV1CtxApp {
   getSetting(settingPath: string) {
     if (this.#propsData.runParameters.formula.version === FormulaVersions.V1) {
       console.warn('app.getSetting() is not available in v1 formulas, please use v2.');
-      return '⚠️ error - see console';
+      return 'âš ï¸ error - see console';
     }
 
     const result = this.#propsData.formConfig.config.settings.Values[settingPath];
@@ -163,7 +163,7 @@ class FormulaContextApp implements FormulaV1CtxApp {
       return result;
     console.warn(`Error: Setting '${settingPath}' not found. Did you configure it in the ContentType to be included? ` +
       `See https://go.2sxc.org/formulas`);
-    return '⚠️ error - see console';
+    return 'âš ï¸ error - see console';
   }
 }
 

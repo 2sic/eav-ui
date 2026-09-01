@@ -39,7 +39,7 @@ export class DialogConfigGlobalService extends HttpServiceBase {
       params: { appId: appId ?? this.appId },
     }).pipe(
       map(dlgSettings => {
-        dlgSettings.Context.Language.List = dlgSettings.Context.Language.List.filter(language => language.IsEnabled);
+        dlgSettings.Context.Language.List = dlgSettings.Context.Language.List.filter(language => language.isEnabled);
         return dlgSettings;
       }),
       tap(dlgSettings => {

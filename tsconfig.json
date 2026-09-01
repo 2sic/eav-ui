@@ -24,6 +24,11 @@
       "./node_modules/@types", 
       "./node_modules"],
     "noImplicitAny": true,
+    "noImplicitThis": false,
+    "strictFunctionTypes": false,
+    "strictNullChecks": false,
+    "strictPropertyInitialization": false,
+    "ignoreDeprecations": "6.0",
     "useDefineForClassFields": false
   },
   "angularCompilerOptions": {
