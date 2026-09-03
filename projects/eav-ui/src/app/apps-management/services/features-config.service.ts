@@ -58,7 +58,7 @@ export class FeaturesConfigService extends HttpServiceBaseSignal {
 
 
   getLicensesLive(refresh: Signal<unknown>) {
-    const licenses = this.#sysData.get<LicenseRaw>({
+    const licenses = this.#sysData.getMany<{ Default: LicenseRaw[] }>({
       source: dataSourceLicenses,
       refresh,
       noCamel: true,
@@ -90,7 +90,7 @@ export class FeaturesConfigService extends HttpServiceBaseSignal {
       Link: true,
     } satisfies Record<keyof FeatureStateRaw, boolean>).join(',');
 
-    const features = this.#sysData.get<FeatureStateRaw>({
+    const features = this.#sysData.getMany<{ Default: FeatureStateRaw[] }>({
       source: dataSourceFeatureStates,
       refresh,
       params: { All: true },
@@ -99,20 +99,25 @@ export class FeaturesConfigService extends HttpServiceBaseSignal {
     });
 
     return {
-      value: computed(() => licenses()
-        .filter(license => !license.FeatureLicense)
-        .map(license => ({
-          AutoEnable: license.AutoEnable,
-          Description: license.Description,
-          Expires: license.Expiration,
-          Features: features()
-            .filter(feature => feature.LicenseName === license.Name || feature.LicenseName === license.NameId)
-            .map(feature => this.#mapFeature(feature)),
-          Guid: license.Guid,
-          IsEnabled: license.IsEnabled,
-          Name: license.Name,
-          Priority: license.Priority,
-        } satisfies License))),
+      value: computed(() => {
+        if (!licenses.hasValue() || !features.hasValue())
+          return undefined;
+
+        return (licenses.value().Default ?? [])
+          .filter(license => !license.FeatureLicense)
+          .map(license => ({
+            AutoEnable: license.AutoEnable,
+            Description: license.Description,
+            Expires: license.Expiration,
+            Features: (features.value().Default ?? [])
+              .filter(feature => feature.LicenseName === license.Name || feature.LicenseName === license.NameId)
+              .map(feature => this.#mapFeature(feature)),
+            Guid: license.Guid,
+            IsEnabled: license.IsEnabled,
+            Name: license.Name,
+            Priority: license.Priority,
+          } satisfies License));
+      }),
     };
   }
 
