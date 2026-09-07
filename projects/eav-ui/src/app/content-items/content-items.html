@@ -7,16 +7,15 @@
           aria-label="Items"
           panelWidth=""
           aria-description="Filters apply to the loaded items. Select All to search all items."
-          [value]="retrieval().top"
-          (selectionChange)="setItemLimit($event.value)"
+          [value]="retrieval().range"
+          (selectionChange)="setItemRange($event.value)"
         >
           <mat-select-trigger>
-            <span>Items: {{ retrieval().top ? 'Top ' + retrieval().top : 'All' }}</span>
+            <span>Items: {{ rangeLabel() }}</span>
           </mat-select-trigger>
-          <mat-option [value]="0">All</mat-option>
-          <mat-option [value]="10">Top 10</mat-option>
-          <mat-option [value]="100">Top 100</mat-option>
-          <mat-option [value]="1000">Top 1000</mat-option>
+          @for (option of rangeOptions; track option.value) {
+            <mat-option [value]="option.value">{{ option.label }}</mat-option>
+          }
         </mat-select>
       </mat-form-field>
       <mat-form-field color="accent" class="eav-mat-form-field" subscriptSizing="dynamic" style="width: 160px; margin-left: 12px">
@@ -24,14 +23,17 @@
           aria-label="Columns"
           panelWidth=""
           aria-description="Basics: Id, Guid, Status, Title. Select All to load every column and editing permissions."
-          [value]="retrieval().columns"
+          multiple
+          [value]="selectedColumnValues()"
           (selectionChange)="setColumns($event.value)"
         >
           <mat-select-trigger>
-            <span>Columns: {{ retrieval().columns === 'basics' ? 'Basics' : 'All' }}</span>
+            <span>Columns: {{ columnsLabel() }}</span>
           </mat-select-trigger>
-          <mat-option value="all">All</mat-option>
-          <mat-option value="basics">Basics</mat-option>
+          <mat-option [value]="allColumnsValue">All</mat-option>
+          @for (column of optionalColumns(); track column.StaticName) {
+            <mat-option [value]="column.StaticName">{{ column.StaticName }}</mat-option>
+          }
         </mat-select>
       </mat-form-field>
     </app-dialog-header>

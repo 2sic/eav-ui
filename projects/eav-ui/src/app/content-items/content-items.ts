@@ -51,7 +51,7 @@ import { CreateMetadataDialogComponent } from './create-metadata-dialog/create-m
 import { MetadataInfo } from './create-metadata-dialog/create-metadata-dialog.models';
 import { AgGridFilterModel } from './models/ag-grid-filter.model';
 import { ContentItem } from './models/content-item.model';
-import { ContentItemsColumns, ContentItemsLimit, ContentItemsRetrieval } from './models/content-items-retrieval.model';
+import { ContentItemsColumns, ContentItemsRange, ContentItemsRetrieval, contentItemsRangeOptions } from './models/content-items-retrieval.model';
 import { ExtendedColDef } from './models/extended-col-def.model';
 import { PubMetaFilterComponent } from './pub-meta-filter/pub-meta-filter';
 import { PubMeta } from './pub-meta-filter/pub-meta-filter.model';
@@ -106,10 +106,13 @@ export class ContentItemsComponent implements OnInit {
     });
     effect(() => {
       const columns = this.#columns();
-      const basics = this.#basicColumns();
+      const selectedColumns = this.selectedColumns();
       if (!this.#gridApiSig() || !columns)
         return;
-      const columnDefs = this.#buildColumnDefs(basics ? [] : columns, basics);
+      const visibleColumns = selectedColumns === 'all'
+        ? columns
+        : columns.filter(column => selectedColumns.includes(column.StaticName));
+      const columnDefs = this.#buildColumnDefs(visibleColumns, selectedColumns !== 'all');
       this.setColumnDefs(columnDefs, buildFilterModel(sessionStorage.getItem(keyFilters), columnDefs));
     });
   }
@@ -149,20 +152,44 @@ export class ContentItemsComponent implements OnInit {
   #contentTypeStaticName = this.#dialogRouter.getParam('contentTypeStaticName');
   contentType = this.#contentTypesSvc.getType(this.#contentTypeStaticName);
 
-  retrieval = signal<ContentItemsRetrieval>({ top: 100, columns: 'basics' });
-  #basicColumns = computed(() => this.retrieval().columns === 'basics');
+  #prefilter = this.#dialogRouter.getQueryParam('prefilter') === 'true';
+  retrieval = signal<ContentItemsRetrieval>({
+    range: this.#prefilter ? 'first100' : 'all',
+    columns: this.#prefilter ? [] : 'all',
+  });
   #columns = signal<Field[]>(null);
+  allColumnsValue = '$all';
+  optionalColumns = computed(() => this.#columns() ?? []);
+  selectedColumns = computed(() => this.retrieval().columns);
+  selectedColumnValues = computed(() => this.selectedColumns() === 'all' ? [this.allColumnsValue] : this.selectedColumns());
+  rangeOptions = contentItemsRangeOptions;
   #itemsResource = this.#contentItemsSvc.getAllLive(this.#contentTypeStaticName, this.refresh, this.retrieval);
   #itemsRaw = this.#itemsResource.value;
   loadError = this.#itemsResource.error;
 
-  setItemLimit(top: ContentItemsLimit) {
-    this.retrieval.update(options => ({ ...options, top }));
+  setItemRange(range: ContentItemsRange) {
+    this.retrieval.update(options => ({ ...options, range }));
   }
 
-  setColumns(columns: ContentItemsColumns) {
+  setColumns(values: string[]) {
+    const previous = this.selectedColumns();
+    const selectedAll = values.includes(this.allColumnsValue);
+    const columns: ContentItemsColumns = selectedAll && previous !== 'all'
+      ? 'all'
+      : values.filter(value => value !== this.allColumnsValue);
     this.retrieval.update(options => ({ ...options, columns }));
   }
+
+  rangeLabel = computed(() =>
+    this.rangeOptions.find(option => option.value === this.retrieval().range)?.label
+  );
+
+  columnsLabel = computed(() => {
+    const columns = this.selectedColumns();
+    if (columns === 'all') return 'All';
+    if (columns.length === 0) return 'Basics';
+    return `${columns.length} optional`;
+  });
 
   items = computed(() => {
     const data = this.#itemsRaw();
