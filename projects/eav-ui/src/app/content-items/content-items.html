@@ -1,13 +1,47 @@
 <div appToggleDebug class="eav-dialog nav-component-wrapper">
   <app-grid-with-help style="height: 100%" [helpText]="uxHelpText()" [refresh]="refresh()" [rowLength]="items()?.length">
     <app-dialog-header (close)="closeDialog()" eav-dialog-header>
-      {{ contentType()?.Label || contentType()?.Name }} Data
+      <span>{{ contentType()?.Label || contentType()?.Name }} Data</span>
+      <mat-form-field color="accent" class="eav-mat-form-field" subscriptSizing="dynamic" style="width: 160px; margin-left: 24px">
+        <mat-select
+          aria-label="Items"
+          panelWidth=""
+          aria-description="Filters apply to the loaded items. Select All to search all items."
+          [value]="retrieval().top"
+          (selectionChange)="setItemLimit($event.value)"
+        >
+          <mat-select-trigger>
+            <span>Items: {{ retrieval().top ? 'Top ' + retrieval().top : 'All' }}</span>
+          </mat-select-trigger>
+          <mat-option [value]="0">All</mat-option>
+          <mat-option [value]="10">Top 10</mat-option>
+          <mat-option [value]="100">Top 100</mat-option>
+          <mat-option [value]="1000">Top 1000</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field color="accent" class="eav-mat-form-field" subscriptSizing="dynamic" style="width: 160px; margin-left: 12px">
+        <mat-select
+          aria-label="Columns"
+          panelWidth=""
+          aria-description="Basics: Id, Guid, Status, Title. Select All to load every column and editing permissions."
+          [value]="retrieval().columns"
+          (selectionChange)="setColumns($event.value)"
+        >
+          <mat-select-trigger>
+            <span>Columns: {{ retrieval().columns === 'basics' ? 'Basics' : 'All' }}</span>
+          </mat-select-trigger>
+          <mat-option value="all">All</mat-option>
+          <mat-option value="basics">Basics</mat-option>
+        </mat-select>
+      </mat-form-field>
     </app-dialog-header>
 
     <!-- Info Content -->
     <div class="eav-dialog-content" eav-dialog-content>
-      @if (contentType()?.Properties?.ListInstructions; as listInstructions) {
-        <div [innerHTML]="listInstructions | safeHtml"></div>
+      @if (loadError()) {
+      <p role="alert">Could not load items. Change the retrieval options to try again.</p>
+      } @if (contentType()?.Properties?.ListInstructions; as listInstructions) {
+      <div [innerHTML]="listInstructions | safeHtml"></div>
       }
     </div>
     <ag-grid-angular
@@ -43,17 +77,17 @@
           <span>Create Metadata</span>
         </button>
         @if (isDebug()) {
-          <button
-            mat-button
-            class="eav-button__with-icon"
-            color="accent"
-            tippy="Print filter to console"
-            tippyPlacement="top"
-            (click)="debugFilter()"
-          >
-            <mat-icon class="eav-icon">filter_list</mat-icon>
-            <span>Filter</span>
-          </button>
+        <button
+          mat-button
+          class="eav-button__with-icon"
+          color="accent"
+          tippy="Print filter to console"
+          tippyPlacement="top"
+          (click)="debugFilter()"
+        >
+          <mat-icon class="eav-icon">filter_list</mat-icon>
+          <span>Filter</span>
+        </button>
         }
       </div>
       <a [href]="urlToNewItem()" matFab mat-elevation-z24 class="grid-fab" tippy="Add item">

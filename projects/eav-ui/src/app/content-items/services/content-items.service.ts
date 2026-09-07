@@ -11,6 +11,7 @@ import { dataSourceEntitiesAdmin, webApiEntityRoot } from '../../shared/services
 import { HttpServiceBaseSignal } from '../../shared/services/http-service-base-signal';
 import { SysDataService } from '../../shared/services/sys-data.service';
 import { ContentItem } from '../models/content-item.model';
+import { contentItemsBasicFields, ContentItemsRetrieval } from '../models/content-items-retrieval.model';
 
 const logSpecs = {
   getAll: true,
@@ -25,14 +26,16 @@ export class ContentItemsService extends HttpServiceBaseSignal {
 
   log = classLog({ ContentItemsService }, logSpecs);
 
-  #getAllSig(contentTypeStaticName: string, refresh?: Signal<unknown>) {
+  #getAllSig(contentTypeStaticName: string, refresh?: Signal<unknown>, retrieval?: Signal<ContentItemsRetrieval>) {
     return this.#sysData.getMany<{ Default?: ContentItem[] }>({
       refresh,
       source: dataSourceEntitiesAdmin,
-      params: {
+      params: computed(() => ({
         AppId: this.appId,
         ContentType: contentTypeStaticName,
-      },
+        ...(retrieval?.().top ? { '$top': retrieval().top } : {}),
+      })),
+      fields: computed(() => retrieval?.().columns === 'basics' ? contentItemsBasicFields : ''),
       streams: 'Default',
       noCamel: true,
     });
@@ -60,12 +63,27 @@ export class ContentItemsService extends HttpServiceBaseSignal {
     };
   }
 
-  getAllLive(contentTypeStaticName: string, refresh: Signal<unknown>) {
+  getAllLive(contentTypeStaticName: string, refresh: Signal<unknown>, retrieval?: Signal<ContentItemsRetrieval>) {
     this.log.fnIf('getAllLive', { contentTypeStaticName, refresh });
-    const resource = this.#getAllSig(contentTypeStaticName, refresh);
+    const resource = this.#getAllSig(contentTypeStaticName, refresh, retrieval);
     return {
       ...resource,
-      value: computed(() => resource.value()?.Default),
+      isLoading: resource.isLoading,
+      error: resource.error,
+      value: computed<ContentItem[] | undefined>(() => {
+        const items = resource.hasValue() ? resource.value()?.Default : undefined;
+        if (retrieval?.().columns !== 'basics')
+          return items;
+        return items?.map(item => ({
+          ...item,
+          _Title: item._Title ?? item.Title,
+          _EditInfo: item._EditInfo ?? {
+            ReadOnly: true,
+            DisableDelete: true,
+            DisableMetadata: true,
+          },
+        }));
+      }),
     };
   }
 
