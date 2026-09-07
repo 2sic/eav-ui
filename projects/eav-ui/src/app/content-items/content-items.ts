@@ -3,7 +3,9 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectorRef, Component, computed, effect, inject, OnInit, signal, ViewContainerRef, WritableSignal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogActions, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
 import { transient } from '../../../../core';
@@ -49,6 +51,7 @@ import { CreateMetadataDialogComponent } from './create-metadata-dialog/create-m
 import { MetadataInfo } from './create-metadata-dialog/create-metadata-dialog.models';
 import { AgGridFilterModel } from './models/ag-grid-filter.model';
 import { ContentItem } from './models/content-item.model';
+import { ContentItemsColumns, ContentItemsRange, ContentItemsRetrieval, contentItemsRangeOptions } from './models/content-items-retrieval.model';
 import { ExtendedColDef } from './models/extended-col-def.model';
 import { PubMetaFilterComponent } from './pub-meta-filter/pub-meta-filter';
 import { PubMeta } from './pub-meta-filter/pub-meta-filter.model';
@@ -66,6 +69,8 @@ const logSpecs = {
   imports: [
     MatButtonModule,
     MatIconModule,
+    MatFormFieldModule,
+    MatSelectModule,
     RouterOutlet,
     MatDialogActions,
     SafeHtmlPipe,
@@ -96,16 +101,21 @@ export class ContentItemsComponent implements OnInit {
   #dialogRouter = transient(DialogRoutingService);
 
   constructor() {
-  effect(() => {
-    const data = this.items();
-    const api = this.#gridApiSig();
-
-    if (!api || !data)
-      return;
-
-    api.setGridOption('loading', false);
-  });
-}
+    effect(() => {
+      this.#gridApiSig()?.setGridOption('loading', this.#itemsResource.isLoading());
+    });
+    effect(() => {
+      const columns = this.#columns();
+      const selectedColumns = this.selectedColumns();
+      if (!this.#gridApiSig() || !columns)
+        return;
+      const visibleColumns = selectedColumns === 'all'
+        ? columns
+        : columns.filter(column => selectedColumns.includes(column.StaticName));
+      const columnDefs = this.#buildColumnDefs(visibleColumns, selectedColumns !== 'all');
+      this.setColumnDefs(columnDefs, buildFilterModel(sessionStorage.getItem(keyFilters), columnDefs));
+    });
+  }
 
   gridOptions: GridOptions = {
     ...defaultGridOptions,
@@ -142,7 +152,44 @@ export class ContentItemsComponent implements OnInit {
   #contentTypeStaticName = this.#dialogRouter.getParam('contentTypeStaticName');
   contentType = this.#contentTypesSvc.getType(this.#contentTypeStaticName);
 
-  #itemsRaw = this.#contentItemsSvc.getAllLive(this.#contentTypeStaticName, this.refresh).value;
+  #prefilter = this.#dialogRouter.getQueryParam('prefilter') === 'true';
+  retrieval = signal<ContentItemsRetrieval>({
+    range: this.#prefilter ? 'first100' : 'all',
+    columns: this.#prefilter ? [] : 'all',
+  });
+  #columns = signal<Field[]>(null);
+  allColumnsValue = '$all';
+  optionalColumns = computed(() => this.#columns() ?? []);
+  selectedColumns = computed(() => this.retrieval().columns);
+  selectedColumnValues = computed(() => this.selectedColumns() === 'all' ? [this.allColumnsValue] : this.selectedColumns());
+  rangeOptions = contentItemsRangeOptions;
+  #itemsResource = this.#contentItemsSvc.getAllLive(this.#contentTypeStaticName, this.refresh, this.retrieval);
+  #itemsRaw = this.#itemsResource.value;
+  loadError = this.#itemsResource.error;
+
+  setItemRange(range: ContentItemsRange) {
+    this.retrieval.update(options => ({ ...options, range }));
+  }
+
+  setColumns(values: string[]) {
+    const previous = this.selectedColumns();
+    const selectedAll = values.includes(this.allColumnsValue);
+    const columns: ContentItemsColumns = selectedAll && previous !== 'all'
+      ? 'all'
+      : values.filter(value => value !== this.allColumnsValue);
+    this.retrieval.update(options => ({ ...options, columns }));
+  }
+
+  rangeLabel = computed(() =>
+    this.rangeOptions.find(option => option.value === this.retrieval().range)?.label
+  );
+
+  columnsLabel = computed(() => {
+    const columns = this.selectedColumns();
+    if (columns === 'all') return 'All';
+    if (columns.length === 0) return 'Basics';
+    return `${columns.length} optional`;
+  });
 
   items = computed(() => {
     const data = this.#itemsRaw();
@@ -167,18 +214,14 @@ export class ContentItemsComponent implements OnInit {
 
   private fetchItems() {
     // Show the AG Grid loading overlay
-    this.#gridApiSig().setGridOption("loading", true);
+    this.#gridApiSig()?.setGridOption("loading", true);
     this.refresh.update(v => ++v);
   }
 
   private fetchColumns() {
     this.#contentItemsSvc.getColumnsPromise(this.#contentTypeStaticName).then(columns => {
       // filter out ephemeral columns as they don't have data to show
-      const columnsWithoutEphemeral = columns.filter(column => !column.IsEphemeral);
-      const columnDefs = this.#buildColumnDefs(columnsWithoutEphemeral);
-      const filterModel = buildFilterModel(sessionStorage.getItem(keyFilters), columnDefs);
-      if (this.#gridApiSig())
-        this.setColumnDefs(columnDefs, filterModel);
+      this.#columns.set(columns.filter(column => !column.IsEphemeral));
     });
   }
 
@@ -331,7 +374,7 @@ export class ContentItemsComponent implements OnInit {
     this.#snackBar.open('Check console for filter information', undefined, { duration: 3000 });
   }
 
-  #buildColumnDefs(columns: Field[]) {
+  #buildColumnDefs(columns: Field[], basics = false) {
     const columnDefs: ColDef[] = [
       {
         ...ColumnDefinitions.IdWithDefaultRenderer,
@@ -412,6 +455,15 @@ export class ContentItemsComponent implements OnInit {
         } satisfies ContentItemsActionsParams,
       },
     ];
+    if (basics) {
+      columnDefs.splice(3, 1); // Relationship statistics are not retrieved in Basics mode.
+      columnDefs.splice(1, 0, {
+        ...ColumnDefinitions.TextWidePrimary,
+        headerName: 'Guid',
+        field: 'Guid',
+      });
+      columnDefs.find(column => column.field === '_Title').headerName = 'Title';
+    }
     for (const column of columns) {
       const colDef: ExtendedColDef = {
         headerName: column.StaticName,
@@ -524,7 +576,10 @@ export class ContentItemsComponent implements OnInit {
 
   private valueGetterEntityField(params: ValueGetterParams) {
     const rawValue: ContentItem[] = params.data[params.colDef.field];
-    if (rawValue.length === 0) { return null; }
+    if (!rawValue?.length)
+    { 
+      return null;
+    }
     return rawValue.map(item => item.Title);
   }
 
