@@ -46,7 +46,8 @@
     "@angular/build": {
       "undici": "^7.24.0"
     },
-    "picomatch": "4.0.4"
+    "picomatch": "4.0.4",
+    "qs": "^6.16.0"
   },
   "dependencies": {
     "@2sic.com/sxc-angular": "^18.0.0",
@@ -93,7 +94,7 @@
     "@angular/cli": "^22.0.4",
     "@angular/compiler-cli": "^22.0.4",
     "@angular/language-service": "^22.0.4",
-    "@compodoc/compodoc": "^1.2.1",
+    "@compodoc/compodoc": "^2.0.0",
     "@types/google.maps": "^3.58.1",
     "@types/lodash-es": "^4.17.12",
     "@types/node": "^22.13.10",
@@ -108,7 +109,7 @@
     "chokidar": "^3.6.0",
     "concurrently": "^9.1.2",
     "dependency-cruiser": "^16.10.0",
-    "esbuild": "^0.27.3",
+    "esbuild": "^0.28.2",
     "eslint": "^9.28.0",
     "eslint-plugin-import": "^2.31.0",
     "fs-extra": "^10.1.0",
@@ -122,11 +123,10 @@
     "vitest": "^4.1.0"
   },
   "allowScripts": {
-    "esbuild@0.28.1": true,
-    "esbuild@0.27.3": true,
-    "@compodoc/compodoc@1.2.1": true,
+    "esbuild@0.28.2": true,
+    "@compodoc/compodoc@2.0.0": true,
     "@parcel/watcher@2.5.6": true,
-    "lmdb@3.5.4": true,
+    "lmdb@3.5.6": true,
     "msgpackr-extract@3.0.4": true
   }
 }
