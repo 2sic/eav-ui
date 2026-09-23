@@ -69,7 +69,7 @@ export class SystemInfoComponent implements OnInit {
 
   #systemInfoSet = computed<SystemInfoSet | null>(() => {
     const streams = this.#systemInfoStreams();
-    if (streams == null)
+    if (!streams)
       return null;
 
     return {
@@ -83,8 +83,8 @@ export class SystemInfoComponent implements OnInit {
 
   systemInfos = computed(() => {
     const systemInfoSetValue = this.#systemInfoSet();
-    if (systemInfoSetValue == null)
-      return null;
+    if (!systemInfoSetValue)
+      return [];
     const url = this.#dialogRouter.router.url + '/' + "registration";
     const info: InfoTemplate[] = [
       { label: 'CMS', value: `2sxc v.${systemInfoSetValue.System.EavVersion}` },
@@ -114,17 +114,18 @@ export class SystemInfoComponent implements OnInit {
     const systemInfoSetValue = this.#systemInfoSet();
     const languagesValue = this.#languages();
 
-    if (systemInfoSetValue == null || languagesValue == null) return;
+    if (!systemInfoSetValue || !languagesValue)
+      return [];
 
-    const allLanguages = languagesValue.length;
-    const activeLanguages = languagesValue.filter(l => l.isEnabled).length;
+    const allCount = languagesValue.length;
+    const activeCount = languagesValue.filter(l => l.isEnabled).length;
 
     const info: InfoTemplate[] = [
       { label: 'Zone', value: systemInfoSetValue.Site.ZoneId.toString() },
       { label: 'Site', value: systemInfoSetValue.Site.SiteId.toString() },
       {
         label: 'Languages',
-        value: `${activeLanguages}/${allLanguages}`,
+        value: `${activeCount}/${allCount}`,
         link: {
           url: 'languages',
           label: 'manage',
@@ -147,16 +148,17 @@ export class SystemInfoComponent implements OnInit {
 
   warningIcon = computed(() => {
     const systemInfoSetValue = this.#systemInfoSet();
-    if (systemInfoSetValue == null) return undefined;
-    if (systemInfoSetValue.Messages.warningsObsolete || systemInfoSetValue.Messages.warningsOther) {
+    if (!systemInfoSetValue)
+      return undefined;
+    if (systemInfoSetValue.Messages.warningsObsolete || systemInfoSetValue.Messages.warningsOther)
       return 'warning';
-    }
     return 'check';
   });
 
   warningInfos = computed(() => {
     const systemInfoSetValue = this.#systemInfoSet();
-    if (systemInfoSetValue == null) return undefined;
+    if (!systemInfoSetValue)
+      return undefined;
 
     const info: InfoTemplate[] = [
       {
@@ -195,9 +197,7 @@ export class SystemInfoComponent implements OnInit {
   protected clipboard = transient(ClipboardService);
 
   ngOnInit(): void {
-    this.#dialogRouter.doOnDialogClosed(() => {
-      this.#refresh.update(v => ++v)
-    });
+    this.#dialogRouter.doOnDialogClosed(() => this.#refresh.update(v => ++v));
   }
 
   openSiteSettings(): void {
@@ -213,7 +213,7 @@ export class SystemInfoComponent implements OnInit {
       .pipe(map(dc => dc?.Context[partName].PrimaryApp), take(1))
       .subscribe(appIdentity => {
         this.#dialogInNewWindowSvc.openAppAdministration(appIdentity.ZoneId, appIdentity.AppId, 'app');
-      })
+      });
   }
 
   openInsights() {
