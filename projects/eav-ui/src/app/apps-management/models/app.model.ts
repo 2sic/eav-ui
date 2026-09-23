@@ -13,7 +13,7 @@ export interface App {
   IsInherited: boolean;
   Items: number;
   /** LightSpeed info provided by the backend */
-  lightSpeed?: LightSpeedInfo;
+  LightSpeed?: LightSpeedInfo;
   Name: string;
   Title?: string;
   Thumbnail: string | null;
