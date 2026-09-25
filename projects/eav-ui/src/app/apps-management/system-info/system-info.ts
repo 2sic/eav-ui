@@ -150,7 +150,7 @@ export class SystemInfoComponent implements OnInit {
     const systemInfoSetValue = this.#systemInfoSet();
     if (!systemInfoSetValue)
       return undefined;
-    if (systemInfoSetValue.Messages.warningsObsolete || systemInfoSetValue.Messages.warningsOther)
+    if (systemInfoSetValue.Messages.WarningsObsolete || systemInfoSetValue.Messages.WarningsOther)
       return 'warning';
     return 'check';
   });
@@ -163,8 +163,8 @@ export class SystemInfoComponent implements OnInit {
     const info: InfoTemplate[] = [
       {
         label: 'Warnings Obsolete',
-        value: systemInfoSetValue.Messages.warningsObsolete.toString(),
-        link: !systemInfoSetValue.Messages.warningsObsolete
+        value: systemInfoSetValue.Messages.WarningsObsolete.toString(),
+        link: !systemInfoSetValue.Messages.WarningsObsolete
           ? undefined
           : {
             url: window.$2sxc.http.apiUrl('sys/insights/logs?key=warnings-obsolete'),
@@ -174,8 +174,8 @@ export class SystemInfoComponent implements OnInit {
       },
       {
         label: 'Warnings Other',
-        value: systemInfoSetValue.Messages.warningsOther.toString(),
-        link: !systemInfoSetValue.Messages.warningsOther
+        value: systemInfoSetValue.Messages.WarningsOther.toString(),
+        link: !systemInfoSetValue.Messages.WarningsOther
           ? undefined
           : {
             url: window.$2sxc.http.apiUrl('sys/insights/logs'),
