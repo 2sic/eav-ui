@@ -7,6 +7,7 @@ export interface License {
   Guid: string;
   IsEnabled: boolean;
   Name: string;
+  NameId: string;
   Priority: number;
   Expires: string;
 }

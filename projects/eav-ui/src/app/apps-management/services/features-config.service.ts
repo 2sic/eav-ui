@@ -115,6 +115,7 @@ export class FeaturesConfigService extends HttpServiceBaseSignal {
             Guid: license.Guid,
             IsEnabled: license.IsEnabled,
             Name: license.Name,
+            NameId: license.NameId,
             Priority: license.Priority,
           } satisfies License));
       }),

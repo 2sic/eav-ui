@@ -20,7 +20,7 @@
 </div>
 
 <mat-accordion multi>
-  @for (license of filteredLicenses() | licensesOrder; track trackLicenses($index, license)) {
+  @for (license of filteredLicenses() | licensesOrder; track license.NameId) {
     <mat-expansion-panel #panel>
       <mat-expansion-panel-header>
         <mat-panel-title>
