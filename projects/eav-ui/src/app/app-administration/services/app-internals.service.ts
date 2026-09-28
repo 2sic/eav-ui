@@ -6,12 +6,12 @@ import { SysDataService } from '../../shared/services/sys-data.service';
 interface AppEnhancementsStreams {
   AppResources: AppInternals['EntityLists']['AppResources'];
   AppSettings: AppInternals['EntityLists']['AppSettings'];
-  AppResourceFields: AppInternals['FieldAll']['AppResources'];
+  AppResourcesFields: AppInternals['FieldAll']['AppResources'];
   AppSettingFields: AppInternals['FieldAll']['AppSettings'];
   Metadata: AppInternals['MetadataList']['Items'];
   ResourcesSystem: AppInternals['EntityLists']['ResourcesSystem'];
   SettingsSystem: AppInternals['EntityLists']['SettingsSystem'];
-  ToSxcContentApp: AppInternals['EntityLists']['ToSxcContentApp'];
+  AppConfig: AppInternals['EntityLists']['AppConfig'];
 }
 
 @Injectable()
@@ -39,10 +39,10 @@ export class AppInternalsService {
             AppSettings: streams.AppSettings,
             ResourcesSystem: streams.ResourcesSystem,
             SettingsSystem: streams.SettingsSystem,
-            ToSxcContentApp: streams.ToSxcContentApp,
+            AppConfig: streams.AppConfig,
           },
           FieldAll: {
-            AppResources: streams.AppResourceFields,
+            AppResources: streams.AppResourcesFields,
             AppSettings: streams.AppSettingFields,
           },
           MetadataList: { Items: streams.Metadata } as AppInternals['MetadataList'],
