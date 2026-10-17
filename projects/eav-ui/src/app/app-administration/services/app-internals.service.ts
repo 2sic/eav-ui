@@ -3,7 +3,7 @@ import { transient } from '../../../../../core';
 import { AppInternals } from '../../app-administration/models/app-internals.model';
 import { SysDataService } from '../../shared/services/sys-data.service';
 
-interface AppEnhancementsStreams {
+interface AppSystemDataStreams {
   AppResources: AppInternals['EntityLists']['AppResources'];
   AppSettings: AppInternals['EntityLists']['AppSettings'];
   AppResourcesFields: AppInternals['FieldAll']['AppResources'];
@@ -19,8 +19,8 @@ export class AppInternalsService {
   #sysData = transient(SysDataService);
 
   getAppInternalsLive(refresh: Signal<unknown>) {
-    const resource = this.#sysData.getMany<AppEnhancementsStreams>({
-      source: 'System.AppEnhancements',
+    const resource = this.#sysData.getMany<AppSystemDataStreams>({
+      source: 'System.AppSystemData',
       refresh,
       streams: '*',
       noCamel: true,

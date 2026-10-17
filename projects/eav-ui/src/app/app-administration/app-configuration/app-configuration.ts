@@ -56,8 +56,8 @@ export class AppConfiguration implements OnInit {
 
   #dialogInNewWindowSvc = transient(DialogInNewWindowService);
   #contentTypesSvc = transient(ContentTypesService);
-  #appInternalsService = transient(AppInternalsService);
   #contentItemsService = transient(ContentItemsService);
+  #appInternalsService = transient(AppInternalsService);
   #dialogConfigSvc = transient(DialogConfigAppService);
   #dialogRouter = transient(DialogRoutingService);
 
@@ -283,34 +283,38 @@ export class AppConfiguration implements OnInit {
   // case eavConstants.contentTypes.systemSettings:
   // case eavConstants.contentTypes.systemResources:
   urlToEditSystem(staticName: string, systemSettingsScope?: Of<typeof SystemSettingsScopes>) {
-    const url = signal('');
-    this.#contentItemsService.getAllPromise(staticName).then(contentItems => {
+    return computed(() => {
+      const appSpecs = this.appSpecsLazy();
+      if (!appSpecs)
+        return '';
+
+      const contentItems = staticName === eavConstants.contentTypes.systemSettings
+        ? appSpecs.EntityLists.SettingsSystem
+        : appSpecs.EntityLists.ResourcesSystem;
       const systemSettingsEntities = contentItems.filter(i =>
         systemSettingsScope === SystemSettingsScopes.App
           ? !i.SettingsEntityScope
           : i.SettingsEntityScope === SystemSettingsScopes.Site
       );
       if (systemSettingsEntities.length > 1) {
-        url.set(this.#urlTo('message/e', { error: 'AppAdmin.ErrorTooManyAppSettings', openUrl:"/data/System.App" }, staticName));
-      } else {
-        const systemSettingsEntity = systemSettingsEntities[0];
-        url.set(this.#urlTo(
-          `edit/${convertFormToUrl({
-            items: [
-              systemSettingsEntity == null
-                ? ItemIdHelper.newFromType(staticName, {
-                  ...(systemSettingsScope === SystemSettingsScopes.Site && {
-                    SettingsEntityScope: SystemSettingsScopes.Site,
-                  }),
-                })
-                : ItemIdHelper.editId(systemSettingsEntity.Id),
-            ],
-          })}`
-        ));
+        return this.#urlTo('message/e', { error: 'AppAdmin.ErrorTooManyAppSettings', openUrl:"/data/System.App" }, staticName);
       }
-    });
 
-    return url;
+      const systemSettingsEntity = systemSettingsEntities[0];
+      return this.#urlTo(
+        `edit/${convertFormToUrl({
+          items: [
+            systemSettingsEntity == null
+              ? ItemIdHelper.newFromType(staticName, {
+                ...(systemSettingsScope === SystemSettingsScopes.Site && {
+                  SettingsEntityScope: SystemSettingsScopes.Site,
+                }),
+              })
+              : ItemIdHelper.editId(systemSettingsEntity.Id),
+          ],
+        })}`
+      );
+    });
   }
 
   // case eavConstants.contentTypes.customSettings:
