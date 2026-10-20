@@ -229,7 +229,7 @@ export class MetadataComponent implements OnInit {
     if (!confirmed) {
       const data: ConfirmDeleteDialogData = {
         entityId: metadata.Id,
-        entityTitle: metadata.Title,
+        entityTitle: this.#metadataTitle(metadata),
         hasDeleteSnackbar: true,
         message: this.metadataSet().Recommendations.find(r => r.Id === metadata._Type.Id)?.DeleteWarning,
       };
@@ -266,6 +266,10 @@ export class MetadataComponent implements OnInit {
     return this.#dialogRoutes.linkSubRoute(`edit/${formUrl}`);
   }
 
+  #metadataTitle(metadata: MetadataItem): string {
+    return metadata.Title ?? metadata._Type.Title ?? metadata._Type.Name;
+  }
+
   #buildGridOptions(): GridOptions {
     const gridOptions: GridOptions = {
       ...defaultGridOptions,
@@ -277,6 +281,7 @@ export class MetadataComponent implements OnInit {
         {
           ...ColumnDefinitions.TextWide,
           field: 'Title',
+          valueGetter: (params: { data: MetadataItem }) => this.#metadataTitle(params.data),
           cellRenderer: (params: ICellRendererParams & { data: MetadataItem }) =>
             AgGridHelper.cellLink(
               this.#metadataEditUrl(params.data),

@@ -18,7 +18,7 @@ export interface MetadataItem {
   Guid: string;
   Id: number;
   Modified: string;
-  Title: string;
+  Title: string | null;
   _Type: EavType;
   [key: string]: any;
 }
