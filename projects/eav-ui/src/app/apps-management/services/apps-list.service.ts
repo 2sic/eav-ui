@@ -5,8 +5,8 @@ import { DialogConfigGlobalService } from '../../app-administration/services/dia
 import { HttpServiceBaseSignal } from '../../shared/services/http-service-base-signal';
 import { App, PendingApp } from '../models/app.model';
 
-const dataSourceApps = 'System.Apps';
-const dataSourceInheritableApps = 'System.InheritableApps';
+const dataSourceApps = 'System.AppDetails';
+const dataSourceInheritableApps = 'System.AppsInheritable';
 const webApiAppRootApp = 'admin/app/app';
 const webApiAppRootInstallPendingApps = 'admin/app/InstallPendingApps';
 const webApiAppRootFlushcache = 'admin/app/flushcache';

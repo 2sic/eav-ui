@@ -13,7 +13,7 @@ interface EntityLists {
   AppSettings: ContentItem[],
   ResourcesSystem: ContentItem[],
   SettingsSystem: ContentItem[],
-  ToSxcContentApp: ContentItem[],
+  AppConfig: ContentItem[],
 }
 
 interface FieldAll {

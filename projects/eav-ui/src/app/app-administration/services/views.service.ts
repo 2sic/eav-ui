@@ -17,12 +17,21 @@ export class ViewsService extends HttpServiceBaseSignal {
   #sysData = transient(SysDataService);
 
   getAllOnce() {
-    const views = this.#sysData.get<View>({ source: 'System.Views', noCamel: true });
+    const views = this.#sysData.get<View>({
+      source: 'System.Views',
+      params: { includeGuid: true },
+      noCamel: true,
+    });
     return { value: views };
   }
 
   getAllLive(refresh: Signal<unknown>) {
-    const views = this.#sysData.get<View>({ refresh, source: 'System.Views', noCamel: true });
+    const views = this.#sysData.get<View>({
+      refresh,
+      source: 'System.Views',
+      params: { includeGuid: true },
+      noCamel: true,
+    });
     return { value: views };
   }
 

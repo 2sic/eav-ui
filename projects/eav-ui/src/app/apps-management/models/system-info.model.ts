@@ -19,8 +19,8 @@ export interface LicenseInfo {
 }
 
 export interface WarningsCount {
-  warningsObsolete: number;
-  warningsOther: number;
+  WarningsObsolete: number;
+  WarningsOther: number;
 }
 
 export interface SiteStats {

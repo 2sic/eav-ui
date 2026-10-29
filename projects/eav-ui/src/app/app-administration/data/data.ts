@@ -263,7 +263,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
             const contentTypeB: ContentType = nodeB.data;
             return contentTypeA._compareLabel.localeCompare(contentTypeB._compareLabel);
           },
-          cellRenderer: (p: { data: ContentType }) => AgGridHelper.cellLink(this.#urlTo(`items/${p.data.NameId}`), p.data.Label),
+          cellRenderer: (p: { data: ContentType }) => AgGridHelper.cellLink(this.#urlToItems(p.data), p.data.Label),
         },
         {
           ...ColumnDefinitions.Items,
@@ -272,7 +272,10 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
           cellRendererParams: ({
             do: (verb, ct) => {
               switch (verb) {
-                case 'openItems': return this.#dialogRouter.navRelative([`items/${ct.NameId}`]);
+                case 'openItems': return this.#dialogRouter.navRelative(
+                  [`items/${ct.NameId}`],
+                  ct.Items > 1000 ? { queryParams: { prefilter: true } } : undefined,
+                );
                 case 'addItem': return this.#dialogRouter.navRelative([`edit/${this.#routeAddItem(ct)}`]);
               }
             },
@@ -337,6 +340,11 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
 
   #urlTo(url: string) {
     return this.#dialogRouter.linkSubRoute(url);
+  }
+
+  #urlToItems(contentType: ContentType) {
+    const url = this.#urlTo(`items/${contentType.NameId}`);
+    return contentType.Items > 1000 ? `${url}?prefilter=true` : url;
   }
 
   #routeAddItem(contentType: ContentType): string {

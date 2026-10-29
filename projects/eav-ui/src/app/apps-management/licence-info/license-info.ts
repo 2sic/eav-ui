@@ -140,10 +140,6 @@ export class LicenseInfoComponent implements OnInit {
     }, timer);
   }
 
-  trackLicenses(index: number, license: License): string {
-    return license.Guid;
-  }
-
   openRegistration(): void {
     const router = this.#dialogRouter.router;
     router.navigate([router.url.replace('license', '') + "/registration"]);

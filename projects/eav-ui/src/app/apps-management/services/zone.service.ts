@@ -15,7 +15,7 @@ export class ZoneService extends HttpServiceBaseSignal {
     return this.#sysData.get<SiteLanguage>({
       refresh,
       source: 'System.ZoneLanguages',
-      fields: 'Code,Culture,IsEnabled,NameId',
+      fields: 'Code,Culture,IsEnabled',
     });
   }
 
@@ -38,7 +38,7 @@ export class ZoneService extends HttpServiceBaseSignal {
     return this.#sysData.get<SiteLanguagePermissions>({
       refresh,
       source: 'System.AppLanguages',
-      noCamel: true,
+      // noCamel: true,
       params: { appId: this.appId },
     });
   }

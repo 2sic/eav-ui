@@ -44,9 +44,7 @@ export class LanguagePermissionsComponent implements OnInit {
   languages = this.#zoneSvc.getLanguagesPermissionsLive(this.#refresh);
 
   ngOnInit(): void {
-    this.#dialogRouting.doOnDialogClosed(() => {
-      this.#refresh.update(v => ++v)
-    });
+    this.#dialogRouting.doOnDialogClosed(() => this.#refresh.update(v => ++v));
   }
 
   closeDialog(): void {
@@ -54,7 +52,7 @@ export class LanguagePermissionsComponent implements OnInit {
   }
 
   openPermissions(language: SiteLanguagePermissions): void {
-    this.#dialogRouting.navRelative([GoToPermissions.getUrlLanguage(language.nameId)]);
+    this.#dialogRouting.navRelative([GoToPermissions.getUrlLanguage(language.code.toLocaleLowerCase())]);
   }
 
 
@@ -64,27 +62,25 @@ export class LanguagePermissionsComponent implements OnInit {
       columnDefs: [
         {
           ...ColumnDefinitions.IdWithDefaultRenderer,
-          field: 'Code',
+          field: 'code',
           filter: 'agTextColumnFilter',
-          cellRendererParams: (() => {
-            const params: IdFieldParams<SiteLanguagePermissions> = {
-              tooltipGetter: (language) => `ID: ${language.code}`,
-            };
-            return params;
-          })(),
+          cellRendererParams: {
+            tooltipGetter: (language) => `ID: ${language.code}`,
+          } satisfies IdFieldParams<SiteLanguagePermissions>,
         },
         {
           ...ColumnDefinitions.TextWide,
-          field: 'Name',
+          field: 'culture',
           sort: 'asc',
-          valueGetter: (p: { data: SiteLanguagePermissions }) => p.data.culture,
         },
         {
           ...ColumnDefinitions.ActionsPinnedRight1,
           cellRenderer: LanguagesPermissionsActionsComponent,
           cellRendererParams: {
             do: (verb, lang) => {
-              switch (verb) { case 'openPermissions': return this.openPermissions(lang); }
+              switch (verb) {
+                case 'openPermissions': return this.openPermissions(lang);
+              }
             },
           } satisfies LanguagesPermissionsActionsComponent['params'],
         },
