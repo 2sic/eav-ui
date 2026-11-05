@@ -290,7 +290,11 @@ export class AppConfiguration implements OnInit {
 
       const contentItems = staticName === eavConstants.contentTypes.systemSettings
         ? appSpecs.EntityLists.SettingsSystem
-        : appSpecs.EntityLists.ResourcesSystem;
+        : staticName === eavConstants.contentTypes.systemResources
+          ? appSpecs.EntityLists.ResourcesSystem
+          : staticName === eavConstants.contentTypes.settings || staticName === eavConstants.contentTypes.customSettings
+            ? appSpecs.EntityLists.AppSettings
+            : appSpecs.EntityLists.AppResources;
       const systemSettingsEntities = contentItems.filter(i =>
         systemSettingsScope === SystemSettingsScopes.App
           ? !i.SettingsEntityScope
