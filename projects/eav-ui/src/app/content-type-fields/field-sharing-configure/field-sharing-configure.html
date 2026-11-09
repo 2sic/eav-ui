@@ -92,7 +92,7 @@
                   <!-- Column Definition "Content Type" -->
                   <ng-container matColumnDef="contentType">
                     <th mat-header-cell *matHeaderCellDef><b>Content Type</b></th>
-                    <td mat-cell *matCellDef="let field">{{ field.ContentType.Name }}</td>
+                    <td mat-cell *matCellDef="let field">{{ field.ContentType.name }}</td>
                   </ng-container>
                   <!-- Column Definition "Name" -->
                   <ng-container matColumnDef="name">
@@ -144,7 +144,7 @@
           <li>
             Guid: <strong>{{ field.Guid }}</strong>
             <br />
-            Content Type: <strong>{{ field.ContentType.Name }}</strong>
+            Content Type: <strong>{{ field.ContentType.name }}</strong>
             <br />
             Field: <strong>{{ field.StaticName }}</strong> ({{ field.AttributeId }})
           </li>

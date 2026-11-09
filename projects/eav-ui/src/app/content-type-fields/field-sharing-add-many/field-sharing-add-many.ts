@@ -131,7 +131,7 @@ export class FieldSharingAddMany extends BaseComponent implements OnInit {
         concatMap(inheritField =>
           this.#contentTypesFieldsSvc.addInheritedField(
             this.dialogData.contentType.Id,
-            inheritField.field.ContentType.Id,
+            inheritField.field.ContentType.id,
             inheritField.field.Guid,
             inheritField.newName
           ).pipe(catchError(_ => of(null)))
