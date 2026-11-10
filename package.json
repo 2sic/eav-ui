@@ -46,6 +46,7 @@
     "@angular/build": {
       "undici": "^7.24.0"
     },
+    "minimatch": "11.0.5",
     "picomatch": "4.0.4",
     "qs": "^6.16.0"
   },

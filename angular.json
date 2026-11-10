@@ -70,6 +70,13 @@
               "sourceMap": true,
               "namedChunks": true,
               "extractLicenses": false
+            },
+            "testing": {
+              "optimization": false,
+              "sourceMap": true,
+              "namedChunks": true,
+              "extractLicenses": false,
+              "polyfills": []
             }
           },
           "defaultConfiguration": "development"
@@ -98,7 +105,7 @@
         "test": {
           "builder": "@angular/build:unit-test",
           "options": {
-            "buildTarget": "eav-ui:build:development",
+            "buildTarget": "eav-ui:build:testing",
             "tsConfig": "projects/eav-ui/tsconfig.spec.json",
             "runner": "vitest"
           }
