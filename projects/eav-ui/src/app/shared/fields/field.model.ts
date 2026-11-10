@@ -1,5 +1,6 @@
 import { Of } from '../../../../../core';
 import { PermissionsCount } from '../../app-administration/models/permissions-count.model';
+import { EavType } from '../../edit/shared/models/eav/eav-type';
 import { EditInfo } from '../models/edit-info';
 import { InputTypeCatalog } from './input-type-catalog';
 import { InputTypeMetadata } from './input-type-metadata.model';
@@ -25,10 +26,7 @@ export interface Field {
   /**
    * This will only be available when calling fields/GetSharedFields
    */
-  ContentType?: {
-    id: string;
-    name: string;
-  };
+  ContentType?: EavType;
 
   /** new #ConfigTypesFromBackend v16.08 */
   ConfigTypes: Record<string, boolean>;
