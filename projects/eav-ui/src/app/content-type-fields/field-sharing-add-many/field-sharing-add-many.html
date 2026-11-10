@@ -22,7 +22,7 @@
         <table mat-table [dataSource]="shareableFields">
           <ng-container matColumnDef="contentType">
             <th mat-header-cell *matHeaderCellDef><b>Content Type</b></th>
-            <td mat-cell *matCellDef="let field" class="eav-table-cell">{{ field.ContentType.name }}</td>
+            <td mat-cell *matCellDef="let field" class="eav-table-cell">{{ field.ContentType.Name }}</td>
           </ng-container>
 
           <ng-container matColumnDef="name">
@@ -80,7 +80,7 @@
             <ng-container matColumnDef="source">
               <th mat-header-cell *matHeaderCellDef><b>Source</b></th>
               <td mat-cell *matCellDef="let item" style="word-break: break-all" class="eav-table-cell">
-                {{ item.field.ContentType.name }}/{{ item.field.StaticName }} ({{ item.field.Type }})
+                {{ item.field.ContentType.Name }}/{{ item.field.StaticName }} ({{ item.field.Type }})
               </td>
             </ng-container>
 
