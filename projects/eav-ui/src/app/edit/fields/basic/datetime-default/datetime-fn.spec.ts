@@ -10,11 +10,11 @@ import localeData from 'dayjs/plugin/localeData';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { DateTimeUtils } from './datetime-fn';
 
 describe('DateTime Functions', () => {
-  let setUiValue: ReturnType<typeof vi.fn>;
+  let setUiValue: Mock<(value: string | null) => void>;
   let testDate: dayjs.Dayjs;
   let standardCurrentValue: string;
 

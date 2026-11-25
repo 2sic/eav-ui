@@ -10,6 +10,9 @@ import { DefaultAddOnSettings, DefaultPaste } from './defaults';
 import { RawEditorOptionsExtended } from './raw-editor-options-extended';
 import { TranslationsLoader } from './translation-loader';
 import { WysiwygConfigurationManager } from './wysiwyg-configuration-manager';
+import { isSafariOrWebKit } from '../utils/browser-detection';
+import { injectTinyMceSkinCSS, injectSafariTinyMceStyles } from '../utils/tinymce-css-injection';
+import { tinyMceBaseUrl } from '../constants/internal-constants';
 
 const logSpecs = {
   all: false,
@@ -84,10 +87,18 @@ export class TinyMceConfigurator {
     if (!contentCssFile)
       contentCssFile = null;
 
+    // Safari/WebKit workaround: dialogs rendered in Shadow DOM don't display properly
+    // Use split UI mode (which renders dialogs on document.body) instead of fixed container
+    const isSafari = isSafariOrWebKit();
+    const safariWorkaroundActive = isSafari;
+
     const options: RawEditorOptionsExtended = {
       ...wysiwygConfiguration.tinyMce,
       selector: `.${selectorClass}`,
-      fixed_toolbar_container: `.${fixedToolbarClass}`,
+      // On Safari/WebKit, remove fixed_toolbar_container to allow split UI mode
+      fixed_toolbar_container: safariWorkaroundActive ? undefined : `.${fixedToolbarClass}`,
+      // On Safari/WebKit, explicitly set ui_mode to split for proper dialog rendering
+      ui_mode: safariWorkaroundActive ? 'split' : undefined,
       content_style: contentStyle.default,
       content_css: contentCssFile,
       setup,
@@ -98,6 +109,14 @@ export class TinyMceConfigurator {
       promotion: false,
       block_unsupported_drop: false,
     };
+
+    // If Safari/WebKit workaround is active, inject skin CSS into document head
+    // This ensures proper styling when UI is rendered outside of Shadow DOM
+    if (safariWorkaroundActive) {
+      const skinName = options.skin || '2sxc-tinymce-skin';
+      injectTinyMceSkinCSS(skinName, tinyMceBaseUrl);
+      injectSafariTinyMceStyles();
+    }
 
     // If this is inherited by a customized field, then call it's configureOptions (if available)
     if (this.reconfigure?.configureOptions) {
