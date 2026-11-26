@@ -156,11 +156,11 @@ export class AppsListComponent implements OnInit {
       const status = await this.#appsListSvc.flushCache(app.Id);
       // Check the status code
       if (status >= 200 && status < 300) {
-        this.snackBar.open('Cache flushed', undefined, { duration: 2000 })
+        this.snackBar.open('Cache flushed', undefined, { duration: 2000 });
       }
     } catch (statusCode) {
-      this.snackBar.open('Cache flush failed. Please check console.', undefined, { duration: 3000 }),
-        console.error('Export error:', statusCode);
+      this.snackBar.open('Cache flush failed. Please check console.', undefined, { duration: 3000 });
+      console.error('Export error:', statusCode);
     }
   }
 
